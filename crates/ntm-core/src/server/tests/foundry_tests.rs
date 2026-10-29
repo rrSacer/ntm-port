@@ -178,7 +178,7 @@ fn channels_keep_one_material_and_outlets_filter() {
     assert_eq!(crucible(&mut g, CORE).waste_stack, vec![("iron".to_string(), 100)], "derramou ferro numa rede de cobre");
     assert_eq!(melt_at(&mut g, ch1).1, 0);
     // The outlet: only copper passes.
-    let mut o = crate::foundry::flow::Outlet { filter: Some("copper".into()), invert: false };
+    let mut o = crate::foundry::flow::Outlet { filter: Some("copper".into()), ..Default::default() };
     assert!(o.passes("copper") && !o.passes("iron"));
     o.invert = true;
     assert!(!o.passes("copper") && o.passes("iron"));

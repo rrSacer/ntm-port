@@ -48,11 +48,15 @@ pub struct Crucible {
     /// The recipe list is open on the old screen.
     #[serde(default)]
     pub picking: bool,
+    /// The colour each stream (recipe, waste) poured in its last tick (0:
+    /// none), for the model's jets.
+    #[serde(skip)]
+    pub jets: [u32; 2],
 }
 
 impl Default for Crucible {
     fn default() -> Self {
-        Self { slots: vec![None; SLOTS], heat: 0, progress: 0, recipe: None, recipe_stack: Vec::new(), waste_stack: Vec::new(), picking: false }
+        Self { slots: vec![None; SLOTS], heat: 0, progress: 0, recipe: None, recipe_stack: Vec::new(), waste_stack: Vec::new(), picking: false, jets: [0; 2] }
     }
 }
 
@@ -60,8 +64,8 @@ impl Default for Crucible {
 /// (opposite side).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Stream {
-    Recipe,
-    Waste,
+    Recipe = 0,
+    Waste = 1,
 }
 
 impl Crucible {
@@ -195,7 +199,7 @@ impl Crucible {
             Stream::Recipe => &mut self.recipe_stack,
             Stream::Waste => &mut self.waste_stack,
         };
-        let mut poured = None;
+        let mut poured: Option<Mat> = None;
         for s in stack.iter_mut() {
             // The recipe stream only pours the alloy's outputs (all of it
             // with no alloy loaded).
@@ -213,6 +217,7 @@ impl Crucible {
             }
         }
         self.clean();
+        self.jets[stream as usize] = poured.as_ref().map_or(0, |p| t.color(&p.0));
         poured
     }
 
@@ -225,7 +230,8 @@ impl Crucible {
     /// The screen's values: heat, its maximum, progress, its maximum, the
     /// waste and recipe totals, the capacity, the colour of each stack's
     /// top material, then up to 8 `(material id, quanta)` of the waste and
-    /// 8 of the recipe stack (0, 0 when fewer).
+    /// 8 of the recipe stack (0, 0 when fewer), then the colours of the
+    /// recipe and waste jets (0: not pouring).
     pub fn screen_data(&self, t: &Tables) -> Vec<i32> {
         let top = |s: &[Mat]| s.last().map_or(0, |m| t.color(&m.0)) as i32;
         let mut v = vec![
@@ -247,6 +253,7 @@ impl Crucible {
                 }
             }
         }
+        v.extend(self.jets.map(|c| c as i32));
         v
     }
 }
@@ -479,6 +486,6 @@ mod tests {
         assert_eq!(&v[..9], &[100_000, 100_000, 0, 20_000, 80, 16, 10_368, 0xFF7F32, 0xFF8F60]);
         assert_eq!(&v[9..13], &[26, 72, 28, 8]);
         assert_eq!(&v[25..27], &[30, 16]);
-        assert_eq!(v.len(), 9 + 32);
+        assert_eq!(v.len(), 9 + 32 + 2);
     }
 }

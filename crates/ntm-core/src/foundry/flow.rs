@@ -10,6 +10,7 @@ use super::{Tables, quanta_name};
 use crate::{
     machine::{Effect, Logic, fill_level},
     proto::Held,
+    server::container_bridge::{Slots, Slotted},
     view::{self, ViewModel},
 };
 use serde::{Deserialize, Serialize};
@@ -76,6 +77,9 @@ pub struct Channel {
     pub last_flow: u8,
     #[serde(default)]
     pub next: u8,
+    /// No slots: the engine's block entity only carries its values.
+    #[serde(skip)]
+    pub slots: Slots,
 }
 
 /// `TileEntityFoundryTank`: fills the tank under it first.
@@ -85,6 +89,8 @@ pub struct Tank {
     pub melt: Melt,
     #[serde(default)]
     pub next: u8,
+    #[serde(skip)]
+    pub slots: Slots,
 }
 
 /// `TileEntityFoundryOutlet`: takes metal from behind and pours it into
@@ -97,6 +103,8 @@ pub struct Outlet {
     pub filter: Option<String>,
     #[serde(default)]
     pub invert: bool,
+    #[serde(skip)]
+    pub slots: Slots,
 }
 
 /// The four sides, in the NTM's `ForgeDirection` order 2..=5 (north,
@@ -175,6 +183,36 @@ impl Logic for Tank {
     }
     fn contents(&self) -> Vec<(String, u32)> {
         self.melt.scraps()
+    }
+}
+
+/// Blocks without slots on the engine's block entity: their values go
+/// to the model (`horizon_machine` `synced`): quanta, capacity, colour.
+impl Slotted for Channel {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        self.melt.synced(Tables::ntm(), CHANNEL_CAP)
+    }
+}
+
+impl Slotted for Tank {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        self.melt.synced(Tables::ntm(), TANK_CAP)
+    }
+}
+
+/// The outlet holds no metal: its filter's colour (0: none), inverted.
+impl Slotted for Outlet {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        vec![self.filter.as_deref().map_or(0, |m| Tables::ntm().color(m)) as i32, i32::from(self.invert)]
     }
 }
 
