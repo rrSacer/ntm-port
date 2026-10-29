@@ -23697,6 +23697,114 @@
       "sources": [],
       "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
       "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_iron",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_lead",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_steel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_desh",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_ferrouranium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_saturnite",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_bismuth_bronze",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_arsenic_bronze",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_schrabidate",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_dnt",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_osmiridium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:anvil_murky",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
     }
   ],
   "extraction_gaps": []

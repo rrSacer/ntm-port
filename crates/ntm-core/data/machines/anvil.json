@@ -1,1 +1,8049 @@
-{"smithing":[],"construction":[]}
+{
+"station": "anvil",
+"source": "content/machine-recipes/anvil.json",
+"smithing": [
+{
+"name": "anvil.smithing.0",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_steel",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.1",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_desh"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_desh",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.2",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_saturnite"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_saturnite",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.3",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_ferrouranium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_ferrouranium",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.4",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_bismuth_bronze"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_bismuth_bronze",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.5",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_arsenic_bronze"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_arsenic_bronze",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.6",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_schrabidate"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_schrabidate",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.7",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_dineutronium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_dnt",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.8",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_osmiridium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_osmiridium",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.9",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_steel",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.10",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_desh"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_desh",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.11",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_saturnite"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_saturnite",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.12",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_ferrouranium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_ferrouranium",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.13",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_bismuth_bronze"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_bismuth_bronze",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.14",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_arsenic_bronze"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_arsenic_bronze",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.15",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_schrabidate"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_schrabidate",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.16",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_dineutronium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_dnt",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.17",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_osmiridium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_osmiridium",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.38",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_aluminium"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:ingot_gunmetal",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+1
+]
+},
+{
+"name": "anvil.smithing.39",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:fragment_boron",
+"ntm:fragment_cerium",
+"ntm:fragment_cobalt",
+"ntm:fragment_lanthanium",
+"ntm:fragment_neodymium",
+"ntm:fragment_niobium",
+"ntm:nugget_actinium",
+"ntm:nugget_am241",
+"ntm:nugget_am242",
+"ntm:nugget_am_mix",
+"ntm:nugget_arsenic",
+"ntm:nugget_au198",
+"ntm:nugget_australium",
+"ntm:nugget_beryllium",
+"ntm:nugget_bismuth",
+"ntm:nugget_co60",
+"ntm:nugget_cobalt",
+"ntm:nugget_desh",
+"ntm:nugget_dineutronium",
+"ntm:nugget_euphemium",
+"ntm:nugget_gh336",
+"ntm:nugget_lead",
+"ntm:nugget_neptunium",
+"ntm:nugget_niobium",
+"ntm:nugget_osmiridium",
+"ntm:nugget_pb209",
+"ntm:nugget_plutonium",
+"ntm:nugget_polonium",
+"ntm:nugget_pu238",
+"ntm:nugget_pu239",
+"ntm:nugget_pu240",
+"ntm:nugget_pu241",
+"ntm:nugget_pu_mix",
+"ntm:nugget_ra226",
+"ntm:nugget_raw__aluminium",
+"ntm:nugget_raw__boron",
+"ntm:nugget_raw__copper",
+"ntm:nugget_raw__lithium",
+"ntm:nugget_raw__sodium",
+"ntm:nugget_raw__strontium",
+"ntm:nugget_raw__titanium",
+"ntm:nugget_raw__tungsten",
+"ntm:nugget_schrabidium",
+"ntm:nugget_silicon",
+"ntm:nugget_solinium",
+"ntm:nugget_sr90",
+"ntm:nugget_tantalium",
+"ntm:nugget_technetium",
+"ntm:nugget_th232",
+"ntm:nugget_u233",
+"ntm:nugget_u235",
+"ntm:nugget_u238",
+"ntm:nugget_uranium",
+"ntm:nugget_zirconium",
+"minecraft:gold_nugget"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__nugget",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.40",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:billet_actinium",
+"ntm:billet_am241",
+"ntm:billet_am242",
+"ntm:billet_am_mix",
+"ntm:billet_au198",
+"ntm:billet_australium",
+"ntm:billet_beryllium",
+"ntm:billet_bismuth",
+"ntm:billet_co60",
+"ntm:billet_cobalt",
+"ntm:billet_gh336",
+"ntm:billet_neptunium",
+"ntm:billet_pb209",
+"ntm:billet_plutonium",
+"ntm:billet_polonium",
+"ntm:billet_pu238",
+"ntm:billet_pu239",
+"ntm:billet_pu240",
+"ntm:billet_pu241",
+"ntm:billet_pu_mix",
+"ntm:billet_ra226",
+"ntm:billet_schrabidium",
+"ntm:billet_silicon",
+"ntm:billet_solinium",
+"ntm:billet_sr90",
+"ntm:billet_technetium",
+"ntm:billet_th232",
+"ntm:billet_u233",
+"ntm:billet_u235",
+"ntm:billet_u238",
+"ntm:billet_uranium",
+"ntm:billet_zirconium"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__billet",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.41",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt",
+"ntm:chunk_ore__ilmenite",
+"ntm:chunk_ore__malachite",
+"ntm:chunk_ore__rare",
+"ntm:fragment_coltan",
+"ntm:ingot_actinium",
+"ntm:ingot_aluminium",
+"ntm:ingot_am241",
+"ntm:ingot_am242",
+"ntm:ingot_am_mix",
+"ntm:ingot_arsenic",
+"ntm:ingot_arsenic_bronze",
+"ntm:ingot_asbestos",
+"ntm:ingot_au198",
+"ntm:ingot_australium",
+"ntm:ingot_bakelite",
+"ntm:ingot_beryllium",
+"ntm:ingot_biorubber",
+"ntm:ingot_bismuth",
+"ntm:ingot_bismuth_bronze",
+"ntm:ingot_boron",
+"ntm:ingot_bscco",
+"ntm:ingot_cadmium",
+"ntm:ingot_calcium",
+"ntm:ingot_cdalloy",
+"ntm:ingot_co60",
+"ntm:ingot_cobalt",
+"ntm:ingot_combine_steel",
+"ntm:ingot_copper",
+"ntm:ingot_desh",
+"ntm:ingot_dineutronium",
+"ntm:ingot_dura_steel",
+"ntm:ingot_euphemium",
+"ntm:ingot_ferrouranium",
+"ntm:ingot_fiberglass",
+"ntm:ingot_gh336",
+"ntm:ingot_graphite",
+"ntm:ingot_gunmetal",
+"ntm:ingot_lanthanium",
+"ntm:ingot_lead",
+"ntm:ingot_magnetized_tungsten",
+"ntm:ingot_mud",
+"ntm:ingot_neptunium",
+"ntm:ingot_niobium",
+"ntm:ingot_osmiridium",
+"ntm:ingot_pb209",
+"ntm:ingot_pc",
+"ntm:ingot_phosphorus",
+"ntm:ingot_plutonium",
+"ntm:ingot_polonium",
+"ntm:ingot_polymer",
+"ntm:ingot_pu238",
+"ntm:ingot_pu239",
+"ntm:ingot_pu240",
+"ntm:ingot_pu241",
+"ntm:ingot_pu_mix",
+"ntm:ingot_pvc",
+"ntm:ingot_ra226",
+"ntm:ingot_raw__borax",
+"ntm:ingot_raw__neodymium",
+"ntm:ingot_raw__redstone",
+"ntm:ingot_raw__slag",
+"ntm:ingot_raw__sodium",
+"ntm:ingot_raw__strontium",
+"ntm:ingot_red_copper",
+"ntm:ingot_rubber",
+"ntm:ingot_saturnite",
+"ntm:ingot_schrabidate",
+"ntm:ingot_schrabidium",
+"ntm:ingot_silicon",
+"ntm:ingot_solinium",
+"ntm:ingot_sr90",
+"ntm:ingot_steel",
+"ntm:ingot_tantalium",
+"ntm:ingot_tcalloy",
+"ntm:ingot_technetium",
+"ntm:ingot_th232",
+"ntm:ingot_titanium",
+"ntm:ingot_tungsten",
+"ntm:ingot_tungsten_carbide",
+"ntm:ingot_u233",
+"ntm:ingot_u235",
+"ntm:ingot_u238",
+"ntm:ingot_uranium",
+"ntm:ingot_weaponsteel",
+"ntm:ingot_zirconium",
+"ntm:lithium",
+"minecraft:brick",
+"minecraft:gold_ingot",
+"minecraft:iron_ingot",
+"minecraft:nether_brick"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__ingot",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.42",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:plate_aluminium",
+"ntm:plate_combine_steel",
+"ntm:plate_copper",
+"ntm:plate_dura_steel",
+"ntm:plate_gold",
+"ntm:plate_gunmetal",
+"ntm:plate_iron",
+"ntm:plate_lead",
+"ntm:plate_saturnite",
+"ntm:plate_schrabidium",
+"ntm:plate_steel",
+"ntm:plate_titanium",
+"ntm:plate_weaponsteel"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__plate",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.43",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:plate_cast__abronze",
+"ntm:plate_cast__aluminium",
+"ntm:plate_cast__bbronze",
+"ntm:plate_cast__cdalloy",
+"ntm:plate_cast__combine_steel",
+"ntm:plate_cast__copper",
+"ntm:plate_cast__desh",
+"ntm:plate_cast__dura_steel",
+"ntm:plate_cast__ferro",
+"ntm:plate_cast__gold",
+"ntm:plate_cast__iron",
+"ntm:plate_cast__lead",
+"ntm:plate_cast__osmiridium",
+"ntm:plate_cast__saturn",
+"ntm:plate_cast__schrabidate",
+"ntm:plate_cast__schrabidium",
+"ntm:plate_cast__starmetal",
+"ntm:plate_cast__steel",
+"ntm:plate_cast__tcalloy",
+"ntm:plate_cast__titanium",
+"ntm:plate_cast__tungsten",
+"ntm:plate_cast__weaponsteel",
+"ntm:plate_cast__zirconium"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__plate_cast",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.44",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:plate_cast__abronze",
+"ntm:plate_cast__aluminium",
+"ntm:plate_cast__bbronze",
+"ntm:plate_cast__cdalloy",
+"ntm:plate_cast__combine_steel",
+"ntm:plate_cast__copper",
+"ntm:plate_cast__desh",
+"ntm:plate_cast__dura_steel",
+"ntm:plate_cast__ferro",
+"ntm:plate_cast__gold",
+"ntm:plate_cast__iron",
+"ntm:plate_cast__lead",
+"ntm:plate_cast__osmiridium",
+"ntm:plate_cast__saturn",
+"ntm:plate_cast__schrabidate",
+"ntm:plate_cast__schrabidium",
+"ntm:plate_cast__starmetal",
+"ntm:plate_cast__steel",
+"ntm:plate_cast__tcalloy",
+"ntm:plate_cast__titanium",
+"ntm:plate_cast__tungsten",
+"ntm:plate_cast__weaponsteel",
+"ntm:plate_cast__zirconium"
+],
+"count": 3,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__plates_cast",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.45",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:wire_fine__aluminium",
+"ntm:wire_fine__carbon",
+"ntm:wire_fine__copper",
+"ntm:wire_fine__gold",
+"ntm:wire_fine__lead",
+"ntm:wire_fine__magnetized_tungsten",
+"ntm:wire_fine__red_copper",
+"ntm:wire_fine__schrabidium",
+"ntm:wire_fine__steel",
+"ntm:wire_fine__tungsten",
+"ntm:wire_fine__zirconium"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__wire",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.46",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:blade_titanium",
+"ntm:blade_tungsten"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__blade",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.47",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:blades_steel",
+"ntm:blades_titanium"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__blades",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.48",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:stamp_stone_flat",
+"ntm:stamp_iron_flat",
+"ntm:stamp_steel_flat",
+"ntm:stamp_titanium_flat",
+"ntm:stamp_obsidian_flat"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__stamp",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.49",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:shell__aluminium",
+"ntm:shell__copper",
+"ntm:shell__saturn",
+"ntm:shell__steel",
+"ntm:shell__titanium",
+"ntm:shell__weaponsteel"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__shell",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.50",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:pipe__aluminium",
+"ntm:pipe__copper",
+"ntm:pipe__dura_steel",
+"ntm:pipe__iron",
+"ntm:pipe__lead",
+"ntm:pipe__rubber",
+"ntm:pipe__steel"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__pipe",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.51",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt",
+"ntm:chunk_ore__ilmenite",
+"ntm:chunk_ore__malachite",
+"ntm:chunk_ore__rare",
+"ntm:fragment_coltan",
+"ntm:ingot_actinium",
+"ntm:ingot_aluminium",
+"ntm:ingot_am241",
+"ntm:ingot_am242",
+"ntm:ingot_am_mix",
+"ntm:ingot_arsenic",
+"ntm:ingot_arsenic_bronze",
+"ntm:ingot_asbestos",
+"ntm:ingot_au198",
+"ntm:ingot_australium",
+"ntm:ingot_bakelite",
+"ntm:ingot_beryllium",
+"ntm:ingot_biorubber",
+"ntm:ingot_bismuth",
+"ntm:ingot_bismuth_bronze",
+"ntm:ingot_boron",
+"ntm:ingot_bscco",
+"ntm:ingot_cadmium",
+"ntm:ingot_calcium",
+"ntm:ingot_cdalloy",
+"ntm:ingot_co60",
+"ntm:ingot_cobalt",
+"ntm:ingot_combine_steel",
+"ntm:ingot_copper",
+"ntm:ingot_desh",
+"ntm:ingot_dineutronium",
+"ntm:ingot_dura_steel",
+"ntm:ingot_euphemium",
+"ntm:ingot_ferrouranium",
+"ntm:ingot_fiberglass",
+"ntm:ingot_gh336",
+"ntm:ingot_graphite",
+"ntm:ingot_gunmetal",
+"ntm:ingot_lanthanium",
+"ntm:ingot_lead",
+"ntm:ingot_magnetized_tungsten",
+"ntm:ingot_mud",
+"ntm:ingot_neptunium",
+"ntm:ingot_niobium",
+"ntm:ingot_osmiridium",
+"ntm:ingot_pb209",
+"ntm:ingot_pc",
+"ntm:ingot_phosphorus",
+"ntm:ingot_plutonium",
+"ntm:ingot_polonium",
+"ntm:ingot_polymer",
+"ntm:ingot_pu238",
+"ntm:ingot_pu239",
+"ntm:ingot_pu240",
+"ntm:ingot_pu241",
+"ntm:ingot_pu_mix",
+"ntm:ingot_pvc",
+"ntm:ingot_ra226",
+"ntm:ingot_raw__borax",
+"ntm:ingot_raw__neodymium",
+"ntm:ingot_raw__redstone",
+"ntm:ingot_raw__slag",
+"ntm:ingot_raw__sodium",
+"ntm:ingot_raw__strontium",
+"ntm:ingot_red_copper",
+"ntm:ingot_rubber",
+"ntm:ingot_saturnite",
+"ntm:ingot_schrabidate",
+"ntm:ingot_schrabidium",
+"ntm:ingot_silicon",
+"ntm:ingot_solinium",
+"ntm:ingot_sr90",
+"ntm:ingot_steel",
+"ntm:ingot_tantalium",
+"ntm:ingot_tcalloy",
+"ntm:ingot_technetium",
+"ntm:ingot_th232",
+"ntm:ingot_titanium",
+"ntm:ingot_tungsten",
+"ntm:ingot_tungsten_carbide",
+"ntm:ingot_u233",
+"ntm:ingot_u235",
+"ntm:ingot_u238",
+"ntm:ingot_uranium",
+"ntm:ingot_weaponsteel",
+"ntm:ingot_zirconium",
+"ntm:lithium",
+"minecraft:brick",
+"minecraft:gold_ingot",
+"minecraft:iron_ingot",
+"minecraft:nether_brick"
+],
+"count": 9,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__ingots",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.52",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:plate_aluminium",
+"ntm:plate_combine_steel",
+"ntm:plate_copper",
+"ntm:plate_dura_steel",
+"ntm:plate_gold",
+"ntm:plate_gunmetal",
+"ntm:plate_iron",
+"ntm:plate_lead",
+"ntm:plate_saturnite",
+"ntm:plate_schrabidium",
+"ntm:plate_steel",
+"ntm:plate_titanium",
+"ntm:plate_weaponsteel"
+],
+"count": 9,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__plates",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.53",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:block_actinium",
+"ntm:block_aluminium",
+"ntm:block_asbestos",
+"ntm:block_australium",
+"ntm:block_bakelite",
+"ntm:block_beryllium",
+"ntm:block_bismuth",
+"ntm:block_boron",
+"ntm:block_cadmium",
+"ntm:block_cdalloy",
+"ntm:block_cobalt",
+"ntm:block_coke__coal",
+"ntm:block_coke__lignite",
+"ntm:block_coke__petroleum",
+"ntm:block_coltan",
+"ntm:block_combine_steel",
+"ntm:block_copper",
+"ntm:block_desh",
+"ntm:block_dineutronium",
+"ntm:block_dura_steel",
+"ntm:block_euphemium",
+"ntm:block_fiberglass",
+"ntm:block_fluorite",
+"ntm:block_lanthanium",
+"ntm:block_lead",
+"ntm:block_lithium",
+"ntm:block_magnetized_tungsten",
+"ntm:block_neptunium",
+"ntm:block_niter",
+"ntm:block_plutonium",
+"ntm:block_polonium",
+"ntm:block_polymer",
+"ntm:block_pu238",
+"ntm:block_pu239",
+"ntm:block_pu240",
+"ntm:block_pu_mix",
+"ntm:block_ra226",
+"ntm:block_red_copper",
+"ntm:block_rubber",
+"ntm:block_schrabidate",
+"ntm:block_schrabidium",
+"ntm:block_schraranium",
+"ntm:block_solinium",
+"ntm:block_starmetal",
+"ntm:block_steel",
+"ntm:block_sulfur",
+"ntm:block_tantalium",
+"ntm:block_tcalloy",
+"ntm:block_thorium",
+"ntm:block_titanium",
+"ntm:block_tungsten",
+"ntm:block_u233",
+"ntm:block_u235",
+"ntm:block_u238",
+"ntm:block_uranium",
+"ntm:block_white_phosphorus",
+"ntm:block_zirconium",
+"ntm:glass_ash",
+"ntm:glass_boron",
+"ntm:glass_lead",
+"ntm:glass_polonium",
+"ntm:glass_trinitite",
+"ntm:glass_uranium",
+"minecraft:coal_block",
+"minecraft:diamond_block",
+"minecraft:emerald_block",
+"minecraft:gold_block",
+"minecraft:iron_block",
+"minecraft:lapis_block",
+"minecraft:quartz_block",
+"minecraft:redstone_block"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__block",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.54",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:wire_dense__bscco",
+"ntm:wire_dense__copper",
+"ntm:wire_dense__dnt",
+"ntm:wire_dense__gold",
+"ntm:wire_dense__magnetized_tungsten",
+"ntm:wire_dense__neodymium",
+"ntm:wire_dense__niobium",
+"ntm:wire_dense__red_copper",
+"ntm:wire_dense__schrabidate",
+"ntm:wire_dense__schrabidium",
+"ntm:wire_dense__starmetal",
+"ntm:wire_dense__titanium",
+"ntm:wire_dense__tungsten"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__wire_dense",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.55",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:wire_dense__bscco",
+"ntm:wire_dense__copper",
+"ntm:wire_dense__dnt",
+"ntm:wire_dense__gold",
+"ntm:wire_dense__magnetized_tungsten",
+"ntm:wire_dense__neodymium",
+"ntm:wire_dense__niobium",
+"ntm:wire_dense__red_copper",
+"ntm:wire_dense__schrabidate",
+"ntm:wire_dense__schrabidium",
+"ntm:wire_dense__starmetal",
+"ntm:wire_dense__titanium",
+"ntm:wire_dense__tungsten"
+],
+"count": 9,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__wires_dense",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+}
+],
+"construction": [
+{
+"name": "anvil.construction.0",
+"label": "Placa de Ferro",
+"in": [
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_iron",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.1",
+"label": "Placa de Ouro",
+"in": [
+{
+"ids": [
+"minecraft:gold_ingot"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_gold",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.2",
+"label": "Placa de Titânio",
+"in": [
+{
+"ids": [
+"ntm:ingot_titanium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_titanium",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.3",
+"label": "Placa de Alumínio",
+"in": [
+{
+"ids": [
+"ntm:ingot_aluminium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_aluminium",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.4",
+"label": "Placa de Aço",
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.5",
+"label": "Placa de Chumbo",
+"in": [
+{
+"ids": [
+"ntm:ingot_lead"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_lead",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.6",
+"label": "Placa de Cobre",
+"in": [
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_copper",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.7",
+"label": "Placa de Bronze de Armas",
+"in": [
+{
+"ids": [
+"ntm:ingot_gunmetal"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_gunmetal",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.8",
+"label": "Placa de Aço para Armas",
+"in": [
+{
+"ids": [
+"ntm:ingot_weaponsteel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_weaponsteel",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.9",
+"label": "Placa de Saturnita",
+"in": [
+{
+"ids": [
+"ntm:ingot_saturnite"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_saturnite",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.10",
+"label": "Placa de Aço Rápido",
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_dura_steel",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.11",
+"label": "Placa de Schrabídio",
+"in": [
+{
+"ids": [
+"ntm:ingot_schrabidium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_schrabidium",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.12",
+"label": "Placa de Aço CMB",
+"in": [
+{
+"ids": [
+"ntm:ingot_combine_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_combine_steel",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.13",
+"label": "Fio de Carbono ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_graphite"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__carbon",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.14",
+"label": "Fio de Ouro ×8",
+"in": [
+{
+"ids": [
+"minecraft:gold_ingot"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__gold",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.15",
+"label": "Fio de Schrabídio ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_schrabidium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__schrabidium",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.16",
+"label": "Fio de Cobre ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__copper",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.17",
+"label": "Fio de Tungstênio ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__tungsten",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.18",
+"label": "Fio de Alumínio ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_aluminium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__aluminium",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.19",
+"label": "Fio de Chumbo ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_lead"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__lead",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.20",
+"label": "Fio de Zircônio ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_zirconium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__zirconium",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.21",
+"label": "Fio de Aço ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__steel",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.22",
+"label": "Fio de Cobre Vermelho ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_red_copper"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__red_copper",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.23",
+"label": "Fio de Tungstênio Magnetizado ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_magnetized_tungsten"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__magnetized_tungsten",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.24",
+"label": "coal",
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"minecraft:coal",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.25",
+"label": "quartz",
+"in": [
+{
+"ids": [
+"ntm:powder_quartz"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"minecraft:quartz",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.26",
+"label": "lapis lazuli",
+"in": [
+{
+"ids": [
+"ntm:powder_lapis"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"minecraft:lapis_lazuli",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.27",
+"label": "diamond",
+"in": [
+{
+"ids": [
+"ntm:powder_diamond"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"minecraft:diamond",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.28",
+"label": "emerald",
+"in": [
+{
+"ids": [
+"ntm:powder_emerald"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"minecraft:emerald",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.31",
+"label": "Bloco Decorativo de Alumínio ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_aluminium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_aluminium",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.32",
+"label": "Bloco Decorativo de Berílio ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_beryllium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_beryllium",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.33",
+"label": "Bloco Decorativo de Chumbo ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_lead"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_lead",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.34",
+"label": "Bloco Decorativo de Cobre Vermelho ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_red_copper"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_red_copper",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.35",
+"label": "Bloco Decorativo de Aço ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_steel",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.37",
+"label": "Bloco Decorativo de Tungstênio ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_tungsten",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.39",
+"label": "Carcaça de Titânio",
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__titanium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.40",
+"label": "Carcaça de Cobre",
+"in": [
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__copper",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.41",
+"label": "Carcaça de Alumínio",
+"in": [
+{
+"ids": [
+"ntm:plate_aluminium"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__aluminium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.42",
+"label": "Carcaça de Aço",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__steel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.43",
+"label": "Carcaça de Aço de Arma",
+"in": [
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__weaponsteel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.44",
+"label": "Carcaça de Saturnita",
+"in": [
+{
+"ids": [
+"ntm:plate_saturnite"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__saturn",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.45",
+"label": "Tubo de Ferro",
+"in": [
+{
+"ids": [
+"ntm:plate_iron"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__iron",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.46",
+"label": "Tubo de Cobre",
+"in": [
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__copper",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.47",
+"label": "Tubo de Alumínio",
+"in": [
+{
+"ids": [
+"ntm:plate_aluminium"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__aluminium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.48",
+"label": "Tubo de Chumbo",
+"in": [
+{
+"ids": [
+"ntm:plate_lead"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__lead",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.49",
+"label": "Tubo de Aço",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__steel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.50",
+"label": "Tubo de Aço de Alta Velocidade",
+"in": [
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__dura_steel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.51",
+"label": "Tubo de Borracha",
+"in": [
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__rubber",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.52",
+"label": "Bobina Toroidal",
+"in": [
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:coil_copper_torus",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.53",
+"label": "Bobina Toroidal de Ouro",
+"in": [
+{
+"ids": [
+"ntm:coil_gold"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:coil_gold_torus",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.54",
+"label": "Motor ×2",
+"in": [
+{
+"ids": [
+"ntm:plate_iron"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper_torus"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:motor",
+2,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.55",
+"label": "Motor de Desh",
+"in": [
+{
+"ids": [
+"ntm:motor"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:motor_desh",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.56",
+"label": "Alto-Forno",
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"count": 32,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_blast_furnace",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.58",
+"label": "Montadora",
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:motor"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_assembly_machine",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.61",
+"label": "Fornalha",
+"in": [
+{
+"ids": [
+"minecraft:furnace"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:heater_firebox",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.74",
+"label": "Crisol",
+"in": [
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"count": 20,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_crucible",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.93",
+"label": "Placa de Composto de Desh ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:powder_bakelite",
+"ntm:powder_polymer"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_desh",
+4,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.94",
+"label": "Placa de Composto de Bismuto",
+"in": [
+{
+"ids": [
+"ntm:nugget_bismuth"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:billet_u238"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:powder_niobium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_bismuth",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.95",
+"label": "Placa de Blindagem de Titânio",
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:bolt__steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_armor_titanium",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.96",
+"label": "Blindagem de Ferro ×2",
+"in": [
+{
+"ids": [
+"ntm:plate_iron"
+],
+"count": 6,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_niobium"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_armor_titanium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_armor_ajr",
+2,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.97",
+"label": "Blindagem Reativa",
+"in": [
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_armor_titanium"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:wire_fine__tungsten"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_armor_hev",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.100",
+"label": "Blindagem de DNT",
+"in": [
+{
+"ids": [
+"ntm:plate_dineutronium"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:particle_sparkticle"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_armor_fau"
+],
+"count": 6,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_armor_dnt",
+1,
+1.0
+]
+],
+"tier_lower": 7,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.152",
+"label": "Matriz de Estampo de Chapa (Pedra)",
+"in": [
+{
+"ids": [
+"ntm:stamp_stone_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_stone_plate",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.153",
+"label": "Matriz de Estampo de Fio (Pedra)",
+"in": [
+{
+"ids": [
+"ntm:stamp_stone_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_stone_wire",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.154",
+"label": "Matriz de Estampo de Circuito (Pedra)",
+"in": [
+{
+"ids": [
+"ntm:stamp_stone_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_stone_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.155",
+"label": "Matriz de Estampo de Chapa (Ferro)",
+"in": [
+{
+"ids": [
+"ntm:stamp_iron_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_iron_plate",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.156",
+"label": "Matriz de Estampo de Fio (Ferro)",
+"in": [
+{
+"ids": [
+"ntm:stamp_iron_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_iron_wire",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.157",
+"label": "Matriz de Estampo de Circuito (Ferro)",
+"in": [
+{
+"ids": [
+"ntm:stamp_iron_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_iron_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.158",
+"label": "Matriz de Estampo de Chapa (Aço)",
+"in": [
+{
+"ids": [
+"ntm:stamp_steel_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_steel_plate",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.159",
+"label": "Matriz de Estampo de Fio (Aço)",
+"in": [
+{
+"ids": [
+"ntm:stamp_steel_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_steel_wire",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.160",
+"label": "Matriz de Estampo de Circuito (Aço)",
+"in": [
+{
+"ids": [
+"ntm:stamp_steel_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_steel_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.161",
+"label": "Matriz de Estampo de Chapa (Titânio)",
+"in": [
+{
+"ids": [
+"ntm:stamp_titanium_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_titanium_plate",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.162",
+"label": "Matriz de Estampo de Fio (Titânio)",
+"in": [
+{
+"ids": [
+"ntm:stamp_titanium_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_titanium_wire",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.163",
+"label": "Matriz de Estampo de Circuito (Titânio)",
+"in": [
+{
+"ids": [
+"ntm:stamp_titanium_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_titanium_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.164",
+"label": "Matriz de Estampo de Chapa (Obsidiana)",
+"in": [
+{
+"ids": [
+"ntm:stamp_obsidian_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_obsidian_plate",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.165",
+"label": "Matriz de Estampo de Fio (Obsidiana)",
+"in": [
+{
+"ids": [
+"ntm:stamp_obsidian_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_obsidian_wire",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.166",
+"label": "Matriz de Estampo de Circuito (Obsidiana)",
+"in": [
+{
+"ids": [
+"ntm:stamp_obsidian_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_obsidian_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.167",
+"label": "Matriz de Estampo de Chapa (Desh)",
+"in": [
+{
+"ids": [
+"ntm:stamp_desh_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_desh_plate",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.168",
+"label": "Matriz de Estampo de Fio (Desh)",
+"in": [
+{
+"ids": [
+"ntm:stamp_desh_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_desh_wire",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.169",
+"label": "Matriz de Estampo de Circuito (Desh)",
+"in": [
+{
+"ids": [
+"ntm:stamp_desh_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_desh_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.170",
+"label": "Matriz de Estampo de Pequeno Calibre",
+"in": [
+{
+"ids": [
+"ntm:stamp_iron_flat"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_gunmetal"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_9",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.171",
+"label": "Matriz de Estampo de Grande Calibre",
+"in": [
+{
+"ids": [
+"ntm:stamp_iron_flat"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_gunmetal"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_50",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.172",
+"label": "Matriz de Estampo de Pequeno Calibre (Desh)",
+"in": [
+{
+"ids": [
+"ntm:stamp_desh_flat"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_weaponsteel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_desh_9",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.173",
+"label": "Matriz de Estampo de Grande Calibre (Desh)",
+"in": [
+{
+"ids": [
+"ntm:stamp_desh_flat"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_weaponsteel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_desh_50",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.174",
+"label": "Molde de Fundição (Estojo de Pequeno Calibre)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__c9",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.175",
+"label": "Molde de Fundição (Estojo de Grande Calibre)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__c50",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.176",
+"label": "Molde de Fundição (Cano Leve)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__barrel_light",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.177",
+"label": "Molde de Fundição (Cano Pesado)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__barrel_heavy",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.178",
+"label": "Molde de Fundição (Receptor Leve)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__receiver_light",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.179",
+"label": "Molde de Fundição (Receptor Pesado)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__receiver_heavy",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.180",
+"label": "Molde de Fundição (Mecanismo)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__mechanism",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.181",
+"label": "Molde de Fundição (Coronha)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__stock",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.182",
+"label": "Molde de Fundição (Empunhadura)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__grip",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.203",
+"label": "Fragmento de Boro (+7)",
+"in": [
+{
+"ids": [
+"ntm:chunk_ore__rare"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:fragment_boron",
+1,
+1.0
+],
+[
+"ntm:fragment_boron",
+1,
+0.5
+],
+[
+"ntm:fragment_lanthanium",
+1,
+0.1
+],
+[
+"ntm:fragment_cobalt",
+1,
+1.0
+],
+[
+"ntm:fragment_cobalt",
+1,
+0.5
+],
+[
+"ntm:fragment_cerium",
+1,
+0.1
+],
+[
+"ntm:fragment_neodymium",
+1,
+0.5
+],
+[
+"ntm:fragment_niobium",
+1,
+0.5
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.205",
+"label": "Cobre Vermelho",
+"in": [
+{
+"ids": [
+"ntm:deco_red_copper"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_red_copper",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.206",
+"label": "Lingote de Tungstênio",
+"in": [
+{
+"ids": [
+"ntm:deco_tungsten"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_tungsten",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.207",
+"label": "Lingote de Alumínio",
+"in": [
+{
+"ids": [
+"ntm:deco_aluminium"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_aluminium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.208",
+"label": "Lingote de Aço",
+"in": [
+{
+"ids": [
+"ntm:deco_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_steel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.209",
+"label": "Lingote de Aço",
+"in": [
+{
+"ids": [
+"ntm:deco_rusty_steel"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_steel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.210",
+"label": "Lingote de Chumbo",
+"in": [
+{
+"ids": [
+"ntm:deco_lead"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_lead",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.211",
+"label": "Lingote de Berílio",
+"in": [
+{
+"ids": [
+"ntm:deco_beryllium"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_beryllium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.214",
+"label": "Placa de Aço ×8 (+1)",
+"in": [
+{
+"ids": [
+"ntm:heater_firebox"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+8,
+1.0
+],
+[
+"ntm:ingot_copper",
+6,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.255",
+"label": "Tubo de Aço ×4 (+2)",
+"in": [
+{
+"ids": [
+"ntm:fusion_heater"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__steel",
+4,
+1.0
+],
+[
+"ntm:pipe__copper",
+2,
+1.0
+],
+[
+"ntm:circuit__analog",
+1,
+0.5
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+}
+],
+"recipes": [
+{
+"name": "anvil.smithing.0",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_steel",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.1",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_desh"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_desh",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.2",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_saturnite"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_saturnite",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.3",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_ferrouranium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_ferrouranium",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.4",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_bismuth_bronze"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_bismuth_bronze",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.5",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_arsenic_bronze"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_arsenic_bronze",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.6",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_schrabidate"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_schrabidate",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.7",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_dineutronium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_dnt",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.8",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_iron"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_osmiridium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_osmiridium",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.9",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_steel",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.10",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_desh"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_desh",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.11",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_saturnite"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_saturnite",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.12",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_ferrouranium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_ferrouranium",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.13",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_bismuth_bronze"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_bismuth_bronze",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.14",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_arsenic_bronze"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_arsenic_bronze",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.15",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_schrabidate"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_schrabidate",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.16",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_dineutronium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_dnt",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.17",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:anvil_lead"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_osmiridium"
+],
+"count": 10,
+"exact": false
+},
+"out": [
+"ntm:anvil_osmiridium",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+10
+]
+},
+{
+"name": "anvil.smithing.38",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 1,
+"exact": false
+},
+"right": {
+"ids": [
+"ntm:ingot_aluminium"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:ingot_gunmetal",
+1
+],
+"shapeless": false,
+"consume": [
+1,
+1
+]
+},
+{
+"name": "anvil.smithing.39",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:fragment_boron",
+"ntm:fragment_cerium",
+"ntm:fragment_cobalt",
+"ntm:fragment_lanthanium",
+"ntm:fragment_neodymium",
+"ntm:fragment_niobium",
+"ntm:nugget_actinium",
+"ntm:nugget_am241",
+"ntm:nugget_am242",
+"ntm:nugget_am_mix",
+"ntm:nugget_arsenic",
+"ntm:nugget_au198",
+"ntm:nugget_australium",
+"ntm:nugget_beryllium",
+"ntm:nugget_bismuth",
+"ntm:nugget_co60",
+"ntm:nugget_cobalt",
+"ntm:nugget_desh",
+"ntm:nugget_dineutronium",
+"ntm:nugget_euphemium",
+"ntm:nugget_gh336",
+"ntm:nugget_lead",
+"ntm:nugget_neptunium",
+"ntm:nugget_niobium",
+"ntm:nugget_osmiridium",
+"ntm:nugget_pb209",
+"ntm:nugget_plutonium",
+"ntm:nugget_polonium",
+"ntm:nugget_pu238",
+"ntm:nugget_pu239",
+"ntm:nugget_pu240",
+"ntm:nugget_pu241",
+"ntm:nugget_pu_mix",
+"ntm:nugget_ra226",
+"ntm:nugget_raw__aluminium",
+"ntm:nugget_raw__boron",
+"ntm:nugget_raw__copper",
+"ntm:nugget_raw__lithium",
+"ntm:nugget_raw__sodium",
+"ntm:nugget_raw__strontium",
+"ntm:nugget_raw__titanium",
+"ntm:nugget_raw__tungsten",
+"ntm:nugget_schrabidium",
+"ntm:nugget_silicon",
+"ntm:nugget_solinium",
+"ntm:nugget_sr90",
+"ntm:nugget_tantalium",
+"ntm:nugget_technetium",
+"ntm:nugget_th232",
+"ntm:nugget_u233",
+"ntm:nugget_u235",
+"ntm:nugget_u238",
+"ntm:nugget_uranium",
+"ntm:nugget_zirconium",
+"minecraft:gold_nugget"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__nugget",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.40",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:billet_actinium",
+"ntm:billet_am241",
+"ntm:billet_am242",
+"ntm:billet_am_mix",
+"ntm:billet_au198",
+"ntm:billet_australium",
+"ntm:billet_beryllium",
+"ntm:billet_bismuth",
+"ntm:billet_co60",
+"ntm:billet_cobalt",
+"ntm:billet_gh336",
+"ntm:billet_neptunium",
+"ntm:billet_pb209",
+"ntm:billet_plutonium",
+"ntm:billet_polonium",
+"ntm:billet_pu238",
+"ntm:billet_pu239",
+"ntm:billet_pu240",
+"ntm:billet_pu241",
+"ntm:billet_pu_mix",
+"ntm:billet_ra226",
+"ntm:billet_schrabidium",
+"ntm:billet_silicon",
+"ntm:billet_solinium",
+"ntm:billet_sr90",
+"ntm:billet_technetium",
+"ntm:billet_th232",
+"ntm:billet_u233",
+"ntm:billet_u235",
+"ntm:billet_u238",
+"ntm:billet_uranium",
+"ntm:billet_zirconium"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__billet",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.41",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt",
+"ntm:chunk_ore__ilmenite",
+"ntm:chunk_ore__malachite",
+"ntm:chunk_ore__rare",
+"ntm:fragment_coltan",
+"ntm:ingot_actinium",
+"ntm:ingot_aluminium",
+"ntm:ingot_am241",
+"ntm:ingot_am242",
+"ntm:ingot_am_mix",
+"ntm:ingot_arsenic",
+"ntm:ingot_arsenic_bronze",
+"ntm:ingot_asbestos",
+"ntm:ingot_au198",
+"ntm:ingot_australium",
+"ntm:ingot_bakelite",
+"ntm:ingot_beryllium",
+"ntm:ingot_biorubber",
+"ntm:ingot_bismuth",
+"ntm:ingot_bismuth_bronze",
+"ntm:ingot_boron",
+"ntm:ingot_bscco",
+"ntm:ingot_cadmium",
+"ntm:ingot_calcium",
+"ntm:ingot_cdalloy",
+"ntm:ingot_co60",
+"ntm:ingot_cobalt",
+"ntm:ingot_combine_steel",
+"ntm:ingot_copper",
+"ntm:ingot_desh",
+"ntm:ingot_dineutronium",
+"ntm:ingot_dura_steel",
+"ntm:ingot_euphemium",
+"ntm:ingot_ferrouranium",
+"ntm:ingot_fiberglass",
+"ntm:ingot_gh336",
+"ntm:ingot_graphite",
+"ntm:ingot_gunmetal",
+"ntm:ingot_lanthanium",
+"ntm:ingot_lead",
+"ntm:ingot_magnetized_tungsten",
+"ntm:ingot_mud",
+"ntm:ingot_neptunium",
+"ntm:ingot_niobium",
+"ntm:ingot_osmiridium",
+"ntm:ingot_pb209",
+"ntm:ingot_pc",
+"ntm:ingot_phosphorus",
+"ntm:ingot_plutonium",
+"ntm:ingot_polonium",
+"ntm:ingot_polymer",
+"ntm:ingot_pu238",
+"ntm:ingot_pu239",
+"ntm:ingot_pu240",
+"ntm:ingot_pu241",
+"ntm:ingot_pu_mix",
+"ntm:ingot_pvc",
+"ntm:ingot_ra226",
+"ntm:ingot_raw__borax",
+"ntm:ingot_raw__neodymium",
+"ntm:ingot_raw__redstone",
+"ntm:ingot_raw__slag",
+"ntm:ingot_raw__sodium",
+"ntm:ingot_raw__strontium",
+"ntm:ingot_red_copper",
+"ntm:ingot_rubber",
+"ntm:ingot_saturnite",
+"ntm:ingot_schrabidate",
+"ntm:ingot_schrabidium",
+"ntm:ingot_silicon",
+"ntm:ingot_solinium",
+"ntm:ingot_sr90",
+"ntm:ingot_steel",
+"ntm:ingot_tantalium",
+"ntm:ingot_tcalloy",
+"ntm:ingot_technetium",
+"ntm:ingot_th232",
+"ntm:ingot_titanium",
+"ntm:ingot_tungsten",
+"ntm:ingot_tungsten_carbide",
+"ntm:ingot_u233",
+"ntm:ingot_u235",
+"ntm:ingot_u238",
+"ntm:ingot_uranium",
+"ntm:ingot_weaponsteel",
+"ntm:ingot_zirconium",
+"ntm:lithium",
+"minecraft:brick",
+"minecraft:gold_ingot",
+"minecraft:iron_ingot",
+"minecraft:nether_brick"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__ingot",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.42",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:plate_aluminium",
+"ntm:plate_combine_steel",
+"ntm:plate_copper",
+"ntm:plate_dura_steel",
+"ntm:plate_gold",
+"ntm:plate_gunmetal",
+"ntm:plate_iron",
+"ntm:plate_lead",
+"ntm:plate_saturnite",
+"ntm:plate_schrabidium",
+"ntm:plate_steel",
+"ntm:plate_titanium",
+"ntm:plate_weaponsteel"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__plate",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.43",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:plate_cast__abronze",
+"ntm:plate_cast__aluminium",
+"ntm:plate_cast__bbronze",
+"ntm:plate_cast__cdalloy",
+"ntm:plate_cast__combine_steel",
+"ntm:plate_cast__copper",
+"ntm:plate_cast__desh",
+"ntm:plate_cast__dura_steel",
+"ntm:plate_cast__ferro",
+"ntm:plate_cast__gold",
+"ntm:plate_cast__iron",
+"ntm:plate_cast__lead",
+"ntm:plate_cast__osmiridium",
+"ntm:plate_cast__saturn",
+"ntm:plate_cast__schrabidate",
+"ntm:plate_cast__schrabidium",
+"ntm:plate_cast__starmetal",
+"ntm:plate_cast__steel",
+"ntm:plate_cast__tcalloy",
+"ntm:plate_cast__titanium",
+"ntm:plate_cast__tungsten",
+"ntm:plate_cast__weaponsteel",
+"ntm:plate_cast__zirconium"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__plate_cast",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.44",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:plate_cast__abronze",
+"ntm:plate_cast__aluminium",
+"ntm:plate_cast__bbronze",
+"ntm:plate_cast__cdalloy",
+"ntm:plate_cast__combine_steel",
+"ntm:plate_cast__copper",
+"ntm:plate_cast__desh",
+"ntm:plate_cast__dura_steel",
+"ntm:plate_cast__ferro",
+"ntm:plate_cast__gold",
+"ntm:plate_cast__iron",
+"ntm:plate_cast__lead",
+"ntm:plate_cast__osmiridium",
+"ntm:plate_cast__saturn",
+"ntm:plate_cast__schrabidate",
+"ntm:plate_cast__schrabidium",
+"ntm:plate_cast__starmetal",
+"ntm:plate_cast__steel",
+"ntm:plate_cast__tcalloy",
+"ntm:plate_cast__titanium",
+"ntm:plate_cast__tungsten",
+"ntm:plate_cast__weaponsteel",
+"ntm:plate_cast__zirconium"
+],
+"count": 3,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__plates_cast",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.45",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:wire_fine__aluminium",
+"ntm:wire_fine__carbon",
+"ntm:wire_fine__copper",
+"ntm:wire_fine__gold",
+"ntm:wire_fine__lead",
+"ntm:wire_fine__magnetized_tungsten",
+"ntm:wire_fine__red_copper",
+"ntm:wire_fine__schrabidium",
+"ntm:wire_fine__steel",
+"ntm:wire_fine__tungsten",
+"ntm:wire_fine__zirconium"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__wire",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.46",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:blade_titanium",
+"ntm:blade_tungsten"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__blade",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.47",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:blades_steel",
+"ntm:blades_titanium"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__blades",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.48",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:stamp_stone_flat",
+"ntm:stamp_iron_flat",
+"ntm:stamp_steel_flat",
+"ntm:stamp_titanium_flat",
+"ntm:stamp_obsidian_flat"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__stamp",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.49",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:shell__aluminium",
+"ntm:shell__copper",
+"ntm:shell__saturn",
+"ntm:shell__steel",
+"ntm:shell__titanium",
+"ntm:shell__weaponsteel"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__shell",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.50",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:pipe__aluminium",
+"ntm:pipe__copper",
+"ntm:pipe__dura_steel",
+"ntm:pipe__iron",
+"ntm:pipe__lead",
+"ntm:pipe__rubber",
+"ntm:pipe__steel"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__pipe",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.51",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt",
+"ntm:chunk_ore__ilmenite",
+"ntm:chunk_ore__malachite",
+"ntm:chunk_ore__rare",
+"ntm:fragment_coltan",
+"ntm:ingot_actinium",
+"ntm:ingot_aluminium",
+"ntm:ingot_am241",
+"ntm:ingot_am242",
+"ntm:ingot_am_mix",
+"ntm:ingot_arsenic",
+"ntm:ingot_arsenic_bronze",
+"ntm:ingot_asbestos",
+"ntm:ingot_au198",
+"ntm:ingot_australium",
+"ntm:ingot_bakelite",
+"ntm:ingot_beryllium",
+"ntm:ingot_biorubber",
+"ntm:ingot_bismuth",
+"ntm:ingot_bismuth_bronze",
+"ntm:ingot_boron",
+"ntm:ingot_bscco",
+"ntm:ingot_cadmium",
+"ntm:ingot_calcium",
+"ntm:ingot_cdalloy",
+"ntm:ingot_co60",
+"ntm:ingot_cobalt",
+"ntm:ingot_combine_steel",
+"ntm:ingot_copper",
+"ntm:ingot_desh",
+"ntm:ingot_dineutronium",
+"ntm:ingot_dura_steel",
+"ntm:ingot_euphemium",
+"ntm:ingot_ferrouranium",
+"ntm:ingot_fiberglass",
+"ntm:ingot_gh336",
+"ntm:ingot_graphite",
+"ntm:ingot_gunmetal",
+"ntm:ingot_lanthanium",
+"ntm:ingot_lead",
+"ntm:ingot_magnetized_tungsten",
+"ntm:ingot_mud",
+"ntm:ingot_neptunium",
+"ntm:ingot_niobium",
+"ntm:ingot_osmiridium",
+"ntm:ingot_pb209",
+"ntm:ingot_pc",
+"ntm:ingot_phosphorus",
+"ntm:ingot_plutonium",
+"ntm:ingot_polonium",
+"ntm:ingot_polymer",
+"ntm:ingot_pu238",
+"ntm:ingot_pu239",
+"ntm:ingot_pu240",
+"ntm:ingot_pu241",
+"ntm:ingot_pu_mix",
+"ntm:ingot_pvc",
+"ntm:ingot_ra226",
+"ntm:ingot_raw__borax",
+"ntm:ingot_raw__neodymium",
+"ntm:ingot_raw__redstone",
+"ntm:ingot_raw__slag",
+"ntm:ingot_raw__sodium",
+"ntm:ingot_raw__strontium",
+"ntm:ingot_red_copper",
+"ntm:ingot_rubber",
+"ntm:ingot_saturnite",
+"ntm:ingot_schrabidate",
+"ntm:ingot_schrabidium",
+"ntm:ingot_silicon",
+"ntm:ingot_solinium",
+"ntm:ingot_sr90",
+"ntm:ingot_steel",
+"ntm:ingot_tantalium",
+"ntm:ingot_tcalloy",
+"ntm:ingot_technetium",
+"ntm:ingot_th232",
+"ntm:ingot_titanium",
+"ntm:ingot_tungsten",
+"ntm:ingot_tungsten_carbide",
+"ntm:ingot_u233",
+"ntm:ingot_u235",
+"ntm:ingot_u238",
+"ntm:ingot_uranium",
+"ntm:ingot_weaponsteel",
+"ntm:ingot_zirconium",
+"ntm:lithium",
+"minecraft:brick",
+"minecraft:gold_ingot",
+"minecraft:iron_ingot",
+"minecraft:nether_brick"
+],
+"count": 9,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__ingots",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.52",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:plate_aluminium",
+"ntm:plate_combine_steel",
+"ntm:plate_copper",
+"ntm:plate_dura_steel",
+"ntm:plate_gold",
+"ntm:plate_gunmetal",
+"ntm:plate_iron",
+"ntm:plate_lead",
+"ntm:plate_saturnite",
+"ntm:plate_schrabidium",
+"ntm:plate_steel",
+"ntm:plate_titanium",
+"ntm:plate_weaponsteel"
+],
+"count": 9,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__plates",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.53",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:block_actinium",
+"ntm:block_aluminium",
+"ntm:block_asbestos",
+"ntm:block_australium",
+"ntm:block_bakelite",
+"ntm:block_beryllium",
+"ntm:block_bismuth",
+"ntm:block_boron",
+"ntm:block_cadmium",
+"ntm:block_cdalloy",
+"ntm:block_cobalt",
+"ntm:block_coke__coal",
+"ntm:block_coke__lignite",
+"ntm:block_coke__petroleum",
+"ntm:block_coltan",
+"ntm:block_combine_steel",
+"ntm:block_copper",
+"ntm:block_desh",
+"ntm:block_dineutronium",
+"ntm:block_dura_steel",
+"ntm:block_euphemium",
+"ntm:block_fiberglass",
+"ntm:block_fluorite",
+"ntm:block_lanthanium",
+"ntm:block_lead",
+"ntm:block_lithium",
+"ntm:block_magnetized_tungsten",
+"ntm:block_neptunium",
+"ntm:block_niter",
+"ntm:block_plutonium",
+"ntm:block_polonium",
+"ntm:block_polymer",
+"ntm:block_pu238",
+"ntm:block_pu239",
+"ntm:block_pu240",
+"ntm:block_pu_mix",
+"ntm:block_ra226",
+"ntm:block_red_copper",
+"ntm:block_rubber",
+"ntm:block_schrabidate",
+"ntm:block_schrabidium",
+"ntm:block_schraranium",
+"ntm:block_solinium",
+"ntm:block_starmetal",
+"ntm:block_steel",
+"ntm:block_sulfur",
+"ntm:block_tantalium",
+"ntm:block_tcalloy",
+"ntm:block_thorium",
+"ntm:block_titanium",
+"ntm:block_tungsten",
+"ntm:block_u233",
+"ntm:block_u235",
+"ntm:block_u238",
+"ntm:block_uranium",
+"ntm:block_white_phosphorus",
+"ntm:block_zirconium",
+"ntm:glass_ash",
+"ntm:glass_boron",
+"ntm:glass_lead",
+"ntm:glass_polonium",
+"ntm:glass_trinitite",
+"ntm:glass_uranium",
+"minecraft:coal_block",
+"minecraft:diamond_block",
+"minecraft:emerald_block",
+"minecraft:gold_block",
+"minecraft:iron_block",
+"minecraft:lapis_block",
+"minecraft:quartz_block",
+"minecraft:redstone_block"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__block",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.54",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:wire_dense__bscco",
+"ntm:wire_dense__copper",
+"ntm:wire_dense__dnt",
+"ntm:wire_dense__gold",
+"ntm:wire_dense__magnetized_tungsten",
+"ntm:wire_dense__neodymium",
+"ntm:wire_dense__niobium",
+"ntm:wire_dense__red_copper",
+"ntm:wire_dense__schrabidate",
+"ntm:wire_dense__schrabidium",
+"ntm:wire_dense__starmetal",
+"ntm:wire_dense__titanium",
+"ntm:wire_dense__tungsten"
+],
+"count": 1,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__wire_dense",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.smithing.55",
+"tier": 1,
+"left": {
+"ids": [
+"ntm:wire_dense__bscco",
+"ntm:wire_dense__copper",
+"ntm:wire_dense__dnt",
+"ntm:wire_dense__gold",
+"ntm:wire_dense__magnetized_tungsten",
+"ntm:wire_dense__neodymium",
+"ntm:wire_dense__niobium",
+"ntm:wire_dense__red_copper",
+"ntm:wire_dense__schrabidate",
+"ntm:wire_dense__schrabidium",
+"ntm:wire_dense__starmetal",
+"ntm:wire_dense__titanium",
+"ntm:wire_dense__tungsten"
+],
+"count": 9,
+"exact": true
+},
+"right": {
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+"out": [
+"ntm:mold__wires_dense",
+1
+],
+"shapeless": false,
+"consume": [
+0,
+1
+]
+},
+{
+"name": "anvil.construction.0",
+"label": "Placa de Ferro",
+"in": [
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_iron",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.1",
+"label": "Placa de Ouro",
+"in": [
+{
+"ids": [
+"minecraft:gold_ingot"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_gold",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.2",
+"label": "Placa de Titânio",
+"in": [
+{
+"ids": [
+"ntm:ingot_titanium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_titanium",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.3",
+"label": "Placa de Alumínio",
+"in": [
+{
+"ids": [
+"ntm:ingot_aluminium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_aluminium",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.4",
+"label": "Placa de Aço",
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.5",
+"label": "Placa de Chumbo",
+"in": [
+{
+"ids": [
+"ntm:ingot_lead"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_lead",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.6",
+"label": "Placa de Cobre",
+"in": [
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_copper",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.7",
+"label": "Placa de Bronze de Armas",
+"in": [
+{
+"ids": [
+"ntm:ingot_gunmetal"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_gunmetal",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.8",
+"label": "Placa de Aço para Armas",
+"in": [
+{
+"ids": [
+"ntm:ingot_weaponsteel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_weaponsteel",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.9",
+"label": "Placa de Saturnita",
+"in": [
+{
+"ids": [
+"ntm:ingot_saturnite"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_saturnite",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.10",
+"label": "Placa de Aço Rápido",
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_dura_steel",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.11",
+"label": "Placa de Schrabídio",
+"in": [
+{
+"ids": [
+"ntm:ingot_schrabidium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_schrabidium",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.12",
+"label": "Placa de Aço CMB",
+"in": [
+{
+"ids": [
+"ntm:ingot_combine_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_combine_steel",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.13",
+"label": "Fio de Carbono ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_graphite"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__carbon",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.14",
+"label": "Fio de Ouro ×8",
+"in": [
+{
+"ids": [
+"minecraft:gold_ingot"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__gold",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.15",
+"label": "Fio de Schrabídio ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_schrabidium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__schrabidium",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.16",
+"label": "Fio de Cobre ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__copper",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.17",
+"label": "Fio de Tungstênio ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__tungsten",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.18",
+"label": "Fio de Alumínio ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_aluminium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__aluminium",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.19",
+"label": "Fio de Chumbo ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_lead"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__lead",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.20",
+"label": "Fio de Zircônio ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_zirconium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__zirconium",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.21",
+"label": "Fio de Aço ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__steel",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.22",
+"label": "Fio de Cobre Vermelho ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_red_copper"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__red_copper",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.23",
+"label": "Fio de Tungstênio Magnetizado ×8",
+"in": [
+{
+"ids": [
+"ntm:ingot_magnetized_tungsten"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:wire_fine__magnetized_tungsten",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.24",
+"label": "coal",
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"minecraft:coal",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.25",
+"label": "quartz",
+"in": [
+{
+"ids": [
+"ntm:powder_quartz"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"minecraft:quartz",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.26",
+"label": "lapis lazuli",
+"in": [
+{
+"ids": [
+"ntm:powder_lapis"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"minecraft:lapis_lazuli",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.27",
+"label": "diamond",
+"in": [
+{
+"ids": [
+"ntm:powder_diamond"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"minecraft:diamond",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.28",
+"label": "emerald",
+"in": [
+{
+"ids": [
+"ntm:powder_emerald"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"minecraft:emerald",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.31",
+"label": "Bloco Decorativo de Alumínio ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_aluminium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_aluminium",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.32",
+"label": "Bloco Decorativo de Berílio ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_beryllium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_beryllium",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.33",
+"label": "Bloco Decorativo de Chumbo ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_lead"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_lead",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.34",
+"label": "Bloco Decorativo de Cobre Vermelho ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_red_copper"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_red_copper",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.35",
+"label": "Bloco Decorativo de Aço ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_steel",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.37",
+"label": "Bloco Decorativo de Tungstênio ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_tungsten",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.39",
+"label": "Carcaça de Titânio",
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__titanium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.40",
+"label": "Carcaça de Cobre",
+"in": [
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__copper",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.41",
+"label": "Carcaça de Alumínio",
+"in": [
+{
+"ids": [
+"ntm:plate_aluminium"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__aluminium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.42",
+"label": "Carcaça de Aço",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__steel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.43",
+"label": "Carcaça de Aço de Arma",
+"in": [
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__weaponsteel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.44",
+"label": "Carcaça de Saturnita",
+"in": [
+{
+"ids": [
+"ntm:plate_saturnite"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:shell__saturn",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.45",
+"label": "Tubo de Ferro",
+"in": [
+{
+"ids": [
+"ntm:plate_iron"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__iron",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.46",
+"label": "Tubo de Cobre",
+"in": [
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__copper",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.47",
+"label": "Tubo de Alumínio",
+"in": [
+{
+"ids": [
+"ntm:plate_aluminium"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__aluminium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.48",
+"label": "Tubo de Chumbo",
+"in": [
+{
+"ids": [
+"ntm:plate_lead"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__lead",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.49",
+"label": "Tubo de Aço",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__steel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.50",
+"label": "Tubo de Aço de Alta Velocidade",
+"in": [
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__dura_steel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.51",
+"label": "Tubo de Borracha",
+"in": [
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__rubber",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.52",
+"label": "Bobina Toroidal",
+"in": [
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:coil_copper_torus",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.53",
+"label": "Bobina Toroidal de Ouro",
+"in": [
+{
+"ids": [
+"ntm:coil_gold"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:coil_gold_torus",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.54",
+"label": "Motor ×2",
+"in": [
+{
+"ids": [
+"ntm:plate_iron"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper_torus"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:motor",
+2,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.55",
+"label": "Motor de Desh",
+"in": [
+{
+"ids": [
+"ntm:motor"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:motor_desh",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.56",
+"label": "Alto-Forno",
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"count": 32,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_blast_furnace",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.58",
+"label": "Montadora",
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:motor"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_assembly_machine",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.61",
+"label": "Fornalha",
+"in": [
+{
+"ids": [
+"minecraft:furnace"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:heater_firebox",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.74",
+"label": "Crisol",
+"in": [
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"count": 20,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_crucible",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.93",
+"label": "Placa de Composto de Desh ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:powder_bakelite",
+"ntm:powder_polymer"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_desh",
+4,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.94",
+"label": "Placa de Composto de Bismuto",
+"in": [
+{
+"ids": [
+"ntm:nugget_bismuth"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:billet_u238"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:powder_niobium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_bismuth",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.95",
+"label": "Placa de Blindagem de Titânio",
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:bolt__steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_armor_titanium",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.96",
+"label": "Blindagem de Ferro ×2",
+"in": [
+{
+"ids": [
+"ntm:plate_iron"
+],
+"count": 6,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_niobium"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_armor_titanium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_armor_ajr",
+2,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.97",
+"label": "Blindagem Reativa",
+"in": [
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_armor_titanium"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:wire_fine__tungsten"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_armor_hev",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.100",
+"label": "Blindagem de DNT",
+"in": [
+{
+"ids": [
+"ntm:plate_dineutronium"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:particle_sparkticle"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_armor_fau"
+],
+"count": 6,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_armor_dnt",
+1,
+1.0
+]
+],
+"tier_lower": 7,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.152",
+"label": "Matriz de Estampo de Chapa (Pedra)",
+"in": [
+{
+"ids": [
+"ntm:stamp_stone_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_stone_plate",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.153",
+"label": "Matriz de Estampo de Fio (Pedra)",
+"in": [
+{
+"ids": [
+"ntm:stamp_stone_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_stone_wire",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.154",
+"label": "Matriz de Estampo de Circuito (Pedra)",
+"in": [
+{
+"ids": [
+"ntm:stamp_stone_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_stone_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.155",
+"label": "Matriz de Estampo de Chapa (Ferro)",
+"in": [
+{
+"ids": [
+"ntm:stamp_iron_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_iron_plate",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.156",
+"label": "Matriz de Estampo de Fio (Ferro)",
+"in": [
+{
+"ids": [
+"ntm:stamp_iron_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_iron_wire",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.157",
+"label": "Matriz de Estampo de Circuito (Ferro)",
+"in": [
+{
+"ids": [
+"ntm:stamp_iron_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_iron_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.158",
+"label": "Matriz de Estampo de Chapa (Aço)",
+"in": [
+{
+"ids": [
+"ntm:stamp_steel_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_steel_plate",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.159",
+"label": "Matriz de Estampo de Fio (Aço)",
+"in": [
+{
+"ids": [
+"ntm:stamp_steel_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_steel_wire",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.160",
+"label": "Matriz de Estampo de Circuito (Aço)",
+"in": [
+{
+"ids": [
+"ntm:stamp_steel_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_steel_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.161",
+"label": "Matriz de Estampo de Chapa (Titânio)",
+"in": [
+{
+"ids": [
+"ntm:stamp_titanium_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_titanium_plate",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.162",
+"label": "Matriz de Estampo de Fio (Titânio)",
+"in": [
+{
+"ids": [
+"ntm:stamp_titanium_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_titanium_wire",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.163",
+"label": "Matriz de Estampo de Circuito (Titânio)",
+"in": [
+{
+"ids": [
+"ntm:stamp_titanium_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_titanium_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.164",
+"label": "Matriz de Estampo de Chapa (Obsidiana)",
+"in": [
+{
+"ids": [
+"ntm:stamp_obsidian_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_obsidian_plate",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.165",
+"label": "Matriz de Estampo de Fio (Obsidiana)",
+"in": [
+{
+"ids": [
+"ntm:stamp_obsidian_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_obsidian_wire",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.166",
+"label": "Matriz de Estampo de Circuito (Obsidiana)",
+"in": [
+{
+"ids": [
+"ntm:stamp_obsidian_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_obsidian_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.167",
+"label": "Matriz de Estampo de Chapa (Desh)",
+"in": [
+{
+"ids": [
+"ntm:stamp_desh_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_desh_plate",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.168",
+"label": "Matriz de Estampo de Fio (Desh)",
+"in": [
+{
+"ids": [
+"ntm:stamp_desh_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_desh_wire",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.169",
+"label": "Matriz de Estampo de Circuito (Desh)",
+"in": [
+{
+"ids": [
+"ntm:stamp_desh_flat"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_desh_circuit",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.170",
+"label": "Matriz de Estampo de Pequeno Calibre",
+"in": [
+{
+"ids": [
+"ntm:stamp_iron_flat"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_gunmetal"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_9",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.171",
+"label": "Matriz de Estampo de Grande Calibre",
+"in": [
+{
+"ids": [
+"ntm:stamp_iron_flat"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_gunmetal"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_50",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.172",
+"label": "Matriz de Estampo de Pequeno Calibre (Desh)",
+"in": [
+{
+"ids": [
+"ntm:stamp_desh_flat"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_weaponsteel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_desh_9",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.173",
+"label": "Matriz de Estampo de Grande Calibre (Desh)",
+"in": [
+{
+"ids": [
+"ntm:stamp_desh_flat"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_weaponsteel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:stamp_desh_50",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.174",
+"label": "Molde de Fundição (Estojo de Pequeno Calibre)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__c9",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.175",
+"label": "Molde de Fundição (Estojo de Grande Calibre)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__c50",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.176",
+"label": "Molde de Fundição (Cano Leve)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__barrel_light",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.177",
+"label": "Molde de Fundição (Cano Pesado)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__barrel_heavy",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.178",
+"label": "Molde de Fundição (Receptor Leve)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__receiver_light",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.179",
+"label": "Molde de Fundição (Receptor Pesado)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__receiver_heavy",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.180",
+"label": "Molde de Fundição (Mecanismo)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__mechanism",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.181",
+"label": "Molde de Fundição (Coronha)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__stock",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.182",
+"label": "Molde de Fundição (Empunhadura)",
+"in": [
+{
+"ids": [
+"ntm:mold_base"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:mold__grip",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.203",
+"label": "Fragmento de Boro (+7)",
+"in": [
+{
+"ids": [
+"ntm:chunk_ore__rare"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:fragment_boron",
+1,
+1.0
+],
+[
+"ntm:fragment_boron",
+1,
+0.5
+],
+[
+"ntm:fragment_lanthanium",
+1,
+0.1
+],
+[
+"ntm:fragment_cobalt",
+1,
+1.0
+],
+[
+"ntm:fragment_cobalt",
+1,
+0.5
+],
+[
+"ntm:fragment_cerium",
+1,
+0.1
+],
+[
+"ntm:fragment_neodymium",
+1,
+0.5
+],
+[
+"ntm:fragment_niobium",
+1,
+0.5
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.205",
+"label": "Cobre Vermelho",
+"in": [
+{
+"ids": [
+"ntm:deco_red_copper"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_red_copper",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.206",
+"label": "Lingote de Tungstênio",
+"in": [
+{
+"ids": [
+"ntm:deco_tungsten"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_tungsten",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.207",
+"label": "Lingote de Alumínio",
+"in": [
+{
+"ids": [
+"ntm:deco_aluminium"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_aluminium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.208",
+"label": "Lingote de Aço",
+"in": [
+{
+"ids": [
+"ntm:deco_steel"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_steel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.209",
+"label": "Lingote de Aço",
+"in": [
+{
+"ids": [
+"ntm:deco_rusty_steel"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_steel",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.210",
+"label": "Lingote de Chumbo",
+"in": [
+{
+"ids": [
+"ntm:deco_lead"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_lead",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.211",
+"label": "Lingote de Berílio",
+"in": [
+{
+"ids": [
+"ntm:deco_beryllium"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_beryllium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.214",
+"label": "Placa de Aço ×8 (+1)",
+"in": [
+{
+"ids": [
+"ntm:heater_firebox"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+8,
+1.0
+],
+[
+"ntm:ingot_copper",
+6,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.255",
+"label": "Tubo de Aço ×4 (+2)",
+"in": [
+{
+"ids": [
+"ntm:fusion_heater"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:pipe__steel",
+4,
+1.0
+],
+[
+"ntm:pipe__copper",
+2,
+1.0
+],
+[
+"ntm:circuit__analog",
+1,
+0.5
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+}
+],
+"skipped": 176
+}

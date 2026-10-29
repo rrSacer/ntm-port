@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Converte as receitas extraídas pelo agente de conteúdo
-(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder,blast_furnace,foundry}.json, schema 1)
+(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder,blast_furnace,foundry,anvil}.json, schema 1)
 para o formato que a lógica embute (crates/ntm-core/data/machines/*.json),
 com os nomes pt_BR do content/ids.json para a tela.
 
@@ -114,7 +114,26 @@ def foundry():
             'recipes': alloys, 'skipped': len(src.get('skipped', []))}
 
 
-for st, data in [('assembly', generic('assembly')), ('chemical_plant', generic('chemical_plant')), ('centrifuge', centrifuge()), ('shredder', shredder()), ('blast_furnace', blast_furnace()), ('foundry', foundry())]:
+def anvil():
+    """Forja e construção na ordem do NTM (`source_index`: a primeira que
+    casa); o rótulo de cada construção é a sua primeira saída."""
+    src = json.loads((root / 'content/machine-recipes/anvil.json').read_text())
+    side = lambda x: {'ids': x['ids'], 'count': x['count'], 'exact': bool(x.get('exact'))}
+    smithing = [{'name': r['name'], 'tier': r['tier'], 'left': side(r['left']), 'right': side(r['right']), 'out': r['out'],
+                 'shapeless': r.get('shapeless', False), 'consume': r['consume']}
+                for r in sorted(src['smithing'], key=lambda r: r['source_index'])]
+    def clabel(r):
+        outs = r['out']
+        base = label(r, outs, [])
+        return base + (f" (+{len(outs) - 1})" if len(outs) > 1 else '')
+    construction = [{'name': r['name'], 'label': clabel(r), 'in': [side(i) for i in r['in']], 'out': r['out'],
+                     'tier_lower': r['tier_lower'], 'tier_upper': r['tier_upper']}
+                    for r in sorted(src['construction'], key=lambda r: r['source_index'])]
+    return {'station': 'anvil', 'source': 'content/machine-recipes/anvil.json', 'smithing': smithing, 'construction': construction,
+            'recipes': smithing + construction, 'skipped': len(src['skipped'])}
+
+
+for st, data in [('assembly', generic('assembly')), ('chemical_plant', generic('chemical_plant')), ('centrifuge', centrifuge()), ('shredder', shredder()), ('blast_furnace', blast_furnace()), ('foundry', foundry()), ('anvil', anvil())]:
     p = root / f'crates/ntm-core/data/machines/{st}.json'
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"{st}: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
