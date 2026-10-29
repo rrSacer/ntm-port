@@ -4173,6 +4173,260 @@
           }
         ]
       }
+    },
+    "ntm:machine_gascent": {
+      "source": "ContainerMachineGasCent, GUIMachineGasCent (MachineGasCent {3,0,0,0,0,0}); battery and identifier slots have no logic in the port",
+      "machine": {
+        "slots": [
+          {
+            "x": 71,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 89,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 71,
+            "y": 71,
+            "output": true
+          },
+          {
+            "x": 89,
+            "y": 71,
+            "output": true
+          },
+          {
+            "x": 182,
+            "y": 71,
+            "accept": []
+          },
+          {
+            "x": 91,
+            "y": 15,
+            "accept": []
+          },
+          {
+            "x": 69,
+            "y": 15,
+            "accept": [
+              "ntm:upgrade_gc_speed"
+            ],
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 12,
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            3,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_centrifuge_gas.png",
+        "texture_from": "textures/gui/processing/gui_centrifuge_gas.png",
+        "size": [
+          206,
+          204
+        ],
+        "title": false,
+        "compose": [
+          {
+            "from": "textures/gui/fluids/uf6.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              230,
+              100
+            ]
+          },
+          {
+            "from": "textures/gui/fluids/uf6.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              230,
+              116
+            ]
+          },
+          {
+            "from": "textures/gui/fluids/uf6.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              230,
+              132
+            ]
+          },
+          {
+            "from": "textures/gui/fluids/uf6.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              230,
+              148
+            ]
+          }
+        ],
+        "bars": [
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              182,
+              17,
+              16,
+              52
+            ],
+            "uv": [
+              206,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              70,
+              35,
+              36,
+              13
+            ],
+            "uv": [
+              206,
+              52
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              16,
+              16,
+              6,
+              52
+            ],
+            "uv": [
+              230,
+              100
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              32,
+              16,
+              6,
+              52
+            ],
+            "uv": [
+              230,
+              100
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 9,
+            "max": 10,
+            "rect": [
+              138,
+              16,
+              6,
+              52
+            ],
+            "uv": [
+              230,
+              100
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 9,
+            "max": 10,
+            "rect": [
+              154,
+              16,
+              6,
+              52
+            ],
+            "uv": [
+              230,
+              100
+            ],
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              182,
+              17,
+              16,
+              52
+            ],
+            "lines": [
+              "{2:si} / {3:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              15,
+              15,
+              24,
+              55
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              137,
+              15,
+              25,
+              55
+            ],
+            "lines": [
+              "{9} / {10} mB"
+            ]
+          }
+        ]
+      }
     }
   }
 }

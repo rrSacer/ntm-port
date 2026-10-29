@@ -1,0 +1,61 @@
+{
+  "slots": [
+    {
+      "x": 71,
+      "y": 53,
+      "output": true
+    },
+    {
+      "x": 89,
+      "y": 53,
+      "output": true
+    },
+    {
+      "x": 71,
+      "y": 71,
+      "output": true
+    },
+    {
+      "x": 89,
+      "y": 71,
+      "output": true
+    },
+    {
+      "x": 182,
+      "y": 71,
+      "accept": []
+    },
+    {
+      "x": 91,
+      "y": 15,
+      "accept": []
+    },
+    {
+      "x": 69,
+      "y": 15,
+      "accept": [
+        "ntm:upgrade_gc_speed"
+      ],
+      "max": 1
+    }
+  ],
+  "inventory": [
+    8,
+    122
+  ],
+  "data": 12,
+  "multiblock": {
+    "min": [
+      0,
+      0,
+      0
+    ],
+    "max": [
+      0,
+      3,
+      0
+    ],
+    "offset": 0,
+    "dummy": "ntm:dummy_machine"
+  }
+}
