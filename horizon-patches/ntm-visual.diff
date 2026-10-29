@@ -1555,10 +1555,10 @@ index 000000000..830f267f7
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
 new file mode 100644
-index 000000000..a7dfb20f8
+index 000000000..a54a2f2ea
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_screens.rs
-@@ -0,0 +1,489 @@
+@@ -0,0 +1,497 @@
 +//! Screens of content mods' machines (`horizon_world::mod_machines`): the
 +//! machine's own background texture, with bars, lights and tooltips drawn
 +//! from the values the mod sets. Each `assets/<namespace>/horizon_screen/<name>.json`
@@ -1582,7 +1582,8 @@ index 000000000..a7dfb20f8
 +//!   ],
 +//!   "tooltips": [{"rect": [152, 18, 16, 61], "lines": ["{0:si} / {1:si} HE"]}],
 +//!   "buttons": [{"id": 0, "rect": [7, 125, 18, 18], "lines": ["Choose a recipe"]}]
-+//! }
++//! }                                          a button's "shift": the id sent while shift is held
++//!                                            (HBM's shift-click: the anvil crafts all it can)
 +//! ```
 +use crate::hud::{HudAtlas, HudBatch, Rect};
 +use serde_json::Value;
@@ -1639,6 +1640,8 @@ index 000000000..a7dfb20f8
 +#[derive(Clone, Debug, PartialEq)]
 +pub struct Button {
 +    pub id: u32,
++    /// The id sent while shift is held, when not `id`.
++    pub shift: Option<u32>,
 +    pub rect: [f32; 4],
 +    pub lines: Vec<String>,
 +}
@@ -1799,6 +1802,7 @@ index 000000000..a7dfb20f8
 +        .filter_map(|b| {
 +            Some(Button {
 +                id: b["id"].as_u64()? as u32,
++                shift: b["shift"].as_u64().map(|i| i as u32),
 +                rect: floats::<4>(&b["rect"])?,
 +                lines: lines(&b["lines"]),
 +            })
@@ -2007,11 +2011,12 @@ index 000000000..a7dfb20f8
 +    }
 +
 +    /// The button under the pointer (screen-relative).
-+    pub fn button_at(&self, x: f32, y: f32) -> Option<u32> {
++    /// The id the button under `(x, y)` sends, `shift` held or not.
++    pub fn button_at(&self, x: f32, y: f32, shift: bool) -> Option<u32> {
 +        self.buttons
 +            .iter()
 +            .find(|b| inside(b.rect, x, y))
-+            .map(|b| b.id)
++            .map(|b| b.shift.filter(|_| shift).unwrap_or(b.id))
 +    }
 +}
 +
@@ -2035,7 +2040,7 @@ index 000000000..a7dfb20f8
 +                "bars":[{"value":0,"max":1,"rect":[1,2,3,4],"uv":[176,0],"dir":"up"}],
 +                "overlays":[{"slot":0,"rect":[1,1,2,2],"uv":[3,3]}],
 +                "tooltips":[{"rect":[0,0,10,10],"lines":["{0}"]}],
-+                "buttons":[{"id":2,"rect":[20,20,5,5]}]}"#,
++                "buttons":[{"id":2,"rect":[20,20,5,5]},{"id":3,"shift":4,"rect":[30,30,5,5]}]}"#,
 +        )
 +        .unwrap();
 +        let def = parse(Path::new("/r"), &doc).unwrap();
@@ -2044,8 +2049,11 @@ index 000000000..a7dfb20f8
 +        assert_eq!(def.title_color, None);
 +        assert_eq!(def.inventory_label, Some([8.0, 162.0]));
 +        assert_eq!(def.tooltip(5.0, 5.0, &[42]), Some(vec!["42".into()]));
-+        assert_eq!(def.button_at(21.0, 21.0), Some(2));
-+        assert_eq!(def.button_at(0.0, 0.0), None);
++        assert_eq!(def.button_at(21.0, 21.0, false), Some(2));
++        assert_eq!(def.button_at(21.0, 21.0, true), Some(2));
++        assert_eq!(def.button_at(31.0, 31.0, false), Some(3));
++        assert_eq!(def.button_at(31.0, 31.0, true), Some(4));
++        assert_eq!(def.button_at(0.0, 0.0, false), None);
 +    }
 +}
 diff --git a/crates/horizon-client/src/game.rs b/crates/horizon-client/src/game.rs
@@ -2435,10 +2443,10 @@ index 4a6fca181..ff6f945ae 100644
              .as_ref()
 diff --git a/crates/horizon-client/src/game/mod_machines.rs b/crates/horizon-client/src/game/mod_machines.rs
 new file mode 100644
-index 000000000..f04b49f5e
+index 000000000..64e555ed0
 --- /dev/null
 +++ b/crates/horizon-client/src/game/mod_machines.rs
-@@ -0,0 +1,348 @@
+@@ -0,0 +1,361 @@
 +//! Content mods' machines in the game (`horizon_world::mod_machines`): a
 +//! multiblock breaks as one block, whichever of its cells the player mines.
 +use super::Game;
@@ -2490,6 +2498,7 @@ index 000000000..f04b49f5e
 +};
 +use horizon_world::mod_machines::MachineDef;
 +use std::sync::Arc;
++use winit::keyboard::KeyCode;
 +
 +impl Game<'_> {
 +    /// The open container's machine and screen, when it is a mod machine.
@@ -2541,9 +2550,19 @@ index 000000000..f04b49f5e
 +        let screen = screen.filter(|s| s.ready(atlas));
 +        let [w, h] = self.machine_screen_size().unwrap_or([176.0, 166.0]);
 +        match &screen {
-+            Some(s) => s.draw(batch, atlas, ox, oy, &m.data, |slot| {
-+                m.items.get(slot).is_some_and(Option::is_some)
-+            }),
++            Some(s) => {
++                s.draw(batch, atlas, ox, oy, &m.data, |slot| {
++                    m.items.get(slot).is_some_and(Option::is_some)
++                });
++                // Its buttons for the control socket (`horizon-ctl
++                // click-button`), by their tooltip's first line.
++                for b in &s.buttons {
++                    if let Some(label) = b.lines.first() {
++                        let [x, y, w, h] = b.rect;
++                        horizon_client::widgets::record(label, [ox + x, oy + y, w, h], true);
++                    }
++                }
++            }
 +            None => {
 +                batch.fill(atlas, ox, oy, w, h, rgba(198, 198, 198, 255));
 +                let frames = def
@@ -2642,7 +2661,9 @@ index 000000000..f04b49f5e
 +        };
 +        let batch = HudBatch::new(size);
 +        let (ox, oy) = self.inventory_origin(&batch);
-+        let Some(button) = screen.button_at(self.cursor.0 - ox, self.cursor.1 - oy) else {
++        let shift =
++            self.keys.contains(&KeyCode::ShiftLeft) || self.keys.contains(&KeyCode::ShiftRight);
++        let Some(button) = screen.button_at(self.cursor.0 - ox, self.cursor.1 - oy, shift) else {
 +            return false;
 +        };
 +        self.audio
