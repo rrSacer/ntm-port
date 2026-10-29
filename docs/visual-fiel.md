@@ -364,8 +364,13 @@ fica pronto e parado.
   `install-side-by-side.sh` exige o patch e o server mod com `machines` (`tools/build-visual.sh`). Aplicar na
   instalação do usuário depende da aprovação do coordenador.
 - **Facing das bombas:** o template `redstone_lamp` das bombas não tem `facing`, então o modelo da Little Boy tem
-  orientação fixa. Decisão do coordenador: **opção B**, guardar o `facing` de quem colocou nos dados da máquina e
-  girar só o modelo (sem o `dispenser`). Pendente, na etapa d.
+  orientação fixa. Decisão do coordenador: **opção B**, sem o `dispenser`. **Feito, etapa d.1** (motor 1dd21ab7f):
+  - ao colocar, o motor guarda no block entity o lado de quem colocou, `floor(yaw·4/360 + 0.5)`, como o metadata dos
+    `BlockContainer` do NTM;
+  - o lado vai no save;
+  - o cliente recebe o block entity como `horizon:machine` (no chunk e nas atualizações), e o modelo gira por ele;
+  - não precisa de nada no port; vale para qualquer máquina sem `facing`;
+  - captura: `img/visual-bomb-facing.png`, 4 Little Boys postas olhando para 4 lados, iguais depois de sair e voltar.
 - **Drop do item da máquina (não é um bug):** em sobrevivência, com uma picareta de diamante:
   - minar um dummy da montadora solta o item da máquina;
   - o triturador solta o item e o conteúdo (2 minérios, 2 lâminas).

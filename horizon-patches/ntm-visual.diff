@@ -53,7 +53,7 @@ index 75cf5ee85..1262f15cd 100644
  miniz_oxide = "0.8"
  naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
 diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
-index b415748c4..3484965d4 100644
+index b415748c4..68ea2f7de 100644
 --- a/crates/horizon-client-render/src/block_entity_render.rs
 +++ b/crates/horizon-client-render/src/block_entity_render.rs
 @@ -317,6 +317,13 @@ enum Kind {
@@ -111,18 +111,29 @@ index b415748c4..3484965d4 100644
          }
      }
      fn kind(&self, state: u32) -> &Kind {
-@@ -971,6 +997,10 @@ impl BlockEntityRenderer {
+@@ -971,6 +997,21 @@ impl BlockEntityRenderer {
              let origin = (DVec3::new(f64::from(pos[0]), f64::from(pos[1]), f64::from(pos[2]))
                  - scene.camera)
                  .as_vec3();
 +            if let Kind::ModModel { model, yaw, play } = kind {
-+                self.render_mod_model(scene, *pos, *model, *yaw, *play, origin, lights, out);
++                // A block with no `facing` turns by its placer's (the machine's own).
++                let yaw = match scene.world.block_entities.get(&(pos[0], pos[1], pos[2])) {
++                    Some(crate::containers::BlockEntity::ModContainer(m)) => {
++                        m.facing.map_or(*yaw, |f| {
++                            crate::mod_models::facing_yaw(Some(
++                                ["north", "east", "south", "west"][f as usize & 3],
++                            ))
++                        })
++                    }
++                    _ => *yaw,
++                };
++                self.render_mod_model(scene, *pos, *model, yaw, *play, origin, lights, out);
 +                continue;
 +            }
              let packed = scene.world.light(pos[0], pos[1], pos[2]);
              if matches!(kind, Kind::Sign { .. }) && scene.texts.is_none() {
                  self.sign_text(scene, *pos, *state, origin, packed, out);
-@@ -1089,6 +1119,202 @@ impl BlockEntityRenderer {
+@@ -1089,6 +1130,202 @@ impl BlockEntityRenderer {
      pub fn renders(&self, state: u32) -> bool {
          !matches!(self.kind(state), Kind::None)
      }
@@ -325,7 +336,7 @@ index b415748c4..3484965d4 100644
      /// ChestRenderer and BannerRenderer submit their animated models for crumbling.
      pub fn render_breaking(
          &self,
-@@ -1239,7 +1465,8 @@ impl BlockEntityRenderer {
+@@ -1239,7 +1476,8 @@ impl BlockEntityRenderer {
          };
          let none = |_: &str, _: &mut [f32; 9]| {};
          match kind {
@@ -335,7 +346,7 @@ index b415748c4..3484965d4 100644
              Kind::Sign {
                  hanging,
                  wall,
-@@ -2278,6 +2505,10 @@ mod tests {
+@@ -2278,6 +2516,10 @@ mod tests {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
@@ -347,10 +358,10 @@ index b415748c4..3484965d4 100644
          let world = World::new(BlockStateId(0), 1);
          let sprites = HashMap::new();
 diff --git a/crates/horizon-client-render/src/chunk/block_entity.rs b/crates/horizon-client-render/src/chunk/block_entity.rs
-index 6dbd09e14..3e82cd597 100644
+index 6dbd09e14..d878887bd 100644
 --- a/crates/horizon-client-render/src/chunk/block_entity.rs
 +++ b/crates/horizon-client-render/src/chunk/block_entity.rs
-@@ -76,6 +76,17 @@ pub enum BlockEntity {
+@@ -76,6 +76,21 @@ pub enum BlockEntity {
      DaylightDetector,
      /// `ChiseledBookShelfBlockEntity`: a `Container` of six one-book slots.
      ChiseledBookshelf(Box<ChiseledBookshelf>),
@@ -365,11 +376,15 @@ index 6dbd09e14..3e82cd597 100644
 +    pub block: Arc<str>,
 +    pub items: Vec<Option<ItemStack>>,
 +    pub data: Vec<i32>,
++    /// The way the placer faced (`north`, `east`, `south`, `west` as 0 to
++    /// 3), for a block whose state has no `facing`: its model turns by it,
++    /// as HBM's renderers turn by metadata.
++    pub facing: Option<u8>,
  }
  /// `ChiseledBookShelfBlockEntity`: six slots and `lastInteractedSlot`.
  #[derive(Clone, Debug, PartialEq)]
 diff --git a/crates/horizon-client-render/src/containers.rs b/crates/horizon-client-render/src/containers.rs
-index 4908ed1ee..d6d0a1198 100644
+index 4908ed1ee..6820b1eb7 100644
 --- a/crates/horizon-client-render/src/containers.rs
 +++ b/crates/horizon-client-render/src/containers.rs
 @@ -3,7 +3,7 @@
@@ -381,7 +396,7 @@ index 4908ed1ee..d6d0a1198 100644
  };
  use crate::items::ItemStack;
  use std::collections::HashMap;
-@@ -256,6 +256,15 @@ impl BlockEntity {
+@@ -256,6 +256,16 @@ impl BlockEntity {
          if name == "minecraft:chiseled_bookshelf" {
              return Some(Self::ChiseledBookshelf(Box::default()));
          }
@@ -392,12 +407,13 @@ index 4908ed1ee..d6d0a1198 100644
 +                block: name.into(),
 +                items: vec![None; def.slots.len()],
 +                data: vec![0; def.data],
++                facing: None,
 +            })));
 +        }
          let size = match name {
              "minecraft:chest" | "minecraft:trapped_chest" | "minecraft:barrel" => 27,
              n if n.ends_with("copper_chest") => 27,
-@@ -297,6 +306,8 @@ impl BlockEntity {
+@@ -297,6 +307,8 @@ impl BlockEntity {
              Self::DaylightDetector => "minecraft:daylight_detector",
              Self::Campfire(_) => "minecraft:campfire",
              Self::ChiseledBookshelf(_) => "minecraft:chiseled_bookshelf",
@@ -406,7 +422,7 @@ index 4908ed1ee..d6d0a1198 100644
          }
      }
      pub fn contents(&self) -> Vec<ItemStack> {
-@@ -322,6 +333,7 @@ impl BlockEntity {
+@@ -322,6 +334,7 @@ impl BlockEntity {
              Self::Crafter(c) => c.items.iter().flatten().cloned().collect(),
              Self::Campfire(c) => c.items.iter().flatten().cloned().collect(),
              Self::ChiseledBookshelf(b) => b.items.iter().flatten().cloned().collect(),
@@ -414,7 +430,7 @@ index 4908ed1ee..d6d0a1198 100644
          }
      }
      pub fn slots(&self) -> &[Option<ItemStack>] {
-@@ -340,6 +352,7 @@ impl BlockEntity {
+@@ -340,6 +353,7 @@ impl BlockEntity {
              | Self::DaylightDetector => &[],
              Self::Crafter(c) => &c.items,
              Self::ChiseledBookshelf(b) => &b.items,
@@ -422,7 +438,7 @@ index 4908ed1ee..d6d0a1198 100644
              Self::CreakingHeart(_)
              | Self::Spawner(_)
              | Self::TrialSpawner(_)
-@@ -366,6 +379,7 @@ impl BlockEntity {
+@@ -366,6 +380,7 @@ impl BlockEntity {
              | Self::DaylightDetector => &mut [],
              Self::Crafter(c) => &mut c.items,
              Self::ChiseledBookshelf(b) => &mut b.items,
@@ -1826,7 +1842,7 @@ index 000000000..447832c6e
 +    }
 +}
 diff --git a/crates/horizon-client/src/game.rs b/crates/horizon-client/src/game.rs
-index ffa8a66eb..ed0615463 100644
+index ffa8a66eb..aa7dc24db 100644
 --- a/crates/horizon-client/src/game.rs
 +++ b/crates/horizon-client/src/game.rs
 @@ -111,6 +111,7 @@ mod mob_blocks;
@@ -1868,7 +1884,30 @@ index ffa8a66eb..ed0615463 100644
          }
          if removed && !creative {
              let held = self.held().cloned();
-@@ -6366,7 +6377,8 @@ impl Game<'_> {
+@@ -4574,8 +4585,21 @@ impl Game<'_> {
+         let target = [pos.x, pos.y, pos.z];
+         let state = self.apply_item_block_state(target, state, &stack)?;
+         self.mod_block_event(target, state, true);
+-        if let Some(entity) = BlockEntity::for_block(&self.res.facts().get(state).name) {
++        if let Some(mut entity) = BlockEntity::for_block(&self.res.facts().get(state).name) {
+             let key = (target[0], target[1], target[2]);
++            // A machine whose state has no `facing` keeps its placer's, as HBM's
++            // BlockContainer bombs keep it in metadata: floor(yaw * 4 / 360 + 0.5) & 3
++            // gives north, east, south, west.
++            if let BlockEntity::ModContainer(m) = &mut entity
++                && self
++                    .pack
++                    .assets
++                    .registry
++                    .state(state)
++                    .is_some_and(|s| !s.properties.contains_key("facing"))
++            {
++                m.facing = Some(((self.yaw * 4.0 / 360.0 + 0.5).floor() as i32 & 3) as u8);
++            }
+             self.world.block_entities.insert(key, entity);
+             let game_master = self.can_use_game_master_blocks();
+             self.apply_placed_item(target, &stack, game_master);
+@@ -6366,7 +6390,8 @@ impl Game<'_> {
          if self.screen == Screen::Creative {
              return Self::creative_origin(batch);
          }
@@ -1878,7 +1917,7 @@ index ffa8a66eb..ed0615463 100644
          (x + self.recipe_book_shift(batch.width), y)
      }
      /// Slot ids: 0..36 player inventory, 100..109 crafting grid, 200 result.
-@@ -6410,6 +6422,7 @@ impl Game<'_> {
+@@ -6410,6 +6435,7 @@ impl Game<'_> {
                  | BlockEntity::Campfire(_)
                  | BlockEntity::ChiseledBookshelf(_),
              ) => {}
@@ -1886,7 +1925,7 @@ index ffa8a66eb..ed0615463 100644
              None => {
                  v.extend((0..self.craft_size * self.craft_size).map(|i| 100 + i));
                  v.push(200);
-@@ -6434,6 +6447,7 @@ impl Game<'_> {
+@@ -6434,6 +6460,7 @@ impl Game<'_> {
          }
          if let Some(p) = self
              .station_slot_position(i)
@@ -1894,7 +1933,7 @@ index ffa8a66eb..ed0615463 100644
              .or_else(|| self.machine_slot_position(i))
              .or_else(|| self.crafter_slot_position(i))
              .or_else(|| self.mount_slot_position(i))
-@@ -6572,6 +6586,7 @@ impl Game<'_> {
+@@ -6572,6 +6599,7 @@ impl Game<'_> {
          if self.draw_station(batch) {
              return;
          }
@@ -1902,7 +1941,7 @@ index ffa8a66eb..ed0615463 100644
          let (ox, oy) = self.inventory_origin(batch);
          {
              let atlas = &self.gui.atlas;
-@@ -6665,6 +6680,7 @@ impl Game<'_> {
+@@ -6665,6 +6693,7 @@ impl Game<'_> {
                  }
                  Some(BlockEntity::Brewing(_)) => {}
                  Some(BlockEntity::Crafter(_)) => self.draw_crafter_screen(batch, ox, oy),
@@ -1910,7 +1949,7 @@ index ffa8a66eb..ed0615463 100644
                  Some(
                      BlockEntity::Sign(_)
                      | BlockEntity::Jukebox(_)
-@@ -6721,6 +6737,7 @@ impl Game<'_> {
+@@ -6721,6 +6750,7 @@ impl Game<'_> {
          }
          self.draw_carried(batch);
          self.draw_slot_tooltip(batch);
@@ -1918,7 +1957,7 @@ index ffa8a66eb..ed0615463 100644
          if self.container.is_none() && self.craft_size == 2 && !self.mount_active() {
              self.draw_inventory_effects(batch, (ox, oy), 176);
          }
-@@ -7077,6 +7094,12 @@ impl Game<'_> {
+@@ -7077,6 +7107,12 @@ impl Game<'_> {
                          (kind, size)
                      }
                      Some(BlockEntity::Brewing(_)) => (Kind::Brewing, 5),
@@ -1931,7 +1970,7 @@ index ffa8a66eb..ed0615463 100644
                      Some(BlockEntity::Furnace(f)) => (
                          Kind::Furnace(
                              match f.kind.recipe_type().trim_start_matches("minecraft:") {
-@@ -7843,6 +7866,9 @@ impl Game<'_> {
+@@ -7843,6 +7879,9 @@ impl Game<'_> {
          if self.station_click(right) {
              return;
          }
@@ -1941,7 +1980,7 @@ index ffa8a66eb..ed0615463 100644
          if self.remote.is_some() {
              return self.remote_click(right);
          }
-@@ -8270,7 +8296,15 @@ impl Game<'_> {
+@@ -8270,7 +8309,15 @@ impl Game<'_> {
                              (glam::DVec3::new(f64::from(p[0]), f64::from(p[1]), f64::from(p[2]))
                                  - camera)
                                  .as_vec3();
@@ -1958,7 +1997,7 @@ index ffa8a66eb..ed0615463 100644
                      })
              });
              if self.entity_culler.is_some() || self.pack_ids.is_some() {
-@@ -11961,11 +11995,16 @@ impl Game<'_> {
+@@ -11961,11 +12008,16 @@ impl Game<'_> {
          entities.clear();
          self.see_through_vertices.clear();
          self.glowing_vertices.get_mut().clear();
@@ -1975,7 +2014,7 @@ index ffa8a66eb..ed0615463 100644
          let bolts = if title {
              Vec::new()
          } else {
-@@ -12029,6 +12068,16 @@ impl Game<'_> {
+@@ -12029,6 +12081,16 @@ impl Game<'_> {
          hud.patches.append(&mut self.map_patches);
          let entity_spans = std::mem::take(self.entity_spans.get_mut());
          let glowing = std::mem::take(self.glowing_vertices.get_mut());
@@ -1992,7 +2031,7 @@ index ffa8a66eb..ed0615463 100644
          let frame = Frame {
              weather: &weather,
              weather_time: horizon_client::weather::Time::new(self.world.game_time, alpha as f32),
-@@ -12111,6 +12160,11 @@ impl Game<'_> {
+@@ -12111,6 +12173,11 @@ impl Game<'_> {
              entity_spans: &entity_spans,
              glowing: &glowing,
              dynamic_lights: &self.dynamic_lights,
@@ -2004,7 +2043,7 @@ index ffa8a66eb..ed0615463 100644
              lightning: horizon_client::gfx::lightning::Input {
                  bolts: &bolts,
                  uv: [
-@@ -14804,6 +14858,15 @@ fn load_world_rest(
+@@ -14804,6 +14871,15 @@ fn load_world_rest(
      progress.set(6);
      let mob_data = horizon_client::mobs::MobData::load(root, facts);
      horizon_client::mobs::trial_spawner::load_registry(root);
@@ -2020,7 +2059,7 @@ index ffa8a66eb..ed0615463 100644
  
      let items = Items::load(root, assets.registry, facts)?;
      log::info!("load items: {:.2}s", started.elapsed().as_secs_f32());
-@@ -15025,6 +15088,7 @@ fn loading_frame(hud: &HudBatch) -> Frame<'_> {
+@@ -15025,6 +15101,7 @@ fn loading_frame(hud: &HudBatch) -> Frame<'_> {
          dynamic_lights: &[],
          clouds: None,
          lightning: Default::default(),
@@ -2550,10 +2589,29 @@ index fb0c3b341..290b6d410 100644
                      continue;
                  }
 diff --git a/crates/horizon-client/src/game/remote.rs b/crates/horizon-client/src/game/remote.rs
-index 0e5f69fa0..c914a1bc6 100644
+index 0e5f69fa0..403eeaa9b 100644
 --- a/crates/horizon-client/src/game/remote.rs
 +++ b/crates/horizon-client/src/game/remote.rs
-@@ -1643,6 +1643,10 @@ impl Game<'_> {
+@@ -1182,6 +1182,18 @@ impl Game<'_> {
+             }
+             return;
+         }
++        // A content mod's machine: the way its placer faced.
++        if name == horizon_client::lan::chunks::MOD_MACHINE {
++            if let Some(BlockEntity::ModContainer(m)) = self.world.block_entities.get_mut(&key)
++                && let Some(f) = tag.get("horizon_facing").and_then(|t| match t {
++                    Tag::Byte(b) => Some(*b as u8 & 3),
++                    _ => None,
++                })
++            {
++                m.facing = Some(f);
++            }
++            return;
++        }
+         let Some(entity) = self.world.block_entities.get(&key) else {
+             return;
+         };
+@@ -1643,6 +1655,10 @@ impl Game<'_> {
              "minecraft:generic_9x4" => rows(4),
              "minecraft:generic_9x5" => rows(5),
              "minecraft:generic_9x6" => rows(6),
@@ -2564,7 +2622,7 @@ index 0e5f69fa0..c914a1bc6 100644
              // HopperMenu; DispenserMenu (dispensers and droppers).
              "minecraft:hopper" => slots(5),
              "minecraft:generic_3x3" => slots(9),
-@@ -2763,6 +2767,19 @@ impl Game<'_> {
+@@ -2763,6 +2779,19 @@ impl Game<'_> {
                          Ok(9) => c.triggered = v == 1,
                          _ => {}
                      },
@@ -2584,7 +2642,7 @@ index 0e5f69fa0..c914a1bc6 100644
                      // BrewingStandBlockEntity.dataAccess.
                      Some(BlockEntity::Brewing(b)) => match p.id {
                          0 => b.brew_time = v,
-@@ -5916,6 +5933,8 @@ impl Game<'_> {
+@@ -5916,6 +5945,8 @@ impl Game<'_> {
              "minecraft:generic_3x3" => Some(BlockEntity::Chest(vec![None; 9])),
              // CrafterMenu: the disabled slots and triggered come in ContainerSetData.
              "minecraft:crafter_3x3" => Some(BlockEntity::Crafter(Default::default())),
@@ -2802,6 +2860,37 @@ index a5a4b0f3f..f8fa9d86d 100644
                  Output::SetBlocks {
                      name,
                      dimension,
+diff --git a/crates/horizon-client/src/lan/chunks.rs b/crates/horizon-client/src/lan/chunks.rs
+index b93197dc0..cb5a9efb8 100644
+--- a/crates/horizon-client/src/lan/chunks.rs
++++ b/crates/horizon-client/src/lan/chunks.rs
+@@ -30,6 +30,10 @@ const ENTITY: u8 = 4;
+ 
+ /// The vanilla block entity type of a block (BlockEntityType.validBlocks).
+ pub fn block_entity_type(name: &str) -> Option<&'static str> {
++    // A content mod's machine: Horizon's own type (`mod_content` registers it).
++    if !name.starts_with("minecraft:") && horizon_world::mod_machines::get(name).is_some() {
++        return Some(MOD_MACHINE);
++    }
+     let n = name.strip_prefix("minecraft:")?;
+     Some(match n {
+         "chest" => "minecraft:chest",
+@@ -936,8 +940,15 @@ fn java_hash_order<T>(items: &mut Vec<T>, pos: impl Fn(&T) -> (i32, i32, i32)) {
+ }
+ 
+ /// The update tag of a block entity (getUpdateTag) for what the client shows.
++/// The block entity type of content mods' machines.
++pub const MOD_MACHINE: &str = "horizon:machine";
++
+ pub fn entity_tag(entity: &BlockEntity) -> Option<Tag> {
+     match entity {
++        // What the client draws by: the way the placer faced.
++        BlockEntity::ModContainer(m) => m
++            .facing
++            .map(|f| Tag::compound(vec![("horizon_facing", Tag::Byte(f as i8))])),
+         BlockEntity::Sign(sign) => Some(Tag::compound(sign.encode())),
+         BlockEntity::Spawner(s) => Some(s.update_tag()),
+         // BannerBlockEntity.getUpdateTag: saveWithoutMetadata, so the patterns,
 diff --git a/crates/horizon-client/src/lan/containers.rs b/crates/horizon-client/src/lan/containers.rs
 index 59f01552e..b09ec80ac 100644
 --- a/crates/horizon-client/src/lan/containers.rs
@@ -2930,7 +3019,7 @@ index 1aeeec1e1..54d69f0b0 100644
                  // AbstractMountInventoryMenu.quickMoveStack: no count check
                  // and no onTake.
 diff --git a/crates/horizon-client/src/mod_content.rs b/crates/horizon-client/src/mod_content.rs
-index 5815d1bc3..67a2bf390 100644
+index 5815d1bc3..796a9779a 100644
 --- a/crates/horizon-client/src/mod_content.rs
 +++ b/crates/horizon-client/src/mod_content.rs
 @@ -19,7 +19,7 @@ use horizon_mods::content::{Block, Content, Rarity};
@@ -3045,16 +3134,25 @@ index 5815d1bc3..67a2bf390 100644
                  if let Some(r) = i.rarity {
                      let r = match r {
                          Rarity::Common => "common",
-@@ -567,6 +614,7 @@ impl<'a> Plan<'a> {
+@@ -567,6 +614,16 @@ impl<'a> Plan<'a> {
                  for (registry, names) in [
                      ("minecraft:item", new_items.collect::<Vec<_>>()),
                      ("minecraft:block", new_blocks.collect()),
 +                    ("minecraft:menu", self.menus.clone()),
++                    // Their block entity type, which chunks and updates name.
++                    (
++                        "minecraft:block_entity_type",
++                        if self.menus.is_empty() {
++                            Vec::new()
++                        } else {
++                            vec![crate::lan::chunks::MOD_MACHINE.to_owned()]
++                        },
++                    ),
                  ] {
                      let Some(J::Obj(entries)) =
                          doc.get_mut(registry).and_then(|r| r.get_mut("entries"))
 diff --git a/crates/horizon-client/src/save.rs b/crates/horizon-client/src/save.rs
-index aadfcb285..7fb796f32 100644
+index aadfcb285..8d393d29a 100644
 --- a/crates/horizon-client/src/save.rs
 +++ b/crates/horizon-client/src/save.rs
 @@ -415,6 +415,7 @@ fn block_entity_id(e: &crate::containers::BlockEntity, block: &str) -> String {
@@ -3065,18 +3163,21 @@ index aadfcb285..7fb796f32 100644
          _ => e.id().to_owned(),
      }
  }
-@@ -488,6 +489,10 @@ pub fn encode_block_entity(
+@@ -488,6 +489,13 @@ pub fn encode_block_entity(
              entries.push(("Items", encode_items(&b.items)));
              entries.push(("last_interacted_slot", Tag::Int(b.last_slot)));
          }
 +        BlockEntity::ModContainer(m) => {
 +            entries.push(("Items", encode_items(&m.items)));
 +            entries.push(("horizon_data", Tag::IntArray(m.data.clone())));
++            if let Some(f) = m.facing {
++                entries.push(("horizon_facing", Tag::Byte(f as i8)));
++            }
 +        }
          // CampfireBlockEntity.saveAdditional.
          BlockEntity::Campfire(c) => {
              entries.push(("Items", encode_items(&c.items)));
-@@ -733,6 +738,15 @@ pub fn decode_block_entity(tag: &Tag) -> Option<((i32, i32, i32), crate::contain
+@@ -733,6 +741,16 @@ pub fn decode_block_entity(tag: &Tag) -> Option<((i32, i32, i32), crate::contain
              }
              b.last_slot = int("last_interacted_slot").unwrap_or(-1);
          }
@@ -3088,6 +3189,7 @@ index aadfcb285..7fb796f32 100644
 +                    *d = *v;
 +                }
 +            }
++            m.facing = number(tag.get("horizon_facing")).map(|f| (f as u8) & 3);
 +        }
          // CampfireBlockEntity.loadAdditional: missing time arrays stay zeros.
          BlockEntity::Campfire(c) => {
