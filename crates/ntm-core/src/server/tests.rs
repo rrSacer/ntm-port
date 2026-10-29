@@ -1790,3 +1790,5 @@ mod bomb_tests;
 mod fluid_tests;
 
 mod crafter_tests;
+
+mod review_m2_tests;

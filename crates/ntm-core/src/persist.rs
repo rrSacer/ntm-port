@@ -291,9 +291,11 @@ impl Worlds {
         let mailboxes = 2 * crate::proto::MAX_ENVELOPE as u64;
         (saves + largest + mailboxes, self.worlds.len() + 5)
     }
-    /// Over 80% of the bytes or the keys.
-    pub fn nearly_full(&self) -> bool {
+    /// Over 80% of the bytes or the keys, with `extra` (the explosions'
+    /// keys, `nx.*`) on top.
+    pub fn nearly_full(&self, extra: (u64, usize)) -> bool {
         let (bytes, n) = self.usage();
+        let (bytes, n) = (bytes + extra.0, n + extra.1);
         bytes * 5 > QUOTA * 4 || n * 5 > MAX_KEYS * 4
     }
 }

@@ -1665,9 +1665,11 @@ impl Server {
                 if changed && let Err(e) = self.worlds.store(host) {
                     host.log(&format!("worlds: {e}"));
                 }
-                if self.worlds.nearly_full() && !self.warned_full {
+                let explosions = self.blasts.nukes.stored();
+                if self.worlds.nearly_full(explosions) && !self.warned_full {
                     self.warned_full = true;
                     let (used, n) = self.worlds.usage();
+                    let (used, n) = (used + explosions.0, n + explosions.1);
                     host.log(&format!("storage nearly full: {} KiB, {n} keys", used >> 10));
                     self.tell_all(
                         host,

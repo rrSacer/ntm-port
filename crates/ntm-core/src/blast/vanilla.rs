@@ -27,9 +27,16 @@ pub fn resistance(state: &str) -> f32 {
     }
 }
 
+/// The strongest explosion this computes: the NTM's charges go to 15 (C4);
+/// `/ntmbomba teste` goes to here. Power 20 reads a cube of 73³ blocks and
+/// costs ~23 M of fuel.
+pub const MAX_POWER: f32 = 20.0;
+
 /// The blocks a power-`power` explosion at `center` removes, top first.
-/// `read` is `None` where no chunk is loaded (the ray stops there).
+/// `read` is `None` where no chunk is loaded (the ray stops there). The
+/// power is held to [`MAX_POWER`] (the cube grows as its cube).
 pub fn explode(center: [f64; 3], power: f32, read: &mut impl FnMut(Pos) -> Option<String>) -> (Vec<Pos>, u32) {
+    let power = if power.is_finite() { power.clamp(0.0, MAX_POWER) } else { 0.0 };
     // Farthest a ray goes: power·1.3 / 0.225 steps of 0.3.
     let reach = ((power * 1.3 / 0.225) * 0.3).ceil() as i32 + 1;
     let side = 2 * reach + 1;
@@ -97,10 +104,47 @@ pub fn explode(center: [f64; 3], power: f32, read: &mut impl FnMut(Pos) -> Optio
     (out, reads)
 }
 
-/// Vanilla's damage to an entity at `dist` from a power-`power` blast, in
-/// the open (exposure 1): `(i² + i)/2 · 7 · 2p + 1`, `i = 1 − d/2p`.
-pub fn damage(power: f32, dist: f64) -> f32 {
-    let i = (1.0 - dist / (2.0 * f64::from(power))).max(0.0) as f32;
+/// Whether a block stops a ray of `exposure` (it has a collision box:
+/// air, liquids and plants don't).
+fn solid(state: &str) -> bool {
+    !matches!(classify(state).kind, Kind::Air | Kind::Liquid | Kind::Plant)
+}
+
+/// The share of a player's box (feet at `feet`, 0.6 × 1.8) that sees
+/// `center` (`Explosion.getSeenPercent`: rays from a grid over the box to
+/// the center, here 3 × 5 × 3, stepping half a block; a block hit stops
+/// one). Blocks are read once (cache).
+pub fn exposure(center: [f64; 3], feet: [f64; 3], read: &mut impl FnMut(Pos) -> Option<String>) -> f32 {
+    let mut seen: std::collections::HashMap<Pos, bool> = Default::default();
+    let mut solid_at = |p: Pos| *seen.entry(p).or_insert_with(|| read(p).is_some_and(|s| solid(&s)));
+    let (mut open, mut total) = (0, 0);
+    for ix in 0..3 {
+        for iy in 0..5 {
+            for iz in 0..3 {
+                let a = [feet[0] - 0.3 + 0.3 * f64::from(ix), feet[1] + 0.45 * f64::from(iy), feet[2] - 0.3 + 0.3 * f64::from(iz)];
+                let d = [center[0] - a[0], center[1] - a[1], center[2] - a[2]];
+                let len = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt();
+                let steps = (len / 0.5).ceil().max(1.0) as i32;
+                let end = center.map(|v| v.floor() as i32);
+                total += 1;
+                let blocked = (0..steps).any(|k| {
+                    let t = f64::from(k) / f64::from(steps);
+                    let p = [0, 1, 2].map(|i| (a[i] + d[i] * t).floor() as i32);
+                    p != end && solid_at(p)
+                });
+                if !blocked {
+                    open += 1;
+                }
+            }
+        }
+    }
+    open as f32 / total as f32
+}
+
+/// Vanilla's damage to an entity at `dist` from a power-`power` blast that
+/// sees `exposure` of it: `(i² + i)/2 · 7 · 2p + 1`, `i = (1 − d/2p) · exposure`.
+pub fn damage(power: f32, dist: f64, exposure: f32) -> f32 {
+    let i = ((1.0 - dist / (2.0 * f64::from(power))).max(0.0) as f32) * exposure.clamp(0.0, 1.0);
     if i <= 0.0 {
         return 0.0;
     }
@@ -133,8 +177,31 @@ mod tests {
 
     #[test]
     fn damage_falls_with_distance() {
-        assert!(damage(10.0, 1.0) > 100.0);
-        assert!(damage(10.0, 15.0) < damage(10.0, 5.0));
-        assert_eq!(damage(10.0, 25.0), 0.0);
+        assert!(damage(10.0, 1.0, 1.0) > 100.0);
+        assert!(damage(10.0, 15.0, 1.0) < damage(10.0, 5.0, 1.0));
+        assert_eq!(damage(10.0, 25.0, 1.0), 0.0);
+        assert_eq!(damage(10.0, 5.0, 0.0), 0.0);
+    }
+
+    /// Revisão do M2, P1-13: a força passa do teto, a conta fica no teto
+    /// (antes, força 100 alocava um cubo de ~165 MiB).
+    #[test]
+    fn power_is_held_to_the_maximum() {
+        let mut reads = 0usize;
+        let (_, n) = explode([0.5, 64.5, 0.5], 100.0, &mut |p| {
+            reads += 1;
+            flat(p)
+        });
+        let (_, m) = explode([0.5, 64.5, 0.5], MAX_POWER, &mut flat);
+        assert_eq!(n, m);
+        assert!(explode([0.5, 64.5, 0.5], f32::NAN, &mut flat).0.is_empty());
+    }
+
+    #[test]
+    fn exposure_sees_through_air_not_walls() {
+        let open = exposure([0.5, 70.5, 0.5], [6.5, 70.0, 0.5], &mut |_| Some("minecraft:air".into()));
+        assert_eq!(open, 1.0);
+        let wall = exposure([0.5, 70.5, 0.5], [6.5, 70.0, 0.5], &mut |p| Some(if p[0] == 3 { "minecraft:obsidian" } else { "minecraft:air" }.into()));
+        assert_eq!(wall, 0.0);
     }
 }

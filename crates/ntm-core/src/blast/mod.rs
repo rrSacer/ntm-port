@@ -64,6 +64,43 @@ pub struct BombWorld {
     /// This world's settings, over the global ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cfg: Option<Config>,
+    /// Bombs set off and not yet exploded (or not yet durable in the
+    /// engine): saved with the bomb's removal, so a crash never loses one.
+    /// They go off a few per tick, within the tick's fuel.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub queue: Vec<Queued>,
+}
+
+/// A bomb set off, waiting its turn (`BombWorld.queue`).
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Queued {
+    /// The explosion's number (`w<world>n<number>`).
+    pub n: u64,
+    pub dim: String,
+    pub pos: Pos,
+    pub blast: crate::bomb::Blast,
+    /// The bomb's block, and what set it off.
+    pub name: String,
+    pub why: String,
+    /// A nuke handed to the engine, its effects done: it stays here until
+    /// the engine has it in the folder.
+    #[serde(default)]
+    pub started: bool,
+}
+
+impl Queued {
+    /// Fuel the tick it goes off costs (measured in `spikes/m2-fuel`:
+    /// vanilla's explosion of power 15 takes 12 M; a nuke only hands its
+    /// plan to the engine, which builds one per tick).
+    pub fn cost(&self) -> u64 {
+        match self.blast {
+            crate::bomb::Blast::Conventional { power } => {
+                let p = f64::from(power.clamp(1.0, vanilla::MAX_POWER)) / 15.0;
+                (13_000_000.0 * p * p) as u64 + 1_000_000
+            }
+            _ => 1_000_000,
+        }
+    }
 }
 
 /// Blast damage a nuke deals while its crater is dug (`ExplosionNukeGeneric
@@ -103,6 +140,9 @@ pub struct Runtime {
     pub charged_at: Option<u64>,
     /// Last detonations, for `/ntmbomba status`.
     pub log: Vec<String>,
+    /// When each player online was first seen in this world: the area
+    /// radiation's entry grace is per player.
+    pub entered: BTreeMap<String, u64>,
 }
 
 /// What an explosion's engine tells (`ntm_explosion::Hooks`).

@@ -21,7 +21,7 @@ use crate::{
 use serde::{Deserialize, Serialize};
 
 /// How a bomb explodes.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum Blast {
     /// Vanilla's explosion (`world.createExplosion`) of this strength.
     Conventional { power: f32 },
