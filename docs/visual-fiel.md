@@ -350,9 +350,39 @@ modelo de blocos dele continua):
   - `img/visual-foundry-screens.png`: as telas do cadinho e da fornalha acesa;
   - `img/visual-foundry-blocks.png`: molde, bacia, tanque com saída e dois canais.
 
+## 3d. Telas das bombas (etapa d.3)
+
+O port tem 11 tipos de bomba. As 4 cargas (TNT do NTM, dinamite, Semtex, C-4) não têm slots nem GUI no NTM e ficam
+como estão. As 7 com peças usam os slots do motor (`Layout::Bomb`, uma peça por slot, na ordem do tipo) e a GUI do
+NTM:
+
+| Bomba | Textura | O que a tela desenha |
+|---|---|---|
+| Little Boy | `lilBoySchematic` | as 5 peças e a lâmpada de pronta |
+| The Gadget, Fat Man | `gadgetSchematic`, `fatManSchematic` | um quarto da esfera por lente (`exp1`–`exp4`) e a lâmpada |
+| Ivy Mike | `ivyMikeSchematic` | lentes, núcleo, tanque de urânio, deutério, resfriamento; uma lâmpada por estágio (`isReady`, `isFilled`) |
+| Tsar Bomba | `tsarBombaSchematic` + a do Ivy Mike | as mesmas sobreposições, tiradas da textura do Ivy Mike como no `GUINukeTsar`; o gerador cola as duas num arquivo de 256×512 (`compose`) |
+| Mina N² | `n2Schematic` | a barra de 6 px por carga, das 12 |
+| Fogo maldito | `fstbmbSchematic` | o ovo e a bateria; o campo do timer fica vazio, porque o port a detona por redstone ou detonador |
+
+- **Valores:** a tela de uma bomba recebe `[estágios prontos, peças no lugar]` (`bomb_data` no bridge, com o
+  `slot_ok` da própria bomba).
+- **Uma peça por slot:** os slots das bombas têm `"max": 1`, o `Slot.getMaxStackSize` do vanilla, novo no motor.
+  - Sem isso, um shift-clique de 4 lentes (que empilham até 64) punha as 4 no primeiro slot, e o bridge cortava
+    para 1: 3 lentes perdidas.
+  - Com isso, as 4 se espalham pelos 4 slots de lente.
+- **Migração:** uma bomba montada antes, pela tela antiga, mostra as peças nos slots na primeira vista. Há um teste
+  para cada uma das 7.
+- **Detonação sem duplicar:** a bomba sai com `set_blocks(air)`. No motor, isso passa por `place_state`, que tira o
+  block entity sem efeitos colaterais, então os slots não se derramam.
+  - Em jogo, com Little Boy, Gadget e Fat Man prontas, houve zero peças no chão.
+  - Um item de controle a 2,8 blocos sobreviveu à explosão.
+- **Modelos:** uma entrada à mão sem `model` agora fica com o modelo do extrator. Antes, a tela substituía o modelo.
+- **Captura:** `img/visual-bomb-screens.png`.
+
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 23 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 24 commits):
 
 | Commit | O quê |
 |---|---|
@@ -379,6 +409,7 @@ modelo de blocos dele continua):
 | `feat(render): draw liquids in mod block models` | `liquids`, `horizon_liquid`, blocos abertos |
 | `feat(client): a machine screen's title may have a colour` | `title_color` |
 | `docs(render): describe a model's liquids` | |
+| `feat(world): a machine slot may hold fewer items` | `max` por slot (as peças das bombas) |
 
 **No port:**
 
@@ -409,7 +440,7 @@ multiblocos (`extends BlockDummyable`). O port tem hoje 11 máquinas e 11 bombas
 | **Visual estático das 237 entradas** (modelo, rotação, multibloco), com o extrator e revisão por captura | ~10 min cada: **4–6 dias** |
 | **Telas das 177 máquinas com container** (posições pelo extrator; barras ligadas aos valores da lógica do port) | 30–60 min cada: **2–3 semanas** |
 | **Animações** (cada `AssemblerArm`/`prevRot` vira keyframes, à mão) | 0,5–1 h cada para as 144: **2–3 semanas** (ou parado nas menos vistas) |
-| **Bombas:** as 11 do port, com facing (ver pendências) | 1–2 dias |
+| **Bombas:** as 11 do port, com facing (ver pendências) | feito (§3d) |
 
 A lógica das máquinas que faltam (o port tem 11 de ~420) não entra nesta conta: o visual de uma máquina sem lógica
 fica pronto e parado.
