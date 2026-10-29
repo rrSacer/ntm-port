@@ -200,9 +200,126 @@ pub fn read_ore_data(snbt: Option<&str>) -> [f64; 6] {
     out
 }
 
+/// The ore slopper (`TileEntityMachineOreSlopper`), without upgrades: 200
+/// HE a tick for 600 ticks, a raw ore and 1 000 mB of water into 1 000 mB
+/// of slop and the ore's densities; each whole unit of a type's density
+/// becomes a BASE ore of that type in the outputs (what doesn't fit waits,
+/// as in the NTM: the machine doesn't check its outputs to work).
+pub mod slopper {
+    use super::TYPES;
+    use crate::fluid::Tank;
+    use crate::server::container_bridge::{Slots, Stack};
+    use serde::{Deserialize, Serialize};
+
+    pub const SLOTS: usize = 11;
+    pub const INPUT: usize = 2;
+    pub const OUTPUTS: std::ops::RangeInclusive<usize> = 3..=8;
+    pub const RAW: &str = "ntm:bedrock_ore_base";
+    pub const TICKS: u32 = 600;
+    pub const HE_PER_TICK: u64 = 200;
+    pub const MAX_POWER: u64 = 100_000;
+    pub const WATER: u32 = 1_000;
+    pub const TANK: u32 = 16_000;
+    pub const STACK: u32 = 64;
+
+    /// The BASE ore of type `t`.
+    pub fn base(t: usize) -> String {
+        format!("ntm:bedrock_ore__base_{}", TYPES[t])
+    }
+
+    #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+    pub struct OreSlopper {
+        #[serde(skip)]
+        pub slots: Slots,
+        pub power: u64,
+        pub progress: u32,
+        pub water: Tank,
+        pub slop: Tank,
+        /// What the ores slopped so far hold of each type, not yet an item.
+        pub ores: [f64; 6],
+    }
+
+    impl Default for OreSlopper {
+        fn default() -> Self {
+            Self { slots: vec![None; SLOTS], power: 0, progress: 0, water: Tank::typed("water", TANK), slop: Tank::typed("slop", TANK), ores: [0.0; 6] }
+        }
+    }
+
+    impl OreSlopper {
+        /// `canSlop`.
+        pub fn can(&self) -> bool {
+            self.water.mb >= WATER
+                && self.slop.mb + WATER <= self.slop.cap
+                && self.power >= HE_PER_TICK
+                && self.slots.get(INPUT).and_then(|s| s.as_ref()).is_some_and(|s| s.id == RAW && s.count > 0)
+        }
+
+        /// One tick; `densities` reads the raw ore's (its item data).
+        /// True when something changed.
+        pub fn step(&mut self, densities: impl Fn(&Stack) -> [f64; 6]) -> bool {
+            let before = (self.progress, self.power);
+            if self.can() {
+                self.power -= HE_PER_TICK;
+                self.progress += 1;
+                if self.progress >= TICKS {
+                    self.progress = 0;
+                    let Some(raw) = self.slots[INPUT].as_mut() else { return true };
+                    let d = densities(raw);
+                    for (o, v) in self.ores.iter_mut().zip(d) {
+                        *o += v;
+                    }
+                    raw.count -= 1;
+                    if raw.count == 0 {
+                        self.slots[INPUT] = None;
+                    }
+                    self.water.drain(WATER);
+                    self.slop.fill("slop", WATER);
+                }
+            } else {
+                self.progress = 0;
+            }
+            let out = self.lay_out();
+            out || before != (self.progress, self.power)
+        }
+
+        /// The whole units into the output slots: a pile of the same ore
+        /// first, then an empty slot.
+        fn lay_out(&mut self) -> bool {
+            let mut moved = false;
+            for t in 0..TYPES.len() {
+                let id = base(t);
+                'unit: while self.ores[t] >= 1.0 {
+                    for i in OUTPUTS {
+                        if let Some(s) = &mut self.slots[i]
+                            && s.id == id
+                            && s.count < STACK
+                        {
+                            s.count += 1;
+                            self.ores[t] -= 1.0;
+                            moved = true;
+                            continue 'unit;
+                        }
+                    }
+                    for i in OUTPUTS {
+                        if self.slots[i].is_none() {
+                            self.slots[i] = Some(Stack::new(&id, 1));
+                            self.ores[t] -= 1.0;
+                            moved = true;
+                            continue 'unit;
+                        }
+                    }
+                    break;
+                }
+            }
+            moved
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::server::container_bridge::Stack;
 
     /// `java.util.Random` against the JDK's (`java` 21, printed once).
     #[test]
@@ -237,5 +354,48 @@ mod tests {
             assert!((a - b).abs() < 1e-6);
         }
         assert_eq!(read_ore_data(None), [0.0; 6]);
+    }
+
+    #[test]
+    fn the_slopper_turns_a_raw_ore_into_base_ores_by_its_densities() {
+        use slopper::*;
+        let mut m = OreSlopper::default();
+        m.slots[INPUT] = Some(Stack::new(RAW, 2));
+        m.water.mb = 16_000;
+        let dens = |_: &Stack| [1.5, 0.25, 0.0, 2.0, 0.75, 0.5];
+        for _ in 0..TICKS {
+            m.power = MAX_POWER;
+            m.step(dens);
+        }
+        // One ore: 1 light (0.5 left), 2 actinide; the rest under 1.
+        let n = |m: &OreSlopper, t: usize| m.slots[OUTPUTS].iter().flatten().filter(|s| s.id == base(t)).map(|s| s.count).sum::<u32>();
+        assert_eq!((n(&m, 0), n(&m, 3), n(&m, 4)), (1, 2, 0));
+        assert_eq!((m.water.mb, m.slop.mb, m.slots[INPUT].as_ref().map(|s| s.count)), (15_000, 1_000, Some(1)));
+        for _ in 0..TICKS {
+            m.power = MAX_POWER;
+            m.step(dens);
+        }
+        assert_eq!((n(&m, 0), n(&m, 3), n(&m, 4), n(&m, 5)), (3, 4, 1, 1));
+        assert_eq!(m.slots[INPUT], None);
+        // Nothing left to slop: it stops, the fractions wait.
+        m.power = MAX_POWER;
+        assert!(!m.can());
+        assert!((m.ores[1] - 0.5).abs() < 1e-9);
+    }
+
+    #[test]
+    fn the_slopper_needs_water_room_for_slop_and_power() {
+        use slopper::*;
+        let mut m = OreSlopper::default();
+        m.slots[INPUT] = Some(Stack::new(RAW, 1));
+        m.power = MAX_POWER;
+        assert!(!m.can(), "sem água");
+        m.water.mb = 1_000;
+        m.slop.mb = 15_500;
+        assert!(!m.can(), "o slop não cabe");
+        m.slop.mb = 0;
+        assert!(m.can());
+        m.slots[INPUT] = Some(Stack::new("minecraft:stone", 1));
+        assert!(!m.can(), "só o minério bruto");
     }
 }
