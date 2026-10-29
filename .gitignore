@@ -1,0 +1,6 @@
+target/
+*.hmod
+/dist/
+/spikes/
+/content-gen-evidence/
+/recipe-gen-evidence/
