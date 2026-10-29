@@ -79,10 +79,15 @@ impl Server {
             if ports.is_empty() {
                 continue;
             }
+            // A multiblock's proxy cells carry its fluids as ducts (container_bridge).
+            let proxies = super::container_bridge::fluid_proxy_cells(&m.block, *pos, m.facing.as_deref());
             let Some(node) = m.logic_mut().fluid() else { continue };
             feed(at.rotate_left(7) ^ crate::hash::fnv64(dim.as_bytes()));
             for t in node.fluid_types() {
                 feed(crate::hash::fnv64(t.as_bytes()));
+                if !proxies.is_empty() {
+                    ducts.entry((dim.clone(), t.clone())).or_default().extend(proxies.iter().copied());
+                }
                 kinds.insert((dim.clone(), t));
             }
             users.entry(dim.clone()).or_default().insert(*pos, ports);

@@ -108,17 +108,61 @@ pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
         return Vec::new();
     };
     // The placer looked against the facing: z runs that way, x to their right.
-    let fwd = [-f[0], -f[2]];
-    let right = [-fwd[1], fwd[0]];
     let mut out = Vec::new();
     for z in min[2]..=max[2] {
         for x in min[0]..=max[0] {
             if (x, z) != (0, 0) {
-                out.push([core[0] + right[0] * x + fwd[0] * z, core[1] + min[1], core[2] + right[1] * x + fwd[1] * z]);
+                out.push(world_cell(core, f, [x, min[1], z]));
             }
         }
     }
     out
+}
+
+/// Multiblocks' fluid proxies (HBM's `getAllPorts` and `makeExtra`): the
+/// cells, in the placer's frame (x right, y up, z away from the player),
+/// that join the core's fluid networks as ducts. A chain of them reaches the
+/// core: the blast furnace's ports up its front reach it down its column.
+pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[(
+    "ntm:machine_blast_furnace",
+    &[
+        [1, 0, 0],
+        [-1, 0, 0],
+        [0, 0, 1],
+        [0, 0, -1],
+        [0, 1, 0],
+        [0, 2, 0],
+        [0, 3, 0],
+        [0, 4, 0],
+        [0, 5, 0],
+        [0, 6, 0],
+        [0, 3, 1],
+        [0, 3, -1],
+        [0, 5, 1],
+        [0, 5, -1],
+    ],
+)];
+
+/// Cell `l` (placer's frame) of the multiblock with its core at `core`.
+fn world_cell(core: Pos, facing: [i32; 3], l: [i32; 3]) -> Pos {
+    let fwd = [-facing[0], -facing[2]];
+    let right = [-fwd[1], fwd[0]];
+    [
+        core[0] + right[0] * l[0] + fwd[0] * l[2],
+        core[1] + l[1],
+        core[2] + right[1] * l[0] + fwd[1] * l[2],
+    ]
+}
+
+/// The cells that carry the fluids of the multiblock of `block` at `core`.
+pub fn fluid_proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
+    let Some((_, cells)) = FLUID_PROXIES.iter().find(|(b, _)| *b == block) else {
+        return Vec::new();
+    };
+    let Some(f) = facing.and_then(crate::registry::facing_dir) else {
+        return Vec::new();
+    };
+    cells.iter().map(|&l| world_cell(core, f, l)).collect()
 }
 
 pub fn layout(block: &str) -> Option<&'static Layout> {
@@ -419,6 +463,17 @@ mod tests {
         let mut slots: Slots = vec![a(5), None];
         lay_out(&mut slots, 0..2, &[("a".into(), 100)], 64);
         assert_eq!(slots, vec![a(64), a(36)]);
+    }
+
+    #[test]
+    fn proxies_turn_with_the_facing() {
+        // Facing north, the placer looked south: their right is west.
+        assert_eq!(world_cell([0, 64, 0], [0, 0, -1], [1, 0, 0]), [-1, 64, 0]);
+        assert_eq!(world_cell([0, 64, 0], [0, 0, -1], [0, 3, 1]), [0, 67, 1]);
+        let cells = fluid_proxy_cells("ntm:machine_blast_furnace", [0, 64, 0], Some("east"));
+        assert_eq!(cells.len(), 14);
+        assert!(cells.contains(&[0, 70, 0]));
+        assert!(proxy_cells("ntm:machine_assembly_machine", [0, 64, 0], Some("north")).len() == 8);
     }
 
     #[test]
