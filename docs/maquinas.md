@@ -284,6 +284,59 @@ da firebox e 26 moldes.
   - o ferro conservado do cadinho até o molde.
 - **Em jogo:** pendente, à espera das telas e modelos do agente de visual.
 
+## Bigorna (`anvil.rs`), no motor com slots
+
+São o `NTMAnvil.java`, o `ContainerAnvil.java`, o `AnvilRecipes.java` e o
+`AnvilCraftPacket.java`. Os 12 blocos, de `anvil_iron` (nível 1) a
+`anvil_osmiridium` (8), mais o `anvil_murky`, vêm do agente de importação
+(`content/machine-recipes/anvil.json`, [content-anvil.md](content-anvil.md)).
+Os níveis estão fixos em `anvil::ANVILS`.
+
+| | NTM | Port |
+| --- | --- | --- |
+| Bloco | sem block entity: a forja solta os itens ao fechar a tela; a construção tira do inventário do jogador | uma máquina com 19 slots do motor (desvio aprovado pelo coordenador) |
+| Forja | slots esquerda/direita; o resultado sai ao ser retirado | slots 0, 1 e 2; o botão 3 ("forjar") consome e entrega no mesmo tick do servidor, sem a corrida de retirar a saída |
+| Construção | lista filtrada pelo nível; faz 1 ou, com shift, um pacote | grade 3×4 (slots 3–14) e 4 saídas (15–18); botão 0 abre a lista na tela antiga, botão 1 faz uma, botão 2 faz um pacote |
+| Saídas por chance | `rand` | sorteio por hash do número de construções (`anvil::roll`), salvo com o bloco |
+| Saída cheia | os itens vão para o inventário ou caem | só constrói se todas as saídas couberem |
+
+**Receitas:** 36 forjas (18 melhorias de bigorna, gunmetal e 17 gravações de
+molde, que guardam o exemplo e gastam a base) e 103 construções, na ordem do
+NTM. Elas são embutidas por `tools/machine-gen/build.py`.
+
+**Fora (com o acordo do coordenador):**
+- as 18 forjas "quentes" (calor no NBT do item);
+- as receitas de etiqueta de nome e de cianeto (NBT);
+- a queda como areia.
+
+**Tela:** valores `[nível, receita + 1, pode construir, vezes, forja casa]`,
+seguidos do estado salvo `[receita + 1, construções]`. O desenho é do agente
+de visual: a grade fica na área da lista do NTM.
+
+**Custo por tick:** a contagem de "vezes" roda a cada tick em cada bigorna
+carregada. Simular até 64 construções custava 28,9 µs por chamada (nativo,
+grade cheia de lingotes). Agora a contagem divide o total de cada entrada e
+confere só a próxima construção: 0,98 µs. Os botões continuam simulando cada
+construção.
+
+**Verificação:**
+- **Mundo falso, lógica** (`anvil::tests`, 4):
+  - melhoria de bigorna;
+  - molde com exemplo exato;
+  - forja sem forma;
+  - saída ocupada;
+  - grade e nível;
+  - chances perto da metade em 64;
+  - saídas cheias;
+  - a tabela embutida.
+- **Mundo falso, servidor** (`server/tests/anvil_tests.rs`, 3), com os botões
+  pela ponte de slots:
+  - a forja da bigorna de aço;
+  - chapas de aço numa bigorna de nível 3, uma e um pacote;
+  - a receita escolhida volta do bloco depois de perder o save do mod;
+  - a bigorna de ferro recusa um nível acima.
+- **Em jogo:** pendente da tela do agente de visual.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
