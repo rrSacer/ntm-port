@@ -47,6 +47,8 @@ pub enum Kind {
     /// Casting bases (`crate::foundry::cast`): small molds, and the basin.
     Mold,
     Basin,
+    /// An anvil of any tier (`crate::anvil`): smithing and construction.
+    Anvil,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -127,6 +129,7 @@ pub enum Data {
     Outlet(crate::foundry::flow::Outlet),
     Mold(crate::foundry::cast::Cast),
     Basin(crate::foundry::cast::Cast),
+    Anvil(crate::anvil::Anvil),
     Inert { name: String },
 }
 
@@ -165,6 +168,7 @@ impl Machine {
             Kind::Outlet => Data::Outlet(Default::default()),
             Kind::Mold => Data::Mold(crate::foundry::cast::Cast::new(0)),
             Kind::Basin => Data::Basin(crate::foundry::cast::Cast::new(1)),
+            Kind::Anvil => Data::Anvil(crate::anvil::Anvil::new(crate::anvil::tier(block_id))),
             Kind::Crafter => match crate::crafter::Station::of(block_id) {
                 Some(st) => Data::Crafter(crate::crafter::Crafter::new(st)),
                 None => Data::Inert { name: block_id.into() },
@@ -207,6 +211,7 @@ impl Machine {
             Data::Outlet(_) => Kind::Outlet,
             Data::Mold(_) => Kind::Mold,
             Data::Basin(_) => Kind::Basin,
+            Data::Anvil(_) => Kind::Anvil,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -232,6 +237,7 @@ impl Machine {
             Data::Outlet(m) => m,
             Data::Mold(m) => m,
             Data::Basin(m) => m,
+            Data::Anvil(m) => m,
             Data::Inert { name } => name,
         }
     }
@@ -257,6 +263,7 @@ impl Machine {
             Data::Outlet(m) => m,
             Data::Mold(m) => m,
             Data::Basin(m) => m,
+            Data::Anvil(m) => m,
             Data::Inert { name } => name,
         }
     }

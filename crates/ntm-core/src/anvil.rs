@@ -570,6 +570,19 @@ mod tests {
         assert_eq!(a.slots[3], st("ntm:chunk_ore__rare", 64));
     }
 
+    #[test]
+    fn the_ntm_tables_are_embedded() {
+        let t = Tables::ntm();
+        assert_eq!((t.smithing.len(), t.construction.len()), (36, 103));
+        // The 17 mold engravings: the example stays, exactly one.
+        let molds: Vec<_> = t.smithing.iter().filter(|s| s.out.0.starts_with("ntm:mold__")).collect();
+        assert_eq!(molds.len(), 17);
+        assert!(molds.iter().all(|s| s.consume == (0, 1) && s.left.exact));
+        // Every anvil above lead comes from iron or lead and 10 ingots.
+        assert_eq!(t.smithing.iter().filter(|s| s.out.0.starts_with("ntm:anvil_")).count(), 18);
+        assert!(ANVILS.iter().all(|(id, _)| crate::registry::spec(id).is_some()));
+    }
+
     impl Anvil {
         fn listed_len(&self, t: &Tables) -> usize {
             t.listed(self.tier).len()

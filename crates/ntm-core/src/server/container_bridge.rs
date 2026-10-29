@@ -92,6 +92,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Channel(c) => Some(c),
         Data::FoundryTank(c) => Some(c),
         Data::Outlet(c) => Some(c),
+        Data::Anvil(a) => Some(a),
         _ => None,
     }
 }
@@ -108,6 +109,18 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:foundry_channel", Layout::Native),
     ("ntm:foundry_tank", Layout::Native),
     ("ntm:foundry_outlet", Layout::Native),
+    ("ntm:anvil_iron", Layout::Native),
+    ("ntm:anvil_lead", Layout::Native),
+    ("ntm:anvil_steel", Layout::Native),
+    ("ntm:anvil_desh", Layout::Native),
+    ("ntm:anvil_ferrouranium", Layout::Native),
+    ("ntm:anvil_saturnite", Layout::Native),
+    ("ntm:anvil_bismuth_bronze", Layout::Native),
+    ("ntm:anvil_arsenic_bronze", Layout::Native),
+    ("ntm:anvil_schrabidate", Layout::Native),
+    ("ntm:anvil_dnt", Layout::Native),
+    ("ntm:anvil_osmiridium", Layout::Native),
+    ("ntm:anvil_murky", Layout::Native),
     (
         "ntm:machine_assembly_machine",
         Layout::Crafter {
