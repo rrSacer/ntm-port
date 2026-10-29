@@ -1,0 +1,46 @@
+{
+  "slots": [
+    {
+      "x": 62,
+      "y": 35,
+      "accept": [
+        "ntm:mold__nugget",
+        "ntm:mold__billet",
+        "ntm:mold__ingot",
+        "ntm:mold__plate",
+        "ntm:mold__wire",
+        "ntm:mold__plate_cast",
+        "ntm:mold__wire_dense",
+        "ntm:mold__blade",
+        "ntm:mold__blades",
+        "ntm:mold__stamp",
+        "ntm:mold__shell",
+        "ntm:mold__pipe",
+        "ntm:mold__c9",
+        "ntm:mold__c50",
+        "ntm:mold__barrel_light",
+        "ntm:mold__barrel_heavy",
+        "ntm:mold__receiver_light",
+        "ntm:mold__receiver_heavy",
+        "ntm:mold__mechanism",
+        "ntm:mold__stock",
+        "ntm:mold__grip"
+      ]
+    },
+    {
+      "x": 98,
+      "y": 35,
+      "output": true
+    }
+  ],
+  "inventory": [
+    8,
+    84
+  ],
+  "data": 8,
+  "synced": [
+    0,
+    1,
+    2
+  ]
+}

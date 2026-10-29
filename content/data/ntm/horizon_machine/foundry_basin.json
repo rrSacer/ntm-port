@@ -1,0 +1,30 @@
+{
+  "slots": [
+    {
+      "x": 62,
+      "y": 35,
+      "accept": [
+        "ntm:mold__ingots",
+        "ntm:mold__plates",
+        "ntm:mold__plates_cast",
+        "ntm:mold__wires_dense",
+        "ntm:mold__block"
+      ]
+    },
+    {
+      "x": 98,
+      "y": 35,
+      "output": true
+    }
+  ],
+  "inventory": [
+    8,
+    84
+  ],
+  "data": 8,
+  "synced": [
+    0,
+    1,
+    2
+  ]
+}

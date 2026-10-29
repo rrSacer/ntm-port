@@ -1581,6 +1581,198 @@
           "InnerBurning"
         ]
       }
+    },
+    "ntm:foundry_mold": {
+      "source": "TileEntityFoundryMold (no GUI; RenderFoundry: metal 0.125..0.375)",
+      "machine": {
+        "slots": [
+          {
+            "x": 62,
+            "y": 35,
+            "accept": [
+              "ntm:mold__nugget",
+              "ntm:mold__billet",
+              "ntm:mold__ingot",
+              "ntm:mold__plate",
+              "ntm:mold__wire",
+              "ntm:mold__plate_cast",
+              "ntm:mold__wire_dense",
+              "ntm:mold__blade",
+              "ntm:mold__blades",
+              "ntm:mold__stamp",
+              "ntm:mold__shell",
+              "ntm:mold__pipe",
+              "ntm:mold__c9",
+              "ntm:mold__c50",
+              "ntm:mold__barrel_light",
+              "ntm:mold__barrel_heavy",
+              "ntm:mold__receiver_light",
+              "ntm:mold__receiver_heavy",
+              "ntm:mold__mechanism",
+              "ntm:mold__stock",
+              "ntm:mold__grip"
+            ]
+          },
+          {
+            "x": 98,
+            "y": 35,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 8,
+        "synced": [
+          0,
+          1,
+          2
+        ]
+      },
+      "liquid": {
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/lava_gray.png",
+            "texture_from": "textures/models/machines/lava_gray.png",
+            "box": [
+              0.125,
+              0.125,
+              0.125,
+              0.875,
+              0.375,
+              0.875
+            ],
+            "value": 0,
+            "max": 1,
+            "color": 2
+          }
+        ]
+      }
+    },
+    "ntm:foundry_basin": {
+      "source": "TileEntityFoundryBasin (no GUI; RenderFoundry: metal 0.125..0.875)",
+      "machine": {
+        "slots": [
+          {
+            "x": 62,
+            "y": 35,
+            "accept": [
+              "ntm:mold__ingots",
+              "ntm:mold__plates",
+              "ntm:mold__plates_cast",
+              "ntm:mold__wires_dense",
+              "ntm:mold__block"
+            ]
+          },
+          {
+            "x": 98,
+            "y": 35,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 8,
+        "synced": [
+          0,
+          1,
+          2
+        ]
+      },
+      "liquid": {
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/lava_gray.png",
+            "texture_from": "textures/models/machines/lava_gray.png",
+            "box": [
+              0.125,
+              0.125,
+              0.125,
+              0.875,
+              0.875,
+              0.875
+            ],
+            "value": 0,
+            "max": 1,
+            "color": 2
+          }
+        ]
+      }
+    },
+    "ntm:foundry_channel": {
+      "source": "RenderFoundryChannel (block renderer): metal 0.125 + amount*0.25/cap in the centre",
+      "machine": {
+        "slots": [],
+        "data": 5,
+        "synced": [
+          0,
+          1,
+          2
+        ]
+      },
+      "liquid": {
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/lava_gray.png",
+            "texture_from": "textures/models/machines/lava_gray.png",
+            "box": [
+              0.375,
+              0.125,
+              0.375,
+              0.625,
+              0.375,
+              0.625
+            ],
+            "value": 0,
+            "max": 1,
+            "color": 2
+          }
+        ]
+      }
+    },
+    "ntm:foundry_tank": {
+      "source": "RenderFoundryTank (block renderer): walls 0.125, metal up to 0.875",
+      "machine": {
+        "slots": [],
+        "data": 5,
+        "synced": [
+          0,
+          1,
+          2
+        ]
+      },
+      "liquid": {
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/lava_gray.png",
+            "texture_from": "textures/models/machines/lava_gray.png",
+            "box": [
+              0.125,
+              0.125,
+              0.125,
+              0.875,
+              0.875,
+              0.875
+            ],
+            "value": 0,
+            "max": 1,
+            "color": 2
+          }
+        ]
+      }
+    },
+    "ntm:foundry_outlet": {
+      "source": "TileEntityFoundryOutlet: no metal kept, its filter in the old screen",
+      "machine": {
+        "slots": [],
+        "data": 4
+      },
+      "liquid": {
+        "liquids": []
+      }
     }
   }
 }
