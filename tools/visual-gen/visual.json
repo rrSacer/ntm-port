@@ -4530,6 +4530,54 @@
             "color": "#7f0000"
           }
         ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/press.obj",
+        "obj_from": "models/press_body.obj",
+        "texture": "ntm:textures/models/press/press.png",
+        "texture_from": "textures/models/press_body.png",
+        "merge": [
+          {
+            "obj_from": "models/press_head.obj",
+            "texture_from": "textures/models/press_head.png",
+            "name": "Head",
+            "turn": -180
+          }
+        ],
+        "rotation": 180,
+        "radius": 2.0,
+        "loop_animation": {
+          "name": "animation.press.work",
+          "length": 1.0,
+          "bones": {
+            "Head": {
+              "position": {
+                "0.00": [
+                  0,
+                  14,
+                  0
+                ],
+                "0.80": [
+                  0,
+                  0,
+                  0
+                ],
+                "1.00": [
+                  0,
+                  14,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.press.work",
+            "property": "honey_level",
+            "not": "0"
+          }
+        ]
       }
     },
     "ntm:machine_epress": {
@@ -4706,6 +4754,54 @@
             "lines": [
               "{2:si} / {3:si} HE"
             ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/epress.obj",
+        "obj_from": "models/epress_body.obj",
+        "texture": "ntm:textures/models/press/epress.png",
+        "texture_from": "textures/models/epress_body.png",
+        "merge": [
+          {
+            "obj_from": "models/epress_head.obj",
+            "texture_from": "textures/models/epress_head.png",
+            "name": "Head",
+            "lift": 1
+          }
+        ],
+        "rotation": 90,
+        "radius": 2.0,
+        "loop_animation": {
+          "name": "animation.epress.work",
+          "length": 1.0,
+          "bones": {
+            "Head": {
+              "position": {
+                "0.00": [
+                  0,
+                  14,
+                  0
+                ],
+                "0.80": [
+                  0,
+                  0,
+                  0
+                ],
+                "1.00": [
+                  0,
+                  14,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.epress.work",
+            "property": "honey_level",
+            "not": "0"
           }
         ]
       }

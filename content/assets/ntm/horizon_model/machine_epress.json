@@ -1,6 +1,14 @@
 {
-  "obj": "ntm:models/obj/epress_body.obj",
-  "texture": "ntm:textures/models/epress_body.png",
-  "rotation": 90.0,
-  "radius": 3.5
+  "obj": "ntm:models/obj/epress.obj",
+  "texture": "ntm:textures/models/press/epress.png",
+  "rotation": 90,
+  "radius": 2.0,
+  "play": [
+    {
+      "animation": "animation.epress.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_epress.animation.json"
 }

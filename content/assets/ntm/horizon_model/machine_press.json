@@ -1,6 +1,14 @@
 {
-  "obj": "ntm:models/obj/press_body.obj",
-  "texture": "ntm:textures/models/press_body.png",
-  "rotation": 0,
-  "radius": 3.5
+  "obj": "ntm:models/obj/press.obj",
+  "texture": "ntm:textures/models/press/press.png",
+  "rotation": 180,
+  "radius": 2.0,
+  "play": [
+    {
+      "animation": "animation.press.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_press.animation.json"
 }
