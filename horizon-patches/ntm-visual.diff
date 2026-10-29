@@ -3187,7 +3187,7 @@ index 4e6c902a5..8bcbef0bf 100644
  pub mod attack_strength;
  pub mod attribute_updates;
 diff --git a/crates/horizon-client/src/menu.rs b/crates/horizon-client/src/menu.rs
-index 1aeeec1e1..54d69f0b0 100644
+index 1aeeec1e1..bd99c358c 100644
 --- a/crates/horizon-client/src/menu.rs
 +++ b/crates/horizon-client/src/menu.rs
 @@ -122,6 +122,9 @@ pub enum Kind {
@@ -3243,7 +3243,18 @@ index 1aeeec1e1..54d69f0b0 100644
              Role::CrafterIn => self.data.get(self.slots[s].index) != Some(&1),
              Role::Potion => {
                  env.brewing.is_bottle(stack)
-@@ -2106,6 +2131,30 @@ impl Menu {
+@@ -1344,6 +1369,10 @@ impl Menu {
+             // The lectern's bookAccess holds one.
+             Role::Plain if self.kind == Kind::Lectern && self.slots[s].container == MAIN => 1,
+             Role::Fuel if Self::is_bucket(stack) => return 1,
++            // A content mod's slot may hold fewer (`horizon_machine` max).
++            Role::Mod { machine, slot } => horizon_world::mod_machines::by_index(machine)
++                .and_then(|d| d.slots.get(slot as usize)?.max)
++                .unwrap_or(CONTAINER_MAX),
+             _ => CONTAINER_MAX,
+         };
+         own.min(Self::max_stack(env, stack))
+@@ -2106,6 +2135,30 @@ impl Menu {
              }
              // LecternMenu.quickMoveStack moves nothing.
              Kind::Lectern => return None,
@@ -4106,10 +4117,10 @@ index 6df870d42..5a5ad71f7 100644
  pub mod movement_restitution;
 diff --git a/crates/horizon-world/src/mod_machines.rs b/crates/horizon-world/src/mod_machines.rs
 new file mode 100644
-index 000000000..ae1caf880
+index 000000000..86708df3b
 --- /dev/null
 +++ b/crates/horizon-world/src/mod_machines.rs
-@@ -0,0 +1,421 @@
+@@ -0,0 +1,429 @@
 +//! Machines from content mods: blocks with slots the game keeps, a screen
 +//! layout and, optionally, a multiblock volume. Each
 +//! `data/<namespace>/horizon_machine/<name>.json` in the resource root
@@ -4126,6 +4137,7 @@ index 000000000..ae1caf880
 +//!     {"grid": [8, 18, 4, 3]},            x, y, columns, rows: one input slot each
 +//!     {"x": 8, "y": 90, "reject": ["ntm:blades_steel"]},   anything but these
 +//!     {"x": 98, "y": 45, "output": true}  the player takes from it, never puts into it
++//!     {"x": 26, "y": 36, "accept": ["ntm:explosive_lenses"], "max": 1}   at most 1 item
 +//!   ],
 +//!   "inventory": [8, 174],                the player's inventory (hotbar 58 below)
 +//!   "data": 4,                            values the mod sets and the screen shows
@@ -4162,6 +4174,9 @@ index 000000000..ae1caf880
 +    pub x: i32,
 +    pub y: i32,
 +    pub rule: SlotRule,
++    /// The most items it holds (`Slot.getMaxStackSize`): a bomb's part slot
++    /// holds one. None: the item's own stack size.
++    pub max: Option<u32>,
 +}
 +
 +impl SlotDef {
@@ -4251,6 +4266,7 @@ index 000000000..ae1caf880
 +        } else {
 +            SlotRule::Any
 +        };
++        let max = s["max"].as_u64().map(|m| m.clamp(1, 99) as u32);
 +        if let Some([x, y, columns, rows]) = ints::<4>(&s["grid"]) {
 +            for r in 0..rows.max(0) {
 +                for c in 0..columns.max(0) {
@@ -4258,6 +4274,7 @@ index 000000000..ae1caf880
 +                        x: x + c * 18,
 +                        y: y + r * 18,
 +                        rule: rule.clone(),
++                        max,
 +                    });
 +                }
 +            }
@@ -4269,6 +4286,7 @@ index 000000000..ae1caf880
 +                x: x as i32,
 +                y: y as i32,
 +                rule,
++                max,
 +            });
 +        }
 +    }
@@ -4515,7 +4533,7 @@ index 000000000..ae1caf880
 +    #[test]
 +    fn grids_expand_and_rules_read() {
 +        let doc: Value = serde_json::from_str(
-+            r#"{"slots":[{"x":1,"y":2,"accept":["a:b"]},{"grid":[8,18,4,3]},{"x":9,"y":9,"output":true},{"x":0,"y":0,"reject":["a:b"]}],
++            r#"{"slots":[{"x":1,"y":2,"accept":["a:b"],"max":1},{"grid":[8,18,4,3]},{"x":9,"y":9,"output":true},{"x":0,"y":0,"reject":["a:b"]}],
 +                "data":3,"synced":[2,0,7],"multiblock":{"min":[-1,0,-1],"max":[1,2,1],"offset":1,"dummy":"a:d"}}"#,
 +        )
 +        .unwrap();
@@ -4524,6 +4542,7 @@ index 000000000..ae1caf880
 +        assert!(!def.slots[14].accepts("a:b") && def.slots[14].accepts("a:c"));
 +        assert_eq!((def.slots[4].x, def.slots[4].y), (8 + 18 * 3, 18));
 +        assert!(def.slots[0].accepts("a:b") && !def.slots[0].accepts("a:c"));
++        assert_eq!((def.slots[0].max, def.slots[1].max), (Some(1), None));
 +        assert!(!def.slots[13].accepts("a:b"));
 +        assert_eq!(def.screen, "a:m");
 +        // A synced index past the values is dropped.
