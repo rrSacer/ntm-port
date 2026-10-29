@@ -1794,3 +1794,5 @@ mod crafter_tests;
 mod review_m2_tests;
 
 mod shredder_tests;
+
+mod blastfurnace_tests;
