@@ -1,176 +1,766 @@
 {
-  "schema": 1,
-  "stamps": [
-    {
-      "item": "ntm:stamp_iron_flat",
-      "type": "flat",
-      "durability": 64
-    },
-    {
-      "item": "ntm:stamp_iron_plate",
-      "type": "plate",
-      "durability": 64
-    },
-    {
-      "item": "ntm:stamp_iron_wire",
-      "type": "wire",
-      "durability": 64
-    }
-  ],
-  "machines": {
-    "machine_epress": {
-      "energy_per_tick": 100
-    },
-    "machine_press": {
-      "max_speed": 400,
-      "progress_at_max": 25,
-      "max_press": 200
-    }
-  },
-  "recipes": [
-    {
-      "id": "ntm:plate_aluminium",
-      "input": {
-        "item": "ntm:ingot_aluminium",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:plate_aluminium",
-        "count": 1
-      },
-      "stamp": "plate"
-    },
-    {
-      "id": "ntm:plate_lead",
-      "input": {
-        "item": "ntm:ingot_lead",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:plate_lead",
-        "count": 1
-      },
-      "stamp": "plate"
-    },
-    {
-      "id": "ntm:plate_titanium",
-      "input": {
-        "item": "ntm:ingot_titanium",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:plate_titanium",
-        "count": 1
-      },
-      "stamp": "plate"
-    },
-    {
-      "id": "ntm:wire_fine__aluminium",
-      "input": {
-        "item": "ntm:ingot_aluminium",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:wire_fine__aluminium",
-        "count": 8
-      },
-      "stamp": "wire"
-    },
-    {
-      "id": "ntm:wire_fine__lead",
-      "input": {
-        "item": "ntm:ingot_lead",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:wire_fine__lead",
-        "count": 8
-      },
-      "stamp": "wire"
-    },
-    {
-      "id": "ntm:wire_fine__red_copper",
-      "input": {
-        "item": "ntm:ingot_red_copper",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:wire_fine__red_copper",
-        "count": 8
-      },
-      "stamp": "wire"
-    },
-    {
-      "id": "ntm:wire_fine__tungsten",
-      "input": {
-        "item": "ntm:ingot_tungsten",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:wire_fine__tungsten",
-        "count": 8
-      },
-      "stamp": "wire"
-    },
-    {
-      "id": "ntm:wire_fine__copper",
-      "input": {
-        "item": "ntm:ingot_copper",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:wire_fine__copper",
-        "count": 8
-      },
-      "stamp": "wire"
-    },
-    {
-      "id": "ntm:wire_fine__magnetized_tungsten",
-      "input": {
-        "item": "ntm:ingot_magnetized_tungsten",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:wire_fine__magnetized_tungsten",
-        "count": 8
-      },
-      "stamp": "wire"
-    },
-    {
-      "id": "ntm:wire_fine__schrabidium",
-      "input": {
-        "item": "ntm:ingot_schrabidium",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:wire_fine__schrabidium",
-        "count": 8
-      },
-      "stamp": "wire"
-    },
-    {
-      "id": "ntm:wire_fine__steel",
-      "input": {
-        "item": "ntm:ingot_steel",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:wire_fine__steel",
-        "count": 8
-      },
-      "stamp": "wire"
-    },
-    {
-      "id": "ntm:wire_fine__zirconium",
-      "input": {
-        "item": "ntm:ingot_zirconium",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:wire_fine__zirconium",
-        "count": 8
-      },
-      "stamp": "wire"
-    }
-  ]
+"schema": 1,
+"stamps": [
+{
+"item": "ntm:stamp_stone_flat",
+"type": "flat",
+"durability": 32
+},
+{
+"item": "ntm:stamp_stone_plate",
+"type": "plate",
+"durability": 32
+},
+{
+"item": "ntm:stamp_stone_wire",
+"type": "wire",
+"durability": 32
+},
+{
+"item": "ntm:stamp_stone_circuit",
+"type": "circuit",
+"durability": 32
+},
+{
+"item": "ntm:stamp_iron_flat",
+"type": "flat",
+"durability": 64
+},
+{
+"item": "ntm:stamp_iron_plate",
+"type": "plate",
+"durability": 64
+},
+{
+"item": "ntm:stamp_iron_wire",
+"type": "wire",
+"durability": 64
+},
+{
+"item": "ntm:stamp_iron_circuit",
+"type": "circuit",
+"durability": 64
+},
+{
+"item": "ntm:stamp_steel_flat",
+"type": "flat",
+"durability": 192
+},
+{
+"item": "ntm:stamp_steel_plate",
+"type": "plate",
+"durability": 192
+},
+{
+"item": "ntm:stamp_steel_wire",
+"type": "wire",
+"durability": 192
+},
+{
+"item": "ntm:stamp_steel_circuit",
+"type": "circuit",
+"durability": 192
+},
+{
+"item": "ntm:stamp_titanium_flat",
+"type": "flat",
+"durability": 256
+},
+{
+"item": "ntm:stamp_titanium_plate",
+"type": "plate",
+"durability": 256
+},
+{
+"item": "ntm:stamp_titanium_wire",
+"type": "wire",
+"durability": 256
+},
+{
+"item": "ntm:stamp_titanium_circuit",
+"type": "circuit",
+"durability": 256
+},
+{
+"item": "ntm:stamp_obsidian_flat",
+"type": "flat",
+"durability": 512
+},
+{
+"item": "ntm:stamp_obsidian_plate",
+"type": "plate",
+"durability": 512
+},
+{
+"item": "ntm:stamp_obsidian_wire",
+"type": "wire",
+"durability": 512
+},
+{
+"item": "ntm:stamp_obsidian_circuit",
+"type": "circuit",
+"durability": 512
+},
+{
+"item": "ntm:stamp_desh_flat",
+"type": "flat",
+"durability": 0
+},
+{
+"item": "ntm:stamp_desh_plate",
+"type": "plate",
+"durability": 0
+},
+{
+"item": "ntm:stamp_desh_wire",
+"type": "wire",
+"durability": 0
+},
+{
+"item": "ntm:stamp_desh_circuit",
+"type": "circuit",
+"durability": 0
+},
+{
+"item": "ntm:stamp_357",
+"type": "c357",
+"durability": 1000
+},
+{
+"item": "ntm:stamp_44",
+"type": "c44",
+"durability": 1000
+},
+{
+"item": "ntm:stamp_9",
+"type": "c9",
+"durability": 1000
+},
+{
+"item": "ntm:stamp_50",
+"type": "c50",
+"durability": 1000
+},
+{
+"item": "ntm:stamp_desh_357",
+"type": "c357",
+"durability": 0
+},
+{
+"item": "ntm:stamp_desh_44",
+"type": "c44",
+"durability": 0
+},
+{
+"item": "ntm:stamp_desh_9",
+"type": "c9",
+"durability": 0
+},
+{
+"item": "ntm:stamp_desh_50",
+"type": "c50",
+"durability": 0
+}
+],
+"machines": {
+"machine_epress": {
+"energy_per_tick": 100
+},
+"machine_press": {
+"max_speed": 400,
+"progress_at_max": 25,
+"max_press": 200
+}
+},
+"recipes": [
+{
+"id": "press.0",
+"input": {
+"item": "ntm:powder_quartz",
+"count": 1
+},
+"output": {
+"item": "minecraft:quartz",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.1",
+"input": {
+"item": "ntm:powder_lapis",
+"count": 1
+},
+"output": {
+"item": "minecraft:lapis_lazuli",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.2",
+"input": {
+"item": "ntm:powder_diamond",
+"count": 1
+},
+"output": {
+"item": "minecraft:diamond",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.3",
+"input": {
+"item": "ntm:powder_emerald",
+"count": 1
+},
+"output": {
+"item": "minecraft:emerald",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.4",
+"input": {
+"item": "ntm:biomass",
+"count": 1
+},
+"output": {
+"item": "ntm:biomass_compressed",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.5",
+"input": {
+"item": "ntm:coke__coal",
+"count": 1
+},
+"output": {
+"item": "ntm:ingot_graphite",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.5",
+"input": {
+"item": "ntm:coke__lignite",
+"count": 1
+},
+"output": {
+"item": "ntm:ingot_graphite",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.5",
+"input": {
+"item": "ntm:coke__petroleum",
+"count": 1
+},
+"output": {
+"item": "ntm:ingot_graphite",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.7",
+"input": {
+"item": "minecraft:jungle_log",
+"count": 1
+},
+"output": {
+"item": "ntm:ball_resin",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.8",
+"input": {
+"item": "ntm:powder_coal",
+"count": 1
+},
+"output": {
+"item": "ntm:briquette__coal",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.9",
+"input": {
+"item": "ntm:powder_lignite",
+"count": 1
+},
+"output": {
+"item": "ntm:briquette__lignite",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.10",
+"input": {
+"item": "ntm:powder_sawdust",
+"count": 1
+},
+"output": {
+"item": "ntm:briquette__wood",
+"count": 1
+},
+"stamp": "flat"
+},
+{
+"id": "press.11",
+"input": {
+"item": "minecraft:iron_ingot",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_iron",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.12",
+"input": {
+"item": "minecraft:gold_ingot",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_gold",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.13",
+"input": {
+"item": "ntm:ingot_titanium",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_titanium",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.14",
+"input": {
+"item": "ntm:ingot_aluminium",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_aluminium",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.15",
+"input": {
+"item": "ntm:ingot_steel",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_steel",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.16",
+"input": {
+"item": "ntm:ingot_lead",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_lead",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.17",
+"input": {
+"item": "ntm:ingot_copper",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_copper",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.18",
+"input": {
+"item": "ntm:ingot_schrabidium",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_schrabidium",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.19",
+"input": {
+"item": "ntm:ingot_combine_steel",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_combine_steel",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.20",
+"input": {
+"item": "ntm:ingot_gunmetal",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_gunmetal",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.21",
+"input": {
+"item": "ntm:ingot_weaponsteel",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_weaponsteel",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.22",
+"input": {
+"item": "ntm:ingot_saturnite",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_saturnite",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.23",
+"input": {
+"item": "ntm:ingot_dura_steel",
+"count": 1
+},
+"output": {
+"item": "ntm:plate_dura_steel",
+"count": 1
+},
+"stamp": "plate"
+},
+{
+"id": "press.24",
+"input": {
+"item": "ntm:plate_gunmetal",
+"count": 1
+},
+"output": {
+"item": "ntm:casing__small",
+"count": 4
+},
+"stamp": "c9"
+},
+{
+"id": "press.25",
+"input": {
+"item": "ntm:plate_gunmetal",
+"count": 1
+},
+"output": {
+"item": "ntm:casing__large",
+"count": 2
+},
+"stamp": "c50"
+},
+{
+"id": "press.26",
+"input": {
+"item": "ntm:plate_weaponsteel",
+"count": 1
+},
+"output": {
+"item": "ntm:casing__small_steel",
+"count": 4
+},
+"stamp": "c9"
+},
+{
+"id": "press.27",
+"input": {
+"item": "ntm:plate_weaponsteel",
+"count": 1
+},
+"output": {
+"item": "ntm:casing__large_steel",
+"count": 2
+},
+"stamp": "c50"
+},
+{
+"id": "press.28",
+"input": {
+"item": "ntm:ingot_graphite",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__carbon",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.29",
+"input": {
+"item": "minecraft:gold_ingot",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__gold",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.30",
+"input": {
+"item": "ntm:ingot_schrabidium",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__schrabidium",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.31",
+"input": {
+"item": "ntm:ingot_copper",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__copper",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.32",
+"input": {
+"item": "ntm:ingot_tungsten",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__tungsten",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.33",
+"input": {
+"item": "ntm:ingot_aluminium",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__aluminium",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.34",
+"input": {
+"item": "ntm:ingot_lead",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__lead",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.35",
+"input": {
+"item": "ntm:ingot_zirconium",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__zirconium",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.36",
+"input": {
+"item": "ntm:ingot_steel",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__steel",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.37",
+"input": {
+"item": "ntm:ingot_red_copper",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__red_copper",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.38",
+"input": {
+"item": "ntm:ingot_magnetized_tungsten",
+"count": 1
+},
+"output": {
+"item": "ntm:wire_fine__magnetized_tungsten",
+"count": 8
+},
+"stamp": "wire"
+},
+{
+"id": "press.39",
+"input": {
+"item": "ntm:billet_silicon",
+"count": 1
+},
+"output": {
+"item": "ntm:circuit__silicon",
+"count": 1
+},
+"stamp": "circuit"
+},
+{
+"id": "press.40",
+"input": {
+"item": "minecraft:paper",
+"count": 1
+},
+"output": {
+"item": "ntm:page_of___page1",
+"count": 1
+},
+"stamp": "printing1"
+},
+{
+"id": "press.41",
+"input": {
+"item": "minecraft:paper",
+"count": 1
+},
+"output": {
+"item": "ntm:page_of___page2",
+"count": 1
+},
+"stamp": "printing2"
+},
+{
+"id": "press.42",
+"input": {
+"item": "minecraft:paper",
+"count": 1
+},
+"output": {
+"item": "ntm:page_of___page3",
+"count": 1
+},
+"stamp": "printing3"
+},
+{
+"id": "press.43",
+"input": {
+"item": "minecraft:paper",
+"count": 1
+},
+"output": {
+"item": "ntm:page_of___page4",
+"count": 1
+},
+"stamp": "printing4"
+},
+{
+"id": "press.44",
+"input": {
+"item": "minecraft:paper",
+"count": 1
+},
+"output": {
+"item": "ntm:page_of___page5",
+"count": 1
+},
+"stamp": "printing5"
+},
+{
+"id": "press.45",
+"input": {
+"item": "minecraft:paper",
+"count": 1
+},
+"output": {
+"item": "ntm:page_of___page6",
+"count": 1
+},
+"stamp": "printing6"
+},
+{
+"id": "press.46",
+"input": {
+"item": "minecraft:paper",
+"count": 1
+},
+"output": {
+"item": "ntm:page_of___page7",
+"count": 1
+},
+"stamp": "printing7"
+},
+{
+"id": "press.47",
+"input": {
+"item": "minecraft:paper",
+"count": 1
+},
+"output": {
+"item": "ntm:page_of___page8",
+"count": 1
+},
+"stamp": "printing8"
+}
+],
+"skipped": 1
 }

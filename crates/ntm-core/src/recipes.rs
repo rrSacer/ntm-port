@@ -236,6 +236,15 @@ mod tests {
         assert_eq!((r.output.as_str(), r.count), ("ntm:wire_fine__lead", 8));
         assert!(p.recipe("ntm:ingot_lead", "flat").is_none());
         assert_eq!((p.epress_energy, p.max_speed, p.progress_at_max, p.max_press), (100, 400, 25, 200));
+        // The NTM's whole table (`PressRecipes`, `ModItems` stamps).
+        assert_eq!((p.stamps.len(), p.recipes.len()), (32, 49));
+        assert_eq!(p.stamp("ntm:stamp_desh_flat").unwrap().durability, 0);
+        assert_eq!(p.stamp("ntm:stamp_9").map(|k| (k.kind.as_str(), k.durability)), Some(("c9", 1000)));
+        let gold = p.recipe("minecraft:gold_ingot", "wire").unwrap();
+        assert_eq!((gold.output.as_str(), gold.count), ("ntm:wire_fine__gold", 8));
+        assert_eq!(p.recipe("minecraft:gold_ingot", "plate").unwrap().output, "ntm:plate_gold");
+        assert_eq!(p.recipe("ntm:coke__petroleum", "flat").unwrap().output, "ntm:ingot_graphite");
+        assert_eq!(p.recipe("minecraft:paper", "printing3").unwrap().output, "ntm:page_of___page3");
     }
 
     #[test]

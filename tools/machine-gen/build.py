@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Converte as receitas extraídas pelo agente de conteúdo
-(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder,blast_furnace,foundry,anvil}.json, schema 1)
+(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder,blast_furnace,foundry,anvil,press}.json, schema 1)
 para o formato que a lógica embute (crates/ntm-core/data/machines/*.json),
 com os nomes pt_BR do content/ids.json para a tela.
 
@@ -133,7 +133,31 @@ def anvil():
             'recipes': smithing + construction, 'skipped': len(src['skipped'])}
 
 
+def press():
+    """As duas prensas (`press_recipes.json`, lido por `recipes::press`):
+    as matrizes e, na ordem do NTM, uma receita por alternativa do OreDict
+    (a busca pega a primeira que casa). Velocidade e energia das prensas
+    são as do M1 (`TileEntityMachinePress`/`EPress`)."""
+    src = json.loads((root / 'content/machine-recipes/press.json').read_text())
+    stamps = [{'item': s['item'], 'type': s['type'], 'durability': s['durability']} for s in src['stamps']]
+    recipes = []
+    for r in sorted(src['recipes'], key=lambda r: r['source_index']):
+        for i in r['in']['ids']:
+            recipes.append({'id': r['name'], 'input': {'item': i, 'count': r['in']['count']},
+                            'output': {'item': r['out'][0], 'count': r['out'][1]}, 'stamp': r['stamp']})
+    return {'schema': 1, 'stamps': stamps,
+            'machines': {'machine_epress': {'energy_per_tick': 100}, 'machine_press': {'max_speed': 400, 'progress_at_max': 25, 'max_press': 200}},
+            'recipes': recipes, 'skipped': len(src['skipped'])}
+
+
 for st, data in [('assembly', generic('assembly')), ('chemical_plant', generic('chemical_plant')), ('centrifuge', centrifuge()), ('shredder', shredder()), ('blast_furnace', blast_furnace()), ('foundry', foundry()), ('anvil', anvil())]:
     p = root / f'crates/ntm-core/data/machines/{st}.json'
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"{st}: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
+
+# A prensa fica fora de machines/: as duas prensas do M1 a leem de data/.
+if (root / 'content/machine-recipes/press.json').exists():
+    data = press()
+    p = root / 'crates/ntm-core/data/press_recipes.json'
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
+    print(f"press: {len(data['recipes'])} receitas por item, {len(data['stamps'])} matrizes ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
