@@ -113,3 +113,28 @@ fn the_block_shows_its_work_and_drops_its_items() {
     // Iron and sand (the coal went in as fuel).
     assert_eq!(g.world.borrow().dropped.len(), 2, "{:?}", g.world.borrow().dropped);
 }
+
+/// The multiblock's fluid proxies (`container_bridge::fluid_proxy_cells`):
+/// a duct on its top (above the cell 6 up) reaches the core.
+#[test]
+fn hot_air_reaches_the_core_from_the_top_of_the_multiblock() {
+    let mut g = game();
+    let (duct_at, tank_at) = ([AT[0], AT[1] + 7, AT[2]], [AT[0], AT[1] + 8, AT[2]]);
+    g.place(AT, "ntm:machine_blast_furnace[facing=north,honey_level=0]");
+    g.place(tank_at, "ntm:machine_fluidtank[facing=north,honey_level=0]");
+    g.run(2);
+    duct(&mut g, duct_at, bf::AIRBLAST);
+    set_store(&mut g, tank_at, |s| {
+        s.tank.fill(bf::AIRBLAST, 100_000);
+        s.mode = Mode::Output;
+    });
+    set_furnace(&mut g, |b| {
+        b.slots[0] = Some(Stack::new("minecraft:coal", 1));
+        b.slots[1] = Some(Stack::new("minecraft:iron_ingot", 2));
+        b.slots[2] = Some(Stack::new("minecraft:sand", 1));
+    });
+    g.run(40);
+    let b = furnace(&mut g);
+    assert!(b.airblast.mb > 1_000, "o ar não chegou ao núcleo: {} mB", b.airblast.mb);
+    assert!(b.speed > 2.0, "velocidade {}", b.speed);
+}
