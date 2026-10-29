@@ -380,9 +380,46 @@ NTM:
 - **Modelos:** uma entrada à mão sem `model` agora fica com o modelo do extrator. Antes, a tela substituía o modelo.
 - **Captura:** `img/visual-bomb-screens.png`.
 
+## 3e. Bigorna
+
+As 12 bigornas do port (`anvil.rs`, do agente das bombas) têm 19 slots:
+- 0–1: o par da forja; 2: o resultado;
+- 3–14: a grade de construção 3×4;
+- 15–18: as saídas.
+
+Os botões são: 0 lista de receitas (a tela antiga), 1 construir uma vez, 2 construir o máximo, 3 forjar.
+
+O NTM tem menos coisa:
+- **Slots:** o `ContainerAnvil` só tem os 3 da forja. A construção tira os materiais do inventário do jogador.
+- **Tela:** o `GUIAnvil` tem uma lista de receitas 2×5 com setas, um campo de busca, o botão de construir (shift:
+  tudo) e o de modo, mais um painel que mostra a receita.
+
+A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
+
+| Port | Onde, na `gui_anvil.png` |
+|---|---|
+| Forja 0–1 → 2 | onde o NTM os tem (17,27 + 53,27 → 89,27) |
+| Grade 3–14 | uma faixa 6×2 sobre a lista de receitas e as setas, que tem exatamente 12 células. A grade é lida como um monte, então a forma não importa |
+| Saídas 15–18 | 2×2 no painel azul da receita |
+| Botão 1, e 2 com shift | o botão de construir (a bigorna azul); a sobreposição acesa quando dá para construir |
+| Botão 0 | o campo de busca e a lupa |
+| Botão 3 | a seta da forja |
+
+- **Molduras:** as dos slots novos são coladas da própria textura (`compose` com `src`).
+- **Painel:** é desenhado por cima da borda da tela, como no NTM.
+- **Botão de modo:** mostra o ícone de construção e o nível da bigorna.
+- **Modelo:** o `anvil.obj` do `RenderAnvil`, com a textura de bloco de cada bigorna, girado pelo `facing`. A
+  bigorna sombria usa aço em tudo (no NTM, só o topo dela é diferente).
+- **No motor, para isto:**
+  - `shift` num botão: o id mandado com shift;
+  - os botões das telas de máquina aparecem no `horizon-ctl screen` e no `click-button`.
+- **Em jogo:** bigorna de ferro mais 12 de aço, Forjar → bigorna de aço, sobrando 2 de aço. A construção, com
+  receita da lista, fica para a aceitação do agente das bombas.
+- **Captura:** `img/visual-anvil.png`.
+
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 24 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 26 commits):
 
 | Commit | O quê |
 |---|---|
@@ -410,6 +447,8 @@ NTM:
 | `feat(client): a machine screen's title may have a colour` | `title_color` |
 | `docs(render): describe a model's liquids` | |
 | `feat(world): a machine slot may hold fewer items` | `max` por slot (as peças das bombas) |
+| `feat(render): a machine screen button may send another id on shift` | `shift` (a bigorna) |
+| `feat(client): list a machine screen's buttons for the control socket` | `horizon-ctl screen` e `click-button` |
 
 **No port:**
 
