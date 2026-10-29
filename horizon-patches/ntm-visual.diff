@@ -1,0 +1,3597 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index cf181cdfc..4cee1cf84 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -1475,6 +1475,7 @@ dependencies = [
+  "serde_json",
+  "sha2",
+  "symphonia",
++ "tobj",
+  "unicode-bidi",
+  "ureq",
+  "wgpu",
+@@ -3771,6 +3772,12 @@ dependencies = [
+  "zerovec",
+ ]
+ 
++[[package]]
++name = "tobj"
++version = "4.0.5"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "6eb8e04167c1c0c76b5de63226fd733485ad63ef71e40de31e16272f47b099e2"
++
+ [[package]]
+ name = "tokio"
+ version = "1.53.2"
+diff --git a/crates/cargo-horizon-mod/src/check.rs b/crates/cargo-horizon-mod/src/check.rs
+index 73d691e60..835e8c433 100644
+--- a/crates/cargo-horizon-mod/src/check.rs
++++ b/crates/cargo-horizon-mod/src/check.rs
+@@ -281,6 +281,12 @@ fn play(path: &Path, report: &mut Report) -> Result<(), String> {
+                 format!("placed recipe {book_id}{}", if all { " (all)" } else { "" })
+             }
+             Output::Give { item, count, .. } => format!("gave {count} {item}"),
++            Output::MachineSlot { pos, slot, .. } => {
++                format!("set slot {slot} of the machine at {pos:?}")
++            }
++            Output::MachineData { pos, values, .. } => {
++                format!("set {} value(s) of the machine at {pos:?}", values.len())
++            }
+             Output::Shake { strength, seconds } => {
+                 format!("shook the camera: {strength:.2} for {seconds:.1} s")
+             }
+diff --git a/crates/horizon-client-render/Cargo.toml b/crates/horizon-client-render/Cargo.toml
+index 75cf5ee85..1262f15cd 100644
+--- a/crates/horizon-client-render/Cargo.toml
++++ b/crates/horizon-client-render/Cargo.toml
+@@ -29,6 +29,7 @@ cpal = { version = "0.16", optional = true }
+ chrono = { version = "0.4.42", default-features = false, features = ["clock", "std"] }
+ flate2 = { version = "1.1.10", default-features = false, features = ["zlib-rs", "runtime_detection"] }
+ glam = "0.30"
++tobj = { version = "4.0.5", default-features = false }
+ log = "0.4"
+ miniz_oxide = "0.8"
+ naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
+diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
+index b415748c4..4ea908910 100644
+--- a/crates/horizon-client-render/src/block_entity_render.rs
++++ b/crates/horizon-client-render/src/block_entity_render.rs
+@@ -317,6 +317,13 @@ enum Kind {
+     EndGateway {
+         state: u32,
+     },
++    /// A content mod's model (`crate::mod_models`): which, the facing's turn
++    /// in degrees and the animation the state plays.
++    ModModel {
++        model: usize,
++        yaw: f32,
++        play: Option<usize>,
++    },
+     /// Sign text (`StandingSignRenderer` / `HangingSignRenderer`); the boards are block models.
+     Sign {
+         hanging: bool,
+@@ -784,7 +791,12 @@ pub struct BlockEntityRenderer {
+     /// `Block.shouldRenderFace` for End gateway faces (its occlusion pair cache needs a lock).
+     visibility: Option<Mutex<FaceVisibility>>,
+     sign_texts: Mutex<SignTexts>,
++    /// Content mods' models, and their still bones' vertices by model,
++    /// turn and dimension lighting (relative to the block; light is set per frame).
++    mod_models: Vec<std::sync::Arc<crate::mod_models::Model>>,
++    mod_still: Mutex<ModStill>,
+ }
++type ModStill = HashMap<(usize, u32, bool), std::sync::Arc<Vec<Vertex>>>;
+ /// Laid-out sign text by position. `AbstractSignRenderer` lays the text out
+ /// again each frame, glyph by glyph; its vertices only change with what is
+ /// in the key, so they are kept relative to the block and moved to the camera.
+@@ -857,6 +869,7 @@ impl BlockEntityRenderer {
+             .collect();
+         let mut renderer = Self::new(models, registry);
+         renderer.visibility = Some(Mutex::new(crate::models::load_visibility(root, registry)?));
++        renderer.load_mod_models(root, registry);
+         // Sherd items: provides_pottery_pattern -> decorated_pot_pattern asset id.
+         if let Ok(bytes) = std::fs::read(root.join("items.json")) {
+             let items: Value = serde_json::from_slice(&bytes)?;
+@@ -937,6 +950,8 @@ impl BlockEntityRenderer {
+             pot_patterns: HashMap::new(),
+             visibility: None,
+             sign_texts: Mutex::default(),
++            mod_models: Vec::new(),
++            mod_still: Mutex::default(),
+         }
+     }
+     fn kind(&self, state: u32) -> &Kind {
+@@ -971,6 +986,10 @@ impl BlockEntityRenderer {
+             let origin = (DVec3::new(f64::from(pos[0]), f64::from(pos[1]), f64::from(pos[2]))
+                 - scene.camera)
+                 .as_vec3();
++            if let Kind::ModModel { model, yaw, play } = kind {
++                self.render_mod_model(scene, *pos, *model, *yaw, *play, origin, lights, out);
++                continue;
++            }
+             let packed = scene.world.light(pos[0], pos[1], pos[2]);
+             if matches!(kind, Kind::Sign { .. }) && scene.texts.is_none() {
+                 self.sign_text(scene, *pos, *state, origin, packed, out);
+@@ -1089,6 +1108,136 @@ impl BlockEntityRenderer {
+     pub fn renders(&self, state: u32) -> bool {
+         !matches!(self.kind(state), Kind::None)
+     }
++    /// Content mods' models (`crate::mod_models`) take the states of their blocks.
++    fn load_mod_models(&mut self, root: &Path, registry: &BlockRegistry) {
++        self.mod_models = crate::mod_models::load(root)
++            .into_iter()
++            .map(std::sync::Arc::new)
++            .collect();
++        if self.mod_models.is_empty() {
++            return;
++        }
++        let by_block: HashMap<&str, usize> = self
++            .mod_models
++            .iter()
++            .enumerate()
++            .map(|(i, m)| (m.block.as_str(), i))
++            .collect();
++        for id in 0..registry.len() as u32 {
++            let Some(s) = registry.state(BlockStateId(id)) else {
++                continue;
++            };
++            let Some(&model) = by_block.get(s.name.as_str()) else {
++                continue;
++            };
++            let prop = |k: &str| s.properties.get(k).cloned();
++            if let Some(kind) = self.kinds.get_mut(id as usize) {
++                *kind = Kind::ModModel {
++                    model,
++                    yaw: crate::mod_models::facing_yaw(
++                        s.properties.get("facing").map(String::as_str),
++                    ),
++                    play: self.mod_models[model].playing(&prop),
++                };
++            }
++        }
++        let triangles: usize = self.mod_models.iter().map(|m| m.triangles).sum();
++        log::info!(
++            "Horizon: {} block models ({triangles} triangles)",
++            self.mod_models.len()
++        );
++    }
++    /// How far from its block's centre a content mod's model reaches, for
++    /// culling (none for vanilla's renderers).
++    pub fn model_radius(&self, state: u32) -> Option<f32> {
++        match self.kind(state) {
++            Kind::ModModel { model, .. } => self.mod_models.get(*model).map(|m| m.radius),
++            _ => None,
++        }
++    }
++    /// A content mod's model: its still bones from the cache, the moving ones
++    /// posed for this frame. Lit by the brightest cell around the block,
++    /// since a machine's own cell may hold no light.
++    #[allow(clippy::too_many_arguments)]
++    fn render_mod_model(
++        &self,
++        scene: &Scene,
++        pos: [i32; 3],
++        model: usize,
++        yaw: f32,
++        play: Option<usize>,
++        origin: Vec3,
++        lights: (Vec3, Vec3),
++        out: &mut Vec<Vertex>,
++    ) {
++        let Some(m) = self.mod_models.get(model) else {
++            return;
++        };
++        let Some(sprite) = scene.sprites.get(&m.sprite).copied() else {
++            return;
++        };
++        let (mut sky, mut block) = (0u8, 0u8);
++        for d in [
++            [0, 0, 0],
++            [0, 1, 0],
++            [0, -1, 0],
++            [1, 0, 0],
++            [-1, 0, 0],
++            [0, 0, 1],
++            [0, 0, -1],
++        ] {
++            let l = scene
++                .world
++                .light(pos[0] + d[0], pos[1] + d[1], pos[2] + d[2]);
++            sky = sky.max(l >> 4);
++            block = block.max(l & 15);
++        }
++        let light = vertex_light(sky << 4 | block);
++        let base = m.base(yaw);
++        let paint = Paint {
++            sprite,
++            tint: 0xFFFFFF,
++            light,
++            lights,
++        };
++        let key = (model, yaw.to_bits(), scene.nether);
++        let still = self.mod_still.lock().ok().map(|mut cache| {
++            cache
++                .entry(key)
++                .or_insert_with(|| {
++                    let rest = m.pose(None, 0.0);
++                    let mut v = Vec::new();
++                    m.emit(|i| m.still[i], &rest, base, paint, &mut v);
++                    std::sync::Arc::new(v)
++                })
++                .clone()
++        });
++        if let Some(still) = still {
++            out.reserve(still.len());
++            out.extend(still.iter().map(|v| {
++                let mut v = *v;
++                v.pos = [
++                    v.pos[0] + origin.x,
++                    v.pos[1] + origin.y,
++                    v.pos[2] + origin.z,
++                ];
++                v.light = light;
++                v
++            }));
++        }
++        if m.still.iter().all(|&s| s) {
++            return;
++        }
++        let t = (scene.game_time as f32 + scene.partial) / 20.0;
++        let pose = m.pose(play, t);
++        m.emit(
++            |i| !m.still[i],
++            &pose,
++            Mat4::from_translation(origin) * base,
++            paint,
++            out,
++        );
++    }
+     /// ChestRenderer and BannerRenderer submit their animated models for crumbling.
+     pub fn render_breaking(
+         &self,
+@@ -1239,7 +1388,8 @@ impl BlockEntityRenderer {
+         };
+         let none = |_: &str, _: &mut [f32; 9]| {};
+         match kind {
+-            Kind::None => {}
++            // Drawn by `render_mod_model`.
++            Kind::None | Kind::ModModel { .. } => {}
+             Kind::Sign {
+                 hanging,
+                 wall,
+@@ -2278,6 +2428,8 @@ mod tests {
+             pot_patterns: HashMap::new(),
+             visibility: None,
+             sign_texts: Mutex::default(),
++            mod_models: Vec::new(),
++            mod_still: Mutex::default(),
+         };
+         let world = World::new(BlockStateId(0), 1);
+         let sprites = HashMap::new();
+diff --git a/crates/horizon-client-render/src/chunk/block_entity.rs b/crates/horizon-client-render/src/chunk/block_entity.rs
+index 6dbd09e14..3e82cd597 100644
+--- a/crates/horizon-client-render/src/chunk/block_entity.rs
++++ b/crates/horizon-client-render/src/chunk/block_entity.rs
+@@ -76,6 +76,17 @@ pub enum BlockEntity {
+     DaylightDetector,
+     /// `ChiseledBookShelfBlockEntity`: a `Container` of six one-book slots.
+     ChiseledBookshelf(Box<ChiseledBookshelf>),
++    /// A content mod's machine (`horizon_world::mod_machines`).
++    ModContainer(Box<ModContainer>),
++}
++/// A content mod's machine: the slots its file declares and the values its
++/// screen shows, which the mod's server code sets.
++#[derive(Clone, Debug, Default, PartialEq)]
++pub struct ModContainer {
++    /// The block, `<namespace>:<name>`: the block entity's id in a save.
++    pub block: Arc<str>,
++    pub items: Vec<Option<ItemStack>>,
++    pub data: Vec<i32>,
+ }
+ /// `ChiseledBookShelfBlockEntity`: six slots and `lastInteractedSlot`.
+ #[derive(Clone, Debug, PartialEq)]
+diff --git a/crates/horizon-client-render/src/containers.rs b/crates/horizon-client-render/src/containers.rs
+index 4908ed1ee..d6d0a1198 100644
+--- a/crates/horizon-client-render/src/containers.rs
++++ b/crates/horizon-client-render/src/containers.rs
+@@ -3,7 +3,7 @@
+ //! from the data-driven `context_int_provider`/`context_float_provider` files.
+ pub use crate::chunk::block_entity::{
+     Banner, Beacon, BlockEntity, Campfire, ChiseledBookshelf, Crafter, CreakingHeart, EndGateway,
+-    Furnace, FurnaceKind, Jukebox, Lectern, Skull, SkullSkin,
++    Furnace, FurnaceKind, Jukebox, Lectern, ModContainer, Skull, SkullSkin,
+ };
+ use crate::items::ItemStack;
+ use std::collections::HashMap;
+@@ -256,6 +256,15 @@ impl BlockEntity {
+         if name == "minecraft:chiseled_bookshelf" {
+             return Some(Self::ChiseledBookshelf(Box::default()));
+         }
++        if !name.starts_with("minecraft:")
++            && let Some(def) = horizon_world::mod_machines::get(name)
++        {
++            return Some(Self::ModContainer(Box::new(ModContainer {
++                block: name.into(),
++                items: vec![None; def.slots.len()],
++                data: vec![0; def.data],
++            })));
++        }
+         let size = match name {
+             "minecraft:chest" | "minecraft:trapped_chest" | "minecraft:barrel" => 27,
+             n if n.ends_with("copper_chest") => 27,
+@@ -297,6 +306,8 @@ impl BlockEntity {
+             Self::DaylightDetector => "minecraft:daylight_detector",
+             Self::Campfire(_) => "minecraft:campfire",
+             Self::ChiseledBookshelf(_) => "minecraft:chiseled_bookshelf",
++            // A save writes the block's own id (`save::block_entity_id`).
++            Self::ModContainer(_) => "horizon:machine",
+         }
+     }
+     pub fn contents(&self) -> Vec<ItemStack> {
+@@ -322,6 +333,7 @@ impl BlockEntity {
+             Self::Crafter(c) => c.items.iter().flatten().cloned().collect(),
+             Self::Campfire(c) => c.items.iter().flatten().cloned().collect(),
+             Self::ChiseledBookshelf(b) => b.items.iter().flatten().cloned().collect(),
++            Self::ModContainer(m) => m.items.iter().flatten().cloned().collect(),
+         }
+     }
+     pub fn slots(&self) -> &[Option<ItemStack>] {
+@@ -340,6 +352,7 @@ impl BlockEntity {
+             | Self::DaylightDetector => &[],
+             Self::Crafter(c) => &c.items,
+             Self::ChiseledBookshelf(b) => &b.items,
++            Self::ModContainer(m) => &m.items,
+             Self::CreakingHeart(_)
+             | Self::Spawner(_)
+             | Self::TrialSpawner(_)
+@@ -366,6 +379,7 @@ impl BlockEntity {
+             | Self::DaylightDetector => &mut [],
+             Self::Crafter(c) => &mut c.items,
+             Self::ChiseledBookshelf(b) => &mut b.items,
++            Self::ModContainer(m) => &mut m.items,
+             Self::CreakingHeart(_)
+             | Self::Spawner(_)
+             | Self::TrialSpawner(_)
+diff --git a/crates/horizon-client-render/src/hud.rs b/crates/horizon-client-render/src/hud.rs
+index fda0094d8..375edfb80 100644
+--- a/crates/horizon-client-render/src/hud.rs
++++ b/crates/horizon-client-render/src/hud.rs
+@@ -488,6 +488,18 @@ impl HudAtlas {
+         }
+         if full {
+             images.extend(atlas_sprites(root, &images));
++            // Content mods' machine screens and models name their own
++            // textures (`mod_screens::textures`): those, and no other file of
++            // the mods' folders, join the atlas.
++            for (name, path) in crate::mod_screens::textures(root) {
++                if images.iter().any(|i| i.0 == name) {
++                    continue;
++                }
++                match decode(&path) {
++                    Ok((w, h, pixels)) => images.push((name, w, h, pixels)),
++                    Err(e) => log::warn!("Horizon: {}: {e}", path.display()),
++                }
++            }
+         }
+         // The title screen's "JAVA EDITION" banner reads "RUST EDITION".
+         if let Some(edition) = images
+diff --git a/crates/horizon-client-render/src/lib.rs b/crates/horizon-client-render/src/lib.rs
+index c9cc303ec..9391f5611 100644
+--- a/crates/horizon-client-render/src/lib.rs
++++ b/crates/horizon-client-render/src/lib.rs
+@@ -48,6 +48,8 @@ pub mod mesher;
+ pub mod minimap;
+ pub mod mipmap;
+ pub mod mod_list;
++pub mod mod_models;
++pub mod mod_screens;
+ pub mod model_library;
+ pub mod models;
+ pub mod options_file;
+diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
+new file mode 100644
+index 000000000..e5f83476c
+--- /dev/null
++++ b/crates/horizon-client-render/src/mod_models.rs
+@@ -0,0 +1,515 @@
++//! Models of content mods' blocks drawn by the block-entity renderer: a
++//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
++//! objects are bones that animations move (GeckoLib's Bedrock animation
++//! format, numbers only). Each `assets/<namespace>/horizon_model/<name>.json`
++//! of the resource root draws the block `<namespace>:<name>`.
++//!
++//! ```text
++//! {
++//!   "obj": "ntm:models/obj/assembly_machine.obj",
++//!   "texture": "ntm:textures/models/machines/assembly_machine.png",
++//!   "rotation": 90,            degrees about y before the facing's turn (north 0, west 90,
++//!                              south 180, east 270), as HBM's renderers turn by metadata
++//!   "translate": [0, 0, 0],    blocks, in the model's frame, before both turns
++//!   "scale": 1.0,
++//!   "radius": 2.5,             blocks from the block's centre the model reaches (culling)
++//!   "hide": ["Ring2"],         objects not drawn
++//!   "bones": {"ArmLower1": {"pivot": [0, 1.625, 0.9375], "parent": "Ring"}},
++//!   "animations": "ntm:animations/assembly_machine.animation.json",
++//!   "play": [{"animation": "animation.assembler.work", "property": "honey_level", "not": "0"}]
++//! }
++//! ```
++//!
++//! An animation file is GeckoLib's: `{"animations": {"<name>": {"loop": true,
++//! "animation_length": 4.0, "bones": {"<bone>": {"rotation": {"0.0": [x, y, z],
++//! ...}, "position": {...}}}}}}`. Rotations are degrees about the bone's
++//! pivot (applied z, y, then x), positions are pixels (1/16 block), both
++//! interpolated linearly between keyframes; a channel may be one constant
++//! `[x, y, z]`. A bone's transform applies to its children too.
++use crate::{
++    block_entity_render::{Paint, diffuse},
++    hud::Rect,
++    mesher::Vertex,
++};
++use glam::{Mat4, Quat, Vec3};
++use serde_json::Value;
++use std::{
++    fs,
++    io::BufReader,
++    path::{Path, PathBuf},
++};
++
++/// One OBJ object: its triangles (position, UV, normal) in blocks.
++#[derive(Clone, Debug, Default)]
++pub struct Bone {
++    pub name: String,
++    pub parent: Option<usize>,
++    pub pivot: Vec3,
++    pub hidden: bool,
++    pub triangles: Vec<[(Vec3, [f32; 2], Vec3); 3]>,
++}
++
++#[derive(Clone, Debug, Default)]
++struct Channel {
++    rotation: Vec<(f32, Vec3)>,
++    position: Vec<(f32, Vec3)>,
++}
++
++#[derive(Clone, Debug, Default)]
++pub struct Animation {
++    pub name: String,
++    pub length: f32,
++    pub looping: bool,
++    channels: Vec<(usize, Channel)>,
++}
++
++/// Which animation a block state plays: `property` is (or is not) `value`.
++#[derive(Clone, Debug)]
++pub struct Play {
++    pub animation: usize,
++    pub property: String,
++    pub is: Option<String>,
++    pub not: Option<String>,
++}
++
++#[derive(Clone, Debug, Default)]
++pub struct Model {
++    pub block: String,
++    /// The texture's sprite in the GUI atlas: `ntm:models/machines/assembly_machine`.
++    pub sprite: String,
++    pub bones: Vec<Bone>,
++    pub rotation: f32,
++    pub translate: Vec3,
++    pub scale: f32,
++    pub radius: f32,
++    pub animations: Vec<Animation>,
++    pub play: Vec<Play>,
++    /// Bones no animation moves, nor their ancestors: drawn from a cache.
++    pub still: Vec<bool>,
++    /// Triangles in the model.
++    pub triangles: usize,
++}
++
++/// `ntm:models/x.obj` under `root`: `assets/ntm/models/x.obj`.
++fn reference_path(root: &Path, reference: &str) -> Option<PathBuf> {
++    let (ns, path) = reference.split_once(':')?;
++    Some(root.join("assets").join(ns).join(path))
++}
++
++fn vec3(v: &Value) -> Option<Vec3> {
++    let a = v.as_array().filter(|a| a.len() == 3)?;
++    Some(Vec3::new(
++        a[0].as_f64()? as f32,
++        a[1].as_f64()? as f32,
++        a[2].as_f64()? as f32,
++    ))
++}
++
++/// A Bedrock keyframe channel: one constant vector, or times to vectors.
++fn keyframes(v: &Value) -> Vec<(f32, Vec3)> {
++    if let Some(c) = vec3(v) {
++        return vec![(0.0, c)];
++    }
++    let mut out: Vec<(f32, Vec3)> = v
++        .as_object()
++        .into_iter()
++        .flatten()
++        .filter_map(|(t, k)| {
++            let k = k.get("post").unwrap_or(k);
++            Some((t.parse::<f32>().ok()?, vec3(k)?))
++        })
++        .collect();
++    out.sort_by(|a, b| a.0.total_cmp(&b.0));
++    out
++}
++
++fn sample(keys: &[(f32, Vec3)], t: f32) -> Vec3 {
++    match keys {
++        [] => Vec3::ZERO,
++        [(_, v)] => *v,
++        _ => {
++            let i = keys.partition_point(|k| k.0 <= t);
++            if i == 0 {
++                return keys[0].1;
++            }
++            if i == keys.len() {
++                return keys[i - 1].1;
++            }
++            let (t0, a) = keys[i - 1];
++            let (t1, b) = keys[i];
++            a.lerp(b, if t1 > t0 { (t - t0) / (t1 - t0) } else { 0.0 })
++        }
++    }
++}
++
++fn read_obj(path: &Path) -> Result<Vec<(String, Vec<[(Vec3, [f32; 2], Vec3); 3]>)>, String> {
++    let file = fs::File::open(path).map_err(|e| e.to_string())?;
++    let options = tobj::LoadOptions {
++        triangulate: true,
++        single_index: true,
++        ..Default::default()
++    };
++    let (models, _) = tobj::load_obj_buf(&mut BufReader::new(file), &options, |_| {
++        Err(tobj::LoadError::OpenFileFailed)
++    })
++    .map_err(|e| e.to_string())?;
++    let mut out = Vec::new();
++    for m in models {
++        let mesh = &m.mesh;
++        let at = |i: u32| {
++            let i = i as usize;
++            let p = Vec3::new(
++                mesh.positions[3 * i],
++                mesh.positions[3 * i + 1],
++                mesh.positions[3 * i + 2],
++            );
++            // HFRWavefrontObject (and Forge's loader) read v as 1 - v.
++            let uv = if mesh.texcoords.len() >= 2 * i + 2 {
++                [mesh.texcoords[2 * i], 1.0 - mesh.texcoords[2 * i + 1]]
++            } else {
++                [0.0, 0.0]
++            };
++            let n = if mesh.normals.len() >= 3 * i + 3 {
++                Vec3::new(
++                    mesh.normals[3 * i],
++                    mesh.normals[3 * i + 1],
++                    mesh.normals[3 * i + 2],
++                )
++            } else {
++                Vec3::ZERO
++            };
++            (p, uv, n)
++        };
++        let mut tris = Vec::with_capacity(mesh.indices.len() / 3);
++        for t in mesh.indices.as_chunks::<3>().0 {
++            let mut tri = [at(t[0]), at(t[1]), at(t[2])];
++            // A face without normals is lit by its own plane.
++            let flat = (tri[1].0 - tri[0].0)
++                .cross(tri[2].0 - tri[0].0)
++                .normalize_or(Vec3::Y);
++            for v in &mut tri {
++                if v.2 == Vec3::ZERO {
++                    v.2 = flat;
++                }
++            }
++            tris.push(tri);
++        }
++        // Objects of one name (`o` twice) join.
++        match out
++            .iter_mut()
++            .find(|(n, _): &&mut (String, Vec<_>)| *n == m.name)
++        {
++            Some((_, t)) => t.extend(tris),
++            None => out.push((m.name.clone(), tris)),
++        }
++    }
++    Ok(out)
++}
++
++fn read_animations(path: &Path, bones: &[Bone]) -> Result<Vec<Animation>, String> {
++    let doc: Value = serde_json::from_slice(&fs::read(path).map_err(|e| e.to_string())?)
++        .map_err(|e| e.to_string())?;
++    let mut out = Vec::new();
++    for (name, a) in doc["animations"].as_object().ok_or("no animations")? {
++        let mut channels = Vec::new();
++        for (bone, c) in a["bones"].as_object().into_iter().flatten() {
++            let Some(i) = bones.iter().position(|b| b.name == *bone) else {
++                continue;
++            };
++            channels.push((
++                i,
++                Channel {
++                    rotation: keyframes(&c["rotation"]),
++                    position: keyframes(&c["position"]),
++                },
++            ));
++        }
++        out.push(Animation {
++            name: name.clone(),
++            length: a["animation_length"].as_f64().unwrap_or(1.0) as f32,
++            looping: a["loop"].as_bool().unwrap_or(false),
++            channels,
++        });
++    }
++    Ok(out)
++}
++
++/// Reads one model file.
++pub fn parse(root: &Path, block: &str, doc: &Value) -> Result<Model, String> {
++    let obj = doc["obj"].as_str().ok_or("no obj")?;
++    let obj = reference_path(root, obj).ok_or("obj: not <ns>:<path>")?;
++    let texture = doc["texture"].as_str().ok_or("no texture")?;
++    let (sprite, _) = crate::mod_screens::texture_sprite(root, texture)
++        .ok_or("texture: not <ns>:textures/<path>")?;
++    let hide: Vec<&str> = doc["hide"]
++        .as_array()
++        .into_iter()
++        .flatten()
++        .filter_map(Value::as_str)
++        .collect();
++    let mut bones: Vec<Bone> = read_obj(&obj)
++        .map_err(|e| format!("{}: {e}", obj.display()))?
++        .into_iter()
++        .map(|(name, triangles)| Bone {
++            hidden: hide.contains(&name.as_str()),
++            name,
++            parent: None,
++            pivot: Vec3::ZERO,
++            triangles,
++        })
++        .collect();
++    let spec = &doc["bones"];
++    for i in 0..bones.len() {
++        let b = &spec[&bones[i].name];
++        bones[i].pivot = vec3(&b["pivot"]).unwrap_or(Vec3::ZERO);
++        bones[i].parent = b["parent"]
++            .as_str()
++            .and_then(|p| bones.iter().position(|o| o.name == p))
++            .filter(|&p| p != i);
++    }
++    // A parent chain that loops back is cut.
++    for i in 0..bones.len() {
++        let mut seen = 0;
++        let mut at = bones[i].parent;
++        while let Some(p) = at {
++            seen += 1;
++            if p == i || seen > bones.len() {
++                bones[i].parent = None;
++                break;
++            }
++            at = bones[p].parent;
++        }
++    }
++    let animations = match doc["animations"].as_str() {
++        Some(a) => {
++            let path = reference_path(root, a).ok_or("animations: not <ns>:<path>")?;
++            read_animations(&path, &bones).map_err(|e| format!("{}: {e}", path.display()))?
++        }
++        None => Vec::new(),
++    };
++    let play = doc["play"]
++        .as_array()
++        .into_iter()
++        .flatten()
++        .filter_map(|p| {
++            Some(Play {
++                animation: animations
++                    .iter()
++                    .position(|a| Some(a.name.as_str()) == p["animation"].as_str())?,
++                property: p["property"].as_str()?.to_owned(),
++                is: p["is"].as_str().map(str::to_owned),
++                not: p["not"].as_str().map(str::to_owned),
++            })
++        })
++        .collect();
++    let moved: Vec<bool> = (0..bones.len())
++        .map(|i| {
++            animations
++                .iter()
++                .any(|a| a.channels.iter().any(|(b, _)| *b == i))
++        })
++        .collect();
++    let still = (0..bones.len())
++        .map(|i| {
++            let mut at = Some(i);
++            while let Some(b) = at {
++                if moved[b] {
++                    return false;
++                }
++                at = bones[b].parent;
++            }
++            true
++        })
++        .collect();
++    let triangles = bones
++        .iter()
++        .filter(|b| !b.hidden)
++        .map(|b| b.triangles.len())
++        .sum();
++    Ok(Model {
++        block: block.to_owned(),
++        sprite,
++        bones,
++        rotation: doc["rotation"].as_f64().unwrap_or(0.0) as f32,
++        translate: vec3(&doc["translate"]).unwrap_or(Vec3::ZERO),
++        scale: doc["scale"].as_f64().unwrap_or(1.0) as f32,
++        radius: doc["radius"].as_f64().unwrap_or(1.0) as f32,
++        animations,
++        play,
++        still,
++        triangles,
++    })
++}
++
++/// Every model of `root`, by block.
++pub fn load(root: &Path) -> Vec<Model> {
++    let mut out = Vec::new();
++    for (block, path) in crate::mod_screens::asset_files(root, "horizon_model") {
++        let doc = fs::read(&path)
++            .ok()
++            .and_then(|b| serde_json::from_slice::<Value>(&b).ok());
++        match doc
++            .ok_or_else(|| "not JSON".to_owned())
++            .and_then(|d| parse(root, &block, &d))
++        {
++            Ok(m) => out.push(m),
++            Err(e) => log::warn!("Horizon: block model {}: {e}", path.display()),
++        }
++    }
++    out
++}
++
++/// `facing`'s turn as HBM's renderers make it from the block's metadata.
++pub fn facing_yaw(facing: Option<&str>) -> f32 {
++    match facing {
++        Some("west") => 90.0,
++        Some("south") => 180.0,
++        Some("east") => 270.0,
++        _ => 0.0,
++    }
++}
++
++impl Model {
++    /// The animation a state with these properties plays, if any.
++    pub fn playing(&self, prop: &dyn Fn(&str) -> Option<String>) -> Option<usize> {
++        self.play.iter().find_map(|p| {
++            let v = prop(&p.property)?;
++            let on = p.is.as_ref().is_none_or(|is| *is == v)
++                && p.not.as_ref().is_none_or(|not| *not != v);
++            on.then_some(p.animation)
++        })
++    }
++
++    /// The block-space transform of the whole model for a turn of `yaw`
++    /// degrees: the block's centre, the turn, the scale and translation.
++    pub fn base(&self, yaw: f32) -> Mat4 {
++        Mat4::from_translation(Vec3::new(0.5, 0.0, 0.5))
++            * Mat4::from_rotation_y((yaw + self.rotation).to_radians())
++            * Mat4::from_scale(Vec3::splat(self.scale))
++            * Mat4::from_translation(self.translate)
++    }
++
++    /// Each bone's transform in the model's frame, `animation` at `t`
++    /// seconds (or the rest pose).
++    pub fn pose(&self, animation: Option<usize>, t: f32) -> Vec<Mat4> {
++        let mut local = vec![Mat4::IDENTITY; self.bones.len()];
++        if let Some(a) = animation.and_then(|a| self.animations.get(a)) {
++            let t = if a.looping && a.length > 0.0 {
++                t.rem_euclid(a.length)
++            } else {
++                t.min(a.length)
++            };
++            for (b, c) in &a.channels {
++                let r = sample(&c.rotation, t) * (std::f32::consts::PI / 180.0);
++                let p = sample(&c.position, t) / 16.0;
++                let pivot = self.bones[*b].pivot;
++                local[*b] = Mat4::from_translation(p)
++                    * Mat4::from_translation(pivot)
++                    * Mat4::from_quat(Quat::from_euler(glam::EulerRot::ZYX, r.z, r.y, r.x))
++                    * Mat4::from_translation(-pivot);
++            }
++        }
++        let mut world = vec![Mat4::IDENTITY; self.bones.len()];
++        let mut done = vec![false; self.bones.len()];
++        fn resolve(i: usize, m: &Model, local: &[Mat4], world: &mut [Mat4], done: &mut [bool]) {
++            if done[i] {
++                return;
++            }
++            let parent = match m.bones[i].parent {
++                Some(p) => {
++                    resolve(p, m, local, world, done);
++                    world[p]
++                }
++                None => Mat4::IDENTITY,
++            };
++            world[i] = parent * local[i];
++            done[i] = true;
++        }
++        for i in 0..self.bones.len() {
++            resolve(i, self, &local, &mut world, &mut done);
++        }
++        world
++    }
++
++    /// The bones `pick` keeps, posed, as quads (a triangle repeats its
++    /// last corner): `base` places them, `paint` lights and textures them.
++    pub fn emit(
++        &self,
++        pick: impl Fn(usize) -> bool,
++        pose: &[Mat4],
++        base: Mat4,
++        paint: Paint,
++        out: &mut Vec<Vertex>,
++    ) {
++        let r: Rect = paint.sprite;
++        for (i, bone) in self.bones.iter().enumerate() {
++            if bone.hidden || !pick(i) {
++                continue;
++            }
++            let m = base * pose[i];
++            for tri in &bone.triangles {
++                let corners = [tri[0], tri[1], tri[2], tri[2]];
++                for (p, uv, n) in corners {
++                    let normal = m.transform_vector3(n).normalize_or(Vec3::Y);
++                    let shade = diffuse(normal, paint.lights);
++                    let c = |shift: u32| (((paint.tint >> shift) & 255) as f32 * shade) as u32;
++                    out.push(Vertex {
++                        pos: m.transform_point3(p).to_array(),
++                        uv: [r.u0 + (r.u1 - r.u0) * uv[0], r.v0 + (r.v1 - r.v0) * uv[1]],
++                        layer: 0,
++                        color: 255 << 24 | c(0) << 16 | c(8) << 8 | c(16),
++                        light: paint.light,
++                        normal: [0; 4],
++                        glint_uv: [0.0, 0.0],
++                    });
++                }
++            }
++        }
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn keyframes_interpolate_and_loop() {
++        let keys =
++            keyframes(&serde_json::json!({"0.0": [0, 0, 0], "1.0": [0, 90, 0], "2.0": [0, 0, 0]}));
++        assert_eq!(sample(&keys, 0.5), Vec3::new(0.0, 45.0, 0.0));
++        assert_eq!(sample(&keys, 3.0), Vec3::ZERO);
++        assert_eq!(
++            keyframes(&serde_json::json!([1, 2, 3])),
++            vec![(0.0, Vec3::new(1.0, 2.0, 3.0))]
++        );
++    }
++
++    #[test]
++    fn a_child_follows_its_parent() {
++        let bone = |name: &str, parent: Option<usize>| Bone {
++            name: name.into(),
++            parent,
++            ..Default::default()
++        };
++        let mut m = Model {
++            bones: vec![bone("ring", None), bone("arm", Some(0))],
++            scale: 1.0,
++            ..Default::default()
++        };
++        m.animations.push(Animation {
++            name: "spin".into(),
++            length: 4.0,
++            looping: true,
++            channels: vec![(
++                0,
++                Channel {
++                    rotation: vec![(0.0, Vec3::ZERO), (4.0, Vec3::new(0.0, 360.0, 0.0))],
++                    position: Vec::new(),
++                },
++            )],
++        });
++        let pose = m.pose(Some(0), 1.0);
++        let p = pose[1].transform_point3(Vec3::X);
++        assert!((p - Vec3::new(0.0, 0.0, -1.0)).length() < 1e-4, "{p}");
++    }
++}
+diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
+new file mode 100644
+index 000000000..0f09cb902
+--- /dev/null
++++ b/crates/horizon-client-render/src/mod_screens.rs
+@@ -0,0 +1,471 @@
++//! Screens of content mods' machines (`horizon_world::mod_machines`): the
++//! machine's own background texture, with bars, lights and tooltips drawn
++//! from the values the mod sets. Each `assets/<namespace>/horizon_screen/<name>.json`
++//! of the resource root is the screen `<namespace>:<name>`; slots are the
++//! machine file's.
++//!
++//! ```text
++//! {
++//!   "texture": "ntm:textures/gui/processing/gui_assembler.png",
++//!   "size": [176, 256],                      the screen, drawn from the texture's top left
++//!   "title": [70, 6, "center"],              x, y, alignment ("left" or "center")
++//!   "inventory_label": [8, 162],             null: none
++//!   "bars": [                                value `value` of `max` (a value's index, or "max_value")
++//!     {"value": 0, "max": 1, "rect": [152, 18, 16, 61], "uv": [176, 0], "dir": "up"},
++//!     {"value": 4, "max_value": 4000, "rect": [8, 99, 52, 16], "color": 6, "dir": "right"}
++//!   ],                                       `color`: a value's index holding 0xRRGGBB, in place of uv
++//!   "overlays": [                            a part of the texture drawn while ...
++//!     {"slot": 0, "rect": [142, 90, 16, 16], "uv": [176, 0]},    ... the slot holds something
++//!     {"value": 7, "min": 1, "rect": [51, 121, 6, 8], "uv": [195, 0]}  ... a value is at least min
++//!   ],
++//!   "tooltips": [{"rect": [152, 18, 16, 61], "lines": ["{0:si} / {1:si} HE"]}],
++//!   "buttons": [{"id": 0, "rect": [7, 125, 18, 18], "lines": ["Choose a recipe"]}]
++//! }
++//! ```
++use crate::hud::{HudAtlas, HudBatch, Rect};
++use serde_json::Value;
++use std::{
++    collections::HashMap,
++    fs,
++    path::{Path, PathBuf},
++    sync::{Arc, RwLock},
++};
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum Dir {
++    Up,
++    Down,
++    Left,
++    Right,
++}
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum Max {
++    Value(usize),
++    Fixed(i32),
++}
++
++#[derive(Clone, Debug, PartialEq)]
++pub struct Bar {
++    pub value: usize,
++    pub max: Max,
++    pub rect: [f32; 4],
++    pub uv: Option<[f32; 2]>,
++    pub color: Option<usize>,
++    pub dir: Dir,
++}
++
++#[derive(Clone, Debug, PartialEq)]
++pub enum When {
++    Slot(usize),
++    Value { index: usize, min: i32 },
++}
++
++#[derive(Clone, Debug, PartialEq)]
++pub struct Overlay {
++    pub when: When,
++    pub rect: [f32; 4],
++    pub uv: [f32; 2],
++}
++
++#[derive(Clone, Debug, PartialEq)]
++pub struct Tip {
++    pub rect: [f32; 4],
++    pub lines: Vec<String>,
++}
++
++#[derive(Clone, Debug, PartialEq)]
++pub struct Button {
++    pub id: u32,
++    pub rect: [f32; 4],
++    pub lines: Vec<String>,
++}
++
++#[derive(Clone, Debug, PartialEq)]
++pub struct ScreenDef {
++    /// The texture's sprite in the GUI atlas: `ntm:gui/processing/gui_assembler`.
++    pub sprite: String,
++    pub size: [f32; 2],
++    pub title: Option<([f32; 2], bool)>,
++    pub inventory_label: Option<[f32; 2]>,
++    pub bars: Vec<Bar>,
++    pub overlays: Vec<Overlay>,
++    pub tips: Vec<Tip>,
++    pub buttons: Vec<Button>,
++}
++
++static SCREENS: RwLock<Option<Arc<HashMap<String, Arc<ScreenDef>>>>> = RwLock::new(None);
++
++/// A texture reference (`ntm:textures/gui/x.png`) as the atlas names it
++/// (`ntm:gui/x`), and its file under `root`.
++pub fn texture_sprite(root: &Path, reference: &str) -> Option<(String, PathBuf)> {
++    let (ns, path) = reference.split_once(':')?;
++    let path = path.strip_prefix("textures/")?;
++    let file = root.join("assets").join(ns).join("textures").join(path);
++    let name = path.strip_suffix(".png").unwrap_or(path);
++    Some((format!("{ns}:{name}"), file))
++}
++
++/// The `assets/<ns>/<folder>/*.json` files of `root`, as (`<ns>:<name>`, file).
++pub fn asset_files(root: &Path, folder: &str) -> Vec<(String, PathBuf)> {
++    let mut out = Vec::new();
++    let Ok(namespaces) = fs::read_dir(root.join("assets")) else {
++        return out;
++    };
++    for ns in namespaces.flatten() {
++        let Some(namespace) = ns.file_name().to_str().map(str::to_owned) else {
++            continue;
++        };
++        if namespace == "minecraft" {
++            continue;
++        }
++        let Ok(entries) = fs::read_dir(ns.path().join(folder)) else {
++            continue;
++        };
++        for entry in entries.flatten() {
++            let path = entry.path();
++            if path.extension().and_then(|e| e.to_str()) == Some("json")
++                && let Some(name) = path.file_stem().and_then(|s| s.to_str())
++            {
++                out.push((format!("{namespace}:{name}"), path.clone()));
++            }
++        }
++    }
++    out.sort();
++    out
++}
++
++fn read(path: &Path) -> Option<Value> {
++    serde_json::from_slice(&fs::read(path).ok()?).ok()
++}
++
++fn floats<const N: usize>(v: &Value) -> Option<[f32; N]> {
++    let a = v.as_array().filter(|a| a.len() >= N)?;
++    let mut out = [0.0; N];
++    for (o, x) in out.iter_mut().zip(a) {
++        *o = x.as_f64()? as f32;
++    }
++    Some(out)
++}
++
++fn lines(v: &Value) -> Vec<String> {
++    v.as_array()
++        .map(|a| {
++            a.iter()
++                .filter_map(|l| l.as_str().map(str::to_owned))
++                .collect()
++        })
++        .unwrap_or_default()
++}
++
++/// Reads one screen file.
++pub fn parse(root: &Path, doc: &Value) -> Result<ScreenDef, String> {
++    let texture = doc["texture"].as_str().ok_or("no texture")?;
++    let (sprite, _) = texture_sprite(root, texture).ok_or("texture: not <ns>:textures/<path>")?;
++    let size = floats::<2>(&doc["size"]).unwrap_or([176.0, 166.0]);
++    let title = match &doc["title"] {
++        Value::Null => Some(([8.0, 6.0], false)),
++        t => floats::<2>(t).map(|p| (p, t.get(2).and_then(Value::as_str) == Some("center"))),
++    };
++    let inventory_label = match doc.get("inventory_label") {
++        None => Some([8.0, size[1] - 94.0]),
++        Some(v) => floats::<2>(v),
++    };
++    let dir = |v: &Value| match v.as_str() {
++        Some("up") => Dir::Up,
++        Some("down") => Dir::Down,
++        Some("left") => Dir::Left,
++        _ => Dir::Right,
++    };
++    let index = |v: &Value| v.as_u64().map(|i| i as usize);
++    let mut bars = Vec::new();
++    for b in doc["bars"].as_array().into_iter().flatten() {
++        let max = match (index(&b["max"]), b["max_value"].as_i64()) {
++            (Some(i), _) => Max::Value(i),
++            (None, Some(v)) => Max::Fixed(v as i32),
++            _ => return Err("a bar without max or max_value".into()),
++        };
++        bars.push(Bar {
++            value: index(&b["value"]).ok_or("a bar without value")?,
++            max,
++            rect: floats::<4>(&b["rect"]).ok_or("a bar without rect")?,
++            uv: floats::<2>(&b["uv"]),
++            color: index(&b["color"]),
++            dir: dir(&b["dir"]),
++        });
++    }
++    let mut overlays = Vec::new();
++    for o in doc["overlays"].as_array().into_iter().flatten() {
++        let when = match (index(&o["slot"]), index(&o["value"])) {
++            (Some(s), _) => When::Slot(s),
++            (None, Some(i)) => When::Value {
++                index: i,
++                min: o["min"].as_i64().unwrap_or(1) as i32,
++            },
++            _ => return Err("an overlay without slot or value".into()),
++        };
++        overlays.push(Overlay {
++            when,
++            rect: floats::<4>(&o["rect"]).ok_or("an overlay without rect")?,
++            uv: floats::<2>(&o["uv"]).ok_or("an overlay without uv")?,
++        });
++    }
++    let tips = doc["tooltips"]
++        .as_array()
++        .into_iter()
++        .flatten()
++        .filter_map(|t| {
++            Some(Tip {
++                rect: floats::<4>(&t["rect"])?,
++                lines: lines(&t["lines"]),
++            })
++        })
++        .collect();
++    let buttons = doc["buttons"]
++        .as_array()
++        .into_iter()
++        .flatten()
++        .filter_map(|b| {
++            Some(Button {
++                id: b["id"].as_u64()? as u32,
++                rect: floats::<4>(&b["rect"])?,
++                lines: lines(&b["lines"]),
++            })
++        })
++        .collect();
++    Ok(ScreenDef {
++        sprite,
++        size,
++        title,
++        inventory_label,
++        bars,
++        overlays,
++        tips,
++        buttons,
++    })
++}
++
++/// Loads the screens of `root`, replacing those loaded before; how many.
++pub fn load(root: &Path) -> usize {
++    let mut map = HashMap::new();
++    for (name, path) in asset_files(root, "horizon_screen") {
++        match read(&path)
++            .ok_or_else(|| "not JSON".to_owned())
++            .and_then(|doc| parse(root, &doc))
++        {
++            Ok(def) => {
++                map.insert(name, Arc::new(def));
++            }
++            Err(e) => log::warn!("Horizon: machine screen {}: {e}", path.display()),
++        }
++    }
++    let n = map.len();
++    if let Ok(mut s) = SCREENS.write() {
++        *s = Some(Arc::new(map));
++    }
++    n
++}
++
++/// The screen `name` (`<namespace>:<name>`).
++pub fn get(name: &str) -> Option<Arc<ScreenDef>> {
++    SCREENS.read().ok()?.as_ref()?.get(name).cloned()
++}
++
++/// The textures the machine screens and models of `root` name: the GUI
++/// atlas packs these, and no other file of the mods' `textures/`.
++pub fn textures(root: &Path) -> Vec<(String, PathBuf)> {
++    let mut out: Vec<(String, PathBuf)> = Vec::new();
++    for folder in ["horizon_screen", "horizon_model"] {
++        for (_, path) in asset_files(root, folder) {
++            if let Some(t) = read(&path)
++                .as_ref()
++                .and_then(|d| d["texture"].as_str().map(str::to_owned))
++                && let Some(found) = texture_sprite(root, &t)
++                && !out.iter().any(|(n, _)| *n == found.0)
++            {
++                out.push(found);
++            }
++        }
++    }
++    out
++}
++
++/// `{0}` is value 0; `{0:si}` writes it with an SI prefix (`12.5k`), as
++/// HBM's `BobMathUtil.getShortNumber`.
++pub fn format(line: &str, values: &[i32]) -> String {
++    let mut out = String::new();
++    let mut rest = line;
++    while let Some(start) = rest.find('{') {
++        out.push_str(&rest[..start]);
++        let Some(end) = rest[start..].find('}') else {
++            out.push_str(&rest[start..]);
++            return out;
++        };
++        let inner = &rest[start + 1..start + end];
++        let (index, si) = match inner.split_once(':') {
++            Some((i, "si")) => (i, true),
++            _ => (inner, false),
++        };
++        match index.parse::<usize>().ok().and_then(|i| values.get(i)) {
++            Some(&v) if si => out.push_str(&short_number(i64::from(v))),
++            Some(v) => out.push_str(&v.to_string()),
++            None => out.push_str(&rest[start..=start + end]),
++        }
++        rest = &rest[start + end + 1..];
++    }
++    out.push_str(rest);
++    out
++}
++
++fn short_number(v: i64) -> String {
++    let a = v.unsigned_abs() as f64;
++    for (limit, suffix) in [(1e12, "T"), (1e9, "G"), (1e6, "M"), (1e3, "k")] {
++        if a >= limit {
++            let x = v as f64 / limit;
++            return format!("{}{suffix}", (x * 10.0).round() / 10.0);
++        }
++    }
++    v.to_string()
++}
++
++fn inside(r: [f32; 4], x: f32, y: f32) -> bool {
++    x >= r[0] && y >= r[1] && x < r[0] + r[2] && y < r[1] + r[3]
++}
++
++impl ScreenDef {
++    /// The part `[sx, sy, w, h]` of the texture at `[dx, dy]` on the screen.
++    fn blit(&self, batch: &mut HudBatch, atlas: &HudAtlas, src: [f32; 4], dx: f32, dy: f32) {
++        let Some(mut r) = atlas.sprites.get(&self.sprite).copied() else {
++            return;
++        };
++        let (du, dv) = ((r.u1 - r.u0) / r.w as f32, (r.v1 - r.v0) / r.h as f32);
++        r = Rect {
++            u0: r.u0 + src[0] * du,
++            v0: r.v0 + src[1] * dv,
++            u1: r.u0 + (src[0] + src[2]) * du,
++            v1: r.v0 + (src[1] + src[3]) * dv,
++            ..r
++        };
++        batch.rect_uv(dx, dy, src[2], src[3], r, u32::MAX);
++    }
++
++    /// Whether the GUI atlas holds the texture.
++    pub fn ready(&self, atlas: &HudAtlas) -> bool {
++        atlas.sprites.contains_key(&self.sprite)
++    }
++
++    /// The background, then the bars and overlays, at `(ox, oy)`.
++    pub fn draw(
++        &self,
++        batch: &mut HudBatch,
++        atlas: &HudAtlas,
++        ox: f32,
++        oy: f32,
++        values: &[i32],
++        filled: impl Fn(usize) -> bool,
++    ) {
++        self.blit(batch, atlas, [0.0, 0.0, self.size[0], self.size[1]], ox, oy);
++        let value = |i: usize| values.get(i).copied().unwrap_or(0);
++        for bar in &self.bars {
++            let max = match bar.max {
++                Max::Value(i) => value(i),
++                Max::Fixed(v) => v,
++            };
++            if max <= 0 {
++                continue;
++            }
++            let f = (value(bar.value) as f32 / max as f32).clamp(0.0, 1.0);
++            let [x, y, w, h] = bar.rect;
++            // The part of the rect the value covers, as HBM's GUIs cut it.
++            let (cx, cy, cw, ch) = match bar.dir {
++                Dir::Right => (0.0, 0.0, (w * f).ceil(), h),
++                Dir::Left => (w - (w * f).ceil(), 0.0, (w * f).ceil(), h),
++                Dir::Up => (0.0, h - (h * f).ceil(), w, (h * f).ceil()),
++                Dir::Down => (0.0, 0.0, w, (h * f).ceil()),
++            };
++            if cw <= 0.0 || ch <= 0.0 {
++                continue;
++            }
++            if let Some([u, v]) = bar.uv {
++                self.blit(
++                    batch,
++                    atlas,
++                    [u + cx, v + cy, cw, ch],
++                    ox + x + cx,
++                    oy + y + cy,
++                );
++            } else if let Some(c) = bar.color {
++                let rgb = value(c) as u32;
++                let color = crate::hud::rgba((rgb >> 16) as u8, (rgb >> 8) as u8, rgb as u8, 255);
++                batch.fill(atlas, ox + x + cx, oy + y + cy, cw, ch, color);
++            }
++        }
++        for o in &self.overlays {
++            let on = match o.when {
++                When::Slot(s) => filled(s),
++                When::Value { index, min } => value(index) >= min,
++            };
++            if on {
++                let [x, y, w, h] = o.rect;
++                self.blit(batch, atlas, [o.uv[0], o.uv[1], w, h], ox + x, oy + y);
++            }
++        }
++    }
++
++    /// The tooltip under the pointer (screen-relative), filled in.
++    pub fn tooltip(&self, x: f32, y: f32, values: &[i32]) -> Option<Vec<String>> {
++        let lines = self
++            .tips
++            .iter()
++            .find(|t| inside(t.rect, x, y))
++            .map(|t| &t.lines)
++            .or_else(|| {
++                self.buttons
++                    .iter()
++                    .find(|b| inside(b.rect, x, y) && !b.lines.is_empty())
++                    .map(|b| &b.lines)
++            })?;
++        Some(lines.iter().map(|l| format(l, values)).collect())
++    }
++
++    /// The button under the pointer (screen-relative).
++    pub fn button_at(&self, x: f32, y: f32) -> Option<u32> {
++        self.buttons
++            .iter()
++            .find(|b| inside(b.rect, x, y))
++            .map(|b| b.id)
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn lines_take_values() {
++        assert_eq!(
++            format("{0:si} / {1:si} HE", &[12_500, 1_000_000]),
++            "12.5k / 1M HE"
++        );
++        assert_eq!(format("{2} ticks {x}", &[1, 2, 3]), "3 ticks {x}");
++    }
++
++    #[test]
++    fn a_screen_reads() {
++        let doc: Value = serde_json::from_str(
++            r#"{"texture":"ntm:textures/gui/a.png","size":[176,256],"title":[70,6,"center"],
++                "bars":[{"value":0,"max":1,"rect":[1,2,3,4],"uv":[176,0],"dir":"up"}],
++                "overlays":[{"slot":0,"rect":[1,1,2,2],"uv":[3,3]}],
++                "tooltips":[{"rect":[0,0,10,10],"lines":["{0}"]}],
++                "buttons":[{"id":2,"rect":[20,20,5,5]}]}"#,
++        )
++        .unwrap();
++        let def = parse(Path::new("/r"), &doc).unwrap();
++        assert_eq!(def.sprite, "ntm:gui/a");
++        assert_eq!(def.title, Some(([70.0, 6.0], true)));
++        assert_eq!(def.inventory_label, Some([8.0, 162.0]));
++        assert_eq!(def.tooltip(5.0, 5.0, &[42]), Some(vec!["42".into()]));
++        assert_eq!(def.button_at(21.0, 21.0), Some(2));
++        assert_eq!(def.button_at(0.0, 0.0), None);
++    }
++}
+diff --git a/crates/horizon-client/src/game.rs b/crates/horizon-client/src/game.rs
+index ffa8a66eb..8cdded2cf 100644
+--- a/crates/horizon-client/src/game.rs
++++ b/crates/horizon-client/src/game.rs
+@@ -111,6 +111,7 @@ mod mob_blocks;
+ mod mob_gear;
+ mod mob_sounds;
+ mod mod_input;
++mod mod_machines;
+ #[cfg(feature = "mods")]
+ mod mod_panel;
+ mod mod_render;
+@@ -2074,6 +2075,9 @@ impl Game<'_> {
+     /// grows with the lid (`ShulkerBoxBlockEntity.getBoundingBox`).
+     fn context_outline(&self, pos: [i32; 3], state: BlockStateId) -> Option<[f64; 6]> {
+         let name = &self.res.facts().get(state).name;
++        if let Some(b) = self.multiblock_outline(pos, name) {
++            return Some(b);
++        }
+         if matches!(&**name, "minecraft:light" | "minecraft:scaffolding") {
+             return self
+                 .held()
+@@ -4057,6 +4061,10 @@ impl Game<'_> {
+             return Ok(());
+         }
+         self.pad_rumble(horizon_client::gamepad::Rumble::BlockBroken);
++        // A content mod's multiblock breaks whole: mining a filler breaks the
++        // core (its drops, its slots), and the fillers go with it.
++        let multiblock = self.machine_multiblock(pos);
++        let pos = multiblock.as_ref().map_or(pos, |(core, _)| *core);
+         // ServerPlayerGameMode.destroyBlock.
+         let state = self.world.block(pos[0], pos[1], pos[2]);
+         let broken = state;
+@@ -4117,6 +4125,9 @@ impl Game<'_> {
+         });
+         if removed {
+             self.mod_block_event(pos, broken, false);
++            if let Some((_, cells)) = &multiblock {
++                self.clear_multiblock(cells);
++            }
+         }
+         if removed && !creative {
+             let held = self.held().cloned();
+@@ -6366,7 +6377,8 @@ impl Game<'_> {
+         if self.screen == Screen::Creative {
+             return Self::creative_origin(batch);
+         }
+-        let (x, y) = batch.centered_origin(176.0, self.screen_height());
++        let width = self.machine_screen_size().map_or(176.0, |s| s[0]);
++        let (x, y) = batch.centered_origin(width, self.screen_height());
+         (x + self.recipe_book_shift(batch.width), y)
+     }
+     /// Slot ids: 0..36 player inventory, 100..109 crafting grid, 200 result.
+@@ -6410,6 +6422,7 @@ impl Game<'_> {
+                 | BlockEntity::Campfire(_)
+                 | BlockEntity::ChiseledBookshelf(_),
+             ) => {}
++            Some(BlockEntity::ModContainer(m)) => v.extend((0..m.items.len()).map(|i| 300 + i)),
+             None => {
+                 v.extend((0..self.craft_size * self.craft_size).map(|i| 100 + i));
+                 v.push(200);
+@@ -6434,6 +6447,7 @@ impl Game<'_> {
+         }
+         if let Some(p) = self
+             .station_slot_position(i)
++            .or_else(|| self.mod_slot_position(i))
+             .or_else(|| self.machine_slot_position(i))
+             .or_else(|| self.crafter_slot_position(i))
+             .or_else(|| self.mount_slot_position(i))
+@@ -6665,6 +6679,7 @@ impl Game<'_> {
+                 }
+                 Some(BlockEntity::Brewing(_)) => {}
+                 Some(BlockEntity::Crafter(_)) => self.draw_crafter_screen(batch, ox, oy),
++                Some(BlockEntity::ModContainer(_)) => self.draw_mod_machine(batch, ox, oy),
+                 Some(
+                     BlockEntity::Sign(_)
+                     | BlockEntity::Jukebox(_)
+@@ -6721,6 +6736,7 @@ impl Game<'_> {
+         }
+         self.draw_carried(batch);
+         self.draw_slot_tooltip(batch);
++        self.draw_mod_machine_tooltip(batch);
+         if self.container.is_none() && self.craft_size == 2 && !self.mount_active() {
+             self.draw_inventory_effects(batch, (ox, oy), 176);
+         }
+@@ -7077,6 +7093,12 @@ impl Game<'_> {
+                         (kind, size)
+                     }
+                     Some(BlockEntity::Brewing(_)) => (Kind::Brewing, 5),
++                    Some(BlockEntity::ModContainer(m)) => {
++                        match horizon_world::mod_machines::get(&m.block) {
++                            Some(def) => (Kind::Mod(def.index), m.items.len()),
++                            None => return false,
++                        }
++                    }
+                     Some(BlockEntity::Furnace(f)) => (
+                         Kind::Furnace(
+                             match f.kind.recipe_type().trim_start_matches("minecraft:") {
+@@ -7843,6 +7865,9 @@ impl Game<'_> {
+         if self.station_click(right) {
+             return;
+         }
++        if !right && self.mod_machine_button_click() {
++            return;
++        }
+         if self.remote.is_some() {
+             return self.remote_click(right);
+         }
+@@ -8270,7 +8295,15 @@ impl Game<'_> {
+                             (glam::DVec3::new(f64::from(p[0]), f64::from(p[1]), f64::from(p[2]))
+                                 - camera)
+                                 .as_vec3();
+-                        v.intersects(o - glam::Vec3::ONE, o + glam::Vec3::splat(2.0))
++                        // A content mod's model reaches as far as its file says.
++                        let reach = self
++                            .res
++                            .block_entity_render()
++                            .model_radius(*state)
++                            .map_or(1.0, |r| r.max(1.0));
++                        let centre = o + glam::Vec3::splat(0.5);
++                        let half = glam::Vec3::splat(0.5 + reach);
++                        v.intersects(centre - half, centre + half)
+                     })
+             });
+             if self.entity_culler.is_some() || self.pack_ids.is_some() {
+@@ -14804,6 +14837,15 @@ fn load_world_rest(
+     progress.set(6);
+     let mob_data = horizon_client::mobs::MobData::load(root, facts);
+     horizon_client::mobs::trial_spawner::load_registry(root);
++    // Content mods' machines (`data/<ns>/horizon_machine/`): slots, menus, multiblocks.
++    let (machines, warnings) = horizon_world::mod_machines::load(root);
++    for w in warnings {
++        log::warn!("Horizon: machine {w}");
++    }
++    if machines > 0 {
++        let screens = horizon_client::mod_screens::load(root);
++        log::info!("Horizon: {machines} content mod machines, {screens} screens");
++    }
+ 
+     let items = Items::load(root, assets.registry, facts)?;
+     log::info!("load items: {:.2}s", started.elapsed().as_secs_f32());
+diff --git a/crates/horizon-client/src/game/lan_actions.rs b/crates/horizon-client/src/game/lan_actions.rs
+index d71923ad0..e35f8dfdd 100644
+--- a/crates/horizon-client/src/game/lan_actions.rs
++++ b/crates/horizon-client/src/game/lan_actions.rs
+@@ -833,6 +833,31 @@ impl Game<'_> {
+             .facts()
+             .get(self.world.block(pos.0, pos.1, pos.2))
+             .name;
++        if let Some(BlockEntity::ModContainer(m)) = self.world.block_entities.get(&pos)
++            && let Some(def) = horizon_world::mod_machines::get(&m.block)
++        {
++            // A content mod's machine: its own menu type (`mod_content` adds
++            // one per machine), named after the block.
++            let title = def.title.clone().unwrap_or_else(|| {
++                let (ns, path) = def
++                    .block
++                    .split_once(':')
++                    .unwrap_or(("minecraft", &def.block));
++                format!("block.{ns}.{path}")
++            });
++            let items = m.items.clone();
++            self.guest_container_closed(host, conn);
++            self.lan_station_closed(host, conn, None);
++            host.hub.open_container(
++                conn,
++                &def.block,
++                horizon_protocol::text::translatable(&title, &[]),
++                pos,
++                Slots::Block(pos),
++                items,
++            );
++            return true;
++        }
+         let (menu, title, slots) = if &**name == "minecraft:ender_chest" {
+             // EnderChestBlock.useWithoutItem: the player's own inventory.
+             (
+@@ -1358,6 +1383,8 @@ impl Game<'_> {
+                 });
+             }
+             S::PlayerCommand(p) if p.action == 6 => self.lan_start_gliding(host, conn),
++            S::ContainerButtonClick(p)
++                if self.lan_machine_button(host, conn, p.container, p.button) => {}
+             S::ContainerButtonClick(p) => {
+                 self.lan_station_button(host, conn, p.container, p.button);
+             }
+diff --git a/crates/horizon-client/src/game/lan_crafting.rs b/crates/horizon-client/src/game/lan_crafting.rs
+index 2a1c6dc3c..dab51fc06 100644
+--- a/crates/horizon-client/src/game/lan_crafting.rs
++++ b/crates/horizon-client/src/game/lan_crafting.rs
+@@ -233,6 +233,12 @@ impl Game<'_> {
+             }
+             Some(BlockEntity::Brewing(b)) => (Kind::Brewing, b.items.to_vec()),
+             Some(BlockEntity::Crafter(c)) => (Kind::CrafterBlock, c.items.to_vec()),
++            Some(BlockEntity::ModContainer(m)) => {
++                let Some(def) = horizon_world::mod_machines::get(&m.block) else {
++                    return false;
++                };
++                (Kind::Mod(def.index), m.items.clone())
++            }
+             _ => return false,
+         };
+         let furnace = matches!(kind, Kind::Furnace(_));
+@@ -293,6 +299,11 @@ impl Game<'_> {
+                     c.disabled[k] = menu.data[k] == 1;
+                 }
+             }
++            Some(BlockEntity::ModContainer(m)) => {
++                for k in 0..m.items.len() {
++                    m.items[k] = menu.slot(k).cloned();
++                }
++            }
+             _ => {}
+         }
+         // FurnaceResultSlot.checkTakeAchievements: the guest took from the output.
+@@ -311,6 +322,43 @@ impl Game<'_> {
+         true
+     }
+ 
++    /// A button of the guest's open mod machine screen: the server mods hear
++    /// it (`machines.poll-buttons`). False for other windows.
++    pub(super) fn lan_machine_button(
++        &mut self,
++        host: &mut LanHost,
++        conn: u32,
++        window: i32,
++        button: i32,
++    ) -> bool {
++        let Some(g) = host.hub.guest(conn).filter(|g| !g.spectator()) else {
++            return false;
++        };
++        let Some(pos) = g
++            .menu
++            .as_ref()
++            .filter(|m| window != 0 && m.window == window)
++            .and_then(|m| match m.slots {
++                Slots::Block(pos) => Some(pos),
++                _ => None,
++            })
++        else {
++            return false;
++        };
++        if !matches!(
++            self.world.block_entities.get(&pos),
++            Some(BlockEntity::ModContainer(_))
++        ) {
++            return false;
++        }
++        let Ok(button) = u32::try_from(button) else {
++            return true;
++        };
++        let uuid = g.uuid;
++        self.machine_button(uuid, [pos.0, pos.1, pos.2], button);
++        true
++    }
++
+     /// `ServerGamePacketListenerImpl.handleContainerSlotStateChanged`: a
+     /// guest's crafter slot toggle (`CrafterBlockEntity.setSlotState`) in
+     /// their open crafter window.
+diff --git a/crates/horizon-client/src/game/levels.rs b/crates/horizon-client/src/game/levels.rs
+index c3b279ad1..d1470c477 100644
+--- a/crates/horizon-client/src/game/levels.rs
++++ b/crates/horizon-client/src/game/levels.rs
+@@ -37,7 +37,7 @@ const IDLE_TICKS: u32 = 300;
+ 
+ /// A level that is not in place: every per-level field of `Game`.
+ pub(super) struct Parked {
+-    world: World,
++    pub(super) world: World,
+     streaming: Streaming,
+     locator: Option<Arc<VanillaTerrain>>,
+     save: Arc<SaveDir>,
+diff --git a/crates/horizon-client/src/game/machines.rs b/crates/horizon-client/src/game/machines.rs
+index 4a6fca181..ff6f945ae 100644
+--- a/crates/horizon-client/src/game/machines.rs
++++ b/crates/horizon-client/src/game/machines.rs
+@@ -164,7 +164,12 @@ impl Containers<'_> {
+         // A beehive keeps bees, not items, and a campfire cooks its own: neither
+         // is a `Container` (HopperBlockEntity.getContainerAt), so a dropper drops
+         // in front of them and a hopper leaves them alone.
+-        if matches!(entity, BlockEntity::Beehive(_) | BlockEntity::Campfire(_)) {
++        // A mod's machine has input and output slots that hoppers don't know
++        // (no sided access yet): they leave it alone.
++        if matches!(
++            entity,
++            BlockEntity::Beehive(_) | BlockEntity::Campfire(_) | BlockEntity::ModContainer(_)
++        ) {
+             return None;
+         }
+         let kind = match (entity, name) {
+@@ -1081,6 +1086,9 @@ impl Game<'_> {
+     }
+     /// `imageHeight` of the open screen (HopperScreen is 133 tall).
+     pub(super) fn screen_height(&self) -> f32 {
++        if let Some([_, h]) = self.machine_screen_size() {
++            return h;
++        }
+         if self
+             .station
+             .as_ref()
+diff --git a/crates/horizon-client/src/game/mod_machines.rs b/crates/horizon-client/src/game/mod_machines.rs
+new file mode 100644
+index 000000000..fc73b54a2
+--- /dev/null
++++ b/crates/horizon-client/src/game/mod_machines.rs
+@@ -0,0 +1,266 @@
++//! Content mods' machines in the game (`horizon_world::mod_machines`): a
++//! multiblock breaks as one block, whichever of its cells the player mines.
++use super::Game;
++use horizon_core::position::BlockPos;
++
++impl Game<'_> {
++    /// The multiblock that holds `pos`: its core and its other cells.
++    pub(super) fn machine_multiblock(
++        &mut self,
++        pos: [i32; 3],
++    ) -> Option<([i32; 3], Vec<[i32; 3]>)> {
++        let at = BlockPos::new(pos[0], pos[1], pos[2]);
++        let core = self.with_level(|b, level, _| b.machine_core(&*level, at))?;
++        let state = self.world.block(core.x, core.y, core.z);
++        let name = self.res.facts().get(state).name.clone();
++        let def = horizon_world::mod_machines::get(&name)?;
++        let m = def.multiblock.as_ref()?;
++        let facing = self
++            .pack
++            .assets
++            .registry
++            .state(state)
++            .and_then(|s| s.properties.get("facing"))
++            .and_then(|f| horizon_world::mod_machines::facing_step(f))
++            .unwrap_or([0, 1]);
++        let core = [core.x, core.y, core.z];
++        Some((core, m.cells(core, facing)))
++    }
++
++    /// Takes away the filler cells of a broken multiblock: no drops (the
++    /// core dropped the machine), shape updates as any removal.
++    pub(super) fn clear_multiblock(&mut self, cells: &[[i32; 3]]) {
++        let air = self.world.air;
++        for &c in cells {
++            let state = self.world.block(c[0], c[1], c[2]);
++            if !horizon_world::mod_machines::is_dummy(&self.res.facts().get(state).name) {
++                continue;
++            }
++            let at = BlockPos::new(c[0], c[1], c[2]);
++            self.with_level(|b, level, ticks| b.set_block(level, ticks, at, air, 3));
++        }
++    }
++}
++
++use horizon_client::{
++    containers::BlockEntity,
++    hud::{HudBatch, rgba},
++    mod_screens::ScreenDef,
++};
++use horizon_world::mod_machines::MachineDef;
++use std::sync::Arc;
++
++impl Game<'_> {
++    /// The open container's machine and screen, when it is a mod machine.
++    pub(super) fn open_machine(&self) -> Option<(Arc<MachineDef>, Option<Arc<ScreenDef>>)> {
++        let Some(BlockEntity::ModContainer(m)) = self.container_kind() else {
++            return None;
++        };
++        let def = horizon_world::mod_machines::get(&m.block)?;
++        let screen = horizon_client::mod_screens::get(&def.screen);
++        Some((def, screen))
++    }
++
++    /// The open machine screen's size (176 x 166 without a screen file).
++    pub(super) fn machine_screen_size(&self) -> Option<[f32; 2]> {
++        let (def, screen) = self.open_machine()?;
++        Some(screen.map_or_else(|| [176.0, def.inventory[1] as f32 + 82.0], |s| s.size))
++    }
++
++    /// Where the open machine screen puts slot `i`: the machine file's slots
++    /// (300 and up), the inventory where the file says.
++    pub(super) fn mod_slot_position(&self, i: usize) -> Option<(f32, f32)> {
++        let (def, _) = self.open_machine()?;
++        let [ix, iy] = def.inventory.map(|v| v as f32);
++        Some(match i {
++            0..9 => (ix + i as f32 * 18.0, iy + 58.0),
++            9..36 => (
++                ix + ((i - 9) % 9) as f32 * 18.0,
++                iy + ((i - 9) / 9) as f32 * 18.0,
++            ),
++            300..500 => {
++                let s = def.slots.get(i - 300)?;
++                (s.x as f32, s.y as f32)
++            }
++            _ => return None,
++        })
++    }
++
++    /// The open machine's background, bars, lights and labels; a plain
++    /// panel with slot frames when its screen or texture is missing.
++    pub(super) fn draw_mod_machine(&self, batch: &mut HudBatch, ox: f32, oy: f32) {
++        let Some((def, screen)) = self.open_machine() else {
++            return;
++        };
++        let Some(BlockEntity::ModContainer(m)) = self.container_kind() else {
++            return;
++        };
++        let atlas = &self.gui.atlas;
++        let grey = rgba(64, 64, 64, 255);
++        let screen = screen.filter(|s| s.ready(atlas));
++        let [w, h] = self.machine_screen_size().unwrap_or([176.0, 166.0]);
++        match &screen {
++            Some(s) => s.draw(batch, atlas, ox, oy, &m.data, |slot| {
++                m.items.get(slot).is_some_and(Option::is_some)
++            }),
++            None => {
++                batch.fill(atlas, ox, oy, w, h, rgba(198, 198, 198, 255));
++                let frames = def
++                    .slots
++                    .iter()
++                    .map(|s| (s.x as f32, s.y as f32))
++                    .chain((0..36).filter_map(|i| self.mod_slot_position(i)));
++                for (x, y) in frames {
++                    batch.fill(
++                        atlas,
++                        ox + x - 1.0,
++                        oy + y - 1.0,
++                        18.0,
++                        18.0,
++                        rgba(55, 55, 55, 255),
++                    );
++                    batch.fill(atlas, ox + x, oy + y, 16.0, 16.0, rgba(139, 139, 139, 255));
++                }
++            }
++        }
++        let title = self.remote_menu_title().unwrap_or_else(|| {
++            let key = def.title.clone().unwrap_or_else(|| {
++                let (ns, path) = def
++                    .block
++                    .split_once(':')
++                    .unwrap_or(("minecraft", &def.block));
++                format!("block.{ns}.{path}")
++            });
++            horizon_client::text::Text::literal(self.translate(&key, &def.block))
++        });
++        let (title_at, centred) = screen
++            .as_ref()
++            .map_or(Some(([8.0, 6.0], false)), |s| s.title)
++            .unwrap_or(([8.0, 6.0], false));
++        if screen.as_ref().is_none_or(|s| s.title.is_some()) {
++            let tw = atlas.font.width_text(&title);
++            let tx = if centred {
++                title_at[0] - tw / 2.0
++            } else {
++                title_at[0]
++            };
++            batch.text_styled(atlas, &title, ox + tx, oy + title_at[1], grey, false);
++        }
++        let label = screen.as_ref().map_or(
++            Some([def.inventory[0] as f32, def.inventory[1] as f32 - 12.0]),
++            |s| s.inventory_label,
++        );
++        if let Some([lx, ly]) = label {
++            let inventory = self.translate("container.inventory", "Inventory");
++            batch.text(atlas, &inventory, ox + lx, oy + ly, grey, false);
++        }
++    }
++
++    /// The tooltip of the bar or button under the pointer, when no slot's is shown.
++    pub(super) fn draw_mod_machine_tooltip(&mut self, batch: &mut HudBatch) {
++        if self.carried.is_some() || self.slot_at(batch, self.cursor.0, self.cursor.1).is_some() {
++            return;
++        }
++        let Some((_, Some(screen))) = self.open_machine() else {
++            return;
++        };
++        let Some(BlockEntity::ModContainer(m)) = self.container_kind() else {
++            return;
++        };
++        let (ox, oy) = self.inventory_origin(batch);
++        let Some(lines) = screen.tooltip(self.cursor.0 - ox, self.cursor.1 - oy, &m.data) else {
++            return;
++        };
++        let lines: Vec<_> = lines
++            .into_iter()
++            .map(|l| (horizon_client::text::Text::literal(l), u32::MAX))
++            .collect();
++        self.draw_tooltip_lines(batch, &lines, self.cursor.0, self.cursor.1);
++    }
++
++    /// A click on one of the open machine screen's buttons: the server's
++    /// mods hear it (`ServerboundContainerButtonClickPacket`). False when the
++    /// pointer is on no button.
++    pub(super) fn mod_machine_button_click(&mut self) -> bool {
++        let Some((_, Some(screen))) = self.open_machine() else {
++            return false;
++        };
++        let Some(size) = self
++            .renderer
++            .as_ref()
++            .map(|r| [r.config.width, r.config.height])
++        else {
++            return false;
++        };
++        let batch = HudBatch::new(size);
++        let (ox, oy) = self.inventory_origin(&batch);
++        let Some(button) = screen.button_at(self.cursor.0 - ox, self.cursor.1 - oy) else {
++            return false;
++        };
++        self.audio
++            .play("minecraft:ui.button.click", None, 0.25, 1.0);
++        if let Some((window, _)) = self.remote.as_ref().and_then(|r| r.menu.clone()) {
++            self.send(
++                horizon_protocol::packets::play::Serverbound::ContainerButtonClick(
++                    horizon_protocol::packets::play::ContainerButtonClick {
++                        container: window,
++                        button: button as i32,
++                    },
++                ),
++            );
++        } else if let Some(key) = self.container {
++            let u = self.acting_player_uuid();
++            let uuid = u.iter().fold(0u128, |a, &w| a << 32 | u128::from(w as u32));
++            self.machine_button(uuid, [key.0, key.1, key.2], button);
++        }
++        true
++    }
++}
++
++impl Game<'_> {
++    /// The facing of the block at `pos`, `north`...
++    fn facing_at(&self, pos: [i32; 3]) -> Option<String> {
++        let state = self.world.block(pos[0], pos[1], pos[2]);
++        self.pack
++            .assets
++            .registry
++            .state(state)
++            .and_then(|s| s.properties.get("facing").cloned())
++    }
++
++    /// A multiblock's cell outlines the whole volume, as HBM's
++    /// `BlockDummyable` boxes do: the box relative to the cell at `pos`.
++    pub(super) fn multiblock_outline(&self, pos: [i32; 3], name: &str) -> Option<[f64; 6]> {
++        if name.starts_with("minecraft:") {
++            return None;
++        }
++        let core = if horizon_world::mod_machines::is_dummy(name) {
++            horizon_world::mod_machines::core_of(pos, |c| {
++                let state = self.world.block(c[0], c[1], c[2]);
++                (
++                    self.res.facts().get(state).name.to_string(),
++                    self.facing_at(c),
++                )
++            })?
++        } else {
++            pos
++        };
++        let state = self.world.block(core[0], core[1], core[2]);
++        let def = horizon_world::mod_machines::get(&self.res.facts().get(state).name)?;
++        let m = def.multiblock.as_ref()?;
++        let facing = self
++            .facing_at(core)
++            .as_deref()
++            .and_then(horizon_world::mod_machines::facing_step)?;
++        let (lo, hi) = m.bounds(core, facing);
++        let rel = |v: i32, i: usize| f64::from(v - pos[i]);
++        Some([
++            rel(lo[0], 0),
++            rel(lo[1], 1),
++            rel(lo[2], 2),
++            rel(hi[0], 0),
++            rel(hi[1], 1),
++            rel(hi[2], 2),
++        ])
++    }
++}
+diff --git a/crates/horizon-client/src/game/mods.rs b/crates/horizon-client/src/game/mods.rs
+index fb0c3b341..290b6d410 100644
+--- a/crates/horizon-client/src/game/mods.rs
++++ b/crates/horizon-client/src/game/mods.rs
+@@ -708,7 +708,9 @@ impl Game<'_> {
+                 server @ (Output::Tell { .. }
+                 | Output::Broadcast { .. }
+                 | Output::Reply { .. }
+-                | Output::SetBlocks { .. }) => {
++                | Output::SetBlocks { .. }
++                | Output::MachineSlot { .. }
++                | Output::MachineData { .. }) => {
+                     self.route_server_output(host.as_deref_mut(), server);
+                     continue;
+                 }
+diff --git a/crates/horizon-client/src/game/remote.rs b/crates/horizon-client/src/game/remote.rs
+index 0e5f69fa0..c914a1bc6 100644
+--- a/crates/horizon-client/src/game/remote.rs
++++ b/crates/horizon-client/src/game/remote.rs
+@@ -1643,6 +1643,10 @@ impl Game<'_> {
+             "minecraft:generic_9x4" => rows(4),
+             "minecraft:generic_9x5" => rows(5),
+             "minecraft:generic_9x6" => rows(6),
++            // A content mod's machine: its slots, then the inventory.
++            m if horizon_world::mod_machines::get(m).is_some() => {
++                slots(horizon_world::mod_machines::get(m)?.slots.len())
++            }
+             // HopperMenu; DispenserMenu (dispensers and droppers).
+             "minecraft:hopper" => slots(5),
+             "minecraft:generic_3x3" => slots(9),
+@@ -2763,6 +2767,19 @@ impl Game<'_> {
+                         Ok(9) => c.triggered = v == 1,
+                         _ => {}
+                     },
++                    // A mod machine's int values, each as its low then high short.
++                    Some(BlockEntity::ModContainer(m)) => {
++                        if let Ok(k) = usize::try_from(p.id)
++                            && let Some(d) = m.data.get_mut(k / 2)
++                        {
++                            let half = i32::from(p.value as u16);
++                            *d = if k % 2 == 0 {
++                                (*d & !0xFFFF) | half
++                            } else {
++                                (*d & 0xFFFF) | (half << 16)
++                            };
++                        }
++                    }
+                     // BrewingStandBlockEntity.dataAccess.
+                     Some(BlockEntity::Brewing(b)) => match p.id {
+                         0 => b.brew_time = v,
+@@ -5916,6 +5933,8 @@ impl Game<'_> {
+             "minecraft:generic_3x3" => Some(BlockEntity::Chest(vec![None; 9])),
+             // CrafterMenu: the disabled slots and triggered come in ContainerSetData.
+             "minecraft:crafter_3x3" => Some(BlockEntity::Crafter(Default::default())),
++            // A content mod's machine: its slots and values follow.
++            m if horizon_world::mod_machines::get(m).is_some() => BlockEntity::for_block(m),
+             m if m.starts_with("minecraft:generic_9x") || m == "minecraft:shulker_box" => {
+                 let rows = m
+                     .strip_prefix("minecraft:generic_9x")
+diff --git a/crates/horizon-client/src/game/server_mods.rs b/crates/horizon-client/src/game/server_mods.rs
+index a5a4b0f3f..f8fa9d86d 100644
+--- a/crates/horizon-client/src/game/server_mods.rs
++++ b/crates/horizon-client/src/game/server_mods.rs
+@@ -48,19 +48,24 @@ impl Game<'_> {
+         false
+     }
+     pub(super) fn apply_mod_block_writes(&mut self) {}
++    pub(super) fn machine_button(&mut self, _uuid: u128, _pos: [i32; 3], _button: u32) {}
+ }
+ 
+ #[cfg(feature = "mods")]
+ mod run {
+     use super::{Game, LanHost, ModEvent, Who};
+     use horizon_client::chunk_map::ChunkMap;
++    use horizon_client::{
++        block_entities::BlockEntities, containers::BlockEntity, items::ItemStack,
++    };
+     use horizon_client::{
+         command::args::GameMode as Mode,
+         lan::data::component_nbt,
+         text::{self, Text},
+     };
+     use horizon_mods::{
+-        ArgumentKind, BlockPos, GameMode, Output, ServerCommand, ServerPlayer, WorldView,
++        ArgumentKind, BlockPos, GameMode, MachineStack, Output, ServerCommand, ServerPlayer,
++        WorldView,
+     };
+     use horizon_protocol::packets::play::{self, Clientbound as C};
+     use horizon_world::registry::{BlockRegistry, BlockStateId};
+@@ -76,6 +81,10 @@ mod run {
+         registry: &'static BlockRegistry,
+         biomes: std::sync::Arc<horizon_client::biome::Biomes>,
+         dims: Vec<(&'static str, ChunkMap)>,
++        /// The levels' block entities, lent with the chunks (capability
++        /// `machines` reads content mods' machines in them).
++        entities: Vec<(&'static str, BlockEntities)>,
++        res: std::sync::Arc<super::super::Resources>,
+     }
+     impl WorldView for LentWorld {
+         fn block(&self, dimension: &str, x: i32, y: i32, z: i32) -> Option<String> {
+@@ -99,6 +108,31 @@ mod run {
+                 .map(drop)
+                 .map_err(|e| format!("{state}: {e}"))
+         }
++        fn machine_slots(
++            &self,
++            dimension: &str,
++            pos: [i32; 3],
++        ) -> Option<Vec<Option<MachineStack>>> {
++            let (_, entities) = self.entities.iter().find(|(d, _)| *d == dimension)?;
++            let Some(BlockEntity::ModContainer(m)) = entities.get(&(pos[0], pos[1], pos[2])) else {
++                return None;
++            };
++            Some(
++                m.items
++                    .iter()
++                    .map(|s| {
++                        s.as_ref().map(|s| MachineStack {
++                            id: s.item.to_string(),
++                            count: s.count,
++                            damage: s.damage,
++                        })
++                    })
++                    .collect(),
++            )
++        }
++        fn max_stack(&self, id: &str) -> Option<u32> {
++            self.res.items().get(id).map(|i| i.max_stack)
++        }
+     }
+ 
+     /// Server mods' commands as a root of the commands report
+@@ -341,10 +375,21 @@ mod run {
+             }
+             let registry = self.pack.assets.registry;
+             let biomes = self.res.biomes().clone();
++            let mut entities = vec![(
++                self.dim.id(),
++                std::mem::take(&mut self.world.block_entities),
++            )];
++            for dim in self.levels.parked_dims() {
++                if let Some(p) = self.levels.parked_mut(dim) {
++                    entities.push((dim.id(), std::mem::take(&mut p.world.block_entities)));
++                }
++            }
+             self.mods.mods.lend_world(Box::new(LentWorld {
+                 registry,
+                 biomes,
+                 dims,
++                entities,
++                res: self.res.clone(),
+             }));
+         }
+ 
+@@ -361,6 +406,13 @@ mod run {
+             if let Some(i) = dims.iter().position(|(d, _)| *d == self.dim.id()) {
+                 self.world.chunks = dims.swap_remove(i).1;
+             }
++            for (dim, entities) in lent.entities {
++                if dim == self.dim.id() {
++                    self.world.block_entities = entities;
++                } else if let Some(p) = self.levels.parked_mut(super::super::Dim::from_id(dim)) {
++                    p.world.block_entities = entities;
++                }
++            }
+             for (dim, chunks) in self.levels.parked_chunks() {
+                 if let Some(i) = dims.iter().position(|(d, _)| *d == dim.id()) {
+                     *chunks = dims.swap_remove(i).1;
+@@ -368,6 +420,53 @@ mod run {
+             }
+         }
+ 
++        /// The block entity at `pos` of `dimension`'s level, in place or parked.
++        fn machine_entity(&mut self, dimension: &str, pos: [i32; 3]) -> Option<&mut BlockEntity> {
++            let key = (pos[0], pos[1], pos[2]);
++            if dimension == self.dim.id() {
++                return self.world.block_entities.get_mut(&key);
++            }
++            self.levels
++                .parked_mut(super::super::Dim::from_id(dimension))?
++                .world
++                .block_entities
++                .get_mut(&key)
++        }
++
++        /// `machines.set-slot`: a slot that holds the item already keeps its
++        /// components; its count and damage change.
++        fn set_machine_slot(
++            &mut self,
++            dimension: &str,
++            pos: [i32; 3],
++            slot: usize,
++            stack: Option<MachineStack>,
++        ) {
++            let in_place = dimension == self.dim.id();
++            let Some(BlockEntity::ModContainer(m)) = self.machine_entity(dimension, pos) else {
++                return;
++            };
++            let Some(cell) = m.items.get_mut(slot) else {
++                return;
++            };
++            *cell = match (cell.take(), stack) {
++                (_, None) => None,
++                (Some(mut old), Some(new)) if *old.item == *new.id => {
++                    old.count = new.count;
++                    old.damage = new.damage;
++                    Some(old)
++                }
++                (_, Some(new)) => {
++                    let mut stack = ItemStack::new(&new.id, new.count);
++                    stack.damage = new.damage;
++                    Some(stack)
++                }
++            };
++            if in_place {
++                self.container_changed((pos[0], pos[1], pos[2]));
++            }
++        }
++
+         /// Makes the blocks server mods set in the level in place, in order,
+         /// as `/setblock` does. Those of other dimensions wait for their level.
+         pub(in crate::game) fn apply_mod_block_writes(&mut self) {
+@@ -399,6 +498,20 @@ mod run {
+             }
+         }
+ 
++        /// A player pressed `button` of the machine screen at `pos` (in the
++        /// level in place): the server mods hear it on their next poll.
++        pub(in crate::game) fn machine_button(&mut self, uuid: u128, pos: [i32; 3], button: u32) {
++            let [x, y, z] = pos;
++            self.mods.mods.machine_button(horizon_mods::MachineButton {
++                player: uuid_string(uuid),
++                dimension: self.dim.id().to_owned(),
++                x,
++                y,
++                z,
++                button,
++            });
++        }
++
+         /// A player broke (or placed) `state` at `pos`: the player acting now.
+         pub(in crate::game) fn mod_block_event(
+             &mut self,
+@@ -554,6 +667,24 @@ mod run {
+                         self.tell_server_player(host.as_deref_mut(), &p.id, line);
+                     }
+                 }
++                Output::MachineSlot {
++                    dimension,
++                    pos,
++                    slot,
++                    stack,
++                } => self.set_machine_slot(&dimension, pos, slot as usize, stack),
++                Output::MachineData {
++                    dimension,
++                    pos,
++                    values,
++                } => {
++                    if let Some(BlockEntity::ModContainer(m)) = self.machine_entity(&dimension, pos)
++                    {
++                        for (d, v) in m.data.iter_mut().zip(values) {
++                            *d = v;
++                        }
++                    }
++                }
+                 Output::SetBlocks {
+                     name,
+                     dimension,
+diff --git a/crates/horizon-client/src/lan/containers.rs b/crates/horizon-client/src/lan/containers.rs
+index 59f01552e..b09ec80ac 100644
+--- a/crates/horizon-client/src/lan/containers.rs
++++ b/crates/horizon-client/src/lan/containers.rs
+@@ -580,6 +580,13 @@ impl Hub {
+                 .chain([&c.triggered])
+                 .map(|&d| i32::from(d))
+                 .collect(),
++            // A mod machine's values are ints: each goes as its low and high
++            // shorts, as HBM's machines split their power.
++            Some(BlockEntity::ModContainer(m)) => m
++                .data
++                .iter()
++                .flat_map(|&v| [v & 0xFFFF, (v >> 16) & 0xFFFF])
++                .collect(),
+             _ => return,
+         }
+         .into_iter()
+diff --git a/crates/horizon-client/src/lib.rs b/crates/horizon-client/src/lib.rs
+index 4e6c902a5..8bcbef0bf 100644
+--- a/crates/horizon-client/src/lib.rs
++++ b/crates/horizon-client/src/lib.rs
+@@ -11,11 +11,11 @@ pub use horizon_client_render::{
+     collisions, command_block, containers, crash, datapack, dynamic_light, effects, environment,
+     extras, fast_hash, fog, font, gfx, graphics, graphics_style, graphics_ui, hud, hud_layout,
+     hud_overlays, inventory_effects, java_text, level_loading, light, lod, logging, menu_blur,
+-    mesher, minimap, mipmap, mod_list, model_library, models, options_file, options_fixes,
+-    options_ui, overlay, pack_screen, packs, par, particles, poi_sections, providers, screen_draw,
+-    screen_effects, sculk, settings, shader_pack_list, signs, skins, sound_engine, sound_events,
+-    spans, sprites, streaming, tab_list, telemetry, testgen, title_edition, trims, ui, vault,
+-    weather, widgets, world, worldborder, zip,
++    mesher, minimap, mipmap, mod_list, mod_screens, model_library, models, options_file,
++    options_fixes, options_ui, overlay, pack_screen, packs, par, particles, poi_sections,
++    providers, screen_draw, screen_effects, sculk, settings, shader_pack_list, signs, skins,
++    sound_engine, sound_events, spans, sprites, streaming, tab_list, telemetry, testgen,
++    title_edition, trims, ui, vault, weather, widgets, world, worldborder, zip,
+ };
+ pub mod attack_strength;
+ pub mod attribute_updates;
+diff --git a/crates/horizon-client/src/menu.rs b/crates/horizon-client/src/menu.rs
+index 1aeeec1e1..54d69f0b0 100644
+--- a/crates/horizon-client/src/menu.rs
++++ b/crates/horizon-client/src/menu.rs
+@@ -122,6 +122,9 @@ pub enum Kind {
+     /// `CreativeModeInventoryScreen.ItemPickerMenu`: an item tab's 45
+     /// display slots, then the hotbar.
+     ItemPicker,
++    /// A content mod's machine (`horizon_world::mod_machines`, by its menu
++    /// number): its slots, then the inventory.
++    Mod(u16),
+ }
+ 
+ impl Kind {
+@@ -218,6 +221,12 @@ enum Role {
+     /// An `ArmorSlot` of a mount for this `EquipmentSlot` ("saddle" or
+     /// "body"): `isEquippableInSlot` for `Menu::mount`, one item.
+     MountEquip(&'static str),
++    /// Slot `slot` of the mod machine with menu number `machine`: what it
++    /// accepts is the machine file's rule.
++    Mod {
++        machine: u16,
++        slot: u16,
++    },
+ }
+ 
+ #[derive(Clone, Copy)]
+@@ -580,6 +589,19 @@ impl Menu {
+                 });
+                 player(&mut slots);
+             }
++            Kind::Mod(machine) => {
++                let n = horizon_world::mod_machines::by_index(machine).map_or(0, |d| d.slots.len());
++                containers[MAIN] = vec![None; n];
++                slots.extend((0..n).map(|index| Slot {
++                    container: MAIN,
++                    index,
++                    role: Role::Mod {
++                        machine,
++                        slot: index as u16,
++                    },
++                }));
++                player(&mut slots);
++            }
+             Kind::Lectern => {
+                 containers[MAIN] = vec![None; 1];
+                 slots.extend(main(1, Role::Plain));
+@@ -1255,6 +1277,9 @@ impl Menu {
+             Role::Shulker => fits_inside_container_items(stack),
+             Role::Fuel => Self::is_fuel(env, stack) || Self::is_bucket(stack),
+             Role::Output | Role::CraftResult | Role::Inert => false,
++            Role::Mod { machine, slot } => horizon_world::mod_machines::by_index(machine)
++                .and_then(|d| d.slots.get(slot as usize).map(|s| s.accepts(&stack.item)))
++                .unwrap_or(false),
+             Role::CrafterIn => self.data.get(self.slots[s].index) != Some(&1),
+             Role::Potion => {
+                 env.brewing.is_bottle(stack)
+@@ -2106,6 +2131,30 @@ impl Menu {
+             }
+             // LecternMenu.quickMoveStack moves nothing.
+             Kind::Lectern => return None,
++            // ContainerBase.transferStackInSlot of HBM's machines: out to the
++            // inventory, or in to the first slots that take the stack.
++            Kind::Mod(_) => {
++                check_count = false;
++                let n = total - 36;
++                if index < n {
++                    if !self.move_to(env, &mut stack, n, total, true) {
++                        return None;
++                    }
++                } else {
++                    let mut moved = false;
++                    for dest in 0..n {
++                        if stack.count == 0 {
++                            break;
++                        }
++                        if self.may_place(env, dest, &stack) {
++                            moved |= self.move_to(env, &mut stack, dest, dest + 1, false);
++                        }
++                    }
++                    if !moved {
++                        return None;
++                    }
++                }
++            }
+             Kind::Mount(columns) => {
+                 // AbstractMountInventoryMenu.quickMoveStack: no count check
+                 // and no onTake.
+diff --git a/crates/horizon-client/src/mod_content.rs b/crates/horizon-client/src/mod_content.rs
+index 5815d1bc3..67a2bf390 100644
+--- a/crates/horizon-client/src/mod_content.rs
++++ b/crates/horizon-client/src/mod_content.rs
+@@ -19,7 +19,7 @@ use horizon_mods::content::{Block, Content, Rarity};
+ use horizon_world::nbt::{self, JavaString, Limits, Tag};
+ use serde::{Deserialize, Serialize, de};
+ use std::{
+-    collections::BTreeMap,
++    collections::{BTreeMap, BTreeSet},
+     fmt, fs,
+     ops::Range,
+     path::{Path, PathBuf},
+@@ -235,6 +235,7 @@ struct NewItem {
+     rename: Rename,
+     max_stack_size: Option<u8>,
+     rarity: Option<Rarity>,
++    max_damage: Option<u32>,
+ }
+ 
+ struct Plan<'a> {
+@@ -250,6 +251,14 @@ struct Plan<'a> {
+     /// accept as `#<ns>:<path>` once they are in the exported registries.
+     item_tags: Vec<String>,
+     block_tags: Vec<String>,
++    /// The mods' machines (`data/<ns>/horizon_machine/<name>.json`,
++    /// `horizon_world::mod_machines`): each gets a menu type of its name.
++    menus: Vec<String>,
++    /// Blocks a model file draws (`assets/<ns>/horizon_model/<name>.json`,
++    /// `block_entity_render`): they let light and the faces behind them
++    /// through, as HBM's machines do (`isOpaqueCube` false), whatever their
++    /// template.
++    see_through: BTreeSet<String>,
+ }
+ 
+ fn read_json(path: &Path) -> Result<J> {
+@@ -360,19 +369,38 @@ impl<'a> Plan<'a> {
+                     rename: Rename::new(item, &b.decl.id),
+                     max_stack_size: None,
+                     rarity: None,
++                    max_damage: None,
+                 });
+             }
+         }
+-        let (mut item_tags, mut block_tags) = (Vec::new(), Vec::new());
++        let (mut item_tags, mut block_tags, mut menus) = (Vec::new(), Vec::new(), Vec::new());
++        let mut see_through = BTreeSet::new();
+         for m in &sorted {
+             for i in &m.content.items {
+                 items.push(NewItem {
+                     rename: Rename::new(&i.template, &i.id),
+                     max_stack_size: i.max_stack_size,
+                     rarity: i.rarity,
++                    max_damage: i.max_damage,
+                 });
+             }
+             for file in &m.content.files {
++                if let Some((ns, name)) = file
++                    .strip_prefix("data/")
++                    .and_then(|f| f.strip_suffix(".json"))
++                    .and_then(|f| f.split_once("/horizon_machine/"))
++                    .filter(|(_, name)| !name.contains('/'))
++                {
++                    menus.push(format!("{ns}:{name}"));
++                }
++                if let Some((ns, name)) = file
++                    .strip_prefix("assets/")
++                    .and_then(|f| f.strip_suffix(".json"))
++                    .and_then(|f| f.split_once("/horizon_model/"))
++                    .filter(|(_, name)| !name.contains('/'))
++                {
++                    see_through.insert(format!("{ns}:{name}"));
++                }
+                 let Some((ns, rest)) = file
+                     .strip_prefix("data/")
+                     .and_then(|f| f.strip_suffix(".json"))
+@@ -395,6 +423,8 @@ impl<'a> Plan<'a> {
+             sounds,
+             item_tags,
+             block_tags,
++            menus,
++            see_through,
+         })
+     }
+ 
+@@ -462,6 +492,18 @@ impl<'a> Plan<'a> {
+         if let Some(s) = &p.sounds {
+             row.set("sound", self.sounds[s].clone());
+         }
++        if self.see_through.contains(&b.decl.id) {
++            // The block-entity renderer draws it, whatever its template, and
++            // the chunk mesh leaves it out: its blockstate's model (the cube a
++            // game without models shows) only gives the particles.
++            row.set("block_entity", J::Bool(true));
++            row.set("render_shape", J::Str("ENTITYBLOCK_ANIMATED".into()));
++            row.set("dampening", J::Num(0.into()));
++            row.set("skylight_down", J::Bool(true));
++            for key in ["shape_occlusion", "can_occlude", "solid_render"] {
++                row.set(key, J::Bool(false));
++            }
++        }
+     }
+ 
+     /// Adds each new block's copy of the template's entry to a map by name.
+@@ -490,6 +532,11 @@ impl<'a> Plan<'a> {
+                 if let Some(n) = i.max_stack_size {
+                     v.set("minecraft:max_stack_size", J::Num(n.into()));
+                 }
++                if let Some(n) = i.max_damage {
++                    v.set("minecraft:max_damage", J::Num(n.into()));
++                    v.set("minecraft:damage", J::Num(0.into()));
++                    v.set("minecraft:max_stack_size", J::Num(1.into()));
++                }
+                 if let Some(r) = i.rarity {
+                     let r = match r {
+                         Rarity::Common => "common",
+@@ -567,6 +614,7 @@ impl<'a> Plan<'a> {
+                 for (registry, names) in [
+                     ("minecraft:item", new_items.collect::<Vec<_>>()),
+                     ("minecraft:block", new_blocks.collect()),
++                    ("minecraft:menu", self.menus.clone()),
+                 ] {
+                     let Some(J::Obj(entries)) =
+                         doc.get_mut(registry).and_then(|r| r.get_mut("entries"))
+diff --git a/crates/horizon-client/src/save.rs b/crates/horizon-client/src/save.rs
+index aadfcb285..7fb796f32 100644
+--- a/crates/horizon-client/src/save.rs
++++ b/crates/horizon-client/src/save.rs
+@@ -415,6 +415,7 @@ fn block_entity_id(e: &crate::containers::BlockEntity, block: &str) -> String {
+         (crate::containers::BlockEntity::Chest(_), b) if b.ends_with("shulker_box") => {
+             "minecraft:shulker_box".to_owned()
+         }
++        (crate::containers::BlockEntity::ModContainer(m), _) => m.block.to_string(),
+         _ => e.id().to_owned(),
+     }
+ }
+@@ -488,6 +489,10 @@ pub fn encode_block_entity(
+             entries.push(("Items", encode_items(&b.items)));
+             entries.push(("last_interacted_slot", Tag::Int(b.last_slot)));
+         }
++        BlockEntity::ModContainer(m) => {
++            entries.push(("Items", encode_items(&m.items)));
++            entries.push(("horizon_data", Tag::IntArray(m.data.clone())));
++        }
+         // CampfireBlockEntity.saveAdditional.
+         BlockEntity::Campfire(c) => {
+             entries.push(("Items", encode_items(&c.items)));
+@@ -733,6 +738,15 @@ pub fn decode_block_entity(tag: &Tag) -> Option<((i32, i32, i32), crate::contain
+             }
+             b.last_slot = int("last_interacted_slot").unwrap_or(-1);
+         }
++        // A mod's machine: a file with fewer slots than the save keeps the first.
++        BlockEntity::ModContainer(m) => {
++            m.items = decode_items(tag.get("Items"), m.items.len());
++            if let Some(Tag::IntArray(v)) = tag.get("horizon_data") {
++                for (d, v) in m.data.iter_mut().zip(v) {
++                    *d = *v;
++                }
++            }
++        }
+         // CampfireBlockEntity.loadAdditional: missing time arrays stay zeros.
+         BlockEntity::Campfire(c) => {
+             for (slot, item) in decode_items(tag.get("Items"), 4).into_iter().enumerate() {
+diff --git a/crates/horizon-mod-sdk/src/lib.rs b/crates/horizon-mod-sdk/src/lib.rs
+index 1e7120091..271e9b11f 100644
+--- a/crates/horizon-mod-sdk/src/lib.rs
++++ b/crates/horizon-mod-sdk/src/lib.rs
+@@ -198,6 +198,8 @@ pub mod server {
+         Argument, ArgumentKind, ArgumentValue, BlockPos, Guest as __Guest, Registration,
+         ServerCommand,
+     };
++    /// Capability `machines`: content mods' machine slots and screen values.
++    pub use horizon::mods::machines::{self, ButtonPress, ItemStack};
+     pub use horizon::mods::players::{self, GameMode, Player};
+     pub use horizon::mods::world::{self, BlockChange};
+ 
+diff --git a/crates/horizon-mod-sdk/wit/horizon.wit b/crates/horizon-mod-sdk/wit/horizon.wit
+index 0680cce92..230fb3f44 100644
+--- a/crates/horizon-mod-sdk/wit/horizon.wit
++++ b/crates/horizon-mod-sdk/wit/horizon.wit
+@@ -691,6 +691,49 @@ interface %world {
+     set-blocks: func(dimension: string, blocks: list<block-change>) -> result<_, string>;
+ }
+ 
++/// Capability `machines`, server mods only (manifest `api = "0.3"`,
++/// experimental): the slots and screen values of content mods' machines
++/// (`data/<ns>/horizon_machine/<block>.json`). The game keeps the slots: it
++/// saves them with the chunk, shows them in the machine's screen, where
++/// players move items as in a furnace's, and drops them when the block
++/// goes. The item record and the slot rules are those of API 0.4's
++/// `machine` interface, here addressed by position.
++interface machines {
++    /// An item, how many and its wear. Other item components are not
++    /// carried: a slot set to the item it holds keeps them.
++    record item-stack {
++        /// `minecraft:coal`, `<mod>:<path>`, ...
++        id: string,
++        count: u32,
++        /// `minecraft:damage`: the wear of a tool (a blade), 0 for none.
++        damage: u32,
++    }
++    /// A player pressed one of a machine screen's buttons.
++    record button-press {
++        /// The player's UUID.
++        player: string,
++        dimension: string,
++        x: s32,
++        y: s32,
++        z: s32,
++        /// The button's number in the screen file.
++        button: u32,
++    }
++    /// The slots of the machine at a position, as of this call: none where
++    /// there is none, or no chunk is loaded.
++    get-slots: func(dimension: string, x: s32, y: s32, z: s32) -> option<list<option<item-stack>>>;
++    /// Sets one slot (none empties it) after this call returns, before
++    /// players act again; a stack over the item's maximum is cut to it.
++    /// False for no machine there, a slot out of range or an unknown item.
++    set-slot: func(dimension: string, x: s32, y: s32, z: s32, slot: u32, stack: option<item-stack>) -> bool;
++    /// The values the machine's screen shows (bars, tooltips, lights), from
++    /// the first: at most the file's `data`, the rest kept. False for no
++    /// machine there.
++    set-data: func(dimension: string, x: s32, y: s32, z: s32, values: list<s32>) -> bool;
++    /// The button presses since the last call, oldest first (at most 256).
++    poll-buttons: func() -> list<button-press>;
++}
++
+ /// What the server calls in a server mod (manifest `api = "0.3"`,
+ /// experimental). Only the hooks `init` asks for are ever called. The player
+ /// in each event is as the server saw them when it happened.
+@@ -802,6 +845,7 @@ world horizon-server-mod {
+     import storage;
+     import players;
+     import %world;
++    import machines;
+     export server-events;
+ }
+ 
+diff --git a/crates/horizon-mods/src/api_level.rs b/crates/horizon-mods/src/api_level.rs
+index 045a9346b..e9e71e8b0 100644
+--- a/crates/horizon-mods/src/api_level.rs
++++ b/crates/horizon-mods/src/api_level.rs
+@@ -7,13 +7,13 @@
+ //! version's level so the launcher can tell before it installs.
+ 
+ /// The newest level this Horizon serves.
+-pub const LEVEL: u32 = 7;
++pub const LEVEL: u32 = 8;
+ 
+ /// Every function the game offers mods, as `interface.function`, with its
+ /// level. Level 0 is the contract of Horizon 0.2.67 to 0.2.69. A new
+ /// function takes the next level and raises [`LEVEL`] (the `api_reference`
+ /// test fails until it is listed here).
+-pub const FUNCTIONS: [(&str, u32); 46] = [
++pub const FUNCTIONS: [(&str, u32); 50] = [
+     ("log.write", 0),
+     ("game.get-player", 0),
+     ("game.get-clock", 0),
+@@ -60,6 +60,10 @@ pub const FUNCTIONS: [(&str, u32); 46] = [
+     ("recipes.place", 6),
+     ("recipes.give", 6),
+     ("render.set-far-terrain", 7),
++    ("machines.get-slots", 8),
++    ("machines.set-slot", 8),
++    ("machines.set-data", 8),
++    ("machines.poll-buttons", 8),
+ ];
+ 
+ /// What the game's program carries so the launcher can read its level
+diff --git a/crates/horizon-mods/src/content.rs b/crates/horizon-mods/src/content.rs
+index 95b6761cc..76ef11b3a 100644
+--- a/crates/horizon-mods/src/content.rs
++++ b/crates/horizon-mods/src/content.rs
+@@ -116,6 +116,7 @@ struct ItemFile {
+     template: String,
+     max_stack_size: Option<u8>,
+     rarity: Option<Rarity>,
++    max_damage: Option<u32>,
+ }
+ 
+ /// An item the mod adds: a vanilla template item's components under a new
+@@ -127,6 +128,8 @@ pub struct Item {
+     pub template: String,
+     pub max_stack_size: Option<u8>,
+     pub rarity: Option<Rarity>,
++    /// `minecraft:max_damage`: the item wears (a tool); it stacks to 1.
++    pub max_damage: Option<u32>,
+ }
+ 
+ #[derive(Debug)]
+@@ -349,6 +352,16 @@ impl Content {
+             if file.max_stack_size.is_some_and(|n| !(1..=99).contains(&n)) {
+                 return Err(format!("{name}: max_stack_size is 1 to 99"));
+             }
++            // DataComponents.MAX_DAMAGE: a positive int; a damageable item stacks to 1.
++            if file
++                .max_damage
++                .is_some_and(|n| n == 0 || n > i32::MAX as u32)
++            {
++                return Err(format!("{name}: max_damage is 1 or more"));
++            }
++            if file.max_damage.is_some() && file.max_stack_size.is_some_and(|n| n > 1) {
++                return Err(format!("{name}: an item with max_damage stacks to 1"));
++            }
+             if !ids.insert(item.clone()) {
+                 return Err(format!("{name}: {item} is also a block's item"));
+             }
+@@ -357,6 +370,7 @@ impl Content {
+                 template: file.template,
+                 max_stack_size: file.max_stack_size,
+                 rarity: file.rarity,
++                max_damage: file.max_damage,
+             });
+         }
+         drop(reader);
+@@ -564,6 +578,20 @@ capabilities = ["registries"]
+                 br#"{"template": "minecraft:stick", "max_stack_size": 100}"#,
+             )],
+         );
++        refused(
++            "wear-stack",
++            &[(
++                "data/ruby/horizon/item/a.json",
++                br#"{"template": "minecraft:stick", "max_damage": 400, "max_stack_size": 16}"#,
++            )],
++        );
++        refused(
++            "no-wear",
++            &[(
++                "data/ruby/horizon/item/a.json",
++                br#"{"template": "minecraft:stick", "max_damage": 0}"#,
++            )],
++        );
+     }
+ 
+     #[test]
+diff --git a/crates/horizon-mods/src/manifest.rs b/crates/horizon-mods/src/manifest.rs
+index c2f2f61fc..6745a7d53 100644
+--- a/crates/horizon-mods/src/manifest.rs
++++ b/crates/horizon-mods/src/manifest.rs
+@@ -103,9 +103,12 @@ pub enum Capability {
+     /// The recipes and items the game knows, for recipe viewers
+     /// (interface `recipes`).
+     Recipes,
++    /// The slots and screen values of content mods' machines (server mods,
++    /// interface `machines`).
++    Machines,
+ }
+ impl Capability {
+-    pub const ALL: [Capability; 12] = [
++    pub const ALL: [Capability; 13] = [
+         Capability::GameRead,
+         Capability::Chat,
+         Capability::Hud,
+@@ -118,12 +121,13 @@ impl Capability {
+         Capability::Players,
+         Capability::World,
+         Capability::Recipes,
++        Capability::Machines,
+     ];
+     /// Whether a server mod may have it: the others act on a local player.
+     pub fn on_server(self) -> bool {
+         matches!(
+             self,
+-            Capability::Storage | Capability::Players | Capability::World
++            Capability::Storage | Capability::Players | Capability::World | Capability::Machines
+         )
+     }
+     /// The WIT interface it grants, in `horizon:mods`.
+@@ -141,6 +145,7 @@ impl Capability {
+             Capability::Players => "players",
+             Capability::World => "world",
+             Capability::Recipes => "recipes",
++            Capability::Machines => "machines",
+         }
+     }
+     /// May change in any release: a mod uses it only with
+@@ -148,7 +153,11 @@ impl Capability {
+     pub fn is_experimental(self) -> bool {
+         matches!(
+             self,
+-            Capability::Ui | Capability::Render | Capability::Input | Capability::Recipes
++            Capability::Ui
++                | Capability::Render
++                | Capability::Input
++                | Capability::Recipes
++                | Capability::Machines
+         )
+     }
+     /// What the player reads before turning the mod on: "May <this>".
+@@ -167,6 +176,9 @@ impl Capability {
+             }
+             Capability::Players => "see who is on the server and message them",
+             Capability::World => "read and change the world's blocks",
++            Capability::Machines => {
++                "move the items in its machines and set what their screens show"
++            }
+             Capability::Recipes => {
+                 "read the game's recipes and items and which recipes you know, place recipes in your crafting grid and, in creative mode, give you items"
+             }
+@@ -211,6 +223,7 @@ impl fmt::Display for Capability {
+             Capability::Players => "players",
+             Capability::World => "world",
+             Capability::Recipes => "recipes",
++            Capability::Machines => "machines",
+         };
+         f.write_str(name)
+     }
+diff --git a/crates/horizon-mods/src/runtime.rs b/crates/horizon-mods/src/runtime.rs
+index cff44722b..6624fc7d3 100644
+--- a/crates/horizon-mods/src/runtime.rs
++++ b/crates/horizon-mods/src/runtime.rs
+@@ -3,7 +3,7 @@ use crate::manifest::{Manifest, Package, Side};
+ use server_bindings::{
+     HorizonServerMod,
+     exports::horizon::mods::server_events::Registration as ServerRegistration,
+-    horizon::mods::{players, world as mod_world},
++    horizon::mods::{machines, players, world as mod_world},
+ };
+ use std::{
+     path::{Path, PathBuf},
+@@ -51,6 +51,10 @@ use bindings::{
+     exports::horizon::mods::events::Registration,
+     horizon::mods::{chat, command, game, hud, log as mod_log, storage},
+ };
++/// Capability `machines`' records (WIT `interface machines`).
++pub use server_bindings::horizon::mods::machines::{
++    ButtonPress as MachineButton, ItemStack as MachineStack,
++};
+ pub use server_bindings::{
+     exports::horizon::mods::server_events::{
+         Argument, ArgumentKind, ArgumentValue, BlockPos, ServerCommand,
+@@ -247,6 +251,20 @@ pub enum Output {
+         count: u32,
+         components: String,
+     },
++    /// `machines.set-slot`: slot `slot` of the machine at `pos` (checked
++    /// by the [`WorldView`] lent for the call), none to empty it.
++    MachineSlot {
++        dimension: String,
++        pos: [i32; 3],
++        slot: u32,
++        stack: Option<MachineStack>,
++    },
++    /// `machines.set-data`: the machine's screen values, from the first.
++    MachineData {
++        dimension: String,
++        pos: [i32; 3],
++        values: Vec<i32>,
++    },
+ }
+ 
+ /// The game's world as capability `world` reads it during a call: the
+@@ -261,6 +279,15 @@ pub trait WorldView: std::any::Any + Send {
+     fn has_dimension(&self, dimension: &str) -> bool;
+     /// `Err` (why) for a state string that names no block state.
+     fn check_state(&self, state: &str) -> Result<(), String>;
++    /// The slots of a content mod's machine (capability `machines`): none
++    /// where there is no machine or no chunk loaded.
++    fn machine_slots(&self, _dimension: &str, _pos: [i32; 3]) -> Option<Vec<Option<MachineStack>>> {
++        None
++    }
++    /// The most of item `id` one slot holds; none for an unknown item.
++    fn max_stack(&self, _id: &str) -> Option<u32> {
++        None
++    }
+ }
+ 
+ /// The view lent for the current calls, shared by every mod's store.
+@@ -427,6 +454,8 @@ struct State {
+     storage_budget: u64,
+     limits: StoreLimits,
+     world: WorldSlot,
++    /// Capability `machines`' button presses not yet polled.
++    buttons: Vec<MachineButton>,
+ }
+ 
+ /// The installed mods and the engine running them. `Mods::default()` is
+@@ -542,6 +571,8 @@ impl Mods {
+                 .map_err(|e| e.to_string())?;
+             mod_world::add_to_linker::<State, HasSelf<State>>(&mut linker, |s| s)
+                 .map_err(|e| e.to_string())?;
++            machines::add_to_linker::<State, HasSelf<State>>(&mut linker, |s| s)
++                .map_err(|e| e.to_string())?;
+             UiHost::add_to_linker::<State, HasSelf<State>>(&mut linker, |s| s)
+                 .map_err(|e| e.to_string())?;
+             RenderHost::add_to_linker::<State, HasSelf<State>>(&mut linker, |s| s)
+@@ -628,6 +659,7 @@ impl Mods {
+                 .instances(16)
+                 .build(),
+             world,
++            buttons: Vec::new(),
+         };
+         let mut store = Store::new(engine, state);
+         store.limiter(|s| &mut s.limits);
+@@ -985,6 +1017,18 @@ impl Mods {
+         let b = &self.entries.get(owner)?.run.as_ref()?.store.data().browser;
+         b.recipes.as_ref()
+     }
++    /// A player pressed a button of a machine's screen: every running server
++    /// mod hears it on its next `machines.poll-buttons`.
++    pub fn machine_button(&mut self, press: MachineButton) {
++        for run in self.entries.iter_mut().filter_map(|e| e.run.as_mut()) {
++            if matches!(run.hooks, Hooks::Server(..)) {
++                let buttons = &mut run.store.data_mut().buttons;
++                if buttons.len() < MACHINE_BUTTONS {
++                    buttons.push(press.clone());
++                }
++            }
++        }
++    }
+     /// The player did `event` on mod `owner`'s panel.
+     pub fn browser_event(&mut self, owner: usize, event: BrowserEvent) {
+         if let Some(run) = self.entries.get_mut(owner).and_then(|e| e.run.as_mut()) {
+@@ -1593,6 +1637,80 @@ impl mod_world::Host for State {
+         Ok(())
+     }
+ }
++/// Button presses kept for one mod between polls.
++const MACHINE_BUTTONS: usize = 256;
++
++impl machines::Host for State {
++    fn get_slots(
++        &mut self,
++        dimension: String,
++        x: i32,
++        y: i32,
++        z: i32,
++    ) -> Option<Vec<Option<MachineStack>>> {
++        let view = self.world.lock().ok()?;
++        view.as_ref()?.machine_slots(&dimension, [x, y, z])
++    }
++    fn set_slot(
++        &mut self,
++        dimension: String,
++        x: i32,
++        y: i32,
++        z: i32,
++        slot: u32,
++        stack: Option<MachineStack>,
++    ) -> bool {
++        let stack = {
++            let Ok(view) = self.world.lock() else {
++                return false;
++            };
++            let Some(view) = view.as_ref() else {
++                return false;
++            };
++            let Some(slots) = view.machine_slots(&dimension, [x, y, z]) else {
++                return false;
++            };
++            if slot as usize >= slots.len() {
++                return false;
++            }
++            match stack {
++                None => None,
++                Some(mut s) => {
++                    let Some(max) = view.max_stack(&s.id) else {
++                        return false;
++                    };
++                    s.count = s.count.min(max);
++                    (s.count > 0).then_some(s)
++                }
++            }
++        };
++        self.out.push(Output::MachineSlot {
++            dimension,
++            pos: [x, y, z],
++            slot,
++            stack,
++        });
++        true
++    }
++    fn set_data(&mut self, dimension: String, x: i32, y: i32, z: i32, values: Vec<i32>) -> bool {
++        let known = self.world.lock().ok().and_then(|v| {
++            v.as_ref()
++                .map(|v| v.machine_slots(&dimension, [x, y, z]).is_some())
++        });
++        if known != Some(true) {
++            return false;
++        }
++        self.out.push(Output::MachineData {
++            dimension,
++            pos: [x, y, z],
++            values,
++        });
++        true
++    }
++    fn poll_buttons(&mut self) -> Vec<MachineButton> {
++        std::mem::take(&mut self.buttons)
++    }
++}
+ impl players::Host for State {
+     fn online(&mut self) -> Vec<ServerPlayer> {
+         self.snapshot.players.clone()
+diff --git a/crates/horizon-world/src/level/interact.rs b/crates/horizon-world/src/level/interact.rs
+index 210786493..eafd0c3f3 100644
+--- a/crates/horizon-world/src/level/interact.rs
++++ b/crates/horizon-world/src/level/interact.rs
+@@ -113,6 +113,25 @@ impl<L: LevelAccess + ?Sized> Sim<'_, L> {
+         let data = b.data(state);
+         let block = b.block(state);
+         use InteractionResult::*;
++        // A content mod's machine opens its screen; a multiblock's filler
++        // opens its core's (HBM's `BlockDummyable.standardOpenBehavior`).
++        let name = table.name(state);
++        if !name.starts_with("minecraft:") {
++            if crate::mod_machines::get(name).is_some() {
++                self.player_effect(pos, state, PlayerEffect::OpenMenu);
++                return Success;
++            }
++            if crate::mod_machines::is_dummy(name) {
++                return match b.machine_core(&*self.level, pos) {
++                    Some(core) => {
++                        let core_state = self.state(core);
++                        self.player_effect(core, core_state, PlayerEffect::OpenMenu);
++                        Success
++                    }
++                    None => Pass,
++                };
++            }
++        }
+         for &class in data.chain.iter() {
+             return match class {
+                 Class::Door => {
+diff --git a/crates/horizon-world/src/level/mod.rs b/crates/horizon-world/src/level/mod.rs
+index c7d4db8fc..aa35cfe45 100644
+--- a/crates/horizon-world/src/level/mod.rs
++++ b/crates/horizon-world/src/level/mod.rs
+@@ -549,6 +549,35 @@ impl Behaviours {
+     pub fn block(&self, state: BlockStateId) -> BlockId {
+         self.table.block(state)
+     }
++    /// The `facing` of a state, `north`..., when it has one.
++    pub fn facing_text(&self, state: BlockStateId) -> Option<&str> {
++        self.table
++            .has(state, self.props.facing)
++            .then(|| self.table.text(state, self.props.facing))
++    }
++    /// The core of the content mod multiblock that holds cell `pos`
++    /// (`crate::mod_machines`): the cell itself for a core.
++    pub fn machine_core<L: LevelAccess + ?Sized>(
++        &self,
++        level: &L,
++        pos: BlockPos,
++    ) -> Option<BlockPos> {
++        let name = self.table.name(level.block_state(pos));
++        if crate::mod_machines::get(name).is_some_and(|d| d.multiblock.is_some()) {
++            return Some(pos);
++        }
++        if !crate::mod_machines::is_dummy(name) {
++            return None;
++        }
++        crate::mod_machines::core_of([pos.x, pos.y, pos.z], |c| {
++            let state = level.block_state(BlockPos::new(c[0], c[1], c[2]));
++            (
++                self.table.name(state).to_owned(),
++                self.facing_text(state).map(str::to_owned),
++            )
++        })
++        .map(|c| BlockPos::new(c[0], c[1], c[2]))
++    }
+     pub fn item_binding(&self, item: &str) -> Option<&ItemBinding> {
+         self.items.get(item)
+     }
+diff --git a/crates/horizon-world/src/level/place.rs b/crates/horizon-world/src/level/place.rs
+index 2ec2f02ec..c8f340916 100644
+--- a/crates/horizon-world/src/level/place.rs
++++ b/crates/horizon-world/src/level/place.rs
+@@ -1564,12 +1564,41 @@ impl<L: LevelAccess + ?Sized> Sim<'_, L> {
+     /// `BlockItem.place` (and its subclasses' overrides).
+     pub(crate) fn place(&mut self, input: &PlaceContext) -> PlaceOutcome {
+         let b = self.b;
+-        let Some((ctx, binding, state)) = self.placement(input) else {
++        let Some((mut ctx, binding, state)) = self.placement(input) else {
+             return PlaceOutcome::Failed;
+         };
+         if !self.is_in_valid_bounds(ctx.pos) {
+             return PlaceOutcome::Failed;
+         }
++        // A content mod's multiblock (HBM's `BlockDummyable`): the core sits
++        // its offset away from the player and its dummy fills the rest of the
++        // volume, which must be free.
++        let mut dummies = Vec::new();
++        if let Some(def) = crate::mod_machines::get(b.table.name(state))
++            && let Some(m) = &def.multiblock
++        {
++            let facing = b
++                .facing_text(state)
++                .and_then(crate::mod_machines::facing_step)
++                .unwrap_or([0, 1]);
++            let Some(dummy) = b.table.block_by_name(&m.dummy) else {
++                return PlaceOutcome::Failed;
++            };
++            let dummy = b.table.default_state(dummy);
++            let at = |c: [i32; 3]| BlockPos::new(c[0], c[1], c[2]);
++            let core = m.core_for([ctx.pos.x, ctx.pos.y, ctx.pos.z], facing);
++            let cells = m.cells(core, facing);
++            for &c in std::iter::once(&core).chain(&cells) {
++                let p = at(c);
++                if p != ctx.pos
++                    && !(self.is_in_valid_bounds(p) && self.can_be_replaced(self.state(p), &ctx))
++                {
++                    return PlaceOutcome::Failed;
++                }
++            }
++            ctx.pos = at(core);
++            dummies = cells.into_iter().map(|c| (at(c), dummy)).collect();
++        }
+ 
+         if binding.kind == ItemKind::DoubleHigh {
+             let above_pos = above(ctx.pos);
+@@ -1583,6 +1612,9 @@ impl<L: LevelAccess + ?Sized> Sim<'_, L> {
+         if !self.set_block(ctx.pos, state, 11) {
+             return PlaceOutcome::Failed;
+         }
++        for (p, dummy) in dummies {
++            self.set_block(p, dummy, 3);
++        }
+         let placed = self.state(ctx.pos);
+         if b.block(placed) == b.block(state) {
+             self.set_placed_by(ctx.pos, placed);
+diff --git a/crates/horizon-world/src/level/removal.rs b/crates/horizon-world/src/level/removal.rs
+index 6fe55c790..8270f0e49 100644
+--- a/crates/horizon-world/src/level/removal.rs
++++ b/crates/horizon-world/src/level/removal.rs
+@@ -39,6 +39,12 @@ pub fn pre_remove(name: &str) -> PreRemove {
+         slots,
+         furnace: false,
+     };
++    // A content mod's machine spills its slots as a chest does.
++    if !name.starts_with("minecraft:")
++        && let Some(def) = crate::mod_machines::get(name)
++    {
++        return contents(def.slots.len() as _);
++    }
+     match n {
+         "chest" | "trapped_chest" | "barrel" => contents(27),
+         _ if n.ends_with("copper_chest") => contents(27),
+diff --git a/crates/horizon-world/src/lib.rs b/crates/horizon-world/src/lib.rs
+index 6df870d42..5a5ad71f7 100644
+--- a/crates/horizon-world/src/lib.rs
++++ b/crates/horizon-world/src/lib.rs
+@@ -85,6 +85,7 @@ pub mod living_hurt;
+ pub mod living_landing;
+ pub mod living_motion;
+ pub mod loot;
++pub mod mod_machines;
+ pub mod movement_emission;
+ pub mod movement_properties;
+ pub mod movement_restitution;
+diff --git a/crates/horizon-world/src/mod_machines.rs b/crates/horizon-world/src/mod_machines.rs
+new file mode 100644
+index 000000000..293c413ab
+--- /dev/null
++++ b/crates/horizon-world/src/mod_machines.rs
+@@ -0,0 +1,409 @@
++//! Machines from content mods: blocks with slots the game keeps, a screen
++//! layout and, optionally, a multiblock volume. Each
++//! `data/<namespace>/horizon_machine/<name>.json` in the resource root
++//! describes the block `<namespace>:<name>`. The folder is outside
++//! `data/<id>/horizon/`, so a game without machines ignores it and the mod
++//! stays valid there.
++//!
++//! ```text
++//! {
++//!   "title": "container.ntm.assembler",   translation key (else the block's name)
++//!   "screen": "ntm:assembler",            assets/ntm/horizon_screen/assembler.json (default: the block's id)
++//!   "slots": [                            in slot order; positions as the screen draws them
++//!     {"x": 152, "y": 81, "accept": ["ntm:battery_generic"]},
++//!     {"grid": [8, 18, 4, 3]},            x, y, columns, rows: one input slot each
++//!     {"x": 8, "y": 90, "reject": ["ntm:blades_steel"]},   anything but these
++//!     {"x": 98, "y": 45, "output": true}  the player takes from it, never puts into it
++//!   ],
++//!   "inventory": [8, 174],                the player's inventory (hotbar 58 below)
++//!   "data": 4,                            values the mod sets and the screen shows
++//!   "multiblock": {                       the volume around the core, in the placer's frame:
++//!     "min": [-1, 0, -1], "max": [1, 2, 1], x to the right, y up, z away from the player
++//!     "offset": 1,                        the core sits this far away from the clicked cell
++//!     "dummy": "ntm:dummy_block"          the block every other cell holds
++//!   }
++//! }
++//! ```
++use serde_json::Value;
++use std::{
++    collections::HashMap,
++    fs,
++    path::Path,
++    sync::{Arc, RwLock},
++};
++
++/// What a slot takes.
++#[derive(Clone, Debug, PartialEq)]
++pub enum SlotRule {
++    Any,
++    /// Only these item ids.
++    Only(Vec<String>),
++    /// Anything but these item ids.
++    Except(Vec<String>),
++    /// Nothing: the player takes from it.
++    Output,
++}
++
++#[derive(Clone, Debug, PartialEq)]
++pub struct SlotDef {
++    pub x: i32,
++    pub y: i32,
++    pub rule: SlotRule,
++}
++
++impl SlotDef {
++    pub fn accepts(&self, item: &str) -> bool {
++        match &self.rule {
++            SlotRule::Any => true,
++            SlotRule::Only(items) => items.iter().any(|i| i == item),
++            SlotRule::Except(items) => !items.iter().any(|i| i == item),
++            SlotRule::Output => false,
++        }
++    }
++}
++
++/// The cells of a multiblock around its core, in the placer's frame.
++#[derive(Clone, Debug, PartialEq)]
++pub struct Multiblock {
++    pub min: [i32; 3],
++    pub max: [i32; 3],
++    pub offset: i32,
++    pub dummy: String,
++}
++
++#[derive(Clone, Debug, PartialEq)]
++pub struct MachineDef {
++    /// The block, `<namespace>:<name>`.
++    pub block: String,
++    /// Its place in [`all`]: the menu kind's number.
++    pub index: u16,
++    pub title: Option<String>,
++    pub screen: String,
++    pub slots: Vec<SlotDef>,
++    pub inventory: [i32; 2],
++    pub data: usize,
++    pub multiblock: Option<Multiblock>,
++}
++
++/// Most slots and data values one machine may declare.
++pub const MAX_SLOTS: usize = 128;
++pub const MAX_DATA: usize = 64;
++
++#[derive(Default)]
++struct Registry {
++    list: Vec<Arc<MachineDef>>,
++    by_block: HashMap<String, usize>,
++    dummies: HashMap<String, ()>,
++    /// The largest distance from a core to one of its cells, on any axis.
++    reach: i32,
++}
++
++static REGISTRY: RwLock<Option<Arc<Registry>>> = RwLock::new(None);
++
++fn registry() -> Option<Arc<Registry>> {
++    REGISTRY.read().ok().and_then(|r| r.clone())
++}
++
++fn ints<const N: usize>(v: &Value) -> Option<[i32; N]> {
++    let a = v.as_array().filter(|a| a.len() == N)?;
++    let mut out = [0; N];
++    for (o, x) in out.iter_mut().zip(a) {
++        *o = i32::try_from(x.as_i64()?).ok()?;
++    }
++    Some(out)
++}
++
++/// Reads one machine file; the error says what is wrong in it.
++pub fn parse(block: &str, doc: &Value) -> Result<MachineDef, String> {
++    let mut slots = Vec::new();
++    for s in doc["slots"].as_array().ok_or("no slots")? {
++        let rule = if s["output"].as_bool() == Some(true) {
++            SlotRule::Output
++        } else if let Some(items) = s["accept"].as_array() {
++            SlotRule::Only(
++                items
++                    .iter()
++                    .filter_map(|i| i.as_str().map(str::to_owned))
++                    .collect(),
++            )
++        } else if let Some(items) = s["reject"].as_array() {
++            SlotRule::Except(
++                items
++                    .iter()
++                    .filter_map(|i| i.as_str().map(str::to_owned))
++                    .collect(),
++            )
++        } else {
++            SlotRule::Any
++        };
++        if let Some([x, y, columns, rows]) = ints::<4>(&s["grid"]) {
++            for r in 0..rows.max(0) {
++                for c in 0..columns.max(0) {
++                    slots.push(SlotDef {
++                        x: x + c * 18,
++                        y: y + r * 18,
++                        rule: rule.clone(),
++                    });
++                }
++            }
++        } else {
++            let (Some(x), Some(y)) = (s["x"].as_i64(), s["y"].as_i64()) else {
++                return Err("a slot without x and y (or grid)".into());
++            };
++            slots.push(SlotDef {
++                x: x as i32,
++                y: y as i32,
++                rule,
++            });
++        }
++    }
++    if slots.len() > MAX_SLOTS {
++        return Err(format!("{} slots (at most {MAX_SLOTS})", slots.len()));
++    }
++    let data = doc["data"].as_u64().unwrap_or(0) as usize;
++    if data > MAX_DATA {
++        return Err(format!("{data} data values (at most {MAX_DATA})"));
++    }
++    let multiblock = match doc.get("multiblock") {
++        None | Some(Value::Null) => None,
++        Some(m) => {
++            let min = ints::<3>(&m["min"]).ok_or("multiblock: no min [x, y, z]")?;
++            let max = ints::<3>(&m["max"]).ok_or("multiblock: no max [x, y, z]")?;
++            if (0..3).any(|i| min[i] > 0 || max[i] < 0 || max[i] - min[i] > 15) {
++                return Err("multiblock: min..max must hold the core and span 16 at most".into());
++            }
++            Some(Multiblock {
++                min,
++                max,
++                offset: m["offset"].as_i64().unwrap_or(0) as i32,
++                dummy: m["dummy"]
++                    .as_str()
++                    .ok_or("multiblock: no dummy block")?
++                    .to_owned(),
++            })
++        }
++    };
++    Ok(MachineDef {
++        block: block.to_owned(),
++        index: 0,
++        title: doc["title"].as_str().map(str::to_owned),
++        screen: doc["screen"].as_str().unwrap_or(block).to_owned(),
++        slots,
++        inventory: ints::<2>(&doc["inventory"]).unwrap_or([8, 84]),
++        data,
++        multiblock,
++    })
++}
++
++/// The machine files under `root`, as (block id, file).
++pub fn files(root: &Path) -> Vec<(String, std::path::PathBuf)> {
++    let mut out = Vec::new();
++    let Ok(namespaces) = fs::read_dir(root.join("data")) else {
++        return out;
++    };
++    for ns in namespaces.flatten() {
++        let Some(namespace) = ns.file_name().to_str().map(str::to_owned) else {
++            continue;
++        };
++        if namespace == "minecraft" {
++            continue;
++        }
++        let Ok(entries) = fs::read_dir(ns.path().join("horizon_machine")) else {
++            continue;
++        };
++        for entry in entries.flatten() {
++            let path = entry.path();
++            if path.extension().and_then(|e| e.to_str()) != Some("json") {
++                continue;
++            }
++            if let Some(name) = path.file_stem().and_then(|s| s.to_str()) {
++                out.push((format!("{namespace}:{name}"), path.clone()));
++            }
++        }
++    }
++    out.sort();
++    out
++}
++
++/// Loads the machines of `root`, replacing those loaded before: how many,
++/// and what was wrong in the files left out.
++pub fn load(root: &Path) -> (usize, Vec<String>) {
++    let mut reg = Registry::default();
++    let mut warnings = Vec::new();
++    for (block, path) in files(root) {
++        let doc = fs::read(&path)
++            .map_err(|e| e.to_string())
++            .and_then(|b| serde_json::from_slice::<Value>(&b).map_err(|e| e.to_string()))
++            .and_then(|doc| parse(&block, &doc));
++        match doc {
++            Ok(mut def) => {
++                def.index = reg.list.len() as u16;
++                if let Some(m) = &def.multiblock {
++                    reg.dummies.insert(m.dummy.clone(), ());
++                    let reach = (0..3)
++                        .map(|i| m.min[i].abs().max(m.max[i].abs()))
++                        .max()
++                        .unwrap_or(0);
++                    reg.reach = reg.reach.max(reach);
++                }
++                reg.by_block.insert(block, reg.list.len());
++                reg.list.push(Arc::new(def));
++            }
++            Err(e) => warnings.push(format!("{}: {e}", path.display())),
++        }
++    }
++    let n = reg.list.len();
++    if let Ok(mut r) = REGISTRY.write() {
++        *r = (n > 0).then(|| Arc::new(reg));
++    }
++    (n, warnings)
++}
++
++/// The machine of block `name`.
++pub fn get(name: &str) -> Option<Arc<MachineDef>> {
++    let r = registry()?;
++    r.by_block.get(name).map(|&i| r.list[i].clone())
++}
++
++/// The machine with menu number `index`.
++pub fn by_index(index: u16) -> Option<Arc<MachineDef>> {
++    registry()?.list.get(index as usize).cloned()
++}
++
++/// Every machine, in menu order.
++pub fn all() -> Vec<Arc<MachineDef>> {
++    registry().map_or_else(Vec::new, |r| r.list.clone())
++}
++
++/// Whether `name` is the filler block of some multiblock.
++pub fn is_dummy(name: &str) -> bool {
++    registry().is_some_and(|r| r.dummies.contains_key(name))
++}
++
++/// How far from a cell its core may be, on any axis (0 with no multiblocks).
++pub fn reach() -> i32 {
++    registry().map_or(0, |r| r.reach)
++}
++
++/// The horizontal step of a `facing` value: the way the block's front looks.
++pub fn facing_step(facing: &str) -> Option<[i32; 2]> {
++    Some(match facing {
++        "north" => [0, -1],
++        "south" => [0, 1],
++        "west" => [-1, 0],
++        "east" => [1, 0],
++        _ => return None,
++    })
++}
++
++impl Multiblock {
++    /// The world cell of local cell `l` of a core at `core` whose front looks
++    /// `facing` (the placer looked the other way: z runs away from them).
++    pub fn cell(&self, core: [i32; 3], facing: [i32; 2], l: [i32; 3]) -> [i32; 3] {
++        let forward = [-facing[0], -facing[1]];
++        let right = [-forward[1], forward[0]];
++        [
++            core[0] + right[0] * l[0] + forward[0] * l[2],
++            core[1] + l[1],
++            core[2] + right[1] * l[0] + forward[1] * l[2],
++        ]
++    }
++    /// Every cell but the core's.
++    pub fn cells(&self, core: [i32; 3], facing: [i32; 2]) -> Vec<[i32; 3]> {
++        let mut out = Vec::new();
++        for y in self.min[1]..=self.max[1] {
++            for z in self.min[2]..=self.max[2] {
++                for x in self.min[0]..=self.max[0] {
++                    if [x, y, z] != [0, 0, 0] {
++                        out.push(self.cell(core, facing, [x, y, z]));
++                    }
++                }
++            }
++        }
++        out
++    }
++    /// Where the core goes when the item is used on cell `placed`.
++    pub fn core_for(&self, placed: [i32; 3], facing: [i32; 2]) -> [i32; 3] {
++        self.cell(placed, facing, [0, 0, self.offset])
++    }
++    /// The volume's box in world coordinates (min corner, max corner + 1).
++    pub fn bounds(&self, core: [i32; 3], facing: [i32; 2]) -> ([i32; 3], [i32; 3]) {
++        let a = self.cell(core, facing, self.min);
++        let b = self.cell(core, facing, self.max);
++        let lo = [a[0].min(b[0]), a[1].min(b[1]), a[2].min(b[2])];
++        let hi = [a[0].max(b[0]) + 1, a[1].max(b[1]) + 1, a[2].max(b[2]) + 1];
++        (lo, hi)
++    }
++}
++
++/// The core of the multiblock that holds cell `pos`: `block_at` gives a
++/// cell's block id and `facing` value. None when no core around claims it.
++pub fn core_of(
++    pos: [i32; 3],
++    mut block_at: impl FnMut([i32; 3]) -> (String, Option<String>),
++) -> Option<[i32; 3]> {
++    let reach = reach();
++    if reach == 0 {
++        return None;
++    }
++    for dy in -reach..=reach {
++        for dz in -reach..=reach {
++            for dx in -reach..=reach {
++                let c = [pos[0] + dx, pos[1] + dy, pos[2] + dz];
++                let (name, facing) = block_at(c);
++                let Some(def) = get(&name) else { continue };
++                let (Some(m), Some(f)) = (&def.multiblock, facing.as_deref().and_then(facing_step))
++                else {
++                    continue;
++                };
++                let (lo, hi) = m.bounds(c, f);
++                if (0..3).all(|i| pos[i] >= lo[i] && pos[i] < hi[i]) {
++                    return Some(c);
++                }
++            }
++        }
++    }
++    None
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn a_footprint_turns_with_the_facing() {
++        let m = Multiblock {
++            min: [-1, 0, 0],
++            max: [1, 1, 2],
++            offset: 1,
++            dummy: "x:d".into(),
++        };
++        // Facing north: the placer looked south (+z), their right is west.
++        let f = facing_step("north").unwrap();
++        assert_eq!(m.core_for([0, 64, 0], f), [0, 64, 1]);
++        assert_eq!(m.cell([0, 64, 0], f, [1, 0, 2]), [-1, 64, 2]);
++        let (lo, hi) = m.bounds([0, 64, 0], f);
++        assert_eq!((lo, hi), ([-1, 64, 0], [2, 66, 3]));
++        assert_eq!(m.cells([0, 64, 0], f).len(), 3 * 2 * 3 - 1);
++        // Facing east: the placer looked west (-x), their right is north.
++        let f = facing_step("east").unwrap();
++        assert_eq!(m.cell([0, 64, 0], f, [1, 0, 2]), [-2, 64, -1]);
++    }
++
++    #[test]
++    fn grids_expand_and_rules_read() {
++        let doc: Value = serde_json::from_str(
++            r#"{"slots":[{"x":1,"y":2,"accept":["a:b"]},{"grid":[8,18,4,3]},{"x":9,"y":9,"output":true},{"x":0,"y":0,"reject":["a:b"]}],
++                "data":3,"multiblock":{"min":[-1,0,-1],"max":[1,2,1],"offset":1,"dummy":"a:d"}}"#,
++        )
++        .unwrap();
++        let def = parse("a:m", &doc).unwrap();
++        assert_eq!(def.slots.len(), 15);
++        assert!(!def.slots[14].accepts("a:b") && def.slots[14].accepts("a:c"));
++        assert_eq!((def.slots[4].x, def.slots[4].y), (8 + 18 * 3, 18));
++        assert!(def.slots[0].accepts("a:b") && !def.slots[0].accepts("a:c"));
++        assert!(!def.slots[13].accepts("a:b"));
++        assert_eq!(def.screen, "a:m");
++        assert_eq!(def.multiblock.unwrap().offset, 1);
++    }
++}
+diff --git a/docs/api/mods-reference.md b/docs/api/mods-reference.md
+index b25ef5b9e..d71bc1a7e 100644
+--- a/docs/api/mods-reference.md
++++ b/docs/api/mods-reference.md
+@@ -19,6 +19,7 @@ The contract between Horizon and its mods: the WIT package `horizon:mods@0.1.0`,
+ | `players` | [`players`](#players) | see who is on the server and message them |
+ | `world` | [`world`](#world) | read and change the world's blocks |
+ | `recipes` | [`recipes`](#recipes) | read the game's recipes and items and which recipes you know, place recipes in your crafting grid and, in creative mode, give you items |
++| `machines` | [`machines`](#machines) | move the items in its machines and set what their screens show |
+ 
+ ## World `horizon-mod`
+ 
+@@ -31,7 +32,7 @@ A client mod: runs in the player's game.
+ 
+ A server mod (manifest `side = "server"`, `api = "0.3"`, experimental): runs where the world is simulated, on the dedicated server, a LAN host and single player's own server.
+ 
+-- Imports (what the game offers): `log`, `storage`, `players`, `world`
++- Imports (what the game offers): `log`, `storage`, `players`, `world`, `machines`
+ - Exports (what the mod provides): `server-events`
+ 
+ ## World `horizon-ui-mod`
+@@ -687,6 +688,42 @@ Capability `world`, server mods only (manifest `api = "0.3"`, experimental): the
+ | `get-biome` | `func(dimension: string, x: s32, y: s32, z: s32) -> option<string>` | The biome at a position (`minecraft:plains`, ...), as the server stores it (one per 4 x 4 x 4 cell): none where no chunk is loaded. |
+ | `set-blocks` | `func(dimension: string, blocks: list<block-change>) -> result<_, string>` | Sets blocks as `/setblock` does: the old block entity removed, neighbours and shapes updated, light, and every player told. Every state is checked now (an error queues nothing); the changes are made in order after this call returns, before that dimension's next tick; one in a chunk not loaded then is skipped. At most 4096 per call. |
+ 
++## `machines`
++
++Access: capability `machines`.
++
++Capability `machines`, server mods only (manifest `api = "0.3"`, experimental): the slots and screen values of content mods' machines (`data/<ns>/horizon_machine/<block>.json`). The game keeps the slots: it saves them with the chunk, shows them in the machine's screen, where players move items as in a furnace's, and drops them when the block goes. The item record and the slot rules are those of API 0.4's `machine` interface, here addressed by position.
++
++### record `item-stack`
++
++An item, how many and its wear. Other item components are not carried: a slot set to the item it holds keeps them.
++
++| Field | Type | |
++| --- | --- | --- |
++| `id` | `string` | `minecraft:coal`, `<mod>:<path>`, ... |
++| `count` | `u32` |  |
++| `damage` | `u32` | `minecraft:damage`: the wear of a tool (a blade), 0 for none. |
++
++### record `button-press`
++
++A player pressed one of a machine screen's buttons.
++
++| Field | Type | |
++| --- | --- | --- |
++| `player` | `string` | The player's UUID. |
++| `dimension` | `string` |  |
++| `x` | `s32` |  |
++| `y` | `s32` |  |
++| `z` | `s32` |  |
++| `button` | `u32` | The button's number in the screen file. |
++
++| Function | Signature | What it does |
++| --- | --- | --- |
++| `get-slots` | `func(dimension: string, x: s32, y: s32, z: s32) -> option<list<option<item-stack>>>` | The slots of the machine at a position, as of this call: none where there is none, or no chunk is loaded. |
++| `set-slot` | `func(dimension: string, x: s32, y: s32, z: s32, slot: u32, stack: option<item-stack>) -> bool` | Sets one slot (none empties it) after this call returns, before players act again; a stack over the item's maximum is cut to it. False for no machine there, a slot out of range or an unknown item. |
++| `set-data` | `func(dimension: string, x: s32, y: s32, z: s32, values: list<s32>) -> bool` | The values the machine's screen shows (bars, tooltips, lights), from the first: at most the file's `data`, the rest kept. False for no machine there. |
++| `poll-buttons` | `func() -> list<button-press>` | The button presses since the last call, oldest first (at most 256). |
++
+ ## `server-events`
+ 
+ Access: exported by the mod: the game calls it.
+diff --git a/docs/modpacks.md b/docs/modpacks.md
+index 8e3980dd2..660951ca6 100644
+--- a/docs/modpacks.md
++++ b/docs/modpacks.md
+@@ -220,7 +220,7 @@ Most decoration and resource blocks are vanilla classes with other numbers: Maca
+ `DoorBlock`s, XTones are full cubes, ore sets are `DropExperienceBlock`s. So templates cover the
+ data tier without code. Templates also give mod blocks every behaviour Horizon already
+ implements and the harnesses already check. Items work the same way (`"template":
+-"minecraft:diamond"`, overriding `max_stack_size`, `rarity` and so on).
++"minecraft:diamond"`, overriding `max_stack_size`, `rarity`, `max_damage` (a tool that wears, stacking to 1) and so on).
+ 
+ How the game loads them, without touching vanilla's path:
+ 
