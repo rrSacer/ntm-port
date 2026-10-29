@@ -425,42 +425,47 @@
             "y": 36,
             "accept": [
               "ntm:boy_shielding"
-            ]
+            ],
+            "max": 1
           },
           {
             "x": 44,
             "y": 36,
             "accept": [
               "ntm:boy_target"
-            ]
+            ],
+            "max": 1
           },
           {
             "x": 62,
             "y": 36,
             "accept": [
               "ntm:boy_bullet"
-            ]
+            ],
+            "max": 1
           },
           {
             "x": 80,
             "y": 36,
             "accept": [
               "ntm:boy_propellant"
-            ]
+            ],
+            "max": 1
           },
           {
             "x": 98,
             "y": 36,
             "accept": [
               "ntm:boy_igniter"
-            ]
+            ],
+            "max": 1
           }
         ],
         "inventory": [
           8,
           140
         ],
-        "data": 1
+        "data": 2
       },
       "screen": {
         "texture": "ntm:textures/gui/weapon/lil_boy_schematic.png",
