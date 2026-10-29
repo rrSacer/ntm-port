@@ -57,6 +57,10 @@ struct World {
     tags: BTreeMap<String, BTreeSet<String>>,
     /// Command storage ints other than `ntmlogic:world`: "<id> <path>".
     nbt: BTreeMap<String, i64>,
+    /// The engine's machine block entities (patch `ntm-visual`): their
+    /// slots and values, saved with the world (a test's autosave copies
+    /// them with it). Only the blocks a test gives slots have them.
+    engine: BTreeMap<(String, Pos), (container_bridge::Slots, Vec<i32>)>,
     /// Item ids the game doesn't have (an older content mod): a line
     /// naming one doesn't parse.
     unknown_items: BTreeSet<String>,
@@ -86,6 +90,7 @@ impl World {
             writes: Vec::new(),
             tags: content_tags(),
             nbt: BTreeMap::new(),
+            engine: BTreeMap::new(),
             unknown_items: BTreeSet::new(),
         };
         for x in -32..32 {
@@ -486,6 +491,30 @@ impl ServerHost for SHost {
     }
     fn log(&mut self, text: &str) {
         eprintln!("[server] {text}");
+    }
+    fn machine_slots(&mut self, dim: &str, p: Pos) -> Option<container_bridge::Slots> {
+        self.world.borrow().engine.get(&(dim.to_string(), p)).map(|e| e.0.clone())
+    }
+    fn set_machine_slot(&mut self, dim: &str, p: Pos, slot: u32, stack: Option<container_bridge::Stack>) -> bool {
+        match self.world.borrow_mut().engine.get_mut(&(dim.to_string(), p)) {
+            Some(e) if (slot as usize) < e.0.len() => {
+                e.0[slot as usize] = stack;
+                true
+            }
+            _ => false,
+        }
+    }
+    fn machine_data(&mut self, dim: &str, p: Pos) -> Option<Vec<i32>> {
+        self.world.borrow().engine.get(&(dim.to_string(), p)).map(|e| e.1.clone())
+    }
+    fn set_machine_data(&mut self, dim: &str, p: Pos, values: &[i32]) -> bool {
+        match self.world.borrow_mut().engine.get_mut(&(dim.to_string(), p)) {
+            Some(e) => {
+                e.1 = values.to_vec();
+                true
+            }
+            None => false,
+        }
     }
 }
 
@@ -1798,3 +1827,5 @@ mod shredder_tests;
 mod blastfurnace_tests;
 
 mod foundry_tests;
+
+mod slot_items_tests;
