@@ -3609,6 +3609,48 @@
           }
         ]
       }
+    },
+    "ntm:anvil_lead": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_lead.png",
+        "texture_from": "textures/blocks/anvil_lead.png"
+      }
+    },
+    "ntm:anvil_steel": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_steel.png",
+        "texture_from": "textures/blocks/anvil_steel.png"
+      }
+    },
+    "ntm:anvil_desh": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_desh.png",
+        "texture_from": "textures/blocks/anvil_desh.png"
+      }
+    },
+    "ntm:anvil_ferrouranium": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_ferrouranium.png",
+        "texture_from": "textures/blocks/anvil_ferrouranium.png"
+      }
+    },
+    "ntm:anvil_saturnite": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_saturnite.png",
+        "texture_from": "textures/blocks/anvil_saturnite.png"
+      }
+    },
+    "ntm:anvil_bismuth_bronze": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_bismuth_bronze.png",
+        "texture_from": "textures/blocks/anvil_bismuth_bronze.png"
+      }
     }
   }
 }
