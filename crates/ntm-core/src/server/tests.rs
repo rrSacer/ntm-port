@@ -1792,3 +1792,5 @@ mod fluid_tests;
 mod crafter_tests;
 
 mod review_m2_tests;
+
+mod shredder_tests;
