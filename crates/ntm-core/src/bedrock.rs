@@ -354,6 +354,8 @@ mod tests {
             assert!((a - b).abs() < 1e-6);
         }
         assert_eq!(read_ore_data(None), [0.0; 6]);
+        // As the engine writes it back (`to_snbt`: 0d as 0.0d, absent types).
+        assert_eq!(read_ore_data(Some("{ntm_ore:{light:1.5d,rare:0.0d,crystal:2.0E-4d}}")), [1.5, 0.0, 0.0, 0.0, 0.0, 2.0e-4]);
     }
 
     #[test]
