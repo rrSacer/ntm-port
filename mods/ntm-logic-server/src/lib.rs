@@ -85,6 +85,10 @@ impl ServerHost for Host {
         horizon_mod_sdk::server::machines::set_data(dim, p[0], p[1], p[2], values)
     }
     #[cfg(feature = "machines")]
+    fn machine_data(&mut self, dim: &str, p: Pos) -> Option<Vec<i32>> {
+        horizon_mod_sdk::server::machines::get_data(dim, p[0], p[1], p[2])
+    }
+    #[cfg(feature = "machines")]
     fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
         horizon_mod_sdk::server::machines::poll_buttons()
             .into_iter()
