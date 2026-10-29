@@ -97,6 +97,34 @@ def obj_info(path):
     return names, reach
 
 
+def loop_animation(spec):
+    """A loop played while the machine works, as HBM's renderers move parts
+    by their `anim` tick counter: `turn` is degrees per loop about the bone's
+    pivot (two keyframes, linear), `sway` a slide along an axis by
+    BobMathUtil.sps, `cycles` times per loop, sampled 24 times a cycle."""
+    import math
+    length = spec['length']
+    bones = {}
+    for bone, b in spec['bones'].items():
+        out = {}
+        if 'turn' in b:
+            out['rotation'] = {'0.0': [0, 0, 0], f'{length:.2f}': b['turn']}
+        if 'sway' in b:
+            w = b['sway']
+            axis = 'xyz'.index(w['axis'])
+            keys = {}
+            n = 24 * w.get('cycles', 1)
+            for k in range(n + 1):
+                t = length * k / n
+                v = w['amp'] * math.sin(math.pi / 2 * math.cos(2 * math.pi * w.get('cycles', 1) * t / length))
+                pos = [0.0, 0.0, 0.0]
+                pos[axis] = round(v, 4)
+                keys[f'{t:.4f}'] = pos
+            out['position'] = keys
+        bones[bone] = out
+    return {'format_version': '1.8.0', 'animations': {spec['name']: {'loop': True, 'animation_length': length, 'bones': bones}}}
+
+
 def block_model(spec, block):
     """A block HBM draws with an ISBRH (RenderFoundryMold...): its boxes as
     JSON elements, each face naming one of HBM's block textures. Default UVs
@@ -259,6 +287,11 @@ def main():
                 del m['liquids']
             copy(m.pop('obj_from'), 'assets/ntm/' + m['obj'].split(':', 1)[1])
             copy(m.pop('texture_from'), 'assets/ntm/' + m['texture'].split(':', 1)[1])
+            loop = m.pop('loop_animation', None)
+            if loop:
+                rel = f'animations/{name}.animation.json'
+                write_json(own('assets/ntm/' + rel), loop_animation(loop))
+                m['animations'] = 'ntm:' + rel
             anim = m.pop('arm_animation', None)
             if anim:
                 rel = f'animations/{name}.animation.json'
