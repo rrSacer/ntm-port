@@ -51,15 +51,37 @@ pub struct Crucible {
     /// The recipe list is open on the old screen.
     #[serde(default)]
     pub picking: bool,
-    /// The colour each stream (recipe, waste) poured in its last tick (0:
-    /// none), for the model's jets.
+    /// The colour each stream (recipe, waste) poured last (0: none), for
+    /// the model's jets, held for [`JET_HOLD`] ticks after a pour.
     #[serde(skip)]
     pub jets: [u32; 2],
+    #[serde(skip)]
+    pub jet_hold: [u8; 2],
+}
+
+/// Ticks a jet stays drawn after its last pour: a stream pours in bursts
+/// (when the block below takes metal), and a one-tick jet only flickers.
+pub const JET_HOLD: u8 = 8;
+
+impl Crucible {
+    /// A tick of the jets: one that hasn't poured for [`JET_HOLD`] ticks
+    /// goes out. True when one did.
+    pub fn fade_jets(&mut self) -> bool {
+        let mut out = false;
+        for i in 0..2 {
+            self.jet_hold[i] = self.jet_hold[i].saturating_sub(1);
+            if self.jet_hold[i] == 0 && self.jets[i] != 0 {
+                self.jets[i] = 0;
+                out = true;
+            }
+        }
+        out
+    }
 }
 
 impl Default for Crucible {
     fn default() -> Self {
-        Self { slots: vec![None; SLOTS], heat: 0, progress: 0, recipe: None, recipe_stack: Vec::new(), waste_stack: Vec::new(), picking: false, jets: [0; 2] }
+        Self { slots: vec![None; SLOTS], heat: 0, progress: 0, recipe: None, recipe_stack: Vec::new(), waste_stack: Vec::new(), picking: false, jets: [0; 2], jet_hold: [0; 2] }
     }
 }
 
@@ -220,7 +242,10 @@ impl Crucible {
             }
         }
         self.clean();
-        self.jets[stream as usize] = poured.as_ref().map_or(0, |p| t.color(&p.0));
+        if let Some(p) = &poured {
+            self.jets[stream as usize] = t.color(&p.0);
+            self.jet_hold[stream as usize] = JET_HOLD;
+        }
         poured
     }
 
@@ -498,6 +523,13 @@ mod tests {
         }
         assert_eq!(c.pour_stream(&t, Stream::Recipe, &mut No), None);
         assert_eq!(quanta(&c.recipe_stack, Some("steel")), 76);
+        // The waste jet stays drawn for a while after its last pour.
+        assert_eq!(c.jets[Stream::Waste as usize], t.color("copper"));
+        for _ in 1..JET_HOLD {
+            assert!(!c.fade_jets());
+        }
+        assert!(c.fade_jets(), "apaga {JET_HOLD} ticks depois");
+        assert_eq!(c.jets, [0, 0]);
     }
 
     #[test]

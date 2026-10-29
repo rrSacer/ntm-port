@@ -167,8 +167,9 @@ fn crucible_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: 
         Some(Data::Firebox(f)) => c.step(t, Some(f as &mut dyn HeatSource), tick),
         _ => c.step(t, None, tick),
     };
-    // The jets show what poured this tick only.
-    c.jets = [0; 2];
+    if c.fade_jets() {
+        changed = true;
+    }
     if let Some(d) = facing.as_deref().and_then(registry::facing_dir) {
         for (stream, s) in [(Stream::Recipe, 1), (Stream::Waste, -1)] {
             let from = [key.1[0] + 2 * d[0] * s, key.1[1], key.1[2] + 2 * d[2] * s];
