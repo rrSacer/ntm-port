@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:nugget_osmiridium"
+  },
+  "result": {
+    "id": "ntm:ingot_osmiridium",
+    "count": 1
+  }
+}

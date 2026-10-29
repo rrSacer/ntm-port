@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:powder_australium",
+  "result": {
+    "id": "ntm:ingot_australium",
+    "count": 1
+  },
+  "experience": 5.0,
+  "cookingtime": 200
+}

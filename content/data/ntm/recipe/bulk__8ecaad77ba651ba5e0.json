@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:meteor_battery",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MSM",
+    "MWM",
+    "MSM"
+  ],
+  "key": {
+    "M": "ntm:meteor_polished",
+    "S": "#ntm:bulk/blockstarmetal",
+    "W": "#ntm:bulk/wirefineschrabidium"
+  }
+}

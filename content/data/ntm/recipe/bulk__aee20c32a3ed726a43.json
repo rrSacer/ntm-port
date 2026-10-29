@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:fluid_barrel_empty",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "121",
+    "1G1",
+    "121"
+  ],
+  "key": {
+    "1": "#ntm:bulk/platesteel",
+    "2": "#ntm:bulk/platealuminum",
+    "G": "#ntm:bulk/paneglass"
+  }
+}

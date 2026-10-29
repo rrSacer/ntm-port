@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:plant_item__rope",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:string",
+    "minecraft:string",
+    "minecraft:string"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_cadmium"
+  ],
+  "result": {
+    "id": "ntm:ingot_cadmium",
+    "count": 9
+  }
+}

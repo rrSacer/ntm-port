@@ -1,0 +1,15 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:plate_polymer",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SWS"
+  ],
+  "key": {
+    "S": "minecraft:string",
+    "W": "minecraft:white_wool"
+  }
+}

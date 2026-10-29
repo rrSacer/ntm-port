@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:fragment_coltan"
+  },
+  "result": {
+    "id": "ntm:block_coltan",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:ams_catalyst_cerium",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:ams_catalyst_blank",
+    "ntm:rune_hagalaz",
+    "ntm:rune_hagalaz",
+    "ntm:rune_jera",
+    "ntm:rune_thurisaz",
+    "#ntm:bulk/dustcerium",
+    "#ntm:bulk/dustcerium",
+    "#ntm:bulk/dustcerium",
+    "#ntm:bulk/dustcerium"
+  ]
+}

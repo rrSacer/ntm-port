@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:custom_hydro",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "LTL",
+    "LIL"
+  ],
+  "key": {
+    "C": "#ntm:bulk/platecopper",
+    "L": "#ntm:bulk/platelead",
+    "I": "#ntm:bulk/plateiron",
+    "T": "ntm:cell_tritium"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_semtex_mix",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:solid_fuel",
+    "ntm:cordite",
+    "#ntm:bulk/dustsaltpeter"
+  ]
+}

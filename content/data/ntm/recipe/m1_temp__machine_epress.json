@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "RMR",
+    "WCW"
+  ],
+  "key": {
+    "P": "ntm:plate_titanium",
+    "R": "minecraft:piston",
+    "M": "ntm:machine_press",
+    "W": "ntm:wire_fine__red_copper",
+    "C": "minecraft:redstone"
+  },
+  "result": {
+    "id": "ntm:machine_epress",
+    "count": 1
+  }
+}

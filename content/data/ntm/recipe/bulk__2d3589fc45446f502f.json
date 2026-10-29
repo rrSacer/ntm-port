@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:concrete_pillar",
+    "count": 6
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CBC",
+    "CBC",
+    "CBC"
+  ],
+  "key": {
+    "C": "ntm:concrete_smooth",
+    "B": "minecraft:iron_bars"
+  }
+}

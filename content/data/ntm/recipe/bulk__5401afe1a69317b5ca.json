@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:concrete_colored_ext__sand",
+    "count": 6
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "1 2",
+    "CCC"
+  ],
+  "key": {
+    "C": "ntm:concrete_smooth",
+    "1": "#ntm:bulk/dyeyellow",
+    "2": "#ntm:bulk/dyegray"
+  }
+}

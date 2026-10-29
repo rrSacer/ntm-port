@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:ingot_tungsten"
+  ],
+  "result": {
+    "id": "ntm:nugget_raw__tungsten",
+    "count": 9
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_bakelite"
+  ],
+  "result": {
+    "id": "ntm:ingot_bakelite",
+    "count": 9
+  }
+}

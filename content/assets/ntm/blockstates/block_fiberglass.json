@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "ntm:block/block_fiberglass"
+    },
+    "axis=x": {
+      "model": "ntm:block/block_fiberglass",
+      "x": 90,
+      "y": 90
+    },
+    "axis=z": {
+      "model": "ntm:block/block_fiberglass",
+      "x": 90
+    }
+  }
+}

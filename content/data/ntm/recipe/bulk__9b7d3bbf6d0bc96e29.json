@@ -1,0 +1,15 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:part_stock__wood",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "  W"
+  ],
+  "key": {
+    "W": "#ntm:bulk/plankwood"
+  }
+}

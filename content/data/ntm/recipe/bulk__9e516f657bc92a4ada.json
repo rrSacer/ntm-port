@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:circuit__vacuum_tube",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "G",
+    "W",
+    "I"
+  ],
+  "key": {
+    "G": "#ntm:bulk/paneglass",
+    "W": "#ntm:bulk/wirefinetungsten",
+    "I": "ntm:plate_polymer"
+  }
+}

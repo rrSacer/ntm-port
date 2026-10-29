@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BBB",
+    "WFW",
+    "RRR"
+  ],
+  "key": {
+    "B": "ntm:ingot_beryllium",
+    "W": "ntm:plate_aluminium",
+    "F": "minecraft:furnace",
+    "R": "ntm:wire_fine__tungsten"
+  },
+  "result": {
+    "id": "ntm:machine_electric_furnace_off",
+    "count": 1
+  }
+}

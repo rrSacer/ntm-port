@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/bedrock_ore_primary_nonmetal__bedrock_ore__primary_solvent_nonmetal",
+    "layer1": "ntm:item/bedrock_ore_overlay.solvent"
+  }
+}

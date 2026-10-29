@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:ore_beryllium",
+  "result": {
+    "id": "ntm:ingot_beryllium",
+    "count": 1
+  },
+  "experience": 2.0,
+  "cookingtime": 200
+}

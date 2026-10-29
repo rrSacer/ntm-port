@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "minecraft:torch",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "L",
+    "S"
+  ],
+  "key": {
+    "L": "#ntm:bulk/gemlignite",
+    "S": "#ntm:bulk/stickwood"
+  }
+}

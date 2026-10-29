@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:block_u235",
+    "ntm:fleija_core",
+    "ntm:ingot_pu238"
+  ]
+}

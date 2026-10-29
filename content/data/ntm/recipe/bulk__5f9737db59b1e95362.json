@@ -1,0 +1,15 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "minecraft:lead",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RSR"
+  ],
+  "key": {
+    "R": "ntm:plant_item__rope",
+    "S": "#ntm:bulk/slimeball"
+  }
+}

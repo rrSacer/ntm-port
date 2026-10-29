@@ -1,0 +1,32 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_au198",
+    "ntm:billet_balefire_gold",
+    "ntm:billet_flashlead",
+    "ntm:block_corium",
+    "ntm:block_polonium",
+    "ntm:block_schrabidium",
+    "ntm:block_solinium",
+    "ntm:crystal_schrabidium",
+    "ntm:crystal_trixite",
+    "ntm:debris_fuel",
+    "ntm:ingot_au198",
+    "ntm:nugget_pb209",
+    "ntm:powder_at209",
+    "ntm:powder_au198",
+    "ntm:powder_balefire",
+    "ntm:powder_i131",
+    "ntm:powder_polonium",
+    "ntm:rod_zirnox_les_fuel_depleted",
+    "ntm:rod_zirnox_mox_fuel_depleted",
+    "ntm:rod_zirnox_natural_uranium_fuel_depleted",
+    "ntm:rod_zirnox_plutonium_fuel_depleted",
+    "ntm:rod_zirnox_u233_fuel_depleted",
+    "ntm:rod_zirnox_u235_fuel_depleted",
+    "ntm:rod_zirnox_uranium_fuel_depleted",
+    "ntm:solid_fuel_bf",
+    "ntm:solid_fuel_presto_bf",
+    "ntm:solid_fuel_presto_triplet_bf"
+  ]
+}

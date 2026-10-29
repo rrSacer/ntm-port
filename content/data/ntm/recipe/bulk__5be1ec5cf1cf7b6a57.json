@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:powder_i131"
+  ],
+  "result": {
+    "id": "ntm:powder_i131_tiny",
+    "count": 9
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "ntm:m1_tungsten",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 1,
+    "separation": 0,
+    "salt": 2167085,
+    "spread_type": "linear"
+  }
+}

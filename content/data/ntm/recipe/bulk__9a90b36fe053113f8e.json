@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:circuit__capacitor",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IAI",
+    "W W"
+  ],
+  "key": {
+    "I": "ntm:plate_polymer",
+    "A": "#ntm:bulk/dustaluminum",
+    "W": "#ntm:bulk/wirefinealuminum"
+  }
+}

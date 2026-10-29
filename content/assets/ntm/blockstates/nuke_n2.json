@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "ntm:block/nuke_n2"
+    },
+    "lit=true": {
+      "model": "ntm:block/nuke_n2"
+    }
+  }
+}

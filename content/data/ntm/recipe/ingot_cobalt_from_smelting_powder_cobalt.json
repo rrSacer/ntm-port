@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:powder_cobalt",
+  "result": {
+    "id": "ntm:ingot_cobalt",
+    "count": 1
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

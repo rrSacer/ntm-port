@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:part_grip__pvc",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "W ",
+    " W",
+    " W"
+  ],
+  "key": {
+    "W": "#ntm:bulk/ingotpvc"
+  }
+}

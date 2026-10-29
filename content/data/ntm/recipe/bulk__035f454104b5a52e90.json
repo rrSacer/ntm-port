@@ -1,0 +1,15 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:meteor_pillar",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "C"
+  ],
+  "key": {
+    "C": "ntm:meteor_polished"
+  }
+}

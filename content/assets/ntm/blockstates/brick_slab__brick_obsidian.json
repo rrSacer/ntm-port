@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "ntm:block/brick_slab__brick_obsidian"
+    },
+    "type=top": {
+      "model": "ntm:block/brick_slab__brick_obsidian_top"
+    },
+    "type=double": {
+      "model": "ntm:block/brick_slab__brick_obsidian_double"
+    }
+  }
+}

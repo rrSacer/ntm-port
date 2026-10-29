@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": "ntm:ore_gneiss_lithium",
+  "result": {
+    "id": "ntm:lithium",
+    "count": 1
+  },
+  "experience": 10.0,
+  "cookingtime": 100
+}

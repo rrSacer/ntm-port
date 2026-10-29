@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:reinforced_glass",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FBF",
+    "BFB",
+    "FBF"
+  ],
+  "key": {
+    "F": "minecraft:iron_bars",
+    "B": "minecraft:glass"
+  }
+}

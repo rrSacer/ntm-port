@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:nugget_neptunium_fuel"
+  },
+  "result": {
+    "id": "ntm:ingot_neptunium_fuel",
+    "count": 1
+  }
+}

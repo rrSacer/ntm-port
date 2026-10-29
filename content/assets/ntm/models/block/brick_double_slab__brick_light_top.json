@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "side": "ntm:block/brick_light",
+    "top": "ntm:block/brick_light",
+    "bottom": "ntm:block/brick_light",
+    "all": "ntm:block/brick_light"
+  }
+}

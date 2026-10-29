@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "side": "ntm:block/reinforced_stone",
+    "top": "ntm:block/reinforced_stone",
+    "bottom": "ntm:block/reinforced_stone"
+  }
+}

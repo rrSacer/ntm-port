@@ -1,0 +1,2314 @@
+{
+  "schema": 1,
+  "namespace": "ntm",
+  "fluids": [
+    {
+      "id": "none",
+      "string_id": "none",
+      "source_id": 0,
+      "source_variable": "NONE",
+      "metadata": 0,
+      "color": "888888",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:261"
+    },
+    {
+      "id": "water",
+      "string_id": "water",
+      "source_id": 1,
+      "source_variable": "WATER",
+      "metadata": 1,
+      "color": "3333FF",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:262"
+    },
+    {
+      "id": "steam",
+      "string_id": "steam",
+      "source_id": 2,
+      "source_variable": "STEAM",
+      "metadata": 2,
+      "color": "e5e5e5",
+      "temp": 100,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:263"
+    },
+    {
+      "id": "hotsteam",
+      "string_id": "hotsteam",
+      "source_id": 3,
+      "source_variable": "HOTSTEAM",
+      "metadata": 3,
+      "color": "E7D6D6",
+      "temp": 300,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:264"
+    },
+    {
+      "id": "superhotsteam",
+      "string_id": "superhotsteam",
+      "source_id": 4,
+      "source_variable": "SUPERHOTSTEAM",
+      "metadata": 4,
+      "color": "E7B7B7",
+      "temp": 450,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:265"
+    },
+    {
+      "id": "ultrahotsteam",
+      "string_id": "ultrahotsteam",
+      "source_id": 5,
+      "source_variable": "ULTRAHOTSTEAM",
+      "metadata": 5,
+      "color": "E39393",
+      "temp": 600,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:266"
+    },
+    {
+      "id": "coolant",
+      "string_id": "coolant",
+      "source_id": 6,
+      "source_variable": "COOLANT",
+      "metadata": 6,
+      "color": "d8fcff",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:267"
+    },
+    {
+      "id": "lava",
+      "string_id": "lava",
+      "source_id": 7,
+      "source_variable": "LAVA",
+      "metadata": 7,
+      "color": "FF3300",
+      "temp": 1200,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:268"
+    },
+    {
+      "id": "deuterium",
+      "string_id": "deuterium",
+      "source_id": 8,
+      "source_variable": "DEUTERIUM",
+      "metadata": 8,
+      "color": "0000FF",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "0000FF",
+          "FFFFFF"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:269"
+    },
+    {
+      "id": "tritium",
+      "string_id": "tritium",
+      "source_id": 9,
+      "source_variable": "TRITIUM",
+      "metadata": 9,
+      "color": "000099",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "000099",
+          "E9FFAA"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:270"
+    },
+    {
+      "id": "oil",
+      "string_id": "oil",
+      "source_id": 10,
+      "source_variable": "OIL",
+      "metadata": 10,
+      "color": "020202",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "424242"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:271"
+    },
+    {
+      "id": "hotoil",
+      "string_id": "hotoil",
+      "source_id": 11,
+      "source_variable": "HOTOIL",
+      "metadata": 11,
+      "color": "300900",
+      "temp": 350,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:272"
+    },
+    {
+      "id": "heavyoil",
+      "string_id": "heavyoil",
+      "source_id": 12,
+      "source_variable": "HEAVYOIL",
+      "metadata": 12,
+      "color": "141312",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "513F39"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:273"
+    },
+    {
+      "id": "bitumen",
+      "string_id": "bitumen",
+      "source_id": 13,
+      "source_variable": "BITUMEN",
+      "metadata": 13,
+      "color": "1f2426",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "5A5877"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:274"
+    },
+    {
+      "id": "smear",
+      "string_id": "smear",
+      "source_id": 14,
+      "source_variable": "SMEAR",
+      "metadata": 14,
+      "color": "190f01",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "624F3B"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:275"
+    },
+    {
+      "id": "heatingoil",
+      "string_id": "heatingoil",
+      "source_id": 15,
+      "source_variable": "HEATINGOIL",
+      "metadata": 15,
+      "color": "211806",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "694235"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:276"
+    },
+    {
+      "id": "reclaimed",
+      "string_id": "reclaimed",
+      "source_id": 16,
+      "source_variable": "RECLAIMED",
+      "metadata": 16,
+      "color": "332b22",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "F65723"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:277"
+    },
+    {
+      "id": "petroil",
+      "string_id": "petroil",
+      "source_id": 17,
+      "source_variable": "PETROIL",
+      "metadata": 17,
+      "color": "44413d",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "2369F6"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:278"
+    },
+    {
+      "id": "lubricant",
+      "string_id": "lubricant",
+      "source_id": 18,
+      "source_variable": "LUBRICANT",
+      "metadata": 18,
+      "color": "606060",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "F1CC05"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:279"
+    },
+    {
+      "id": "naphtha",
+      "string_id": "naphtha",
+      "source_id": 19,
+      "source_variable": "NAPHTHA",
+      "metadata": 19,
+      "color": "595744",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "5F6D44"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:280"
+    },
+    {
+      "id": "diesel",
+      "string_id": "diesel",
+      "source_id": 20,
+      "source_variable": "DIESEL",
+      "metadata": 20,
+      "color": "f2eed5",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "FF2C2C"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:281"
+    },
+    {
+      "id": "lightoil",
+      "string_id": "lightoil",
+      "source_id": 21,
+      "source_variable": "LIGHTOIL",
+      "metadata": 21,
+      "color": "8c7451",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "B46B52"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:282"
+    },
+    {
+      "id": "kerosene",
+      "string_id": "kerosene",
+      "source_id": 22,
+      "source_variable": "KEROSENE",
+      "metadata": 22,
+      "color": "ffa5d2",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "FF377D"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:283"
+    },
+    {
+      "id": "gas",
+      "string_id": "gas",
+      "source_id": 23,
+      "source_variable": "GAS",
+      "metadata": 23,
+      "color": "fffeed",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "FF4545",
+          "FFE97F"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:284"
+    },
+    {
+      "id": "petroleum",
+      "string_id": "petroleum",
+      "source_id": 24,
+      "source_variable": "PETROLEUM",
+      "metadata": 24,
+      "color": "7cb7c9",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "5E7CFF",
+          "FFE97F"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:285"
+    },
+    {
+      "id": "lpg",
+      "string_id": "lpg",
+      "source_id": 25,
+      "source_variable": "LPG",
+      "metadata": 25,
+      "color": "4747EA",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:286"
+    },
+    {
+      "id": "biogas",
+      "string_id": "biogas",
+      "source_id": 26,
+      "source_variable": "BIOGAS",
+      "metadata": 26,
+      "color": "bfd37c",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "C8FF1F",
+          "303030"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:287"
+    },
+    {
+      "id": "biofuel",
+      "string_id": "biofuel",
+      "source_id": 27,
+      "source_variable": "BIOFUEL",
+      "metadata": 27,
+      "color": "eef274",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "9EB623"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:288"
+    },
+    {
+      "id": "nitan",
+      "string_id": "nitan",
+      "source_id": 28,
+      "source_variable": "NITAN",
+      "metadata": 28,
+      "color": "8018ad",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "6B238C"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:289"
+    },
+    {
+      "id": "uf6",
+      "string_id": "uf6",
+      "source_id": 29,
+      "source_variable": "UF6",
+      "metadata": 29,
+      "color": "D1CEBE",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:290"
+    },
+    {
+      "id": "puf6",
+      "string_id": "puf6",
+      "source_id": 30,
+      "source_variable": "PUF6",
+      "metadata": 30,
+      "color": "4C4C4C",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:291"
+    },
+    {
+      "id": "sas3",
+      "string_id": "sas3",
+      "source_id": 31,
+      "source_variable": "SAS3",
+      "metadata": 31,
+      "color": "4ffffc",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:292"
+    },
+    {
+      "id": "schrabidic",
+      "string_id": "schrabidic",
+      "source_id": 32,
+      "source_variable": "SCHRABIDIC",
+      "metadata": 32,
+      "color": "006B6B",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:293"
+    },
+    {
+      "id": "amat",
+      "string_id": "amat",
+      "source_id": 33,
+      "source_variable": "AMAT",
+      "metadata": 33,
+      "color": "010101",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:294"
+    },
+    {
+      "id": "aschrab",
+      "string_id": "aschrab",
+      "source_id": 34,
+      "source_variable": "ASCHRAB",
+      "metadata": 34,
+      "color": "b50000",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:295"
+    },
+    {
+      "id": "peroxide",
+      "string_id": "peroxide",
+      "source_id": 35,
+      "source_variable": "PEROXIDE",
+      "metadata": 35,
+      "color": "fff7aa",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:296"
+    },
+    {
+      "id": "watz",
+      "string_id": "watz",
+      "source_id": 36,
+      "source_variable": "WATZ",
+      "metadata": 36,
+      "color": "86653E",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:297"
+    },
+    {
+      "id": "cryogel",
+      "string_id": "cryogel",
+      "source_id": 37,
+      "source_variable": "CRYOGEL",
+      "metadata": 37,
+      "color": "32ffff",
+      "temp": -170,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:298"
+    },
+    {
+      "id": "hydrogen",
+      "string_id": "hydrogen",
+      "source_id": 38,
+      "source_variable": "HYDROGEN",
+      "metadata": 38,
+      "color": "4286f4",
+      "temp": -260,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "4286f4",
+          "ffffff"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:299"
+    },
+    {
+      "id": "oxygen",
+      "string_id": "oxygen",
+      "source_id": 39,
+      "source_variable": "OXYGEN",
+      "metadata": 39,
+      "color": "98bdf9",
+      "temp": -100,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "98bdf9",
+          "ffffff"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:300"
+    },
+    {
+      "id": "xenon",
+      "string_id": "xenon",
+      "source_id": 40,
+      "source_variable": "XENON",
+      "metadata": 40,
+      "color": "ba45e8",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "8C21FF",
+          "303030"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:301"
+    },
+    {
+      "id": "balefire",
+      "string_id": "balefire",
+      "source_id": 41,
+      "source_variable": "BALEFIRE",
+      "metadata": 41,
+      "color": "28e02e",
+      "temp": 1500,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:302"
+    },
+    {
+      "id": "mercury",
+      "string_id": "mercury",
+      "source_id": 42,
+      "source_variable": "MERCURY",
+      "metadata": 42,
+      "color": "808080",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:303"
+    },
+    {
+      "id": "pain",
+      "string_id": "pain",
+      "source_id": 43,
+      "source_variable": "PAIN",
+      "metadata": 43,
+      "color": "938541",
+      "temp": 300,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:304"
+    },
+    {
+      "id": "wastefluid",
+      "string_id": "wastefluid",
+      "source_id": 44,
+      "source_variable": "WASTEFLUID",
+      "metadata": 44,
+      "color": "544400",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:305"
+    },
+    {
+      "id": "wastegas",
+      "string_id": "wastegas",
+      "source_id": 45,
+      "source_variable": "WASTEGAS",
+      "metadata": 45,
+      "color": "B8B8B8",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:306"
+    },
+    {
+      "id": "gasoline",
+      "string_id": "gasoline",
+      "source_id": 46,
+      "source_variable": "GASOLINE",
+      "metadata": 46,
+      "color": "445772",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "2F7747"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:307"
+    },
+    {
+      "id": "coalgas",
+      "string_id": "coalgas",
+      "source_id": 47,
+      "source_variable": "COALGAS",
+      "metadata": 47,
+      "color": "445772",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "2E155F"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:308"
+    },
+    {
+      "id": "spentsteam",
+      "string_id": "spentsteam",
+      "source_id": 48,
+      "source_variable": "SPENTSTEAM",
+      "metadata": 48,
+      "color": "445772",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:309"
+    },
+    {
+      "id": "fracksol",
+      "string_id": "fracksol",
+      "source_id": 49,
+      "source_variable": "FRACKSOL",
+      "metadata": 49,
+      "color": "798A6B",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "4F887F"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:310"
+    },
+    {
+      "id": "plasma_dt",
+      "string_id": "plasma_dt",
+      "source_id": 50,
+      "source_variable": "PLASMA_DT",
+      "metadata": 50,
+      "color": "F7AFDE",
+      "temp": 3250,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:311"
+    },
+    {
+      "id": "plasma_hd",
+      "string_id": "plasma_hd",
+      "source_id": 51,
+      "source_variable": "PLASMA_HD",
+      "metadata": 51,
+      "color": "F0ADF4",
+      "temp": 2500,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:312"
+    },
+    {
+      "id": "plasma_ht",
+      "string_id": "plasma_ht",
+      "source_id": 52,
+      "source_variable": "PLASMA_HT",
+      "metadata": 52,
+      "color": "D1ABF2",
+      "temp": 3000,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:313"
+    },
+    {
+      "id": "plasma_xm",
+      "string_id": "plasma_xm",
+      "source_id": 53,
+      "source_variable": "PLASMA_XM",
+      "metadata": 53,
+      "color": "C6A5FF",
+      "temp": 4250,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:314"
+    },
+    {
+      "id": "plasma_bf",
+      "string_id": "plasma_bf",
+      "source_id": 54,
+      "source_variable": "PLASMA_BF",
+      "metadata": 54,
+      "color": "A7F1A3",
+      "temp": 8500,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:315"
+    },
+    {
+      "id": "carbondioxide",
+      "string_id": "carbondioxide",
+      "source_id": 55,
+      "source_variable": "CARBONDIOXIDE",
+      "metadata": 55,
+      "color": "404040",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:316"
+    },
+    {
+      "id": "plasma_dh3",
+      "string_id": "plasma_dh3",
+      "source_id": 56,
+      "source_variable": "PLASMA_DH3",
+      "metadata": 56,
+      "color": "FF83AA",
+      "temp": 3480,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:317"
+    },
+    {
+      "id": "helium3",
+      "string_id": "helium3",
+      "source_id": 57,
+      "source_variable": "HELIUM3",
+      "metadata": 57,
+      "color": "FCF0C4",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "FD631F",
+          "ffffff"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:318"
+    },
+    {
+      "id": "death",
+      "string_id": "death",
+      "source_id": 58,
+      "source_variable": "DEATH",
+      "metadata": 58,
+      "color": "717A88",
+      "temp": 300,
+      "no_container": false,
+      "lead_container": true,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:319"
+    },
+    {
+      "id": "ethanol",
+      "string_id": "ethanol",
+      "source_id": 59,
+      "source_variable": "ETHANOL",
+      "metadata": 59,
+      "color": "e0ffff",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "EAFFF3"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:320"
+    },
+    {
+      "id": "heavywater",
+      "string_id": "heavywater",
+      "source_id": 60,
+      "source_variable": "HEAVYWATER",
+      "metadata": 60,
+      "color": "00a0b0",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:321"
+    },
+    {
+      "id": "crackoil",
+      "string_id": "crackoil",
+      "source_id": 61,
+      "source_variable": "CRACKOIL",
+      "metadata": 61,
+      "color": "020202",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "424242"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:322"
+    },
+    {
+      "id": "coaloil",
+      "string_id": "coaloil",
+      "source_id": 62,
+      "source_variable": "COALOIL",
+      "metadata": 62,
+      "color": "020202",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "424242"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:323"
+    },
+    {
+      "id": "hotcrackoil",
+      "string_id": "hotcrackoil",
+      "source_id": 63,
+      "source_variable": "HOTCRACKOIL",
+      "metadata": 63,
+      "color": "300900",
+      "temp": 350,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:324"
+    },
+    {
+      "id": "naphtha_crack",
+      "string_id": "naphtha_crack",
+      "source_id": 64,
+      "source_variable": "NAPHTHA_CRACK",
+      "metadata": 64,
+      "color": "595744",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "5F6D44"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:325"
+    },
+    {
+      "id": "lightoil_crack",
+      "string_id": "lightoil_crack",
+      "source_id": 65,
+      "source_variable": "LIGHTOIL_CRACK",
+      "metadata": 65,
+      "color": "8c7451",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "B46B52"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:326"
+    },
+    {
+      "id": "diesel_crack",
+      "string_id": "diesel_crack",
+      "source_id": 66,
+      "source_variable": "DIESEL_CRACK",
+      "metadata": 66,
+      "color": "f2eed5",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "FF2C2C"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:327"
+    },
+    {
+      "id": "aromatics",
+      "string_id": "aromatics",
+      "source_id": 67,
+      "source_variable": "AROMATICS",
+      "metadata": 67,
+      "color": "68A09A",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "68A09A",
+          "EDCF27"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:328"
+    },
+    {
+      "id": "unsaturateds",
+      "string_id": "unsaturateds",
+      "source_id": 68,
+      "source_variable": "UNSATURATEDS",
+      "metadata": 68,
+      "color": "628FAE",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "628FAE",
+          "EDCF27"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:329"
+    },
+    {
+      "id": "salient",
+      "string_id": "salient",
+      "source_id": 69,
+      "source_variable": "SALIENT",
+      "metadata": 69,
+      "color": "457F2D",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:330"
+    },
+    {
+      "id": "xpjuice",
+      "string_id": "xpjuice",
+      "source_id": 70,
+      "source_variable": "XPJUICE",
+      "metadata": 70,
+      "color": "BBFF09",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:331"
+    },
+    {
+      "id": "enderjuice",
+      "string_id": "enderjuice",
+      "source_id": 71,
+      "source_variable": "ENDERJUICE",
+      "metadata": 71,
+      "color": "127766",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:332"
+    },
+    {
+      "id": "petroil_leaded",
+      "string_id": "petroil_leaded",
+      "source_id": 72,
+      "source_variable": "PETROIL_LEADED",
+      "metadata": 72,
+      "color": "44413d",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "2331F6"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:333"
+    },
+    {
+      "id": "gasoline_leaded",
+      "string_id": "gasoline_leaded",
+      "source_id": 73,
+      "source_variable": "GASOLINE_LEADED",
+      "metadata": 73,
+      "color": "445772",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "2F775A"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:334"
+    },
+    {
+      "id": "coalgas_leaded",
+      "string_id": "coalgas_leaded",
+      "source_id": 74,
+      "source_variable": "COALGAS_LEADED",
+      "metadata": 74,
+      "color": "445772",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "1E155F"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:335"
+    },
+    {
+      "id": "sulfuric_acid",
+      "string_id": "sulfuric_acid",
+      "source_id": 75,
+      "source_variable": "SULFURIC_ACID",
+      "metadata": 75,
+      "color": "B0AA64",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:336"
+    },
+    {
+      "id": "coolant_hot",
+      "string_id": "coolant_hot",
+      "source_id": 76,
+      "source_variable": "COOLANT_HOT",
+      "metadata": 76,
+      "color": "99525E",
+      "temp": 600,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:337"
+    },
+    {
+      "id": "mug",
+      "string_id": "mug",
+      "source_id": 77,
+      "source_variable": "MUG",
+      "metadata": 77,
+      "color": "4B2D28",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:338"
+    },
+    {
+      "id": "mug_hot",
+      "string_id": "mug_hot",
+      "source_id": 78,
+      "source_variable": "MUG_HOT",
+      "metadata": 78,
+      "color": "6B2A20",
+      "temp": 500,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:339"
+    },
+    {
+      "id": "woodoil",
+      "string_id": "woodoil",
+      "source_id": 79,
+      "source_variable": "WOODOIL",
+      "metadata": 79,
+      "color": "847D54",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "BF7E4F"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:340"
+    },
+    {
+      "id": "coalcreosote",
+      "string_id": "coalcreosote",
+      "source_id": 80,
+      "source_variable": "COALCREOSOTE",
+      "metadata": 80,
+      "color": "51694F",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "285A3F"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:341"
+    },
+    {
+      "id": "seedslurry",
+      "string_id": "seedslurry",
+      "source_id": 81,
+      "source_variable": "SEEDSLURRY",
+      "metadata": 81,
+      "color": "7CC35E",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "7CC35E"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:342"
+    },
+    {
+      "id": "nitric_acid",
+      "string_id": "nitric_acid",
+      "source_id": 82,
+      "source_variable": "NITRIC_ACID",
+      "metadata": 82,
+      "color": "BB7A1E",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:343"
+    },
+    {
+      "id": "solvent",
+      "string_id": "solvent",
+      "source_id": 83,
+      "source_variable": "SOLVENT",
+      "metadata": 83,
+      "color": "E4E3EF",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "E4E3EF"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:344"
+    },
+    {
+      "id": "blood",
+      "string_id": "blood",
+      "source_id": 84,
+      "source_variable": "BLOOD",
+      "metadata": 84,
+      "color": "B22424",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:345"
+    },
+    {
+      "id": "blood_hot",
+      "string_id": "blood_hot",
+      "source_id": 85,
+      "source_variable": "BLOOD_HOT",
+      "metadata": 85,
+      "color": "F22419",
+      "temp": 666,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:346"
+    },
+    {
+      "id": "syngas",
+      "string_id": "syngas",
+      "source_id": 86,
+      "source_variable": "SYNGAS",
+      "metadata": 86,
+      "color": "131313",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "FFFFFF",
+          "131313"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:347"
+    },
+    {
+      "id": "oxyhydrogen",
+      "string_id": "oxyhydrogen",
+      "source_id": 87,
+      "source_variable": "OXYHYDROGEN",
+      "metadata": 87,
+      "color": "483FC1",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:348"
+    },
+    {
+      "id": "radiosolvent",
+      "string_id": "radiosolvent",
+      "source_id": 88,
+      "source_variable": "RADIOSOLVENT",
+      "metadata": 88,
+      "color": "A4D7DD",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:349"
+    },
+    {
+      "id": "chlorine",
+      "string_id": "chlorine",
+      "source_id": 89,
+      "source_variable": "CHLORINE",
+      "metadata": 89,
+      "color": "BAB572",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "BAB572",
+          "887B34"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:350"
+    },
+    {
+      "id": "heavyoil_vacuum",
+      "string_id": "heavyoil_vacuum",
+      "source_id": 90,
+      "source_variable": "HEAVYOIL_VACUUM",
+      "metadata": 90,
+      "color": "131214",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "513F39"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:351"
+    },
+    {
+      "id": "reformate",
+      "string_id": "reformate",
+      "source_id": 91,
+      "source_variable": "REFORMATE",
+      "metadata": 91,
+      "color": "835472",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "D180D6"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:352"
+    },
+    {
+      "id": "lightoil_vacuum",
+      "string_id": "lightoil_vacuum",
+      "source_id": 92,
+      "source_variable": "LIGHTOIL_VACUUM",
+      "metadata": 92,
+      "color": "8C8851",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "B46B52"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:353"
+    },
+    {
+      "id": "sourgas",
+      "string_id": "sourgas",
+      "source_id": 93,
+      "source_variable": "SOURGAS",
+      "metadata": 93,
+      "color": "C9BE0D",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "C9BE0D",
+          "303030"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:354"
+    },
+    {
+      "id": "xylene",
+      "string_id": "xylene",
+      "source_id": 94,
+      "source_variable": "XYLENE",
+      "metadata": 94,
+      "color": "5C4E76",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "A380D6"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:355"
+    },
+    {
+      "id": "heatingoil_vacuum",
+      "string_id": "heatingoil_vacuum",
+      "source_id": 95,
+      "source_variable": "HEATINGOIL_VACUUM",
+      "metadata": 95,
+      "color": "211D06",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "694235"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:356"
+    },
+    {
+      "id": "diesel_reform",
+      "string_id": "diesel_reform",
+      "source_id": 96,
+      "source_variable": "DIESEL_REFORM",
+      "metadata": 96,
+      "color": "CDC3C6",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "FFC500"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:357"
+    },
+    {
+      "id": "diesel_crack_reform",
+      "string_id": "diesel_crack_reform",
+      "source_id": 97,
+      "source_variable": "DIESEL_CRACK_REFORM",
+      "metadata": 97,
+      "color": "CDC3CC",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "FFC500"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:358"
+    },
+    {
+      "id": "kerosene_reform",
+      "string_id": "kerosene_reform",
+      "source_id": 98,
+      "source_variable": "KEROSENE_REFORM",
+      "metadata": 98,
+      "color": "FFA5F3",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "FF377D"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:359"
+    },
+    {
+      "id": "reformgas",
+      "string_id": "reformgas",
+      "source_id": 99,
+      "source_variable": "REFORMGAS",
+      "metadata": 99,
+      "color": "6362AE",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "9392FF",
+          "FFB992"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:360"
+    },
+    {
+      "id": "colloid",
+      "string_id": "colloid",
+      "source_id": 100,
+      "source_variable": "COLLOID",
+      "metadata": 100,
+      "color": "787878",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:361"
+    },
+    {
+      "id": "phosgene",
+      "string_id": "phosgene",
+      "source_id": 101,
+      "source_variable": "PHOSGENE",
+      "metadata": 101,
+      "color": "CFC4A4",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "CFC4A4",
+          "361414"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:362"
+    },
+    {
+      "id": "mustardgas",
+      "string_id": "mustardgas",
+      "source_id": 102,
+      "source_variable": "MUSTARDGAS",
+      "metadata": 102,
+      "color": "BAB572",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "BAB572",
+          "361414"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:363"
+    },
+    {
+      "id": "iongel",
+      "string_id": "iongel",
+      "source_id": 103,
+      "source_variable": "IONGEL",
+      "metadata": 103,
+      "color": "B8FFFF",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:364"
+    },
+    {
+      "id": "oil_coker",
+      "string_id": "oil_coker",
+      "source_id": 104,
+      "source_variable": "OIL_COKER",
+      "metadata": 104,
+      "color": "001802",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:365"
+    },
+    {
+      "id": "naphtha_coker",
+      "string_id": "naphtha_coker",
+      "source_id": 105,
+      "source_variable": "NAPHTHA_COKER",
+      "metadata": 105,
+      "color": "495944",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:366"
+    },
+    {
+      "id": "gas_coker",
+      "string_id": "gas_coker",
+      "source_id": 106,
+      "source_variable": "GAS_COKER",
+      "metadata": 106,
+      "color": "DEF4CA",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:367"
+    },
+    {
+      "id": "egg",
+      "string_id": "egg",
+      "source_id": 107,
+      "source_variable": "EGG",
+      "metadata": 107,
+      "color": "D2C273",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:368"
+    },
+    {
+      "id": "cholesterol",
+      "string_id": "cholesterol",
+      "source_id": 108,
+      "source_variable": "CHOLESTEROL",
+      "metadata": 108,
+      "color": "D6D2BD",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:369"
+    },
+    {
+      "id": "estradiol",
+      "string_id": "estradiol",
+      "source_id": 109,
+      "source_variable": "ESTRADIOL",
+      "metadata": 109,
+      "color": "CDD5D8",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:370"
+    },
+    {
+      "id": "fishoil",
+      "string_id": "fishoil",
+      "source_id": 110,
+      "source_variable": "FISHOIL",
+      "metadata": 110,
+      "color": "4B4A45",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:371"
+    },
+    {
+      "id": "sunfloweroil",
+      "string_id": "sunfloweroil",
+      "source_id": 111,
+      "source_variable": "SUNFLOWEROIL",
+      "metadata": 111,
+      "color": "CBAD45",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:372"
+    },
+    {
+      "id": "nitroglycerin",
+      "string_id": "nitroglycerin",
+      "source_id": 112,
+      "source_variable": "NITROGLYCERIN",
+      "metadata": 112,
+      "color": "92ACA6",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:373"
+    },
+    {
+      "id": "redmud",
+      "string_id": "redmud",
+      "source_id": 113,
+      "source_variable": "REDMUD",
+      "metadata": 113,
+      "color": "D85638",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": true,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:374"
+    },
+    {
+      "id": "chlorocalcite_solution",
+      "string_id": "chlorocalcite_solution",
+      "source_id": 114,
+      "source_variable": "CHLOROCALCITE_SOLUTION",
+      "metadata": 114,
+      "color": "808080",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:375"
+    },
+    {
+      "id": "chlorocalcite_mix",
+      "string_id": "chlorocalcite_mix",
+      "source_id": 115,
+      "source_variable": "CHLOROCALCITE_MIX",
+      "metadata": 115,
+      "color": "808080",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:376"
+    },
+    {
+      "id": "chlorocalcite_cleaned",
+      "string_id": "chlorocalcite_cleaned",
+      "source_id": 116,
+      "source_variable": "CHLOROCALCITE_CLEANED",
+      "metadata": 116,
+      "color": "808080",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:377"
+    },
+    {
+      "id": "potassium_chloride",
+      "string_id": "potassium_chloride",
+      "source_id": 117,
+      "source_variable": "POTASSIUM_CHLORIDE",
+      "metadata": 117,
+      "color": "808080",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:378"
+    },
+    {
+      "id": "calcium_chloride",
+      "string_id": "calcium_chloride",
+      "source_id": 118,
+      "source_variable": "CALCIUM_CHLORIDE",
+      "metadata": 118,
+      "color": "808080",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:379"
+    },
+    {
+      "id": "calcium_solution",
+      "string_id": "calcium_solution",
+      "source_id": 119,
+      "source_variable": "CALCIUM_SOLUTION",
+      "metadata": 119,
+      "color": "808080",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:380"
+    },
+    {
+      "id": "smoke",
+      "string_id": "smoke",
+      "source_id": 120,
+      "source_variable": "SMOKE",
+      "metadata": 120,
+      "color": "808080",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:381"
+    },
+    {
+      "id": "smoke_leaded",
+      "string_id": "smoke_leaded",
+      "source_id": 121,
+      "source_variable": "SMOKE_LEADED",
+      "metadata": 121,
+      "color": "808080",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:382"
+    },
+    {
+      "id": "smoke_poison",
+      "string_id": "smoke_poison",
+      "source_id": 122,
+      "source_variable": "SMOKE_POISON",
+      "metadata": 122,
+      "color": "808080",
+      "temp": 20,
+      "no_container": true,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:383"
+    },
+    {
+      "id": "helium4",
+      "string_id": "helium4",
+      "source_id": 123,
+      "source_variable": "HELIUM4",
+      "metadata": 123,
+      "color": "E54B0A",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "FD631F",
+          "ffff00"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:384"
+    },
+    {
+      "id": "heavywater_hot",
+      "string_id": "heavywater_hot",
+      "source_id": 124,
+      "source_variable": "HEAVYWATER_HOT",
+      "metadata": 124,
+      "color": "4D007B",
+      "temp": 600,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:385"
+    },
+    {
+      "id": "sodium",
+      "string_id": "sodium",
+      "source_id": 125,
+      "source_variable": "SODIUM",
+      "metadata": 125,
+      "color": "CCD4D5",
+      "temp": 400,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:386"
+    },
+    {
+      "id": "sodium_hot",
+      "string_id": "sodium_hot",
+      "source_id": 126,
+      "source_variable": "SODIUM_HOT",
+      "metadata": 126,
+      "color": "E2ADC1",
+      "temp": 1200,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:387"
+    },
+    {
+      "id": "thorium_salt",
+      "string_id": "thorium_salt",
+      "source_id": 127,
+      "source_variable": "THORIUM_SALT",
+      "metadata": 127,
+      "color": "7A5542",
+      "temp": 800,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:388"
+    },
+    {
+      "id": "thorium_salt_hot",
+      "string_id": "thorium_salt_hot",
+      "source_id": 128,
+      "source_variable": "THORIUM_SALT_HOT",
+      "metadata": 128,
+      "color": "3E3627",
+      "temp": 1600,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:389"
+    },
+    {
+      "id": "thorium_salt_depleted",
+      "string_id": "thorium_salt_depleted",
+      "source_id": 129,
+      "source_variable": "THORIUM_SALT_DEPLETED",
+      "metadata": 129,
+      "color": "302D1C",
+      "temp": 800,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:390"
+    },
+    {
+      "id": "fullerene",
+      "string_id": "fullerene",
+      "source_id": 130,
+      "source_variable": "FULLERENE",
+      "metadata": 130,
+      "color": "FF7FED",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:391"
+    },
+    {
+      "id": "pheromone",
+      "string_id": "pheromone",
+      "source_id": 131,
+      "source_variable": "PHEROMONE",
+      "metadata": 131,
+      "color": "5FA6E8",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:392"
+    },
+    {
+      "id": "pheromone_m",
+      "string_id": "pheromone_m",
+      "source_id": 132,
+      "source_variable": "PHEROMONE_M",
+      "metadata": 132,
+      "color": "48C9B0",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:393"
+    },
+    {
+      "id": "oil_ds",
+      "string_id": "oil_ds",
+      "source_id": 133,
+      "source_variable": "OIL_DS",
+      "metadata": 133,
+      "color": "121212",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "424242"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:394"
+    },
+    {
+      "id": "hotoil_ds",
+      "string_id": "hotoil_ds",
+      "source_id": 134,
+      "source_variable": "HOTOIL_DS",
+      "metadata": 134,
+      "color": "3F180F",
+      "temp": 350,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:395"
+    },
+    {
+      "id": "crackoil_ds",
+      "string_id": "crackoil_ds",
+      "source_id": 135,
+      "source_variable": "CRACKOIL_DS",
+      "metadata": 135,
+      "color": "2A1C11",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "424242"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:396"
+    },
+    {
+      "id": "hotcrackoil_ds",
+      "string_id": "hotcrackoil_ds",
+      "source_id": 136,
+      "source_variable": "HOTCRACKOIL_DS",
+      "metadata": 136,
+      "color": "3A1A28",
+      "temp": 350,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:397"
+    },
+    {
+      "id": "naphtha_ds",
+      "string_id": "naphtha_ds",
+      "source_id": 137,
+      "source_variable": "NAPHTHA_DS",
+      "metadata": 137,
+      "color": "63614E",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "5F6D44"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:398"
+    },
+    {
+      "id": "lightoil_ds",
+      "string_id": "lightoil_ds",
+      "source_id": 138,
+      "source_variable": "LIGHTOIL_DS",
+      "metadata": 138,
+      "color": "63543E",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "B46B52"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:399"
+    },
+    {
+      "id": "stellar_flux",
+      "string_id": "stellar_flux",
+      "source_id": 139,
+      "source_variable": "STELLAR_FLUX",
+      "metadata": 139,
+      "color": "E300FF",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:400"
+    },
+    {
+      "id": "vitriol",
+      "string_id": "vitriol",
+      "source_id": 140,
+      "source_variable": "VITRIOL",
+      "metadata": 140,
+      "color": "6E5222",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:401"
+    },
+    {
+      "id": "slop",
+      "string_id": "slop",
+      "source_id": 141,
+      "source_variable": "SLOP",
+      "metadata": 141,
+      "color": "929D45",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:402"
+    },
+    {
+      "id": "lead",
+      "string_id": "lead",
+      "source_id": 142,
+      "source_variable": "LEAD",
+      "metadata": 142,
+      "color": "666672",
+      "temp": 350,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:403"
+    },
+    {
+      "id": "lead_hot",
+      "string_id": "lead_hot",
+      "source_id": 143,
+      "source_variable": "LEAD_HOT",
+      "metadata": 143,
+      "color": "776563",
+      "temp": 1500,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:404"
+    },
+    {
+      "id": "perfluoromethyl",
+      "string_id": "perfluoromethyl",
+      "source_id": 144,
+      "source_variable": "PERFLUOROMETHYL",
+      "metadata": 144,
+      "color": "BDC8DC",
+      "temp": 15,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:405"
+    },
+    {
+      "id": "perfluoromethyl_cold",
+      "string_id": "perfluoromethyl_cold",
+      "source_id": 145,
+      "source_variable": "PERFLUOROMETHYL_COLD",
+      "metadata": 145,
+      "color": "99DADE",
+      "temp": -150,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:406"
+    },
+    {
+      "id": "perfluoromethyl_hot",
+      "string_id": "perfluoromethyl_hot",
+      "source_id": 146,
+      "source_variable": "PERFLUOROMETHYL_HOT",
+      "metadata": 146,
+      "color": "B899DE",
+      "temp": 250,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:407"
+    },
+    {
+      "id": "lye",
+      "string_id": "lye",
+      "source_id": 147,
+      "source_variable": "LYE",
+      "metadata": 147,
+      "color": "FFECCC",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:408"
+    },
+    {
+      "id": "sodium_aluminate",
+      "string_id": "sodium_aluminate",
+      "source_id": 148,
+      "source_variable": "SODIUM_ALUMINATE",
+      "metadata": 148,
+      "color": "FFD191",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:409"
+    },
+    {
+      "id": "bauxite_solution",
+      "string_id": "bauxite_solution",
+      "source_id": 149,
+      "source_variable": "BAUXITE_SOLUTION",
+      "metadata": 149,
+      "color": "E2560F",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:410"
+    },
+    {
+      "id": "alumina",
+      "string_id": "alumina",
+      "source_id": 150,
+      "source_variable": "ALUMINA",
+      "metadata": 150,
+      "color": "DDFFFF",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:411"
+    },
+    {
+      "id": "air",
+      "string_id": "air",
+      "source_id": 151,
+      "source_variable": "AIR",
+      "metadata": 151,
+      "color": "E7EAEB",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:412"
+    },
+    {
+      "id": "concrete",
+      "string_id": "concrete",
+      "source_id": 152,
+      "source_variable": "CONCRETE",
+      "metadata": 152,
+      "color": "A2A2A2",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:413"
+    },
+    {
+      "id": "dhc",
+      "string_id": "dhc",
+      "source_id": 153,
+      "source_variable": "DHC",
+      "metadata": 153,
+      "color": "D2AFFF",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:414"
+    },
+    {
+      "id": "airblast",
+      "string_id": "airblast",
+      "source_id": 154,
+      "source_variable": "AIRBLAST",
+      "metadata": 154,
+      "color": "FFDADA",
+      "temp": 1200,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {},
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:415"
+    },
+    {
+      "id": "flue",
+      "string_id": "flue",
+      "source_id": 155,
+      "source_variable": "FLUE",
+      "metadata": 155,
+      "color": "131313",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Gastank": [
+          "FF4545",
+          "FFE97F"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:416"
+    },
+    {
+      "id": "titanium_tetrachloride",
+      "string_id": "titanium_tetrachloride",
+      "source_id": 156,
+      "source_variable": "TITANIUM_TETRACHLORIDE",
+      "metadata": 156,
+      "color": "DBF796",
+      "temp": 20,
+      "no_container": false,
+      "lead_container": false,
+      "descriptors": {
+        "Canister": [
+          "E1E549"
+        ]
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:417"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": "ntm:waste_trinitite",
+  "result": {
+    "id": "ntm:glass_trinitite",
+    "count": 1
+  },
+  "experience": 0.25,
+  "cookingtime": 100
+}

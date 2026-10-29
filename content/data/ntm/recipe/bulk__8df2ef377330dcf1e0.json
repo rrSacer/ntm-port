@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_meteorite",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/dustiron",
+    "#ntm:bulk/dustcopper",
+    "#ntm:bulk/dustlithium",
+    "#ntm:bulk/dustnetherquartz"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_polymer"
+  },
+  "result": {
+    "id": "ntm:block_polymer",
+    "count": 1
+  }
+}

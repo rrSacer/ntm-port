@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/ingot_tungsten"
+  },
+  "result": {
+    "id": "ntm:block_tungsten",
+    "count": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:upgrade_gc_speed",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GNG",
+    "RUR",
+    "GMG"
+  ],
+  "key": {
+    "R": "#ntm:bulk/ingotrubber",
+    "M": "ntm:motor",
+    "G": "ntm:coil_gold",
+    "N": "#ntm:bulk/ingotniobium",
+    "U": "ntm:upgrade_template"
+  }
+}

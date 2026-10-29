@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:ingot_hes",
+    "ntm:ingot_les",
+    "ntm:ingot_schrabidium_fuel"
+  ]
+}

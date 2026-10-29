@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_rubber"
+  ],
+  "result": {
+    "id": "ntm:ingot_rubber",
+    "count": 9
+  }
+}

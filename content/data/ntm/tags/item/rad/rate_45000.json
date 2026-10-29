@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:plate_cast__schrabidium",
+    "ntm:powder_i131_tiny",
+    "ntm:powder_schrabidium",
+    "ntm:powder_sr90"
+  ]
+}

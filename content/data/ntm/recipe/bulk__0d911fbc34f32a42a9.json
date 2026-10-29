@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:custom_dirty",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "WLW",
+    "WLW"
+  ],
+  "key": {
+    "C": "#ntm:bulk/platecopper",
+    "L": "#ntm:bulk/platelead",
+    "W": "ntm:nuclear_waste"
+  }
+}

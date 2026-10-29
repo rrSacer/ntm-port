@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "side": "ntm:block/ducrete",
+    "top": "ntm:block/ducrete",
+    "bottom": "ntm:block/ducrete",
+    "all": "ntm:block/ducrete"
+  }
+}

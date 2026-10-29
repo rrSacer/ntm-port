@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_tantalium"
+  },
+  "result": {
+    "id": "ntm:block_tantalium",
+    "count": 1
+  }
+}

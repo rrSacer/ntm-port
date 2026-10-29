@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:concrete_colored_ext__machine_stripe",
+    "count": 6
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "1 2",
+    "CCC"
+  ],
+  "key": {
+    "C": "ntm:concrete_smooth",
+    "1": "#ntm:bulk/dyebrown",
+    "2": "#ntm:bulk/dyeblack"
+  }
+}

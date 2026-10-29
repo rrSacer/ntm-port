@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_pu238",
+    "ntm:block_uranium_fuel",
+    "ntm:cell_sas3",
+    "ntm:debris_metal",
+    "ntm:gadget_core",
+    "ntm:ingot_gh336",
+    "ntm:ingot_pu239",
+    "ntm:ingot_u233",
+    "ntm:man_core"
+  ]
+}

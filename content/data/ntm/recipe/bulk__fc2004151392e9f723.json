@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_dineutronium"
+  },
+  "result": {
+    "id": "ntm:block_dineutronium",
+    "count": 1
+  }
+}

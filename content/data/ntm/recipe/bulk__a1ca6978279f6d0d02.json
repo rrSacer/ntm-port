@@ -1,0 +1,15 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:glass_polarized",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": "ntm:part_generic__glass_polarized"
+  }
+}

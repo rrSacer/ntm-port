@@ -1,0 +1,27 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_americium_fuel",
+    "ntm:billet_hes",
+    "ntm:billet_les",
+    "ntm:billet_plutonium_fuel",
+    "ntm:billet_pu_mix",
+    "ntm:billet_schrabidium_fuel",
+    "ntm:billet_technetium",
+    "ntm:billet_thorium_fuel",
+    "ntm:billet_u238",
+    "ntm:billet_uranium",
+    "ntm:cell_tritium",
+    "ntm:nugget_americium_fuel",
+    "ntm:nugget_hes",
+    "ntm:nugget_les",
+    "ntm:nugget_plutonium_fuel",
+    "ntm:nugget_pu_mix",
+    "ntm:nugget_schrabidium_fuel",
+    "ntm:nugget_technetium",
+    "ntm:nugget_thorium_fuel",
+    "ntm:nugget_u238",
+    "ntm:nugget_uranium",
+    "ntm:rod_zirnox_tritium"
+  ]
+}

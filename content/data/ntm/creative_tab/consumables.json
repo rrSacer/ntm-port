@@ -1,0 +1,28 @@
+{
+  "title": "itemGroup.ntm.consumables",
+  "fallback": "NTM Consumables and Gear",
+  "icon": "ntm:syringe_empty",
+  "order": 8,
+  "items": [
+    "ntm:syringe_empty",
+    "ntm:syringe_metal_empty",
+    "ntm:cap_nuka",
+    "ntm:cap_quantum",
+    "ntm:cap_sparkle",
+    "ntm:cap_rad",
+    "ntm:cap_korl",
+    "ntm:cap_fritz",
+    "ntm:ring_pull",
+    "ntm:can_empty",
+    "ntm:can_key",
+    "ntm:coin_creeper",
+    "ntm:coin_radiation",
+    "ntm:coin_maskman",
+    "ntm:coin_worm",
+    "ntm:coin_ufo",
+    "ntm:coin_token",
+    "ntm:egg_glyphid",
+    "ntm:pin",
+    "ntm:bottle_empty"
+  ]
+}

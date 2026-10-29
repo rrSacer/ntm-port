@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:debris_concrete",
+    "ntm:fallout__item",
+    "ntm:ingot_actinium",
+    "ntm:ingot_co60"
+  ]
+}

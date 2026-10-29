@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_uranium_fuel",
+    "ntm:ingot_u238",
+    "ntm:mike_core",
+    "ntm:nugget_mox_fuel",
+    "ntm:nugget_neptunium"
+  ]
+}

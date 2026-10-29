@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:crystal_niter",
+  "result": {
+    "id": "ntm:niter",
+    "count": 6
+  },
+  "experience": 2.0,
+  "cookingtime": 200
+}

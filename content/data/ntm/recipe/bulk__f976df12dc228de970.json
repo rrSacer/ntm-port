@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:billet_uranium",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:billet_u238",
+    "#ntm:bulk/nuggeturanium238",
+    "#ntm:bulk/nuggeturanium238",
+    "#ntm:bulk/nuggeturanium238",
+    "#ntm:bulk/nuggeturanium238",
+    "#ntm:bulk/nuggeturanium238",
+    "#ntm:bulk/nuggeturanium235"
+  ]
+}

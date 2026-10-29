@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:syringe_metal_empty",
+    "count": 6
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "P",
+    "C",
+    "B"
+  ],
+  "key": {
+    "B": "minecraft:iron_bars",
+    "C": "ntm:rod_empty",
+    "P": "#ntm:bulk/plateiron"
+  }
+}

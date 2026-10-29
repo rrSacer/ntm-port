@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_nuclear_waste",
+    "ntm:billet_schrabidium",
+    "ntm:billet_sr90",
+    "ntm:ingot_plutonium",
+    "ntm:ingot_pu240",
+    "ntm:ingot_ra226",
+    "ntm:nuclear_waste_vitrified",
+    "ntm:nugget_polonium",
+    "ntm:ore_nether_plutonium",
+    "ntm:powder_neptunium",
+    "ntm:tsar_core"
+  ]
+}

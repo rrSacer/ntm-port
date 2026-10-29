@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rod_zirnox_empty",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "Z Z",
+    "ZBZ",
+    "Z Z"
+  ],
+  "key": {
+    "Z": "#ntm:bulk/nuggetzirconium",
+    "B": "#ntm:bulk/ingotberyllium"
+  }
+}

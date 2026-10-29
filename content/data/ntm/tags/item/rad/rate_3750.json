@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_plutonium",
+    "ntm:billet_pu240",
+    "ntm:billet_ra226"
+  ]
+}

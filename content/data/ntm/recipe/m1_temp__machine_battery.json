@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "RLR",
+    "WWW"
+  ],
+  "key": {
+    "P": "ntm:plate_lead",
+    "R": "minecraft:redstone",
+    "L": "ntm:lithium",
+    "W": "ntm:wire_fine__red_copper"
+  },
+  "result": {
+    "id": "ntm:machine_battery",
+    "count": 1
+  }
+}

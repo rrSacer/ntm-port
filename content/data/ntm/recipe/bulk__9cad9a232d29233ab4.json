@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:dust_tiny"
+  },
+  "result": {
+    "id": "ntm:dust",
+    "count": 1
+  }
+}

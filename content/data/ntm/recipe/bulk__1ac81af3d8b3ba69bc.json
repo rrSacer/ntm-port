@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_tcalloy"
+  ],
+  "result": {
+    "id": "ntm:ingot_tcalloy",
+    "count": 9
+  }
+}

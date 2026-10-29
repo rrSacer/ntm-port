@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/lithium"
+  },
+  "result": {
+    "id": "ntm:block_lithium",
+    "count": 1
+  }
+}

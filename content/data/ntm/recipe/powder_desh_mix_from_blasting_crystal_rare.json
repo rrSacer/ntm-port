@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": "ntm:crystal_rare",
+  "result": {
+    "id": "ntm:powder_desh_mix",
+    "count": 1
+  },
+  "experience": 2.0,
+  "cookingtime": 100
+}

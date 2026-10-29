@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/ingot_aluminium"
+  },
+  "result": {
+    "id": "ntm:block_aluminium",
+    "count": 1
+  }
+}

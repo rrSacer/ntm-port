@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:block_plutonium",
+    "ntm:block_pu240",
+    "ntm:block_ra226",
+    "ntm:crystal_plutonium",
+    "ntm:ingot_polonium",
+    "ntm:rod_zirnox_zfb_mox_depleted"
+  ]
+}

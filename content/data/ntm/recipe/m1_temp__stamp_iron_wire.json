@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "I I",
+    " S ",
+    "I I"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "S": "ntm:stamp_iron_flat"
+  },
+  "result": {
+    "id": "ntm:stamp_iron_wire",
+    "count": 1
+  }
+}

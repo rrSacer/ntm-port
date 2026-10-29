@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/niter"
+  },
+  "result": {
+    "id": "ntm:block_niter",
+    "count": 1
+  }
+}

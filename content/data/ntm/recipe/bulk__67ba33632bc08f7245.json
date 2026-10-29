@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:nugget_silicon"
+  },
+  "result": {
+    "id": "ntm:ingot_silicon",
+    "count": 1
+  }
+}

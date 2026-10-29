@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:ingot_neptunium_fuel",
+    "ntm:ingot_schrabidate",
+    "ntm:nuclear_waste_tiny",
+    "ntm:nugget_schrabidium",
+    "ntm:nugget_sr90"
+  ]
+}

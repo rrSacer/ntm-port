@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_uranium"
+  ],
+  "result": {
+    "id": "ntm:ingot_uranium",
+    "count": 9
+  }
+}

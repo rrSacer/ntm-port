@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " I ",
+    " S ",
+    " I "
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "S": "ntm:stamp_iron_flat"
+  },
+  "result": {
+    "id": "ntm:stamp_iron_plate",
+    "count": 1
+  }
+}

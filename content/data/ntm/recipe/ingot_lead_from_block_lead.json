@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_lead"
+  ],
+  "result": {
+    "id": "ntm:ingot_lead",
+    "count": 9
+  }
+}

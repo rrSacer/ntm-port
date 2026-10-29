@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:upgrade_template",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WIW",
+    "PCP",
+    "WIW"
+  ],
+  "key": {
+    "W": "#ntm:bulk/wirefinecopper",
+    "I": "#ntm:bulk/plateiron",
+    "C": "ntm:circuit__analog",
+    "P": "ntm:plate_polymer"
+  }
+}

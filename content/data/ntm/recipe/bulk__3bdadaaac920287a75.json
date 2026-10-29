@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:circuit__numitron",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "G",
+    "W",
+    "I"
+  ],
+  "key": {
+    "G": "#ntm:bulk/paneglass",
+    "W": "ntm:coil_tungsten",
+    "I": "#ntm:bulk/platecopper"
+  }
+}

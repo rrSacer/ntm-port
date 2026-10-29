@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:machine_wood_burner",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "CFC",
+    "I I"
+  ],
+  "key": {
+    "P": "#ntm:bulk/platesteel",
+    "C": "ntm:coil_copper",
+    "I": "#ntm:bulk/ingotiron",
+    "F": "minecraft:furnace"
+  }
+}

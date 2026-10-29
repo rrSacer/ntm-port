@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "side": "ntm:block/brick_ducrete",
+    "top": "ntm:block/brick_ducrete",
+    "bottom": "ntm:block/brick_ducrete",
+    "all": "ntm:block/brick_ducrete"
+  }
+}

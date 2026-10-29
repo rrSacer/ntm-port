@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "ntm:block/ore_basalt_asbestos",
+    "top": "ntm:block/ore_basalt_asbestos_top",
+    "bottom": "ntm:block/ore_basalt_asbestos_top"
+  }
+}

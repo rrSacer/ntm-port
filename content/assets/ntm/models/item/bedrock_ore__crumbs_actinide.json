@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/bedrock_ore_crumbs_actinide__bedrock_ore__crumbs_actinide",
+    "layer1": "ntm:item/bedrock_ore_overlay.centrifuged"
+  }
+}

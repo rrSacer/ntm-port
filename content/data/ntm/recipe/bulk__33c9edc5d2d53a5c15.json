@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:hazmat_cloth_red",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "R",
+    "C"
+  ],
+  "key": {
+    "C": "ntm:hazmat_cloth",
+    "R": "#ntm:bulk/dustredstone"
+  }
+}

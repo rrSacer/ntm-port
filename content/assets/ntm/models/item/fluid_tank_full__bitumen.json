@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/fluid_tank",
+    "layer1": "ntm:item/fluid_tank_overlay__fluid_tank_full__bitumen"
+  }
+}

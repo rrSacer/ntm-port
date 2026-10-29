@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/canister_empty",
+    "layer1": "ntm:item/canister_overlay__canister_full__heatingoil"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_bakelite"
+  },
+  "result": {
+    "id": "ntm:block_bakelite",
+    "count": 1
+  }
+}

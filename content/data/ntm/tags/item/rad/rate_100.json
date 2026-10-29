@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:ingot_th232",
+    "ntm:nugget_u235",
+    "ntm:ore_thorium",
+    "ntm:trinitite"
+  ]
+}

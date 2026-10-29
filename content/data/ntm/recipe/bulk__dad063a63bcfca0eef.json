@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:crt_display",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "SGS",
+    " T "
+  ],
+  "key": {
+    "A": "#ntm:bulk/dustaluminum",
+    "S": "#ntm:bulk/platesteel",
+    "G": "#ntm:bulk/paneglass",
+    "T": "ntm:circuit__vacuum_tube"
+  }
+}

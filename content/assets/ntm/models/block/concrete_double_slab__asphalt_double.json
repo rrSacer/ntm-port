@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "side": "ntm:block/asphalt",
+    "top": "ntm:block/asphalt",
+    "bottom": "ntm:block/asphalt",
+    "all": "ntm:block/asphalt"
+  }
+}

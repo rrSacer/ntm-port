@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_flashlead",
+    "ntm:billet_pb209",
+    "ntm:block_actinium",
+    "ntm:debris_fuel",
+    "ntm:demon_core_closed",
+    "ntm:ingot_au198",
+    "ntm:nugget_pb209",
+    "ntm:powder_at209",
+    "ntm:powder_au198",
+    "ntm:powder_balefire",
+    "ntm:powder_i131",
+    "ntm:powder_xe135_tiny",
+    "ntm:solid_fuel_bf",
+    "ntm:solid_fuel_presto_bf"
+  ]
+}

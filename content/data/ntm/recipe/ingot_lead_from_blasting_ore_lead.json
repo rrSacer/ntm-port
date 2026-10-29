@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": "ntm:ore_lead",
+  "result": {
+    "id": "ntm:ingot_lead",
+    "count": 1
+  },
+  "experience": 3.0,
+  "cookingtime": 100
+}

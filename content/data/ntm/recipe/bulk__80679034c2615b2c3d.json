@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:barrel_steel",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPI",
+    "I I",
+    "IPI"
+  ],
+  "key": {
+    "I": "#ntm:bulk/platesteel",
+    "P": "#ntm:bulk/ingotsteel"
+  }
+}

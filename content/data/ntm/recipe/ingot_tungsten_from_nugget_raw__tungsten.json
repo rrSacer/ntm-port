@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/nugget_raw__tungsten"
+  },
+  "result": {
+    "id": "ntm:ingot_tungsten",
+    "count": 1
+  }
+}

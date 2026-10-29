@@ -1,0 +1,11 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:ingot_firebrick",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:brick_fire"
+  ]
+}

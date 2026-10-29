@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "CFC",
+    "I I"
+  ],
+  "key": {
+    "P": "ntm:plate_titanium",
+    "C": "ntm:wire_fine__red_copper",
+    "I": "minecraft:iron_ingot",
+    "F": "minecraft:furnace"
+  },
+  "result": {
+    "id": "ntm:machine_wood_burner",
+    "count": 1
+  }
+}

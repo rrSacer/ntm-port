@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:circuit__capacitor",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I",
+    "N",
+    "W"
+  ],
+  "key": {
+    "I": "ntm:plate_polymer",
+    "N": "#ntm:bulk/nuggetniobium",
+    "W": "#ntm:bulk/wirefinecopper"
+  }
+}

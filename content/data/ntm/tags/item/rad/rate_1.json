@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:cell_tritium",
+    "ntm:rod_zirnox_tritium"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:ingot_aluminium"
+  ],
+  "result": {
+    "id": "ntm:nugget_raw__aluminium",
+    "count": 9
+  }
+}

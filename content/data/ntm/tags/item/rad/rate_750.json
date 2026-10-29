@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_neptunium_fuel",
+    "ntm:nuclear_waste_vitrified_tiny",
+    "ntm:nugget_plutonium",
+    "ntm:nugget_pu240",
+    "ntm:nugget_ra226"
+  ]
+}

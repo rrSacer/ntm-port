@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "minecraft:gunpowder",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/dustsulfur",
+    "#ntm:bulk/dustsaltpeter",
+    "minecraft:charcoal"
+  ]
+}

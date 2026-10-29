@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "##"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/ingot_uranium"
+  },
+  "result": {
+    "id": "ntm:billet_uranium",
+    "count": 3
+  }
+}

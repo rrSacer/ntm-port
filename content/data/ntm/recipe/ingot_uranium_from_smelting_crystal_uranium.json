@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:crystal_uranium",
+  "result": {
+    "id": "ntm:ingot_uranium",
+    "count": 2
+  },
+  "experience": 2.0,
+  "cookingtime": 200
+}

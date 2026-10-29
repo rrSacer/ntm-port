@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:ore_gneiss_iron",
+  "result": {
+    "id": "minecraft:iron_ingot",
+    "count": 1
+  },
+  "experience": 5.0,
+  "cookingtime": 200
+}

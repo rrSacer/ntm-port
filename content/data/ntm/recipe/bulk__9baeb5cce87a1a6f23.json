@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_desh_mix",
+    "count": 9
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/dustboron",
+    "#ntm:bulk/dustboron",
+    "#ntm:bulk/dustlanthanum",
+    "#ntm:bulk/dustlanthanum",
+    "#ntm:bulk/dustcerium",
+    "#ntm:bulk/dustcobalt",
+    "#ntm:bulk/dustlithium",
+    "#ntm:bulk/dustneodymium",
+    "#ntm:bulk/dustniobium"
+  ]
+}

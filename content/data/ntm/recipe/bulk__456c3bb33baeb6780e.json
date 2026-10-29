@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_actinium"
+  },
+  "result": {
+    "id": "ntm:block_actinium",
+    "count": 1
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/ingot_asbestos"
+  },
+  "result": {
+    "id": "ntm:block_asbestos",
+    "count": 1
+  }
+}

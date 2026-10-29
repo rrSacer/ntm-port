@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/bedrock_ore_rad_light__bedrock_ore__rad_byproduct_light",
+    "layer1": "ntm:item/bedrock_ore_overlay.centrifuged",
+    "layer2": "ntm:item/bedrock_ore_overlay.rad"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:launch_code",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:launch_code_piece",
+    "ntm:launch_code_piece",
+    "ntm:launch_code_piece",
+    "ntm:launch_code_piece",
+    "ntm:launch_code_piece",
+    "ntm:launch_code_piece",
+    "ntm:launch_code_piece",
+    "ntm:launch_code_piece",
+    "ntm:circuit__advanced"
+  ]
+}

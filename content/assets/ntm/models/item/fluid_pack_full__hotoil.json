@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/fluid_pack",
+    "layer1": "ntm:item/fluid_pack_overlay__fluid_pack_full__hotoil"
+  }
+}

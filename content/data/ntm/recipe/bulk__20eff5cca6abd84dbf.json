@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:powder_sr90_tiny"
+  },
+  "result": {
+    "id": "ntm:powder_sr90",
+    "count": 1
+  }
+}

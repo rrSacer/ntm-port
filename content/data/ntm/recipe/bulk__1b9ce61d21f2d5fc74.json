@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:plate_polymer",
+    "count": 16
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DD"
+  ],
+  "key": {
+    "D": "#ntm:bulk/ingotasbestos"
+  }
+}

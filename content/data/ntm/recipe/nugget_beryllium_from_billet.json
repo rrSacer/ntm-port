@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:billet_beryllium"
+  ],
+  "result": {
+    "id": "ntm:nugget_beryllium",
+    "count": 6
+  }
+}

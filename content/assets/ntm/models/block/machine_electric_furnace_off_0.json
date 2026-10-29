@@ -1,0 +1,51 @@
+{
+  "textures": {
+    "particle": "ntm:block/machine_electric_furnace_side",
+    "down": "ntm:block/machine_electric_furnace_bottom",
+    "up": "ntm:block/machine_electric_furnace_top",
+    "north": "ntm:block/machine_electric_furnace_front_off",
+    "south": "ntm:block/machine_electric_furnace_side",
+    "east": "ntm:block/machine_electric_furnace_side",
+    "west": "ntm:block/machine_electric_furnace_side"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        }
+      }
+    }
+  ]
+}

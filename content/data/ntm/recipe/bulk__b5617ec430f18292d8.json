@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:photo_panel",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "IPI",
+    " C "
+  ],
+  "key": {
+    "G": "#ntm:bulk/paneglass",
+    "I": "ntm:plate_polymer",
+    "P": "#ntm:bulk/billetsilicon",
+    "C": "ntm:circuit__pcb"
+  }
+}

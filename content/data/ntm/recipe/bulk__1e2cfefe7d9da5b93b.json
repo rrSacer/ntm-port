@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:reinforced_ducrete",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DSD",
+    "SUS",
+    "DSD"
+  ],
+  "key": {
+    "D": "ntm:brick_ducrete",
+    "S": "ntm:plate_steel",
+    "U": "#ntm:bulk/billeturanium238"
+  }
+}

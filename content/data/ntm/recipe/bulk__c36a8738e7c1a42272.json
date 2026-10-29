@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_boron"
+  },
+  "result": {
+    "id": "ntm:block_boron",
+    "count": 1
+  }
+}

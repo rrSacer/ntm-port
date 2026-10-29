@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:block_pu239",
+    "ntm:block_u233",
+    "ntm:cell_balefire",
+    "ntm:nugget_au198"
+  ]
+}

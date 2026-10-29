@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_ice",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:snowball",
+    "#ntm:bulk/dustsaltpeter",
+    "#ntm:bulk/dustredstone"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rod_empty",
+    "count": 16
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "L L",
+    "SSS"
+  ],
+  "key": {
+    "S": "#ntm:bulk/platesteel",
+    "L": "#ntm:bulk/platelead"
+  }
+}

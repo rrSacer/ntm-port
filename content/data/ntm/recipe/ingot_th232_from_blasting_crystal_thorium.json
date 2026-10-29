@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": "ntm:crystal_thorium",
+  "result": {
+    "id": "ntm:ingot_th232",
+    "count": 2
+  },
+  "experience": 2.0,
+  "cookingtime": 100
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:powder_tcalloy",
+  "result": {
+    "id": "ntm:ingot_tcalloy",
+    "count": 1
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/gas_empty",
+    "layer1": "ntm:item/gas_bottle__gas_full__unsaturateds",
+    "layer2": "ntm:item/gas_label__gas_full__unsaturateds"
+  }
+}

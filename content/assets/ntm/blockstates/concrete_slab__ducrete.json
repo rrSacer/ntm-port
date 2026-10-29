@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "ntm:block/concrete_slab__ducrete"
+    },
+    "type=top": {
+      "model": "ntm:block/concrete_slab__ducrete_top"
+    },
+    "type=double": {
+      "model": "ntm:block/concrete_slab__ducrete_double"
+    }
+  }
+}

@@ -1,0 +1,2048 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "id": "redstone_sword",
+      "type": "item",
+      "source_variable": "redstone_sword",
+      "source_class": "RedstoneSword",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2090",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "big_sword",
+      "type": "item",
+      "source_variable": "big_sword",
+      "source_class": "BigSword",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2092",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "gun_b92_ammo",
+      "type": "item",
+      "source_variable": "gun_b92_ammo",
+      "source_class": "GunB92Cell",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3588",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "gun_b92",
+      "type": "item",
+      "source_variable": "gun_b92",
+      "source_class": "GunB92",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3590",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ullapool_caber",
+      "type": "item",
+      "source_variable": "ullapool_caber",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3606",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "screwdriver",
+      "type": "item",
+      "source_variable": "screwdriver",
+      "source_class": "ItemTooling",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3709",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "screwdriver_desh",
+      "type": "item",
+      "source_variable": "screwdriver_desh",
+      "source_class": "ItemTooling",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3710",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hand_drill",
+      "type": "item",
+      "source_variable": "hand_drill",
+      "source_class": "ItemTooling",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3711",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hand_drill_desh",
+      "type": "item",
+      "source_variable": "hand_drill_desh",
+      "source_class": "ItemTooling",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3712",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "wrench_archineer",
+      "type": "item",
+      "source_variable": "wrench_archineer",
+      "source_class": "ItemToolingWeapon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3713",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "toolbox",
+      "type": "item",
+      "source_variable": "toolbox",
+      "source_class": "ItemToolBox",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3801",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "detonator_multi",
+      "type": "item",
+      "source_variable": "detonator_multi",
+      "source_class": "ItemMultiDetonator",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3816",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "detonator_laser",
+      "type": "item",
+      "source_variable": "detonator_laser",
+      "source_class": "ItemLaserDetonator",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3817",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "mirror_tool",
+      "type": "item",
+      "source_variable": "mirror_tool",
+      "source_class": "ItemMirrorTool",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3837",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "rbmk_tool",
+      "type": "item",
+      "source_variable": "rbmk_tool",
+      "source_class": "ItemRBMKTool",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3838",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "power_net_tool",
+      "type": "item",
+      "source_variable": "power_net_tool",
+      "source_class": "ItemPowerNetTool",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3840",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "analysis_tool",
+      "type": "item",
+      "source_variable": "analysis_tool",
+      "source_class": "ItemAnalysisTool",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3841",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "settings_tool",
+      "type": "item",
+      "source_variable": "settings_tool",
+      "source_class": "ItemSettingsTool",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3845",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "schrabidium_sword",
+      "type": "item",
+      "source_variable": "schrabidium_sword",
+      "source_class": "ItemSwordAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3911",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "schrabidium_pickaxe",
+      "type": "item",
+      "source_variable": "schrabidium_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3916",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "schrabidium_axe",
+      "type": "item",
+      "source_variable": "schrabidium_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3927",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "schrabidium_shovel",
+      "type": "item",
+      "source_variable": "schrabidium_shovel",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3939",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "schrabidium_hoe",
+      "type": "item",
+      "source_variable": "schrabidium_hoe",
+      "source_class": "HoeSchrabidium",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3950",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "titanium_axe",
+      "type": "item",
+      "source_variable": "titanium_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3955",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "steel_sword",
+      "type": "item",
+      "source_variable": "steel_sword",
+      "source_class": "ItemSwordAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3959",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "steel_pickaxe",
+      "type": "item",
+      "source_variable": "steel_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3962",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "steel_axe",
+      "type": "item",
+      "source_variable": "steel_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3964",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "steel_shovel",
+      "type": "item",
+      "source_variable": "steel_shovel",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3967",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "alloy_sword",
+      "type": "item",
+      "source_variable": "alloy_sword",
+      "source_class": "ItemSwordAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3970",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "alloy_pickaxe",
+      "type": "item",
+      "source_variable": "alloy_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3973",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "alloy_axe",
+      "type": "item",
+      "source_variable": "alloy_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3976",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "alloy_shovel",
+      "type": "item",
+      "source_variable": "alloy_shovel",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3980",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cmb_sword",
+      "type": "item",
+      "source_variable": "cmb_sword",
+      "source_class": "ItemSwordAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3985",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cmb_pickaxe",
+      "type": "item",
+      "source_variable": "cmb_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3989",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cmb_axe",
+      "type": "item",
+      "source_variable": "cmb_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3995",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cmb_shovel",
+      "type": "item",
+      "source_variable": "cmb_shovel",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4002",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "elec_sword",
+      "type": "item",
+      "source_variable": "elec_sword",
+      "source_class": "ItemSwordAbilityPower",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4010",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "elec_pickaxe",
+      "type": "item",
+      "source_variable": "elec_pickaxe",
+      "source_class": "ItemToolAbilityPower",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4013",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "elec_axe",
+      "type": "item",
+      "source_variable": "elec_axe",
+      "source_class": "ItemToolAbilityPower",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4020",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "elec_shovel",
+      "type": "item",
+      "source_variable": "elec_shovel",
+      "source_class": "ItemToolAbilityPower",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4029",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "desh_sword",
+      "type": "item",
+      "source_variable": "desh_sword",
+      "source_class": "ItemSwordAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4036",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "desh_pickaxe",
+      "type": "item",
+      "source_variable": "desh_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4039",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "desh_axe",
+      "type": "item",
+      "source_variable": "desh_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4046",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "desh_shovel",
+      "type": "item",
+      "source_variable": "desh_shovel",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4054",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cobalt_pickaxe",
+      "type": "item",
+      "source_variable": "cobalt_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4065",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cobalt_axe",
+      "type": "item",
+      "source_variable": "cobalt_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4069",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cobalt_shovel",
+      "type": "item",
+      "source_variable": "cobalt_shovel",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4074",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cobalt_decorated_sword",
+      "type": "item",
+      "source_variable": "cobalt_decorated_sword",
+      "source_class": "ItemSwordAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4081",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cobalt_decorated_pickaxe",
+      "type": "item",
+      "source_variable": "cobalt_decorated_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4083",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cobalt_decorated_axe",
+      "type": "item",
+      "source_variable": "cobalt_decorated_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4089",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cobalt_decorated_shovel",
+      "type": "item",
+      "source_variable": "cobalt_decorated_shovel",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4096",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "starmetal_sword",
+      "type": "item",
+      "source_variable": "starmetal_sword",
+      "source_class": "ItemSwordAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4105",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "starmetal_pickaxe",
+      "type": "item",
+      "source_variable": "starmetal_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4109",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "starmetal_axe",
+      "type": "item",
+      "source_variable": "starmetal_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4116",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "starmetal_shovel",
+      "type": "item",
+      "source_variable": "starmetal_shovel",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4124",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "centri_stick",
+      "type": "item",
+      "source_variable": "centri_stick",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4132",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "smashing_hammer",
+      "type": "item",
+      "source_variable": "smashing_hammer",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4135",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bismuth_pickaxe",
+      "type": "item",
+      "source_variable": "bismuth_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4139",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bismuth_axe",
+      "type": "item",
+      "source_variable": "bismuth_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4150",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "volcanic_pickaxe",
+      "type": "item",
+      "source_variable": "volcanic_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4163",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "volcanic_axe",
+      "type": "item",
+      "source_variable": "volcanic_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4174",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "chlorophyte_pickaxe",
+      "type": "item",
+      "source_variable": "chlorophyte_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4186",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "chlorophyte_axe",
+      "type": "item",
+      "source_variable": "chlorophyte_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4197",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "mese_pickaxe",
+      "type": "item",
+      "source_variable": "mese_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4207",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "mese_axe",
+      "type": "item",
+      "source_variable": "mese_axe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4219",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dwarven_pickaxe",
+      "type": "item",
+      "source_variable": "dwarven_pickaxe",
+      "source_class": "ItemToolAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4233",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword",
+      "type": "item",
+      "source_variable": "meteorite_sword",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4238",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_seared",
+      "type": "item",
+      "source_variable": "meteorite_sword_seared",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4239",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_reforged",
+      "type": "item",
+      "source_variable": "meteorite_sword_reforged",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4240",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_hardened",
+      "type": "item",
+      "source_variable": "meteorite_sword_hardened",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4241",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_alloyed",
+      "type": "item",
+      "source_variable": "meteorite_sword_alloyed",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4242",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_machined",
+      "type": "item",
+      "source_variable": "meteorite_sword_machined",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4243",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_treated",
+      "type": "item",
+      "source_variable": "meteorite_sword_treated",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4244",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_etched",
+      "type": "item",
+      "source_variable": "meteorite_sword_etched",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4245",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_bred",
+      "type": "item",
+      "source_variable": "meteorite_sword_bred",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4246",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_irradiated",
+      "type": "item",
+      "source_variable": "meteorite_sword_irradiated",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4247",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_fused",
+      "type": "item",
+      "source_variable": "meteorite_sword_fused",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4248",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "meteorite_sword_baleful",
+      "type": "item",
+      "source_variable": "meteorite_sword_baleful",
+      "source_class": "ItemSwordMeteorite",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4249",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_helmet",
+      "type": "item",
+      "source_variable": "hazmat_helmet",
+      "source_class": "ArmorHazmatMask",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4252",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_plate",
+      "type": "item",
+      "source_variable": "hazmat_plate",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4254",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_legs",
+      "type": "item",
+      "source_variable": "hazmat_legs",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4255",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_boots",
+      "type": "item",
+      "source_variable": "hazmat_boots",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4256",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_helmet_red",
+      "type": "item",
+      "source_variable": "hazmat_helmet_red",
+      "source_class": "ArmorHazmatMask",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4257",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_plate_red",
+      "type": "item",
+      "source_variable": "hazmat_plate_red",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4258",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_legs_red",
+      "type": "item",
+      "source_variable": "hazmat_legs_red",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4259",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_boots_red",
+      "type": "item",
+      "source_variable": "hazmat_boots_red",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4260",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_helmet_grey",
+      "type": "item",
+      "source_variable": "hazmat_helmet_grey",
+      "source_class": "ArmorHazmatMask",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4261",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_plate_grey",
+      "type": "item",
+      "source_variable": "hazmat_plate_grey",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4263",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_legs_grey",
+      "type": "item",
+      "source_variable": "hazmat_legs_grey",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4264",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_boots_grey",
+      "type": "item",
+      "source_variable": "hazmat_boots_grey",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4265",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_paa_helmet",
+      "type": "item",
+      "source_variable": "hazmat_paa_helmet",
+      "source_class": "ArmorHazmatMask",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4266",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_paa_plate",
+      "type": "item",
+      "source_variable": "hazmat_paa_plate",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4268",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_paa_legs",
+      "type": "item",
+      "source_variable": "hazmat_paa_legs",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4269",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hazmat_paa_boots",
+      "type": "item",
+      "source_variable": "hazmat_paa_boots",
+      "source_class": "ArmorHazmat",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4270",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "liquidator_helmet",
+      "type": "item",
+      "source_variable": "liquidator_helmet",
+      "source_class": "ArmorLiquidatorMask",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4274",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "liquidator_plate",
+      "type": "item",
+      "source_variable": "liquidator_plate",
+      "source_class": "ArmorLiquidator",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4278",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "liquidator_legs",
+      "type": "item",
+      "source_variable": "liquidator_legs",
+      "source_class": "ArmorLiquidator",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4279",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "liquidator_boots",
+      "type": "item",
+      "source_variable": "liquidator_boots",
+      "source_class": "ArmorLiquidator",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4280",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "schrabidium_hammer",
+      "type": "item",
+      "source_variable": "schrabidium_hammer",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4288",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "shimmer_sledge",
+      "type": "item",
+      "source_variable": "shimmer_sledge",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4290",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "shimmer_axe",
+      "type": "item",
+      "source_variable": "shimmer_axe",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4291",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bottle_opener",
+      "type": "item",
+      "source_variable": "bottle_opener",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4292",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "crowbar",
+      "type": "item",
+      "source_variable": "crowbar",
+      "source_class": "ModSword",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4296",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "wrench_flipped",
+      "type": "item",
+      "source_variable": "wrench_flipped",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4297",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "memespoon",
+      "type": "item",
+      "source_variable": "memespoon",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4298",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "wood_gavel",
+      "type": "item",
+      "source_variable": "wood_gavel",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4299",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "lead_gavel",
+      "type": "item",
+      "source_variable": "lead_gavel",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4300",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "diamond_gavel",
+      "type": "item",
+      "source_variable": "diamond_gavel",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4301",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "mese_gavel",
+      "type": "item",
+      "source_variable": "mese_gavel",
+      "source_class": "ItemSwordAbility",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4303",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "weapon_pipe_lead",
+      "type": "item",
+      "source_variable": "pipe_lead",
+      "source_class": "ModSword",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4309",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "reer_graar",
+      "type": "item",
+      "source_variable": "reer_graar",
+      "source_class": "ModSword",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4311",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "stopsign",
+      "type": "item",
+      "source_variable": "stopsign",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4312",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "sopsign",
+      "type": "item",
+      "source_variable": "sopsign",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4313",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "chernobylsign",
+      "type": "item",
+      "source_variable": "chernobylsign",
+      "source_class": "WeaponSpecial",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4314",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "goggles",
+      "type": "item",
+      "source_variable": "goggles",
+      "source_class": "ArmorModel",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:24",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ashglasses",
+      "type": "item",
+      "source_variable": "ashglasses",
+      "source_class": "ArmorAshGlasses",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:26",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "gas_mask",
+      "type": "item",
+      "source_variable": "gas_mask",
+      "source_class": "ArmorGasMask",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:27",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "gas_mask_m65",
+      "type": "item",
+      "source_variable": "gas_mask_m65",
+      "source_class": "ArmorGasMask",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:28",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "gas_mask_mono",
+      "type": "item",
+      "source_variable": "gas_mask_mono",
+      "source_class": "ArmorGasMask",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:29",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "gas_mask_olde",
+      "type": "item",
+      "source_variable": "gas_mask_olde",
+      "source_class": "ArmorGasMask",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:30",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "mask_rag",
+      "type": "item",
+      "source_variable": "mask_rag",
+      "source_class": "ModArmor",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:31",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "mask_piss",
+      "type": "item",
+      "source_variable": "mask_piss",
+      "source_class": "ModArmor",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:32",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "nossy_hat",
+      "type": "item",
+      "source_variable": "hat",
+      "source_class": "ArmorHat",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:33",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "no9",
+      "type": "item",
+      "source_variable": "no9",
+      "source_class": "ArmorNo9",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:34",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "euphemium_helmet",
+      "type": "item",
+      "source_variable": "euphemium_helmet",
+      "source_class": "ArmorEuphemium",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:36",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "euphemium_plate",
+      "type": "item",
+      "source_variable": "euphemium_plate",
+      "source_class": "ArmorEuphemium",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:38",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "euphemium_legs",
+      "type": "item",
+      "source_variable": "euphemium_legs",
+      "source_class": "ArmorEuphemium",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:39",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "euphemium_boots",
+      "type": "item",
+      "source_variable": "euphemium_boots",
+      "source_class": "ArmorEuphemium",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:40",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "schrabidium_helmet",
+      "type": "item",
+      "source_variable": "schrabidium_helmet",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:41",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "schrabidium_plate",
+      "type": "item",
+      "source_variable": "schrabidium_plate",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:49",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "schrabidium_legs",
+      "type": "item",
+      "source_variable": "schrabidium_legs",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:50",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "schrabidium_boots",
+      "type": "item",
+      "source_variable": "schrabidium_boots",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:51",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bismuth_helmet",
+      "type": "item",
+      "source_variable": "bismuth_helmet",
+      "source_class": "ArmorBismuth",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:52",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bismuth_plate",
+      "type": "item",
+      "source_variable": "bismuth_plate",
+      "source_class": "ArmorBismuth",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:59",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bismuth_legs",
+      "type": "item",
+      "source_variable": "bismuth_legs",
+      "source_class": "ArmorBismuth",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:60",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bismuth_boots",
+      "type": "item",
+      "source_variable": "bismuth_boots",
+      "source_class": "ArmorBismuth",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:61",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cmb_helmet",
+      "type": "item",
+      "source_variable": "cmb_helmet",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:74",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cmb_plate",
+      "type": "item",
+      "source_variable": "cmb_plate",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:79",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cmb_legs",
+      "type": "item",
+      "source_variable": "cmb_legs",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:80",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "cmb_boots",
+      "type": "item",
+      "source_variable": "cmb_boots",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:81",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "paa_plate",
+      "type": "item",
+      "source_variable": "paa_plate",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:82",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "paa_legs",
+      "type": "item",
+      "source_variable": "paa_legs",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:84",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "paa_boots",
+      "type": "item",
+      "source_variable": "paa_boots",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:85",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "asbestos_helmet",
+      "type": "item",
+      "source_variable": "asbestos_helmet",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:86",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "asbestos_plate",
+      "type": "item",
+      "source_variable": "asbestos_plate",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:87",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "asbestos_legs",
+      "type": "item",
+      "source_variable": "asbestos_legs",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:88",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "asbestos_boots",
+      "type": "item",
+      "source_variable": "asbestos_boots",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:89",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "security_helmet",
+      "type": "item",
+      "source_variable": "security_helmet",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:90",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "security_plate",
+      "type": "item",
+      "source_variable": "security_plate",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:91",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "security_legs",
+      "type": "item",
+      "source_variable": "security_legs",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:92",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "security_boots",
+      "type": "item",
+      "source_variable": "security_boots",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:93",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "robes_helmet",
+      "type": "item",
+      "source_variable": "robes_helmet",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:103",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "robes_plate",
+      "type": "item",
+      "source_variable": "robes_plate",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:105",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "robes_legs",
+      "type": "item",
+      "source_variable": "robes_legs",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:106",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "robes_boots",
+      "type": "item",
+      "source_variable": "robes_boots",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:107",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "zirconium_legs",
+      "type": "item",
+      "source_variable": "zirconium_legs",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:112",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dnt_helmet",
+      "type": "item",
+      "source_variable": "dnt_helmet",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:116",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dnt_plate",
+      "type": "item",
+      "source_variable": "dnt_plate",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:118",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dnt_legs",
+      "type": "item",
+      "source_variable": "dnt_legs",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:119",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dnt_boots",
+      "type": "item",
+      "source_variable": "dnt_boots",
+      "source_class": "ArmorFSB",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:120",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "t51_helmet",
+      "type": "item",
+      "source_variable": "t51_helmet",
+      "source_class": "ArmorT51",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:124",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "t51_plate",
+      "type": "item",
+      "source_variable": "t51_plate",
+      "source_class": "ArmorT51",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:133",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "t51_legs",
+      "type": "item",
+      "source_variable": "t51_legs",
+      "source_class": "ArmorT51",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:134",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "t51_boots",
+      "type": "item",
+      "source_variable": "t51_boots",
+      "source_class": "ArmorT51",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:135",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "steamsuit_helmet",
+      "type": "item",
+      "source_variable": "steamsuit_helmet",
+      "source_class": "ArmorDesh",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:139",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "steamsuit_plate",
+      "type": "item",
+      "source_variable": "steamsuit_plate",
+      "source_class": "ArmorDesh",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:145",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "steamsuit_legs",
+      "type": "item",
+      "source_variable": "steamsuit_legs",
+      "source_class": "ArmorDesh",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:146",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "steamsuit_boots",
+      "type": "item",
+      "source_variable": "steamsuit_boots",
+      "source_class": "ArmorDesh",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:147",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dieselsuit_helmet",
+      "type": "item",
+      "source_variable": "dieselsuit_helmet",
+      "source_class": "ArmorDiesel",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:151",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dieselsuit_plate",
+      "type": "item",
+      "source_variable": "dieselsuit_plate",
+      "source_class": "ArmorDiesel",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:157",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dieselsuit_legs",
+      "type": "item",
+      "source_variable": "dieselsuit_legs",
+      "source_class": "ArmorDiesel",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:158",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dieselsuit_boots",
+      "type": "item",
+      "source_variable": "dieselsuit_boots",
+      "source_class": "ArmorDiesel",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:159",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ajr_helmet",
+      "type": "item",
+      "source_variable": "ajr_helmet",
+      "source_class": "ArmorAJR",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:163",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ajr_plate",
+      "type": "item",
+      "source_variable": "ajr_plate",
+      "source_class": "ArmorAJR",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:173",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ajr_legs",
+      "type": "item",
+      "source_variable": "ajr_legs",
+      "source_class": "ArmorAJR",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:174",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ajr_boots",
+      "type": "item",
+      "source_variable": "ajr_boots",
+      "source_class": "ArmorAJR",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:175",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ajro_helmet",
+      "type": "item",
+      "source_variable": "ajro_helmet",
+      "source_class": "ArmorAJRO",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:176",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ajro_plate",
+      "type": "item",
+      "source_variable": "ajro_plate",
+      "source_class": "ArmorAJRO",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:187",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ajro_legs",
+      "type": "item",
+      "source_variable": "ajro_legs",
+      "source_class": "ArmorAJRO",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:188",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ajro_boots",
+      "type": "item",
+      "source_variable": "ajro_boots",
+      "source_class": "ArmorAJRO",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:189",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "rpa_helmet",
+      "type": "item",
+      "source_variable": "rpa_helmet",
+      "source_class": "ArmorRPA",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:190",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "rpa_plate",
+      "type": "item",
+      "source_variable": "rpa_plate",
+      "source_class": "ArmorRPA",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:202",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "rpa_legs",
+      "type": "item",
+      "source_variable": "rpa_legs",
+      "source_class": "ArmorRPA",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:203",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "rpa_boots",
+      "type": "item",
+      "source_variable": "rpa_boots",
+      "source_class": "ArmorRPA",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:204",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ncrpa_helmet",
+      "type": "item",
+      "source_variable": "ncrpa_helmet",
+      "source_class": "ArmorNCRPA",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:205",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ncrpa_plate",
+      "type": "item",
+      "source_variable": "ncrpa_plate",
+      "source_class": "ArmorNCRPA",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:217",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ncrpa_legs",
+      "type": "item",
+      "source_variable": "ncrpa_legs",
+      "source_class": "ArmorNCRPA",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:218",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "ncrpa_boots",
+      "type": "item",
+      "source_variable": "ncrpa_boots",
+      "source_class": "ArmorNCRPA",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:219",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bj_helmet",
+      "type": "item",
+      "source_variable": "bj_helmet",
+      "source_class": "ArmorBJ",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:223",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bj_plate",
+      "type": "item",
+      "source_variable": "bj_plate",
+      "source_class": "ArmorBJ",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:237",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bj_plate_jetpack",
+      "type": "item",
+      "source_variable": "bj_plate_jetpack",
+      "source_class": "ArmorBJJetpack",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:238",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bj_legs",
+      "type": "item",
+      "source_variable": "bj_legs",
+      "source_class": "ArmorBJ",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:239",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "bj_boots",
+      "type": "item",
+      "source_variable": "bj_boots",
+      "source_class": "ArmorBJ",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:240",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "envsuit_helmet",
+      "type": "item",
+      "source_variable": "envsuit_helmet",
+      "source_class": "ArmorEnvsuit",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:244",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "envsuit_plate",
+      "type": "item",
+      "source_variable": "envsuit_plate",
+      "source_class": "ArmorEnvsuit",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:250",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "envsuit_legs",
+      "type": "item",
+      "source_variable": "envsuit_legs",
+      "source_class": "ArmorEnvsuit",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:251",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "envsuit_boots",
+      "type": "item",
+      "source_variable": "envsuit_boots",
+      "source_class": "ArmorEnvsuit",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:252",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hev_helmet",
+      "type": "item",
+      "source_variable": "hev_helmet",
+      "source_class": "ArmorHEV",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:256",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hev_plate",
+      "type": "item",
+      "source_variable": "hev_plate",
+      "source_class": "ArmorHEV",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:264",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hev_legs",
+      "type": "item",
+      "source_variable": "hev_legs",
+      "source_class": "ArmorHEV",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:265",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "hev_boots",
+      "type": "item",
+      "source_variable": "hev_boots",
+      "source_class": "ArmorHEV",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:266",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "jackt",
+      "type": "item",
+      "source_variable": "jackt",
+      "source_class": "ModArmor",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:267",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "jackt2",
+      "type": "item",
+      "source_variable": "jackt2",
+      "source_class": "ModArmor",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:269",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "fau_helmet",
+      "type": "item",
+      "source_variable": "fau_helmet",
+      "source_class": "ArmorDigamma",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:273",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "fau_plate",
+      "type": "item",
+      "source_variable": "fau_plate",
+      "source_class": "ArmorDigamma",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:284",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "fau_legs",
+      "type": "item",
+      "source_variable": "fau_legs",
+      "source_class": "ArmorDigamma",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:285",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "fau_boots",
+      "type": "item",
+      "source_variable": "fau_boots",
+      "source_class": "ArmorDigamma",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:286",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dns_helmet",
+      "type": "item",
+      "source_variable": "dns_helmet",
+      "source_class": "ArmorDNT",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:290",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dns_plate",
+      "type": "item",
+      "source_variable": "dns_plate",
+      "source_class": "ArmorDNT",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:304",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dns_legs",
+      "type": "item",
+      "source_variable": "dns_legs",
+      "source_class": "ArmorDNT",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:305",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "dns_boots",
+      "type": "item",
+      "source_variable": "dns_boots",
+      "source_class": "ArmorDNT",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:306",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "taurun_helmet",
+      "type": "item",
+      "source_variable": "taurun_helmet",
+      "source_class": "ArmorTaurun",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:310",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "taurun_plate",
+      "type": "item",
+      "source_variable": "taurun_plate",
+      "source_class": "ArmorTaurun",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:316",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "taurun_legs",
+      "type": "item",
+      "source_variable": "taurun_legs",
+      "source_class": "ArmorTaurun",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:317",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "taurun_boots",
+      "type": "item",
+      "source_variable": "taurun_boots",
+      "source_class": "ArmorTaurun",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:318",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "trenchmaster_helmet",
+      "type": "item",
+      "source_variable": "trenchmaster_helmet",
+      "source_class": "ArmorTrenchmaster",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:321",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "trenchmaster_plate",
+      "type": "item",
+      "source_variable": "trenchmaster_plate",
+      "source_class": "ArmorTrenchmaster",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:331",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "trenchmaster_legs",
+      "type": "item",
+      "source_variable": "trenchmaster_legs",
+      "source_class": "ArmorTrenchmaster",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:332",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "trenchmaster_boots",
+      "type": "item",
+      "source_variable": "trenchmaster_boots",
+      "source_class": "ArmorTrenchmaster",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:333",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "jackt",
+      "type": "item",
+      "source_variable": "jackt",
+      "source_class": "ModArmor",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:334",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "jackt2",
+      "type": "item",
+      "source_variable": "jackt2",
+      "source_class": "ModArmor",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:336",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "machine_armor_table",
+      "type": "block",
+      "source_variable": "machine_armor_table",
+      "source_class": "BlockArmorTable",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1958",
+      "category": "decorative",
+      "reason": "custom block behavior/model or unsupported block subclass"
+    },
+    {
+      "id": "machine_weapon_table",
+      "type": "block",
+      "source_variable": "machine_weapon_table",
+      "source_class": "BlockWeaponTable",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1959",
+      "category": "decorative",
+      "reason": "custom block behavior/model or unsupported block subclass"
+    },
+    {
+      "id": "watz_end",
+      "type": "block",
+      "source_variable": "watz_end",
+      "source_class": "BlockToolConversion",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2023",
+      "category": "decorative",
+      "reason": "custom block behavior/model or unsupported block subclass"
+    },
+    {
+      "id": "coupling_tool",
+      "type": "item",
+      "source_variable": "coupling_tool",
+      "source_class": "ItemCouplingTool",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3842",
+      "category": "component",
+      "source_configuration": "coupling_tool = new ItemCouplingTool().setUnlocalizedName(\"coupling_tool\").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab).setTextureName(RefStrings.MODID + \":coupling_tool\");",
+      "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/coupling_tool.png",
+      "reason": "NBT or special tool/energy/fluid behavior is not plain content"
+    },
+    {
+      "id": "weaponized_starblaster_cell",
+      "type": "item",
+      "source_variable": "weaponized_starblaster_cell",
+      "source_class": "WeaponizedCell",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3608",
+      "category": "component",
+      "source_configuration": "weaponized_starblaster_cell = new WeaponizedCell().setUnlocalizedName(\"weaponized_starblaster_cell\").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + \":gun_b92_ammo_weaponized\");",
+      "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gun_b92_ammo_weaponized.png",
+      "reason": "NBT or special tool/energy/fluid behavior is not plain content"
+    }
+  ],
+  "notes": "Custom abilities, hazmat/radiation protection, firearms and other equipment require logic. Authorized bomb detonator is registered separately."
+}

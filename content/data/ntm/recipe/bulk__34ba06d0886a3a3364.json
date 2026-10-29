@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:blade_titanium",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TP",
+    "TP",
+    "TT"
+  ],
+  "key": {
+    "P": "#ntm:bulk/platetitanium",
+    "T": "#ntm:bulk/ingottitanium"
+  }
+}

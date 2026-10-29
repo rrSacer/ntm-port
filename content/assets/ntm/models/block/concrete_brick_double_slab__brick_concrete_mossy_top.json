@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "side": "ntm:block/brick_concrete_mossy",
+    "top": "ntm:block/brick_concrete_mossy",
+    "bottom": "ntm:block/brick_concrete_mossy",
+    "all": "ntm:block/brick_concrete_mossy"
+  }
+}

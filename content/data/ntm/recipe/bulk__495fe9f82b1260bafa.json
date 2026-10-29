@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:laser_crystal_dnt",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "QDQ",
+    "SBS",
+    "QDQ"
+  ],
+  "key": {
+    "Q": "ntm:glass_quartz",
+    "D": "#ntm:bulk/ingotdineutronium",
+    "B": "ntm:egg_balefire",
+    "S": "ntm:powder_spark_mix"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:laser_crystal_digamma",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "QUQ",
+    "UEU",
+    "QUQ"
+  ],
+  "key": {
+    "Q": "ntm:glass_quartz",
+    "U": "ntm:undefined",
+    "E": "ntm:ingot_electronium"
+  }
+}

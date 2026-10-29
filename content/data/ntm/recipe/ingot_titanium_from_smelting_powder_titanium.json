@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:powder_titanium",
+  "result": {
+    "id": "ntm:ingot_titanium",
+    "count": 1
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

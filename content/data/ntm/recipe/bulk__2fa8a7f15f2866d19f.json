@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:nugget_mercury_tiny"
+  },
+  "result": {
+    "id": "ntm:nugget_mercury",
+    "count": 1
+  }
+}

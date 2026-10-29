@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_niter"
+  ],
+  "result": {
+    "id": "ntm:niter",
+    "count": 9
+  }
+}

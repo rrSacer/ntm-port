@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:solid_fuel_presto_triplet",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:solid_fuel_presto",
+    "ntm:solid_fuel_presto",
+    "ntm:solid_fuel_presto",
+    "ntm:ball_dynamite"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:powder_sr90",
+  "result": {
+    "id": "ntm:ingot_sr90",
+    "count": 1
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

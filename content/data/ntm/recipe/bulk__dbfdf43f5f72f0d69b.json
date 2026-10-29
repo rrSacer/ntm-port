@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:upgrade_nullifier",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SPS",
+    "PUP",
+    "SPS"
+  ],
+  "key": {
+    "S": "#ntm:bulk/platesteel",
+    "P": "ntm:powder_fire",
+    "U": "ntm:upgrade_template"
+  }
+}

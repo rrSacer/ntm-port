@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": "ntm:powder_steel",
+  "result": {
+    "id": "ntm:ingot_steel",
+    "count": 1
+  },
+  "experience": 1.0,
+  "cookingtime": 100
+}

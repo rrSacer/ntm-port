@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:motor",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " R ",
+    "ICI",
+    " T "
+  ],
+  "key": {
+    "R": "#ntm:bulk/wirefinemingrade",
+    "T": "ntm:coil_copper_torus",
+    "I": "#ntm:bulk/platesteel",
+    "C": "ntm:coil_copper"
+  }
+}

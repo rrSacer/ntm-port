@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_cadmium"
+  },
+  "result": {
+    "id": "ntm:block_cadmium",
+    "count": 1
+  }
+}

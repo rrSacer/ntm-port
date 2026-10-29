@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_lanthanium_tiny",
+    "count": 9
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#"
+  ],
+  "key": {
+    "#": "ntm:powder_lanthanium"
+  }
+}

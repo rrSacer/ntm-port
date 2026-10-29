@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/ore_centrifuged",
+    "layer1": "ntm:item/ore_overlay__ore_centrifuged__asbestos"
+  }
+}

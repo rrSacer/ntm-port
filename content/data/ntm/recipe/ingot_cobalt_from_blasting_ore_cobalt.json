@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": "ntm:ore_cobalt",
+  "result": {
+    "id": "ntm:ingot_cobalt",
+    "count": 1
+  },
+  "experience": 2.0,
+  "cookingtime": 100
+}

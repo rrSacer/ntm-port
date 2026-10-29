@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": "ntm:briquette__lignite",
+  "result": {
+    "id": "ntm:coke__lignite",
+    "count": 1
+  },
+  "experience": 1.0,
+  "cookingtime": 100
+}

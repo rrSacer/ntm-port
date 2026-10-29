@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:block_mox_fuel",
+    "ntm:block_neptunium",
+    "ntm:debris_exchanger",
+    "ntm:gem_rad",
+    "ntm:ingot_pu241",
+    "ntm:ore_sellafield_radgem"
+  ]
+}

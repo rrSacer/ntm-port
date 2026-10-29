@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_hes",
+    "ntm:billet_les",
+    "ntm:billet_schrabidium_fuel"
+  ]
+}

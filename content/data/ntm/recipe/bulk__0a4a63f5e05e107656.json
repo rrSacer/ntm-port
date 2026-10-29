@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:red_cable",
+    "count": 16
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " W ",
+    "RRR",
+    " W "
+  ],
+  "key": {
+    "W": "ntm:plate_polymer",
+    "R": "#ntm:bulk/wirefinemingrade"
+  }
+}

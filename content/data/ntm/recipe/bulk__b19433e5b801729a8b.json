@@ -1,0 +1,15 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:cobalt_helmet",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ECE"
+  ],
+  "key": {
+    "E": "#ntm:bulk/billetcobalt",
+    "C": "ntm:steel_helmet"
+  }
+}

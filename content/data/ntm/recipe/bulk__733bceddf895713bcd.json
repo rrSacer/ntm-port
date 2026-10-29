@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:ingot_technetium"
+  ],
+  "result": {
+    "id": "ntm:nugget_technetium",
+    "count": 9
+  }
+}

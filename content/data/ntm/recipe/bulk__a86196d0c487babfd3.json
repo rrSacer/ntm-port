@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:ams_catalyst_aluminium",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:ams_catalyst_blank",
+    "ntm:rune_isa",
+    "ntm:rune_isa",
+    "ntm:rune_jera",
+    "ntm:rune_thurisaz",
+    "#ntm:bulk/dustaluminum",
+    "#ntm:bulk/dustaluminum",
+    "#ntm:bulk/dustaluminum",
+    "#ntm:bulk/dustaluminum"
+  ]
+}

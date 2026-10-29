@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/byproduct__ore_byproduct__b_technetium"
+  }
+}

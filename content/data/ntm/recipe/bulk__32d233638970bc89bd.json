@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:part_generic__piston_pneumatic",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "CPC",
+    " I "
+  ],
+  "key": {
+    "I": "#ntm:bulk/ingotiron",
+    "C": "#ntm:bulk/ingotcopper",
+    "P": "#ntm:bulk/plateiron"
+  }
+}

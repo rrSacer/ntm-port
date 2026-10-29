@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:flame_pony",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " O ",
+    "DPD",
+    " O "
+  ],
+  "key": {
+    "D": "#ntm:bulk/dyepink",
+    "O": "#ntm:bulk/dyeyellow",
+    "P": "minecraft:paper"
+  }
+}

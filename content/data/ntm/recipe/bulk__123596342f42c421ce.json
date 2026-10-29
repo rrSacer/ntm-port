@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:circuit__pcb",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I",
+    "P"
+  ],
+  "key": {
+    "I": "ntm:plate_polymer",
+    "P": "#ntm:bulk/plategold"
+  }
+}

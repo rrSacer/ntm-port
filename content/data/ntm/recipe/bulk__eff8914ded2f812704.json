@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:ams_catalyst_dineutronium",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:ams_catalyst_blank",
+    "ntm:rune_hagalaz",
+    "ntm:rune_hagalaz",
+    "ntm:rune_thurisaz",
+    "ntm:rune_thurisaz",
+    "#ntm:bulk/dustdineutronium",
+    "#ntm:bulk/dustdineutronium",
+    "#ntm:bulk/dustdineutronium",
+    "#ntm:bulk/dustdineutronium"
+  ]
+}

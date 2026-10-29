@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:powder_i131_tiny"
+  },
+  "result": {
+    "id": "ntm:powder_i131",
+    "count": 1
+  }
+}

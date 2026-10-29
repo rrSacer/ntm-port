@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:crystal_sulfur",
+  "result": {
+    "id": "ntm:sulfur",
+    "count": 6
+  },
+  "experience": 2.0,
+  "cookingtime": 200
+}

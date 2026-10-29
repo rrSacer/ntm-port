@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "side": "ntm:block/brick_ducrete",
+    "top": "ntm:block/brick_ducrete",
+    "bottom": "ntm:block/brick_ducrete"
+  }
+}

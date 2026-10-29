@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_power",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/dustglowstone",
+    "#ntm:bulk/dustdiamond",
+    "#ntm:bulk/dustmagnetizedtungsten"
+  ]
+}

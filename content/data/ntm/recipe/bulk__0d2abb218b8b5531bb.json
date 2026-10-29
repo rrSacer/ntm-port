@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_thermite",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/dustiron",
+    "#ntm:bulk/dustiron",
+    "#ntm:bulk/dustiron",
+    "#ntm:bulk/dustaluminum"
+  ]
+}

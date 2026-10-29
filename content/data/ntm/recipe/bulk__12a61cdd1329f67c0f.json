@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_poison",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:spider_eye",
+    "#ntm:bulk/dustredstone",
+    "#ntm:bulk/gemnetherquartz"
+  ]
+}

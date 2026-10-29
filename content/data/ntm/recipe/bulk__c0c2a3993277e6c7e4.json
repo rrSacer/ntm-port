@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "minecraft:saddle",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LLL",
+    "LRL",
+    " S "
+  ],
+  "key": {
+    "S": "#ntm:bulk/ingotsteel",
+    "L": "minecraft:leather",
+    "R": "ntm:plant_item__rope"
+  }
+}

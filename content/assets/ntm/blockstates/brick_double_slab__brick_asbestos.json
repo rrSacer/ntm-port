@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "ntm:block/brick_double_slab__brick_asbestos"
+    },
+    "type=top": {
+      "model": "ntm:block/brick_double_slab__brick_asbestos_top"
+    },
+    "type=double": {
+      "model": "ntm:block/brick_double_slab__brick_asbestos_double"
+    }
+  }
+}

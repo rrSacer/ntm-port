@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "side": "ntm:block/ducrete",
+    "top": "ntm:block/ducrete",
+    "bottom": "ntm:block/ducrete"
+  }
+}

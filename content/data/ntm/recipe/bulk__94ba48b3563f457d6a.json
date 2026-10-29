@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:bottle2_empty",
+    "count": 6
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "G G",
+    "G G"
+  ],
+  "key": {
+    "G": "#ntm:bulk/paneglass"
+  }
+}

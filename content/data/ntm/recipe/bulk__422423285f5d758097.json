@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:cell_empty",
+    "count": 6
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "G G",
+    " S "
+  ],
+  "key": {
+    "S": "#ntm:bulk/platesteel",
+    "G": "#ntm:bulk/paneglass"
+  }
+}

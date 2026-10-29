@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:nugget_arsenic"
+  },
+  "result": {
+    "id": "ntm:ingot_arsenic",
+    "count": 1
+  }
+}

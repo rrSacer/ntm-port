@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:igniter",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " W",
+    "SC",
+    "CE"
+  ],
+  "key": {
+    "S": "#ntm:bulk/platesteel",
+    "W": "#ntm:bulk/wirefineschrabidium",
+    "C": "ntm:circuit__advanced",
+    "E": "#ntm:bulk/ingoteuphemium"
+  }
+}

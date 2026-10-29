@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:ams_catalyst_thorium",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:ams_catalyst_blank",
+    "ntm:rune_isa",
+    "ntm:rune_dagaz",
+    "ntm:rune_thurisaz",
+    "ntm:rune_thurisaz",
+    "#ntm:bulk/dustthorium232",
+    "#ntm:bulk/dustthorium232",
+    "#ntm:bulk/dustthorium232",
+    "#ntm:bulk/dustthorium232"
+  ]
+}

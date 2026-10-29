@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "##"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/ingot_beryllium"
+  },
+  "result": {
+    "id": "ntm:billet_beryllium",
+    "count": 3
+  }
+}

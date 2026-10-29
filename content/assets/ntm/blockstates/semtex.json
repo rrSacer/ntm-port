@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "ntm:block/semtex"
+    },
+    "lit=true": {
+      "model": "ntm:block/semtex"
+    }
+  }
+}

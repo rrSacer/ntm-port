@@ -1,0 +1,20 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:laser_crystal_bismuth",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "QUQ",
+    "BCB",
+    "QTQ"
+  ],
+  "key": {
+    "Q": "ntm:glass_quartz",
+    "U": "#ntm:bulk/ingoturanium",
+    "T": "#ntm:bulk/ingotthorium232",
+    "B": "ntm:nugget_bismuth",
+    "C": "ntm:crystal_rare"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/ingot_red_copper"
+  },
+  "result": {
+    "id": "ntm:block_red_copper",
+    "count": 1
+  }
+}

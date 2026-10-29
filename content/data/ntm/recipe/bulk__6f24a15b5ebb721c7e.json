@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:tank_steel",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "STS",
+    "S S",
+    "STS"
+  ],
+  "key": {
+    "S": "#ntm:bulk/platesteel",
+    "T": "#ntm:bulk/platetitanium"
+  }
+}

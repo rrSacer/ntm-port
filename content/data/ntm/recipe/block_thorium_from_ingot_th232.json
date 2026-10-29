@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/ingot_th232"
+  },
+  "result": {
+    "id": "ntm:block_thorium",
+    "count": 1
+  }
+}

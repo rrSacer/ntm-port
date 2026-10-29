@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:powder_paleogenite_tiny"
+  },
+  "result": {
+    "id": "ntm:powder_paleogenite",
+    "count": 1
+  }
+}

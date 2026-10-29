@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:ingot_beryllium"
+  ],
+  "result": {
+    "id": "ntm:nugget_beryllium",
+    "count": 9
+  }
+}

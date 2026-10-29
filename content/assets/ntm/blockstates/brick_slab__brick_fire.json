@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "ntm:block/brick_slab__brick_fire"
+    },
+    "type=top": {
+      "model": "ntm:block/brick_slab__brick_fire_top"
+    },
+    "type=double": {
+      "model": "ntm:block/brick_slab__brick_fire_double"
+    }
+  }
+}

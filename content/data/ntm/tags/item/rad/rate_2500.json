@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_gh336",
+    "ntm:billet_pu239",
+    "ntm:billet_u233",
+    "ntm:block_u238",
+    "ntm:debris_shrapnel",
+    "ntm:ingot_mox_fuel",
+    "ntm:ingot_neptunium",
+    "ntm:nugget_pu241"
+  ]
+}

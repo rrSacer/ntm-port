@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:ingot_uranium",
+    "ntm:ore_gneiss_uranium",
+    "ntm:ore_gneiss_uranium_scorched",
+    "ntm:ore_nether_uranium",
+    "ntm:ore_nether_uranium_scorched",
+    "ntm:ore_sellafield_uranium_scorched",
+    "ntm:ore_uranium",
+    "ntm:ore_uranium_scorched"
+  ]
+}

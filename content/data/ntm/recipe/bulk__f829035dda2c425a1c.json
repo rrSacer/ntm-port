@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_flux",
+    "count": 8
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/dustlead",
+    "#ntm:bulk/dustsulfur",
+    "#ntm:bulk/sand"
+  ]
+}

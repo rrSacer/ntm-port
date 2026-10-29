@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "ntm:block/dynamite"
+    },
+    "lit=true": {
+      "model": "ntm:block/dynamite"
+    }
+  }
+}

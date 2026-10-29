@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/nugget_lead"
+  },
+  "result": {
+    "id": "ntm:ingot_lead",
+    "count": 1
+  }
+}

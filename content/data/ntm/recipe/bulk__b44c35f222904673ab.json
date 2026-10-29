@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:watch",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LYL",
+    "EWE",
+    "LYL"
+  ],
+  "key": {
+    "E": "#ntm:bulk/ingoteuphemium",
+    "L": "#ntm:bulk/dyeblue",
+    "W": "minecraft:clock",
+    "Y": "ntm:billet_yharonite"
+  }
+}

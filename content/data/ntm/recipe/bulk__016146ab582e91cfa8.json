@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_bismuth"
+  },
+  "result": {
+    "id": "ntm:block_bismuth",
+    "count": 1
+  }
+}

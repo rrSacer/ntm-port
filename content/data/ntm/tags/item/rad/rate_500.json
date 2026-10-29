@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_u235",
+    "ntm:ingot_uranium_fuel",
+    "ntm:nugget_gh336",
+    "ntm:nugget_pu239",
+    "ntm:nugget_u233"
+  ]
+}

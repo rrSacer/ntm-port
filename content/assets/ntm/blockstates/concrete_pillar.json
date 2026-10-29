@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "ntm:block/concrete_pillar"
+    },
+    "axis=x": {
+      "model": "ntm:block/concrete_pillar",
+      "x": 90,
+      "y": 90
+    },
+    "axis=z": {
+      "model": "ntm:block/concrete_pillar",
+      "x": 90
+    }
+  }
+}

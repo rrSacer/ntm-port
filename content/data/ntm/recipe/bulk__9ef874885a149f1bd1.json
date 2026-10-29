@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_spark_mix",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/dustworkersalloy",
+    "#ntm:bulk/dusteuphemium",
+    "ntm:powder_power"
+  ]
+}

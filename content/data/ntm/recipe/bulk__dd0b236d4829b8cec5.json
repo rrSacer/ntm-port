@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:nugget_niobium"
+  },
+  "result": {
+    "id": "ntm:ingot_niobium",
+    "count": 1
+  }
+}

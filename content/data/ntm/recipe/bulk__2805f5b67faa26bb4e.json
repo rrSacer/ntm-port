@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:fluid_tank_empty",
+    "count": 8
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "121",
+    "1G1",
+    "121"
+  ],
+  "key": {
+    "1": "#ntm:bulk/platealuminum",
+    "2": "#ntm:bulk/plateiron",
+    "G": "#ntm:bulk/paneglass"
+  }
+}

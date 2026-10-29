@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:dust"
+  ],
+  "result": {
+    "id": "ntm:dust_tiny",
+    "count": 9
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:ducttape",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "F",
+    "P",
+    "S"
+  ],
+  "key": {
+    "F": "minecraft:string",
+    "S": "#ntm:bulk/slimeball",
+    "P": "minecraft:paper"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#ntm:ingredients/fluorite"
+  },
+  "result": {
+    "id": "ntm:block_fluorite",
+    "count": 1
+  }
+}

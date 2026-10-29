@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:nugget_technetium"
+  },
+  "result": {
+    "id": "ntm:ingot_technetium",
+    "count": 1
+  }
+}

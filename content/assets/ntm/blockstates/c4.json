@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "ntm:block/c4"
+    },
+    "lit=true": {
+      "model": "ntm:block/c4"
+    }
+  }
+}

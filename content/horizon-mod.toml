@@ -1,0 +1,6 @@
+id = "ntm"
+name = "HBM Nuclear Tech Mod — Content"
+version = "0.2.0"
+api = "0.2"
+side = "both"
+capabilities = ["registries"]

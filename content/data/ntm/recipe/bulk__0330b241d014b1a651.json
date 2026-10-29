@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_ra226"
+  },
+  "result": {
+    "id": "ntm:block_ra226",
+    "count": 1
+  }
+}

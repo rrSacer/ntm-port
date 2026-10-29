@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_lanthanium"
+  },
+  "result": {
+    "id": "ntm:block_lanthanium",
+    "count": 1
+  }
+}

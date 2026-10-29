@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_rubber"
+  },
+  "result": {
+    "id": "ntm:block_rubber",
+    "count": 1
+  }
+}

@@ -1,0 +1,1809 @@
+{
+  "schema": 1,
+  "machine": "centrifuge",
+  "profile": {
+    "enable528": false,
+    "enableExpensiveMode": false,
+    "enableLBSM": false,
+    "enableLBSMSimpleCentrifuge": false,
+    "external_mods": []
+  },
+  "units": {
+    "duration": "ticks",
+    "power": "HE/t",
+    "fluids": "mB"
+  },
+  "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
+  "coverage": {
+    "emitted": 54,
+    "scanned_source_calls": 79,
+    "skipped_source_calls": 25,
+    "expanded_fluid_recipes": 0,
+    "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
+  },
+  "recipes": [
+    {
+      "name": "source_line_48",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:48",
+      "input": {
+        "ids": [
+          "ntm:chunk_ore__rare"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_cobalt_tiny",
+          2
+        ],
+        [
+          "ntm:powder_boron_tiny",
+          2
+        ],
+        [
+          "ntm:powder_niobium_tiny",
+          2
+        ],
+        [
+          "ntm:nugget_zirconium",
+          3
+        ]
+      ],
+      "label": "Pequena Porção de Pó de Cobalto ×2",
+      "label_en": "Tiny Pile of Cobalt Powder ×2"
+    },
+    {
+      "name": "source_line_54",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:54",
+      "input": {
+        "ids": [
+          "minecraft:coal_ore"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_coal",
+          2
+        ],
+        [
+          "ntm:powder_coal",
+          2
+        ],
+        [
+          "ntm:powder_coal",
+          2
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Carvão ×2",
+      "label_en": "Coal Powder ×2"
+    },
+    {
+      "name": "source_line_60",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:60",
+      "input": {
+        "ids": [
+          "ntm:ore_lignite"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_lignite",
+          2
+        ],
+        [
+          "ntm:powder_lignite",
+          2
+        ],
+        [
+          "ntm:powder_lignite",
+          2
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Linhito ×2",
+      "label_en": "Lignite Powder ×2"
+    },
+    {
+      "name": "source_line_66",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:66",
+      "input": {
+        "ids": [
+          "ntm:ore_gneiss_iron"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Ferro",
+      "label_en": "Iron Powder"
+    },
+    {
+      "name": "source_line_72",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:72",
+      "input": {
+        "ids": [
+          "ntm:ore_gneiss_gold"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_gold",
+          1
+        ],
+        [
+          "ntm:powder_gold",
+          1
+        ],
+        [
+          "ntm:powder_gold",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Ouro",
+      "label_en": "Gold Powder"
+    },
+    {
+      "name": "source_line_78",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:78",
+      "input": {
+        "ids": [
+          "ntm:gravel_diamond",
+          "ntm:ore_sellafield_diamond"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_diamond",
+          1
+        ],
+        [
+          "ntm:powder_diamond",
+          1
+        ],
+        [
+          "ntm:powder_diamond",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Diamante",
+      "label_en": "Diamond Powder"
+    },
+    {
+      "name": "source_line_84",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:84",
+      "input": {
+        "ids": [
+          "ntm:ore_sellafield_emerald"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_emerald",
+          1
+        ],
+        [
+          "ntm:powder_emerald",
+          1
+        ],
+        [
+          "ntm:powder_emerald",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Esmeralda",
+      "label_en": "Emerald Powder"
+    },
+    {
+      "name": "source_line_90",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:90",
+      "input": {
+        "ids": [
+          "ntm:ore_titanium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_titanium",
+          1
+        ],
+        [
+          "ntm:chunk_ore__ilmenite",
+          2
+        ],
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Titânio",
+      "label_en": "Titanium Powder"
+    },
+    {
+      "name": "source_line_96",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:96",
+      "input": {
+        "ids": [
+          "minecraft:nether_quartz_ore"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_quartz",
+          1
+        ],
+        [
+          "ntm:powder_quartz",
+          1
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ],
+        [
+          "minecraft:netherrack",
+          1
+        ]
+      ],
+      "label": "Pó de Quartzo",
+      "label_en": "Quartz Powder"
+    },
+    {
+      "name": "source_line_102",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:102",
+      "input": {
+        "ids": [
+          "ntm:ore_nether_tungsten",
+          "ntm:ore_tungsten"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_tungsten",
+          1
+        ],
+        [
+          "ntm:powder_tungsten",
+          1
+        ],
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Tungstênio",
+      "label_en": "Tungsten Powder"
+    },
+    {
+      "name": "source_line_108",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:108",
+      "input": {
+        "ids": [
+          "ntm:ore_copper",
+          "ntm:ore_gneiss_copper"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_copper",
+          1
+        ],
+        [
+          "ntm:powder_copper",
+          1
+        ],
+        [
+          "ntm:powder_gold",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Cobre",
+      "label_en": "Copper Powder"
+    },
+    {
+      "name": "source_line_114",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:114",
+      "input": {
+        "ids": [
+          "ntm:ore_aluminium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:chunk_ore__cryolite",
+          2
+        ],
+        [
+          "ntm:powder_titanium",
+          1
+        ],
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Fragmento de Criolita ×2",
+      "label_en": "Cryolite Chunk ×2"
+    },
+    {
+      "name": "source_line_120",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:120",
+      "input": {
+        "ids": [
+          "ntm:ore_lead"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_lead",
+          1
+        ],
+        [
+          "ntm:powder_lead",
+          1
+        ],
+        [
+          "ntm:powder_gold",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Chumbo",
+      "label_en": "Lead Powder"
+    },
+    {
+      "name": "source_line_126",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:126",
+      "input": {
+        "ids": [
+          "ntm:ore_gneiss_schrabidium",
+          "ntm:ore_nether_schrabidium",
+          "ntm:ore_schrabidium",
+          "ntm:ore_sellafield_schrabidium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_schrabidium",
+          1
+        ],
+        [
+          "ntm:powder_schrabidium",
+          1
+        ],
+        [
+          "ntm:nugget_solinium",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Schrabídio",
+      "label_en": "Schrabidium Powder"
+    },
+    {
+      "name": "source_line_132",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:132",
+      "input": {
+        "ids": [
+          "ntm:ore_gneiss_rare",
+          "ntm:ore_rare"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_desh_mix",
+          1
+        ],
+        [
+          "ntm:nugget_zirconium",
+          1
+        ],
+        [
+          "ntm:nugget_zirconium",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Mistura de Desh",
+      "label_en": "Desh Blend"
+    },
+    {
+      "name": "source_line_138",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:138",
+      "input": {
+        "ids": [
+          "ntm:ore_nether_plutonium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_plutonium",
+          1
+        ],
+        [
+          "ntm:powder_plutonium",
+          1
+        ],
+        [
+          "ntm:nugget_polonium",
+          3
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Plutônio",
+      "label_en": "Plutonium Powder"
+    },
+    {
+      "name": "source_line_144",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:144",
+      "input": {
+        "ids": [
+          "ntm:ore_gneiss_uranium",
+          "ntm:ore_gneiss_uranium_scorched",
+          "ntm:ore_nether_uranium",
+          "ntm:ore_nether_uranium_scorched",
+          "ntm:ore_sellafield_uranium_scorched",
+          "ntm:ore_uranium",
+          "ntm:ore_uranium_scorched"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_uranium",
+          1
+        ],
+        [
+          "ntm:powder_uranium",
+          1
+        ],
+        [
+          "ntm:nugget_ra226",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Urânio",
+      "label_en": "Uranium Powder"
+    },
+    {
+      "name": "source_line_150",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:150",
+      "input": {
+        "ids": [
+          "ntm:ore_thorium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_thorium",
+          1
+        ],
+        [
+          "ntm:powder_thorium",
+          1
+        ],
+        [
+          "ntm:powder_uranium",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Tório",
+      "label_en": "Thorium Powder"
+    },
+    {
+      "name": "source_line_156",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:156",
+      "input": {
+        "ids": [
+          "ntm:ore_beryllium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_beryllium",
+          1
+        ],
+        [
+          "ntm:powder_beryllium",
+          1
+        ],
+        [
+          "ntm:powder_emerald",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Berílio",
+      "label_en": "Beryllium Powder"
+    },
+    {
+      "name": "source_line_162",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:162",
+      "input": {
+        "ids": [
+          "ntm:ore_basalt__fluorite",
+          "ntm:ore_fluorite"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:fluorite",
+          3
+        ],
+        [
+          "ntm:fluorite",
+          3
+        ],
+        [
+          "ntm:gem_sodalite",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Fluorita ×3",
+      "label_en": "Fluorite ×3"
+    },
+    {
+      "name": "source_line_168",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:168",
+      "input": {
+        "ids": [
+          "minecraft:redstone_ore"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "minecraft:redstone",
+          3
+        ],
+        [
+          "minecraft:redstone",
+          3
+        ],
+        [
+          "ntm:nugget_mercury",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Redstone ×3",
+      "label_en": "Redstone Dust ×3"
+    },
+    {
+      "name": "source_line_174",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:174",
+      "input": {
+        "ids": [
+          "ntm:ore_tikite"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_plutonium",
+          1
+        ],
+        [
+          "ntm:powder_cobalt",
+          2
+        ],
+        [
+          "ntm:powder_niobium",
+          2
+        ],
+        [
+          "minecraft:end_stone",
+          1
+        ]
+      ],
+      "label": "Pó de Plutônio",
+      "label_en": "Plutonium Powder"
+    },
+    {
+      "name": "source_line_180",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:180",
+      "input": {
+        "ids": [
+          "minecraft:lapis_ore"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_lapis",
+          6
+        ],
+        [
+          "ntm:powder_cobalt_tiny",
+          1
+        ],
+        [
+          "ntm:gem_sodalite",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Lápis-Lazúli ×6",
+      "label_en": "Lapis Lazuli Powder ×6"
+    },
+    {
+      "name": "source_line_192",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:192",
+      "input": {
+        "ids": [
+          "ntm:ore_nether_fire"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "minecraft:blaze_powder",
+          2
+        ],
+        [
+          "ntm:powder_fire",
+          2
+        ],
+        [
+          "ntm:ingot_phosphorus",
+          1
+        ],
+        [
+          "minecraft:netherrack",
+          1
+        ]
+      ],
+      "label": "Pó de Blaze ×2",
+      "label_en": "Blaze Powder ×2"
+    },
+    {
+      "name": "source_line_198",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:198",
+      "input": {
+        "ids": [
+          "ntm:ore_cobalt",
+          "ntm:ore_nether_cobalt"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_cobalt",
+          2
+        ],
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "ntm:powder_copper",
+          1
+        ],
+        [
+          "minecraft:gravel",
+          1
+        ]
+      ],
+      "label": "Pó de Cobalto ×2",
+      "label_en": "Cobalt Powder ×2"
+    },
+    {
+      "name": "source_line_204",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:204",
+      "input": {
+        "ids": [
+          "ntm:powder_tektite"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_meteorite_tiny",
+          1
+        ],
+        [
+          "ntm:powder_paleogenite_tiny",
+          1
+        ],
+        [
+          "ntm:powder_meteorite_tiny",
+          1
+        ],
+        [
+          "ntm:dust",
+          6
+        ]
+      ],
+      "label": "Pequena Porção de Pó de Meteorito",
+      "label_en": "Tiny Pile of Meteorite Powder"
+    },
+    {
+      "name": "source_line_216",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:216",
+      "input": {
+        "ids": [
+          "ntm:powder_ash__coal"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_coal_tiny",
+          2
+        ],
+        [
+          "ntm:powder_boron_tiny",
+          1
+        ],
+        [
+          "ntm:dust_tiny",
+          6
+        ]
+      ],
+      "label": "Pequena Porção de Pó de Carvão ×2",
+      "label_en": "Tiny Pile of Coal Powder ×2"
+    },
+    {
+      "name": "source_line_303",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:303",
+      "input": {
+        "ids": [
+          "minecraft:blaze_rod"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "minecraft:blaze_powder",
+          1
+        ],
+        [
+          "minecraft:blaze_powder",
+          1
+        ],
+        [
+          "ntm:powder_fire",
+          1
+        ],
+        [
+          "ntm:powder_fire",
+          1
+        ]
+      ],
+      "label": "Pó de Blaze",
+      "label_en": "Blaze Powder"
+    },
+    {
+      "name": "source_line_305",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:305",
+      "input": {
+        "ids": [
+          "ntm:crystal_coal"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_coal",
+          3
+        ],
+        [
+          "ntm:powder_coal",
+          3
+        ],
+        [
+          "ntm:powder_coal",
+          3
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Carvão ×3",
+      "label_en": "Coal Powder ×3"
+    },
+    {
+      "name": "source_line_306",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:306",
+      "input": {
+        "ids": [
+          "ntm:crystal_iron"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_iron",
+          2
+        ],
+        [
+          "ntm:powder_iron",
+          2
+        ],
+        [
+          "ntm:powder_titanium",
+          1
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Ferro ×2",
+      "label_en": "Iron Powder ×2"
+    },
+    {
+      "name": "source_line_307",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:307",
+      "input": {
+        "ids": [
+          "ntm:crystal_gold"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_gold",
+          2
+        ],
+        [
+          "ntm:powder_gold",
+          2
+        ],
+        [
+          "ntm:nugget_mercury",
+          1
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Ouro ×2",
+      "label_en": "Gold Powder ×2"
+    },
+    {
+      "name": "source_line_308",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:308",
+      "input": {
+        "ids": [
+          "ntm:crystal_redstone"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "minecraft:redstone",
+          3
+        ],
+        [
+          "minecraft:redstone",
+          3
+        ],
+        [
+          "minecraft:redstone",
+          3
+        ],
+        [
+          "ntm:nugget_mercury",
+          3
+        ]
+      ],
+      "label": "Pó de Redstone ×3",
+      "label_en": "Redstone Dust ×3"
+    },
+    {
+      "name": "source_line_309",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:309",
+      "input": {
+        "ids": [
+          "ntm:crystal_lapis"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_lapis",
+          4
+        ],
+        [
+          "ntm:powder_lapis",
+          4
+        ],
+        [
+          "ntm:powder_cobalt",
+          1
+        ],
+        [
+          "ntm:gem_sodalite",
+          2
+        ]
+      ],
+      "label": "Pó de Lápis-Lazúli ×4",
+      "label_en": "Lapis Lazuli Powder ×4"
+    },
+    {
+      "name": "source_line_310",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:310",
+      "input": {
+        "ids": [
+          "ntm:crystal_diamond"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_diamond",
+          1
+        ],
+        [
+          "ntm:powder_diamond",
+          1
+        ],
+        [
+          "ntm:powder_diamond",
+          1
+        ],
+        [
+          "ntm:powder_diamond",
+          1
+        ]
+      ],
+      "label": "Pó de Diamante",
+      "label_en": "Diamond Powder"
+    },
+    {
+      "name": "source_line_311",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:311",
+      "input": {
+        "ids": [
+          "ntm:crystal_uranium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_uranium",
+          2
+        ],
+        [
+          "ntm:powder_uranium",
+          2
+        ],
+        [
+          "ntm:nugget_ra226",
+          2
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Urânio ×2",
+      "label_en": "Uranium Powder ×2"
+    },
+    {
+      "name": "source_line_312",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:312",
+      "input": {
+        "ids": [
+          "ntm:crystal_thorium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_thorium",
+          2
+        ],
+        [
+          "ntm:powder_thorium",
+          2
+        ],
+        [
+          "ntm:powder_uranium",
+          1
+        ],
+        [
+          "ntm:nugget_ra226",
+          1
+        ]
+      ],
+      "label": "Pó de Tório ×2",
+      "label_en": "Thorium Powder ×2"
+    },
+    {
+      "name": "source_line_313",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:313",
+      "input": {
+        "ids": [
+          "ntm:crystal_plutonium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_plutonium",
+          2
+        ],
+        [
+          "ntm:powder_plutonium",
+          2
+        ],
+        [
+          "ntm:powder_polonium",
+          1
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Plutônio ×2",
+      "label_en": "Plutonium Powder ×2"
+    },
+    {
+      "name": "source_line_314",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:314",
+      "input": {
+        "ids": [
+          "ntm:crystal_titanium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_titanium",
+          2
+        ],
+        [
+          "ntm:powder_titanium",
+          2
+        ],
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Titânio ×2",
+      "label_en": "Titanium Powder ×2"
+    },
+    {
+      "name": "source_line_315",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:315",
+      "input": {
+        "ids": [
+          "ntm:crystal_sulfur"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:sulfur",
+          4
+        ],
+        [
+          "ntm:sulfur",
+          4
+        ],
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "ntm:nugget_mercury",
+          1
+        ]
+      ],
+      "label": "Enxofre ×4",
+      "label_en": "Sulfur ×4"
+    },
+    {
+      "name": "source_line_316",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:316",
+      "input": {
+        "ids": [
+          "ntm:crystal_niter"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:niter",
+          3
+        ],
+        [
+          "ntm:niter",
+          3
+        ],
+        [
+          "ntm:niter",
+          3
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Nitre ×3",
+      "label_en": "Niter ×3"
+    },
+    {
+      "name": "source_line_317",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:317",
+      "input": {
+        "ids": [
+          "ntm:crystal_copper"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_copper",
+          2
+        ],
+        [
+          "ntm:powder_copper",
+          2
+        ],
+        [
+          "ntm:sulfur",
+          1
+        ],
+        [
+          "ntm:powder_cobalt_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Cobre ×2",
+      "label_en": "Copper Powder ×2"
+    },
+    {
+      "name": "source_line_318",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:318",
+      "input": {
+        "ids": [
+          "ntm:crystal_tungsten"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_tungsten",
+          2
+        ],
+        [
+          "ntm:powder_tungsten",
+          2
+        ],
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Tungstênio ×2",
+      "label_en": "Tungsten Powder ×2"
+    },
+    {
+      "name": "source_line_319",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:319",
+      "input": {
+        "ids": [
+          "ntm:crystal_aluminium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:chunk_ore__cryolite",
+          3
+        ],
+        [
+          "ntm:powder_titanium",
+          1
+        ],
+        [
+          "ntm:powder_iron",
+          1
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Fragmento de Criolita ×3",
+      "label_en": "Cryolite Chunk ×3"
+    },
+    {
+      "name": "source_line_320",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:320",
+      "input": {
+        "ids": [
+          "ntm:crystal_fluorite"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:fluorite",
+          4
+        ],
+        [
+          "ntm:fluorite",
+          4
+        ],
+        [
+          "ntm:gem_sodalite",
+          2
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Fluorita ×4",
+      "label_en": "Fluorite ×4"
+    },
+    {
+      "name": "source_line_321",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:321",
+      "input": {
+        "ids": [
+          "ntm:crystal_beryllium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_beryllium",
+          2
+        ],
+        [
+          "ntm:powder_beryllium",
+          2
+        ],
+        [
+          "ntm:powder_quartz",
+          1
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Berílio ×2",
+      "label_en": "Beryllium Powder ×2"
+    },
+    {
+      "name": "source_line_322",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:322",
+      "input": {
+        "ids": [
+          "ntm:crystal_lead"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_lead",
+          2
+        ],
+        [
+          "ntm:powder_lead",
+          2
+        ],
+        [
+          "ntm:powder_gold",
+          1
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Chumbo ×2",
+      "label_en": "Lead Powder ×2"
+    },
+    {
+      "name": "source_line_323",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:323",
+      "input": {
+        "ids": [
+          "ntm:crystal_schraranium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:nugget_schrabidium",
+          2
+        ],
+        [
+          "ntm:nugget_schrabidium",
+          2
+        ],
+        [
+          "ntm:nugget_uranium",
+          2
+        ],
+        [
+          "ntm:nugget_neptunium",
+          2
+        ]
+      ],
+      "label": "Pepita de Schrabídio ×2",
+      "label_en": "Schrabidium Nugget ×2"
+    },
+    {
+      "name": "source_line_324",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:324",
+      "input": {
+        "ids": [
+          "ntm:crystal_schrabidium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_schrabidium",
+          2
+        ],
+        [
+          "ntm:powder_schrabidium",
+          2
+        ],
+        [
+          "ntm:powder_plutonium",
+          1
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Schrabídio ×2",
+      "label_en": "Schrabidium Powder ×2"
+    },
+    {
+      "name": "source_line_325",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:325",
+      "input": {
+        "ids": [
+          "ntm:crystal_rare"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_desh_mix",
+          1
+        ],
+        [
+          "ntm:powder_desh_mix",
+          1
+        ],
+        [
+          "ntm:nugget_zirconium",
+          2
+        ],
+        [
+          "ntm:nugget_zirconium",
+          2
+        ]
+      ],
+      "label": "Mistura de Desh",
+      "label_en": "Desh Blend"
+    },
+    {
+      "name": "source_line_326",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:326",
+      "input": {
+        "ids": [
+          "ntm:crystal_phosphorus"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_fire",
+          3
+        ],
+        [
+          "ntm:powder_fire",
+          3
+        ],
+        [
+          "ntm:ingot_phosphorus",
+          2
+        ],
+        [
+          "minecraft:blaze_powder",
+          2
+        ]
+      ],
+      "label": "Fósforo Vermelho ×3",
+      "label_en": "Red Phosphorus ×3"
+    },
+    {
+      "name": "source_line_327",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:327",
+      "input": {
+        "ids": [
+          "ntm:crystal_trixite"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_plutonium",
+          2
+        ],
+        [
+          "ntm:powder_cobalt",
+          3
+        ],
+        [
+          "ntm:powder_niobium",
+          2
+        ],
+        [
+          "ntm:powder_nitan_mix",
+          1
+        ]
+      ],
+      "label": "Pó de Plutônio ×2",
+      "label_en": "Plutonium Powder ×2"
+    },
+    {
+      "name": "source_line_328",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:328",
+      "input": {
+        "ids": [
+          "ntm:crystal_lithium"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_lithium",
+          2
+        ],
+        [
+          "ntm:powder_lithium",
+          2
+        ],
+        [
+          "ntm:powder_quartz",
+          1
+        ],
+        [
+          "ntm:fluorite",
+          1
+        ]
+      ],
+      "label": "Pó de Lítio ×2",
+      "label_en": "Lithium Powder ×2"
+    },
+    {
+      "name": "source_line_329",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:329",
+      "input": {
+        "ids": [
+          "ntm:crystal_starmetal"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_dura_steel",
+          3
+        ],
+        [
+          "ntm:powder_cobalt",
+          3
+        ],
+        [
+          "ntm:powder_astatine",
+          2
+        ],
+        [
+          "ntm:nugget_mercury",
+          5
+        ]
+      ],
+      "label": "Pó de Aço Rápido ×3",
+      "label_en": "High-Speed Steel Powder ×3"
+    },
+    {
+      "name": "source_line_330",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:330",
+      "input": {
+        "ids": [
+          "ntm:crystal_cobalt"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:powder_cobalt",
+          2
+        ],
+        [
+          "ntm:powder_iron",
+          3
+        ],
+        [
+          "ntm:powder_copper",
+          3
+        ],
+        [
+          "ntm:powder_lithium_tiny",
+          1
+        ]
+      ],
+      "label": "Pó de Cobalto ×2",
+      "label_en": "Cobalt Powder ×2"
+    }
+  ],
+  "skipped": [
+    {
+      "name": "source_line_186",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:186",
+      "reason": "unregistered/ambiguous source item ingot_starmetal",
+      "expression": "new ComparableStack(ModBlocks.block_euphemium_cluster), new ItemStack[] {\n\t\t\t\tnew ItemStack(ModItems.nugget_euphemium, 7),\n\t\t\t\tnew ItemStack(ModItems.powder_schrabidium, 4),\n\t\t\t\tnew ItemStack(ModItems.ingot_starmetal, 2),\n\t\t\t\tnew ItemStack(ModItems.nugget_solinium, 2) }"
+    },
+    {
+      "name": "source_line_210",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:210",
+      "reason": "unregistered/ambiguous source item block_slag",
+      "expression": "new ComparableStack(ModBlocks.block_slag), new ItemStack[] {\n\t\t\t\tnew ItemStack(Blocks.gravel, 1),\n\t\t\t\tnew ItemStack(ModItems.powder_fire, 1),\n\t\t\t\tnew ItemStack(ModItems.powder_calcium),\n\t\t\t\tnew ItemStack(ModItems.dust) }"
+    },
+    {
+      "name": "source_line_224",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:224",
+      "reason": "dynamic/control-dependent for(EnumBedrockOre ore : EnumBedrockOre.values())",
+      "expression": "new ComparableStack(ModItems.ore_bedrock, 1, i), new ItemStack[] {\n\t\t\t\t\tnew ItemStack(ModItems.ore_centrifuged, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_centrifuged, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_centrifuged, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_centrifuged, 1, i) }"
+    },
+    {
+      "name": "source_line_230",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:230",
+      "reason": "dynamic/control-dependent for(EnumBedrockOre ore : EnumBedrockOre.values())",
+      "expression": "new ComparableStack(ModItems.ore_cleaned, 1, i), new ItemStack[] {\n\t\t\t\t\tnew ItemStack(ModItems.ore_separated, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_separated, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_separated, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_separated, 1, i) }"
+    },
+    {
+      "name": "source_line_236",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:236",
+      "reason": "dynamic/control-dependent for(EnumBedrockOre ore : EnumBedrockOre.values())",
+      "expression": "new ComparableStack(ModItems.ore_purified, 1, i), new ItemStack[] {\n\t\t\t\t\tnew ItemStack(ModItems.ore_enriched, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_enriched, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_enriched, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_enriched, 1, i) }"
+    },
+    {
+      "name": "source_line_244",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:244",
+      "reason": "dynamic/control-dependent for(EnumBedrockOre ore : EnumBedrockOre.values())",
+      "expression": "new ComparableStack(ModItems.ore_nitrated, 1, i), new ItemStack[] {\n\t\t\t\t\tnew ItemStack(ModItems.ore_nitrocrystalline, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_nitrocrystalline, 1, i),\n\t\t\t\t\tItemStackUtil.carefulCopy(by1),\n\t\t\t\t\tItemStackUtil.carefulCopy(by1) }"
+    },
+    {
+      "name": "source_line_252",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:252",
+      "reason": "dynamic/control-dependent for(EnumBedrockOre ore : EnumBedrockOre.values())",
+      "expression": "new ComparableStack(ModItems.ore_deepcleaned, 1, i), new ItemStack[] {\n\t\t\t\t\tnew ItemStack(ModItems.ore_enriched, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_enriched, 1, i),\n\t\t\t\t\tItemStackUtil.carefulCopy(by2),\n\t\t\t\t\tItemStackUtil.carefulCopy(by2) }"
+    },
+    {
+      "name": "source_line_260",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:260",
+      "reason": "dynamic/control-dependent for(EnumBedrockOre ore : EnumBedrockOre.values())",
+      "expression": "new ComparableStack(ModItems.ore_seared, 1, i), new ItemStack[] {\n\t\t\t\t\tnew ItemStack(ModItems.ore_enriched, 1, i),\n\t\t\t\t\tnew ItemStack(ModItems.ore_enriched, 1, i),\n\t\t\t\t\tItemStackUtil.carefulCopy(by3),\n\t\t\t\t\tItemStackUtil.carefulCopy(by3) }"
+    },
+    {
+      "name": "source_line_269",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:269",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.BASE, type)), new ItemStack[] {ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY, type), new ItemStack(Blocks.gravel)}"
+    },
+    {
+      "name": "source_line_270",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:270",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.BASE_ROASTED, type)), new ItemStack[] {ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY, type), new ItemStack(Blocks.gravel)}"
+    },
+    {
+      "name": "source_line_271",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:271",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.BASE_WASHED, type)), new ItemStack[] {ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY, type), ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY, type), new ItemStack(Blocks.gravel)}"
+    },
+    {
+      "name": "source_line_273",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:273",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_SULFURIC, type)), new ItemStack[] {ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_NOSULFURIC, type, 2), ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_BYPRODUCT, type, 2)}"
+    },
+    {
+      "name": "source_line_274",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:274",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_SOLVENT, type)), new ItemStack[] {ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_NOSOLVENT, type, 2), ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_BYPRODUCT, type, 2), ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_BYPRODUCT, type, 2)}"
+    },
+    {
+      "name": "source_line_275",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:275",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_RAD, type)), new ItemStack[] {ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_NORAD, type, 2), ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_BYPRODUCT, type, 2), ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_BYPRODUCT, type, 2), ItemBedrockOreNew.make(BedrockOreGrade.RAD_BYPRODUCT, type, 2)}"
+    },
+    {
+      "name": "source_line_277",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:277",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY, type)), new ItemStack[] {ItemBedrockOreNew.extract(type.primary1, 1), ItemBedrockOreNew.extract(type.primary2, 1)}"
+    },
+    {
+      "name": "source_line_278",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:278",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_ROASTED, type)), new ItemStack[] {ItemBedrockOreNew.extract(type.primary1, 1), ItemBedrockOreNew.extract(type.primary2, 1)}"
+    },
+    {
+      "name": "source_line_279",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:279",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_NOSULFURIC, type)), new ItemStack[] {ItemBedrockOreNew.extract(type.primary1, 1), ItemBedrockOreNew.extract(type.primary2, 1), ItemBedrockOreNew.make(BedrockOreGrade.CRUMBS, type)}"
+    },
+    {
+      "name": "source_line_280",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:280",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_NOSOLVENT, type)), new ItemStack[] {ItemBedrockOreNew.extract(type.primary1, 1), ItemBedrockOreNew.extract(type.primary2, 1), ItemBedrockOreNew.make(BedrockOreGrade.CRUMBS, type)}"
+    },
+    {
+      "name": "source_line_281",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:281",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_NORAD, type)), new ItemStack[] {ItemBedrockOreNew.extract(type.primary1, 1), ItemBedrockOreNew.extract(type.primary2, 1), ItemBedrockOreNew.make(BedrockOreGrade.CRUMBS, type)}"
+    },
+    {
+      "name": "source_line_282",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:282",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_FIRST, type)), new ItemStack[] {ItemBedrockOreNew.extract(type.primary1, 1), ItemBedrockOreNew.extract(type.primary1, 1), ItemBedrockOreNew.extract(type.primary2, 1), ItemBedrockOreNew.make(BedrockOreGrade.CRUMBS, type, 1)}"
+    },
+    {
+      "name": "source_line_283",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:283",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_SECOND, type)), new ItemStack[] {ItemBedrockOreNew.extract(type.primary1, 1), ItemBedrockOreNew.extract(type.primary2, 1), ItemBedrockOreNew.extract(type.primary2, 1), ItemBedrockOreNew.make(BedrockOreGrade.CRUMBS, type, 1)}"
+    },
+    {
+      "name": "source_line_285",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:285",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_WASHED, type)), new ItemStack[] {ItemBedrockOreNew.extract(type.byproductAcid1, 1), ItemBedrockOreNew.extract(type.byproductAcid2, 1), ItemBedrockOreNew.extract(type.byproductAcid3, 1), ItemBedrockOreNew.make(BedrockOreGrade.CRUMBS, type)}"
+    },
+    {
+      "name": "source_line_286",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:286",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_WASHED, type)), new ItemStack[] {ItemBedrockOreNew.extract(type.byproductSolvent1, 1), ItemBedrockOreNew.extract(type.byproductSolvent2, 1), ItemBedrockOreNew.extract(type.byproductSolvent3, 1), ItemBedrockOreNew.make(BedrockOreGrade.CRUMBS, type)}"
+    },
+    {
+      "name": "source_line_287",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:287",
+      "reason": "dynamic/control-dependent for(BedrockOreType type : BedrockOreType.values())",
+      "expression": "new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.RAD_WASHED, type)), new ItemStack[] {ItemBedrockOreNew.extract(type.byproductRad1, 1), ItemBedrockOreNew.extract(type.byproductRad2, 1), ItemBedrockOreNew.extract(type.byproductRad3, 1), ItemBedrockOreNew.make(BedrockOreGrade.CRUMBS, type)}"
+    },
+    {
+      "name": "source_line_296",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:296",
+      "reason": "dynamic/control-dependent if(quartz != null && !quartz.isEmpty())",
+      "expression": "new OreDictStack(\"oreCertusQuartz\"), new ItemStack[] {\n\t\t\t\t\tqItem.copy(),\n\t\t\t\t\tqItem.copy(),\n\t\t\t\t\tqItem.copy(),\n\t\t\t\t\tqItem.copy() }"
+    }
+  ]
+}

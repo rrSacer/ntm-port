@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "ntm:block/brick_double_slab__reinforced_stone"
+    },
+    "type=top": {
+      "model": "ntm:block/brick_double_slab__reinforced_stone_top"
+    },
+    "type=double": {
+      "model": "ntm:block/brick_double_slab__reinforced_stone_double"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_cdalloy"
+  },
+  "result": {
+    "id": "ntm:block_cdalloy",
+    "count": 1
+  }
+}

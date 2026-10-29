@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:ams_catalyst_copper",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:ams_catalyst_blank",
+    "ntm:rune_dagaz",
+    "ntm:rune_dagaz",
+    "ntm:rune_jera",
+    "ntm:rune_jera",
+    "#ntm:bulk/dustcopper",
+    "#ntm:bulk/dustcopper",
+    "#ntm:bulk/dustcopper",
+    "#ntm:bulk/dustcopper"
+  ]
+}

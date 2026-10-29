@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:ingot_silicon"
+  ],
+  "result": {
+    "id": "ntm:nugget_silicon",
+    "count": 9
+  }
+}

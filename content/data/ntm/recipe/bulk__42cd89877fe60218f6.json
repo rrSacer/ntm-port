@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:canister_empty",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S ",
+    "AA",
+    "AA"
+  ],
+  "key": {
+    "S": "#ntm:bulk/platesteel",
+    "A": "#ntm:bulk/platealuminum"
+  }
+}

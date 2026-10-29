@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "ntm:block/tnt_ntm"
+    },
+    "lit=true": {
+      "model": "ntm:block/tnt_ntm"
+    }
+  }
+}

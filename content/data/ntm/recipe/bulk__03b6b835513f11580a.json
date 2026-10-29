@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:pellet_gas",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:water_bucket",
+    "#ntm:bulk/dustglowstone",
+    "#ntm:bulk/platesteel"
+  ]
+}

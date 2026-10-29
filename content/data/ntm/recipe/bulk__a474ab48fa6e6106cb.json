@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:gas_empty",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S ",
+    "AA",
+    "AA"
+  ],
+  "key": {
+    "A": "#ntm:bulk/platesteel",
+    "S": "#ntm:bulk/platecopper"
+  }
+}

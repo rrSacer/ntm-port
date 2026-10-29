@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:billet_zfb_bismuth",
+    "count": 6
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/billetzirconium",
+    "#ntm:bulk/billetzirconium",
+    "#ntm:bulk/billetzirconium",
+    "#ntm:bulk/billeturanium",
+    "#ntm:bulk/billetplutonium241",
+    "#ntm:bulk/billetbismuth"
+  ]
+}

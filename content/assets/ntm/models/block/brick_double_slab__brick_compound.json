@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "side": "ntm:block/brick_compound",
+    "top": "ntm:block/brick_compound",
+    "bottom": "ntm:block/brick_compound",
+    "all": "ntm:block/brick_compound"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_pu_mix"
+  ],
+  "result": {
+    "id": "ntm:ingot_pu_mix",
+    "count": 9
+  }
+}

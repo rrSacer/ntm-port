@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_sulfur"
+  ],
+  "result": {
+    "id": "ntm:sulfur",
+    "count": 9
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:custom_tnt",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "TIT",
+    "TIT"
+  ],
+  "key": {
+    "C": "#ntm:bulk/platecopper",
+    "I": "#ntm:bulk/plateiron",
+    "T": "#ntm:bulk/ingotanyhighexplosive"
+  }
+}

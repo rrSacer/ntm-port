@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:powder_dura_steel",
+  "result": {
+    "id": "ntm:ingot_dura_steel",
+    "count": 1
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

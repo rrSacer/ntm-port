@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": "ntm:crystal_fluorite",
+  "result": {
+    "id": "ntm:fluorite",
+    "count": 6
+  },
+  "experience": 2.0,
+  "cookingtime": 200
+}

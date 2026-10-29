@@ -1,0 +1,13 @@
+{
+  "title": "itemGroup.ntm.weapons",
+  "fallback": "NTM Weapons and Turrets",
+  "icon": "ntm:stick_tnt",
+  "order": 7,
+  "items": [
+    "ntm:stick_tnt",
+    "ntm:stick_semtex",
+    "ntm:stick_c4",
+    "ntm:disperser_canister_empty",
+    "ntm:glyphid_gland_empty"
+  ]
+}

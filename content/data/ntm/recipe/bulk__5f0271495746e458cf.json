@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:shimmer_head",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "DTD",
+    "SSS"
+  ],
+  "key": {
+    "S": "#ntm:bulk/ingotsteel",
+    "D": "#ntm:bulk/blockworkersalloy",
+    "T": "#ntm:bulk/blocktungsten"
+  }
+}

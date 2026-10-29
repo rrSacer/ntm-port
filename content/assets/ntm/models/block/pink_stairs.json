@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "side": "ntm:block/pink_planks",
+    "top": "ntm:block/pink_planks",
+    "bottom": "ntm:block/pink_planks"
+  }
+}

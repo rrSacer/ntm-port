@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "texture": "ntm:block/ash",
+    "all": "ntm:block/ash"
+  }
+}

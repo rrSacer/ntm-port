@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "side": "ntm:block/reinforced_stone",
+    "top": "ntm:block/reinforced_stone",
+    "bottom": "ntm:block/reinforced_stone",
+    "all": "ntm:block/reinforced_stone"
+  }
+}

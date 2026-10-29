@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:machine_press",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IRI",
+    "IPI",
+    "IBI"
+  ],
+  "key": {
+    "I": "#ntm:bulk/ingotiron",
+    "R": "minecraft:furnace",
+    "B": "#ntm:bulk/blockiron",
+    "P": "minecraft:piston"
+  }
+}

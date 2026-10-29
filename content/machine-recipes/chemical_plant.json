@@ -1,0 +1,1689 @@
+{
+  "schema": 1,
+  "machine": "chemical_plant",
+  "profile": {
+    "enable528": false,
+    "enableExpensiveMode": false,
+    "enableLBSM": false,
+    "enableLBSMSimpleCentrifuge": false,
+    "external_mods": []
+  },
+  "units": {
+    "duration": "ticks",
+    "power": "HE/t",
+    "fluids": "mB"
+  },
+  "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
+  "coverage": {
+    "emitted": 47,
+    "scanned_source_calls": 77,
+    "skipped_source_calls": 30,
+    "expanded_fluid_recipes": 0,
+    "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
+  },
+  "recipes": [
+    {
+      "name": "chem.hydrogen",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:44",
+      "duration": 20,
+      "power": 400,
+      "inputItems": [
+        {
+          "ids": [
+            "minecraft:coal"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "water",
+          8000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "hydrogen",
+          500
+        ]
+      ],
+      "pools": [],
+      "label": "Hidrogênio Líquido · 500 mB",
+      "label_en": "Liquid Hydrogen · 500 mB"
+    },
+    {
+      "name": "chem.hydrogencoke",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:49",
+      "duration": 20,
+      "power": 400,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:coke__coal",
+            "ntm:coke__lignite",
+            "ntm:coke__petroleum"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "water",
+          8000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "hydrogen",
+          500
+        ]
+      ],
+      "pools": [],
+      "label": "Hidrogênio Líquido · 500 mB",
+      "label_en": "Liquid Hydrogen · 500 mB"
+    },
+    {
+      "name": "chem.oxygen",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:54",
+      "duration": 20,
+      "power": 400,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "air",
+          8000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "oxygen",
+          500
+        ]
+      ],
+      "pools": [],
+      "label": "Oxigênio Líquido · 500 mB",
+      "label_en": "Liquid Oxygen · 500 mB"
+    },
+    {
+      "name": "chem.xenon",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:58",
+      "duration": 300,
+      "power": 1000,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "air",
+          16000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "xenon",
+          50
+        ]
+      ],
+      "pools": [],
+      "label": "Gás Xenônio · 50 mB",
+      "label_en": "Xenon Gas · 50 mB"
+    },
+    {
+      "name": "chem.xenonoxy",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:62",
+      "duration": 20,
+      "power": 1000,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "air",
+          8000
+        ],
+        [
+          "oxygen",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "xenon",
+          50
+        ]
+      ],
+      "pools": [
+        "alt..xenonoxy"
+      ],
+      "label": "Gás Xenônio · 50 mB",
+      "label_en": "Xenon Gas · 50 mB"
+    },
+    {
+      "name": "chem.helium3",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:66",
+      "duration": 25,
+      "power": 2000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:moon_turf"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [],
+      "outputFluids": [
+        [
+          "helium3",
+          500
+        ]
+      ],
+      "pools": [],
+      "label": "Hélio-3 · 500 mB",
+      "label_en": "Helium-3 · 500 mB"
+    },
+    {
+      "name": "chem.co2",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:70",
+      "duration": 60,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "gas",
+          1000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "carbondioxide",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Dióxido de Carbono · 1000 mB",
+      "label_en": "Carbon Dioxide · 1000 mB"
+    },
+    {
+      "name": "chem.perfluoromethyl",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:74",
+      "duration": 20,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:fluorite"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "petroleum",
+          1000
+        ],
+        [
+          "unsaturateds",
+          500
+        ]
+      ],
+      "outputFluids": [
+        [
+          "perfluoromethyl",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Perfluorometil · 1000 mB",
+      "label_en": "Perfluoromethyl · 1000 mB"
+    },
+    {
+      "name": "chem.cccentrifuge",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:79",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "chlorocalcite_cleaned",
+          500
+        ],
+        [
+          "sulfuric_acid",
+          8000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "potassium_chloride",
+          250
+        ],
+        [
+          "calcium_chloride",
+          250
+        ]
+      ],
+      "pools": [],
+      "label": "Solução de Cloreto de Potássio · 250 mB",
+      "label_en": "Potassium chloride Solution · 250 mB"
+    },
+    {
+      "name": "chem.ticl4",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:83",
+      "duration": 60,
+      "power": 500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:chunk_ore__ilmenite"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:coke__coal",
+            "ntm:coke__lignite",
+            "ntm:coke__petroleum"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "chlorine",
+          500
+        ]
+      ],
+      "outputFluids": [
+        [
+          "titanium_tetrachloride",
+          4000
+        ]
+      ],
+      "pools": [],
+      "label": "Titanium_Tetrachloride · 4000 mB",
+      "label_en": "Titanium Tetrachloride · 4000 mB"
+    },
+    {
+      "name": "chem.ethanol",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:89",
+      "duration": 50,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "minecraft:sugar"
+          ],
+          "count": 10
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [],
+      "outputFluids": [
+        [
+          "ethanol",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Etanol · 1000 mB",
+      "label_en": "Ethanol · 1000 mB"
+    },
+    {
+      "name": "chem.biogas",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:93",
+      "duration": 60,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:biomass"
+          ],
+          "count": 16
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "air",
+          4000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "biogas",
+          2000
+        ]
+      ],
+      "pools": [],
+      "label": "Biogás · 2000 mB",
+      "label_en": "Biogas · 2000 mB"
+    },
+    {
+      "name": "chem.biofuel",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:98",
+      "duration": 60,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "biogas",
+          1500
+        ],
+        [
+          "ethanol",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "biofuel",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Biocombustível · 1000 mB",
+      "label_en": "Biofuel · 1000 mB"
+    },
+    {
+      "name": "chem.reoil",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:102",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "smear",
+          1000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "reclaimed",
+          800
+        ]
+      ],
+      "pools": [],
+      "label": "Óleo Industrial Recuperado · 800 mB",
+      "label_en": "Reclaimed Industrial Oil · 800 mB"
+    },
+    {
+      "name": "chem.gasoline",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:106",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "naphtha",
+          1000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "gasoline",
+          800
+        ]
+      ],
+      "pools": [],
+      "label": "Gasolina · 800 mB",
+      "label_en": "Gasoline · 800 mB"
+    },
+    {
+      "name": "chem.coallube",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:110",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "coalcreosote",
+          1000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "lubricant",
+          1000
+        ]
+      ],
+      "pools": [
+        "alt..lube"
+      ],
+      "label": "Lubrificante de Motor · 1000 mB",
+      "label_en": "Engine Lubricant · 1000 mB"
+    },
+    {
+      "name": "chem.heavylube",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:114",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "heavyoil",
+          2000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "lubricant",
+          1000
+        ]
+      ],
+      "pools": [
+        "alt..lube"
+      ],
+      "label": "Lubrificante de Motor · 1000 mB",
+      "label_en": "Engine Lubricant · 1000 mB"
+    },
+    {
+      "name": "chem.deicer",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:128",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [
+        [
+          "ntm:fuel_additive__deicer",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "gas",
+          100
+        ],
+        [
+          "hydrogen",
+          50
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Anticongelante",
+      "label_en": "Deicer"
+    },
+    {
+      "name": "chem.cobble",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:133",
+      "duration": 20,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [
+        [
+          "minecraft:cobblestone",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "water",
+          1000
+        ],
+        [
+          "lava",
+          25
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Pedregulho",
+      "label_en": "Cobblestone"
+    },
+    {
+      "name": "chem.stone",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:136",
+      "duration": 60,
+      "power": 500,
+      "inputItems": [],
+      "outputItems": [
+        [
+          "minecraft:stone",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "water",
+          1000
+        ],
+        [
+          "lava",
+          25
+        ],
+        [
+          "air",
+          4000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [
+        "discover..stone"
+      ],
+      "label": "Pedra",
+      "label_en": "Stone"
+    },
+    {
+      "name": "chem.obsidian",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:139",
+      "duration": 60,
+      "power": 500,
+      "inputItems": [],
+      "outputItems": [
+        [
+          "minecraft:obsidian",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "water",
+          1000
+        ],
+        [
+          "lava",
+          500
+        ],
+        [
+          "air",
+          4000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [
+        "discover..stone"
+      ],
+      "label": "Obsidiana",
+      "label_en": "Obsidian"
+    },
+    {
+      "name": "chem.aggregate",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:142",
+      "duration": 320,
+      "power": 500,
+      "inputItems": [
+        {
+          "ids": [
+            "minecraft:cobblestone"
+          ],
+          "count": 16
+        }
+      ],
+      "outputItems": [
+        [
+          "minecraft:gravel",
+          8
+        ],
+        [
+          "minecraft:sand",
+          8
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [
+        "discover..stone"
+      ],
+      "label": "Cascalho ×8",
+      "label_en": "Gravel ×8"
+    },
+    {
+      "name": "chem.lightconstruction",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:241",
+      "duration": 400,
+      "power": 25000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_dura_steel"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:part_generic__alclad",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "xylene",
+          1000
+        ],
+        [
+          "phosgene",
+          1000
+        ],
+        [
+          "sourgas",
+          4000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Part Generic Alclad",
+      "label_en": "Aviation Grade Sheeting"
+    },
+    {
+      "name": "chem.carboncarbon",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:244",
+      "duration": 400,
+      "power": 100000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:coke__coal",
+            "ntm:coke__lignite",
+            "ntm:coke__petroleum"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:plate_titanium"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:part_generic__alclad",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "heavyoil_vacuum",
+          1000
+        ],
+        [
+          "syngas",
+          8000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Part Generic Alclad",
+      "label_en": "Aviation Grade Sheeting"
+    },
+    {
+      "name": "chem.epearl",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:253",
+      "duration": 100,
+      "power": 300,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_diamond"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "xpjuice",
+          500
+        ]
+      ],
+      "outputFluids": [
+        [
+          "enderjuice",
+          100
+        ]
+      ],
+      "pools": [],
+      "label": "Suco de Ender · 100 mB",
+      "label_en": "Ender Juice · 100 mB"
+    },
+    {
+      "name": "chem.rustysteel",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:264",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:deco_steel"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:deco_rusty_steel",
+          8
+        ]
+      ],
+      "inputFluids": [
+        [
+          "water",
+          1000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Bloco Decorativo de Aço Enferrujado ×8",
+      "label_en": "Rusty Steel Deco Block ×8"
+    },
+    {
+      "name": "chem.biosolidfuel",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:269",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:biomass_compressed"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:solid_fuel",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [
+        "alt..biosolidfuel"
+      ],
+      "label": "Combustível Sólido",
+      "label_en": "Solid Fuel"
+    },
+    {
+      "name": "chem.biooilsolidfuel",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:273",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:biomass_compressed"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:solid_fuel",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "heatingoil",
+          100
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [
+        "alt..biosolidfuel"
+      ],
+      "label": "Combustível Sólido",
+      "label_en": "Solid Fuel"
+    },
+    {
+      "name": "chem.peroxide",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:287",
+      "duration": 50,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "water",
+          1000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "peroxide",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Peróxido de Hidrogênio · 1000 mB",
+      "label_en": "Hydrogen Peroxide · 1000 mB"
+    },
+    {
+      "name": "chem.sulfuricacid",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:291",
+      "duration": 50,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:sulfur"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "peroxide",
+          1000
+        ],
+        [
+          "water",
+          1000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "sulfuric_acid",
+          2000
+        ]
+      ],
+      "pools": [],
+      "label": "Ácido Sulfúrico · 2000 mB",
+      "label_en": "Sulfuric Acid · 2000 mB"
+    },
+    {
+      "name": "chem.nitricacid",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:296",
+      "duration": 50,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:niter"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "sulfuric_acid",
+          500
+        ]
+      ],
+      "outputFluids": [
+        [
+          "nitric_acid",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Ácido Nítrico · 1000 mB",
+      "label_en": "Nitric Acid · 1000 mB"
+    },
+    {
+      "name": "chem.birkeland",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:301",
+      "duration": 200,
+      "power": 5000,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "air",
+          8000
+        ],
+        [
+          "water",
+          2000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "nitric_acid",
+          1000
+        ]
+      ],
+      "pools": [
+        "alt..birkeland"
+      ],
+      "label": "Ácido Nítrico · 1000 mB",
+      "label_en": "Nitric Acid · 1000 mB"
+    },
+    {
+      "name": "chem.schrabidic",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:305",
+      "duration": 60,
+      "power": 5000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pellet_charged"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "sas3",
+          2000
+        ],
+        [
+          "peroxide",
+          2000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "schrabidic",
+          2000
+        ]
+      ],
+      "pools": [],
+      "label": "Ácido Schrabídico · 2000 mB",
+      "label_en": "Schrabidic Acid · 2000 mB"
+    },
+    {
+      "name": "chem.schrabidate",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:310",
+      "duration": 150,
+      "power": 5000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_iron"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:powder_schrabidate",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "schrabidic",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Pó de Schrabidato Férrico",
+      "label_en": "Ferric Schrabidate Powder"
+    },
+    {
+      "name": "chem.coltancleaning",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:316",
+      "duration": 60,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_coltan_ore"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:powder_coal"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:powder_coltan",
+          1
+        ],
+        [
+          "ntm:powder_niobium",
+          1
+        ],
+        [
+          "ntm:dust",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "peroxide",
+          250
+        ],
+        [
+          "hydrogen",
+          500
+        ]
+      ],
+      "outputFluids": [
+        [
+          "water",
+          500
+        ]
+      ],
+      "pools": [],
+      "label": "Tantalita Purificada",
+      "label_en": "Purified Tantalite"
+    },
+    {
+      "name": "chem.coltanpain",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:322",
+      "duration": 120,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_coltan"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:fluorite"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "gas",
+          1000
+        ],
+        [
+          "oxygen",
+          500
+        ]
+      ],
+      "outputFluids": [
+        [
+          "pain",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Solução de Pandemônio(III)tantalita · 1000 mB",
+      "label_en": "Pandemonium(III)tantalite Solution · 1000 mB"
+    },
+    {
+      "name": "chem.coltancrystal",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:327",
+      "duration": 80,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [
+        [
+          "ntm:gem_tantalium",
+          1
+        ],
+        [
+          "ntm:dust",
+          3
+        ]
+      ],
+      "inputFluids": [
+        [
+          "pain",
+          1000
+        ],
+        [
+          "peroxide",
+          500
+        ]
+      ],
+      "outputFluids": [
+        [
+          "water",
+          250
+        ]
+      ],
+      "pools": [],
+      "label": "Policristal de Tântalo",
+      "label_en": "Tantalum Polycrystal"
+    },
+    {
+      "name": "chem.dynamite",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:343",
+      "duration": 50,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "minecraft:sugar"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:niter"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "minecraft:sand"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:ball_dynamite",
+          2
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Dinamite ×2",
+      "label_en": "Dynamite ×2"
+    },
+    {
+      "name": "chem.napalm",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:362",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:canister_empty"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:canister_napalm",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "gasoline",
+          100
+        ],
+        [
+          "aromatics",
+          50
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Canister Napalm",
+      "label_en": "Napalm B"
+    },
+    {
+      "name": "chem.laminate",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:368",
+      "duration": 20,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "minecraft:glass"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:bolt__steel"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:reinforced_laminate",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "xylene",
+          50
+        ],
+        [
+          "phosgene",
+          50
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Laminado Reforçado",
+      "label_en": "Reinforced Laminate"
+    },
+    {
+      "name": "chem.polarized",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:373",
+      "duration": 100,
+      "power": 500,
+      "inputItems": [
+        {
+          "ids": [
+            "minecraft:glass_pane"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:part_generic__glass_polarized",
+          16
+        ]
+      ],
+      "inputFluids": [
+        [
+          "petroleum",
+          1000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Lente Polarizada ×16",
+      "label_en": "Polarized Lens ×16"
+    },
+    {
+      "name": "chem.yellowcake",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:379",
+      "duration": 250,
+      "power": 500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:billet_uranium"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:sulfur"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:powder_yellowcake",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "peroxide",
+          500
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Pó de Powder Yellowcake",
+      "label_en": "Yellowcake"
+    },
+    {
+      "name": "chem.uf6",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:384",
+      "duration": 100,
+      "power": 500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_yellowcake"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:fluorite"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:sulfur",
+          2
+        ]
+      ],
+      "inputFluids": [
+        [
+          "water",
+          1000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "uf6",
+          1200
+        ]
+      ],
+      "pools": [],
+      "label": "Enxofre ×2",
+      "label_en": "Sulfur ×2"
+    },
+    {
+      "name": "chem.puf6",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:390",
+      "duration": 200,
+      "power": 500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_plutonium"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:fluorite"
+          ],
+          "count": 3
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "water",
+          1000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "puf6",
+          900
+        ]
+      ],
+      "pools": [],
+      "label": "Hexafluoreto de Plutônio · 900 mB",
+      "label_en": "Plutonium Hexafluoride · 900 mB"
+    },
+    {
+      "name": "chem.sas3",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:395",
+      "duration": 200,
+      "power": 5000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_schrabidium"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:sulfur"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "peroxide",
+          2000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "sas3",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Trissulfeto de Eschrabídio · 1000 mB",
+      "label_en": "Schrabidium Trisulfide · 1000 mB"
+    },
+    {
+      "name": "chem.balefire",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:400",
+      "duration": 100,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:egg_balefire_shard"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:powder_balefire",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          6000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "balefire",
+          8000
+        ]
+      ],
+      "pools": [],
+      "label": "Cinzas Termonucleares",
+      "label_en": "Thermonuclear Ashes"
+    },
+    {
+      "name": "chem.dhc",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:406",
+      "duration": 400,
+      "power": 500,
+      "inputItems": [],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "deuterium",
+          500
+        ],
+        [
+          "reformgas",
+          250
+        ],
+        [
+          "syngas",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "dhc",
+          500
+        ]
+      ],
+      "pools": [],
+      "label": "Hidrocarboneto Deuterado · 500 mB",
+      "label_en": "Deuterated Hydrocarbon · 500 mB"
+    }
+  ],
+  "skipped": [
+    {
+      "name": "chem.tarsand",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:118",
+      "reason": "unregistered/ambiguous source item ore_oil_sand",
+      "expression": "new GenericRecipe(\"chem.tarsand\").setupNamed(200, 100).setIcon(ModBlocks.ore_oil_sand)\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.ore_oil_sand, 16), new OreDictStack(ANY_TAR.any(), 1))\n\t\t\t\t.outputItems(new ItemStack(Blocks.sand, 16))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.BITUMEN, 1_000))"
+    },
+    {
+      "name": "chem.tel",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:123",
+      "reason": "unresolved ore dictionary ANY_TAR.any()",
+      "expression": "new GenericRecipe(\"chem.tel\").setup(40, 100)\n\t\t\t\t.inputItems(new OreDictStack(ANY_TAR.any()), new OreDictStack(PB.dust()))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.PETROLEUM, 100), new FluidStack(Fluids.STEAM, 1000))\n\t\t\t\t.outputItems(DictFrame.fromOne(ModItems.fuel_additive, EnumFuelAdditive.ANTIKNOCK))"
+    },
+    {
+      "name": "chem.concrete",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:145",
+      "reason": "unregistered/ambiguous source item powder_cement",
+      "expression": "new GenericRecipe(\"chem.concrete\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_cement, 1), new ComparableStack(Blocks.gravel, 8), new OreDictStack(KEY_SAND, 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 2_000))\n\t\t\t\t.outputItems(new ItemStack(ModBlocks.concrete_smooth, 16))"
+    },
+    {
+      "name": "chem.concreteasbestos",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:150",
+      "reason": "unregistered/ambiguous source item powder_cement",
+      "expression": "new GenericRecipe(\"chem.concreteasbestos\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_cement, 4), new OreDictStack(ASBESTOS.ingot(), (GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ? 1 : 4), new OreDictStack(KEY_SAND, 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 2_000))\n\t\t\t\t.outputItems(new ItemStack(ModBlocks.concrete_asbestos, 16))"
+    },
+    {
+      "name": "chem.ducrete",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:155",
+      "reason": "unregistered/ambiguous source item powder_cement",
+      "expression": "new GenericRecipe(\"chem.ducrete\").setup(150, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_cement, 4), new OreDictStack(FERRO.ingot()), new OreDictStack(KEY_SAND, 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 2_000))\n\t\t\t\t.outputItems(new ItemStack(ModBlocks.ducrete_smooth, 8))"
+    },
+    {
+      "name": "chem.liquidconk",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:160",
+      "reason": "unregistered/ambiguous source item powder_cement",
+      "expression": "new GenericRecipe(\"chem.liquidconk\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_cement, 1), new ComparableStack(Blocks.gravel, 8), new OreDictStack(KEY_SAND, 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 2_000))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.CONCRETE, 16_000))"
+    },
+    {
+      "name": "chem.asphalt",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:165",
+      "reason": "unregistered/ambiguous source item asphalt",
+      "expression": "new GenericRecipe(\"chem.asphalt\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(Blocks.gravel, 2), new OreDictStack(KEY_SAND, 6))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.BITUMEN, 1_000))\n\t\t\t\t.outputItems(new ItemStack(ModBlocks.asphalt, 16))"
+    },
+    {
+      "name": "chem.batterylead",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:171",
+      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_LEAD.ordinal()",
+      "expression": "new GenericRecipe(\"chem.batterylead\").setup(100, 100)\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 4),\n\t\t\t\t\t\tnew OreDictStack(PB.ingot(), 4))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SULFURIC_ACID, 8_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_LEAD.ordinal()))"
+    },
+    {
+      "name": "chem.batterylithium",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:176",
+      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_LITHIUM.ordinal()",
+      "expression": "new GenericRecipe(\"chem.batterylithium\").setup(100, 1_000)\n\t\t\t\t.inputItems(new OreDictStack(LI.dust(), 12),\n\t\t\t\t\t\tnew OreDictStack(CO.dust(), 8),\n\t\t\t\t\t\tnew OreDictStack(ANY_PLASTIC.ingot(), 4))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.OXYGEN, 2_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_LITHIUM.ordinal()))"
+    },
+    {
+      "name": "chem.batterysodium",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:182",
+      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_SODIUM.ordinal()",
+      "expression": "new GenericRecipe(\"chem.batterysodium\").setup(100, 10_000)\n\t\t\t\t.inputItems(new OreDictStack(NA.dust(), 24),\n\t\t\t\t\t\tnew OreDictStack(IRON.dust(), 24),\n\t\t\t\t\t\tnew OreDictStack(ANY_HARDPLASTIC.ingot(), 12))\n\t\t\t\t.outputItems(new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_SODIUM.ordinal()))"
+    },
+    {
+      "name": "chem.batteryschrabidium",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:187",
+      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_SCHRABIDIUM.ordinal()",
+      "expression": "new GenericRecipe(\"chem.batteryschrabidium\").setup(100, 25_000)\n\t\t\t\t.inputItems(new OreDictStack(SA326.dust(), 24),\n\t\t\t\t\t\tnew OreDictStack(ANY_BISMOIDBRONZE.plateCast(), 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.HELIUM4, 8_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_SCHRABIDIUM.ordinal()))"
+    },
+    {
+      "name": "chem.batteryquantum",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:192",
+      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_QUANTUM.ordinal()",
+      "expression": "new GenericRecipe(\"chem.batteryquantum\").setup(100, 100_000)\n\t\t\t\t.inputItems(new OreDictStack(BSCCO.wireDense(), 24),\n\t\t\t\t\t\tnew ComparableStack(ModItems.pellet_charged, 32),\n\t\t\t\t\t\tnew ComparableStack(ModItems.ingot_cft, 16))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.PERFLUOROMETHYL_COLD, 8_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_QUANTUM.ordinal()))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.PERFLUOROMETHYL, 8_000))"
+    },
+    {
+      "name": "chem.desh",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:201",
+      "reason": "unresolved fluid: (GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ?\n\t\t\t\t\t\t\t\tnew FluidStack[] {new FluidStack(Fluids.LIGHTOIL, 200)} :\n\t\t\t\t\t\t\t\tnew FluidStack[] {new FluidStack(Fluids.LIGHTOIL, 200), new FluidStack(Fluids.MERCURY, 200)}",
+      "expression": "new GenericRecipe(\"chem.desh\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_desh_mix))\n\t\t\t\t.inputFluids((GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ?\n\t\t\t\t\t\t\t\tnew FluidStack[] {new FluidStack(Fluids.LIGHTOIL, 200)} :\n\t\t\t\t\t\t\t\tnew FluidStack[] {new FluidStack(Fluids.LIGHTOIL, 200), new FluidStack(Fluids.MERCURY, 200)})\n\t\t\t\t.outputItems(new ItemStack(ModItems.ingot_desh))"
+    },
+    {
+      "name": "chem.deshcracked",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:207",
+      "reason": "unresolved fluid: (GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ?\n\t\t\t\t\t\t\t\tnew FluidStack[] {new FluidStack(Fluids.LIGHTOIL_CRACK, 500)} :\n\t\t\t\t\t\t\t\tnew FluidStack[] {new FluidStack(Fluids.LIGHTOIL_CRACK, 500, 1), new FluidStack(Fluids.MERCURY, 100)}",
+      "expression": "new GenericRecipe(\"chem.deshcracked\").setupNamed(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_desh_mix))\n\t\t\t\t.inputFluids((GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ?\n\t\t\t\t\t\t\t\tnew FluidStack[] {new FluidStack(Fluids.LIGHTOIL_CRACK, 500)} :\n\t\t\t\t\t\t\t\tnew FluidStack[] {new FluidStack(Fluids.LIGHTOIL_CRACK, 500, 1), new FluidStack(Fluids.MERCURY, 100)})\n\t\t\t\t.outputItems(new ItemStack(ModItems.ingot_desh))"
+    },
+    {
+      "name": "chem.polymer",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:214",
+      "reason": "nonliteral integer:  1_000, GeneralConfig.enable528PressurizedRecipes ? 1 : 0",
+      "expression": "new GenericRecipe(\"chem.polymer\").setup(100, 100)\n\t\t\t\t.inputItems(new OreDictStack(COAL.dust(), 2), new OreDictStack(F.dust()))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.PETROLEUM, 1_000, GeneralConfig.enable528PressurizedRecipes ? 1 : 0))\n\t\t\t\t.outputItems(new ItemStack(ModItems.ingot_polymer, 4))"
+    },
+    {
+      "name": "chem.bakelite",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:219",
+      "reason": "nonliteral integer:  500, GeneralConfig.enable528PressurizedRecipes ? 1 : 0",
+      "expression": "new GenericRecipe(\"chem.bakelite\").setup(100, 100)\n\t\t\t\t.inputFluids(new FluidStack(Fluids.AROMATICS, 500, GeneralConfig.enable528PressurizedRecipes ? 1 : 0), new FluidStack(Fluids.PETROLEUM, 500, GeneralConfig.enable528PressurizedRecipes ? 1 : 0))\n\t\t\t\t.outputItems(new ItemStack(ModItems.ingot_bakelite))"
+    },
+    {
+      "name": "chem.rubber",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:223",
+      "reason": "nonliteral integer:  500, GeneralConfig.enable528PressurizedRecipes ? 2 : 0",
+      "expression": "new GenericRecipe(\"chem.rubber\").setup(100, 200)\n\t\t\t\t.inputItems(new OreDictStack(S.dust()))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.UNSATURATEDS, 500, GeneralConfig.enable528PressurizedRecipes ? 2 : 0))\n\t\t\t\t.outputItems(new ItemStack(ModItems.ingot_rubber, 2))"
+    },
+    {
+      "name": "chem.hardplastic",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:228",
+      "reason": "nonliteral integer:  500, GeneralConfig.enable528PressurizedRecipes ? 2 : 0",
+      "expression": "new GenericRecipe(\"chem.hardplastic\").setup(100, 1_000)\n\t\t\t\t.inputFluids(new FluidStack(Fluids.XYLENE, 500, GeneralConfig.enable528PressurizedRecipes ? 2 : 0), new FluidStack(Fluids.PHOSGENE, 500, GeneralConfig.enable528PressurizedRecipes ? 2 : 0))\n\t\t\t\t.outputItems(new ItemStack(ModItems.ingot_pc))"
+    },
+    {
+      "name": "chem.pvc",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:232",
+      "reason": "nonliteral integer:  250, GeneralConfig.enable528PressurizedRecipes ? 2 : 0",
+      "expression": "new GenericRecipe(\"chem.pvc\").setup(100, 1_000)\n\t\t\t\t.inputItems(new OreDictStack(CD.dust()))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.UNSATURATEDS, 250, GeneralConfig.enable528PressurizedRecipes ? 2 : 0), new FluidStack(Fluids.CHLORINE, 250, GeneralConfig.enable528PressurizedRecipes ? 2 : 0))\n\t\t\t\t.outputItems(new ItemStack(ModItems.ingot_pvc, 2))"
+    },
+    {
+      "name": "chem.kevlar",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:237",
+      "reason": "unresolved fluid: new FluidStack(GeneralConfig.enable528PressurizedRecipes ? Fluids.PHOSGENE : Fluids.CHLORINE, 100)",
+      "expression": "new GenericRecipe(\"chem.kevlar\").setup(60, 300)\n\t\t\t\t.inputFluids(new FluidStack(Fluids.AROMATICS, 200), new FluidStack(Fluids.NITRIC_ACID, 100), new FluidStack(GeneralConfig.enable528PressurizedRecipes ? Fluids.PHOSGENE : Fluids.CHLORINE, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.plate_kevlar, 4))"
+    },
+    {
+      "name": "chem.meth",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:248",
+      "reason": "unregistered/ambiguous source item chocolate",
+      "expression": "new GenericRecipe(\"chem.meth\").setup(60, 300)\n\t\t\t\t.inputItems(new ComparableStack(Items.wheat), new ComparableStack(Items.dye, 2, 3))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.LUBRICANT, 400), new FluidStack(Fluids.PEROXIDE, 500))\n\t\t\t\t.outputItems(new ItemStack(ModItems.chocolate, 4))"
+    },
+    {
+      "name": "chem.meatprocessing",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:258",
+      "reason": "unresolved ore dictionary KEY_GLYPHID_MEAT",
+      "expression": "new GenericRecipe(\"chem.meatprocessing\").setupNamed(200, 200).setIcon(ModItems.glyphid_meat)\n\t\t\t\t.inputItems(new OreDictStack(KEY_GLYPHID_MEAT, 3))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 1_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.sulfur, 4), new ItemStack(ModItems.niter, 3))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.SALIENT, 250))"
+    },
+    {
+      "name": "chem.oilelectrodes",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:278",
+      "reason": "unregistered/ambiguous source item arc_electrode",
+      "expression": "new GenericRecipe(\"chem.oilelectrodes\").setupNamed(600, 100)\n\t\t\t\t.inputFluids(new FluidStack(Fluids.HEATINGOIL, 4_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.arc_electrode, 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + \".electrodes\")"
+    },
+    {
+      "name": "chem.lubeelectrodes",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:282",
+      "reason": "unregistered/ambiguous source item arc_electrode",
+      "expression": "new GenericRecipe(\"chem.lubeelectrodes\").setupNamed(600, 100)\n\t\t\t\t.inputFluids(new FluidStack(Fluids.LUBRICANT, 8_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.arc_electrode, 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + \".electrodes\")"
+    },
+    {
+      "name": "chem.cordite",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:333",
+      "reason": "unresolved fluid: (GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ? new FluidStack(Fluids.HEATINGOIL, 200) : new FluidStack(Fluids.GAS, 200)",
+      "expression": "new GenericRecipe(\"chem.cordite\").setup(40, 100)\n\t\t\t\t.inputItems(new OreDictStack(KNO.dust(), 2), new ComparableStack(ModItems.powder_sawdust, 2))\n\t\t\t\t.inputFluids((GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ? new FluidStack(Fluids.HEATINGOIL, 200) : new FluidStack(Fluids.GAS, 200))\n\t\t\t\t.outputItems(new ItemStack(ModItems.cordite, 4))"
+    },
+    {
+      "name": "chem.rocketfuel",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:338",
+      "reason": "nonliteral integer:  200, GeneralConfig.enable528PressurizedRecipes ? 1 : 0",
+      "expression": "new GenericRecipe(\"chem.rocketfuel\").setup(200, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.solid_fuel, 2))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.PETROLEUM, 200, GeneralConfig.enable528PressurizedRecipes ? 1 : 0), new FluidStack(Fluids.NITRIC_ACID, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.rocket_fuel, 4))"
+    },
+    {
+      "name": "chem.tnt",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:347",
+      "reason": "nonliteral integer:  500, GeneralConfig.enable528PressurizedRecipes ? 1 : 0",
+      "expression": "new GenericRecipe(\"chem.tnt\").setup(100, 1_000)\n\t\t\t\t.inputItems(new OreDictStack(KNO.dust()))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.AROMATICS, 500, GeneralConfig.enable528PressurizedRecipes ? 1 : 0))\n\t\t\t\t.outputItems(new ItemStack(ModItems.ball_tnt, 4))"
+    },
+    {
+      "name": "chem.tatb",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:352",
+      "reason": "nonliteral integer:  200, 1",
+      "expression": "new GenericRecipe(\"chem.tatb\").setup(50, 5_000)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.ball_tnt))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SOURGAS, 200, 1), new FluidStack(Fluids.NITRIC_ACID, 10))\n\t\t\t\t.outputItems(new ItemStack(ModItems.ball_tatb))"
+    },
+    {
+      "name": "chem.c4",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:357",
+      "reason": "unregistered/ambiguous source item ingot_c4",
+      "expression": "new GenericRecipe(\"chem.c4\").setup(100, 1_000)\n\t\t\t\t.inputItems(new OreDictStack(KNO.dust()))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.UNSATURATEDS, 500, GeneralConfig.enable528PressurizedRecipes ? 1 : 0))\n\t\t\t\t.outputItems(new ItemStack(ModItems.ingot_c4, 4))"
+    },
+    {
+      "name": "chem.osmiridiumdeath",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:411",
+      "reason": "nonliteral integer:  1_000, 5",
+      "expression": "new GenericRecipe(\"chem.osmiridiumdeath\").setup(240, 1_000)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_paleogenite), new OreDictStack(F.dust(), 8), new ComparableStack(ModItems.nugget_bismuth, 4))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.PEROXIDE, 1_000, 5))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.DEATH, 1_000, 0))"
+    }
+  ]
+}

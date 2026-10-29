@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:nugget_americium_fuel"
+  },
+  "result": {
+    "id": "ntm:ingot_americium_fuel",
+    "count": 1
+  }
+}

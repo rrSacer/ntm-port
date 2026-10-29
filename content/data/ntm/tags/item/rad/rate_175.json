@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:billet_uranium",
+    "ntm:nugget_thorium_fuel"
+  ]
+}
