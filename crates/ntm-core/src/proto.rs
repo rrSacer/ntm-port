@@ -83,6 +83,9 @@ pub enum S2C {
     Run { tx: u32, lines: Vec<String> },
     /// A chat line for the player.
     Toast { text: String },
+    /// Open the screen of the machine at `pos` though the client didn't ask
+    /// (a button of the machine's engine screen did): its `View` follows.
+    Show { dim: String, pos: Pos },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

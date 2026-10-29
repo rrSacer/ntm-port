@@ -9,3 +9,8 @@ license.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 ntm-explosion.workspace = true
+
+[features]
+# Machines whose items are the engine's slots (Horizon patch ntm-visual,
+# docs/visual-fiel.md): the use button opens the engine's screen of those.
+machines = []

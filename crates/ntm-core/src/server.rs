@@ -28,6 +28,21 @@ pub trait ServerHost: Kv {
     fn set_blocks(&mut self, dim: &str, blocks: &[(Pos, String)]) -> Result<(), String>;
     fn tell(&mut self, player: &str, text: &str);
     fn log(&mut self, text: &str);
+    /// The engine's slots of the machine at `p` (Horizon patch `ntm-visual`,
+    /// capability `machines`): none without them.
+    fn machine_slots(&mut self, _dim: &str, _p: Pos) -> Option<container_bridge::Slots> {
+        None
+    }
+    fn set_machine_slot(&mut self, _dim: &str, _p: Pos, _slot: u32, _stack: Option<(String, u32)>) -> bool {
+        false
+    }
+    fn set_machine_data(&mut self, _dim: &str, _p: Pos, _values: &[i32]) -> bool {
+        false
+    }
+    /// Machine screen buttons pressed: player, dimension, position, button.
+    fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
+        Vec::new()
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -109,6 +124,8 @@ struct Ready {
     /// drop their contents when they vanish.
     seen: BTreeSet<Key>,
     viewer: Option<(Key, Option<ViewModel>)>,
+    /// Machines whose items are the engine's slots (`container_bridge`).
+    bridge: container_bridge::Bridge,
     /// Transactions whose new answer cell waits for the save before their
     /// lines leave (`tx.id`).
     to_publish: BTreeSet<u64>,
@@ -319,10 +336,12 @@ impl Server {
                 self.block_event(host, e);
             }
             self.radiation_tick(host);
+            self.slots_in(host);
             self.simulate(host);
             self.fluids_tick();
             self.bombs_tick(host);
             self.run_txs(host);
+            self.slots_out(host);
         } else if self.queued.len() > 4096 {
             self.queued.drain(..2048);
         }
@@ -527,6 +546,7 @@ impl Server {
             suspect: BTreeMap::new(),
             seen: BTreeSet::new(),
             viewer: None,
+            bridge: Default::default(),
             to_publish: BTreeSet::new(),
             resets_sent: None,
             restored: BTreeMap::new(),
@@ -1436,6 +1456,10 @@ impl Server {
 
     /// A machine's contents dropped at `pos`, a transaction per stack.
     fn drop_contents(&mut self, dim: &str, pos: Pos, m: &Machine) {
+        // The engine's slots spill themselves (`container_bridge`).
+        if self.slots_gone(&(dim.to_string(), pos)) {
+            return;
+        }
         self.snapshot = Some(((dim.to_string(), pos), m.clone()));
         for (item, count) in m.logic().contents() {
             if count > 0 && token::valid_item(&item) {
@@ -1797,6 +1821,9 @@ fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
         let ports = registry::ports(spec, m.facing.as_deref());
         if m.kind() != Kind::Inert && !ports.is_empty() {
             dims.entry(d).or_default().1.insert(*p, ports);
+            // A multiblock's bottom cells carry its power, as HBM's proxies.
+            let cells = container_bridge::proxy_cells(&m.block, *p, m.facing.as_deref());
+            dims.entry(d).or_default().0.extend(cells);
         }
     }
     dims.into_iter()
@@ -1833,6 +1860,7 @@ fn same_look(actual: &str, want: &str) -> bool {
 }
 
 mod bomb_server;
+pub mod container_bridge;
 mod fluid_server;
 mod radiation_server;
 

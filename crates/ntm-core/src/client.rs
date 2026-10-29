@@ -185,8 +185,16 @@ impl Client {
         }
         self.run_queued(host);
 
-        let pressed = (input.use_down && !self.use_was_down)
-            || input.use_clicks > self.use_clicks
+        // The use button on a machine with engine slots opens the engine's
+        // screen (`server::container_bridge`); the key still opens ours.
+        let slotted = cfg!(feature = "machines")
+            && input
+                .target
+                .as_ref()
+                .is_some_and(|(_, id)| crate::server::container_bridge::layout(id).is_some());
+        let pressed = (((input.use_down && !self.use_was_down)
+            || input.use_clicks > self.use_clicks)
+            && !slotted)
             || input.open_key;
         self.use_was_down = input.use_down;
         self.use_clicks = input.use_clicks;
@@ -252,6 +260,7 @@ impl Client {
                 }
             }
             S2C::Toast { text } => host.chat(&text),
+            S2C::Show { dim, pos } => self.opening = Some((dim, pos)),
         }
     }
 

@@ -209,7 +209,7 @@ impl Crafter {
         self.station.recipes().iter().find(|r| r.name == name)
     }
 
-    fn max_power(&self) -> u64 {
+    pub(crate) fn max_power(&self) -> u64 {
         match self.station {
             Station::Centrifuge => 100_000,
             _ => self.current().map_or(100_000, |r| (r.power * 100).max(100_000)),
