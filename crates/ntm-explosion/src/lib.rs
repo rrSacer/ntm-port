@@ -23,6 +23,21 @@ pub mod fallout;
 pub mod persist;
 pub mod pool;
 
+/// Marca de fuel (feature `trace`, só no harness `spikes/m2-fuel`): o host
+/// anota o fuel restante em cada marca.
+#[cfg(all(feature = "trace", target_arch = "wasm32"))]
+pub fn trace(id: u32) {
+    #[link(wasm_import_module = "host")]
+    unsafe extern "C" {
+        fn trace(id: u32);
+    }
+    unsafe { trace(id) }
+}
+
+#[cfg(not(all(feature = "trace", target_arch = "wasm32")))]
+#[inline(always)]
+pub fn trace(_id: u32) {}
+
 pub use crater::{Kind, MAX_RADIUS, Plan};
 pub use effects::{EdgeEffect, EdgeHit, EffectProfile, Event, Hooks, NoHooks};
 pub use engine::{BLOCKS_PER_CALL, Change, DEFAULT_BUDGET, Detonation, Explosion, Explosions, Phase, Progress, World};

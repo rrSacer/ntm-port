@@ -148,11 +148,12 @@ fn unloaded_fallout_chunks_wait_for_a_player() {
     assert!(ex.is_empty());
     let pend: Vec<_> = ex.lingering().map(|(id, n)| (id.to_string(), n)).collect();
     assert_eq!(pend, vec![("f1".to_string(), 1)]);
-    // Só o cabeçalho (e o índice) ficam no storage.
-    assert!(s.keys.len() <= 2, "{:?}", s.keys.keys().collect::<Vec<_>>());
-    // Reinício com o chunk ainda longe: volta como pendente.
+    // Só o estado (dois slots) e o índice ficam no storage, sem o diário.
+    assert!(s.keys.keys().all(|k| k.starts_with("nx.index") || k.starts_with("nx.f1.s")), "{:?}", s.keys.keys().collect::<Vec<_>>());
+    // Reinício com o chunk ainda longe: volta como pendente (no tick seguinte).
     let mut ex = Explosions::new();
     assert_eq!(ex.resume(&mut s, t, &mut r), vec![Ok("f1".to_string())]);
+    ex.tick(t + 1, &mut w, &mut s, &mut r);
     assert_eq!(ex.lingering().count(), 1);
     // Ninguém perto: nada acontece mesmo com o chunk carregado.
     w.unloaded.clear();
@@ -236,7 +237,13 @@ fn a_crater_waiting_for_chunks_holds_neither_its_fallout_nor_other_blasts() {
     let mut other = Detonation::new("f2", DIM, [c[0] + 400, surface(c[0] + 400, c[2]) + 1, c[2]], 12);
     other.budget = 4096;
     ex.detonate(other, 0).unwrap();
-    let t = run(&mut ex, &mut w, &mut s, &mut r, 0, 1500, |_, ex| ex.progress("f2").is_none());
+    // O plano de cada uma é montado num tick só para ele: a segunda aparece
+    // e some quando termina.
+    let mut seen = false;
+    let t = run(&mut ex, &mut w, &mut s, &mut r, 0, 1500, |_, ex| {
+        seen |= ex.progress("f2").is_some();
+        seen && ex.progress("f2").is_none()
+    });
     assert!(ex.progress("f2").is_none(), "a segunda ficou presa atrás da primeira");
     let p = ex.progress("f1").expect("a primeira espera o chunk");
     assert!(p.fallout_columns > 0, "o fallout não começou: {}", p.line());

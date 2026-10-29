@@ -253,15 +253,16 @@ pub struct Header {
     pub cols_done: u32,
     /// Blocos fechados do diário (`<p>.d<k>`).
     pub blocks: Vec<Sealed>,
-    /// Chunks que estavam sem carregar e ainda não foram recalculados.
+    /// Chunks que estavam sem carregar e ainda não foram recalculados. (As
+    /// três listas de chunks vão na cauda binária do estado; o texto só
+    /// diz quantos.)
     pub pending_chunks: Vec<(i32, i32)>,
     /// Chunks que estavam sem carregar e já foram recalculados (registros no diário).
     pub done_chunks: Vec<(i32, i32)>,
     pub profile: String,
-    /// Faixa fechada guardada em cada chave do anel `<p>.e0..e2` (ou nenhuma).
+    /// Faixa fechada guardada em cada chave do anel `<p>.e0..e2` (ou
+    /// nenhuma): só as que o plano ainda usa (as duas antes da mais nova).
     pub ering: [Option<(u32, Sealed)>; RING],
-    /// Faixa da energia que está na cauda do estado.
-    pub cband: Option<u32>,
     /// Persistência leve (R > [`JOURNAL_MAX_RADIUS`], ou o diário não coube):
     /// só as seções escritas (bits na cauda); a retomada recalcula o plano.
     pub lite: bool,
@@ -275,19 +276,6 @@ pub struct Header {
     pub fpend: Vec<(i32, i32)>,
 }
 
-fn chunks_str(v: &[(i32, i32)]) -> String {
-    v.iter().map(|(a, b)| format!("{a},{b}")).collect::<Vec<_>>().join(";")
-}
-
-fn chunks_parse(s: &str) -> Vec<(i32, i32)> {
-    s.split(';')
-        .filter_map(|p| {
-            let (a, b) = p.split_once(',')?;
-            Some((a.parse().ok()?, b.parse().ok()?))
-        })
-        .collect()
-}
-
 fn sealed_str((len, sum): Sealed) -> String {
     format!("{len}:{sum:x}")
 }
@@ -298,10 +286,23 @@ fn sealed_parse(s: &str) -> Option<Sealed> {
 }
 
 impl Header {
+    /// Checksum das listas de chunks (que vão na cauda): o texto muda
+    /// quando elas mudam.
+    fn lists_sum(&self) -> u64 {
+        let mut h = 0xcbf2_9ce4_8422_2325u64;
+        for v in [&self.pending_chunks, &self.done_chunks, &self.fpend] {
+            h = (h ^ v.len() as u64).wrapping_mul(0x0100_0000_01b3);
+            for &(a, b) in v.iter() {
+                h = (h ^ (u64::from(a as u32) << 32 | u64::from(b as u32))).wrapping_mul(0x0100_0000_01b3);
+            }
+        }
+        h
+    }
+
     pub fn encode(&self) -> String {
         let ering: Vec<String> = self.ering.iter().map(|e| e.map_or("-".into(), |(b, s)| format!("{b}@{}", sealed_str(s)))).collect();
         format!(
-            "v=2\nid={}\ndim={}\ncenter={},{},{}\nradius={}\nbudget={}\ntick0={}\ncols_done={}\nblocks={}\npending_chunks={}\ndone_chunks={}\nering={}\ncband={}\nlite={}\ncrater_left={}\nphase={}\nfring={}\nfpend={}\nprofile={}\n",
+            "v=2\nid={}\ndim={}\ncenter={},{},{}\nradius={}\nbudget={}\ntick0={}\ncols_done={}\nblocks={}\npending_chunks={}\ndone_chunks={}\nering={}\nlists={:x}\nlite={}\ncrater_left={}\nphase={}\nfring={}\nfpend={}\nprofile={}\n",
             self.id,
             self.dim,
             self.center[0],
@@ -312,15 +313,15 @@ impl Header {
             self.tick0,
             self.cols_done,
             self.blocks.iter().map(|b| sealed_str(*b)).collect::<Vec<_>>().join(","),
-            chunks_str(&self.pending_chunks),
-            chunks_str(&self.done_chunks),
+            self.pending_chunks.len(),
+            self.done_chunks.len(),
             ering.join(","),
-            self.cband.map_or("-".into(), |b| b.to_string()),
+            self.lists_sum(),
             u8::from(self.lite),
             u8::from(self.crater_left),
             if self.phase.is_empty() { "crater" } else { &self.phase },
             self.fring,
-            chunks_str(&self.fpend),
+            self.fpend.len(),
             self.profile.replace('\n', "\\n"),
         )
     }
@@ -344,15 +345,12 @@ impl Header {
                 "tick0" => h.tick0 = num(v)? as u64,
                 "cols_done" => h.cols_done = num(v)? as u32,
                 "blocks" => h.blocks = v.split(',').filter(|b| !b.is_empty()).map(|b| sealed_parse(b).ok_or(format!("blocks: {b}"))).collect::<Result<_, _>>()?,
-                "pending_chunks" => h.pending_chunks = chunks_parse(v),
-                "done_chunks" => h.done_chunks = chunks_parse(v),
+
                 "profile" => h.profile = v.replace("\\n", "\n"),
                 "lite" => h.lite = v == "1",
                 "crater_left" => h.crater_left = v == "1",
                 "phase" => h.phase = v.into(),
                 "fring" => h.fring = num(v)? as i32,
-                "fpend" => h.fpend = chunks_parse(v),
-                "cband" => h.cband = v.parse().ok(),
                 "ering" => {
                     for (i, e) in v.split(',').take(RING).enumerate() {
                         h.ering[i] = e.split_once('@').and_then(|(b, s)| Some((b.parse().ok()?, sealed_parse(s)?)));
@@ -374,20 +372,47 @@ pub struct State {
     pub header: Header,
     /// O bloco do diário em curso (depois dos fechados).
     pub data: Vec<u8>,
-    /// Energia da faixa `header.cband`.
+    /// Faixas de energia que ainda não têm chave (ver [`encode_bands`]).
     pub energy: Vec<u8>,
     /// Persistência leve: 1 bit por seção escrita.
     pub bits: Vec<u8>,
 }
 
+fn put_chunks(out: &mut Vec<u8>, v: &[(i32, i32)]) {
+    put_varint(out, v.len() as u64);
+    for &(a, b) in v {
+        put_varint(out, zigzag(a));
+        put_varint(out, zigzag(b));
+    }
+}
+
+fn get_chunks(r: &mut Reader) -> Result<Vec<(i32, i32)>, String> {
+    let n = r.varint()? as usize;
+    let mut v = Vec::with_capacity(n.min(1 << 16));
+    for _ in 0..n {
+        v.push((unzigzag(r.varint()?), unzigzag(r.varint()?)));
+    }
+    Ok(v)
+}
+
 impl State {
     pub fn encode(&self) -> Vec<u8> {
-        let mut out = self.header.encode().into_bytes();
+        self.encode_with(&self.header.encode())
+    }
+
+    /// Com o texto do cabeçalho já codificado.
+    pub fn encode_with(&self, header: &str) -> Vec<u8> {
+        let h = &self.header;
+        let mut out = Vec::with_capacity(header.len() + self.data.len() + self.energy.len() + self.bits.len() + 8 * (h.fpend.len() + h.pending_chunks.len() + h.done_chunks.len()) + 32);
+        out.extend_from_slice(header.as_bytes());
         out.push(0);
         for part in [&self.data, &self.energy, &self.bits] {
             put_varint(&mut out, part.len() as u64);
             out.extend_from_slice(part);
         }
+        put_chunks(&mut out, &h.pending_chunks);
+        put_chunks(&mut out, &h.done_chunks);
+        put_chunks(&mut out, &h.fpend);
         out
     }
 
@@ -395,14 +420,42 @@ impl State {
         let nul = b.iter().position(|&c| c == 0).ok_or("estado sem cauda")?;
         let header = Header::decode(std::str::from_utf8(&b[..nul]).map_err(|e| e.to_string())?)?;
         let mut r = Reader { b, p: nul + 1 };
-        let mut part = || -> Result<Vec<u8>, String> {
+        let part = |r: &mut Reader| -> Result<Vec<u8>, String> {
             let n = r.varint()? as usize;
             let s = r.b.get(r.p..r.p + n).ok_or("cauda truncada")?.to_vec();
             r.p += n;
             Ok(s)
         };
-        Ok(Self { header, data: part()?, energy: part()?, bits: part()? })
+        let (data, energy, bits) = (part(&mut r)?, part(&mut r)?, part(&mut r)?);
+        let mut header = header;
+        header.pending_chunks = get_chunks(&mut r)?;
+        header.done_chunks = get_chunks(&mut r)?;
+        header.fpend = get_chunks(&mut r)?;
+        Ok(Self { header, data, energy, bits })
     }
+}
+
+/// Faixas de energia em sequência: faixa, tamanho, bytes.
+pub fn encode_bands(bands: &[(u32, Vec<u8>)]) -> Vec<u8> {
+    let mut out = Vec::new();
+    for (b, buf) in bands {
+        put_varint(&mut out, u64::from(*b));
+        put_varint(&mut out, buf.len() as u64);
+        out.extend_from_slice(buf);
+    }
+    out
+}
+
+pub fn decode_bands(b: &[u8]) -> Result<Vec<(u32, Vec<u8>)>, String> {
+    let mut r = Reader { b, p: 0 };
+    let mut out = Vec::new();
+    while r.p < b.len() {
+        let band = r.varint()? as u32;
+        let n = r.varint()? as usize;
+        out.push((band, b.get(r.p..r.p + n).ok_or("faixa truncada")?.to_vec()));
+        r.p += n;
+    }
+    Ok(out)
 }
 
 /// FNV-1a de 64 bits (o checksum dos slots e dos blocos).
@@ -417,13 +470,13 @@ pub fn fnv64(b: &[u8]) -> u64 {
 /// Fuel estimado por byte de checksum/cópia na gravação (laço simples em wasm).
 pub const COST_BYTE: u64 = 6;
 
-fn slot_key(base: &str, gen: u64) -> String {
-    format!("{base}{}", gen % 2)
+fn slot_key(base: &str, generation: u64) -> String {
+    format!("{base}{}", generation % 2)
 }
 
 /// O valor de um slot: `NX2 <geração> <fnv> <tamanho>\n` e os bytes.
-pub fn slot_bytes(gen: u64, payload: &[u8]) -> Vec<u8> {
-    let mut out = format!("NX2 {gen} {:016x} {}\n", fnv64(payload), payload.len()).into_bytes();
+pub fn slot_bytes(generation: u64, payload: &[u8]) -> Vec<u8> {
+    let mut out = format!("NX2 {generation} {:016x} {}\n", fnv64(payload), payload.len()).into_bytes();
     out.extend_from_slice(payload);
     out
 }
@@ -434,16 +487,16 @@ fn slot_decode(b: &[u8]) -> Option<(u64, &[u8])> {
     if f.next()? != "NX2" {
         return None;
     }
-    let gen: u64 = f.next()?.parse().ok()?;
+    let generation: u64 = f.next()?.parse().ok()?;
     let sum = u64::from_str_radix(f.next()?, 16).ok()?;
     let len: usize = f.next()?.parse().ok()?;
     let payload = &b[nl + 1..];
-    (payload.len() == len && fnv64(payload) == sum).then_some((gen, payload))
+    (payload.len() == len && fnv64(payload) == sum).then_some((generation, payload))
 }
 
-/// Chave em que a geração `gen` vai (a outra fica com a anterior).
-pub fn slot_for(base: &str, gen: u64) -> String {
-    slot_key(base, gen)
+/// Chave em que a geração `generation` vai (a outra fica com a anterior).
+pub fn slot_for(base: &str, generation: u64) -> String {
+    slot_key(base, generation)
 }
 
 /// Os slots inteiros de `base`, do mais novo para o mais velho.
@@ -452,7 +505,7 @@ pub fn read_slots(store: &mut dyn Store, base: &str) -> Vec<(u64, Vec<u8>)> {
         .filter_map(|i| store.get(&slot_key(base, i)))
         .filter_map(|b| slot_decode(&b).map(|(g, p)| (g, p.to_vec())))
         .collect();
-    out.sort_by(|a, b| b.0.cmp(&a.0));
+    out.sort_by_key(|a| std::cmp::Reverse(a.0));
     out
 }
 
@@ -471,14 +524,14 @@ pub fn read_index(store: &mut dyn Store) -> (u64, Vec<String>) {
 }
 
 /// Grava o índice com `ids` (no slot da próxima geração); vazio apaga.
-pub fn write_index(store: &mut dyn Store, gen: u64, ids: &[String]) -> Result<usize, String> {
+pub fn write_index(store: &mut dyn Store, generation: u64, ids: &[String]) -> Result<usize, String> {
     if ids.is_empty() {
         delete_slots(store, INDEX_KEY);
         return Ok(0);
     }
     let text: String = ids.iter().map(|i| format!("{i}\n")).collect();
-    let b = slot_bytes(gen + 1, text.as_bytes());
-    store.set(&slot_for(INDEX_KEY, gen + 1), &b)?;
+    let b = slot_bytes(generation + 1, text.as_bytes());
+    store.set(&slot_for(INDEX_KEY, generation + 1), &b)?;
     Ok(b.len())
 }
 

@@ -79,10 +79,13 @@ thread_local! {
 }
 
 /// Rasga a n-ésima gravação (`LEFT`).
-fn nth_write(_k: &str, _v: &[u8]) -> bool {
+fn nth_write(k: &str, _v: &[u8]) -> bool {
     LEFT.with(|l| {
         let n = l.get();
         l.set(n.saturating_sub(1));
+        if n == 1 {
+            eprintln!("rasgada: {k}");
+        }
         n == 1
     })
 }
@@ -123,8 +126,16 @@ fn torn_case(n: usize, reference: &FakeWorld) {
         return;
     }
     assert_eq!(resumed, vec![Ok("t".to_string())], "queda na gravação {n}");
+    h.0.clear();
     run(&mut ex, &mut w, &mut s, &mut h, t + 1, 5000, |_, _| false);
     assert!(ex.is_empty());
+    if h.0.iter().any(|e| matches!(e, Event::ResumeFailed { .. })) {
+        // O índice foi gravado, o estado inicial não: nada a retomar, e as
+        // chaves saem.
+        assert!(w.diff().is_empty(), "queda na gravação {n}: retomada falhou ({:?}), mas o mundo já mudou", h.0);
+        assert!(s.keys.is_empty(), "sobrou {:?}", s.keys.keys().collect::<Vec<_>>());
+        return;
+    }
     let (a, b) = (reference.diff(), w.diff());
     let only_ref = a.iter().filter(|(k, v)| b.get(*k) != Some(*v)).count();
     let only_new = b.iter().filter(|(k, v)| a.get(*k) != Some(*v)).count();
@@ -142,7 +153,7 @@ fn p1_7_a_torn_write_never_loses_the_explosion() {
     run(&mut ex, &mut w, &mut s, &mut h, 0, 5000, |_, _| false);
     let total = WRITES.with(Cell::get);
     assert!(total > 10, "{total} gravações");
-    let step = (total / 16).max(1);
+    let step = (total / 48).max(1);
     for n in (1..total).step_by(step) {
         torn_case(n, &w);
     }
@@ -337,4 +348,32 @@ fn p2_8_lite_resume_in_fallout_keeps_deferred_crater() {
     assert!(ex.is_empty());
     let got = in_hole(&w);
     assert!(got * 10 >= want * 9, "cratera no chunk atrasado depois da retomada: {got} contra {want}");
+}
+
+// ------------------------------------------------------------------ P2-11
+
+/// O diário completo não passa da parte do storage que o mod deu às
+/// explosões: quando não cabe, passa à persistência leve (e continua
+/// retomável), sem tirar espaço do resto do mod.
+#[test]
+fn p2_11_the_journal_keeps_to_its_share() {
+    let (mut w, mut s, mut h) = (FakeWorld::default(), FakeStore::default(), Rec::default());
+    let mut ex = Explosions::new();
+    ex.limits.total_bytes = 48 << 10;
+    ex.detonate(det("q", at(0, 0), 60), 0).unwrap();
+    let mut peak = 0;
+    let t = run(&mut ex, &mut w, &mut s, &mut h, 0, 40, |_, _| false);
+    peak = peak.max(s.max_total);
+    assert!(!ex.is_empty(), "terminou cedo demais");
+    assert!(peak <= (48 << 10) + 1024, "{peak} bytes, acima da parte de 48 KiB");
+    assert!(h.0.iter().any(|e| matches!(e, Event::PersistFailed { reason } if reason.contains("leve"))), "{:?}", h.0);
+    // Ainda retomável (leve).
+    drop(ex);
+    let mut ex = Explosions::new();
+    ex.limits.total_bytes = 48 << 10;
+    assert_eq!(ex.resume(&mut s, t + 1, &mut h), vec![Ok("q".to_string())]);
+    run(&mut ex, &mut w, &mut s, &mut h, t + 1, 8000, |_, _| false);
+    assert!(ex.is_empty());
+    assert!(s.max_total <= (48 << 10) + 1024, "{} bytes", s.max_total);
+    assert!(s.keys.is_empty());
 }

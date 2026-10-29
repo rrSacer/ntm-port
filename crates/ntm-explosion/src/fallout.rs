@@ -322,6 +322,14 @@ pub struct Sweep {
     /// Chunks com colunas que ficaram para quando carregarem.
     pub pending: Vec<(i32, i32)>,
     pending_set: HashSet<(i32, i32), BuildFnv>,
+    /// Chunk pendente em curso: a próxima coluna (0..256, x depois z) e o
+    /// topo da última feita. Um chunk é feito aos pedaços, dentro do fuel e
+    /// das escritas de cada chamada (revisão do M2, P1-4).
+    pcur: Option<((i32, i32), u16, Option<i32>)>,
+    /// Chunks começados que descarregaram no meio (de onde continuar).
+    partial: HashMap<(i32, i32), (u16, Option<i32>), BuildFnv>,
+    /// Próximo pendente a conferir (rodízio).
+    pscan: usize,
     pub columns: u64,
     pub reads: u64,
     pub writes: u64,
@@ -342,6 +350,9 @@ impl Sweep {
             cls: Classes::default(),
             pending: Vec::new(),
             pending_set: HashSet::default(),
+            pcur: None,
+            partial: HashMap::default(),
+            pscan: 0,
             columns: 0,
             reads: 0,
             writes: 0,
@@ -472,57 +483,83 @@ impl Sweep {
     }
 
     /// Faz os chunks pendentes que carregaram, perto de `viewers` (até
-    /// `near` blocos), até gastar `fuel`/`budget`. Devolve se algo mudou.
+    /// `near` blocos), coluna a coluna, até gastar `fuel` ou `budget`
+    /// escritas; um chunk pode ficar pela metade para a próxima chamada.
+    /// Devolve o fuel estimado gasto.
     #[allow(clippy::too_many_arguments)]
-    pub fn pending_step(&mut self, p: &FalloutProfile, viewers: &[[f64; 3]], near: f64, mut fuel: u64, budget: usize, world: &mut dyn Reader, out: &mut Vec<Change>) -> bool {
-        let mut changed = false;
-        let mut i = 0;
-        while i < self.pending.len() {
-            if fuel < 256 * 20 * COST_READ || out.len() + 1024 > budget {
+    pub fn pending_step(&mut self, p: &FalloutProfile, viewers: &[[f64; 3]], near: f64, mut fuel: u64, budget: usize, world: &mut dyn Reader, out: &mut Vec<Change>) -> u64 {
+        // Uma coluna cabe nisto (com folga: ~10 leituras na média).
+        const COLUMN: u64 = 64 * COST_READ + COST_COLUMN;
+        let f0 = fuel;
+        let w0 = out.len();
+        let mut scanned = 0;
+        loop {
+            if fuel < COLUMN || out.len() + 16 > budget {
                 break;
             }
-            let ch = self.pending[i];
-            let (cx, cz) = (f64::from(ch.0 * 16 + 8), f64::from(ch.1 * 16 + 8));
-            let close = viewers.iter().any(|v| (v[0] - cx).powi(2) + (v[2] - cz).powi(2) <= near * near);
-            fuel = fuel.saturating_sub(50);
-            if !close || world.block(ch.0 * 16, self.c[1], ch.1 * 16).is_none() {
-                i += 1;
+            let Some((ch, col, top)) = self.pcur else {
+                // Próximo chunk pendente perto de alguém e carregado.
+                if scanned >= self.pending.len() {
+                    break;
+                }
+                scanned += 1;
+                if self.pscan >= self.pending.len() {
+                    self.pscan = 0;
+                }
+                let ch = self.pending[self.pscan];
+                self.pscan += 1;
+                let (cx, cz) = (f64::from(ch.0 * 16 + 8), f64::from(ch.1 * 16 + 8));
+                let close = viewers.iter().any(|v| (v[0] - cx).powi(2) + (v[2] - cz).powi(2) <= near * near);
+                fuel = fuel.saturating_sub(50);
+                if !close {
+                    continue;
+                }
+                fuel = fuel.saturating_sub(COST_READ);
+                if world.block(ch.0 * 16, self.c[1], ch.1 * 16).is_none() {
+                    continue;
+                }
+                let (col, top) = self.partial.remove(&ch).unwrap_or((0, None));
+                self.pcur = Some((ch, col, top));
+                continue;
+            };
+            if col >= 256 {
+                // Chunk inteiro.
+                if let Some(i) = self.pending.iter().position(|c| *c == ch) {
+                    self.pending.swap_remove(i);
+                }
+                fuel = fuel.saturating_sub(self.pending.len() as u64 * 4);
+                self.pending_set.remove(&ch);
+                self.pcur = None;
                 continue;
             }
-            let before = out.len();
-            let mut top_last: Option<i32> = None;
-            let mut unloaded = false;
-            for x in ch.0 * 16..ch.0 * 16 + 16 {
-                for z in ch.1 * 16..ch.1 * 16 + 16 {
-                    let (dx, dz) = (x - self.c[0], z - self.c[2]);
-                    if !self.in_annulus(dx, dz) {
-                        continue;
-                    }
-                    let d = ((dx * dx + dz * dz) as f32).sqrt() / self.outer as f32;
-                    let start = top_last.map_or(self.c[1] + 8, |t| t + 8);
-                    let w = out.len();
-                    match stomp(p, &mut self.cls, x, z, d, start, world, out) {
-                        Column::Done { reads, top } => {
-                            top_last = Some(top);
-                            self.columns += 1;
-                            self.reads += u64::from(reads);
-                            fuel = fuel.saturating_sub(u64::from(reads) * COST_READ + COST_COLUMN + (out.len() - w) as u64 * COST_WRITE);
-                        }
-                        Column::Unloaded => unloaded = true,
-                    }
+            let (x, z) = (ch.0 * 16 + i32::from(col / 16), ch.1 * 16 + i32::from(col % 16));
+            let (dx, dz) = (x - self.c[0], z - self.c[2]);
+            if !self.in_annulus(dx, dz) {
+                fuel = fuel.saturating_sub(20);
+                self.pcur = Some((ch, col + 1, top));
+                continue;
+            }
+            let d = ((dx * dx + dz * dz) as f32).sqrt() / self.outer as f32;
+            let start = top.map_or(self.c[1] + 8, |t| t + 8);
+            let w = out.len();
+            match stomp(p, &mut self.cls, x, z, d, start, world, out) {
+                Column::Done { reads, top } => {
+                    self.columns += 1;
+                    self.reads += u64::from(reads);
+                    fuel = fuel.saturating_sub(u64::from(reads) * COST_READ + COST_COLUMN + (out.len() - w) as u64 * COST_WRITE);
+                    self.pcur = Some((ch, col + 1, Some(top)));
+                }
+                Column::Unloaded => {
+                    // Descarregou no meio: continua dali quando carregar.
+                    out.truncate(w);
+                    fuel = fuel.saturating_sub(COST_READ);
+                    self.partial.insert(ch, (col, top));
+                    self.pcur = None;
                 }
             }
-            if unloaded {
-                out.truncate(before);
-                i += 1;
-                continue;
-            }
-            self.writes += (out.len() - before) as u64;
-            self.pending_set.remove(&ch);
-            self.pending.swap_remove(i);
-            changed = true;
         }
-        changed
+        self.writes += (out.len() - w0) as u64;
+        f0 - fuel
     }
 }
 
