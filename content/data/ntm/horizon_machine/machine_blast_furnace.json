@@ -1,0 +1,113 @@
+{
+  "slots": [
+    {
+      "x": 80,
+      "y": 81,
+      "accept": [
+        "minecraft:coal",
+        "minecraft:coal_block",
+        "ntm:block_coke__coal",
+        "ntm:block_coke__lignite",
+        "ntm:block_coke__petroleum",
+        "ntm:briquette__coal",
+        "ntm:briquette__lignite",
+        "ntm:coke__coal",
+        "ntm:coke__lignite",
+        "ntm:coke__petroleum",
+        "ntm:lignite",
+        "ntm:powder_coal",
+        "ntm:powder_lignite",
+        "ntm:rocket_fuel",
+        "ntm:solid_fuel",
+        "ntm:solid_fuel_bf",
+        "ntm:solid_fuel_presto",
+        "ntm:solid_fuel_presto_bf",
+        "ntm:solid_fuel_presto_triplet",
+        "ntm:solid_fuel_presto_triplet_bf"
+      ]
+    },
+    {
+      "x": 80,
+      "y": 27,
+      "accept": [
+        "minecraft:clay_ball",
+        "minecraft:copper_ingot",
+        "minecraft:gold_ingot",
+        "minecraft:iron_ingot",
+        "minecraft:iron_ore",
+        "minecraft:red_sand",
+        "minecraft:redstone",
+        "minecraft:sand",
+        "ntm:ingot_copper",
+        "ntm:ingot_raw__redstone",
+        "ntm:ore_copper",
+        "ntm:ore_enriched__copper",
+        "ntm:ore_enriched__iron",
+        "ntm:ore_gneiss_copper",
+        "ntm:ore_gneiss_iron",
+        "ntm:plate_mixed",
+        "ntm:powder_aluminium",
+        "ntm:powder_copper",
+        "ntm:powder_flux",
+        "ntm:powder_iron",
+        "ntm:powder_limestone"
+      ]
+    },
+    {
+      "x": 80,
+      "y": 45,
+      "accept": [
+        "minecraft:clay_ball",
+        "minecraft:copper_ingot",
+        "minecraft:gold_ingot",
+        "minecraft:iron_ingot",
+        "minecraft:iron_ore",
+        "minecraft:red_sand",
+        "minecraft:redstone",
+        "minecraft:sand",
+        "ntm:ingot_copper",
+        "ntm:ingot_raw__redstone",
+        "ntm:ore_copper",
+        "ntm:ore_enriched__copper",
+        "ntm:ore_enriched__iron",
+        "ntm:ore_gneiss_copper",
+        "ntm:ore_gneiss_iron",
+        "ntm:plate_mixed",
+        "ntm:powder_aluminium",
+        "ntm:powder_copper",
+        "ntm:powder_flux",
+        "ntm:powder_iron",
+        "ntm:powder_limestone"
+      ]
+    },
+    {
+      "x": 134,
+      "y": 72,
+      "output": true
+    },
+    {
+      "x": 134,
+      "y": 90,
+      "output": true
+    }
+  ],
+  "inventory": [
+    8,
+    140
+  ],
+  "data": 10,
+  "multiblock": {
+    "min": [
+      -1,
+      0,
+      -1
+    ],
+    "max": [
+      1,
+      6,
+      1
+    ],
+    "offset": 1,
+    "dummy": "ntm:dummy_machine"
+  }
+}

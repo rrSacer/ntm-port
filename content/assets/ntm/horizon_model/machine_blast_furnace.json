@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/blast_furnace.obj",
+  "texture": "ntm:textures/models/machines/blast_furnace.png",
+  "rotation": 90,
+  "radius": 6.5
+}

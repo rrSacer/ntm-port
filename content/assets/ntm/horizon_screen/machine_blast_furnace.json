@@ -1,0 +1,99 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_blast_furnace.png",
+  "size": [
+    176,
+    222
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    128
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        62,
+        80,
+        56,
+        26
+      ],
+      "uv": [
+        176,
+        102
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        62,
+        18,
+        56,
+        62
+      ],
+      "uv": [
+        176,
+        40
+      ],
+      "dir": "up"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 9,
+      "min": 1,
+      "rect": [
+        81,
+        64,
+        14,
+        14
+      ],
+      "uv": [
+        176,
+        0
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        79,
+        62,
+        18,
+        18
+      ],
+      "lines": [
+        "Velocidade: {4}%"
+      ]
+    },
+    {
+      "rect": [
+        25,
+        71,
+        18,
+        18
+      ],
+      "lines": [
+        "Ar quente: {5} / {6} mB"
+      ]
+    },
+    {
+      "rect": [
+        25,
+        17,
+        18,
+        18
+      ],
+      "lines": [
+        "Gás de exaustão: {7} / {8} mB"
+      ]
+    }
+  ]
+}
