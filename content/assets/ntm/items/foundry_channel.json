@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ntm:block/foundry_channel_0"
+    "model": "ntm:block/visual/foundry_channel"
   }
 }

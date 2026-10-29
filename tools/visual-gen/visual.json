@@ -1937,6 +1937,105 @@
             "color": 2
           }
         ]
+      },
+      "block_model": {
+        "source": "RenderFoundryChannel with no neighbour to connect to (connections: docs/visual-fiel.md, pending)",
+        "textures": {
+          "top": "foundry_channel_top",
+          "side": "foundry_channel_side",
+          "bottom": "foundry_channel_bottom",
+          "inner": "foundry_channel_inner"
+        },
+        "elements": [
+          [
+            [
+              5,
+              0,
+              5
+            ],
+            [
+              11,
+              2,
+              11
+            ],
+            {
+              "down": "bottom",
+              "up": "bottom"
+            }
+          ],
+          [
+            [
+              5,
+              0,
+              5
+            ],
+            [
+              11,
+              8,
+              6
+            ],
+            {
+              "north": "side",
+              "south": "inner",
+              "up": "top",
+              "west": "side",
+              "east": "side"
+            }
+          ],
+          [
+            [
+              5,
+              0,
+              10
+            ],
+            [
+              11,
+              8,
+              11
+            ],
+            {
+              "south": "side",
+              "north": "inner",
+              "up": "top",
+              "west": "side",
+              "east": "side"
+            }
+          ],
+          [
+            [
+              5,
+              0,
+              6
+            ],
+            [
+              6,
+              8,
+              10
+            ],
+            {
+              "west": "side",
+              "east": "inner",
+              "up": "top"
+            }
+          ],
+          [
+            [
+              10,
+              0,
+              6
+            ],
+            [
+              11,
+              8,
+              10
+            ],
+            {
+              "east": "side",
+              "west": "inner",
+              "up": "top"
+            }
+          ]
+        ]
       }
     },
     "ntm:foundry_tank": {
