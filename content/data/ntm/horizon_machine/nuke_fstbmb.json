@@ -1,0 +1,25 @@
+{
+  "slots": [
+    {
+      "x": 17,
+      "y": 36,
+      "accept": [
+        "ntm:egg_balefire"
+      ],
+      "max": 1
+    },
+    {
+      "x": 53,
+      "y": 36,
+      "accept": [
+        "ntm:battery_spark"
+      ],
+      "max": 1
+    }
+  ],
+  "inventory": [
+    8,
+    140
+  ],
+  "data": 2
+}

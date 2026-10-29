@@ -1,0 +1,34 @@
+{
+  "texture": "ntm:textures/gui/weapon/n2schematic.png",
+  "size": [
+    176,
+    222
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    128
+  ],
+  "bars": [
+    {
+      "value": 1,
+      "max_value": 12,
+      "rect": [
+        35,
+        48,
+        34,
+        72
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "up"
+    }
+  ],
+  "overlays": []
+}

@@ -2944,6 +2944,222 @@
           }
         ]
       }
+    },
+    "ntm:nuke_n2": {
+      "source": "ContainerNukeN2, GUINukeN2 (6 px of the bar per charge)",
+      "machine": {
+        "slots": [
+          {
+            "x": 98,
+            "y": 36,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 116,
+            "y": 36,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 134,
+            "y": 36,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 98,
+            "y": 54,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 116,
+            "y": 54,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 134,
+            "y": 54,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 98,
+            "y": 72,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 116,
+            "y": 72,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 134,
+            "y": 72,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 98,
+            "y": 90,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 116,
+            "y": 90,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          },
+          {
+            "x": 134,
+            "y": 90,
+            "accept": [
+              "ntm:n2_charge"
+            ],
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          140
+        ],
+        "data": 2
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/weapon/n2schematic.png",
+        "texture_from": "textures/gui/weapon/n2Schematic.png",
+        "size": [
+          176,
+          222
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          128
+        ],
+        "bars": [
+          {
+            "value": 1,
+            "max_value": 12,
+            "rect": [
+              35,
+              48,
+              34,
+              72
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          }
+        ],
+        "overlays": []
+      }
+    },
+    "ntm:nuke_fstbmb": {
+      "source": "ContainerNukeFstbmb, GUINukeFstbmb (no timer: the port sets it off by redstone or detonator)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 36,
+            "accept": [
+              "ntm:egg_balefire"
+            ],
+            "max": 1
+          },
+          {
+            "x": 53,
+            "y": 36,
+            "accept": [
+              "ntm:battery_spark"
+            ],
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          140
+        ],
+        "data": 2
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/weapon/fstbmbschematic.png",
+        "texture_from": "textures/gui/weapon/fstbmbSchematic.png",
+        "size": [
+          176,
+          222
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          128
+        ],
+        "overlays": [
+          {
+            "slot": 0,
+            "rect": [
+              19,
+              90,
+              30,
+              16
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "slot": 1,
+            "rect": [
+              88,
+              93,
+              18,
+              10
+            ],
+            "uv": [
+              176,
+              16
+            ]
+          }
+        ]
+      }
     }
   }
 }

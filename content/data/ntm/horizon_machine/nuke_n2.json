@@ -1,0 +1,105 @@
+{
+  "slots": [
+    {
+      "x": 98,
+      "y": 36,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 116,
+      "y": 36,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 134,
+      "y": 36,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 98,
+      "y": 54,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 116,
+      "y": 54,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 134,
+      "y": 54,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 98,
+      "y": 72,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 116,
+      "y": 72,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 134,
+      "y": 72,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 98,
+      "y": 90,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 116,
+      "y": 90,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    },
+    {
+      "x": 134,
+      "y": 90,
+      "accept": [
+        "ntm:n2_charge"
+      ],
+      "max": 1
+    }
+  ],
+  "inventory": [
+    8,
+    140
+  ],
+  "data": 2
+}

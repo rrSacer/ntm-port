@@ -1,0 +1,44 @@
+{
+  "texture": "ntm:textures/gui/weapon/fstbmbschematic.png",
+  "size": [
+    176,
+    222
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    128
+  ],
+  "overlays": [
+    {
+      "slot": 0,
+      "rect": [
+        19,
+        90,
+        30,
+        16
+      ],
+      "uv": [
+        176,
+        0
+      ]
+    },
+    {
+      "slot": 1,
+      "rect": [
+        88,
+        93,
+        18,
+        10
+      ],
+      "uv": [
+        176,
+        16
+      ]
+    }
+  ]
+}
