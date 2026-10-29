@@ -53,10 +53,22 @@ index 75cf5ee85..1262f15cd 100644
  miniz_oxide = "0.8"
  naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
 diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
-index b415748c4..d3ceb890e 100644
+index b415748c4..caddf98c6 100644
 --- a/crates/horizon-client-render/src/block_entity_render.rs
 +++ b/crates/horizon-client-render/src/block_entity_render.rs
-@@ -317,6 +317,13 @@ enum Kind {
+@@ -94,6 +94,11 @@ pub fn diffuse(normal: Vec3, lights: (Vec3, Vec3)) -> f32 {
+     ((lights.0.dot(normal).max(0.0) + lights.1.dot(normal).max(0.0)) * 0.6 + 0.4).min(1.0)
+ }
+ /// Packed vertex light from the level's packed `sky << 4 | block` byte.
++/// Whether bone `i` is in a `Kind::ModModel`'s hidden mask.
++fn shown_not(hidden: u64, i: usize) -> bool {
++    i < 64 && hidden & 1 << i != 0
++}
++
+ pub fn vertex_light(packed: u8) -> u32 {
+     (u32::from(packed >> 4) * 16) | ((u32::from(packed & 15) * 16) << 8)
+ }
+@@ -317,6 +322,15 @@ enum Kind {
      EndGateway {
          state: u32,
      },
@@ -66,11 +78,13 @@ index b415748c4..d3ceb890e 100644
 +        model: usize,
 +        yaw: f32,
 +        play: Option<usize>,
++        /// Bones the state's `show` conditions hide (`Model::hidden_by`).
++        hidden: u64,
 +    },
      /// Sign text (`StandingSignRenderer` / `HangingSignRenderer`); the boards are block models.
      Sign {
          hanging: bool,
-@@ -784,7 +791,21 @@ pub struct BlockEntityRenderer {
+@@ -784,7 +798,21 @@ pub struct BlockEntityRenderer {
      /// `Block.shouldRenderFace` for End gateway faces (its occlusion pair cache needs a lock).
      visibility: Option<Mutex<FaceVisibility>>,
      sign_texts: Mutex<SignTexts>,
@@ -88,11 +102,11 @@ index b415748c4..d3ceb890e 100644
 +        )>,
 +    >,
  }
-+type ModStill = HashMap<(usize, u32, bool), std::sync::Arc<Vec<Vertex>>>;
++type ModStill = HashMap<(usize, u32, bool, u64), std::sync::Arc<Vec<Vertex>>>;
  /// Laid-out sign text by position. `AbstractSignRenderer` lays the text out
  /// again each frame, glyph by glyph; its vertices only change with what is
  /// in the key, so they are kept relative to the block and moved to the camera.
-@@ -857,6 +878,7 @@ impl BlockEntityRenderer {
+@@ -857,6 +885,7 @@ impl BlockEntityRenderer {
              .collect();
          let mut renderer = Self::new(models, registry);
          renderer.visibility = Some(Mutex::new(crate::models::load_visibility(root, registry)?));
@@ -100,7 +114,7 @@ index b415748c4..d3ceb890e 100644
          // Sherd items: provides_pottery_pattern -> decorated_pot_pattern asset id.
          if let Ok(bytes) = std::fs::read(root.join("items.json")) {
              let items: Value = serde_json::from_slice(&bytes)?;
-@@ -937,6 +959,10 @@ impl BlockEntityRenderer {
+@@ -937,6 +966,10 @@ impl BlockEntityRenderer {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
@@ -111,11 +125,17 @@ index b415748c4..d3ceb890e 100644
          }
      }
      fn kind(&self, state: u32) -> &Kind {
-@@ -971,6 +997,21 @@ impl BlockEntityRenderer {
+@@ -971,6 +1004,36 @@ impl BlockEntityRenderer {
              let origin = (DVec3::new(f64::from(pos[0]), f64::from(pos[1]), f64::from(pos[2]))
                  - scene.camera)
                  .as_vec3();
-+            if let Kind::ModModel { model, yaw, play } = kind {
++            if let Kind::ModModel {
++                model,
++                yaw,
++                play,
++                hidden,
++            } = kind
++            {
 +                // A block with no `facing` turns by its placer's (the machine's own).
 +                let yaw = match scene.world.block_entities.get(&(pos[0], pos[1], pos[2])) {
 +                    Some(crate::containers::BlockEntity::ModContainer(m)) => {
@@ -127,13 +147,22 @@ index b415748c4..d3ceb890e 100644
 +                    }
 +                    _ => *yaw,
 +                };
-+                self.render_mod_model(scene, *pos, *model, yaw, *play, origin, lights, out);
++                self.render_mod_model(
++                    scene,
++                    *pos,
++                    *model,
++                    yaw,
++                    (*play, *hidden),
++                    origin,
++                    lights,
++                    out,
++                );
 +                continue;
 +            }
              let packed = scene.world.light(pos[0], pos[1], pos[2]);
              if matches!(kind, Kind::Sign { .. }) && scene.texts.is_none() {
                  self.sign_text(scene, *pos, *state, origin, packed, out);
-@@ -1089,6 +1130,210 @@ impl BlockEntityRenderer {
+@@ -1089,6 +1152,225 @@ impl BlockEntityRenderer {
      pub fn renders(&self, state: u32) -> bool {
          !matches!(self.kind(state), Kind::None)
      }
@@ -167,6 +196,7 @@ index b415748c4..d3ceb890e 100644
 +                        s.properties.get("facing").map(String::as_str),
 +                    ),
 +                    play: self.mod_models[model].playing(&prop),
++                    hidden: self.mod_models[model].hidden_by(&prop),
 +                };
 +            }
 +        }
@@ -237,7 +267,7 @@ index b415748c4..d3ceb890e 100644
 +        pos: [i32; 3],
 +        model: usize,
 +        yaw: f32,
-+        play: Option<usize>,
++        (play, hidden): (Option<usize>, u64),
 +        origin: Vec3,
 +        lights: (Vec3, Vec3),
 +        out: &mut Vec<Vertex>,
@@ -284,9 +314,14 @@ index b415748c4..d3ceb890e 100644
 +            let place = Mat4::from_translation(origin) * base;
 +            if let Ok(mut draws) = self.model_draws.lock() {
 +                for (i, bone) in m.bones.iter().enumerate() {
-+                    if bone.hidden || bone.triangles.is_empty() {
++                    if bone.hidden || bone.triangles.is_empty() || shown_not(hidden, i) {
 +                        continue;
 +                    }
++                    let light = if bone.glow {
++                        crate::mod_models::FULL_LIGHT
++                    } else {
++                        light
++                    };
 +                    let key = crate::gfx::mod_models::Key {
 +                        model: model as u32,
 +                        bone: i as u32,
@@ -303,14 +338,20 @@ index b415748c4..d3ceb890e 100644
 +            light,
 +            lights,
 +        };
-+        let key = (model, yaw.to_bits(), scene.nether);
++        let key = (model, yaw.to_bits(), scene.nether, hidden);
 +        let still = self.mod_still.lock().ok().map(|mut cache| {
 +            cache
 +                .entry(key)
 +                .or_insert_with(|| {
 +                    let rest = m.pose(None, 0.0);
 +                    let mut v = Vec::new();
-+                    m.emit(|i| m.still[i], &rest, base, paint, &mut v);
++                    m.emit(
++                        |i| m.still[i] && !shown_not(hidden, i),
++                        &rest,
++                        base,
++                        paint,
++                        &mut v,
++                    );
 +                    std::sync::Arc::new(v)
 +                })
 +                .clone()
@@ -324,7 +365,10 @@ index b415748c4..d3ceb890e 100644
 +                    v.pos[1] + origin.y,
 +                    v.pos[2] + origin.z,
 +                ];
-+                v.light = light;
++                // A glowing bone keeps its full light.
++                if v.light != crate::mod_models::FULL_LIGHT {
++                    v.light = light;
++                }
 +                v
 +            }));
 +        }
@@ -334,7 +378,7 @@ index b415748c4..d3ceb890e 100644
 +        let t = (scene.game_time as f32 + scene.partial) / 20.0;
 +        let pose = m.pose(play, t);
 +        m.emit(
-+            |i| !m.still[i],
++            |i| !m.still[i] && !shown_not(hidden, i),
 +            &pose,
 +            Mat4::from_translation(origin) * base,
 +            paint,
@@ -344,7 +388,7 @@ index b415748c4..d3ceb890e 100644
      /// ChestRenderer and BannerRenderer submit their animated models for crumbling.
      pub fn render_breaking(
          &self,
-@@ -1239,7 +1484,8 @@ impl BlockEntityRenderer {
+@@ -1239,7 +1521,8 @@ impl BlockEntityRenderer {
          };
          let none = |_: &str, _: &mut [f32; 9]| {};
          match kind {
@@ -354,7 +398,7 @@ index b415748c4..d3ceb890e 100644
              Kind::Sign {
                  hanging,
                  wall,
-@@ -2278,6 +2524,10 @@ mod tests {
+@@ -2278,6 +2561,10 @@ mod tests {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
@@ -819,10 +863,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..de10d53d9
+index 000000000..0c1d0dac0
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,764 @@
+@@ -0,0 +1,836 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -841,7 +885,9 @@ index 000000000..de10d53d9
 +//!   "hide": ["Ring2"],         objects not drawn
 +//!   "bones": {"ArmLower1": {"pivot": [0, 1.625, 0.9375], "parent": "Ring"}},
 +//!   "animations": "ntm:animations/assembly_machine.animation.json",
-+//!   "play": [{"animation": "animation.assembler.work", "property": "honey_level", "not": "0"}]
++//!   "play": [{"animation": "animation.assembler.work", "property": "honey_level", "not": "0"}],
++//!   "show": {"InnerBurning": {"property": "honey_level", "not": "0"}},   objects drawn only so
++//!   "glow": ["InnerBurning"]   drawn at full light (HBM's lightmap 240, 240)
 +//! }
 +//! ```
 +//!
@@ -885,6 +931,8 @@ index 000000000..de10d53d9
 +    pub parent: Option<usize>,
 +    pub pivot: Vec3,
 +    pub hidden: bool,
++    /// Drawn at full light, whatever the block's.
++    pub glow: bool,
 +    pub triangles: Vec<[(Vec3, [f32; 2], Vec3); 3]>,
 +}
 +
@@ -926,6 +974,19 @@ index 000000000..de10d53d9
 +    pub not: Option<String>,
 +}
 +
++impl Play {
++    /// Whether the block state's property is (or is not) the value asked.
++    fn matches(&self, prop: &dyn Fn(&str) -> Option<String>) -> bool {
++        prop(&self.property).is_some_and(|v| {
++            self.is.as_ref().is_none_or(|is| *is == v)
++                && self.not.as_ref().is_none_or(|not| *not != v)
++        })
++    }
++}
++
++/// Sky and block light 15, packed as a vertex's (`block_entity_render::vertex_light`).
++pub const FULL_LIGHT: u32 = 240 | 240 << 8;
++
 +#[derive(Clone, Debug, Default)]
 +pub struct Model {
 +    pub block: String,
@@ -938,6 +999,9 @@ index 000000000..de10d53d9
 +    pub radius: f32,
 +    pub animations: Vec<Animation>,
 +    pub play: Vec<Play>,
++    /// Bones shown only while a block state property matches (HBM's
++    /// renderers draw `InnerBurning` or `InnerEmpty` by `wasOn`).
++    pub show: Vec<(usize, Play)>,
 +    pub liquids: Vec<Liquid>,
 +    /// Bones no animation moves, nor their ancestors: drawn from a cache.
 +    pub still: Vec<bool>,
@@ -1138,6 +1202,9 @@ index 000000000..de10d53d9
 +        .into_iter()
 +        .map(|(name, triangles)| Bone {
 +            hidden: hide.contains(&name.as_str()),
++            glow: doc["glow"]
++                .as_array()
++                .is_some_and(|g| g.iter().any(|v| v.as_str() == Some(name.as_str()))),
 +            name,
 +            parent: None,
 +            pivot: Vec3::ZERO,
@@ -1188,6 +1255,22 @@ index 000000000..de10d53d9
 +            })
 +        })
 +        .collect();
++    let show = doc["show"]
++        .as_object()
++        .into_iter()
++        .flatten()
++        .filter_map(|(bone, c)| {
++            Some((
++                bones.iter().position(|b| b.name == *bone)?,
++                Play {
++                    animation: 0,
++                    property: c["property"].as_str()?.to_owned(),
++                    is: c["is"].as_str().map(str::to_owned),
++                    not: c["not"].as_str().map(str::to_owned),
++                },
++            ))
++        })
++        .collect();
 +    let moved: Vec<bool> = (0..bones.len())
 +        .map(|i| {
 +            animations
@@ -1222,6 +1305,7 @@ index 000000000..de10d53d9
 +        radius: doc["radius"].as_f64().unwrap_or(1.0) as f32,
 +        animations,
 +        play,
++        show,
 +        liquids,
 +        still,
 +        triangles,
@@ -1262,12 +1346,18 @@ index 000000000..de10d53d9
 +impl Model {
 +    /// The animation a state with these properties plays, if any.
 +    pub fn playing(&self, prop: &dyn Fn(&str) -> Option<String>) -> Option<usize> {
-+        self.play.iter().find_map(|p| {
-+            let v = prop(&p.property)?;
-+            let on = p.is.as_ref().is_none_or(|is| *is == v)
-+                && p.not.as_ref().is_none_or(|not| *not != v);
-+            on.then_some(p.animation)
-+        })
++        self.play
++            .iter()
++            .find_map(|p| p.matches(prop).then_some(p.animation))
++    }
++
++    /// The bones a block state hides by `show` (bit `i` for bone `i`; bones
++    /// past 63 are always shown).
++    pub fn hidden_by(&self, prop: &dyn Fn(&str) -> Option<String>) -> u64 {
++        self.show
++            .iter()
++            .filter(|(b, c)| *b < 64 && !c.matches(prop))
++            .fold(0, |m, (b, _)| m | 1 << b)
 +    }
 +
 +    /// The block-space transform of the whole model for a turn of `yaw`
@@ -1433,6 +1523,7 @@ index 000000000..de10d53d9
 +            if bone.hidden || !pick(i) {
 +                continue;
 +            }
++            let light = if bone.glow { FULL_LIGHT } else { paint.light };
 +            let m = base * pose[i];
 +            for tri in &bone.triangles {
 +                let corners = [tri[0], tri[1], tri[2], tri[2]];
@@ -1445,7 +1536,7 @@ index 000000000..de10d53d9
 +                        uv: [r.u0 + (r.u1 - r.u0) * uv[0], r.v0 + (r.v1 - r.v0) * uv[1]],
 +                        layer: 0,
 +                        color: 255 << 24 | c(0) << 16 | c(8) << 8 | c(16),
-+                        light: paint.light,
++                        light,
 +                        normal: [0; 4],
 +                        glint_uv: [0.0, 0.0],
 +                    });
@@ -1557,6 +1648,31 @@ index 000000000..de10d53d9
 +        let pose = m.pose(Some(0), 1.0);
 +        let p = pose[1].transform_point3(Vec3::X);
 +        assert!((p - Vec3::new(0.0, 0.0, -1.0)).length() < 1e-4, "{p}");
++    }
++
++    #[test]
++    fn a_state_shows_one_inner_part_or_the_other() {
++        let bone = |name: &str| Bone {
++            name: name.into(),
++            ..Default::default()
++        };
++        let cond = |is: Option<&str>, not: Option<&str>| Play {
++            animation: 0,
++            property: "honey_level".into(),
++            is: is.map(Into::into),
++            not: not.map(Into::into),
++        };
++        let m = Model {
++            bones: vec![bone("Main"), bone("InnerBurning"), bone("InnerEmpty")],
++            show: vec![(1, cond(None, Some("0"))), (2, cond(Some("0"), None))],
++            ..Default::default()
++        };
++        let at =
++            |level: &'static str| move |k: &str| (k == "honey_level").then(|| level.to_owned());
++        assert_eq!(m.hidden_by(&at("0")), 0b010, "cold: InnerEmpty shows");
++        assert_eq!(m.hidden_by(&at("3")), 0b100, "burning: InnerBurning shows");
++        // A state without the property hides both.
++        assert_eq!(m.hidden_by(&|_: &str| None), 0b110);
 +    }
 +
 +    #[test]
