@@ -256,6 +256,5 @@
   "content/data/ntm/tags/item/ingredients/nugget_uranium.json",
   "content/data/ntm/tags/item/ingredients/sulfur.json",
   "crates/ntm-core/data/furnace_recipes.json",
-  "crates/ntm-core/data/press_recipes.json",
   "tools/recipe-gen/coverage.json"
 ]

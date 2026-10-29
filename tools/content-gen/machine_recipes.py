@@ -293,6 +293,8 @@ def export(source, output, rows):
     counts['foundry'] = foundry_recipes.export(source, output, rows)['coverage']
     import anvil_recipes
     counts['anvil'] = anvil_recipes.export(source, output, rows)['coverage']
+    import press_recipes
+    counts['press'] = press_recipes.export(source, output, rows)['coverage']
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 

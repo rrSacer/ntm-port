@@ -1,0 +1,1303 @@
+{
+  "schema": 1,
+  "machine": "press",
+  "profile": {
+    "external_mods": [],
+    "modern_vanilla_ore_variants": false
+  },
+  "coverage": {
+    "source_calls": 38,
+    "expanded": 48,
+    "emitted": 47,
+    "skipped": 1,
+    "stamps": 32,
+    "skipped_stamps": 1,
+    "by_stamp": {
+      "flat": {
+        "emitted": 10,
+        "skipped": 1
+      },
+      "plate": {
+        "emitted": 13,
+        "skipped": 0
+      },
+      "wire": {
+        "emitted": 11,
+        "skipped": 0
+      },
+      "circuit": {
+        "emitted": 1,
+        "skipped": 0
+      },
+      "c357": {
+        "emitted": 0,
+        "skipped": 0
+      },
+      "c44": {
+        "emitted": 0,
+        "skipped": 0
+      },
+      "c50": {
+        "emitted": 2,
+        "skipped": 0
+      },
+      "c9": {
+        "emitted": 2,
+        "skipped": 0
+      },
+      "printing1": {
+        "emitted": 1,
+        "skipped": 0
+      },
+      "printing2": {
+        "emitted": 1,
+        "skipped": 0
+      },
+      "printing3": {
+        "emitted": 1,
+        "skipped": 0
+      },
+      "printing4": {
+        "emitted": 1,
+        "skipped": 0
+      },
+      "printing5": {
+        "emitted": 1,
+        "skipped": 0
+      },
+      "printing6": {
+        "emitted": 1,
+        "skipped": 0
+      },
+      "printing7": {
+        "emitted": 1,
+        "skipped": 0
+      },
+      "printing8": {
+        "emitted": 1,
+        "skipped": 0
+      }
+    }
+  },
+  "source_recipe_order": [
+    "press.0",
+    "press.1",
+    "press.2",
+    "press.3",
+    "press.4",
+    "press.5",
+    "press.6",
+    "press.7",
+    "press.8",
+    "press.9",
+    "press.10",
+    "press.11",
+    "press.12",
+    "press.13",
+    "press.14",
+    "press.15",
+    "press.16",
+    "press.17",
+    "press.18",
+    "press.19",
+    "press.20",
+    "press.21",
+    "press.22",
+    "press.23",
+    "press.24",
+    "press.25",
+    "press.26",
+    "press.27",
+    "press.28",
+    "press.29",
+    "press.30",
+    "press.31",
+    "press.32",
+    "press.33",
+    "press.34",
+    "press.35",
+    "press.36",
+    "press.37",
+    "press.38",
+    "press.39",
+    "press.40",
+    "press.41",
+    "press.42",
+    "press.43",
+    "press.44",
+    "press.45",
+    "press.46",
+    "press.47"
+  ],
+  "stamps": [
+    {
+      "item": "ntm:stamp_stone_flat",
+      "type": "flat",
+      "durability": 32,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2724"
+    },
+    {
+      "item": "ntm:stamp_stone_plate",
+      "type": "plate",
+      "durability": 32,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2725"
+    },
+    {
+      "item": "ntm:stamp_stone_wire",
+      "type": "wire",
+      "durability": 32,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2726"
+    },
+    {
+      "item": "ntm:stamp_stone_circuit",
+      "type": "circuit",
+      "durability": 32,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2727"
+    },
+    {
+      "item": "ntm:stamp_iron_flat",
+      "type": "flat",
+      "durability": 64,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2728"
+    },
+    {
+      "item": "ntm:stamp_iron_plate",
+      "type": "plate",
+      "durability": 64,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2729"
+    },
+    {
+      "item": "ntm:stamp_iron_wire",
+      "type": "wire",
+      "durability": 64,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2730"
+    },
+    {
+      "item": "ntm:stamp_iron_circuit",
+      "type": "circuit",
+      "durability": 64,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2731"
+    },
+    {
+      "item": "ntm:stamp_steel_flat",
+      "type": "flat",
+      "durability": 192,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2732"
+    },
+    {
+      "item": "ntm:stamp_steel_plate",
+      "type": "plate",
+      "durability": 192,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2733"
+    },
+    {
+      "item": "ntm:stamp_steel_wire",
+      "type": "wire",
+      "durability": 192,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2734"
+    },
+    {
+      "item": "ntm:stamp_steel_circuit",
+      "type": "circuit",
+      "durability": 192,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2735"
+    },
+    {
+      "item": "ntm:stamp_titanium_flat",
+      "type": "flat",
+      "durability": 256,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2736"
+    },
+    {
+      "item": "ntm:stamp_titanium_plate",
+      "type": "plate",
+      "durability": 256,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2737"
+    },
+    {
+      "item": "ntm:stamp_titanium_wire",
+      "type": "wire",
+      "durability": 256,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2738"
+    },
+    {
+      "item": "ntm:stamp_titanium_circuit",
+      "type": "circuit",
+      "durability": 256,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2739"
+    },
+    {
+      "item": "ntm:stamp_obsidian_flat",
+      "type": "flat",
+      "durability": 512,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2740"
+    },
+    {
+      "item": "ntm:stamp_obsidian_plate",
+      "type": "plate",
+      "durability": 512,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2741"
+    },
+    {
+      "item": "ntm:stamp_obsidian_wire",
+      "type": "wire",
+      "durability": 512,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2742"
+    },
+    {
+      "item": "ntm:stamp_obsidian_circuit",
+      "type": "circuit",
+      "durability": 512,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2743"
+    },
+    {
+      "item": "ntm:stamp_desh_flat",
+      "type": "flat",
+      "durability": 0,
+      "unbreakable": true,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2744"
+    },
+    {
+      "item": "ntm:stamp_desh_plate",
+      "type": "plate",
+      "durability": 0,
+      "unbreakable": true,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2745"
+    },
+    {
+      "item": "ntm:stamp_desh_wire",
+      "type": "wire",
+      "durability": 0,
+      "unbreakable": true,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2746"
+    },
+    {
+      "item": "ntm:stamp_desh_circuit",
+      "type": "circuit",
+      "durability": 0,
+      "unbreakable": true,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2747"
+    },
+    {
+      "item": "ntm:stamp_357",
+      "type": "c357",
+      "durability": 1000,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2748"
+    },
+    {
+      "item": "ntm:stamp_44",
+      "type": "c44",
+      "durability": 1000,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2749"
+    },
+    {
+      "item": "ntm:stamp_9",
+      "type": "c9",
+      "durability": 1000,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2750"
+    },
+    {
+      "item": "ntm:stamp_50",
+      "type": "c50",
+      "durability": 1000,
+      "unbreakable": false,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2751"
+    },
+    {
+      "item": "ntm:stamp_desh_357",
+      "type": "c357",
+      "durability": 0,
+      "unbreakable": true,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2754"
+    },
+    {
+      "item": "ntm:stamp_desh_44",
+      "type": "c44",
+      "durability": 0,
+      "unbreakable": true,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2755"
+    },
+    {
+      "item": "ntm:stamp_desh_9",
+      "type": "c9",
+      "durability": 0,
+      "unbreakable": true,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2756"
+    },
+    {
+      "item": "ntm:stamp_desh_50",
+      "type": "c50",
+      "durability": 0,
+      "unbreakable": true,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2757"
+    }
+  ],
+  "skipped_stamps": [
+    {
+      "variable": "ModItems.stamp_book",
+      "class": "ItemStampBook",
+      "types": [
+        "printing1",
+        "printing2",
+        "printing3",
+        "printing4",
+        "printing5",
+        "printing6",
+        "printing7",
+        "printing8"
+      ],
+      "durability": 0,
+      "source": "src/main/java/com/hbm/items/ModItems.java:2752",
+      "reason": "ModItems.stamp_book absent from catalog (setCreativeTab(null) secret item)"
+    }
+  ],
+  "recipes": [
+    {
+      "name": "press.0",
+      "source_index": 0,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:61",
+      "stamp": "flat",
+      "in": {
+        "ids": [
+          "ntm:powder_quartz"
+        ],
+        "count": 1
+      },
+      "out": [
+        "minecraft:quartz",
+        1
+      ],
+      "label": "Quartzo do Nether",
+      "label_en": "Nether Quartz"
+    },
+    {
+      "name": "press.1",
+      "source_index": 1,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:62",
+      "stamp": "flat",
+      "in": {
+        "ids": [
+          "ntm:powder_lapis"
+        ],
+        "count": 1
+      },
+      "out": [
+        "minecraft:lapis_lazuli",
+        1
+      ],
+      "label": "Lápis-Lazúli",
+      "label_en": "Lapis Lazuli"
+    },
+    {
+      "name": "press.2",
+      "source_index": 2,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:63",
+      "stamp": "flat",
+      "in": {
+        "ids": [
+          "ntm:powder_diamond"
+        ],
+        "count": 1
+      },
+      "out": [
+        "minecraft:diamond",
+        1
+      ],
+      "label": "Diamante",
+      "label_en": "Diamond"
+    },
+    {
+      "name": "press.3",
+      "source_index": 3,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:64",
+      "stamp": "flat",
+      "in": {
+        "ids": [
+          "ntm:powder_emerald"
+        ],
+        "count": 1
+      },
+      "out": [
+        "minecraft:emerald",
+        1
+      ],
+      "label": "Esmeralda",
+      "label_en": "Emerald"
+    },
+    {
+      "name": "press.4",
+      "source_index": 4,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:65",
+      "stamp": "flat",
+      "in": {
+        "ids": [
+          "ntm:biomass"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:biomass_compressed",
+        1
+      ],
+      "label": "Biomassa Compactada",
+      "label_en": "Compressed Biomass"
+    },
+    {
+      "name": "press.5",
+      "source_index": 5,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:66",
+      "stamp": "flat",
+      "in": {
+        "ids": [
+          "ntm:coke__coal",
+          "ntm:coke__lignite",
+          "ntm:coke__petroleum"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:ingot_graphite",
+        1
+      ],
+      "label": "Lingote de Grafite",
+      "label_en": "Graphite Ingot"
+    },
+    {
+      "name": "press.7",
+      "source_index": 7,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:68",
+      "stamp": "flat",
+      "in": {
+        "ids": [
+          "minecraft:jungle_log"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:ball_resin",
+        1
+      ],
+      "label": "Látex",
+      "label_en": "Latex"
+    },
+    {
+      "name": "press.8",
+      "source_index": 8,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:70",
+      "stamp": "flat",
+      "in": {
+        "ids": [
+          "ntm:powder_coal"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:briquette__coal",
+        1
+      ],
+      "label": "Briquete de Carvão",
+      "label_en": "Coal Briquette"
+    },
+    {
+      "name": "press.9",
+      "source_index": 9,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:71",
+      "stamp": "flat",
+      "in": {
+        "ids": [
+          "ntm:powder_lignite"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:briquette__lignite",
+        1
+      ],
+      "label": "Briquete de Linhito",
+      "label_en": "Lignite Briquette"
+    },
+    {
+      "name": "press.10",
+      "source_index": 10,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:72",
+      "stamp": "flat",
+      "in": {
+        "ids": [
+          "ntm:powder_sawdust"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:briquette__wood",
+        1
+      ],
+      "label": "Briquete de Serragem",
+      "label_en": "Sawdust Briquette"
+    },
+    {
+      "name": "press.11",
+      "source_index": 11,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:74",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "minecraft:iron_ingot"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_iron",
+        1
+      ],
+      "label": "Placa de Ferro",
+      "label_en": "Iron Plate"
+    },
+    {
+      "name": "press.12",
+      "source_index": 12,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:75",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "minecraft:gold_ingot"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_gold",
+        1
+      ],
+      "label": "Placa de Ouro",
+      "label_en": "Gold Plate"
+    },
+    {
+      "name": "press.13",
+      "source_index": 13,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:76",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_titanium"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_titanium",
+        1
+      ],
+      "label": "Placa de Titânio",
+      "label_en": "Titanium Plate"
+    },
+    {
+      "name": "press.14",
+      "source_index": 14,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:77",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_aluminium"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_aluminium",
+        1
+      ],
+      "label": "Placa de Alumínio",
+      "label_en": "Aluminium Plate"
+    },
+    {
+      "name": "press.15",
+      "source_index": 15,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:78",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_steel"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_steel",
+        1
+      ],
+      "label": "Placa de Aço",
+      "label_en": "Steel Plate"
+    },
+    {
+      "name": "press.16",
+      "source_index": 16,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:79",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_lead"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_lead",
+        1
+      ],
+      "label": "Placa de Chumbo",
+      "label_en": "Lead Plate"
+    },
+    {
+      "name": "press.17",
+      "source_index": 17,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:80",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_copper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_copper",
+        1
+      ],
+      "label": "Placa de Cobre",
+      "label_en": "Copper Plate"
+    },
+    {
+      "name": "press.18",
+      "source_index": 18,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:81",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_schrabidium"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_schrabidium",
+        1
+      ],
+      "label": "Placa de Schrabídio",
+      "label_en": "Schrabidium Plate"
+    },
+    {
+      "name": "press.19",
+      "source_index": 19,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:82",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_combine_steel"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_combine_steel",
+        1
+      ],
+      "label": "Placa de Aço CMB",
+      "label_en": "CMB Steel Plate"
+    },
+    {
+      "name": "press.20",
+      "source_index": 20,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:83",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_gunmetal"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_gunmetal",
+        1
+      ],
+      "label": "Placa de Bronze de Armas",
+      "label_en": "Gunmetal Plate"
+    },
+    {
+      "name": "press.21",
+      "source_index": 21,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:84",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_weaponsteel"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_weaponsteel",
+        1
+      ],
+      "label": "Placa de Aço para Armas",
+      "label_en": "Weapon Steel Plate"
+    },
+    {
+      "name": "press.22",
+      "source_index": 22,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:85",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_saturnite"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_saturnite",
+        1
+      ],
+      "label": "Placa de Saturnita",
+      "label_en": "Saturnite Plate"
+    },
+    {
+      "name": "press.23",
+      "source_index": 23,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:86",
+      "stamp": "plate",
+      "in": {
+        "ids": [
+          "ntm:ingot_dura_steel"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:plate_dura_steel",
+        1
+      ],
+      "label": "Placa de Aço Rápido",
+      "label_en": "High-Speed Steel Plate"
+    },
+    {
+      "name": "press.24",
+      "source_index": 24,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:88",
+      "stamp": "c9",
+      "in": {
+        "ids": [
+          "ntm:plate_gunmetal"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:casing__small",
+        4
+      ],
+      "label": "Estojo Pequeno de Gunmetal ×4",
+      "label_en": "Small Gunmetal Casing ×4"
+    },
+    {
+      "name": "press.25",
+      "source_index": 25,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:89",
+      "stamp": "c50",
+      "in": {
+        "ids": [
+          "ntm:plate_gunmetal"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:casing__large",
+        2
+      ],
+      "label": "Estojo Grande de Gunmetal ×2",
+      "label_en": "Large Gunmetal Casing ×2"
+    },
+    {
+      "name": "press.26",
+      "source_index": 26,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:90",
+      "stamp": "c9",
+      "in": {
+        "ids": [
+          "ntm:plate_weaponsteel"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:casing__small_steel",
+        4
+      ],
+      "label": "Estojo Pequeno de Aço de Arma ×4",
+      "label_en": "Small Weapon Steel Casing ×4"
+    },
+    {
+      "name": "press.27",
+      "source_index": 27,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:91",
+      "stamp": "c50",
+      "in": {
+        "ids": [
+          "ntm:plate_weaponsteel"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:casing__large_steel",
+        2
+      ],
+      "label": "Estojo Grande de Aço de Arma ×2",
+      "label_en": "Large Weapon Steel Casing ×2"
+    },
+    {
+      "name": "press.28",
+      "source_index": 28,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "carbon",
+        "material_id": 699,
+        "ore": "ingotCarbon"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "ntm:ingot_graphite"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__carbon",
+        8
+      ],
+      "label": "Fio de Carbono ×8",
+      "label_en": "Carbon Wire ×8"
+    },
+    {
+      "name": "press.29",
+      "source_index": 29,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "gold",
+        "material_id": 7900,
+        "ore": "ingotGold"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "minecraft:gold_ingot"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__gold",
+        8
+      ],
+      "label": "Fio de Ouro ×8",
+      "label_en": "Gold Wire ×8"
+    },
+    {
+      "name": "press.30",
+      "source_index": 30,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "schrabidium",
+        "material_id": 12626,
+        "ore": "ingotSchrabidium"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "ntm:ingot_schrabidium"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__schrabidium",
+        8
+      ],
+      "label": "Fio de Schrabídio ×8",
+      "label_en": "Schrabidium Wire ×8"
+    },
+    {
+      "name": "press.31",
+      "source_index": 31,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "copper",
+        "material_id": 2900,
+        "ore": "ingotCopper"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "ntm:ingot_copper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__copper",
+        8
+      ],
+      "label": "Fio de Cobre ×8",
+      "label_en": "Copper Wire ×8"
+    },
+    {
+      "name": "press.32",
+      "source_index": 32,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "tungsten",
+        "material_id": 7400,
+        "ore": "ingotTungsten"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "ntm:ingot_tungsten"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__tungsten",
+        8
+      ],
+      "label": "Fio de Tungstênio ×8",
+      "label_en": "Tungsten Wire ×8"
+    },
+    {
+      "name": "press.33",
+      "source_index": 33,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "aluminium",
+        "material_id": 1300,
+        "ore": "ingotAluminum"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "ntm:ingot_aluminium"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__aluminium",
+        8
+      ],
+      "label": "Fio de Alumínio ×8",
+      "label_en": "Aluminium Wire ×8"
+    },
+    {
+      "name": "press.34",
+      "source_index": 34,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "lead",
+        "material_id": 8200,
+        "ore": "ingotLead"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "ntm:ingot_lead"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__lead",
+        8
+      ],
+      "label": "Fio de Chumbo ×8",
+      "label_en": "Lead Wire ×8"
+    },
+    {
+      "name": "press.35",
+      "source_index": 35,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "zirconium",
+        "material_id": 4000,
+        "ore": "ingotZirconium"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "ntm:ingot_zirconium"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__zirconium",
+        8
+      ],
+      "label": "Fio de Zircônio ×8",
+      "label_en": "Zirconium Wire ×8"
+    },
+    {
+      "name": "press.36",
+      "source_index": 36,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "steel",
+        "material_id": 30,
+        "ore": "ingotSteel"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "ntm:ingot_steel"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__steel",
+        8
+      ],
+      "label": "Fio de Aço ×8",
+      "label_en": "Steel Wire ×8"
+    },
+    {
+      "name": "press.37",
+      "source_index": 37,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "mingrade",
+        "material_id": 31,
+        "ore": "ingotMingrade"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "ntm:ingot_red_copper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__red_copper",
+        8
+      ],
+      "label": "Fio de Cobre Vermelho ×8",
+      "label_en": "Red Copper Wire ×8"
+    },
+    {
+      "name": "press.38",
+      "source_index": 38,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:95",
+      "expansion": {
+        "material": "magtung",
+        "material_id": 38,
+        "ore": "ingotMagnetizedTungsten"
+      },
+      "stamp": "wire",
+      "in": {
+        "ids": [
+          "ntm:ingot_magnetized_tungsten"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:wire_fine__magnetized_tungsten",
+        8
+      ],
+      "label": "Fio de Tungstênio Magnetizado ×8",
+      "label_en": "Magnetized Tungsten Wire ×8"
+    },
+    {
+      "name": "press.39",
+      "source_index": 39,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:99",
+      "stamp": "circuit",
+      "in": {
+        "ids": [
+          "ntm:billet_silicon"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:circuit__silicon",
+        1
+      ],
+      "label": "Wafer de Silício Impresso",
+      "label_en": "Printed Silicon Wafer"
+    },
+    {
+      "name": "press.40",
+      "source_index": 40,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:101",
+      "stamp": "printing1",
+      "in": {
+        "ids": [
+          "minecraft:paper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:page_of___page1",
+        1
+      ],
+      "label": "Página 1",
+      "label_en": "Page 1"
+    },
+    {
+      "name": "press.41",
+      "source_index": 41,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:102",
+      "stamp": "printing2",
+      "in": {
+        "ids": [
+          "minecraft:paper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:page_of___page2",
+        1
+      ],
+      "label": "Página 2",
+      "label_en": "Page 2"
+    },
+    {
+      "name": "press.42",
+      "source_index": 42,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:103",
+      "stamp": "printing3",
+      "in": {
+        "ids": [
+          "minecraft:paper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:page_of___page3",
+        1
+      ],
+      "label": "Página 3",
+      "label_en": "Page 3"
+    },
+    {
+      "name": "press.43",
+      "source_index": 43,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:104",
+      "stamp": "printing4",
+      "in": {
+        "ids": [
+          "minecraft:paper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:page_of___page4",
+        1
+      ],
+      "label": "Página 4",
+      "label_en": "Page 4"
+    },
+    {
+      "name": "press.44",
+      "source_index": 44,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:105",
+      "stamp": "printing5",
+      "in": {
+        "ids": [
+          "minecraft:paper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:page_of___page5",
+        1
+      ],
+      "label": "Página 5",
+      "label_en": "Page 5"
+    },
+    {
+      "name": "press.45",
+      "source_index": 45,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:106",
+      "stamp": "printing6",
+      "in": {
+        "ids": [
+          "minecraft:paper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:page_of___page6",
+        1
+      ],
+      "label": "Página 6",
+      "label_en": "Page 6"
+    },
+    {
+      "name": "press.46",
+      "source_index": 46,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:107",
+      "stamp": "printing7",
+      "in": {
+        "ids": [
+          "minecraft:paper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:page_of___page7",
+        1
+      ],
+      "label": "Página 7",
+      "label_en": "Page 7"
+    },
+    {
+      "name": "press.47",
+      "source_index": 47,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:108",
+      "stamp": "printing8",
+      "in": {
+        "ids": [
+          "minecraft:paper"
+        ],
+        "count": 1
+      },
+      "out": [
+        "ntm:page_of___page8",
+        1
+      ],
+      "label": "Página 8",
+      "label_en": "Page 8"
+    }
+  ],
+  "skipped": [
+    {
+      "name": "press.6",
+      "source_index": 6,
+      "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:67",
+      "stamp": "flat",
+      "reason": "missing catalog identities: ModItems.meteorite_sword_reforged, ModItems.meteorite_sword_hardened",
+      "missing_items": [
+        "ModItems.meteorite_sword_reforged",
+        "ModItems.meteorite_sword_hardened"
+      ],
+      "expression": "StampType.FLAT, new ComparableStack(ModItems.meteorite_sword_reforged),\tModItems.meteorite_sword_hardened"
+    }
+  ],
+  "notes": [
+    "source_index preserves PressRecipes.registerDefaults() source order with Mats.orderedList WIRE expansion in iteration order.",
+    "OreDict resolution uses the conservative Forge 1.7.10 snapshot (no modern vanilla copper_ingot alias; carbon maps to ingotCarbon -> ntm:ingot_graphite, gold maps to ingotGold -> minecraft:gold_ingot).",
+    "Desh stamps have durability 0 (unbreakable in ItemStamp / TileEntityMachinePress).",
+    "C357 and C44 stamps exist in ModItems.java (4 items), while PressRecipes.registerDefaults() defines 0 recipes for them in NTM 1.7.10.",
+    "PRINTING1..PRINTING8 recipes resolve paper -> ntm:page_of___page1..8; their stamp provider ModItems.stamp_book (ItemStampBook, CreativeTab null) is absent from ids.json and recorded in skipped_stamps."
+  ]
+}

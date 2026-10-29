@@ -22,13 +22,16 @@ for rel in json.loads(manifest.read_text()):
                 assert tag.exists(),tag
                 assert all(v in ids for v in json.loads(tag.read_text())['values'])
         assert data['result']['id'] in ids
-for name in ['press','furnace']:
-    recipes=json.loads((root/f'crates/ntm-core/data/{name}_recipes.json').read_text())
-    for r in recipes['recipes']:
-        for side in ['input','output']:
-            item=r[side]['item']
-            if item.startswith('ntm:'): assert item in ids,item
-    if name=='press':
-        assert all(s['item'] in ids for s in recipes['stamps'])
-        assert all(r['stamp'] in {s['type'] for s in recipes['stamps']} for r in recipes['recipes'])
+furnace=json.loads((root/'crates/ntm-core/data/furnace_recipes.json').read_text())
+for r in furnace['recipes']:
+    for side in ['input','output']:
+        item=r[side]['item']
+        if item.startswith('ntm:'): assert item in ids,item
+press=json.loads((root/'content/machine-recipes/press.json').read_text())
+stamp_types={s['type'] for s in press['stamps']} | {t for s in press.get('skipped_stamps',[]) for t in s.get('types',[])}
+assert all(s['item'] in ids for s in press['stamps'])
+for r in press['recipes']:
+    for item in [*r['in']['ids'], r['out'][0]]:
+        if item.startswith('ntm:'): assert item in ids,item
+    assert r['stamp'] in stamp_types,r['stamp']
 print('PASS: deterministic generation, flat paths, item/tag references, machine/stamp integrity')

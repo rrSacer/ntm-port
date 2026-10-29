@@ -19,8 +19,9 @@ entries = json.loads((CONTENT / 'ids.json').read_text())['entries']
 ids = {e['id'] for e in entries}
 files = {}
 provenance = []
-press = []
 furnace = []
+# Handed over to tools/machine-gen/build.py (fed by content/machine-recipes/press.json).
+HANDED_OFF = {'crates/ntm-core/data/press_recipes.json'}
 
 def write(path, obj):
     files[str(path.relative_to(ROOT))] = json.dumps(obj, indent=2, ensure_ascii=False) + '\n'
@@ -85,13 +86,6 @@ for m in re.finditer(pattern, smelt_text):
         add(out+'_from_'+kind+'_'+src, {'type':'minecraft:'+kind,'category':'misc','ingredient':ni(src),'result':{'id':ni(out),'count':count},'experience':float(xp),'cookingtime':ticks}, f'crafting/SmeltingRecipes.java:{line}' + ('; blasting is 26.3 port extension' if kind=='blasting' else ''))
     furnace.append({'id':'ntm:'+src,'input':{'item':ni(src),'count':1},'output':{'item':ni(out),'count':count},'experience':float(xp)})
 
-# NTM press: three explicit plates and auto-generated fine wires, no dense/cast/welded inventions.
-for e in entries:
-    if e['id'] in ['ntm:plate_aluminium','ntm:plate_lead','ntm:plate_titanium']:
-        press.append({'id':e['id'], 'input':{'item':ni('ingot_'+e['material']),'count':1},'output':{'item':e['id'],'count':1},'stamp':'plate'})
-    if e['source_variable']=='wire_fine' and ni('ingot_'+e['material']) in ids:
-        press.append({'id':e['id'], 'input':{'item':ni('ingot_'+e['material']),'count':1},'output':{'item':e['id'],'count':8},'stamp':'wire'})
-
 shaped('machine_press', 'machine_press', ['IRI','IPI','IBI'], {'I':'minecraft:iron_ingot','R':'minecraft:furnace','P':'minecraft:piston','B':'minecraft:iron_block'},source='main/CraftingManager.java:288')
 for brick in ['brick','nether_brick']:
     shaped('stamp_iron_flat_from_'+brick,'stamp_iron_flat',['III','SSS'],{'I':'minecraft:'+brick,'S':'minecraft:iron_ingot'},source='main/CraftingManager.java:346-354')
@@ -131,18 +125,18 @@ for f in sorted((vanilla/'recipe').glob('*.json')):
     for item in sorted(set(expand(rec['ingredient']))):
         furnace.append({'id':'minecraft:'+f.stem+'/'+item.split(':')[1], 'input':{'item':item,'count':1}, 'output':{'item':result['id'],'count':result.get('count',1)},'experience':rec.get('experience',0)})
 
-stamps=[{'item':ni('stamp_iron_'+s),'type':s,'durability':64} for s in ['flat','plate','wire']]
-write(ROOT/'crates/ntm-core/data/press_recipes.json',{'schema':1,'stamps':stamps,'machines':{'machine_epress':{'energy_per_tick':100},'machine_press':{'max_speed':400,'progress_at_max':25,'max_press':200}},'recipes':press})
 write(ROOT/'crates/ntm-core/data/furnace_recipes.json',{'schema':1,'machines':{'machine_electric_furnace_off':{'ticks':100,'energy_per_tick':50}},'recipes':furnace})
 # Coverage records are intentionally descriptive: many catalog items have no
 # crafting recipe (worldgen drops, crystallizer, casting, welding, wiremill).
+press_path = CONTENT / 'machine-recipes/press.json'
+press_count = len(json.loads(press_path.read_text())['recipes']) if press_path.is_file() else 0
 outputs={json.loads(v)['result']['id'] for k,v in files.items() if '/recipe/' in k}
-coverage={'catalog_items':len(ids),'vanilla_recipe_count':len(provenance),'temporary_count':sum(x['temporary'] for x in provenance),'press_count':len(press),'furnace_count':len(furnace),'recipes':provenance,'without_vanilla_recipe':sorted(ids-outputs)}
+coverage={'catalog_items':len(ids),'vanilla_recipe_count':len(provenance),'temporary_count':sum(x['temporary'] for x in provenance),'press_count':press_count,'furnace_count':len(furnace),'recipes':provenance,'without_vanilla_recipe':sorted(ids-outputs)}
 write(ROOT/'tools/recipe-gen/coverage.json',coverage)
 manifest=ROOT/'tools/recipe-gen/generated-files.json'
 if manifest.exists():
     for rel in json.loads(manifest.read_text()):
-        if rel not in files:
+        if rel not in files and rel not in HANDED_OFF:
             (ROOT/rel).unlink(missing_ok=True)
 for rel,text in files.items():
     dest=ROOT/rel
