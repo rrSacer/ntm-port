@@ -1555,10 +1555,10 @@ index 000000000..830f267f7
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
 new file mode 100644
-index 000000000..a54a2f2ea
+index 000000000..6da2be7d5
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_screens.rs
-@@ -0,0 +1,497 @@
+@@ -0,0 +1,520 @@
 +//! Screens of content mods' machines (`horizon_world::mod_machines`): the
 +//! machine's own background texture, with bars, lights and tooltips drawn
 +//! from the values the mod sets. Each `assets/<namespace>/horizon_screen/<name>.json`
@@ -1574,7 +1574,10 @@ index 000000000..a54a2f2ea
 +//!   "inventory_label": [8, 162],             null: none
 +//!   "bars": [                                value `value` of `max` (a value's index, or "max_value")
 +//!     {"value": 0, "max": 1, "rect": [152, 18, 16, 61], "uv": [176, 0], "dir": "up"},
-+//!     {"value": 4, "max_value": 4000, "rect": [8, 99, 52, 16], "color": 6, "dir": "right"}
++//!     {"value": 4, "max_value": 4000, "rect": [8, 99, 52, 16], "color": 6, "dir": "right"},
++//!     {"value": 2, "from": 248, "max_value": 497, "rect": [92, 21, 12, 36], "uv": [182, 37], "dir": "up"}
++//!                                            `from`: empty up to that value (one of HBM's
++//!                                            centrifuge's four progress columns)
 +//!   ],                                       `color`: a value's index holding 0xRRGGBB, in place of uv
 +//!   "overlays": [                            a part of the texture drawn while ...
 +//!     {"slot": 0, "rect": [142, 90, 16, 16], "uv": [176, 0]},    ... the slot holds something
@@ -1611,6 +1614,8 @@ index 000000000..a54a2f2ea
 +#[derive(Clone, Debug, PartialEq)]
 +pub struct Bar {
 +    pub value: usize,
++    /// The value at which it starts to fill.
++    pub from: i32,
 +    pub max: Max,
 +    pub rect: [f32; 4],
 +    pub uv: Option<[f32; 2]>,
@@ -1760,6 +1765,7 @@ index 000000000..a54a2f2ea
 +        };
 +        bars.push(Bar {
 +            value: index(&b["value"]).ok_or("a bar without value")?,
++            from: b["from"].as_i64().unwrap_or(0) as i32,
 +            max,
 +            rect: floats::<4>(&b["rect"]).ok_or("a bar without rect")?,
 +            uv: floats::<2>(&b["uv"]),
@@ -1953,10 +1959,9 @@ index 000000000..a54a2f2ea
 +                Max::Value(i) => value(i),
 +                Max::Fixed(v) => v,
 +            };
-+            if max <= 0 {
++            let Some(f) = fill(value(bar.value), bar.from, max) else {
 +                continue;
-+            }
-+            let f = (value(bar.value) as f32 / max as f32).clamp(0.0, 1.0);
++            };
 +            let [x, y, w, h] = bar.rect;
 +            // The part of the rect the value covers, as HBM's GUIs cut it.
 +            let (cx, cy, cw, ch) = match bar.dir {
@@ -2020,6 +2025,13 @@ index 000000000..a54a2f2ea
 +    }
 +}
 +
++/// The share of a bar `value` fills between `from` and `max`; None for a
++/// bar with nothing to show (`max` not above `from`).
++fn fill(value: i32, from: i32, max: i32) -> Option<f32> {
++    let span = i64::from(max) - i64::from(from);
++    (span > 0).then(|| ((i64::from(value) - i64::from(from)) as f32 / span as f32).clamp(0.0, 1.0))
++}
++
 +#[cfg(test)]
 +mod tests {
 +    use super::*;
@@ -2031,6 +2043,17 @@ index 000000000..a54a2f2ea
 +            "12.5k / 1M HE"
 +        );
 +        assert_eq!(format("{2} ticks {x}", &[1, 2, 3]), "3 ticks {x}");
++    }
++
++    #[test]
++    fn a_bar_fills_from_its_start() {
++        assert_eq!(fill(50, 0, 100), Some(0.5));
++        // The second of four columns: empty below 250, full from 500.
++        assert_eq!(fill(100, 250, 500), Some(0.0));
++        assert_eq!(fill(375, 250, 500), Some(0.5));
++        assert_eq!(fill(900, 250, 500), Some(1.0));
++        assert_eq!(fill(5, 0, 0), None);
++        assert_eq!(fill(i32::MAX, i32::MIN, i32::MAX), Some(1.0));
 +    }
 +
 +    #[test]
