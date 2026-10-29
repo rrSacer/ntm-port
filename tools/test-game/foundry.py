@@ -10,7 +10,9 @@ mudo), com os mods de tools/build-visual.sh. Etapas:
            jogador retira;
   canais   (etapa 2) no lugar do molde, canal → canal → tanque → saída, e um
            molde num buraco sob a saída; 2 lingotes de ferro chegam ao molde;
-  voltar   depois de reabrir o mundo: o calor do cadinho e o metal do tanque.
+  reter    o molde sai de sob a saída e 3 lingotes vão ao cadinho: o metal
+           fica no tanque (e o jogo deve ser fechado e reaberto);
+  voltar   depois de reabrir o mundo: o molde de volta, os 3 lingotes saem.
 Grava <pasta>/foundry-evidence.json e capturas foundry-*.png.
 """
 import json, subprocess, sys, time
@@ -254,11 +256,51 @@ def canais():
     print('canais', evidence['canais'])
 
 
-def voltar():
+def line():
+    """The outlet's mold and where to stand to reach it (after `canais`)."""
     y = floor_y()
-    ctl('tp', X + 3.5, y, Z + 3.5)
-    time.sleep(2)
-    evidence['voltar'] = {'cadinho': heat()}
+    core = find('ntm:machine_crucible', y + 1, y + 1)
+    _, _, (dx, dz) = waste(core)
+    (cx, _, cz) = core[0]
+    ox, oz = cx - 5 * dx, cz - 5 * dz
+    return core, (ox, y - 1, oz), (ox - 2 * dx, y, oz - 2 * dz)
+
+
+def reter():
+    core, mold, far = line()
+    (cx, y1, cz) = core[0]
+    ctl('command', 'clear @s minecraft:iron_ingot', check=False)
+    ctl('tp', far[0] + 0.5, far[1], far[2] + 0.5)
+    ctl('interact', *mold)
+    time.sleep(1.5)
+    for s in machine_slots():
+        ctl('click-slot', s[0], 'shift')
+        time.sleep(0.5)
+    left = machine_slots()
+    ctl('close', check=False)
+    ctl('command', 'clear @s minecraft:iron_ingot', check=False)
+    put = shift_in(cx + 1, y1, cz, [('minecraft:iron_ingot', 3)], (cx + 3, y1 - 1, cz))
+    time.sleep(60)
+    tank = state(cx - 4 * (cx - mold[0]) // 5, y1 - 1, cz - 4 * (cz - mold[2]) // 5)
+    ctl('save', check=False)
+    time.sleep(5)
+    evidence['reter'] = {'molde_depois_de_tirar': left, 'cadinho': put, 'tanque': tank,
+                         'ferro_no_inventario': ctl('inventory').get('counts', {}).get('minecraft:iron_ingot', 0)}
+    print('reter', evidence['reter'])
+
+
+def voltar():
+    _, mold, far = line()
+    ctl('tp', far[0] + 0.5, far[1], far[2] + 0.5)
+    time.sleep(3)
+    shift_in(*mold, [('ntm:mold__ingot', 1)])
+    t0, taken = time.time(), 0
+    want = int(os.environ.get('FOUNDRY_EXPECT', 3))
+    while taken < want and time.time() - t0 < 240:
+        time.sleep(5)
+        taken += take_casts(*mold, far)
+    evidence['voltar'] = {'lingotes_retirados': taken, 'segundos': round(time.time() - t0, 1),
+                          'ferro_no_inventario': ctl('inventory').get('counts', {}).get('minecraft:iron_ingot', 0)}
     print('voltar', evidence['voltar'])
 
 
