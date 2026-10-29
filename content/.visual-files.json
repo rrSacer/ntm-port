@@ -12,6 +12,9 @@
   "assets/ntm/models/obj/lil_boy.obj",
   "assets/ntm/textures/models/lilboy.png",
   "assets/ntm/horizon_model/nuke_boy.json",
+  "data/ntm/horizon_machine/machine_shredder.json",
+  "assets/ntm/textures/gui/processing/gui_shredder.png",
+  "assets/ntm/horizon_screen/machine_shredder.json",
   "data/ntm/horizon/block/dummy_machine.json",
   "assets/ntm/blockstates/dummy_machine.json",
   "assets/ntm/models/block/dummy_machine.json"

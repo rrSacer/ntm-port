@@ -1,0 +1,57 @@
+{
+  "slots": [
+    {
+      "grid": [
+        44,
+        18,
+        3,
+        3
+      ],
+      "reject": [
+        "ntm:blades_steel",
+        "ntm:blades_titanium",
+        "ntm:blades_desh"
+      ]
+    },
+    {
+      "grid": [
+        116,
+        18,
+        3,
+        6
+      ],
+      "output": true
+    },
+    {
+      "x": 44,
+      "y": 108,
+      "accept": [
+        "ntm:blades_steel",
+        "ntm:blades_titanium",
+        "ntm:blades_desh"
+      ]
+    },
+    {
+      "x": 80,
+      "y": 108,
+      "accept": [
+        "ntm:blades_steel",
+        "ntm:blades_titanium",
+        "ntm:blades_desh"
+      ]
+    },
+    {
+      "x": 8,
+      "y": 108,
+      "accept": [
+        "ntm:battery_spark",
+        "ntm:battery_trixite"
+      ]
+    }
+  ],
+  "inventory": [
+    8,
+    151
+  ],
+  "data": 6
+}
