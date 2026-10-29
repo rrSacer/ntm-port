@@ -55,7 +55,9 @@ fn network_takes(m: &Machines, key: &Key, mat: &str) -> bool {
             continue;
         }
         let Some(Data::Channel(c)) = m.get(&k).map(|x| &x.data) else { continue };
-        if c.melt.mat.as_deref().is_some_and(|x| x != mat) {
+        // An empty channel's network type is none (`node.type = null` at
+        // amount 0, `TileEntityFoundryChannel.java:37`).
+        if c.melt.amount > 0 && c.melt.mat.as_deref().is_some_and(|x| x != mat) {
             return false;
         }
         for d in SIDES {

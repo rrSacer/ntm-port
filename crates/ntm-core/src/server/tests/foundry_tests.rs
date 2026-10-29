@@ -177,6 +177,14 @@ fn channels_keep_one_material_and_outlets_filter() {
     g.run(20);
     assert_eq!(crucible(&mut g, CORE).waste_stack, vec![("iron".to_string(), 100)], "derramou ferro numa rede de cobre");
     assert_eq!(melt_at(&mut g, ch1).1, 0);
+    // The copper gone (a channel keeps its material at 0 quanta), the
+    // network takes iron.
+    edit(&mut g, ch2, |d| {
+        let Data::Channel(c) = d else { panic!() };
+        c.melt.amount = 0;
+    });
+    g.run(20);
+    assert!(melt_at(&mut g, ch1).1 + melt_at(&mut g, ch2).1 > 0, "uma rede vazia, que já levou cobre, recusou ferro");
     // The outlet: only copper passes.
     let mut o = crate::foundry::flow::Outlet { filter: Some("copper".into()), ..Default::default() };
     assert!(o.passes("copper") && !o.passes("iron"));
