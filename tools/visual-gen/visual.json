@@ -2257,6 +2257,296 @@
       "liquid": {
         "liquids": []
       }
+    },
+    "ntm:nuke_gadget": {
+      "source": "ContainerNukeGadget, GUINukeGadget (exp1-4 and isReady)",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 35,
+            "accept": [
+              "ntm:gadget_wireing"
+            ],
+            "max": 1
+          },
+          {
+            "x": 8,
+            "y": 17,
+            "accept": [
+              "ntm:early_explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 44,
+            "y": 17,
+            "accept": [
+              "ntm:early_explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 8,
+            "y": 53,
+            "accept": [
+              "ntm:early_explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 44,
+            "y": 53,
+            "accept": [
+              "ntm:early_explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 98,
+            "y": 35,
+            "accept": [
+              "ntm:gadget_core"
+            ],
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 2
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/weapon/gadgetschematic.png",
+        "texture_from": "textures/gui/weapon/gadgetSchematic.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "overlays": [
+          {
+            "slot": 1,
+            "rect": [
+              82,
+              19,
+              24,
+              24
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "slot": 2,
+            "rect": [
+              106,
+              19,
+              24,
+              24
+            ],
+            "uv": [
+              200,
+              0
+            ]
+          },
+          {
+            "slot": 3,
+            "rect": [
+              82,
+              43,
+              24,
+              24
+            ],
+            "uv": [
+              176,
+              24
+            ]
+          },
+          {
+            "slot": 4,
+            "rect": [
+              106,
+              43,
+              24,
+              24
+            ],
+            "uv": [
+              200,
+              24
+            ]
+          },
+          {
+            "value": 0,
+            "min": 1,
+            "rect": [
+              134,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              176,
+              48
+            ]
+          }
+        ]
+      }
+    },
+    "ntm:nuke_man": {
+      "source": "ContainerNukeMan, GUINukeMan (exp1-4 and isReady)",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 35,
+            "accept": [
+              "ntm:man_igniter"
+            ],
+            "max": 1
+          },
+          {
+            "x": 8,
+            "y": 17,
+            "accept": [
+              "ntm:early_explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 44,
+            "y": 17,
+            "accept": [
+              "ntm:early_explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 8,
+            "y": 53,
+            "accept": [
+              "ntm:early_explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 44,
+            "y": 53,
+            "accept": [
+              "ntm:early_explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 98,
+            "y": 35,
+            "accept": [
+              "ntm:man_core"
+            ],
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 2
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/weapon/fatmanschematic.png",
+        "texture_from": "textures/gui/weapon/fatManSchematic.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "overlays": [
+          {
+            "slot": 1,
+            "rect": [
+              82,
+              19,
+              24,
+              24
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "slot": 2,
+            "rect": [
+              106,
+              19,
+              24,
+              24
+            ],
+            "uv": [
+              200,
+              0
+            ]
+          },
+          {
+            "slot": 3,
+            "rect": [
+              82,
+              43,
+              24,
+              24
+            ],
+            "uv": [
+              176,
+              24
+            ]
+          },
+          {
+            "slot": 4,
+            "rect": [
+              106,
+              43,
+              24,
+              24
+            ],
+            "uv": [
+              200,
+              24
+            ]
+          },
+          {
+            "value": 0,
+            "min": 1,
+            "rect": [
+              134,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              176,
+              48
+            ]
+          }
+        ]
+      }
     }
   }
 }

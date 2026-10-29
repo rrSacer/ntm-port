@@ -1,0 +1,57 @@
+{
+  "slots": [
+    {
+      "x": 26,
+      "y": 35,
+      "accept": [
+        "ntm:gadget_wireing"
+      ],
+      "max": 1
+    },
+    {
+      "x": 8,
+      "y": 17,
+      "accept": [
+        "ntm:early_explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 44,
+      "y": 17,
+      "accept": [
+        "ntm:early_explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 8,
+      "y": 53,
+      "accept": [
+        "ntm:early_explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 44,
+      "y": 53,
+      "accept": [
+        "ntm:early_explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 98,
+      "y": 35,
+      "accept": [
+        "ntm:gadget_core"
+      ],
+      "max": 1
+    }
+  ],
+  "inventory": [
+    8,
+    84
+  ],
+  "data": 2
+}
