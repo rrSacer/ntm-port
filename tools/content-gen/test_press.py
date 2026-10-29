@@ -70,15 +70,27 @@ class PressContracts(unittest.TestCase):
         cls.data = json.loads((ROOT / 'content/machine-recipes/press.json').read_text())
         cls.by_name = {row['name']: row for row in cls.data['recipes']}
 
-    def test_32_stamps_durabilities_and_stamp_book_gap(self):
+    def test_32_stamps_durabilities_max_damage_and_stamp_book_gap(self):
         self.assertEqual(len(self.data['stamps']), 32)
         self.assertEqual(
             [(s['item'], s['type'], s['durability']) for s in self.data['stamps']],
             EXPECTED_STAMPS,
         )
         for stamp in self.data['stamps']:
-            self.assertIn(stamp['item'], self.rows)
-            self.assertEqual(stamp['unbreakable'], stamp['durability'] == 0)
+            ident = stamp['item']
+            durability = stamp['durability']
+            self.assertIn(ident, self.rows)
+            row = self.rows[ident]
+            self.assertEqual(row['max_stack_size'], 1, ident)
+            self.assertEqual(row['durability'], {'max_damage': durability, 'wear': durability > 0}, ident)
+            if durability > 0:
+                self.assertEqual(row.get('max_damage'), durability, ident)
+            else:
+                self.assertNotIn('max_damage', row, ident)
+            item_decl = json.loads((ROOT / f"content/data/ntm/horizon/item/{ident.split(':', 1)[1]}.json").read_text())
+            self.assertEqual(item_decl['max_stack_size'], 1, ident)
+            self.assertNotIn('max_damage', item_decl, ident)
+            self.assertEqual(stamp['unbreakable'], durability == 0)
             self.assertIn('ModItems.java:', stamp['source'])
         self.assertEqual(len(self.data['skipped_stamps']), 1)
         book = self.data['skipped_stamps'][0]

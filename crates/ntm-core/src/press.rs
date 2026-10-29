@@ -10,6 +10,7 @@
 
 use crate::{
     energy::{EnergyNode, Role},
+    server::container_bridge::{Slots, Slotted, Stack},
     machine::{Effect, Logic, burn_ticks},
     proto::Held,
     recipes::{self, PressRecipe},
@@ -335,6 +336,10 @@ pub struct BurnerPress {
     /// Burn ticks stored.
     pub burn: u32,
     pub fuel: Option<(String, u32)>,
+    /// The engine's slots (`ContainerMachinePress`: fuel, stamp, input,
+    /// output), a mirror of the fields.
+    #[serde(skip)]
+    pub slots: Slots,
 }
 
 /// Burn ticks one pressing costs.
@@ -419,6 +424,10 @@ impl Logic for BurnerPress {
 pub struct ElectricPress {
     pub core: PressCore,
     pub power: u64,
+    /// The engine's slots (`ContainerMachineEPress`: battery, stamp, input,
+    /// output, upgrade); the battery and the upgrade aren't used yet.
+    #[serde(skip)]
+    pub slots: Slots,
 }
 
 impl ElectricPress {
@@ -494,6 +503,120 @@ impl EnergyNode for ElectricPress {
     fn take(&mut self, _he: u64) {}
 }
 
+// ------------------------------------------------------- the engine's slots
+
+/// Slot `i` of a press's engine slots.
+pub mod slot {
+    pub const FUEL: usize = 0;
+    pub const BATTERY: usize = 0;
+    pub const STAMP: usize = 1;
+    pub const INPUT: usize = 2;
+    pub const OUTPUT: usize = 3;
+    pub const UPGRADE: usize = 4;
+}
+
+fn pile(s: &Option<Stack>) -> Option<(String, u32)> {
+    s.as_ref().filter(|s| s.count > 0).map(|s| (s.id.clone(), s.count))
+}
+
+fn stack(p: &Option<(String, u32)>) -> Option<Stack> {
+    p.as_ref().map(|(i, n)| Stack::new(i, *n))
+}
+
+impl PressCore {
+    /// Stamp (its wear as the item's damage), input and output from the
+    /// slots.
+    fn sync_in(&mut self, slots: &Slots) {
+        self.stamp = slots.get(slot::STAMP).cloned().flatten().map(|s| Stamp { item: s.id, used: s.damage });
+        self.input = slots.get(slot::INPUT).and_then(pile);
+        self.output = slots.get(slot::OUTPUT).and_then(pile);
+    }
+
+    fn sync_out(&self, slots: &mut Slots, len: usize) {
+        slots.resize(len, None);
+        slots[slot::STAMP] = self.stamp.as_ref().map(|s| Stack { id: s.item.clone(), count: 1, damage: s.used });
+        slots[slot::INPUT] = stack(&self.input);
+        slots[slot::OUTPUT] = stack(&self.output);
+    }
+
+    fn save_state(&self) -> Vec<i32> {
+        vec![self.press as i32, i32::from(self.retracting), self.delay as i32]
+    }
+
+    fn load_state(&mut self, v: &[i32]) {
+        if let [press, retracting, delay, ..] = v {
+            self.press = (*press).clamp(0, recipes::press().max_press as i32) as u32;
+            self.retracting = *retracting != 0;
+            self.delay = (*delay).max(0) as u32;
+        }
+    }
+}
+
+impl Slotted for BurnerPress {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn sync_in(&mut self) {
+        self.core.sync_in(&self.slots);
+        self.fuel = self.slots.get(slot::FUEL).and_then(pile);
+    }
+    fn sync_out(&mut self) {
+        self.core.sync_out(&mut self.slots, 4);
+        self.slots[slot::FUEL] = stack(&self.fuel);
+    }
+    fn migrates(&self) -> bool {
+        true
+    }
+    /// The ram, its maximum, the speed, its maximum, the burn ticks stored
+    /// and what a pressing costs.
+    fn screen_data(&self) -> Vec<i32> {
+        let p = recipes::press();
+        vec![self.core.press as i32, p.max_press as i32, self.speed as i32, p.max_speed as i32, self.burn as i32, BURN_PER_OP as i32]
+    }
+    fn save_state(&self) -> Vec<i32> {
+        let mut v = self.core.save_state();
+        v.extend([self.speed as i32, self.burn as i32]);
+        v
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        self.core.load_state(v);
+        if let [_, _, _, speed, burn, ..] = v {
+            self.speed = (*speed).clamp(0, recipes::press().max_speed as i32) as u32;
+            self.burn = (*burn).max(0) as u32;
+        }
+    }
+}
+
+impl Slotted for ElectricPress {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn sync_in(&mut self) {
+        self.core.sync_in(&self.slots);
+    }
+    fn sync_out(&mut self) {
+        self.core.sync_out(&mut self.slots, 5);
+    }
+    fn migrates(&self) -> bool {
+        true
+    }
+    /// The ram, its maximum, the energy and its maximum.
+    fn screen_data(&self) -> Vec<i32> {
+        vec![self.core.press as i32, recipes::press().max_press as i32, self.power.min(i32::MAX as u64) as i32, Self::MAX as i32]
+    }
+    fn save_state(&self) -> Vec<i32> {
+        let mut v = self.core.save_state();
+        v.push(self.power.min(Self::MAX) as i32);
+        v
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        self.core.load_state(v);
+        if let [_, _, _, power, ..] = v {
+            self.power = (*power).clamp(0, Self::MAX as i32) as u64;
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -560,6 +683,7 @@ mod tests {
         let mut p = ElectricPress {
             core: loaded(),
             power: ElectricPress::MAX,
+            ..Default::default()
         };
         p.core.input = Some(("ntm:ingot_lead".into(), 64));
         p.core.stamp.as_mut().unwrap().used = 62;
@@ -571,7 +695,7 @@ mod tests {
         assert_eq!(p.core.stamp, None);
         assert!(p.power < ElectricPress::MAX);
         // No power: nothing moves.
-        let mut dead = ElectricPress { core: loaded(), power: 0 };
+        let mut dead = ElectricPress { core: loaded(), power: 0, ..Default::default() };
         assert!(!dead.tick());
     }
 
@@ -627,7 +751,7 @@ mod tests {
 
     #[test]
     fn a_desh_stamp_never_wears_and_a_stone_one_lasts_32() {
-        let mut p = ElectricPress { core: loaded(), power: ElectricPress::MAX };
+        let mut p = ElectricPress { core: loaded(), power: ElectricPress::MAX, ..Default::default() };
         p.core.stamp = Some(Stamp { item: "ntm:stamp_desh_wire".into(), used: 0 });
         p.core.input = Some(("minecraft:gold_ingot".into(), 40));
         for _ in 0..40 {

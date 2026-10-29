@@ -150,6 +150,18 @@ def build(source=SOURCE, output=ROOT / 'content'):
                      'source_texture': 'src/main/resources/assets/hbm/textures/items/' + texture + '.png',
                      'max_stack_size': 1, 'durability': {'max_damage': durability, 'wear': durability > 0},
                      **({'max_damage': durability} if durability else {})})
+    m1_categories = {row['source_variable']: row['category'] for row in json.loads((HERE / 'm1.json').read_text())['entries']}
+    stamp_declarations = list(re.finditer(r'\b(\w+)\s*=\s*new ItemStamp\((\d+),\s*StampType\.(\w+)\)', clean(items)))
+    if len(stamp_declarations) != 32:
+        raise ValueError(f'Expected 32 ItemStamp declarations, found {len(stamp_declarations)}')
+    for match in stamp_declarations:
+        var, durability = match[1], int(match[2])
+        name, texture = registration(items, var, 'item')
+        rows.append({'id': name, 'source_variable': var, 'type': 'item',
+                     'category': m1_categories.get(var, 'component'),
+                     'source_texture': 'src/main/resources/assets/hbm/textures/items/' + texture + '.png',
+                     'max_stack_size': 1, 'durability': {'max_damage': durability, 'wear': durability > 0},
+                     **({'max_damage': durability} if durability else {})})
     write_json(HERE / 'm3.json', {'schema': 1, 'entries': rows})
     write_json(output / 'fluids.json', {'schema': 1, 'namespace': 'ntm', 'fluids': registry})
     backlog = output / 'machines_backlog.json'

@@ -25,25 +25,25 @@ A escrita direta de `crates/ntm-core/data/press_recipes.json` que existia desde 
 | `plate` | 13 | 0 | Lingotes → `plate_{iron,gold,titanium,aluminium,steel,lead,copper,schrabidium,combine_steel,gunmetal,weaponsteel,saturnite,dura_steel}` (usando o snapshot OreDict conservador do Forge 1.7.10, sem alias moderno `minecraft:copper_ingot`). |
 | `c9` | 2 | 0 | `plate_gunmetal` → `casing__small ×4`; `plate_weaponsteel` → `casing__small_steel ×4`. |
 | `c50` | 2 | 0 | `plate_gunmetal` → `casing__large ×2`; `plate_weaponsteel` → `casing__large_steel ×2`. |
-| `wire` | 11 | 0 | Laço `Mats.orderedList` com `autogen.contains(WIRE)` e `ingot` registrado no OreDict (`×8`): `carbon` (`ingot_graphite` → `wire_fine__carbon`), `gold` (`minecraft:gold_ingot` → `wire_fine__gold`), `schrabidium`, `copper`, `tungsten`, `aluminium`, `lead`, `zirconium`, `steel`, `mingrade` (`ingot_red_copper` → `wire_fine__red_copper`) e `magtung` (`ingot_magnetized_tungsten` → `wire_fine__magnetized_tungsten`). |
+| `wire` | 11 | 0 | Laço `Mats.orderedList` com `autogen.contains(WIRE)` e `ingot` registrado no OreDict (`×8`): `carbon` (`ingot_graphite` → `wire_fine__carbon`), `gold` (`minecraft:gold_ingot` → `wire_fine__gold`), `schrabidium`, `copper`, `tungsten`, `aluminium`, `lead`, `zirconium`, `steel`, `mingrade` (`ingot_red_copper` → `wire_fine__red_copper`) e `magtung` (`ntm:ingot_magnetized_tungsten` → `wire_fine__magnetized_tungsten`). |
 | `circuit` | 1 | 0 | `billet_silicon` → `circuit__silicon`. |
 | `printing1..8` | 8 (1 cada) | 0 | `minecraft:paper` → `ntm:page_of___page1..8` (`1` por tipo `printing1`..`printing8`). |
 | `c357`, `c44` | 0 | 0 | As 4 matrizes existem em `ModItems.java`, mas `PressRecipes.registerDefaults()` não registra receitas para `.357`/`.44` no NTM 1.7.10. |
 
-## As 32 matrizes (`stamps`) e lacunas documentadas
+## As 32 matrizes (`stamps`), `max_damage` e lacunas documentadas
 
-Todas as **32 instâncias de `ItemStamp`** declaradas em `ModItems.java:2724-2757` já existem em `content/ids.json` (nenhum ID novo adicionado ao catálogo):
+Todas as **32 instâncias de `ItemStamp`** declaradas em `ModItems.java:2724-2757` já existem em `content/ids.json` com `max_stack_size: 1`. Assim como nas lâminas do triturador (`ItemBlades`), `m3_catalog.py` registra `max_damage` em `content/ids.json` para as **24 matrizes desgastáveis** e omite `max_damage` nas **8 matrizes eternas de desh** (`durability == 0`): o pacote base em `content/data/ntm/horizon/item/stamp_*.json` permanece compatível com a API 0.2 sem o campo, enquanto `tools/build-visual.sh` (e `generate.py --max-damage`) injeta `max_damage` nas declarações do motor `ntm-visual` para preservar o dano real do slot no inventário.
 
-| Família | Durabilidade (`maxDamage`) | Tipos (`type`) | Quantidade |
-|---|---:|---|---:|
-| Pedra (`ntm:stamp_stone_*`) | 32 | `flat`, `plate`, `wire`, `circuit` | 4 |
-| Ferro (`ntm:stamp_iron_*`) | 64 | `flat`, `plate`, `wire`, `circuit` | 4 |
-| Aço (`ntm:stamp_steel_*`) | 192 | `flat`, `plate`, `wire`, `circuit` | 4 |
-| Titânio (`ntm:stamp_titanium_*`) | 256 | `flat`, `plate`, `wire`, `circuit` | 4 |
-| Obsidiana (`ntm:stamp_obsidian_*`) | 512 | `flat`, `plate`, `wire`, `circuit` | 4 |
-| Desh (`ntm:stamp_desh_{flat,plate,wire,circuit}`) | 0 (inquebrável) | `flat`, `plate`, `wire`, `circuit` | 4 |
-| Munição padrão (`ntm:stamp_{357,44,9,50}`) | 1000 | `c357`, `c44`, `c9`, `c50` | 4 |
-| Munição de desh (`ntm:stamp_desh_{357,44,9,50}`) | 0 (inquebrável) | `c357`, `c44`, `c9`, `c50` | 4 |
+| Família | Durabilidade (`maxDamage`) | `max_damage` em `ids.json` | Tipos (`type`) | Quantidade |
+|---|---:|---:|---|---:|
+| Pedra (`ntm:stamp_stone_*`) | 32 | `32` | `flat`, `plate`, `wire`, `circuit` | 4 |
+| Ferro (`ntm:stamp_iron_*`) | 64 | `64` | `flat`, `plate`, `wire`, `circuit` | 4 |
+| Aço (`ntm:stamp_steel_*`) | 192 | `192` | `flat`, `plate`, `wire`, `circuit` | 4 |
+| Titânio (`ntm:stamp_titanium_*`) | 256 | `256` | `flat`, `plate`, `wire`, `circuit` | 4 |
+| Obsidiana (`ntm:stamp_obsidian_*`) | 512 | `512` | `flat`, `plate`, `wire`, `circuit` | 4 |
+| Desh (`ntm:stamp_desh_{flat,plate,wire,circuit}`) | 0 (inquebrável) | omitido | `flat`, `plate`, `wire`, `circuit` | 4 |
+| Munição padrão (`ntm:stamp_{357,44,9,50}`) | 1000 | `1000` | `c357`, `c44`, `c9`, `c50` | 4 |
+| Munição de desh (`ntm:stamp_desh_{357,44,9,50}`) | 0 (inquebrável) | omitido | `c357`, `c44`, `c9`, `c50` | 4 |
 
 ### Lacunas documentadas (sem IDs nem receitas inventados)
 
@@ -54,12 +54,12 @@ Todas as **32 instâncias de `ItemStamp`** declaradas em `ModItems.java:2724-275
 ## Reprodução e validação
 
 ```sh
+/usr/local/bin/agent-run python3 tools/content-gen/generate.py --ids-only
 /usr/local/bin/agent-run python3 tools/content-gen/press_recipes.py
 /usr/local/bin/agent-run python3 tools/recipe-gen/generate.py
 /usr/local/bin/agent-run python3 tools/recipe-gen/validate.py
 /usr/local/bin/agent-run python3 tools/content-gen/test_press.py
 /usr/local/bin/agent-run python3 tools/content-gen/test_anvil.py
-/usr/local/bin/agent-run python3 tools/content-gen/test_foundry.py
 /usr/local/bin/agent-run python3 tools/content-gen/test_blast_furnace.py
 /usr/local/bin/agent-run python3 tools/content-gen/test_shredder.py
 /usr/local/bin/agent-run python3 tools/content-gen/test_m3.py

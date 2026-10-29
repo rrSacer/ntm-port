@@ -19504,6 +19504,414 @@
         "max_damage": 0,
         "wear": false
       }
+    },
+    {
+      "id": "stamp_stone_flat",
+      "source_variable": "stamp_stone_flat",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_stone_flat.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 32,
+        "wear": true
+      },
+      "max_damage": 32
+    },
+    {
+      "id": "stamp_stone_plate",
+      "source_variable": "stamp_stone_plate",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_stone_plate.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 32,
+        "wear": true
+      },
+      "max_damage": 32
+    },
+    {
+      "id": "stamp_stone_wire",
+      "source_variable": "stamp_stone_wire",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_stone_wire.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 32,
+        "wear": true
+      },
+      "max_damage": 32
+    },
+    {
+      "id": "stamp_stone_circuit",
+      "source_variable": "stamp_stone_circuit",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_stone_circuit.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 32,
+        "wear": true
+      },
+      "max_damage": 32
+    },
+    {
+      "id": "stamp_iron_flat",
+      "source_variable": "stamp_iron_flat",
+      "type": "item",
+      "category": "stamp",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_flat.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 64,
+        "wear": true
+      },
+      "max_damage": 64
+    },
+    {
+      "id": "stamp_iron_plate",
+      "source_variable": "stamp_iron_plate",
+      "type": "item",
+      "category": "stamp",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_plate.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 64,
+        "wear": true
+      },
+      "max_damage": 64
+    },
+    {
+      "id": "stamp_iron_wire",
+      "source_variable": "stamp_iron_wire",
+      "type": "item",
+      "category": "stamp",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_wire.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 64,
+        "wear": true
+      },
+      "max_damage": 64
+    },
+    {
+      "id": "stamp_iron_circuit",
+      "source_variable": "stamp_iron_circuit",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_circuit.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 64,
+        "wear": true
+      },
+      "max_damage": 64
+    },
+    {
+      "id": "stamp_steel_flat",
+      "source_variable": "stamp_steel_flat",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_steel_flat.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 192,
+        "wear": true
+      },
+      "max_damage": 192
+    },
+    {
+      "id": "stamp_steel_plate",
+      "source_variable": "stamp_steel_plate",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_steel_plate.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 192,
+        "wear": true
+      },
+      "max_damage": 192
+    },
+    {
+      "id": "stamp_steel_wire",
+      "source_variable": "stamp_steel_wire",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_steel_wire.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 192,
+        "wear": true
+      },
+      "max_damage": 192
+    },
+    {
+      "id": "stamp_steel_circuit",
+      "source_variable": "stamp_steel_circuit",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_steel_circuit.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 192,
+        "wear": true
+      },
+      "max_damage": 192
+    },
+    {
+      "id": "stamp_titanium_flat",
+      "source_variable": "stamp_titanium_flat",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_titanium_flat.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 256,
+        "wear": true
+      },
+      "max_damage": 256
+    },
+    {
+      "id": "stamp_titanium_plate",
+      "source_variable": "stamp_titanium_plate",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_titanium_plate.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 256,
+        "wear": true
+      },
+      "max_damage": 256
+    },
+    {
+      "id": "stamp_titanium_wire",
+      "source_variable": "stamp_titanium_wire",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_titanium_wire.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 256,
+        "wear": true
+      },
+      "max_damage": 256
+    },
+    {
+      "id": "stamp_titanium_circuit",
+      "source_variable": "stamp_titanium_circuit",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_titanium_circuit.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 256,
+        "wear": true
+      },
+      "max_damage": 256
+    },
+    {
+      "id": "stamp_obsidian_flat",
+      "source_variable": "stamp_obsidian_flat",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_obsidian_flat.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 512,
+        "wear": true
+      },
+      "max_damage": 512
+    },
+    {
+      "id": "stamp_obsidian_plate",
+      "source_variable": "stamp_obsidian_plate",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_obsidian_plate.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 512,
+        "wear": true
+      },
+      "max_damage": 512
+    },
+    {
+      "id": "stamp_obsidian_wire",
+      "source_variable": "stamp_obsidian_wire",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_obsidian_wire.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 512,
+        "wear": true
+      },
+      "max_damage": 512
+    },
+    {
+      "id": "stamp_obsidian_circuit",
+      "source_variable": "stamp_obsidian_circuit",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_obsidian_circuit.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 512,
+        "wear": true
+      },
+      "max_damage": 512
+    },
+    {
+      "id": "stamp_desh_flat",
+      "source_variable": "stamp_desh_flat",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_desh_flat.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      }
+    },
+    {
+      "id": "stamp_desh_plate",
+      "source_variable": "stamp_desh_plate",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_desh_plate.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      }
+    },
+    {
+      "id": "stamp_desh_wire",
+      "source_variable": "stamp_desh_wire",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_desh_wire.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      }
+    },
+    {
+      "id": "stamp_desh_circuit",
+      "source_variable": "stamp_desh_circuit",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_desh_circuit.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      }
+    },
+    {
+      "id": "stamp_357",
+      "source_variable": "stamp_357",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_357.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 1000,
+        "wear": true
+      },
+      "max_damage": 1000
+    },
+    {
+      "id": "stamp_44",
+      "source_variable": "stamp_44",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_44.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 1000,
+        "wear": true
+      },
+      "max_damage": 1000
+    },
+    {
+      "id": "stamp_9",
+      "source_variable": "stamp_9",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_9.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 1000,
+        "wear": true
+      },
+      "max_damage": 1000
+    },
+    {
+      "id": "stamp_50",
+      "source_variable": "stamp_50",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_50.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 1000,
+        "wear": true
+      },
+      "max_damage": 1000
+    },
+    {
+      "id": "stamp_desh_357",
+      "source_variable": "stamp_desh_357",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_357_desh.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      }
+    },
+    {
+      "id": "stamp_desh_44",
+      "source_variable": "stamp_desh_44",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_44_desh.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      }
+    },
+    {
+      "id": "stamp_desh_9",
+      "source_variable": "stamp_desh_9",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_9_desh.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      }
+    },
+    {
+      "id": "stamp_desh_50",
+      "source_variable": "stamp_desh_50",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_50_desh.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      }
     }
   ]
 }

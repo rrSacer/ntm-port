@@ -2374,6 +2374,12 @@
       "category": "stamp",
       "source_variable": "stamp_iron_flat",
       "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_flat.png",
+      "durability": {
+        "max_damage": 64,
+        "wear": true
+      },
+      "max_damage": 64,
       "source_registry": "hbm:item.stamp_iron_flat",
       "names": {
         "en_us": "Flat Stamp (Iron)",
@@ -2383,7 +2389,6 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.stamp_iron_flat.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.stamp_iron_flat.name"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_flat.png",
       "source_recipe_machine": [],
       "source_recipe_references": [
         {
@@ -2399,6 +2404,12 @@
       "category": "stamp",
       "source_variable": "stamp_iron_plate",
       "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_plate.png",
+      "durability": {
+        "max_damage": 64,
+        "wear": true
+      },
+      "max_damage": 64,
       "source_registry": "hbm:item.stamp_iron_plate",
       "names": {
         "en_us": "Plate Stamp (Iron)",
@@ -2408,7 +2419,6 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.stamp_iron_plate.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.stamp_iron_plate.name"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_plate.png",
       "source_recipe_machine": [],
       "source_recipe_references": [
         {
@@ -2424,6 +2434,12 @@
       "category": "stamp",
       "source_variable": "stamp_iron_wire",
       "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_wire.png",
+      "durability": {
+        "max_damage": 64,
+        "wear": true
+      },
+      "max_damage": 64,
       "source_registry": "hbm:item.stamp_iron_wire",
       "names": {
         "en_us": "Wire Stamp (Iron)",
@@ -2433,7 +2449,6 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.stamp_iron_wire.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.stamp_iron_wire.name"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_wire.png",
       "source_recipe_machine": [],
       "source_recipe_references": [
         {
@@ -52142,6 +52157,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_357.png",
+      "durability": {
+        "max_damage": 1000,
+        "wear": true
+      },
+      "max_damage": 1000,
       "source_registry": "hbm:item.stamp_357",
       "names": {
         "en_us": ".357 Magnum Stamp",
@@ -52166,6 +52186,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_44.png",
+      "durability": {
+        "max_damage": 1000,
+        "wear": true
+      },
+      "max_damage": 1000,
       "source_registry": "hbm:item.stamp_44",
       "names": {
         "en_us": ".44 Magnum Stamp",
@@ -52190,6 +52215,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_50.png",
+      "durability": {
+        "max_damage": 1000,
+        "wear": true
+      },
+      "max_damage": 1000,
       "source_registry": "hbm:item.stamp_50",
       "names": {
         "en_us": "Large Caliber Stamp",
@@ -52219,6 +52249,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_9.png",
+      "durability": {
+        "max_damage": 1000,
+        "wear": true
+      },
+      "max_damage": 1000,
       "source_registry": "hbm:item.stamp_9",
       "names": {
         "en_us": "Small Caliber Stamp",
@@ -52248,6 +52283,10 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_357_desh.png",
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
       "source_registry": "hbm:item.stamp_desh_357",
       "names": {
         "en_us": ".357 Magnum Stamp (Desh)",
@@ -52272,6 +52311,10 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_44_desh.png",
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
       "source_registry": "hbm:item.stamp_desh_44",
       "names": {
         "en_us": ".44 Magnum Stamp (Desh)",
@@ -52296,6 +52339,10 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_50_desh.png",
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
       "source_registry": "hbm:item.stamp_desh_50",
       "names": {
         "en_us": "Large Caliber Stamp (Desh)",
@@ -52325,6 +52372,10 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_9_desh.png",
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
       "source_registry": "hbm:item.stamp_desh_9",
       "names": {
         "en_us": "Small Caliber Stamp (Desh)",
@@ -52354,6 +52405,10 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_desh_circuit.png",
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
       "source_registry": "hbm:item.stamp_desh_circuit",
       "names": {
         "en_us": "Circuit Stamp (Desh)",
@@ -52383,6 +52438,10 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_desh_flat.png",
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
       "source_registry": "hbm:item.stamp_desh_flat",
       "names": {
         "en_us": "Flat Stamp (Desh)",
@@ -52412,6 +52471,10 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_desh_plate.png",
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
       "source_registry": "hbm:item.stamp_desh_plate",
       "names": {
         "en_us": "Plate Stamp (Desh)",
@@ -52441,6 +52504,10 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_desh_wire.png",
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
       "source_registry": "hbm:item.stamp_desh_wire",
       "names": {
         "en_us": "Wire Stamp (Desh)",
@@ -52470,6 +52537,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_iron_circuit.png",
+      "durability": {
+        "max_damage": 64,
+        "wear": true
+      },
+      "max_damage": 64,
       "source_registry": "hbm:item.stamp_iron_circuit",
       "names": {
         "en_us": "Circuit Stamp (Iron)",
@@ -52499,6 +52571,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_obsidian_circuit.png",
+      "durability": {
+        "max_damage": 512,
+        "wear": true
+      },
+      "max_damage": 512,
       "source_registry": "hbm:item.stamp_obsidian_circuit",
       "names": {
         "en_us": "Circuit Stamp (Obsidian)",
@@ -52528,6 +52605,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_obsidian_flat.png",
+      "durability": {
+        "max_damage": 512,
+        "wear": true
+      },
+      "max_damage": 512,
       "source_registry": "hbm:item.stamp_obsidian_flat",
       "names": {
         "en_us": "Flat Stamp (Obsidian)",
@@ -52557,6 +52639,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_obsidian_plate.png",
+      "durability": {
+        "max_damage": 512,
+        "wear": true
+      },
+      "max_damage": 512,
       "source_registry": "hbm:item.stamp_obsidian_plate",
       "names": {
         "en_us": "Plate Stamp (Obsidian)",
@@ -52586,6 +52673,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_obsidian_wire.png",
+      "durability": {
+        "max_damage": 512,
+        "wear": true
+      },
+      "max_damage": 512,
       "source_registry": "hbm:item.stamp_obsidian_wire",
       "names": {
         "en_us": "Wire Stamp (Obsidian)",
@@ -52615,6 +52707,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_steel_circuit.png",
+      "durability": {
+        "max_damage": 192,
+        "wear": true
+      },
+      "max_damage": 192,
       "source_registry": "hbm:item.stamp_steel_circuit",
       "names": {
         "en_us": "Circuit Stamp (Steel)",
@@ -52644,6 +52741,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_steel_flat.png",
+      "durability": {
+        "max_damage": 192,
+        "wear": true
+      },
+      "max_damage": 192,
       "source_registry": "hbm:item.stamp_steel_flat",
       "names": {
         "en_us": "Flat Stamp (Steel)",
@@ -52673,6 +52775,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_steel_plate.png",
+      "durability": {
+        "max_damage": 192,
+        "wear": true
+      },
+      "max_damage": 192,
       "source_registry": "hbm:item.stamp_steel_plate",
       "names": {
         "en_us": "Plate Stamp (Steel)",
@@ -52702,6 +52809,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_steel_wire.png",
+      "durability": {
+        "max_damage": 192,
+        "wear": true
+      },
+      "max_damage": 192,
       "source_registry": "hbm:item.stamp_steel_wire",
       "names": {
         "en_us": "Wire Stamp (Steel)",
@@ -52731,6 +52843,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_stone_circuit.png",
+      "durability": {
+        "max_damage": 32,
+        "wear": true
+      },
+      "max_damage": 32,
       "source_registry": "hbm:item.stamp_stone_circuit",
       "names": {
         "en_us": "Circuit Stamp (Stone)",
@@ -52760,6 +52877,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_stone_flat.png",
+      "durability": {
+        "max_damage": 32,
+        "wear": true
+      },
+      "max_damage": 32,
       "source_registry": "hbm:item.stamp_stone_flat",
       "names": {
         "en_us": "Flat Stamp (Stone)",
@@ -52789,6 +52911,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_stone_plate.png",
+      "durability": {
+        "max_damage": 32,
+        "wear": true
+      },
+      "max_damage": 32,
       "source_registry": "hbm:item.stamp_stone_plate",
       "names": {
         "en_us": "Plate Stamp (Stone)",
@@ -52818,6 +52945,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_stone_wire.png",
+      "durability": {
+        "max_damage": 32,
+        "wear": true
+      },
+      "max_damage": 32,
       "source_registry": "hbm:item.stamp_stone_wire",
       "names": {
         "en_us": "Wire Stamp (Stone)",
@@ -52847,6 +52979,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_titanium_circuit.png",
+      "durability": {
+        "max_damage": 256,
+        "wear": true
+      },
+      "max_damage": 256,
       "source_registry": "hbm:item.stamp_titanium_circuit",
       "names": {
         "en_us": "Circuit Stamp (Titanium)",
@@ -52876,6 +53013,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_titanium_flat.png",
+      "durability": {
+        "max_damage": 256,
+        "wear": true
+      },
+      "max_damage": 256,
       "source_registry": "hbm:item.stamp_titanium_flat",
       "names": {
         "en_us": "Flat Stamp (Titanium)",
@@ -52905,6 +53047,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_titanium_plate.png",
+      "durability": {
+        "max_damage": 256,
+        "wear": true
+      },
+      "max_damage": 256,
       "source_registry": "hbm:item.stamp_titanium_plate",
       "names": {
         "en_us": "Plate Stamp (Titanium)",
@@ -52934,6 +53081,11 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/stamp_titanium_wire.png",
+      "durability": {
+        "max_damage": 256,
+        "wear": true
+      },
+      "max_damage": 256,
       "source_registry": "hbm:item.stamp_titanium_wire",
       "names": {
         "en_us": "Wire Stamp (Titanium)",

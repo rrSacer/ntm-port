@@ -18,6 +18,7 @@ use crate::{
     fluid::{self, FluidNode, Tank},
     machine::{Effect, Logic},
     proto::Held,
+    server::container_bridge::{Slots, Slotted, Stack},
     view::{self, ViewModel},
 };
 use serde::{Deserialize, Serialize};
@@ -103,6 +104,11 @@ pub struct GasCent {
     pub out: Vec<(String, u32)>,
     #[serde(default)]
     pub upgrade: bool,
+    /// The engine's slots (`ContainerMachineGasCent`): 4 outputs, battery,
+    /// fluid identifier, speed upgrade; a mirror of `out` and `upgrade`
+    /// (the battery and the identifier aren't used yet).
+    #[serde(skip)]
+    pub slots: Slots,
 }
 
 impl Default for GasCent {
@@ -115,6 +121,7 @@ impl Default for GasCent {
             progress: 0,
             out: Vec::new(),
             upgrade: false,
+            slots: Vec::new(),
         }
     }
 }
@@ -371,6 +378,77 @@ pub fn end_of_line(g: &mut GasCent) -> bool {
         return true;
     }
     false
+}
+
+/// Slots of the engine's screen.
+pub mod slot {
+    pub const OUT: std::ops::Range<usize> = 0..4;
+    pub const BATTERY: usize = 4;
+    pub const IDENTIFIER: usize = 5;
+    pub const UPGRADE: usize = 6;
+    pub const COUNT: usize = 7;
+}
+
+impl Slotted for GasCent {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn sync_in(&mut self) {
+        self.out = self.slots[slot::OUT].iter().flatten().filter(|s| s.count > 0).map(|s| (s.id.clone(), s.count)).collect();
+        self.upgrade = self.slots.get(slot::UPGRADE).is_some_and(|s| s.as_ref().is_some_and(|s| s.id == UPGRADE));
+    }
+    /// The outputs stay in the slots they are in; a new one takes the first
+    /// free slot.
+    fn sync_out(&mut self) {
+        self.slots.resize(slot::COUNT, None);
+        let mut left = self.out.clone();
+        for i in slot::OUT {
+            self.slots[i] = self.slots[i].take().and_then(|s| {
+                let k = left.iter().position(|o| o.0 == s.id)?;
+                let (id, n) = left.remove(k);
+                Some(Stack { id, count: n, damage: s.damage })
+            });
+        }
+        for i in slot::OUT {
+            if self.slots[i].is_none() && !left.is_empty() {
+                let (id, n) = left.remove(0);
+                self.slots[i] = Some(Stack::new(&id, n));
+            }
+        }
+        let other = self.slots[slot::UPGRADE].as_ref().is_some_and(|s| s.id != UPGRADE);
+        if !other {
+            self.slots[slot::UPGRADE] = self.upgrade.then(|| Stack::new(UPGRADE, 1));
+        }
+    }
+    fn migrates(&self) -> bool {
+        true
+    }
+    /// Progress and the time a stage takes, energy and its maximum, the
+    /// fluid tank (mB, capacity), the pseudo input and output tanks (type,
+    /// mB) and their capacity.
+    fn screen_data(&self) -> Vec<i32> {
+        vec![
+            self.progress as i32,
+            self.speed() as i32,
+            self.power.min(MAX_POWER) as i32,
+            MAX_POWER as i32,
+            self.tank.mb as i32,
+            self.tank.cap as i32,
+            self.input.0 as i32,
+            self.input.1 as i32,
+            self.output.0 as i32,
+            self.output.1 as i32,
+            PSEUDO_CAP as i32,
+        ]
+    }
+    fn save_state(&self) -> Vec<i32> {
+        vec![self.progress as i32]
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        if let [progress, ..] = v {
+            self.progress = (*progress).max(0) as u32;
+        }
+    }
 }
 
 #[cfg(test)]

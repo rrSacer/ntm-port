@@ -57,6 +57,19 @@ pub trait Slotted {
     fn button(&mut self, _id: u32) -> bool {
         false
     }
+    /// A machine from before the slots (its items in its own fields, moved
+    /// by transactions on the old screen, which an engine without slots
+    /// still uses) mirrors them: `sync_in` reads the slots into the fields
+    /// after the engine's are copied in, `sync_out` the fields into the
+    /// slots before they are written back.
+    fn sync_in(&mut self) {}
+    fn sync_out(&mut self) {}
+    /// Such a machine, seen with empty engine slots in a new session, keeps
+    /// what its fields hold (the world's slots come from before them: a
+    /// machine filled by transactions), as the assembler and the bombs do.
+    fn migrates(&self) -> bool {
+        false
+    }
     /// What it holds outside its slots (molten metal as scraps), dropped
     /// when it is broken: the engine spills the slots, not this.
     fn held_contents(&self) -> Vec<(String, u32)> {
@@ -93,6 +106,9 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::FoundryTank(c) => Some(c),
         Data::Outlet(c) => Some(c),
         Data::Anvil(a) => Some(a),
+        Data::BurnerPress(p) => Some(p),
+        Data::ElectricPress(p) => Some(p),
+        Data::GasCent(g) => Some(g),
         _ => None,
     }
 }
@@ -109,6 +125,9 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:foundry_channel", Layout::Native),
     ("ntm:foundry_tank", Layout::Native),
     ("ntm:foundry_outlet", Layout::Native),
+    ("ntm:machine_press", Layout::Native),
+    ("ntm:machine_epress", Layout::Native),
+    ("ntm:machine_gascent", Layout::Native),
     ("ntm:anvil_iron", Layout::Native),
     ("ntm:anvil_lead", Layout::Native),
     ("ntm:anvil_steel", Layout::Native),
@@ -401,7 +420,10 @@ impl Server {
                             n.load_state(&saved[at..]);
                         }
                     }
-                    *n.slots_mut() = now.clone();
+                    if !(first && empty && n.migrates()) {
+                        *n.slots_mut() = now.clone();
+                        n.sync_in();
+                    }
                 }
                 _ => continue,
             }
@@ -459,6 +481,7 @@ impl Server {
                 }
                 (data, Layout::Native) => {
                     let Some(n) = slotted(data) else { continue };
+                    n.sync_out();
                     want = n.slots_mut().clone();
                     let mut v = n.screen_data();
                     v.extend(n.save_state());
