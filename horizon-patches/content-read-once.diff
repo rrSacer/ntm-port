@@ -1,0 +1,75 @@
+From b26b1de1ef31a01964b903458902b13004236134 Mon Sep 17 00:00:00 2001
+From: rrSacer <349742895+rrSacer@users.noreply.github.com>
+Date: Thu, 29 Oct 2026 12:12:37 -0300
+Subject: [PATCH] perf(mods): read a content mod's declarations through one
+ reader
+
+Content::check reopened the .hmod for every block and item declaration,
+and each reopening parses the whole zip index: quadratic in the files.
+With NTM (12,086 files, 2,516 declarations) Content::read took 109 s,
+paid twice per start (resource loader, then start_mods on the render
+thread, freezing the window). One reader brings it to 0.11 s.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ crates/horizon-mods/src/content.rs | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/crates/horizon-mods/src/content.rs b/crates/horizon-mods/src/content.rs
+index 494e734ec..95b6761cc 100644
+--- a/crates/horizon-mods/src/content.rs
++++ b/crates/horizon-mods/src/content.rs
+@@ -317,24 +317,29 @@ impl Content {
+                 ));
+             }
+         }
++        // One reader for every declaration: reopening a `.hmod` reads its
++        // whole index, so a file each would cost thousands of reopenings.
++        let mut reader = self.reader()?;
+         let mut ids = BTreeSet::new();
++        let mut new_blocks = Vec::with_capacity(blocks.len());
+         for (block, name) in blocks {
+             let file: BlockFile =
+-                serde_json::from_slice(&self.file(&name)?).map_err(|e| format!("{name}: {e}"))?;
++                serde_json::from_slice(&reader.read(&name)?).map_err(|e| format!("{name}: {e}"))?;
+             check_block(&file).map_err(|e| format!("{name}: {e}"))?;
+             if file.item {
+                 ids.insert(block.clone());
+             }
+-            self.blocks.push(Block {
++            new_blocks.push(Block {
+                 id: block,
+                 template: file.template,
+                 properties: file.properties,
+                 item: file.item,
+             });
+         }
++        let mut new_items = Vec::with_capacity(items.len());
+         for (item, name) in items {
+             let file: ItemFile =
+-                serde_json::from_slice(&self.file(&name)?).map_err(|e| format!("{name}: {e}"))?;
++                serde_json::from_slice(&reader.read(&name)?).map_err(|e| format!("{name}: {e}"))?;
+             if !vanilla_id(&file.template) {
+                 return Err(format!(
+                     "{name}: template {:?} is not a vanilla item (minecraft:...)",
+@@ -347,13 +352,16 @@ impl Content {
+             if !ids.insert(item.clone()) {
+                 return Err(format!("{name}: {item} is also a block's item"));
+             }
+-            self.items.push(Item {
++            new_items.push(Item {
+                 id: item,
+                 template: file.template,
+                 max_stack_size: file.max_stack_size,
+                 rarity: file.rarity,
+             });
+         }
++        drop(reader);
++        self.blocks = new_blocks;
++        self.items = new_items;
+         Ok(())
+     }
+ }
+-- 
+2.56.0
+

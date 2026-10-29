@@ -1,0 +1,297 @@
+{
+ "log": {
+  "ok": true,
+  "result": {
+   "tabs": [
+    "creative-plus: 8 content mod tabs"
+   ],
+   "stopped": []
+  }
+ },
+ "creative_tabs_search": {
+  "ok": true,
+  "result": "ok"
+ },
+ "panel_cheat": {
+  "ok": true,
+  "result": {
+   "before": {},
+   "after": {
+    "ntm:block_u233": 65
+   }
+  }
+ },
+ "keys_r_u": {
+  "ok": true,
+  "result": "ok"
+ },
+ "mod_tags_in_commands": {
+  "ok": true,
+  "result": {
+   "clear @s #ntm:rad/bit_8 0": {
+    "actionbar": null,
+    "chat": [
+     "Found 2 matching item(s) on player NtmTeste",
+     "Gave 2 [Uranium Ingot] to NtmTeste",
+     "Removed 65 item(s) from player NtmTeste"
+    ],
+    "order": "newest first",
+    "styled": [
+     {
+      "translate": "commands.clear.test.single",
+      "with": [
+       2,
+       {
+        "click_event": {
+         "action": "suggest_command",
+         "command": "/tell NtmTeste "
+        },
+        "insertion": "NtmTeste",
+        "text": "NtmTeste"
+       }
+      ]
+     },
+     {
+      "translate": "commands.give.success.single",
+      "with": [
+       2,
+       {
+        "color": "white",
+        "hover_event": {
+         "action": "show_item",
+         "id": "ntm:ingot_uranium"
+        },
+        "translate": "chat.square_brackets",
+        "with": [
+         {
+          "extra": [
+           {
+            "translate": "item.ntm.ingot_uranium"
+           }
+          ],
+          "text": ""
+         }
+        ]
+       },
+       {
+        "click_event": {
+         "action": "suggest_command",
+         "command": "/tell NtmTeste "
+        },
+        "insertion": "NtmTeste",
+        "text": "NtmTeste"
+       }
+      ]
+     },
+     {
+      "translate": "commands.clear.success.single",
+      "with": [
+       65,
+       {
+        "click_event": {
+         "action": "suggest_command",
+         "command": "/tell NtmTeste "
+        },
+        "insertion": "NtmTeste",
+        "text": "NtmTeste"
+       }
+      ]
+     }
+    ],
+    "subtitle": null,
+    "title": null
+   },
+   "clear @s #ntm:rad/bit_0 0": {
+    "actionbar": null,
+    "chat": [
+     "No items were found on player NtmTeste",
+     "Found 2 matching item(s) on player NtmTeste",
+     "Gave 2 [Uranium Ingot] to NtmTeste"
+    ],
+    "order": "newest first",
+    "styled": [
+     {
+      "extra": [
+       {
+        "color": "red",
+        "text": ""
+       },
+       {
+        "color": "red",
+        "translate": "clear.failed.single",
+        "with": [
+         {
+          "click_event": {
+           "action": "suggest_command",
+           "command": "/tell NtmTeste "
+          },
+          "insertion": "NtmTeste",
+          "text": "NtmTeste"
+         }
+        ]
+       }
+      ],
+      "text": ""
+     },
+     {
+      "translate": "commands.clear.test.single",
+      "with": [
+       2,
+       {
+        "click_event": {
+         "action": "suggest_command",
+         "command": "/tell NtmTeste "
+        },
+        "insertion": "NtmTeste",
+        "text": "NtmTeste"
+       }
+      ]
+     },
+     {
+      "translate": "commands.give.success.single",
+      "with": [
+       2,
+       {
+        "color": "white",
+        "hover_event": {
+         "action": "show_item",
+         "id": "ntm:ingot_uranium"
+        },
+        "translate": "chat.square_brackets",
+        "with": [
+         {
+          "extra": [
+           {
+            "translate": "item.ntm.ingot_uranium"
+           }
+          ],
+          "text": ""
+         }
+        ]
+       },
+       {
+        "click_event": {
+         "action": "suggest_command",
+         "command": "/tell NtmTeste "
+        },
+        "insertion": "NtmTeste",
+        "text": "NtmTeste"
+       }
+      ]
+     }
+    ],
+    "subtitle": null,
+    "title": null
+   },
+   "block": {
+    "actionbar": null,
+    "chat": [
+     "[NtmTeste] ore_tag_ok",
+     "Changed the block at -21, 64, 10",
+     "No items were found on player NtmTeste"
+    ],
+    "order": "newest first",
+    "styled": [
+     {
+      "translate": "chat.type.announcement",
+      "with": [
+       {
+        "click_event": {
+         "action": "suggest_command",
+         "command": "/tell NtmTeste "
+        },
+        "insertion": "NtmTeste",
+        "text": "NtmTeste"
+       },
+       {
+        "extra": [
+         {
+          "text": "ore_tag_ok"
+         }
+        ],
+        "text": ""
+       }
+      ]
+     },
+     {
+      "translate": "commands.setblock.success",
+      "with": [
+       -21,
+       64,
+       10
+      ]
+     },
+     {
+      "extra": [
+       {
+        "color": "red",
+        "text": ""
+       },
+       {
+        "color": "red",
+        "translate": "clear.failed.single",
+        "with": [
+         {
+          "click_event": {
+           "action": "suggest_command",
+           "command": "/tell NtmTeste "
+          },
+          "insertion": "NtmTeste",
+          "text": "NtmTeste"
+         }
+        ]
+       }
+      ],
+      "text": ""
+     }
+    ],
+    "subtitle": null,
+    "title": null
+   }
+  }
+ },
+ "radiation": {
+  "ok": true,
+  "result": {
+   "start_millirad": 512,
+   "after_40s_millirad": 29212
+  }
+ },
+ "machine_pos": [
+  -22,
+  120,
+  10
+ ],
+ "machine_wood_burner": {
+  "ok": true,
+  "result": {
+   "energia": null,
+   "inventory": {
+    "minecraft:coal": 3,
+    "ntm:ingot_uranium": 2
+   }
+  }
+ },
+ "saved_dose": 29912,
+ "log_reentered": {
+  "ok": true,
+  "result": {
+   "tabs": [
+    "creative-plus: 8 content mod tabs"
+   ],
+   "stopped": []
+  }
+ },
+ "reentered": {
+  "ok": true,
+  "result": {
+   "energia": null,
+   "dose_millirad": 29912,
+   "inventory": {
+    "minecraft:coal": 3,
+    "ntm:ingot_uranium": 2
+   },
+   "world": "Aceite"
+  }
+ }
+}

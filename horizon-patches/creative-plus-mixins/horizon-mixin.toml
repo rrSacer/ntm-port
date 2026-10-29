@@ -1,0 +1,77 @@
+# creative-plus: the item panel of a recipe viewer (Recipes) on the creative
+# screen too, and creative tabs for content mods (data/<ns>/creative_tab/).
+# Not on Horizon's stable hook points (API 2 has none for the creative
+# screen): pinned to the commit it was made on.
+[mod]
+id = "creative-plus"
+version = "0.1.0"
+priority = 100
+
+[compatibility]
+horizon_revision = "9e49037875b91efe07a2d5e4714a113d052df17a"
+
+[[module]]
+id = "mod-tabs"
+file = "crates/horizon-client/src/creative.rs"
+name = "mod_tabs"
+source = "mod_tabs.rs"
+visibility = "pub"
+
+[[module]]
+id = "screen"
+file = "crates/horizon-client/src/game.rs"
+name = "creative_plus"
+source = "creative_plus.rs"
+
+[[injection]]
+id = "load-root"
+kind = "HEAD"
+target = "horizon_client::creative::Creative::load"
+helper = "load.rs"
+bindings = [{ name = "root", ty = "&Path", value = "root" }]
+
+[[injection]]
+id = "open-mod-tabs"
+kind = "HEAD"
+target = "horizon_client::creative::Creative::reopen"
+helper = "tabs.rs"
+bindings = [{ name = "creative", ty = "&mut Creative", value = "&mut *self" }]
+
+[[injection]]
+id = "tab-pages"
+kind = "OVERWRITE"
+target = "horizon_client::creative::Creative::tab_position"
+helper = "tab_position.rs"
+bindings = [{ name = "tab", ty = "&Tab", value = "tab" }]
+
+[[injection]]
+id = "creative-click"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::Game<'_>::click_creative"
+helper = "click.rs"
+bindings = [
+  { name = "game", ty = "&mut Game<'_>", value = "&mut *self" },
+  { name = "right", ty = "bool", value = "right" },
+]
+
+[[injection]]
+id = "creative-draw"
+kind = "HEAD"
+target = "horizon_client::game::Game<'_>::draw_carried"
+helper = "draw.rs"
+bindings = [
+  { name = "game", ty = "&mut Game<'_>", value = "&mut *self" },
+  { name = "batch", ty = "&mut HudBatch", value = "&mut *batch" },
+]
+
+[[injection]]
+id = "tab-title"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::Game<'_>::creative_tab_title"
+helper = "title.rs"
+bindings = [
+  { name = "game", ty = "&Game<'_>", value = "self" },
+  { name = "tab", ty = "&horizon_client::creative::Tab", value = "tab" },
+]

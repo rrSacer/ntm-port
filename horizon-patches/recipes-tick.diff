@@ -1,0 +1,176 @@
+diff --git a/mods/official/recipes/src/lib.rs b/mods/official/recipes/src/lib.rs
+index 42f85601..66ece4c4 100644
+--- a/mods/official/recipes/src/lib.rs
++++ b/mods/official/recipes/src/lib.rs
+@@ -76,6 +76,22 @@ struct Recipes {
+     /// The book id behind each recipe the page shows (-1: none).
+     shown: Vec<i32>,
+     give: bool,
++    /// Each item's name in lower case, for the search.
++    lower: Vec<String>,
++    /// How far the tables are loaded: each step is one frame's work.
++    stage: Stage,
++}
++
++/// The tables load over several frames, so a big modpack's (thousands of
++/// items and recipes) never takes one frame's whole budget.
++#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
++enum Stage {
++    #[default]
++    Out,
++    Items,
++    Names,
++    Recipes,
++    Ready,
+ }
+ 
+ impl Recipes {
+@@ -91,10 +107,6 @@ impl Recipes {
+             components: s.components.clone(),
+         }
+     }
+-    /// The same item, and the same components when `want` names some.
+-    fn matches(&self, s: &recipes::Stack, want: &browser::Stack) -> bool {
+-        self.id(s) == want.item && (want.components.is_empty() || s.components == want.components)
+-    }
+     fn name<'a>(&'a self, item: &'a str) -> &'a str {
+         self.items
+             .iter()
+@@ -102,45 +114,67 @@ impl Recipes {
+             .map_or(item, |i| &i.name)
+     }
+ 
+-    /// Loads the tables once a world is open, and drops them when it closes.
++    /// Loads the tables once a world is open, a step a frame, and drops
++    /// them when it closes.
+     fn load(&mut self) {
+         let in_world = game::get_player().is_some();
+-        if in_world && self.items.is_empty() {
+-            self.items = recipes::items();
+-            self.all = recipes::all();
+-            self.list();
+-        } else if !in_world && !self.items.is_empty() {
+-            browser::set_recipes("", &[], 0, &[]);
+-            browser::set_items(&[]);
+-            *self = Recipes {
+-                give: self.give,
+-                ..Recipes::default()
+-            };
++        if !in_world {
++            if self.stage != Stage::Out {
++                browser::set_recipes("", &[], 0, &[]);
++                browser::set_items(&[]);
++                *self = Recipes {
++                    give: self.give,
++                    ..Recipes::default()
++                };
++            }
++            return;
+         }
++        self.stage = match self.stage {
++            Stage::Out => {
++                self.items = recipes::items();
++                Stage::Items
++            }
++            Stage::Items => {
++                self.lower = self.items.iter().map(|i| i.name.to_lowercase()).collect();
++                Stage::Names
++            }
++            Stage::Names => {
++                self.all = recipes::all();
++                Stage::Recipes
++            }
++            Stage::Recipes => {
++                self.list();
++                Stage::Ready
++            }
++            Stage::Ready => Stage::Ready,
++        };
+     }
+ 
+     /// Fills the panel with the items the search keeps: every word must be
+     /// in the name or the id; `@minecraft` keeps a namespace, `#logs` a tag.
+     fn list(&mut self) {
++        if self.lower.len() != self.items.len() {
++            return;
++        }
+         let words: Vec<String> = self
+             .search
+             .to_lowercase()
+             .split_whitespace()
+             .map(String::from)
+             .collect();
+-        let keeps = |item: &recipes::Item| {
++        let keeps = |item: &recipes::Item, lower: &str| {
+             words.iter().all(|w| {
+                 if let Some(ns) = w.strip_prefix('@') {
+                     item.id.split(':').next().is_some_and(|n| n.starts_with(ns))
+                 } else if let Some(tag) = w.strip_prefix('#') {
+                     item.tags.iter().any(|t| t.contains(tag))
+                 } else {
+-                    item.name.to_lowercase().contains(w.as_str()) || item.id.contains(w.as_str())
++                    lower.contains(w.as_str()) || item.id.contains(w.as_str())
+                 }
+             })
+         };
+         self.listed = (self.items.iter().enumerate())
+-            .filter(|(_, i)| i.id != "minecraft:air" && keeps(i))
++            .filter(|&(n, i)| i.id != "minecraft:air" && keeps(i, &self.lower[n]))
+             .map(|(n, _)| n)
+             .collect();
+         let stacks: Vec<_> = self
+@@ -148,20 +182,33 @@ impl Recipes {
+             .iter()
+             .map(|&n| stack(&self.items[n].id))
+             .collect();
+-        browser::set_items(&stacks);
++        if stacks.is_empty() {
++            // An empty list takes the panel away, its search box with it,
++            // leaving the player no way to change the search: a barrier
++            // stands for "nothing found" instead (its click finds no item).
++            browser::set_items(&[stack("minecraft:barrier")]);
++        } else {
++            browser::set_items(&stacks);
++        }
+     }
+ 
+-    /// The recipes a view lists, all stations together.
++    /// The recipes a view lists, all stations together. Stacks are matched
++    /// by item index, not by id, so a search over thousands of recipes stays
++    /// cheap.
+     fn found(&self, view: &View) -> Vec<&recipes::Recipe> {
++        let Some(want) = self.items.iter().position(|i| i.id == view.item.item) else {
++            return Vec::new();
++        };
++        let (want, components) = (want as u32, &view.item.components);
++        let hit = |s: &recipes::Stack| {
++            s.item == want && (components.is_empty() || s.components == *components)
++        };
+         (self.all.iter())
+             .filter(|r| {
+                 if view.uses {
+-                    r.slots
+-                        .iter()
+-                        .flatten()
+-                        .any(|s| self.matches(s, &view.item))
++                    r.slots.iter().flatten().any(&hit)
+                 } else {
+-                    r.results.iter().any(|s| self.matches(s, &view.item))
++                    r.results.iter().any(&hit)
+                 }
+             })
+             .collect()
+@@ -339,9 +386,11 @@ impl Mod for Recipes {
+             ..Recipes::default()
+         };
+         me.page();
+-        Ok((me, Registration::new().on_frame()))
++        // The tick, not the frame: its budget holds a big modpack's tables
++        // and searches, and no frame pays for the mod.
++        Ok((me, Registration::new().on_tick()))
+     }
+-    fn frame(&mut self, _seconds: f32) {
++    fn tick(&mut self, _tick: u64) {
+         self.load();
+         // The keys matter only over an item, which `browser` reports.
+         let _ = input::poll();

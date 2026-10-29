@@ -1,0 +1,539 @@
+diff --git a/crates/horizon-client/src/creative.rs b/crates/horizon-client/src/creative.rs
+index a262ad1d..621de7ff 100644
+--- a/crates/horizon-client/src/creative.rs
++++ b/crates/horizon-client/src/creative.rs
+@@ -2,6 +2,8 @@
+ //! contents as built by the game's own display generators
+ //! (`creative-inventory.json`), a 9x5 scrolling grid and the search tab.
+ use crate::{Result, items::ItemStack, ui::EditBox};
++
++pub mod mod_tabs;
+ use serde_json::Value;
+ use std::{
+     collections::HashMap,
+@@ -186,16 +188,20 @@ impl Creative {
+     pub const SCROLL_WIDTH: f32 = 14.0;
+     pub const SCROLL_HEIGHT: f32 = 112.0;
+     /// `creative-inventory.json` (VanillaCreativeTabsExporter); resources
+-    /// prepared before it fall back to `creative-tabs.json`'s item ids.
++    /// prepared before it fall back to `creative-tabs.json`'s item ids. Then
++    /// the content mods' tabs.
+     pub fn load(root: &Path) -> Result<Self> {
+         let path = root.join("creative-inventory.json");
+-        if path.exists() {
+-            Self::from_json(&serde_json::from_slice(&fs::read(path)?)?)
++        let mut creative = if path.exists() {
++            Self::from_json(&serde_json::from_slice(&fs::read(path)?)?)?
+         } else {
+             Self::from_legacy(&serde_json::from_slice(&fs::read(
+                 root.join("creative-tabs.json"),
+-            )?)?)
+-        }
++            )?)?)?
++        };
++        // Content mods' tabs (`data/<ns>/creative_tab/`), on pages after vanilla's.
++        mod_tabs::add(&mut creative, root);
++        Ok(creative)
+     }
+     pub fn from_json(raw: &Value) -> Result<Self> {
+         let mut tabs = Vec::new();
+@@ -529,6 +535,9 @@ impl Creative {
+     }
+     /// Tab button position relative to the screen origin (CreativeModeInventoryScreen.getTabX/Y).
+     pub fn tab_position(tab: &Tab) -> (f32, f32) {
++        if !mod_tabs::on_page(tab) {
++            return mod_tabs::HIDDEN;
++        }
+         let mut x = tab.column as f32 * 27.0;
+         if tab.column >= 5 {
+             // Right-aligned tabs (search, inventory).
+diff --git a/crates/horizon-client/src/creative/mod_tabs.rs b/crates/horizon-client/src/creative/mod_tabs.rs
+new file mode 100644
+index 00000000..80a111fc
+--- /dev/null
++++ b/crates/horizon-client/src/creative/mod_tabs.rs
+@@ -0,0 +1,248 @@
++//! Creative tabs from content mods: every
++//! `data/<namespace>/creative_tab/<name>.json` of a content mod's namespace in
++//! the resource root becomes a tab `<namespace>:<name>`, and its items join
++//! the search tab. A content mod's files outside `data/<id>/horizon/` are
++//! copied into the root as they are, so no loader change is needed.
++//!
++//! ```text
++//! {
++//!   "title": "itemGroup.ntm.parts",          translation key (optional)
++//!   "fallback": "NTM Resources and Parts",   shown when the key is unknown
++//!   "icon": "ntm:ingot_uranium",             the first item when left out
++//!   "order": 10,                             tabs sort by order, then id
++//!   "items": ["ntm:ingot_uranium", ...]      item ids, in the tab's order
++//! }
++//! ```
++//!
++//! Vanilla's tabs fill both rows, so mod tabs go on more pages, ten to a page
++//! (columns 1 to 5 of the top and bottom rows), as Forge pages them; the tabs
++//! of columns 6 and 7 (search, inventory, op blocks) stay on every page.
++use super::{Creative, SearchEntry, Tab, java_lower, split_id};
++use crate::items::ItemStack;
++use serde_json::Value;
++use std::{
++    collections::HashSet,
++    fs,
++    path::Path,
++    sync::{
++        RwLock,
++        atomic::{AtomicUsize, Ordering},
++    },
++};
++
++/// Mod tabs on one page.
++pub const PER_PAGE: usize = 10;
++/// Where a tab of another page is "drawn": far off the screen, where no
++/// click reaches it.
++pub const HIDDEN: (f32, f32) = (-100_000.0, -100_000.0);
++
++/// A mod tab: its id, page (1 and up) and English fallback title.
++struct Placed {
++    id: String,
++    page: usize,
++    fallback: String,
++}
++
++static PLACED: RwLock<Vec<Placed>> = RwLock::new(Vec::new());
++static PAGE: AtomicUsize = AtomicUsize::new(0);
++static PAGES: AtomicUsize = AtomicUsize::new(1);
++
++/// Adds the content mods' tabs found in `root` to `creative`.
++pub fn add(creative: &mut Creative, root: &Path) {
++    let mut found: Vec<(i64, String, Value)> = Vec::new();
++    for namespace in crate::mod_content::namespaces(root) {
++        let dir = root.join("data").join(&namespace).join("creative_tab");
++        let Ok(entries) = fs::read_dir(&dir) else {
++            continue;
++        };
++        for entry in entries.flatten() {
++            let path = entry.path();
++            if path.extension().and_then(|e| e.to_str()) != Some("json") {
++                continue;
++            }
++            let Some(name) = path.file_stem().and_then(|s| s.to_str()) else {
++                continue;
++            };
++            let doc = fs::read(&path)
++                .ok()
++                .and_then(|b| serde_json::from_slice::<Value>(&b).ok());
++            match doc {
++                Some(doc) => found.push((
++                    doc["order"].as_i64().unwrap_or(0),
++                    format!("{namespace}:{name}"),
++                    doc,
++                )),
++                None => log::warn!("creative-plus: {} is not JSON", path.display()),
++            }
++        }
++    }
++    found.sort_by(|a, b| (a.0, &a.1).cmp(&(b.0, &b.1)));
++    let mut placed = Vec::new();
++    let mut searched: HashSet<String> = HashSet::new();
++    for (_, id, doc) in found {
++        let slot = placed.len() % PER_PAGE;
++        let page = 1 + placed.len() / PER_PAGE;
++        let title = doc["title"].as_str().unwrap_or(&id).to_owned();
++        let fallback = doc["fallback"].as_str().unwrap_or(&title).to_owned();
++        // Another `Game` (the server thread's) loading the same root into
++        // this one's tabs: placed again, not added twice.
++        if creative.tabs.iter().any(|t| t.id == id) {
++            placed.push(Placed { id, page, fallback });
++            continue;
++        }
++        let items: Vec<ItemStack> = doc["items"]
++            .as_array()
++            .into_iter()
++            .flatten()
++            .filter_map(Value::as_str)
++            .map(|item| ItemStack::new(item, 1))
++            .collect();
++        if items.is_empty() {
++            continue;
++        }
++        for stack in &items {
++            if searched.insert(stack.item.to_string()) && creative.order_of(stack).is_none() {
++                let (namespace, path) = split_id(&java_lower(&stack.item));
++                creative.search_index.push(SearchEntry {
++                    namespace,
++                    path,
++                    lines: Vec::new(),
++                    tags: Vec::new(),
++                });
++                creative.search_items.push(stack.clone());
++            }
++        }
++        let icon = doc["icon"]
++            .as_str()
++            .map_or_else(|| items[0].item.to_string(), str::to_owned);
++        creative.tabs.push(Tab {
++            id: id.clone(),
++            title,
++            icon,
++            items,
++            top: slot < PER_PAGE / 2,
++            column: (slot % (PER_PAGE / 2)) as u32,
++            search: false,
++            inventory: false,
++        });
++        placed.push(Placed { id, page, fallback });
++    }
++    if !placed.is_empty() {
++        log::info!("creative-plus: {} content mod tabs", placed.len());
++    }
++    PAGES.store(1 + placed.len().div_ceil(PER_PAGE), Ordering::Relaxed);
++    PAGE.store(0, Ordering::Relaxed);
++    *PLACED.write().unwrap_or_else(|e| e.into_inner()) = placed;
++}
++
++/// The page shown (0: vanilla's tabs) and how many there are.
++pub fn page() -> usize {
++    PAGE.load(Ordering::Relaxed)
++}
++pub fn pages() -> usize {
++    PAGES.load(Ordering::Relaxed)
++}
++
++/// The page tab `id` is on: 0 for vanilla's.
++fn page_of(id: &str) -> usize {
++    let placed = PLACED.read().unwrap_or_else(|e| e.into_inner());
++    placed.iter().find(|p| p.id == id).map_or(0, |p| p.page)
++}
++
++/// Whether `tab` shows on the page shown now.
++pub fn on_page(tab: &Tab) -> bool {
++    tab.column >= 5 || page_of(&tab.id) == page()
++}
++
++/// A mod tab's English title, for a title key the language lacks; None for
++/// vanilla's tabs.
++pub fn fallback(id: &str) -> Option<String> {
++    let placed = PLACED.read().unwrap_or_else(|e| e.into_inner());
++    placed
++        .iter()
++        .find(|p| p.id == id)
++        .map(|p| p.fallback.clone())
++}
++
++/// Turns the page by `step` (wrapping around): the index of the tab to
++/// select on it, its first.
++pub fn turn(creative: &Creative, step: isize) -> Option<usize> {
++    let pages = pages();
++    if pages < 2 {
++        return None;
++    }
++    let to = (page() as isize + step).rem_euclid(pages as isize) as usize;
++    PAGE.store(to, Ordering::Relaxed);
++    creative
++        .tabs
++        .iter()
++        .position(|t| t.column < 5 && page_of(&t.id) == to)
++}
++
++/// The page buttons, left and right above the top tabs, relative to the
++/// screen's origin: `[x, y, w, h]`.
++pub fn buttons() -> [[f32; 4]; 2] {
++    [
++        [0.0, -50.0, 20.0, 20.0],
++        [Creative::WIDTH - 20.0, -50.0, 20.0, 20.0],
++    ]
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn content_mod_tabs_load_on_a_page_of_their_own() {
++        let root = std::env::temp_dir().join(format!("mod-tabs-{}", std::process::id()));
++        let dir = root.join("data/ntm/creative_tab");
++        fs::create_dir_all(&dir).unwrap();
++        fs::write(
++            root.join(horizon_items::content_namespaces::MARKER),
++            r#"["ntm"]"#,
++        )
++        .unwrap();
++        fs::write(
++            dir.join("parts.json"),
++            r#"{"title": "itemGroup.ntm.parts", "fallback": "NTM Parts", "order": 1,
++                "items": ["ntm:ingot_uranium", "ntm:plate_steel"]}"#,
++        )
++        .unwrap();
++        fs::write(dir.join("empty.json"), r#"{"items": []}"#).unwrap();
++        let raw = serde_json::json!({"tabs": [
++            {"id": "minecraft:building_blocks", "type": "CATEGORY", "row": "TOP", "column": 0,
++             "title": "Building Blocks", "icon": "{count:1,id:\"minecraft:bricks\"}", "visible": true,
++             "items": ["{count:1,id:\"minecraft:bricks\"}"]},
++            {"id": "minecraft:search", "type": "SEARCH", "row": "TOP", "column": 6, "title": "Search Items",
++             "icon": "{count:1,id:\"minecraft:compass\"}", "visible": true,
++             "items": ["{count:1,id:\"minecraft:bricks\"}"], "lines": [["Bricks"]], "tags": [[]]}
++        ]});
++        let mut creative = Creative::from_json(&raw).unwrap();
++        add(&mut creative, &root);
++        // Loading the same root again (the server thread's Game) adds nothing.
++        add(&mut creative, &root);
++        let _ = fs::remove_dir_all(&root);
++
++        let ids: Vec<&str> = creative.tabs.iter().map(|t| t.id.as_str()).collect();
++        assert_eq!(
++            ids,
++            ["minecraft:building_blocks", "minecraft:search", "ntm:parts"]
++        );
++        let tab = &creative.tabs[2];
++        assert_eq!(
++            (tab.top, tab.column, tab.icon.as_str()),
++            (true, 0, "ntm:ingot_uranium")
++        );
++        assert_eq!(fallback("ntm:parts").as_deref(), Some("NTM Parts"));
++        assert_eq!(fallback("minecraft:search"), None);
++        assert_eq!(pages(), 2);
++        // Page 0 shows vanilla's tabs and the search tab, not the mod's.
++        assert!(on_page(&creative.tabs[0]) && on_page(&creative.tabs[1]));
++        assert!(!on_page(tab));
++        // The mod's items join the search tab once, found by name and id.
++        assert_eq!(creative.search_items().len(), 3);
++        let names = crate::creative::Names::default();
++        assert_eq!(creative.search_results("uranium", &names).len(), 1);
++        assert_eq!(creative.search_results("ntm:", &names).len(), 2);
++    }
++}
+diff --git a/crates/horizon-client/src/game.rs b/crates/horizon-client/src/game.rs
+index a8aa547e..ffa8a66e 100644
+--- a/crates/horizon-client/src/game.rs
++++ b/crates/horizon-client/src/game.rs
+@@ -39,6 +39,7 @@ mod control;
+ mod copper_golems;
+ mod creaking;
+ mod creative_hotbar;
++mod creative_plus;
+ mod creatures;
+ mod crossbow;
+ pub(crate) mod cushions;
+@@ -11243,6 +11244,9 @@ impl Game<'_> {
+     }
+     /// A creative tab's title: `itemGroup.*`, else the export's English title.
+     fn creative_tab_title(&self, tab: &horizon_client::creative::Tab) -> String {
++        if let std::ops::ControlFlow::Break(title) = creative_plus::title(self, tab) {
++            return title;
++        }
+         horizon_client::creative::item_group_key(&tab.id)
+             .map_or_else(|| tab.title.clone(), |key| self.translate(key, &tab.title))
+     }
+@@ -11433,6 +11437,8 @@ impl Game<'_> {
+                 );
+             }
+         }
++        // The page buttons and a mod's item panel, under the carried stack.
++        creative_plus::draw(self, batch);
+         self.draw_carried(batch);
+         if tab.inventory {
+             if Self::creative_trash_hovered(batch, self.cursor) {
+@@ -11456,6 +11462,9 @@ impl Game<'_> {
+             && cursor.1 < oy + y + 16.0
+     }
+     fn click_creative(&mut self, right: bool) {
++        if creative_plus::click(self, right).is_break() {
++            return;
++        }
+         let Some(size) = self
+             .renderer
+             .as_ref()
+@@ -13387,6 +13396,7 @@ impl ApplicationHandler for Game<'_> {
+                 WindowEvent::KeyboardInput { event, .. }
+                     if self.screen == Screen::Creative
+                         && self.creative_screen.tab().search
++                        && !self.mod_browser_typing()
+                         && event.state == ElementState::Pressed
+                         && !matches!(event.physical_key, PhysicalKey::Code(KeyCode::Escape)) =>
+                 {
+diff --git a/crates/horizon-client/src/game/control.rs b/crates/horizon-client/src/game/control.rs
+index 60260865..3b902dcc 100644
+--- a/crates/horizon-client/src/game/control.rs
++++ b/crates/horizon-client/src/game/control.rs
+@@ -630,7 +630,7 @@ impl Game<'_> {
+                     // The port, or the game rules' search and number boxes.
+                     Screen::WorldOptions if text == "\\b" => self.world_options_text(None),
+                     Screen::WorldOptions => self.world_options_text(Some(text)),
+-                    Screen::Inventory if self.mod_browser_typing() => {
++                    Screen::Inventory | Screen::Creative if self.mod_browser_typing() => {
+                         self.mod_browser_text((text != "\\b").then_some(text), text == "\\b")
+                     }
+                     Screen::Inventory if self.recipe_search_focused() => {
+diff --git a/crates/horizon-client/src/game/creative_plus.rs b/crates/horizon-client/src/game/creative_plus.rs
+new file mode 100644
+index 00000000..ef0abcc6
+--- /dev/null
++++ b/crates/horizon-client/src/game/creative_plus.rs
+@@ -0,0 +1,99 @@
++//! The creative screen's additions: the item panel of a recipe viewer mod
++//! (Recipes) right of it, as beside the survival inventory, and the page
++//! buttons of the content mods' tabs (`horizon_client::creative::mod_tabs`).
++use super::{Game, Screen, select_creative_tab};
++use horizon_client::{
++    creative::{Creative, Tab, mod_tabs},
++    hud::HudBatch,
++    items::ItemStack,
++    text::Text,
++    ui,
++};
++use std::ops::ControlFlow;
++
++fn inside(p: (f32, f32), [x, y, w, h]: [f32; 4]) -> bool {
++    p.0 >= x && p.1 >= y && p.0 < x + w && p.1 < y + h
++}
++
++/// Before the creative screen's carried stack: the page buttons, then the
++/// panel, so the carried stack and the tooltips stay on top.
++pub(super) fn draw(game: &mut Game<'_>, batch: &mut HudBatch) {
++    if game.screen != Screen::Creative {
++        return;
++    }
++    draw_pages(game, batch);
++    game.draw_mod_browser(batch);
++}
++
++fn draw_pages(game: &Game<'_>, batch: &mut HudBatch) {
++    let pages = mod_tabs::pages();
++    if pages < 2 {
++        return;
++    }
++    let (ox, oy) = Game::creative_origin(batch);
++    let atlas = &game.gui.atlas;
++    for (i, [x, y, w, h]) in mod_tabs::buttons().into_iter().enumerate() {
++        let (x, y) = (ox + x, oy + y);
++        let hover = inside(game.cursor, [x, y, w, h]);
++        let label = Text::literal(if i == 0 { "<" } else { ">" });
++        ui::button(batch, atlas, x, y, w, h, &label, true, hover);
++    }
++    let label = format!("{} / {}", mod_tabs::page() + 1, pages);
++    let width = HudBatch::text_width(atlas, &label);
++    let x = (ox + (Creative::WIDTH - width) / 2.0).floor();
++    batch.text(atlas, &label, x, oy - 44.0, u32::MAX, true);
++}
++
++/// A press on the creative screen: the panel's first, then the page buttons.
++pub(super) fn click(game: &mut Game<'_>, right: bool) -> ControlFlow<()> {
++    if game.mod_browser_press(right) {
++        return ControlFlow::Break(());
++    }
++    if right || mod_tabs::pages() < 2 {
++        return ControlFlow::Continue(());
++    }
++    let Some(size) = game
++        .renderer
++        .as_ref()
++        .map(|r| [r.config.width, r.config.height])
++    else {
++        return ControlFlow::Continue(());
++    };
++    let batch = HudBatch::new(size);
++    let (ox, oy) = Game::creative_origin(&batch);
++    for (i, [x, y, w, h]) in mod_tabs::buttons().into_iter().enumerate() {
++        if !inside(game.cursor, [ox + x, oy + y, w, h]) {
++            continue;
++        }
++        let step = if i == 0 { -1 } else { 1 };
++        if let Some(tab) = mod_tabs::turn(&game.creative_screen, step) {
++            select_creative_tab(&mut game.creative_screen, &mut game.inv_clicks, tab);
++            game.inv_drag = None;
++            game.last_inv_click = None;
++        }
++        game.audio
++            .play("minecraft:ui.button.click", None, 0.25, 1.0);
++        return ControlFlow::Break(());
++    }
++    ControlFlow::Continue(())
++}
++
++/// A mod tab's title in the player's language.
++pub(super) fn title(game: &Game<'_>, tab: &Tab) -> ControlFlow<String> {
++    match mod_tabs::fallback(&tab.id) {
++        Some(fallback) => ControlFlow::Break(game.translate(&tab.title, &fallback)),
++        None => ControlFlow::Continue(()),
++    }
++}
++
++/// The stack an item tab shows in display slot `slot` (the mods' keys over
++/// it, as over a slot of the screen's); None for the other slots.
++pub(super) fn display_stack(game: &Game<'_>, slot: usize) -> Option<ItemStack> {
++    if slot < Creative::DISPLAY || !game.creative_tab_open() {
++        return None;
++    }
++    let names = &game.pack.names;
++    let items = game.creative_screen.items(names);
++    let first = game.creative_screen.first_row(names);
++    items.get(first * 9 + slot - Creative::DISPLAY).cloned()
++}
+diff --git a/crates/horizon-client/src/game/mod_input.rs b/crates/horizon-client/src/game/mod_input.rs
+index 4bfd3ab3..08d49842 100644
+--- a/crates/horizon-client/src/game/mod_input.rs
++++ b/crates/horizon-client/src/game/mod_input.rs
+@@ -124,7 +124,7 @@ impl Game<'_> {
+         // Over an item on a container screen, the mods' keys are `browser`
+         // events (a recipe viewer's R and U).
+         if pressed
+-            && self.screen == Screen::Inventory
++            && matches!(self.screen, Screen::Inventory | Screen::Creative)
+             && self.title.is_none()
+             && !self.mod_browser_typing()
+             && let Some(name) = horizon_client::keybinds::key_name(key)
+diff --git a/crates/horizon-client/src/game/native_panel.rs b/crates/horizon-client/src/game/native_panel.rs
+index ef540734..160f386d 100644
+--- a/crates/horizon-client/src/game/native_panel.rs
++++ b/crates/horizon-client/src/game/native_panel.rs
+@@ -184,7 +184,7 @@ impl Game<'_> {
+     /// The mod showing a panel, with its items made into stacks once per
+     /// change; none while no mod shows one or no container screen is up.
+     fn browser_sync(&mut self) -> Option<Owner> {
+-        if self.screen != Screen::Inventory || self.title.is_some() {
++        if !matches!(self.screen, Screen::Inventory | Screen::Creative) || self.title.is_some() {
+             return None;
+         }
+         self.panel_wasm_sync();
+@@ -390,7 +390,8 @@ impl Game<'_> {
+         } else if let Some(stack) = self.browser_pointed_stack(&layout) {
+             let lines = self.stack_tooltip(&stack.1);
+             self.draw_tooltip_lines(batch, &lines, cursor.0, cursor.1);
+-        } else {
++        } else if self.screen != Screen::Creative {
++            // The creative screen draws its own slots' tooltips after the panel.
+             self.draw_slot_tooltip(batch);
+         }
+     }
+@@ -460,7 +461,7 @@ impl Game<'_> {
+ 
+     /// Whether keys go to the panel's search box.
+     pub(super) fn mod_browser_typing(&self) -> bool {
+-        self.screen == Screen::Inventory
++        matches!(self.screen, Screen::Inventory | Screen::Creative)
+             && self.panel.of.is_some()
+             && self.panel.search.as_ref().is_some_and(|s| s.focused)
+     }
+@@ -535,7 +536,10 @@ impl Game<'_> {
+             }
+             _ => {
+                 let slot = self.slot_at(&batch, self.cursor.0, self.cursor.1)?;
+-                self.slot_view(slot)?
++                match super::creative_plus::display_stack(self, slot) {
++                    Some(stack) => stack,
++                    None => self.slot_view(slot)?,
++                }
+             }
+         };
+         Some(BrowserStack {
+@@ -547,7 +551,10 @@ impl Game<'_> {
+     /// A key `key` (`key.keyboard.r`) went down: over an item on a container
+     /// screen, a native mod's panel hears it as a `Key` event.
+     pub(super) fn native_panel_key(&mut self, key: &str) {
+-        if self.screen != Screen::Inventory || self.title.is_some() || self.mod_browser_typing() {
++        if !matches!(self.screen, Screen::Inventory | Screen::Creative)
++            || self.title.is_some()
++            || self.mod_browser_typing()
++        {
+             return;
+         }
+         let Some(owner) = self.browser_sync().filter(|o| o.native_id().is_some()) else {

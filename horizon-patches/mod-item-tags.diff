@@ -1,0 +1,88 @@
+mod-item-tags: as tags de item e de bloco dos content mods passam a valer em comandos
+(`clear @s #ntm:rad/bit_8 0`, `execute if block ... #ns:tag`).
+Base: upstream 9e49037875b91efe07a2d5e4714a113d052df17a (main de 2026-10-29). Só crates/horizon-client/src/mod_content.rs.
+Formatado com rustfmt (igual ao antigo mod-item-tags.fmt.diff). Aplicar: git apply mod-item-tags.diff
+Verificado em jogo (horizon-tags, 2026-10-29): veja ntm-port/docs/radiacao.md.
+
+diff --git a/crates/horizon-client/src/mod_content.rs b/crates/horizon-client/src/mod_content.rs
+index 2d8d2de3..5815d1bc 100644
+--- a/crates/horizon-client/src/mod_content.rs
++++ b/crates/horizon-client/src/mod_content.rs
+@@ -246,6 +246,10 @@ struct Plan<'a> {
+     defaults: BTreeMap<String, u32>,
+     /// The gameplay rows' sound objects, by block, for `sounds` overrides.
+     sounds: BTreeMap<String, J>,
++    /// The item and block tags the mods add (`<ns>:<path>`), which commands
++    /// accept as `#<ns>:<path>` once they are in the exported registries.
++    item_tags: Vec<String>,
++    block_tags: Vec<String>,
+ }
+ 
+ fn read_json(path: &Path) -> Result<J> {
+@@ -359,6 +363,7 @@ impl<'a> Plan<'a> {
+                 });
+             }
+         }
++        let (mut item_tags, mut block_tags) = (Vec::new(), Vec::new());
+         for m in &sorted {
+             for i in &m.content.items {
+                 items.push(NewItem {
+@@ -367,6 +372,20 @@ impl<'a> Plan<'a> {
+                     rarity: i.rarity,
+                 });
+             }
++            for file in &m.content.files {
++                let Some((ns, rest)) = file
++                    .strip_prefix("data/")
++                    .and_then(|f| f.strip_suffix(".json"))
++                    .and_then(|f| f.split_once("/tags/"))
++                else {
++                    continue;
++                };
++                if let Some(path) = rest.strip_prefix("item/") {
++                    item_tags.push(format!("{ns}:{path}"));
++                } else if let Some(path) = rest.strip_prefix("block/") {
++                    block_tags.push(format!("{ns}:{path}"));
++                }
++            }
+         }
+         Ok(Plan {
+             blocks,
+@@ -374,6 +393,8 @@ impl<'a> Plan<'a> {
+             states: names.len(),
+             defaults,
+             sounds,
++            item_tags,
++            block_tags,
+         })
+     }
+ 
+@@ -584,6 +605,28 @@ impl<'a> Plan<'a> {
+                 if let Some(J::Arr(ids)) = doc.at("by_registry/minecraft:block/ids") {
+                     ids.extend(new_blocks());
+                 }
++                // The tag names commands check `#tag` against (vanilla tags a
++                // mod only adds to are already there).
++                for (tags, keys) in [
++                    (
++                        &self.item_tags,
++                        ["item_tags", "by_registry/minecraft:item/tags"],
++                    ),
++                    (
++                        &self.block_tags,
++                        ["block_tags", "by_registry/minecraft:block/tags"],
++                    ),
++                ] {
++                    for key in keys {
++                        if let Some(J::Arr(names)) = doc.at(key) {
++                            for t in tags {
++                                if !names.iter().any(|n| matches!(n, J::Str(s) if s == t)) {
++                                    names.push(J::Str(t.clone()));
++                                }
++                            }
++                        }
++                    }
++                }
+             }
+             "mob-data.json" => states(doc, "states", false, false)?,
+             "worldgen/block_flags.json" => states(doc, "", false, false)?,
