@@ -105,7 +105,8 @@ def foundry():
     src = json.loads((root / 'content/machine-recipes/foundry.json').read_text())
     keep = ('id', 'name', 'behavior', 'smelts_into', 'conv', 'colors')
     materials = [{k: m[k] for k in keep} for m in src['materials']]
-    alloys = [{'name': a['name'], 'frequency': a['frequency'], 'icon': a.get('icon', ''), 'in': a['in'], 'out': a['out']}
+    alloys = [{'name': a['name'], 'label': name(a['icon']) if a.get('icon') else a['name'], 'frequency': a['frequency'], 'icon': a.get('icon', ''),
+               'in': a['in'], 'out': a['out']}
               for a in sorted(src['alloys'], key=lambda a: a['source_index'])]
     molds = [{k: m[k] for k in ('id', 'size', 'name', 'item', 'shape', 'amount', 'cost', 'outputs')} for m in src.get('molds', [])]
     return {'station': 'foundry', 'source': 'content/machine-recipes/foundry.json', 'quanta': src['quanta'], 'materials': materials,

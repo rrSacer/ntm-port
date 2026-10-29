@@ -51,6 +51,9 @@ pub type Mat = (String, u32);
 #[derive(Clone, Debug, Deserialize)]
 pub struct Alloy {
     pub name: String,
+    /// The icon item's name, for the list.
+    #[serde(default)]
+    pub label: String,
     pub frequency: u32,
     #[serde(default)]
     pub icon: String,
@@ -224,6 +227,7 @@ pub(crate) mod testing {
             vec![
                 Alloy {
                     name: "steel".into(),
+                    label: "Aço".into(),
                     frequency: 20,
                     icon: "ntm:ingot_steel".into(),
                     inputs: vec![("iron".into(), 2 * n), ("carbon".into(), 3 * n), ("flux".into(), n)],
@@ -231,6 +235,7 @@ pub(crate) mod testing {
                 },
                 Alloy {
                     name: "redcopper".into(),
+                    label: "Cobre vermelho".into(),
                     frequency: 2,
                     icon: "ntm:ingot_red_copper".into(),
                     inputs: vec![("copper".into(), n), ("redstone".into(), n)],

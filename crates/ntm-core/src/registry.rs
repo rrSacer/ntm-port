@@ -151,6 +151,65 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
+    // The foundry (`crate::foundry`, docs/maquinas.md): the firebox heats
+    // the crucible above it; channels, tank, outlet, slagtap, mold and
+    // basin come in the next stages.
+    BlockSpec {
+        id: "ntm:heater_firebox",
+        kind: Kind::Firebox,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_crucible",
+        kind: Kind::Crucible,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:foundry_channel",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:foundry_tank",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:foundry_outlet",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:foundry_slagtap",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:foundry_mold",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:foundry_basin",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
     // The shredder (`crate::shredder`): `TilePortShapes.around`, energy only.
     BlockSpec {
         id: "ntm:machine_shredder",

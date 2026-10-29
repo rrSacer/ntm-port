@@ -5,7 +5,11 @@
 //! `max(heat/1000, 1)` a tick. Left out: the ash pit, smoke and soot.
 
 use super::{HeatSource, Tables};
-use crate::server::container_bridge::{Slots, Stack};
+use crate::{
+    machine::{Logic, fill_level},
+    server::container_bridge::{Slots, Slotted, Stack},
+    view::{self, ViewModel},
+};
 use serde::{Deserialize, Serialize};
 
 pub const SLOTS: usize = 2;
@@ -66,6 +70,38 @@ impl Firebox {
     /// last fuel, TU a tick, burning.
     pub fn screen_data(&self) -> Vec<i32> {
         vec![self.heat as i32, MAX_HEAT as i32, self.burn as i32, self.max_burn as i32, self.burn_heat as i32, i32::from(self.on)]
+    }
+}
+
+impl Logic for Firebox {
+    fn tick(&mut self) -> bool {
+        let was = self.on;
+        self.step(Tables::ntm()) || was != self.on
+    }
+
+    fn level(&self, max: u8) -> u8 {
+        if self.on { fill_level(u64::from(self.heat).max(1), u64::from(MAX_HEAT), max) } else { 0 }
+    }
+
+    /// No item screen here: the fuel goes in through the engine's slots.
+    fn view(&self) -> ViewModel {
+        ViewModel::new("Fornalha")
+            .bar("Calor", u64::from(self.heat), u64::from(MAX_HEAT), "TU")
+            .text(format!("{} TU/t, {} s de queima", self.burn_heat, self.burn / 20), view::GREY)
+            .text("O combustível entra pela tela com slots (motor com o patch ntm-visual).", view::GREY)
+    }
+
+    fn contents(&self) -> Vec<(String, u32)> {
+        self.slots.iter().flatten().map(|s| (s.id.clone(), s.count)).collect()
+    }
+}
+
+impl Slotted for Firebox {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        Firebox::screen_data(self)
     }
 }
 

@@ -37,6 +37,9 @@ pub enum Kind {
     Shredder,
     /// The blast furnace (`crate::blastfurnace`): engine slots too.
     BlastFurnace,
+    /// The foundry's heat source and crucible (`crate::foundry`).
+    Firebox,
+    Crucible,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -110,6 +113,8 @@ pub enum Data {
     GasCent(crate::gascent::GasCent),
     Shredder(crate::shredder::Shredder),
     BlastFurnace(crate::blastfurnace::BlastFurnace),
+    Firebox(crate::foundry::firebox::Firebox),
+    Crucible(crate::foundry::crucible::Crucible),
     Inert { name: String },
 }
 
@@ -141,6 +146,8 @@ impl Machine {
             Kind::GasCent => Data::GasCent(crate::gascent::GasCent::default()),
             Kind::Shredder => Data::Shredder(crate::shredder::Shredder::default()),
             Kind::BlastFurnace => Data::BlastFurnace(crate::blastfurnace::BlastFurnace::default()),
+            Kind::Firebox => Data::Firebox(crate::foundry::firebox::Firebox::default()),
+            Kind::Crucible => Data::Crucible(crate::foundry::crucible::Crucible::default()),
             Kind::Crafter => match crate::crafter::Station::of(block_id) {
                 Some(st) => Data::Crafter(crate::crafter::Crafter::new(st)),
                 None => Data::Inert { name: block_id.into() },
@@ -176,6 +183,8 @@ impl Machine {
             Data::GasCent(_) => Kind::GasCent,
             Data::Shredder(_) => Kind::Shredder,
             Data::BlastFurnace(_) => Kind::BlastFurnace,
+            Data::Firebox(_) => Kind::Firebox,
+            Data::Crucible(_) => Kind::Crucible,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -194,6 +203,8 @@ impl Machine {
             Data::GasCent(m) => m,
             Data::Shredder(m) => m,
             Data::BlastFurnace(m) => m,
+            Data::Firebox(m) => m,
+            Data::Crucible(m) => m,
             Data::Inert { name } => name,
         }
     }
@@ -212,6 +223,8 @@ impl Machine {
             Data::GasCent(m) => m,
             Data::Shredder(m) => m,
             Data::BlastFurnace(m) => m,
+            Data::Firebox(m) => m,
+            Data::Crucible(m) => m,
             Data::Inert { name } => name,
         }
     }

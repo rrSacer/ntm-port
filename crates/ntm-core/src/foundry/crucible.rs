@@ -10,7 +10,20 @@
 //! Left out: picking up dropped items, burning whoever stands in it.
 
 use super::{Acceptor, HeatSource, Mat, Tables, add, quanta};
-use crate::server::container_bridge::Slots;
+use crate::{
+    machine::{Effect, Logic, fill_level},
+    proto::Held,
+    server::container_bridge::{Slots, Slotted},
+    view::{self, ViewModel},
+};
+
+pub mod actions {
+    /// The alloy list (the screen with slots' button 0 opens it too).
+    pub const PICK: u32 = 1;
+    pub const BACK: u32 = 2;
+    /// A row of the list: `LIST + row` (row 0: no alloy).
+    pub const LIST: u32 = crate::view::LIST_ACTIONS;
+}
 use serde::{Deserialize, Serialize};
 
 pub const SLOTS: usize = 10;
@@ -235,6 +248,72 @@ impl Crucible {
             }
         }
         v
+    }
+}
+
+/// The crucible's server side (heat from below, pouring) runs in
+/// `server::foundry_server`; this is its screen and contents.
+impl Logic for Crucible {
+    fn level(&self, max: u8) -> u8 {
+        let n = quanta(&self.recipe_stack, None) + quanta(&self.waste_stack, None);
+        fill_level(u64::from(n), u64::from(2 * CAPACITY), max)
+    }
+
+    fn view(&self) -> ViewModel {
+        let t = Tables::ntm();
+        if self.picking {
+            let mut rows = vec!["(nenhuma)".to_string()];
+            rows.extend(t.alloys.iter().map(|a| if a.label.is_empty() { a.name.clone() } else { a.label.clone() }));
+            let selected = self.recipe.as_deref().and_then(|r| t.alloys.iter().position(|a| a.name == r)).map_or(0, |i| i as u32 + 1);
+            return ViewModel::new("Cadinho: liga").list(actions::LIST, rows, Some(selected)).button(actions::BACK, "Voltar");
+        }
+        let line = |s: &[Mat]| if s.is_empty() { "vazio".to_string() } else { s.iter().map(|(m, q)| format!("{m} {q}")).collect::<Vec<_>>().join(", ") };
+        let alloy = self.recipe.as_deref().and_then(|r| t.alloy(r)).map_or("nenhuma".to_string(), |a| a.label.clone());
+        ViewModel::new("Cadinho")
+            .bar("Calor", u64::from(self.heat), u64::from(MAX_HEAT), "TU")
+            .bar("Progresso", u64::from(self.progress), u64::from(PROCESS), "")
+            .text(format!("Liga: {alloy}"), view::GREY)
+            .text(format!("Receita: {}", line(&self.recipe_stack)), view::GREY)
+            .text(format!("Resto: {}", line(&self.waste_stack)), view::GREY)
+            .button(actions::PICK, "Escolher a liga")
+    }
+
+    fn action(&mut self, action: u32, _held: Option<&Held>, _fx: &mut Vec<Effect>) {
+        match action {
+            actions::PICK => self.picking = true,
+            actions::BACK => self.picking = false,
+            a if (actions::LIST..actions::LIST + view::LIST_MAX as u32).contains(&a) => self.pick(Tables::ntm(), (a - actions::LIST) as usize),
+            _ => {}
+        }
+    }
+
+    /// Its items and, as scraps, a whole ingot of each material per 72
+    /// quanta (a scrap here is always an ingot's worth: the slots carry no
+    /// amount). What is under an ingot is lost.
+    fn contents(&self) -> Vec<(String, u32)> {
+        let mut out: Vec<(String, u32)> = self.slots.iter().flatten().map(|s| (s.id.clone(), s.count)).collect();
+        for (m, q) in self.recipe_stack.iter().chain(&self.waste_stack) {
+            if q / 72 > 0 {
+                out.push((format!("ntm:scraps__{m}"), q / 72));
+            }
+        }
+        out
+    }
+}
+
+impl Slotted for Crucible {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        Crucible::screen_data(self, Tables::ntm())
+    }
+    /// The recipe selector: the alloy list of the old screen.
+    fn button(&mut self, id: u32) -> bool {
+        if id == 0 {
+            self.picking = true;
+        }
+        id == 0
     }
 }
 

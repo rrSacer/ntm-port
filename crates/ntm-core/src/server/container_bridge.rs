@@ -52,8 +52,11 @@ pub trait Slotted {
     fn slots_mut(&mut self) -> &mut Slots;
     /// The values its screen shows (`horizon_screen/<block>.json`).
     fn screen_data(&self) -> Vec<i32>;
-    /// A button of its screen.
-    fn button(&mut self, _id: u32) {}
+    /// A button of its screen; true when it opens the machine's old
+    /// screen (a list, as the crucible's alloy selector).
+    fn button(&mut self, _id: u32) -> bool {
+        false
+    }
 }
 
 /// The machines that implement [`Slotted`] (`Layout::Native`).
@@ -61,6 +64,8 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
     match data {
         Data::Shredder(s) => Some(s),
         Data::BlastFurnace(b) => Some(b),
+        Data::Firebox(f) => Some(f),
+        Data::Crucible(c) => Some(c),
         _ => None,
     }
 }
@@ -70,6 +75,8 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
 pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_shredder", Layout::Native),
     ("ntm:machine_blast_furnace", Layout::Native),
+    ("ntm:heater_firebox", Layout::Native),
+    ("ntm:machine_crucible", Layout::Native),
     (
         "ntm:machine_assembly_machine",
         Layout::Crafter {
@@ -423,8 +430,16 @@ impl Server {
         let Some(r) = self.ready() else { return };
         let Some(m) = r.world.machines.get_mut(key) else { return };
         if let Some(n) = slotted(&mut m.data) {
-            n.button(button);
+            let open = n.button(button);
             r.dirty = true;
+            if open {
+                r.viewer = Some((key.clone(), None));
+                self.mail.send(S2C::Show {
+                    dim: key.0.clone(),
+                    pos: key.1,
+                });
+                self.push_view(true);
+            }
             return;
         }
         if let Data::Crafter(c) = &mut m.data
