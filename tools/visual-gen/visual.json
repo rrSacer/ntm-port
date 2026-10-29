@@ -1025,6 +1025,255 @@
         "radius": 6.5
       }
     },
+    "ntm:machine_crucible": {
+      "source": "MachineCrucible {1,0,1,1,1,1} offset 1, GUICrucible 176x214, RenderCrucible (metal at 0.5 + level*0.875)",
+      "machine": {
+        "slots": [
+          {
+            "x": -10000,
+            "y": -10000,
+            "accept": []
+          },
+          {
+            "grid": [
+              107,
+              18,
+              3,
+              3
+            ]
+          }
+        ],
+        "inventory": [
+          8,
+          132
+        ],
+        "data": 128,
+        "synced": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          41,
+          42
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            1,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_crucible.png",
+        "texture_from": "textures/gui/processing/gui_crucible.png",
+        "size": [
+          176,
+          214
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          120
+        ],
+        "bars": [
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              126,
+              82,
+              33,
+              5
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              126,
+              91,
+              33,
+              5
+            ],
+            "uv": [
+              176,
+              5
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 6,
+            "rect": [
+              17,
+              17,
+              34,
+              81
+            ],
+            "color": 7,
+            "dir": "up"
+          },
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              62,
+              17,
+              34,
+              81
+            ],
+            "color": 8,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              125,
+              81,
+              34,
+              7
+            ],
+            "lines": [
+              "{2} / {3} TU"
+            ]
+          },
+          {
+            "rect": [
+              125,
+              90,
+              34,
+              7
+            ],
+            "lines": [
+              "{0} / {1} TU"
+            ]
+          },
+          {
+            "rect": [
+              16,
+              17,
+              36,
+              81
+            ],
+            "lines": [
+              "Resto: {4} / {6}"
+            ]
+          },
+          {
+            "rect": [
+              61,
+              17,
+              36,
+              81
+            ],
+            "lines": [
+              "Liga: {5} / {6}"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              106,
+              80,
+              18,
+              18
+            ],
+            "lines": [
+              "Escolher liga"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/crucible.obj",
+        "obj_from": "models/machines/crucible.obj",
+        "texture": "ntm:textures/models/machines/crucible_heat.png",
+        "texture_from": "textures/models/machines/crucible_heat.png",
+        "rotation": 90,
+        "radius": 2.2,
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/lava_gray.png",
+            "texture_from": "textures/models/machines/lava_gray.png",
+            "box": [
+              -0.5,
+              0.5,
+              -0.5,
+              1.5,
+              1.375,
+              1.5
+            ],
+            "value": 4,
+            "max": 6,
+            "color": 7
+          },
+          {
+            "texture": "ntm:textures/models/machines/lava_gray.png",
+            "texture_from": "textures/models/machines/lava_gray.png",
+            "box": [
+              -0.5,
+              0.5,
+              -0.5,
+              1.5,
+              1.375,
+              1.5
+            ],
+            "value": 5,
+            "max": 6,
+            "color": 8
+          },
+          {
+            "texture": "ntm:textures/models/machines/lava_gray.png",
+            "texture_from": "textures/models/machines/lava_gray.png",
+            "box": [
+              0.4375,
+              -0.875,
+              -1.5625,
+              0.5625,
+              0.5,
+              -1.4375
+            ],
+            "color": 41,
+            "column": true
+          },
+          {
+            "texture": "ntm:textures/models/machines/lava_gray.png",
+            "texture_from": "textures/models/machines/lava_gray.png",
+            "box": [
+              0.4375,
+              -0.875,
+              2.4375,
+              0.5625,
+              0.5,
+              2.5625
+            ],
+            "color": 42,
+            "column": true
+          }
+        ]
+      }
+    },
     "ntm:heater_firebox": {
       "source": "MachineHeaterFirebox {0,0,1,1,1,1} offset 1, GUIFirebox 176x168 (gui_firebox.png), RenderFirebox (case 2: 180, then -90)",
       "machine": {

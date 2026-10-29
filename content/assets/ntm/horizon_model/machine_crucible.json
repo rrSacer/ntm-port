@@ -1,6 +1,62 @@
 {
   "obj": "ntm:models/obj/crucible.obj",
   "texture": "ntm:textures/models/machines/crucible_heat.png",
-  "rotation": 90.0,
-  "radius": 2.5
+  "rotation": 90,
+  "radius": 2.2,
+  "liquids": [
+    {
+      "texture": "ntm:textures/models/machines/lava_gray.png",
+      "box": [
+        -0.5,
+        0.5,
+        -0.5,
+        1.5,
+        1.375,
+        1.5
+      ],
+      "value": 4,
+      "max": 6,
+      "color": 7
+    },
+    {
+      "texture": "ntm:textures/models/machines/lava_gray.png",
+      "box": [
+        -0.5,
+        0.5,
+        -0.5,
+        1.5,
+        1.375,
+        1.5
+      ],
+      "value": 5,
+      "max": 6,
+      "color": 8
+    },
+    {
+      "texture": "ntm:textures/models/machines/lava_gray.png",
+      "box": [
+        0.4375,
+        -0.875,
+        -1.5625,
+        0.5625,
+        0.5,
+        -1.4375
+      ],
+      "color": 41,
+      "column": true
+    },
+    {
+      "texture": "ntm:textures/models/machines/lava_gray.png",
+      "box": [
+        0.4375,
+        -0.875,
+        2.4375,
+        0.5625,
+        0.5,
+        2.5625
+      ],
+      "color": 42,
+      "column": true
+    }
+  ]
 }

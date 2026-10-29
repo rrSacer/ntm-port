@@ -1,0 +1,133 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_crucible.png",
+  "size": [
+    176,
+    214
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    120
+  ],
+  "bars": [
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        126,
+        82,
+        33,
+        5
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        126,
+        91,
+        33,
+        5
+      ],
+      "uv": [
+        176,
+        5
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 4,
+      "max": 6,
+      "rect": [
+        17,
+        17,
+        34,
+        81
+      ],
+      "color": 7,
+      "dir": "up"
+    },
+    {
+      "value": 5,
+      "max": 6,
+      "rect": [
+        62,
+        17,
+        34,
+        81
+      ],
+      "color": 8,
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        125,
+        81,
+        34,
+        7
+      ],
+      "lines": [
+        "{2} / {3} TU"
+      ]
+    },
+    {
+      "rect": [
+        125,
+        90,
+        34,
+        7
+      ],
+      "lines": [
+        "{0} / {1} TU"
+      ]
+    },
+    {
+      "rect": [
+        16,
+        17,
+        36,
+        81
+      ],
+      "lines": [
+        "Resto: {4} / {6}"
+      ]
+    },
+    {
+      "rect": [
+        61,
+        17,
+        36,
+        81
+      ],
+      "lines": [
+        "Liga: {5} / {6}"
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "rect": [
+        106,
+        80,
+        18,
+        18
+      ],
+      "lines": [
+        "Escolher liga"
+      ]
+    }
+  ],
+  "title_color": "#ffffff"
+}
