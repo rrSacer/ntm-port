@@ -36,13 +36,29 @@ pub fn blade_durability(item: &str) -> Option<u32> {
     BLADE_TYPES.iter().find(|(id, _)| *id == item).map(|(_, d)| *d)
 }
 
+/// What an item without a recipe becomes (`getShredderResult`: never null,
+/// so any item but a blade goes in).
+pub const SCRAP: (&str, u32) = ("ntm:scrap", 1);
+
 /// What each input becomes: (output, count).
 #[derive(Clone, Debug, Default)]
 pub struct Recipes(pub HashMap<String, (String, u32)>);
 
 impl Recipes {
     pub fn result(&self, item: &str) -> Option<(&str, u32)> {
-        self.0.get(item).map(|(o, n)| (o.as_str(), *n))
+        if blade_durability(item).is_some() {
+            return None;
+        }
+        Some(self.0.get(item).map_or(SCRAP, |(o, n)| (o.as_str(), *n)))
+    }
+}
+
+/// Whether `item` may go in input slot `slot` (`isItemValidForSlot`).
+pub fn accepts(slot: usize, item: &str) -> bool {
+    match slot {
+        s if INPUTS.contains(&s) => blade_durability(item).is_none(),
+        s if BLADES.contains(&s) => blade_durability(item).is_some(),
+        _ => false,
     }
 }
 
@@ -264,11 +280,24 @@ mod tests {
     }
 
     #[test]
+    fn anything_without_a_recipe_becomes_scrap_but_blades() {
+        let r = recipes();
+        assert_eq!(r.result("minecraft:dirt"), Some(SCRAP));
+        assert_eq!(r.result("ntm:blades_steel"), None);
+        assert!(accepts(0, "minecraft:dirt") && !accepts(0, "ntm:blades_desh"));
+        assert!(accepts(27, "ntm:blades_titanium") && !accepts(28, "minecraft:dirt"));
+        let mut s = with_blades(0);
+        s.slots[0] = st("minecraft:dirt", 1);
+        cycle(&mut s, &r);
+        assert_eq!(s.slots[9], st("ntm:scrap", 1));
+    }
+
+    #[test]
     fn full_outputs_stop_it() {
         let r = recipes();
         let mut s = with_blades(0);
         for o in OUTPUTS {
-            s.slots[o] = st("minecraft:dirt", 64);
+            s.slots[o] = st("ntm:scrap", 64);
         }
         s.slots[0] = st("minecraft:iron_ingot", 1);
         assert!(!s.can_process(&r));
