@@ -270,6 +270,26 @@ segunda com a câmera em céu aberto. As 25 montadoras foram postas por `setbloc
 - **Memória de GPU:** +7 a +13 MB (antes, +34 a +90 MB).
 - Captura: `img/visual-instanced-25.png`.
 
+## 3b. Etapa c: o extrator (feito)
+
+`tools/visual-gen/extract.py` lê o Java do NTM e grava `tools/visual-gen/extracted.json`:
+- **Cobertura:** 412 blocos do `ModBlocks`; para cada um, a classe do bloco, o tile entity e o renderer (o
+  `bindTileEntitySpecialRenderer` do `ClientProxy`).
+- **Modelos:** o OBJ e a textura do `ResourceManager` (224 modelos). O giro do `case 2` mais o de antes do `switch`,
+  e o `glTranslate` (lidos em 157 dos 224; os outros 67 não têm `switch` por metadata). As partes desenhadas.
+- **Multiblocos e telas:** `getDimensions`/`getOffset` (154 multiblocos), a GUI (textura, tamanho) e os slots do
+  container (186 GUIs).
+- **Conferência:** o extrator reproduz os valores que eu tinha posto à mão: montadora 90°; Little Boy 90° com
+  translate −2; alto-forno 90°.
+
+O `generate.py` usa o extraído para os blocos do catálogo do port que o `visual.json` não descreve à mão. Hoje são 13
+(`img/visual-auto-models.png`): centrífuga, planta química, as duas prensas, tanque, centrífuga de gás, queimador de
+madeira e as bombas Gadget, Fat Man, Ivy Mike, Tsar, N2 e balefire.
+
+Desses, entra **só o modelo**: sem slots e sem multibloco. Eles têm lógica no port, e um multibloco sem proxies das
+portas quebraria as redes de energia e fluido deles. A tela texturizada e o multibloco de cada um viram uma entrada à
+mão no `visual.json`, com os dados do `extracted.json` como ponto de partida (slots, textura, dimensões).
+
 ## 4. Motor (patch) e port
 
 **Patch no motor** (`horizon-visual`, branch `ntm-visual`, 16 commits):
