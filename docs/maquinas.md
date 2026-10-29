@@ -353,7 +353,18 @@ construção.
   - chapas de aço numa bigorna de nível 3, uma e um pacote;
   - a receita escolhida volta do bloco depois de perder o save do mod;
   - a bigorna de ferro recusa um nível acima.
-- **Em jogo:** pendente da tela do agente de visual.
+- **Em jogo** (motor `ntm-visual`, Xvfb `:15`, mudo, `tools/test-game/anvil.py`;
+  mundo criativo, seed 1768123; sem "took too long"). A tela é a
+  `gui_anvil.png` do NTM, com a grade e as saídas do agente de visual.
+  - **`forjar`:** a bigorna de ferro e 12 lingotes de aço nos slots da forja.
+    "Forjar" dá a bigorna de aço e sobram 2 lingotes.
+  - **`construir`:** numa bigorna de desh (nível 3), "Placa de Aço" é
+    escolhida na lista da tela antiga e 20 lingotes vão para a grade.
+    "Construir uma vez" faz 1 chapa; com shift, faz as outras 19. As 20
+    chapas vão para o inventário.
+  - **`voltar`:** o mundo é fechado e reaberto. Os slots da bigorna de ferro
+    estão como ficaram, e a de desh ainda tem a chapa escolhida: 2 lingotes
+    dão a chapa.
 
 ## Prensas: a tabela inteira
 
