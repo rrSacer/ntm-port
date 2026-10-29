@@ -3035,10 +3035,10 @@ index 0e5f69fa0..a778a7448 100644
                  let rows = m
                      .strip_prefix("minecraft:generic_9x")
 diff --git a/crates/horizon-client/src/game/server_mods.rs b/crates/horizon-client/src/game/server_mods.rs
-index a5a4b0f3f..08b489036 100644
+index a5a4b0f3f..cc0b0bfa0 100644
 --- a/crates/horizon-client/src/game/server_mods.rs
 +++ b/crates/horizon-client/src/game/server_mods.rs
-@@ -48,19 +48,24 @@ impl Game<'_> {
+@@ -48,19 +48,46 @@ impl Game<'_> {
          false
      }
      pub(super) fn apply_mod_block_writes(&mut self) {}
@@ -3048,6 +3048,28 @@ index a5a4b0f3f..08b489036 100644
  #[cfg(feature = "mods")]
  mod run {
      use super::{Game, LanHost, ModEvent, Who};
++
++    /// `machines`' custom data (`minecraft:custom_data`): one whole SNBT
++    /// compound, as `/give` takes it.
++    pub(super) fn custom_tag(snbt: &str) -> Option<horizon_world::nbt::Tag> {
++        let (tag, used) = horizon_world::nbt::parse_snbt(snbt).ok()?;
++        (snbt[used..].trim().is_empty() && matches!(tag, horizon_world::nbt::Tag::Compound(_)))
++            .then_some(tag)
++    }
++
++    #[cfg(test)]
++    #[test]
++    fn custom_data_is_one_compound() {
++        let tag = custom_tag("{ntm_ore:{light:1.5d,rare:0d}}").expect("a compound");
++        assert_eq!(
++            horizon_client::snbt::to_snbt(&tag),
++            "{ntm_ore:{light:1.5d,rare:0.0d}}"
++        );
++        assert!(custom_tag("{a:1} ").is_some());
++        assert!(custom_tag("1.5d").is_none(), "not a compound");
++        assert!(custom_tag("{a:1} x").is_none(), "trailing text");
++        assert!(custom_tag("{a:").is_none());
++    }
      use horizon_client::chunk_map::ChunkMap;
 +    use horizon_client::{
 +        block_entities::BlockEntities, containers::BlockEntity, items::ItemStack,
@@ -3064,7 +3086,7 @@ index a5a4b0f3f..08b489036 100644
      };
      use horizon_protocol::packets::play::{self, Clientbound as C};
      use horizon_world::registry::{BlockRegistry, BlockStateId};
-@@ -76,6 +81,10 @@ mod run {
+@@ -76,6 +103,10 @@ mod run {
          registry: &'static BlockRegistry,
          biomes: std::sync::Arc<horizon_client::biome::Biomes>,
          dims: Vec<(&'static str, ChunkMap)>,
@@ -3075,7 +3097,7 @@ index a5a4b0f3f..08b489036 100644
      }
      impl WorldView for LentWorld {
          fn block(&self, dimension: &str, x: i32, y: i32, z: i32) -> Option<String> {
-@@ -99,6 +108,38 @@ mod run {
+@@ -99,6 +130,45 @@ mod run {
                  .map(drop)
                  .map_err(|e| format!("{state}: {e}"))
          }
@@ -3096,6 +3118,10 @@ index a5a4b0f3f..08b489036 100644
 +                            id: s.item.to_string(),
 +                            count: s.count,
 +                            damage: s.damage,
++                            custom: s
++                                .data()
++                                .and_then(|d| d.other("minecraft:custom_data"))
++                                .map(horizon_client::snbt::to_snbt),
 +                        })
 +                    })
 +                    .collect(),
@@ -3103,6 +3129,9 @@ index a5a4b0f3f..08b489036 100644
 +        }
 +        fn max_stack(&self, id: &str) -> Option<u32> {
 +            self.res.items().get(id).map(|i| i.max_stack)
++        }
++        fn valid_custom(&self, snbt: &str) -> bool {
++            custom_tag(snbt).is_some()
 +        }
 +        fn machine_data(&self, dimension: &str, pos: [i32; 3]) -> Option<Vec<i32>> {
 +            let (_, entities) = self.entities.iter().find(|(d, _)| *d == dimension)?;
@@ -3114,7 +3143,7 @@ index a5a4b0f3f..08b489036 100644
      }
  
      /// Server mods' commands as a root of the commands report
-@@ -341,10 +382,21 @@ mod run {
+@@ -341,10 +411,21 @@ mod run {
              }
              let registry = self.pack.assets.registry;
              let biomes = self.res.biomes().clone();
@@ -3136,7 +3165,7 @@ index a5a4b0f3f..08b489036 100644
              }));
          }
  
-@@ -361,6 +413,13 @@ mod run {
+@@ -361,6 +442,13 @@ mod run {
              if let Some(i) = dims.iter().position(|(d, _)| *d == self.dim.id()) {
                  self.world.chunks = dims.swap_remove(i).1;
              }
@@ -3150,7 +3179,7 @@ index a5a4b0f3f..08b489036 100644
              for (dim, chunks) in self.levels.parked_chunks() {
                  if let Some(i) = dims.iter().position(|(d, _)| *d == dim.id()) {
                      *chunks = dims.swap_remove(i).1;
-@@ -368,6 +427,53 @@ mod run {
+@@ -368,6 +456,61 @@ mod run {
              }
          }
  
@@ -3188,11 +3217,19 @@ index a5a4b0f3f..08b489036 100644
 +                (Some(mut old), Some(new)) if *old.item == *new.id => {
 +                    old.count = new.count;
 +                    old.damage = new.damage;
++                    if let Some(tag) = new.custom.as_deref().and_then(custom_tag) {
++                        old.data_mut().set_other("minecraft:custom_data", Some(tag));
++                    }
 +                    Some(old)
 +                }
 +                (_, Some(new)) => {
 +                    let mut stack = ItemStack::new(&new.id, new.count);
 +                    stack.damage = new.damage;
++                    if let Some(tag) = new.custom.as_deref().and_then(custom_tag) {
++                        stack
++                            .data_mut()
++                            .set_other("minecraft:custom_data", Some(tag));
++                    }
 +                    Some(stack)
 +                }
 +            };
@@ -3204,7 +3241,7 @@ index a5a4b0f3f..08b489036 100644
          /// Makes the blocks server mods set in the level in place, in order,
          /// as `/setblock` does. Those of other dimensions wait for their level.
          pub(in crate::game) fn apply_mod_block_writes(&mut self) {
-@@ -399,6 +505,20 @@ mod run {
+@@ -399,6 +542,20 @@ mod run {
              }
          }
  
@@ -3225,7 +3262,7 @@ index a5a4b0f3f..08b489036 100644
          /// A player broke (or placed) `state` at `pos`: the player acting now.
          pub(in crate::game) fn mod_block_event(
              &mut self,
-@@ -554,6 +674,38 @@ mod run {
+@@ -554,6 +711,38 @@ mod run {
                          self.tell_server_player(host.as_deref_mut(), &p.id, line);
                      }
                  }
@@ -3686,10 +3723,10 @@ index 1e7120091..271e9b11f 100644
      pub use horizon::mods::world::{self, BlockChange};
  
 diff --git a/crates/horizon-mod-sdk/wit/horizon.wit b/crates/horizon-mod-sdk/wit/horizon.wit
-index 0680cce92..dc631b7bf 100644
+index 0680cce92..db559c361 100644
 --- a/crates/horizon-mod-sdk/wit/horizon.wit
 +++ b/crates/horizon-mod-sdk/wit/horizon.wit
-@@ -691,6 +691,53 @@ interface %world {
+@@ -691,6 +691,59 @@ interface %world {
      set-blocks: func(dimension: string, blocks: list<block-change>) -> result<_, string>;
  }
  
@@ -3701,14 +3738,19 @@ index 0680cce92..dc631b7bf 100644
 +/// goes. The item record and the slot rules are those of API 0.4's
 +/// `machine` interface, here addressed by position.
 +interface machines {
-+    /// An item, how many and its wear. Other item components are not
-+    /// carried: a slot set to the item it holds keeps them.
++    /// An item, how many, its wear and its custom data. Other item
++    /// components are not carried: a slot set to the item it holds keeps
++    /// them.
 +    record item-stack {
 +        /// `minecraft:coal`, `<mod>:<path>`, ...
 +        id: string,
 +        count: u32,
 +        /// `minecraft:damage`: the wear of a tool (a blade), 0 for none.
 +        damage: u32,
++        /// `minecraft:custom_data` as SNBT (`{ntm_ore:{light:1.5d}}`), as
++        /// `/give` takes it. Setting none keeps what the slot's same item
++        /// had; stacks of different custom data don't stack.
++        custom: option<string>,
 +    }
 +    /// A player pressed one of a machine screen's buttons.
 +    record button-press {
@@ -3726,7 +3768,8 @@ index 0680cce92..dc631b7bf 100644
 +    get-slots: func(dimension: string, x: s32, y: s32, z: s32) -> option<list<option<item-stack>>>;
 +    /// Sets one slot (none empties it) after this call returns, before
 +    /// players act again; a stack over the item's maximum is cut to it.
-+    /// False for no machine there, a slot out of range or an unknown item.
++    /// False for no machine there, a slot out of range, an unknown item or
++    /// custom data that isn't an SNBT compound.
 +    set-slot: func(dimension: string, x: s32, y: s32, z: s32, slot: u32, stack: option<item-stack>) -> bool;
 +    /// The values the machine's screen shows (bars, tooltips, lights), from
 +    /// the first: at most the file's `data`, the rest kept. False for no
@@ -3743,7 +3786,7 @@ index 0680cce92..dc631b7bf 100644
  /// What the server calls in a server mod (manifest `api = "0.3"`,
  /// experimental). Only the hooks `init` asks for are ever called. The player
  /// in each event is as the server saw them when it happened.
-@@ -802,6 +849,7 @@ world horizon-server-mod {
+@@ -802,6 +855,7 @@ world horizon-server-mod {
      import storage;
      import players;
      import %world;
@@ -3752,7 +3795,7 @@ index 0680cce92..dc631b7bf 100644
  }
  
 diff --git a/crates/horizon-mods/src/api_level.rs b/crates/horizon-mods/src/api_level.rs
-index 045a9346b..551181aea 100644
+index 045a9346b..7eca5f6ea 100644
 --- a/crates/horizon-mods/src/api_level.rs
 +++ b/crates/horizon-mods/src/api_level.rs
 @@ -7,13 +7,13 @@
@@ -3760,7 +3803,7 @@ index 045a9346b..551181aea 100644
  
  /// The newest level this Horizon serves.
 -pub const LEVEL: u32 = 7;
-+pub const LEVEL: u32 = 9;
++pub const LEVEL: u32 = 10;
  
  /// Every function the game offers mods, as `interface.function`, with its
  /// level. Level 0 is the contract of Horizon 0.2.67 to 0.2.69. A new
@@ -3771,12 +3814,13 @@ index 045a9346b..551181aea 100644
      ("log.write", 0),
      ("game.get-player", 0),
      ("game.get-clock", 0),
-@@ -60,6 +60,11 @@ pub const FUNCTIONS: [(&str, u32); 46] = [
+@@ -60,6 +60,12 @@ pub const FUNCTIONS: [(&str, u32); 46] = [
      ("recipes.place", 6),
      ("recipes.give", 6),
      ("render.set-far-terrain", 7),
-+    ("machines.get-slots", 8),
-+    ("machines.set-slot", 8),
++    // Level 10: the item-stack carries custom data.
++    ("machines.get-slots", 10),
++    ("machines.set-slot", 10),
 +    ("machines.set-data", 8),
 +    ("machines.poll-buttons", 8),
 +    ("machines.get-data", 9),
@@ -3923,7 +3967,7 @@ index c2f2f61fc..6745a7d53 100644
          f.write_str(name)
      }
 diff --git a/crates/horizon-mods/src/runtime.rs b/crates/horizon-mods/src/runtime.rs
-index cff44722b..01f1f15d5 100644
+index cff44722b..0b8407687 100644
 --- a/crates/horizon-mods/src/runtime.rs
 +++ b/crates/horizon-mods/src/runtime.rs
 @@ -3,7 +3,7 @@ use crate::manifest::{Manifest, Package, Side};
@@ -3967,7 +4011,7 @@ index cff44722b..01f1f15d5 100644
  }
  
  /// The game's world as capability `world` reads it during a call: the
-@@ -261,6 +279,19 @@ pub trait WorldView: std::any::Any + Send {
+@@ -261,6 +279,23 @@ pub trait WorldView: std::any::Any + Send {
      fn has_dimension(&self, dimension: &str) -> bool;
      /// `Err` (why) for a state string that names no block state.
      fn check_state(&self, state: &str) -> Result<(), String>;
@@ -3980,6 +4024,10 @@ index cff44722b..01f1f15d5 100644
 +    fn max_stack(&self, _id: &str) -> Option<u32> {
 +        None
 +    }
++    /// Whether `snbt` is custom data an item can hold (an SNBT compound).
++    fn valid_custom(&self, _snbt: &str) -> bool {
++        false
++    }
 +    /// A machine's values (capability `machines`); none without a machine.
 +    fn machine_data(&self, _dimension: &str, _pos: [i32; 3]) -> Option<Vec<i32>> {
 +        None
@@ -3987,7 +4035,7 @@ index cff44722b..01f1f15d5 100644
  }
  
  /// The view lent for the current calls, shared by every mod's store.
-@@ -427,6 +458,8 @@ struct State {
+@@ -427,6 +462,8 @@ struct State {
      storage_budget: u64,
      limits: StoreLimits,
      world: WorldSlot,
@@ -3996,7 +4044,7 @@ index cff44722b..01f1f15d5 100644
  }
  
  /// The installed mods and the engine running them. `Mods::default()` is
-@@ -542,6 +575,8 @@ impl Mods {
+@@ -542,6 +579,8 @@ impl Mods {
                  .map_err(|e| e.to_string())?;
              mod_world::add_to_linker::<State, HasSelf<State>>(&mut linker, |s| s)
                  .map_err(|e| e.to_string())?;
@@ -4005,7 +4053,7 @@ index cff44722b..01f1f15d5 100644
              UiHost::add_to_linker::<State, HasSelf<State>>(&mut linker, |s| s)
                  .map_err(|e| e.to_string())?;
              RenderHost::add_to_linker::<State, HasSelf<State>>(&mut linker, |s| s)
-@@ -628,6 +663,7 @@ impl Mods {
+@@ -628,6 +667,7 @@ impl Mods {
                  .instances(16)
                  .build(),
              world,
@@ -4013,7 +4061,7 @@ index cff44722b..01f1f15d5 100644
          };
          let mut store = Store::new(engine, state);
          store.limiter(|s| &mut s.limits);
-@@ -985,6 +1021,18 @@ impl Mods {
+@@ -985,6 +1025,18 @@ impl Mods {
          let b = &self.entries.get(owner)?.run.as_ref()?.store.data().browser;
          b.recipes.as_ref()
      }
@@ -4032,7 +4080,7 @@ index cff44722b..01f1f15d5 100644
      /// The player did `event` on mod `owner`'s panel.
      pub fn browser_event(&mut self, owner: usize, event: BrowserEvent) {
          if let Some(run) = self.entries.get_mut(owner).and_then(|e| e.run.as_mut()) {
-@@ -1593,6 +1641,84 @@ impl mod_world::Host for State {
+@@ -1593,6 +1645,87 @@ impl mod_world::Host for State {
          Ok(())
      }
  }
@@ -4078,6 +4126,9 @@ index cff44722b..01f1f15d5 100644
 +                    let Some(max) = view.max_stack(&s.id) else {
 +                        return false;
 +                    };
++                    if s.custom.as_deref().is_some_and(|c| !view.valid_custom(c)) {
++                        return false;
++                    }
 +                    s.count = s.count.min(max);
 +                    (s.count > 0).then_some(s)
 +                }
@@ -4715,7 +4766,7 @@ index 000000000..86708df3b
 +    }
 +}
 diff --git a/docs/api/mods-reference.md b/docs/api/mods-reference.md
-index b25ef5b9e..778c18ac1 100644
+index b25ef5b9e..6586c059b 100644
 --- a/docs/api/mods-reference.md
 +++ b/docs/api/mods-reference.md
 @@ -19,6 +19,7 @@ The contract between Horizon and its mods: the WIT package `horizon:mods@0.1.0`,
@@ -4735,7 +4786,7 @@ index b25ef5b9e..778c18ac1 100644
  - Exports (what the mod provides): `server-events`
  
  ## World `horizon-ui-mod`
-@@ -687,6 +688,43 @@ Capability `world`, server mods only (manifest `api = "0.3"`, experimental): the
+@@ -687,6 +688,44 @@ Capability `world`, server mods only (manifest `api = "0.3"`, experimental): the
  | `get-biome` | `func(dimension: string, x: s32, y: s32, z: s32) -> option<string>` | The biome at a position (`minecraft:plains`, ...), as the server stores it (one per 4 x 4 x 4 cell): none where no chunk is loaded. |
  | `set-blocks` | `func(dimension: string, blocks: list<block-change>) -> result<_, string>` | Sets blocks as `/setblock` does: the old block entity removed, neighbours and shapes updated, light, and every player told. Every state is checked now (an error queues nothing); the changes are made in order after this call returns, before that dimension's next tick; one in a chunk not loaded then is skipped. At most 4096 per call. |
  
@@ -4747,13 +4798,14 @@ index b25ef5b9e..778c18ac1 100644
 +
 +### record `item-stack`
 +
-+An item, how many and its wear. Other item components are not carried: a slot set to the item it holds keeps them.
++An item, how many, its wear and its custom data. Other item components are not carried: a slot set to the item it holds keeps them.
 +
 +| Field | Type | |
 +| --- | --- | --- |
 +| `id` | `string` | `minecraft:coal`, `<mod>:<path>`, ... |
 +| `count` | `u32` |  |
 +| `damage` | `u32` | `minecraft:damage`: the wear of a tool (a blade), 0 for none. |
++| `custom` | `option<string>` | `minecraft:custom_data` as SNBT (`{ntm_ore:{light:1.5d}}`), as `/give` takes it. Setting none keeps what the slot's same item had; stacks of different custom data don't stack. |
 +
 +### record `button-press`
 +
@@ -4771,7 +4823,7 @@ index b25ef5b9e..778c18ac1 100644
 +| Function | Signature | What it does |
 +| --- | --- | --- |
 +| `get-slots` | `func(dimension: string, x: s32, y: s32, z: s32) -> option<list<option<item-stack>>>` | The slots of the machine at a position, as of this call: none where there is none, or no chunk is loaded. |
-+| `set-slot` | `func(dimension: string, x: s32, y: s32, z: s32, slot: u32, stack: option<item-stack>) -> bool` | Sets one slot (none empties it) after this call returns, before players act again; a stack over the item's maximum is cut to it. False for no machine there, a slot out of range or an unknown item. |
++| `set-slot` | `func(dimension: string, x: s32, y: s32, z: s32, slot: u32, stack: option<item-stack>) -> bool` | Sets one slot (none empties it) after this call returns, before players act again; a stack over the item's maximum is cut to it. False for no machine there, a slot out of range, an unknown item or custom data that isn't an SNBT compound. |
 +| `set-data` | `func(dimension: string, x: s32, y: s32, z: s32, values: list<s32>) -> bool` | The values the machine's screen shows (bars, tooltips, lights), from the first: at most the file's `data`, the rest kept. False for no machine there. |
 +| `poll-buttons` | `func() -> list<button-press>` | The button presses since the last call, oldest first (at most 256). |
 +| `get-data` | `func(dimension: string, x: s32, y: s32, z: s32) -> option<list<s32>>` | The machine's values as last set (saved with the chunk, so a mod keeps there what must not part from the slots), as of this call: none where there is no machine. |

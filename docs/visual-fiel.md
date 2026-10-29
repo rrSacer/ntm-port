@@ -462,7 +462,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 29 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 30 commits):
 
 | Commit | O quê |
 |---|---|
@@ -495,6 +495,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(render): a screen bar may start filling past a value` | `from` (as colunas da centrífuga) |
 | `feat(render): draw needle gauges on machine screens` | `gauges` (prensa, alto-forno) |
 | `feat(render): hold a mod model at rest on its first frame` | O repouso das animações |
+| `feat(mods)!: machine slots carry an item's custom data` | `custom` no `item-stack` (SNBT do `minecraft:custom_data`), api level 10: o minério de bedrock leva as densidades |
 
 **No port:**
 
