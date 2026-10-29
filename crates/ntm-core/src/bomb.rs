@@ -256,7 +256,7 @@ impl Bomb {
         bomb_type(&self.id)
     }
 
-    fn slot_ok(&self, i: usize) -> bool {
+    pub(crate) fn slot_ok(&self, i: usize) -> bool {
         let Some(t) = self.kind() else { return false };
         t.slots.get(i).is_some_and(|s| self.slots.get(i).and_then(Option::as_ref).is_some_and(|it| it == s.item))
     }
