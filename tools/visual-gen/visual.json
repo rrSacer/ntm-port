@@ -3163,6 +3163,96 @@
     },
     "ntm:anvil_iron": {
       "source": "ContainerAnvil, GUIAnvil, RenderAnvil (anvil.obj with the block icon); the port's 19 slots (anvil.rs)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 27
+          },
+          {
+            "x": 53,
+            "y": 27
+          },
+          {
+            "x": 89,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 8,
+            "y": 72
+          },
+          {
+            "x": 26,
+            "y": 72
+          },
+          {
+            "x": 44,
+            "y": 72
+          },
+          {
+            "x": 62,
+            "y": 72
+          },
+          {
+            "x": 80,
+            "y": 72
+          },
+          {
+            "x": 98,
+            "y": 72
+          },
+          {
+            "x": 8,
+            "y": 90
+          },
+          {
+            "x": 26,
+            "y": 90
+          },
+          {
+            "x": 44,
+            "y": 90
+          },
+          {
+            "x": 62,
+            "y": 90
+          },
+          {
+            "x": 80,
+            "y": 90
+          },
+          {
+            "x": 98,
+            "y": 90
+          },
+          {
+            "x": 133,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 151,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 133,
+            "y": 71,
+            "output": true
+          },
+          {
+            "x": 151,
+            "y": 71,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          140
+        ],
+        "data": 7
+      },
       "model": {
         "obj": "ntm:models/obj/anvil.obj",
         "obj_from": "models/blocks/anvil.obj",
@@ -3170,6 +3260,354 @@
         "texture_from": "textures/blocks/anvil_iron.png",
         "rotation": 90,
         "radius": 1.0
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_anvil.png",
+        "texture_from": "textures/gui/processing/gui_anvil.png",
+        "size": [
+          176,
+          222
+        ],
+        "title": [
+          61,
+          8,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          128
+        ],
+        "compose": [
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              7,
+              71
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              25,
+              71
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              43,
+              71
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              61,
+              71
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              79,
+              71
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              97,
+              71
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              7,
+              89
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              25,
+              89
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              43,
+              89
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              61,
+              89
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              79,
+              89
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              97,
+              89
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              132,
+              52
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              150,
+              52
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              132,
+              70
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_anvil.png",
+            "src": [
+              16,
+              71,
+              18,
+              18
+            ],
+            "at": [
+              150,
+              70
+            ]
+          }
+        ],
+        "overlays": [
+          {
+            "value": 0,
+            "min": 0,
+            "rect": [
+              125,
+              17,
+              54,
+              108
+            ],
+            "uv": [
+              125,
+              17
+            ]
+          },
+          {
+            "value": 0,
+            "min": 0,
+            "rect": [
+              88,
+              53,
+              18,
+              18
+            ],
+            "uv": [
+              218,
+              0
+            ]
+          },
+          {
+            "value": 2,
+            "min": 1,
+            "rect": [
+              52,
+              53,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              150
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              88,
+              53,
+              18,
+              18
+            ],
+            "lines": [
+              "Construção",
+              "Nível da bigorna: {0}"
+            ]
+          },
+          {
+            "rect": [
+              124,
+              19,
+              52,
+              103
+            ],
+            "lines": [
+              "Saídas da construção"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              8,
+              108,
+              88,
+              16
+            ],
+            "lines": [
+              "Escolher receita"
+            ]
+          },
+          {
+            "id": 0,
+            "rect": [
+              97,
+              107,
+              18,
+              18
+            ],
+            "lines": [
+              "Escolher receita"
+            ]
+          },
+          {
+            "id": 1,
+            "shift": 2,
+            "rect": [
+              52,
+              53,
+              18,
+              18
+            ],
+            "lines": [
+              "Construir uma vez",
+              "Shift: o máximo ({3})"
+            ]
+          },
+          {
+            "id": 3,
+            "rect": [
+              71,
+              27,
+              18,
+              16
+            ],
+            "lines": [
+              "Forjar"
+            ]
+          }
+        ]
       }
     }
   }

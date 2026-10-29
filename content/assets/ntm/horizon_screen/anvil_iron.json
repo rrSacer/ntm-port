@@ -1,0 +1,137 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_anvil.png",
+  "size": [
+    176,
+    222
+  ],
+  "title": [
+    61,
+    8,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    128
+  ],
+  "overlays": [
+    {
+      "value": 0,
+      "min": 0,
+      "rect": [
+        125,
+        17,
+        54,
+        108
+      ],
+      "uv": [
+        125,
+        17
+      ]
+    },
+    {
+      "value": 0,
+      "min": 0,
+      "rect": [
+        88,
+        53,
+        18,
+        18
+      ],
+      "uv": [
+        218,
+        0
+      ]
+    },
+    {
+      "value": 2,
+      "min": 1,
+      "rect": [
+        52,
+        53,
+        18,
+        18
+      ],
+      "uv": [
+        176,
+        150
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        88,
+        53,
+        18,
+        18
+      ],
+      "lines": [
+        "Construção",
+        "Nível da bigorna: {0}"
+      ]
+    },
+    {
+      "rect": [
+        124,
+        19,
+        52,
+        103
+      ],
+      "lines": [
+        "Saídas da construção"
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "rect": [
+        8,
+        108,
+        88,
+        16
+      ],
+      "lines": [
+        "Escolher receita"
+      ]
+    },
+    {
+      "id": 0,
+      "rect": [
+        97,
+        107,
+        18,
+        18
+      ],
+      "lines": [
+        "Escolher receita"
+      ]
+    },
+    {
+      "id": 1,
+      "shift": 2,
+      "rect": [
+        52,
+        53,
+        18,
+        18
+      ],
+      "lines": [
+        "Construir uma vez",
+        "Shift: o máximo ({3})"
+      ]
+    },
+    {
+      "id": 3,
+      "rect": [
+        71,
+        27,
+        18,
+        16
+      ],
+      "lines": [
+        "Forjar"
+      ]
+    }
+  ]
+}
