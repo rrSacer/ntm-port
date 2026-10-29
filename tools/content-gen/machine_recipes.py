@@ -285,6 +285,8 @@ def export(source, output, rows):
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(json.dumps(body, ensure_ascii=False, indent=2) + '\n')
         counts[machine] = body['coverage']
+    import shredder_recipes
+    counts['shredder'] = shredder_recipes.export(source, output, rows)['coverage']
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 
