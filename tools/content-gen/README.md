@@ -1,3 +1,7 @@
+## Triturador (2026-10-29)
+
+O catálogo tem **2516 IDs**, incluindo `ntm:machine_shredder`; o pipeline exporta **722 receitas do triturador** com precedência fonte e contratos das três lâminas. A receita real de montagem também está disponível. A flag `--max-damage` habilita a extensão de durabilidade do fork; o padrão preserva API 0.2 base. Contratos, limites e reprodução em [docs/content-shredder.md](../../docs/content-shredder.md).
+
 ## M3: fluidos e máquinas (2026-10-29)
 
 O catálogo tem **2515 IDs (341 blocos/2174 itens)** e **807 receitas vanilla**. O pipeline combina `m1.json`, `bulk.json`, `bombs.json` e `m3.json`; gera 610 recipientes preenchidos e exporta 499 receitas de processamento, com alternativas OreDict, labels pt_BR/en_US e lacunas por chamada fonte. Veja [docs/content-m3.md](../../docs/content-m3.md) para contratos, contagens e reprodução. `m3.json` é reconstruído da fonte automaticamente; não é necessário editar a lista à mão.
