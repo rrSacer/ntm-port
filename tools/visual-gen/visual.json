@@ -1608,7 +1608,17 @@
         "texture_from": "textures/models/machines/firebox.png",
         "rotation": 90,
         "radius": 2.0,
-        "hide": [
+        "show": {
+          "InnerBurning": {
+            "property": "honey_level",
+            "not": "0"
+          },
+          "InnerEmpty": {
+            "property": "honey_level",
+            "is": "0"
+          }
+        },
+        "glow": [
           "InnerBurning"
         ]
       }
