@@ -79,6 +79,56 @@ def arm_animation(spec):
     return {'format_version': '1.8.0', 'animations': {spec['name']: {'loop': True, 'animation_length': length, 'bones': bones}}}
 
 
+def obj_info(path):
+    """The OBJ's object names and how far it reaches from the block's centre."""
+    names, reach = [], 1.0
+    for line in path.read_text(errors='replace').splitlines():
+        if line.startswith('o '):
+            names.append(line[2:].strip())
+        elif line.startswith('v '):
+            try:
+                x, y, z = (float(v) for v in line.split()[1:4])
+            except ValueError:
+                continue
+            reach = max(reach, abs(x) + 0.5, abs(y), abs(z) + 0.5)
+    return names, reach
+
+
+def auto_models(args, src, hand):
+    """The port's blocks with an HBM model (extracted.json) that visual.json
+    does not describe: their model as HBM's renderer turns it. No slots and
+    no multiblock: those blocks keep their logic's screen and their one cell
+    (a multiblock needs its ports as proxies, which only a hand entry gives)."""
+    extracted = HERE / 'extracted.json'
+    if not extracted.exists():
+        return {}
+    ex = json.loads(extracted.read_text())
+    ids = {e['id'] for e in json.loads((args.out / 'ids.json').read_text())['entries']}
+    out = {}
+    for block, e in sorted(ex.items()):
+        m = e.get('model')
+        if block in hand or block not in ids or not m or not m.get('files'):
+            continue
+        obj = src / m['obj']
+        names, reach = obj_info(obj)
+        name = block.split(':', 1)[1]
+        model = {
+            # Resource paths are lower case; HBM's files are not always.
+            'obj': f"ntm:models/obj/{Path(m['obj']).name.lower()}",
+            'obj_from': m['obj'],
+            'texture': 'ntm:' + m['texture'].lower(),
+            'texture_from': m['texture'],
+            'rotation': m.get('rotation') or 0,
+            'radius': round(reach + 0.5, 1),
+        }
+        if m.get('translate'):
+            model['translate'] = m['translate']
+        if not m.get('render_all') and m.get('parts'):
+            model['hide'] = [n for n in names if n not in m['parts']]
+        out[block] = {'source': f"extracted: {e.get('renderer')}", 'model': model}
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--spec', type=Path, default=HERE / 'visual.json')
@@ -100,7 +150,10 @@ def main():
         shutil.copyfile(src / from_rel, target)
 
     dummy = spec['dummy']
-    for block, b in spec['blocks'].items():
+    blocks = dict(spec['blocks'])
+    auto = auto_models(args, src, set(blocks))
+    blocks.update(auto)
+    for block, b in blocks.items():
         name = block.split(':', 1)[1]
         if 'machine' in b:
             write_json(own(f'data/ntm/horizon_machine/{name}.json'), b['machine'])
