@@ -1,0 +1,155 @@
+//! Explosions of the NTM's bombs on the server (docs/bombas.md): the crater
+//! engine (`ntm-explosion`) per world, vanilla's explosion for charges, the
+//! effects as vanilla commands, blast damage, and the radiation a nuke
+//! leaves (a pulse at the blast, then an area that decays).
+
+pub mod config;
+pub mod vanilla;
+pub mod visuals;
+
+use crate::Pos;
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
+
+pub use config::{Config, Mode};
+
+/// Radiation a nuke's fallout leaves around ground zero: falls off with
+/// distance (squared, to zero at `radius`) and halves every `half_life`
+/// ticks of the world.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Zone {
+    pub dim: String,
+    pub center: Pos,
+    pub radius: i32,
+    /// milliRAD/s at ground zero when it was made.
+    pub peak: u32,
+    /// The world's tick count then (`WorldState.ticks`).
+    pub t0: u64,
+    pub half_life: u64,
+}
+
+impl Zone {
+    /// milliRAD/s at `pos` at world tick `now`.
+    pub fn rate(&self, dim: &str, pos: [f64; 3], now: u64) -> u32 {
+        if dim != self.dim {
+            return 0;
+        }
+        let d2 = (pos[0] - f64::from(self.center[0])).powi(2) + (pos[2] - f64::from(self.center[2])).powi(2);
+        let r = f64::from(self.radius);
+        if d2 >= r * r {
+            return 0;
+        }
+        let fall = 1.0 - d2.sqrt() / r;
+        let decay = 0.5f64.powf(now.saturating_sub(self.t0) as f64 / self.half_life.max(1) as f64);
+        (f64::from(self.peak) * fall * fall * decay) as u32
+    }
+
+    /// Below 1 milliRAD/s anywhere: forgotten.
+    pub fn spent(&self, now: u64) -> bool {
+        self.rate(&self.dim, [f64::from(self.center[0]), 0.0, f64::from(self.center[2])], now) == 0
+    }
+}
+
+/// What a world keeps of its bombs (in its save, `WorldState.bombs`).
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct BombWorld {
+    /// The next explosion's number (its id is `w<world>n<number>`).
+    #[serde(default)]
+    pub next: u64,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub zones: Vec<Zone>,
+    /// Each player's detonator: the bomb it is linked to.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub links: BTreeMap<String, (String, Pos)>,
+    /// This world's settings, over the global ones.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cfg: Option<Config>,
+}
+
+/// Blast damage a nuke deals while its crater is dug (`ExplosionNukeGeneric
+/// .dealDamage`, every tick of `EntityNukeExplosionMK5` in the NTM; here
+/// every [`PULSE_EVERY`] ticks for [`PULSE_TICKS`]).
+#[derive(Clone, Debug)]
+pub struct Pulse {
+    pub dim: String,
+    pub center: [f64; 3],
+    /// 2R: `dealDamage(…, length * 2)`.
+    pub reach: f64,
+    pub next: u64,
+    pub until: u64,
+}
+
+pub const PULSE_EVERY: u64 = 10;
+pub const PULSE_TICKS: u64 = 100;
+/// `dealDamage`'s maxDamage.
+pub const PULSE_MAX: f64 = 250.0;
+
+/// The bombs' state on the server that isn't saved with the world.
+#[derive(Default)]
+pub struct Runtime {
+    pub nukes: ntm_explosion::Explosions,
+    /// The world whose explosions are in `nukes`.
+    pub wid: Option<String>,
+    /// The `lit` each bomb showed last (redstone sets bombs off on its
+    /// rising edge, as `onNeighborBlockChange` does).
+    pub lit: BTreeMap<(String, Pos), bool>,
+    pub pulses: Vec<Pulse>,
+    /// The global settings, read once from the folder.
+    pub global: Option<Config>,
+    pub warned_fallback: bool,
+    pub warned_persist: bool,
+    /// The tick a charge went off: its vanilla explosion used that tick's
+    /// fuel, so the nukes wait for the next one.
+    pub charged_at: Option<u64>,
+    /// Last detonations, for `/ntmbomba status`.
+    pub log: Vec<String>,
+}
+
+/// What an explosion's engine tells (`ntm_explosion::Hooks`).
+#[derive(Default)]
+pub struct Recorder(pub Vec<(String, ntm_explosion::Event)>);
+
+impl ntm_explosion::Hooks for Recorder {
+    fn event(&mut self, id: &str, e: &ntm_explosion::Event) {
+        self.0.push((id.to_string(), e.clone()));
+    }
+}
+
+/// The fallout layer block: the content's `ntm:fallout` (snow template).
+pub const FALLOUT_LAYER: &str = "ntm:fallout[layers=1]";
+
+/// The crater's and the fallout's blocks for a blast, with the content
+/// mod's waste blocks (`ids.json`, category `fallout`).
+pub fn profile(blast: crate::bomb::Blast, fallout: bool) -> ntm_explosion::EffectProfile {
+    use crate::bomb::Blast;
+    use ntm_explosion::{EffectProfile, FalloutProfile};
+    match blast {
+        // statFacNoRad: no fallout rain, so no slag either.
+        Blast::Nuke { fallout: false, .. } | Blast::Conventional { .. } => EffectProfile::none(),
+        Blast::Balefire { .. } => EffectProfile {
+            name: "balefire".into(),
+            foliage: Some("minecraft:air".into()),
+            fire: Some((0.5, 1.0, "minecraft:fire".into())),
+            ..EffectProfile::none()
+        },
+        Blast::Nuke { fallout: true, .. } => EffectProfile {
+            name: "ntm".into(),
+            // The fallout slags everything up to 1.25R: the whole crater.
+            slag: vec![(f32::INFINITY, "ntm:sellafield_slaked".into())],
+            trinitite: Some((0.05, "ntm:waste_trinitite".into())),
+            wood: Some("ntm:waste_log".into()),
+            planks: Some("ntm:waste_planks".into()),
+            foliage: Some("minecraft:air".into()),
+            fire: Some((0.2, 0.65, "minecraft:fire".into())),
+            fallout: fallout.then(|| FalloutProfile {
+                slag: vec![(0.5, "ntm:sellafield_slaked".into())],
+                wood: Some("ntm:waste_log".into()),
+                planks: Some("ntm:waste_planks".into()),
+                dead_leaves: Some("ntm:waste_leaves[persistent=true]".into()),
+                trinitite: Some((0.05, "ntm:waste_trinitite".into())),
+                layer: Some(FALLOUT_LAYER.into()),
+                ..FalloutProfile::ntm_placeholder()
+            }),
+        },
+    }
+}

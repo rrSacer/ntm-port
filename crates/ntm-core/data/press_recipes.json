@@ -1,0 +1,176 @@
+{
+  "schema": 1,
+  "stamps": [
+    {
+      "item": "ntm:stamp_iron_flat",
+      "type": "flat",
+      "durability": 64
+    },
+    {
+      "item": "ntm:stamp_iron_plate",
+      "type": "plate",
+      "durability": 64
+    },
+    {
+      "item": "ntm:stamp_iron_wire",
+      "type": "wire",
+      "durability": 64
+    }
+  ],
+  "machines": {
+    "machine_epress": {
+      "energy_per_tick": 100
+    },
+    "machine_press": {
+      "max_speed": 400,
+      "progress_at_max": 25,
+      "max_press": 200
+    }
+  },
+  "recipes": [
+    {
+      "id": "ntm:plate_aluminium",
+      "input": {
+        "item": "ntm:ingot_aluminium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:plate_aluminium",
+        "count": 1
+      },
+      "stamp": "plate"
+    },
+    {
+      "id": "ntm:plate_lead",
+      "input": {
+        "item": "ntm:ingot_lead",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:plate_lead",
+        "count": 1
+      },
+      "stamp": "plate"
+    },
+    {
+      "id": "ntm:plate_titanium",
+      "input": {
+        "item": "ntm:ingot_titanium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:plate_titanium",
+        "count": 1
+      },
+      "stamp": "plate"
+    },
+    {
+      "id": "ntm:wire_fine__aluminium",
+      "input": {
+        "item": "ntm:ingot_aluminium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:wire_fine__aluminium",
+        "count": 8
+      },
+      "stamp": "wire"
+    },
+    {
+      "id": "ntm:wire_fine__lead",
+      "input": {
+        "item": "ntm:ingot_lead",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:wire_fine__lead",
+        "count": 8
+      },
+      "stamp": "wire"
+    },
+    {
+      "id": "ntm:wire_fine__red_copper",
+      "input": {
+        "item": "ntm:ingot_red_copper",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:wire_fine__red_copper",
+        "count": 8
+      },
+      "stamp": "wire"
+    },
+    {
+      "id": "ntm:wire_fine__tungsten",
+      "input": {
+        "item": "ntm:ingot_tungsten",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:wire_fine__tungsten",
+        "count": 8
+      },
+      "stamp": "wire"
+    },
+    {
+      "id": "ntm:wire_fine__copper",
+      "input": {
+        "item": "ntm:ingot_copper",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:wire_fine__copper",
+        "count": 8
+      },
+      "stamp": "wire"
+    },
+    {
+      "id": "ntm:wire_fine__magnetized_tungsten",
+      "input": {
+        "item": "ntm:ingot_magnetized_tungsten",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:wire_fine__magnetized_tungsten",
+        "count": 8
+      },
+      "stamp": "wire"
+    },
+    {
+      "id": "ntm:wire_fine__schrabidium",
+      "input": {
+        "item": "ntm:ingot_schrabidium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:wire_fine__schrabidium",
+        "count": 8
+      },
+      "stamp": "wire"
+    },
+    {
+      "id": "ntm:wire_fine__steel",
+      "input": {
+        "item": "ntm:ingot_steel",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:wire_fine__steel",
+        "count": 8
+      },
+      "stamp": "wire"
+    },
+    {
+      "id": "ntm:wire_fine__zirconium",
+      "input": {
+        "item": "ntm:ingot_zirconium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:wire_fine__zirconium",
+        "count": 8
+      },
+      "stamp": "wire"
+    }
+  ]
+}

@@ -1,0 +1,3009 @@
+{
+  "schema": 1,
+  "machines": {
+    "machine_electric_furnace_off": {
+      "ticks": 100,
+      "energy_per_tick": 50
+    }
+  },
+  "recipes": [
+    {
+      "id": "ntm:ore_thorium",
+      "input": {
+        "item": "ntm:ore_thorium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_th232",
+        "count": 1
+      },
+      "experience": 3.0
+    },
+    {
+      "id": "ntm:ore_uranium",
+      "input": {
+        "item": "ntm:ore_uranium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_uranium",
+        "count": 1
+      },
+      "experience": 6.0
+    },
+    {
+      "id": "ntm:ore_uranium_scorched",
+      "input": {
+        "item": "ntm:ore_uranium_scorched",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_uranium",
+        "count": 1
+      },
+      "experience": 6.0
+    },
+    {
+      "id": "ntm:ore_nether_uranium",
+      "input": {
+        "item": "ntm:ore_nether_uranium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_uranium",
+        "count": 1
+      },
+      "experience": 12.0
+    },
+    {
+      "id": "ntm:ore_nether_uranium_scorched",
+      "input": {
+        "item": "ntm:ore_nether_uranium_scorched",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_uranium",
+        "count": 1
+      },
+      "experience": 12.0
+    },
+    {
+      "id": "ntm:ore_nether_plutonium",
+      "input": {
+        "item": "ntm:ore_nether_plutonium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_plutonium",
+        "count": 1
+      },
+      "experience": 24.0
+    },
+    {
+      "id": "ntm:ore_titanium",
+      "input": {
+        "item": "ntm:ore_titanium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_titanium",
+        "count": 1
+      },
+      "experience": 3.0
+    },
+    {
+      "id": "ntm:ore_copper",
+      "input": {
+        "item": "ntm:ore_copper",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_copper",
+        "count": 1
+      },
+      "experience": 2.5
+    },
+    {
+      "id": "ntm:ore_tungsten",
+      "input": {
+        "item": "ntm:ore_tungsten",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_tungsten",
+        "count": 1
+      },
+      "experience": 6.0
+    },
+    {
+      "id": "ntm:ore_nether_tungsten",
+      "input": {
+        "item": "ntm:ore_nether_tungsten",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_tungsten",
+        "count": 1
+      },
+      "experience": 12.0
+    },
+    {
+      "id": "ntm:ore_lead",
+      "input": {
+        "item": "ntm:ore_lead",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_lead",
+        "count": 1
+      },
+      "experience": 3.0
+    },
+    {
+      "id": "ntm:ore_beryllium",
+      "input": {
+        "item": "ntm:ore_beryllium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_beryllium",
+        "count": 1
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:ore_schrabidium",
+      "input": {
+        "item": "ntm:ore_schrabidium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_schrabidium",
+        "count": 1
+      },
+      "experience": 128.0
+    },
+    {
+      "id": "ntm:ore_nether_schrabidium",
+      "input": {
+        "item": "ntm:ore_nether_schrabidium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_schrabidium",
+        "count": 1
+      },
+      "experience": 256.0
+    },
+    {
+      "id": "ntm:ore_cobalt",
+      "input": {
+        "item": "ntm:ore_cobalt",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_cobalt",
+        "count": 1
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:ore_nether_cobalt",
+      "input": {
+        "item": "ntm:ore_nether_cobalt",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_cobalt",
+        "count": 1
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:ore_gneiss_uranium",
+      "input": {
+        "item": "ntm:ore_gneiss_uranium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_uranium",
+        "count": 1
+      },
+      "experience": 12.0
+    },
+    {
+      "id": "ntm:ore_gneiss_uranium_scorched",
+      "input": {
+        "item": "ntm:ore_gneiss_uranium_scorched",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_uranium",
+        "count": 1
+      },
+      "experience": 12.0
+    },
+    {
+      "id": "ntm:ore_gneiss_copper",
+      "input": {
+        "item": "ntm:ore_gneiss_copper",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_copper",
+        "count": 1
+      },
+      "experience": 5.0
+    },
+    {
+      "id": "ntm:ore_gneiss_lithium",
+      "input": {
+        "item": "ntm:ore_gneiss_lithium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:lithium",
+        "count": 1
+      },
+      "experience": 10.0
+    },
+    {
+      "id": "ntm:ore_gneiss_schrabidium",
+      "input": {
+        "item": "ntm:ore_gneiss_schrabidium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_schrabidium",
+        "count": 1
+      },
+      "experience": 256.0
+    },
+    {
+      "id": "ntm:ore_australium",
+      "input": {
+        "item": "ntm:ore_australium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:nugget_australium",
+        "count": 1
+      },
+      "experience": 2.5
+    },
+    {
+      "id": "ntm:powder_australium",
+      "input": {
+        "item": "ntm:powder_australium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_australium",
+        "count": 1
+      },
+      "experience": 5.0
+    },
+    {
+      "id": "ntm:powder_lead",
+      "input": {
+        "item": "ntm:powder_lead",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_lead",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_neptunium",
+      "input": {
+        "item": "ntm:powder_neptunium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_neptunium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_polonium",
+      "input": {
+        "item": "ntm:powder_polonium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_polonium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_schrabidium",
+      "input": {
+        "item": "ntm:powder_schrabidium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_schrabidium",
+        "count": 1
+      },
+      "experience": 5.0
+    },
+    {
+      "id": "ntm:powder_schrabidate",
+      "input": {
+        "item": "ntm:powder_schrabidate",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_schrabidate",
+        "count": 1
+      },
+      "experience": 5.0
+    },
+    {
+      "id": "ntm:powder_euphemium",
+      "input": {
+        "item": "ntm:powder_euphemium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_euphemium",
+        "count": 1
+      },
+      "experience": 10.0
+    },
+    {
+      "id": "ntm:powder_aluminium",
+      "input": {
+        "item": "ntm:powder_aluminium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_aluminium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_beryllium",
+      "input": {
+        "item": "ntm:powder_beryllium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_beryllium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_copper",
+      "input": {
+        "item": "ntm:powder_copper",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_copper",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_titanium",
+      "input": {
+        "item": "ntm:powder_titanium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_titanium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_cobalt",
+      "input": {
+        "item": "ntm:powder_cobalt",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_cobalt",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_tungsten",
+      "input": {
+        "item": "ntm:powder_tungsten",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_tungsten",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_uranium",
+      "input": {
+        "item": "ntm:powder_uranium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_uranium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_thorium",
+      "input": {
+        "item": "ntm:powder_thorium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_th232",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_plutonium",
+      "input": {
+        "item": "ntm:powder_plutonium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_plutonium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_combine_steel",
+      "input": {
+        "item": "ntm:powder_combine_steel",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_combine_steel",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_magnetized_tungsten",
+      "input": {
+        "item": "ntm:powder_magnetized_tungsten",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_magnetized_tungsten",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_red_copper",
+      "input": {
+        "item": "ntm:powder_red_copper",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_red_copper",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_steel",
+      "input": {
+        "item": "ntm:powder_steel",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_steel",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_lithium",
+      "input": {
+        "item": "ntm:powder_lithium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:lithium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_dura_steel",
+      "input": {
+        "item": "ntm:powder_dura_steel",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_dura_steel",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_polymer",
+      "input": {
+        "item": "ntm:powder_polymer",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_polymer",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_bakelite",
+      "input": {
+        "item": "ntm:powder_bakelite",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_bakelite",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_lanthanium",
+      "input": {
+        "item": "ntm:powder_lanthanium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_lanthanium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_actinium",
+      "input": {
+        "item": "ntm:powder_actinium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_actinium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_boron",
+      "input": {
+        "item": "ntm:powder_boron",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_boron",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_desh",
+      "input": {
+        "item": "ntm:powder_desh",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_desh",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_dineutronium",
+      "input": {
+        "item": "ntm:powder_dineutronium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_dineutronium",
+        "count": 1
+      },
+      "experience": 5.0
+    },
+    {
+      "id": "ntm:powder_asbestos",
+      "input": {
+        "item": "ntm:powder_asbestos",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_asbestos",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_zirconium",
+      "input": {
+        "item": "ntm:powder_zirconium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_zirconium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_tcalloy",
+      "input": {
+        "item": "ntm:powder_tcalloy",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_tcalloy",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_au198",
+      "input": {
+        "item": "ntm:powder_au198",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_au198",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_sr90",
+      "input": {
+        "item": "ntm:powder_sr90",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_sr90",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_ra226",
+      "input": {
+        "item": "ntm:powder_ra226",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_ra226",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_tantalium",
+      "input": {
+        "item": "ntm:powder_tantalium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_tantalium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_niobium",
+      "input": {
+        "item": "ntm:powder_niobium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_niobium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_bismuth",
+      "input": {
+        "item": "ntm:powder_bismuth",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_bismuth",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_calcium",
+      "input": {
+        "item": "ntm:powder_calcium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_calcium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:powder_cadmium",
+      "input": {
+        "item": "ntm:powder_cadmium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_cadmium",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:ball_resin",
+      "input": {
+        "item": "ntm:ball_resin",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_biorubber",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "ntm:combine_scrap",
+      "input": {
+        "item": "ntm:combine_scrap",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_combine_steel",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "ntm:ball_fireclay",
+      "input": {
+        "item": "ntm:ball_fireclay",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_firebrick",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "ntm:crystal_uranium",
+      "input": {
+        "item": "ntm:crystal_uranium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_uranium",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_thorium",
+      "input": {
+        "item": "ntm:crystal_thorium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_th232",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_plutonium",
+      "input": {
+        "item": "ntm:crystal_plutonium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_plutonium",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_titanium",
+      "input": {
+        "item": "ntm:crystal_titanium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_titanium",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_sulfur",
+      "input": {
+        "item": "ntm:crystal_sulfur",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:sulfur",
+        "count": 6
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_niter",
+      "input": {
+        "item": "ntm:crystal_niter",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:niter",
+        "count": 6
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_copper",
+      "input": {
+        "item": "ntm:crystal_copper",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_copper",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_tungsten",
+      "input": {
+        "item": "ntm:crystal_tungsten",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_tungsten",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_aluminium",
+      "input": {
+        "item": "ntm:crystal_aluminium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_aluminium",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_fluorite",
+      "input": {
+        "item": "ntm:crystal_fluorite",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:fluorite",
+        "count": 6
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_beryllium",
+      "input": {
+        "item": "ntm:crystal_beryllium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_beryllium",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_lead",
+      "input": {
+        "item": "ntm:crystal_lead",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_lead",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_schraranium",
+      "input": {
+        "item": "ntm:crystal_schraranium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:nugget_schrabidium",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_schrabidium",
+      "input": {
+        "item": "ntm:crystal_schrabidium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_schrabidium",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_rare",
+      "input": {
+        "item": "ntm:crystal_rare",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:powder_desh_mix",
+        "count": 1
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_phosphorus",
+      "input": {
+        "item": "ntm:crystal_phosphorus",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:powder_fire",
+        "count": 6
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_lithium",
+      "input": {
+        "item": "ntm:crystal_lithium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:lithium",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_cobalt",
+      "input": {
+        "item": "ntm:crystal_cobalt",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_cobalt",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_trixite",
+      "input": {
+        "item": "ntm:crystal_trixite",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_plutonium",
+        "count": 4
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_cinnebar",
+      "input": {
+        "item": "ntm:crystal_cinnebar",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:cinnebar",
+        "count": 4
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:crystal_osmiridium",
+      "input": {
+        "item": "ntm:crystal_osmiridium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_osmiridium",
+        "count": 1
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "ntm:m1_temp/aluminium_from_ore",
+      "input": {
+        "item": "ntm:ore_aluminium"
+      },
+      "output": {
+        "item": "ntm:ingot_aluminium"
+      },
+      "experience": 2.5
+    },
+    {
+      "id": "minecraft:baked_potato/potato",
+      "input": {
+        "item": "minecraft:potato",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:baked_potato",
+        "count": 1
+      },
+      "experience": 0.35
+    },
+    {
+      "id": "minecraft:black_glazed_terracotta/black_terracotta",
+      "input": {
+        "item": "minecraft:black_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:black_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:blue_glazed_terracotta/blue_terracotta",
+      "input": {
+        "item": "minecraft:blue_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:blue_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:brick/clay_ball",
+      "input": {
+        "item": "minecraft:clay_ball",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:brick",
+        "count": 1
+      },
+      "experience": 0.3
+    },
+    {
+      "id": "minecraft:brown_glazed_terracotta/brown_terracotta",
+      "input": {
+        "item": "minecraft:brown_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:brown_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:charcoal/acacia_log",
+      "input": {
+        "item": "minecraft:acacia_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/acacia_wood",
+      "input": {
+        "item": "minecraft:acacia_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/birch_log",
+      "input": {
+        "item": "minecraft:birch_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/birch_wood",
+      "input": {
+        "item": "minecraft:birch_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/cherry_log",
+      "input": {
+        "item": "minecraft:cherry_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/cherry_wood",
+      "input": {
+        "item": "minecraft:cherry_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/dark_oak_log",
+      "input": {
+        "item": "minecraft:dark_oak_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/dark_oak_wood",
+      "input": {
+        "item": "minecraft:dark_oak_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/jungle_log",
+      "input": {
+        "item": "minecraft:jungle_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/jungle_wood",
+      "input": {
+        "item": "minecraft:jungle_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/mangrove_log",
+      "input": {
+        "item": "minecraft:mangrove_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/mangrove_wood",
+      "input": {
+        "item": "minecraft:mangrove_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/oak_log",
+      "input": {
+        "item": "minecraft:oak_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/oak_wood",
+      "input": {
+        "item": "minecraft:oak_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/pale_oak_log",
+      "input": {
+        "item": "minecraft:pale_oak_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/pale_oak_wood",
+      "input": {
+        "item": "minecraft:pale_oak_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/poplar_log",
+      "input": {
+        "item": "minecraft:poplar_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/poplar_wood",
+      "input": {
+        "item": "minecraft:poplar_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/spruce_log",
+      "input": {
+        "item": "minecraft:spruce_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/spruce_wood",
+      "input": {
+        "item": "minecraft:spruce_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_acacia_log",
+      "input": {
+        "item": "minecraft:stripped_acacia_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_acacia_wood",
+      "input": {
+        "item": "minecraft:stripped_acacia_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_birch_log",
+      "input": {
+        "item": "minecraft:stripped_birch_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_birch_wood",
+      "input": {
+        "item": "minecraft:stripped_birch_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_cherry_log",
+      "input": {
+        "item": "minecraft:stripped_cherry_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_cherry_wood",
+      "input": {
+        "item": "minecraft:stripped_cherry_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_dark_oak_log",
+      "input": {
+        "item": "minecraft:stripped_dark_oak_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_dark_oak_wood",
+      "input": {
+        "item": "minecraft:stripped_dark_oak_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_jungle_log",
+      "input": {
+        "item": "minecraft:stripped_jungle_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_jungle_wood",
+      "input": {
+        "item": "minecraft:stripped_jungle_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_mangrove_log",
+      "input": {
+        "item": "minecraft:stripped_mangrove_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_mangrove_wood",
+      "input": {
+        "item": "minecraft:stripped_mangrove_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_oak_log",
+      "input": {
+        "item": "minecraft:stripped_oak_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_oak_wood",
+      "input": {
+        "item": "minecraft:stripped_oak_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_pale_oak_log",
+      "input": {
+        "item": "minecraft:stripped_pale_oak_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_pale_oak_wood",
+      "input": {
+        "item": "minecraft:stripped_pale_oak_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_poplar_log",
+      "input": {
+        "item": "minecraft:stripped_poplar_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_poplar_wood",
+      "input": {
+        "item": "minecraft:stripped_poplar_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_spruce_log",
+      "input": {
+        "item": "minecraft:stripped_spruce_log",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:charcoal/stripped_spruce_wood",
+      "input": {
+        "item": "minecraft:stripped_spruce_wood",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:charcoal",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:coal_from_smelting_coal_ore/coal_ore",
+      "input": {
+        "item": "minecraft:coal_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:coal",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:coal_from_smelting_deepslate_coal_ore/deepslate_coal_ore",
+      "input": {
+        "item": "minecraft:deepslate_coal_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:coal",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:cooked_beef/beef",
+      "input": {
+        "item": "minecraft:beef",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cooked_beef",
+        "count": 1
+      },
+      "experience": 0.35
+    },
+    {
+      "id": "minecraft:cooked_chicken/chicken",
+      "input": {
+        "item": "minecraft:chicken",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cooked_chicken",
+        "count": 1
+      },
+      "experience": 0.35
+    },
+    {
+      "id": "minecraft:cooked_cod/cod",
+      "input": {
+        "item": "minecraft:cod",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cooked_cod",
+        "count": 1
+      },
+      "experience": 0.35
+    },
+    {
+      "id": "minecraft:cooked_mutton/mutton",
+      "input": {
+        "item": "minecraft:mutton",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cooked_mutton",
+        "count": 1
+      },
+      "experience": 0.35
+    },
+    {
+      "id": "minecraft:cooked_porkchop/porkchop",
+      "input": {
+        "item": "minecraft:porkchop",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cooked_porkchop",
+        "count": 1
+      },
+      "experience": 0.35
+    },
+    {
+      "id": "minecraft:cooked_rabbit/rabbit",
+      "input": {
+        "item": "minecraft:rabbit",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cooked_rabbit",
+        "count": 1
+      },
+      "experience": 0.35
+    },
+    {
+      "id": "minecraft:cooked_salmon/salmon",
+      "input": {
+        "item": "minecraft:salmon",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cooked_salmon",
+        "count": 1
+      },
+      "experience": 0.35
+    },
+    {
+      "id": "minecraft:copper_ingot_from_smelting_copper_ore/copper_ore",
+      "input": {
+        "item": "minecraft:copper_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_ingot",
+        "count": 1
+      },
+      "experience": 0.7
+    },
+    {
+      "id": "minecraft:copper_ingot_from_smelting_deepslate_copper_ore/deepslate_copper_ore",
+      "input": {
+        "item": "minecraft:deepslate_copper_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_ingot",
+        "count": 1
+      },
+      "experience": 0.7
+    },
+    {
+      "id": "minecraft:copper_ingot_from_smelting_raw_copper/raw_copper",
+      "input": {
+        "item": "minecraft:raw_copper",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_ingot",
+        "count": 1
+      },
+      "experience": 0.7
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_axe",
+      "input": {
+        "item": "minecraft:copper_axe",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_boots",
+      "input": {
+        "item": "minecraft:copper_boots",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_chestplate",
+      "input": {
+        "item": "minecraft:copper_chestplate",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_helmet",
+      "input": {
+        "item": "minecraft:copper_helmet",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_hoe",
+      "input": {
+        "item": "minecraft:copper_hoe",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_horse_armor",
+      "input": {
+        "item": "minecraft:copper_horse_armor",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_leggings",
+      "input": {
+        "item": "minecraft:copper_leggings",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_nautilus_armor",
+      "input": {
+        "item": "minecraft:copper_nautilus_armor",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_pickaxe",
+      "input": {
+        "item": "minecraft:copper_pickaxe",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_shovel",
+      "input": {
+        "item": "minecraft:copper_shovel",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_spear",
+      "input": {
+        "item": "minecraft:copper_spear",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:copper_nugget_from_smelting/copper_sword",
+      "input": {
+        "item": "minecraft:copper_sword",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:copper_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:cracked_deepslate_bricks/deepslate_bricks",
+      "input": {
+        "item": "minecraft:deepslate_bricks",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cracked_deepslate_bricks",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:cracked_deepslate_tiles/deepslate_tiles",
+      "input": {
+        "item": "minecraft:deepslate_tiles",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cracked_deepslate_tiles",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:cracked_nether_bricks/nether_bricks",
+      "input": {
+        "item": "minecraft:nether_bricks",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cracked_nether_bricks",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:cracked_polished_blackstone_bricks/polished_blackstone_bricks",
+      "input": {
+        "item": "minecraft:polished_blackstone_bricks",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cracked_polished_blackstone_bricks",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:cracked_stone_bricks/stone_bricks",
+      "input": {
+        "item": "minecraft:stone_bricks",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cracked_stone_bricks",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:cyan_glazed_terracotta/cyan_terracotta",
+      "input": {
+        "item": "minecraft:cyan_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:cyan_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:deepslate/cobbled_deepslate",
+      "input": {
+        "item": "minecraft:cobbled_deepslate",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:deepslate",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:diamond_from_smelting_deepslate_diamond_ore/deepslate_diamond_ore",
+      "input": {
+        "item": "minecraft:deepslate_diamond_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:diamond",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "minecraft:diamond_from_smelting_diamond_ore/diamond_ore",
+      "input": {
+        "item": "minecraft:diamond_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:diamond",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "minecraft:dried_kelp_from_smelting/kelp",
+      "input": {
+        "item": "minecraft:kelp",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:dried_kelp",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:emerald_from_smelting_deepslate_emerald_ore/deepslate_emerald_ore",
+      "input": {
+        "item": "minecraft:deepslate_emerald_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:emerald",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "minecraft:emerald_from_smelting_emerald_ore/emerald_ore",
+      "input": {
+        "item": "minecraft:emerald_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:emerald",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "minecraft:glass/red_sand",
+      "input": {
+        "item": "minecraft:red_sand",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:glass",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:glass/sand",
+      "input": {
+        "item": "minecraft:sand",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:glass",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_ingot_from_smelting_deepslate_gold_ore/deepslate_gold_ore",
+      "input": {
+        "item": "minecraft:deepslate_gold_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_ingot",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "minecraft:gold_ingot_from_smelting_gold_ore/gold_ore",
+      "input": {
+        "item": "minecraft:gold_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_ingot",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "minecraft:gold_ingot_from_smelting_nether_gold_ore/nether_gold_ore",
+      "input": {
+        "item": "minecraft:nether_gold_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_ingot",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "minecraft:gold_ingot_from_smelting_raw_gold/raw_gold",
+      "input": {
+        "item": "minecraft:raw_gold",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_ingot",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_axe",
+      "input": {
+        "item": "minecraft:golden_axe",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_boots",
+      "input": {
+        "item": "minecraft:golden_boots",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_chestplate",
+      "input": {
+        "item": "minecraft:golden_chestplate",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_helmet",
+      "input": {
+        "item": "minecraft:golden_helmet",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_hoe",
+      "input": {
+        "item": "minecraft:golden_hoe",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_horse_armor",
+      "input": {
+        "item": "minecraft:golden_horse_armor",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_leggings",
+      "input": {
+        "item": "minecraft:golden_leggings",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_nautilus_armor",
+      "input": {
+        "item": "minecraft:golden_nautilus_armor",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_pickaxe",
+      "input": {
+        "item": "minecraft:golden_pickaxe",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_shovel",
+      "input": {
+        "item": "minecraft:golden_shovel",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_spear",
+      "input": {
+        "item": "minecraft:golden_spear",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gold_nugget_from_smelting/golden_sword",
+      "input": {
+        "item": "minecraft:golden_sword",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gold_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:gray_glazed_terracotta/gray_terracotta",
+      "input": {
+        "item": "minecraft:gray_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:gray_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:green_dye/cactus",
+      "input": {
+        "item": "minecraft:cactus",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:green_dye",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
+      "id": "minecraft:green_glazed_terracotta/green_terracotta",
+      "input": {
+        "item": "minecraft:green_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:green_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_ingot_from_smelting_deepslate_iron_ore/deepslate_iron_ore",
+      "input": {
+        "item": "minecraft:deepslate_iron_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_ingot",
+        "count": 1
+      },
+      "experience": 0.7
+    },
+    {
+      "id": "minecraft:iron_ingot_from_smelting_iron_ore/iron_ore",
+      "input": {
+        "item": "minecraft:iron_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_ingot",
+        "count": 1
+      },
+      "experience": 0.7
+    },
+    {
+      "id": "minecraft:iron_ingot_from_smelting_raw_iron/raw_iron",
+      "input": {
+        "item": "minecraft:raw_iron",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_ingot",
+        "count": 1
+      },
+      "experience": 0.7
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/chainmail_boots",
+      "input": {
+        "item": "minecraft:chainmail_boots",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/chainmail_chestplate",
+      "input": {
+        "item": "minecraft:chainmail_chestplate",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/chainmail_helmet",
+      "input": {
+        "item": "minecraft:chainmail_helmet",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/chainmail_leggings",
+      "input": {
+        "item": "minecraft:chainmail_leggings",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_axe",
+      "input": {
+        "item": "minecraft:iron_axe",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_boots",
+      "input": {
+        "item": "minecraft:iron_boots",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_chestplate",
+      "input": {
+        "item": "minecraft:iron_chestplate",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_helmet",
+      "input": {
+        "item": "minecraft:iron_helmet",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_hoe",
+      "input": {
+        "item": "minecraft:iron_hoe",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_horse_armor",
+      "input": {
+        "item": "minecraft:iron_horse_armor",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_leggings",
+      "input": {
+        "item": "minecraft:iron_leggings",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_nautilus_armor",
+      "input": {
+        "item": "minecraft:iron_nautilus_armor",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_pickaxe",
+      "input": {
+        "item": "minecraft:iron_pickaxe",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_shovel",
+      "input": {
+        "item": "minecraft:iron_shovel",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_spear",
+      "input": {
+        "item": "minecraft:iron_spear",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:iron_nugget_from_smelting/iron_sword",
+      "input": {
+        "item": "minecraft:iron_sword",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:iron_nugget",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:lapis_lazuli_from_smelting_deepslate_lapis_ore/deepslate_lapis_ore",
+      "input": {
+        "item": "minecraft:deepslate_lapis_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:lapis_lazuli",
+        "count": 1
+      },
+      "experience": 0.2
+    },
+    {
+      "id": "minecraft:lapis_lazuli_from_smelting_lapis_ore/lapis_ore",
+      "input": {
+        "item": "minecraft:lapis_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:lapis_lazuli",
+        "count": 1
+      },
+      "experience": 0.2
+    },
+    {
+      "id": "minecraft:leaf_litter/acacia_leaves",
+      "input": {
+        "item": "minecraft:acacia_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/azalea_leaves",
+      "input": {
+        "item": "minecraft:azalea_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/birch_leaves",
+      "input": {
+        "item": "minecraft:birch_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/cherry_leaves",
+      "input": {
+        "item": "minecraft:cherry_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/dark_oak_leaves",
+      "input": {
+        "item": "minecraft:dark_oak_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/flowering_azalea_leaves",
+      "input": {
+        "item": "minecraft:flowering_azalea_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/jungle_leaves",
+      "input": {
+        "item": "minecraft:jungle_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/mangrove_leaves",
+      "input": {
+        "item": "minecraft:mangrove_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/oak_leaves",
+      "input": {
+        "item": "minecraft:oak_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/orange_poplar_leaves",
+      "input": {
+        "item": "minecraft:orange_poplar_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/pale_oak_leaves",
+      "input": {
+        "item": "minecraft:pale_oak_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/red_poplar_leaves",
+      "input": {
+        "item": "minecraft:red_poplar_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/spruce_leaves",
+      "input": {
+        "item": "minecraft:spruce_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:leaf_litter/yellow_poplar_leaves",
+      "input": {
+        "item": "minecraft:yellow_poplar_leaves",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:leaf_litter",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:light_blue_glazed_terracotta/light_blue_terracotta",
+      "input": {
+        "item": "minecraft:light_blue_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:light_blue_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:light_gray_glazed_terracotta/light_gray_terracotta",
+      "input": {
+        "item": "minecraft:light_gray_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:light_gray_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:lime_dye_from_smelting/sea_pickle",
+      "input": {
+        "item": "minecraft:sea_pickle",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:lime_dye",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:lime_glazed_terracotta/lime_terracotta",
+      "input": {
+        "item": "minecraft:lime_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:lime_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:magenta_glazed_terracotta/magenta_terracotta",
+      "input": {
+        "item": "minecraft:magenta_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:magenta_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:nether_brick/netherrack",
+      "input": {
+        "item": "minecraft:netherrack",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:nether_brick",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:netherite_scrap/ancient_debris",
+      "input": {
+        "item": "minecraft:ancient_debris",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:netherite_scrap",
+        "count": 1
+      },
+      "experience": 2.0
+    },
+    {
+      "id": "minecraft:orange_glazed_terracotta/orange_terracotta",
+      "input": {
+        "item": "minecraft:orange_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:orange_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:pink_glazed_terracotta/pink_terracotta",
+      "input": {
+        "item": "minecraft:pink_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:pink_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:popped_chorus_fruit/chorus_fruit",
+      "input": {
+        "item": "minecraft:chorus_fruit",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:popped_chorus_fruit",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:purple_glazed_terracotta/purple_terracotta",
+      "input": {
+        "item": "minecraft:purple_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:purple_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:quartz/nether_quartz_ore",
+      "input": {
+        "item": "minecraft:nether_quartz_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:quartz",
+        "count": 1
+      },
+      "experience": 0.2
+    },
+    {
+      "id": "minecraft:red_glazed_terracotta/red_terracotta",
+      "input": {
+        "item": "minecraft:red_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:red_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:redstone_from_smelting_deepslate_redstone_ore/deepslate_redstone_ore",
+      "input": {
+        "item": "minecraft:deepslate_redstone_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:redstone",
+        "count": 1
+      },
+      "experience": 0.7
+    },
+    {
+      "id": "minecraft:redstone_from_smelting_redstone_ore/redstone_ore",
+      "input": {
+        "item": "minecraft:redstone_ore",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:redstone",
+        "count": 1
+      },
+      "experience": 0.7
+    },
+    {
+      "id": "minecraft:resin_brick/resin_clump",
+      "input": {
+        "item": "minecraft:resin_clump",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:resin_brick",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:smooth_basalt/basalt",
+      "input": {
+        "item": "minecraft:basalt",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:smooth_basalt",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:smooth_quartz/quartz_block",
+      "input": {
+        "item": "minecraft:quartz_block",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:smooth_quartz",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:smooth_red_sandstone/red_sandstone",
+      "input": {
+        "item": "minecraft:red_sandstone",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:smooth_red_sandstone",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:smooth_sandstone/sandstone",
+      "input": {
+        "item": "minecraft:sandstone",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:smooth_sandstone",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:smooth_stone/stone",
+      "input": {
+        "item": "minecraft:stone",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:smooth_stone",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:sponge/wet_sponge",
+      "input": {
+        "item": "minecraft:wet_sponge",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:sponge",
+        "count": 1
+      },
+      "experience": 0.15
+    },
+    {
+      "id": "minecraft:stone/cobblestone",
+      "input": {
+        "item": "minecraft:cobblestone",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:stone",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:terracotta/clay",
+      "input": {
+        "item": "minecraft:clay",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:terracotta",
+        "count": 1
+      },
+      "experience": 0.35
+    },
+    {
+      "id": "minecraft:white_glazed_terracotta/white_terracotta",
+      "input": {
+        "item": "minecraft:white_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:white_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "minecraft:yellow_glazed_terracotta/yellow_terracotta",
+      "input": {
+        "item": "minecraft:yellow_terracotta",
+        "count": 1
+      },
+      "output": {
+        "item": "minecraft:yellow_glazed_terracotta",
+        "count": 1
+      },
+      "experience": 0.1
+    }
+  ]
+}

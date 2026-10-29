@@ -1,0 +1,628 @@
+{
+  "schema": 1,
+  "grouping": "exact radiation_millirad_s, no rate approximation",
+  "buckets": [
+    {
+      "tag": "ntm:rad/rate_1",
+      "radiation_millirad_s": 1,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_10",
+      "radiation_millirad_s": 10,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_25",
+      "radiation_millirad_s": 25,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_35",
+      "radiation_millirad_s": 35,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_50",
+      "radiation_millirad_s": 50,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_62",
+      "radiation_millirad_s": 62,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_100",
+      "radiation_millirad_s": 100,
+      "item_count": 4
+    },
+    {
+      "tag": "ntm:rad/rate_125",
+      "radiation_millirad_s": 125,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_150",
+      "radiation_millirad_s": 150,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_175",
+      "radiation_millirad_s": 175,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_250",
+      "radiation_millirad_s": 250,
+      "item_count": 5
+    },
+    {
+      "tag": "ntm:rad/rate_275",
+      "radiation_millirad_s": 275,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_300",
+      "radiation_millirad_s": 300,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_350",
+      "radiation_millirad_s": 350,
+      "item_count": 8
+    },
+    {
+      "tag": "ntm:rad/rate_425",
+      "radiation_millirad_s": 425,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_475",
+      "radiation_millirad_s": 475,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_500",
+      "radiation_millirad_s": 500,
+      "item_count": 5
+    },
+    {
+      "tag": "ntm:rad/rate_585",
+      "radiation_millirad_s": 585,
+      "item_count": 3
+    },
+    {
+      "tag": "ntm:rad/rate_625",
+      "radiation_millirad_s": 625,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_750",
+      "radiation_millirad_s": 750,
+      "item_count": 5
+    },
+    {
+      "tag": "ntm:rad/rate_850",
+      "radiation_millirad_s": 850,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_875",
+      "radiation_millirad_s": 875,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_900",
+      "radiation_millirad_s": 900,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_950",
+      "radiation_millirad_s": 950,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_1000",
+      "radiation_millirad_s": 1000,
+      "item_count": 8
+    },
+    {
+      "tag": "ntm:rad/rate_1050",
+      "radiation_millirad_s": 1050,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_1250",
+      "radiation_millirad_s": 1250,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_1375",
+      "radiation_millirad_s": 1375,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_1500",
+      "radiation_millirad_s": 1500,
+      "item_count": 5
+    },
+    {
+      "tag": "ntm:rad/rate_1750",
+      "radiation_millirad_s": 1750,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_2000",
+      "radiation_millirad_s": 2000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_2125",
+      "radiation_millirad_s": 2125,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_2375",
+      "radiation_millirad_s": 2375,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_2500",
+      "radiation_millirad_s": 2500,
+      "item_count": 8
+    },
+    {
+      "tag": "ntm:rad/rate_2750",
+      "radiation_millirad_s": 2750,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_2925",
+      "radiation_millirad_s": 2925,
+      "item_count": 3
+    },
+    {
+      "tag": "ntm:rad/rate_3000",
+      "radiation_millirad_s": 3000,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_3125",
+      "radiation_millirad_s": 3125,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_3500",
+      "radiation_millirad_s": 3500,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_3750",
+      "radiation_millirad_s": 3750,
+      "item_count": 3
+    },
+    {
+      "tag": "ntm:rad/rate_4250",
+      "radiation_millirad_s": 4250,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_4500",
+      "radiation_millirad_s": 4500,
+      "item_count": 3
+    },
+    {
+      "tag": "ntm:rad/rate_4750",
+      "radiation_millirad_s": 4750,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_5000",
+      "radiation_millirad_s": 5000,
+      "item_count": 9
+    },
+    {
+      "tag": "ntm:rad/rate_5850",
+      "radiation_millirad_s": 5850,
+      "item_count": 3
+    },
+    {
+      "tag": "ntm:rad/rate_6000",
+      "radiation_millirad_s": 6000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_6250",
+      "radiation_millirad_s": 6250,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_7500",
+      "radiation_millirad_s": 7500,
+      "item_count": 11
+    },
+    {
+      "tag": "ntm:rad/rate_8500",
+      "radiation_millirad_s": 8500,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_8750",
+      "radiation_millirad_s": 8750,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_9000",
+      "radiation_millirad_s": 9000,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_9500",
+      "radiation_millirad_s": 9500,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_10000",
+      "radiation_millirad_s": 10000,
+      "item_count": 3
+    },
+    {
+      "tag": "ntm:rad/rate_11250",
+      "radiation_millirad_s": 11250,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_12500",
+      "radiation_millirad_s": 12500,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_14000",
+      "radiation_millirad_s": 14000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_15000",
+      "radiation_millirad_s": 15000,
+      "item_count": 15
+    },
+    {
+      "tag": "ntm:rad/rate_17500",
+      "radiation_millirad_s": 17500,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_22500",
+      "radiation_millirad_s": 22500,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_25000",
+      "radiation_millirad_s": 25000,
+      "item_count": 6
+    },
+    {
+      "tag": "ntm:rad/rate_30000",
+      "radiation_millirad_s": 30000,
+      "item_count": 4
+    },
+    {
+      "tag": "ntm:rad/rate_37500",
+      "radiation_millirad_s": 37500,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_42500",
+      "radiation_millirad_s": 42500,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_45000",
+      "radiation_millirad_s": 45000,
+      "item_count": 4
+    },
+    {
+      "tag": "ntm:rad/rate_50000",
+      "radiation_millirad_s": 50000,
+      "item_count": 4
+    },
+    {
+      "tag": "ntm:rad/rate_58500",
+      "radiation_millirad_s": 58500,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_60000",
+      "radiation_millirad_s": 60000,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_62500",
+      "radiation_millirad_s": 62500,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_70000",
+      "radiation_millirad_s": 70000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_75000",
+      "radiation_millirad_s": 75000,
+      "item_count": 6
+    },
+    {
+      "tag": "ntm:rad/rate_90000",
+      "radiation_millirad_s": 90000,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_100000",
+      "radiation_millirad_s": 100000,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_112500",
+      "radiation_millirad_s": 112500,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_150000",
+      "radiation_millirad_s": 150000,
+      "item_count": 6
+    },
+    {
+      "tag": "ntm:rad/rate_165000",
+      "radiation_millirad_s": 165000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_172500",
+      "radiation_millirad_s": 172500,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_175000",
+      "radiation_millirad_s": 175000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_187500",
+      "radiation_millirad_s": 187500,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_225000",
+      "radiation_millirad_s": 225000,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_250000",
+      "radiation_millirad_s": 250000,
+      "item_count": 3
+    },
+    {
+      "tag": "ntm:rad/rate_300000",
+      "radiation_millirad_s": 300000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_375000",
+      "radiation_millirad_s": 375000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_450000",
+      "radiation_millirad_s": 450000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_500000",
+      "radiation_millirad_s": 500000,
+      "item_count": 3
+    },
+    {
+      "tag": "ntm:rad/rate_750000",
+      "radiation_millirad_s": 750000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_1000000",
+      "radiation_millirad_s": 1000000,
+      "item_count": 2
+    },
+    {
+      "tag": "ntm:rad/rate_1500000",
+      "radiation_millirad_s": 1500000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_2000000",
+      "radiation_millirad_s": 2000000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_3750000",
+      "radiation_millirad_s": 3750000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_5000000",
+      "radiation_millirad_s": 5000000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_6000000",
+      "radiation_millirad_s": 6000000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_6250000",
+      "radiation_millirad_s": 6250000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_10000000",
+      "radiation_millirad_s": 10000000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_22500000",
+      "radiation_millirad_s": 22500000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_30000000",
+      "radiation_millirad_s": 30000000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_100000000",
+      "radiation_millirad_s": 100000000,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/rate_300000000",
+      "radiation_millirad_s": 300000000,
+      "item_count": 1
+    }
+  ],
+  "bits": [
+    {
+      "tag": "ntm:rad/bit_0",
+      "bit": 0,
+      "item_count": 22
+    },
+    {
+      "tag": "ntm:rad/bit_1",
+      "bit": 1,
+      "item_count": 53
+    },
+    {
+      "tag": "ntm:rad/bit_2",
+      "bit": 2,
+      "item_count": 90
+    },
+    {
+      "tag": "ntm:rad/bit_3",
+      "bit": 3,
+      "item_count": 128
+    },
+    {
+      "tag": "ntm:rad/bit_4",
+      "bit": 4,
+      "item_count": 114
+    },
+    {
+      "tag": "ntm:rad/bit_5",
+      "bit": 5,
+      "item_count": 105
+    },
+    {
+      "tag": "ntm:rad/bit_6",
+      "bit": 6,
+      "item_count": 127
+    },
+    {
+      "tag": "ntm:rad/bit_7",
+      "bit": 7,
+      "item_count": 139
+    },
+    {
+      "tag": "ntm:rad/bit_8",
+      "bit": 8,
+      "item_count": 129
+    },
+    {
+      "tag": "ntm:rad/bit_9",
+      "bit": 9,
+      "item_count": 104
+    },
+    {
+      "tag": "ntm:rad/bit_10",
+      "bit": 10,
+      "item_count": 75
+    },
+    {
+      "tag": "ntm:rad/bit_11",
+      "bit": 11,
+      "item_count": 74
+    },
+    {
+      "tag": "ntm:rad/bit_12",
+      "bit": 12,
+      "item_count": 74
+    },
+    {
+      "tag": "ntm:rad/bit_13",
+      "bit": 13,
+      "item_count": 66
+    },
+    {
+      "tag": "ntm:rad/bit_14",
+      "bit": 14,
+      "item_count": 46
+    },
+    {
+      "tag": "ntm:rad/bit_15",
+      "bit": 15,
+      "item_count": 38
+    },
+    {
+      "tag": "ntm:rad/bit_16",
+      "bit": 16,
+      "item_count": 32
+    },
+    {
+      "tag": "ntm:rad/bit_17",
+      "bit": 17,
+      "item_count": 27
+    },
+    {
+      "tag": "ntm:rad/bit_18",
+      "bit": 18,
+      "item_count": 14
+    },
+    {
+      "tag": "ntm:rad/bit_19",
+      "bit": 19,
+      "item_count": 10
+    },
+    {
+      "tag": "ntm:rad/bit_20",
+      "bit": 20,
+      "item_count": 8
+    },
+    {
+      "tag": "ntm:rad/bit_21",
+      "bit": 21,
+      "item_count": 3
+    },
+    {
+      "tag": "ntm:rad/bit_22",
+      "bit": 22,
+      "item_count": 7
+    },
+    {
+      "tag": "ntm:rad/bit_23",
+      "bit": 23,
+      "item_count": 4
+    },
+    {
+      "tag": "ntm:rad/bit_24",
+      "bit": 24,
+      "item_count": 4
+    },
+    {
+      "tag": "ntm:rad/bit_26",
+      "bit": 26,
+      "item_count": 1
+    },
+    {
+      "tag": "ntm:rad/bit_28",
+      "bit": 28,
+      "item_count": 1
+    }
+  ]
+}

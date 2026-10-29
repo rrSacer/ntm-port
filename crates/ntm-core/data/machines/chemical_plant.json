@@ -1,0 +1,1505 @@
+{
+"station": "chemical_plant",
+"source": "content/machine-recipes/chemical_plant.json",
+"recipes": [
+{
+"name": "chem.hydrogen",
+"label": "Hidrogênio Líquido · 500 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:44",
+"duration": 20,
+"power": 400,
+"in": [
+{
+"ids": [
+"minecraft:coal"
+],
+"n": 1,
+"label": "coal"
+}
+],
+"fin": [
+[
+"water",
+8000
+]
+],
+"out": [],
+"fout": [
+[
+"hydrogen",
+500
+]
+],
+"pools": []
+},
+{
+"name": "chem.hydrogencoke",
+"label": "Hidrogênio Líquido · 500 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:49",
+"duration": 20,
+"power": 400,
+"in": [
+{
+"ids": [
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum"
+],
+"n": 1,
+"label": "Coque de Carvão"
+}
+],
+"fin": [
+[
+"water",
+8000
+]
+],
+"out": [],
+"fout": [
+[
+"hydrogen",
+500
+]
+],
+"pools": []
+},
+{
+"name": "chem.oxygen",
+"label": "Oxigênio Líquido · 500 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:54",
+"duration": 20,
+"power": 400,
+"in": [],
+"fin": [
+[
+"air",
+8000
+]
+],
+"out": [],
+"fout": [
+[
+"oxygen",
+500
+]
+],
+"pools": []
+},
+{
+"name": "chem.xenon",
+"label": "Gás Xenônio · 50 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:58",
+"duration": 300,
+"power": 1000,
+"in": [],
+"fin": [
+[
+"air",
+16000
+]
+],
+"out": [],
+"fout": [
+[
+"xenon",
+50
+]
+],
+"pools": []
+},
+{
+"name": "chem.xenonoxy",
+"label": "Gás Xenônio · 50 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:62",
+"duration": 20,
+"power": 1000,
+"in": [],
+"fin": [
+[
+"air",
+8000
+],
+[
+"oxygen",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"xenon",
+50
+]
+],
+"pools": [
+"alt..xenonoxy"
+]
+},
+{
+"name": "chem.helium3",
+"label": "Hélio-3 · 500 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:66",
+"duration": 25,
+"power": 2000,
+"in": [
+{
+"ids": [
+"ntm:moon_turf"
+],
+"n": 1,
+"label": "Solo Lunar"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"helium3",
+500
+]
+],
+"pools": []
+},
+{
+"name": "chem.co2",
+"label": "Dióxido de Carbono · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:70",
+"duration": 60,
+"power": 100,
+"in": [],
+"fin": [
+[
+"gas",
+1000
+]
+],
+"out": [],
+"fout": [
+[
+"carbondioxide",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "chem.perfluoromethyl",
+"label": "Perfluorometil · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:74",
+"duration": 20,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluorite"
+],
+"n": 1,
+"label": "Fluorita"
+}
+],
+"fin": [
+[
+"petroleum",
+1000
+],
+[
+"unsaturateds",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"perfluoromethyl",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "chem.cccentrifuge",
+"label": "Solução de Cloreto de Potássio · 250 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:79",
+"duration": 200,
+"power": 100,
+"in": [],
+"fin": [
+[
+"chlorocalcite_cleaned",
+500
+],
+[
+"sulfuric_acid",
+8000
+]
+],
+"out": [],
+"fout": [
+[
+"potassium_chloride",
+250
+],
+[
+"calcium_chloride",
+250
+]
+],
+"pools": []
+},
+{
+"name": "chem.ticl4",
+"label": "Titanium_Tetrachloride · 4000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:83",
+"duration": 60,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:chunk_ore__ilmenite"
+],
+"n": 4,
+"label": "Chunk Ore Ilmenite"
+},
+{
+"ids": [
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum"
+],
+"n": 1,
+"label": "Coque de Carvão"
+}
+],
+"fin": [
+[
+"chlorine",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"titanium_tetrachloride",
+4000
+]
+],
+"pools": []
+},
+{
+"name": "chem.ethanol",
+"label": "Etanol · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:89",
+"duration": 50,
+"power": 100,
+"in": [
+{
+"ids": [
+"minecraft:sugar"
+],
+"n": 10,
+"label": "sugar"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"ethanol",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "chem.biogas",
+"label": "Biogás · 2000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:93",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:biomass"
+],
+"n": 16,
+"label": "Biomassa"
+}
+],
+"fin": [
+[
+"air",
+4000
+]
+],
+"out": [],
+"fout": [
+[
+"biogas",
+2000
+]
+],
+"pools": []
+},
+{
+"name": "chem.biofuel",
+"label": "Biocombustível · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:98",
+"duration": 60,
+"power": 100,
+"in": [],
+"fin": [
+[
+"biogas",
+1500
+],
+[
+"ethanol",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"biofuel",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "chem.reoil",
+"label": "Óleo Industrial Recuperado · 800 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:102",
+"duration": 40,
+"power": 100,
+"in": [],
+"fin": [
+[
+"smear",
+1000
+]
+],
+"out": [],
+"fout": [
+[
+"reclaimed",
+800
+]
+],
+"pools": []
+},
+{
+"name": "chem.gasoline",
+"label": "Gasolina · 800 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:106",
+"duration": 40,
+"power": 100,
+"in": [],
+"fin": [
+[
+"naphtha",
+1000
+]
+],
+"out": [],
+"fout": [
+[
+"gasoline",
+800
+]
+],
+"pools": []
+},
+{
+"name": "chem.coallube",
+"label": "Lubrificante de Motor · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:110",
+"duration": 40,
+"power": 100,
+"in": [],
+"fin": [
+[
+"coalcreosote",
+1000
+]
+],
+"out": [],
+"fout": [
+[
+"lubricant",
+1000
+]
+],
+"pools": [
+"alt..lube"
+]
+},
+{
+"name": "chem.heavylube",
+"label": "Lubrificante de Motor · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:114",
+"duration": 40,
+"power": 100,
+"in": [],
+"fin": [
+[
+"heavyoil",
+2000
+]
+],
+"out": [],
+"fout": [
+[
+"lubricant",
+1000
+]
+],
+"pools": [
+"alt..lube"
+]
+},
+{
+"name": "chem.deicer",
+"label": "Anticongelante",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:128",
+"duration": 40,
+"power": 100,
+"in": [],
+"fin": [
+[
+"gas",
+100
+],
+[
+"hydrogen",
+50
+]
+],
+"out": [
+[
+"ntm:fuel_additive__deicer",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.cobble",
+"label": "Pedregulho",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:133",
+"duration": 20,
+"power": 100,
+"in": [],
+"fin": [
+[
+"water",
+1000
+],
+[
+"lava",
+25
+]
+],
+"out": [
+[
+"minecraft:cobblestone",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.stone",
+"label": "Pedra",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:136",
+"duration": 60,
+"power": 500,
+"in": [],
+"fin": [
+[
+"water",
+1000
+],
+[
+"lava",
+25
+],
+[
+"air",
+4000
+]
+],
+"out": [
+[
+"minecraft:stone",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"discover..stone"
+]
+},
+{
+"name": "chem.obsidian",
+"label": "Obsidiana",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:139",
+"duration": 60,
+"power": 500,
+"in": [],
+"fin": [
+[
+"water",
+1000
+],
+[
+"lava",
+500
+],
+[
+"air",
+4000
+]
+],
+"out": [
+[
+"minecraft:obsidian",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"discover..stone"
+]
+},
+{
+"name": "chem.aggregate",
+"label": "Cascalho ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:142",
+"duration": 320,
+"power": 500,
+"in": [
+{
+"ids": [
+"minecraft:cobblestone"
+],
+"n": 16,
+"label": "cobblestone"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:gravel",
+8,
+1.0
+],
+[
+"minecraft:sand",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"discover..stone"
+]
+},
+{
+"name": "chem.lightconstruction",
+"label": "Part Generic Alclad",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:241",
+"duration": 400,
+"power": 25000,
+"in": [
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"n": 2,
+"label": "Placa de Aço Rápido"
+}
+],
+"fin": [
+[
+"xylene",
+1000
+],
+[
+"phosgene",
+1000
+],
+[
+"sourgas",
+4000
+]
+],
+"out": [
+[
+"ntm:part_generic__alclad",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.carboncarbon",
+"label": "Part Generic Alclad",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:244",
+"duration": 400,
+"power": 100000,
+"in": [
+{
+"ids": [
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum"
+],
+"n": 8,
+"label": "Coque de Carvão"
+},
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 1,
+"label": "Placa de Titânio"
+}
+],
+"fin": [
+[
+"heavyoil_vacuum",
+1000
+],
+[
+"syngas",
+8000
+]
+],
+"out": [
+[
+"ntm:part_generic__alclad",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.epearl",
+"label": "Suco de Ender · 100 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:253",
+"duration": 100,
+"power": 300,
+"in": [
+{
+"ids": [
+"ntm:powder_diamond"
+],
+"n": 1,
+"label": "Pó de Diamante"
+}
+],
+"fin": [
+[
+"xpjuice",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"enderjuice",
+100
+]
+],
+"pools": []
+},
+{
+"name": "chem.rustysteel",
+"label": "Bloco Decorativo de Aço Enferrujado ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:264",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:deco_steel"
+],
+"n": 8,
+"label": "Bloco Decorativo de Aço"
+}
+],
+"fin": [
+[
+"water",
+1000
+]
+],
+"out": [
+[
+"ntm:deco_rusty_steel",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.biosolidfuel",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:269",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:biomass_compressed"
+],
+"n": 4,
+"label": "Biomassa Compactada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt..biosolidfuel"
+]
+},
+{
+"name": "chem.biooilsolidfuel",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:273",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:biomass_compressed"
+],
+"n": 2,
+"label": "Biomassa Compactada"
+}
+],
+"fin": [
+[
+"heatingoil",
+100
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt..biosolidfuel"
+]
+},
+{
+"name": "chem.peroxide",
+"label": "Peróxido de Hidrogênio · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:287",
+"duration": 50,
+"power": 100,
+"in": [],
+"fin": [
+[
+"water",
+1000
+]
+],
+"out": [],
+"fout": [
+[
+"peroxide",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "chem.sulfuricacid",
+"label": "Ácido Sulfúrico · 2000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:291",
+"duration": 50,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:sulfur"
+],
+"n": 1,
+"label": "Enxofre"
+}
+],
+"fin": [
+[
+"peroxide",
+1000
+],
+[
+"water",
+1000
+]
+],
+"out": [],
+"fout": [
+[
+"sulfuric_acid",
+2000
+]
+],
+"pools": []
+},
+{
+"name": "chem.nitricacid",
+"label": "Ácido Nítrico · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:296",
+"duration": 50,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:niter"
+],
+"n": 1,
+"label": "Nitre"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"nitric_acid",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "chem.birkeland",
+"label": "Ácido Nítrico · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:301",
+"duration": 200,
+"power": 5000,
+"in": [],
+"fin": [
+[
+"air",
+8000
+],
+[
+"water",
+2000
+]
+],
+"out": [],
+"fout": [
+[
+"nitric_acid",
+1000
+]
+],
+"pools": [
+"alt..birkeland"
+]
+},
+{
+"name": "chem.schrabidic",
+"label": "Ácido Schrabídico · 2000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:305",
+"duration": 60,
+"power": 5000,
+"in": [
+{
+"ids": [
+"ntm:pellet_charged"
+],
+"n": 1,
+"label": "Partículas Ionizadas"
+}
+],
+"fin": [
+[
+"sas3",
+2000
+],
+[
+"peroxide",
+2000
+]
+],
+"out": [],
+"fout": [
+[
+"schrabidic",
+2000
+]
+],
+"pools": []
+},
+{
+"name": "chem.schrabidate",
+"label": "Pó de Schrabidato Férrico",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:310",
+"duration": 150,
+"power": 5000,
+"in": [
+{
+"ids": [
+"ntm:powder_iron"
+],
+"n": 1,
+"label": "Pó de Ferro"
+}
+],
+"fin": [
+[
+"schrabidic",
+250
+]
+],
+"out": [
+[
+"ntm:powder_schrabidate",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.coltancleaning",
+"label": "Tantalita Purificada",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:316",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_coltan_ore"
+],
+"n": 2,
+"label": "Coltan Triturado"
+},
+{
+"ids": [
+"ntm:powder_coal"
+],
+"n": 1,
+"label": "Pó de Carvão"
+}
+],
+"fin": [
+[
+"peroxide",
+250
+],
+[
+"hydrogen",
+500
+]
+],
+"out": [
+[
+"ntm:powder_coltan",
+1,
+1.0
+],
+[
+"ntm:powder_niobium",
+1,
+1.0
+],
+[
+"ntm:dust",
+1,
+1.0
+]
+],
+"fout": [
+[
+"water",
+500
+]
+],
+"pools": []
+},
+{
+"name": "chem.coltanpain",
+"label": "Solução de Pandemônio(III)tantalita · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:322",
+"duration": 120,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_coltan"
+],
+"n": 1,
+"label": "Tantalita Purificada"
+},
+{
+"ids": [
+"ntm:fluorite"
+],
+"n": 1,
+"label": "Fluorita"
+}
+],
+"fin": [
+[
+"gas",
+1000
+],
+[
+"oxygen",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"pain",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "chem.coltancrystal",
+"label": "Policristal de Tântalo",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:327",
+"duration": 80,
+"power": 100,
+"in": [],
+"fin": [
+[
+"pain",
+1000
+],
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:gem_tantalium",
+1,
+1.0
+],
+[
+"ntm:dust",
+3,
+1.0
+]
+],
+"fout": [
+[
+"water",
+250
+]
+],
+"pools": []
+},
+{
+"name": "chem.dynamite",
+"label": "Dinamite ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:343",
+"duration": 50,
+"power": 100,
+"in": [
+{
+"ids": [
+"minecraft:sugar"
+],
+"n": 1,
+"label": "sugar"
+},
+{
+"ids": [
+"ntm:niter"
+],
+"n": 1,
+"label": "Nitre"
+},
+{
+"ids": [
+"minecraft:sand"
+],
+"n": 1,
+"label": "sand"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ball_dynamite",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.napalm",
+"label": "Canister Napalm",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:362",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:canister_empty"
+],
+"n": 1,
+"label": "Canister Vazio"
+}
+],
+"fin": [
+[
+"gasoline",
+100
+],
+[
+"aromatics",
+50
+]
+],
+"out": [
+[
+"ntm:canister_napalm",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.laminate",
+"label": "Laminado Reforçado",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:368",
+"duration": 20,
+"power": 100,
+"in": [
+{
+"ids": [
+"minecraft:glass"
+],
+"n": 1,
+"label": "glass"
+},
+{
+"ids": [
+"ntm:bolt__steel"
+],
+"n": 4,
+"label": "Parafuso de Aço"
+}
+],
+"fin": [
+[
+"xylene",
+50
+],
+[
+"phosgene",
+50
+]
+],
+"out": [
+[
+"ntm:reinforced_laminate",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.polarized",
+"label": "Lente Polarizada ×16",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:373",
+"duration": 100,
+"power": 500,
+"in": [
+{
+"ids": [
+"minecraft:glass_pane"
+],
+"n": 1,
+"label": "glass pane"
+}
+],
+"fin": [
+[
+"petroleum",
+1000
+]
+],
+"out": [
+[
+"ntm:part_generic__glass_polarized",
+16,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.yellowcake",
+"label": "Pó de Powder Yellowcake",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:379",
+"duration": 250,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:billet_uranium"
+],
+"n": 2,
+"label": "Tarugo de Urânio"
+},
+{
+"ids": [
+"ntm:sulfur"
+],
+"n": 2,
+"label": "Enxofre"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:powder_yellowcake",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.uf6",
+"label": "Enxofre ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:384",
+"duration": 100,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:powder_yellowcake"
+],
+"n": 1,
+"label": "Pó de Powder Yellowcake"
+},
+{
+"ids": [
+"ntm:fluorite"
+],
+"n": 4,
+"label": "Fluorita"
+}
+],
+"fin": [
+[
+"water",
+1000
+]
+],
+"out": [
+[
+"ntm:sulfur",
+2,
+1.0
+]
+],
+"fout": [
+[
+"uf6",
+1200
+]
+],
+"pools": []
+},
+{
+"name": "chem.puf6",
+"label": "Hexafluoreto de Plutônio · 900 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:390",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:powder_plutonium"
+],
+"n": 1,
+"label": "Pó de Plutônio"
+},
+{
+"ids": [
+"ntm:fluorite"
+],
+"n": 3,
+"label": "Fluorita"
+}
+],
+"fin": [
+[
+"water",
+1000
+]
+],
+"out": [],
+"fout": [
+[
+"puf6",
+900
+]
+],
+"pools": []
+},
+{
+"name": "chem.sas3",
+"label": "Trissulfeto de Eschrabídio · 1000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:395",
+"duration": 200,
+"power": 5000,
+"in": [
+{
+"ids": [
+"ntm:powder_schrabidium"
+],
+"n": 1,
+"label": "Pó de Schrabídio"
+},
+{
+"ids": [
+"ntm:sulfur"
+],
+"n": 2,
+"label": "Enxofre"
+}
+],
+"fin": [
+[
+"peroxide",
+2000
+]
+],
+"out": [],
+"fout": [
+[
+"sas3",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "chem.balefire",
+"label": "Cinzas Termonucleares",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:400",
+"duration": 100,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:egg_balefire_shard"
+],
+"n": 1,
+"label": "Fragmento de Fogo Maldito"
+}
+],
+"fin": [
+[
+"kerosene",
+6000
+]
+],
+"out": [
+[
+"ntm:powder_balefire",
+1,
+1.0
+]
+],
+"fout": [
+[
+"balefire",
+8000
+]
+],
+"pools": []
+},
+{
+"name": "chem.dhc",
+"label": "Hidrocarboneto Deuterado · 500 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:406",
+"duration": 400,
+"power": 500,
+"in": [],
+"fin": [
+[
+"deuterium",
+500
+],
+[
+"reformgas",
+250
+],
+[
+"syngas",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"dhc",
+500
+]
+],
+"pools": []
+}
+],
+"skipped": 30
+}

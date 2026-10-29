@@ -1,0 +1,13513 @@
+{
+"station": "assembly",
+"source": "content/machine-recipes/assembly.json",
+"recipes": [
+{
+"name": "ass.plateiron",
+"label": "Placa de Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:67",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"n": 1,
+"label": "iron ingot"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_iron",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.plategold",
+"label": "Placa de Ouro",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:68",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"minecraft:gold_ingot"
+],
+"n": 1,
+"label": "gold ingot"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_gold",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.platetitanium",
+"label": "Placa de Titânio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:69",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_titanium"
+],
+"n": 1,
+"label": "Lingote de Titânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_titanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.platealu",
+"label": "Placa de Alumínio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:70",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_aluminium"
+],
+"n": 1,
+"label": "Lingote de Alumínio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_aluminium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.platesteel",
+"label": "Placa de Aço",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:71",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"n": 1,
+"label": "Lingote de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_steel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.platelead",
+"label": "Placa de Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:72",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_lead"
+],
+"n": 1,
+"label": "Lingote de Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_lead",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.platecopper",
+"label": "Placa de Cobre",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:73",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_copper",
+"minecraft:copper_ingot"
+],
+"n": 1,
+"label": "Cobre de Grau Industrial"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.plateschrab",
+"label": "Placa de Schrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:74",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_schrabidium"
+],
+"n": 1,
+"label": "Lingote de Schrabídio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_schrabidium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.platecmb",
+"label": "Placa de Aço CMB",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:75",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_combine_steel"
+],
+"n": 1,
+"label": "Lingote de Aço CMB"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_combine_steel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.plategunmetal",
+"label": "Placa de Bronze de Armas",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:76",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_gunmetal"
+],
+"n": 1,
+"label": "Lingote de Gunmetal"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_gunmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.plateweaponsteel",
+"label": "Placa de Aço para Armas",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:77",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_weaponsteel"
+],
+"n": 1,
+"label": "Lingote de Aço para Armas"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_weaponsteel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.platesaturnite",
+"label": "Placa de Saturnita",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:78",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_saturnite"
+],
+"n": 1,
+"label": "Lingote de Saturnite"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_saturnite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.platedura",
+"label": "Placa de Aço Rápido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:79",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 1,
+"label": "Lingote de Aço de Alta Velocidade"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_dura_steel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt.plates"
+]
+},
+{
+"name": "ass.platemixed",
+"label": "Placa Mista ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:81",
+"duration": 50,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 2,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:neutron_reflector"
+],
+"n": 1,
+"label": "Refletor de Nêutrons"
+},
+{
+"ids": [
+"ntm:plate_saturnite"
+],
+"n": 1,
+"label": "Placa de Saturnita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_mixed",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.platedesh",
+"label": "Placa de Composto de Desh ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:85",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"n": 4,
+"label": "Lingote de Desh"
+},
+{
+"ids": [
+"ntm:powder_bakelite",
+"ntm:powder_polymer"
+],
+"n": 2,
+"label": "Pó de Baquelita"
+},
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 1,
+"label": "Lingote de Aço de Alta Velocidade"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_desh",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.platebismuth",
+"label": "Placa de Composto de Bismuto",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:87",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:nugget_bismuth"
+],
+"n": 2,
+"label": "Pepita de Bismuto"
+},
+{
+"ids": [
+"ntm:billet_u238"
+],
+"n": 2,
+"label": "Tarugo de Urânio-238"
+},
+{
+"ids": [
+"ntm:powder_niobium"
+],
+"n": 1,
+"label": "Pó de Nióbio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_bismuth",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.hazcloth",
+"label": "Traje Antirradição ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:118",
+"duration": 50,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_lead"
+],
+"n": 4,
+"label": "Pó de Chumbo"
+},
+{
+"ids": [
+"minecraft:string"
+],
+"n": 8,
+"label": "string"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:hazmat_cloth",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.firecloth",
+"label": "Tecido de Proximidade ao Fogo ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:120",
+"duration": 50,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_asbestos"
+],
+"n": 1,
+"label": "Placa de Amianto"
+},
+{
+"ids": [
+"minecraft:string"
+],
+"n": 8,
+"label": "string"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:asbestos_cloth",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.filtercoal",
+"label": "Filtro de Carbono Ativado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:122",
+"duration": 50,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"n": 4,
+"label": "Pó de Carvão"
+},
+{
+"ids": [
+"minecraft:string"
+],
+"n": 2,
+"label": "string"
+},
+{
+"ids": [
+"minecraft:paper"
+],
+"n": 1,
+"label": "paper"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:filter_coal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.chip",
+"label": "Microchip",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:127",
+"duration": 50,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 1,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:circuit__silicon"
+],
+"n": 1,
+"label": "Wafer de Silício Impresso"
+},
+{
+"ids": [
+"ntm:wire_fine__gold"
+],
+"n": 1,
+"label": "Fio de Ouro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:circuit__chip",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.chipBismoid",
+"label": "Circuito Integrado Versátil",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:129",
+"duration": 100,
+"power": 1500,
+"in": [
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 2,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:circuit__silicon"
+],
+"n": 2,
+"label": "Wafer de Silício Impresso"
+},
+{
+"ids": [
+"ntm:nugget_arsenic",
+"ntm:nugget_bismuth"
+],
+"n": 1,
+"label": "Pepita de Arsênio"
+},
+{
+"ids": [
+"ntm:wire_fine__gold"
+],
+"n": 2,
+"label": "Fio de Ouro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:circuit__chip_bismoid",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.chipQuantum",
+"label": "Processador Quântico de Estado Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:131",
+"duration": 200,
+"power": 15000,
+"in": [
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 2,
+"label": "Barra de Plástico Rígido"
+},
+{
+"ids": [
+"ntm:wire_dense__bscco"
+],
+"n": 1,
+"label": "Fio de BSCCO Denso"
+},
+{
+"ids": [
+"ntm:pellet_charged"
+],
+"n": 1,
+"label": "Partículas Ionizadas"
+},
+{
+"ids": [
+"ntm:wire_fine__gold"
+],
+"n": 8,
+"label": "Fio de Ouro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:circuit__chip_quantum",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.atomicClock",
+"label": "Relógio Atômico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:133",
+"duration": 300,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 2,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 3,
+"label": "Microchip"
+},
+{
+"ids": [
+"ntm:powder_strontium"
+],
+"n": 1,
+"label": "Pó de Estrôncio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:circuit__atomic_clock",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.analogAlt",
+"label": "Placa de Circuito Analógico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:137",
+"duration": 200,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:circuit__pcb"
+],
+"n": 4,
+"label": "Placa de Circuito Impresso"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:wire_fine__tungsten"
+],
+"n": 8,
+"label": "Fio de Tungstênio"
+},
+{
+"ids": [
+"ntm:ingot_niobium"
+],
+"n": 1,
+"label": "Lingote de Nióbio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:circuit__analog",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt..circuit"
+]
+},
+{
+"name": "ass.factorioChip",
+"label": "Placa de Circuito Integrado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:139",
+"duration": 300,
+"power": 20000,
+"in": [
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 2,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:plate_iron"
+],
+"n": 4,
+"label": "Placa de Ferro"
+},
+{
+"ids": [
+"ntm:wire_fine__copper"
+],
+"n": 8,
+"label": "Fio de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:circuit__basic",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt..circuit"
+]
+},
+{
+"name": "ass.atomicClockAlt",
+"label": "Relógio Atômico ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:141",
+"duration": 300,
+"power": 20000,
+"in": [
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 3,
+"label": "Microchip"
+},
+{
+"ids": [
+"ntm:powder_cs137"
+],
+"n": 1,
+"label": "Pó de Césio-137"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:circuit__atomic_clock",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt..circuit"
+]
+},
+{
+"name": "ass.centrifugetower",
+"label": "Elemento de Centrífuga",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:151",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"n": 4,
+"label": "Placa de Aço Rápido"
+},
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 4,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 1,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:centrifuge_element",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.reactorcore",
+"label": "Núcleo de Reator de Conversão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:153",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__lead"
+],
+"n": 4,
+"label": "Placa Fundida de Chumbo"
+},
+{
+"ids": [
+"ntm:ingot_beryllium"
+],
+"n": 8,
+"label": "Lingote de Berílio"
+},
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"n": 8,
+"label": "Placa de Aço Rápido"
+},
+{
+"ids": [
+"ntm:ingot_asbestos"
+],
+"n": 4,
+"label": "Placa de Amianto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:reactor_core",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.thermoelement",
+"label": "Elemento Termoelétrico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:155",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 1,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:wire_fine__red_copper"
+],
+"n": 2,
+"label": "Fio de Cobre Vermelho"
+},
+{
+"ids": [
+"ntm:powder_quartz"
+],
+"n": 2,
+"label": "Pó de Quartzo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:thermo_element",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.thermoelementsilicon",
+"label": "Elemento Termoelétrico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:157",
+"duration": 60,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 1,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:wire_fine__gold"
+],
+"n": 2,
+"label": "Fio de Ouro"
+},
+{
+"ids": [
+"ntm:billet_silicon"
+],
+"n": 1,
+"label": "Pastilha de Silício"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:thermo_element",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.rtgunit",
+"label": "Unidade RTG",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:159",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__lead"
+],
+"n": 2,
+"label": "Placa Fundida de Chumbo"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:thermo_element"
+],
+"n": 2,
+"label": "Elemento Termoelétrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:rtg_unit",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.magnetron",
+"label": "Magnetron",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:161",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 3,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:wire_fine__tungsten"
+],
+"n": 4,
+"label": "Fio de Tungstênio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:magnetron",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.titaniumdrill",
+"label": "Broca de Titânio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:163",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__dura_steel"
+],
+"n": 1,
+"label": "Placa Fundida de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 8,
+"label": "Placa de Titânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drill_titanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.entanglementkit",
+"label": "Kit de Entrelaçamento",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:165",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__dura_steel"
+],
+"n": 4,
+"label": "Placa Fundida de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 24,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"n": 16,
+"label": "Fio de Ouro Denso"
+}
+],
+"fin": [
+[
+"xenon",
+8000
+]
+],
+"out": [
+[
+"ntm:entanglement_kit",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.protoreactor",
+"label": "Reator Nuclear Defeituoso",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:168",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:plate_cast__lead"
+],
+"n": 4,
+"label": "Placa Fundida de Chumbo"
+},
+{
+"ids": [
+"ntm:rod_quad_empty"
+],
+"n": 10,
+"label": "Haste Quádruplo Vazio"
+},
+{
+"ids": [
+"minecraft:brown_dye"
+],
+"n": 3,
+"label": "brown dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:dysfunctional_reactor",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.partlith",
+"label": "Caixa de Pó de Lítio ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:186",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_lithium"
+],
+"n": 1,
+"label": "Pó de Lítio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:part_lithium",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.partberyl",
+"label": "Caixa de Pó de Berílio ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:188",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_beryllium"
+],
+"n": 1,
+"label": "Pó de Berílio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:part_beryllium",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.partcoal",
+"label": "Caixa de Pó de Carbono ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:190",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"n": 1,
+"label": "Pó de Carvão"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:part_carbon",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.partcop",
+"label": "Caixa de Pó de Cobre ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:192",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_copper"
+],
+"n": 1,
+"label": "Pó de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:part_copper",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.partplut",
+"label": "Caixa de Pó de Plutônio ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:194",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_plutonium"
+],
+"n": 1,
+"label": "Pó de Plutônio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:part_plutonium",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.cmbtile",
+"label": "Azulejo de Aço CMB ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:198",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:concrete",
+"ntm:concrete_asbestos",
+"ntm:concrete_smooth",
+"ntm:ducrete",
+"ntm:ducrete_smooth"
+],
+"n": 4,
+"label": "Azulejo de Concreto"
+},
+{
+"ids": [
+"ntm:plate_combine_steel"
+],
+"n": 4,
+"label": "Placa de Aço CMB"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:cmb_brick",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.cmbbrick",
+"label": "Tijolos CMB Reforçados ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:200",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_magnetized_tungsten"
+],
+"n": 8,
+"label": "Lingote de Tungstênio Magnetizado"
+},
+{
+"ids": [
+"ntm:ducrete"
+],
+"n": 4,
+"label": "Azulejo de Ducrete"
+},
+{
+"ids": [
+"ntm:cmb_brick"
+],
+"n": 8,
+"label": "Azulejo de Aço CMB"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:cmb_brick_reinforced",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.sealframe",
+"label": "Estrutura da Escotilha de Silo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:202",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 1,
+"label": "Lingote de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 1,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:wire_dense__red_copper"
+],
+"n": 1,
+"label": "Fio de Cobre Vermelho Denso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:seal_frame",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.assembler",
+"label": "Montadora",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:262",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"n": 4,
+"label": "Lingote de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 1,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_assembly_machine",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.chemplant",
+"label": "Planta Química",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:264",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"n": 8,
+"label": "Lingote de Aço"
+},
+{
+"ids": [
+"ntm:pipe__copper"
+],
+"n": 2,
+"label": "Tubo de Cobre"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 16,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:coil_tungsten"
+],
+"n": 2,
+"label": "Bobina de Aquecimento"
+},
+{
+"ids": [
+"ntm:circuit__analog"
+],
+"n": 1,
+"label": "Placa de Circuito Analógico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_chemical_plant",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.chemplantAlt",
+"label": "Planta Química",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:267",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"n": 8,
+"label": "Placa de Aço Rápido"
+},
+{
+"ids": [
+"ntm:pipe__copper"
+],
+"n": 4,
+"label": "Tubo de Cobre"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 1,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_chemical_plant",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.centrifuge",
+"label": "Centrífuga",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:279",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:centrifuge_element"
+],
+"n": 1,
+"label": "Elemento de Centrífuga"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 8,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:circuit__analog"
+],
+"n": 1,
+"label": "Placa de Circuito Analógico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_centrifuge",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.gascent",
+"label": "Centrífuga de Gás",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:282",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:centrifuge_element"
+],
+"n": 4,
+"label": "Elemento de Centrífuga"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 8,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"n": 2,
+"label": "Lingote de Desh"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 8,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:circuit__advanced"
+],
+"n": 1,
+"label": "Placa de Circuito de Grau Militar"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_gascent",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.epress",
+"label": "Prensa Elétrica",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:354",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 8,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ingot_biorubber",
+"ntm:ingot_rubber"
+],
+"n": 4,
+"label": "Barra de Látex"
+},
+{
+"ids": [
+"ntm:part_generic__piston_hydraulic"
+],
+"n": 2,
+"label": "Pistão Hidráulico"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 1,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_epress",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.tank",
+"label": "Tanque de Fluidos",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:472",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 8,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_fluidtank",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pwrheatex",
+"label": "Trocador de Calor do PWR ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:547",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"n": 4,
+"label": "Placa Fundida de Cobre"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 1,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_heatex",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pwrheatsink",
+"label": "Dissipador de Calor do PWR ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:551",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__saturn"
+],
+"n": 4,
+"label": "Placa Fundida de Saturnita"
+},
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"n": 4,
+"label": "Placa Fundida de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_heatsink",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pwrreflector",
+"label": "Refletor de Nêutrons do PWR ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:554",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 2,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:neutron_reflector"
+],
+"n": 4,
+"label": "Refletor de Nêutrons"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_reflector",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pwrreflectoralt",
+"label": "Refletor de Nêutrons do PWR ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:557",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 2,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"n": 16,
+"label": "Placa de Aço para Armas"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_reflector",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pwrcasing",
+"label": "Vaso de Pressão do PWR ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:560",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:plate_lead"
+],
+"n": 4,
+"label": "Placa de Chumbo"
+},
+{
+"ids": [
+"ntm:concrete",
+"ntm:concrete_asbestos",
+"ntm:concrete_smooth",
+"ntm:ducrete",
+"ntm:ducrete_smooth"
+],
+"n": 4,
+"label": "Azulejo de Concreto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_casing",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pwrport",
+"label": "Porta de Acesso do PWR ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:566",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:plate_lead"
+],
+"n": 4,
+"label": "Placa de Chumbo"
+},
+{
+"ids": [
+"ntm:concrete",
+"ntm:concrete_asbestos",
+"ntm:concrete_smooth",
+"ntm:ducrete",
+"ntm:ducrete_smooth"
+],
+"n": 4,
+"label": "Azulejo de Concreto"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 4,
+"label": "Tubo de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_port",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pwrneutronsource",
+"label": "Fonte de Nêutrons do PWR",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:569",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__zirconium"
+],
+"n": 1,
+"label": "Placa Soldada de Zircônio"
+},
+{
+"ids": [
+"ntm:billet_ra226be"
+],
+"n": 3,
+"label": "Tarugo Ra226Be"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_neutron_source",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.watzrod",
+"label": "Câmara de Reação Watz ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:616",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 2,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:ingot_zirconium"
+],
+"n": 2,
+"label": "Cubo de Zircônio"
+},
+{
+"ids": [
+"ntm:ingot_saturnite"
+],
+"n": 2,
+"label": "Lingote de Saturnite"
+},
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 4,
+"label": "Barra de Plástico Rígido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:watz_element",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.watzcooler",
+"label": "Super-Resfriador do Reator Watz ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:620",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 2,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"n": 4,
+"label": "Placa Fundida de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 2,
+"label": "Barra de Borracha"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:watz_cooler",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.overdrive1",
+"label": "Melhoria de Sobrecarga Mk.I",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:631",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:upgrade_speed_3"
+],
+"n": 1,
+"label": "Melhoria de Velocidade Mk.III"
+},
+{
+"ids": [
+"ntm:upgrade_effect_3"
+],
+"n": 1,
+"label": "Melhoria de Eficiência Mk.III"
+},
+{
+"ids": [
+"ntm:ingot_saturnite"
+],
+"n": 16,
+"label": "Lingote de Saturnite"
+},
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 16,
+"label": "Barra de Plástico Rígido"
+},
+{
+"ids": [
+"ntm:circuit__advanced"
+],
+"n": 16,
+"label": "Placa de Circuito de Grau Militar"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:upgrade_overdrive_1",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.overdrive2",
+"label": "Melhoria de Sobrecarga Mk.II",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:633",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:upgrade_overdrive_1"
+],
+"n": 1,
+"label": "Melhoria de Sobrecarga Mk.I"
+},
+{
+"ids": [
+"ntm:upgrade_speed_3"
+],
+"n": 1,
+"label": "Melhoria de Velocidade Mk.III"
+},
+{
+"ids": [
+"ntm:upgrade_effect_3"
+],
+"n": 1,
+"label": "Melhoria de Eficiência Mk.III"
+},
+{
+"ids": [
+"ntm:ingot_saturnite"
+],
+"n": 16,
+"label": "Lingote de Saturnite"
+},
+{
+"ids": [
+"ntm:ingot_cft"
+],
+"n": 8,
+"label": "Fulerita Cristalina"
+},
+{
+"ids": [
+"ntm:circuit__capacitor_board"
+],
+"n": 16,
+"label": "Placa de Capacitores"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:upgrade_overdrive_2",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.overdrive3",
+"label": "Melhoria de Sobrecarga Mk.III",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:635",
+"duration": 1200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:upgrade_overdrive_2"
+],
+"n": 1,
+"label": "Melhoria de Sobrecarga Mk.II"
+},
+{
+"ids": [
+"ntm:upgrade_speed_3"
+],
+"n": 1,
+"label": "Melhoria de Velocidade Mk.III"
+},
+{
+"ids": [
+"ntm:upgrade_effect_3"
+],
+"n": 1,
+"label": "Melhoria de Eficiência Mk.III"
+},
+{
+"ids": [
+"ntm:ingot_arsenic_bronze",
+"ntm:ingot_bismuth_bronze"
+],
+"n": 16,
+"label": "Lingote de Bronze de Arsênio"
+},
+{
+"ids": [
+"ntm:ingot_cft"
+],
+"n": 16,
+"label": "Fulerita Cristalina"
+},
+{
+"ids": [
+"ntm:circuit__bismoid"
+],
+"n": 16,
+"label": "Placa de Circuito Versátil"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:upgrade_overdrive_3",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.clusterpellets",
+"label": "Pastilhas Explosivas",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:646",
+"duration": 50,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 4,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 1,
+"label": "Ball Tatb"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pellet_cluster",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.buckshot",
+"label": "Chumbinhos de Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:648",
+"duration": 50,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:nugget_lead"
+],
+"n": 6,
+"label": "Pepita de Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pellet_buckshot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.gadget",
+"label": "O Artefato",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:654",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:sphere_steel"
+],
+"n": 1,
+"label": "Esfera de Aço"
+},
+{
+"ids": [
+"ntm:fins_flat"
+],
+"n": 2,
+"label": "Revestimento Plano de Aço"
+},
+{
+"ids": [
+"ntm:pedestal_steel"
+],
+"n": 1,
+"label": "Pedestal de Aço"
+},
+{
+"ids": [
+"ntm:circuit__controller"
+],
+"n": 3,
+"label": "Unidade de Controle"
+},
+{
+"ids": [
+"minecraft:gray_dye"
+],
+"n": 8,
+"label": "gray dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nuke_gadget",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.littleboy",
+"label": "Nuke Boy",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:657",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 2,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:fins_small_steel"
+],
+"n": 1,
+"label": "Pequenas Aletas de Grade de Aço"
+},
+{
+"ids": [
+"ntm:circuit__controller"
+],
+"n": 2,
+"label": "Unidade de Controle"
+},
+{
+"ids": [
+"minecraft:blue_dye"
+],
+"n": 4,
+"label": "blue dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nuke_boy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.fatman",
+"label": "Nuke Man",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:660",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:sphere_steel"
+],
+"n": 1,
+"label": "Esfera de Aço"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 2,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:fins_big_steel"
+],
+"n": 1,
+"label": "Grandes Aletas de Grade de Aço"
+},
+{
+"ids": [
+"ntm:circuit__controller"
+],
+"n": 3,
+"label": "Unidade de Controle"
+},
+{
+"ids": [
+"minecraft:yellow_dye"
+],
+"n": 6,
+"label": "yellow dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nuke_man",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.ivymike",
+"label": "Nuke Mike",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:663",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:sphere_steel"
+],
+"n": 1,
+"label": "Esfera de Aço"
+},
+{
+"ids": [
+"ntm:shell__aluminium"
+],
+"n": 4,
+"label": "Carcaça de Alumínio"
+},
+{
+"ids": [
+"ntm:circuit__controller_advanced"
+],
+"n": 8,
+"label": "Unidade de Controle Avançada"
+},
+{
+"ids": [
+"minecraft:light_gray_dye"
+],
+"n": 16,
+"label": "light gray dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nuke_mike",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.tsarbomba",
+"label": "Nuke Tsar",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:666",
+"duration": 1200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:sphere_steel"
+],
+"n": 1,
+"label": "Esfera de Aço"
+},
+{
+"ids": [
+"ntm:shell__titanium"
+],
+"n": 6,
+"label": "Carcaça de Titânio"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 2,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:fins_tri_steel"
+],
+"n": 1,
+"label": "Grandes Aletas de Aço"
+},
+{
+"ids": [
+"ntm:circuit__controller_advanced"
+],
+"n": 16,
+"label": "Unidade de Controle Avançada"
+},
+{
+"ids": [
+"minecraft:black_dye"
+],
+"n": 8,
+"label": "black dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nuke_tsar",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.n2mine",
+"label": "Mina N²",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:678",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 6,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:wire_fine__magnetized_tungsten"
+],
+"n": 12,
+"label": "Fio de Tungstênio Magnetizado"
+},
+{
+"ids": [
+"ntm:circuit__controller"
+],
+"n": 2,
+"label": "Unidade de Controle"
+},
+{
+"ids": [
+"minecraft:green_dye"
+],
+"n": 8,
+"label": "green dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nuke_n2",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.balefirebomb",
+"label": "Bomba Balefire",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:681",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:sphere_steel"
+],
+"n": 1,
+"label": "Esfera de Aço"
+},
+{
+"ids": [
+"ntm:shell__titanium"
+],
+"n": 6,
+"label": "Carcaça de Titânio"
+},
+{
+"ids": [
+"ntm:fins_big_steel"
+],
+"n": 1,
+"label": "Grandes Aletas de Grade de Aço"
+},
+{
+"ids": [
+"ntm:powder_magic"
+],
+"n": 8,
+"label": "Encantamento Pulverizado"
+},
+{
+"ids": [
+"ntm:circuit__controller_advanced"
+],
+"n": 4,
+"label": "Unidade de Controle Avançada"
+},
+{
+"ids": [
+"minecraft:gray_dye"
+],
+"n": 8,
+"label": "gray dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nuke_fstbmb",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.wiring",
+"label": "Fiação",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:699",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:wire_fine__gold"
+],
+"n": 24,
+"label": "Fio de Ouro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:gadget_wireing",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.core1",
+"label": "Grande Núcleo de Plutônio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:701",
+"duration": 1200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:nugget_pu239"
+],
+"n": 7,
+"label": "Pepita de Plutônio-239"
+},
+{
+"ids": [
+"ntm:nugget_u238"
+],
+"n": 3,
+"label": "Pepita de Urânio-238"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:gadget_core",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.boyshield",
+"label": "Blindagem contra Nêutrons",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:703",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:neutron_reflector"
+],
+"n": 12,
+"label": "Refletor de Nêutrons"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 4,
+"label": "Placa de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:boy_shielding",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.boytarget",
+"label": "Alvo Subcrítico de U235",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:705",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:nugget_u235"
+],
+"n": 18,
+"label": "Pepita de Urânio-235"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:boy_target",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.boybullet",
+"label": "Projétil de U235",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:707",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:nugget_u235"
+],
+"n": 9,
+"label": "Pepita de Urânio-235"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:boy_bullet",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.boypropellant",
+"label": "Propelente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:709",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:cordite"
+],
+"n": 8,
+"label": "Cordita"
+},
+{
+"ids": [
+"ntm:plate_iron"
+],
+"n": 8,
+"label": "Placa de Ferro"
+},
+{
+"ids": [
+"ntm:plate_aluminium"
+],
+"n": 4,
+"label": "Placa de Alumínio"
+},
+{
+"ids": [
+"ntm:wire_fine__red_copper"
+],
+"n": 4,
+"label": "Fio de Cobre Vermelho"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:boy_propellant",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.boyigniter",
+"label": "Ignitor de Bomba",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:711",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__aluminium"
+],
+"n": 3,
+"label": "Carcaça de Alumínio"
+},
+{
+"ids": [
+"ntm:plate_cast__dura_steel"
+],
+"n": 1,
+"label": "Placa Fundida de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:circuit__advanced"
+],
+"n": 1,
+"label": "Placa de Circuito de Grau Militar"
+},
+{
+"ids": [
+"ntm:wire_fine__red_copper"
+],
+"n": 16,
+"label": "Fio de Cobre Vermelho"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:boy_igniter",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.manigniter",
+"label": "Unidade de Disparo da Bomba",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:713",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:circuit__advanced"
+],
+"n": 3,
+"label": "Placa de Circuito de Grau Militar"
+},
+{
+"ids": [
+"ntm:wire_fine__gold"
+],
+"n": 24,
+"label": "Fio de Ouro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:man_igniter",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mancore",
+"label": "Núcleo de Plutônio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:715",
+"duration": 1200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:nugget_pu239"
+],
+"n": 8,
+"label": "Pepita de Plutônio-239"
+},
+{
+"ids": [
+"ntm:nugget_beryllium"
+],
+"n": 2,
+"label": "Pepita de Berílio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:man_core",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mikecore",
+"label": "Tanque de Deutério Revestido com Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:717",
+"duration": 1200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:nugget_u238"
+],
+"n": 24,
+"label": "Pepita de Urânio-238"
+},
+{
+"ids": [
+"ntm:plate_lead"
+],
+"n": 6,
+"label": "Placa de Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mike_core",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mikedeut",
+"label": "Tanque de Deutério",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:719",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"n": 16,
+"label": "Placa de Aço para Armas"
+},
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 16,
+"label": "Placa de Titânio"
+}
+],
+"fin": [
+[
+"deuterium",
+10000
+]
+],
+"out": [
+[
+"ntm:mike_deut",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mikecooler",
+"label": "Unidade de Resfriamento de Deutério",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:722",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"n": 8,
+"label": "Placa de Aço Rápido"
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"n": 5,
+"label": "Bobina de Cobre"
+},
+{
+"ids": [
+"ntm:coil_tungsten"
+],
+"n": 5,
+"label": "Bobina de Aquecimento"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mike_cooling_unit",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.fleijaigniter",
+"label": "Ignição de Pulso",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:724",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 6,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:wire_fine__schrabidium"
+],
+"n": 2,
+"label": "Fio de Schrabídio"
+},
+{
+"ids": [
+"ntm:circuit__advanced"
+],
+"n": 1,
+"label": "Placa de Circuito de Grau Militar"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fleija_igniter",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.fleijacore",
+"label": "Carga de Urânio 235 F.L.E.I.J.A.",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:726",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:nugget_u235"
+],
+"n": 8,
+"label": "Pepita de Urânio-235"
+},
+{
+"ids": [
+"ntm:nugget_neptunium"
+],
+"n": 2,
+"label": "Pepita de Neptúnio"
+},
+{
+"ids": [
+"ntm:nugget_beryllium"
+],
+"n": 4,
+"label": "Pepita de Berílio"
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"n": 2,
+"label": "Bobina de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fleija_core",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.fleijacharge",
+"label": "Propelente de Schrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:728",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 3,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:plate_schrabidium"
+],
+"n": 8,
+"label": "Placa de Schrabídio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fleija_propellant",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.soliniumigniter",
+"label": "Ignitor de Pulso SOL",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:730",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 4,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:wire_fine__red_copper"
+],
+"n": 8,
+"label": "Fio de Cobre Vermelho"
+},
+{
+"ids": [
+"ntm:circuit__advanced"
+],
+"n": 1,
+"label": "Placa de Circuito de Grau Militar"
+},
+{
+"ids": [
+"ntm:coil_gold"
+],
+"n": 1,
+"label": "Bobina de Ouro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:solinium_igniter",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.soliniumcore",
+"label": "Núcleo de Solínio Semiestável",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:732",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:nugget_solinium"
+],
+"n": 9,
+"label": "Pepita de Solínio"
+},
+{
+"ids": [
+"ntm:nugget_euphemium"
+],
+"n": 1,
+"label": "Pepita de Eufêmio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:solinium_core",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.soliniumcharge",
+"label": "Carga de Compressão SOL",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:734",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 3,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:neutron_reflector"
+],
+"n": 2,
+"label": "Refletor de Nêutrons"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 6,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:wire_fine__tungsten"
+],
+"n": 6,
+"label": "Fio de Tungstênio"
+},
+{
+"ids": [
+"ntm:biomass_compressed"
+],
+"n": 4,
+"label": "Biomassa Compactada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:solinium_propellant",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.missileassembly",
+"label": "Conjunto de Míssil Pequeno",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:786",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__aluminium"
+],
+"n": 2,
+"label": "Carcaça de Alumínio"
+},
+{
+"ids": [
+"ntm:shell__titanium"
+],
+"n": 4,
+"label": "Carcaça de Titânio"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 8,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:rocket_fuel"
+],
+"n": 8,
+"label": "Combustível Sólido (Propelente de Foguete)"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 1,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:missile_assembly",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadhe1",
+"label": "Ogiva Pequena",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:788",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 4,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:ball_dynamite"
+],
+"n": 2,
+"label": "Dinamite"
+},
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 1,
+"label": "Microchip"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_generic_small",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadhe2",
+"label": "Ogiva Média",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:790",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 8,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 4,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 1,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_generic_medium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadhe3",
+"label": "Ogiva Grande",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:792",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 16,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 8,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__advanced"
+],
+"n": 1,
+"label": "Placa de Circuito de Grau Militar"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_generic_large",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadinc1",
+"label": "Ogiva Incendiária Pequena",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:794",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:warhead_generic_small"
+],
+"n": 1,
+"label": "Ogiva Pequena"
+},
+{
+"ids": [
+"ntm:powder_fire"
+],
+"n": 2,
+"label": "Fósforo Vermelho"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_incendiary_small",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadinc2",
+"label": "Ogiva Incendiária Média",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:796",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:warhead_generic_medium"
+],
+"n": 1,
+"label": "Ogiva Média"
+},
+{
+"ids": [
+"ntm:powder_fire"
+],
+"n": 4,
+"label": "Fósforo Vermelho"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_incendiary_medium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadinc3",
+"label": "Ogiva Incendiária Grande",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:798",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:warhead_generic_large"
+],
+"n": 1,
+"label": "Ogiva Grande"
+},
+{
+"ids": [
+"ntm:powder_fire"
+],
+"n": 8,
+"label": "Fósforo Vermelho"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_incendiary_large",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadcl1",
+"label": "Ogiva de Fragmentação Pequena",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:800",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:warhead_generic_small"
+],
+"n": 1,
+"label": "Ogiva Pequena"
+},
+{
+"ids": [
+"ntm:pellet_cluster"
+],
+"n": 2,
+"label": "Pastilhas Explosivas"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_cluster_small",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadcl2",
+"label": "Ogiva de Fragmentação Média",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:802",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:warhead_generic_medium"
+],
+"n": 1,
+"label": "Ogiva Média"
+},
+{
+"ids": [
+"ntm:pellet_cluster"
+],
+"n": 4,
+"label": "Pastilhas Explosivas"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_cluster_medium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadcl3",
+"label": "Ogiva de Fragmentação Grande",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:804",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:warhead_generic_large"
+],
+"n": 1,
+"label": "Ogiva Grande"
+},
+{
+"ids": [
+"ntm:pellet_cluster"
+],
+"n": 8,
+"label": "Pastilhas Explosivas"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_cluster_large",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadbb1",
+"label": "Ogiva Penetradora de Bunkers Pequena",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:806",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:warhead_generic_small"
+],
+"n": 1,
+"label": "Ogiva Pequena"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 2,
+"label": "Ball Tatb"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_buster_small",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadbb2",
+"label": "Ogiva Penetradora de Bunkers Média",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:808",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:warhead_generic_medium"
+],
+"n": 1,
+"label": "Ogiva Média"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 4,
+"label": "Ball Tatb"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_buster_medium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadbb3",
+"label": "Ogiva Penetradora de Bunkers Grande",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:810",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:warhead_generic_large"
+],
+"n": 1,
+"label": "Ogiva Grande"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 8,
+"label": "Ball Tatb"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_buster_large",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadnuke",
+"label": "Ogiva Nuclear",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:812",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__titanium"
+],
+"n": 12,
+"label": "Placa Fundida de Titânio"
+},
+{
+"ids": [
+"ntm:plate_cast__lead"
+],
+"n": 6,
+"label": "Placa Fundida de Chumbo"
+},
+{
+"ids": [
+"ntm:billet_u235"
+],
+"n": 6,
+"label": "Tarugo de Urânio-235"
+},
+{
+"ids": [
+"ntm:cordite"
+],
+"n": 12,
+"label": "Cordita"
+},
+{
+"ids": [
+"ntm:circuit__controller"
+],
+"n": 1,
+"label": "Unidade de Controle"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:warhead_nuclear",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.warheadthermonuke",
+"label": "Ogiva Termonuclear",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:815",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__titanium"
+],
+"n": 12,
+"label": "Placa Fundida de Titânio"
+},
+{
+"ids": [
+"ntm:plate_cast__lead"
+],
+"n": 6,
+"label": "Placa Fundida de Chumbo"
+},
+{
+"ids": [
+"ntm:billet_pu239"
+],
+"n": 8,
+"label": "Tarugo de Plutônio-239"
+},
+{
+"ids": [
+"ntm:ball_tatb"
+],
+"n": 12,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__controller_advanced"
+],
+"n": 2,
+"label": "Unidade de Controle Avançada"
+}
+],
+"fin": [
+[
+"deuterium",
+4000
+]
+],
+"out": [
+[
+"ntm:warhead_mirv",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.thrusternerva",
+"label": "Motor de Foguete Nuclear LV-N",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:821",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 32,
+"label": "Lingote de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:ingot_boron"
+],
+"n": 8,
+"label": "Lingote de Boro"
+},
+{
+"ids": [
+"ntm:plate_lead"
+],
+"n": 16,
+"label": "Placa de Chumbo"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 4,
+"label": "Tubo de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:thruster_nuclear",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpf15solid",
+"label": "Fuselagem de Combustível Sólido Tamanho 15",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:893",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_15"
+],
+"n": 2,
+"label": "Conector Tamanho 15"
+},
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 32,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 12,
+"label": "Placa de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_fuselage_15_solid",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpf15hydro",
+"label": "Fuselagem de Hidrogênio Tamanho 15",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:895",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_15"
+],
+"n": 2,
+"label": "Conector Tamanho 15"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 32,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 12,
+"label": "Placa de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_fuselage_15_hydrogen",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpf1520kero",
+"label": "Fuselagem de Querosene Tamanho 15/20",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:897",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_15"
+],
+"n": 1,
+"label": "Conector Tamanho 15"
+},
+{
+"ids": [
+"ntm:seg_20"
+],
+"n": 1,
+"label": "Conector Tamanho 20"
+},
+{
+"ids": [
+"ntm:plate_aluminium"
+],
+"n": 48,
+"label": "Placa de Alumínio"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 16,
+"label": "Placa de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_fuselage_15_20_kerosene",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpf1520solid",
+"label": "Fuselagem de Combustível Sólido Tamanho 15/20",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:899",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_15"
+],
+"n": 1,
+"label": "Conector Tamanho 15"
+},
+{
+"ids": [
+"ntm:seg_20"
+],
+"n": 1,
+"label": "Conector Tamanho 20"
+},
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 48,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 16,
+"label": "Placa de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_fuselage_15_20_solid",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpw10he",
+"label": "Ogiva HE Tamanho 10",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:903",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_10"
+],
+"n": 1,
+"label": "Conector Tamanho 10"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 6,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 3,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 1,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_warhead_10_he",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpw10inc",
+"label": "Ogiva Incendiária Tamanho 10",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:905",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_10"
+],
+"n": 1,
+"label": "Conector Tamanho 10"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 6,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 2,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:powder_fire"
+],
+"n": 6,
+"label": "Fósforo Vermelho"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 1,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_warhead_10_incendiary",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpw10bus",
+"label": "Ogiva Perfuradora de Bunkers Tamanho 10",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:907",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_10"
+],
+"n": 1,
+"label": "Conector Tamanho 10"
+},
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"n": 6,
+"label": "Placa de Aço para Armas"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 6,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 2,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_warhead_10_buster",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpw10nukesmall",
+"label": "Micro Ogiva Nuclear Tamanho 10",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:909",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_10"
+],
+"n": 1,
+"label": "Conector Tamanho 10"
+},
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"n": 16,
+"label": "Placa de Aço para Armas"
+},
+{
+"ids": [
+"ntm:billet_pu239"
+],
+"n": 2,
+"label": "Tarugo de Plutônio-239"
+},
+{
+"ids": [
+"ntm:neutron_reflector"
+],
+"n": 4,
+"label": "Refletor de Nêutrons"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 4,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__controller"
+],
+"n": 1,
+"label": "Unidade de Controle"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_warhead_10_nuclear",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpw10nukelarge",
+"label": "Ogiva Nuclear Tamanho 10",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:912",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_10"
+],
+"n": 1,
+"label": "Conector Tamanho 10"
+},
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"n": 16,
+"label": "Placa de Aço para Armas"
+},
+{
+"ids": [
+"ntm:billet_pu239"
+],
+"n": 6,
+"label": "Tarugo de Plutônio-239"
+},
+{
+"ids": [
+"ntm:neutron_reflector"
+],
+"n": 8,
+"label": "Refletor de Nêutrons"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 12,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__controller"
+],
+"n": 1,
+"label": "Unidade de Controle"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_warhead_10_nuclear_large",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpw15he",
+"label": "Ogiva HE Tamanho 15",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:919",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_15"
+],
+"n": 1,
+"label": "Conector Tamanho 15"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 12,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 12,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 3,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_warhead_15_he",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpw15inc",
+"label": "Ogiva Incendiária Tamanho 15",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:921",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_15"
+],
+"n": 1,
+"label": "Conector Tamanho 15"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 12,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 8,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:powder_fire"
+],
+"n": 16,
+"label": "Fósforo Vermelho"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 3,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_warhead_15_incendiary",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpw15nuke",
+"label": "Ogiva Nuclear Tamanho 15",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:923",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_15"
+],
+"n": 1,
+"label": "Conector Tamanho 15"
+},
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"n": 32,
+"label": "Placa de Aço para Armas"
+},
+{
+"ids": [
+"ntm:billet_pu239"
+],
+"n": 12,
+"label": "Tarugo de Plutônio-239"
+},
+{
+"ids": [
+"ntm:neutron_reflector"
+],
+"n": 12,
+"label": "Refletor de Nêutrons"
+},
+{
+"ids": [
+"ntm:ball_tatb"
+],
+"n": 24,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__controller"
+],
+"n": 3,
+"label": "Unidade de Controle"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_warhead_15_nuclear",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpw15n2",
+"label": "Mina N² Tamanho 15",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:926",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_15"
+],
+"n": 1,
+"label": "Conector Tamanho 15"
+},
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"n": 32,
+"label": "Placa de Aço para Armas"
+},
+{
+"ids": [
+"ntm:ball_tatb"
+],
+"n": 32,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__advanced"
+],
+"n": 8,
+"label": "Placa de Circuito de Grau Militar"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_warhead_15_n2",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mpw15bf",
+"label": "Ogiva BF Tamanho 15",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:929",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:seg_15"
+],
+"n": 1,
+"label": "Conector Tamanho 15"
+},
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"n": 32,
+"label": "Placa de Aço para Armas"
+},
+{
+"ids": [
+"ntm:neutron_reflector"
+],
+"n": 16,
+"label": "Refletor de Nêutrons"
+},
+{
+"ids": [
+"ntm:powder_magic"
+],
+"n": 8,
+"label": "Encantamento Pulverizado"
+},
+{
+"ids": [
+"ntm:egg_balefire_shard"
+],
+"n": 4,
+"label": "Fragmento de Fogo Maldito"
+},
+{
+"ids": [
+"ntm:ball_tatb",
+"ntm:ball_tnt"
+],
+"n": 16,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:circuit__controller"
+],
+"n": 2,
+"label": "Unidade de Controle"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:mp_warhead_15_balefire",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.alclad",
+"label": "Part Generic Alclad",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:960",
+"duration": 200,
+"power": 50000,
+"in": [
+{
+"ids": [
+"ntm:powder_aluminium"
+],
+"n": 8,
+"label": "Pó de Alumínio"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 2,
+"label": "Placa de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:part_generic__alclad",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.titaniumconstruction",
+"label": "Part Generic Alclad",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:962",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 4,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 8,
+"label": "Barra de Baquelita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:part_generic__alclad",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.emptypackage",
+"label": "Recipiente Grande de Fluido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1110",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 4,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 2,
+"label": "Barra de Baquelita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.water",
+"label": "Empacotar: Água",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"water",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__water",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.steam",
+"label": "Empacotar: Vapor",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"steam",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__steam",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.hotsteam",
+"label": "Empacotar: Vapor Denso",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"hotsteam",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__hotsteam",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.superhotsteam",
+"label": "Empacotar: Vapor Superdenso",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"superhotsteam",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__superhotsteam",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.ultrahotsteam",
+"label": "Empacotar: Vapor Ultradenso",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"ultrahotsteam",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__ultrahotsteam",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.coolant",
+"label": "Empacotar: Refrigerante",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"coolant",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__coolant",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.lava",
+"label": "Empacotar: Lava",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"lava",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__lava",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.deuterium",
+"label": "Empacotar: Deutério",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"deuterium",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__deuterium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.tritium",
+"label": "Empacotar: Trítio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"tritium",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__tritium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.oil",
+"label": "Empacotar: Petróleo Bruto",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"oil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__oil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.hotoil",
+"label": "Empacotar: Petróleo Bruto Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"hotoil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__hotoil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.heavyoil",
+"label": "Empacotar: Óleo Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"heavyoil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__heavyoil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.bitumen",
+"label": "Empacotar: Betume",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"bitumen",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__bitumen",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.smear",
+"label": "Empacotar: Óleo Industrial",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"smear",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__smear",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.heatingoil",
+"label": "Empacotar: Óleo de Aquecimento",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"heatingoil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__heatingoil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.reclaimed",
+"label": "Empacotar: Óleo Industrial Recuperado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"reclaimed",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__reclaimed",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.petroil",
+"label": "Empacotar: Petroil",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"petroil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__petroil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.lubricant",
+"label": "Empacotar: Lubrificante de Motor",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"lubricant",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__lubricant",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.naphtha",
+"label": "Empacotar: Nafta",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"naphtha",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__naphtha",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.diesel",
+"label": "Empacotar: Diesel",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"diesel",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__diesel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.lightoil",
+"label": "Empacotar: Óleo Leve",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"lightoil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__lightoil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.kerosene",
+"label": "Empacotar: Querosene",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"kerosene",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__kerosene",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.gas",
+"label": "Empacotar: Gás Natural",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"gas",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__gas",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.petroleum",
+"label": "Empacotar: Gás de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"petroleum",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__petroleum",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.lpg",
+"label": "Empacotar: GLP",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"lpg",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__lpg",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.biogas",
+"label": "Empacotar: Biogás",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"biogas",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__biogas",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.biofuel",
+"label": "Empacotar: Biocombustível",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"biofuel",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__biofuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.nitan",
+"label": "Empacotar: NITAN© Combustível Super de 100 Octanas",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"nitan",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__nitan",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.uf6",
+"label": "Empacotar: Hexafluoreto de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"uf6",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__uf6",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.puf6",
+"label": "Empacotar: Hexafluoreto de Plutônio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"puf6",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__puf6",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.sas3",
+"label": "Empacotar: Trissulfeto de Eschrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"sas3",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__sas3",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.schrabidic",
+"label": "Empacotar: Ácido Schrabídico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"schrabidic",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__schrabidic",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.amat",
+"label": "Empacotar: Antimatéria",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"amat",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__amat",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.aschrab",
+"label": "Empacotar: Antieschrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"aschrab",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__aschrab",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.peroxide",
+"label": "Empacotar: Peróxido de Hidrogênio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"peroxide",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__peroxide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.watz",
+"label": "Empacotar: Lama Venenosa",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"watz",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__watz",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.cryogel",
+"label": "Empacotar: Criogel",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"cryogel",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__cryogel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.hydrogen",
+"label": "Empacotar: Hidrogênio Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"hydrogen",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__hydrogen",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.oxygen",
+"label": "Empacotar: Oxigênio Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"oxygen",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__oxygen",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.xenon",
+"label": "Empacotar: Gás Xenônio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"xenon",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__xenon",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.balefire",
+"label": "Empacotar: Combustível de Foguete BF",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"balefire",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__balefire",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.mercury",
+"label": "Empacotar: Mercúrio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"mercury",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__mercury",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.pain",
+"label": "Empacotar: Solução de Pandemônio(III)tantalita",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"pain",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__pain",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.gasoline",
+"label": "Empacotar: Gasolina",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"gasoline",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__gasoline",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.coalgas",
+"label": "Empacotar: Gasolina de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"coalgas",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__coalgas",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.fracksol",
+"label": "Empacotar: Solução de Fraturamento",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"fracksol",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__fracksol",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.carbondioxide",
+"label": "Empacotar: Dióxido de Carbono",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"carbondioxide",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__carbondioxide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.helium3",
+"label": "Empacotar: Hélio-3",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"helium3",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__helium3",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.death",
+"label": "Empacotar: Solução Osmirídica",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"death",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__death",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.ethanol",
+"label": "Empacotar: Etanol",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"ethanol",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__ethanol",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.heavywater",
+"label": "Empacotar: Água Pesada",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"heavywater",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__heavywater",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.crackoil",
+"label": "Empacotar: Óleo Craqueado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"crackoil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__crackoil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.coaloil",
+"label": "Empacotar: Óleo de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"coaloil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__coaloil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.hotcrackoil",
+"label": "Empacotar: Óleo Craqueado Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"hotcrackoil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__hotcrackoil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.naphtha_crack",
+"label": "Empacotar: Nafta Craqueada",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"naphtha_crack",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__naphtha_crack",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.lightoil_crack",
+"label": "Empacotar: Óleo Leve Craqueado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"lightoil_crack",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__lightoil_crack",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.diesel_crack",
+"label": "Empacotar: Diesel Craqueado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"diesel_crack",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__diesel_crack",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.aromatics",
+"label": "Empacotar: Hidrocarbonetos Aromáticos",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"aromatics",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__aromatics",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.unsaturateds",
+"label": "Empacotar: Hidrocarbonetos Insaturados",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"unsaturateds",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__unsaturateds",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.salient",
+"label": "Empacotar: Verde Saliente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"salient",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__salient",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.xpjuice",
+"label": "Empacotar: Suco de Experiência",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"xpjuice",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__xpjuice",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.enderjuice",
+"label": "Empacotar: Suco de Ender",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"enderjuice",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__enderjuice",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.petroil_leaded",
+"label": "Empacotar: Petroil com Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"petroil_leaded",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__petroil_leaded",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.gasoline_leaded",
+"label": "Empacotar: Gasolina com Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"gasoline_leaded",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__gasoline_leaded",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.coalgas_leaded",
+"label": "Empacotar: Gasolina de Carvão com Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"coalgas_leaded",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__coalgas_leaded",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.sulfuric_acid",
+"label": "Empacotar: Ácido Sulfúrico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__sulfuric_acid",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.coolant_hot",
+"label": "Empacotar: Refrigerante Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"coolant_hot",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__coolant_hot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.mug",
+"label": "Empacotar: Cerveja de Raiz de Caneca",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"mug",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__mug",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.mug_hot",
+"label": "Empacotar: Cerveja de Raiz de Caneca Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"mug_hot",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__mug_hot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.woodoil",
+"label": "Empacotar: Óleo de Madeira",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"woodoil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__woodoil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.coalcreosote",
+"label": "Empacotar: Creosoto de Alcatrão de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"coalcreosote",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__coalcreosote",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.seedslurry",
+"label": "Empacotar: Polpa de Semeadura",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"seedslurry",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__seedslurry",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.nitric_acid",
+"label": "Empacotar: Ácido Nítrico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"nitric_acid",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__nitric_acid",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.solvent",
+"label": "Empacotar: Solvente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"solvent",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__solvent",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.blood",
+"label": "Empacotar: Sangue",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"blood",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__blood",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.blood_hot",
+"label": "Empacotar: Sangue Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"blood_hot",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__blood_hot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.syngas",
+"label": "Empacotar: Gás de Síntese",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"syngas",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__syngas",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.oxyhydrogen",
+"label": "Empacotar: Oxihidrogênio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"oxyhydrogen",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__oxyhydrogen",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.radiosolvent",
+"label": "Empacotar: Solvente de Alto Desempenho",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"radiosolvent",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__radiosolvent",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.chlorine",
+"label": "Empacotar: Gás Cloro",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"chlorine",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__chlorine",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.heavyoil_vacuum",
+"label": "Empacotar: Óleo Pesado a Vácuo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"heavyoil_vacuum",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__heavyoil_vacuum",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.reformate",
+"label": "Empacotar: Reformado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"reformate",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__reformate",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.lightoil_vacuum",
+"label": "Empacotar: Óleo Leve a Vácuo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"lightoil_vacuum",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__lightoil_vacuum",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.sourgas",
+"label": "Empacotar: Gás Ácido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"sourgas",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__sourgas",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.xylene",
+"label": "Empacotar: Xileno (BTX)",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"xylene",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__xylene",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.heatingoil_vacuum",
+"label": "Empacotar: Óleo de Aquecimento Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"heatingoil_vacuum",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__heatingoil_vacuum",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.diesel_reform",
+"label": "Empacotar: Diesel de Alto Cetano",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"diesel_reform",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__diesel_reform",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.diesel_crack_reform",
+"label": "Empacotar: Diesel Craqueado de Alto Cetano",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"diesel_crack_reform",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__diesel_crack_reform",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.kerosene_reform",
+"label": "Empacotar: Combustível de Aviação",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"kerosene_reform",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__kerosene_reform",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.reformgas",
+"label": "Empacotar: Gás de Reformado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"reformgas",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__reformgas",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.colloid",
+"label": "Empacotar: Coloide",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"colloid",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__colloid",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.phosgene",
+"label": "Empacotar: Fosgênio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"phosgene",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__phosgene",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.mustardgas",
+"label": "Empacotar: Gás Mostarda",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"mustardgas",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__mustardgas",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.iongel",
+"label": "Empacotar: Gel Iônico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"iongel",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__iongel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.oil_coker",
+"label": "Empacotar: Petróleo de Coqueria",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"oil_coker",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__oil_coker",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.naphtha_coker",
+"label": "Empacotar: Nafta de Coqueria",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"naphtha_coker",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__naphtha_coker",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.gas_coker",
+"label": "Empacotar: Gás de Coqueria",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"gas_coker",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__gas_coker",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.egg",
+"label": "Empacotar: Ovo Dissolvido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"egg",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__egg",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.cholesterol",
+"label": "Empacotar: Solução de Colesterol",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"cholesterol",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__cholesterol",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.estradiol",
+"label": "Empacotar: Solução de Estradiol",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"estradiol",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__estradiol",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.fishoil",
+"label": "Empacotar: Óleo de Peixe",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"fishoil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__fishoil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.sunfloweroil",
+"label": "Empacotar: Óleo de Semente de Girassol",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"sunfloweroil",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__sunfloweroil",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.nitroglycerin",
+"label": "Empacotar: Nitroglicerina",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"nitroglycerin",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__nitroglycerin",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.redmud",
+"label": "Empacotar: Lama Vermelha",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"redmud",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__redmud",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.helium4",
+"label": "Empacotar: Hélio-4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"helium4",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__helium4",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.heavywater_hot",
+"label": "Empacotar: Água Pesada Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"heavywater_hot",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__heavywater_hot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.sodium",
+"label": "Empacotar: Sódio Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"sodium",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__sodium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.sodium_hot",
+"label": "Empacotar: Sódio Líquido Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"sodium_hot",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__sodium_hot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.thorium_salt",
+"label": "Empacotar: Sal de Tório Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"thorium_salt",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__thorium_salt",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.thorium_salt_hot",
+"label": "Empacotar: Sal de Tório Líquido Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"thorium_salt_hot",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__thorium_salt_hot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.thorium_salt_depleted",
+"label": "Empacotar: Sal de Tório Líquido Empobrecido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"thorium_salt_depleted",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__thorium_salt_depleted",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.fullerene",
+"label": "Empacotar: Solução de Fulereno",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"fullerene",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__fullerene",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.pheromone",
+"label": "Empacotar: Feromônio Potencializador",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"pheromone",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__pheromone",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.pheromone_m",
+"label": "Empacotar: Feromônio Potencializador Modificado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"pheromone_m",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__pheromone_m",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.oil_ds",
+"label": "Empacotar: Petróleo Bruto Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"oil_ds",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__oil_ds",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.hotoil_ds",
+"label": "Empacotar: Petróleo Bruto Quente Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"hotoil_ds",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__hotoil_ds",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.crackoil_ds",
+"label": "Empacotar: Óleo Craqueado Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"crackoil_ds",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__crackoil_ds",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.hotcrackoil_ds",
+"label": "Empacotar: Óleo Craqueado Quente Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"hotcrackoil_ds",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__hotcrackoil_ds",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.naphtha_ds",
+"label": "Empacotar: Nafta Dessulfurizada",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"naphtha_ds",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__naphtha_ds",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.lightoil_ds",
+"label": "Empacotar: Óleo Leve Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"lightoil_ds",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__lightoil_ds",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.stellar_flux",
+"label": "Empacotar: Fluxo Estelar",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"stellar_flux",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__stellar_flux",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.vitriol",
+"label": "Empacotar: Vitríolo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"vitriol",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__vitriol",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.slop",
+"label": "Empacotar: Resíduo de Minério",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"slop",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__slop",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.lead",
+"label": "Empacotar: Chumbo Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"lead",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__lead",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.lead_hot",
+"label": "Empacotar: Chumbo Líquido Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"lead_hot",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__lead_hot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.perfluoromethyl",
+"label": "Empacotar: Perfluorometil",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"perfluoromethyl",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__perfluoromethyl",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.perfluoromethyl_cold",
+"label": "Empacotar: Perfluorometil Frio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"perfluoromethyl_cold",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__perfluoromethyl_cold",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.perfluoromethyl_hot",
+"label": "Empacotar: Perfluorometil Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"perfluoromethyl_hot",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__perfluoromethyl_hot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.lye",
+"label": "Empacotar: Soda Cáustica",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"lye",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__lye",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.sodium_aluminate",
+"label": "Empacotar: Aluminato de Sódio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"sodium_aluminate",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__sodium_aluminate",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.bauxite_solution",
+"label": "Empacotar: Solução de Bauxita",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"bauxite_solution",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__bauxite_solution",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.alumina",
+"label": "Empacotar: Alumina",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"alumina",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__alumina",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.air",
+"label": "Empacotar: Ar Comprimido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"air",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__air",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.concrete",
+"label": "Empacotar: Concreto Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"concrete",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__concrete",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.dhc",
+"label": "Empacotar: Hidrocarboneto Deuterado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"dhc",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__dhc",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.airblast",
+"label": "Empacotar: Sopro de Ar Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"airblast",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__airblast",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.flue",
+"label": "Empacotar: Gás de Combustão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"flue",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__flue",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.packagehbmfluid.titanium_tetrachloride",
+"label": "Empacotar: Titanium_Tetrachloride",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1117",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_empty"
+],
+"n": 1,
+"label": "Recipiente Grande de Fluido"
+}
+],
+"fin": [
+[
+"titanium_tetrachloride",
+32000
+]
+],
+"out": [
+[
+"ntm:fluid_pack_full__titanium_tetrachloride",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.water",
+"label": "Desempacotar: Água",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__water"
+],
+"n": 1,
+"label": "Pacote de Água"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"water",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.steam",
+"label": "Desempacotar: Vapor",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__steam"
+],
+"n": 1,
+"label": "Pacote de Vapor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"steam",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.hotsteam",
+"label": "Desempacotar: Vapor Denso",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__hotsteam"
+],
+"n": 1,
+"label": "Pacote de Vapor Denso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"hotsteam",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.superhotsteam",
+"label": "Desempacotar: Vapor Superdenso",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__superhotsteam"
+],
+"n": 1,
+"label": "Pacote de Vapor Superdenso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"superhotsteam",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.ultrahotsteam",
+"label": "Desempacotar: Vapor Ultradenso",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__ultrahotsteam"
+],
+"n": 1,
+"label": "Pacote de Vapor Ultradenso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"ultrahotsteam",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.coolant",
+"label": "Desempacotar: Refrigerante",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__coolant"
+],
+"n": 1,
+"label": "Pacote de Refrigerante"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"coolant",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.lava",
+"label": "Desempacotar: Lava",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__lava"
+],
+"n": 1,
+"label": "Pacote de Lava"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"lava",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.deuterium",
+"label": "Desempacotar: Deutério",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__deuterium"
+],
+"n": 1,
+"label": "Pacote de Deutério"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"deuterium",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.tritium",
+"label": "Desempacotar: Trítio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__tritium"
+],
+"n": 1,
+"label": "Pacote de Trítio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"tritium",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.oil",
+"label": "Desempacotar: Petróleo Bruto",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__oil"
+],
+"n": 1,
+"label": "Pacote de Petróleo Bruto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.hotoil",
+"label": "Desempacotar: Petróleo Bruto Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__hotoil"
+],
+"n": 1,
+"label": "Pacote de Petróleo Bruto Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"hotoil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.heavyoil",
+"label": "Desempacotar: Óleo Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__heavyoil"
+],
+"n": 1,
+"label": "Pacote de Óleo Pesado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"heavyoil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.bitumen",
+"label": "Desempacotar: Betume",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__bitumen"
+],
+"n": 1,
+"label": "Pacote de Betume"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"bitumen",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.smear",
+"label": "Desempacotar: Óleo Industrial",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__smear"
+],
+"n": 1,
+"label": "Pacote de Óleo Industrial"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"smear",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.heatingoil",
+"label": "Desempacotar: Óleo de Aquecimento",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__heatingoil"
+],
+"n": 1,
+"label": "Pacote de Óleo de Aquecimento"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"heatingoil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.reclaimed",
+"label": "Desempacotar: Óleo Industrial Recuperado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__reclaimed"
+],
+"n": 1,
+"label": "Pacote de Óleo Industrial Recuperado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"reclaimed",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.petroil",
+"label": "Desempacotar: Petroil",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__petroil"
+],
+"n": 1,
+"label": "Pacote de Petroil"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"petroil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.lubricant",
+"label": "Desempacotar: Lubrificante de Motor",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__lubricant"
+],
+"n": 1,
+"label": "Pacote de Lubrificante de Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"lubricant",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.naphtha",
+"label": "Desempacotar: Nafta",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__naphtha"
+],
+"n": 1,
+"label": "Pacote de Nafta"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.diesel",
+"label": "Desempacotar: Diesel",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__diesel"
+],
+"n": 1,
+"label": "Pacote de Diesel"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"diesel",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.lightoil",
+"label": "Desempacotar: Óleo Leve",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__lightoil"
+],
+"n": 1,
+"label": "Pacote de Óleo Leve"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"lightoil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.kerosene",
+"label": "Desempacotar: Querosene",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__kerosene"
+],
+"n": 1,
+"label": "Pacote de Querosene"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"kerosene",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.gas",
+"label": "Desempacotar: Gás Natural",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__gas"
+],
+"n": 1,
+"label": "Pacote de Gás Natural"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.petroleum",
+"label": "Desempacotar: Gás de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__petroleum"
+],
+"n": 1,
+"label": "Pacote de Gás de Petróleo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"petroleum",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.lpg",
+"label": "Desempacotar: GLP",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__lpg"
+],
+"n": 1,
+"label": "Pacote de GLP"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"lpg",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.biogas",
+"label": "Desempacotar: Biogás",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__biogas"
+],
+"n": 1,
+"label": "Pacote de Biogás"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"biogas",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.biofuel",
+"label": "Desempacotar: Biocombustível",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__biofuel"
+],
+"n": 1,
+"label": "Pacote de Biocombustível"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"biofuel",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.nitan",
+"label": "Desempacotar: NITAN© Combustível Super de 100 Octanas",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__nitan"
+],
+"n": 1,
+"label": "Pacote de NITAN© Combustível Super de 100 Octanas"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"nitan",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.uf6",
+"label": "Desempacotar: Hexafluoreto de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__uf6"
+],
+"n": 1,
+"label": "Pacote de Hexafluoreto de Urânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"uf6",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.puf6",
+"label": "Desempacotar: Hexafluoreto de Plutônio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__puf6"
+],
+"n": 1,
+"label": "Pacote de Hexafluoreto de Plutônio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"puf6",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.sas3",
+"label": "Desempacotar: Trissulfeto de Eschrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__sas3"
+],
+"n": 1,
+"label": "Pacote de Trissulfeto de Eschrabídio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"sas3",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.schrabidic",
+"label": "Desempacotar: Ácido Schrabídico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__schrabidic"
+],
+"n": 1,
+"label": "Pacote de Ácido Schrabídico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"schrabidic",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.amat",
+"label": "Desempacotar: Antimatéria",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__amat"
+],
+"n": 1,
+"label": "Pacote de Antimatéria"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"amat",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.aschrab",
+"label": "Desempacotar: Antieschrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__aschrab"
+],
+"n": 1,
+"label": "Pacote de Antieschrabídio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"aschrab",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.peroxide",
+"label": "Desempacotar: Peróxido de Hidrogênio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__peroxide"
+],
+"n": 1,
+"label": "Pacote de Peróxido de Hidrogênio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"peroxide",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.watz",
+"label": "Desempacotar: Lama Venenosa",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__watz"
+],
+"n": 1,
+"label": "Pacote de Lama Venenosa"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.cryogel",
+"label": "Desempacotar: Criogel",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__cryogel"
+],
+"n": 1,
+"label": "Pacote de Criogel"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"cryogel",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.hydrogen",
+"label": "Desempacotar: Hidrogênio Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__hydrogen"
+],
+"n": 1,
+"label": "Pacote de Hidrogênio Líquido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"hydrogen",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.oxygen",
+"label": "Desempacotar: Oxigênio Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__oxygen"
+],
+"n": 1,
+"label": "Pacote de Oxigênio Líquido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oxygen",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.xenon",
+"label": "Desempacotar: Gás Xenônio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__xenon"
+],
+"n": 1,
+"label": "Pacote de Gás Xenônio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"xenon",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.balefire",
+"label": "Desempacotar: Combustível de Foguete BF",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__balefire"
+],
+"n": 1,
+"label": "Pacote de Combustível de Foguete BF"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"balefire",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.mercury",
+"label": "Desempacotar: Mercúrio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__mercury"
+],
+"n": 1,
+"label": "Pacote de Mercúrio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"mercury",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.pain",
+"label": "Desempacotar: Solução de Pandemônio(III)tantalita",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__pain"
+],
+"n": 1,
+"label": "Pacote de Solução de Pandemônio(III)tantalita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"pain",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.gasoline",
+"label": "Desempacotar: Gasolina",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__gasoline"
+],
+"n": 1,
+"label": "Pacote de Gasolina"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gasoline",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.coalgas",
+"label": "Desempacotar: Gasolina de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__coalgas"
+],
+"n": 1,
+"label": "Pacote de Gasolina de Carvão"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"coalgas",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.fracksol",
+"label": "Desempacotar: Solução de Fraturamento",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__fracksol"
+],
+"n": 1,
+"label": "Pacote de Solução de Fraturamento"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"fracksol",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.carbondioxide",
+"label": "Desempacotar: Dióxido de Carbono",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__carbondioxide"
+],
+"n": 1,
+"label": "Pacote de Dióxido de Carbono"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"carbondioxide",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.helium3",
+"label": "Desempacotar: Hélio-3",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__helium3"
+],
+"n": 1,
+"label": "Pacote de Hélio-3"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"helium3",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.death",
+"label": "Desempacotar: Solução Osmirídica",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__death"
+],
+"n": 1,
+"label": "Pacote de Solução Osmirídica"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"death",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.ethanol",
+"label": "Desempacotar: Etanol",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__ethanol"
+],
+"n": 1,
+"label": "Pacote de Etanol"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"ethanol",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.heavywater",
+"label": "Desempacotar: Água Pesada",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__heavywater"
+],
+"n": 1,
+"label": "Pacote de Água Pesada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"heavywater",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.crackoil",
+"label": "Desempacotar: Óleo Craqueado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__crackoil"
+],
+"n": 1,
+"label": "Pacote de Óleo Craqueado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"crackoil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.coaloil",
+"label": "Desempacotar: Óleo de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__coaloil"
+],
+"n": 1,
+"label": "Pacote de Óleo de Carvão"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"coaloil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.hotcrackoil",
+"label": "Desempacotar: Óleo Craqueado Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__hotcrackoil"
+],
+"n": 1,
+"label": "Pacote de Óleo Craqueado Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"hotcrackoil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.naphtha_crack",
+"label": "Desempacotar: Nafta Craqueada",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__naphtha_crack"
+],
+"n": 1,
+"label": "Pacote de Nafta Craqueada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha_crack",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.lightoil_crack",
+"label": "Desempacotar: Óleo Leve Craqueado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__lightoil_crack"
+],
+"n": 1,
+"label": "Pacote de Óleo Leve Craqueado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"lightoil_crack",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.diesel_crack",
+"label": "Desempacotar: Diesel Craqueado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__diesel_crack"
+],
+"n": 1,
+"label": "Pacote de Diesel Craqueado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"diesel_crack",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.aromatics",
+"label": "Desempacotar: Hidrocarbonetos Aromáticos",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__aromatics"
+],
+"n": 1,
+"label": "Pacote de Hidrocarbonetos Aromáticos"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"aromatics",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.unsaturateds",
+"label": "Desempacotar: Hidrocarbonetos Insaturados",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__unsaturateds"
+],
+"n": 1,
+"label": "Pacote de Hidrocarbonetos Insaturados"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"unsaturateds",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.salient",
+"label": "Desempacotar: Verde Saliente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__salient"
+],
+"n": 1,
+"label": "Pacote de Verde Saliente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"salient",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.xpjuice",
+"label": "Desempacotar: Suco de Experiência",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__xpjuice"
+],
+"n": 1,
+"label": "Pacote de Suco de Experiência"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"xpjuice",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.enderjuice",
+"label": "Desempacotar: Suco de Ender",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__enderjuice"
+],
+"n": 1,
+"label": "Pacote de Suco de Ender"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"enderjuice",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.petroil_leaded",
+"label": "Desempacotar: Petroil com Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__petroil_leaded"
+],
+"n": 1,
+"label": "Pacote de Petroil com Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"petroil_leaded",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.gasoline_leaded",
+"label": "Desempacotar: Gasolina com Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__gasoline_leaded"
+],
+"n": 1,
+"label": "Pacote de Gasolina com Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gasoline_leaded",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.coalgas_leaded",
+"label": "Desempacotar: Gasolina de Carvão com Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__coalgas_leaded"
+],
+"n": 1,
+"label": "Pacote de Gasolina de Carvão com Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"coalgas_leaded",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.sulfuric_acid",
+"label": "Desempacotar: Ácido Sulfúrico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__sulfuric_acid"
+],
+"n": 1,
+"label": "Pacote de Ácido Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"sulfuric_acid",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.coolant_hot",
+"label": "Desempacotar: Refrigerante Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__coolant_hot"
+],
+"n": 1,
+"label": "Pacote de Refrigerante Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"coolant_hot",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.mug",
+"label": "Desempacotar: Cerveja de Raiz de Caneca",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__mug"
+],
+"n": 1,
+"label": "Pacote de Cerveja de Raiz de Caneca"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"mug",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.mug_hot",
+"label": "Desempacotar: Cerveja de Raiz de Caneca Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__mug_hot"
+],
+"n": 1,
+"label": "Pacote de Cerveja de Raiz de Caneca Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"mug_hot",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.woodoil",
+"label": "Desempacotar: Óleo de Madeira",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__woodoil"
+],
+"n": 1,
+"label": "Pacote de Óleo de Madeira"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"woodoil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.coalcreosote",
+"label": "Desempacotar: Creosoto de Alcatrão de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__coalcreosote"
+],
+"n": 1,
+"label": "Pacote de Creosoto de Alcatrão de Carvão"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"coalcreosote",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.seedslurry",
+"label": "Desempacotar: Polpa de Semeadura",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__seedslurry"
+],
+"n": 1,
+"label": "Pacote de Polpa de Semeadura"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"seedslurry",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.nitric_acid",
+"label": "Desempacotar: Ácido Nítrico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__nitric_acid"
+],
+"n": 1,
+"label": "Pacote de Ácido Nítrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"nitric_acid",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.solvent",
+"label": "Desempacotar: Solvente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__solvent"
+],
+"n": 1,
+"label": "Pacote de Solvente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"solvent",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.blood",
+"label": "Desempacotar: Sangue",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__blood"
+],
+"n": 1,
+"label": "Pacote de Sangue"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"blood",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.blood_hot",
+"label": "Desempacotar: Sangue Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__blood_hot"
+],
+"n": 1,
+"label": "Pacote de Sangue Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"blood_hot",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.syngas",
+"label": "Desempacotar: Gás de Síntese",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__syngas"
+],
+"n": 1,
+"label": "Pacote de Gás de Síntese"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"syngas",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.oxyhydrogen",
+"label": "Desempacotar: Oxihidrogênio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__oxyhydrogen"
+],
+"n": 1,
+"label": "Pacote de Oxihidrogênio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oxyhydrogen",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.radiosolvent",
+"label": "Desempacotar: Solvente de Alto Desempenho",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__radiosolvent"
+],
+"n": 1,
+"label": "Pacote de Solvente de Alto Desempenho"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"radiosolvent",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.chlorine",
+"label": "Desempacotar: Gás Cloro",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__chlorine"
+],
+"n": 1,
+"label": "Pacote de Gás Cloro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"chlorine",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.heavyoil_vacuum",
+"label": "Desempacotar: Óleo Pesado a Vácuo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__heavyoil_vacuum"
+],
+"n": 1,
+"label": "Pacote de Óleo Pesado a Vácuo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"heavyoil_vacuum",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.reformate",
+"label": "Desempacotar: Reformado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__reformate"
+],
+"n": 1,
+"label": "Pacote de Reformado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"reformate",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.lightoil_vacuum",
+"label": "Desempacotar: Óleo Leve a Vácuo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__lightoil_vacuum"
+],
+"n": 1,
+"label": "Pacote de Óleo Leve a Vácuo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"lightoil_vacuum",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.sourgas",
+"label": "Desempacotar: Gás Ácido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__sourgas"
+],
+"n": 1,
+"label": "Pacote de Gás Ácido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"sourgas",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.xylene",
+"label": "Desempacotar: Xileno (BTX)",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__xylene"
+],
+"n": 1,
+"label": "Pacote de Xileno (BTX)"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"xylene",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.heatingoil_vacuum",
+"label": "Desempacotar: Óleo de Aquecimento Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__heatingoil_vacuum"
+],
+"n": 1,
+"label": "Pacote de Óleo de Aquecimento Pesado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"heatingoil_vacuum",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.diesel_reform",
+"label": "Desempacotar: Diesel de Alto Cetano",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__diesel_reform"
+],
+"n": 1,
+"label": "Pacote de Diesel de Alto Cetano"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"diesel_reform",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.diesel_crack_reform",
+"label": "Desempacotar: Diesel Craqueado de Alto Cetano",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__diesel_crack_reform"
+],
+"n": 1,
+"label": "Pacote de Diesel Craqueado de Alto Cetano"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"diesel_crack_reform",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.kerosene_reform",
+"label": "Desempacotar: Combustível de Aviação",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__kerosene_reform"
+],
+"n": 1,
+"label": "Pacote de Combustível de Aviação"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"kerosene_reform",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.reformgas",
+"label": "Desempacotar: Gás de Reformado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__reformgas"
+],
+"n": 1,
+"label": "Pacote de Gás de Reformado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"reformgas",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.colloid",
+"label": "Desempacotar: Coloide",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__colloid"
+],
+"n": 1,
+"label": "Pacote de Coloide"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"colloid",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.phosgene",
+"label": "Desempacotar: Fosgênio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__phosgene"
+],
+"n": 1,
+"label": "Pacote de Fosgênio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"phosgene",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.mustardgas",
+"label": "Desempacotar: Gás Mostarda",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__mustardgas"
+],
+"n": 1,
+"label": "Pacote de Gás Mostarda"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"mustardgas",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.iongel",
+"label": "Desempacotar: Gel Iônico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__iongel"
+],
+"n": 1,
+"label": "Pacote de Gel Iônico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"iongel",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.oil_coker",
+"label": "Desempacotar: Petróleo de Coqueria",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__oil_coker"
+],
+"n": 1,
+"label": "Pacote de Petróleo de Coqueria"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oil_coker",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.naphtha_coker",
+"label": "Desempacotar: Nafta de Coqueria",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__naphtha_coker"
+],
+"n": 1,
+"label": "Pacote de Nafta de Coqueria"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha_coker",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.gas_coker",
+"label": "Desempacotar: Gás de Coqueria",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__gas_coker"
+],
+"n": 1,
+"label": "Pacote de Gás de Coqueria"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.egg",
+"label": "Desempacotar: Ovo Dissolvido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__egg"
+],
+"n": 1,
+"label": "Pacote de Ovo Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"egg",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.cholesterol",
+"label": "Desempacotar: Solução de Colesterol",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__cholesterol"
+],
+"n": 1,
+"label": "Pacote de Solução de Colesterol"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"cholesterol",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.estradiol",
+"label": "Desempacotar: Solução de Estradiol",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__estradiol"
+],
+"n": 1,
+"label": "Pacote de Solução de Estradiol"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"estradiol",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.fishoil",
+"label": "Desempacotar: Óleo de Peixe",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__fishoil"
+],
+"n": 1,
+"label": "Pacote de Óleo de Peixe"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"fishoil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.sunfloweroil",
+"label": "Desempacotar: Óleo de Semente de Girassol",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__sunfloweroil"
+],
+"n": 1,
+"label": "Pacote de Óleo de Semente de Girassol"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"sunfloweroil",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.nitroglycerin",
+"label": "Desempacotar: Nitroglicerina",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__nitroglycerin"
+],
+"n": 1,
+"label": "Pacote de Nitroglicerina"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"nitroglycerin",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.redmud",
+"label": "Desempacotar: Lama Vermelha",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__redmud"
+],
+"n": 1,
+"label": "Pacote de Lama Vermelha"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"redmud",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.helium4",
+"label": "Desempacotar: Hélio-4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__helium4"
+],
+"n": 1,
+"label": "Pacote de Hélio-4"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"helium4",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.heavywater_hot",
+"label": "Desempacotar: Água Pesada Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__heavywater_hot"
+],
+"n": 1,
+"label": "Pacote de Água Pesada Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"heavywater_hot",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.sodium",
+"label": "Desempacotar: Sódio Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__sodium"
+],
+"n": 1,
+"label": "Pacote de Sódio Líquido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"sodium",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.sodium_hot",
+"label": "Desempacotar: Sódio Líquido Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__sodium_hot"
+],
+"n": 1,
+"label": "Pacote de Sódio Líquido Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"sodium_hot",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.thorium_salt",
+"label": "Desempacotar: Sal de Tório Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__thorium_salt"
+],
+"n": 1,
+"label": "Pacote de Sal de Tório Líquido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"thorium_salt",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.thorium_salt_hot",
+"label": "Desempacotar: Sal de Tório Líquido Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__thorium_salt_hot"
+],
+"n": 1,
+"label": "Pacote de Sal de Tório Líquido Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"thorium_salt_hot",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.thorium_salt_depleted",
+"label": "Desempacotar: Sal de Tório Líquido Empobrecido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__thorium_salt_depleted"
+],
+"n": 1,
+"label": "Pacote de Sal de Tório Líquido Empobrecido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"thorium_salt_depleted",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.fullerene",
+"label": "Desempacotar: Solução de Fulereno",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__fullerene"
+],
+"n": 1,
+"label": "Pacote de Solução de Fulereno"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"fullerene",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.pheromone",
+"label": "Desempacotar: Feromônio Potencializador",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__pheromone"
+],
+"n": 1,
+"label": "Pacote de Feromônio Potencializador"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"pheromone",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.pheromone_m",
+"label": "Desempacotar: Feromônio Potencializador Modificado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__pheromone_m"
+],
+"n": 1,
+"label": "Pacote de Feromônio Potencializador Modificado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"pheromone_m",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.oil_ds",
+"label": "Desempacotar: Petróleo Bruto Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__oil_ds"
+],
+"n": 1,
+"label": "Pacote de Petróleo Bruto Dessulfurizado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oil_ds",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.hotoil_ds",
+"label": "Desempacotar: Petróleo Bruto Quente Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__hotoil_ds"
+],
+"n": 1,
+"label": "Pacote de Petróleo Bruto Quente Dessulfurizado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"hotoil_ds",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.crackoil_ds",
+"label": "Desempacotar: Óleo Craqueado Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__crackoil_ds"
+],
+"n": 1,
+"label": "Pacote de Óleo Craqueado Dessulfurizado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"crackoil_ds",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.hotcrackoil_ds",
+"label": "Desempacotar: Óleo Craqueado Quente Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__hotcrackoil_ds"
+],
+"n": 1,
+"label": "Pacote de Óleo Craqueado Quente Dessulfurizado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"hotcrackoil_ds",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.naphtha_ds",
+"label": "Desempacotar: Nafta Dessulfurizada",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__naphtha_ds"
+],
+"n": 1,
+"label": "Pacote de Nafta Dessulfurizada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha_ds",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.lightoil_ds",
+"label": "Desempacotar: Óleo Leve Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__lightoil_ds"
+],
+"n": 1,
+"label": "Pacote de Óleo Leve Dessulfurizado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"lightoil_ds",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.stellar_flux",
+"label": "Desempacotar: Fluxo Estelar",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__stellar_flux"
+],
+"n": 1,
+"label": "Pacote de Fluxo Estelar"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"stellar_flux",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.vitriol",
+"label": "Desempacotar: Vitríolo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__vitriol"
+],
+"n": 1,
+"label": "Pacote de Vitríolo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.slop",
+"label": "Desempacotar: Resíduo de Minério",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__slop"
+],
+"n": 1,
+"label": "Pacote de Resíduo de Minério"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"slop",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.lead",
+"label": "Desempacotar: Chumbo Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__lead"
+],
+"n": 1,
+"label": "Pacote de Chumbo Líquido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"lead",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.lead_hot",
+"label": "Desempacotar: Chumbo Líquido Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__lead_hot"
+],
+"n": 1,
+"label": "Pacote de Chumbo Líquido Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"lead_hot",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.perfluoromethyl",
+"label": "Desempacotar: Perfluorometil",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__perfluoromethyl"
+],
+"n": 1,
+"label": "Pacote de Perfluorometil"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"perfluoromethyl",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.perfluoromethyl_cold",
+"label": "Desempacotar: Perfluorometil Frio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__perfluoromethyl_cold"
+],
+"n": 1,
+"label": "Pacote de Perfluorometil Frio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"perfluoromethyl_cold",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.perfluoromethyl_hot",
+"label": "Desempacotar: Perfluorometil Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__perfluoromethyl_hot"
+],
+"n": 1,
+"label": "Pacote de Perfluorometil Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"perfluoromethyl_hot",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.lye",
+"label": "Desempacotar: Soda Cáustica",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__lye"
+],
+"n": 1,
+"label": "Pacote de Soda Cáustica"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"lye",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.sodium_aluminate",
+"label": "Desempacotar: Aluminato de Sódio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__sodium_aluminate"
+],
+"n": 1,
+"label": "Pacote de Aluminato de Sódio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"sodium_aluminate",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.bauxite_solution",
+"label": "Desempacotar: Solução de Bauxita",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__bauxite_solution"
+],
+"n": 1,
+"label": "Pacote de Solução de Bauxita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"bauxite_solution",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.alumina",
+"label": "Desempacotar: Alumina",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__alumina"
+],
+"n": 1,
+"label": "Pacote de Alumina"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"alumina",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.air",
+"label": "Desempacotar: Ar Comprimido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__air"
+],
+"n": 1,
+"label": "Pacote de Ar Comprimido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"air",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.concrete",
+"label": "Desempacotar: Concreto Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__concrete"
+],
+"n": 1,
+"label": "Pacote de Concreto Líquido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"concrete",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.dhc",
+"label": "Desempacotar: Hidrocarboneto Deuterado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__dhc"
+],
+"n": 1,
+"label": "Pacote de Hidrocarboneto Deuterado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"dhc",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.airblast",
+"label": "Desempacotar: Sopro de Ar Quente",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__airblast"
+],
+"n": 1,
+"label": "Pacote de Sopro de Ar Quente"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"airblast",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.flue",
+"label": "Desempacotar: Gás de Combustão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__flue"
+],
+"n": 1,
+"label": "Pacote de Gás de Combustão"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"flue",
+32000
+]
+],
+"pools": []
+},
+{
+"name": "ass.unpackagehbmfluid.titanium_tetrachloride",
+"label": "Desempacotar: Titanium_Tetrachloride",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1119",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:fluid_pack_full__titanium_tetrachloride"
+],
+"n": 1,
+"label": "Pacote de Titanium Tetrachloride"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluid_pack_empty",
+1,
+1.0
+]
+],
+"fout": [
+[
+"titanium_tetrachloride",
+32000
+]
+],
+"pools": []
+}
+],
+"skipped": 233
+}

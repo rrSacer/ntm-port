@@ -1,0 +1,2231 @@
+{
+"station": "centrifuge",
+"source": "content/machine-recipes/centrifuge.json",
+"recipes": [
+{
+"name": "source_line_48",
+"label": "Fragmento de Minério de Terra Rara",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:48",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:chunk_ore__rare"
+],
+"n": 1,
+"label": "Fragmento de Minério de Terra Rara"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_cobalt_tiny",
+2,
+1.0
+],
+[
+"ntm:powder_boron_tiny",
+2,
+1.0
+],
+[
+"ntm:powder_niobium_tiny",
+2,
+1.0
+],
+[
+"ntm:nugget_zirconium",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_54",
+"label": "coal ore",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:54",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"minecraft:coal_ore"
+],
+"n": 1,
+"label": "coal ore"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_coal",
+2,
+1.0
+],
+[
+"ntm:powder_coal",
+2,
+1.0
+],
+[
+"ntm:powder_coal",
+2,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_60",
+"label": "Minério de Linhito",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:60",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_lignite"
+],
+"n": 1,
+"label": "Minério de Linhito"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_lignite",
+2,
+1.0
+],
+[
+"ntm:powder_lignite",
+2,
+1.0
+],
+[
+"ntm:powder_lignite",
+2,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_66",
+"label": "Minério de Ferro em Xisto",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:66",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_iron"
+],
+"n": 1,
+"label": "Minério de Ferro em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_72",
+"label": "Minério de Ouro em Xisto",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:72",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_gold"
+],
+"n": 1,
+"label": "Minério de Ouro em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_gold",
+1,
+1.0
+],
+[
+"ntm:powder_gold",
+1,
+1.0
+],
+[
+"ntm:powder_gold",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_78",
+"label": "Cascalho de Diamante",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:78",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:gravel_diamond",
+"ntm:ore_sellafield_diamond"
+],
+"n": 1,
+"label": "Cascalho de Diamante"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_diamond",
+1,
+1.0
+],
+[
+"ntm:powder_diamond",
+1,
+1.0
+],
+[
+"ntm:powder_diamond",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_84",
+"label": "Minério de Esmeralda Sellafita",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:84",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_sellafield_emerald"
+],
+"n": 1,
+"label": "Minério de Esmeralda Sellafita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_emerald",
+1,
+1.0
+],
+[
+"ntm:powder_emerald",
+1,
+1.0
+],
+[
+"ntm:powder_emerald",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_90",
+"label": "Minério de Titânio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:90",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_titanium"
+],
+"n": 1,
+"label": "Minério de Titânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_titanium",
+1,
+1.0
+],
+[
+"ntm:chunk_ore__ilmenite",
+2,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_96",
+"label": "nether quartz ore",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:96",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"minecraft:nether_quartz_ore"
+],
+"n": 1,
+"label": "nether quartz ore"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_quartz",
+1,
+1.0
+],
+[
+"ntm:powder_quartz",
+1,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+],
+[
+"minecraft:netherrack",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_102",
+"label": "Minério de Tungstênio do Nether",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:102",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_tungsten",
+"ntm:ore_tungsten"
+],
+"n": 1,
+"label": "Minério de Tungstênio do Nether"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_tungsten",
+1,
+1.0
+],
+[
+"ntm:powder_tungsten",
+1,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_108",
+"label": "Minério de Cobre",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:108",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_copper",
+"ntm:ore_gneiss_copper"
+],
+"n": 1,
+"label": "Minério de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_copper",
+1,
+1.0
+],
+[
+"ntm:powder_copper",
+1,
+1.0
+],
+[
+"ntm:powder_gold",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_114",
+"label": "Minério Rico em Alumínio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:114",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_aluminium"
+],
+"n": 1,
+"label": "Minério Rico em Alumínio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:chunk_ore__cryolite",
+2,
+1.0
+],
+[
+"ntm:powder_titanium",
+1,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_120",
+"label": "Minério de Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:120",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_lead"
+],
+"n": 1,
+"label": "Minério de Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_lead",
+1,
+1.0
+],
+[
+"ntm:powder_lead",
+1,
+1.0
+],
+[
+"ntm:powder_gold",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_126",
+"label": "Minério de Schrabídio em Xisto",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:126",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_schrabidium",
+"ntm:ore_nether_schrabidium",
+"ntm:ore_schrabidium",
+"ntm:ore_sellafield_schrabidium"
+],
+"n": 1,
+"label": "Minério de Schrabídio em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_schrabidium",
+1,
+1.0
+],
+[
+"ntm:powder_schrabidium",
+1,
+1.0
+],
+[
+"ntm:nugget_solinium",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_132",
+"label": "Minério de Terras Raras em Xisto",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:132",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_rare",
+"ntm:ore_rare"
+],
+"n": 1,
+"label": "Minério de Terras Raras em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_desh_mix",
+1,
+1.0
+],
+[
+"ntm:nugget_zirconium",
+1,
+1.0
+],
+[
+"ntm:nugget_zirconium",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_138",
+"label": "Minério de Plutônio do Nether",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:138",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_plutonium"
+],
+"n": 1,
+"label": "Minério de Plutônio do Nether"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_plutonium",
+1,
+1.0
+],
+[
+"ntm:powder_plutonium",
+1,
+1.0
+],
+[
+"ntm:nugget_polonium",
+3,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_144",
+"label": "Minério de Urânio em Xisto",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:144",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_uranium",
+"ntm:ore_gneiss_uranium_scorched",
+"ntm:ore_nether_uranium",
+"ntm:ore_nether_uranium_scorched",
+"ntm:ore_sellafield_uranium_scorched",
+"ntm:ore_uranium",
+"ntm:ore_uranium_scorched"
+],
+"n": 1,
+"label": "Minério de Urânio em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_uranium",
+1,
+1.0
+],
+[
+"ntm:powder_uranium",
+1,
+1.0
+],
+[
+"ntm:nugget_ra226",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_150",
+"label": "Minério de Tório",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:150",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_thorium"
+],
+"n": 1,
+"label": "Minério de Tório"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_thorium",
+1,
+1.0
+],
+[
+"ntm:powder_thorium",
+1,
+1.0
+],
+[
+"ntm:powder_uranium",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_156",
+"label": "Minério de Berílio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:156",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_beryllium"
+],
+"n": 1,
+"label": "Minério de Berílio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_beryllium",
+1,
+1.0
+],
+[
+"ntm:powder_beryllium",
+1,
+1.0
+],
+[
+"ntm:powder_emerald",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_162",
+"label": "Basalto Rico em Fluorita",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:162",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_basalt__fluorite",
+"ntm:ore_fluorite"
+],
+"n": 1,
+"label": "Basalto Rico em Fluorita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluorite",
+3,
+1.0
+],
+[
+"ntm:fluorite",
+3,
+1.0
+],
+[
+"ntm:gem_sodalite",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_168",
+"label": "redstone ore",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:168",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"minecraft:redstone_ore"
+],
+"n": 1,
+"label": "redstone ore"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:redstone",
+3,
+1.0
+],
+[
+"minecraft:redstone",
+3,
+1.0
+],
+[
+"ntm:nugget_mercury",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_174",
+"label": "Trixita",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:174",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_tikite"
+],
+"n": 1,
+"label": "Trixita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_plutonium",
+1,
+1.0
+],
+[
+"ntm:powder_cobalt",
+2,
+1.0
+],
+[
+"ntm:powder_niobium",
+2,
+1.0
+],
+[
+"minecraft:end_stone",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_180",
+"label": "lapis ore",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:180",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"minecraft:lapis_ore"
+],
+"n": 1,
+"label": "lapis ore"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_lapis",
+6,
+1.0
+],
+[
+"ntm:powder_cobalt_tiny",
+1,
+1.0
+],
+[
+"ntm:gem_sodalite",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_192",
+"label": "Minério de Fósforo do Nether",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:192",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_fire"
+],
+"n": 1,
+"label": "Minério de Fósforo do Nether"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:blaze_powder",
+2,
+1.0
+],
+[
+"ntm:powder_fire",
+2,
+1.0
+],
+[
+"ntm:ingot_phosphorus",
+1,
+1.0
+],
+[
+"minecraft:netherrack",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_198",
+"label": "Minério de Cobalto",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:198",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:ore_cobalt",
+"ntm:ore_nether_cobalt"
+],
+"n": 1,
+"label": "Minério de Cobalto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_cobalt",
+2,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"ntm:powder_copper",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_204",
+"label": "Pó de Tectita",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:204",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:powder_tektite"
+],
+"n": 1,
+"label": "Pó de Tectita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_meteorite_tiny",
+1,
+1.0
+],
+[
+"ntm:powder_paleogenite_tiny",
+1,
+1.0
+],
+[
+"ntm:powder_meteorite_tiny",
+1,
+1.0
+],
+[
+"ntm:dust",
+6,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_216",
+"label": "Cinzas de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:216",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:powder_ash__coal"
+],
+"n": 1,
+"label": "Cinzas de Carvão"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_coal_tiny",
+2,
+1.0
+],
+[
+"ntm:powder_boron_tiny",
+1,
+1.0
+],
+[
+"ntm:dust_tiny",
+6,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_303",
+"label": "blaze rod",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:303",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"minecraft:blaze_rod"
+],
+"n": 1,
+"label": "blaze rod"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:blaze_powder",
+1,
+1.0
+],
+[
+"minecraft:blaze_powder",
+1,
+1.0
+],
+[
+"ntm:powder_fire",
+1,
+1.0
+],
+[
+"ntm:powder_fire",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_305",
+"label": "Cristais de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:305",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_coal"
+],
+"n": 1,
+"label": "Cristais de Carvão"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_coal",
+3,
+1.0
+],
+[
+"ntm:powder_coal",
+3,
+1.0
+],
+[
+"ntm:powder_coal",
+3,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_306",
+"label": "Cristais de Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:306",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_iron"
+],
+"n": 1,
+"label": "Cristais de Ferro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_iron",
+2,
+1.0
+],
+[
+"ntm:powder_iron",
+2,
+1.0
+],
+[
+"ntm:powder_titanium",
+1,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_307",
+"label": "Cristais de Ouro",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:307",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_gold"
+],
+"n": 1,
+"label": "Cristais de Ouro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_gold",
+2,
+1.0
+],
+[
+"ntm:powder_gold",
+2,
+1.0
+],
+[
+"ntm:nugget_mercury",
+1,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_308",
+"label": "Cristais de Redstone",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:308",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_redstone"
+],
+"n": 1,
+"label": "Cristais de Redstone"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:redstone",
+3,
+1.0
+],
+[
+"minecraft:redstone",
+3,
+1.0
+],
+[
+"minecraft:redstone",
+3,
+1.0
+],
+[
+"ntm:nugget_mercury",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_309",
+"label": "Cristais de Lápis-Lazúli",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:309",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_lapis"
+],
+"n": 1,
+"label": "Cristais de Lápis-Lazúli"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_lapis",
+4,
+1.0
+],
+[
+"ntm:powder_lapis",
+4,
+1.0
+],
+[
+"ntm:powder_cobalt",
+1,
+1.0
+],
+[
+"ntm:gem_sodalite",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_310",
+"label": "Cristais de Diamante",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:310",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_diamond"
+],
+"n": 1,
+"label": "Cristais de Diamante"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_diamond",
+1,
+1.0
+],
+[
+"ntm:powder_diamond",
+1,
+1.0
+],
+[
+"ntm:powder_diamond",
+1,
+1.0
+],
+[
+"ntm:powder_diamond",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_311",
+"label": "Cristais de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:311",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_uranium"
+],
+"n": 1,
+"label": "Cristais de Urânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_uranium",
+2,
+1.0
+],
+[
+"ntm:powder_uranium",
+2,
+1.0
+],
+[
+"ntm:nugget_ra226",
+2,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_312",
+"label": "Cristais de Tório",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:312",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_thorium"
+],
+"n": 1,
+"label": "Cristais de Tório"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_thorium",
+2,
+1.0
+],
+[
+"ntm:powder_thorium",
+2,
+1.0
+],
+[
+"ntm:powder_uranium",
+1,
+1.0
+],
+[
+"ntm:nugget_ra226",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_313",
+"label": "Cristais de Plutônio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:313",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_plutonium"
+],
+"n": 1,
+"label": "Cristais de Plutônio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_plutonium",
+2,
+1.0
+],
+[
+"ntm:powder_plutonium",
+2,
+1.0
+],
+[
+"ntm:powder_polonium",
+1,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_314",
+"label": "Cristais de Titânio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:314",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_titanium"
+],
+"n": 1,
+"label": "Cristais de Titânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_titanium",
+2,
+1.0
+],
+[
+"ntm:powder_titanium",
+2,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_315",
+"label": "Cristais de Enxofre",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:315",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_sulfur"
+],
+"n": 1,
+"label": "Cristais de Enxofre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:sulfur",
+4,
+1.0
+],
+[
+"ntm:sulfur",
+4,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"ntm:nugget_mercury",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_316",
+"label": "Cristais de Salitre",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:316",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_niter"
+],
+"n": 1,
+"label": "Cristais de Salitre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:niter",
+3,
+1.0
+],
+[
+"ntm:niter",
+3,
+1.0
+],
+[
+"ntm:niter",
+3,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_317",
+"label": "Cristais de Cobre",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:317",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_copper"
+],
+"n": 1,
+"label": "Cristais de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_copper",
+2,
+1.0
+],
+[
+"ntm:powder_copper",
+2,
+1.0
+],
+[
+"ntm:sulfur",
+1,
+1.0
+],
+[
+"ntm:powder_cobalt_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_318",
+"label": "Cristais de Tungstênio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:318",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_tungsten"
+],
+"n": 1,
+"label": "Cristais de Tungstênio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_tungsten",
+2,
+1.0
+],
+[
+"ntm:powder_tungsten",
+2,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_319",
+"label": "Cristais de Alumínio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:319",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_aluminium"
+],
+"n": 1,
+"label": "Cristais de Alumínio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:chunk_ore__cryolite",
+3,
+1.0
+],
+[
+"ntm:powder_titanium",
+1,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_320",
+"label": "Cristais de Fluorita",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:320",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_fluorite"
+],
+"n": 1,
+"label": "Cristais de Fluorita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fluorite",
+4,
+1.0
+],
+[
+"ntm:fluorite",
+4,
+1.0
+],
+[
+"ntm:gem_sodalite",
+2,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_321",
+"label": "Cristais de Berílio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:321",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_beryllium"
+],
+"n": 1,
+"label": "Cristais de Berílio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_beryllium",
+2,
+1.0
+],
+[
+"ntm:powder_beryllium",
+2,
+1.0
+],
+[
+"ntm:powder_quartz",
+1,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_322",
+"label": "Cristais de Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:322",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_lead"
+],
+"n": 1,
+"label": "Cristais de Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_lead",
+2,
+1.0
+],
+[
+"ntm:powder_lead",
+2,
+1.0
+],
+[
+"ntm:powder_gold",
+1,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_323",
+"label": "Cristais de Schraranium",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:323",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_schraranium"
+],
+"n": 1,
+"label": "Cristais de Schraranium"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_schrabidium",
+2,
+1.0
+],
+[
+"ntm:nugget_schrabidium",
+2,
+1.0
+],
+[
+"ntm:nugget_uranium",
+2,
+1.0
+],
+[
+"ntm:nugget_neptunium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_324",
+"label": "Cristais de Schrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:324",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_schrabidium"
+],
+"n": 1,
+"label": "Cristais de Schrabídio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_schrabidium",
+2,
+1.0
+],
+[
+"ntm:powder_schrabidium",
+2,
+1.0
+],
+[
+"ntm:powder_plutonium",
+1,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_325",
+"label": "Cristais de Terras Raras",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:325",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_rare"
+],
+"n": 1,
+"label": "Cristais de Terras Raras"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_desh_mix",
+1,
+1.0
+],
+[
+"ntm:powder_desh_mix",
+1,
+1.0
+],
+[
+"ntm:nugget_zirconium",
+2,
+1.0
+],
+[
+"ntm:nugget_zirconium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_326",
+"label": "Cristais de Fósforo",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:326",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_phosphorus"
+],
+"n": 1,
+"label": "Cristais de Fósforo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_fire",
+3,
+1.0
+],
+[
+"ntm:powder_fire",
+3,
+1.0
+],
+[
+"ntm:ingot_phosphorus",
+2,
+1.0
+],
+[
+"minecraft:blaze_powder",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_327",
+"label": "Cristais de Trixita",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:327",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_trixite"
+],
+"n": 1,
+"label": "Cristais de Trixita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_plutonium",
+2,
+1.0
+],
+[
+"ntm:powder_cobalt",
+3,
+1.0
+],
+[
+"ntm:powder_niobium",
+2,
+1.0
+],
+[
+"ntm:powder_nitan_mix",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_328",
+"label": "Cristais de Lítio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:328",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_lithium"
+],
+"n": 1,
+"label": "Cristais de Lítio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_lithium",
+2,
+1.0
+],
+[
+"ntm:powder_lithium",
+2,
+1.0
+],
+[
+"ntm:powder_quartz",
+1,
+1.0
+],
+[
+"ntm:fluorite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_329",
+"label": "Cristais de Metal Estelar",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:329",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_starmetal"
+],
+"n": 1,
+"label": "Cristais de Metal Estelar"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_dura_steel",
+3,
+1.0
+],
+[
+"ntm:powder_cobalt",
+3,
+1.0
+],
+[
+"ntm:powder_astatine",
+2,
+1.0
+],
+[
+"ntm:nugget_mercury",
+5,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "source_line_330",
+"label": "Cristais de Cobalto",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:330",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:crystal_cobalt"
+],
+"n": 1,
+"label": "Cristais de Cobalto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_cobalt",
+2,
+1.0
+],
+[
+"ntm:powder_iron",
+3,
+1.0
+],
+[
+"ntm:powder_copper",
+3,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+}
+],
+"skipped": 25
+}
