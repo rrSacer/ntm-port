@@ -242,3 +242,40 @@ fn iron_is_conserved_from_crucible_to_mold() {
     }
     assert_eq!(taken, 5, "não fundiu e moldou os 5");
 }
+
+/// A bomb assembled through transactions before its block had engine slots:
+/// on its first view with empty slots, its parts go to the slots, once each,
+/// and the bomb keeps them (`Layout::Bomb`).
+#[test]
+fn a_bomb_assembled_before_the_slots_shows_its_parts_in_them() {
+    for id in ["ntm:nuke_boy", "ntm:nuke_gadget", "ntm:nuke_man", "ntm:nuke_mike", "ntm:nuke_tsar", "ntm:nuke_n2", "ntm:nuke_fstbmb"] {
+        let mut g = game();
+        let state = format!("{id}[lit=false]");
+        g.place(AT, &state);
+        g.run(2);
+        let kind = crate::bomb::bomb_type(id).unwrap();
+        g.open(AT);
+        for s in kind.slots {
+            g.hold(s.item, 1);
+            g.click(crate::bomb::actions::INSERT);
+            for _ in 0..200 {
+                if g.held().is_none() && g.server.txs().is_empty() {
+                    break;
+                }
+                g.run(1);
+            }
+            assert_eq!(g.held(), None, "{id}: {} not taken", s.item);
+        }
+        // The patched engine: the block gets its (empty) slots.
+        g.world.borrow_mut().engine.insert((OW.to_string(), AT), (vec![None; kind.slots.len()], Vec::new()));
+        g.run(5);
+        let slots = slots(&g, AT);
+        let want: Vec<Option<Stack>> = kind.slots.iter().map(|s| Some(Stack::new(s.item, 1))).collect();
+        assert_eq!(slots, want, "{id}");
+        let parts = match g.ready().world.machines.get(&(OW.to_string(), AT)).map(|m| m.data.clone()) {
+            Some(Data::Bomb(b)) => b.slots.iter().flatten().count(),
+            _ => 0,
+        };
+        assert_eq!(parts, kind.slots.len(), "{id}: the bomb lost parts");
+    }
+}
