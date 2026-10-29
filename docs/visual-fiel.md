@@ -417,9 +417,32 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
   receita da lista, fica para a aceitação do agente das bombas.
 - **Captura:** `img/visual-anvil.png`.
 
+## 3f. Máquinas com lógica (etapa d.2)
+
+| Máquina | Lógica no port | Slots na tela | Multibloco e portas |
+|---|---|---|---|
+| Planta química | `Crafter` (`Layout::Crafter`, entradas 0..3, saídas 3..6) | 3 entradas e 3 saídas onde o NTM as tem; os 6 tanques; energia, progresso, os LEDs; a lista de receitas no slot de receita | 3×3×3, offset 1; o anel de baixo passa energia e fluido (`getAllPorts`) |
+| Centrífuga | `Crafter` (entrada 0, saídas 1..5) | a entrada e as 4 saídas; energia; as 4 colunas de progresso, uma depois da outra (`from` na barra) | torre 1×4×1; a energia entra pelo núcleo |
+| Centrífuga de gás | `Slotted` (agente das bombas) | as 4 saídas, o upgrade de velocidade (`max` 1); bateria e identificador sem lógica (`accept` vazio); tanques com a textura do UF6, colada no canto livre | torre 1×4×1 |
+| Prensa a carvão | `Slotted` (agente das bombas) | combustível (os itens com `burn_ticks`), matriz (`max` 1), a entrada (a tabela da prensa), a saída; a chama e a cabeça da prensa | torre 1×3×1 |
+| Prensa elétrica | `Slotted` (agente das bombas) | matriz, entrada, saída; bateria e upgrade sem lógica; energia e cabeça | torre 1×3×1 |
+
+- **Crafter com várias saídas:** o `Layout::Crafter` virou uma faixa de entradas e uma de saídas, cada uma uma vista
+  dos montes da máquina.
+  - A centrífuga escolhe a receita pelo que os slots põem (`pick_by_items`), como o `INSERT`.
+  - Os valores da tela ganham os 6 tanques (índices 12–29), depois dos 12 da montadora, que não mudam.
+- **Slots sem lógica no port:** a bateria, os upgrades e os recipientes de fluido ficam de fora (planta química,
+  centrífuga) ou com `accept` vazio (prensas, centrífuga de gás), em vez de aceitar itens que não fazem nada.
+- **Falta:**
+  - o ponteiro de velocidade da prensa a carvão (o `drawSmoothGauge`), hoje um tooltip;
+  - as animações (o `Spinner` e o `Slider` da planta química, a cabeça da prensa);
+  - o tipo de fluido real nos tanques da centrífuga de gás (hoje sempre UF6).
+- **Em jogo:** as 5 colocadas com os dummies certos (26, 3, 3, 2, 2) e as 5 telas abertas
+  (`img/visual-machines-d2.png`). A planta química pede escala de GUI ≤ 2 em 720p, como a montadora.
+
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 26 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 27 commits):
 
 | Commit | O quê |
 |---|---|
@@ -449,6 +472,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(world): a machine slot may hold fewer items` | `max` por slot (as peças das bombas) |
 | `feat(render): a machine screen button may send another id on shift` | `shift` (a bigorna) |
 | `feat(client): list a machine screen's buttons for the control socket` | `horizon-ctl screen` e `click-button` |
+| `feat(render): a screen bar may start filling past a value` | `from` (as colunas da centrífuga) |
 
 **No port:**
 
