@@ -282,7 +282,25 @@ da firebox e 26 moldes.
   - uma queda entre o save do mundo e o do mod, nos dois sentidos, não duplica
     nem perde metal;
   - o ferro conservado do cadinho até o molde.
-- **Em jogo:** pendente, à espera das telas e modelos do agente de visual.
+- **Em jogo** (motor `ntm-visual`, Xvfb `:15`, mudo, `tools/test-game/foundry.py`;
+  mundo criativo, seed 1768123; sem "took too long"):
+  - **`fundir`, etapas 1 e 3:** firebox com carvão; o cadinho posto agachado,
+    com o núcleo sobre o da firebox; 3 lingotes de ferro por shift-clique.
+    Fundem e caem no molde de lingote, 2 blocos atrás da frente. Os 3 lingotes
+    são retirados em 70 s.
+  - **`canais`, etapa 2:** canal, canal, tanque e saída, com um molde sob a
+    saída. Os lingotes saem no molde (2 em 25 s).
+  - **`reter` e `voltar`:** o molde sai de sob a saída; o metal fica no tanque
+    (360 quanta pelo save do mod) e o jogo é fechado. Ao reabrir, o molde
+    volta e saem os 5 lingotes, em 72 s.
+  - A aceitação achou dois defeitos, corrigidos com teste no mundo falso:
+    - **bloco novo com valores zerados.** Num bloco recém-posto, o `get-data`
+      devolve zeros e o material 0 é pedra. Canais e tanques novos só
+      aceitavam pedra, e a saída nova filtrava pedra. Agora o material é salvo
+      como id + 1, com 0 = nenhum.
+    - **rede de canais presa a um metal.** Um canal vazio guardava o material
+      na checagem da rede. Agora, como no NTM, só canais com metal definem o
+      material da rede.
 
 ## Bigorna (`anvil.rs`), no motor com slots
 
