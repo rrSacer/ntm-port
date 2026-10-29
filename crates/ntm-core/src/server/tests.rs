@@ -61,6 +61,8 @@ struct World {
     /// slots and values, saved with the world (a test's autosave copies
     /// them with it). Only the blocks a test gives slots have them.
     engine: BTreeMap<(String, Pos), (container_bridge::Slots, Vec<i32>)>,
+    /// Screen buttons pressed on engine screens, taken on the next tick.
+    presses: Vec<(String, Pos, u32)>,
     /// Item ids the game doesn't have (an older content mod): a line
     /// naming one doesn't parse.
     unknown_items: BTreeSet<String>,
@@ -91,6 +93,7 @@ impl World {
             tags: content_tags(),
             nbt: BTreeMap::new(),
             engine: BTreeMap::new(),
+            presses: Vec::new(),
             unknown_items: BTreeSet::new(),
         };
         for x in -32..32 {
@@ -503,6 +506,9 @@ impl ServerHost for SHost {
             }
             _ => false,
         }
+    }
+    fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
+        std::mem::take(&mut self.world.borrow_mut().presses).into_iter().map(|(d, p, b)| ("p1".to_string(), d, p, b)).collect()
     }
     fn machine_data(&mut self, dim: &str, p: Pos) -> Option<Vec<i32>> {
         self.world.borrow().engine.get(&(dim.to_string(), p)).map(|e| e.1.clone())
@@ -1829,3 +1835,5 @@ mod blastfurnace_tests;
 mod foundry_tests;
 
 mod slot_items_tests;
+
+mod anvil_tests;
