@@ -1,99 +1,18 @@
 {
   "variants": {
-    "facing=north,honey_level=0": {
-      "model": "ntm:block/foundry_outlet_0",
-      "y": 0
+    "facing=north": {
+      "model": "ntm:block/visual/foundry_outlet"
     },
-    "facing=north,honey_level=1": {
-      "model": "ntm:block/foundry_outlet_1",
-      "y": 0
-    },
-    "facing=north,honey_level=2": {
-      "model": "ntm:block/foundry_outlet_2",
-      "y": 0
-    },
-    "facing=north,honey_level=3": {
-      "model": "ntm:block/foundry_outlet_3",
-      "y": 0
-    },
-    "facing=north,honey_level=4": {
-      "model": "ntm:block/foundry_outlet_4",
-      "y": 0
-    },
-    "facing=north,honey_level=5": {
-      "model": "ntm:block/foundry_outlet_5",
-      "y": 0
-    },
-    "facing=east,honey_level=0": {
-      "model": "ntm:block/foundry_outlet_0",
+    "facing=east": {
+      "model": "ntm:block/visual/foundry_outlet",
       "y": 90
     },
-    "facing=east,honey_level=1": {
-      "model": "ntm:block/foundry_outlet_1",
-      "y": 90
-    },
-    "facing=east,honey_level=2": {
-      "model": "ntm:block/foundry_outlet_2",
-      "y": 90
-    },
-    "facing=east,honey_level=3": {
-      "model": "ntm:block/foundry_outlet_3",
-      "y": 90
-    },
-    "facing=east,honey_level=4": {
-      "model": "ntm:block/foundry_outlet_4",
-      "y": 90
-    },
-    "facing=east,honey_level=5": {
-      "model": "ntm:block/foundry_outlet_5",
-      "y": 90
-    },
-    "facing=south,honey_level=0": {
-      "model": "ntm:block/foundry_outlet_0",
+    "facing=south": {
+      "model": "ntm:block/visual/foundry_outlet",
       "y": 180
     },
-    "facing=south,honey_level=1": {
-      "model": "ntm:block/foundry_outlet_1",
-      "y": 180
-    },
-    "facing=south,honey_level=2": {
-      "model": "ntm:block/foundry_outlet_2",
-      "y": 180
-    },
-    "facing=south,honey_level=3": {
-      "model": "ntm:block/foundry_outlet_3",
-      "y": 180
-    },
-    "facing=south,honey_level=4": {
-      "model": "ntm:block/foundry_outlet_4",
-      "y": 180
-    },
-    "facing=south,honey_level=5": {
-      "model": "ntm:block/foundry_outlet_5",
-      "y": 180
-    },
-    "facing=west,honey_level=0": {
-      "model": "ntm:block/foundry_outlet_0",
-      "y": 270
-    },
-    "facing=west,honey_level=1": {
-      "model": "ntm:block/foundry_outlet_1",
-      "y": 270
-    },
-    "facing=west,honey_level=2": {
-      "model": "ntm:block/foundry_outlet_2",
-      "y": 270
-    },
-    "facing=west,honey_level=3": {
-      "model": "ntm:block/foundry_outlet_3",
-      "y": 270
-    },
-    "facing=west,honey_level=4": {
-      "model": "ntm:block/foundry_outlet_4",
-      "y": 270
-    },
-    "facing=west,honey_level=5": {
-      "model": "ntm:block/foundry_outlet_5",
+    "facing=west": {
+      "model": "ntm:block/visual/foundry_outlet",
       "y": 270
     }
   }

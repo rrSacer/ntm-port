@@ -2079,6 +2079,77 @@
         "slots": [],
         "data": 4
       },
+      "block_model": {
+        "source": "RenderFoundryOutlet, metadata 2 (north); no filter or lock drawn",
+        "facing": true,
+        "textures": {
+          "top": "foundry_outlet_top",
+          "side": "foundry_outlet_side",
+          "bottom": "foundry_outlet_bottom",
+          "inner": "foundry_outlet_inner",
+          "front": "foundry_outlet_front"
+        },
+        "elements": [
+          [
+            [
+              5,
+              0,
+              10
+            ],
+            [
+              11,
+              2,
+              16
+            ],
+            {
+              "down": "bottom",
+              "up": "bottom",
+              "north": "front",
+              "south": "front",
+              "west": "side",
+              "east": "side"
+            }
+          ],
+          [
+            [
+              5,
+              2,
+              10
+            ],
+            [
+              6,
+              8,
+              16
+            ],
+            {
+              "west": "side",
+              "east": "inner",
+              "up": "top",
+              "north": "front",
+              "south": "front"
+            }
+          ],
+          [
+            [
+              10,
+              2,
+              10
+            ],
+            [
+              11,
+              8,
+              16
+            ],
+            {
+              "east": "side",
+              "west": "inner",
+              "up": "top",
+              "north": "front",
+              "south": "front"
+            }
+          ]
+        ]
+      },
       "liquid": {
         "liquids": []
       }
