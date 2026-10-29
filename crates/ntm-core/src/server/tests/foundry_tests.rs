@@ -214,3 +214,40 @@ fn steel_pours_into_an_ingot_mold_and_casts() {
     g.run(20);
     assert_eq!(crucible(&mut g, CORE).recipe_stack, vec![("steel".to_string(), 28)], "com o lingote no molde, nada mais entra");
 }
+
+/// The in-game line (`tools/test-game/foundry.py canais`): a crucible
+/// facing east pours its waste 2 blocks west onto a channel; channel,
+/// tank, an outlet facing west, and a mold one block under the outlet.
+/// Every block is new, with the engine's zeros as its saved values (a
+/// block entity the mod never wrote): material 0 is none, not stone.
+#[test]
+fn a_line_of_channel_tank_and_outlet_fills_a_mold() {
+    let mut g = game();
+    let core = [0, 71, 0];
+    let (ch1, ch2, tank, outlet, mold) = ([-2, 70, 0], [-3, 70, 0], [-4, 70, 0], [-5, 70, 0], [-5, 69, 0]);
+    // (position, block, engine slots, data length: `horizon_machine` `data`)
+    let line: [(Pos, &str, usize, usize); 6] = [
+        (core, "ntm:machine_crucible[facing=east,honey_level=0]", 10, 128),
+        (ch1, "ntm:foundry_channel[facing=south,honey_level=0]", 0, 5),
+        (ch2, "ntm:foundry_channel[facing=south,honey_level=0]", 0, 5),
+        (tank, "ntm:foundry_tank[facing=south,honey_level=0]", 0, 5),
+        (outlet, "ntm:foundry_outlet[facing=west,honey_level=0]", 0, 4),
+        (mold, "ntm:foundry_mold[facing=west,honey_level=0]", 2, 8),
+    ];
+    for (p, state, slots, data) in line {
+        g.place(p, state);
+        g.world.borrow_mut().engine.insert((OW.to_string(), p), (vec![None; slots], vec![0; data]));
+    }
+    g.world.borrow_mut().engine.get_mut(&(OW.to_string(), mold)).unwrap().0[0] = Some(Stack::new("ntm:mold__ingot", 1));
+    g.run(2);
+    edit(&mut g, core, |d| {
+        let Data::Crucible(c) = d else { panic!() };
+        c.waste_stack = vec![("iron".into(), 144)];
+    });
+    g.run(600);
+    let cast = match g.machine(mold).data {
+        Data::Mold(c) => (g.world.borrow().engine[&(OW.to_string(), mold)].0[1].clone(), c.melt.amount),
+        other => panic!("{other:?}"),
+    };
+    assert_eq!(cast.0, Some(Stack::new("minecraft:iron_ingot", 1)), "o molde sob a saída: {cast:?}; tanque {:?}, canais {:?} {:?}", melt_at(&mut g, tank), melt_at(&mut g, ch1), melt_at(&mut g, ch2));
+}

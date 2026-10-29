@@ -131,12 +131,14 @@ impl Tables {
         self.by_name.get(name).map(|&i| &self.materials[i])
     }
 
-    /// A material's id for an engine value (-1: none), and back.
+    /// A material as an engine value, its id + 1 (0: none, so the zeros
+    /// of a block entity the mod never wrote read as nothing; stone is id
+    /// 0), and back.
     pub fn mat_id(&self, name: Option<&str>) -> i32 {
-        name.and_then(|n| self.material(n)).map_or(-1, |m| m.id as i32)
+        name.and_then(|n| self.material(n)).map_or(0, |m| m.id as i32 + 1)
     }
-    pub fn mat_name(&self, id: i32) -> Option<String> {
-        self.materials.iter().find(|m| m.id as i32 == id).map(|m| m.name.clone())
+    pub fn mat_name(&self, code: i32) -> Option<String> {
+        self.materials.iter().find(|m| m.id as i32 + 1 == code).map(|m| m.name.clone())
     }
 
     /// A stack as engine values: count, then (id, quanta) pairs; and back

@@ -194,8 +194,11 @@ impl Melt {
     }
     fn load(&mut self, v: &[i32]) {
         if let [id, q, ..] = v {
-            self.mat = Tables::ntm().mat_name(*id);
-            self.amount = if self.mat.is_some() { (*q).max(0) as u32 } else { 0 };
+            self.amount = (*q).max(0) as u32;
+            self.mat = Tables::ntm().mat_name(*id).filter(|_| self.amount > 0);
+            if self.mat.is_none() {
+                self.amount = 0;
+            }
         }
     }
 }
