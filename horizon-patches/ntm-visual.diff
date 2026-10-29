@@ -819,10 +819,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..830f267f7
+index 000000000..de10d53d9
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,730 @@
+@@ -0,0 +1,764 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -1280,8 +1280,14 @@ index 000000000..830f267f7
 +    }
 +
 +    /// Each bone's transform in the model's frame, `animation` at `t`
-+    /// seconds (or the rest pose).
++    /// seconds. At rest, the first animation's first frame: HBM's parts stay
++    /// where their `anim` left them, which for a slide (`BobMathUtil.sps`) is
++    /// not the OBJ's own place.
 +    pub fn pose(&self, animation: Option<usize>, t: f32) -> Vec<Mat4> {
++        let (animation, t) = match animation {
++            Some(a) => (Some(a), t),
++            None => ((!self.animations.is_empty()).then_some(0), 0.0),
++        };
 +        let mut local = vec![Mat4::IDENTITY; self.bones.len()];
 +        if let Some(a) = animation.and_then(|a| self.animations.get(a)) {
 +            let t = if a.looping && a.length > 0.0 {
@@ -1551,6 +1557,34 @@ index 000000000..830f267f7
 +        let pose = m.pose(Some(0), 1.0);
 +        let p = pose[1].transform_point3(Vec3::X);
 +        assert!((p - Vec3::new(0.0, 0.0, -1.0)).length() < 1e-4, "{p}");
++    }
++
++    #[test]
++    fn a_model_at_rest_holds_its_first_frame() {
++        let mut m = Model {
++            bones: vec![Bone::default()],
++            scale: 1.0,
++            ..Default::default()
++        };
++        assert_eq!(m.pose(None, 3.0), vec![Mat4::IDENTITY]);
++        m.animations.push(Animation {
++            name: "pump".into(),
++            length: 1.0,
++            looping: true,
++            channels: vec![(
++                0,
++                Channel {
++                    rotation: Vec::new(),
++                    position: vec![
++                        (0.0, Vec3::new(8.0, 0.0, 0.0)),
++                        (0.5, Vec3::new(-8.0, 0.0, 0.0)),
++                    ],
++                },
++            )],
++        });
++        // Half a block out, as sps(0) leaves HBM's pump.
++        let p = m.pose(None, 3.0)[0].transform_point3(Vec3::ZERO);
++        assert!((p - Vec3::new(0.5, 0.0, 0.0)).length() < 1e-4, "{p}");
 +    }
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
