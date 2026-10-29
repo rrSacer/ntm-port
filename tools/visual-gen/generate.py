@@ -209,7 +209,7 @@ def main():
             write_json(own(f'assets/ntm/horizon_liquid/{name}.json'), l)
         if 'block_model' in b:
             bm = b['block_model']
-            for tex in set(bm['textures'].values()):
+            for tex in sorted(set(bm['textures'].values())):
                 copy(f'textures/blocks/{tex}.png', f'assets/ntm/textures/block/visual/{tex}.png')
             model, states, item = block_model(bm, block)
             write_json(own(f'assets/ntm/models/block/visual/{name}.json'), model)
