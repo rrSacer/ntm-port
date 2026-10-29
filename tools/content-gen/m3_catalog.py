@@ -54,6 +54,7 @@ def build(source=SOURCE, output=ROOT / 'content'):
         'barrel_steel': ('Steel Barrel', 'Barril de Aço'),
         'machine_fluidtank': ('Fluid Tank', 'Tanque de Fluidos'),
         'machine_shredder': ('Shredder', 'Triturador'),
+        'machine_blast_furnace': ('Blast Furnace', 'Alto-Forno'),
     }
     for var, (en, pt) in names.items():
         name, texture = registration(blocks, var, 'block')
@@ -62,6 +63,9 @@ def build(source=SOURCE, output=ROOT / 'content'):
         if var == 'machine_shredder':
             surfaces = {face: 'blocks/machine_shredder_' + face + '_alt' for face in ('side', 'top', 'bottom', 'front')}
             front = surfaces['front']
+        if var == 'machine_blast_furnace':
+            front = 'blocks/brick_fire'
+            surfaces = {face: front for face in ('side', 'top', 'front')}
         rows.append({'id': name, 'source_variable': var, 'type': 'block', 'category': 'machine',
                      'template': 'minecraft:beehive', 'names': {'en_us': en, 'pt_br': pt},
                      'source_texture': 'src/main/resources/assets/hbm/textures/' + front + '.png',
@@ -150,7 +154,9 @@ def build(source=SOURCE, output=ROOT / 'content'):
         for entry in data['entries']:
             if entry['source_variable'] in names:
                 entry['content_id'] = 'ntm:' + entry['id']
-                entry['status'] = ('Shredder content contract declared; processing/storage logic tracked separately by the machine agent'
+                entry['status'] = ('Blast furnace content contract declared; processing/multiblock logic tracked separately'
+                                   if entry['source_variable'] == 'machine_blast_furnace' else
+                                   'Shredder content contract declared; processing/storage logic tracked separately by the machine agent'
                                    if entry['source_variable'] == 'machine_shredder' else
                                    'M3 content contract declared; processing/storage logic tracked separately by the M3 machine agent')
         write_json(backlog, data)

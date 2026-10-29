@@ -1887,6 +1887,7 @@
   "block.ntm.barrel_steel": "Steel Barrel",
   "block.ntm.machine_fluidtank": "Fluid Tank",
   "block.ntm.machine_shredder": "Shredder",
+  "block.ntm.machine_blast_furnace": "Blast Furnace",
   "block.ntm.fluid_duct_neo": "Fluid Duct",
   "item.ntm.pipe__iron": "Iron Pipe",
   "item.ntm.shell__titanium": "Titanium Shell",

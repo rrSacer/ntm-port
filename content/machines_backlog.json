@@ -1515,7 +1515,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Blast furnace content contract declared; processing/multiblock logic tracked separately",
+      "content_id": "ntm:machine_blast_furnace"
     },
     {
       "id": "machine_centrifuge",

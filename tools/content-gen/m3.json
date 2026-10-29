@@ -138,6 +138,25 @@
       "model_gap": "NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage"
     },
     {
+      "id": "machine_blast_furnace",
+      "source_variable": "machine_blast_furnace",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Blast Furnace",
+        "pt_br": "Alto-Forno"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png",
+      "textures": {
+        "side": "blocks/brick_fire",
+        "top": "blocks/brick_fire",
+        "front": "blocks/brick_fire"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage"
+    },
+    {
       "id": "fluid_duct_neo",
       "source_variable": "fluid_duct_neo",
       "type": "block",

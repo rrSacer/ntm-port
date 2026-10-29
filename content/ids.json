@@ -30,7 +30,8 @@
     "ntm:machine_gascent",
     "ntm:barrel_steel",
     "ntm:machine_fluidtank",
-    "ntm:machine_shredder"
+    "ntm:machine_shredder",
+    "ntm:machine_blast_furnace"
   ],
   "internal_blocks": [
     {
@@ -57082,6 +57083,47 @@
         {
           "machine": "assembly_machine",
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:259"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_blast_furnace",
+      "source_variable": "machine_blast_furnace",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Blast Furnace",
+        "pt_br": "Alto-Forno"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png",
+      "textures": {
+        "side": "blocks/brick_fire",
+        "top": "blocks/brick_fire",
+        "front": "blocks/brick_fire"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage",
+      "source_registry": "hbm:tile.machine_blast_furnace",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:225"
         }
       ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
