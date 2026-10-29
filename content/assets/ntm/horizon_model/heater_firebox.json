@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/firebox.obj",
+  "texture": "ntm:textures/models/machines/firebox.png",
+  "rotation": 180.0,
+  "radius": 2.6,
+  "hide": []
+}

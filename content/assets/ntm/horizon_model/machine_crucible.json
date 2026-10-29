@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/crucible.obj",
+  "texture": "ntm:textures/models/machines/crucible_heat.png",
+  "rotation": 90.0,
+  "radius": 2.5
+}
