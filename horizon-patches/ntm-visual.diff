@@ -910,10 +910,10 @@ index 000000000..e5f83476c
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
 new file mode 100644
-index 000000000..0f09cb902
+index 000000000..4e0d23235
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_screens.rs
-@@ -0,0 +1,471 @@
+@@ -0,0 +1,472 @@
 +//! Screens of content mods' machines (`horizon_world::mod_machines`): the
 +//! machine's own background texture, with bars, lights and tooltips drawn
 +//! from the values the mod sets. Each `assets/<namespace>/horizon_screen/<name>.json`
@@ -932,7 +932,7 @@ index 000000000..0f09cb902
 +//!   ],                                       `color`: a value's index holding 0xRRGGBB, in place of uv
 +//!   "overlays": [                            a part of the texture drawn while ...
 +//!     {"slot": 0, "rect": [142, 90, 16, 16], "uv": [176, 0]},    ... the slot holds something
-+//!     {"value": 7, "min": 1, "rect": [51, 121, 6, 8], "uv": [195, 0]}  ... a value is at least min
++//!     {"value": 7, "min": 1, "rect": [51, 121, 6, 8], "uv": [195, 0]}  ... a value is in min..=max (max: none)
 +//!   ],
 +//!   "tooltips": [{"rect": [152, 18, 16, 61], "lines": ["{0:si} / {1:si} HE"]}],
 +//!   "buttons": [{"id": 0, "rect": [7, 125, 18, 18], "lines": ["Choose a recipe"]}]
@@ -974,7 +974,7 @@ index 000000000..0f09cb902
 +#[derive(Clone, Debug, PartialEq)]
 +pub enum When {
 +    Slot(usize),
-+    Value { index: usize, min: i32 },
++    Value { index: usize, min: i32, max: i32 },
 +}
 +
 +#[derive(Clone, Debug, PartialEq)]
@@ -1117,6 +1117,7 @@ index 000000000..0f09cb902
 +            (None, Some(i)) => When::Value {
 +                index: i,
 +                min: o["min"].as_i64().unwrap_or(1) as i32,
++                max: o["max"].as_i64().map_or(i32::MAX, |m| m as i32),
 +            },
 +            _ => return Err("an overlay without slot or value".into()),
 +        };
@@ -1319,7 +1320,7 @@ index 000000000..0f09cb902
 +        for o in &self.overlays {
 +            let on = match o.when {
 +                When::Slot(s) => filled(s),
-+                When::Value { index, min } => value(index) >= min,
++                When::Value { index, min, max } => (min..=max).contains(&value(index)),
 +            };
 +            if on {
 +                let [x, y, w, h] = o.rect;

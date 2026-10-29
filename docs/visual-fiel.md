@@ -1,7 +1,7 @@
 # Visual fiel ao NTM: telas, modelos 3D e multiblocos (protótipo)
 
 2026-10-29. Protótipo de ponta a ponta com a **montadora** (`ntm:machine_assembly_machine`) e a **Little Boy**
-(`ntm:nuke_boy`). Motor: branch `ntm-visual` em `~/Workspace/horizon-visual` (13 commits sobre `ntm-patched` b26b1de1e),
+(`ntm:nuke_boy`). Motor: branch `ntm-visual` em `~/Workspace/horizon-visual` (14 commits sobre `ntm-patched` b26b1de1e; já em `ntm-patched`, fd44a1d1a),
 diff em [`horizon-patches/ntm-visual.diff`](../horizon-patches/ntm-visual.diff). Port: `tools/visual-gen/`,
 `crates/ntm-core/src/server/container_bridge.rs` e a feature `machines` dos dois mods de lógica.
 Fonte do NTM: `ntm-src/src/main/java/com/hbm/` (Java) e `ntm-src/src/main/resources/assets/hbm/` (recursos).
@@ -248,7 +248,7 @@ segunda com a câmera em céu aberto. As 25 montadoras foram postas por `setbloc
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 13 commits, 38 arquivos, +2618/−24):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 14 commits, 38 arquivos):
 
 | Commit | O quê |
 |---|---|
@@ -265,6 +265,7 @@ segunda com a câmera em céu aberto. As 25 montadoras foram postas por `setbloc
 | `feat(mods): machine slots carry their stack's damage` | `item-stack.damage` |
 | `feat(mods): max_damage for content mods' items` | O schema dos itens aceita `max_damage` (pilha 1) |
 | `feat(world): a machine slot may refuse a list of items` | `reject` |
+| `feat(render): a screen overlay may show for a range of values` | Overlay com `min..=max` (as luzes das lâminas) |
 
 **No port:**
 
@@ -302,19 +303,28 @@ fica pronto e parado.
 
 ## 6. Pendências e o que se sabe
 
-- **Triturador:** a lógica do agente das bombas usa `Slotted` com `Stack {id, count, damage}`. Faltam o braço em
-  `container_bridge::slotted`, o `SLOTTED` e o `visual.json` dele (`gui_shredder.png`, OBJ, multibloco).
-- **Juntar ao build do usuário:** o `ntm-visual` precisa entrar no `ntm-patched`. A instalação do usuário passa a
-  exigir o motor com o patch; a decisão é do coordenador.
-
+- **Triturador (feito, etapa a):**
+  - A lógica do agente das bombas usa `Slotted` e `Layout::Native` (324212c). O visual é só a tela: o
+    `MachineShredder` do NTM é um `BlockContainer` sem renderer, e o cubo do agente de importação é o visual certo.
+  - `gui_shredder.png`, com os 30 slots do `ContainerMachineShredder`:
+    - entradas com `reject` das lâminas;
+    - saídas só de saída;
+    - lâminas só com as 3 lâminas;
+    - bateria.
+  - As barras de energia e de progresso e as luzes das lâminas por estado (overlay com `min..=max`).
+  - Captura: `img/visual-shredder-screen.png`. A aceitação com energia (pó saindo, lâminas gastando) fica com o agente
+    das bombas.
+- **Juntar ao build do usuário (feito):** o `ntm-visual` entrou no `ntm-patched` por fast-forward (fd44a1d1a). O
+  `install-side-by-side.sh` exige o patch e o server mod com `machines` (`tools/build-visual.sh`). Aplicar na
+  instalação do usuário depende da aprovação do coordenador.
 - **Facing das bombas:** o template `redstone_lamp` das bombas não tem `facing`, então o modelo da Little Boy tem
-  orientação fixa.
-  - Opção A: o template `minecraft:dispenser` (`facing` + `triggered`, que liga por redstone como o `lit`), trocando
-    `registry::BOMB_POWERED`, `bomb_server::BOMB_LIT` e os testes que montam `[lit=false]`. Riscos, segundo o agente
-    das bombas: o dispenser ejeta um item num pulso, se o inventário dele for o do container; e a GUI dele.
-  - Opção B: guardar o `facing` de quem colocou nos dados da máquina e orientar só o modelo.
-- **Drop do item da máquina:** ao minar em sobrevivência (multibloco ou não, como a bateria de bloco único) não sai
-  o item da máquina, só o conteúdo. É anterior a este trabalho (ferramenta certa/loot do template beehive).
+  orientação fixa. Decisão do coordenador: **opção B**, guardar o `facing` de quem colocou nos dados da máquina e
+  girar só o modelo (sem o `dispenser`). Pendente, na etapa d.
+- **Drop do item da máquina (não é um bug):** em sobrevivência, com uma picareta de diamante:
+  - minar um dummy da montadora solta o item da máquina;
+  - o triturador solta o item e o conteúdo (2 minérios, 2 lâminas).
+  A falta de drop vista antes foi um artefato do teste: o `break` do horizon-ctl responde antes de o item aparecer, e
+  o modo ainda era trocado.
 - **Fluidos:** só a energia passa pelo anel do multibloco. As portas de fluido continuam no núcleo.
 - **Explosões e comandos:** uma explosão, um `/fill` ou um `set-blocks` que tira uma célula não tira o resto.
 - **Interface:**
