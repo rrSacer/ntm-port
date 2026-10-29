@@ -185,6 +185,17 @@ def main():
 
     dummy = spec['dummy']
     blocks = dict(spec['blocks'])
+    # An entry `like` another (the twelve anvils) takes its machine, on that
+    # one's screen, and its model, with its own keys over them.
+    for k, b in list(blocks.items()):
+        if 'like' in b:
+            base = blocks[b['like']]
+            e = {key: v for key, v in base.items() if key not in ('screen', 'source')}
+            e['machine'] = {**base['machine'], 'screen': base['machine'].get('screen', b['like'])}
+            if 'model' in base:
+                e['model'] = {**base['model'], **b.get('model', {})}
+            e.update({key: v for key, v in b.items() if key not in ('like', 'model')})
+            blocks[k] = e
     # A hand entry without a model takes the extracted one.
     auto = auto_models(args, src, {k for k, b in blocks.items() if 'model' in b})
     ex_file = HERE / 'extracted.json'
