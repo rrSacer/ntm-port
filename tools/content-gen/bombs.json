@@ -1,0 +1,387 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "id": "tnt_ntm",
+      "source_variable": "tnt",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/tnt_side.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/tnt_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/tnt_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/tnt_bottom.png"
+      }
+    },
+    {
+      "id": "dynamite",
+      "source_variable": "dynamite",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/dynamite_side.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/dynamite_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/dynamite_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/dynamite_bottom.png"
+      }
+    },
+    {
+      "id": "semtex",
+      "source_variable": "semtex",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/semtex_side.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/semtex_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/semtex_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/semtex_bottom.png"
+      }
+    },
+    {
+      "id": "c4",
+      "source_variable": "c4",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/c4_side.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/c4_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/c4_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/c4_bottom.png"
+      }
+    },
+    {
+      "id": "nuke_boy",
+      "source_variable": "nuke_boy",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lilBoy.png",
+      "icon_cube": true,
+      "model_gap": "NTM TESR/OBJ approximated by opaque icon on steel cube; explosion/assembly belongs to Rust logic"
+    },
+    {
+      "id": "nuke_gadget",
+      "source_variable": "nuke_gadget",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/theGadget.png",
+      "icon_cube": true,
+      "model_gap": "NTM TESR/OBJ approximated by opaque icon on steel cube; explosion/assembly belongs to Rust logic"
+    },
+    {
+      "id": "nuke_man",
+      "source_variable": "nuke_man",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/fatMan.png",
+      "icon_cube": true,
+      "model_gap": "NTM TESR/OBJ approximated by opaque icon on steel cube; explosion/assembly belongs to Rust logic"
+    },
+    {
+      "id": "nuke_mike",
+      "source_variable": "nuke_mike",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ivyMike.png",
+      "icon_cube": true,
+      "model_gap": "NTM TESR/OBJ approximated by opaque icon on steel cube; explosion/assembly belongs to Rust logic"
+    },
+    {
+      "id": "nuke_tsar",
+      "source_variable": "nuke_tsar",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/tsarBomba.png",
+      "icon_cube": true,
+      "model_gap": "NTM TESR/OBJ approximated by opaque icon on steel cube; explosion/assembly belongs to Rust logic"
+    },
+    {
+      "id": "nuke_n2",
+      "source_variable": "nuke_n2",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/nuke_n2.png",
+      "icon_cube": true,
+      "model_gap": "NTM TESR/OBJ approximated by opaque icon on steel cube; explosion/assembly belongs to Rust logic"
+    },
+    {
+      "id": "nuke_fstbmb",
+      "source_variable": "nuke_fstbmb",
+      "type": "block",
+      "category": "bomb",
+      "template": "minecraft:redstone_lamp",
+      "logic": {
+        "kind": "bomb",
+        "powered": "lit"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/nuke_fstbmb.png",
+      "icon_cube": true,
+      "model_gap": "NTM TESR/OBJ approximated by opaque icon on steel cube; explosion/assembly belongs to Rust logic"
+    },
+    {
+      "id": "sellafield_slaked",
+      "source_variable": "sellafield_slaked",
+      "type": "block",
+      "category": "fallout",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_slaked.png",
+      "behavior_gap": "Fallout surface only; radiation, spread, decay and original random loot require Rust logic"
+    },
+    {
+      "id": "waste_trinitite",
+      "source_variable": "waste_trinitite",
+      "type": "block",
+      "category": "fallout",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/waste_trinitite.png",
+      "behavior_gap": "Fallout surface only; radiation, spread, decay and original random loot require Rust logic"
+    },
+    {
+      "id": "waste_log",
+      "source_variable": "waste_log",
+      "type": "block",
+      "category": "fallout",
+      "template": "minecraft:oak_log",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/waste_log_side.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/waste_log_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/waste_log_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/waste_log_top.png"
+      },
+      "behavior_gap": "Fallout surface only; radiation, spread, decay and original random loot require Rust logic"
+    },
+    {
+      "id": "waste_planks",
+      "source_variable": "waste_planks",
+      "type": "block",
+      "category": "fallout",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/waste_planks.png",
+      "behavior_gap": "Fallout surface only; radiation, spread, decay and original random loot require Rust logic"
+    },
+    {
+      "id": "waste_leaves",
+      "source_variable": "waste_leaves",
+      "type": "block",
+      "category": "fallout",
+      "template": "minecraft:oak_leaves",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/waste_leaves.png",
+      "behavior_gap": "Fallout surface only; radiation, spread, decay and original random loot require Rust logic"
+    },
+    {
+      "id": "fallout",
+      "source_variable": "fallout",
+      "type": "block",
+      "category": "fallout",
+      "template": "minecraft:snow",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ash.png",
+      "behavior_gap": "Fallout surface only; radiation, spread, decay and original random loot require Rust logic"
+    },
+    {
+      "id": "boy_shielding",
+      "source_variable": "boy_shielding",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/boy_shielding.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "boy_target",
+      "source_variable": "boy_target",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/boy_target.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "boy_bullet",
+      "source_variable": "boy_bullet",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/boy_bullet.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "boy_propellant",
+      "source_variable": "boy_propellant",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/boy_propellant.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "boy_igniter",
+      "source_variable": "boy_igniter",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/boy_igniter.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "gadget_wireing",
+      "source_variable": "gadget_wireing",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gadget_wireing.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "gadget_core",
+      "source_variable": "gadget_core",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gadget_core.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "early_explosive_lenses",
+      "source_variable": "early_explosive_lenses",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gadget_explosive8.png",
+      "max_stack_size": 64
+    },
+    {
+      "id": "man_igniter",
+      "source_variable": "man_igniter",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/man_igniter.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "man_core",
+      "source_variable": "man_core",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/man_core.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "explosive_lenses",
+      "source_variable": "explosive_lenses",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/man_explosive8.png",
+      "max_stack_size": 64
+    },
+    {
+      "id": "mike_core",
+      "source_variable": "mike_core",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mike_core.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "mike_deut",
+      "source_variable": "mike_deut",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mike_deut.png",
+      "max_stack_size": 1,
+      "behavior_gap": "Container-item return requires logic; no fake container recipe"
+    },
+    {
+      "id": "mike_cooling_unit",
+      "source_variable": "mike_cooling_unit",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mike_cooling_unit.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "tsar_core",
+      "source_variable": "tsar_core",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/tsar_core.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "n2_charge",
+      "source_variable": "n2_charge",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/n2_charge.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "egg_balefire",
+      "source_variable": "egg_balefire",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/egg_balefire.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "battery_spark",
+      "source_variable": "battery_spark",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_spark.png",
+      "max_stack_size": 1
+    },
+    {
+      "id": "detonator",
+      "source_variable": "detonator",
+      "type": "item",
+      "category": "bomb_component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/detonator.png",
+      "max_stack_size": 1,
+      "template": "minecraft:stick",
+      "logic": {
+        "kind": "detonator"
+      }
+    }
+  ]
+}

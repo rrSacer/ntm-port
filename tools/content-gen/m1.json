@@ -1,0 +1,813 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "id": "billet_beryllium",
+      "type": "item",
+      "category": "billet",
+      "material": "beryllium",
+      "source_variable": "billet_beryllium"
+    },
+    {
+      "id": "billet_uranium",
+      "type": "item",
+      "category": "billet",
+      "material": "uranium",
+      "source_variable": "billet_uranium"
+    },
+    {
+      "id": "block_aluminium",
+      "type": "block",
+      "category": "storage",
+      "material": "aluminium",
+      "source_variable": "block_aluminium"
+    },
+    {
+      "id": "block_asbestos",
+      "type": "block",
+      "category": "storage",
+      "material": "asbestos",
+      "source_variable": "block_asbestos"
+    },
+    {
+      "id": "block_beryllium",
+      "type": "block",
+      "category": "storage",
+      "material": "beryllium",
+      "source_variable": "block_beryllium"
+    },
+    {
+      "id": "block_fluorite",
+      "type": "block",
+      "category": "storage",
+      "material": "fluorite",
+      "source_variable": "block_fluorite"
+    },
+    {
+      "id": "block_lead",
+      "type": "block",
+      "category": "storage",
+      "material": "lead",
+      "source_variable": "block_lead"
+    },
+    {
+      "id": "block_lithium",
+      "type": "block",
+      "category": "storage",
+      "material": "lithium",
+      "source_variable": "block_lithium"
+    },
+    {
+      "id": "block_niter",
+      "type": "block",
+      "category": "storage",
+      "material": "niter",
+      "source_variable": "block_niter"
+    },
+    {
+      "id": "block_red_copper",
+      "type": "block",
+      "category": "storage",
+      "material": "red_copper",
+      "source_variable": "block_red_copper"
+    },
+    {
+      "id": "block_sulfur",
+      "type": "block",
+      "category": "storage",
+      "material": "sulfur",
+      "source_variable": "block_sulfur"
+    },
+    {
+      "id": "block_thorium",
+      "type": "block",
+      "category": "storage",
+      "material": "thorium",
+      "source_variable": "block_thorium"
+    },
+    {
+      "id": "block_titanium",
+      "type": "block",
+      "category": "storage",
+      "material": "titanium",
+      "source_variable": "block_titanium"
+    },
+    {
+      "id": "block_tungsten",
+      "type": "block",
+      "category": "storage",
+      "material": "tungsten",
+      "source_variable": "block_tungsten"
+    },
+    {
+      "id": "block_uranium",
+      "type": "block",
+      "category": "storage",
+      "material": "uranium",
+      "source_variable": "block_uranium"
+    },
+    {
+      "id": "crystal_aluminium",
+      "type": "item",
+      "category": "crystal",
+      "material": "aluminium",
+      "source_variable": "crystal_aluminium"
+    },
+    {
+      "id": "crystal_beryllium",
+      "type": "item",
+      "category": "crystal",
+      "material": "beryllium",
+      "source_variable": "crystal_beryllium"
+    },
+    {
+      "id": "crystal_fluorite",
+      "type": "item",
+      "category": "crystal",
+      "material": "fluorite",
+      "source_variable": "crystal_fluorite"
+    },
+    {
+      "id": "crystal_lead",
+      "type": "item",
+      "category": "crystal",
+      "material": "lead",
+      "source_variable": "crystal_lead"
+    },
+    {
+      "id": "crystal_lithium",
+      "type": "item",
+      "category": "crystal",
+      "material": "lithium",
+      "source_variable": "crystal_lithium"
+    },
+    {
+      "id": "crystal_niter",
+      "type": "item",
+      "category": "crystal",
+      "material": "niter",
+      "source_variable": "crystal_niter"
+    },
+    {
+      "id": "crystal_sulfur",
+      "type": "item",
+      "category": "crystal",
+      "material": "sulfur",
+      "source_variable": "crystal_sulfur"
+    },
+    {
+      "id": "crystal_thorium",
+      "type": "item",
+      "category": "crystal",
+      "material": "thorium",
+      "source_variable": "crystal_thorium"
+    },
+    {
+      "id": "crystal_titanium",
+      "type": "item",
+      "category": "crystal",
+      "material": "titanium",
+      "source_variable": "crystal_titanium"
+    },
+    {
+      "id": "crystal_tungsten",
+      "type": "item",
+      "category": "crystal",
+      "material": "tungsten",
+      "source_variable": "crystal_tungsten"
+    },
+    {
+      "id": "crystal_uranium",
+      "type": "item",
+      "category": "crystal",
+      "material": "uranium",
+      "source_variable": "crystal_uranium"
+    },
+    {
+      "id": "fluorite",
+      "type": "item",
+      "category": "fluorite",
+      "material": "fluorite",
+      "source_variable": "fluorite"
+    },
+    {
+      "id": "ingot_aluminium",
+      "type": "item",
+      "category": "ingot",
+      "material": "aluminium",
+      "source_variable": "ingot_aluminium"
+    },
+    {
+      "id": "ingot_asbestos",
+      "type": "item",
+      "category": "ingot",
+      "material": "asbestos",
+      "source_variable": "ingot_asbestos"
+    },
+    {
+      "id": "ingot_beryllium",
+      "type": "item",
+      "category": "ingot",
+      "material": "beryllium",
+      "source_variable": "ingot_beryllium"
+    },
+    {
+      "id": "ingot_lead",
+      "type": "item",
+      "category": "ingot",
+      "material": "lead",
+      "source_variable": "ingot_lead"
+    },
+    {
+      "id": "ingot_red_copper",
+      "type": "item",
+      "category": "ingot",
+      "material": "red_copper",
+      "source_variable": "ingot_red_copper"
+    },
+    {
+      "id": "ingot_th232",
+      "type": "item",
+      "category": "ingot",
+      "material": "thorium",
+      "source_variable": "ingot_th232"
+    },
+    {
+      "id": "ingot_titanium",
+      "type": "item",
+      "category": "ingot",
+      "material": "titanium",
+      "source_variable": "ingot_titanium"
+    },
+    {
+      "id": "ingot_tungsten",
+      "type": "item",
+      "category": "ingot",
+      "material": "tungsten",
+      "source_variable": "ingot_tungsten"
+    },
+    {
+      "id": "ingot_uranium",
+      "type": "item",
+      "category": "ingot",
+      "material": "uranium",
+      "source_variable": "ingot_uranium"
+    },
+    {
+      "id": "lithium",
+      "type": "item",
+      "category": "lithium",
+      "material": "lithium",
+      "source_variable": "lithium"
+    },
+    {
+      "id": "machine_battery",
+      "type": "block",
+      "category": "machine",
+      "source_variable": "machine_battery"
+    },
+    {
+      "id": "machine_electric_furnace_off",
+      "type": "block",
+      "category": "machine",
+      "source_variable": "machine_electric_furnace_off"
+    },
+    {
+      "id": "machine_epress",
+      "type": "block",
+      "category": "machine",
+      "source_variable": "machine_epress"
+    },
+    {
+      "id": "machine_press",
+      "type": "block",
+      "category": "machine",
+      "source_variable": "machine_press"
+    },
+    {
+      "id": "machine_wood_burner",
+      "type": "block",
+      "category": "machine",
+      "source_variable": "machine_wood_burner"
+    },
+    {
+      "id": "niter",
+      "type": "item",
+      "category": "niter",
+      "material": "niter",
+      "source_variable": "niter"
+    },
+    {
+      "id": "nugget_beryllium",
+      "type": "item",
+      "category": "nugget",
+      "material": "beryllium",
+      "source_variable": "nugget_beryllium"
+    },
+    {
+      "id": "nugget_lead",
+      "type": "item",
+      "category": "nugget",
+      "material": "lead",
+      "source_variable": "nugget_lead"
+    },
+    {
+      "id": "nugget_raw__aluminium",
+      "type": "item",
+      "category": "nugget",
+      "material": "aluminium",
+      "source_variable": "nugget_raw",
+      "metadata": 1300,
+      "source_material": "MAT_ALUMINIUM"
+    },
+    {
+      "id": "nugget_raw__lithium",
+      "type": "item",
+      "category": "nugget",
+      "material": "lithium",
+      "source_variable": "nugget_raw",
+      "metadata": 300,
+      "source_material": "MAT_LITHIUM"
+    },
+    {
+      "id": "nugget_raw__titanium",
+      "type": "item",
+      "category": "nugget",
+      "material": "titanium",
+      "source_variable": "nugget_raw",
+      "metadata": 2200,
+      "source_material": "MAT_TITANIUM"
+    },
+    {
+      "id": "nugget_raw__tungsten",
+      "type": "item",
+      "category": "nugget",
+      "material": "tungsten",
+      "source_variable": "nugget_raw",
+      "metadata": 7400,
+      "source_material": "MAT_TUNGSTEN"
+    },
+    {
+      "id": "nugget_th232",
+      "type": "item",
+      "category": "nugget",
+      "material": "thorium",
+      "source_variable": "nugget_th232"
+    },
+    {
+      "id": "nugget_uranium",
+      "type": "item",
+      "category": "nugget",
+      "material": "uranium",
+      "source_variable": "nugget_uranium"
+    },
+    {
+      "id": "ore_aluminium",
+      "type": "block",
+      "category": "ore",
+      "material": "aluminium",
+      "source_variable": "ore_aluminium"
+    },
+    {
+      "id": "ore_asbestos",
+      "type": "block",
+      "category": "ore",
+      "material": "asbestos",
+      "source_variable": "ore_asbestos"
+    },
+    {
+      "id": "ore_beryllium",
+      "type": "block",
+      "category": "ore",
+      "material": "beryllium",
+      "source_variable": "ore_beryllium"
+    },
+    {
+      "id": "ore_fluorite",
+      "type": "block",
+      "category": "ore",
+      "material": "fluorite",
+      "source_variable": "ore_fluorite"
+    },
+    {
+      "id": "ore_gneiss_lithium",
+      "type": "block",
+      "category": "ore",
+      "material": "lithium",
+      "source_variable": "ore_gneiss_lithium"
+    },
+    {
+      "id": "ore_lead",
+      "type": "block",
+      "category": "ore",
+      "material": "lead",
+      "source_variable": "ore_lead"
+    },
+    {
+      "id": "ore_niter",
+      "type": "block",
+      "category": "ore",
+      "material": "niter",
+      "source_variable": "ore_niter"
+    },
+    {
+      "id": "ore_sulfur",
+      "type": "block",
+      "category": "ore",
+      "material": "sulfur",
+      "source_variable": "ore_sulfur"
+    },
+    {
+      "id": "ore_thorium",
+      "type": "block",
+      "category": "ore",
+      "material": "thorium",
+      "source_variable": "ore_thorium"
+    },
+    {
+      "id": "ore_titanium",
+      "type": "block",
+      "category": "ore",
+      "material": "titanium",
+      "source_variable": "ore_titanium"
+    },
+    {
+      "id": "ore_tungsten",
+      "type": "block",
+      "category": "ore",
+      "material": "tungsten",
+      "source_variable": "ore_tungsten"
+    },
+    {
+      "id": "ore_uranium",
+      "type": "block",
+      "category": "ore",
+      "material": "uranium",
+      "source_variable": "ore_uranium"
+    },
+    {
+      "id": "plate_aluminium",
+      "type": "item",
+      "category": "plate",
+      "material": "aluminium",
+      "source_variable": "plate_aluminium"
+    },
+    {
+      "id": "plate_cast__aluminium",
+      "type": "item",
+      "category": "plate",
+      "material": "aluminium",
+      "source_variable": "plate_cast",
+      "metadata": 1300,
+      "source_material": "MAT_ALUMINIUM"
+    },
+    {
+      "id": "plate_cast__lead",
+      "type": "item",
+      "category": "plate",
+      "material": "lead",
+      "source_variable": "plate_cast",
+      "metadata": 8200,
+      "source_material": "MAT_LEAD"
+    },
+    {
+      "id": "plate_cast__titanium",
+      "type": "item",
+      "category": "plate",
+      "material": "titanium",
+      "source_variable": "plate_cast",
+      "metadata": 2200,
+      "source_material": "MAT_TITANIUM"
+    },
+    {
+      "id": "plate_cast__tungsten",
+      "type": "item",
+      "category": "plate",
+      "material": "tungsten",
+      "source_variable": "plate_cast",
+      "metadata": 7400,
+      "source_material": "MAT_TUNGSTEN"
+    },
+    {
+      "id": "plate_lead",
+      "type": "item",
+      "category": "plate",
+      "material": "lead",
+      "source_variable": "plate_lead"
+    },
+    {
+      "id": "plate_titanium",
+      "type": "item",
+      "category": "plate",
+      "material": "titanium",
+      "source_variable": "plate_titanium"
+    },
+    {
+      "id": "plate_welded__aluminium",
+      "type": "item",
+      "category": "plate",
+      "material": "aluminium",
+      "source_variable": "plate_welded",
+      "metadata": 1300,
+      "source_material": "MAT_ALUMINIUM"
+    },
+    {
+      "id": "plate_welded__titanium",
+      "type": "item",
+      "category": "plate",
+      "material": "titanium",
+      "source_variable": "plate_welded",
+      "metadata": 2200,
+      "source_material": "MAT_TITANIUM"
+    },
+    {
+      "id": "plate_welded__tungsten",
+      "type": "item",
+      "category": "plate",
+      "material": "tungsten",
+      "source_variable": "plate_welded",
+      "metadata": 7400,
+      "source_material": "MAT_TUNGSTEN"
+    },
+    {
+      "id": "powder_aluminium",
+      "type": "item",
+      "category": "powder",
+      "material": "aluminium",
+      "source_variable": "powder_aluminium"
+    },
+    {
+      "id": "powder_asbestos",
+      "type": "item",
+      "category": "powder",
+      "material": "asbestos",
+      "source_variable": "powder_asbestos"
+    },
+    {
+      "id": "powder_beryllium",
+      "type": "item",
+      "category": "powder",
+      "material": "beryllium",
+      "source_variable": "powder_beryllium"
+    },
+    {
+      "id": "powder_lead",
+      "type": "item",
+      "category": "powder",
+      "material": "lead",
+      "source_variable": "powder_lead"
+    },
+    {
+      "id": "powder_lithium",
+      "type": "item",
+      "category": "powder",
+      "material": "lithium",
+      "source_variable": "powder_lithium"
+    },
+    {
+      "id": "powder_red_copper",
+      "type": "item",
+      "category": "powder",
+      "material": "red_copper",
+      "source_variable": "powder_red_copper"
+    },
+    {
+      "id": "powder_thorium",
+      "type": "item",
+      "category": "powder",
+      "material": "thorium",
+      "source_variable": "powder_thorium"
+    },
+    {
+      "id": "powder_titanium",
+      "type": "item",
+      "category": "powder",
+      "material": "titanium",
+      "source_variable": "powder_titanium"
+    },
+    {
+      "id": "powder_tungsten",
+      "type": "item",
+      "category": "powder",
+      "material": "tungsten",
+      "source_variable": "powder_tungsten"
+    },
+    {
+      "id": "powder_uranium",
+      "type": "item",
+      "category": "powder",
+      "material": "uranium",
+      "source_variable": "powder_uranium"
+    },
+    {
+      "id": "red_cable",
+      "type": "block",
+      "category": "cable",
+      "source_variable": "red_cable"
+    },
+    {
+      "id": "stamp_iron_flat",
+      "type": "item",
+      "category": "stamp",
+      "source_variable": "stamp_iron_flat",
+      "max_stack_size": 1
+    },
+    {
+      "id": "stamp_iron_plate",
+      "type": "item",
+      "category": "stamp",
+      "source_variable": "stamp_iron_plate",
+      "max_stack_size": 1
+    },
+    {
+      "id": "stamp_iron_wire",
+      "type": "item",
+      "category": "stamp",
+      "source_variable": "stamp_iron_wire",
+      "max_stack_size": 1
+    },
+    {
+      "id": "sulfur",
+      "type": "item",
+      "category": "sulfur",
+      "material": "sulfur",
+      "source_variable": "sulfur"
+    },
+    {
+      "id": "wire_dense__red_copper",
+      "type": "item",
+      "category": "wire",
+      "material": "red_copper",
+      "source_variable": "wire_dense",
+      "metadata": 31,
+      "source_material": "MAT_MINGRADE"
+    },
+    {
+      "id": "wire_dense__titanium",
+      "type": "item",
+      "category": "wire",
+      "material": "titanium",
+      "source_variable": "wire_dense",
+      "metadata": 2200,
+      "source_material": "MAT_TITANIUM"
+    },
+    {
+      "id": "wire_dense__tungsten",
+      "type": "item",
+      "category": "wire",
+      "material": "tungsten",
+      "source_variable": "wire_dense",
+      "metadata": 7400,
+      "source_material": "MAT_TUNGSTEN"
+    },
+    {
+      "id": "wire_fine__aluminium",
+      "type": "item",
+      "category": "wire",
+      "material": "aluminium",
+      "source_variable": "wire_fine",
+      "metadata": 1300,
+      "source_material": "MAT_ALUMINIUM"
+    },
+    {
+      "id": "wire_fine__lead",
+      "type": "item",
+      "category": "wire",
+      "material": "lead",
+      "source_variable": "wire_fine",
+      "metadata": 8200,
+      "source_material": "MAT_LEAD"
+    },
+    {
+      "id": "wire_fine__red_copper",
+      "type": "item",
+      "category": "wire",
+      "material": "red_copper",
+      "source_variable": "wire_fine",
+      "metadata": 31,
+      "source_material": "MAT_MINGRADE"
+    },
+    {
+      "id": "wire_fine__tungsten",
+      "type": "item",
+      "category": "wire",
+      "material": "tungsten",
+      "source_variable": "wire_fine",
+      "metadata": 7400,
+      "source_material": "MAT_TUNGSTEN"
+    },
+    {
+      "id": "wiring_red_copper",
+      "type": "item",
+      "category": "wiring",
+      "material": "red_copper",
+      "source_variable": "wiring_red_copper"
+    }
+  ],
+  "worldgen": [
+    {
+      "material": "uranium",
+      "block": "ntm:ore_uranium",
+      "attempts_per_chunk": 7,
+      "size": 5,
+      "min_y": 5,
+      "max_y": 24,
+      "salt": 2167000
+    },
+    {
+      "material": "thorium",
+      "block": "ntm:ore_thorium",
+      "attempts_per_chunk": 7,
+      "size": 5,
+      "min_y": 5,
+      "max_y": 29,
+      "salt": 2167017
+    },
+    {
+      "material": "titanium",
+      "block": "ntm:ore_titanium",
+      "attempts_per_chunk": 8,
+      "size": 6,
+      "min_y": 5,
+      "max_y": 34,
+      "salt": 2167034
+    },
+    {
+      "material": "lead",
+      "block": "ntm:ore_lead",
+      "attempts_per_chunk": 6,
+      "size": 9,
+      "min_y": 5,
+      "max_y": 34,
+      "salt": 2167051
+    },
+    {
+      "material": "aluminium",
+      "block": "ntm:ore_aluminium",
+      "attempts_per_chunk": 7,
+      "size": 6,
+      "min_y": 5,
+      "max_y": 44,
+      "salt": 2167068
+    },
+    {
+      "material": "tungsten",
+      "block": "ntm:ore_tungsten",
+      "attempts_per_chunk": 10,
+      "size": 8,
+      "min_y": 5,
+      "max_y": 34,
+      "salt": 2167085
+    },
+    {
+      "material": "beryllium",
+      "block": "ntm:ore_beryllium",
+      "attempts_per_chunk": 6,
+      "size": 4,
+      "min_y": 5,
+      "max_y": 34,
+      "salt": 2167102
+    },
+    {
+      "material": "asbestos",
+      "block": "ntm:ore_asbestos",
+      "attempts_per_chunk": 2,
+      "size": 4,
+      "min_y": 16,
+      "max_y": 31,
+      "salt": 2167119
+    },
+    {
+      "material": "fluorite",
+      "block": "ntm:ore_fluorite",
+      "attempts_per_chunk": 6,
+      "size": 4,
+      "min_y": 5,
+      "max_y": 49,
+      "salt": 2167136
+    },
+    {
+      "material": "niter",
+      "block": "ntm:ore_niter",
+      "attempts_per_chunk": 6,
+      "size": 6,
+      "min_y": 5,
+      "max_y": 34,
+      "salt": 2167153
+    },
+    {
+      "material": "sulfur",
+      "block": "ntm:ore_sulfur",
+      "attempts_per_chunk": 5,
+      "size": 8,
+      "min_y": 5,
+      "max_y": 34,
+      "salt": 2167170
+    }
+  ],
+  "worldgen_gaps": {
+    "lithium": "Only ore_gneiss_lithium exists; stone_gneiss substrate is not generated in M1. No lithium-in-stone substitution.",
+    "red_copper": "Alloy; no natural ore.",
+    "deepslate": "Uses the same ore ID/NTM artwork for stone and deepslate at the original positive heights; no extra negative-depth distribution."
+  }
+}
