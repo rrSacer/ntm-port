@@ -1648,6 +1648,109 @@
             "color": 2
           }
         ]
+      },
+      "block_model": {
+        "source": "RenderFoundryMold: 0.5 tall, floor and walls 0.125",
+        "textures": {
+          "top": "foundry_mold_top",
+          "side": "foundry_mold_side",
+          "bottom": "foundry_mold_bottom",
+          "inner": "foundry_mold_inner"
+        },
+        "elements": [
+          [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              16,
+              2,
+              16
+            ],
+            {
+              "down": "bottom",
+              "up": "bottom",
+              "north": "side",
+              "south": "side",
+              "west": "side",
+              "east": "side"
+            }
+          ],
+          [
+            [
+              0,
+              2,
+              0
+            ],
+            [
+              16,
+              8,
+              2
+            ],
+            {
+              "north": "side",
+              "south": "inner",
+              "up": "top",
+              "west": "side",
+              "east": "side"
+            }
+          ],
+          [
+            [
+              0,
+              2,
+              14
+            ],
+            [
+              16,
+              8,
+              16
+            ],
+            {
+              "south": "side",
+              "north": "inner",
+              "up": "top",
+              "west": "side",
+              "east": "side"
+            }
+          ],
+          [
+            [
+              0,
+              2,
+              2
+            ],
+            [
+              2,
+              8,
+              14
+            ],
+            {
+              "west": "side",
+              "east": "inner",
+              "up": "top"
+            }
+          ],
+          [
+            [
+              14,
+              2,
+              2
+            ],
+            [
+              16,
+              8,
+              14
+            ],
+            {
+              "east": "side",
+              "west": "inner",
+              "up": "top"
+            }
+          ]
+        ]
       }
     },
     "ntm:foundry_basin": {
