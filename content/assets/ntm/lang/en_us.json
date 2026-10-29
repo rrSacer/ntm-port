@@ -1882,6 +1882,7 @@
   "item.ntm.detonator": "Detonator",
   "block.ntm.machine_assembly_machine": "Assembly Machine",
   "block.ntm.machine_chemical_plant": "Chemical Plant",
+  "block.ntm.machine_purex": "PUREX",
   "block.ntm.machine_centrifuge": "Centrifuge",
   "block.ntm.machine_gascent": "Gas Centrifuge",
   "block.ntm.barrel_steel": "Steel Barrel",

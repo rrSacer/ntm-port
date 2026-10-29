@@ -6257,7 +6257,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "PUREX content contract declared; processing/multiblock logic and visuals tracked separately",
+      "content_id": "ntm:machine_purex"
     },
     {
       "id": "machine_mixer",

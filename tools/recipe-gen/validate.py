@@ -34,4 +34,18 @@ for r in press['recipes']:
     for item in [*r['in']['ids'], r['out'][0]]:
         if item.startswith('ntm:'): assert item in ids,item
     assert r['stamp'] in stamp_types,r['stamp']
-print('PASS: deterministic generation, flat paths, item/tag references, machine/stamp integrity')
+purex_path=root/'content/machine-recipes/purex.json'
+if purex_path.is_file():
+    purex=json.loads(purex_path.read_text())
+    fluids={f['string_id'] for f in json.loads((root/'crates/ntm-core/data/fluids.json').read_text())['fluids']}
+    for r in purex['recipes']:
+        for ing in r['inputItems']:
+            assert ing['count']>0 and ing['ids'],r['name']
+            for item in ing['ids']:
+                if item.startswith('ntm:'): assert item in ids,item
+        for out_item,count,chance in r['outputItems']:
+            assert count>0 and 0.0<chance<=1.0,r['name']
+            if out_item.startswith('ntm:'): assert out_item in ids,out_item
+        for fid,mb in [*r['inputFluids'],*r['outputFluids']]:
+            assert fid in fluids and mb>0,(r['name'],fid,mb)
+print('PASS: deterministic generation, flat paths, item/tag references, machine/stamp/purex integrity')

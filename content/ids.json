@@ -26,6 +26,7 @@
     "ntm:machine_wood_burner",
     "ntm:machine_assembly_machine",
     "ntm:machine_chemical_plant",
+    "ntm:machine_purex",
     "ntm:machine_centrifuge",
     "ntm:machine_gascent",
     "ntm:barrel_steel",
@@ -57051,6 +57052,46 @@
         {
           "machine": "assembly_machine",
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:267"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_purex",
+      "source_variable": "machine_purex",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "PUREX",
+        "pt_br": "PUREX"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/models/machines/purex.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "models/machines/purex"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage",
+      "source_registry": "hbm:tile.machine_purex",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:270"
         }
       ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",

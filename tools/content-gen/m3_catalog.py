@@ -49,6 +49,7 @@ def build(source=SOURCE, output=ROOT / 'content'):
     names = {
         'machine_assembly_machine': ('Assembly Machine', 'Montadora'),
         'machine_chemical_plant': ('Chemical Plant', 'Planta Química'),
+        'machine_purex': ('PUREX', 'PUREX'),
         'machine_centrifuge': ('Centrifuge', 'Centrífuga'),
         'machine_gascent': ('Gas Centrifuge', 'Centrífuga de Gás'),
         'barrel_steel': ('Steel Barrel', 'Barril de Aço'),
@@ -58,7 +59,7 @@ def build(source=SOURCE, output=ROOT / 'content'):
     }
     for var, (en, pt) in names.items():
         name, texture = registration(blocks, var, 'block')
-        front = 'blocks/' + var if var not in ('machine_assembly_machine', 'machine_chemical_plant') else 'models/machines/' + var.removeprefix('machine_')
+        front = 'blocks/' + var if var not in ('machine_assembly_machine', 'machine_chemical_plant', 'machine_purex') else 'models/machines/' + var.removeprefix('machine_')
         surfaces = {'side': 'blocks/' + str(texture), 'top': 'blocks/' + str(texture), 'front': front}
         if var == 'machine_shredder':
             surfaces = {face: 'blocks/machine_shredder_' + face + '_alt' for face in ('side', 'top', 'bottom', 'front')}
@@ -172,6 +173,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
                 entry['content_id'] = 'ntm:' + entry['id']
                 entry['status'] = ('Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents'
                                    if entry['source_variable'] in foundry_catalog.BLOCKS else
+                                   'PUREX content contract declared; processing/multiblock logic and visuals tracked separately'
+                                   if entry['source_variable'] == 'machine_purex' else
                                    'Blast furnace content contract declared; processing/multiblock logic tracked separately'
                                    if entry['source_variable'] == 'machine_blast_furnace' else
                                    'Shredder content contract declared; processing/storage logic tracked separately by the machine agent'

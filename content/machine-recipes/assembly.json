@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 399,
+    "emitted": 400,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 232,
+    "skipped_source_calls": 231,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1622,6 +1622,55 @@
       "pools": [],
       "label": "Planta Química",
       "label_en": "Chemical Plant"
+    },
+    {
+      "name": "ass.purex",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:270",
+      "duration": 300,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:pipe__rubber"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:plate_cast__lead"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor_desh"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_purex",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "PUREX",
+      "label_en": "PUREX"
     },
     {
       "name": "ass.centrifuge",
@@ -13449,12 +13498,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:255",
       "reason": "missing enum DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.KORL)",
       "expression": "new GenericRecipe(\"ass.capkorl\").setup(10, 100).outputItems(DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.KORL))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.cap_korl, 64), new ComparableStack(ModItems.cap_korl, 64))"
-    },
-    {
-      "name": "ass.purex",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:270",
-      "reason": "unregistered/ambiguous source item machine_purex",
-      "expression": "new GenericRecipe(\"ass.purex\").setup(300, 100).outputItems(new ItemStack(ModBlocks.machine_purex, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.shell(), 4), new OreDictStack(RUBBER.pipe(), 8), new OreDictStack(PB.plateCast(), 4), new ComparableStack(ModItems.motor_desh, 1), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BASIC))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.LEAD_PLATING), new OreDictStack(STEEL.shell(), 4), new OreDictStack(RUBBER.pipe(), 12), new ComparableStack(ModItems.motor_desh, 3), new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.CIRCUIT))"
     },
     {
       "name": "ass.precass",

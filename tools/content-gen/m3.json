@@ -40,6 +40,25 @@
       "model_gap": "NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage"
     },
     {
+      "id": "machine_purex",
+      "source_variable": "machine_purex",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "PUREX",
+        "pt_br": "PUREX"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/models/machines/purex.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "models/machines/purex"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage"
+    },
+    {
       "id": "machine_centrifuge",
       "source_variable": "machine_centrifuge",
       "type": "block",

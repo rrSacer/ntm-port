@@ -1,0 +1,1662 @@
+{
+  "schema": 1,
+  "machine": "purex",
+  "profile": {
+    "enable528": false,
+    "enableExpensiveMode": false,
+    "enableLBSM": false,
+    "enableLBSMSimpleCentrifuge": false,
+    "external_mods": [],
+    "modern_vanilla_ore_variants": false
+  },
+  "units": {
+    "duration": "ticks",
+    "power": "HE/t",
+    "fluids": "mB"
+  },
+  "limits": {
+    "inputItems": 3,
+    "inputFluids": 3,
+    "outputItems": 6,
+    "outputFluids": 1
+  },
+  "ingredient_policy": "conservative Forge 1.7.10 OreDict snapshot; first ntm id, then lexical vanilla",
+  "coverage": {
+    "emitted": 22,
+    "scanned_source_calls": 59,
+    "skipped_source_calls": 37,
+    "by_family": {
+      "synthesis": {
+        "emitted": 3,
+        "skipped": 0
+      },
+      "pile": {
+        "emitted": 0,
+        "skipped": 4
+      },
+      "zirnox": {
+        "emitted": 0,
+        "skipped": 9
+      },
+      "plate": {
+        "emitted": 0,
+        "skipped": 7
+      },
+      "pwr": {
+        "emitted": 15,
+        "skipped": 0
+      },
+      "molten_salt": {
+        "emitted": 1,
+        "skipped": 0
+      },
+      "watz": {
+        "emitted": 0,
+        "skipped": 12
+      },
+      "icf": {
+        "emitted": 1,
+        "skipped": 0
+      },
+      "vitrification": {
+        "emitted": 0,
+        "skipped": 3
+      },
+      "schrabidium": {
+        "emitted": 2,
+        "skipped": 2
+      }
+    },
+    "note": "Preserves exact PUREXRecipes.registerDefaults() source_index order (0..58), conservative 1.7.10 OreDict snapshot, independent duplicate output entries, and conditional nuggetNaquadria OreDict guard."
+  },
+  "source_recipe_order": [
+    "purex.uzh",
+    "purex.flashgold",
+    "purex.flashlead",
+    "purex.pilepu239",
+    "purex.pilergp",
+    "purex.pilethorium",
+    "purex.pilewaste",
+    "purex.zirnoxnu",
+    "purex.zirnoxmeu",
+    "purex.zirnoxthmeu",
+    "purex.zirnoxmox",
+    "purex.zirnoxmep",
+    "purex.zirnoxheu233",
+    "purex.zirnoxheu235",
+    "purex.zirnoxles",
+    "purex.zirnoxzfbmox",
+    "purex.platemox",
+    "purex.platepu238be",
+    "purex.platepu239",
+    "purex.platera226be",
+    "purex.platesa326",
+    "purex.plateu233",
+    "purex.plateu235",
+    "purex.pwrmeu",
+    "purex.pwrheu233",
+    "purex.pwrheu235",
+    "purex.pwrmen",
+    "purex.pwrhen237",
+    "purex.pwrmox",
+    "purex.pwrmep",
+    "purex.pwrhep239",
+    "purex.pwrhep241",
+    "purex.pwrmea",
+    "purex.pwrhea242",
+    "purex.pwrhes326",
+    "purex.pwrhes327",
+    "purex.pwrbfbam",
+    "purex.pwrbfpu241",
+    "purex.thoriumsalt",
+    "purex.watzschrab",
+    "purex.watzhes",
+    "purex.watzmes",
+    "purex.watzles",
+    "purex.watzhen",
+    "purex.watzmeu",
+    "purex.watzmep",
+    "purex.watzlead",
+    "purex.watzboron",
+    "purex.watzdu",
+    "purex.watznaqadah",
+    "purex.watznaqadria",
+    "purex.icf",
+    "purex.vitliquid",
+    "purex.vitgaseous",
+    "purex.vitsolid",
+    "purex.schraranium",
+    "purex.schrabzirnox",
+    "purex.schrabpwr",
+    "purex.schrabmen"
+  ],
+  "recipes": [
+    {
+      "name": "purex.uzh",
+      "source_index": 0,
+      "source": "PUREXRecipes.java:44",
+      "duration": 600,
+      "power": 1000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:billet_uranium_fuel"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:billet_zirconium"
+          ],
+          "count": 3
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:billet_uzh",
+          4,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "nitric_acid",
+          1000
+        ],
+        [
+          "hydrogen",
+          4000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Tarugo de Hidreto de Urânio-Zircônio ×4",
+      "label_en": "Uranium Zirconium Hydride Billet ×4",
+      "autoSwitchGroup": null
+    },
+    {
+      "name": "purex.flashgold",
+      "source_index": 1,
+      "source": "PUREXRecipes.java:50",
+      "duration": 600,
+      "power": 1000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:billet_au198"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:pellet_charged"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:billet_balefire_gold",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "amat",
+          1000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Tarugo de Ouro Reluzente ×2",
+      "label_en": "Flashgold Billet ×2",
+      "autoSwitchGroup": null
+    },
+    {
+      "name": "purex.flashlead",
+      "source_index": 2,
+      "source": "PUREXRecipes.java:56",
+      "duration": 600,
+      "power": 1000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:billet_pb209"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:billet_balefire_gold"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:billet_flashlead",
+          1,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "amat",
+          1000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Tarugo de Chumbo Reluzente",
+      "label_en": "Flashlead Billet",
+      "autoSwitchGroup": null
+    },
+    {
+      "name": "purex.pwrmeu",
+      "source_index": 23,
+      "source": "PUREXRecipes.java:238",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__meu"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_u238",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_plutonium",
+          4,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          3,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR MEU Esgotado",
+      "label_en": "Reprocessing of Depleted MEU PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrheu233",
+      "source_index": 24,
+      "source": "PUREXRecipes.java:247",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__heu233"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_u235",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_pu238",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          5,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR HEU-233 Esgotado",
+      "label_en": "Reprocessing of Depleted HEU-233 PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrheu235",
+      "source_index": 25,
+      "source": "PUREXRecipes.java:256",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__heu235"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_neptunium",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_pu238",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          5,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR HEU-235 Esgotado",
+      "label_en": "Reprocessing of Depleted HEU-235 PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrmen",
+      "source_index": 26,
+      "source": "PUREXRecipes.java:265",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__men"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_u238",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_pu239",
+          4,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          3,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR MEN Esgotado",
+      "label_en": "Reprocessing of Depleted MEN PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrhen237",
+      "source_index": 27,
+      "source": "PUREXRecipes.java:274",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__hen237"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_pu238",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nugget_pu239",
+          4,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          5,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR HEN-237 Esgotado",
+      "label_en": "Reprocessing of Depleted HEN-237 PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrmox",
+      "source_index": 28,
+      "source": "PUREXRecipes.java:283",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__mox"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_u238",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_pu240",
+          4,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          3,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR MOX Esgotado",
+      "label_en": "Reprocessing of Depleted MOX PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrmep",
+      "source_index": 29,
+      "source": "PUREXRecipes.java:292",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__mep"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_lead",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nugget_pu_mix",
+          4,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          3,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR MEP Esgotado",
+      "label_en": "Reprocessing of Depleted MEP PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrhep239",
+      "source_index": 30,
+      "source": "PUREXRecipes.java:301",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__hep239"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_pu_mix",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nugget_pu240",
+          4,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          5,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR HEP-239 Esgotado",
+      "label_en": "Reprocessing of Depleted HEP-239 PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrhep241",
+      "source_index": 31,
+      "source": "PUREXRecipes.java:310",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__hep241"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_lead",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_zirconium",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          6,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR HEP-241 Esgotado",
+      "label_en": "Reprocessing of Depleted HEP-241 PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrmea",
+      "source_index": 32,
+      "source": "PUREXRecipes.java:319",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__mea"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_lead",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_zirconium",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          6,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR MEA Esgotado",
+      "label_en": "Reprocessing of Depleted MEA PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrhea242",
+      "source_index": 33,
+      "source": "PUREXRecipes.java:328",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__hea242"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_lead",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_zirconium",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          6,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR HEA-242 Esgotado",
+      "label_en": "Reprocessing of Depleted HEA-242 PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrhes326",
+      "source_index": 34,
+      "source": "PUREXRecipes.java:337",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__hes326"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_solinium",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_lead",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nugget_euphemium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          6,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR HES-326 Esgotado",
+      "label_en": "Reprocessing of Depleted HES-326 PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrhes327",
+      "source_index": 35,
+      "source": "PUREXRecipes.java:346",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__hes327"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_australium",
+          4,
+          1.0
+        ],
+        [
+          "ntm:nugget_lead",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nugget_euphemium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          6,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível PWR HES-327 Esgotado",
+      "label_en": "Reprocessing of Depleted HES-327 PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrbfbam",
+      "source_index": 36,
+      "source": "PUREXRecipes.java:355",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__bfb_am_mix"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_am_mix",
+          9,
+          1.0
+        ],
+        [
+          "ntm:nugget_pu_mix",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nugget_bismuth",
+          6,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          1,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste BFB de Combustível PWR de Amerício de Grau Combustível Esgotado",
+      "label_en": "Reprocessing of Depleted Fuel Grade Americium PWR BFB Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.pwrbfpu241",
+      "source_index": 37,
+      "source": "PUREXRecipes.java:364",
+      "duration": 100,
+      "power": 2500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__bfb_pu241"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_pu241",
+          9,
+          1.0
+        ],
+        [
+          "ntm:nugget_pu_mix",
+          2,
+          1.0
+        ],
+        [
+          "ntm:nugget_bismuth",
+          6,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          1,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste BFB de PWR de Plutônio-241 Esgotado",
+      "label_en": "Reprocessing of Depleted Plutonium-241 PWR BFB Rod",
+      "autoSwitchGroup": "autoswitch.pwr"
+    },
+    {
+      "name": "purex.thoriumsalt",
+      "source_index": 38,
+      "source": "PUREXRecipes.java:374",
+      "duration": 20,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:nugget_th232"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_u233",
+          1,
+          0.5
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          1,
+          0.25
+        ]
+      ],
+      "inputFluids": [
+        [
+          "thorium_salt_depleted",
+          16000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "thorium_salt",
+          16000
+        ]
+      ],
+      "pools": [],
+      "label": "Sal de Tório Líquido · 16000 mB",
+      "label_en": "Liquid Thorium Salt · 16000 mB",
+      "autoSwitchGroup": null
+    },
+    {
+      "name": "purex.icf",
+      "source_index": 51,
+      "source": "PUREXRecipes.java:500",
+      "duration": 300,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:icf_pellet_depleted"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:icf_pellet_empty",
+          1,
+          1.0
+        ],
+        [
+          "ntm:pellet_charged",
+          1,
+          1.0
+        ],
+        [
+          "ntm:powder_iron",
+          1,
+          1.0
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [
+        [
+          "helium4",
+          1250
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha de Combustível ICF Esgotada",
+      "label_en": "Reprocessing of Depleted ICF Fuel Pellet",
+      "autoSwitchGroup": null
+    },
+    {
+      "name": "purex.schrabpwr",
+      "source_index": 57,
+      "source": "PUREXRecipes.java:540",
+      "duration": 200,
+      "power": 50000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__mep"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:powder_schrabidium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          4,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "solvent",
+          4000
+        ],
+        [
+          "schrabidic",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Extração de Schrabídio de Haste de Combustível PWR MEP Esgotado",
+      "label_en": "Schrabidium extraction from Depleted MEP PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.schrab"
+    },
+    {
+      "name": "purex.schrabmen",
+      "source_index": 58,
+      "source": "PUREXRecipes.java:547",
+      "duration": 200,
+      "power": 50000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pwr_fuel_depleted__men"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:powder_schrabidium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste_tiny",
+          4,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "solvent",
+          4000
+        ],
+        [
+          "schrabidic",
+          250
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Extração de Schrabídio de Haste de Combustível PWR MEN Esgotado",
+      "label_en": "Schrabidium extraction from Depleted MEN PWR Fuel Rod",
+      "autoSwitchGroup": "autoswitch.schrab"
+    }
+  ],
+  "skipped": [
+    {
+      "name": "purex.pilepu239",
+      "source_index": 3,
+      "source": "PUREXRecipes.java:64",
+      "family": "pile",
+      "autoSwitchGroup": "autoswitch.pile",
+      "reason": "missing catalog identities: ModItems.pile_rod",
+      "missing_items": [
+        "ModItems.pile_rod"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.pilepu239\").setup(40, pilePower).setNameWrapper(\"purex.recycle\").setGroup(autoPile, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.pile_rod, 1, EnumPileRod.PU239))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SULFURIC_ACID, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.billet_pu239, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.billet_uranium, 1))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.pilergp",
+      "source_index": 4,
+      "source": "PUREXRecipes.java:70",
+      "family": "pile",
+      "autoSwitchGroup": "autoswitch.pile",
+      "reason": "missing catalog identities: ModItems.pile_rod",
+      "missing_items": [
+        "ModItems.pile_rod"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.pilergp\").setup(40, pilePower).setNameWrapper(\"purex.recycle\").setGroup(autoPile, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.pile_rod, 1, EnumPileRod.RGP))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SULFURIC_ACID, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.billet_pu_mix, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.billet_nuclear_waste, 1))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.pilethorium",
+      "source_index": 5,
+      "source": "PUREXRecipes.java:76",
+      "family": "pile",
+      "autoSwitchGroup": "autoswitch.pile",
+      "reason": "missing catalog identities: ModItems.pile_rod",
+      "missing_items": [
+        "ModItems.pile_rod"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.pilethorium\").setup(40, pilePower).setNameWrapper(\"purex.recycle\").setGroup(autoPile, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.pile_rod, 1, EnumPileRod.THORIUM_FUEL))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SULFURIC_ACID, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.billet_thorium_fuel, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.billet_nuclear_waste, 1))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.pilewaste",
+      "source_index": 6,
+      "source": "PUREXRecipes.java:82",
+      "family": "pile",
+      "autoSwitchGroup": "autoswitch.pile",
+      "reason": "missing catalog identities: ModItems.pile_rod",
+      "missing_items": [
+        "ModItems.pile_rod"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.pilewaste\").setup(40, pilePower).setNameWrapper(\"purex.recycle\").setGroup(autoPile, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.pile_rod, 1, EnumPileRod.WASTE))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SULFURIC_ACID, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.billet_nuclear_waste, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.billet_polonium, 1))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.zirnoxnu",
+      "source_index": 7,
+      "source": "PUREXRecipes.java:91",
+      "family": "zirnox",
+      "autoSwitchGroup": "autoswitch.zirnox",
+      "reason": "missing catalog identities: ModItems.waste_natural_uranium",
+      "missing_items": [
+        "ModItems.waste_natural_uranium"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.zirnoxnu\").setup(100, zirnoxPower).setNameWrapper(\"purex.recycle\").setGroup(autoZirnox, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_natural_uranium))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_u238, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_pu_mix, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_pu239, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 2))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.zirnoxmeu",
+      "source_index": 8,
+      "source": "PUREXRecipes.java:100",
+      "family": "zirnox",
+      "autoSwitchGroup": "autoswitch.zirnox",
+      "reason": "missing catalog identities: ModItems.waste_uranium",
+      "missing_items": [
+        "ModItems.waste_uranium"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.zirnoxmeu\").setup(100, zirnoxPower).setNameWrapper(\"purex.recycle\").setGroup(autoZirnox, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_uranium))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu_mix, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_plutonium, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 2))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.zirnoxthmeu",
+      "source_index": 9,
+      "source": "PUREXRecipes.java:109",
+      "family": "zirnox",
+      "autoSwitchGroup": "autoswitch.zirnox",
+      "reason": "missing catalog identities: ModItems.waste_thorium",
+      "missing_items": [
+        "ModItems.waste_thorium"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.zirnoxthmeu\").setup(100, zirnoxPower).setNameWrapper(\"purex.recycle\").setGroup(autoZirnox, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_thorium))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_u238, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_th232, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_u233, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 2))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.zirnoxmox",
+      "source_index": 10,
+      "source": "PUREXRecipes.java:118",
+      "family": "zirnox",
+      "autoSwitchGroup": "autoswitch.zirnox",
+      "reason": "missing catalog identities: ModItems.waste_mox",
+      "missing_items": [
+        "ModItems.waste_mox"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.zirnoxmox\").setup(100, zirnoxPower).setNameWrapper(\"purex.recycle\").setGroup(autoZirnox, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_mox))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu_mix, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_u238, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 3))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.zirnoxmep",
+      "source_index": 11,
+      "source": "PUREXRecipes.java:127",
+      "family": "zirnox",
+      "autoSwitchGroup": "autoswitch.zirnox",
+      "reason": "missing catalog identities: ModItems.waste_plutonium",
+      "missing_items": [
+        "ModItems.waste_plutonium"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.zirnoxmep\").setup(100, zirnoxPower).setNameWrapper(\"purex.recycle\").setGroup(autoZirnox, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_plutonium))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu_mix, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 3))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.zirnoxheu233",
+      "source_index": 12,
+      "source": "PUREXRecipes.java:135",
+      "family": "zirnox",
+      "autoSwitchGroup": "autoswitch.zirnox",
+      "reason": "missing catalog identities: ModItems.waste_u233",
+      "missing_items": [
+        "ModItems.waste_u233"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.zirnoxheu233\").setup(100, zirnoxPower).setNameWrapper(\"purex.recycle\").setGroup(autoZirnox, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_u233))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_u235, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_neptunium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 3))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.zirnoxheu235",
+      "source_index": 13,
+      "source": "PUREXRecipes.java:144",
+      "family": "zirnox",
+      "autoSwitchGroup": "autoswitch.zirnox",
+      "reason": "missing catalog identities: ModItems.waste_u235",
+      "missing_items": [
+        "ModItems.waste_u235"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.zirnoxheu235\").setup(100, zirnoxPower).setNameWrapper(\"purex.recycle\").setGroup(autoZirnox, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_u235))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu238, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_neptunium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 3))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.zirnoxles",
+      "source_index": 14,
+      "source": "PUREXRecipes.java:153",
+      "family": "zirnox",
+      "autoSwitchGroup": "autoswitch.zirnox",
+      "reason": "missing catalog identities: ModItems.waste_schrabidium",
+      "missing_items": [
+        "ModItems.waste_schrabidium"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.zirnoxles\").setup(100, zirnoxPower).setNameWrapper(\"purex.recycle\").setGroup(autoZirnox, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_schrabidium))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_beryllium, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_pu239, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 2))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.zirnoxzfbmox",
+      "source_index": 15,
+      "source": "PUREXRecipes.java:162",
+      "family": "zirnox",
+      "autoSwitchGroup": "autoswitch.zirnox",
+      "reason": "missing catalog identities: ModItems.waste_zfb_mox",
+      "missing_items": [
+        "ModItems.waste_zfb_mox"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.zirnoxzfbmox\").setup(100, zirnoxPower).setNameWrapper(\"purex.recycle\").setGroup(autoZirnox, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_zfb_mox))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_zirconium, 3),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_pu_mix, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 1))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.platemox",
+      "source_index": 16,
+      "source": "PUREXRecipes.java:173",
+      "family": "plate",
+      "autoSwitchGroup": "autoswitch.plate",
+      "reason": "missing catalog identities: ModItems.waste_plate_mox",
+      "missing_items": [
+        "ModItems.waste_plate_mox"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.platemox\").setup(100, platePower).setNameWrapper(\"purex.recycle\").setGroup(autoPlate, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_plate_mox))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.powder_sr90_tiny, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_pu_mix, 3),\n\t\t\t\t\t\tnew ItemStack(ModItems.powder_cs137_tiny, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 4))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.platepu238be",
+      "source_index": 17,
+      "source": "PUREXRecipes.java:182",
+      "family": "plate",
+      "autoSwitchGroup": "autoswitch.plate",
+      "reason": "missing catalog identities: ModItems.waste_plate_pu238be",
+      "missing_items": [
+        "ModItems.waste_plate_pu238be"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.platepu238be\").setup(100, platePower).setNameWrapper(\"purex.recycle\").setGroup(autoPlate, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_plate_pu238be))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_beryllium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_pu238, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.powder_coal_tiny, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_lead, 2))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.platepu239",
+      "source_index": 18,
+      "source": "PUREXRecipes.java:191",
+      "family": "plate",
+      "autoSwitchGroup": "autoswitch.plate",
+      "reason": "missing catalog identities: ModItems.waste_plate_pu239",
+      "missing_items": [
+        "ModItems.waste_plate_pu239"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.platepu239\").setup(100, platePower).setNameWrapper(\"purex.recycle\").setGroup(autoPlate, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_plate_pu239))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu240, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.powder_cs137_tiny, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 5))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.platera226be",
+      "source_index": 19,
+      "source": "PUREXRecipes.java:200",
+      "family": "plate",
+      "autoSwitchGroup": "autoswitch.plate",
+      "reason": "missing catalog identities: ModItems.waste_plate_ra226be",
+      "missing_items": [
+        "ModItems.waste_plate_ra226be"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.platera226be\").setup(100, platePower).setNameWrapper(\"purex.recycle\").setGroup(autoPlate, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_plate_ra226be))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_beryllium, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_polonium, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.powder_coal_tiny, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_lead, 1))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.platesa326",
+      "source_index": 20,
+      "source": "PUREXRecipes.java:209",
+      "family": "plate",
+      "autoSwitchGroup": "autoswitch.plate",
+      "reason": "missing catalog identities: ModItems.waste_plate_sa326",
+      "missing_items": [
+        "ModItems.waste_plate_sa326"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.platesa326\").setup(100, platePower).setNameWrapper(\"purex.recycle\").setGroup(autoPlate, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_plate_sa326))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_solinium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.powder_neodymium_tiny, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_tantalium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 6))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.plateu233",
+      "source_index": 21,
+      "source": "PUREXRecipes.java:218",
+      "family": "plate",
+      "autoSwitchGroup": "autoswitch.plate",
+      "reason": "missing catalog identities: ModItems.waste_plate_u233",
+      "missing_items": [
+        "ModItems.waste_plate_u233"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.plateu233\").setup(100, platePower).setNameWrapper(\"purex.recycle\").setGroup(autoPlate, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_plate_u233))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_u235, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.powder_i131_tiny, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.powder_sr90_tiny, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 6))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.plateu235",
+      "source_index": 22,
+      "source": "PUREXRecipes.java:227",
+      "family": "plate",
+      "autoSwitchGroup": "autoswitch.plate",
+      "reason": "missing catalog identities: ModItems.waste_plate_u235",
+      "missing_items": [
+        "ModItems.waste_plate_u235"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.plateu235\").setup(100, platePower).setNameWrapper(\"purex.recycle\").setGroup(autoPlate, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_plate_u235))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_neptunium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_pu238, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 6))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watzschrab",
+      "source_index": 39,
+      "source": "PUREXRecipes.java:384",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzschrab\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.SCHRABIDIUM))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_solinium, 15),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_euphemium, 3),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watzhes",
+      "source_index": 40,
+      "source": "PUREXRecipes.java:393",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzhes\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.HES))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_solinium, 17),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_euphemium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watzmes",
+      "source_index": 41,
+      "source": "PUREXRecipes.java:402",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzmes\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.MES))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_solinium, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_tantalium, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watzles",
+      "source_index": 42,
+      "source": "PUREXRecipes.java:411",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzles\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.LES))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_solinium, 9),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_tantalium, 9),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watzhen",
+      "source_index": 43,
+      "source": "PUREXRecipes.java:420",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzhen\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.HEN))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu239, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watzmeu",
+      "source_index": 44,
+      "source": "PUREXRecipes.java:429",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzmeu\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.MEU))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu239, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_bismuth, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watzmep",
+      "source_index": 45,
+      "source": "PUREXRecipes.java:438",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzmep\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.MEP))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu241, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_bismuth, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watzlead",
+      "source_index": 46,
+      "source": "PUREXRecipes.java:447",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzlead\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.LEAD))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_lead, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_bismuth, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watzboron",
+      "source_index": 47,
+      "source": "PUREXRecipes.java:456",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzboron\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.BORON))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.powder_coal_tiny, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_co60, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watzdu",
+      "source_index": 48,
+      "source": "PUREXRecipes.java:465",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzdu\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.DU))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_polonium, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_pu238, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watznaqadah",
+      "source_index": 49,
+      "source": "PUREXRecipes.java:480",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "conditional OreDict guard if(naquadriaNuggets.size() != 0): nuggetNaquadria absent from catalog",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watznaqadah\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.NQD))\n\t\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t\t.outputItems(copy,\n\t\t\t\t\t\t\tnew ItemStack(ModItems.nugget_euphemium, 6),\n\t\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.watznaqadria",
+      "source_index": 50,
+      "source": "PUREXRecipes.java:489",
+      "family": "watz",
+      "autoSwitchGroup": "autoswitch.watz",
+      "reason": "conditional OreDict guard if(naquadriaNuggets.size() != 0): nuggetNaquadria absent from catalog",
+      "missing_items": [
+        "ModItems.watz_pellet_depleted"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watznaqadria\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.NQR))\n\t\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_co60, 12),\n\t\t\t\t\t\t\tnew ItemStack(ModItems.nugget_euphemium, 6),\n\t\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.vitliquid",
+      "source_index": 52,
+      "source": "PUREXRecipes.java:509",
+      "family": "vitrification",
+      "autoSwitchGroup": null,
+      "reason": "missing catalog identities: ModBlocks.sand_mix",
+      "missing_items": [
+        "ModBlocks.sand_mix"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.vitliquid\").setup(100, vitrification)\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.sand_mix, 1, EnumSandType.LEAD))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WASTEFLUID, 1_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nuclear_waste_vitrified))"
+    },
+    {
+      "name": "purex.vitgaseous",
+      "source_index": 53,
+      "source": "PUREXRecipes.java:514",
+      "family": "vitrification",
+      "autoSwitchGroup": null,
+      "reason": "missing catalog identities: ModBlocks.sand_mix",
+      "missing_items": [
+        "ModBlocks.sand_mix"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.vitgaseous\").setup(100, vitrification)\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.sand_mix, 1, EnumSandType.LEAD))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WASTEGAS, 1_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nuclear_waste_vitrified))"
+    },
+    {
+      "name": "purex.vitsolid",
+      "source_index": 54,
+      "source": "PUREXRecipes.java:519",
+      "family": "vitrification",
+      "autoSwitchGroup": null,
+      "reason": "missing catalog identities: ModBlocks.sand_mix",
+      "missing_items": [
+        "ModBlocks.sand_mix"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.vitsolid\").setup(300, vitrification)\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.sand_mix, 1, EnumSandType.LEAD), new ComparableStack(ModItems.nuclear_waste, 4))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nuclear_waste_vitrified, 4))"
+    },
+    {
+      "name": "purex.schraranium",
+      "source_index": 55,
+      "source": "PUREXRecipes.java:524",
+      "family": "schrabidium",
+      "autoSwitchGroup": null,
+      "reason": "missing catalog identities: ModItems.ingot_schraranium",
+      "missing_items": [
+        "ModItems.ingot_schraranium"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.schraranium\").setup(200, 1_000).setNameWrapper(\"purex.schrab\")\n\t\t\t\t.inputItems(new ComparableStack(ModItems.ingot_schraranium))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 2_000), new FluidStack(Fluids.NITRIC_ACID, 1_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_schrabidium, 3),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_uranium, 3),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_neptunium, 2))\n\t\t\t\t.setIconToFirstIngredient()"
+    },
+    {
+      "name": "purex.schrabzirnox",
+      "source_index": 56,
+      "source": "PUREXRecipes.java:533",
+      "family": "schrabidium",
+      "autoSwitchGroup": "autoswitch.schrab",
+      "reason": "missing catalog identities: ModItems.waste_plutonium",
+      "missing_items": [
+        "ModItems.waste_plutonium"
+      ],
+      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.schrabzirnox\").setup(200, 50_000).setNameWrapper(\"purex.schrab\").setGroup(autoSchrab, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_plutonium))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SOLVENT, 4_000), new FluidStack(Fluids.SCHRABIDIC, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.powder_schrabidium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 3),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 4))\n\t\t\t\t.setIconToFirstIngredient()"
+    }
+  ]
+}

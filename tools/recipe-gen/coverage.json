@@ -1,5 +1,5 @@
 {
-  "catalog_items": 2563,
+  "catalog_items": 2564,
   "vanilla_recipe_count": 235,
   "temporary_count": 10,
   "press_count": 47,
@@ -2641,6 +2641,7 @@
     "ntm:machine_crucible",
     "ntm:machine_fluidtank",
     "ntm:machine_gascent",
+    "ntm:machine_purex",
     "ntm:machine_shredder",
     "ntm:magnetron",
     "ntm:man_core",

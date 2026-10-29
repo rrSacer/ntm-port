@@ -116,6 +116,7 @@ class FoundryContracts(unittest.TestCase):
 
     def test_registered_item_and_block_graph(self):
         vanilla = Path('/home/sacer/Games/horizon/.local/horizon-client/26.3/assets/minecraft/items')
+        visual_owned = set(json.loads((ROOT / 'content/.visual-files.json').read_text())) if (ROOT / 'content/.visual-files.json').exists() else set()
         ids = list(self.data['items']) + list(self.data['firebox_fuels'])
         for row in self.data['alloys']+self.data['disabled_alloys']: ids.append(row['icon'])
         for row in self.data['molds']: ids.extend([row['item']]+[out[0] for out in row['outputs'].values()])
@@ -128,8 +129,12 @@ class FoundryContracts(unittest.TestCase):
             self.assertIn(ident,self.catalog['machines'])
             self.assertEqual(row['template'],'minecraft:beehive')
             self.assertEqual(row['logic']['level'],{'prop':'honey_level','max':5})
-            blockstates=json.loads((ROOT/f'content/assets/ntm/blockstates/{name}.json').read_text())
-            self.assertEqual(len(blockstates['variants']),24)
+            rel_state=f'assets/ntm/blockstates/{name}.json'
+            blockstates=json.loads((ROOT/'content'/rel_state).read_text())
+            if rel_state in visual_owned:
+                self.assertIn(len(blockstates['variants']), (1, 4))
+            else:
+                self.assertEqual(len(blockstates['variants']),24)
             loot=json.loads((ROOT/f'content/data/ntm/loot_table/blocks/{name}.json').read_text())
             self.assertIn(ident,json.dumps(loot))
 

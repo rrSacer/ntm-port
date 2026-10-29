@@ -16,7 +16,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MATERIAL_PT = dict(zip('uranium thorium titanium lead red_copper aluminium tungsten beryllium lithium asbestos fluorite niter sulfur'.split(), ['Urânio', 'Tório', 'Titânio', 'Chumbo', 'Cobre Vermelho', 'Alumínio', 'Tungstênio', 'Berílio', 'Lítio', 'Amianto', 'Fluorita', 'Salitre', 'Enxofre']))
 FORM_PT = {'ingot':'Lingote de {}','nugget':'Pepita de {}','plate':'Placa de {}','powder':'Pó de {}','wire':'Fio de {}','wiring':'Bobina de {}','billet':'Tarugo de {}','crystal':'Cristal de {}','ore':'Minério de {}','storage':'Bloco de {}'}
-MACHINE_PT = {'machine_wood_burner':'Gerador a Combustão', 'red_cable':'Cabo de Cobre Vermelho', 'machine_battery':'Bloco de Armazenamento de Energia', 'machine_electric_furnace_off':'Fornalha Elétrica', 'machine_press':'Prensa a Combustão', 'machine_epress':'Prensa Elétrica'}
+MACHINE_PT = {'machine_wood_burner':'Gerador a Combustão', 'red_cable':'Cabo de Cobre Vermelho', 'machine_battery':'Bloco de Armazenamento de Energia', 'machine_electric_furnace_off':'Fornalha Elétrica', 'machine_press':'Prensa a Combustão', 'machine_epress':'Prensa Elétrica', 'machine_purex':'PUREX'}
 MACHINE_TEXTURES = {
  'machine_wood_burner': {'side':'blocks/block_steel', 'top':'blocks/block_steel', 'front':'models/machines/wood_burner'},
  'machine_battery': {'side':'blocks/battery_side_alt','top':'blocks/battery_top','front':'blocks/battery_front_alt'},
@@ -87,7 +87,7 @@ def catalog(src, manifest):
     mat=row['material']; material_name=(MATERIAL_PT[mat] if loc=='pt_br' else mat.replace('_',' ').title())
     value=value.replace('%s',material_name) if value else None
    # Some pt_BR entries are absent or still use the English source text.
-   if not value or (loc=='pt_br' and value==langs['en_us'].get(key)):
+   if not value or (loc=='pt_br' and loc not in preset_names and value==langs['en_us'].get(key)):
     if loc=='pt_br':
      value=MACHINE_PT.get(name)
      if value is None and row['category']=='stamp':value='Matriz de Ferro ('+name.rsplit('_',1)[1]+')'
@@ -280,7 +280,13 @@ def generate(src,out,rows,distributions,max_damage=False):
    emit(f'data/ntm/loot_table/blocks/{name}.json',{'type':'minecraft:block','pools':[] if row.get('loot_none') else [{'rolls':1,'entries':[entry]}]})
   emit(f'assets/ntm/items/{name}.json',{'model':{'type':'minecraft:model','model':model}})
   for loc in languages:languages[loc][('block.' if kind=='block' else 'item.')+'ntm.'+name]=row['names'][loc]
- for loc,value in languages.items():emit(f'assets/ntm/lang/{loc}.json',value)
+ for loc,value in languages.items():
+  # Preserve visual-gen's dummy_machine lang key across content regenerations when dummy_machine is active.
+  existing_lang=out/f'assets/ntm/lang/{loc}.json'
+  if 'data/ntm/horizon/block/dummy_machine.json' in visual_owned and existing_lang.is_file():
+   prior_lang=json.loads(existing_lang.read_text())
+   if 'block.ntm.dummy_machine' in prior_lang:value['block.ntm.dummy_machine']=prior_lang['block.ntm.dummy_machine']
+  emit(f'assets/ntm/lang/{loc}.json',value)
  emit('data/minecraft/tags/block/mineable/pickaxe.json',{'replace':False,'values':blocks})
  emit('data/minecraft/tags/block/needs_iron_tool.json',{'replace':False,'values':[r['id'] for r in rows if r['category']=='ore']})
  worldgen.generate(emit,rows,distributions)
