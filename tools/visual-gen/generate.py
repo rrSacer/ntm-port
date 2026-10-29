@@ -9,6 +9,9 @@ Reads tools/visual-gen/visual.json and ntm-src, writes into content/:
   assets/ntm/horizon_model/<block>.json      OBJ + texture + bones + animations
   assets/ntm/animations/<block>.animation.json   GeckoLib/Bedrock animation format
   assets/ntm/models/obj/*.obj, assets/ntm/textures/{gui,models}/...   copied from ntm-src
+  assets/ntm/blockstates/<block>.json, models/block/visual/<block>.json,
+  items/<block>.json   a block HBM draws with its own block renderer (ISBRH), as
+                       JSON elements; content-gen leaves these paths to us
   the dummy block of the multiblocks (ntm:dummy_machine)
 
 A Horizon without the patch ignores these folders: the blocks keep their
@@ -94,6 +97,37 @@ def obj_info(path):
     return names, reach
 
 
+def block_model(spec, block):
+    """A block HBM draws with an ISBRH (RenderFoundryMold...): its boxes as
+    JSON elements, each face naming one of HBM's block textures. Default UVs
+    follow the element's position, as RenderBlocks' faces follow the render
+    bounds, so a face shows the part of HBM's texture it showed there. Faces
+    on the block's edge are culled against neighbours; no ambient occlusion,
+    as HBM's renderers have none."""
+    name = block.split(':', 1)[1]
+    textures = {k: f'ntm:block/visual/{v}' for k, v in spec['textures'].items()}
+    textures.setdefault('particle', textures[spec.get('particle', 'side')])
+    edge = {'down': (1, 0), 'up': (1, 16), 'north': (2, 0), 'south': (2, 16), 'west': (0, 0), 'east': (0, 16)}
+    elements = []
+    for frm, to, faces in spec['elements']:
+        out = {}
+        for face, tex in faces.items():
+            f = {'texture': '#' + tex}
+            axis, at = edge[face]
+            if (frm if at == 0 else to)[axis] == at:
+                f['cullface'] = face
+            out[face] = f
+        elements.append({'from': frm, 'to': to, 'faces': out})
+    model = {'ambientocclusion': False, 'textures': textures, 'elements': elements}
+    ref = f'ntm:block/visual/{name}'
+    if spec.get('facing'):
+        turns = {'north': 0, 'east': 90, 'south': 180, 'west': 270}
+        variants = {f'facing={f}': ({'model': ref, 'y': y} if y else {'model': ref}) for f, y in turns.items()}
+    else:
+        variants = {'': {'model': ref}}
+    return model, {'variants': variants}, {'model': {'type': 'minecraft:model', 'model': ref}}
+
+
 def auto_models(args, src, hand):
     """The port's blocks with an HBM model (extracted.json) that visual.json
     does not describe: their model as HBM's renderer turns it. No slots and
@@ -161,8 +195,27 @@ def main():
             s = dict(b['screen'])
             copy(s.pop('texture_from'), 'assets/ntm/' + s['texture'].split(':', 1)[1])
             write_json(own(f'assets/ntm/horizon_screen/{name}.json'), s)
+        if 'liquid' in b:
+            # A liquid file: drawn over the block's own model (horizon_liquid).
+            l = {'liquids': [dict(x) for x in b['liquid']['liquids']]}
+            for x in l['liquids']:
+                copy(x.pop('texture_from'), 'assets/ntm/' + x['texture'].split(':', 1)[1])
+            write_json(own(f'assets/ntm/horizon_liquid/{name}.json'), l)
+        if 'block_model' in b:
+            bm = b['block_model']
+            for tex in set(bm['textures'].values()):
+                copy(f'textures/blocks/{tex}.png', f'assets/ntm/textures/block/visual/{tex}.png')
+            model, states, item = block_model(bm, block)
+            write_json(own(f'assets/ntm/models/block/visual/{name}.json'), model)
+            write_json(own(f'assets/ntm/blockstates/{name}.json'), states)
+            write_json(own(f'assets/ntm/items/{name}.json'), item)
         if 'model' in b:
             m = dict(b['model'])
+            m['liquids'] = [dict(x) for x in m.get('liquids', [])]
+            for x in m['liquids']:
+                copy(x.pop('texture_from'), 'assets/ntm/' + x['texture'].split(':', 1)[1])
+            if not m['liquids']:
+                del m['liquids']
             copy(m.pop('obj_from'), 'assets/ntm/' + m['obj'].split(':', 1)[1])
             copy(m.pop('texture_from'), 'assets/ntm/' + m['texture'].split(':', 1)[1])
             anim = m.pop('arm_animation', None)
