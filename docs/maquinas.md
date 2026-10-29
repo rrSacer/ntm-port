@@ -337,6 +337,39 @@ construção.
   - a bigorna de ferro recusa um nível acima.
 - **Em jogo:** pendente da tela do agente de visual.
 
+## Prensas: a tabela inteira
+
+As duas prensas do M1 (a queimador e a elétrica) agora usam a tabela completa
+do `PressRecipes.java`. Ela vem do agente de importação
+(`content/machine-recipes/press.json`, [content-press.md](content-press.md)) e
+é embutida por `tools/machine-gen/build.py` em `data/press_recipes.json`, com
+uma entrada por alternativa do OreDict.
+
+| Matriz | Receitas | Durabilidade (`ModItems`) |
+| --- | --- | --- |
+| `flat` | 10, entre elas pós em quartzo, diamante, esmeralda e lápis; coque em grafite; tora da selva em resina; briquetes | pedra 32, ferro 64, aço 192, titânio 256, obsidiana 512, desh 0 (não gasta) |
+| `plate` | 13 chapas | idem |
+| `wire` | 11 fios finos ×8, inclusive ouro e carbono (do grafite) | idem |
+| `circuit` | silício | idem |
+| `c9`, `c50` | cápsulas de gunmetal e weaponsteel | 1000; desh 0 |
+| `printing1..8` | as páginas, de papel | — |
+
+A única receita pulada é a espada de meteorito, fora do catálogo. As
+matrizes C357 e C44 existem, mas o NTM não tem receita para elas.
+
+**Combustível que também é entrada.** Na prensa a queimador, a tora da selva
+(prensada em resina) também é combustível. No NTM o jogador escolhe o slot;
+aqui ela vai para a entrada só se a matriz posta a prensa, e senão vira
+combustível.
+
+**Verificação:** no mundo falso:
+- a tabela inteira (32 matrizes, 49 entradas);
+- o fio de ouro e a chapa de ouro;
+- o grafite do coque de petróleo;
+- uma página;
+- a matriz desh, que não gasta em 40 prensagens, e a de pedra, que quebra na 32ª;
+- a tora, queimada sob a matriz de chapa e prensada sob a plana.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
@@ -346,7 +379,7 @@ novas sem quebrar a cadeia.
 | --- | --- | --- |
 | `machine_epress` | sim: montadora `ass.epress` | pede 2 `part_generic__piston_hydraulic`, sem receita no port; e placa de aço só sai da montadora a partir de aço |
 | `machine_battery`, `machine_electric_furnace` | não (sem receita de montadora extraída) | — |
-| `stamp_iron_plate`, `stamp_iron_wire` | não (bigorna) | — |
+| `stamp_iron_plate`, `stamp_iron_wire` | sim: bigorna nível 1, a partir da `stamp_iron_flat` (`anvil.construction.155`/`156`) | pode sair; a retirada é decisão de quem cuida das receitas |
 | `aluminium_from_ore`, `red_copper_alloy` | não (beneficiamento, alto-forno) | — |
 | `machine_wood_burner`, `red_cable`, `wiring_red_copper` | não | o agente de conteúdo já importou as receitas originais de bancada (`bulk__*`); retirar a ponte é decisão de quem cuida das receitas |
 
