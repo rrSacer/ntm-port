@@ -199,3 +199,46 @@ fn a_crash_with_an_older_mod_save_loses_no_molten_metal() {
     let total = molten + 72 * count(&slots(&g, core), "minecraft:iron_ingot");
     assert_eq!(total, 72, "ferro depois da queda: {total} quanta (era 72)");
 }
+
+/// From slot to slot through the metal: ingots melt in a crucible, pour
+/// into an ingot mold and come out cast, while the player takes the casts.
+/// Every tick, the iron in ingots, in the crucible, in the mold and taken
+/// is what went in.
+#[test]
+fn iron_is_conserved_from_crucible_to_mold() {
+    let mut g = game();
+    let core = [0, 71, 0];
+    // No alloy: everything goes to the waste stream, south of the core.
+    let mold = [0, 70, 2];
+    engine_block(&mut g, core, "ntm:machine_crucible[facing=north,honey_level=0]", 10);
+    engine_block(&mut g, mold, "ntm:foundry_mold[facing=north,honey_level=0]", 2);
+    put(&mut g, core, 1, Some(Stack::new("minecraft:iron_ingot", 5)));
+    put(&mut g, mold, 0, Some(Stack::new("ntm:mold__ingot", 1)));
+    let mut taken = 0;
+    for t in 0..2000 {
+        {
+            let r = g.ready();
+            if let Some(Data::Crucible(c)) = r.world.machines.get_mut(&(OW.to_string(), core)).map(|m| &mut m.data) {
+                c.heat = 100_000;
+            }
+        }
+        g.run(1);
+        let molten = match g.machine(core).data {
+            Data::Crucible(c) => c.waste_stack.iter().map(|m| m.1).sum::<u32>(),
+            _ => 0,
+        };
+        let in_mold = match g.machine(mold).data {
+            Data::Mold(c) => c.melt.amount,
+            _ => 0,
+        };
+        let (cs, ms) = (slots(&g, core), slots(&g, mold));
+        let ingots = count(&cs, "minecraft:iron_ingot") + count(&ms, "minecraft:iron_ingot") + taken;
+        assert_eq!(ingots * 72 + molten + in_mold, 5 * 72, "tick {t}: lingotes {ingots}, fundido {molten}, no molde {in_mold}");
+        // The player takes a cast when there is one.
+        if count(&ms, "minecraft:iron_ingot") > 0 && t % 3 == 0 {
+            taken += count(&ms, "minecraft:iron_ingot");
+            put(&mut g, mold, 1, None);
+        }
+    }
+    assert_eq!(taken, 5, "não fundiu e moldou os 5");
+}
