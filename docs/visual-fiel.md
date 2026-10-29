@@ -442,15 +442,27 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
   - **Multibloco:** 5×5×5 com o núcleo no centro da base (offset 2). As 16 células da borda de baixo passam energia
     e fluido (`TilePortShapes.purex`).
   - **Em jogo:** posto e com a tela aberta (`img/visual-purex.png`, ao lado do ponteiro da prensa).
+- **Animações** (tocam enquanto o `honey_level` não é 0, como a montadora):
+  - **Planta química:** o `Spinner` gira 15° por tick sobre o pivô (0,5, 0, 0,5), e o `Slider` corre por
+    `BobMathUtil.sps` (`RenderChemicalPlant`).
+  - **PUREX:** o `Fan` gira 45° por tick sobre (1,5, 1,25, 0), e a `Pump` corre por `sps` (`RenderPUREX`).
+  - **Uma volta por máquina:** um só loop leva as duas partes, de 2,4 s e 1,2 s. As corridas ficam 5% mais rápidas que
+    as do NTM.
+  - **Frame:** escondido, como no NTM quando não há bloco em cima.
+  - **Prensas:** corpo e cabeça num só modelo (`merge` no visual-gen: os dois OBJ, as duas texturas lado a lado). A
+    cabeça desce e sobe uma vez por segundo enquanto a prensa trabalha. No NTM ela segue o valor da prensa, e mandar
+    esse valor 20 vezes por segundo custaria uma atualização de bloco por tick por prensa.
+  - **Em repouso,** o modelo mostra o primeiro quadro da animação (motor). No NTM as peças ficam onde o `anim` parou,
+    e para a corrida isso é uma volta inteira para fora.
+  - **Captura:** `img/visual-animations.png` (a planta química, e as duas prensas em quadros de 0,2 s).
 - **Falta:**
-  - as animações (o `Spinner` e o `Slider` da planta química, a cabeça da prensa);
   - o tipo de fluido real nos tanques da centrífuga de gás (hoje sempre UF6).
 - **Em jogo:** as 5 colocadas com os dummies certos (26, 3, 3, 2, 2) e as 5 telas abertas
   (`img/visual-machines-d2.png`). A planta química pede escala de GUI ≤ 2 em 720p, como a montadora.
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 28 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 29 commits):
 
 | Commit | O quê |
 |---|---|
@@ -482,6 +494,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(client): list a machine screen's buttons for the control socket` | `horizon-ctl screen` e `click-button` |
 | `feat(render): a screen bar may start filling past a value` | `from` (as colunas da centrífuga) |
 | `feat(render): draw needle gauges on machine screens` | `gauges` (prensa, alto-forno) |
+| `feat(render): hold a mod model at rest on its first frame` | O repouso das animações |
 
 **No port:**
 
