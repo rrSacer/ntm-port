@@ -23,6 +23,7 @@ pub mod press;
 pub mod probes;
 pub mod proto;
 pub mod recipes;
+pub mod shredder;
 pub mod radiation;
 pub mod registry;
 pub mod server;
