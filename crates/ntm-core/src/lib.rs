@@ -7,6 +7,7 @@
 //! `cargo test` against a fake world.
 
 pub mod anvil;
+pub mod bedrock;
 pub mod blast;
 pub mod blastfurnace;
 pub mod blockstate;
