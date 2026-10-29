@@ -185,10 +185,12 @@ def main():
 
     dummy = spec['dummy']
     blocks = dict(spec['blocks'])
-    auto = auto_models(args, src, set(blocks))
+    # A hand entry without a model takes the extracted one.
+    auto = auto_models(args, src, {k for k, b in blocks.items() if 'model' in b})
     ex_file = HERE / 'extracted.json'
     extracted = json.loads(ex_file.read_text()) if ex_file.exists() else {}
-    blocks.update(auto)
+    for k, a in auto.items():
+        blocks[k] = {**a, **blocks.get(k, {})}
     for block, b in blocks.items():
         name = block.split(':', 1)[1]
         if 'machine' in b:
@@ -199,7 +201,21 @@ def main():
             color = extracted.get(block, {}).get('gui', {}).get('title_color')
             if color and 'title_color' not in s:
                 s['title_color'] = color
-            copy(s.pop('texture_from'), 'assets/ntm/' + s['texture'].split(':', 1)[1])
+            target = 'assets/ntm/' + s['texture'].split(':', 1)[1]
+            copy(s.pop('texture_from'), target)
+            # Other GUI textures a screen draws from (the Tsar's lamps are
+            # Ivy Mike's), pasted below or beside it into one file.
+            if 'compose' in s:
+                from PIL import Image
+                base = Image.open(out / target).convert('RGBA')
+                parts = [(Image.open(src / c['from']).convert('RGBA'), c['at']) for c in s.pop('compose')]
+                w = max([base.width] + [im.width + at[0] for im, at in parts])
+                h = max([base.height] + [im.height + at[1] for im, at in parts])
+                sheet = Image.new('RGBA', (w, h))
+                sheet.paste(base, (0, 0))
+                for im, at in parts:
+                    sheet.paste(im, tuple(at))
+                sheet.save(out / target)
             write_json(own(f'assets/ntm/horizon_screen/{name}.json'), s)
         if 'liquid' in b:
             # A liquid file: drawn over the block's own model (horizon_liquid).
