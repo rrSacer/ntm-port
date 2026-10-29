@@ -53,14 +53,19 @@ def build(source=SOURCE, output=ROOT / 'content'):
         'machine_gascent': ('Gas Centrifuge', 'Centrífuga de Gás'),
         'barrel_steel': ('Steel Barrel', 'Barril de Aço'),
         'machine_fluidtank': ('Fluid Tank', 'Tanque de Fluidos'),
+        'machine_shredder': ('Shredder', 'Triturador'),
     }
     for var, (en, pt) in names.items():
         name, texture = registration(blocks, var, 'block')
         front = 'blocks/' + var if var not in ('machine_assembly_machine', 'machine_chemical_plant') else 'models/machines/' + var.removeprefix('machine_')
+        surfaces = {'side': 'blocks/' + str(texture), 'top': 'blocks/' + str(texture), 'front': front}
+        if var == 'machine_shredder':
+            surfaces = {face: 'blocks/machine_shredder_' + face + '_alt' for face in ('side', 'top', 'bottom', 'front')}
+            front = surfaces['front']
         rows.append({'id': name, 'source_variable': var, 'type': 'block', 'category': 'machine',
                      'template': 'minecraft:beehive', 'names': {'en_us': en, 'pt_br': pt},
                      'source_texture': 'src/main/resources/assets/hbm/textures/' + front + '.png',
-                     'textures': {'side': 'blocks/' + texture, 'top': 'blocks/' + texture, 'front': front},
+                     'textures': surfaces,
                      'opaque_machine_textures': True,
                      'model_gap': 'NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage',
                      **({'fluid_capacity_mb': 16000 if var == 'barrel_steel' else 256000} if var in ('barrel_steel', 'machine_fluidtank') else {})})
@@ -130,6 +135,13 @@ def build(source=SOURCE, output=ROOT / 'content'):
     for row in rows:
         for texture in [row['source_texture'], *[x['source'] for x in row.get('overlay_textures', [])]]:
             if not (source / texture).is_file(): raise ValueError('Missing texture: ' + texture)
+    for var in ('blades_steel', 'blades_titanium', 'blades_desh'):
+        name, texture = registration(items, var, 'item')
+        durability = int(re.search(r'\b' + var + r'\s*=\s*new ItemBlades\((\d+)\)', items)[1])
+        rows.append({'id': name, 'source_variable': var, 'type': 'item', 'category': 'component',
+                     'source_texture': 'src/main/resources/assets/hbm/textures/items/' + texture + '.png',
+                     'max_stack_size': 1, 'durability': {'max_damage': durability, 'wear': durability > 0},
+                     **({'max_damage': durability} if durability else {})})
     write_json(HERE / 'm3.json', {'schema': 1, 'entries': rows})
     write_json(output / 'fluids.json', {'schema': 1, 'namespace': 'ntm', 'fluids': registry})
     backlog = output / 'machines_backlog.json'
@@ -138,7 +150,9 @@ def build(source=SOURCE, output=ROOT / 'content'):
         for entry in data['entries']:
             if entry['source_variable'] in names:
                 entry['content_id'] = 'ntm:' + entry['id']
-                entry['status'] = 'M3 content contract declared; processing/storage logic tracked separately by the M3 machine agent'
+                entry['status'] = ('Shredder content contract declared; processing/storage logic tracked separately by the machine agent'
+                                   if entry['source_variable'] == 'machine_shredder' else
+                                   'M3 content contract declared; processing/storage logic tracked separately by the M3 machine agent')
         write_json(backlog, data)
     print(f'M3: {len(registry)} fluid definitions; {len(rows)} content contracts')
     return registry

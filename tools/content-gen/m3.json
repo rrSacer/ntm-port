@@ -118,6 +118,26 @@
       "fluid_capacity_mb": 256000
     },
     {
+      "id": "machine_shredder",
+      "source_variable": "machine_shredder",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Shredder",
+        "pt_br": "Triturador"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/machine_shredder_front_alt.png",
+      "textures": {
+        "side": "blocks/machine_shredder_side_alt",
+        "top": "blocks/machine_shredder_top_alt",
+        "bottom": "blocks/machine_shredder_bottom_alt",
+        "front": "blocks/machine_shredder_front_alt"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage"
+    },
+    {
       "id": "fluid_duct_neo",
       "source_variable": "fluid_duct_neo",
       "type": "block",
@@ -18359,6 +18379,44 @@
       },
       "behavior_gap": "Filled item only; server logic must consume/return container, never a temporary crafting bridge",
       "source_container": "src/main/java/com/hbm/inventory/FluidContainerRegistry.java:69-91"
+    },
+    {
+      "id": "blades_steel",
+      "source_variable": "blades_steel",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/blades_steel.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 400,
+        "wear": true
+      },
+      "max_damage": 400
+    },
+    {
+      "id": "blades_titanium",
+      "source_variable": "blades_titanium",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/blades_titanium.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 500,
+        "wear": true
+      },
+      "max_damage": 500
+    },
+    {
+      "id": "blades_desh",
+      "source_variable": "blades_desh",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/blades_desh.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      }
     }
   ]
 }

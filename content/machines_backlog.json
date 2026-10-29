@@ -2132,7 +2132,8 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Shredder content contract declared; processing/storage logic tracked separately by the machine agent",
+      "content_id": "ntm:machine_shredder"
     },
     {
       "id": "machine_teleporter",

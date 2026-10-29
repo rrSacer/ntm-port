@@ -341,6 +341,7 @@
     "ntm:machine_gascent",
     "ntm:barrel_steel",
     "ntm:machine_fluidtank",
+    "ntm:machine_shredder",
     "ntm:fluid_duct_neo"
   ]
 }

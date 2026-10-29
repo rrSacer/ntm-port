@@ -162,7 +162,7 @@ def transform_png(raw, light=None, dark=None, background=None, crop=None, multip
  return b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(bytes(output),9))+chunk(b'IEND',b'')
 
 
-def generate(src,out,rows,distributions):
+def generate(src,out,rows,distributions,max_damage=False):
  """Write only owned files; recipes/worldgen from the other pipelines survive regeneration."""
  generated=[]
  def emit(rel,value):
@@ -199,7 +199,11 @@ def generate(src,out,rows,distributions):
    dest='assets/ntm/textures/block/'+name+'_opaque.png';path=out/dest;path.parent.mkdir(parents=True,exist_ok=True)
    path.write_bytes(transform_png((src/row['source_texture']).read_bytes(),background=(src/'src/main/resources/assets/hbm/textures/blocks/block_steel.png').read_bytes()));generated.append(dest);tex='ntm:block/'+name+'_opaque'
   if kind=='item':
-   emit(f'data/ntm/horizon/item/{name}.json',{'template':row.get('template','minecraft:iron_ingot'),'max_stack_size':row.get('max_stack_size',64)})
+   declaration={'template':row.get('template','minecraft:iron_ingot'),'max_stack_size':row.get('max_stack_size',64)}
+   if max_damage and row.get('max_damage'):
+    if declaration['max_stack_size']!=1:raise ValueError('Durable item must have stack size 1: '+row['id'])
+    declaration['max_damage']=row['max_damage']
+   emit(f'data/ntm/horizon/item/{name}.json',declaration)
    emit(f'assets/ntm/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':tex}})
    if row.get('overlay_textures'):
     layers={'layer0':tex}
@@ -293,6 +297,7 @@ def main():
  parser.add_argument('--output',type=Path,default=ROOT/'content')
  parser.add_argument('--catalog',type=Path,default=HERE/'m1.json')
  parser.add_argument('--ids-only',action='store_true')
+ parser.add_argument('--max-damage',action='store_true',help='Emit max_damage for durable items; requires the ntm-visual engine extension')
  args=parser.parse_args()
  if args.catalog.resolve()==(HERE/'m1.json').resolve():
   import m3_catalog
@@ -319,7 +324,7 @@ def main():
   elif row['category']=='cable':row['logic']={'kind':'cable'}
   elif row['category']=='duct':row['logic']={'kind':'duct'}
  write_json(args.output/'ids.json',{'schema':1,'namespace':'ntm','subtype_convention':'<original_registry_path>__<material>; source_registry and metadata retain 1.7.10 identity','ducts':[r['id'] for r in rows if r['category']=='duct'],'bombs':[r['id'] for r in rows if r['category']=='bomb'],'machines':[r['id'] for r in rows if r['category']=='machine'],'internal_blocks':[{'id':'ntm:logic_token','type':'block','category':'internal','item':False,'template':'minecraft:composter','logic':{'level':{'prop':'level','max':8}}}],'worldgen':manifest.get('worldgen',[]),'worldgen_gaps':manifest.get('worldgen_gaps',{}),'entries':rows})
- count=0 if args.ids_only else generate(args.source,args.output,rows,manifest.get('worldgen',[]))
+ count=0 if args.ids_only else generate(args.source,args.output,rows,manifest.get('worldgen',[]),max_damage=args.max_damage)
  if not args.ids_only and args.catalog.resolve()==(HERE/'m1.json').resolve():
   import machine_recipes
   machine_recipes.export(args.source,args.output,rows)
