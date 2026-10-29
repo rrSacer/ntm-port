@@ -290,9 +290,69 @@ Desses, entra **só o modelo**: sem slots e sem multibloco. Eles têm lógica no
 portas quebraria as redes de energia e fluido deles. A tela texturizada e o multibloco de cada um viram uma entrada à
 mão no `visual.json`, com os dados do `extracted.json` como ponto de partida (slots, textura, dimensões).
 
+## 3c. Fundição: telas, multiblocos, metal visível e jatos
+
+**Pesquisa (como desenham líquido):**
+- **NTM:** dois caminhos.
+  - O cadinho (`RenderCrucible`) é um TESR: desenha um quad horizontal com `lava_gray.png` tingida pela
+    `moltenColor` do material, na altura `0.5 + nível·0.875`.
+  - Molde, bacia, tanque e canal são ISBRH (`RenderFoundry{Mold,Basin,Tank,Channel,Outlet}`). Também desenham o
+    metal como faces com `lava_gray` tingida e brilho cheio, mas no próprio mesh do chunk.
+- **Upstream (Horizon):** fluido em modelo só existe para os blocos do vanilla: o `mesher` faz a água e a lava pelos
+  níveis do estado. Não há líquido de mod. O 0.5 (GeckoLib/Bedrock) não tem líquido: é geometria e animação.
+- **Decisão:** um líquido é uma caixa no block entity: a face de cima em `lava_gray`, tingida por um valor
+  sincronizado, na altura `mín + valor/máx·(máx − mín)`. Isso é o TESR do cadinho, generalizado.
+  - Fica no caminho de modelos que já existe, que é instanciado.
+  - O chunk não é remontado a cada mudança de nível, como no ISBRH do NTM.
+
+**Formato:** `liquids` no `horizon_model`, ou `assets/ntm/horizon_liquid/<bloco>.json` para um bloco sem OBJ (o
+modelo de blocos dele continua):
+
+```json
+{ "liquids": [ {"texture": "ntm:textures/models/machines/lava_gray.png", "box": [0.125, 0.125, 0.125, 0.875, 0.375, 0.875],
+                "value": 0, "max": 1, "color": 2, "column": false} ] }
+```
+
+- `value`, `max` e `color` são índices nos valores da máquina. Sem cor (0), nada é desenhado.
+- `column`: um jato, as quatro laterais da caixa, que só aparecem enquanto a cor não é 0 (a lógica põe a cor do
+  metal no tick em que ele cai).
+- Os valores chegam ao cliente pela lista `synced` do `horizon_machine`: os pares `horizon_synced` do block entity, no
+  chunk e nas atualizações. O servidor só reenvia quando um deles muda. O resto dos valores só vai para quem está com
+  a tela aberta, como no vanilla.
+
+**Os blocos:**
+
+| Bloco | Tela | Multibloco | Modelo | Metal |
+|---|---|---|---|---|
+| Fornalha (`heater_firebox`) | `gui_firebox.png`: chama (overlay), queima, calor | 3×1×3 | `firebox.obj`, sem `InnerBurning` | — |
+| Cadinho (`machine_crucible`) | `gui_crucible.png`: grade 3×3, resto e liga em cor, calor, progresso, botão de liga; título branco | 3×2×3, posto sobre a fornalha | `crucible.obj` | resto e liga, até 0.5 + 0.875; os dois jatos |
+| Molde (`foundry_mold`) | painel simples (o NTM não tem GUI: ver pendências) | — | JSON (ISBRH) | 0.125..0.375 |
+| Bacia (`foundry_basin`) | painel simples | — | JSON (ISBRH) | 0.125..0.875 |
+| Tanque (`foundry_tank`) | sem menu | — | JSON (ISBRH, sozinho) | 0.125..0.875 |
+| Canal (`foundry_channel`) | sem menu | — | JSON (ISBRH, sozinho) | centro, 0.125..0.375 |
+| Saída (`foundry_outlet`) | sem menu (tela antiga do port) | — | JSON (ISBRH), gira pelo `facing` | — |
+
+- Uma máquina sem slots (canal, tanque, saída) não abre menu do motor: a tela do mod, se houver, abre como antes.
+- **Modelos JSON dos ISBRH:** o visual-gen escreve o blockstate, o modelo e o item a partir de `block_model` no
+  `visual.json`, com as texturas originais do NTM. As caixas são as `setRenderBounds` do renderer. Os UVs padrão do
+  JSON seguem a posição do elemento, como as faces do `RenderBlocks`, então cada face mostra o mesmo pedaço da textura;
+  as partes transparentes ficam fora das faces. Não há oclusão de ambiente, como no NTM.
+  - Esses caminhos são do visual-gen: o content-gen respeita o `content/.visual-files.json` e não os sobrescreve.
+  - Sem o patch, o bloco tem esse modelo e não tem o metal.
+- **Título colorido:** `title_color` na tela. O extrator lê a cor do `drawString(name, ...)`: 28 GUIs não usam o cinza
+  do vanilla.
+- **Bloco aberto:** um bloco com `horizon_liquid` (mesmo com a lista vazia, como a saída) não esconde as faces dos
+  vizinhos e deixa a luz passar, como os de `horizon_model`. Isso vale para o `can_occlude` do
+  `render-definitions.json` e para a linha de jogo. Sem isso, o template `beehive` abria buracos no chão ao lado e
+  deixava o interior escuro.
+- **Capturas:**
+  - `img/visual-foundry.png`: o cadinho sobre a fornalha com ferro fundido, e o molde enchendo;
+  - `img/visual-foundry-screens.png`: as telas do cadinho e da fornalha acesa;
+  - `img/visual-foundry-blocks.png`: molde, bacia, tanque com saída e dois canais.
+
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 16 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 23 commits):
 
 | Commit | O quê |
 |---|---|
@@ -312,12 +372,19 @@ mão no `visual.json`, com os dados do `extracted.json` como ponto de partida (s
 | `feat(render): a screen overlay may show for a range of values` | Overlay com `min..=max` (as luzes das lâminas) |
 | `perf(render): draw mod block models from bone meshes on the gpu` | Malhas na GPU por osso e instâncias (etapa b) |
 | `perf(client): load a machine screen's texture when it opens` | Os 2 slots de GUI sob demanda (etapa b) |
+| `feat(client): a machine without facing turns by its placer` | O lado de quem colocou, no block entity (as bombas, etapa d.1) |
+| `feat(mods): machines.get-data reads a machine's saved values` | `get-data` (pedido do agente das bombas) |
+| `feat(world): open no menu for a machine without slots` | Canal, tanque, saída |
+| `feat(client): send a machine's synced values with its block entity` | `synced`: os valores que o cliente desenha |
+| `feat(render): draw liquids in mod block models` | `liquids`, `horizon_liquid`, blocos abertos |
+| `feat(client): a machine screen's title may have a colour` | `title_color` |
+| `docs(render): describe a model's liquids` | |
 
 **No port:**
 
 | Arquivo | O quê |
 |---|---|
-| `tools/visual-gen/{generate.py,visual.json}` | Copia OBJ e PNG do ntm-src; escreve máquina, tela, modelo, animação e o `ntm:dummy_machine` |
+| `tools/visual-gen/{generate.py,visual.json}` | Copia OBJ e PNG do ntm-src; escreve máquina, tela, modelo, animação, líquido, os modelos JSON dos ISBRH (blockstate e item inclusos) e o `ntm:dummy_machine` |
 | `crates/ntm-core/src/server/container_bridge.rs` (novo) | A ponte, `Stack`, `Slotted`, os proxies de energia e os testes |
 | `tools/build-visual.sh`, `tools/test-game/run-visual.sh` | Build dos mods para o motor com o patch, numa cópia, e o jogo de teste em Xvfb :15 |
 | `server.rs` (+33) | Métodos padrão do `ServerHost`, 2 linhas no tick, o campo `bridge`, `drop_contents` |
@@ -376,6 +443,21 @@ fica pronto e parado.
   - o triturador solta o item e o conteúdo (2 minérios, 2 lâminas).
   A falta de drop vista antes foi um artefato do teste: o `break` do horizon-ctl responde antes de o item aparecer, e
   o modo ainda era trocado.
+- **Fundição (feito o básico; ver 3c). Falta:**
+  - **Conexões de canal e tanque:** no NTM, o canal estica braços para os vizinhos que aceitam metal, e o tanque
+    abre a parede para o tanque ao lado. O estado do bloco aqui não tem propriedades de conexão, então os dois são
+    desenhados sozinhos (centro fechado; caixa fechada). Caminho: propriedades `north/east/south/west` no template e
+    um blockstate multipart, postas pela lógica do port (que já conhece a rede de canais) ou por uma regra do motor.
+  - **Molde e bacia:** o NTM não tem tela; o molde entra e o lingote sai com o botão direito. Aqui, por decisão do
+    agente das bombas, são 2 slots num painel simples.
+  - **Jatos:** a lógica zera os jatos a cada tick, então a coluna aparece só no tick em que o metal cai. Falta
+    segurá-los por alguns ticks (lado da lógica) e as partículas do `ParticleFoundry`.
+  - **Fornalha acesa:** a parte `InnerBurning` do modelo fica escondida; o modelo ainda não mostra partes por valor.
+  - **Saída:** o filtro e a trava (`iconFilter`, `iconLock`) não são desenhados.
+  - **Colisão e sombra:** o template `beehive` é um cubo cheio. Por isso o jogador não entra no canal, e o chão em
+    volta ganha a sombra de oclusão de ambiente de um bloco cheio. A forma vem do template do agente de importação.
+  - **Luz velha:** um bloco da fundição posto antes desta mudança guarda luz 0 no save. A troca não muda a opacidade
+    vista pela iluminação incremental, então ele só clareia quando é recolocado.
 - **Fluidos:** só a energia passa pelo anel do multibloco. As portas de fluido continuam no núcleo.
 - **Explosões e comandos:** uma explosão, um `/fill` ou um `set-blocks` que tira uma célula não tira o resto.
 - **Interface:**
