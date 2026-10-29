@@ -462,7 +462,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 30 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 31 commits):
 
 | Commit | O quê |
 |---|---|
@@ -496,6 +496,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(render): draw needle gauges on machine screens` | `gauges` (prensa, alto-forno) |
 | `feat(render): hold a mod model at rest on its first frame` | O repouso das animações |
 | `feat(mods)!: machine slots carry an item's custom data` | `custom` no `item-stack` (SNBT do `minecraft:custom_data`), api level 10: o minério de bedrock leva as densidades |
+| `feat(render): show mod model parts by block state, some at full light` | `show` e `glow` (a fornalha acesa) |
 
 **No port:**
 
@@ -569,7 +570,10 @@ fica pronto e parado.
     agente das bombas, são 2 slots num painel simples.
   - **Jatos:** a lógica zera os jatos a cada tick, então a coluna aparece só no tick em que o metal cai. Falta
     segurá-los por alguns ticks (lado da lógica) e as partículas do `ParticleFoundry`.
-  - **Fornalha acesa:** a parte `InnerBurning` do modelo fica escondida; o modelo ainda não mostra partes por valor.
+  - **Fornalha acesa (feito):** `show` e `glow` no modelo (motor). O `InnerBurning` aparece com luz cheia enquanto
+    o `honey_level` não é 0, e o `InnerEmpty` quando ela está fria, como no `RenderFirebox`. As duas partes ficam atrás
+    da porta: no NTM ela só abre enquanto um jogador está com a tela aberta (`playersUsing`), e aqui ela ainda não
+    abre. Captura com a porta escondida: `img/visual-firebox-lit.png`.
   - **Saída:** o filtro e a trava (`iconFilter`, `iconLock`) não são desenhados.
   - **Colisão e sombra:** o template `beehive` é um cubo cheio. Por isso o jogador não entra no canal, e o chão em
     volta ganha a sombra de oclusão de ambiente de um bloco cheio. A forma vem do template do agente de importação.
