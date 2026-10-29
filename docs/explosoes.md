@@ -189,21 +189,25 @@ nukes.progress("boy1");  nukes.active();  nukes.cancel("boy1", &mut Hz);
 | Efeitos | `src/effects.rs` | `EffectProfile` (dados: faixas de escória, trinitite, madeira, folhagem, fogo; serializável), `Hooks::edge` para trocar o efeito por borda, `Hooks::event` (`FirstWrite`, `CraterDone`, `Done`, `Resumed`, `PersistFailed`) |
 | Persistência | `src/persist.rs` | Diário por coluna + anel de energia (seção 7) |
 | Alocador | `src/pool.rs` | `Pool::new()` para `#[global_allocator]` (só alvo de uma thread) |
-| Testes | `tests/` | 13 testes: forma contra o NTM, determinismo por passos, orçamento por tick e por chamada, mundo final = plano, chunks descarregados, retomada (a cada 3 ticks de uma explosão R=40 e em pontos extras, com e sem o mundo voltar ao estado anterior, com chunks atrasados), limites de storage em R=150, cancelamento, perfil, pool |
+| Testes | `tests/` | 27 testes: forma contra o NTM, determinismo por passos, orçamento por tick e por chamada, mundo final = plano, chunks descarregados, retomada (a cada 3 ticks de uma explosão R=40 e em pontos extras, com e sem o mundo voltar ao estado anterior, com chunks atrasados), limites de storage em R=150, cancelamento, perfil, pool; e os 8 da revisão do M2 (`tests/review.rs`, seção 11) |
 | Benchmark | `examples/compare.rs` | `cargo run --release --example compare -- 25 50 100 150` |
 
-Uma explosão por vez recebe o tick (o fuel é dela); as outras esperam na fila. Os ids viram prefixo de chave no storage (`nx.<id>.*`), por isso não podem ter `.`, espaço ou quebra de linha.
+Uma explosão por vez recebe o tick (o fuel é dela); as outras esperam na fila. O plano de uma detonação nova ou retomada é montado num tick só para ele, um por tick (R=500 custa ~21 M de fuel), e o estado inicial é gravado nesse tick. Os ids viram prefixo de chave no storage (`nx.<id>.*`), por isso usam só `[a-z0-9_-]`, até 40 caracteres.
 
 ## 7. Persistência: retomar após reinício
 
 **Problema.** Recalcular do zero depois de um reinício daria uma cratera maior: o que já foi removido virou ar, e ar não gasta energia.
 
 **Solução** (`persist.rs`). A varredura grava, coluna a coluna, num diário:
-- **Estrutura** (só anexada): o menor dy vivo, as faixas removidas e as bordas **expostas** com o tipo de material. São ~13 bytes por coluna, em blocos `nx.<id>.d<k>` de 96 KB, e só o último é regravado a cada tick.
-- **Energia exata só da frente da espiral:** os pais e os cantos da interpolação de um voxel ficam a ≤ 1,5 bloco na horizontal, em colunas mais perto do centro. Um anel de 3 chaves `nx.<id>.e0..e2`, uma por faixa de 2 blocos de raio horizontal, guarda só isso, e a faixa mais antiga é sobrescrita.
-- **Cabeçalho em texto** `nx.<id>.h`: centro, raio, dimensão, orçamento, perfil, colunas gravadas, chunks pendentes e o anel. O índice `nx.index` lista as explosões ativas.
+- **Estrutura** (só anexada): o menor dy vivo, as faixas removidas e as bordas **expostas** com o tipo de material. São ~13 bytes por coluna. Os blocos fechados de 96 KB (`nx.<id>.d<k>`) são gravados **uma vez só**; o bloco em curso vai na cauda do estado.
+- **Energia exata só da frente da espiral:** os pais e os cantos da interpolação de um voxel ficam a ≤ 1,5 bloco na horizontal, em colunas mais perto do centro. Cada faixa de 2 blocos de raio horizontal, ao fechar, vai para uma chave do anel `nx.<id>.e0..e2`. A faixa em curso fica na cauda do estado. Uma chave do anel só é sobrescrita quando o estado em vigor já não usa a faixa que está nela.
+- **Estado** em dois slots, `nx.<id>.s0`/`s1`, gravados alternadamente com geração e checksum (FNV-1a), como o save do M1:
+  - um cabeçalho em texto: centro, raio, dimensão, orçamento, perfil, colunas gravadas, tamanho e checksum de cada bloco e de cada faixa do anel, fase;
+  - uma cauda binária: o bloco do diário em curso, as faixas sem chave, os bits da persistência leve e as listas de chunks (pendentes, recalculados, do fallout).
 
-O motor grava o diário **antes** das escritas de cada tick. Assim, uma seção só vai ao mundo depois que as colunas dela estão no storage, e a retomada nunca recalcula por cima de blocos já removidos. Ao retomar (`Explosions::resume`, no `init` do mod), todas as seções voltam a pendentes: reescrever ar sobre ar custa ~0,6 µs no host. Isso também cobre um mundo que voltou ao último autosave depois de uma queda. A varredura **espera até 60 s** pelos chunks da frente, porque o servidor recém-iniciado ainda carrega. No fim, as chaves são apagadas.
+  A leitura fica com a geração mais nova cujo checksum confere e cujos blocos conferem. O índice `nx.index0`/`index1` também vai em dois slots.
+
+O motor grava o diário **antes** das escritas de cada tick. Assim, uma seção só vai ao mundo depois que as colunas dela estão no storage, e a retomada nunca recalcula por cima de blocos já removidos. Se o estado não coube no tick (orçamento de gravação), as escritas do mundo esperam o próximo. O `storage::set` do Horizon reescreve o arquivo sem rename atômico, mas nada que o estado em vigor usa é reescrito: uma queda no meio de qualquer gravação deixa o estado anterior inteiro. O teste `p1_7_a_torn_write_never_loses_the_explosion` rasga cada gravação de uma explosão R=40, uma de cada vez, e a cratera final é a mesma. Ao retomar (`Explosions::resume`, no `init` do mod), todas as seções voltam a pendentes: reescrever ar sobre ar custa ~0,6 µs no host. Isso também cobre um mundo que voltou ao último autosave depois de uma queda. A varredura **espera até 60 s** pelos chunks da frente, porque o servidor recém-iniciado ainda carrega. No fim, as chaves são apagadas.
 
 **Custo:**
 
@@ -322,6 +326,44 @@ Como alternativa, o `pool.rs` (~70 linhas, sem dependências) pode ir para o `nt
   - `cargo horizon-mod check` do pacote.
   - Uma rampa de `get-block` como a do S7 (`nuke-mod/src/bench.rs`, modo `rampr`) antes e depois.
 - **Quando importa:** com poucas máquinas, o fuel por tick do ntmlogic é pequeno e o ganho não aparece. Com redes grandes de cabos, canos ou muitas máquinas lendo blocos, o teto de 50 M por tick chega 2–4× mais tarde.
+
+## 11. Revisão do M2: trabalho por tick limitado
+
+A segunda revisão do M2 mediu, no harness de fuel (`spikes/m2-fuel`, wasmtime
+48.0.7, como no Horizon), uma Tsar (R=500) com os chunks descarregados além de
+110 blocos do centro, a 22 M de fuel por tick. O pior tick gastava **3.420,8 M**,
+contra um teto de 50 M que desliga o mod. As causas, achadas pelas marcas de
+fuel (feature `trace` do crate: o harness anota o fuel em cada marca), e as
+correções:
+
+| Onde | Antes | Depois |
+| --- | --- | --- |
+| Fim da passada principal e cada tick com seções adiadas | `reeval.contains` por seção (~70 mil × ~2.900 chunks), filtro e ordenação de todas as seções todo tick | filas por coluna de chunk (`order`, `pool`, `deferred`), conjuntos FNV, contadores por estado; a lista de recálculo entra aos poucos (`mark_step`) e tudo é descontado do fuel |
+| Gravação do estado no fallout | 44 M: as listas de chunks pendentes em texto (`format!` por chunk), codificadas duas vezes | listas em varint na cauda binária, texto do cabeçalho só com as contagens e um checksum delas |
+| Efeitos de borda com o disco quase todo descarregado | dezenas de milhares de bordas por tick sem custo; a nova tentativa varria a lista inteira | bordas adiadas por chunk, 256 chunks por nova tentativa em rodízio, ~4,5 k de fuel por efeito (medido) |
+| Início do fallout (`release_all`) | 23 M: percorria as 785 mil colunas do disco | percorre só os buffers alocados (cada um sabe a coluna dele) |
+| Fallout pendente (`Linger`) | um chunk inteiro por vez (66 mil leituras num passo), cada `Linger` com o fuel inteiro | cursor por coluna; fuel e escritas do tick divididos entre os pendentes |
+| Detonar ou retomar várias | um plano por detonação no mesmo hook (3 × R=500 ≈ 64,7 M) | o plano é montado num tick só para ele, um por tick |
+
+**Pior tick medido (fuel real, com pool; "antes" de `results.txt` do M2,
+onde existe):**
+
+| Caso | Antes | Depois |
+| --- | ---: | ---: |
+| R=500, descarregado além de 110, fallout | 3.420,8 M | 26,3 M (fase de espera: 26,9 → 6,0 M) |
+| R=150, descarregado além de 110, fallout | — | 25,9 M |
+| R=100, tudo carregado, fallout | 29,4 M | 29,4 M |
+| R=150, tudo carregado, fallout | 29,6 M | 27,4 M |
+| Retomada de R=120 (reinício no tick 40) | 30,2 M; `resume()` 3,0 M | 27,2 M; `resume()` 0,3 M |
+
+O teto do hook é 50 M; o orçamento do motor é 22 M, e uma estimativa pode
+passar dele em até ~1,3× (o plano se mede por voxel, não por instrução).
+
+**Persistência** (seção 7) agora resiste a uma queda no meio de qualquer
+gravação, e respeita a parte do storage que o mod dá às explosões
+([bombas.md](bombas.md#storage)). Os testes da revisão estão em
+`tests/review.rs`. Cada um falhava no motor entregue no M2, e a lista está em
+[bombas.md](bombas.md#revisão-do-m2-segunda-independente).
 
 ## Limites e próximos passos
 

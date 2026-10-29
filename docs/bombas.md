@@ -102,7 +102,30 @@ Cargas mostram a força e **Acender o pavio (4 s)**.
   outra dimensão.
 - **Pavio** das cargas: vive nos dados da máquina (salvo), anda no `tick`.
 - `/ntmbomba teste <raio> [n2|balefire|forca]`: detona na posição do jogador
-  (só no criativo), para testes.
+  (só no criativo), para testes. O raio vai de 1 a 500; a força (`forca`), de
+  1 a 20. Fora disso o comando é recusado antes de qualquer coisa.
+
+Nada dispara enquanto a bomba tem uma transação de item em andamento, ou uma
+já feita que ainda não foi conferida com o mundo depois de um reinício (um
+componente que a queda desfez). O `lit` também espera, então a borda de subida
+não se perde. O detonador responde "Aguarde: os componentes da bomba ainda
+estão sendo confirmados" e confere se o bloco ainda é a bomba.
+
+## Fila de detonação
+
+Uma bomba disparada sai do mundo (máquina e bloco) e entra numa fila no save
+do mundo (`BombWorld.queue`), **no mesmo save** em que sai. Uma queda logo
+depois do disparo não perde a explosão: a fila volta com o save.
+
+A cada tick, a fila dispara em ordem enquanto cabe no fuel do tick (`fuel`,
+22 M):
+
+- uma carga custa ~13 M·(p/15)²: a explosão vanilla de força 15 mede 12 M no
+  harness, então duas C4 nunca vão no mesmo tick;
+- uma nuke só entrega o plano ao motor, que monta um por tick.
+
+A nuke fica na fila até o motor tê-la gravada na pasta. Se o servidor cair
+antes disso, ela é entregue de novo, sem repetir efeitos.
 
 ## Explosões
 
@@ -194,7 +217,11 @@ e fazer `available()` refletir a capacidade do motor.
   tick do MK5: 250·(2R − d)/2R se a linha até o jogador não está obstruída.
   Aqui: a cada 10 ticks, por 100 ticks, `damage <nome> <n> minecraft:explosion`;
   obstrução por amostragem (24 pontos). Criativo não leva.
-- **Carga:** dano vanilla, `(i² + i)/2 · 7 · 2p + 1` com `i = 1 − d/2p`.
+- **Carga:** dano vanilla, `(i² + i)/2 · 7 · 2p + 1` com `i = (1 − d/2p) ×
+  exposição`. A exposição é a de `Explosion.getSeenPercent`: a fração de 45
+  raios (grade 3 × 5 × 3 sobre a caixa de 0,6 × 1,8 do jogador) que chegam ao
+  centro sem bater num bloco com colisão. É calculada antes de os blocos
+  saírem, na ordem do vanilla. Atrás de uma parede de obsidiana, nenhum dano.
 - **Pulso de radiação** (`EntityNukeExplosionMK5.radiate`, 10 primeiros ticks):
   Σ 2,5 M/(5t+1) ≈ 3,78 M RAD sobre (blindagem × distância²), até 2R; a
   blindagem é a soma da resistência ao longo da linha (48 amostras). Entra
@@ -316,6 +343,44 @@ limpos. Testes novos:
 | `engine.rs` (10, antigos) | inalterados, passam com o plano esparso |
 | `registry::tests` | bombas de `ids.json` = `BLOCKS`, template `redstone_lamp`, `lit`, componentes e detonador existem |
 
+## Revisão do M2 (segunda, independente)
+
+Cada achado tem um teste que falhava no código entregue no M2 e passa
+agora. Os do motor estão em `crates/ntm-explosion/tests/review.rs`; os do
+servidor, em `crates/ntm-core/src/server/tests/review_m2_tests.rs`.
+
+| Achado | Correção | Teste |
+| --- | --- | --- |
+| P1-1: R=500 com chunks descarregados, pico de 3.420,8 M de fuel no planejamento | filas por coluna de chunk, conjuntos em vez de buscas lineares, administração limitada e descontada do fuel (`explosoes.md` §11) | harness `spikes/m2-fuel` (abaixo) |
+| P1-2: várias cargas ou planos no mesmo hook | fila de detonação admitida pelo fuel do tick; o motor monta um plano por tick | `p1_2_charges_ending_together_go_off_within_the_tick_budget`, `p1_2_one_plan_per_tick` |
+| P1-3: cada `Linger` com o fuel inteiro | os fallouts pendentes dividem fuel e escritas do tick, em rodízio | `p1_3_lingering_fallouts_share_the_tick` |
+| P1-4: um chunk pendente do fallout de uma vez (66 mil leituras) | cursor por coluna, dentro do fuel e das escritas de cada chamada | `p1_4_a_pending_chunk_is_done_in_pieces_within_budget` |
+| P1-5: detonar antes de conferir as transações dos componentes | nada dispara com transação em andamento ou ainda não conferida | `p1_5_no_detonation_before_the_components_are_confirmed` |
+| P1-6: explosão na fila some no reinício | fila no save do mundo, junto com a saída da bomba; estado inicial gravado na criação | `p1_6_a_detonation_survives_a_crash_in_its_tick`, `p1_6_queued_explosions_survive_a_restart` |
+| P1-7: diário e cabeçalho sem proteção contra gravação rasgada | estado em dois slots com geração e checksum, blocos selados, linger gravado antes de apagar o diário | `p1_7_a_torn_write_never_loses_the_explosion` (rasga cada gravação), `p1_7_a_torn_linger_header_keeps_the_pending_fallout` |
+| P1-13: `teste 100 forca` alocava ~165 MiB | faixa conferida antes de tudo; força vanilla limitada a 20 | `p1_13_test_blasts_are_bounded`, `vanilla::power_is_held_to_the_maximum` |
+| P2-8: retomada leve no fallout descartava seções adiadas | `crater_left` no estado: a retomada refaz o plano e termina a cratera | `p2_8_lite_resume_in_fallout_keeps_deferred_crater` |
+| P2-9: carência eterna para outros jogadores | relógio de entrada por jogador | `p2_9_area_dose_grace_is_per_player` |
+| P2-10: detonador sem conferir o bloco | confere o bloco antes de disparar | `p2_10_the_detonator_checks_the_bomb_is_still_there` |
+| P2-11: `nx.*` fora da conta da quota | limites por tick e no total, dados pelo servidor; persistência leve quando não cabe | `p2_11_explosions_share_the_folder_quota`, `p2_11_the_journal_keeps_to_its_share` |
+| P2-12: dano de carga sem obstrução | exposição do vanilla (45 raios) | `p2_12_charge_damage_is_blocked_by_walls`, `vanilla::exposure_sees_through_air_not_walls` |
+
+O pior tick de R=500 com o disco quase todo descarregado foi de **3.420,8 M para
+26,3 M** de fuel, e nenhum caso medido passa de 29,4 M (tabela em
+[explosoes.md](explosoes.md#11-revisão-do-m2-trabalho-por-tick-limitado)).
+
+**Em jogo** (Xvfb `:9`, mudo; `tools/test-game/m2review.py`; mundo criativo,
+seed 1768123; nenhum "took too long" no log):
+
+- **Cargas:** três C4 ligadas pela mesma fileira de blocos de redstone
+  explodiram em três ticks diferentes, cada uma com a explosão de força 15
+  inteira (593, 1.037 e 931 blocos).
+- **Nuke:** `teste 40` terminou em 36 ticks, com fallout de 26.392 colunas.
+- **Reinício:** `teste 60`, saída do jogo (`quit`) já no fallout. O estado ficou
+  em `nx.<id>.s0`/`s1` e no anel `e0..e2`. Ao reabrir, `explosion resumed`: a
+  cratera foi reaplicada (14 ticks), o fallout continuou e a explosão terminou
+  em 64 ticks. Ficaram 32 chunks do fallout esperando um jogador.
+
 ### Em jogo
 
 Mudo (`HORIZON_NO_AUDIO=1` — o log diz "no sound: audio off"; `options.txt`
@@ -362,6 +427,21 @@ Os `.hmod` em `/tmp/ntm-m2-dist`.
 - O Geiger (HUD) só mostra a taxa da zona quando a amostra do inventário da
   fundação confirma; com o PC carregado, ela às vezes não confirmou ("sem
   confirmação", "tags do mod desconhecidas"). A dose da zona não depende disso.
+
+## Storage
+
+As chaves das explosões (`nx.*`) dividem a pasta do mod (4 MiB, 64 chaves,
+1 MiB gravado por chamada de hook) com os saves dos mundos. O servidor dá às
+explosões o que sobra:
+
+- **bytes:** a quota menos o que os saves ocupam (`Worlds::usage`) e menos um
+  save a mais, de margem;
+- **chaves:** o limite menos as dos saves e 4 de margem;
+- **por tick:** 1 MiB menos três saves do maior mundo e uma caixa de correio.
+
+O aviso de "pasta quase cheia" conta as explosões também. Um diário completo
+que não cabe passa à persistência leve (só as seções escritas, 1 bit cada). A
+leve que falha tenta de novo a cada 10 s; a explosão continua sem ela.
 
 ## Limites
 
