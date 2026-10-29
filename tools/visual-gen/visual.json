@@ -2762,6 +2762,188 @@
           }
         ]
       }
+    },
+    "ntm:nuke_tsar": {
+      "source": "ContainerNukeTsar, GUINukeTsar (textureMike for the overlays)",
+      "machine": {
+        "slots": [
+          {
+            "x": 48,
+            "y": 101,
+            "accept": [
+              "ntm:explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 66,
+            "y": 101,
+            "accept": [
+              "ntm:explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 84,
+            "y": 101,
+            "accept": [
+              "ntm:explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 102,
+            "y": 101,
+            "accept": [
+              "ntm:explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 55,
+            "y": 51,
+            "accept": [
+              "ntm:man_core"
+            ],
+            "max": 1
+          },
+          {
+            "x": 138,
+            "y": 101,
+            "accept": [
+              "ntm:tsar_core"
+            ],
+            "max": 1
+          }
+        ],
+        "inventory": [
+          48,
+          151
+        ],
+        "data": 2
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/weapon/tsarbombaschematic.png",
+        "texture_from": "textures/gui/weapon/tsarBombaSchematic.png",
+        "size": [
+          256,
+          233
+        ],
+        "title": [
+          128,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          48,
+          139
+        ],
+        "compose": [
+          {
+            "from": "textures/gui/weapon/ivyMikeSchematic.png",
+            "at": [
+              0,
+              256
+            ]
+          }
+        ],
+        "overlays": [
+          {
+            "value": 0,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              18,
+              50,
+              16,
+              16
+            ],
+            "uv": [
+              176,
+              256
+            ]
+          },
+          {
+            "value": 0,
+            "min": 2,
+            "rect": [
+              18,
+              50,
+              16,
+              16
+            ],
+            "uv": [
+              176,
+              274
+            ]
+          },
+          {
+            "slot": 0,
+            "rect": [
+              40,
+              36,
+              23,
+              23
+            ],
+            "uv": [
+              209,
+              257
+            ]
+          },
+          {
+            "slot": 2,
+            "rect": [
+              63,
+              36,
+              23,
+              23
+            ],
+            "uv": [
+              232,
+              257
+            ]
+          },
+          {
+            "slot": 1,
+            "rect": [
+              40,
+              59,
+              23,
+              23
+            ],
+            "uv": [
+              209,
+              280
+            ]
+          },
+          {
+            "slot": 3,
+            "rect": [
+              63,
+              59,
+              23,
+              23
+            ],
+            "uv": [
+              232,
+              280
+            ]
+          },
+          {
+            "slot": 5,
+            "rect": [
+              91,
+              41,
+              80,
+              36
+            ],
+            "uv": [
+              176,
+              476
+            ]
+          }
+        ]
+      }
     }
   }
 }

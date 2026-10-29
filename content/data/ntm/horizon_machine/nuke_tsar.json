@@ -1,0 +1,57 @@
+{
+  "slots": [
+    {
+      "x": 48,
+      "y": 101,
+      "accept": [
+        "ntm:explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 66,
+      "y": 101,
+      "accept": [
+        "ntm:explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 84,
+      "y": 101,
+      "accept": [
+        "ntm:explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 102,
+      "y": 101,
+      "accept": [
+        "ntm:explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 55,
+      "y": 51,
+      "accept": [
+        "ntm:man_core"
+      ],
+      "max": 1
+    },
+    {
+      "x": 138,
+      "y": 101,
+      "accept": [
+        "ntm:tsar_core"
+      ],
+      "max": 1
+    }
+  ],
+  "inventory": [
+    48,
+    151
+  ],
+  "data": 2
+}
