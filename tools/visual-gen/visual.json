@@ -4174,6 +4174,455 @@
         ]
       }
     },
+    "ntm:machine_press": {
+      "source": "ContainerMachinePress, GUIMachinePress (MachinePress {2,0,0,0,0,0}); the speed gauge is a needle the engine does not draw yet",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 53,
+            "accept": [
+              "minecraft:acacia_log",
+              "minecraft:acacia_planks",
+              "minecraft:acacia_sapling",
+              "minecraft:acacia_wood",
+              "minecraft:bamboo",
+              "minecraft:bamboo_planks",
+              "minecraft:birch_log",
+              "minecraft:birch_planks",
+              "minecraft:birch_sapling",
+              "minecraft:birch_wood",
+              "minecraft:blaze_rod",
+              "minecraft:charcoal",
+              "minecraft:cherry_log",
+              "minecraft:cherry_planks",
+              "minecraft:cherry_sapling",
+              "minecraft:cherry_wood",
+              "minecraft:coal",
+              "minecraft:coal_block",
+              "minecraft:crimson_hyphae",
+              "minecraft:crimson_planks",
+              "minecraft:crimson_stem",
+              "minecraft:dark_oak_log",
+              "minecraft:dark_oak_planks",
+              "minecraft:dark_oak_sapling",
+              "minecraft:dark_oak_wood",
+              "minecraft:jungle_log",
+              "minecraft:jungle_planks",
+              "minecraft:jungle_sapling",
+              "minecraft:jungle_wood",
+              "minecraft:mangrove_log",
+              "minecraft:mangrove_planks",
+              "minecraft:mangrove_wood",
+              "minecraft:mushroom_stem",
+              "minecraft:oak_log",
+              "minecraft:oak_planks",
+              "minecraft:oak_sapling",
+              "minecraft:oak_wood",
+              "minecraft:pale_oak_log",
+              "minecraft:pale_oak_planks",
+              "minecraft:pale_oak_sapling",
+              "minecraft:pale_oak_wood",
+              "minecraft:poplar_log",
+              "minecraft:poplar_planks",
+              "minecraft:poplar_sapling",
+              "minecraft:poplar_wood",
+              "minecraft:spruce_log",
+              "minecraft:spruce_planks",
+              "minecraft:spruce_sapling",
+              "minecraft:spruce_wood",
+              "minecraft:stick",
+              "minecraft:stripped_acacia_log",
+              "minecraft:stripped_acacia_wood",
+              "minecraft:stripped_birch_log",
+              "minecraft:stripped_birch_wood",
+              "minecraft:stripped_cherry_log",
+              "minecraft:stripped_cherry_wood",
+              "minecraft:stripped_crimson_hyphae",
+              "minecraft:stripped_crimson_stem",
+              "minecraft:stripped_dark_oak_log",
+              "minecraft:stripped_dark_oak_wood",
+              "minecraft:stripped_jungle_log",
+              "minecraft:stripped_jungle_wood",
+              "minecraft:stripped_mangrove_log",
+              "minecraft:stripped_mangrove_wood",
+              "minecraft:stripped_oak_log",
+              "minecraft:stripped_oak_wood",
+              "minecraft:stripped_pale_oak_log",
+              "minecraft:stripped_pale_oak_wood",
+              "minecraft:stripped_poplar_log",
+              "minecraft:stripped_poplar_wood",
+              "minecraft:stripped_spruce_log",
+              "minecraft:stripped_spruce_wood",
+              "minecraft:stripped_warped_hyphae",
+              "minecraft:stripped_warped_stem",
+              "minecraft:warped_hyphae",
+              "minecraft:warped_planks",
+              "minecraft:warped_stem",
+              "ntm:briquette__wood",
+              "ntm:oil_tar__wood",
+              "ntm:part_grip__wood",
+              "ntm:part_stock__wood",
+              "ntm:pink_planks",
+              "ntm:powder_ash__wood",
+              "ntm:waste_log",
+              "ntm:waste_planks"
+            ]
+          },
+          {
+            "x": 80,
+            "y": 17,
+            "accept": [
+              "ntm:stamp_357",
+              "ntm:stamp_44",
+              "ntm:stamp_50",
+              "ntm:stamp_9",
+              "ntm:stamp_desh_357",
+              "ntm:stamp_desh_44",
+              "ntm:stamp_desh_50",
+              "ntm:stamp_desh_9",
+              "ntm:stamp_desh_circuit",
+              "ntm:stamp_desh_flat",
+              "ntm:stamp_desh_plate",
+              "ntm:stamp_desh_wire",
+              "ntm:stamp_iron_circuit",
+              "ntm:stamp_iron_flat",
+              "ntm:stamp_iron_plate",
+              "ntm:stamp_iron_wire",
+              "ntm:stamp_obsidian_circuit",
+              "ntm:stamp_obsidian_flat",
+              "ntm:stamp_obsidian_plate",
+              "ntm:stamp_obsidian_wire",
+              "ntm:stamp_steel_circuit",
+              "ntm:stamp_steel_flat",
+              "ntm:stamp_steel_plate",
+              "ntm:stamp_steel_wire",
+              "ntm:stamp_stone_circuit",
+              "ntm:stamp_stone_flat",
+              "ntm:stamp_stone_plate",
+              "ntm:stamp_stone_wire",
+              "ntm:stamp_titanium_circuit",
+              "ntm:stamp_titanium_flat",
+              "ntm:stamp_titanium_plate",
+              "ntm:stamp_titanium_wire"
+            ],
+            "max": 1
+          },
+          {
+            "x": 80,
+            "y": 53,
+            "accept": [
+              "minecraft:gold_ingot",
+              "minecraft:iron_ingot",
+              "minecraft:jungle_log",
+              "minecraft:paper",
+              "ntm:billet_silicon",
+              "ntm:biomass",
+              "ntm:coke__coal",
+              "ntm:coke__lignite",
+              "ntm:coke__petroleum",
+              "ntm:ingot_aluminium",
+              "ntm:ingot_combine_steel",
+              "ntm:ingot_copper",
+              "ntm:ingot_dura_steel",
+              "ntm:ingot_graphite",
+              "ntm:ingot_gunmetal",
+              "ntm:ingot_lead",
+              "ntm:ingot_magnetized_tungsten",
+              "ntm:ingot_red_copper",
+              "ntm:ingot_saturnite",
+              "ntm:ingot_schrabidium",
+              "ntm:ingot_steel",
+              "ntm:ingot_titanium",
+              "ntm:ingot_tungsten",
+              "ntm:ingot_weaponsteel",
+              "ntm:ingot_zirconium",
+              "ntm:plate_gunmetal",
+              "ntm:plate_weaponsteel",
+              "ntm:powder_coal",
+              "ntm:powder_diamond",
+              "ntm:powder_emerald",
+              "ntm:powder_lapis",
+              "ntm:powder_lignite",
+              "ntm:powder_quartz",
+              "ntm:powder_sawdust"
+            ]
+          },
+          {
+            "x": 140,
+            "y": 35,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          132
+        ],
+        "data": 11,
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            2,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_press.png",
+        "texture_from": "textures/gui/processing/gui_press.png",
+        "size": [
+          176,
+          214
+        ],
+        "title": [
+          88,
+          5,
+          "center"
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              79,
+              35,
+              18,
+              16
+            ],
+            "uv": [
+              15,
+              214
+            ],
+            "dir": "down"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 4,
+            "min": 20,
+            "rect": [
+              26,
+              36,
+              14,
+              14
+            ],
+            "uv": [
+              0,
+              214
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              25,
+              16,
+              18,
+              18
+            ],
+            "lines": [
+              "Velocidade: {2} / {3}"
+            ]
+          },
+          {
+            "rect": [
+              25,
+              34,
+              18,
+              18
+            ],
+            "lines": [
+              "Queima: {4} ({5} por prensagem)"
+            ]
+          }
+        ]
+      }
+    },
+    "ntm:machine_epress": {
+      "source": "ContainerMachineEPress, GUIMachineEPress (MachineEPress {2,0,0,0,0,0}); battery and upgrade slots have no logic in the port",
+      "machine": {
+        "slots": [
+          {
+            "x": 152,
+            "y": 54,
+            "accept": []
+          },
+          {
+            "x": 19,
+            "y": 15,
+            "accept": [
+              "ntm:stamp_357",
+              "ntm:stamp_44",
+              "ntm:stamp_50",
+              "ntm:stamp_9",
+              "ntm:stamp_desh_357",
+              "ntm:stamp_desh_44",
+              "ntm:stamp_desh_50",
+              "ntm:stamp_desh_9",
+              "ntm:stamp_desh_circuit",
+              "ntm:stamp_desh_flat",
+              "ntm:stamp_desh_plate",
+              "ntm:stamp_desh_wire",
+              "ntm:stamp_iron_circuit",
+              "ntm:stamp_iron_flat",
+              "ntm:stamp_iron_plate",
+              "ntm:stamp_iron_wire",
+              "ntm:stamp_obsidian_circuit",
+              "ntm:stamp_obsidian_flat",
+              "ntm:stamp_obsidian_plate",
+              "ntm:stamp_obsidian_wire",
+              "ntm:stamp_steel_circuit",
+              "ntm:stamp_steel_flat",
+              "ntm:stamp_steel_plate",
+              "ntm:stamp_steel_wire",
+              "ntm:stamp_stone_circuit",
+              "ntm:stamp_stone_flat",
+              "ntm:stamp_stone_plate",
+              "ntm:stamp_stone_wire",
+              "ntm:stamp_titanium_circuit",
+              "ntm:stamp_titanium_flat",
+              "ntm:stamp_titanium_plate",
+              "ntm:stamp_titanium_wire"
+            ],
+            "max": 1
+          },
+          {
+            "x": 19,
+            "y": 51,
+            "accept": [
+              "minecraft:gold_ingot",
+              "minecraft:iron_ingot",
+              "minecraft:jungle_log",
+              "minecraft:paper",
+              "ntm:billet_silicon",
+              "ntm:biomass",
+              "ntm:coke__coal",
+              "ntm:coke__lignite",
+              "ntm:coke__petroleum",
+              "ntm:ingot_aluminium",
+              "ntm:ingot_combine_steel",
+              "ntm:ingot_copper",
+              "ntm:ingot_dura_steel",
+              "ntm:ingot_graphite",
+              "ntm:ingot_gunmetal",
+              "ntm:ingot_lead",
+              "ntm:ingot_magnetized_tungsten",
+              "ntm:ingot_red_copper",
+              "ntm:ingot_saturnite",
+              "ntm:ingot_schrabidium",
+              "ntm:ingot_steel",
+              "ntm:ingot_titanium",
+              "ntm:ingot_tungsten",
+              "ntm:ingot_weaponsteel",
+              "ntm:ingot_zirconium",
+              "ntm:plate_gunmetal",
+              "ntm:plate_weaponsteel",
+              "ntm:powder_coal",
+              "ntm:powder_diamond",
+              "ntm:powder_emerald",
+              "ntm:powder_lapis",
+              "ntm:powder_lignite",
+              "ntm:powder_quartz",
+              "ntm:powder_sawdust"
+            ]
+          },
+          {
+            "x": 79,
+            "y": 33,
+            "output": true
+          },
+          {
+            "x": 111,
+            "y": 32,
+            "accept": []
+          }
+        ],
+        "inventory": [
+          8,
+          104
+        ],
+        "data": 8,
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            2,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_electric_press.png",
+        "texture_from": "textures/gui/processing/gui_electric_press.png",
+        "size": [
+          176,
+          186
+        ],
+        "title": [
+          89,
+          6,
+          "center"
+        ],
+        "bars": [
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              152,
+              18,
+              16,
+              34
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              18,
+              33,
+              18,
+              16
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "down"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              34
+            ],
+            "lines": [
+              "{2:si} / {3:si} HE"
+            ]
+          }
+        ]
+      }
+    },
     "ntm:machine_gascent": {
       "source": "ContainerMachineGasCent, GUIMachineGasCent (MachineGasCent {3,0,0,0,0,0}); battery and identifier slots have no logic in the port",
       "machine": {

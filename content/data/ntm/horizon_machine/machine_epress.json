@@ -1,0 +1,117 @@
+{
+  "slots": [
+    {
+      "x": 152,
+      "y": 54,
+      "accept": []
+    },
+    {
+      "x": 19,
+      "y": 15,
+      "accept": [
+        "ntm:stamp_357",
+        "ntm:stamp_44",
+        "ntm:stamp_50",
+        "ntm:stamp_9",
+        "ntm:stamp_desh_357",
+        "ntm:stamp_desh_44",
+        "ntm:stamp_desh_50",
+        "ntm:stamp_desh_9",
+        "ntm:stamp_desh_circuit",
+        "ntm:stamp_desh_flat",
+        "ntm:stamp_desh_plate",
+        "ntm:stamp_desh_wire",
+        "ntm:stamp_iron_circuit",
+        "ntm:stamp_iron_flat",
+        "ntm:stamp_iron_plate",
+        "ntm:stamp_iron_wire",
+        "ntm:stamp_obsidian_circuit",
+        "ntm:stamp_obsidian_flat",
+        "ntm:stamp_obsidian_plate",
+        "ntm:stamp_obsidian_wire",
+        "ntm:stamp_steel_circuit",
+        "ntm:stamp_steel_flat",
+        "ntm:stamp_steel_plate",
+        "ntm:stamp_steel_wire",
+        "ntm:stamp_stone_circuit",
+        "ntm:stamp_stone_flat",
+        "ntm:stamp_stone_plate",
+        "ntm:stamp_stone_wire",
+        "ntm:stamp_titanium_circuit",
+        "ntm:stamp_titanium_flat",
+        "ntm:stamp_titanium_plate",
+        "ntm:stamp_titanium_wire"
+      ],
+      "max": 1
+    },
+    {
+      "x": 19,
+      "y": 51,
+      "accept": [
+        "minecraft:gold_ingot",
+        "minecraft:iron_ingot",
+        "minecraft:jungle_log",
+        "minecraft:paper",
+        "ntm:billet_silicon",
+        "ntm:biomass",
+        "ntm:coke__coal",
+        "ntm:coke__lignite",
+        "ntm:coke__petroleum",
+        "ntm:ingot_aluminium",
+        "ntm:ingot_combine_steel",
+        "ntm:ingot_copper",
+        "ntm:ingot_dura_steel",
+        "ntm:ingot_graphite",
+        "ntm:ingot_gunmetal",
+        "ntm:ingot_lead",
+        "ntm:ingot_magnetized_tungsten",
+        "ntm:ingot_red_copper",
+        "ntm:ingot_saturnite",
+        "ntm:ingot_schrabidium",
+        "ntm:ingot_steel",
+        "ntm:ingot_titanium",
+        "ntm:ingot_tungsten",
+        "ntm:ingot_weaponsteel",
+        "ntm:ingot_zirconium",
+        "ntm:plate_gunmetal",
+        "ntm:plate_weaponsteel",
+        "ntm:powder_coal",
+        "ntm:powder_diamond",
+        "ntm:powder_emerald",
+        "ntm:powder_lapis",
+        "ntm:powder_lignite",
+        "ntm:powder_quartz",
+        "ntm:powder_sawdust"
+      ]
+    },
+    {
+      "x": 79,
+      "y": 33,
+      "output": true
+    },
+    {
+      "x": 111,
+      "y": 32,
+      "accept": []
+    }
+  ],
+  "inventory": [
+    8,
+    104
+  ],
+  "data": 8,
+  "multiblock": {
+    "min": [
+      0,
+      0,
+      0
+    ],
+    "max": [
+      0,
+      2,
+      0
+    ],
+    "offset": 0,
+    "dummy": "ntm:dummy_machine"
+  }
+}
