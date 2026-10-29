@@ -122,6 +122,10 @@ def gui_and_container(te_src, cls):
         m = re.search(r'this\.' + k + r'\s*=\s*(\d+)', gsrc)
         if m:
             out[k] = int(m[1])
+    # The title's colour, when a literal other than vanilla's grey (0x404040).
+    tc = re.search(r'drawString\(\s*name\s*,[^;]*,\s*(0x[0-9a-fA-F]+|\d+)\s*\)\s*;', gsrc)
+    if tc and int(tc[1], 0) != 0x404040:
+        out['title_color'] = '#%06x' % int(tc[1], 0)
     c = re.search(r'super\(\s*new\s+(Container\w+)\(', gsrc)
     if c and c[1] in cls:
         csrc = read(cls[c[1]])

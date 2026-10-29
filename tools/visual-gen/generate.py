@@ -186,6 +186,8 @@ def main():
     dummy = spec['dummy']
     blocks = dict(spec['blocks'])
     auto = auto_models(args, src, set(blocks))
+    ex_file = HERE / 'extracted.json'
+    extracted = json.loads(ex_file.read_text()) if ex_file.exists() else {}
     blocks.update(auto)
     for block, b in blocks.items():
         name = block.split(':', 1)[1]
@@ -193,6 +195,10 @@ def main():
             write_json(own(f'data/ntm/horizon_machine/{name}.json'), b['machine'])
         if 'screen' in b:
             s = dict(b['screen'])
+            # HBM's title colour (extracted.json), when the entry names none.
+            color = extracted.get(block, {}).get('gui', {}).get('title_color')
+            if color and 'title_color' not in s:
+                s['title_color'] = color
             copy(s.pop('texture_from'), 'assets/ntm/' + s['texture'].split(':', 1)[1])
             write_json(own(f'assets/ntm/horizon_screen/{name}.json'), s)
         if 'liquid' in b:

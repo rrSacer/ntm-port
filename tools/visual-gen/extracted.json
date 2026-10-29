@@ -2570,6 +2570,7 @@
     ]
    },
    "texture": "textures/gui/machine/gui_launchpad_soyuz.png",
+   "title_color": "#ffffff",
    "xSize": 194,
    "ySize": 244
   },
@@ -2713,6 +2714,7 @@
     ]
    },
    "texture": "textures/gui/processing/gui_arc_furnace.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 256
   },
@@ -3627,6 +3629,7 @@
     ]
    },
    "texture": "textures/gui/processing/gui_catalytic_reformer.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 238
   },
@@ -3710,6 +3713,7 @@
     ]
    },
    "texture": "textures/gui/processing/gui_centrifuge.png",
+   "title_color": "#ffffff",
    "xSize": 182,
    "ySize": 189
   },
@@ -3973,6 +3977,7 @@
     ]
    },
    "texture": "textures/gui/processing/gui_coker.png",
+   "title_color": "#c7c1a3",
    "xSize": 176,
    "ySize": 204
   },
@@ -4217,6 +4222,7 @@
     "slots": []
    },
    "texture": "textures/gui/processing/gui_crucible.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 214
   },
@@ -4976,6 +4982,7 @@
     ]
    },
    "texture": "textures/gui/processing/gui_electrolyser_fluid.png",
+   "title_color": "#ffffff",
    "xSize": 210,
    "ySize": 204
   },
@@ -5222,6 +5229,7 @@
     ]
    },
    "texture": "textures/gui/machine/gui_fel.png",
+   "title_color": "#ffffff",
    "xSize": 203,
    "ySize": 169
   },
@@ -5540,7 +5548,8 @@
      ]
     ]
    },
-   "texture": "textures/gui/processing/gui_furnace_brick.png"
+   "texture": "textures/gui/processing/gui_furnace_brick.png",
+   "title_color": "#ffffff"
   },
   "tile_entity": "TileEntityFurnaceBrick"
  },
@@ -5578,7 +5587,8 @@
      ]
     ]
    },
-   "texture": "textures/gui/processing/gui_furnace_brick.png"
+   "texture": "textures/gui/processing/gui_furnace_brick.png",
+   "title_color": "#ffffff"
   },
   "tile_entity": "TileEntityFurnaceBrick"
  },
@@ -5750,6 +5760,7 @@
     ]
    },
    "texture": "textures/gui/processing/gui_hydrotreater.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 238
   },
@@ -5958,6 +5969,7 @@
     ]
    },
    "texture": "textures/gui/machine/gui_keyforge.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 186
   },
@@ -6086,6 +6098,7 @@
     ]
    },
    "texture": "textures/gui/processing/gui_liquefactor.png",
+   "title_color": "#c7c1a3",
    "xSize": 176,
    "ySize": 204
   },
@@ -6713,6 +6726,7 @@
     ]
    },
    "texture": "textures/gui/processing/gui_press.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 214
   },
@@ -7283,6 +7297,7 @@
     ]
    },
    "texture": "textures/gui/reactors/gui_research_reactor.png",
+   "title_color": "#e5e5e5",
    "xSize": 176,
    "ySize": 222
   },
@@ -7751,6 +7766,7 @@
     ]
    },
    "texture": "textures/gui/gui_rtg.png",
+   "title_color": "#a6b5ae",
    "xSize": 176,
    "ySize": 188
   },
@@ -8338,6 +8354,7 @@
     ]
    },
    "texture": "textures/gui/processing/gui_solidifier.png",
+   "title_color": "#c7c1a3",
    "xSize": 176,
    "ySize": 204
   },
@@ -8517,6 +8534,7 @@
     "slots": []
    },
    "texture": "textures/gui/processing/gui_strand_caster.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 214
   },
@@ -8693,6 +8711,7 @@
     ]
    },
    "texture": "textures/gui/machine/gui_tape_drive.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 186
   },
@@ -9010,6 +9029,7 @@
     ]
    },
    "texture": "textures/gui/processing/gui_vacuum_distill.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 238
   },
@@ -9249,6 +9269,7 @@
     ]
    },
    "texture": "textures/gui/generators/gui_wood_burner_alt.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 186
   },
@@ -10623,6 +10644,7 @@
     ]
    },
    "texture": "textures/gui/particleaccelerator/gui_detector.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 204
   },
@@ -10670,6 +10692,7 @@
     ]
    },
    "texture": "textures/gui/particleaccelerator/gui_dipole.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 204
   },
@@ -10720,6 +10743,7 @@
     ]
    },
    "texture": "textures/gui/particleaccelerator/gui_quadrupole.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 204
   },
@@ -10826,6 +10850,7 @@
     ]
    },
    "texture": "textures/gui/particleaccelerator/gui_source.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 204
   },
@@ -11844,6 +11869,7 @@
     ]
    },
    "texture": "textures/gui/machine/gui_autoloader.png",
+   "title_color": "#ffffff",
    "xSize": 176,
    "ySize": 182
   },
@@ -12789,6 +12815,7 @@
     ]
    },
    "texture": "textures/gui/storage/gui_soyuz_capsule.png",
+   "title_color": "#7daf71",
    "xSize": 176,
    "ySize": 186
   },
@@ -12874,6 +12901,7 @@
     ]
    },
    "texture": "textures/gui/machine/gui_soyuz.png",
+   "title_color": "#ffffff",
    "xSize": 194,
    "ySize": 244
   },
