@@ -434,6 +434,19 @@ transações.
   compartilhado do git na hora do commit dele, e o histórico já publicado
   não é reescrito.
 
+**Em jogo** (motor `ntm-visual`, Xvfb `:15`, mudo, `tools/test-game/presses.py`;
+mundo criativo, seed 1768123; telas do agente de visual):
+- **`prensa`:** 4 carvões, a matriz de chapa de ferro e 8 lingotes de ferro
+  postos nos slots. As 8 chapas saem e são retiradas em 21,7 s, e a matriz
+  fica com desgaste 8 (barra de durabilidade).
+- **`eprensa`:** ao lado de uma bateria cheia, uma matriz de fio com desgaste
+  62 e 5 lingotes de cobre. Depois de 2 prensagens a matriz quebra, com 16
+  fios finos de cobre e 3 lingotes restantes.
+- **`gascent`:** ao lado de uma bateria, 2 células de UF6 despejadas pela tela
+  antiga (tecla R; voltam 2 células vazias). As 3 pepitas de U-238 do
+  primeiro estágio aparecem no slot de saída. O upgrade de velocidade entra e
+  sai pelo slot 6.
+
 **Verificação** (`server/tests/press_slots_tests.rs`, 4):
 - uma prensa enchida antes dos slots mostra matriz (com o desgaste), entrada
   e combustível nos slots;
