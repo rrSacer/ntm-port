@@ -15,6 +15,7 @@ pub mod crafter;
 pub mod energy;
 pub mod fluid;
 pub mod fluidbox;
+pub mod foundry;
 pub mod gascent;
 pub mod hash;
 pub mod kv;

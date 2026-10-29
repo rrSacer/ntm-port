@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Converte as receitas extraídas pelo agente de conteúdo
-(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder,blast_furnace}.json, schema 1)
+(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder,blast_furnace,foundry}.json, schema 1)
 para o formato que a lógica embute (crates/ntm-core/data/machines/*.json),
 com os nomes pt_BR do content/ids.json para a tela.
 
@@ -99,7 +99,21 @@ def blast_furnace():
             'skipped': len(src['skipped'])}
 
 
-for st, data in [('assembly', generic('assembly')), ('chemical_plant', generic('chemical_plant')), ('centrifuge', centrifuge()), ('shredder', shredder()), ('blast_furnace', blast_furnace())]:
+def foundry():
+    """Materiais, item → materiais (antes da conversão), as ligas ativas na
+    ordem da fonte, os combustíveis da firebox e os moldes."""
+    src = json.loads((root / 'content/machine-recipes/foundry.json').read_text())
+    keep = ('id', 'name', 'behavior', 'smelts_into', 'conv', 'colors')
+    materials = [{k: m[k] for k in keep} for m in src['materials']]
+    alloys = [{'name': a['name'], 'frequency': a['frequency'], 'icon': a.get('icon', ''), 'in': a['in'], 'out': a['out']}
+              for a in sorted(src['alloys'], key=lambda a: a['source_index'])]
+    molds = [{k: m[k] for k in ('id', 'size', 'name', 'item', 'shape', 'amount', 'cost', 'outputs')} for m in src.get('molds', [])]
+    return {'station': 'foundry', 'source': 'content/machine-recipes/foundry.json', 'quanta': src['quanta'], 'materials': materials,
+            'items': src['items'], 'alloys': alloys, 'firebox_fuels': src['firebox_fuels'], 'molds': molds,
+            'recipes': alloys, 'skipped': len(src.get('skipped', []))}
+
+
+for st, data in [('assembly', generic('assembly')), ('chemical_plant', generic('chemical_plant')), ('centrifuge', centrifuge()), ('shredder', shredder()), ('blast_furnace', blast_furnace()), ('foundry', foundry())]:
     p = root / f'crates/ntm-core/data/machines/{st}.json'
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"{st}: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
