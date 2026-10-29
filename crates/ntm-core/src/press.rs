@@ -191,7 +191,7 @@ impl PressCore {
                     buckets: WEAR_BUCKETS,
                 });
             }
-        } else if p.is_input(&h.item) {
+        } else if self.as_input(&h.item, fuel.is_some()) {
             match &self.input {
                 Some((i, n)) if *i != h.item || *n >= STACK => {
                     fx.push(Effect::Toast("A entrada está ocupada.".into()))
@@ -212,6 +212,20 @@ impl PressCore {
         }
     }
 
+    /// Whether `item` goes to the input. An item that is also fuel (a
+    /// jungle log) is an input only when the stamp in the press presses
+    /// it; otherwise the burner press burns it.
+    fn as_input(&self, item: &str, has_fuel: bool) -> bool {
+        let p = recipes::press();
+        if !p.is_input(item) {
+            return false;
+        }
+        if !has_fuel || burn_ticks(item) == 0 {
+            return true;
+        }
+        self.stamp.as_ref().and_then(|s| p.stamp(&s.item)).is_some_and(|k| p.recipe(item, &k.kind).is_some())
+    }
+
     /// An item the probe took: where it goes (false: nowhere, give it back).
     fn accept(&mut self, item: &str, tag: u8, fuel: Option<&mut Option<(String, u32)>>) -> bool {
         let p = recipes::press();
@@ -225,7 +239,7 @@ impl PressCore {
             });
             return true;
         }
-        if p.is_input(item) {
+        if self.as_input(item, fuel.is_some()) {
             return add_to(&mut self.input, item);
         }
         match fuel {
@@ -591,5 +605,46 @@ mod tests {
         let mut fx = vec![];
         e.core.insert(Some(&held("minecraft:coal")), None, &mut fx);
         assert!(matches!(&fx[0], Effect::Toast(_)));
+    }
+
+    #[test]
+    fn fuel_that_is_also_an_input_follows_the_stamp() {
+        let held = |item: &str| Held { item: item.into(), count: 1 };
+        // A plate stamp: a jungle log burns.
+        let mut p = BurnerPress { core: loaded(), ..Default::default() };
+        p.core.input = None;
+        let mut fx = vec![];
+        p.action(actions::INSERT, Some(&held("minecraft:jungle_log")), &mut fx);
+        assert_eq!(fx, vec![Effect::TakeHeld { item: "minecraft:jungle_log".into() }]);
+        p.consumed("minecraft:jungle_log", &mut fx);
+        assert_eq!((p.fuel.clone(), p.core.input.clone()), (Some(("minecraft:jungle_log".into(), 1)), None));
+        // A flat stamp: it is pressed into resin.
+        p.core.stamp = Some(Stamp { item: "ntm:stamp_iron_flat".into(), used: 0 });
+        p.consumed("minecraft:jungle_log", &mut fx);
+        assert_eq!(p.core.input, Some(("minecraft:jungle_log".into(), 1)));
+        assert_eq!(p.core.recipe().map(|r| r.output.as_str()), Some("ntm:ball_resin"));
+    }
+
+    #[test]
+    fn a_desh_stamp_never_wears_and_a_stone_one_lasts_32() {
+        let mut p = ElectricPress { core: loaded(), power: ElectricPress::MAX };
+        p.core.stamp = Some(Stamp { item: "ntm:stamp_desh_wire".into(), used: 0 });
+        p.core.input = Some(("minecraft:gold_ingot".into(), 40));
+        for _ in 0..40 {
+            p.core.output = None;
+            p.core.press_one();
+        }
+        assert_eq!(p.core.stamp, Some(Stamp { item: "ntm:stamp_desh_wire".into(), used: 0 }));
+        assert_eq!(stamp_item(p.core.stamp.as_ref().unwrap()), "ntm:stamp_desh_wire");
+        p.core.stamp = Some(Stamp { item: "ntm:stamp_stone_wire".into(), used: 0 });
+        p.core.input = Some(("ntm:ingot_graphite".into(), 40));
+        let mut made = 0;
+        while p.core.stamp.is_some() {
+            p.core.output = None;
+            p.core.press_one();
+            made += 1;
+        }
+        assert_eq!(made, 32);
+        assert_eq!(p.core.output, Some(("ntm:wire_fine__carbon".into(), 8)));
     }
 }
