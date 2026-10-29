@@ -204,11 +204,19 @@ def main():
             target = 'assets/ntm/' + s['texture'].split(':', 1)[1]
             copy(s.pop('texture_from'), target)
             # Other GUI textures a screen draws from (the Tsar's lamps are
-            # Ivy Mike's), pasted below or beside it into one file.
+            # Ivy Mike's), pasted below or beside it into one file; with `src`,
+            # one rectangle of it (a slot frame where the port has a slot HBM's
+            # screen has not).
             if 'compose' in s:
                 from PIL import Image
                 base = Image.open(out / target).convert('RGBA')
-                parts = [(Image.open(src / c['from']).convert('RGBA'), c['at']) for c in s.pop('compose')]
+                def part(c):
+                    im = Image.open(src / c['from']).convert('RGBA')
+                    if 'src' in c:
+                        x, y, w, h = c['src']
+                        im = im.crop((x, y, x + w, y + h))
+                    return im, c['at']
+                parts = [part(c) for c in s.pop('compose')]
                 w = max([base.width] + [im.width + at[0] for im, at in parts])
                 h = max([base.height] + [im.height + at[1] for im, at in parts])
                 sheet = Image.new('RGBA', (w, h))
