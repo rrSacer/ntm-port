@@ -1555,10 +1555,10 @@ index 000000000..830f267f7
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
 new file mode 100644
-index 000000000..6da2be7d5
+index 000000000..e3f74175c
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_screens.rs
-@@ -0,0 +1,520 @@
+@@ -0,0 +1,606 @@
 +//! Screens of content mods' machines (`horizon_world::mod_machines`): the
 +//! machine's own background texture, with bars, lights and tooltips drawn
 +//! from the values the mod sets. Each `assets/<namespace>/horizon_screen/<name>.json`
@@ -1583,6 +1583,9 @@ index 000000000..6da2be7d5
 +//!     {"slot": 0, "rect": [142, 90, 16, 16], "uv": [176, 0]},    ... the slot holds something
 +//!     {"value": 7, "min": 1, "rect": [51, 121, 6, 8], "uv": [195, 0]}  ... a value is in min..=max (max: none)
 +//!   ],
++//!   "gauges": [                              HBM's drawSmoothGauge: a needle from 0 (lower left)
++//!     {"value": 2, "max": 3, "at": [34, 25], "tip": 5, "back": 2, "side": 1, "color": "#7f0000"}
++//!   ],                                       round 270 degrees to the value's share of `max`
 +//!   "tooltips": [{"rect": [152, 18, 16, 61], "lines": ["{0:si} / {1:si} HE"]}],
 +//!   "buttons": [{"id": 0, "rect": [7, 125, 18, 18], "lines": ["Choose a recipe"]}]
 +//! }                                          a button's "shift": the id sent while shift is held
@@ -1621,6 +1624,30 @@ index 000000000..6da2be7d5
 +    pub uv: Option<[f32; 2]>,
 +    pub color: Option<usize>,
 +    pub dir: Dir,
++}
++
++/// HBM's `GUIElements.drawSmoothGauge`: a needle turning round its centre.
++#[derive(Clone, Debug, PartialEq)]
++pub struct Gauge {
++    pub value: usize,
++    pub max: Max,
++    pub at: [f32; 2],
++    /// The needle's length forward, back, and its half width at the back.
++    pub tip: f32,
++    pub back: f32,
++    pub side: f32,
++    /// 0xRRGGBB.
++    pub color: u32,
++}
++
++/// The needle's three corners from its centre at `progress` (0..=1), as
++/// drawSmoothGauge turns them (`Vec3.rotateAroundZ`, GUI y down), scaled
++/// by `mult` (1.5 for its black outline).
++pub fn needle(progress: f32, tip: f32, back: f32, side: f32, mult: f32) -> [[f32; 2]; 3] {
++    let a = (-progress.clamp(0.0, 1.0) * 270.0 - 45.0).to_radians();
++    let (sin, cos) = a.sin_cos();
++    let turn = |[x, y]: [f32; 2]| [(x * cos + y * sin) * mult, (y * cos - x * sin) * mult];
++    [turn([0.0, tip]), turn([side, -back]), turn([-side, -back])]
 +}
 +
 +#[derive(Clone, Debug, PartialEq)]
@@ -1663,6 +1690,7 @@ index 000000000..6da2be7d5
 +    pub title_color: Option<u32>,
 +    pub inventory_label: Option<[f32; 2]>,
 +    pub bars: Vec<Bar>,
++    pub gauges: Vec<Gauge>,
 +    pub overlays: Vec<Overlay>,
 +    pub tips: Vec<Tip>,
 +    pub buttons: Vec<Button>,
@@ -1773,6 +1801,31 @@ index 000000000..6da2be7d5
 +            dir: dir(&b["dir"]),
 +        });
 +    }
++    let gauges = doc["gauges"]
++        .as_array()
++        .into_iter()
++        .flatten()
++        .filter_map(|g| {
++            let max = match (index(&g["max"]), g["max_value"].as_i64()) {
++                (Some(i), _) => Max::Value(i),
++                (None, Some(v)) => Max::Fixed(v as i32),
++                _ => return None,
++            };
++            let f = |k: &str, d: f32| g[k].as_f64().map_or(d, |v| v as f32);
++            Some(Gauge {
++                value: index(&g["value"])?,
++                max,
++                at: floats::<2>(&g["at"])?,
++                tip: f("tip", 5.0),
++                back: f("back", 2.0),
++                side: f("side", 1.0),
++                color: g["color"]
++                    .as_str()
++                    .and_then(|c| u32::from_str_radix(c.strip_prefix('#')?, 16).ok())
++                    .unwrap_or(0x7f0000),
++            })
++        })
++        .collect();
 +    let mut overlays = Vec::new();
 +    for o in doc["overlays"].as_array().into_iter().flatten() {
 +        let when = match (index(&o["slot"]), index(&o["value"])) {
@@ -1822,6 +1875,7 @@ index 000000000..6da2be7d5
 +        title_color,
 +        inventory_label,
 +        bars,
++        gauges,
 +        overlays,
 +        tips,
 +        buttons,
@@ -1987,6 +2041,25 @@ index 000000000..6da2be7d5
 +                batch.fill(atlas, ox + x + cx, oy + y + cy, cw, ch, color);
 +            }
 +        }
++        for g in &self.gauges {
++            let max = match g.max {
++                Max::Value(i) => value(i),
++                Max::Fixed(v) => v,
++            };
++            let Some(f) = fill(value(g.value), 0, max) else {
++                continue;
++            };
++            let [cx, cy] = [ox + g.at[0], oy + g.at[1]];
++            let [r, gr, b] = [(g.color >> 16) as u8, (g.color >> 8) as u8, g.color as u8];
++            for (mult, color) in [
++                (1.5, crate::hud::rgba(0, 0, 0, 255)),
++                (1.0, crate::hud::rgba(r, gr, b, 255)),
++            ] {
++                let [t, l, rt] =
++                    needle(f, g.tip, g.back, g.side, mult).map(|[x, y]| [cx + x, cy + y]);
++                batch.fill_quad(atlas, [t, l, rt, rt], color);
++            }
++        }
 +        for o in &self.overlays {
 +            let on = match o.when {
 +                When::Slot(s) => filled(s),
@@ -2043,6 +2116,19 @@ index 000000000..6da2be7d5
 +            "12.5k / 1M HE"
 +        );
 +        assert_eq!(format("{2} ticks {x}", &[1, 2, 3]), "3 ticks {x}");
++    }
++
++    #[test]
++    fn a_needle_turns_from_lower_left_to_lower_right() {
++        let at = |p| needle(p, 5.0, 2.0, 1.0, 1.0)[0];
++        let close =
++            |a: [f32; 2], b: [f32; 2]| (a[0] - b[0]).abs() < 1e-4 && (a[1] - b[1]).abs() < 1e-4;
++        let d = 5.0 * std::f32::consts::FRAC_1_SQRT_2;
++        // GUI y points down: 0 at the lower left, half at the top, 1 at the lower right.
++        assert!(close(at(0.0), [-d, d]), "{:?}", at(0.0));
++        assert!(close(at(0.5), [0.0, -5.0]), "{:?}", at(0.5));
++        assert!(close(at(1.0), [d, d]), "{:?}", at(1.0));
++        assert!(close(at(2.0), at(1.0)));
 +    }
 +
 +    #[test]
