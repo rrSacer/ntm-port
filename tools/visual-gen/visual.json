@@ -1,0 +1,120 @@
+{
+  "dummy": "ntm:dummy_machine",
+  "dummy_particle": "ntm:block/machine_assembly_machine_side_opaque",
+  "dummy_names": {"en_us": "Machine (part)", "pt_br": "Máquina (parte)"},
+  "blocks": {
+    "ntm:machine_assembly_machine": {
+      "source": "ContainerMachineAssemblyMachine, GUIMachineAssemblyMachine, RenderAssemblyMachine, MachineAssemblyMachine.getDimensions {2,0,1,1,1,1} offset 1",
+      "machine": {
+        "slots": [
+          {"x": 152, "y": 81, "accept": ["ntm:battery_spark", "ntm:battery_trixite"]},
+          {"x": 35, "y": 126, "accept": []},
+          {"x": 152, "y": 108, "accept": ["ntm:upgrade_speed_1", "ntm:upgrade_speed_2", "ntm:upgrade_speed_3", "ntm:upgrade_power_1", "ntm:upgrade_power_2", "ntm:upgrade_power_3", "ntm:upgrade_overdrive_1", "ntm:upgrade_overdrive_2", "ntm:upgrade_overdrive_3"]},
+          {"x": 152, "y": 126, "accept": ["ntm:upgrade_speed_1", "ntm:upgrade_speed_2", "ntm:upgrade_speed_3", "ntm:upgrade_power_1", "ntm:upgrade_power_2", "ntm:upgrade_power_3", "ntm:upgrade_overdrive_1", "ntm:upgrade_overdrive_2", "ntm:upgrade_overdrive_3"]},
+          {"grid": [8, 18, 3, 4]},
+          {"x": 98, "y": 45, "output": true}
+        ],
+        "inventory": [8, 174],
+        "data": 12,
+        "multiblock": {"min": [-1, 0, -1], "max": [1, 2, 1], "offset": 1, "dummy": "ntm:dummy_machine"}
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_assembler.png",
+        "texture_from": "textures/gui/processing/gui_assembler.png",
+        "size": [176, 256],
+        "title": [70, 6, "center"],
+        "inventory_label": [8, 162],
+        "bars": [
+          {"value": 0, "max": 1, "rect": [152, 18, 16, 61], "uv": [176, 0], "dir": "up"},
+          {"value": 2, "max_value": 1000, "rect": [62, 126, 70, 16], "uv": [176, 61], "dir": "right"},
+          {"value": 4, "max": 5, "rect": [8, 99, 52, 16], "color": 6, "dir": "right"},
+          {"value": 7, "max": 8, "rect": [80, 99, 52, 16], "color": 9, "dir": "right"}
+        ],
+        "overlays": [
+          {"value": 10, "min": 1, "rect": [51, 121, 3, 6], "uv": [192, 0]},
+          {"value": 10, "min": 2, "rect": [51, 121, 3, 6], "uv": [195, 0]},
+          {"value": 11, "min": 1, "rect": [56, 121, 3, 6], "uv": [192, 0]},
+          {"value": 10, "min": 2, "rect": [56, 121, 3, 6], "uv": [195, 0]}
+        ],
+        "tooltips": [
+          {"rect": [152, 18, 16, 61], "lines": ["{0:si} / {1:si} HE"]},
+          {"rect": [8, 99, 52, 16], "lines": ["{4} / {5} mB"]},
+          {"rect": [80, 99, 52, 16], "lines": ["{7} / {8} mB"]}
+        ],
+        "buttons": [{"id": 0, "rect": [7, 125, 18, 18], "lines": ["Escolher receita"]}]
+      },
+      "model": {
+        "obj": "ntm:models/obj/assembly_machine.obj",
+        "obj_from": "models/machines/assembly_machine.obj",
+        "texture": "ntm:textures/models/machines/assembly_machine.png",
+        "texture_from": "textures/models/machines/assembly_machine.png",
+        "rotation": 90,
+        "radius": 2.2,
+        "hide": ["Ring2", "Frame"],
+        "bones": {
+          "ArmLower1": {"parent": "Ring", "pivot": [0, 1.625, 0.9375]},
+          "ArmUpper1": {"parent": "ArmLower1", "pivot": [0, 2.375, 0.9375]},
+          "Head1": {"parent": "ArmUpper1", "pivot": [0, 2.375, 0.4375]},
+          "Spike1": {"parent": "Head1"},
+          "ArmLower2": {"parent": "Ring", "pivot": [0, 1.625, -0.9375]},
+          "ArmUpper2": {"parent": "ArmLower2", "pivot": [0, 2.375, -0.9375]},
+          "Head2": {"parent": "ArmUpper2", "pivot": [0, 2.375, -0.4375]},
+          "Spike2": {"parent": "Head2"}
+        },
+        "arm_animation": {
+          "name": "animation.assembler.work",
+          "ring_bone": "Ring",
+          "ring": [[0.0, 0], [0.6, 90], [1.8, 90], [2.5, -40], [3.6, -40]],
+          "bones_of_arm": {
+            "1": {"lower": "ArmLower1", "upper": "ArmUpper1", "head": "Head1", "spike": "Spike1"},
+            "2": {"lower": "ArmLower2", "upper": "ArmUpper2", "head": "Head2", "spike": "Spike2"}
+          },
+          "arm": {
+            "positions": [[45, -15, -5], [15, 15, -15], [25, 10, -15], [30, 0, -10], [70, -10, -25]],
+            "striker": -0.75, "move": 0.25, "hold": 0.1, "strike": 0.1
+          }
+        },
+        "play": [{"animation": "animation.assembler.work", "property": "honey_level", "not": "0"}]
+      }
+    },
+    "ntm:nuke_boy": {
+      "source": "ContainerNukeBoy, GUINukeBoy, RenderNukeBoy (meta 2: rotate 90, translate -2)",
+      "machine": {
+        "slots": [
+          {"x": 26, "y": 36, "accept": ["ntm:boy_shielding"]},
+          {"x": 44, "y": 36, "accept": ["ntm:boy_target"]},
+          {"x": 62, "y": 36, "accept": ["ntm:boy_bullet"]},
+          {"x": 80, "y": 36, "accept": ["ntm:boy_propellant"]},
+          {"x": 98, "y": 36, "accept": ["ntm:boy_igniter"]}
+        ],
+        "inventory": [8, 140],
+        "data": 1
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/weapon/lil_boy_schematic.png",
+        "texture_from": "textures/gui/weapon/lilBoySchematic.png",
+        "size": [176, 222],
+        "title": [88, 6, "center"],
+        "inventory_label": [8, 128],
+        "overlays": [
+          {"value": 0, "min": 1, "rect": [142, 90, 16, 16], "uv": [176, 0]},
+          {"slot": 0, "rect": [27, 87, 21, 22], "uv": [176, 16]},
+          {"slot": 1, "rect": [27, 89, 21, 18], "uv": [176, 38]},
+          {"slot": 2, "rect": [74, 94, 19, 8], "uv": [176, 57]},
+          {"slot": 3, "rect": [92, 95, 12, 6], "uv": [176, 66]},
+          {"slot": 4, "rect": [107, 91, 16, 14], "uv": [176, 75]}
+        ],
+        "tooltips": [{"rect": [142, 90, 16, 16], "lines": ["Pronta para detonar"]}]
+      },
+      "model": {
+        "obj": "ntm:models/obj/lil_boy.obj",
+        "obj_from": "models/LilBoy1.obj",
+        "texture": "ntm:textures/models/lilboy.png",
+        "texture_from": "textures/models/lilboy.png",
+        "rotation": 90,
+        "translate": [-2, 0, 0],
+        "radius": 2.5
+      }
+    }
+  }
+}
