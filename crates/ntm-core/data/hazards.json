@@ -17687,6 +17687,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:machine_purex",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:machine_centrifuge",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,

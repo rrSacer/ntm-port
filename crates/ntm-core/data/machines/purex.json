@@ -1,1 +1,1064 @@
-{"station":"purex","recipes":[],"skipped":0}
+{
+"station": "purex",
+"source": "content/machine-recipes/purex.json",
+"recipes": [
+{
+"name": "purex.uzh",
+"label": "Tarugo de Hidreto de Urânio-Zircônio ×4",
+"source": "PUREXRecipes.java:44",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:billet_uranium_fuel"
+],
+"n": 1,
+"label": "Tarugo de Combustível de Urânio"
+},
+{
+"ids": [
+"ntm:billet_zirconium"
+],
+"n": 3,
+"label": "Tarugo de Zircônio"
+}
+],
+"fin": [
+[
+"nitric_acid",
+1000
+],
+[
+"hydrogen",
+4000
+]
+],
+"out": [
+[
+"ntm:billet_uzh",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "purex.flashgold",
+"label": "Tarugo de Ouro Reluzente ×2",
+"source": "PUREXRecipes.java:50",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:billet_au198"
+],
+"n": 1,
+"label": "Tarugo de Ouro-198"
+},
+{
+"ids": [
+"ntm:pellet_charged"
+],
+"n": 1,
+"label": "Partículas Ionizadas"
+}
+],
+"fin": [
+[
+"amat",
+1000
+]
+],
+"out": [
+[
+"ntm:billet_balefire_gold",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "purex.flashlead",
+"label": "Tarugo de Chumbo Reluzente",
+"source": "PUREXRecipes.java:56",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:billet_pb209"
+],
+"n": 1,
+"label": "Tarugo de Chumbo-209"
+},
+{
+"ids": [
+"ntm:billet_balefire_gold"
+],
+"n": 1,
+"label": "Tarugo de Ouro Reluzente"
+}
+],
+"fin": [
+[
+"amat",
+1000
+]
+],
+"out": [
+[
+"ntm:billet_flashlead",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "purex.pwrmeu",
+"label": "Reprocessamento de Haste de Combustível PWR MEU Esgotado",
+"source": "PUREXRecipes.java:238",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__meu"
+],
+"n": 1,
+"label": "Haste de Combustível PWR MEU Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_u238",
+3,
+1.0
+],
+[
+"ntm:nugget_plutonium",
+4,
+1.0
+],
+[
+"ntm:nugget_technetium",
+2,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrheu233",
+"label": "Reprocessamento de Haste de Combustível PWR HEU-233 Esgotado",
+"source": "PUREXRecipes.java:247",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__heu233"
+],
+"n": 1,
+"label": "Haste de Combustível PWR HEU-233 Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_u235",
+3,
+1.0
+],
+[
+"ntm:nugget_pu238",
+3,
+1.0
+],
+[
+"ntm:nugget_technetium",
+1,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+5,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrheu235",
+"label": "Reprocessamento de Haste de Combustível PWR HEU-235 Esgotado",
+"source": "PUREXRecipes.java:256",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__heu235"
+],
+"n": 1,
+"label": "Haste de Combustível PWR HEU-235 Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_neptunium",
+3,
+1.0
+],
+[
+"ntm:nugget_pu238",
+3,
+1.0
+],
+[
+"ntm:nugget_technetium",
+1,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+5,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrmen",
+"label": "Reprocessamento de Haste de Combustível PWR MEN Esgotado",
+"source": "PUREXRecipes.java:265",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__men"
+],
+"n": 1,
+"label": "Haste de Combustível PWR MEN Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_u238",
+3,
+1.0
+],
+[
+"ntm:nugget_pu239",
+4,
+1.0
+],
+[
+"ntm:nugget_technetium",
+2,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrhen237",
+"label": "Reprocessamento de Haste de Combustível PWR HEN-237 Esgotado",
+"source": "PUREXRecipes.java:274",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__hen237"
+],
+"n": 1,
+"label": "Haste de Combustível PWR HEN-237 Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_pu238",
+2,
+1.0
+],
+[
+"ntm:nugget_pu239",
+4,
+1.0
+],
+[
+"ntm:nugget_technetium",
+1,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+5,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrmox",
+"label": "Reprocessamento de Haste de Combustível PWR MOX Esgotado",
+"source": "PUREXRecipes.java:283",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__mox"
+],
+"n": 1,
+"label": "Haste de Combustível PWR MOX Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_u238",
+3,
+1.0
+],
+[
+"ntm:nugget_pu240",
+4,
+1.0
+],
+[
+"ntm:nugget_technetium",
+2,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrmep",
+"label": "Reprocessamento de Haste de Combustível PWR MEP Esgotado",
+"source": "PUREXRecipes.java:292",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__mep"
+],
+"n": 1,
+"label": "Haste de Combustível PWR MEP Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_lead",
+2,
+1.0
+],
+[
+"ntm:nugget_pu_mix",
+4,
+1.0
+],
+[
+"ntm:nugget_technetium",
+2,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrhep239",
+"label": "Reprocessamento de Haste de Combustível PWR HEP-239 Esgotado",
+"source": "PUREXRecipes.java:301",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__hep239"
+],
+"n": 1,
+"label": "Haste de Combustível PWR HEP-239 Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_pu_mix",
+2,
+1.0
+],
+[
+"ntm:nugget_pu240",
+4,
+1.0
+],
+[
+"ntm:nugget_technetium",
+1,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+5,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrhep241",
+"label": "Reprocessamento de Haste de Combustível PWR HEP-241 Esgotado",
+"source": "PUREXRecipes.java:310",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__hep241"
+],
+"n": 1,
+"label": "Haste de Combustível PWR HEP-241 Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_lead",
+3,
+1.0
+],
+[
+"ntm:nugget_zirconium",
+2,
+1.0
+],
+[
+"ntm:nugget_technetium",
+1,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+6,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrmea",
+"label": "Reprocessamento de Haste de Combustível PWR MEA Esgotado",
+"source": "PUREXRecipes.java:319",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__mea"
+],
+"n": 1,
+"label": "Haste de Combustível PWR MEA Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_lead",
+3,
+1.0
+],
+[
+"ntm:nugget_zirconium",
+2,
+1.0
+],
+[
+"ntm:nugget_technetium",
+1,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+6,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrhea242",
+"label": "Reprocessamento de Haste de Combustível PWR HEA-242 Esgotado",
+"source": "PUREXRecipes.java:328",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__hea242"
+],
+"n": 1,
+"label": "Haste de Combustível PWR HEA-242 Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_lead",
+3,
+1.0
+],
+[
+"ntm:nugget_zirconium",
+2,
+1.0
+],
+[
+"ntm:nugget_technetium",
+1,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+6,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrhes326",
+"label": "Reprocessamento de Haste de Combustível PWR HES-326 Esgotado",
+"source": "PUREXRecipes.java:337",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__hes326"
+],
+"n": 1,
+"label": "Haste de Combustível PWR HES-326 Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_solinium",
+3,
+1.0
+],
+[
+"ntm:nugget_lead",
+2,
+1.0
+],
+[
+"ntm:nugget_euphemium",
+1,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+6,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrhes327",
+"label": "Reprocessamento de Haste de Combustível PWR HES-327 Esgotado",
+"source": "PUREXRecipes.java:346",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__hes327"
+],
+"n": 1,
+"label": "Haste de Combustível PWR HES-327 Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_australium",
+4,
+1.0
+],
+[
+"ntm:nugget_lead",
+1,
+1.0
+],
+[
+"ntm:nugget_euphemium",
+1,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+6,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrbfbam",
+"label": "Reprocessamento de Haste BFB de Combustível PWR de Amerício de Grau Combustível Esgotado",
+"source": "PUREXRecipes.java:355",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__bfb_am_mix"
+],
+"n": 1,
+"label": "Haste BFB de Combustível PWR de Amerício de Grau Combustível Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_am_mix",
+9,
+1.0
+],
+[
+"ntm:nugget_pu_mix",
+2,
+1.0
+],
+[
+"ntm:nugget_bismuth",
+6,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.pwrbfpu241",
+"label": "Reprocessamento de Haste BFB de PWR de Plutônio-241 Esgotado",
+"source": "PUREXRecipes.java:364",
+"duration": 100,
+"power": 2500,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__bfb_pu241"
+],
+"n": 1,
+"label": "Haste BFB de PWR de Plutônio-241 Esgotado"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_pu241",
+9,
+1.0
+],
+[
+"ntm:nugget_pu_mix",
+2,
+1.0
+],
+[
+"ntm:nugget_bismuth",
+6,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pwr"
+},
+{
+"name": "purex.thoriumsalt",
+"label": "Sal de Tório Líquido · 16000 mB",
+"source": "PUREXRecipes.java:374",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:nugget_th232"
+],
+"n": 2,
+"label": "Pepita de Tório-232"
+}
+],
+"fin": [
+[
+"thorium_salt_depleted",
+16000
+]
+],
+"out": [
+[
+"ntm:nugget_u233",
+1,
+0.5
+],
+[
+"ntm:nuclear_waste_tiny",
+1,
+0.25
+]
+],
+"fout": [
+[
+"thorium_salt",
+16000
+]
+],
+"pools": []
+},
+{
+"name": "purex.icf",
+"label": "Reprocessamento de Pastilha de Combustível ICF Esgotada",
+"source": "PUREXRecipes.java:500",
+"duration": 300,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:icf_pellet_depleted"
+],
+"n": 1,
+"label": "Pastilha de Combustível ICF Esgotada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:icf_pellet_empty",
+1,
+1.0
+],
+[
+"ntm:pellet_charged",
+1,
+1.0
+],
+[
+"ntm:powder_iron",
+1,
+1.0
+]
+],
+"fout": [
+[
+"helium4",
+1250
+]
+],
+"pools": []
+},
+{
+"name": "purex.schrabpwr",
+"label": "Extração de Schrabídio de Haste de Combustível PWR MEP Esgotado",
+"source": "PUREXRecipes.java:540",
+"duration": 200,
+"power": 50000,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__mep"
+],
+"n": 1,
+"label": "Haste de Combustível PWR MEP Esgotado"
+}
+],
+"fin": [
+[
+"solvent",
+4000
+],
+[
+"schrabidic",
+250
+]
+],
+"out": [
+[
+"ntm:powder_schrabidium",
+1,
+1.0
+],
+[
+"ntm:nugget_technetium",
+3,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.schrab"
+},
+{
+"name": "purex.schrabmen",
+"label": "Extração de Schrabídio de Haste de Combustível PWR MEN Esgotado",
+"source": "PUREXRecipes.java:547",
+"duration": 200,
+"power": 50000,
+"in": [
+{
+"ids": [
+"ntm:pwr_fuel_depleted__men"
+],
+"n": 1,
+"label": "Haste de Combustível PWR MEN Esgotado"
+}
+],
+"fin": [
+[
+"solvent",
+4000
+],
+[
+"schrabidic",
+250
+]
+],
+"out": [
+[
+"ntm:powder_schrabidium",
+1,
+1.0
+],
+[
+"ntm:nugget_technetium",
+3,
+1.0
+],
+[
+"ntm:nuclear_waste_tiny",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.schrab"
+}
+],
+"skipped": 37
+}

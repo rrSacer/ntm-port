@@ -1714,6 +1714,60 @@
 "pools": []
 },
 {
+"name": "ass.purex",
+"label": "PUREX",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:270",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:pipe__rubber"
+],
+"n": 8,
+"label": "Tubo de Borracha"
+},
+{
+"ids": [
+"ntm:plate_cast__lead"
+],
+"n": 4,
+"label": "Placa Fundida de Chumbo"
+},
+{
+"ids": [
+"ntm:motor_desh"
+],
+"n": 1,
+"label": "Motor de Desh"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 4,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_purex",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.centrifuge",
 "label": "Centrífuga",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:279",
@@ -13549,5 +13603,5 @@
 "pools": []
 }
 ],
-"skipped": 232
+"skipped": 231
 }
