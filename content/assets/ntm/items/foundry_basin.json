@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ntm:block/foundry_basin_0"
+    "model": "ntm:block/visual/foundry_basin"
   }
 }
