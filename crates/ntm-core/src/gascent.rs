@@ -406,7 +406,7 @@ impl Slotted for GasCent {
             self.slots[i] = self.slots[i].take().and_then(|s| {
                 let k = left.iter().position(|o| o.0 == s.id)?;
                 let (id, n) = left.remove(k);
-                Some(Stack { id, count: n, damage: s.damage })
+                Some(Stack { id, count: n, damage: s.damage, custom: s.custom })
             });
         }
         for i in slot::OUT {

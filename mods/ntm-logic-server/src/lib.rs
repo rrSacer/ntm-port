@@ -65,7 +65,7 @@ impl ServerHost for Host {
         Some(
             slots
                 .into_iter()
-                .map(|s| s.map(|s| ntm_core::server::container_bridge::Stack { id: s.id, count: s.count, damage: s.damage }))
+                .map(|s| s.map(|s| ntm_core::server::container_bridge::Stack { id: s.id, count: s.count, damage: s.damage, custom: None }))
                 .collect(),
         )
     }

@@ -25,6 +25,10 @@ pub struct Stack {
     pub count: u32,
     #[serde(default, skip_serializing_if = "is_zero")]
     pub damage: u32,
+    /// The item's `minecraft:custom_data` as SNBT (`{ntm_ore:{...}}`): items
+    /// with different data don't pile.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<String>,
 }
 
 fn is_zero(v: &u32) -> bool {
@@ -37,6 +41,7 @@ impl Stack {
             id: id.into(),
             count,
             damage: 0,
+            custom: None,
         }
     }
 }
@@ -523,7 +528,7 @@ impl Server {
                         if let Some(cell) = want.get_mut(i) {
                             // A part keeps the damage its slot gave it.
                             let damage = cell.as_ref().filter(|c| Some(&c.id) == s.as_ref()).map_or(0, |c| c.damage);
-                            *cell = s.clone().map(|id| Stack { id, count: 1, damage });
+                            *cell = s.clone().map(|id| Stack { id, count: 1, damage, custom: None });
                         }
                     }
                     bomb_data(b)

@@ -40,7 +40,7 @@ fn a_press_filled_before_the_slots_shows_its_items_in_them() {
     engine(&mut g, 4);
     g.run(2);
     let s = slots(&g);
-    assert_eq!(s[slot::STAMP], Some(Stack { id: "ntm:stamp_iron_plate".into(), count: 1, damage: 10 }));
+    assert_eq!(s[slot::STAMP], Some(Stack { id: "ntm:stamp_iron_plate".into(), count: 1, damage: 10, custom: None }));
     assert_eq!(count(&s, "minecraft:iron_ingot") + count(&s, "ntm:plate_iron"), 5);
     assert!(count(&s, "minecraft:coal") <= 3 && count(&s, "minecraft:coal") >= 2, "{s:?}");
 }
@@ -54,7 +54,7 @@ fn a_burner_press_works_from_its_slots_and_wears_the_stamp() {
     g.place(AT, "ntm:machine_press[facing=north,honey_level=0]");
     engine(&mut g, 4);
     g.run(2);
-    put(&mut g, slot::STAMP, Some(Stack { id: "ntm:stamp_iron_plate".into(), count: 1, damage: 10 }));
+    put(&mut g, slot::STAMP, Some(Stack { id: "ntm:stamp_iron_plate".into(), count: 1, damage: 10, custom: None }));
     put(&mut g, slot::INPUT, Some(Stack::new("minecraft:iron_ingot", 8)));
     put(&mut g, slot::FUEL, Some(Stack::new("minecraft:coal", 4)));
     let mut taken = 0;
@@ -88,7 +88,7 @@ fn a_stamps_wear_goes_out_and_back_with_it() {
     // The battery and upgrade slots hold what the player put there.
     put(&mut g, slot::BATTERY, Some(Stack::new("ntm:battery_spark", 1)));
     put(&mut g, slot::UPGRADE, Some(Stack::new("minecraft:dirt", 1)));
-    put(&mut g, slot::STAMP, Some(Stack { id: "ntm:stamp_iron_wire".into(), count: 1, damage: 62 }));
+    put(&mut g, slot::STAMP, Some(Stack { id: "ntm:stamp_iron_wire".into(), count: 1, damage: 62, custom: None }));
     put(&mut g, slot::INPUT, Some(Stack::new("ntm:ingot_copper", 5)));
     g.run(400);
     let s = slots(&g);
@@ -97,7 +97,7 @@ fn a_stamps_wear_goes_out_and_back_with_it() {
     assert_eq!(count(&s, "ntm:ingot_copper"), 3);
     assert_eq!((s[slot::BATTERY].clone(), s[slot::UPGRADE].clone()), (Some(Stack::new("ntm:battery_spark", 1)), Some(Stack::new("minecraft:dirt", 1))));
     // A stamp worn 30 back in: it presses 34 more.
-    put(&mut g, slot::STAMP, Some(Stack { id: "ntm:stamp_iron_wire".into(), count: 1, damage: 30 }));
+    put(&mut g, slot::STAMP, Some(Stack { id: "ntm:stamp_iron_wire".into(), count: 1, damage: 30, custom: None }));
     g.run(100);
     let s = slots(&g);
     assert!(s[slot::STAMP].as_ref().is_some_and(|x| x.damage > 30), "{s:?}");
