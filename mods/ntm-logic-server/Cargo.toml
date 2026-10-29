@@ -16,4 +16,4 @@ horizon-mod-sdk.workspace = true
 # Capability `machines` of the Horizon patch ntm-visual (docs/visual-fiel.md):
 # machines whose items are the engine's slots. A Horizon without the patch
 # refuses a mod that imports it, so it is off by default.
-machines = ["ntm-core/machines"]
+machines = []

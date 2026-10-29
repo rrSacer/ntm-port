@@ -16,10 +16,9 @@ find $B -mindepth 1 -maxdepth 1 ! -name target -exec rm -rf {} +
 # targets and outputs.
 rsync -a --exclude target --exclude dist --exclude spikes --exclude '*-evidence' --exclude .git $P/ $B/
 sed -i "s#/home/sacer/Games/horizon/crates/horizon-mod-sdk#$H/crates/horizon-mod-sdk#" $B/Cargo.toml
-for c in $B/mods/ntm-logic-server/Cargo.toml $B/mods/ntm-logic-client/Cargo.toml; do
-  sed -i 's/^machines = \["ntm-core\/machines"\]$/default = ["machines"]\nmachines = ["ntm-core\/machines"]/' $c
-  grep -q '^default = \["machines"\]' $c
-done
+c=$B/mods/ntm-logic-server/Cargo.toml
+sed -i 's/^machines = \[\]$/default = ["machines"]\nmachines = []/' $c
+grep -q '^default = \["machines"\]' $c
 m=$B/mods/ntm-logic-server/horizon-mod.toml
 sed -i 's/^capabilities = \["storage", "world", "players"\]$/capabilities = ["storage", "world", "players", "machines"]\nexperimental = ["machines"]/' $m
 grep -q machines $m

@@ -42,7 +42,13 @@ pub enum C2S {
         pos: [f64; 3],
     },
     /// The player opened the machine at `pos` (use button on it).
-    Open { dim: String, pos: Pos },
+    /// `by_use`: the use button asked, not the key or `/ntm open`.
+    Open {
+        dim: String,
+        pos: Pos,
+        #[serde(default)]
+        by_use: bool,
+    },
     /// A button of the open screen.
     Action {
         dim: String,

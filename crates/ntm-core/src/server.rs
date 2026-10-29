@@ -1335,8 +1335,11 @@ impl Server {
                     self.client_at = Some((dim, pos));
                 }
             }
-            C2S::Open { dim, pos } => {
+            C2S::Open { dim, pos, by_use } => {
                 let key = (dim.clone(), pos);
+                if by_use && self.slots_open(&key) {
+                    return;
+                }
                 if self.ready().is_none() {
                     self.mail.send_latest(
                         S2C::Toast {

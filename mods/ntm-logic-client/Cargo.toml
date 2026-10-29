@@ -11,7 +11,3 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 ntm-core.workspace = true
 horizon-mod-sdk.workspace = true
-
-[features]
-# As the server mod's: the engine's screen of machines with slots.
-machines = ["ntm-core/machines"]

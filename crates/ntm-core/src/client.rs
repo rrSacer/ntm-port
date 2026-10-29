@@ -185,17 +185,8 @@ impl Client {
         }
         self.run_queued(host);
 
-        // The use button on a machine with engine slots opens the engine's
-        // screen (`server::container_bridge`); the key still opens ours.
-        let slotted = cfg!(feature = "machines")
-            && input
-                .target
-                .as_ref()
-                .is_some_and(|(_, id)| crate::server::container_bridge::layout(id).is_some());
-        let pressed = (((input.use_down && !self.use_was_down)
-            || input.use_clicks > self.use_clicks)
-            && !slotted)
-            || input.open_key;
+        let by_use = (input.use_down && !self.use_was_down) || input.use_clicks > self.use_clicks;
+        let pressed = by_use || input.open_key;
         self.use_was_down = input.use_down;
         self.use_clicks = input.use_clicks;
         // The use button reaches us only while no screen is open, so a press
@@ -206,9 +197,12 @@ impl Client {
             && registry::machine_ids().any(|m| m == id)
         {
             let key = (input.dim.clone(), *pos);
+            // The server keeps ours shut on a use of a machine whose engine
+            // screen opens (`server::container_bridge`); the key opens ours.
             self.send(C2S::Open {
                 dim: key.0.clone(),
                 pos: key.1,
+                by_use: by_use && !input.open_key,
             });
             self.opening = Some(key);
         }
@@ -341,6 +335,7 @@ impl Client {
         self.send(C2S::Open {
             dim: dim.into(),
             pos,
+            by_use: false,
         });
         self.flush(host);
     }

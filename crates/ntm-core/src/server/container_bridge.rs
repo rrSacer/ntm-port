@@ -355,6 +355,12 @@ impl Server {
         }
     }
 
+    /// Whether the engine opens its own screen of the machine at `key`
+    /// (the bridge has seen its slots): the use button then opens no other.
+    pub(super) fn slots_open(&mut self, key: &Key) -> bool {
+        self.ready().is_some_and(|r| r.bridge.last.contains_key(key))
+    }
+
     /// The machine at `key` went away: true when its items were the
     /// engine's slots, which the engine drops itself.
     pub(super) fn slots_gone(&mut self, key: &Key) -> bool {
