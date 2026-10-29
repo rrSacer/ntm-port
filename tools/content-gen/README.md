@@ -91,3 +91,7 @@ python3 tools/content-gen/verify-worldgen.py --diagnostic
 ```
 
 O primeiro comando cria dois mundos dedicados com seed 1768123, pregera a mesma região e compara todos os IDs/coordenadas dos minérios nos 81 chunks centrais, com halo de quatro chunks. O teste estrito registra e retorna falha se houver diferenças; a limitação M1 de duas sobreposições foi aceita e está documentada em `docs/ore-distribution.md`. O segundo constrói quatro pacotes diagnósticos separados com cubos de seis substratos conhecidos e aplica os mesmos onze configs de minério, isolando os controles positivos em lotes para evitar competição entre materiais e alturas acima do heightmap de terreno. Isso evita interpretar uma comparação dos estados finais com vanilla como prova de substituição: estruturas e decoração vanilla podem ter ordens diferentes. As contagens e saves ficam em `content-gen-evidence/worldgen/`, com caminhos para homes temporários preservados.
+
+## Alto-forno
+
+O pipeline também exporta `content/machine-recipes/blast_furnace.json`: receitas em ordem, alternativas OreDict e a tabela restrita de combustível. Veja [contrato, lacunas e reprodução](../../docs/content-blast-furnace.md). O bloco cúbico usa `brick_fire`; modelo/tela/multibloco pertencem ao visual-gen.
