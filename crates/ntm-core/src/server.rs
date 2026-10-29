@@ -33,7 +33,7 @@ pub trait ServerHost: Kv {
     fn machine_slots(&mut self, _dim: &str, _p: Pos) -> Option<container_bridge::Slots> {
         None
     }
-    fn set_machine_slot(&mut self, _dim: &str, _p: Pos, _slot: u32, _stack: Option<(String, u32)>) -> bool {
+    fn set_machine_slot(&mut self, _dim: &str, _p: Pos, _slot: u32, _stack: Option<container_bridge::Stack>) -> bool {
         false
     }
     fn set_machine_data(&mut self, _dim: &str, _p: Pos, _values: &[i32]) -> bool {

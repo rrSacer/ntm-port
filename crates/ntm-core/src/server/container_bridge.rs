@@ -17,8 +17,51 @@ use crate::{
 };
 use std::collections::BTreeMap;
 
-/// Slot stacks as the engine reports them.
-pub type Slots = Vec<Option<(String, u32)>>;
+/// A slot's stack as the engine reports it: the item, how many and its
+/// `minecraft:damage` (a blade's wear).
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub struct Stack {
+    pub id: String,
+    pub count: u32,
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub damage: u32,
+}
+
+fn is_zero(v: &u32) -> bool {
+    *v == 0
+}
+
+impl Stack {
+    pub fn new(id: &str, count: u32) -> Self {
+        Self {
+            id: id.into(),
+            count,
+            damage: 0,
+        }
+    }
+}
+
+/// The engine's slots of a machine.
+pub type Slots = Vec<Option<Stack>>;
+
+/// A machine that keeps its items as the engine's slots (new machines: no
+/// transactions, nothing to reconcile). Before the machines run its slots
+/// become the engine's; after, the slots it changed are written back.
+pub trait Slotted {
+    /// Its slots, in the order of its `horizon_machine/<block>.json`.
+    fn slots_mut(&mut self) -> &mut Slots;
+    /// The values its screen shows (`horizon_screen/<block>.json`).
+    fn screen_data(&self) -> Vec<i32>;
+    /// A button of its screen.
+    fn button(&mut self, _id: u32) {}
+}
+
+/// The machines that implement [`Slotted`] (`Layout::Native`).
+fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
+    // The shredder joins here (Data::Shredder(s) => Some(s)).
+    let _ = data;
+    None
+}
 
 /// The blocks whose machines use the engine's slots, and their layout:
 /// (block, first input slot, inputs, output slot).
@@ -42,6 +85,8 @@ pub enum Layout {
     },
     /// A bomb: one slot per part, in the bomb type's order.
     Bomb,
+    /// A machine that keeps its items as slots ([`Slotted`]).
+    Native,
 }
 
 /// Multiblocks (tools/visual-gen/visual.json): the volume around the core
@@ -83,10 +128,10 @@ pub struct Bridge {
     data: BTreeMap<Key, Vec<i32>>,
 }
 
-fn totals<'a>(slots: impl Iterator<Item = &'a Option<(String, u32)>>) -> BTreeMap<String, i64> {
+fn totals<'a>(slots: impl Iterator<Item = &'a Option<Stack>>) -> BTreeMap<String, i64> {
     let mut out = BTreeMap::new();
-    for (id, n) in slots.flatten() {
-        *out.entry(id.clone()).or_insert(0) += i64::from(*n);
+    for s in slots.flatten() {
+        *out.entry(s.id.clone()).or_insert(0) += i64::from(s.count);
     }
     out
 }
@@ -116,13 +161,16 @@ fn apply_delta(list: &mut Vec<(String, u32)>, last: &BTreeMap<String, i64>, now:
 fn lay_out(slots: &mut Slots, range: std::ops::Range<usize>, want: &[(String, u32)], max: u32) {
     let mut left: Vec<(String, u32)> = want.to_vec();
     for s in range.clone() {
-        if let Some((id, _)) = &slots[s] {
-            let have = left.iter_mut().find(|(i, _)| i == id).map_or(0, |e| {
+        if let Some(stack) = &slots[s] {
+            let have = left.iter_mut().find(|(i, _)| *i == stack.id).map_or(0, |e| {
                 let t = e.1.min(max);
                 e.1 -= t;
                 t
             });
-            slots[s] = (have > 0).then(|| (id.clone(), have));
+            slots[s] = (have > 0).then(|| Stack {
+                count: have,
+                ..stack.clone()
+            });
         }
     }
     for s in range {
@@ -134,7 +182,7 @@ fn lay_out(slots: &mut Slots, range: std::ops::Range<usize>, want: &[(String, u3
         };
         let t = e.1.min(max);
         e.1 -= t;
-        slots[s] = Some((e.0.clone(), t));
+        slots[s] = Some(Stack::new(&e.0, t));
     }
 }
 
@@ -208,9 +256,9 @@ impl Server {
                             .collect();
                         // Outputs of other items than the slot's stay.
                         let slot = now.get(*output).cloned().flatten();
-                        c.out.retain(|(i, _)| slot.as_ref().is_some_and(|(s, _)| s != i));
+                        c.out.retain(|(i, _)| slot.as_ref().is_some_and(|s| s.id != *i));
                         if let Some(s) = slot {
-                            c.out.push(s);
+                            c.out.push((s.id, s.count));
                         }
                     } else {
                         apply_delta(&mut c.items, &totals(last[inputs.clone()].iter()), &totals(now[inputs.clone()].iter()));
@@ -223,9 +271,13 @@ impl Server {
                         // The slots are the truth; on a new session with empty
                         // slots, the parts it had from transactions go to them.
                         for (i, s) in b.slots.iter_mut().enumerate() {
-                            *s = now.get(i).cloned().flatten().map(|(id, _)| id);
+                            *s = now.get(i).cloned().flatten().map(|s| s.id);
                         }
                     }
+                }
+                (data, Layout::Native) => {
+                    let Some(n) = slotted(data) else { continue };
+                    *n.slots_mut() = now.clone();
                 }
                 _ => continue,
             }
@@ -243,7 +295,7 @@ impl Server {
         let Some(r) = self.ready() else { return };
         let keys: Vec<Key> = r.bridge.last.keys().cloned().collect();
         for key in keys {
-            let Some(m) = r.world.machines.get(&key) else {
+            let Some(m) = r.world.machines.get_mut(&key) else {
                 r.bridge.last.remove(&key);
                 r.bridge.data.remove(&key);
                 continue;
@@ -251,28 +303,40 @@ impl Server {
             let Some(layout) = layout(&m.block) else { continue };
             let Some(last) = r.bridge.last.get(&key).cloned() else { continue };
             let mut want = last.clone();
-            let data = match (&m.data, layout) {
+            let data = match (&mut m.data, layout) {
                 (Data::Crafter(c), Layout::Crafter { inputs, output }) => {
                     lay_out(&mut want, inputs.clone(), &c.items, crate::crafter::STACK);
                     // The output slot shows the first of the outputs; others
                     // stay in the machine (its old screen gives them).
-                    let keep = want[*output].as_ref().map(|(i, _)| i.clone());
+                    let keep = want[*output].as_ref().map(|s| s.id.clone());
                     let shown = c
                         .out
                         .iter()
                         .find(|(i, _)| Some(i) == keep.as_ref())
                         .or_else(|| c.out.first())
                         .cloned();
-                    want[*output] = shown.map(|(i, n)| (i, n.min(crate::crafter::STACK)));
+                    let keep_damage = want[*output].as_ref().map_or(0, |s| s.damage);
+                    want[*output] = shown.map(|(i, n)| Stack {
+                        damage: if Some(&i) == keep.as_ref() { keep_damage } else { 0 },
+                        id: i,
+                        count: n.min(crate::crafter::STACK),
+                    });
                     crafter_data(c)
                 }
                 (Data::Bomb(b), Layout::Bomb) => {
                     for (i, s) in b.slots.iter().enumerate() {
                         if let Some(cell) = want.get_mut(i) {
-                            *cell = s.clone().map(|id| (id, 1));
+                            // A part keeps the damage its slot gave it.
+                            let damage = cell.as_ref().filter(|c| Some(&c.id) == s.as_ref()).map_or(0, |c| c.damage);
+                            *cell = s.clone().map(|id| Stack { id, count: 1, damage });
                         }
                     }
                     vec![b.blast().is_some() as i32]
+                }
+                (data, Layout::Native) => {
+                    let Some(n) = slotted(data) else { continue };
+                    want = n.slots_mut().clone();
+                    n.screen_data()
                 }
                 _ => continue,
             };
@@ -299,12 +363,18 @@ impl Server {
 
     /// A screen button: 0 opens the recipe list (the old screen's).
     fn machine_button(&mut self, key: &Key, button: u32) {
-        if button != 0 || !self.within_reach(key) {
+        if !self.within_reach(key) {
             return;
         }
         let Some(r) = self.ready() else { return };
         let Some(m) = r.world.machines.get_mut(key) else { return };
+        if let Some(n) = slotted(&mut m.data) {
+            n.button(button);
+            r.dirty = true;
+            return;
+        }
         if let Data::Crafter(c) = &mut m.data
+            && button == 0
             && c.station != Station::Centrifuge
         {
             c.screen = Screen::Pick;
@@ -320,7 +390,7 @@ impl Server {
 
 /// The slots a bomb's parts take (one each), for tests.
 pub fn bomb_slots(parts: &[Option<&str>]) -> Slots {
-    parts.iter().map(|p| p.map(|id| (id.to_owned(), 1))).collect()
+    parts.iter().map(|p| p.map(|id| Stack::new(id, 1))).collect()
 }
 
 #[cfg(test)]
@@ -329,19 +399,23 @@ mod tests {
 
     #[test]
     fn a_layout_keeps_slots_and_fills_holes() {
-        let mut slots: Slots = vec![None, Some(("a".into(), 5)), None];
+        let a = |n| Some(Stack::new("a", n));
+        let mut slots: Slots = vec![None, Some(Stack { damage: 7, ..Stack::new("a", 5) }), None];
         lay_out(&mut slots, 0..3, &[("a".into(), 3), ("b".into(), 2)], 64);
-        assert_eq!(slots, vec![Some(("b".into(), 2)), Some(("a".into(), 3)), None]);
-        let mut slots: Slots = vec![Some(("a".into(), 5)), None];
+        assert_eq!(
+            slots,
+            vec![Some(Stack::new("b", 2)), Some(Stack { damage: 7, ..Stack::new("a", 3) }), None]
+        );
+        let mut slots: Slots = vec![a(5), None];
         lay_out(&mut slots, 0..2, &[("a".into(), 100)], 64);
-        assert_eq!(slots, vec![Some(("a".into(), 64)), Some(("a".into(), 36))]);
+        assert_eq!(slots, vec![a(64), a(36)]);
     }
 
     #[test]
     fn a_delta_moves_only_what_players_moved() {
         let mut list = vec![("a".to_string(), 10)];
-        let last = totals([Some(("a".to_string(), 4))].iter());
-        let now = totals([Some(("a".to_string(), 1)), Some(("b".to_string(), 2))].iter());
+        let last = totals([Some(Stack::new("a", 4))].iter());
+        let now = totals([Some(Stack::new("a", 1)), Some(Stack::new("b", 2))].iter());
         apply_delta(&mut list, &last, &now);
         assert_eq!(list, vec![("a".to_string(), 7), ("b".to_string(), 2)]);
     }

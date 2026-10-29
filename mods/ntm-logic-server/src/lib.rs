@@ -62,11 +62,22 @@ impl ServerHost for Host {
     #[cfg(feature = "machines")]
     fn machine_slots(&mut self, dim: &str, p: Pos) -> Option<ntm_core::server::container_bridge::Slots> {
         let slots = horizon_mod_sdk::server::machines::get_slots(dim, p[0], p[1], p[2])?;
-        Some(slots.into_iter().map(|s| s.map(|s| (s.id, s.count))).collect())
+        Some(
+            slots
+                .into_iter()
+                .map(|s| s.map(|s| ntm_core::server::container_bridge::Stack { id: s.id, count: s.count, damage: s.damage }))
+                .collect(),
+        )
     }
     #[cfg(feature = "machines")]
-    fn set_machine_slot(&mut self, dim: &str, p: Pos, slot: u32, stack: Option<(String, u32)>) -> bool {
-        let stack = stack.map(|(id, count)| horizon_mod_sdk::server::ItemStack { id, count });
+    fn set_machine_slot(
+        &mut self,
+        dim: &str,
+        p: Pos,
+        slot: u32,
+        stack: Option<ntm_core::server::container_bridge::Stack>,
+    ) -> bool {
+        let stack = stack.map(|s| horizon_mod_sdk::server::ItemStack { id: s.id, count: s.count, damage: s.damage });
         horizon_mod_sdk::server::machines::set_slot(dim, p[0], p[1], p[2], slot, stack.as_ref())
     }
     #[cfg(feature = "machines")]
