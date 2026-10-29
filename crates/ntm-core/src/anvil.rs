@@ -284,6 +284,16 @@ impl Anvil {
             .collect()
     }
 
+    /// Whether every output of a craft (of this roll) fits.
+    fn fits(&self, outs: &[(String, u32)]) -> bool {
+        let mut sim = self.slots.clone();
+        outs.iter().all(|(id, n)| {
+            let ok = Self::room(&sim, OUT, id, *n);
+            Self::put(&mut sim, OUT, id, *n);
+            ok
+        })
+    }
+
     /// Construction on the button: up to `times` crafts of the picked
     /// recipe while the grid has the inputs and the outputs have room
     /// (`AnvilCraftPacket`). Returns the crafts made.
@@ -295,14 +305,7 @@ impl Anvil {
         let mut made = 0;
         while made < times && self.has(c) {
             let outs = self.rolled(c);
-            // Every output (of this roll) has to fit.
-            let mut sim = self.slots.clone();
-            let fits = outs.iter().all(|(id, n)| {
-                let ok = Self::room(&sim, OUT, id, *n);
-                Self::put(&mut sim, OUT, id, *n);
-                ok
-            });
-            if !fits {
+            if !self.fits(&outs) {
                 break;
             }
             self.take_inputs(c);
@@ -324,11 +327,18 @@ impl Anvil {
         }
     }
 
-    /// How many times the picked recipe can be made now (for the screen).
+    /// How many times the grid makes the picked recipe, up to a "craft
+    /// max" (for the screen, every tick: each input counted on its own and
+    /// the outputs' room only for the next craft, so it doesn't simulate
+    /// them all; 0 when not even one is possible).
     pub fn times(&self, t: &Tables) -> u32 {
         let Some(c) = self.recipe.and_then(|i| t.construction.get(i)) else { return 0 };
-        let mut a = self.clone();
-        a.craft(t, Self::max_times(c))
+        if !c.tier_valid(self.tier) || !self.has(c) || !self.fits(&self.rolled(c)) {
+            return 0;
+        }
+        let grid = &self.slots[GRID];
+        let by_input = c.inputs.iter().map(|inp| grid.iter().flatten().filter(|s| inp.ids.contains(&s.id)).map(|s| s.count).sum::<u32>() / inp.count.max(1));
+        by_input.min().unwrap_or(1).clamp(1, Self::max_times(c))
     }
 
     pub fn screen_data(&self, t: &Tables) -> Vec<i32> {
@@ -536,6 +546,7 @@ mod tests {
         a.recipe = Some(0);
         a.slots[3] = st("ntm:plate_steel", 4);
         a.slots[7] = st("ntm:plate_steel", 4);
+        assert_eq!(a.times(&t), 2);
         assert_eq!(a.craft(&t, 1), 1);
         assert_eq!(a.slots[OUT.start], st("ntm:pipe_steel", 1));
         assert_eq!(a.slots[3].as_ref().map(|s| s.count).unwrap_or(0) + a.slots[7].as_ref().map(|s| s.count).unwrap_or(0), 5);
