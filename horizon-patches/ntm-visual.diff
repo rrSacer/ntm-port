@@ -53,7 +53,7 @@ index 75cf5ee85..1262f15cd 100644
  miniz_oxide = "0.8"
  naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
 diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
-index b415748c4..4ea908910 100644
+index b415748c4..3484965d4 100644
 --- a/crates/horizon-client-render/src/block_entity_render.rs
 +++ b/crates/horizon-client-render/src/block_entity_render.rs
 @@ -317,6 +317,13 @@ enum Kind {
@@ -70,7 +70,7 @@ index b415748c4..4ea908910 100644
      /// Sign text (`StandingSignRenderer` / `HangingSignRenderer`); the boards are block models.
      Sign {
          hanging: bool,
-@@ -784,7 +791,12 @@ pub struct BlockEntityRenderer {
+@@ -784,7 +791,21 @@ pub struct BlockEntityRenderer {
      /// `Block.shouldRenderFace` for End gateway faces (its occlusion pair cache needs a lock).
      visibility: Option<Mutex<FaceVisibility>>,
      sign_texts: Mutex<SignTexts>,
@@ -78,12 +78,21 @@ index b415748c4..4ea908910 100644
 +    /// turn and dimension lighting (relative to the block; light is set per frame).
 +    mod_models: Vec<std::sync::Arc<crate::mod_models::Model>>,
 +    mod_still: Mutex<ModStill>,
++    /// Models go to the GPU as bone instances (`gfx::mod_models`) rather
++    /// than vertices: off while a shader pack draws the entities.
++    model_instancing: std::sync::atomic::AtomicBool,
++    model_draws: Mutex<
++        Vec<(
++            crate::gfx::mod_models::Key,
++            crate::gfx::mod_models::Instance,
++        )>,
++    >,
  }
 +type ModStill = HashMap<(usize, u32, bool), std::sync::Arc<Vec<Vertex>>>;
  /// Laid-out sign text by position. `AbstractSignRenderer` lays the text out
  /// again each frame, glyph by glyph; its vertices only change with what is
  /// in the key, so they are kept relative to the block and moved to the camera.
-@@ -857,6 +869,7 @@ impl BlockEntityRenderer {
+@@ -857,6 +878,7 @@ impl BlockEntityRenderer {
              .collect();
          let mut renderer = Self::new(models, registry);
          renderer.visibility = Some(Mutex::new(crate::models::load_visibility(root, registry)?));
@@ -91,16 +100,18 @@ index b415748c4..4ea908910 100644
          // Sherd items: provides_pottery_pattern -> decorated_pot_pattern asset id.
          if let Ok(bytes) = std::fs::read(root.join("items.json")) {
              let items: Value = serde_json::from_slice(&bytes)?;
-@@ -937,6 +950,8 @@ impl BlockEntityRenderer {
+@@ -937,6 +959,10 @@ impl BlockEntityRenderer {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
 +            mod_models: Vec::new(),
 +            mod_still: Mutex::default(),
++            model_instancing: std::sync::atomic::AtomicBool::new(false),
++            model_draws: Mutex::default(),
          }
      }
      fn kind(&self, state: u32) -> &Kind {
-@@ -971,6 +986,10 @@ impl BlockEntityRenderer {
+@@ -971,6 +997,10 @@ impl BlockEntityRenderer {
              let origin = (DVec3::new(f64::from(pos[0]), f64::from(pos[1]), f64::from(pos[2]))
                  - scene.camera)
                  .as_vec3();
@@ -111,7 +122,7 @@ index b415748c4..4ea908910 100644
              let packed = scene.world.light(pos[0], pos[1], pos[2]);
              if matches!(kind, Kind::Sign { .. }) && scene.texts.is_none() {
                  self.sign_text(scene, *pos, *state, origin, packed, out);
-@@ -1089,6 +1108,136 @@ impl BlockEntityRenderer {
+@@ -1089,6 +1119,202 @@ impl BlockEntityRenderer {
      pub fn renders(&self, state: u32) -> bool {
          !matches!(self.kind(state), Kind::None)
      }
@@ -153,6 +164,49 @@ index b415748c4..4ea908910 100644
 +            "Horizon: {} block models ({triangles} triangles)",
 +            self.mod_models.len()
 +        );
++    }
++    /// Whether the next frames send models as bone instances (`gfx::mod_models`).
++    pub fn set_model_instancing(&self, on: bool) {
++        self.model_instancing
++            .store(on, std::sync::atomic::Ordering::Relaxed);
++    }
++    /// The bone instances `render` recorded since the last call.
++    pub fn take_model_draws(
++        &self,
++    ) -> Vec<(
++        crate::gfx::mod_models::Key,
++        crate::gfx::mod_models::Instance,
++    )> {
++        self.model_draws
++            .lock()
++            .map(|mut d| std::mem::take(&mut *d))
++            .unwrap_or_default()
++    }
++    /// A bone's retained mesh for `gfx::mod_models`, on the current atlas.
++    pub fn mod_bone_mesh(
++        &self,
++        sprites: &HashMap<String, Rect>,
++        key: crate::gfx::mod_models::Key,
++    ) -> Vec<Vertex> {
++        let Some(m) = self.mod_models.get(key.model as usize) else {
++            return Vec::new();
++        };
++        let Some(sprite) = sprites.get(&m.sprite).copied() else {
++            return Vec::new();
++        };
++        m.bone_mesh(key.bone as usize, sprite)
++    }
++    /// What the retained meshes depend on: the models' places on the atlas.
++    pub fn mod_models_epoch(&self, sprites: &HashMap<String, Rect>) -> u64 {
++        let mut h = self.mod_models.len() as u64;
++        for m in &self.mod_models {
++            if let Some(r) = sprites.get(&m.sprite) {
++                for v in [r.u0, r.v0, r.u1, r.v1] {
++                    h = h.rotate_left(13) ^ u64::from(v.to_bits());
++                }
++            }
++        }
++        h
 +    }
 +    /// How far from its block's centre a content mod's model reaches, for
 +    /// culling (none for vanilla's renderers).
@@ -201,6 +255,29 @@ index b415748c4..4ea908910 100644
 +        }
 +        let light = vertex_light(sky << 4 | block);
 +        let base = m.base(yaw);
++        if self
++            .model_instancing
++            .load(std::sync::atomic::Ordering::Relaxed)
++        {
++            // A matrix per bone: the GPU keeps the vertices.
++            let t = (scene.game_time as f32 + scene.partial) / 20.0;
++            let pose = m.pose(play, t);
++            let place = Mat4::from_translation(origin) * base;
++            if let Ok(mut draws) = self.model_draws.lock() {
++                for (i, bone) in m.bones.iter().enumerate() {
++                    if bone.hidden || bone.triangles.is_empty() {
++                        continue;
++                    }
++                    let key = crate::gfx::mod_models::Key {
++                        model: model as u32,
++                        bone: i as u32,
++                    };
++                    let matrix = (place * pose[i]).to_cols_array();
++                    draws.push((key, crate::gfx::mod_models::Instance { matrix, light }));
++                }
++            }
++            return;
++        }
 +        let paint = Paint {
 +            sprite,
 +            tint: 0xFFFFFF,
@@ -248,7 +325,7 @@ index b415748c4..4ea908910 100644
      /// ChestRenderer and BannerRenderer submit their animated models for crumbling.
      pub fn render_breaking(
          &self,
-@@ -1239,7 +1388,8 @@ impl BlockEntityRenderer {
+@@ -1239,7 +1465,8 @@ impl BlockEntityRenderer {
          };
          let none = |_: &str, _: &mut [f32; 9]| {};
          match kind {
@@ -258,12 +335,14 @@ index b415748c4..4ea908910 100644
              Kind::Sign {
                  hanging,
                  wall,
-@@ -2278,6 +2428,8 @@ mod tests {
+@@ -2278,6 +2505,10 @@ mod tests {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
 +            mod_models: Vec::new(),
 +            mod_still: Mutex::default(),
++            model_instancing: std::sync::atomic::AtomicBool::new(false),
++            model_draws: Mutex::default(),
          };
          let world = World::new(BlockStateId(0), 1);
          let sprites = HashMap::new();
@@ -351,17 +430,344 @@ index 4908ed1ee..d6d0a1198 100644
              Self::CreakingHeart(_)
              | Self::Spawner(_)
              | Self::TrialSpawner(_)
+diff --git a/crates/horizon-client-render/src/entity.wgsl b/crates/horizon-client-render/src/entity.wgsl
+index b674b0941..a1098fc37 100644
+--- a/crates/horizon-client-render/src/entity.wgsl
++++ b/crates/horizon-client-render/src/entity.wgsl
+@@ -137,6 +137,18 @@ fn entity_vertex(position: vec3<f32>, uv: vec2<f32>,
+     @location(7) offset: vec3<f32>) -> Out {
+     return entity_vertex(offset + position, uv, overlay, color, light, normal);
+ }
++// Content mods' block models (gfx::mod_models): a bone's retained mesh in its
++// own frame, placed by the instance's matrix (attributes 7 to 10) and lit by
++// its light (11); the normal turns with it.
++@vertex fn vs_model(@location(0) position: vec3<f32>, @location(1) uv: vec2<f32>,
++    @location(2) overlay: u32, @location(3) color: vec4<f32>, @location(4) light: vec4<u32>, @location(5) normal: vec4<f32>,
++    @location(7) m0: vec4<f32>, @location(8) m1: vec4<f32>, @location(9) m2: vec4<f32>, @location(10) m3: vec4<f32>,
++    @location(11) instance_light: vec4<u32>) -> Out {
++    let m = mat4x4<f32>(m0, m1, m2, m3);
++    let p = (m * vec4(position, 1.0)).xyz;
++    let n = vec4(normalize((m * vec4(normal.xyz, 0.0)).xyz), normal.w);
++    return entity_vertex(p, uv, overlay, color, instance_light, n);
++}
+ struct CloudInfo {
+     offset: vec4<f32>,
+     colors: array<vec4<f32>, 4>,
+diff --git a/crates/horizon-client-render/src/gfx.rs b/crates/horizon-client-render/src/gfx.rs
+index 7f14c77a6..e7a57beeb 100644
+--- a/crates/horizon-client-render/src/gfx.rs
++++ b/crates/horizon-client-render/src/gfx.rs
+@@ -74,6 +74,7 @@ mod flat;
+ mod hdr;
+ pub mod lightning;
+ mod lod;
++pub mod mod_models;
+ mod native_material;
+ mod native_pack;
+ mod native_post;
+@@ -288,6 +289,8 @@ pub struct Frame<'a> {
+     pub clouds: Option<crate::clouds::Input<'a>>,
+     /// Retained lightning bolts, drawn before the other additive entities.
+     pub lightning: lightning::Input<'a>,
++    /// Content mods' block models from retained bone meshes, after the entities.
++    pub mod_models: mod_models::Input<'a>,
+     /// Additive translucent geometry after lightning (dragon rays).
+     pub additive: &'a [Vertex],
+     /// Name tags over everything, without depth (`TEXT_SEE_THROUGH`).
+@@ -424,6 +427,8 @@ pub struct Renderer {
+     energy_swirl_pipeline: wgpu::RenderPipeline,
+     lightning_pipeline: wgpu::RenderPipeline,
+     lightning: lightning::Renderer,
++    model_pipeline: wgpu::RenderPipeline,
++    mod_models: mod_models::Renderer,
+     see_through_pipeline: wgpu::RenderPipeline,
+     celestial_pipeline: wgpu::RenderPipeline,
+     celestial_buffer: wgpu::Buffer,
+@@ -2025,6 +2030,51 @@ impl Renderer {
+             alpha_blend,
+             false,
+         );
++        // The entities' pipeline over retained bone meshes (gfx::mod_models):
++        // attributes 7 to 10 are the instance's matrix, 11 its light.
++        let model_attributes = wgpu::vertex_attr_array![7=>Float32x4,8=>Float32x4,9=>Float32x4,10=>Float32x4,11=>Uint8x4];
++        let model_vertex = [
++            entity_vertex[0].clone(),
++            Some(wgpu::VertexBufferLayout {
++                array_stride: std::mem::size_of::<mod_models::Instance>() as u64,
++                step_mode: wgpu::VertexStepMode::Instance,
++                attributes: &model_attributes,
++            }),
++        ];
++        let model_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
++            label: Some("Mod models"),
++            layout: Some(&entity_layout),
++            vertex: wgpu::VertexState {
++                module: &entity_shader,
++                entry_point: Some("vs_model"),
++                compilation_options: Default::default(),
++                buffers: &model_vertex,
++            },
++            primitive: wgpu::PrimitiveState {
++                cull_mode: None,
++                ..Default::default()
++            },
++            depth_stencil: Some(wgpu::DepthStencilState {
++                format: wgpu::TextureFormat::Depth32Float,
++                depth_write_enabled: Some(true),
++                depth_compare: Some(wgpu::CompareFunction::GreaterEqual),
++                stencil: Default::default(),
++                bias: Default::default(),
++            }),
++            multisample: Default::default(),
++            fragment: Some(wgpu::FragmentState {
++                module: &entity_shader,
++                entry_point: Some("fs_entity"),
++                compilation_options: Default::default(),
++                targets: &[Some(wgpu::ColorTargetState {
++                    format: config.format.remove_srgb_suffix(),
++                    blend: Some(alpha_blend),
++                    write_mask: wgpu::ColorWrites::ALL,
++                })],
++            }),
++            multiview_mask: None,
++            cache: None,
++        });
+         // RenderPipelines.ENERGY_SWIRL: BlendFunction.ADDITIVE (one, one), no culling; no depth
+         // writes either: vanilla sorts the quads far to near, so every face passes the test.
+         let one_one = wgpu::BlendComponent {
+@@ -2572,6 +2622,8 @@ impl Renderer {
+             energy_swirl_pipeline,
+             lightning_pipeline,
+             lightning: lightning::Renderer::new(),
++            model_pipeline,
++            mod_models: mod_models::Renderer::new(),
+             see_through_pipeline,
+             celestial_pipeline,
+             celestial_buffer,
+@@ -4265,6 +4317,12 @@ impl Renderer {
+             &frame.lightning,
+             camera,
+         );
++        self.mod_models.prepare(
++            &self.device,
++            &mut self.uploads,
++            &mut encoder,
++            &frame.mod_models,
++        );
+         let all_entities = &self.entity_batch.combined;
+         let hand_quads = (frame.hand.len() / 4) as u32;
+         let additive_quads = (frame.additive.len() / 4) as u32;
+@@ -4322,6 +4380,7 @@ impl Renderer {
+                 lightning::QUADS
+             })
+             .max(weather_quads)
++            .max(self.mod_models.max_quads())
+             .max(frame.glowing.len() as u32 / 4);
+         if max_quads > self.index_quads {
+             self.index_quads = max_quads.next_power_of_two();
+@@ -4757,6 +4816,12 @@ impl Renderer {
+                 pass.draw_indexed(0..entity_quads * 6, 0, 0..1);
+                 pass.set_bind_group(0, &self.group, &[]);
+             }
++            if !frame.mod_models.draws.is_empty() {
++                pass.set_pipeline(&self.model_pipeline);
++                pass.set_bind_group(0, &self.entity_group, &[]);
++                self.mod_models.draw(&mut pass);
++                pass.set_bind_group(0, &self.group, &[]);
++            }
+             if translucent_item_quads > 0 {
+                 pass.set_pipeline(&self.translucent_item_pipeline);
+                 pass.set_bind_group(0, &self.entity_group, &[]);
+diff --git a/crates/horizon-client-render/src/gfx/mod_models.rs b/crates/horizon-client-render/src/gfx/mod_models.rs
+new file mode 100644
+index 000000000..12dcb4f13
+--- /dev/null
++++ b/crates/horizon-client-render/src/gfx/mod_models.rs
+@@ -0,0 +1,144 @@
++//! Content mods' block models (`crate::mod_models`) drawn from meshes kept on
++//! the GPU: each bone of each model is uploaded once, in its own frame, and a
++//! frame sends one matrix and light per bone of each block it draws (as the
++//! lightning renderer keeps its bolts and sends their offsets). Moving bones
++//! cost the CPU a matrix, not their vertices.
++use crate::{gfx::upload::Uploads, mesher::Vertex};
++use std::{collections::HashMap, ops::Range};
++use wgpu::util::DeviceExt;
++
++/// Which mesh: a model and one of its bones.
++#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
++pub struct Key {
++    pub model: u32,
++    pub bone: u32,
++}
++
++/// One bone of one block: the matrix from the bone's frame to the
++/// camera-relative world (column major), and the block's packed light.
++#[repr(C)]
++#[derive(Clone, Copy, Debug, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
++pub struct Instance {
++    pub matrix: [f32; 16],
++    pub light: u32,
++}
++
++#[derive(Default)]
++pub struct Input<'a> {
++    /// The bones to draw, in any order.
++    pub draws: &'a [(Key, Instance)],
++    /// The vertices of a bone not uploaded yet (UVs on the atlas).
++    pub mesh: Option<&'a dyn Fn(Key) -> Vec<Vertex>>,
++    /// Changes when the meshes do (a new atlas, models reloaded): the
++    /// uploaded ones are dropped.
++    pub epoch: u64,
++}
++
++struct Mesh {
++    buffer: Option<wgpu::Buffer>,
++    quads: u32,
++}
++
++pub(super) struct Renderer {
++    meshes: HashMap<Key, Mesh>,
++    epoch: u64,
++    instances: Option<wgpu::Buffer>,
++    capacity: usize,
++    groups: Vec<(Key, Range<u32>)>,
++}
++
++impl Renderer {
++    pub(super) fn new() -> Self {
++        Self {
++            meshes: HashMap::new(),
++            epoch: 0,
++            instances: None,
++            capacity: 0,
++            groups: Vec::new(),
++        }
++    }
++
++    /// The most quads one bone draws: the shared quad indices must reach it.
++    pub(super) fn max_quads(&self) -> u32 {
++        self.groups
++            .iter()
++            .filter_map(|(k, _)| self.meshes.get(k))
++            .map(|m| m.quads)
++            .max()
++            .unwrap_or(0)
++    }
++
++    pub(super) fn prepare(
++        &mut self,
++        device: &wgpu::Device,
++        uploads: &mut Uploads,
++        encoder: &mut wgpu::CommandEncoder,
++        input: &Input<'_>,
++    ) {
++        self.groups.clear();
++        if input.epoch != self.epoch {
++            self.meshes.clear();
++            self.epoch = input.epoch;
++        }
++        if input.draws.is_empty() {
++            // Nothing drawn: the instances go, the meshes stay for the next ones.
++            self.instances = None;
++            self.capacity = 0;
++            return;
++        }
++        let mut order: Vec<usize> = (0..input.draws.len()).collect();
++        order.sort_by_key(|&i| input.draws[i].0);
++        let mut instances = Vec::with_capacity(order.len());
++        for &i in &order {
++            let (key, instance) = input.draws[i];
++            self.meshes.entry(key).or_insert_with(|| {
++                let vertices = input.mesh.map(|m| m(key)).unwrap_or_default();
++                let quads = (vertices.len() / 4) as u32;
++                let buffer = (quads > 0).then(|| {
++                    device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
++                        label: Some("Mod model bone"),
++                        contents: bytemuck::cast_slice(&vertices),
++                        usage: wgpu::BufferUsages::VERTEX,
++                    })
++                });
++                Mesh { buffer, quads }
++            });
++            let n = instances.len() as u32;
++            match self.groups.last_mut() {
++                Some((k, range)) if *k == key => range.end = n + 1,
++                _ => self.groups.push((key, n..n + 1)),
++            }
++            instances.push(instance);
++        }
++        if instances.len() > self.capacity || instances.len() < self.capacity / 4 {
++            self.capacity = instances.len().next_power_of_two();
++            self.instances = Some(device.create_buffer(&wgpu::BufferDescriptor {
++                label: Some("Mod model instances"),
++                size: (self.capacity * std::mem::size_of::<Instance>()) as u64,
++                usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
++                mapped_at_creation: false,
++            }));
++        }
++        if let Some(buffer) = &self.instances {
++            uploads.buffer(encoder, buffer, 0, bytemuck::cast_slice(&instances));
++        }
++    }
++
++    pub(super) fn draw(&self, pass: &mut wgpu::RenderPass<'_>) {
++        let Some(instances) = &self.instances else {
++            return;
++        };
++        pass.set_vertex_buffer(1, instances.slice(..));
++        for (key, range) in &self.groups {
++            let Some(Mesh {
++                buffer: Some(buffer),
++                quads,
++            }) = self.meshes.get(key)
++            else {
++                continue;
++            };
++            pass.set_vertex_buffer(0, buffer.slice(..));
++            pass.draw_indexed(0..quads * 6, 0, range.clone());
++        }
++    }
++}
 diff --git a/crates/horizon-client-render/src/hud.rs b/crates/horizon-client-render/src/hud.rs
-index fda0094d8..375edfb80 100644
+index fda0094d8..ba09bfea8 100644
 --- a/crates/horizon-client-render/src/hud.rs
 +++ b/crates/horizon-client-render/src/hud.rs
-@@ -488,6 +488,18 @@ impl HudAtlas {
+@@ -94,6 +94,12 @@ pub const MINIMAP_SPRITE: &str = "horizon/minimap";
+ /// is not stored again, and its player falls back to the default skin, so
+ /// the slots must cover a busy server's player list.
+ pub const SKIN_SLOTS: usize = 128;
++/// Atlas slots for content mods' machine screens (`mod_screens`): a screen's
++/// texture is loaded into one when it opens, the least recently opened
++/// making room, so the atlas holds no mod's GUI textures but these.
++pub const GUI_SLOTS: usize = 2;
++/// Their side: a bigger GUI texture is not shown.
++pub const GUI_SLOT_SIZE: u32 = 512;
+ /// Reused by the visible rows of the classic world selector.
+ pub const WORLD_ICON_SLOTS: usize = 32;
+ /// Atlas slots for the pack icons on the pack screen, one per icon drawn
+@@ -300,6 +306,15 @@ impl HudAtlas {
+             crate::minimap::SIZE as u32,
+             vec![0; crate::minimap::SIZE * crate::minimap::SIZE * 4],
+         ));
++        for i in 0..GUI_SLOTS {
++            let n = (GUI_SLOT_SIZE * GUI_SLOT_SIZE * 4) as usize;
++            images.push((
++                format!("horizon/gui{i}"),
++                GUI_SLOT_SIZE,
++                GUI_SLOT_SIZE,
++                vec![0; n],
++            ));
++        }
+         // Downloaded skins (game/scoreboard.rs).
+         for i in 0..SKIN_SLOTS {
+             images.push((format!("horizon/skin{i}"), 64, 64, vec![0; 64 * 64 * 4]));
+@@ -488,6 +503,18 @@ impl HudAtlas {
          }
          if full {
              images.extend(atlas_sprites(root, &images));
-+            // Content mods' machine screens and models name their own
-+            // textures (`mod_screens::textures`): those, and no other file of
-+            // the mods' folders, join the atlas.
++            // Content mods' block models name their own textures
++            // (`mod_screens::textures`): those join the atlas. Machine screens'
++            // load into the GUI slots when they open.
 +            for (name, path) in crate::mod_screens::textures(root) {
 +                if images.iter().any(|i| i.0 == name) {
 +                    continue;
@@ -389,10 +795,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..e5f83476c
+index 000000000..98468d27f
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,515 @@
+@@ -0,0 +1,543 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -826,6 +1232,34 @@ index 000000000..e5f83476c
 +        world
 +    }
 +
++    /// Bone `bone` as quads in the model's frame, for the GPU to pose: its
++    /// UVs on `sprite`, its normals for the shader to light (`w` 127), white.
++    pub fn bone_mesh(&self, bone: usize, sprite: Rect) -> Vec<Vertex> {
++        let Some(b) = self.bones.get(bone).filter(|b| !b.hidden) else {
++            return Vec::new();
++        };
++        let snorm = |v: f32| (v.clamp(-1.0, 1.0) * 127.0).round() as i8;
++        let mut out = Vec::with_capacity(b.triangles.len() * 4);
++        for tri in &b.triangles {
++            for (p, uv, n) in [tri[0], tri[1], tri[2], tri[2]] {
++                let n = n.normalize_or(Vec3::Y);
++                out.push(Vertex {
++                    pos: p.to_array(),
++                    uv: [
++                        sprite.u0 + (sprite.u1 - sprite.u0) * uv[0],
++                        sprite.v0 + (sprite.v1 - sprite.v0) * uv[1],
++                    ],
++                    layer: 0,
++                    color: u32::MAX,
++                    light: 0,
++                    normal: [snorm(n.x), snorm(n.y), snorm(n.z), 127],
++                    glint_uv: [0.0, 0.0],
++                });
++            }
++        }
++        out
++    }
++
 +    /// The bones `pick` keeps, posed, as quads (a triangle repeats its
 +    /// last corner): `base` places them, `paint` lights and textures them.
 +    pub fn emit(
@@ -910,10 +1344,10 @@ index 000000000..e5f83476c
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
 new file mode 100644
-index 000000000..4e0d23235
+index 000000000..447832c6e
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_screens.rs
-@@ -0,0 +1,472 @@
+@@ -0,0 +1,477 @@
 +//! Screens of content mods' machines (`horizon_world::mod_machines`): the
 +//! machine's own background texture, with bars, lights and tooltips drawn
 +//! from the values the mod sets. Each `assets/<namespace>/horizon_screen/<name>.json`
@@ -1001,6 +1435,8 @@ index 000000000..4e0d23235
 +pub struct ScreenDef {
 +    /// The texture's sprite in the GUI atlas: `ntm:gui/processing/gui_assembler`.
 +    pub sprite: String,
++    /// Its file, loaded into a GUI slot of the atlas when the screen opens.
++    pub file: PathBuf,
 +    pub size: [f32; 2],
 +    pub title: Option<([f32; 2], bool)>,
 +    pub inventory_label: Option<[f32; 2]>,
@@ -1077,7 +1513,8 @@ index 000000000..4e0d23235
 +/// Reads one screen file.
 +pub fn parse(root: &Path, doc: &Value) -> Result<ScreenDef, String> {
 +    let texture = doc["texture"].as_str().ok_or("no texture")?;
-+    let (sprite, _) = texture_sprite(root, texture).ok_or("texture: not <ns>:textures/<path>")?;
++    let (sprite, file) =
++        texture_sprite(root, texture).ok_or("texture: not <ns>:textures/<path>")?;
 +    let size = floats::<2>(&doc["size"]).unwrap_or([176.0, 166.0]);
 +    let title = match &doc["title"] {
 +        Value::Null => Some(([8.0, 6.0], false)),
@@ -1152,6 +1589,7 @@ index 000000000..4e0d23235
 +        .collect();
 +    Ok(ScreenDef {
 +        sprite,
++        file,
 +        size,
 +        title,
 +        inventory_label,
@@ -1188,11 +1626,12 @@ index 000000000..4e0d23235
 +    SCREENS.read().ok()?.as_ref()?.get(name).cloned()
 +}
 +
-+/// The textures the machine screens and models of `root` name: the GUI
-+/// atlas packs these, and no other file of the mods' `textures/`.
++/// The textures the block models of `root` name: the GUI atlas packs these,
++/// and no other file of the mods' `textures/` (a machine screen's texture
++/// loads into a GUI slot when it opens: `hud::GUI_SLOTS`).
 +pub fn textures(root: &Path) -> Vec<(String, PathBuf)> {
 +    let mut out: Vec<(String, PathBuf)> = Vec::new();
-+    for folder in ["horizon_screen", "horizon_model"] {
++    for folder in ["horizon_model"] {
 +        for (_, path) in asset_files(root, folder) {
 +            if let Some(t) = read(&path)
 +                .as_ref()
@@ -1387,7 +1826,7 @@ index 000000000..4e0d23235
 +    }
 +}
 diff --git a/crates/horizon-client/src/game.rs b/crates/horizon-client/src/game.rs
-index ffa8a66eb..8cdded2cf 100644
+index ffa8a66eb..ed0615463 100644
 --- a/crates/horizon-client/src/game.rs
 +++ b/crates/horizon-client/src/game.rs
 @@ -111,6 +111,7 @@ mod mob_blocks;
@@ -1455,7 +1894,15 @@ index ffa8a66eb..8cdded2cf 100644
              .or_else(|| self.machine_slot_position(i))
              .or_else(|| self.crafter_slot_position(i))
              .or_else(|| self.mount_slot_position(i))
-@@ -6665,6 +6679,7 @@ impl Game<'_> {
+@@ -6572,6 +6586,7 @@ impl Game<'_> {
+         if self.draw_station(batch) {
+             return;
+         }
++        self.load_machine_screen_texture();
+         let (ox, oy) = self.inventory_origin(batch);
+         {
+             let atlas = &self.gui.atlas;
+@@ -6665,6 +6680,7 @@ impl Game<'_> {
                  }
                  Some(BlockEntity::Brewing(_)) => {}
                  Some(BlockEntity::Crafter(_)) => self.draw_crafter_screen(batch, ox, oy),
@@ -1463,7 +1910,7 @@ index ffa8a66eb..8cdded2cf 100644
                  Some(
                      BlockEntity::Sign(_)
                      | BlockEntity::Jukebox(_)
-@@ -6721,6 +6736,7 @@ impl Game<'_> {
+@@ -6721,6 +6737,7 @@ impl Game<'_> {
          }
          self.draw_carried(batch);
          self.draw_slot_tooltip(batch);
@@ -1471,7 +1918,7 @@ index ffa8a66eb..8cdded2cf 100644
          if self.container.is_none() && self.craft_size == 2 && !self.mount_active() {
              self.draw_inventory_effects(batch, (ox, oy), 176);
          }
-@@ -7077,6 +7093,12 @@ impl Game<'_> {
+@@ -7077,6 +7094,12 @@ impl Game<'_> {
                          (kind, size)
                      }
                      Some(BlockEntity::Brewing(_)) => (Kind::Brewing, 5),
@@ -1484,7 +1931,7 @@ index ffa8a66eb..8cdded2cf 100644
                      Some(BlockEntity::Furnace(f)) => (
                          Kind::Furnace(
                              match f.kind.recipe_type().trim_start_matches("minecraft:") {
-@@ -7843,6 +7865,9 @@ impl Game<'_> {
+@@ -7843,6 +7866,9 @@ impl Game<'_> {
          if self.station_click(right) {
              return;
          }
@@ -1494,7 +1941,7 @@ index ffa8a66eb..8cdded2cf 100644
          if self.remote.is_some() {
              return self.remote_click(right);
          }
-@@ -8270,7 +8295,15 @@ impl Game<'_> {
+@@ -8270,7 +8296,15 @@ impl Game<'_> {
                              (glam::DVec3::new(f64::from(p[0]), f64::from(p[1]), f64::from(p[2]))
                                  - camera)
                                  .as_vec3();
@@ -1511,7 +1958,53 @@ index ffa8a66eb..8cdded2cf 100644
                      })
              });
              if self.entity_culler.is_some() || self.pack_ids.is_some() {
-@@ -14804,6 +14837,15 @@ fn load_world_rest(
+@@ -11961,11 +11995,16 @@ impl Game<'_> {
+         entities.clear();
+         self.see_through_vertices.clear();
+         self.glowing_vertices.get_mut().clear();
++        // Content mods' models go to the GPU as bone instances, unless a
++        // shader pack draws the entities (it gets their vertices).
++        let ber = self.res.block_entity_render();
++        ber.set_model_instancing(self.pack_ids.is_none());
+         if !title {
+             entities = horizon_client::spans::time("entity_geometry", || {
+                 self.entity_geometry(camera, alpha, entities)
+             });
+         }
++        let model_draws = self.res.block_entity_render().take_model_draws();
+         let bolts = if title {
+             Vec::new()
+         } else {
+@@ -12029,6 +12068,16 @@ impl Game<'_> {
+         hud.patches.append(&mut self.map_patches);
+         let entity_spans = std::mem::take(self.entity_spans.get_mut());
+         let glowing = std::mem::take(self.glowing_vertices.get_mut());
++        let model_res = self.res.clone();
++        let model_sprites = &self.gui.atlas.sprites;
++        let model_mesh = |key| {
++            model_res
++                .block_entity_render()
++                .mod_bone_mesh(model_sprites, key)
++        };
++        let model_epoch = model_res
++            .block_entity_render()
++            .mod_models_epoch(model_sprites);
+         let frame = Frame {
+             weather: &weather,
+             weather_time: horizon_client::weather::Time::new(self.world.game_time, alpha as f32),
+@@ -12111,6 +12160,11 @@ impl Game<'_> {
+             entity_spans: &entity_spans,
+             glowing: &glowing,
+             dynamic_lights: &self.dynamic_lights,
++            mod_models: horizon_client::gfx::mod_models::Input {
++                draws: &model_draws,
++                mesh: Some(&model_mesh),
++                epoch: model_epoch,
++            },
+             lightning: horizon_client::gfx::lightning::Input {
+                 bolts: &bolts,
+                 uv: [
+@@ -14804,6 +14858,15 @@ fn load_world_rest(
      progress.set(6);
      let mob_data = horizon_client::mobs::MobData::load(root, facts);
      horizon_client::mobs::trial_spawner::load_registry(root);
@@ -1527,6 +2020,14 @@ index ffa8a66eb..8cdded2cf 100644
  
      let items = Items::load(root, assets.registry, facts)?;
      log::info!("load items: {:.2}s", started.elapsed().as_secs_f32());
+@@ -15025,6 +15088,7 @@ fn loading_frame(hud: &HudBatch) -> Frame<'_> {
+         dynamic_lights: &[],
+         clouds: None,
+         lightning: Default::default(),
++        mod_models: Default::default(),
+         additive: &[],
+         see_through: &[],
+         celestial: &[],
 diff --git a/crates/horizon-client/src/game/lan_actions.rs b/crates/horizon-client/src/game/lan_actions.rs
 index d71923ad0..e35f8dfdd 100644
 --- a/crates/horizon-client/src/game/lan_actions.rs
@@ -1688,10 +2189,10 @@ index 4a6fca181..ff6f945ae 100644
              .as_ref()
 diff --git a/crates/horizon-client/src/game/mod_machines.rs b/crates/horizon-client/src/game/mod_machines.rs
 new file mode 100644
-index 000000000..fc73b54a2
+index 000000000..e58a30178
 --- /dev/null
 +++ b/crates/horizon-client/src/game/mod_machines.rs
-@@ -0,0 +1,266 @@
+@@ -0,0 +1,341 @@
 +//! Content mods' machines in the game (`horizon_world::mod_machines`): a
 +//! multiblock breaks as one block, whichever of its cells the player mines.
 +use super::Game;
@@ -1956,6 +2457,81 @@ index 000000000..fc73b54a2
 +            rel(hi[1], 1),
 +            rel(hi[2], 2),
 +        ])
++    }
++}
++
++/// Which machine screen's texture is in each GUI slot of the atlas
++/// (`hud::GUI_SLOTS`), least recently opened first.
++static GUI_SLOT_USERS: std::sync::Mutex<Vec<(String, usize)>> = std::sync::Mutex::new(Vec::new());
++
++impl Game<'_> {
++    /// The open machine screen's texture into a GUI slot of the atlas, when
++    /// it is not there: the slot of the least recently opened screen.
++    pub(super) fn load_machine_screen_texture(&mut self) {
++        use horizon_client::hud::{GUI_SLOT_SIZE, GUI_SLOTS};
++        let Some((_, Some(screen))) = self.open_machine() else {
++            return;
++        };
++        let Ok(mut users) = GUI_SLOT_USERS.lock() else {
++            return;
++        };
++        if self.gui.atlas.sprites.contains_key(&screen.sprite) {
++            if let Some(i) = users.iter().position(|(n, _)| *n == screen.sprite) {
++                let used = users.remove(i);
++                users.push(used);
++            }
++            return;
++        }
++        users.retain(|(n, _)| *n != screen.sprite);
++        let (w, h, rgba) = match horizon_client::hud::decode(&screen.file) {
++            Ok(image) if image.0 <= GUI_SLOT_SIZE && image.1 <= GUI_SLOT_SIZE => image,
++            Ok((w, h, _)) => {
++                log::warn!(
++                    "Horizon: {} is {w}x{h}, more than a GUI slot's {GUI_SLOT_SIZE}",
++                    screen.file.display()
++                );
++                return;
++            }
++            Err(e) => {
++                log::warn!("Horizon: {}: {e}", screen.file.display());
++                return;
++            }
++        };
++        let free = (0..GUI_SLOTS).find(|s| users.iter().all(|(_, u)| u != s));
++        let slot = match free {
++            Some(s) => s,
++            None => {
++                let (old, s) = users.remove(0);
++                self.gui.atlas.sprites.remove(&old);
++                s
++            }
++        };
++        let Some(base) = self
++            .gui
++            .atlas
++            .sprites
++            .get(&format!("horizon/gui{slot}"))
++            .copied()
++        else {
++            return;
++        };
++        let (aw, ah) = (self.gui.atlas.width as f32, self.gui.atlas.height as f32);
++        self.map_patches.push(horizon_client::font::Patch {
++            x: (base.u0 * aw).round() as u32,
++            y: (base.v0 * ah).round() as u32,
++            width: w,
++            height: h,
++            rgba,
++        });
++        let rect = horizon_client::hud::Rect {
++            u1: base.u0 + w as f32 / aw,
++            v1: base.v0 + h as f32 / ah,
++            w,
++            h,
++            ..base
++        };
++        self.gui.atlas.sprites.insert(screen.sprite.clone(), rect);
++        users.push((screen.sprite.clone(), slot));
 +    }
 +}
 diff --git a/crates/horizon-client/src/game/mods.rs b/crates/horizon-client/src/game/mods.rs

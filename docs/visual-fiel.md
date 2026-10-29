@@ -1,7 +1,7 @@
 # Visual fiel ao NTM: telas, modelos 3D e multiblocos (protótipo)
 
 2026-10-29. Protótipo de ponta a ponta com a **montadora** (`ntm:machine_assembly_machine`) e a **Little Boy**
-(`ntm:nuke_boy`). Motor: branch `ntm-visual` em `~/Workspace/horizon-visual` (14 commits sobre `ntm-patched` b26b1de1e; já em `ntm-patched`, fd44a1d1a),
+(`ntm:nuke_boy`). Motor: branch `ntm-visual` em `~/Workspace/horizon-visual` (16 commits sobre b26b1de1e; já em `ntm-patched`, 4b962af45),
 diff em [`horizon-patches/ntm-visual.diff`](../horizon-patches/ntm-visual.diff). Port: `tools/visual-gen/`,
 `crates/ntm-core/src/server/container_bridge.rs` e a feature `machines` dos dois mods de lógica.
 Fonte do NTM: `ntm-src/src/main/java/com/hbm/` (Java) e `ntm-src/src/main/resources/assets/hbm/` (recursos).
@@ -240,15 +240,39 @@ segunda com a câmera em céu aberto. As 25 montadoras foram postas por `setbloc
 - **Carga:** `Horizon: 2 block models (1802 triangles)` no início; ler os OBJ com `tobj` não aparece no tempo de
   carga.
 
-**Para escalar:**
-- malhas residentes na GPU por (modelo, rotação), com uma matriz por instância e por osso animado, tirando o upload
-  por quadro (ordem de 10× a 50× menos CPU);
-- textura de GUI carregada ao abrir a tela;
-- texturas de modelo só das máquinas que existem no mundo.
+**Etapa b, otimização (feita):**
+
+- **Malhas na GPU** (`gfx/mod_models.rs`, `vs_model` no `entity.wgsl`):
+  - cada osso de cada modelo vai uma vez para a GPU, no seu referencial;
+  - por quadro, só uma matriz e a luz por osso de cada bloco (68 B);
+  - o shader aplica a matriz à posição e à normal, e a luz por normal é a do próprio shader de entidades;
+  - é o padrão do `gfx/lightning.rs` (raios retidos com offset por instância) e o mesmo espírito da origem por seção
+    do terreno. O upstream não tem instancing de entidades: só o staging belt (#520), o reuso do buffer (#240) e o
+    cache de texto de placa (#3284).
+  - Com shader pack ligado, os modelos voltam ao caminho por vértices: o pack desenha as entidades.
+- **Texturas de tela sob demanda:**
+  - o atlas da GUI não empacota mais as texturas de tela de máquina;
+  - a tela aberta carrega a sua num de 2 slots de 512×512 (2 MB fixos), e o menos recente cede (o mesmo mecanismo das
+    skins baixadas);
+  - o atlas tem o mesmo tamanho com 3 ou 420 máquinas. As texturas de modelo continuam no atlas, só as citadas
+    pelos `horizon_model`.
+
+**Medido de novo** (mesma cena, as mesmas 25 montadoras):
+
+| Cena | CPU médio (ms) | CPU p95 | GPU médio | `render` | `prepare` |
+|---|---:|---:|---:|---:|---:|
+| Sem máquinas | 1,71 | 2,24 | 0,28 | 0,81 | 0,45 |
+| 25 montadoras paradas | 1,71 | 2,20 | 0,43 | 0,83 | 0,46 |
+| 25 montadoras animadas | 1,76 | 2,22 | 0,62 | 0,85 | 0,48 |
+
+- **CPU:** de **+3,5 ms para +0,05 ms** com 25 montadoras: ~70× menos, e a animação não pesa mais.
+- **GPU:** +0,15 a +0,34 ms, porque agora é ela que posa os vértices.
+- **Memória de GPU:** +7 a +13 MB (antes, +34 a +90 MB).
+- Captura: `img/visual-instanced-25.png`.
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 14 commits, 38 arquivos):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 16 commits):
 
 | Commit | O quê |
 |---|---|
@@ -266,6 +290,8 @@ segunda com a câmera em céu aberto. As 25 montadoras foram postas por `setbloc
 | `feat(mods): max_damage for content mods' items` | O schema dos itens aceita `max_damage` (pilha 1) |
 | `feat(world): a machine slot may refuse a list of items` | `reject` |
 | `feat(render): a screen overlay may show for a range of values` | Overlay com `min..=max` (as luzes das lâminas) |
+| `perf(render): draw mod block models from bone meshes on the gpu` | Malhas na GPU por osso e instâncias (etapa b) |
+| `perf(client): load a machine screen's texture when it opens` | Os 2 slots de GUI sob demanda (etapa b) |
 
 **No port:**
 
