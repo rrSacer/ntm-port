@@ -142,6 +142,14 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::AllRound,
     },
+    // The shredder (`crate::shredder`): `TilePortShapes.around`, energy only.
+    BlockSpec {
+        id: "ntm:machine_shredder",
+        kind: Kind::Shredder,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::AllRound,
+    },
     // Fluids (`crate::fluidbox`, docs/fluidos.md): the duct is a "cable" of
     // one fluid type, the barrel and the tank store it.
     BlockSpec {

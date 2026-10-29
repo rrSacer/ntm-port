@@ -33,6 +33,8 @@ pub enum Kind {
     Crafter,
     /// The gas centrifuge (`crate::gascent`).
     GasCent,
+    /// The shredder (`crate::shredder`): its items are the engine's slots.
+    Shredder,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -104,6 +106,7 @@ pub enum Data {
     FluidStore(crate::fluidbox::FluidStore),
     Crafter(crate::crafter::Crafter),
     GasCent(crate::gascent::GasCent),
+    Shredder(crate::shredder::Shredder),
     Inert { name: String },
 }
 
@@ -133,6 +136,7 @@ impl Machine {
             Kind::Bomb => Data::Bomb(crate::bomb::Bomb::new(block_id)),
             Kind::Duct => Data::Duct(crate::fluidbox::Duct::default()),
             Kind::GasCent => Data::GasCent(crate::gascent::GasCent::default()),
+            Kind::Shredder => Data::Shredder(crate::shredder::Shredder::default()),
             Kind::Crafter => match crate::crafter::Station::of(block_id) {
                 Some(st) => Data::Crafter(crate::crafter::Crafter::new(st)),
                 None => Data::Inert { name: block_id.into() },
@@ -166,6 +170,7 @@ impl Machine {
             Data::FluidStore(_) => Kind::FluidStore,
             Data::Crafter(_) => Kind::Crafter,
             Data::GasCent(_) => Kind::GasCent,
+            Data::Shredder(_) => Kind::Shredder,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -182,6 +187,7 @@ impl Machine {
             Data::FluidStore(m) => m,
             Data::Crafter(m) => m,
             Data::GasCent(m) => m,
+            Data::Shredder(m) => m,
             Data::Inert { name } => name,
         }
     }
@@ -198,6 +204,7 @@ impl Machine {
             Data::FluidStore(m) => m,
             Data::Crafter(m) => m,
             Data::GasCent(m) => m,
+            Data::Shredder(m) => m,
             Data::Inert { name } => name,
         }
     }

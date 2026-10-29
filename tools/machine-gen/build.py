@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Converte as receitas extraídas pelo agente de conteúdo
-(content/machine-recipes/{assembly,chemical_plant,centrifuge}.json, schema 1)
+(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder}.json, schema 1)
 para o formato que a lógica embute (crates/ntm-core/data/machines/*.json),
 com os nomes pt_BR do content/ids.json para a tela.
 
@@ -71,7 +71,22 @@ def centrifuge():
     return {'station': 'centrifuge', 'source': 'content/machine-recipes/centrifuge.json', 'recipes': out, 'skipped': len(src['skipped'])}
 
 
-for st, data in [('assembly', generic('assembly')), ('chemical_plant', generic('chemical_plant')), ('centrifuge', centrifuge())]:
+def shredder():
+    """Uma entrada → (saída, quantidade); a 1ª inserção vence, como no
+    `setRecipe` do NTM (o agente de conteúdo já resolveu as colisões). Sem
+    receita, a máquina dá sucata (`shredder::SCRAP`)."""
+    src = json.loads((root / 'content/machine-recipes/shredder.json').read_text())
+    out = {}
+    for r in src['recipes']:
+        (o, n), = r['outputs']
+        for i in r['input']['ids']:
+            out.setdefault(i, [o, n])
+    blades = [[b['id'], b['durability']] for b in src.get('blades', [])]
+    return {'station': 'shredder', 'source': 'content/machine-recipes/shredder.json', 'recipes': out, 'blades': blades,
+            'skipped': len(src['skipped'])}
+
+
+for st, data in [('assembly', generic('assembly')), ('chemical_plant', generic('chemical_plant')), ('centrifuge', centrifuge()), ('shredder', shredder())]:
     p = root / f'crates/ntm-core/data/machines/{st}.json'
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"{st}: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")

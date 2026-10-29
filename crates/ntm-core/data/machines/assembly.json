@@ -1519,6 +1519,46 @@
 "pools": []
 },
 {
+"name": "ass.shredder",
+"label": "Triturador",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:259",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 8,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_shredder",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.assembler",
 "label": "Montadora",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:262",
@@ -13509,5 +13549,5 @@
 "pools": []
 }
 ],
-"skipped": 233
+"skipped": 232
 }

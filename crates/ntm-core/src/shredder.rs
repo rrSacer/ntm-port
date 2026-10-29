@@ -13,7 +13,11 @@
 //! Recipes come from `data/machines/shredder.json` (`ShredderRecipes`:
 //! the explicit ones and those made from the OreDict in `registerPost`).
 
-use crate::energy::{EnergyNode, Role};
+use crate::{
+    energy::{EnergyNode, Role},
+    machine::{Logic, fill_level},
+    view::{self, ViewModel},
+};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -29,11 +33,9 @@ pub const HE_PER_TICK: u64 = 5;
 /// Items a slot piles up to (`getMaxStackSize` of the NTM's dusts).
 pub const STACK: u32 = 64;
 
-/// The blades (`ItemBlades`) and their durability (0: never wears).
-pub const BLADE_TYPES: &[(&str, u32)] = &[("ntm:blades_steel", 400), ("ntm:blades_titanium", 500), ("ntm:blades_desh", 0)];
-
+/// A blade's durability (`ItemBlades`, from the table; 0: never wears).
 pub fn blade_durability(item: &str) -> Option<u32> {
-    BLADE_TYPES.iter().find(|(id, _)| *id == item).map(|(_, d)| *d)
+    table().blades.iter().find(|(id, _)| id == item).map(|(_, d)| *d)
 }
 
 /// What an item without a recipe becomes (`getShredderResult`: never null,
@@ -44,7 +46,24 @@ pub const SCRAP: (&str, u32) = ("ntm:scrap", 1);
 #[derive(Clone, Debug, Default)]
 pub struct Recipes(pub HashMap<String, (String, u32)>);
 
+#[derive(serde::Deserialize)]
+struct Table {
+    recipes: HashMap<String, (String, u32)>,
+    blades: Vec<(String, u32)>,
+}
+
+fn table() -> &'static Table {
+    static T: std::sync::OnceLock<Table> = std::sync::OnceLock::new();
+    T.get_or_init(|| serde_json::from_str(include_str!("../data/machines/shredder.json")).expect("data/machines/shredder.json"))
+}
+
 impl Recipes {
+    /// The NTM's table (`data/machines/shredder.json`).
+    pub fn ntm() -> &'static Recipes {
+        static R: std::sync::OnceLock<Recipes> = std::sync::OnceLock::new();
+        R.get_or_init(|| Recipes(table().recipes.clone()))
+    }
+
     pub fn result(&self, item: &str) -> Option<(&str, u32)> {
         if blade_durability(item).is_some() {
             return None;
@@ -202,6 +221,40 @@ impl EnergyNode for Shredder {
     fn take(&mut self, _he: u64) {}
 }
 
+impl Logic for Shredder {
+    fn tick(&mut self) -> bool {
+        let before = (self.power > 0, self.progress == 0);
+        let moved = self.step(Recipes::ntm());
+        moved || before != (self.power > 0, self.progress == 0)
+    }
+
+    fn energy(&mut self) -> Option<&mut dyn EnergyNode> {
+        Some(self)
+    }
+
+    fn level(&self, max: u8) -> u8 {
+        if self.progress == 0 { 0 } else { fill_level(u64::from(self.progress), u64::from(TICKS), max) }
+    }
+
+    /// No item screen here: the items go in and out through the engine's
+    /// slots (the machine screen of `horizon_screen`), not transactions.
+    fn view(&self) -> ViewModel {
+        let state = |g: u8| ["sem lâmina", "boa", "gasta", "quebrada"][usize::from(g.min(3))];
+        let [l, r] = self.gears();
+        ViewModel::new("Triturador")
+            .bar("Energia", self.power, MAX_POWER, "HE")
+            .bar("Progresso", u64::from(self.progress), u64::from(TICKS), "ticks")
+            .text(format!("Lâminas: {}, {}", state(l), state(r)), view::GREY)
+            .text("Os itens entram e saem pela tela com slots (motor com o patch ntm-visual).", view::GREY)
+    }
+
+    /// What it holds, dropped when it is broken (the engine's slots spill
+    /// themselves; this is for a game without them).
+    fn contents(&self) -> Vec<(String, u32)> {
+        self.slots.iter().flatten().map(|s| (s.id.clone(), s.count)).collect()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -235,6 +288,20 @@ mod tests {
         for _ in 0..TICKS {
             s.step(r);
         }
+    }
+
+    #[test]
+    fn the_ntm_table_is_embedded() {
+        let r = Recipes::ntm();
+        assert!(r.0.len() >= 700, "{} receitas", r.0.len());
+        assert_eq!(r.result("minecraft:iron_ingot"), Some(("ntm:powder_iron", 1)));
+        assert_eq!(r.result("ntm:ingot_steel"), Some(("ntm:powder_steel", 1)));
+        // Explicit (registerDefaults) wins over the OreDict one.
+        assert_eq!(r.result("minecraft:diamond_ore"), Some(("ntm:gravel_diamond", 2)));
+        let blades: Vec<(&str, u32)> = table().blades.iter().map(|(b, d)| (b.as_str(), *d)).collect();
+        assert_eq!(blades, [("ntm:blades_steel", 400), ("ntm:blades_titanium", 500), ("ntm:blades_desh", 0)], "ModItems.java:2759-2761");
+        // Every output is an item of the content or vanilla.
+        assert!(r.0.values().all(|(o, n)| (o.starts_with("ntm:") || o.starts_with("minecraft:")) && *n > 0));
     }
 
     #[test]
