@@ -128,6 +128,15 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::AllRound,
     },
+    // The PUREX (`crate::crafter::Station::Purex`): ports on its whole
+    // bottom ring, as the proxies of its multiblock.
+    BlockSpec {
+        id: "ntm:machine_purex",
+        kind: Kind::Crafter,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::AllRound,
+    },
     BlockSpec {
         id: "ntm:machine_centrifuge",
         kind: Kind::Crafter,
