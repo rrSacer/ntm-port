@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Converte as receitas extraídas pelo agente de conteúdo
-(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder,blast_furnace,foundry,anvil,press}.json, schema 1)
+(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder,blast_furnace,foundry,anvil,press,purex}.json, schema 1)
 para o formato que a lógica embute (crates/ntm-core/data/machines/*.json),
 com os nomes pt_BR do content/ids.json para a tela.
 
@@ -53,6 +53,7 @@ def generic(st):
             'duration': r['duration'], 'power': r['power'],
             'in': ins, 'fin': r['inputFluids'], 'out': outs, 'fout': r['outputFluids'],
             'pools': r.get('pools', []),
+            **({'group': r['autoSwitchGroup']} if r.get('autoSwitchGroup') else {}),
         })
     return {'station': st, 'source': f'content/machine-recipes/{st}.json', 'recipes': out, 'skipped': len(src['skipped'])}
 
@@ -154,6 +155,13 @@ for st, data in [('assembly', generic('assembly')), ('chemical_plant', generic('
     p = root / f'crates/ntm-core/data/machines/{st}.json'
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"{st}: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
+
+# O PUREX, quando o agente de conteúdo já o extraiu (o formato da planta química).
+if (root / 'content/machine-recipes/purex.json').exists():
+    data = generic('purex')
+    p = root / 'crates/ntm-core/data/machines/purex.json'
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
+    print(f"purex: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
 
 # A prensa fica fora de machines/: as duas prensas do M1 a leem de data/.
 if (root / 'content/machine-recipes/press.json').exists():

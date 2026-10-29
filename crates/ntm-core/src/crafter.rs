@@ -31,6 +31,7 @@ pub enum Station {
     Assembly,
     ChemicalPlant,
     Centrifuge,
+    Purex,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -56,6 +57,10 @@ pub struct Recipe {
     pub items_out: Vec<(String, u32, f32)>,
     #[serde(rename = "fout")]
     pub fluids_out: Vec<(String, u32)>,
+    /// `autoSwitchGroup`: within it, the first input of another recipe in
+    /// the machine switches to that recipe.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -73,6 +78,7 @@ impl Station {
             "ntm:machine_assembly_machine" => Some(Station::Assembly),
             "ntm:machine_chemical_plant" => Some(Station::ChemicalPlant),
             "ntm:machine_centrifuge" => Some(Station::Centrifuge),
+            "ntm:machine_purex" => Some(Station::Purex),
             _ => None,
         }
     }
@@ -81,10 +87,12 @@ impl Station {
         static A: OnceLock<Vec<Recipe>> = OnceLock::new();
         static C: OnceLock<Vec<Recipe>> = OnceLock::new();
         static F: OnceLock<Vec<Recipe>> = OnceLock::new();
+        static P: OnceLock<Vec<Recipe>> = OnceLock::new();
         match self {
             Station::Assembly => A.get_or_init(|| table(include_str!("../data/machines/assembly.json"))),
             Station::ChemicalPlant => C.get_or_init(|| table(include_str!("../data/machines/chemical_plant.json"))),
             Station::Centrifuge => F.get_or_init(|| table(include_str!("../data/machines/centrifuge.json"))),
+            Station::Purex => P.get_or_init(|| table(include_str!("../data/machines/purex.json"))),
         }
     }
 
@@ -93,6 +101,7 @@ impl Station {
             Station::Assembly => "Montadora",
             Station::ChemicalPlant => "Planta química",
             Station::Centrifuge => "Centrífuga",
+            Station::Purex => "PUREX",
         }
     }
 
@@ -102,6 +111,8 @@ impl Station {
             Station::Assembly => (1, 1, 4_000),
             Station::ChemicalPlant => (3, 3, 24_000),
             Station::Centrifuge => (0, 0, 0),
+            // `TileEntityMachinePUREX`: 3 input tanks and 1 output.
+            Station::Purex => (3, 1, 24_000),
         }
     }
 
@@ -212,6 +223,8 @@ impl Crafter {
     pub(crate) fn max_power(&self) -> u64 {
         match self.station {
             Station::Centrifuge => 100_000,
+            // `max(power, recipe.power * 100, 1 000 000)`.
+            Station::Purex => self.current().map_or(1_000_000, |r| (r.power * 100).max(1_000_000)),
             _ => self.current().map_or(100_000, |r| (r.power * 100).max(100_000)),
         }
     }
@@ -308,6 +321,24 @@ impl Crafter {
         }
     }
 
+    /// `ModuleMachineBase.canProcess`'s auto switch: the recipe of the
+    /// current one's group whose first input is in the machine and isn't
+    /// one of the current recipe's (the NTM reads input slot 0; the port's
+    /// inputs are a pile, read in the order they came in).
+    pub(crate) fn switch_to(&self, recipes: &'static [Recipe]) -> Option<&'static Recipe> {
+        let r = self.current_in(recipes)?;
+        let g = r.group.as_deref()?;
+        let mine = |item: &str| r.items_in.iter().any(|i| i.ids.iter().any(|x| x == item));
+        self.items.iter().filter(|(i, _)| !mine(i)).find_map(|(item, _)| {
+            recipes.iter().find(|o| o.name != r.name && o.group.as_deref() == Some(g) && o.items_in.first().is_some_and(|i| i.ids.contains(item)))
+        })
+    }
+
+    fn current_in(&self, recipes: &'static [Recipe]) -> Option<&'static Recipe> {
+        let name = self.recipe.as_deref()?;
+        recipes.iter().find(|r| r.name == name)
+    }
+
     fn recipe_for(&self, item: &str) -> Option<&'static Recipe> {
         self.station.recipes().iter().find(|r| r.items_in.iter().any(|i| i.ids.iter().any(|x| x == item)))
     }
@@ -315,8 +346,13 @@ impl Crafter {
     /// How many of `item` may still go in for the current recipe.
     fn room_for(&self, item: &str) -> u32 {
         let Some(r) = self.current() else { return 0 };
+        // The first input of another recipe of its group goes in too: it
+        // switches the machine to that recipe.
+        let group = r.group.as_deref();
+        let others = self.station.recipes().iter().filter(|o| group.is_some() && o.group.as_deref() == group).filter_map(|o| o.items_in.first());
         r.items_in
             .iter()
+            .chain(others)
             .filter(|i| i.ids.iter().any(|x| x == item))
             .map(|i| (i.n * 2).max(STACK).saturating_sub(count(&self.items, &i.ids)))
             .max()
@@ -365,6 +401,11 @@ impl FluidNode for Crafter {
 
 impl Logic for Crafter {
     fn tick(&mut self) -> bool {
+        if let Some(o) = self.switch_to(self.station.recipes()) {
+            // The tick of the switch doesn't process.
+            self.set_recipe(o);
+            return true;
+        }
         let Some(r) = self.current() else {
             return false;
         };
@@ -571,5 +612,55 @@ impl Logic for Crafter {
 
     fn contents(&self) -> Vec<(String, u32)> {
         self.items.iter().chain(&self.out).cloned().collect()
+    }
+}
+
+#[cfg(test)]
+mod purex_tests {
+    use super::*;
+
+    fn rec(name: &str, first: &str, group: Option<&str>) -> Recipe {
+        Recipe {
+            name: name.into(),
+            label: name.into(),
+            duration: 10,
+            power: 100,
+            items_in: vec![Ingredient { ids: vec![first.into()], n: 1, label: first.into() }],
+            fluids_in: vec![("kerosene".into(), 500), ("nitric_acid".into(), 250)],
+            items_out: vec![("ntm:nuclear_waste_tiny".into(), 1, 1.0)],
+            fluids_out: Vec::new(),
+            group: group.map(Into::into),
+        }
+    }
+
+    fn table() -> &'static [Recipe] {
+        Box::leak(
+            vec![
+                rec("purex.pwr_a", "ntm:pwr_a", Some("autoswitch.pwr")),
+                rec("purex.pwr_b", "ntm:pwr_b", Some("autoswitch.pwr")),
+                rec("purex.zirnox", "ntm:zirnox", Some("autoswitch.zirnox")),
+                rec("purex.vitrify", "ntm:waste", None),
+            ]
+            .into_boxed_slice(),
+        )
+    }
+
+    #[test]
+    fn the_first_input_of_another_recipe_of_the_group_switches_to_it() {
+        let t = table();
+        let mut c = Crafter::new(Station::Purex);
+        assert_eq!((c.tin.len(), c.tout.len(), c.tin[0].cap), (3, 1, 24_000));
+        assert_eq!(c.max_power(), 1_000_000);
+        c.recipe = Some("purex.pwr_a".into());
+        c.items = vec![("ntm:pwr_a".into(), 2)];
+        assert!(c.switch_to(t).is_none(), "a sua própria entrada");
+        c.items.push(("ntm:pwr_b".into(), 1));
+        assert_eq!(c.switch_to(t).map(|r| r.name.as_str()), Some("purex.pwr_b"));
+        // Another group's input, or a recipe with no group: no switch.
+        c.items = vec![("ntm:zirnox".into(), 1)];
+        assert!(c.switch_to(t).is_none());
+        c.recipe = Some("purex.vitrify".into());
+        c.items = vec![("ntm:pwr_b".into(), 1)];
+        assert!(c.switch_to(t).is_none());
     }
 }
