@@ -65,7 +65,7 @@ impl ServerHost for Host {
         Some(
             slots
                 .into_iter()
-                .map(|s| s.map(|s| ntm_core::server::container_bridge::Stack { id: s.id, count: s.count, damage: s.damage, custom: None }))
+                .map(|s| s.map(|s| ntm_core::server::container_bridge::Stack { id: s.id, count: s.count, damage: s.damage, custom: s.custom }))
                 .collect(),
         )
     }
@@ -77,7 +77,7 @@ impl ServerHost for Host {
         slot: u32,
         stack: Option<ntm_core::server::container_bridge::Stack>,
     ) -> bool {
-        let stack = stack.map(|s| horizon_mod_sdk::server::ItemStack { id: s.id, count: s.count, damage: s.damage });
+        let stack = stack.map(|s| horizon_mod_sdk::server::ItemStack { id: s.id, count: s.count, damage: s.damage, custom: s.custom });
         horizon_mod_sdk::server::machines::set_slot(dim, p[0], p[1], p[2], slot, stack.as_ref())
     }
     #[cfg(feature = "machines")]
