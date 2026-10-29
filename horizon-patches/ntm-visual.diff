@@ -53,7 +53,7 @@ index 75cf5ee85..1262f15cd 100644
  miniz_oxide = "0.8"
  naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
 diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
-index b415748c4..68ea2f7de 100644
+index b415748c4..d3ceb890e 100644
 --- a/crates/horizon-client-render/src/block_entity_render.rs
 +++ b/crates/horizon-client-render/src/block_entity_render.rs
 @@ -317,6 +317,13 @@ enum Kind {
@@ -133,7 +133,7 @@ index b415748c4..68ea2f7de 100644
              let packed = scene.world.light(pos[0], pos[1], pos[2]);
              if matches!(kind, Kind::Sign { .. }) && scene.texts.is_none() {
                  self.sign_text(scene, *pos, *state, origin, packed, out);
-@@ -1089,6 +1130,202 @@ impl BlockEntityRenderer {
+@@ -1089,6 +1130,210 @@ impl BlockEntityRenderer {
      pub fn renders(&self, state: u32) -> bool {
          !matches!(self.kind(state), Kind::None)
      }
@@ -245,9 +245,6 @@ index b415748c4..68ea2f7de 100644
 +        let Some(m) = self.mod_models.get(model) else {
 +            return;
 +        };
-+        let Some(sprite) = scene.sprites.get(&m.sprite).copied() else {
-+            return;
-+        };
 +        let (mut sky, mut block) = (0u8, 0u8);
 +        for d in [
 +            [0, 0, 0],
@@ -265,6 +262,17 @@ index b415748c4..68ea2f7de 100644
 +            block = block.max(l & 15);
 +        }
 +        let light = vertex_light(sky << 4 | block);
++        // Liquids by the block entity's values (`synced`), drawn as vertices.
++        if !m.liquids.is_empty()
++            && let Some(crate::containers::BlockEntity::ModContainer(c)) =
++                scene.world.block_entities.get(&(pos[0], pos[1], pos[2]))
++        {
++            let place = Mat4::from_translation(origin);
++            m.emit_liquids(&c.data, yaw, place, light, scene.sprites, out);
++        }
++        let Some(sprite) = scene.sprites.get(&m.sprite).copied() else {
++            return;
++        };
 +        let base = m.base(yaw);
 +        if self
 +            .model_instancing
@@ -336,7 +344,7 @@ index b415748c4..68ea2f7de 100644
      /// ChestRenderer and BannerRenderer submit their animated models for crumbling.
      pub fn render_breaking(
          &self,
-@@ -1239,7 +1476,8 @@ impl BlockEntityRenderer {
+@@ -1239,7 +1484,8 @@ impl BlockEntityRenderer {
          };
          let none = |_: &str, _: &mut [f32; 9]| {};
          match kind {
@@ -346,7 +354,7 @@ index b415748c4..68ea2f7de 100644
              Kind::Sign {
                  hanging,
                  wall,
-@@ -2278,6 +2516,10 @@ mod tests {
+@@ -2278,6 +2524,10 @@ mod tests {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
@@ -811,10 +819,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..98468d27f
+index 000000000..830f267f7
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,543 @@
+@@ -0,0 +1,730 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -843,6 +851,20 @@ index 000000000..98468d27f
 +//! pivot (applied z, y, then x), positions are pixels (1/16 block), both
 +//! interpolated linearly between keyframes; a channel may be one constant
 +//! `[x, y, z]`. A bone's transform applies to its children too.
++//!
++//! `"liquids"` (in a model, or alone in `horizon_liquid/<name>.json` for a
++//! block that keeps its own blockstate model) are boxes of molten metal, as
++//! HBM's foundry renderers draw them with `lava_gray`:
++//!
++//! ```text
++//! {"texture": "ntm:textures/models/machines/lava_gray.png",
++//!  "box": [0.125, 0.125, 0.125, 0.875, 0.875, 0.875],   blocks, turned with the model
++//!  "value": 0, "max": 1,     its top face at value / max of the height (indices; no max: full)
++//!  "color": 2,               the value holding 0xRRGGBB; 0 draws nothing
++//!  "column": false}          a jet: the box's four sides, while its colour is set
++//! ```
++//!
++//! The values are the machine's synced ones (`horizon_world::mod_machines`).
 +use crate::{
 +    block_entity_render::{Paint, diffuse},
 +    hud::Rect,
@@ -880,6 +902,21 @@ index 000000000..98468d27f
 +    channels: Vec<(usize, Channel)>,
 +}
 +
++/// A liquid the model shows as HBM's foundry renderers do (`RenderFoundry`):
++/// the top of `bounds` (block coordinates, 0 to 1 on a block, turned with
++/// the facing) at `value / max` of its height, the texture tinted by the
++/// 0xRRGGBB in `color` (none while 0); a `column` (a pour) shows its sides,
++/// whole, while its colour is set.
++#[derive(Clone, Debug, Default, PartialEq)]
++pub struct Liquid {
++    pub bounds: [f32; 6],
++    pub value: usize,
++    pub max: Option<usize>,
++    pub color: usize,
++    pub sprite: String,
++    pub column: bool,
++}
++
 +/// Which animation a block state plays: `property` is (or is not) `value`.
 +#[derive(Clone, Debug)]
 +pub struct Play {
@@ -901,6 +938,7 @@ index 000000000..98468d27f
 +    pub radius: f32,
 +    pub animations: Vec<Animation>,
 +    pub play: Vec<Play>,
++    pub liquids: Vec<Liquid>,
 +    /// Bones no animation moves, nor their ancestors: drawn from a cache.
 +    pub still: Vec<bool>,
 +    /// Triangles in the model.
@@ -1053,7 +1091,38 @@ index 000000000..98468d27f
 +
 +/// Reads one model file.
 +pub fn parse(root: &Path, block: &str, doc: &Value) -> Result<Model, String> {
-+    let obj = doc["obj"].as_str().ok_or("no obj")?;
++    let mut liquids = Vec::new();
++    for l in doc["liquids"].as_array().into_iter().flatten() {
++        let b = l["box"]
++            .as_array()
++            .filter(|b| b.len() == 6)
++            .ok_or("a liquid without box")?;
++        let mut bounds = [0.0; 6];
++        for (o, v) in bounds.iter_mut().zip(b) {
++            *o = v.as_f64().ok_or("a liquid's box: not numbers")? as f32;
++        }
++        let t = l["texture"].as_str().ok_or("a liquid without texture")?;
++        let (sprite, _) = crate::mod_screens::texture_sprite(root, t)
++            .ok_or("a liquid's texture: not <ns>:textures/<path>")?;
++        liquids.push(Liquid {
++            bounds,
++            value: l["value"].as_u64().unwrap_or(0) as usize,
++            max: l["max"].as_u64().map(|m| m as usize),
++            color: l["color"].as_u64().ok_or("a liquid without color")? as usize,
++            sprite,
++            column: l["column"].as_bool().unwrap_or(false),
++        });
++    }
++    // A liquid file (`horizon_liquid`) has no OBJ: the block's own model stays.
++    let Some(obj) = doc["obj"].as_str() else {
++        return Ok(Model {
++            block: block.to_owned(),
++            scale: 1.0,
++            radius: doc["radius"].as_f64().unwrap_or(1.0) as f32,
++            liquids,
++            ..Default::default()
++        });
++    };
 +    let obj = reference_path(root, obj).ok_or("obj: not <ns>:<path>")?;
 +    let texture = doc["texture"].as_str().ok_or("no texture")?;
 +    let (sprite, _) = crate::mod_screens::texture_sprite(root, texture)
@@ -1153,15 +1222,19 @@ index 000000000..98468d27f
 +        radius: doc["radius"].as_f64().unwrap_or(1.0) as f32,
 +        animations,
 +        play,
++        liquids,
 +        still,
 +        triangles,
 +    })
 +}
 +
-+/// Every model of `root`, by block.
++/// Every model of `root`, by block: OBJ models and liquid files.
 +pub fn load(root: &Path) -> Vec<Model> {
 +    let mut out = Vec::new();
-+    for (block, path) in crate::mod_screens::asset_files(root, "horizon_model") {
++    let files = crate::mod_screens::asset_files(root, "horizon_model")
++        .into_iter()
++        .chain(crate::mod_screens::asset_files(root, "horizon_liquid"));
++    for (block, path) in files {
 +        let doc = fs::read(&path)
 +            .ok()
 +            .and_then(|b| serde_json::from_slice::<Value>(&b).ok());
@@ -1248,6 +1321,69 @@ index 000000000..98468d27f
 +        world
 +    }
 +
++    /// The liquids at `data` (the block entity's values), as quads placed
++    /// by `place` (the block's corner, camera-relative) and turned by `yaw`.
++    pub fn emit_liquids(
++        &self,
++        data: &[i32],
++        yaw: f32,
++        place: Mat4,
++        light: u32,
++        sprites: &std::collections::HashMap<String, Rect>,
++        out: &mut Vec<Vertex>,
++    ) {
++        let value = |i: usize| data.get(i).copied().unwrap_or(0);
++        let m = place
++            * Mat4::from_translation(Vec3::new(0.5, 0.0, 0.5))
++            * Mat4::from_rotation_y(yaw.to_radians())
++            * Mat4::from_translation(Vec3::new(-0.5, 0.0, -0.5));
++        for l in &self.liquids {
++            let rgb = value(l.color) as u32 & 0xFF_FFFF;
++            if rgb == 0 {
++                continue;
++            }
++            let Some(r) = sprites.get(&l.sprite).copied() else {
++                continue;
++            };
++            let [x0, y0, z0, x1, y1, z1] = l.bounds;
++            let color = 255 << 24 | (rgb & 255) << 16 | (rgb >> 8 & 255) << 8 | rgb >> 16;
++            let mut quad = |corners: [Vec3; 4]| {
++                let uvs = [[r.u0, r.v0], [r.u0, r.v1], [r.u1, r.v1], [r.u1, r.v0]];
++                for (c, uv) in corners.into_iter().zip(uvs) {
++                    out.push(Vertex {
++                        pos: m.transform_point3(c).to_array(),
++                        uv,
++                        layer: 0,
++                        color,
++                        light,
++                        normal: [0; 4],
++                        glint_uv: [0.0, 0.0],
++                    });
++                }
++            };
++            let v = Vec3::new;
++            if l.column {
++                quad([v(x0, y0, z0), v(x0, y1, z0), v(x1, y1, z0), v(x1, y0, z0)]);
++                quad([v(x1, y0, z1), v(x1, y1, z1), v(x0, y1, z1), v(x0, y0, z1)]);
++                quad([v(x0, y0, z1), v(x0, y1, z1), v(x0, y1, z0), v(x0, y0, z0)]);
++                quad([v(x1, y0, z0), v(x1, y1, z0), v(x1, y1, z1), v(x1, y0, z1)]);
++                continue;
++            }
++            let f = match l.max {
++                Some(max) if value(max) > 0 => {
++                    (value(l.value) as f32 / value(max) as f32).clamp(0.0, 1.0)
++                }
++                Some(_) => 0.0,
++                None => 1.0,
++            };
++            if f <= 0.0 {
++                continue;
++            }
++            let y = y0 + (y1 - y0) * f;
++            quad([v(x0, y, z0), v(x0, y, z1), v(x1, y, z1), v(x1, y, z0)]);
++        }
++    }
++
 +    /// Bone `bone` as quads in the model's frame, for the GPU to pose: its
 +    /// UVs on `sprite`, its normals for the shader to light (`w` 127), white.
 +    pub fn bone_mesh(&self, bone: usize, sprite: Rect) -> Vec<Vertex> {
@@ -1330,6 +1466,65 @@ index 000000000..98468d27f
 +    }
 +
 +    #[test]
++    fn a_liquid_rises_with_its_value_and_hides_without_colour() {
++        let m = Model {
++            liquids: vec![
++                Liquid {
++                    bounds: [0.125, 0.125, 0.125, 0.875, 0.375, 0.875],
++                    value: 0,
++                    max: Some(1),
++                    color: 2,
++                    sprite: "s".into(),
++                    column: false,
++                },
++                Liquid {
++                    bounds: [0.4, -1.0, 0.4, 0.6, 0.5, 0.6],
++                    value: 0,
++                    max: None,
++                    color: 3,
++                    sprite: "s".into(),
++                    column: true,
++                },
++            ],
++            ..Default::default()
++        };
++        let sprites: std::collections::HashMap<String, Rect> = [(
++            "s".to_string(),
++            Rect {
++                u0: 0.0,
++                v0: 0.0,
++                u1: 1.0,
++                v1: 1.0,
++                w: 16,
++                h: 16,
++            },
++        )]
++        .into();
++        let mut out = Vec::new();
++        m.emit_liquids(
++            &[72, 144, 0xFF8000, 0],
++            0.0,
++            Mat4::IDENTITY,
++            0,
++            &sprites,
++            &mut out,
++        );
++        assert_eq!(out.len(), 4, "half full, its pour stopped");
++        assert!((out[0].pos[1] - 0.25).abs() < 1e-5);
++        assert_eq!(out[0].color, 255 << 24 | 0x00 << 16 | 0x80 << 8 | 0xFF);
++        out.clear();
++        m.emit_liquids(
++            &[72, 144, 0, 0x00FF00],
++            0.0,
++            Mat4::IDENTITY,
++            0,
++            &sprites,
++            &mut out,
++        );
++        assert_eq!(out.len(), 16, "no colour, no level; the pour's four sides");
++    }
++
++    #[test]
 +    fn a_child_follows_its_parent() {
 +        let bone = |name: &str, parent: Option<usize>| Bone {
 +            name: name.into(),
@@ -1360,10 +1555,10 @@ index 000000000..98468d27f
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
 new file mode 100644
-index 000000000..447832c6e
+index 000000000..a7dfb20f8
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_screens.rs
-@@ -0,0 +1,477 @@
+@@ -0,0 +1,489 @@
 +//! Screens of content mods' machines (`horizon_world::mod_machines`): the
 +//! machine's own background texture, with bars, lights and tooltips drawn
 +//! from the values the mod sets. Each `assets/<namespace>/horizon_screen/<name>.json`
@@ -1375,6 +1570,7 @@ index 000000000..447832c6e
 +//!   "texture": "ntm:textures/gui/processing/gui_assembler.png",
 +//!   "size": [176, 256],                      the screen, drawn from the texture's top left
 +//!   "title": [70, 6, "center"],              x, y, alignment ("left" or "center")
++//!   "title_color": "#ffffff",                the title's colour (vanilla's grey without it)
 +//!   "inventory_label": [8, 162],             null: none
 +//!   "bars": [                                value `value` of `max` (a value's index, or "max_value")
 +//!     {"value": 0, "max": 1, "rect": [152, 18, 16, 61], "uv": [176, 0], "dir": "up"},
@@ -1455,6 +1651,8 @@ index 000000000..447832c6e
 +    pub file: PathBuf,
 +    pub size: [f32; 2],
 +    pub title: Option<([f32; 2], bool)>,
++    /// The title's colour as 0xRRGGBB, when not vanilla's grey.
++    pub title_color: Option<u32>,
 +    pub inventory_label: Option<[f32; 2]>,
 +    pub bars: Vec<Bar>,
 +    pub overlays: Vec<Overlay>,
@@ -1536,6 +1734,9 @@ index 000000000..447832c6e
 +        Value::Null => Some(([8.0, 6.0], false)),
 +        t => floats::<2>(t).map(|p| (p, t.get(2).and_then(Value::as_str) == Some("center"))),
 +    };
++    let title_color = doc["title_color"]
++        .as_str()
++        .and_then(|c| u32::from_str_radix(c.strip_prefix('#')?, 16).ok());
 +    let inventory_label = match doc.get("inventory_label") {
 +        None => Some([8.0, size[1] - 94.0]),
 +        Some(v) => floats::<2>(v),
@@ -1608,6 +1809,7 @@ index 000000000..447832c6e
 +        file,
 +        size,
 +        title,
++        title_color,
 +        inventory_label,
 +        bars,
 +        overlays,
@@ -1647,15 +1849,19 @@ index 000000000..447832c6e
 +/// loads into a GUI slot when it opens: `hud::GUI_SLOTS`).
 +pub fn textures(root: &Path) -> Vec<(String, PathBuf)> {
 +    let mut out: Vec<(String, PathBuf)> = Vec::new();
-+    for folder in ["horizon_model"] {
++    for folder in ["horizon_model", "horizon_liquid"] {
 +        for (_, path) in asset_files(root, folder) {
-+            if let Some(t) = read(&path)
-+                .as_ref()
-+                .and_then(|d| d["texture"].as_str().map(str::to_owned))
-+                && let Some(found) = texture_sprite(root, &t)
-+                && !out.iter().any(|(n, _)| *n == found.0)
-+            {
-+                out.push(found);
++            let Some(doc) = read(&path) else { continue };
++            let liquids = doc["liquids"].as_array().cloned().unwrap_or_default();
++            let named = std::iter::once(&doc)
++                .chain(&liquids)
++                .filter_map(|d| d["texture"].as_str().map(str::to_owned));
++            for t in named {
++                if let Some(found) = texture_sprite(root, &t)
++                    && !out.iter().any(|(n, _)| *n == found.0)
++                {
++                    out.push(found);
++                }
 +            }
 +        }
 +    }
@@ -1835,6 +2041,7 @@ index 000000000..447832c6e
 +        let def = parse(Path::new("/r"), &doc).unwrap();
 +        assert_eq!(def.sprite, "ntm:gui/a");
 +        assert_eq!(def.title, Some(([70.0, 6.0], true)));
++        assert_eq!(def.title_color, None);
 +        assert_eq!(def.inventory_label, Some([8.0, 162.0]));
 +        assert_eq!(def.tooltip(5.0, 5.0, &[42]), Some(vec!["42".into()]));
 +        assert_eq!(def.button_at(21.0, 21.0), Some(2));
@@ -2228,10 +2435,10 @@ index 4a6fca181..ff6f945ae 100644
              .as_ref()
 diff --git a/crates/horizon-client/src/game/mod_machines.rs b/crates/horizon-client/src/game/mod_machines.rs
 new file mode 100644
-index 000000000..e58a30178
+index 000000000..f04b49f5e
 --- /dev/null
 +++ b/crates/horizon-client/src/game/mod_machines.rs
-@@ -0,0 +1,341 @@
+@@ -0,0 +1,348 @@
 +//! Content mods' machines in the game (`horizon_world::mod_machines`): a
 +//! multiblock breaks as one block, whichever of its cells the player mines.
 +use super::Game;
@@ -2378,7 +2585,14 @@ index 000000000..e58a30178
 +            } else {
 +                title_at[0]
 +            };
-+            batch.text_styled(atlas, &title, ox + tx, oy + title_at[1], grey, false);
++            let colour = screen
++                .as_ref()
++                .and_then(|s| s.title_color)
++                .map_or(grey, |c| {
++                    let [_, r, g, b] = c.to_be_bytes();
++                    rgba(r, g, b, 255)
++                });
++            batch.text_styled(atlas, &title, ox + tx, oy + title_at[1], colour, false);
 +        }
 +        let label = screen.as_ref().map_or(
 +            Some([def.inventory[0] as f32, def.inventory[1] as f32 - 12.0]),
@@ -2589,29 +2803,34 @@ index fb0c3b341..290b6d410 100644
                      continue;
                  }
 diff --git a/crates/horizon-client/src/game/remote.rs b/crates/horizon-client/src/game/remote.rs
-index 0e5f69fa0..403eeaa9b 100644
+index 0e5f69fa0..a778a7448 100644
 --- a/crates/horizon-client/src/game/remote.rs
 +++ b/crates/horizon-client/src/game/remote.rs
-@@ -1182,6 +1182,18 @@ impl Game<'_> {
+@@ -1182,6 +1182,23 @@ impl Game<'_> {
              }
              return;
          }
 +        // A content mod's machine: the way its placer faced.
 +        if name == horizon_client::lan::chunks::MOD_MACHINE {
-+            if let Some(BlockEntity::ModContainer(m)) = self.world.block_entities.get_mut(&key)
-+                && let Some(f) = tag.get("horizon_facing").and_then(|t| match t {
-+                    Tag::Byte(b) => Some(*b as u8 & 3),
-+                    _ => None,
-+                })
-+            {
-+                m.facing = Some(f);
++            if let Some(BlockEntity::ModContainer(m)) = self.world.block_entities.get_mut(&key) {
++                if let Some(Tag::Byte(b)) = tag.get("horizon_facing") {
++                    m.facing = Some(*b as u8 & 3);
++                }
++                // The values its file syncs, as index, value pairs.
++                if let Some(Tag::IntArray(pairs)) = tag.get("horizon_synced") {
++                    for &[i, v] in pairs.as_chunks::<2>().0 {
++                        if let Some(d) = usize::try_from(i).ok().and_then(|i| m.data.get_mut(i)) {
++                            *d = v;
++                        }
++                    }
++                }
 +            }
 +            return;
 +        }
          let Some(entity) = self.world.block_entities.get(&key) else {
              return;
          };
-@@ -1643,6 +1655,10 @@ impl Game<'_> {
+@@ -1643,6 +1660,10 @@ impl Game<'_> {
              "minecraft:generic_9x4" => rows(4),
              "minecraft:generic_9x5" => rows(5),
              "minecraft:generic_9x6" => rows(6),
@@ -2622,7 +2841,7 @@ index 0e5f69fa0..403eeaa9b 100644
              // HopperMenu; DispenserMenu (dispensers and droppers).
              "minecraft:hopper" => slots(5),
              "minecraft:generic_3x3" => slots(9),
-@@ -2763,6 +2779,19 @@ impl Game<'_> {
+@@ -2763,6 +2784,19 @@ impl Game<'_> {
                          Ok(9) => c.triggered = v == 1,
                          _ => {}
                      },
@@ -2642,7 +2861,7 @@ index 0e5f69fa0..403eeaa9b 100644
                      // BrewingStandBlockEntity.dataAccess.
                      Some(BlockEntity::Brewing(b)) => match p.id {
                          0 => b.brew_time = v,
-@@ -5916,6 +5945,8 @@ impl Game<'_> {
+@@ -5916,6 +5950,8 @@ impl Game<'_> {
              "minecraft:generic_3x3" => Some(BlockEntity::Chest(vec![None; 9])),
              // CrafterMenu: the disabled slots and triggered come in ContainerSetData.
              "minecraft:crafter_3x3" => Some(BlockEntity::Crafter(Default::default())),
@@ -2652,7 +2871,7 @@ index 0e5f69fa0..403eeaa9b 100644
                  let rows = m
                      .strip_prefix("minecraft:generic_9x")
 diff --git a/crates/horizon-client/src/game/server_mods.rs b/crates/horizon-client/src/game/server_mods.rs
-index a5a4b0f3f..f8fa9d86d 100644
+index a5a4b0f3f..08b489036 100644
 --- a/crates/horizon-client/src/game/server_mods.rs
 +++ b/crates/horizon-client/src/game/server_mods.rs
 @@ -48,19 +48,24 @@ impl Game<'_> {
@@ -2692,7 +2911,7 @@ index a5a4b0f3f..f8fa9d86d 100644
      }
      impl WorldView for LentWorld {
          fn block(&self, dimension: &str, x: i32, y: i32, z: i32) -> Option<String> {
-@@ -99,6 +108,31 @@ mod run {
+@@ -99,6 +108,38 @@ mod run {
                  .map(drop)
                  .map_err(|e| format!("{state}: {e}"))
          }
@@ -2721,10 +2940,17 @@ index a5a4b0f3f..f8fa9d86d 100644
 +        fn max_stack(&self, id: &str) -> Option<u32> {
 +            self.res.items().get(id).map(|i| i.max_stack)
 +        }
++        fn machine_data(&self, dimension: &str, pos: [i32; 3]) -> Option<Vec<i32>> {
++            let (_, entities) = self.entities.iter().find(|(d, _)| *d == dimension)?;
++            match entities.get(&(pos[0], pos[1], pos[2])) {
++                Some(BlockEntity::ModContainer(m)) => Some(m.data.clone()),
++                _ => None,
++            }
++        }
      }
  
      /// Server mods' commands as a root of the commands report
-@@ -341,10 +375,21 @@ mod run {
+@@ -341,10 +382,21 @@ mod run {
              }
              let registry = self.pack.assets.registry;
              let biomes = self.res.biomes().clone();
@@ -2746,7 +2972,7 @@ index a5a4b0f3f..f8fa9d86d 100644
              }));
          }
  
-@@ -361,6 +406,13 @@ mod run {
+@@ -361,6 +413,13 @@ mod run {
              if let Some(i) = dims.iter().position(|(d, _)| *d == self.dim.id()) {
                  self.world.chunks = dims.swap_remove(i).1;
              }
@@ -2760,7 +2986,7 @@ index a5a4b0f3f..f8fa9d86d 100644
              for (dim, chunks) in self.levels.parked_chunks() {
                  if let Some(i) = dims.iter().position(|(d, _)| *d == dim.id()) {
                      *chunks = dims.swap_remove(i).1;
-@@ -368,6 +420,53 @@ mod run {
+@@ -368,6 +427,53 @@ mod run {
              }
          }
  
@@ -2814,7 +3040,7 @@ index a5a4b0f3f..f8fa9d86d 100644
          /// Makes the blocks server mods set in the level in place, in order,
          /// as `/setblock` does. Those of other dimensions wait for their level.
          pub(in crate::game) fn apply_mod_block_writes(&mut self) {
-@@ -399,6 +498,20 @@ mod run {
+@@ -399,6 +505,20 @@ mod run {
              }
          }
  
@@ -2835,7 +3061,7 @@ index a5a4b0f3f..f8fa9d86d 100644
          /// A player broke (or placed) `state` at `pos`: the player acting now.
          pub(in crate::game) fn mod_block_event(
              &mut self,
-@@ -554,6 +667,24 @@ mod run {
+@@ -554,6 +674,38 @@ mod run {
                          self.tell_server_player(host.as_deref_mut(), &p.id, line);
                      }
                  }
@@ -2850,10 +3076,24 @@ index a5a4b0f3f..f8fa9d86d 100644
 +                    pos,
 +                    values,
 +                } => {
++                    let in_place = dimension == self.dim.id();
 +                    if let Some(BlockEntity::ModContainer(m)) = self.machine_entity(&dimension, pos)
 +                    {
++                        let synced = horizon_world::mod_machines::get(&m.block)
++                            .map(|d| d.synced.clone())
++                            .unwrap_or_default();
++                        let before: Vec<i32> = synced.iter().map(|&i| m.data[i]).collect();
 +                        for (d, v) in m.data.iter_mut().zip(values) {
 +                            *d = v;
++                        }
++                        // What clients draw changed: the block goes to them again,
++                        // with its block entity's tag (`lan::chunks::entity_tag`).
++                        let changed = synced.iter().zip(&before).any(|(&i, b)| m.data[i] != *b);
++                        if changed
++                            && in_place
++                            && let Some(log) = self.world.block_log.as_mut()
++                        {
++                            log.push((pos[0], pos[1], pos[2]));
 +                        }
 +                    }
 +                }
@@ -2861,7 +3101,7 @@ index a5a4b0f3f..f8fa9d86d 100644
                      name,
                      dimension,
 diff --git a/crates/horizon-client/src/lan/chunks.rs b/crates/horizon-client/src/lan/chunks.rs
-index b93197dc0..cb5a9efb8 100644
+index b93197dc0..1f882fe81 100644
 --- a/crates/horizon-client/src/lan/chunks.rs
 +++ b/crates/horizon-client/src/lan/chunks.rs
 @@ -30,6 +30,10 @@ const ENTITY: u8 = 4;
@@ -2875,7 +3115,7 @@ index b93197dc0..cb5a9efb8 100644
      let n = name.strip_prefix("minecraft:")?;
      Some(match n {
          "chest" => "minecraft:chest",
-@@ -936,8 +940,15 @@ fn java_hash_order<T>(items: &mut Vec<T>, pos: impl Fn(&T) -> (i32, i32, i32)) {
+@@ -936,8 +940,31 @@ fn java_hash_order<T>(items: &mut Vec<T>, pos: impl Fn(&T) -> (i32, i32, i32)) {
  }
  
  /// The update tag of a block entity (getUpdateTag) for what the client shows.
@@ -2885,9 +3125,25 @@ index b93197dc0..cb5a9efb8 100644
  pub fn entity_tag(entity: &BlockEntity) -> Option<Tag> {
      match entity {
 +        // What the client draws by: the way the placer faced.
-+        BlockEntity::ModContainer(m) => m
-+            .facing
-+            .map(|f| Tag::compound(vec![("horizon_facing", Tag::Byte(f as i8))])),
++        BlockEntity::ModContainer(m) => {
++            let mut entries = Vec::new();
++            if let Some(f) = m.facing {
++                entries.push(("horizon_facing", Tag::Byte(f as i8)));
++            }
++            // The values its file syncs (a model's liquids), as index, value pairs.
++            if let Some(def) = horizon_world::mod_machines::get(&m.block)
++                && !def.synced.is_empty()
++            {
++                let pairs = def
++                    .synced
++                    .iter()
++                    .filter_map(|&i| Some([i as i32, *m.data.get(i)?]))
++                    .flatten()
++                    .collect();
++                entries.push(("horizon_synced", Tag::IntArray(pairs)));
++            }
++            (!entries.is_empty()).then(|| Tag::compound(entries))
++        }
          BlockEntity::Sign(sign) => Some(Tag::compound(sign.encode())),
          BlockEntity::Spawner(s) => Some(s.update_tag()),
          // BannerBlockEntity.getUpdateTag: saveWithoutMetadata, so the patterns,
@@ -3019,7 +3275,7 @@ index 1aeeec1e1..54d69f0b0 100644
                  // AbstractMountInventoryMenu.quickMoveStack: no count check
                  // and no onTake.
 diff --git a/crates/horizon-client/src/mod_content.rs b/crates/horizon-client/src/mod_content.rs
-index 5815d1bc3..796a9779a 100644
+index 5815d1bc3..aa3d87952 100644
 --- a/crates/horizon-client/src/mod_content.rs
 +++ b/crates/horizon-client/src/mod_content.rs
 @@ -19,7 +19,7 @@ use horizon_mods::content::{Block, Content, Rarity};
@@ -3039,7 +3295,7 @@ index 5815d1bc3..796a9779a 100644
  }
  
  struct Plan<'a> {
-@@ -250,6 +251,14 @@ struct Plan<'a> {
+@@ -250,6 +251,18 @@ struct Plan<'a> {
      /// accept as `#<ns>:<path>` once they are in the exported registries.
      item_tags: Vec<String>,
      block_tags: Vec<String>,
@@ -3051,10 +3307,14 @@ index 5815d1bc3..796a9779a 100644
 +    /// through, as HBM's machines do (`isOpaqueCube` false), whatever their
 +    /// template.
 +    see_through: BTreeSet<String>,
++    /// Blocks a liquid file draws over (`horizon_liquid`): the block-entity
++    /// renderer reaches them, their own model stays, and they are as open
++    /// as the modelled ones (HBM's foundry blocks are not opaque cubes).
++    liquid_drawn: BTreeSet<String>,
  }
  
  fn read_json(path: &Path) -> Result<J> {
-@@ -360,19 +369,38 @@ impl<'a> Plan<'a> {
+@@ -360,19 +373,48 @@ impl<'a> Plan<'a> {
                      rename: Rename::new(item, &b.decl.id),
                      max_stack_size: None,
                      rarity: None,
@@ -3065,6 +3325,7 @@ index 5815d1bc3..796a9779a 100644
 -        let (mut item_tags, mut block_tags) = (Vec::new(), Vec::new());
 +        let (mut item_tags, mut block_tags, mut menus) = (Vec::new(), Vec::new(), Vec::new());
 +        let mut see_through = BTreeSet::new();
++        let mut liquid_drawn = BTreeSet::new();
          for m in &sorted {
              for i in &m.content.items {
                  items.push(NewItem {
@@ -3091,38 +3352,62 @@ index 5815d1bc3..796a9779a 100644
 +                {
 +                    see_through.insert(format!("{ns}:{name}"));
 +                }
++                // A liquid file draws over the block's own model.
++                if let Some((ns, name)) = file
++                    .strip_prefix("assets/")
++                    .and_then(|f| f.strip_suffix(".json"))
++                    .and_then(|f| f.split_once("/horizon_liquid/"))
++                    .filter(|(_, name)| !name.contains('/'))
++                {
++                    liquid_drawn.insert(format!("{ns}:{name}"));
++                }
                  let Some((ns, rest)) = file
                      .strip_prefix("data/")
                      .and_then(|f| f.strip_suffix(".json"))
-@@ -395,6 +423,8 @@ impl<'a> Plan<'a> {
+@@ -395,6 +437,9 @@ impl<'a> Plan<'a> {
              sounds,
              item_tags,
              block_tags,
 +            menus,
 +            see_through,
++            liquid_drawn,
          })
      }
  
-@@ -462,6 +492,18 @@ impl<'a> Plan<'a> {
+@@ -462,6 +507,32 @@ impl<'a> Plan<'a> {
          if let Some(s) = &p.sounds {
              row.set("sound", self.sounds[s].clone());
          }
-+        if self.see_through.contains(&b.decl.id) {
-+            // The block-entity renderer draws it, whatever its template, and
-+            // the chunk mesh leaves it out: its blockstate's model (the cube a
-+            // game without models shows) only gives the particles.
++        let modelled = self.see_through.contains(&b.decl.id);
++        if self.is_open(&b.decl.id) {
++            // A block with a model or a liquid file is open (a machine, a
++            // mold, a channel; the liquid file may list none): it hides no
++            // neighbour's faces and light passes, whatever its template
++            // (`BlockBehaviour.Properties.noOcclusion`). Its block entity
++            // draws the model and the liquids.
 +            row.set("block_entity", J::Bool(true));
-+            row.set("render_shape", J::Str("ENTITYBLOCK_ANIMATED".into()));
 +            row.set("dampening", J::Num(0.into()));
 +            row.set("skylight_down", J::Bool(true));
 +            for key in ["shape_occlusion", "can_occlude", "solid_render"] {
 +                row.set(key, J::Bool(false));
 +            }
 +        }
++        if modelled {
++            // The chunk mesh leaves it out: its blockstate's model (the cube
++            // a game without models shows) only gives the particles. A
++            // liquid's block keeps its own model.
++            row.set("render_shape", J::Str("ENTITYBLOCK_ANIMATED".into()));
++        }
++    }
++
++    /// Whether a block's model or liquid file draws it: it is open, as
++    /// HBM's machines and foundry blocks are (`isOpaqueCube` false).
++    fn is_open(&self, id: &str) -> bool {
++        self.see_through.contains(id) || self.liquid_drawn.contains(id)
      }
  
      /// Adds each new block's copy of the template's entry to a map by name.
-@@ -490,6 +532,11 @@ impl<'a> Plan<'a> {
+@@ -490,6 +561,11 @@ impl<'a> Plan<'a> {
                  if let Some(n) = i.max_stack_size {
                      v.set("minecraft:max_stack_size", J::Num(n.into()));
                  }
@@ -3134,7 +3419,25 @@ index 5815d1bc3..796a9779a 100644
                  if let Some(r) = i.rarity {
                      let r = match r {
                          Rarity::Common => "common",
-@@ -567,6 +614,16 @@ impl<'a> Plan<'a> {
+@@ -552,7 +628,16 @@ impl<'a> Plan<'a> {
+             "model-states.json"
+             | "landing-definitions.json"
+             | "worldgen/blocks/survival-rules.json" => self.names(doc, false),
+-            "render-definitions.json" => self.names(doc, true),
++            "render-definitions.json" => {
++                self.names(doc, true);
++                // An open block hides no neighbour's faces (`canOcclude`).
++                for b in self.blocks.iter().filter(|b| self.is_open(&b.decl.id)) {
++                    if let Some(mut v) = doc.get(&b.decl.id).cloned() {
++                        v.set("can_occlude", J::Bool(false));
++                        doc.set(&b.decl.id, v);
++                    }
++                }
++            }
+             "worldgen/blocks/survival-extra-definitions.json" => {
+                 if let Some(map) = doc.at("ignition_odds") {
+                     self.names(map, false);
+@@ -567,6 +652,16 @@ impl<'a> Plan<'a> {
                  for (registry, names) in [
                      ("minecraft:item", new_items.collect::<Vec<_>>()),
                      ("minecraft:block", new_blocks.collect()),
@@ -3208,10 +3511,10 @@ index 1e7120091..271e9b11f 100644
      pub use horizon::mods::world::{self, BlockChange};
  
 diff --git a/crates/horizon-mod-sdk/wit/horizon.wit b/crates/horizon-mod-sdk/wit/horizon.wit
-index 0680cce92..230fb3f44 100644
+index 0680cce92..dc631b7bf 100644
 --- a/crates/horizon-mod-sdk/wit/horizon.wit
 +++ b/crates/horizon-mod-sdk/wit/horizon.wit
-@@ -691,6 +691,49 @@ interface %world {
+@@ -691,6 +691,53 @@ interface %world {
      set-blocks: func(dimension: string, blocks: list<block-change>) -> result<_, string>;
  }
  
@@ -3256,12 +3559,16 @@ index 0680cce92..230fb3f44 100644
 +    set-data: func(dimension: string, x: s32, y: s32, z: s32, values: list<s32>) -> bool;
 +    /// The button presses since the last call, oldest first (at most 256).
 +    poll-buttons: func() -> list<button-press>;
++    /// The machine's values as last set (saved with the chunk, so a mod
++    /// keeps there what must not part from the slots), as of this call:
++    /// none where there is no machine.
++    get-data: func(dimension: string, x: s32, y: s32, z: s32) -> option<list<s32>>;
 +}
 +
  /// What the server calls in a server mod (manifest `api = "0.3"`,
  /// experimental). Only the hooks `init` asks for are ever called. The player
  /// in each event is as the server saw them when it happened.
-@@ -802,6 +845,7 @@ world horizon-server-mod {
+@@ -802,6 +849,7 @@ world horizon-server-mod {
      import storage;
      import players;
      import %world;
@@ -3270,7 +3577,7 @@ index 0680cce92..230fb3f44 100644
  }
  
 diff --git a/crates/horizon-mods/src/api_level.rs b/crates/horizon-mods/src/api_level.rs
-index 045a9346b..e9e71e8b0 100644
+index 045a9346b..551181aea 100644
 --- a/crates/horizon-mods/src/api_level.rs
 +++ b/crates/horizon-mods/src/api_level.rs
 @@ -7,13 +7,13 @@
@@ -3278,18 +3585,18 @@ index 045a9346b..e9e71e8b0 100644
  
  /// The newest level this Horizon serves.
 -pub const LEVEL: u32 = 7;
-+pub const LEVEL: u32 = 8;
++pub const LEVEL: u32 = 9;
  
  /// Every function the game offers mods, as `interface.function`, with its
  /// level. Level 0 is the contract of Horizon 0.2.67 to 0.2.69. A new
  /// function takes the next level and raises [`LEVEL`] (the `api_reference`
  /// test fails until it is listed here).
 -pub const FUNCTIONS: [(&str, u32); 46] = [
-+pub const FUNCTIONS: [(&str, u32); 50] = [
++pub const FUNCTIONS: [(&str, u32); 51] = [
      ("log.write", 0),
      ("game.get-player", 0),
      ("game.get-clock", 0),
-@@ -60,6 +60,10 @@ pub const FUNCTIONS: [(&str, u32); 46] = [
+@@ -60,6 +60,11 @@ pub const FUNCTIONS: [(&str, u32); 46] = [
      ("recipes.place", 6),
      ("recipes.give", 6),
      ("render.set-far-terrain", 7),
@@ -3297,6 +3604,7 @@ index 045a9346b..e9e71e8b0 100644
 +    ("machines.set-slot", 8),
 +    ("machines.set-data", 8),
 +    ("machines.poll-buttons", 8),
++    ("machines.get-data", 9),
  ];
  
  /// What the game's program carries so the launcher can read its level
@@ -3440,7 +3748,7 @@ index c2f2f61fc..6745a7d53 100644
          f.write_str(name)
      }
 diff --git a/crates/horizon-mods/src/runtime.rs b/crates/horizon-mods/src/runtime.rs
-index cff44722b..6624fc7d3 100644
+index cff44722b..01f1f15d5 100644
 --- a/crates/horizon-mods/src/runtime.rs
 +++ b/crates/horizon-mods/src/runtime.rs
 @@ -3,7 +3,7 @@ use crate::manifest::{Manifest, Package, Side};
@@ -3484,7 +3792,7 @@ index cff44722b..6624fc7d3 100644
  }
  
  /// The game's world as capability `world` reads it during a call: the
-@@ -261,6 +279,15 @@ pub trait WorldView: std::any::Any + Send {
+@@ -261,6 +279,19 @@ pub trait WorldView: std::any::Any + Send {
      fn has_dimension(&self, dimension: &str) -> bool;
      /// `Err` (why) for a state string that names no block state.
      fn check_state(&self, state: &str) -> Result<(), String>;
@@ -3497,10 +3805,14 @@ index cff44722b..6624fc7d3 100644
 +    fn max_stack(&self, _id: &str) -> Option<u32> {
 +        None
 +    }
++    /// A machine's values (capability `machines`); none without a machine.
++    fn machine_data(&self, _dimension: &str, _pos: [i32; 3]) -> Option<Vec<i32>> {
++        None
++    }
  }
  
  /// The view lent for the current calls, shared by every mod's store.
-@@ -427,6 +454,8 @@ struct State {
+@@ -427,6 +458,8 @@ struct State {
      storage_budget: u64,
      limits: StoreLimits,
      world: WorldSlot,
@@ -3509,7 +3821,7 @@ index cff44722b..6624fc7d3 100644
  }
  
  /// The installed mods and the engine running them. `Mods::default()` is
-@@ -542,6 +571,8 @@ impl Mods {
+@@ -542,6 +575,8 @@ impl Mods {
                  .map_err(|e| e.to_string())?;
              mod_world::add_to_linker::<State, HasSelf<State>>(&mut linker, |s| s)
                  .map_err(|e| e.to_string())?;
@@ -3518,7 +3830,7 @@ index cff44722b..6624fc7d3 100644
              UiHost::add_to_linker::<State, HasSelf<State>>(&mut linker, |s| s)
                  .map_err(|e| e.to_string())?;
              RenderHost::add_to_linker::<State, HasSelf<State>>(&mut linker, |s| s)
-@@ -628,6 +659,7 @@ impl Mods {
+@@ -628,6 +663,7 @@ impl Mods {
                  .instances(16)
                  .build(),
              world,
@@ -3526,7 +3838,7 @@ index cff44722b..6624fc7d3 100644
          };
          let mut store = Store::new(engine, state);
          store.limiter(|s| &mut s.limits);
-@@ -985,6 +1017,18 @@ impl Mods {
+@@ -985,6 +1021,18 @@ impl Mods {
          let b = &self.entries.get(owner)?.run.as_ref()?.store.data().browser;
          b.recipes.as_ref()
      }
@@ -3545,7 +3857,7 @@ index cff44722b..6624fc7d3 100644
      /// The player did `event` on mod `owner`'s panel.
      pub fn browser_event(&mut self, owner: usize, event: BrowserEvent) {
          if let Some(run) = self.entries.get_mut(owner).and_then(|e| e.run.as_mut()) {
-@@ -1593,6 +1637,80 @@ impl mod_world::Host for State {
+@@ -1593,6 +1641,84 @@ impl mod_world::Host for State {
          Ok(())
      }
  }
@@ -3622,15 +3934,19 @@ index cff44722b..6624fc7d3 100644
 +    fn poll_buttons(&mut self) -> Vec<MachineButton> {
 +        std::mem::take(&mut self.buttons)
 +    }
++    fn get_data(&mut self, dimension: String, x: i32, y: i32, z: i32) -> Option<Vec<i32>> {
++        let view = self.world.lock().ok()?;
++        view.as_ref()?.machine_data(&dimension, [x, y, z])
++    }
 +}
  impl players::Host for State {
      fn online(&mut self) -> Vec<ServerPlayer> {
          self.snapshot.players.clone()
 diff --git a/crates/horizon-world/src/level/interact.rs b/crates/horizon-world/src/level/interact.rs
-index 210786493..eafd0c3f3 100644
+index 210786493..4f8b75d05 100644
 --- a/crates/horizon-world/src/level/interact.rs
 +++ b/crates/horizon-world/src/level/interact.rs
-@@ -113,6 +113,25 @@ impl<L: LevelAccess + ?Sized> Sim<'_, L> {
+@@ -113,6 +113,31 @@ impl<L: LevelAccess + ?Sized> Sim<'_, L> {
          let data = b.data(state);
          let block = b.block(state);
          use InteractionResult::*;
@@ -3638,12 +3954,18 @@ index 210786493..eafd0c3f3 100644
 +        // opens its core's (HBM's `BlockDummyable.standardOpenBehavior`).
 +        let name = table.name(state);
 +        if !name.starts_with("minecraft:") {
-+            if crate::mod_machines::get(name).is_some() {
++            // A machine with no slots (a channel, a tank) has no menu: its
++            // mod's own screen opens, as for any block.
++            if crate::mod_machines::get(name).is_some_and(|d| !d.slots.is_empty()) {
 +                self.player_effect(pos, state, PlayerEffect::OpenMenu);
 +                return Success;
 +            }
 +            if crate::mod_machines::is_dummy(name) {
-+                return match b.machine_core(&*self.level, pos) {
++                let core = b.machine_core(&*self.level, pos).filter(|&c| {
++                    crate::mod_machines::get(b.table.name(self.state(c)))
++                        .is_some_and(|d| !d.slots.is_empty())
++                });
++                return match core {
 +                    Some(core) => {
 +                        let core_state = self.state(core);
 +                        self.player_effect(core, core_state, PlayerEffect::OpenMenu);
@@ -3784,10 +4106,10 @@ index 6df870d42..5a5ad71f7 100644
  pub mod movement_restitution;
 diff --git a/crates/horizon-world/src/mod_machines.rs b/crates/horizon-world/src/mod_machines.rs
 new file mode 100644
-index 000000000..293c413ab
+index 000000000..ae1caf880
 --- /dev/null
 +++ b/crates/horizon-world/src/mod_machines.rs
-@@ -0,0 +1,409 @@
+@@ -0,0 +1,421 @@
 +//! Machines from content mods: blocks with slots the game keeps, a screen
 +//! layout and, optionally, a multiblock volume. Each
 +//! `data/<namespace>/horizon_machine/<name>.json` in the resource root
@@ -3807,6 +4129,7 @@ index 000000000..293c413ab
 +//!   ],
 +//!   "inventory": [8, 174],                the player's inventory (hotbar 58 below)
 +//!   "data": 4,                            values the mod sets and the screen shows
++//!   "synced": [0, 1, 2],                  those clients get (a model's liquids)
 +//!   "multiblock": {                       the volume around the core, in the placer's frame:
 +//!     "min": [-1, 0, -1], "max": [1, 2, 1], x to the right, y up, z away from the player
 +//!     "offset": 1,                        the core sits this far away from the clicked cell
@@ -3872,12 +4195,14 @@ index 000000000..293c413ab
 +    pub slots: Vec<SlotDef>,
 +    pub inventory: [i32; 2],
 +    pub data: usize,
++    /// The values clients get (a model's liquid levels and colours).
++    pub synced: Vec<usize>,
 +    pub multiblock: Option<Multiblock>,
 +}
 +
 +/// Most slots and data values one machine may declare.
 +pub const MAX_SLOTS: usize = 128;
-+pub const MAX_DATA: usize = 64;
++pub const MAX_DATA: usize = 256;
 +
 +#[derive(Default)]
 +struct Registry {
@@ -3981,6 +4306,13 @@ index 000000000..293c413ab
 +        slots,
 +        inventory: ints::<2>(&doc["inventory"]).unwrap_or([8, 84]),
 +        data,
++        synced: doc["synced"]
++            .as_array()
++            .into_iter()
++            .flatten()
++            .filter_map(|v| v.as_u64().map(|i| i as usize))
++            .filter(|&i| i < data)
++            .collect(),
 +        multiblock,
 +    })
 +}
@@ -4184,7 +4516,7 @@ index 000000000..293c413ab
 +    fn grids_expand_and_rules_read() {
 +        let doc: Value = serde_json::from_str(
 +            r#"{"slots":[{"x":1,"y":2,"accept":["a:b"]},{"grid":[8,18,4,3]},{"x":9,"y":9,"output":true},{"x":0,"y":0,"reject":["a:b"]}],
-+                "data":3,"multiblock":{"min":[-1,0,-1],"max":[1,2,1],"offset":1,"dummy":"a:d"}}"#,
++                "data":3,"synced":[2,0,7],"multiblock":{"min":[-1,0,-1],"max":[1,2,1],"offset":1,"dummy":"a:d"}}"#,
 +        )
 +        .unwrap();
 +        let def = parse("a:m", &doc).unwrap();
@@ -4194,11 +4526,13 @@ index 000000000..293c413ab
 +        assert!(def.slots[0].accepts("a:b") && !def.slots[0].accepts("a:c"));
 +        assert!(!def.slots[13].accepts("a:b"));
 +        assert_eq!(def.screen, "a:m");
++        // A synced index past the values is dropped.
++        assert_eq!(def.synced, [2, 0]);
 +        assert_eq!(def.multiblock.unwrap().offset, 1);
 +    }
 +}
 diff --git a/docs/api/mods-reference.md b/docs/api/mods-reference.md
-index b25ef5b9e..d71bc1a7e 100644
+index b25ef5b9e..778c18ac1 100644
 --- a/docs/api/mods-reference.md
 +++ b/docs/api/mods-reference.md
 @@ -19,6 +19,7 @@ The contract between Horizon and its mods: the WIT package `horizon:mods@0.1.0`,
@@ -4218,7 +4552,7 @@ index b25ef5b9e..d71bc1a7e 100644
  - Exports (what the mod provides): `server-events`
  
  ## World `horizon-ui-mod`
-@@ -687,6 +688,42 @@ Capability `world`, server mods only (manifest `api = "0.3"`, experimental): the
+@@ -687,6 +688,43 @@ Capability `world`, server mods only (manifest `api = "0.3"`, experimental): the
  | `get-biome` | `func(dimension: string, x: s32, y: s32, z: s32) -> option<string>` | The biome at a position (`minecraft:plains`, ...), as the server stores it (one per 4 x 4 x 4 cell): none where no chunk is loaded. |
  | `set-blocks` | `func(dimension: string, blocks: list<block-change>) -> result<_, string>` | Sets blocks as `/setblock` does: the old block entity removed, neighbours and shapes updated, light, and every player told. Every state is checked now (an error queues nothing); the changes are made in order after this call returns, before that dimension's next tick; one in a chunk not loaded then is skipped. At most 4096 per call. |
  
@@ -4257,6 +4591,7 @@ index b25ef5b9e..d71bc1a7e 100644
 +| `set-slot` | `func(dimension: string, x: s32, y: s32, z: s32, slot: u32, stack: option<item-stack>) -> bool` | Sets one slot (none empties it) after this call returns, before players act again; a stack over the item's maximum is cut to it. False for no machine there, a slot out of range or an unknown item. |
 +| `set-data` | `func(dimension: string, x: s32, y: s32, z: s32, values: list<s32>) -> bool` | The values the machine's screen shows (bars, tooltips, lights), from the first: at most the file's `data`, the rest kept. False for no machine there. |
 +| `poll-buttons` | `func() -> list<button-press>` | The button presses since the last call, oldest first (at most 256). |
++| `get-data` | `func(dimension: string, x: s32, y: s32, z: s32) -> option<list<s32>>` | The machine's values as last set (saved with the chunk, so a mod keeps there what must not part from the slots), as of this call: none where there is no machine. |
 +
  ## `server-events`
  
