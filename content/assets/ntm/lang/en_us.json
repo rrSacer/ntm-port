@@ -2550,6 +2550,19 @@
   "item.ntm.mold__mechanism": "Foundry Mold (Mechanism)",
   "item.ntm.mold__stock": "Foundry Mold (Stock)",
   "item.ntm.mold__grip": "Foundry Mold (Grip)",
+  "block.ntm.anvil_iron": "Iron Anvil",
+  "block.ntm.anvil_lead": "Lead Anvil",
+  "block.ntm.anvil_steel": "Steel Anvil",
+  "block.ntm.anvil_desh": "Desh Anvil",
+  "block.ntm.anvil_ferrouranium": "Ferrouranium Anvil",
+  "block.ntm.anvil_saturnite": "Saturnite Anvil",
+  "block.ntm.anvil_bismuth_bronze": "Bismuth Bronze Anvil",
+  "block.ntm.anvil_arsenic_bronze": "Arsenic Bronze Anvil",
+  "block.ntm.anvil_schrabidate": "Ferric Schrabidate Anvil",
+  "block.ntm.anvil_dnt": "Dineutronium Anvil",
+  "block.ntm.anvil_osmiridium": "Osmiridium Anvil",
+  "block.ntm.anvil_murky": "Murky Anvil",
+  "block.ntm.dummy_machine": "Machine (part)",
   "itemGroup.ntm.parts": "NTM Resources and Parts",
   "itemGroup.ntm.control": "NTM Machine Items and Fuel",
   "itemGroup.ntm.blocks": "NTM Ores and Blocks",
@@ -2557,6 +2570,5 @@
   "itemGroup.ntm.bombs": "NTM Bombs",
   "itemGroup.ntm.missiles": "NTM Missiles and Satellites",
   "itemGroup.ntm.weapons": "NTM Weapons and Turrets",
-  "itemGroup.ntm.consumables": "NTM Consumables and Gear",
-  "block.ntm.dummy_machine": "Machine (part)"
+  "itemGroup.ntm.consumables": "NTM Consumables and Gear"
 }

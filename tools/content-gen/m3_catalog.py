@@ -138,6 +138,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
                          'source_container': 'src/main/java/com/hbm/inventory/FluidContainerRegistry.java:69-91'})
     import foundry_catalog
     rows.extend(foundry_catalog.build(source))
+    import anvil_catalog
+    rows.extend(anvil_catalog.build(source))
     for row in rows:
         for texture in [row['source_texture'], *[x['source'] for x in row.get('overlay_textures', [])]]:
             if not (source / texture).is_file(): raise ValueError('Missing texture: ' + texture)

@@ -19132,6 +19132,342 @@
       ]
     },
     {
+      "id": "anvil_iron",
+      "source_variable": "anvil_iron",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 1,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Iron Anvil",
+        "pt_br": "Bigorna de Ferro"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_iron.png",
+      "textures": {
+        "side": "blocks/anvil_iron",
+        "front": "blocks/anvil_iron",
+        "bottom": "blocks/anvil_iron",
+        "top": "blocks/anvil_iron"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2263",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_lead",
+      "source_variable": "anvil_lead",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 1,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Lead Anvil",
+        "pt_br": "Bigorna de Chumbo"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_lead.png",
+      "textures": {
+        "side": "blocks/anvil_lead",
+        "front": "blocks/anvil_lead",
+        "bottom": "blocks/anvil_lead",
+        "top": "blocks/anvil_lead"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2264",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_steel",
+      "source_variable": "anvil_steel",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 2,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Steel Anvil",
+        "pt_br": "Bigorna de Aço"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_steel.png",
+      "textures": {
+        "side": "blocks/anvil_steel",
+        "front": "blocks/anvil_steel",
+        "bottom": "blocks/anvil_steel",
+        "top": "blocks/anvil_steel"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2265",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_desh",
+      "source_variable": "anvil_desh",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 3,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Desh Anvil",
+        "pt_br": "Bigorna de Desh"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_desh.png",
+      "textures": {
+        "side": "blocks/anvil_desh",
+        "front": "blocks/anvil_desh",
+        "bottom": "blocks/anvil_desh",
+        "top": "blocks/anvil_desh"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2266",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_ferrouranium",
+      "source_variable": "anvil_ferrouranium",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 4,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Ferrouranium Anvil",
+        "pt_br": "Bigorna de Ferrourânio"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_ferrouranium.png",
+      "textures": {
+        "side": "blocks/anvil_ferrouranium",
+        "front": "blocks/anvil_ferrouranium",
+        "bottom": "blocks/anvil_ferrouranium",
+        "top": "blocks/anvil_ferrouranium"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2267",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_saturnite",
+      "source_variable": "anvil_saturnite",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 5,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Saturnite Anvil",
+        "pt_br": "Bigorna de Saturnite"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_saturnite.png",
+      "textures": {
+        "side": "blocks/anvil_saturnite",
+        "front": "blocks/anvil_saturnite",
+        "bottom": "blocks/anvil_saturnite",
+        "top": "blocks/anvil_saturnite"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2268",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_bismuth_bronze",
+      "source_variable": "anvil_bismuth_bronze",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 5,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Bismuth Bronze Anvil",
+        "pt_br": "Bigorna de Bronze de Bismuto"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_bismuth_bronze.png",
+      "textures": {
+        "side": "blocks/anvil_bismuth_bronze",
+        "front": "blocks/anvil_bismuth_bronze",
+        "bottom": "blocks/anvil_bismuth_bronze",
+        "top": "blocks/anvil_bismuth_bronze"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2269",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_arsenic_bronze",
+      "source_variable": "anvil_arsenic_bronze",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 5,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Arsenic Bronze Anvil",
+        "pt_br": "Bigorna de Bronze de Arsênio"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_arsenic_bronze.png",
+      "textures": {
+        "side": "blocks/anvil_arsenic_bronze",
+        "front": "blocks/anvil_arsenic_bronze",
+        "bottom": "blocks/anvil_arsenic_bronze",
+        "top": "blocks/anvil_arsenic_bronze"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2270",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_schrabidate",
+      "source_variable": "anvil_schrabidate",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 6,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Ferric Schrabidate Anvil",
+        "pt_br": "Bigorna de Schrabidato Férrico"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_schrabidate.png",
+      "textures": {
+        "side": "blocks/anvil_schrabidate",
+        "front": "blocks/anvil_schrabidate",
+        "bottom": "blocks/anvil_schrabidate",
+        "top": "blocks/anvil_schrabidate"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2271",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_dnt",
+      "source_variable": "anvil_dnt",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 7,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Dineutronium Anvil",
+        "pt_br": "Bigorna de Dineutrônio"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_dnt.png",
+      "textures": {
+        "side": "blocks/anvil_dnt",
+        "front": "blocks/anvil_dnt",
+        "bottom": "blocks/anvil_dnt",
+        "top": "blocks/anvil_dnt"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2272",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_osmiridium",
+      "source_variable": "anvil_osmiridium",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 8,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Osmiridium Anvil",
+        "pt_br": "Bigorna de Osmirídio"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_osmiridium.png",
+      "textures": {
+        "side": "blocks/anvil_osmiridium",
+        "front": "blocks/anvil_osmiridium",
+        "bottom": "blocks/anvil_osmiridium",
+        "top": "blocks/anvil_osmiridium"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2273",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
+      "id": "anvil_murky",
+      "source_variable": "anvil_murky",
+      "source_class": "NTMAnvil",
+      "type": "block",
+      "category": "machine",
+      "tier": 1916169,
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Murky Anvil",
+        "pt_br": "Bigorna Sombria"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/anvil_steel.png",
+      "textures": {
+        "side": "blocks/anvil_steel",
+        "front": "blocks/anvil_steel",
+        "bottom": "blocks/anvil_steel",
+        "top": "blocks/anvil_murky"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 100.0,
+        "sounds": "minecraft:anvil"
+      },
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2274",
+      "model_gap": "Oriented cube fallback; source anvil OBJ/bounds belong to visual pipeline",
+      "behavior_gap": "Source BlockFallingNT gravity/falling damage absent from beehive template; machine interaction belongs to runtime"
+    },
+    {
       "id": "blades_steel",
       "source_variable": "blades_steel",
       "type": "item",

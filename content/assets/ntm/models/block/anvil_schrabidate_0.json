@@ -1,0 +1,51 @@
+{
+  "textures": {
+    "particle": "ntm:block/anvil_schrabidate",
+    "down": "ntm:block/anvil_schrabidate",
+    "up": "ntm:block/anvil_schrabidate",
+    "north": "ntm:block/anvil_schrabidate",
+    "south": "ntm:block/anvil_schrabidate",
+    "east": "ntm:block/anvil_schrabidate",
+    "west": "ntm:block/anvil_schrabidate"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        }
+      }
+    }
+  ]
+}

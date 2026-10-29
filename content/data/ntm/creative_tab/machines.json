@@ -42,6 +42,18 @@
     "ntm:machine_fluidtank",
     "ntm:machine_press",
     "ntm:machine_epress",
+    "ntm:anvil_iron",
+    "ntm:anvil_lead",
+    "ntm:anvil_steel",
+    "ntm:anvil_desh",
+    "ntm:anvil_ferrouranium",
+    "ntm:anvil_saturnite",
+    "ntm:anvil_bismuth_bronze",
+    "ntm:anvil_arsenic_bronze",
+    "ntm:anvil_schrabidate",
+    "ntm:anvil_dnt",
+    "ntm:anvil_osmiridium",
+    "ntm:anvil_murky",
     "ntm:fusion_heater",
     "ntm:machine_battery"
   ]

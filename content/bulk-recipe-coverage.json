@@ -614,6 +614,33 @@
       }
     },
     {
+      "id": "ntm:bulk__e7c945685991f85c9a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:294",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:anvil_iron",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2bbf75b01441ee8667",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:295",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:anvil_lead",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a3842efacadb04d4ce",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:296",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:anvil_murky",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__c8fd00da75328f161a",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:305",
       "type": "minecraft:crafting_shaped",
@@ -5204,7 +5231,7 @@
       }
     }
   ],
-  "generated_count": 578,
+  "generated_count": 581,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -5865,24 +5892,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item solar_mirror",
       "expression": "new ItemStack(ModBlocks.solar_mirror, 3), new Object[] { \"AAA\", \" B \", \"SSS\", 'A', AL.plate(), 'B', ModBlocks.steel_beam, 'S', STEEL.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:294",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item anvil_iron",
-      "expression": "new ItemStack(ModBlocks.anvil_iron, 1), new Object[] { \"III\", \" B \", \"III\", 'I', IRON.ingot(), 'B', IRON.block() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:295",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item anvil_lead",
-      "expression": "new ItemStack(ModBlocks.anvil_lead, 1), new Object[] { \"III\", \" B \", \"III\", 'I', PB.ingot(), 'B', PB.block() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:296",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item anvil_murky",
-      "expression": "new ItemStack(ModBlocks.anvil_murky, 1), new Object[] { \"UUU\", \"UAU\", \"UUU\", 'U', ModItems.undefined, 'A', ModBlocks.anvil_steel }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:297",

@@ -2550,6 +2550,19 @@
   "item.ntm.mold__mechanism": "Molde de Fundição (Mecanismo)",
   "item.ntm.mold__stock": "Molde de Fundição (Coronha)",
   "item.ntm.mold__grip": "Molde de Fundição (Empunhadura)",
+  "block.ntm.anvil_iron": "Bigorna de Ferro",
+  "block.ntm.anvil_lead": "Bigorna de Chumbo",
+  "block.ntm.anvil_steel": "Bigorna de Aço",
+  "block.ntm.anvil_desh": "Bigorna de Desh",
+  "block.ntm.anvil_ferrouranium": "Bigorna de Ferrourânio",
+  "block.ntm.anvil_saturnite": "Bigorna de Saturnite",
+  "block.ntm.anvil_bismuth_bronze": "Bigorna de Bronze de Bismuto",
+  "block.ntm.anvil_arsenic_bronze": "Bigorna de Bronze de Arsênio",
+  "block.ntm.anvil_schrabidate": "Bigorna de Schrabidato Férrico",
+  "block.ntm.anvil_dnt": "Bigorna de Dineutrônio",
+  "block.ntm.anvil_osmiridium": "Bigorna de Osmirídio",
+  "block.ntm.anvil_murky": "Bigorna Sombria",
+  "block.ntm.dummy_machine": "Máquina (parte)",
   "itemGroup.ntm.parts": "Recursos e Peças do NTM",
   "itemGroup.ntm.control": "Componentes do NTM",
   "itemGroup.ntm.blocks": "Minérios e Blocos do NTM",
@@ -2557,6 +2570,5 @@
   "itemGroup.ntm.bombs": "Bombas do NTM",
   "itemGroup.ntm.missiles": "Mísseis e Satélites do NTM",
   "itemGroup.ntm.weapons": "Armas e Torretas do NTM",
-  "itemGroup.ntm.consumables": "Consumíveis e Equipamentos do NTM",
-  "block.ntm.dummy_machine": "Máquina (parte)"
+  "itemGroup.ntm.consumables": "Consumíveis e Equipamentos do NTM"
 }

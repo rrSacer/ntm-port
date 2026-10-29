@@ -351,6 +351,18 @@
     "ntm:foundry_outlet",
     "ntm:foundry_slagtap",
     "ntm:foundry_mold",
-    "ntm:foundry_basin"
+    "ntm:foundry_basin",
+    "ntm:anvil_iron",
+    "ntm:anvil_lead",
+    "ntm:anvil_steel",
+    "ntm:anvil_desh",
+    "ntm:anvil_ferrouranium",
+    "ntm:anvil_saturnite",
+    "ntm:anvil_bismuth_bronze",
+    "ntm:anvil_arsenic_bronze",
+    "ntm:anvil_schrabidate",
+    "ntm:anvil_dnt",
+    "ntm:anvil_osmiridium",
+    "ntm:anvil_murky"
   ]
 }
