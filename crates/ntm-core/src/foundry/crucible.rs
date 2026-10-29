@@ -35,6 +35,9 @@ pub const PROCESS: u32 = 20_000;
 pub const MAX_HEAT: u32 = 100_000;
 /// Quanta a stream pours a tick (`NUGGET.q(3)`).
 pub const POUR: u32 = 24;
+/// Materials a stack keeps in the block entity's values (a crash past
+/// them loses the rest: more than 20 kinds in one crucible is unusual).
+pub const STATE_MATS: usize = 20;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Crucible {
@@ -325,8 +328,11 @@ impl Slotted for Crucible {
         let t = Tables::ntm();
         let alloy = self.recipe.as_deref().and_then(|r| t.alloys.iter().position(|a| a.name == r)).map_or(0, |i| i as i32 + 1);
         let mut v = vec![self.heat as i32, self.progress as i32, alloy];
-        t.encode_stack(&self.recipe_stack, &mut v);
-        t.encode_stack(&self.waste_stack, &mut v);
+        // The block entity's values have a fixed length (`horizon_machine`
+        // `data`: 43 for the screen + this, 128 in all): up to
+        // STATE_MATS materials a stack go there.
+        t.encode_stack(&self.recipe_stack[..self.recipe_stack.len().min(STATE_MATS)], &mut v);
+        t.encode_stack(&self.waste_stack[..self.waste_stack.len().min(STATE_MATS)], &mut v);
         v
     }
     fn load_state(&mut self, v: &[i32]) {
