@@ -41,6 +41,8 @@ done
 # The engine has ntm-visual and the server mod uses it (else its machines keep the old screens).
 grep -q "mod_machines" "${HORIZON_PATCHED:-$HOME/Workspace/horizon-patched}/crates/horizon-world/src/lib.rs" ||
   { echo "the engine at ${HORIZON_PATCHED:-$HOME/Workspace/horizon-patched} lacks the ntm-visual patch" >&2; exit 1; }
+grep -qa "content mod machines" "$build/horizon-client" ||
+  { echo "$build/horizon-client is an older build, without ntm-visual (build it, or HORIZON_PATCHED=~/Workspace/horizon-visual)" >&2; exit 1; }
 unzip -p "$mods/ntmlogic-server.hmod" horizon-mod.toml 2>/dev/null | grep -q '"machines"' ||
   { echo "$mods/ntmlogic-server.hmod is not built with capability machines (tools/build-visual.sh)" >&2; exit 1; }
 if [ "$(id -un)" = root ]; then echo "run as the player, not root" >&2; exit 1; fi
