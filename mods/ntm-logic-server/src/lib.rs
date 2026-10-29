@@ -57,6 +57,29 @@ impl ServerHost for Host {
     fn log(&mut self, text: &str) {
         horizon_mod_sdk::info(text);
     }
+    // Capability `machines` (Horizon patch ntm-visual, docs/visual-fiel.md):
+    // only with the cargo feature, since a Horizon without it refuses the mod.
+    #[cfg(feature = "machines")]
+    fn machine_slots(&mut self, dim: &str, p: Pos) -> Option<ntm_core::server::container_bridge::Slots> {
+        let slots = horizon_mod_sdk::server::machines::get_slots(dim, p[0], p[1], p[2])?;
+        Some(slots.into_iter().map(|s| s.map(|s| (s.id, s.count))).collect())
+    }
+    #[cfg(feature = "machines")]
+    fn set_machine_slot(&mut self, dim: &str, p: Pos, slot: u32, stack: Option<(String, u32)>) -> bool {
+        let stack = stack.map(|(id, count)| horizon_mod_sdk::server::ItemStack { id, count });
+        horizon_mod_sdk::server::machines::set_slot(dim, p[0], p[1], p[2], slot, stack.as_ref())
+    }
+    #[cfg(feature = "machines")]
+    fn set_machine_data(&mut self, dim: &str, p: Pos, values: &[i32]) -> bool {
+        horizon_mod_sdk::server::machines::set_data(dim, p[0], p[1], p[2], values)
+    }
+    #[cfg(feature = "machines")]
+    fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
+        horizon_mod_sdk::server::machines::poll_buttons()
+            .into_iter()
+            .map(|b| (b.player, b.dimension, [b.x, b.y, b.z], b.button))
+            .collect()
+    }
 }
 
 fn info(p: &Player) -> PlayerInfo {
