@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/purex.obj",
+  "texture": "ntm:textures/models/machines/purex.png",
+  "rotation": 90.0,
+  "radius": 5.5,
+  "hide": []
+}
