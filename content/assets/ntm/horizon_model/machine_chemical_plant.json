@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/chemical_plant.obj",
+  "texture": "ntm:textures/models/machines/chemical_plant.png",
+  "rotation": 90.0,
+  "radius": 3.5,
+  "hide": []
+}

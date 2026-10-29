@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/tsar.obj",
+  "texture": "ntm:textures/models/bombs/tsar.png",
+  "rotation": 90.0,
+  "radius": 6.3
+}

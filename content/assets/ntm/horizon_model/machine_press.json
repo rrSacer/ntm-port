@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/press_body.obj",
+  "texture": "ntm:textures/models/press_body.png",
+  "rotation": 0,
+  "radius": 3.5
+}

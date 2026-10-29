@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/fstbmb.obj",
+  "texture": "ntm:textures/models/bombs/fstbmb.png",
+  "rotation": 90.0,
+  "radius": 5.5,
+  "hide": []
+}

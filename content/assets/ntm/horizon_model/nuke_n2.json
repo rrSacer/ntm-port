@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/n2.obj",
+  "texture": "ntm:textures/models/bombs/n2.png",
+  "rotation": 180.0,
+  "radius": 7.5
+}

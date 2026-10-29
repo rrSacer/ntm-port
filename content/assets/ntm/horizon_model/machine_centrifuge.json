@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/centrifuge.obj",
+  "texture": "ntm:textures/models/machines/centrifuge.png",
+  "rotation": 90.0,
+  "radius": 4.5
+}

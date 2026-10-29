@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/wood_burner.obj",
+  "texture": "ntm:textures/models/machines/wood_burner.png",
+  "rotation": 180.0,
+  "radius": 4.4
+}

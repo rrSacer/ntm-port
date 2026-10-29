@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/fluidtank.obj",
+  "texture": "ntm:textures/models/tank.png",
+  "rotation": 180.0,
+  "radius": 6.1,
+  "hide": []
+}

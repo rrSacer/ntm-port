@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/gadget.obj",
+  "texture": "ntm:textures/models/bombs/gadget.png",
+  "rotation": 0,
+  "radius": 3.0,
+  "hide": []
+}

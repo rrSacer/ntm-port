@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/fat_man.obj",
+  "texture": "ntm:textures/models/fatman.png",
+  "rotation": 270.0,
+  "radius": 3.0
+}
