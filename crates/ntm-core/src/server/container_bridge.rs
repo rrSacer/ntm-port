@@ -163,6 +163,14 @@ pub const SLOTTED: &[(&str, Layout)] = &[
             outputs: 1..5,
         },
     ),
+    // HBM's own indices (ContainerMachinePUREX): 0-3 are slots without logic.
+    (
+        "ntm:machine_purex",
+        Layout::Crafter {
+            inputs: 4..7,
+            outputs: 7..13,
+        },
+    ),
     ("ntm:nuke_boy", Layout::Bomb),
     ("ntm:nuke_gadget", Layout::Bomb),
     ("ntm:nuke_man", Layout::Bomb),
@@ -192,6 +200,7 @@ pub enum Layout {
 pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
     ("ntm:machine_assembly_machine", [-1, 0, -1], [1, 0, 1]),
     ("ntm:machine_chemical_plant", [-1, 0, -1], [1, 0, 1]),
+    ("ntm:machine_purex", [-2, 0, -2], [2, 0, 2]),
 ];
 
 /// The cells of the multiblock of `block` at `core` that pass energy to
@@ -220,6 +229,28 @@ pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
 /// that join the core's fluid networks as ducts. A chain of them reaches the
 /// core: the blast furnace's ports up its front reach it down its column.
 pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
+    // TilePortShapes.purex: the edge of its bottom layer.
+    (
+        "ntm:machine_purex",
+        &[
+            [-2, 0, -2],
+            [-2, 0, -1],
+            [-2, 0, 0],
+            [-2, 0, 1],
+            [-2, 0, 2],
+            [2, 0, -2],
+            [2, 0, -1],
+            [2, 0, 0],
+            [2, 0, 1],
+            [2, 0, 2],
+            [-1, 0, -2],
+            [0, 0, -2],
+            [1, 0, -2],
+            [-1, 0, 2],
+            [0, 0, 2],
+            [1, 0, 2],
+        ],
+    ),
     // MachineChemicalPlant.getAllPorts: its bottom ring.
     (
         "ntm:machine_chemical_plant",
