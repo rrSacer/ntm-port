@@ -433,8 +433,16 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
   - Os valores da tela ganham os 6 tanques (índices 12–29), depois dos 12 da montadora, que não mudam.
 - **Slots sem lógica no port:** a bateria, os upgrades e os recipientes de fluido ficam de fora (planta química,
   centrífuga) ou com `accept` vazio (prensas, centrífuga de gás), em vez de aceitar itens que não fazem nada.
+- **Ponteiros** (`gauges` na tela, o `drawSmoothGauge` do NTM): a velocidade da prensa a carvão e os dois tanques do
+  alto-forno. É um triângulo girando 270° a partir de baixo à esquerda, com contorno preto a 1,5×.
+- **PUREX** (lógica do agente das bombas, `Station::Purex`):
+  - **Slots:** os índices do `ContainerMachinePUREX`; 0–3 não aceitam nada, e o 1 fica fora da tela para o botão de
+    receita ficar no lugar dele. Entradas 4–6 e saídas 7–12 em 3×2.
+  - **Tela:** os 3 tanques de entrada, o de saída, energia, progresso e LEDs.
+  - **Multibloco:** 5×5×5 com o núcleo no centro da base (offset 2). As 16 células da borda de baixo passam energia
+    e fluido (`TilePortShapes.purex`).
+  - **Em jogo:** posto e com a tela aberta (`img/visual-purex.png`, ao lado do ponteiro da prensa).
 - **Falta:**
-  - o ponteiro de velocidade da prensa a carvão (o `drawSmoothGauge`), hoje um tooltip;
   - as animações (o `Spinner` e o `Slider` da planta química, a cabeça da prensa);
   - o tipo de fluido real nos tanques da centrífuga de gás (hoje sempre UF6).
 - **Em jogo:** as 5 colocadas com os dummies certos (26, 3, 3, 2, 2) e as 5 telas abertas
@@ -442,7 +450,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 27 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 28 commits):
 
 | Commit | O quê |
 |---|---|
@@ -473,6 +481,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(render): a machine screen button may send another id on shift` | `shift` (a bigorna) |
 | `feat(client): list a machine screen's buttons for the control socket` | `horizon-ctl screen` e `click-button` |
 | `feat(render): a screen bar may start filling past a value` | `from` (as colunas da centrífuga) |
+| `feat(render): draw needle gauges on machine screens` | `gauges` (prensa, alto-forno) |
 
 **No port:**
 
