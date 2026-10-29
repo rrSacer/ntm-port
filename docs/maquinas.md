@@ -152,6 +152,70 @@ o motor `ntm-visual`. O upgrade (`upgrade_shredder`) também fica de fora.
 | ![](img/m4-shredder-working.png) | ![](img/m4-shredder-done.png) |
 | Trabalhando: 14 pós e 2 cascalhos, a barra de energia e as luzes das lâminas. | No fim: o pó já no inventário, a lâmina de aço gasta. |
 
+## Alto-forno (`blastfurnace.rs`), no motor com slots
+
+É o `TileEntityMachineBlastFurnace.java`, com as receitas do
+`BlastFurnaceRecipesNT.java`. O `machine_difurnace` antigo está
+`@Deprecated` no NTM. Os exclusivos dele (tcalloy, tungstênio magnetizado,
+napalm) saem também de outras receitas; o tcalloy, pelo cadinho da fundição.
+
+Como o triturador, guarda os itens como os slots do motor (`Slotted`). A tela
+é a `gui_blast_furnace.png` original, e o multibloco 3×7×3 é o do NTM; os dois
+são do agente de visual.
+
+| | NTM | Port |
+| --- | --- | --- |
+| Slots | 0 combustível, 1–2 entradas, 3–4 saídas | os mesmos |
+| Energia | nenhuma: queima combustível, meia peça de carvão (800) por operação, até 38.400 | igual |
+| Combustível | `ModuleBurnTime`: só itens com `Coal`, `Coke` ou `Lignite` no OreDict, mais `solid_fuel*` e `rocket_fuel`; madeira vale 0 | os 20 da tabela do agente de importação; carvão vegetal e madeira não entram |
+| Receita | `getRecipe(s0, s1)`: a primeira da lista que serve, nas duas ordens; a quantidade só é cobrada na 2ª entrada | igual (`Tables::recipe`) |
+| Velocidade | `1 + airblast × 8 / 4.000`, de 1× a 5×; o ar perde 5% por tick | igual; o ar vem pela rede de fluido |
+| Gás | `flue`, 8 mB por tick da operação, tanque de 1.000 | igual; sai pela rede |
+
+**Receitas:** 12 das 15 do NTM, na ordem dele (aço de lingote, pó, minério e
+com fluxo; cobre vermelho; PAA; firebrick). As 3 que ficam de fora precisam de
+itens ausentes do catálogo (espadas de meteorito e starmetal). Elas vêm do
+agente de importação (`content/machine-recipes/blast_furnace.json`) e são
+embutidas por `tools/machine-gen/build.py`.
+
+**Portas de fluido:** as 6 faces do núcleo. Com o motor de slots, o multibloco
+conduz também pelos proxies (`container_bridge::fluid_proxy_cells`): as
+laterais, a coluna central, a frente e o fundo a +3 e +5, e o topo.
+
+**Fora (com o acordo do coordenador):**
+- a inclinação (`checkTilt`), que no NTM só vale com `enableMachineGravity`,
+  desligado por padrão;
+- o vazamento de `flue` no mundo quando o tanque enche: aqui o tanque só para
+  no máximo;
+- som e partículas;
+- uma fonte de `airblast` no jogo: o port ainda não tem a máquina que o
+  produz, então o ar quente está testado no mundo falso.
+
+**Verificação:**
+- **Mundo falso** (`blastfurnace::tests`, 6 testes; `server/tests/blastfurnace_tests.rs`, 3):
+  - a busca de receita do NTM (as duas ordens, quantidade na 2ª);
+  - o aço em 800 ticks;
+  - sem combustível ou com a saída cheia, a máquina para;
+  - madeira e carvão vegetal não são combustível;
+  - o combustível cheio recusa mais;
+  - com um tanque de `airblast` ligado por duto, mais de 4× mais rápido, gastando ~200 mB de ar por tick;
+  - o `flue` sai por outro duto;
+  - pelo topo do multibloco, o ar chega ao núcleo;
+  - o nível no bloco e os itens soltos ao quebrar.
+- **Em jogo** (motor `ntm-visual`, Xvfb `:15`, mudo, `tools/test-game/blastfurnace.py`;
+  mundo criativo, seed 1768123):
+  - o multibloco posto num piso livre;
+  - por shift-clique, 2 carvões (viram combustível na hora), 4 lingotes de ferro e 2 areias;
+  - 2 operações em 81,2 s (2 × 800 ticks a 20 TPS), com 4 aços e 2 escórias;
+  - o aço retirado para o inventário;
+  - depois de sair e voltar ao mundo, a escória continua na saída;
+  - nenhum "took too long".
+
+| | |
+| --- | --- |
+| ![](img/m4-blastfurnace-working.png) | ![](img/m4-blastfurnace-done.png) |
+| Trabalhando: o ferro e a areia nas entradas, a chama acesa. | No fim: aço e escória nas saídas. |
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
