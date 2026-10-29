@@ -1,0 +1,13 @@
+[package]
+name = "ntm-logic-client"
+description = "NTM port: machine screens and the vanilla-command channel (Horizon client mod)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+ntm-core.workspace = true
+horizon-mod-sdk.workspace = true

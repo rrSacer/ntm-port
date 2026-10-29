@@ -1,0 +1,9 @@
+id = "ntmlogic"
+name = "NTM: lógica (cliente)"
+version = "0.1.0"
+description = "Telas das máquinas do port do HBM's Nuclear Tech Mod e execução dos comandos que o servidor pede. Precisa do mod irmão ntm-logic-server."
+authors = ["NTM port"]
+api = "0.1"
+side = "client"
+capabilities = ["hud", "game-read", "chat", "storage", "command", "ui", "input"]
+experimental = ["ui", "input"]
