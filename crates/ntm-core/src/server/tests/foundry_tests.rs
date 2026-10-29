@@ -111,3 +111,75 @@ fn breaking_a_crucible_drops_its_items_and_scraps() {
     assert_eq!(dropped.len(), 2, "{dropped:?}");
     assert!(dropped.iter().any(|d| d.contains("scraps__iron") && d.contains("count:2")), "{dropped:?}");
 }
+
+// ------------------------------------------------------------- stage 2
+
+fn melt_at(g: &mut Game, at: Pos) -> (Option<String>, u32) {
+    match g.machine(at).data {
+        Data::Channel(c) => (c.melt.mat, c.melt.amount),
+        Data::FoundryTank(c) => (c.melt.mat, c.melt.amount),
+        other => panic!("{other:?}"),
+    }
+}
+
+/// The waste stream falls on a channel; two channels lead to an outlet
+/// (facing south, fed from behind) over two tanks: the upper one fills the
+/// lower first. Nothing is lost on the way.
+#[test]
+fn metal_runs_through_channels_and_an_outlet_into_tanks() {
+    let mut g = game();
+    g.place(CORE, "ntm:machine_crucible[facing=north,honey_level=0]");
+    let (ch1, ch2, outlet, tank1, tank2) = ([0, 70, 2], [0, 70, 3], [0, 70, 4], [0, 68, 4], [0, 67, 4]);
+    g.place(ch1, "ntm:foundry_channel[facing=north,honey_level=0]");
+    g.place(ch2, "ntm:foundry_channel[facing=north,honey_level=0]");
+    g.place(outlet, "ntm:foundry_outlet[facing=south,honey_level=0]");
+    g.place(tank1, "ntm:foundry_tank[facing=north,honey_level=0]");
+    g.place(tank2, "ntm:foundry_tank[facing=north,honey_level=0]");
+    g.run(2);
+    edit(&mut g, CORE, |d| {
+        let Data::Crucible(c) = d else { panic!() };
+        c.waste_stack = vec![("iron".into(), 300)];
+    });
+    g.run(400);
+    let total = |g: &mut Game| {
+        let mut n = crucible(g, CORE).waste_stack.iter().map(|m| m.1).sum::<u32>();
+        for p in [ch1, ch2, tank1, tank2] {
+            n += melt_at(g, p).1;
+        }
+        n
+    };
+    assert_eq!(total(&mut g), 300, "metal perdido ou criado no caminho");
+    let (low, high) = (melt_at(&mut g, tank2), melt_at(&mut g, tank1));
+    assert_eq!(low.0.as_deref(), Some("iron"));
+    assert!(low.1 + high.1 >= 280, "nos tanques: {} + {}", low.1, high.1);
+    assert!(low.1 >= high.1, "o de baixo enche primeiro: {} e {}", low.1, high.1);
+}
+
+/// A pour onto a channel whose network already holds another material is
+/// refused; an outlet's filter stops what it doesn't let through.
+#[test]
+fn channels_keep_one_material_and_outlets_filter() {
+    let mut g = game();
+    g.place(CORE, "ntm:machine_crucible[facing=north,honey_level=0]");
+    let (ch1, ch2) = ([0, 70, 2], [1, 70, 2]);
+    g.place(ch1, "ntm:foundry_channel[facing=north,honey_level=0]");
+    g.place(ch2, "ntm:foundry_channel[facing=north,honey_level=0]");
+    g.run(2);
+    edit(&mut g, ch2, |d| {
+        let Data::Channel(c) = d else { panic!() };
+        c.melt = crate::foundry::flow::Melt { mat: Some("copper".into()), amount: 10 };
+        c.next = 200; // holds still
+    });
+    edit(&mut g, CORE, |d| {
+        let Data::Crucible(c) = d else { panic!() };
+        c.waste_stack = vec![("iron".into(), 100)];
+    });
+    g.run(20);
+    assert_eq!(crucible(&mut g, CORE).waste_stack, vec![("iron".to_string(), 100)], "derramou ferro numa rede de cobre");
+    assert_eq!(melt_at(&mut g, ch1).1, 0);
+    // The outlet: only copper passes.
+    let mut o = crate::foundry::flow::Outlet { filter: Some("copper".into()), invert: false };
+    assert!(o.passes("copper") && !o.passes("iron"));
+    o.invert = true;
+    assert!(!o.passes("copper") && o.passes("iron"));
+}
