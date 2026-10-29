@@ -7,6 +7,7 @@
 //! `cargo test` against a fake world.
 
 pub mod blast;
+pub mod blastfurnace;
 pub mod blockstate;
 pub mod bomb;
 pub mod client;
