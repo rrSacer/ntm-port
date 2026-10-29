@@ -1,0 +1,372 @@
+{
+"station": "blast_furnace",
+"source": "content/machine-recipes/blast_furnace.json",
+"recipes": [
+{
+"name": "blast.steelFromIngot",
+"label": "Lingote de Aço ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:33",
+"duration": 800,
+"in": [
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"n": 2
+},
+{
+"ids": [
+"minecraft:red_sand",
+"minecraft:sand"
+],
+"n": 1
+}
+],
+"out": [
+[
+"ntm:ingot_steel",
+2
+],
+[
+"ntm:ingot_raw__slag",
+1
+]
+]
+},
+{
+"name": "blast.steelFromDust",
+"label": "Lingote de Aço ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:36",
+"duration": 800,
+"in": [
+{
+"ids": [
+"ntm:powder_iron"
+],
+"n": 2
+},
+{
+"ids": [
+"minecraft:red_sand",
+"minecraft:sand"
+],
+"n": 1
+}
+],
+"out": [
+[
+"ntm:ingot_steel",
+2
+],
+[
+"ntm:ingot_raw__slag",
+1
+]
+]
+},
+{
+"name": "blast.steelFromOre",
+"label": "Lingote de Aço ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:39",
+"duration": 800,
+"in": [
+{
+"ids": [
+"ntm:ore_enriched__iron",
+"ntm:ore_gneiss_iron",
+"minecraft:iron_ore"
+],
+"n": 1
+},
+{
+"ids": [
+"minecraft:red_sand",
+"minecraft:sand"
+],
+"n": 1
+}
+],
+"out": [
+[
+"ntm:ingot_steel",
+2
+],
+[
+"ntm:ingot_raw__slag",
+2
+]
+]
+},
+{
+"name": "blast.steelWithFlux",
+"label": "Lingote de Aço ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:42",
+"duration": 1200,
+"in": [
+{
+"ids": [
+"ntm:ore_enriched__iron",
+"ntm:ore_gneiss_iron",
+"minecraft:iron_ore"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:powder_flux"
+],
+"n": 1
+}
+],
+"out": [
+[
+"ntm:ingot_steel",
+3
+],
+[
+"ntm:ingot_raw__slag",
+2
+]
+]
+},
+{
+"name": "blast.mingrade",
+"label": "Cobre Vermelho ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:46",
+"duration": 400,
+"in": [
+{
+"ids": [
+"ntm:ingot_copper",
+"minecraft:copper_ingot"
+],
+"n": 1
+},
+{
+"ids": [
+"minecraft:redstone"
+],
+"n": 1
+}
+],
+"out": [
+[
+"ntm:ingot_red_copper",
+2
+]
+]
+},
+{
+"name": "blast.mingradeDust",
+"label": "Cobre Vermelho ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:49",
+"duration": 400,
+"in": [
+{
+"ids": [
+"ntm:powder_copper"
+],
+"n": 1
+},
+{
+"ids": [
+"minecraft:redstone"
+],
+"n": 1
+}
+],
+"out": [
+[
+"ntm:ingot_red_copper",
+2
+]
+]
+},
+{
+"name": "blast.mingradeIngot",
+"label": "Cobre Vermelho ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:52",
+"duration": 400,
+"in": [
+{
+"ids": [
+"ntm:ingot_copper",
+"minecraft:copper_ingot"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_raw__redstone"
+],
+"n": 1
+}
+],
+"out": [
+[
+"ntm:ingot_red_copper",
+2
+]
+]
+},
+{
+"name": "blast.mingradeCursed",
+"label": "Cobre Vermelho ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:55",
+"duration": 400,
+"in": [
+{
+"ids": [
+"ntm:powder_copper"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_raw__redstone"
+],
+"n": 1
+}
+],
+"out": [
+[
+"ntm:ingot_red_copper",
+2
+]
+]
+},
+{
+"name": "blast.mingradeOre",
+"label": "Cobre Vermelho ×6",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:58",
+"duration": 1200,
+"in": [
+{
+"ids": [
+"ntm:ore_copper",
+"ntm:ore_enriched__copper",
+"ntm:ore_gneiss_copper"
+],
+"n": 1
+},
+{
+"ids": [
+"minecraft:redstone"
+],
+"n": 6
+}
+],
+"out": [
+[
+"ntm:ingot_red_copper",
+6
+],
+[
+"ntm:ingot_raw__slag",
+1
+]
+]
+},
+{
+"name": "blast.paa",
+"label": "Placa de Liga PaA",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:73",
+"duration": 600,
+"in": [
+{
+"ids": [
+"minecraft:gold_ingot"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:plate_mixed"
+],
+"n": 1
+}
+],
+"out": [
+[
+"ntm:plate_paa",
+1
+]
+]
+},
+{
+"name": "blast.firebrick",
+"label": "Tijolo Refratário ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:77",
+"duration": 800,
+"in": [
+{
+"ids": [
+"ntm:powder_aluminium"
+],
+"n": 1
+},
+{
+"ids": [
+"minecraft:clay_ball"
+],
+"n": 7
+}
+],
+"out": [
+[
+"ntm:ingot_firebrick",
+8
+]
+]
+},
+{
+"name": "blast.firebrickLimestone",
+"label": "Tijolo Refratário ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:80",
+"duration": 800,
+"in": [
+{
+"ids": [
+"ntm:powder_limestone"
+],
+"n": 1
+},
+{
+"ids": [
+"minecraft:clay_ball"
+],
+"n": 6
+}
+],
+"out": [
+[
+"ntm:ingot_firebrick",
+8
+]
+]
+}
+],
+"fuels": {
+"minecraft:coal": 1600,
+"minecraft:coal_block": 16000,
+"ntm:block_coke__coal": 32000,
+"ntm:block_coke__lignite": 32000,
+"ntm:block_coke__petroleum": 32000,
+"ntm:briquette__coal": 2000,
+"ntm:briquette__lignite": 1600,
+"ntm:coke__coal": 3200,
+"ntm:coke__lignite": 3200,
+"ntm:coke__petroleum": 3200,
+"ntm:lignite": 1200,
+"ntm:powder_coal": 1600,
+"ntm:powder_lignite": 1200,
+"ntm:rocket_fuel": 6400,
+"ntm:solid_fuel": 3200,
+"ntm:solid_fuel_bf": 32000,
+"ntm:solid_fuel_presto": 8000,
+"ntm:solid_fuel_presto_bf": 80000,
+"ntm:solid_fuel_presto_triplet": 40000,
+"ntm:solid_fuel_presto_triplet_bf": 400000
+},
+"skipped": 3
+}

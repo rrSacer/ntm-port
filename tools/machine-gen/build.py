@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Converte as receitas extraídas pelo agente de conteúdo
-(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder}.json, schema 1)
+(content/machine-recipes/{assembly,chemical_plant,centrifuge,shredder,blast_furnace}.json, schema 1)
 para o formato que a lógica embute (crates/ntm-core/data/machines/*.json),
 com os nomes pt_BR do content/ids.json para a tela.
 
@@ -86,7 +86,20 @@ def shredder():
             'skipped': len(src['skipped'])}
 
 
-for st, data in [('assembly', generic('assembly')), ('chemical_plant', generic('chemical_plant')), ('centrifuge', centrifuge()), ('shredder', shredder())]:
+def blast_furnace():
+    """Na ordem do NTM (`source_index`: `getRecipe` pega a primeira que
+    serve), e o que cada combustível vale (`ModuleBurnTime` do alto-forno)."""
+    src = json.loads((root / 'content/machine-recipes/blast_furnace.json').read_text())
+    out = []
+    for r in sorted(src['recipes'], key=lambda r: r['source_index']):
+        out.append({'name': r['name'], 'label': r.get('label') or r['name'], 'source': r['source'], 'duration': r['duration'],
+                    'in': [{'ids': i['ids'], 'n': i['count']} for i in r['inputItems']],
+                    'out': [[o[0], o[1]] for o in r['outputItems']]})
+    return {'station': 'blast_furnace', 'source': 'content/machine-recipes/blast_furnace.json', 'recipes': out, 'fuels': src['fuels'],
+            'skipped': len(src['skipped'])}
+
+
+for st, data in [('assembly', generic('assembly')), ('chemical_plant', generic('chemical_plant')), ('centrifuge', centrifuge()), ('shredder', shredder()), ('blast_furnace', blast_furnace())]:
     p = root / f'crates/ntm-core/data/machines/{st}.json'
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"{st}: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")

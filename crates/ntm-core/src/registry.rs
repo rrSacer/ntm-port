@@ -142,6 +142,15 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::AllRound,
     },
+    // The blast furnace (`crate::blastfurnace`): no energy; fluid ports
+    // (hot air in, flue gas out) all round the core.
+    BlockSpec {
+        id: "ntm:machine_blast_furnace",
+        kind: Kind::BlastFurnace,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
     // The shredder (`crate::shredder`): `TilePortShapes.around`, energy only.
     BlockSpec {
         id: "ntm:machine_shredder",
@@ -208,7 +217,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, _facing: Option<&str>) -> Vec<crate::energy::Port> {
     match spec.kind {
-        Kind::FluidStore | Kind::Crafter | Kind::GasCent => vec![crate::energy::DIRS.to_vec()],
+        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace => vec![crate::energy::DIRS.to_vec()],
         _ => Vec::new(),
     }
 }

@@ -60,6 +60,7 @@ pub trait Slotted {
 fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
     match data {
         Data::Shredder(s) => Some(s),
+        Data::BlastFurnace(b) => Some(b),
         _ => None,
     }
 }
@@ -68,6 +69,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
 /// (block, first input slot, inputs, output slot).
 pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_shredder", Layout::Native),
+    ("ntm:machine_blast_furnace", Layout::Native),
     (
         "ntm:machine_assembly_machine",
         Layout::Crafter {

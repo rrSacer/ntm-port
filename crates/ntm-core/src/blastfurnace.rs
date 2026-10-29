@@ -13,7 +13,9 @@
 
 use crate::{
     fluid::{FluidNode, Tank},
+    machine::{Logic, fill_level},
     server::container_bridge::{Slots, Stack},
+    view::{self, ViewModel},
 };
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -58,13 +60,20 @@ pub struct Recipe {
 }
 
 /// The recipes in the NTM's order, and what each fuel is worth.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, Deserialize)]
 pub struct Tables {
     pub recipes: Vec<Recipe>,
     pub fuels: HashMap<String, u32>,
 }
 
 impl Tables {
+    /// The NTM's (`data/machines/blast_furnace.json`, from the content
+    /// agent's extraction by `tools/machine-gen/build.py`).
+    pub fn ntm() -> &'static Tables {
+        static T: std::sync::OnceLock<Tables> = std::sync::OnceLock::new();
+        T.get_or_init(|| serde_json::from_str(include_str!("../data/machines/blast_furnace.json")).expect("data/machines/blast_furnace.json"))
+    }
+
     /// `BlastFurnaceRecipesNT.getRecipe(s0, s1)`: the first that fits.
     pub fn recipe(&self, s0: Option<&Stack>, s1: Option<&Stack>) -> Option<&Recipe> {
         self.recipes.iter().find(|r| match r.inputs.as_slice() {
@@ -224,6 +233,37 @@ impl BlastFurnace {
     }
 }
 
+impl Logic for BlastFurnace {
+    fn tick(&mut self) -> bool {
+        self.step(Tables::ntm())
+    }
+
+    fn fluid(&mut self) -> Option<&mut dyn FluidNode> {
+        Some(self)
+    }
+
+    fn level(&self, max: u8) -> u8 {
+        if self.working { fill_level(((self.progress * 1000.0) as u64).max(1), 1000, max) } else { 0 }
+    }
+
+    /// No item screen here: the items go through the engine's slots.
+    fn view(&self) -> ViewModel {
+        ViewModel::new("Alto-forno")
+            .bar("Combustível", u64::from(self.fuel), u64::from(MAX_FUEL), "")
+            .bar("Progresso", (self.progress * 100.0) as u64, 100, "%")
+            .text(format!("Velocidade: {}%", (self.speed * 100.0) as u32), view::GREY)
+            .bar("Ar quente", u64::from(self.airblast.mb), u64::from(AIRBLAST_CAP), "mB")
+            .bar("Gás de exaustão", u64::from(self.flue.mb), u64::from(FLUE_CAP), "mB")
+            .text("Os itens entram e saem pela tela com slots (motor com o patch ntm-visual).", view::GREY)
+    }
+
+    /// What it holds, dropped when it is broken (the engine's slots spill
+    /// themselves; this is for a game without them).
+    fn contents(&self) -> Vec<(String, u32)> {
+        self.slots.iter().flatten().map(|s| (s.id.clone(), s.count)).collect()
+    }
+}
+
 impl crate::server::container_bridge::Slotted for BlastFurnace {
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
@@ -292,6 +332,22 @@ mod tests {
         for _ in 0..ticks {
             b.step(t);
         }
+    }
+
+    #[test]
+    fn the_ntm_tables_are_embedded() {
+        let t = Tables::ntm();
+        assert_eq!(t.recipes.len(), 12, "15 do NTM, 3 com itens ausentes");
+        assert_eq!(t.recipes[0].name, "blast.steelFromIngot");
+        assert_eq!(t.fuel("minecraft:coal"), FUEL_COAL);
+        assert_eq!(t.fuel("minecraft:charcoal"), 0, "só Coal/Coke/Lignite e combustíveis sólidos");
+        assert_eq!(t.fuel("minecraft:oak_log"), 0);
+        let mut b = BlastFurnace::default();
+        b.slots[0] = st("minecraft:coal", 1);
+        b.slots[1] = st("minecraft:iron_ingot", 2);
+        b.slots[2] = st("minecraft:sand", 1);
+        run(&mut b, t, 801);
+        assert_eq!(b.slots[3], st("ntm:ingot_steel", 2));
     }
 
     #[test]
