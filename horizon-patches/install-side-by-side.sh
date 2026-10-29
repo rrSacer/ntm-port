@@ -1,10 +1,12 @@
 #!/bin/bash
-# Installs the patched Horizon (creative-plus + recipes-tick + mod-item-tags)
-# BESIDE the player's own ~/Games/horizon, which it only reads:
+# Installs the patched Horizon (ntm-patched: creative-plus, recipes-tick,
+# mod-item-tags, content-read-once, ntm-visual) BESIDE the player's own
+# ~/Games/horizon, which it only reads:
 #   ~/Games/horizon-ntm/            the new game folder (its own options, saves, mods)
 #     bin/horizon-client, bin/horizon-ctl   from ~/Workspace/horizon-patched/target/release
 #     options.txt, horizon-*.txt, saves/    COPIED (never moved) from ~/Games/horizon
-#     horizon-mods/                         the NTM .hmod files and the patched Recipes
+#     horizon-mods/                         the NTM .hmod files (tools/build-visual.sh: the
+#                                           server mod with capability machines) and the patched Recipes
 #   ~/.local/bin/horizon-ntm                launcher (prepared resources of ~/Games/horizon, read only)
 #   ~/.local/share/applications/horizon-ntm.desktop   menu entry "Horizon (NTM)"
 # Without --apply it only prints what it would do. Run it as the player (sacer).
@@ -19,7 +21,7 @@ apply=false
 old="$HOME/Games/horizon"
 new="$HOME/Games/horizon-ntm"
 build="${HORIZON_PATCHED:-$HOME/Workspace/horizon-patched}/target/release"
-mods="${NTM_MODS:-$HOME/Workspace/ntm-port/target/rad-dist}"
+mods="${NTM_MODS:-$HOME/Workspace/ntm-port/target/visual-build/dist}"
 recipes="${RECIPES_HMOD:-$HOME/Workspace/horizon-patched/target/horizon-mod/recipes.hmod}"
 resources="$old/.local/horizon-client/26.3"
 launcher="$HOME/.local/bin/horizon-ntm"
@@ -36,6 +38,11 @@ for f in "$build/horizon-client" "$build/horizon-ctl" "$resources" \
   [ -e "$f" ] || { echo "missing: $f" >&2; exit 1; }
 done
 [ -e "$new" ] && { echo "$new already exists: remove it first (horizon-ntm-uninstall)" >&2; exit 1; }
+# The engine has ntm-visual and the server mod uses it (else its machines keep the old screens).
+grep -q "mod_machines" "${HORIZON_PATCHED:-$HOME/Workspace/horizon-patched}/crates/horizon-world/src/lib.rs" ||
+  { echo "the engine at ${HORIZON_PATCHED:-$HOME/Workspace/horizon-patched} lacks the ntm-visual patch" >&2; exit 1; }
+unzip -p "$mods/ntmlogic-server.hmod" horizon-mod.toml 2>/dev/null | grep -q '"machines"' ||
+  { echo "$mods/ntmlogic-server.hmod is not built with capability machines (tools/build-visual.sh)" >&2; exit 1; }
 if [ "$(id -un)" = root ]; then echo "run as the player, not root" >&2; exit 1; fi
 
 echo "== game folder $new"

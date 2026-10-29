@@ -7,7 +7,7 @@ set -euo pipefail
 H=${HORIZON_VISUAL:-/home/sacer/Workspace/horizon-visual}
 name="${1:?name}"; shift
 game="/tmp/ntm-visual-game/$name"
-mkdir -p /tmp/ntm-visual-game/dist; cp ${BUILD_DIR:-/tmp/ntm-visual-build}/dist/*.hmod /tmp/ntm-visual-game/dist/
+mkdir -p /tmp/ntm-visual-game/dist; cp ${BUILD_DIR:-/home/sacer/Workspace/ntm-port/target/visual-build}/dist/*.hmod /tmp/ntm-visual-game/dist/
 dist="${DIST:-/tmp/ntm-visual-game/dist}"
 mkdir -p "$game"
 [ -f "$game/options.txt" ] || printf 'soundCategory_master:0.0\nsoundCategory_music:0.0\n' > "$game/options.txt"

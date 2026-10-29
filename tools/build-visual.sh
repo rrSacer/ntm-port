@@ -1,12 +1,12 @@
 #!/bin/bash
 # Builds the NTM mods for the ntm-visual engine (docs/visual-fiel.md) in a copy
-# of this working tree (BUILD_DIR, default /tmp/ntm-visual-build): the SDK
+# of this working tree (BUILD_DIR, default target/visual-build): the SDK
 # of horizon-visual, the machines feature on, the server mod with capability
 # machines. Output: $BUILD_DIR/dist. The repo itself is not touched.
 # usage: build-visual.sh [test]
 set -euo pipefail
-B=${BUILD_DIR:-/tmp/ntm-visual-build}
 P="$(cd "$(dirname "$0")/.." && pwd)"
+B=${BUILD_DIR:-$P/target/visual-build}
 H=${HORIZON_VISUAL:-/home/sacer/Workspace/horizon-visual}
 
 mkdir -p $B
