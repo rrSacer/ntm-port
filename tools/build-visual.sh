@@ -22,6 +22,21 @@ grep -q '^default = \["machines"\]' $c
 m=$B/mods/ntm-logic-server/horizon-mod.toml
 sed -i 's/^capabilities = \["storage", "world", "players"\]$/capabilities = ["storage", "world", "players", "machines"]\nexperimental = ["machines"]/' $m
 grep -q machines $m
+# Durable items carry max_damage (the patched engine reads it; the base one
+# rejects it, so the repo's content stays without): what ids.json says, as
+# tools/content-gen/generate.py --max-damage writes it.
+python3 - $B/content <<'PY'
+import json, sys
+from pathlib import Path
+c = Path(sys.argv[1])
+for e in json.loads((c / 'ids.json').read_text())['entries']:
+    if e.get('type') == 'item' and e.get('max_damage'):
+        f = c / 'data/ntm/horizon/item' / (e['id'].split(':', 1)[1] + '.json')
+        d = json.loads(f.read_text())
+        assert d.get('max_stack_size') == 1, f
+        d['max_damage'] = e['max_damage']
+        f.write_text(json.dumps(d, indent=2) + '\n')
+PY
 cd $B
 if [ "${1:-}" = test ]; then
   exec agent-run cargo test --release -j 6 -p ntm-core --lib "${@:2}"
