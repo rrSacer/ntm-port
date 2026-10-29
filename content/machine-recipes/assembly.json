@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 398,
+    "emitted": 399,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 233,
+    "skipped_source_calls": 232,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1444,6 +1444,43 @@
       "pools": [],
       "label": "Estrutura da Escotilha de Silo",
       "label_en": "Silo Hatch Frame"
+    },
+    {
+      "name": "ass.shredder",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:259",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:plate_copper"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_shredder",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Triturador",
+      "label_en": "Shredder"
     },
     {
       "name": "ass.assembler",
@@ -13412,12 +13449,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:255",
       "reason": "missing enum DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.KORL)",
       "expression": "new GenericRecipe(\"ass.capkorl\").setup(10, 100).outputItems(DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.KORL))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.cap_korl, 64), new ComparableStack(ModItems.cap_korl, 64))"
-    },
-    {
-      "name": "ass.shredder",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:259",
-      "reason": "unregistered/ambiguous source item machine_shredder",
-      "expression": "new GenericRecipe(\"ass.shredder\").setup(100, 100).outputItems(new ItemStack(ModBlocks.machine_shredder, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 8), new OreDictStack(CU.plate(), 4), new ComparableStack(ModItems.motor, 2))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.STEEL_PLATING), new OreDictStack(CU.plate(), 4), new ComparableStack(ModItems.motor, 2))"
     },
     {
       "name": "ass.purex",

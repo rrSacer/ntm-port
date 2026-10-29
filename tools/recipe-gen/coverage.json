@@ -1,5 +1,5 @@
 {
-  "catalog_items": 2515,
+  "catalog_items": 2516,
   "vanilla_recipe_count": 235,
   "temporary_count": 10,
   "press_count": 12,
@@ -2620,6 +2620,7 @@
     "ntm:machine_chemical_plant",
     "ntm:machine_fluidtank",
     "ntm:machine_gascent",
+    "ntm:machine_shredder",
     "ntm:magnetron",
     "ntm:man_core",
     "ntm:man_igniter",
