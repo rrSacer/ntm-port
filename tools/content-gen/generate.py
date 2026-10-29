@@ -3,7 +3,6 @@
 import argparse
 import json
 import re
-import shutil
 import struct
 import subprocess
 import sys
@@ -163,25 +162,29 @@ def transform_png(raw, light=None, dark=None, background=None, crop=None, multip
 
 
 def generate(src,out,rows,distributions,max_damage=False):
- """Write only owned files; recipes/worldgen from the other pipelines survive regeneration."""
+ """Generate fallbacks, yielding claimed paths to visual-gen, including during cleanup."""
+ ownership=out/'.visual-files.json'
+ visual_owned=set(json.loads(ownership.read_text())) if ownership.exists() else set()
  generated=[]
+ def emit_bytes(rel,data):
+  if rel in visual_owned:return
+  path=out/rel;path.parent.mkdir(parents=True,exist_ok=True)
+  path.write_bytes(data);generated.append(rel)
  def emit(rel,value):
-  write_json(out/rel,value);generated.append(rel)
+  emit_bytes(rel,(json.dumps(value,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
  def texture(source,tint=None,suffix=''):
   relative=source.removeprefix('src/main/resources/assets/hbm/textures/').removesuffix('.png')
   relative=relative.replace('blocks/','block/',1) if relative.startswith('blocks/') else relative.replace('items/','item/',1) if relative.startswith('items/') else 'block/'+relative
   relative=relative.lower()
-  dest='assets/ntm/textures/'+relative+suffix+'.png'; path=out/dest;path.parent.mkdir(parents=True,exist_ok=True)
+  dest='assets/ntm/textures/'+relative+suffix+'.png'
   data=(src/source).read_bytes()
   if tint:data=transform_png(data,**tint)
-  path.write_bytes(data);generated.append(dest)
+  emit_bytes(dest,data)
   # Preserve animation metadata when copying an animated source.
   mcmeta=src/(source+'.mcmeta')
-  if mcmeta.exists():shutil.copyfile(mcmeta,out/(dest+'.mcmeta'));generated.append(dest+'.mcmeta')
+  if mcmeta.exists():emit_bytes(dest+'.mcmeta',mcmeta.read_bytes())
   return 'ntm:'+relative+suffix
- manifest=out/'horizon-mod.toml'
- manifest.write_text('id = "ntm"\nname = "HBM Nuclear Tech Mod — Content"\nversion = "0.2.0"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n')
- generated.append('horizon-mod.toml')
+ emit_bytes('horizon-mod.toml',('id = "ntm"\nname = "HBM Nuclear Tech Mod — Content"\nversion = "0.2.0"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n').encode('utf-8'))
  emit('data/ntm/horizon/block/logic_token.json',{'template':'minecraft:composter','item':False})
  emit('assets/ntm/models/block/logic_token.json',{'parent':'minecraft:block/cube_all','textures':{'all':'minecraft:block/bedrock'}})
  emit('assets/ntm/blockstates/logic_token.json',{'variants':{'':{'model':'ntm:block/logic_token'}}})
@@ -190,14 +193,14 @@ def generate(src,out,rows,distributions,max_damage=False):
   name=row['id'].split(':')[1];kind=row['type']; machine=row['category']=='machine'
   tex=texture(row['source_texture'],row.get('tint'),'__'+row.get('material',name) if 'tint' in row else '')
   if row.get('texture_crop'):
-   dest='assets/ntm/textures/item/'+name+'_frame.png';path=out/dest;path.parent.mkdir(parents=True,exist_ok=True)
-   path.write_bytes(transform_png((src/row['source_texture']).read_bytes(),crop=row['texture_crop']));generated.append(dest);tex='ntm:item/'+name+'_frame'
+   dest='assets/ntm/textures/item/'+name+'_frame.png'
+   emit_bytes(dest,transform_png((src/row['source_texture']).read_bytes(),crop=row['texture_crop']));tex='ntm:item/'+name+'_frame'
   if row.get('background_texture'):
-   dest='assets/ntm/textures/block/'+name+'_composite.png';path=out/dest;path.parent.mkdir(parents=True,exist_ok=True)
-   path.write_bytes(transform_png((src/row['source_texture']).read_bytes(),background=(src/row['background_texture']).read_bytes()));generated.append(dest);tex='ntm:block/'+name+'_composite'
+   dest='assets/ntm/textures/block/'+name+'_composite.png'
+   emit_bytes(dest,transform_png((src/row['source_texture']).read_bytes(),background=(src/row['background_texture']).read_bytes()));tex='ntm:block/'+name+'_composite'
   if row.get('icon_cube'):
-   dest='assets/ntm/textures/block/'+name+'_opaque.png';path=out/dest;path.parent.mkdir(parents=True,exist_ok=True)
-   path.write_bytes(transform_png((src/row['source_texture']).read_bytes(),background=(src/'src/main/resources/assets/hbm/textures/blocks/block_steel.png').read_bytes()));generated.append(dest);tex='ntm:block/'+name+'_opaque'
+   dest='assets/ntm/textures/block/'+name+'_opaque.png'
+   emit_bytes(dest,transform_png((src/row['source_texture']).read_bytes(),background=(src/'src/main/resources/assets/hbm/textures/blocks/block_steel.png').read_bytes()));tex='ntm:block/'+name+'_opaque'
   if kind=='item':
    declaration={'template':row.get('template','minecraft:iron_ingot'),'max_stack_size':row.get('max_stack_size',64)}
    if max_damage and row.get('max_damage'):
@@ -219,15 +222,15 @@ def generate(src,out,rows,distributions,max_damage=False):
     if row.get('opaque_machine_textures'):
      backing=(src/'src/main/resources/assets/hbm/textures/blocks/block_steel.png').read_bytes()
      for face,path in row['textures'].items():
-      dest=f'assets/ntm/textures/block/{name}_{face}_opaque.png';target=out/dest;target.parent.mkdir(parents=True,exist_ok=True)
-      target.write_bytes(transform_png((src/('src/main/resources/assets/hbm/textures/'+path+'.png')).read_bytes(),background=backing))
-      generated.append(dest);textures[face]=f'ntm:block/{name}_{face}_opaque'
+      dest=f'assets/ntm/textures/block/{name}_{face}_opaque.png'
+      emit_bytes(dest,transform_png((src/('src/main/resources/assets/hbm/textures/'+path+'.png')).read_bytes(),background=backing))
+      textures[face]=f'ntm:block/{name}_{face}_opaque'
     if name in ('machine_press','machine_epress','machine_wood_burner'):
-     dest=f'assets/ntm/textures/block/{name}_front.png';path=out/dest;path.parent.mkdir(parents=True,exist_ok=True)
+     dest=f'assets/ntm/textures/block/{name}_front.png'
      raw=(src/row['source_texture']).read_bytes()
      backing=(src/'src/main/resources/assets/hbm/textures/blocks/block_steel.png').read_bytes()
-     path.write_bytes(transform_png(raw,background=backing,crop=(0,32,64,64) if name=='machine_wood_burner' else None))
-     generated.append(dest);textures['front']=f'ntm:block/{name}_front'
+     emit_bytes(dest,transform_png(raw,background=backing,crop=(0,32,64,64) if name=='machine_wood_burner' else None))
+     textures['front']=f'ntm:block/{name}_front'
     # A small meter gives every numeric state visible meaning, including TESR approximations.
     for level in range(6):
      front=textures.get('front_on',textures['front']) if level else textures['front']
@@ -286,7 +289,7 @@ def generate(src,out,rows,distributions,max_damage=False):
  previous=out/'.content-gen-files.json'
  if previous.exists():
   for old in json.loads(previous.read_text()):
-   if old not in generated and (out/old).is_file():(out/old).unlink()
+   if old not in generated and old not in visual_owned and (out/old).is_file():(out/old).unlink()
  write_json(previous,sorted(set(generated)))
  return len(set(generated))
 

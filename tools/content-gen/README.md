@@ -95,3 +95,15 @@ O primeiro comando cria dois mundos dedicados com seed 1768123, pregera a mesma 
 ## Alto-forno
 
 O pipeline também exporta `content/machine-recipes/blast_furnace.json`: receitas em ordem, alternativas OreDict e a tabela restrita de combustível. Veja [contrato, lacunas e reprodução](../../docs/content-blast-furnace.md). O bloco cúbico usa `brick_fire`; modelo/tela/multibloco pertencem ao visual-gen.
+
+## Propriedade dos arquivos visuais
+
+Ao iniciar a geração de assets, o content-gen lê `<output>/.visual-files.json` (lista de caminhos relativos ao diretório de saída). Esses caminhos têm precedência: não são escritos, nem apagados pela limpeza, nem incluídos no novo `.content-gen-files.json`. A regra vale também para PNGs e metadata de animação, além dos JSONs. Um arquivo reivindicado mas ainda ausente fica a cargo do visual-gen.
+
+Para transferir os blockstates da fundição, o visual-gen deve criá-los e incluí-los em seu manifesto **antes** da próxima execução do content-gen. Os demais arquivos continuam como fallback; retirar uma reivindicação permite regenerar o fallback correspondente na execução seguinte. A regra é por arquivo inteiro, sem mesclar geometria ou remover propriedades de estado. As adições parciais de tradução continuam sendo responsabilidade do visual-gen após o content-gen, como antes.
+
+Teste isolado de transferência/limpeza e retorno ao fallback:
+
+```sh
+/usr/local/bin/agent-run python3 tools/content-gen/test_ownership.py
+```
