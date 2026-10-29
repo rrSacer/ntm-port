@@ -15,7 +15,8 @@ A ordem segue os itens que cada máquina destrava: `source_recipe_machine` em
 | 3 | Planta química `machine_chemical_plant` | 32 (25) | 47 (30) |
 | 4 | Centrífuga de gás `machine_gascent` | (a cadeia UF6/PuF6) | transcrita à mão |
 
-O triturador (*shredder*) tem 56 (47) e fica sugerido para depois.
+Depois do M3: o triturador (*shredder*), com 56 itens (47 exclusivos); ver a
+seção abaixo.
 
 As receitas vêm do agente de importação, que resolve itens e OreDict:
 `content/machine-recipes/*.json`, schema 1, com `skipped` e motivo.
@@ -98,6 +99,58 @@ Regras:
 - **Desvio:** o tanque real aceita despejar célula ou tanque pela mão, além da
   rede (no NTM, só a rede). A tela não tem slot de identificador: o tipo vem do
   recipiente.
+
+## Triturador (`shredder.rs`), no motor com slots
+
+`TileEntityMachineShredder.java` e `ShredderRecipes.java`. É a primeira
+máquina nova sobre os **slots reais** do motor (`ntm-visual`; desenho em
+[visual-fiel.md](visual-fiel.md)). A máquina guarda os itens como os `Slots` da
+ponte (trait `Slotted`, `Layout::Native`): sem transação de item e sem tela
+`ui`. A tela é a `gui_shredder.png` original, gerada pelo agente de visual.
+
+| | NTM | Port |
+| --- | --- | --- |
+| Slots | 0–8 entradas, 9–26 saídas, 27–28 lâminas, 29 bateria | os mesmos; a bateria fica guardada, sem uso (o port ainda não tem carga em item) |
+| Ciclo | 60 ticks, 5 HE/t, buffer de 10.000 HE | igual; energia pela rede (portas nas 6 faces) |
+| Por ciclo | cada slot de entrada com espaço dá 1 item à saída (`processItem`) | igual, com o mesmo empilhamento |
+| Lâminas | aço 400, titânio 500, desh 0 (não gasta); +1 de dano por ciclo em cada uma; quebrada (dano = máximo) para a máquina | igual; o dano vai no item (`minecraft:damage`), então a lâmina leva o desgaste junto |
+| Sem receita | `getShredderResult` nunca é nulo: vira `scrap` ×1 | igual; uma lâmina não entra como entrada |
+
+**Receitas:** 722 (463 explícitas + 259 geradas do OreDict em `registerPost`).
+São extraídas pelo agente de importação (`content/machine-recipes/shredder.json`;
+o primeiro `setRecipe` vence, 54 colisões) e embutidas por
+`tools/machine-gen/build.py` em `crates/ntm-core/data/machines/shredder.json`.
+Todas as entradas e saídas `ntm:` existem no `ids.json`.
+
+**Fora:** a barra de durabilidade das lâminas só aparece com `max_damage` no
+item, que o motor base não aceita; o gerador de conteúdo tem `--max-damage` para
+o motor `ntm-visual`. O upgrade (`upgrade_shredder`) também fica de fora.
+
+**Verificação:**
+- **Mundo falso** (`shredder::tests`, 6 testes; `server/tests/shredder_tests.rs`, 2):
+  - um item por slot por ciclo, empilhando;
+  - sem energia ou sem lâminas, nada acontece;
+  - lâmina quebrada para a máquina;
+  - saídas cheias param a máquina;
+  - item sem receita vira sucata;
+  - a tabela do NTM, com a explícita vencendo a gerada;
+  - energia de uma bateria vizinha;
+  - o dano da lâmina no save do mundo;
+  - os itens soltos ao quebrar.
+- **Em jogo** (motor `ntm-visual`, Xvfb `:15`, mudo, `tools/test-game/shredder.py`;
+  mundo criativo, seed 1768123):
+  - bateria cheia ao lado;
+  - por shift-clique: 8 minérios de ferro, 4 lingotes e 2 pedregulhos nas entradas, lâminas de aço e desh nos slots delas;
+  - 8 ciclos em 24,7 s (8 × 60 ticks a 20 TPS);
+  - 20 pós de ferro (8 × 2 + 4) e 2 cascalhos; a lâmina de aço com dano 8, a de desh com 0;
+  - o pó retirado para o inventário;
+  - depois de sair e voltar ao mundo, o conteúdo e o dano das lâminas ficaram;
+  - nenhum "took too long".
+
+| | |
+| --- | --- |
+| ![](img/m4-shredder-working.png) | ![](img/m4-shredder-done.png) |
+| Trabalhando: 14 pós e 2 cascalhos, a barra de energia e as luzes das lâminas. | No fim: o pó já no inventário, a lâmina de aço gasta. |
 
 ## Pontes `m1_temp__`
 
