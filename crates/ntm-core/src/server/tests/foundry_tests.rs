@@ -183,3 +183,34 @@ fn channels_keep_one_material_and_outlets_filter() {
     o.invert = true;
     assert!(!o.passes("copper") && o.passes("iron"));
 }
+
+// ------------------------------------------------------------- stage 3
+
+/// The alloy's stream (facing side) falls into an ingot mold: full at 72
+/// quanta, it cools for 200 ticks into a steel ingot, and takes no more
+/// metal until the ingot is out.
+#[test]
+fn steel_pours_into_an_ingot_mold_and_casts() {
+    let mut g = game();
+    g.place(CORE, "ntm:machine_crucible[facing=north,honey_level=0]");
+    let mold_at = [0, 70, -2];
+    g.place(mold_at, "ntm:foundry_mold[facing=north,honey_level=0]");
+    g.run(2);
+    edit(&mut g, mold_at, |d| {
+        let Data::Mold(c) = d else { panic!() };
+        c.slots[0] = Some(Stack::new("ntm:mold__ingot", 1));
+    });
+    edit(&mut g, CORE, |d| {
+        let Data::Crucible(c) = d else { panic!() };
+        c.recipe = Some("crucible.steel".into());
+        c.recipe_stack = vec![("steel".into(), 100)];
+    });
+    g.run(10);
+    let Data::Mold(m) = g.machine(mold_at).data else { panic!() };
+    assert_eq!((m.melt.mat.as_deref(), m.melt.amount), (Some("steel"), 72), "o molde enche com 72");
+    g.run(210);
+    let Data::Mold(m) = g.machine(mold_at).data else { panic!() };
+    assert_eq!(m.slots[1], Some(Stack::new("ntm:ingot_steel", 1)));
+    g.run(20);
+    assert_eq!(crucible(&mut g, CORE).recipe_stack, vec![("steel".to_string(), 28)], "com o lingote no molde, nada mais entra");
+}
