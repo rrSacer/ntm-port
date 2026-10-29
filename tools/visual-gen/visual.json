@@ -1968,6 +1968,109 @@
             "color": 2
           }
         ]
+      },
+      "block_model": {
+        "source": "RenderFoundryTank, alone (no tank beside, above or below): floor and walls 0.125",
+        "textures": {
+          "top": "foundry_tank_top",
+          "side": "foundry_tank_side",
+          "bottom": "foundry_tank_bottom",
+          "inner": "foundry_tank_inner"
+        },
+        "elements": [
+          [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              16,
+              2,
+              16
+            ],
+            {
+              "down": "bottom",
+              "up": "bottom",
+              "north": "side",
+              "south": "side",
+              "west": "side",
+              "east": "side"
+            }
+          ],
+          [
+            [
+              0,
+              2,
+              0
+            ],
+            [
+              16,
+              16,
+              2
+            ],
+            {
+              "north": "side",
+              "south": "inner",
+              "up": "top",
+              "west": "side",
+              "east": "side"
+            }
+          ],
+          [
+            [
+              0,
+              2,
+              14
+            ],
+            [
+              16,
+              16,
+              16
+            ],
+            {
+              "south": "side",
+              "north": "inner",
+              "up": "top",
+              "west": "side",
+              "east": "side"
+            }
+          ],
+          [
+            [
+              0,
+              2,
+              2
+            ],
+            [
+              2,
+              16,
+              14
+            ],
+            {
+              "west": "side",
+              "east": "inner",
+              "up": "top"
+            }
+          ],
+          [
+            [
+              14,
+              2,
+              2
+            ],
+            [
+              16,
+              16,
+              14
+            ],
+            {
+              "east": "side",
+              "west": "inner",
+              "up": "top"
+            }
+          ]
+        ]
       }
     },
     "ntm:foundry_outlet": {
