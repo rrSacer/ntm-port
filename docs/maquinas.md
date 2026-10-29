@@ -458,6 +458,62 @@ mundo criativo, seed 1768123; telas do agente de visual):
 - a centrífuga de gás leva produto e upgrade para os slots, enche as saídas,
   e um produto retirado não mexe nos outros.
 
+## PUREX (`crafter.rs`, `Station::Purex`), no motor com slots
+
+É o `TileEntityMachinePUREX`, sobre o `ModuleMachineBase`, o mesmo módulo
+da planta química, com as receitas do `PUREXRecipes.java`. No port é uma
+estação do `crafter.rs`. As receitas vêm do agente de importação
+(`content/machine-recipes/purex.json`) e são embutidas por
+`tools/machine-gen/build.py`. Tela, multibloco 5×5×5 e as 16 portas da borda
+de baixo (energia e fluido) são do agente de visual.
+
+| | NTM | Port |
+| --- | --- | --- |
+| Slots | 0 bateria, 1 blueprint, 2–3 upgrades, 4–6 entradas, 7–12 saídas | as entradas e as saídas (`Layout::Crafter`); os outros sem lógica |
+| Tanques | 3 de entrada e 1 de saída, 24.000 mB, tipados pela receita | iguais |
+| Energia | máx = max(1.000.000, energia da receita × 100) | igual |
+| Receita | escolhida numa lista; troca automática no grupo (`autoSwitchGroup`) | igual. A troca vale para todas as estações do crafter. A entrada é um monte, lido na ordem em que os itens chegaram (o NTM lê o slot 0) |
+| Saídas com chance | `ChanceOutput` | sorteio por hash das receitas feitas |
+
+**Receitas:** 22 das 59 do NTM, na ordem dele:
+- os 3 especiais (UZH, ouro e chumbo reluzentes);
+- as 15 do combustível PWR gasto, no grupo `autoswitch.pwr`;
+- o sal de tório;
+- o ICF;
+- as 2 do grupo `autoswitch.schrab`.
+
+As outras 37 precisam de itens fora do catálogo: as barras do pile, os
+rejeitos do ZIRNOX, as placas, os pellets do Watz, a mistura de areia da
+vitrificação e o naquadria.
+
+**Fora (com o acordo do coordenador):**
+- os upgrades, que entram depois para todas as estações do crafter;
+- os blueprints, que nenhuma receita padrão usa;
+- o modo restrito, o som e o redstone-over-radio.
+
+Quase todas as entradas vêm de reatores que o port ainda não tem.
+
+**Verificação:**
+- **Mundo falso** (`crafter::purex_tests`, 1; `server/tests/purex_tests.rs`, 2):
+  - a troca no grupo, numa tabela feita à mão;
+  - 2 hastes PWR MEU pelos slots, com querosene e ácido nítrico: 6 pepitas
+    de U-238, 8 de plutônio e 4 de tecnécio, e os tanques descem 1.000 e
+    500 mB. Uma haste MEN posta troca a receita e dá 4 de Pu-239;
+  - 32 vezes o sal de tório gasto: 16.000 mB de sal de tório a cada vez, e
+    o U-233 perto da metade.
+- **Em jogo** (motor `ntm-visual`, Xvfb `:15`, mudo, `tools/test-game/purex.py`;
+  mundo criativo, seed 1768123; sem "took too long"):
+  - **`pwr`:** o multibloco posto, com uma bateria cheia na borda.
+    - A receita PWR MEU escolhida na lista da tela antiga (botão "Escolher
+      receita" da tela com slots).
+    - Um barril de querosene e um de ácido nítrico despejados pela tela
+      antiga; voltam 2 barris vazios.
+    - 2 hastes MEU no slot de entrada dão, nos slots de saída, 6 U-238,
+      8 plutônio, 4 tecnécio e 6 rejeitos nucleares pequenos.
+    - Os tanques ficam com 15.000 e 15.500 mB.
+  - **`trocar`:** uma haste MEN posta troca a receita sozinha. Em 8 s saem
+    4 Pu-239, 3 U-238, 2 tecnécio e 3 rejeitos.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
