@@ -1,7 +1,27 @@
 {
   "obj": "ntm:models/obj/chemical_plant.obj",
   "texture": "ntm:textures/models/machines/chemical_plant.png",
-  "rotation": 90.0,
+  "rotation": 90,
   "radius": 3.5,
-  "hide": []
+  "hide": [
+    "Frame",
+    "Fluid"
+  ],
+  "bones": {
+    "Spinner": {
+      "pivot": [
+        0.5,
+        0,
+        0.5
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.chemplant.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_chemical_plant.animation.json"
 }

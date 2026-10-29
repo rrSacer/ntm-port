@@ -4037,6 +4037,53 @@
             ]
           }
         ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/chemical_plant.obj",
+        "obj_from": "models/machines/chemical_plant.obj",
+        "texture": "ntm:textures/models/machines/chemical_plant.png",
+        "texture_from": "textures/models/machines/chemical_plant.png",
+        "rotation": 90,
+        "radius": 3.5,
+        "hide": [
+          "Frame",
+          "Fluid"
+        ],
+        "bones": {
+          "Spinner": {
+            "pivot": [
+              0.5,
+              0,
+              0.5
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.chemplant.work",
+          "length": 2.4,
+          "bones": {
+            "Spinner": {
+              "turn": [
+                0,
+                720,
+                0
+              ]
+            },
+            "Slider": {
+              "sway": {
+                "axis": "x",
+                "amp": 6.0
+              }
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.chemplant.work",
+            "property": "honey_level",
+            "not": "0"
+          }
+        ]
       }
     },
     "ntm:machine_centrifuge": {
@@ -5227,6 +5274,52 @@
             "lines": [
               "Escolher receita"
             ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/purex.obj",
+        "obj_from": "models/machines/purex.obj",
+        "texture": "ntm:textures/models/machines/purex.png",
+        "texture_from": "textures/models/machines/purex.png",
+        "rotation": 90,
+        "radius": 5.5,
+        "hide": [
+          "Frame"
+        ],
+        "bones": {
+          "Fan": {
+            "pivot": [
+              1.5,
+              1.25,
+              0
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.purex.work",
+          "length": 1.2,
+          "bones": {
+            "Fan": {
+              "turn": [
+                0,
+                0,
+                1080
+              ]
+            },
+            "Pump": {
+              "sway": {
+                "axis": "x",
+                "amp": 8.0
+              }
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.purex.work",
+            "property": "honey_level",
+            "not": "0"
           }
         ]
       }

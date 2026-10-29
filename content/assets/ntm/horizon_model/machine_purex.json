@@ -1,7 +1,26 @@
 {
   "obj": "ntm:models/obj/purex.obj",
   "texture": "ntm:textures/models/machines/purex.png",
-  "rotation": 90.0,
+  "rotation": 90,
   "radius": 5.5,
-  "hide": []
+  "hide": [
+    "Frame"
+  ],
+  "bones": {
+    "Fan": {
+      "pivot": [
+        1.5,
+        1.25,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.purex.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_purex.animation.json"
 }
