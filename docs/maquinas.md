@@ -216,6 +216,74 @@ laterais, a coluna central, a frente e o fundo a +3 e +5, e o topo.
 | ![](img/m4-blastfurnace-working.png) | ![](img/m4-blastfurnace-done.png) |
 | Trabalhando: o ferro e a areia nas entradas, a chama acesa. | No fim: aço e escória nas saídas. |
 
+## Fundição (`foundry/`), no motor com slots
+
+São o `TileEntityHeaterFirebox`, o `TileEntityCrucible`, o
+`TileEntityFoundryChannel`/`Tank`/`Outlet` e o
+`TileEntityFoundryCastingBase` (molde e bacia), com os materiais do
+`Mats.java`, as ligas do `CrucibleRecipes.java` e os moldes do
+`ItemMold.java`. O plano em três etapas foi aprovado pelo coordenador. Telas e
+modelos ficam com o agente de visual.
+
+As tabelas vêm do agente de importação (`content/machine-recipes/foundry.json`):
+109 materiais, 609 itens com o que cada um derrete, 13 ligas, 85 combustíveis
+da firebox e 26 moldes.
+
+| | NTM | Port |
+| --- | --- | --- |
+| Unidade | quanta: lingote 72, pepita 8, bloco 648 | igual (`foundry::quanta`) |
+| Firebox | 2 slots; calor até 100.000 TU; o combustível rende `burn × heat` | igual; um balde de lava devolve o balde |
+| Calor do cadinho | puxa 1/4 da diferença da fonte logo abaixo do núcleo | igual (`HeatSource`) |
+| Cadinho | slots 1–9 de entrada (o 0 não é usado); derrete com ≥ 50.000 TU, 20.000 por item; pilhas de liga e de rejeito de 10.368 quanta | iguais; o slot 0 fica escondido na tela |
+| Liga | escolhida numa lista; feita a cada `frequency` ticks | lista na tela antiga (botão 0 da tela com slots) |
+| Despejo | dois jatos de 24 quanta/tick, caindo até 6 blocos, a núcleo ± 2 × frente | igual |
+| Canal | 144 quanta; nivela com os vizinhos a cada 5 ticks em ordem sorteada | igual, com o sorteio por hash (`flow::roll`) |
+| Tanque | 2.592 quanta | igual |
+| Saída (*outlet*) | tira de trás e despeja até 4 blocos abaixo; filtro de material, invertível | igual |
+| Molde e bacia | o molde define o custo; cheio, esfria 200 ticks e vira o item | igual; moldes pequenos (tamanho 0) no molde, grandes (1) na bacia |
+
+**Desvios:**
+- **Aleatoriedade determinística.** As sortes do NTM (ordem dos vizinhos,
+  `nextInt`) saem de um hash da posição e do tick. Isso torna os testes
+  reprodutíveis.
+- **Metal fora da rede de fluido.** O metal derretido vai por blocos
+  (`foundry_server`), como no NTM, e não pelos dutos.
+- **Bica (*slagtap*) `Inert`.** Fica documentada como lacuna.
+- **Estado salvo no bloco.** O estado que não é slot vai em `set-data` depois
+  dos valores da tela (`Slotted::save_state`) e volta pelo `get-data` (motor
+  `ntm-visual`, api 9) na primeira vez que a sessão vê a máquina:
+  - calor, progresso, liga e as duas pilhas, no cadinho;
+  - metal e resfriamento, no molde e na bacia.
+
+**Verificação:**
+- **Mundo falso, lógica:** 17 testes nos módulos, entre eles:
+  - a firebox: carvão até o máximo e o calor que some parado;
+  - o calor de baixo;
+  - um item por vez;
+  - aço de ferro, carvão e fluxo;
+  - o metal que entra por cima;
+  - a ordem sorteada dos canais;
+  - o filtro da saída;
+  - o molde de lingote em 200 ticks;
+  - a bacia, que só aceita molde grande.
+- **Mundo falso, servidor** (`server/tests/foundry_tests.rs`, 6):
+  - a firebox aquece o cadinho e o ferro derrete e cai;
+  - a liga escolhida na tela antiga;
+  - quebrar o cadinho solta itens e sucata;
+  - o metal corre por canais e uma saída até dois tanques (o de cima enche o
+    de baixo antes), sem perda;
+  - um material por rede;
+  - o aço no molde de lingote.
+- **Robustez dos slots** (`server/tests/slot_items_tests.rs`, 6). Em todos os
+  ticks, a soma de itens, metal e o que foi retirado é o que entrou:
+  - o triturador com a saída retirada em horas aleatórias;
+  - quebrar com conteúdo solta uma vez só;
+  - o metal do cadinho quebrado vira sucata;
+  - uma queda entre o save do mundo e o do mod, nos dois sentidos, não duplica
+    nem perde metal;
+  - o ferro conservado do cadinho até o molde.
+- **Em jogo:** pendente, à espera das telas e modelos do agente de visual.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
