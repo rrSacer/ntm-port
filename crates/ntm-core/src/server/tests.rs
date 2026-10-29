@@ -1839,3 +1839,5 @@ mod slot_items_tests;
 mod anvil_tests;
 
 mod press_slots_tests;
+
+mod purex_tests;
