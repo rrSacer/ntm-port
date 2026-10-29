@@ -15,6 +15,8 @@
 //!   Tank}.java`).
 //! - An outlet takes metal from behind only and pours it into what is
 //!   under it, up to 4 blocks down (`TileEntityFoundryOutlet.java`).
+//! - Molds take metal from above and from the sides, basins from above
+//!   (`crate::foundry::cast`; they cool on their own tick).
 use super::*;
 use crate::foundry::{
     Acceptor, HeatSource, Tables,
@@ -73,6 +75,7 @@ fn accept_pour(m: &mut Machines, t: &Tables, key: &Key, mat: &str, q: u32) -> Op
         Data::Channel(c) if c.melt.check(mat, CHANNEL_CAP) => Some(c.melt.add(mat, q, CHANNEL_CAP)),
         Data::FoundryTank(c) if c.melt.check(mat, TANK_CAP) => Some(c.melt.add(mat, q, TANK_CAP)),
         Data::Crucible(c) => c.pour(t, mat, q),
+        Data::Mold(c) | Data::Basin(c) => c.accept(t, mat, q),
         _ => None,
     }
 }
@@ -95,6 +98,8 @@ fn accept_flow(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &K
     match &mut m.get_mut(key)?.data {
         Data::Channel(c) if c.melt.check(mat, CHANNEL_CAP) => Some(c.melt.add(mat, q, CHANNEL_CAP)),
         Data::FoundryTank(c) if c.melt.check(mat, TANK_CAP) => Some(c.melt.add(mat, q, TANK_CAP)),
+        // A mold block takes metal from the sides too; a basin doesn't.
+        Data::Mold(c) => c.accept(t, mat, q),
         _ => None,
     }
 }

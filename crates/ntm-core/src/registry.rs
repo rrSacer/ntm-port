@@ -198,14 +198,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:foundry_mold",
-        kind: Kind::Inert,
+        kind: Kind::Mold,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:foundry_basin",
-        kind: Kind::Inert,
+        kind: Kind::Basin,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

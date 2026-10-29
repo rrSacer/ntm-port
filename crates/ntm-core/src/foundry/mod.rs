@@ -13,6 +13,7 @@
 //! (`content/machine-recipes/foundry.json`), embedded by
 //! `tools/machine-gen/build.py`; the logic takes them injected.
 
+pub mod cast;
 pub mod crucible;
 pub mod firebox;
 pub mod flow;
@@ -99,13 +100,15 @@ pub struct Tables {
     pub alloys: Vec<Alloy>,
     #[serde(default)]
     pub firebox_fuels: HashMap<String, Fuel>,
+    #[serde(default)]
+    pub molds: Vec<cast::Mold>,
     #[serde(skip)]
     by_name: HashMap<String, usize>,
 }
 
 impl Tables {
     pub fn new(materials: Vec<Material>, items: HashMap<String, Vec<Mat>>, alloys: Vec<Alloy>, firebox_fuels: HashMap<String, Fuel>) -> Self {
-        Self { quanta: HashMap::new(), materials, items, alloys, firebox_fuels, by_name: HashMap::new() }.indexed()
+        Self { quanta: HashMap::new(), materials, items, alloys, firebox_fuels, molds: Vec::new(), by_name: HashMap::new() }.indexed()
     }
 
     /// The NTM's (`data/machines/foundry.json`, from the content agent's

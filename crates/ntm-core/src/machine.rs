@@ -44,6 +44,9 @@ pub enum Kind {
     Channel,
     FoundryTank,
     Outlet,
+    /// Casting bases (`crate::foundry::cast`): small molds, and the basin.
+    Mold,
+    Basin,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -122,6 +125,8 @@ pub enum Data {
     Channel(crate::foundry::flow::Channel),
     FoundryTank(crate::foundry::flow::Tank),
     Outlet(crate::foundry::flow::Outlet),
+    Mold(crate::foundry::cast::Cast),
+    Basin(crate::foundry::cast::Cast),
     Inert { name: String },
 }
 
@@ -158,6 +163,8 @@ impl Machine {
             Kind::Channel => Data::Channel(Default::default()),
             Kind::FoundryTank => Data::FoundryTank(Default::default()),
             Kind::Outlet => Data::Outlet(Default::default()),
+            Kind::Mold => Data::Mold(crate::foundry::cast::Cast::new(0)),
+            Kind::Basin => Data::Basin(crate::foundry::cast::Cast::new(1)),
             Kind::Crafter => match crate::crafter::Station::of(block_id) {
                 Some(st) => Data::Crafter(crate::crafter::Crafter::new(st)),
                 None => Data::Inert { name: block_id.into() },
@@ -198,6 +205,8 @@ impl Machine {
             Data::Channel(_) => Kind::Channel,
             Data::FoundryTank(_) => Kind::FoundryTank,
             Data::Outlet(_) => Kind::Outlet,
+            Data::Mold(_) => Kind::Mold,
+            Data::Basin(_) => Kind::Basin,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -221,6 +230,8 @@ impl Machine {
             Data::Channel(m) => m,
             Data::FoundryTank(m) => m,
             Data::Outlet(m) => m,
+            Data::Mold(m) => m,
+            Data::Basin(m) => m,
             Data::Inert { name } => name,
         }
     }
@@ -244,6 +255,8 @@ impl Machine {
             Data::Channel(m) => m,
             Data::FoundryTank(m) => m,
             Data::Outlet(m) => m,
+            Data::Mold(m) => m,
+            Data::Basin(m) => m,
             Data::Inert { name } => name,
         }
     }
