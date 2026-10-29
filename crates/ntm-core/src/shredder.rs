@@ -81,26 +81,8 @@ pub fn accepts(slot: usize, item: &str) -> bool {
     }
 }
 
-/// An item stack in a slot, its damage too (`minecraft:damage`).
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub struct Stack {
-    pub id: String,
-    pub count: u32,
-    #[serde(default, skip_serializing_if = "is_zero")]
-    pub damage: u32,
-}
-
-fn is_zero(v: &u32) -> bool {
-    *v == 0
-}
-
-impl Stack {
-    pub fn new(id: &str, count: u32) -> Self {
-        Self { id: id.into(), count, damage: 0 }
-    }
-}
-
-pub type Slots = Vec<Option<Stack>>;
+/// Slots and stacks as the engine has them (`minecraft:damage` too).
+pub use crate::server::container_bridge::{Slots, Stack};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Shredder {
@@ -219,6 +201,15 @@ impl EnergyNode for Shredder {
         self.power = (self.power + he).min(MAX_POWER);
     }
     fn take(&mut self, _he: u64) {}
+}
+
+impl crate::server::container_bridge::Slotted for Shredder {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        Shredder::screen_data(self)
+    }
 }
 
 impl Logic for Shredder {

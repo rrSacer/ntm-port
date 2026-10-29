@@ -58,14 +58,16 @@ pub trait Slotted {
 
 /// The machines that implement [`Slotted`] (`Layout::Native`).
 fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
-    // The shredder joins here (Data::Shredder(s) => Some(s)).
-    let _ = data;
-    None
+    match data {
+        Data::Shredder(s) => Some(s),
+        _ => None,
+    }
 }
 
 /// The blocks whose machines use the engine's slots, and their layout:
 /// (block, first input slot, inputs, output slot).
 pub const SLOTTED: &[(&str, Layout)] = &[
+    ("ntm:machine_shredder", Layout::Native),
     (
         "ntm:machine_assembly_machine",
         Layout::Crafter {
