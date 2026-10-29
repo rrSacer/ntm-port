@@ -1,0 +1,73 @@
+{
+  "slots": [
+    {
+      "x": 26,
+      "y": 83,
+      "accept": [
+        "ntm:explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 26,
+      "y": 101,
+      "accept": [
+        "ntm:explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 44,
+      "y": 83,
+      "accept": [
+        "ntm:explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 44,
+      "y": 101,
+      "accept": [
+        "ntm:explosive_lenses"
+      ],
+      "max": 1
+    },
+    {
+      "x": 39,
+      "y": 35,
+      "accept": [
+        "ntm:man_core"
+      ],
+      "max": 1
+    },
+    {
+      "x": 98,
+      "y": 91,
+      "accept": [
+        "ntm:mike_core"
+      ],
+      "max": 1
+    },
+    {
+      "x": 116,
+      "y": 91,
+      "accept": [
+        "ntm:mike_deut"
+      ],
+      "max": 1
+    },
+    {
+      "x": 134,
+      "y": 91,
+      "accept": [
+        "ntm:mike_cooling_unit"
+      ],
+      "max": 1
+    }
+  ],
+  "inventory": [
+    8,
+    135
+  ],
+  "data": 2
+}

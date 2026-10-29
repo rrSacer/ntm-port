@@ -2547,6 +2547,221 @@
           }
         ]
       }
+    },
+    "ntm:nuke_mike": {
+      "source": "ContainerNukeMike, GUINukeMike (isReady, isFilled, the lenses and the three stage-2 parts)",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 83,
+            "accept": [
+              "ntm:explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 26,
+            "y": 101,
+            "accept": [
+              "ntm:explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 44,
+            "y": 83,
+            "accept": [
+              "ntm:explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 44,
+            "y": 101,
+            "accept": [
+              "ntm:explosive_lenses"
+            ],
+            "max": 1
+          },
+          {
+            "x": 39,
+            "y": 35,
+            "accept": [
+              "ntm:man_core"
+            ],
+            "max": 1
+          },
+          {
+            "x": 98,
+            "y": 91,
+            "accept": [
+              "ntm:mike_core"
+            ],
+            "max": 1
+          },
+          {
+            "x": 116,
+            "y": 91,
+            "accept": [
+              "ntm:mike_deut"
+            ],
+            "max": 1
+          },
+          {
+            "x": 134,
+            "y": 91,
+            "accept": [
+              "ntm:mike_cooling_unit"
+            ],
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          135
+        ],
+        "data": 2
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/weapon/ivymikeschematic.png",
+        "texture_from": "textures/gui/weapon/ivyMikeSchematic.png",
+        "size": [
+          176,
+          217
+        ],
+        "title": [
+          88,
+          4,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          123
+        ],
+        "overlays": [
+          {
+            "value": 0,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              5,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              177,
+              1
+            ]
+          },
+          {
+            "value": 0,
+            "min": 2,
+            "rect": [
+              5,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              177,
+              19
+            ]
+          },
+          {
+            "slot": 5,
+            "rect": [
+              75,
+              25,
+              80,
+              36
+            ],
+            "uv": [
+              176,
+              49
+            ]
+          },
+          {
+            "slot": 6,
+            "rect": [
+              79,
+              30,
+              58,
+              26
+            ],
+            "uv": [
+              180,
+              88
+            ]
+          },
+          {
+            "slot": 7,
+            "rect": [
+              140,
+              30,
+              12,
+              26
+            ],
+            "uv": [
+              240,
+              88
+            ]
+          },
+          {
+            "slot": 0,
+            "rect": [
+              24,
+              20,
+              23,
+              23
+            ],
+            "uv": [
+              209,
+              1
+            ]
+          },
+          {
+            "slot": 2,
+            "rect": [
+              47,
+              20,
+              23,
+              23
+            ],
+            "uv": [
+              232,
+              1
+            ]
+          },
+          {
+            "slot": 1,
+            "rect": [
+              24,
+              43,
+              23,
+              23
+            ],
+            "uv": [
+              209,
+              24
+            ]
+          },
+          {
+            "slot": 3,
+            "rect": [
+              47,
+              43,
+              23,
+              23
+            ],
+            "uv": [
+              232,
+              24
+            ]
+          }
+        ]
+      }
     }
   }
 }
