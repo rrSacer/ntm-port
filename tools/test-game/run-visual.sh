@@ -7,7 +7,31 @@ set -euo pipefail
 H=${HORIZON_VISUAL:-/home/sacer/Workspace/horizon-visual}
 name="${1:?name}"; shift
 game="/tmp/ntm-visual-game/$name"
-mkdir -p /tmp/ntm-visual-game/dist; cp ${BUILD_DIR:-/home/sacer/Workspace/ntm-port/target/visual-build}/dist/*.hmod /tmp/ntm-visual-game/dist/
+# The mods into the shared dist (their storage, .horizon-mod-data, stays
+# beside them), whole: a .hmod copied while tools/build-visual.sh writes it
+# is truncated, the content mod doesn't load and the engine turns every
+# ntm: block of the world into air. So each one is checked as a zip
+# (waiting out a build), copied to a temporary name and renamed, under a
+# lock against another agent's game doing the same.
+src=${BUILD_DIR:-/home/sacer/Workspace/ntm-port/target/visual-build}/dist
+mkdir -p /tmp/ntm-visual-game/dist
+(
+  flock 9
+  for try in $(seq 1 60); do
+    ok=1
+    for f in "$src"/*.hmod; do
+      python3 -c 'import sys, zipfile; sys.exit(zipfile.ZipFile(sys.argv[1]).testzip() is not None)' "$f" 2>/dev/null || { ok=0; break; }
+    done
+    [ $ok = 1 ] && break
+    echo "run-visual: $src incompleto (build em andamento?), esperando..." >&2
+    sleep 5
+  done
+  [ $ok = 1 ] || { echo "run-visual: mods inválidos em $src" >&2; exit 1; }
+  for f in "$src"/*.hmod; do
+    cp "$f" "/tmp/ntm-visual-game/dist/.$(basename "$f").tmp"
+    mv -f "/tmp/ntm-visual-game/dist/.$(basename "$f").tmp" "/tmp/ntm-visual-game/dist/$(basename "$f")"
+  done
+) 9>/tmp/ntm-visual-game/dist.lock
 dist="${DIST:-/tmp/ntm-visual-game/dist}"
 mkdir -p "$game"
 [ -f "$game/options.txt" ] || printf 'soundCategory_master:0.0\nsoundCategory_music:0.0\n' > "$game/options.txt"
