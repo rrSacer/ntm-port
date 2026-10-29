@@ -1019,6 +1019,32 @@
               "Gás de exaustão: {7} / {8} mB"
             ]
           }
+        ],
+        "gauges": [
+          {
+            "value": 5,
+            "max": 6,
+            "at": [
+              34,
+              80
+            ],
+            "tip": 5,
+            "back": 2,
+            "side": 1,
+            "color": "#800000"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "at": [
+              34,
+              26
+            ],
+            "tip": 5,
+            "back": 2,
+            "side": 1,
+            "color": "#800000"
+          }
         ]
       },
       "model": {
@@ -4175,7 +4201,7 @@
       }
     },
     "ntm:machine_press": {
-      "source": "ContainerMachinePress, GUIMachinePress (MachinePress {2,0,0,0,0,0}); the speed gauge is a needle the engine does not draw yet",
+      "source": "ContainerMachinePress, GUIMachinePress (MachinePress {2,0,0,0,0,0})",
       "machine": {
         "slots": [
           {
@@ -4441,6 +4467,20 @@
             "lines": [
               "Queima: {4} ({5} por prensagem)"
             ]
+          }
+        ],
+        "gauges": [
+          {
+            "value": 2,
+            "max": 3,
+            "at": [
+              34,
+              25
+            ],
+            "tip": 5,
+            "back": 2,
+            "side": 1,
+            "color": "#7f0000"
           }
         ]
       }

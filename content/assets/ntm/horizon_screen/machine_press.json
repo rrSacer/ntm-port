@@ -66,5 +66,19 @@
       ]
     }
   ],
+  "gauges": [
+    {
+      "value": 2,
+      "max": 3,
+      "at": [
+        34,
+        25
+      ],
+      "tip": 5,
+      "back": 2,
+      "side": 1,
+      "color": "#7f0000"
+    }
+  ],
   "title_color": "#ffffff"
 }

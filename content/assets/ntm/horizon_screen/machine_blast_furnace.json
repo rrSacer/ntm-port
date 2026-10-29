@@ -95,5 +95,31 @@
         "Gás de exaustão: {7} / {8} mB"
       ]
     }
+  ],
+  "gauges": [
+    {
+      "value": 5,
+      "max": 6,
+      "at": [
+        34,
+        80
+      ],
+      "tip": 5,
+      "back": 2,
+      "side": 1,
+      "color": "#800000"
+    },
+    {
+      "value": 7,
+      "max": 8,
+      "at": [
+        34,
+        26
+      ],
+      "tip": 5,
+      "back": 2,
+      "side": 1,
+      "color": "#800000"
+    }
   ]
 }
