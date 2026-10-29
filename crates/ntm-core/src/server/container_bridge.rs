@@ -144,7 +144,23 @@ pub const SLOTTED: &[(&str, Layout)] = &[
         "ntm:machine_assembly_machine",
         Layout::Crafter {
             inputs: 4..16,
-            output: 16,
+            outputs: 16..17,
+        },
+    ),
+    // HBM's other slots (battery, upgrades, fluid containers) have no logic
+    // in the port: the screens leave them out.
+    (
+        "ntm:machine_chemical_plant",
+        Layout::Crafter {
+            inputs: 0..3,
+            outputs: 3..6,
+        },
+    ),
+    (
+        "ntm:machine_centrifuge",
+        Layout::Crafter {
+            inputs: 0..1,
+            outputs: 1..5,
         },
     ),
     ("ntm:nuke_boy", Layout::Bomb),
@@ -158,10 +174,11 @@ pub const SLOTTED: &[(&str, Layout)] = &[
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Layout {
-    /// HBM's processing machines: inputs, one output slot.
+    /// HBM's processing machines: input and output slots, each a view of
+    /// the machine's piles.
     Crafter {
         inputs: std::ops::Range<usize>,
-        output: usize,
+        outputs: std::ops::Range<usize>,
     },
     /// A bomb: one slot per part, in the bomb type's order.
     Bomb,
@@ -172,7 +189,10 @@ pub enum Layout {
 /// Multiblocks (tools/visual-gen/visual.json): the volume around the core
 /// in the placer's frame (x right, z away from the player), as the engine
 /// places it.
-pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[("ntm:machine_assembly_machine", [-1, 0, -1], [1, 0, 1])];
+pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
+    ("ntm:machine_assembly_machine", [-1, 0, -1], [1, 0, 1]),
+    ("ntm:machine_chemical_plant", [-1, 0, -1], [1, 0, 1]),
+];
 
 /// The cells of the multiblock of `block` at `core` that pass energy to
 /// it (HBM's `makeExtra` proxies): its bottom layer but the core.
@@ -199,7 +219,13 @@ pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
 /// cells, in the placer's frame (x right, y up, z away from the player),
 /// that join the core's fluid networks as ducts. A chain of them reaches the
 /// core: the blast furnace's ports up its front reach it down its column.
-pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[(
+pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
+    // MachineChemicalPlant.getAllPorts: its bottom ring.
+    (
+        "ntm:machine_chemical_plant",
+        &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1]],
+    ),
+    (
     "ntm:machine_blast_furnace",
     &[
         [1, 0, 0],
@@ -217,7 +243,8 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[(
         [0, 5, 1],
         [0, 5, -1],
     ],
-)];
+    ),
+];
 
 /// Cell `l` (placer's frame) of the multiblock with its core at `core`.
 fn world_cell(core: Pos, facing: [i32; 3], l: [i32; 3]) -> Pos {
@@ -355,6 +382,11 @@ fn crafter_data(c: &Crafter) -> Vec<i32> {
         led,
         power_ok,
     ]
+    .into_iter()
+    // Then every tank, three in and three out (the chemical plant's).
+    .chain((0..3).flat_map(|i| tank(c.tin.get(i))))
+    .chain((0..3).flat_map(|i| tank(c.tout.get(i))))
+    .collect()
 }
 
 impl Server {
@@ -379,7 +411,7 @@ impl Server {
             let empty = now.iter().all(Option::is_none);
             let last = r.bridge.last.get(&key).cloned().unwrap_or_else(|| now.clone());
             match (&mut m.data, layout) {
-                (Data::Crafter(c), Layout::Crafter { inputs, output }) => {
+                (Data::Crafter(c), Layout::Crafter { inputs, outputs }) => {
                     if first && !empty {
                         // A new session: the slots, saved with the world, are
                         // the truth; a machine whose slots are empty keeps what
@@ -388,17 +420,15 @@ impl Server {
                             .into_iter()
                             .map(|(i, n)| (i, n as u32))
                             .collect();
-                        // Outputs of other items than the slot's stay.
-                        let slot = now.get(*output).cloned().flatten();
-                        c.out.retain(|(i, _)| slot.as_ref().is_some_and(|s| s.id != *i));
-                        if let Some(s) = slot {
-                            c.out.push((s.id, s.count));
-                        }
+                        // Outputs of other items than the slots' stay.
+                        let shown = totals(now[outputs.clone()].iter());
+                        c.out.retain(|(i, _)| !shown.contains_key(i));
+                        c.out.extend(shown.into_iter().map(|(i, n)| (i, n as u32)));
                     } else {
                         apply_delta(&mut c.items, &totals(last[inputs.clone()].iter()), &totals(now[inputs.clone()].iter()));
-                        let one = |s: &Slots| totals(s.get(*output).into_iter());
-                        apply_delta(&mut c.out, &one(&last), &one(&now));
+                        apply_delta(&mut c.out, &totals(last[outputs.clone()].iter()), &totals(now[outputs.clone()].iter()));
                     }
+                    c.pick_by_items();
                 }
                 (Data::Bomb(b), Layout::Bomb) => {
                     if !(first && empty) {
@@ -450,23 +480,11 @@ impl Server {
             let Some(last) = r.bridge.last.get(&key).cloned() else { continue };
             let mut want = last.clone();
             let data = match (&mut m.data, layout) {
-                (Data::Crafter(c), Layout::Crafter { inputs, output }) => {
+                (Data::Crafter(c), Layout::Crafter { inputs, outputs }) => {
                     lay_out(&mut want, inputs.clone(), &c.items, crate::crafter::STACK);
-                    // The output slot shows the first of the outputs; others
-                    // stay in the machine (its old screen gives them).
-                    let keep = want[*output].as_ref().map(|s| s.id.clone());
-                    let shown = c
-                        .out
-                        .iter()
-                        .find(|(i, _)| Some(i) == keep.as_ref())
-                        .or_else(|| c.out.first())
-                        .cloned();
-                    let keep_damage = want[*output].as_ref().map_or(0, |s| s.damage);
-                    want[*output] = shown.map(|(i, n)| Stack {
-                        damage: if Some(&i) == keep.as_ref() { keep_damage } else { 0 },
-                        id: i,
-                        count: n.min(crate::crafter::STACK),
-                    });
+                    // The outputs over their slots; what they can't show stays
+                    // in the machine (its old screen gives it).
+                    lay_out(&mut want, outputs.clone(), &c.out, crate::crafter::STACK);
                     crafter_data(c)
                 }
                 (Data::Bomb(b), Layout::Bomb) => {

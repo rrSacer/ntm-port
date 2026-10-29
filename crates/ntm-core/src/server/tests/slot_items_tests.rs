@@ -279,3 +279,38 @@ fn a_bomb_assembled_before_the_slots_shows_its_parts_in_them() {
         assert_eq!(parts, kind.slots.len(), "{id}: the bomb lost parts");
     }
 }
+
+/// A centrifuge on the engine's slots: its input slot feeds it, its outputs
+/// spread over the four output slots, and a player taking one of them takes
+/// it from the machine too.
+#[test]
+fn a_centrifuge_shows_its_outputs_in_four_slots() {
+    let mut g = game();
+    let state = "ntm:machine_centrifuge[facing=north,honey_level=0]";
+    engine_block(&mut g, AT, state, 5);
+    let r = &crate::crafter::Station::Centrifuge.recipes()[0];
+    let input = r.items_in[0].ids[0].clone();
+    put(&mut g, AT, 0, Some(Stack::new(&input, 2)));
+    g.run(2);
+    {
+        let r = g.ready();
+        if let Some(Data::Crafter(c)) = r.world.machines.get_mut(&(OW.to_string(), AT)).map(|m| &mut m.data) {
+            c.power = 10_000_000;
+        }
+    }
+    g.run(2 * 200 + 10);
+    let s = slots(&g, AT);
+    assert_eq!(s[0], None, "the input was used");
+    for (item, n, _) in &r.items_out {
+        assert!(count(&s[1..5].to_vec(), item) >= 2 * n, "{item}: {s:?}");
+    }
+    // The player takes the first output: the machine has it no more.
+    let taken = s[1].clone().unwrap();
+    put(&mut g, AT, 1, None);
+    g.run(2);
+    let left = match g.ready().world.machines.get(&(OW.to_string(), AT)).map(|m| m.data.clone()) {
+        Some(Data::Crafter(c)) => c.out.iter().filter(|o| o.0 == taken.id).map(|o| o.1).sum::<u32>(),
+        _ => panic!("no centrifuge"),
+    };
+    assert_eq!(left + taken.count, count(&s, &taken.id), "{taken:?}");
+}

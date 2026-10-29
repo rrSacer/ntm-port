@@ -291,6 +291,23 @@ impl Crafter {
     }
 
     /// The recipe that takes `item` as an input (the centrifuge's choice).
+    /// The centrifuge's recipe by what it holds, as INSERT picks it
+    /// (`TileEntityMachineCentrifuge` reads its input slot each tick): for
+    /// items the engine's slots put in, which skip INSERT.
+    pub(crate) fn pick_by_items(&mut self) {
+        if !self.station.picks_by_input() {
+            return;
+        }
+        let Some(first) = self.items.first().map(|i| i.0.clone()) else { return };
+        let takes = |r: &Recipe| r.items_in.iter().any(|i| i.ids.contains(&first));
+        if self.current().is_some_and(takes) {
+            return;
+        }
+        if let Some(r) = self.recipe_for(&first) {
+            self.set_recipe(r);
+        }
+    }
+
     fn recipe_for(&self, item: &str) -> Option<&'static Recipe> {
         self.station.recipes().iter().find(|r| r.items_in.iter().any(|i| i.ids.iter().any(|x| x == item)))
     }
