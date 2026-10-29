@@ -3651,6 +3651,42 @@
         "texture": "ntm:textures/models/anvil/anvil_bismuth_bronze.png",
         "texture_from": "textures/blocks/anvil_bismuth_bronze.png"
       }
+    },
+    "ntm:anvil_arsenic_bronze": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_arsenic_bronze.png",
+        "texture_from": "textures/blocks/anvil_arsenic_bronze.png"
+      }
+    },
+    "ntm:anvil_schrabidate": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_schrabidate.png",
+        "texture_from": "textures/blocks/anvil_schrabidate.png"
+      }
+    },
+    "ntm:anvil_dnt": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_dnt.png",
+        "texture_from": "textures/blocks/anvil_dnt.png"
+      }
+    },
+    "ntm:anvil_osmiridium": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_osmiridium.png",
+        "texture_from": "textures/blocks/anvil_osmiridium.png"
+      }
+    },
+    "ntm:anvil_murky": {
+      "like": "ntm:anvil_iron",
+      "model": {
+        "texture": "ntm:textures/models/anvil/anvil_steel.png",
+        "texture_from": "textures/blocks/anvil_steel.png"
+      },
+      "source": "NTMAnvil: the murky anvil is steel on its sides; its own top is not drawn apart"
     }
   }
 }

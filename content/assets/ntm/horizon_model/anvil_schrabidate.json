@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/anvil.obj",
+  "texture": "ntm:textures/models/anvil/anvil_schrabidate.png",
+  "rotation": 90,
+  "radius": 1.0
+}
