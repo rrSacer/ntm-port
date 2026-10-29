@@ -4012,6 +4012,167 @@
           }
         ]
       }
+    },
+    "ntm:machine_centrifuge": {
+      "source": "ContainerCentrifuge, GUIMachineCentrifuge (MachineCentrifuge {3,0,0,0,0,0}: power through the core)",
+      "machine": {
+        "slots": [
+          {
+            "x": 44,
+            "y": 57
+          },
+          {
+            "x": 70,
+            "y": 57,
+            "output": true
+          },
+          {
+            "x": 90,
+            "y": 57,
+            "output": true
+          },
+          {
+            "x": 110,
+            "y": 57,
+            "output": true
+          },
+          {
+            "x": 130,
+            "y": 57,
+            "output": true
+          }
+        ],
+        "inventory": [
+          11,
+          107
+        ],
+        "data": 30,
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            3,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_centrifuge.png",
+        "texture_from": "textures/gui/processing/gui_centrifuge.png",
+        "size": [
+          182,
+          189
+        ],
+        "title": [
+          109,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          11,
+          95
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              8,
+              18,
+              16,
+              37
+            ],
+            "uv": [
+              182,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "from": 0,
+            "max_value": 248,
+            "rect": [
+              72,
+              21,
+              12,
+              36
+            ],
+            "uv": [
+              182,
+              37
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "from": 248,
+            "max_value": 497,
+            "rect": [
+              92,
+              21,
+              12,
+              36
+            ],
+            "uv": [
+              182,
+              37
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "from": 497,
+            "max_value": 745,
+            "rect": [
+              112,
+              21,
+              12,
+              36
+            ],
+            "uv": [
+              182,
+              37
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "from": 745,
+            "max_value": 993,
+            "rect": [
+              132,
+              21,
+              12,
+              36
+            ],
+            "uv": [
+              182,
+              37
+            ],
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              8,
+              18,
+              16,
+              37
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          }
+        ]
+      }
     }
   }
 }

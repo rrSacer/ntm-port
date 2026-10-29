@@ -1,0 +1,47 @@
+{
+  "slots": [
+    {
+      "x": 44,
+      "y": 57
+    },
+    {
+      "x": 70,
+      "y": 57,
+      "output": true
+    },
+    {
+      "x": 90,
+      "y": 57,
+      "output": true
+    },
+    {
+      "x": 110,
+      "y": 57,
+      "output": true
+    },
+    {
+      "x": 130,
+      "y": 57,
+      "output": true
+    }
+  ],
+  "inventory": [
+    11,
+    107
+  ],
+  "data": 30,
+  "multiblock": {
+    "min": [
+      0,
+      0,
+      0
+    ],
+    "max": [
+      0,
+      3,
+      0
+    ],
+    "offset": 0,
+    "dummy": "ntm:dummy_machine"
+  }
+}
