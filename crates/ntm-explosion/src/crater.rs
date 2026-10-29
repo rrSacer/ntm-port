@@ -302,6 +302,9 @@ pub struct Plan {
     /// Faixas removidas (início, comprimento), em offsets da coluna.
     runs: Vec<(u16, u16)>,
     bufs: Vec<Vec<u16>>,
+    /// A coluna de cada buffer (`u32::MAX`: livre): soltar tudo percorre os
+    /// buffers, não as colunas do disco (785 mil em R=500, 23 M de fuel).
+    owner: Vec<u32>,
     free: Vec<u32>,
     /// Colunas da passada principal com buffer, em ordem de espiral.
     live: std::collections::VecDeque<u32>,
@@ -421,6 +424,7 @@ impl Plan {
             col_meta: vec![0; total],
             runs: Vec::new(),
             bufs: Vec::new(),
+            owner: Vec::new(),
             free: Vec::new(),
             live: Default::default(),
             retained: 0,
@@ -726,10 +730,12 @@ impl Plan {
             }
             None => {
                 self.bufs.push(vec![0; len]);
+                self.owner.push(u32::MAX);
                 (self.bufs.len() - 1) as u32
             }
         };
         self.col_slot[ci] = s + 1;
+        self.owner[s as usize] = ci as u32;
         s
     }
 
@@ -737,6 +743,7 @@ impl Plan {
         let s = self.col_slot[ci];
         if s != 0 {
             self.col_slot[ci] = 0;
+            self.owner[s as usize - 1] = u32::MAX;
             self.free.push(s - 1);
         }
     }
@@ -777,8 +784,11 @@ impl Plan {
     /// Devolve toda energia guardada (plano e recálculos terminados).
     pub fn release_all(&mut self) {
         self.live.clear();
-        for ci in 0..self.total {
-            self.release(ci);
+        for s in 0..self.owner.len() {
+            let ci = self.owner[s];
+            if ci != u32::MAX {
+                self.release(ci as usize);
+            }
         }
         self.retained = 0;
     }
@@ -1233,7 +1243,7 @@ impl Plan {
         self.cols_done = n as u32;
         self.advance_ring();
         // A frente: as colunas restauradas com energia, em ordem de espiral.
-        let mut live: Vec<(u64, u32)> = (0..self.total).filter(|&ci| self.col_slot[ci] != 0).map(|ci| (self.key(ci), ci as u32)).collect();
+        let mut live: Vec<(u64, u32)> = self.owner.iter().filter(|&&ci| ci != u32::MAX).map(|&ci| (self.key(ci as usize), ci)).collect();
         live.sort_unstable();
         self.live = live.into_iter().map(|c| c.1).collect();
         self.cur_floor = i32::MIN;
