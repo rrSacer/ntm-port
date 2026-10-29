@@ -100,6 +100,18 @@ impl Slotted for Firebox {
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
+    /// Its heat and the fuel burning (which came out of a slot).
+    fn save_state(&self) -> Vec<i32> {
+        vec![self.heat as i32, self.burn as i32, self.max_burn as i32, self.burn_heat as i32]
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        if let [heat, burn, max, bh, ..] = v {
+            self.heat = (*heat).max(0) as u32;
+            self.burn = (*burn).max(0) as u32;
+            self.max_burn = (*max).max(0) as u32;
+            self.burn_heat = (*bh).max(0) as u32;
+        }
+    }
     fn screen_data(&self) -> Vec<i32> {
         Firebox::screen_data(self)
     }

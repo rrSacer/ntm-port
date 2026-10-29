@@ -268,6 +268,18 @@ impl crate::server::container_bridge::Slotted for BlastFurnace {
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
+    /// The fuel (which came out of a slot), progress and tanks.
+    fn save_state(&self) -> Vec<i32> {
+        vec![self.fuel as i32, (self.progress * 1_000_000.0) as i32, self.airblast.mb as i32, self.flue.mb as i32]
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        if let [fuel, progress, air, flue, ..] = v {
+            self.fuel = (*fuel).clamp(0, MAX_FUEL as i32) as u32;
+            self.progress = (*progress).max(0) as f32 / 1_000_000.0;
+            self.airblast.mb = (*air).clamp(0, AIRBLAST_CAP as i32) as u32;
+            self.flue.mb = (*flue).clamp(0, FLUE_CAP as i32) as u32;
+        }
+    }
     fn screen_data(&self) -> Vec<i32> {
         BlastFurnace::screen_data(self)
     }

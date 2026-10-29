@@ -39,6 +39,11 @@ pub trait ServerHost: Kv {
     fn set_machine_data(&mut self, _dim: &str, _p: Pos, _values: &[i32]) -> bool {
         false
     }
+    /// The values saved with the machine's block entity (`get-data`): its
+    /// screen's and, after them, its state (`Slotted::save_state`).
+    fn machine_data(&mut self, _dim: &str, _p: Pos) -> Option<Vec<i32>> {
+        None
+    }
     /// Machine screen buttons pressed: player, dimension, position, button.
     fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
         Vec::new()
@@ -1460,12 +1465,15 @@ impl Server {
 
     /// A machine's contents dropped at `pos`, a transaction per stack.
     fn drop_contents(&mut self, dim: &str, pos: Pos, m: &Machine) {
-        // The engine's slots spill themselves (`container_bridge`).
-        if self.slots_gone(&(dim.to_string(), pos)) {
-            return;
-        }
+        // The engine's slots spill themselves (`container_bridge`); what the
+        // machine holds outside them still drops here.
+        let items = if self.slots_gone(&(dim.to_string(), pos)) {
+            container_bridge::held_contents(&m.data)
+        } else {
+            m.logic().contents()
+        };
         self.snapshot = Some(((dim.to_string(), pos), m.clone()));
-        for (item, count) in m.logic().contents() {
+        for (item, count) in items {
             if count > 0 && token::valid_item(&item) {
                 self.new_tx(dim, pos, tx::Kind::Drop { item, count });
             }

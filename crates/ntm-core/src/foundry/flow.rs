@@ -57,8 +57,8 @@ impl Melt {
         }
     }
 
-    /// As scraps, a whole ingot's worth each (see `Crucible::contents`).
-    fn scraps(&self) -> Vec<(String, u32)> {
+    /// As scraps, a whole ingot's worth each (see `Crucible::scraps`).
+    pub fn scraps(&self) -> Vec<(String, u32)> {
         match &self.mat {
             Some(m) if self.amount >= 72 => vec![(format!("ntm:scraps__{m}"), self.amount / 72)],
             _ => Vec::new(),
@@ -188,7 +188,28 @@ impl Logic for Tank {
 
 /// Blocks without slots on the engine's block entity: their values go
 /// to the model (`horizon_machine` `synced`): quanta, capacity, colour.
+impl Melt {
+    fn save(&self) -> [i32; 2] {
+        [Tables::ntm().mat_id(self.mat.as_deref()), self.amount as i32]
+    }
+    fn load(&mut self, v: &[i32]) {
+        if let [id, q, ..] = v {
+            self.mat = Tables::ntm().mat_name(*id);
+            self.amount = if self.mat.is_some() { (*q).max(0) as u32 } else { 0 };
+        }
+    }
+}
+
 impl Slotted for Channel {
+    fn held_contents(&self) -> Vec<(String, u32)> {
+        self.melt.scraps()
+    }
+    fn save_state(&self) -> Vec<i32> {
+        self.melt.save().to_vec()
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        self.melt.load(v);
+    }
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
@@ -198,6 +219,15 @@ impl Slotted for Channel {
 }
 
 impl Slotted for Tank {
+    fn held_contents(&self) -> Vec<(String, u32)> {
+        self.melt.scraps()
+    }
+    fn save_state(&self) -> Vec<i32> {
+        self.melt.save().to_vec()
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        self.melt.load(v);
+    }
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
@@ -213,6 +243,15 @@ impl Slotted for Outlet {
     }
     fn screen_data(&self) -> Vec<i32> {
         vec![self.filter.as_deref().map_or(0, |m| Tables::ntm().color(m)) as i32, i32::from(self.invert)]
+    }
+    fn save_state(&self) -> Vec<i32> {
+        vec![Tables::ntm().mat_id(self.filter.as_deref()), i32::from(self.invert)]
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        if let [id, inv, ..] = v {
+            self.filter = Tables::ntm().mat_name(*id);
+            self.invert = *inv != 0;
+        }
     }
 }
 

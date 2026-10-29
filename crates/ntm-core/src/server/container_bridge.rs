@@ -57,6 +57,28 @@ pub trait Slotted {
     fn button(&mut self, _id: u32) -> bool {
         false
     }
+    /// What it holds outside its slots (molten metal as scraps), dropped
+    /// when it is broken: the engine spills the slots, not this.
+    fn held_contents(&self) -> Vec<(String, u32)> {
+        Vec::new()
+    }
+    /// Its state outside the slots, saved with them in the engine's block
+    /// entity (after the screen's values): the world's save then has the
+    /// slots and the state from the same moment, so a crash between the
+    /// world's save and the mod's can't have an item both in a slot and
+    /// melted (or in neither).
+    fn save_state(&self) -> Vec<i32> {
+        Vec::new()
+    }
+    /// The state back from the block entity, at the first sight of it in a
+    /// session.
+    fn load_state(&mut self, _v: &[i32]) {}
+}
+
+/// What the machine in `data` holds outside the engine's slots.
+pub(super) fn held_contents(data: &Data) -> Vec<(String, u32)> {
+    let mut d = data.clone();
+    slotted(&mut d).map_or_else(Vec::new, |n| n.held_contents())
 }
 
 /// The machines that implement [`Slotted`] (`Layout::Native`).
@@ -341,6 +363,15 @@ impl Server {
                 }
                 (data, Layout::Native) => {
                     let Some(n) = slotted(data) else { continue };
+                    if first
+                        && let Some(saved) = host.machine_data(&key.0, key.1)
+                    {
+                        // The world's save: its state with its slots.
+                        let at = n.screen_data().len();
+                        if saved.len() > at {
+                            n.load_state(&saved[at..]);
+                        }
+                    }
                     *n.slots_mut() = now.clone();
                 }
                 _ => continue,
@@ -400,7 +431,9 @@ impl Server {
                 (data, Layout::Native) => {
                     let Some(n) = slotted(data) else { continue };
                     want = n.slots_mut().clone();
-                    n.screen_data()
+                    let mut v = n.screen_data();
+                    v.extend(n.save_state());
+                    v
                 }
                 _ => continue,
             };

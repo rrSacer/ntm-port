@@ -294,21 +294,52 @@ impl Logic for Crucible {
         }
     }
 
-    /// Its items and, as scraps, a whole ingot of each material per 72
-    /// quanta (a scrap here is always an ingot's worth: the slots carry no
-    /// amount). What is under an ingot is lost.
+    /// Its items and its molten metal as scraps.
     fn contents(&self) -> Vec<(String, u32)> {
         let mut out: Vec<(String, u32)> = self.slots.iter().flatten().map(|s| (s.id.clone(), s.count)).collect();
-        for (m, q) in self.recipe_stack.iter().chain(&self.waste_stack) {
-            if q / 72 > 0 {
-                out.push((format!("ntm:scraps__{m}"), q / 72));
-            }
-        }
+        out.extend(self.scraps());
         out
     }
 }
 
+impl Crucible {
+    /// Its molten metal as scraps, a whole ingot of each material per 72
+    /// quanta (a scrap here is always an ingot's worth: the slots carry no
+    /// amount). What is under an ingot is lost.
+    pub fn scraps(&self) -> Vec<(String, u32)> {
+        self.recipe_stack
+            .iter()
+            .chain(&self.waste_stack)
+            .filter(|(_, q)| q / 72 > 0)
+            .map(|(m, q)| (format!("ntm:scraps__{m}"), q / 72))
+            .collect()
+    }
+}
+
 impl Slotted for Crucible {
+    fn held_contents(&self) -> Vec<(String, u32)> {
+        self.scraps()
+    }
+    /// Heat, progress, the alloy (row in the list, 0 none), both stacks.
+    fn save_state(&self) -> Vec<i32> {
+        let t = Tables::ntm();
+        let alloy = self.recipe.as_deref().and_then(|r| t.alloys.iter().position(|a| a.name == r)).map_or(0, |i| i as i32 + 1);
+        let mut v = vec![self.heat as i32, self.progress as i32, alloy];
+        t.encode_stack(&self.recipe_stack, &mut v);
+        t.encode_stack(&self.waste_stack, &mut v);
+        v
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        let t = Tables::ntm();
+        let mut it = v.iter();
+        let (Some(&heat), Some(&progress), Some(&alloy)) = (it.next(), it.next(), it.next()) else { return };
+        let (Some(r), Some(w)) = (t.decode_stack(&mut it), t.decode_stack(&mut it)) else { return };
+        self.heat = heat.max(0) as u32;
+        self.progress = progress.max(0) as u32;
+        self.recipe = usize::try_from(alloy - 1).ok().and_then(|i| t.alloys.get(i)).map(|a| a.name.clone());
+        self.recipe_stack = r;
+        self.waste_stack = w;
+    }
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }

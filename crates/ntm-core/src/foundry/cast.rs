@@ -146,6 +146,20 @@ impl Logic for Cast {
 }
 
 impl Slotted for Cast {
+    fn held_contents(&self) -> Vec<(String, u32)> {
+        self.melt.scraps()
+    }
+    /// The metal and the cooling left.
+    fn save_state(&self) -> Vec<i32> {
+        vec![Tables::ntm().mat_id(self.melt.mat.as_deref()), self.melt.amount as i32, self.cooloff as i32]
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        if let [id, q, cool, ..] = v {
+            self.melt.mat = Tables::ntm().mat_name(*id);
+            self.melt.amount = if self.melt.mat.is_some() { (*q).max(0) as u32 } else { 0 };
+            self.cooloff = (*cool).clamp(1, COOL as i32) as u32;
+        }
+    }
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }

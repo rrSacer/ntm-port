@@ -131,6 +131,27 @@ impl Tables {
         self.by_name.get(name).map(|&i| &self.materials[i])
     }
 
+    /// A material's id for an engine value (-1: none), and back.
+    pub fn mat_id(&self, name: Option<&str>) -> i32 {
+        name.and_then(|n| self.material(n)).map_or(-1, |m| m.id as i32)
+    }
+    pub fn mat_name(&self, id: i32) -> Option<String> {
+        self.materials.iter().find(|m| m.id as i32 == id).map(|m| m.name.clone())
+    }
+
+    /// A stack as engine values: count, then (id, quanta) pairs; and back
+    /// (`None` when the values don't fit).
+    pub fn encode_stack(&self, s: &[Mat], out: &mut Vec<i32>) {
+        out.push(s.len() as i32);
+        for (m, q) in s {
+            out.extend([self.mat_id(Some(m)), *q as i32]);
+        }
+    }
+    pub fn decode_stack(&self, v: &mut std::slice::Iter<i32>) -> Option<Vec<Mat>> {
+        let n = *v.next()?;
+        (0..n).map(|_| Some((self.mat_name(*v.next()?)?, u32::try_from(*v.next()?).ok()?))).collect()
+    }
+
     /// Only these are ever poured (`CrucibleUtil.tryPourStack`).
     pub fn pourable(&self, name: &str) -> bool {
         self.material(name).is_some_and(|m| m.behavior == Behavior::Smeltable)
