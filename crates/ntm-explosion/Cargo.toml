@@ -1,0 +1,9 @@
+[package]
+name = "ntm-explosion"
+description = "NTM port: motor de explosões nucleares (cratera, efeitos, persistência), sem SDK"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+path = "src/lib.rs"
