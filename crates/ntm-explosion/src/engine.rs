@@ -482,7 +482,9 @@ pub struct Explosion {
     resumed: bool,
     wait_until: Option<u64>,
     /// Bordas cujo chunk estava descarregado na hora do efeito (nova tentativa).
-    edges_later: Vec<usize>,
+    /// (por chunk, e os chunks em rodízio para a nova tentativa).
+    edges_later: HashMap<(i32, i32), Vec<u32>, BuildFnv>,
+    later_keys: VecDeque<(i32, i32)>,
     edges_retry_at: u64,
     pub waited_ticks: u64,
     /// Segunda fase (fallout), depois da cratera e das bordas.
@@ -592,7 +594,8 @@ impl Explosion {
             max_tick_writes: 0,
             resumed: false,
             wait_until: None,
-            edges_later: Vec::new(),
+            edges_later: HashMap::default(),
+            later_keys: VecDeque::new(),
             edges_retry_at: 0,
             waited_ticks: 0,
             sweep: None,
@@ -1187,8 +1190,7 @@ impl Explosion {
             hooks.event(&self.id, &Event::CraterDone { tick: tick - self.tick0 });
         }
         if durable && self.crater_done.is_some() && budget > 0 {
-            let budget = budget.min((fuel / (COST_WRITE + COST_EDGE)) as usize);
-            self.edge_effects(&mut out, budget, tick, world, hooks);
+            self.edge_effects(&mut out, budget, fuel, tick, world, hooks);
         }
 
         crate::trace(10);
@@ -1347,59 +1349,90 @@ impl Explosion {
         })
     }
 
-    fn edge_effects(&mut self, out: &mut Vec<Change>, mut budget: usize, tick: u64, world: &mut dyn World, hooks: &mut dyn Hooks) {
-        let c = self.plan.c;
-        let r = self.plan.r as f32;
+    /// Efeitos nas bordas expostas, até `budget` escritas e `fuel`. As de
+    /// chunk descarregado esperam por chunk (escrever num chunk descarregado
+    /// seria perdido); a cada RETRY_TICKS alguns desses chunks são conferidos,
+    /// em rodízio.
+    fn edge_effects(&mut self, out: &mut Vec<Change>, mut budget: usize, fuel: u64, tick: u64, world: &mut dyn World, hooks: &mut dyn Hooks) {
         let dim = self.dim.clone();
-        // Chunk carregado? (uma leitura por chunk por tick; escrever num chunk
-        // descarregado seria perdido).
-        let mut loaded: HashMap<(i32, i32), bool, BuildFnv> = Default::default();
-        // Primeiro as que ficaram para depois, a cada RETRY_TICKS.
-        let mut queue: Vec<usize> = Vec::new();
-        if !self.edges_later.is_empty() && tick >= self.edges_retry_at {
-            queue = std::mem::take(&mut self.edges_later);
+        let mut spent = 0u64;
+        // Primeiro os chunks que ficaram para depois e agora carregaram.
+        if !self.later_keys.is_empty() && tick >= self.edges_retry_at {
             self.edges_retry_at = tick + RETRY_TICKS;
+            for _ in 0..self.later_keys.len().min(256) {
+                if budget < 2 || spent >= fuel {
+                    break;
+                }
+                let Some(key) = self.later_keys.pop_front() else { break };
+                spent += COST_VERIFY;
+                if world.block(&dim, key.0 * 16, self.plan.c[1], key.1 * 16).is_none() {
+                    self.later_keys.push_back(key);
+                    continue;
+                }
+                let mut idxs = self.edges_later.remove(&key).unwrap_or_default();
+                while let Some(&idx) = idxs.last() {
+                    if budget < 2 || spent >= fuel {
+                        break;
+                    }
+                    idxs.pop();
+                    spent += self.edge_one(idx as usize, out, &mut budget, hooks);
+                }
+                if !idxs.is_empty() {
+                    self.edges_later.insert(key, idxs);
+                    self.later_keys.push_front(key);
+                }
+            }
         }
-        let mut qi = 0;
         // Depois as novas, que já saem em ordem de espiral (do centro para fora).
-        while budget >= 2 {
-            let idx = if qi < queue.len() {
-                qi += 1;
-                queue[qi - 1]
-            } else if self.edges_done < self.plan.edges.len() {
-                self.edges_done += 1;
-                self.edges_done - 1
-            } else {
-                break;
-            };
+        let c = self.plan.c;
+        let mut loaded: HashMap<(i32, i32), bool, BuildFnv> = Default::default();
+        while budget >= 2 && spent < fuel && self.edges_done < self.plan.edges.len() {
+            let idx = self.edges_done;
+            self.edges_done += 1;
             let e = self.plan.edges[idx];
-            let [dx, dy, dz] = [e.o[0] as i32, e.o[1] as i32, e.o[2] as i32];
-            let [x, y, z] = [c[0] + dx, c[1] + dy, c[2] + dz];
+            let (x, y, z) = (c[0] + e.o[0] as i32, c[1] + e.o[1] as i32, c[2] + e.o[2] as i32);
             let key = (x >> 4, z >> 4);
-            let ok = *loaded.entry(key).or_insert_with(|| world.block(&dim, key.0 * 16, y, key.1 * 16).is_some());
+            spent += COST_SCAN * 3;
+            let ok = *loaded.entry(key).or_insert_with(|| {
+                spent += COST_VERIFY;
+                world.block(&dim, key.0 * 16, y, key.1 * 16).is_some()
+            });
             if !ok {
-                self.edges_later.push(idx);
+                let list = self.edges_later.entry(key).or_default();
+                if list.is_empty() {
+                    self.later_keys.push_back(key);
+                }
+                list.push(idx as u32);
                 continue;
             }
-            let hit = EdgeHit {
-                pos: [x, y, z],
-                kind: self.plan.mats.table[e.mat as usize].kind,
-                f: ((dx * dx + dy * dy + dz * dz) as f32).sqrt() / r,
-            };
-            let eff = hooks.edge(&self.id, &hit).unwrap_or_else(|| self.profile.apply(&hit));
-            if let Some(s) = eff.here {
-                out.push(Change { x, y, z, state: s });
-                budget -= 1;
-                self.effects += 1;
-            }
-            if let Some(s) = eff.above {
-                out.push(Change { x, y: y + 1, z, state: s });
-                budget -= 1;
-                self.effects += 1;
-            }
+            spent += self.edge_one(idx, out, &mut budget, hooks);
         }
-        // O que sobrou da fila de nova tentativa volta para ela.
-        self.edges_later.extend_from_slice(&queue[qi..]);
+    }
+
+    /// O efeito de uma borda (chunk carregado); devolve o fuel estimado.
+    fn edge_one(&mut self, idx: usize, out: &mut Vec<Change>, budget: &mut usize, hooks: &mut dyn Hooks) -> u64 {
+        let c = self.plan.c;
+        let e = self.plan.edges[idx];
+        let [dx, dy, dz] = [e.o[0] as i32, e.o[1] as i32, e.o[2] as i32];
+        let [x, y, z] = [c[0] + dx, c[1] + dy, c[2] + dz];
+        let hit = EdgeHit {
+            pos: [x, y, z],
+            kind: self.plan.mats.table[e.mat as usize].kind,
+            f: ((dx * dx + dy * dy + dz * dz) as f32).sqrt() / self.plan.r as f32,
+        };
+        let eff = hooks.edge(&self.id, &hit).unwrap_or_else(|| self.profile.apply(&hit));
+        let mut n = 0;
+        if let Some(s) = eff.here {
+            out.push(Change { x, y, z, state: s });
+            n += 1;
+        }
+        if let Some(s) = eff.above {
+            out.push(Change { x, y: y + 1, z, state: s });
+            n += 1;
+        }
+        *budget = budget.saturating_sub(n);
+        self.effects += n as u64;
+        COST_EDGE + n as u64 * COST_WRITE
     }
 
     fn header(&self, phase: &str) -> Header {
