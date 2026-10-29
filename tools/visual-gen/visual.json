@@ -3160,6 +3160,17 @@
           }
         ]
       }
+    },
+    "ntm:anvil_iron": {
+      "source": "ContainerAnvil, GUIAnvil, RenderAnvil (anvil.obj with the block icon); the port's 19 slots (anvil.rs)",
+      "model": {
+        "obj": "ntm:models/obj/anvil.obj",
+        "obj_from": "models/blocks/anvil.obj",
+        "texture": "ntm:textures/models/anvil/anvil_iron.png",
+        "texture_from": "textures/blocks/anvil_iron.png",
+        "rotation": 90,
+        "radius": 1.0
+      }
     }
   }
 }
