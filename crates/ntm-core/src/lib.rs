@@ -6,6 +6,7 @@
 //! (protocol, persistence, world identity, machines, energy) runs in
 //! `cargo test` against a fake world.
 
+pub mod anvil;
 pub mod blast;
 pub mod blastfurnace;
 pub mod blockstate;
