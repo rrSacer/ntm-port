@@ -1796,3 +1796,5 @@ mod review_m2_tests;
 mod shredder_tests;
 
 mod blastfurnace_tests;
+
+mod foundry_tests;
