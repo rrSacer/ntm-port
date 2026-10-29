@@ -1,0 +1,11 @@
+{
+  "obj": "ntm:models/obj/lil_boy.obj",
+  "texture": "ntm:textures/models/lilboy.png",
+  "rotation": 90,
+  "translate": [
+    -2,
+    0,
+    0
+  ],
+  "radius": 2.5
+}

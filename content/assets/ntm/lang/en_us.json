@@ -2522,5 +2522,6 @@
   "itemGroup.ntm.bombs": "NTM Bombs",
   "itemGroup.ntm.missiles": "NTM Missiles and Satellites",
   "itemGroup.ntm.weapons": "NTM Weapons and Turrets",
-  "itemGroup.ntm.consumables": "NTM Consumables and Gear"
+  "itemGroup.ntm.consumables": "NTM Consumables and Gear",
+  "block.ntm.dummy_machine": "Machine (part)"
 }

@@ -2522,5 +2522,6 @@
   "itemGroup.ntm.bombs": "Bombas do NTM",
   "itemGroup.ntm.missiles": "Mísseis e Satélites do NTM",
   "itemGroup.ntm.weapons": "Armas e Torretas do NTM",
-  "itemGroup.ntm.consumables": "Consumíveis e Equipamentos do NTM"
+  "itemGroup.ntm.consumables": "Consumíveis e Equipamentos do NTM",
+  "block.ntm.dummy_machine": "Máquina (parte)"
 }

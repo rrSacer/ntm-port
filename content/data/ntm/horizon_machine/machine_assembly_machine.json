@@ -1,0 +1,79 @@
+{
+  "slots": [
+    {
+      "x": 152,
+      "y": 81,
+      "accept": [
+        "ntm:battery_spark",
+        "ntm:battery_trixite"
+      ]
+    },
+    {
+      "x": 35,
+      "y": 126,
+      "accept": []
+    },
+    {
+      "x": 152,
+      "y": 108,
+      "accept": [
+        "ntm:upgrade_speed_1",
+        "ntm:upgrade_speed_2",
+        "ntm:upgrade_speed_3",
+        "ntm:upgrade_power_1",
+        "ntm:upgrade_power_2",
+        "ntm:upgrade_power_3",
+        "ntm:upgrade_overdrive_1",
+        "ntm:upgrade_overdrive_2",
+        "ntm:upgrade_overdrive_3"
+      ]
+    },
+    {
+      "x": 152,
+      "y": 126,
+      "accept": [
+        "ntm:upgrade_speed_1",
+        "ntm:upgrade_speed_2",
+        "ntm:upgrade_speed_3",
+        "ntm:upgrade_power_1",
+        "ntm:upgrade_power_2",
+        "ntm:upgrade_power_3",
+        "ntm:upgrade_overdrive_1",
+        "ntm:upgrade_overdrive_2",
+        "ntm:upgrade_overdrive_3"
+      ]
+    },
+    {
+      "grid": [
+        8,
+        18,
+        3,
+        4
+      ]
+    },
+    {
+      "x": 98,
+      "y": 45,
+      "output": true
+    }
+  ],
+  "inventory": [
+    8,
+    174
+  ],
+  "data": 12,
+  "multiblock": {
+    "min": [
+      -1,
+      0,
+      -1
+    ],
+    "max": [
+      1,
+      2,
+      1
+    ],
+    "offset": 1,
+    "dummy": "ntm:dummy_machine"
+  }
+}

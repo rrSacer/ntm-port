@@ -1,0 +1,74 @@
+{
+  "obj": "ntm:models/obj/assembly_machine.obj",
+  "texture": "ntm:textures/models/machines/assembly_machine.png",
+  "rotation": 90,
+  "radius": 2.2,
+  "hide": [
+    "Ring2",
+    "Frame"
+  ],
+  "bones": {
+    "ArmLower1": {
+      "parent": "Ring",
+      "pivot": [
+        0,
+        1.625,
+        0.9375
+      ]
+    },
+    "ArmUpper1": {
+      "parent": "ArmLower1",
+      "pivot": [
+        0,
+        2.375,
+        0.9375
+      ]
+    },
+    "Head1": {
+      "parent": "ArmUpper1",
+      "pivot": [
+        0,
+        2.375,
+        0.4375
+      ]
+    },
+    "Spike1": {
+      "parent": "Head1"
+    },
+    "ArmLower2": {
+      "parent": "Ring",
+      "pivot": [
+        0,
+        1.625,
+        -0.9375
+      ]
+    },
+    "ArmUpper2": {
+      "parent": "ArmLower2",
+      "pivot": [
+        0,
+        2.375,
+        -0.9375
+      ]
+    },
+    "Head2": {
+      "parent": "ArmUpper2",
+      "pivot": [
+        0,
+        2.375,
+        -0.4375
+      ]
+    },
+    "Spike2": {
+      "parent": "Head2"
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.assembler.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_assembly_machine.animation.json"
+}

@@ -1,0 +1,44 @@
+{
+  "slots": [
+    {
+      "x": 26,
+      "y": 36,
+      "accept": [
+        "ntm:boy_shielding"
+      ]
+    },
+    {
+      "x": 44,
+      "y": 36,
+      "accept": [
+        "ntm:boy_target"
+      ]
+    },
+    {
+      "x": 62,
+      "y": 36,
+      "accept": [
+        "ntm:boy_bullet"
+      ]
+    },
+    {
+      "x": 80,
+      "y": 36,
+      "accept": [
+        "ntm:boy_propellant"
+      ]
+    },
+    {
+      "x": 98,
+      "y": 36,
+      "accept": [
+        "ntm:boy_igniter"
+      ]
+    }
+  ],
+  "inventory": [
+    8,
+    140
+  ],
+  "data": 1
+}

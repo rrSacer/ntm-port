@@ -1,0 +1,18 @@
+[
+  "data/ntm/horizon_machine/machine_assembly_machine.json",
+  "assets/ntm/textures/gui/processing/gui_assembler.png",
+  "assets/ntm/horizon_screen/machine_assembly_machine.json",
+  "assets/ntm/models/obj/assembly_machine.obj",
+  "assets/ntm/textures/models/machines/assembly_machine.png",
+  "assets/ntm/animations/machine_assembly_machine.animation.json",
+  "assets/ntm/horizon_model/machine_assembly_machine.json",
+  "data/ntm/horizon_machine/nuke_boy.json",
+  "assets/ntm/textures/gui/weapon/lil_boy_schematic.png",
+  "assets/ntm/horizon_screen/nuke_boy.json",
+  "assets/ntm/models/obj/lil_boy.obj",
+  "assets/ntm/textures/models/lilboy.png",
+  "assets/ntm/horizon_model/nuke_boy.json",
+  "data/ntm/horizon/block/dummy_machine.json",
+  "assets/ntm/blockstates/dummy_machine.json",
+  "assets/ntm/models/block/dummy_machine.json"
+]
