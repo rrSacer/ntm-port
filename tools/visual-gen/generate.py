@@ -101,7 +101,8 @@ def loop_animation(spec):
     """A loop played while the machine works, as HBM's renderers move parts
     by their `anim` tick counter: `turn` is degrees per loop about the bone's
     pivot (two keyframes, linear), `sway` a slide along an axis by
-    BobMathUtil.sps, `cycles` times per loop, sampled 24 times a cycle."""
+    BobMathUtil.sps, `cycles` times per loop, sampled 24 times a cycle;
+    `position` keyframes as they are (a press head's stroke)."""
     import math
     length = spec['length']
     bones = {}
@@ -109,6 +110,8 @@ def loop_animation(spec):
         out = {}
         if 'turn' in b:
             out['rotation'] = {'0.0': [0, 0, 0], f'{length:.2f}': b['turn']}
+        if 'position' in b:
+            out['position'] = b['position']
         if 'sway' in b:
             w = b['sway']
             axis = 'xyz'.index(w['axis'])
@@ -123,6 +126,59 @@ def loop_animation(spec):
             out['position'] = keys
         bones[bone] = out
     return {'format_version': '1.8.0', 'animations': {spec['name']: {'loop': True, 'animation_length': length, 'bones': bones}}}
+
+
+def merge_obj(src, model):
+    """One OBJ and one texture from a model's own and its `merge` parts
+    (RenderPress draws press_body and press_head, each with its texture):
+    the textures side by side on one sheet, each part's UVs moved onto its
+    place there, each part one object (bone) named by its `name`, turned
+    `turn` degrees about y and lifted `lift` blocks into the model's frame.
+    Returns the OBJ text and the sheet."""
+    import math
+    from PIL import Image
+    parts = [{'obj_from': model['obj_from'], 'texture_from': model['texture_from']}] + model['merge']
+    images = [Image.open(src / q['texture_from']).convert('RGBA') for q in parts]
+    W, H = sum(i.width for i in images), max(i.height for i in images)
+    sheet = Image.new('RGBA', (W, H))
+    lines, base = ['# merged by tools/visual-gen/generate.py'], [0, 0, 0]
+    x0 = 0
+    for q, img in zip(parts, images):
+        sheet.paste(img, (x0, 0))
+        a = math.radians(q.get('turn', 0))
+        cos, sin = round(math.cos(a), 6), round(math.sin(a), 6)
+        lift = q.get('lift', 0)
+        n = [0, 0, 0]
+        if 'name' in q:
+            # A part is one bone: its own objects become one.
+            lines.append(f"o {q['name']}")
+        for raw in (src / q['obj_from']).read_text().splitlines():
+            t = raw.split()
+            if not t:
+                continue
+            if t[0] == 'o' and 'name' in q:
+                continue
+            if t[0] in ('v', 'vn'):
+                x, y, z = map(float, t[1:4])
+                x, z = x * cos + z * sin, -x * sin + z * cos
+                if t[0] == 'v':
+                    y += lift
+                lines.append(f'{t[0]} {x:.6f} {y:.6f} {z:.6f}')
+                n[0 if t[0] == 'v' else 2] += 1
+            elif t[0] == 'vt':
+                u, v = float(t[1]), float(t[2])
+                lines.append(f'vt {(x0 + u * img.width) / W:.6f} {1 - ((1 - v) * img.height) / H:.6f}')
+                n[1] += 1
+            elif t[0] == 'f':
+                def shift(c):
+                    idx = c.split('/')
+                    return '/'.join(str(int(i) + base[k]) if i else '' for k, i in enumerate(idx))
+                lines.append('f ' + ' '.join(shift(c) for c in t[1:]))
+            elif t[0] == 'o':
+                lines.append(raw)
+        base = [b + k for b, k in zip(base, n)]
+        x0 += img.width
+    return '\n'.join(lines) + '\n', sheet
 
 
 def block_model(spec, block):
@@ -285,8 +341,19 @@ def main():
                 copy(x.pop('texture_from'), 'assets/ntm/' + x['texture'].split(':', 1)[1])
             if not m['liquids']:
                 del m['liquids']
-            copy(m.pop('obj_from'), 'assets/ntm/' + m['obj'].split(':', 1)[1])
-            copy(m.pop('texture_from'), 'assets/ntm/' + m['texture'].split(':', 1)[1])
+            if 'merge' in m:
+                text, sheet = merge_obj(src, m)
+                for k in ('obj_from', 'texture_from', 'merge'):
+                    m.pop(k)
+                obj_out = own('assets/ntm/' + m['obj'].split(':', 1)[1])
+                obj_out.parent.mkdir(parents=True, exist_ok=True)
+                obj_out.write_text(text)
+                tex_out = own('assets/ntm/' + m['texture'].split(':', 1)[1])
+                tex_out.parent.mkdir(parents=True, exist_ok=True)
+                sheet.save(tex_out)
+            else:
+                copy(m.pop('obj_from'), 'assets/ntm/' + m['obj'].split(':', 1)[1])
+                copy(m.pop('texture_from'), 'assets/ntm/' + m['texture'].split(':', 1)[1])
             loop = m.pop('loop_animation', None)
             if loop:
                 rel = f'animations/{name}.animation.json'
