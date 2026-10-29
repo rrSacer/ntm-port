@@ -399,6 +399,52 @@ combustível.
 - a matriz desh, que não gasta em 40 prensagens, e a de pedra, que quebra na 32ª;
 - a tora, queimada sob a matriz de chapa e prensada sob a plana.
 
+## Prensas e centrífuga de gás com slots (etapa d.2)
+
+São máquinas de antes dos slots: guardam os itens nos próprios campos, que
+as transações da tela antiga movem (o motor sem slots continua usando essa
+tela). No motor `ntm-visual` elas espelham os campos nos slots do motor, por
+dois ganchos do `Slotted`:
+- `sync_in`: lê os slots para os campos, depois que o bridge copia os do
+  motor;
+- `sync_out`: escreve os campos nos slots, antes que voltem ao motor.
+
+Na primeira vista de uma sessão, com os slots do motor vazios, uma máquina
+dessas mantém o que os campos têm e o escreve nos slots (`migrates`), como a
+montadora e as bombas fazem. É a migração de uma máquina enchida por
+transações.
+
+| Máquina | Slots (`Container*` do NTM) | Valores da tela | Estado salvo |
+| --- | --- | --- | --- |
+| Prensa a combustível | 0 combustível, 1 matriz, 2 entrada, 3 saída | prensa, máx, velocidade, máx, queima, custo da prensagem | prensa, recuando, pausa, velocidade, queima |
+| Prensa elétrica | 0 bateria, 1 matriz, 2 entrada, 3 saída, 4 upgrade | prensa, máx, energia, máx | prensa, recuando, pausa, energia |
+| Centrífuga de gás | 0–3 saídas, 4 bateria, 5 identificador, 6 upgrade de velocidade | progresso, tempo do estágio, energia, máx, tanque (mB, cap), tanques pseudo (tipo, mB) e a cap deles | progresso |
+
+**Detalhes:**
+- **Desgaste da matriz:** vai no `damage` do item, com a barra nativa (o
+  `max_damage` das 24 matrizes desgastáveis está no `ids.json`; as 8 desh
+  não têm). Uma matriz gasta retirada e posta de volta volta com o mesmo
+  desgaste.
+- **Slots sem lógica no port:** a bateria, o upgrade da prensa elétrica e o
+  identificador ficam como o jogador os deixou.
+- **Saídas da centrífuga de gás:** ficam no slot onde estão; um produto novo
+  ocupa o primeiro livre.
+- **Onde está o código:** ele entrou no commit 31c087a ("feat(content): add
+  max_damage ..."), do agente de conteúdo. Os arquivos estavam no índice
+  compartilhado do git na hora do commit dele, e o histórico já publicado
+  não é reescrito.
+
+**Verificação** (`server/tests/press_slots_tests.rs`, 4):
+- uma prensa enchida antes dos slots mostra matriz (com o desgaste), entrada
+  e combustível nos slots;
+- a prensa a combustível trabalha pelos slots enquanto o jogador retira as
+  chapas em horas aleatórias: lingotes + chapas são sempre 8, e a matriz
+  gasta 1 por prensagem;
+- a matriz da prensa elétrica quebra no limite, e outra, posta com desgaste
+  30, continua dali; bateria e upgrade intactos;
+- a centrífuga de gás leva produto e upgrade para os slots, enche as saídas,
+  e um produto retirado não mexe nos outros.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
