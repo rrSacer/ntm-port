@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:foundry_basin",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "B B",
+    "B B",
+    "BSB"
+  ],
+  "key": {
+    "B": "ntm:ingot_firebrick",
+    "S": "minecraft:smooth_stone_slab"
+  }
+}

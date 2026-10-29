@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:foundry_tank",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "B B",
+    "I I",
+    "BSB"
+  ],
+  "key": {
+    "B": "ntm:ingot_firebrick",
+    "I": "#ntm:bulk/ingotsteel",
+    "S": "minecraft:smooth_stone_slab"
+  }
+}

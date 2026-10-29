@@ -31,7 +31,15 @@
     "ntm:barrel_steel",
     "ntm:machine_fluidtank",
     "ntm:machine_shredder",
-    "ntm:machine_blast_furnace"
+    "ntm:machine_blast_furnace",
+    "ntm:machine_crucible",
+    "ntm:heater_firebox",
+    "ntm:foundry_channel",
+    "ntm:foundry_tank",
+    "ntm:foundry_outlet",
+    "ntm:foundry_slagtap",
+    "ntm:foundry_mold",
+    "ntm:foundry_basin"
   ],
   "internal_blocks": [
     {
@@ -81791,6 +81799,1050 @@
           "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:114"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:machine_crucible",
+      "source_variable": "machine_crucible",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Crucible",
+        "pt_br": "Crisol"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png",
+      "textures": {
+        "side": "blocks/brick_fire",
+        "top": "blocks/brick_fire",
+        "front": "blocks/brick_fire"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source block texture on oriented cube fallback; visual pipeline owns TESR/multiblock",
+      "source_orientation": true,
+      "source_registry": "hbm:tile.machine_crucible",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:374"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:heater_firebox",
+      "source_variable": "heater_firebox",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Firebox",
+        "pt_br": "Fornalha"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source block texture on oriented cube fallback; visual pipeline owns TESR/multiblock",
+      "source_orientation": true,
+      "source_registry": "hbm:tile.heater_firebox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:665"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:foundry_channel",
+      "source_variable": "foundry_channel",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Foundry Channel",
+        "pt_br": "Canal de Fundição"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png",
+      "textures": {
+        "side": "blocks/brick_fire",
+        "top": "blocks/brick_fire",
+        "front": "blocks/brick_fire"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source block texture on oriented cube fallback; visual pipeline owns TESR/multiblock",
+      "source_orientation": false,
+      "source_registry": "hbm:tile.foundry_channel",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:foundry_tank",
+      "source_variable": "foundry_tank",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Foundry Storage Basin",
+        "pt_br": "Bacia de Armazenamento da Fundição"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png",
+      "textures": {
+        "side": "blocks/brick_fire",
+        "top": "blocks/brick_fire",
+        "front": "blocks/brick_fire"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source block texture on oriented cube fallback; visual pipeline owns TESR/multiblock",
+      "source_orientation": false,
+      "source_registry": "hbm:tile.foundry_tank",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:foundry_outlet",
+      "source_variable": "foundry_outlet",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Foundry Outlet",
+        "pt_br": "Saída da Fundição"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png",
+      "textures": {
+        "side": "blocks/brick_fire",
+        "top": "blocks/brick_fire",
+        "front": "blocks/brick_fire"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source block texture on oriented cube fallback; visual pipeline owns TESR/multiblock",
+      "source_orientation": true,
+      "source_registry": "hbm:tile.foundry_outlet",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:foundry_slagtap",
+      "source_variable": "foundry_slagtap",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Foundry Spill Outlet",
+        "pt_br": "Saída de Escória da Fundição"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png",
+      "textures": {
+        "side": "blocks/brick_fire",
+        "top": "blocks/brick_fire",
+        "front": "blocks/brick_fire"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source block texture on oriented cube fallback; visual pipeline owns TESR/multiblock",
+      "source_orientation": false,
+      "source_registry": "hbm:tile.foundry_slagtap",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:foundry_mold",
+      "source_variable": "foundry_mold",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Shallow Foundry Basin",
+        "pt_br": "Bacia Rasa de Fundição"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png",
+      "textures": {
+        "side": "blocks/brick_fire",
+        "top": "blocks/brick_fire",
+        "front": "blocks/brick_fire"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source block texture on oriented cube fallback; visual pipeline owns TESR/multiblock",
+      "source_orientation": false,
+      "source_registry": "hbm:tile.foundry_mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crucible",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrucibleRecipes.java:263"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:foundry_basin",
+      "source_variable": "foundry_basin",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Foundry Basin",
+        "pt_br": "Bacia de Fundição"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png",
+      "textures": {
+        "side": "blocks/brick_fire",
+        "top": "blocks/brick_fire",
+        "front": "blocks/brick_fire"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source block texture on oriented cube fallback; visual pipeline owns TESR/multiblock",
+      "source_orientation": false,
+      "source_registry": "hbm:tile.foundry_basin",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crucible",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrucibleRecipes.java:263"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:mold__nugget",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_nugget.png",
+      "names": {
+        "en_us": "Foundry Mold (Nugget)",
+        "pt_br": "Molde de Fundição (Pepita)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:46",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__billet",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_billet.png",
+      "names": {
+        "en_us": "Foundry Mold (Billet)",
+        "pt_br": "Molde de Fundição (Tarugo)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:47",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__ingot",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_ingot.png",
+      "names": {
+        "en_us": "Foundry Mold (Ingot)",
+        "pt_br": "Molde de Fundição (Lingote)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:48",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__plate",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_plate.png",
+      "names": {
+        "en_us": "Foundry Mold (Plate)",
+        "pt_br": "Molde de Fundição (Placa)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:49",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__wire",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_wire.png",
+      "names": {
+        "en_us": "Foundry Mold (Wires ×8)",
+        "pt_br": "Molde de Fundição (Fios ×8)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:50",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__plate_cast",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 19,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_plate_cast.png",
+      "names": {
+        "en_us": "Foundry Mold (Cast Plate)",
+        "pt_br": "Molde de Fundição (Placa Fundida)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:52",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__wire_dense",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 20,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_wire_dense.png",
+      "names": {
+        "en_us": "Foundry Mold (Dense Wire)",
+        "pt_br": "Molde de Fundição (Fio Denso)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:53",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__blade",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_blade.png",
+      "names": {
+        "en_us": "Foundry Mold (Blade)",
+        "pt_br": "Molde de Fundição (Lâmina)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:55",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__blades",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_blades.png",
+      "names": {
+        "en_us": "Foundry Mold (Shredder Blades)",
+        "pt_br": "Molde de Fundição (Lâminas do Triturador)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:59",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__stamp",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_stamp.png",
+      "names": {
+        "en_us": "Foundry Mold (Press Stamp)",
+        "pt_br": "Molde de Fundição (Molde de Prensa)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:63",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__shell",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 8,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_shell.png",
+      "names": {
+        "en_us": "Foundry Mold (Shell)",
+        "pt_br": "Molde de Fundição (Projétil)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:70",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__pipe",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 9,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_pipe.png",
+      "names": {
+        "en_us": "Foundry Mold (Pipe)",
+        "pt_br": "Molde de Fundição (Tubo)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:71",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__ingots",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 10,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_ingots.png",
+      "names": {
+        "en_us": "Foundry Mold (Ingot ×9)",
+        "pt_br": "Molde de Fundição (Lingote ×9)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:73",
+      "mold_size": 1,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__plates",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 11,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_plates.png",
+      "names": {
+        "en_us": "Foundry Mold (Plate ×9)",
+        "pt_br": "Molde de Fundição (Placa ×9)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:74",
+      "mold_size": 1,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__plates_cast",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 13,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_plates_cast.png",
+      "names": {
+        "en_us": "Foundry Mold (Cast Plate ×3)",
+        "pt_br": "Molde de Fundição (Placa Fundida ×3)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:75",
+      "mold_size": 1,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__wires_dense",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 21,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_wires_dense.png",
+      "names": {
+        "en_us": "Foundry Mold (Dense Wire ×9)",
+        "pt_br": "Molde de Fundição (Fio Denso ×9)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:76",
+      "mold_size": 1,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__block",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 12,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_block.png",
+      "names": {
+        "en_us": "Foundry Mold (Block)",
+        "pt_br": "Molde de Fundição (Bloco)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:77",
+      "mold_size": 1,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__c9",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 16,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_c9.png",
+      "names": {
+        "en_us": "Foundry Mold (Small Caliber Casing)",
+        "pt_br": "Molde de Fundição (Estojo de Pequeno Calibre)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:79",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__c50",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 17,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_c50.png",
+      "names": {
+        "en_us": "Foundry Mold (Large Caliber Casing)",
+        "pt_br": "Molde de Fundição (Estojo de Grande Calibre)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:82",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__barrel_light",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 22,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_barrel_light.png",
+      "names": {
+        "en_us": "Foundry Mold (Light Barrel)",
+        "pt_br": "Molde de Fundição (Cano Leve)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:86",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__barrel_heavy",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 23,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_barrel_heavy.png",
+      "names": {
+        "en_us": "Foundry Mold (Heavy Barrel)",
+        "pt_br": "Molde de Fundição (Cano Pesado)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:87",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__receiver_light",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 24,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_receiver_light.png",
+      "names": {
+        "en_us": "Foundry Mold (Light Receiver)",
+        "pt_br": "Molde de Fundição (Receptor Leve)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:88",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__receiver_heavy",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 25,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_receiver_heavy.png",
+      "names": {
+        "en_us": "Foundry Mold (Heavy Receiver)",
+        "pt_br": "Molde de Fundição (Receptor Pesado)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:89",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__mechanism",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 26,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_mechanism.png",
+      "names": {
+        "en_us": "Foundry Mold (Mechanism)",
+        "pt_br": "Molde de Fundição (Mecanismo)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:90",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__stock",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 27,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_stock.png",
+      "names": {
+        "en_us": "Foundry Mold (Stock)",
+        "pt_br": "Molde de Fundição (Coronha)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:91",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mold__grip",
+      "source_variable": "mold",
+      "source_class": "ItemMold",
+      "type": "item",
+      "category": "component",
+      "metadata": 28,
+      "subtype_kind": "mold",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mold_grip.png",
+      "names": {
+        "en_us": "Foundry Mold (Grip)",
+        "pt_br": "Molde de Fundição (Empunhadura)"
+      },
+      "source_location": "src/main/java/com/hbm/items/machine/ItemMold.java:92",
+      "mold_size": 0,
+      "source_recipe_machine": [
+        {
+          "machine": "anvil",
+          "source": "AnvilRecipes.java mold engraving; vanilla crafting only creates mold_base"
+        }
+      ],
+      "source_registry": "hbm:item.mold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     }
   ]

@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:foundry_channel",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "B B",
+    " S "
+  ],
+  "key": {
+    "B": "ntm:ingot_firebrick",
+    "S": "minecraft:smooth_stone_slab"
+  }
+}

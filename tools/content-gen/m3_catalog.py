@@ -136,6 +136,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
                          'fluid': {'id': fluid['id'], 'amount_mb': amount, 'empty': 'ntm:' + empty},
                          'behavior_gap': 'Filled item only; server logic must consume/return container, never a temporary crafting bridge',
                          'source_container': 'src/main/java/com/hbm/inventory/FluidContainerRegistry.java:69-91'})
+    import foundry_catalog
+    rows.extend(foundry_catalog.build(source))
     for row in rows:
         for texture in [row['source_texture'], *[x['source'] for x in row.get('overlay_textures', [])]]:
             if not (source / texture).is_file(): raise ValueError('Missing texture: ' + texture)
@@ -152,9 +154,11 @@ def build(source=SOURCE, output=ROOT / 'content'):
     if backlog.is_file():
         data = json.loads(backlog.read_text())
         for entry in data['entries']:
-            if entry['source_variable'] in names:
+            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS):
                 entry['content_id'] = 'ntm:' + entry['id']
-                entry['status'] = ('Blast furnace content contract declared; processing/multiblock logic tracked separately'
+                entry['status'] = ('Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents'
+                                   if entry['source_variable'] in foundry_catalog.BLOCKS else
+                                   'Blast furnace content contract declared; processing/multiblock logic tracked separately'
                                    if entry['source_variable'] == 'machine_blast_furnace' else
                                    'Shredder content contract declared; processing/storage logic tracked separately by the machine agent'
                                    if entry['source_variable'] == 'machine_shredder' else

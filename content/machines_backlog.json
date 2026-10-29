@@ -1004,7 +1004,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents",
+      "content_id": "ntm:heater_firebox"
     },
     {
       "id": "heater_oven",
@@ -1256,7 +1257,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents",
+      "content_id": "ntm:machine_crucible"
     },
     {
       "id": "machine_boiler",
@@ -1309,7 +1311,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents",
+      "content_id": "ntm:foundry_mold"
     },
     {
       "id": "foundry_basin",
@@ -1326,7 +1329,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents",
+      "content_id": "ntm:foundry_basin"
     },
     {
       "id": "foundry_channel",
@@ -1343,7 +1347,8 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents",
+      "content_id": "ntm:foundry_channel"
     },
     {
       "id": "foundry_tank",
@@ -1360,7 +1365,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents",
+      "content_id": "ntm:foundry_tank"
     },
     {
       "id": "foundry_outlet",
@@ -1377,7 +1383,8 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents",
+      "content_id": "ntm:foundry_outlet"
     },
     {
       "id": "foundry_slagtap",
@@ -1395,7 +1402,8 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents",
+      "content_id": "ntm:foundry_slagtap"
     },
     {
       "id": "slag",

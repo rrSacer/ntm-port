@@ -343,6 +343,14 @@
     "ntm:machine_fluidtank",
     "ntm:machine_shredder",
     "ntm:machine_blast_furnace",
-    "ntm:fluid_duct_neo"
+    "ntm:fluid_duct_neo",
+    "ntm:machine_crucible",
+    "ntm:heater_firebox",
+    "ntm:foundry_channel",
+    "ntm:foundry_tank",
+    "ntm:foundry_outlet",
+    "ntm:foundry_slagtap",
+    "ntm:foundry_mold",
+    "ntm:foundry_basin"
   ]
 }

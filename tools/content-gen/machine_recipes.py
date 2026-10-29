@@ -289,6 +289,8 @@ def export(source, output, rows):
     counts['shredder'] = shredder_recipes.export(source, output, rows)['coverage']
     import blast_furnace_recipes
     counts['blast_furnace'] = blast_furnace_recipes.export(source, output, rows)['coverage']
+    import foundry_recipes
+    counts['foundry'] = foundry_recipes.export(source, output, rows)['coverage']
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 

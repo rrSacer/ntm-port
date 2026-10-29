@@ -1451,6 +1451,60 @@
       }
     },
     {
+      "id": "ntm:bulk__0d3413c48c8f918513",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:922",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:foundry_basin",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__b5d0878c37d9a97167",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:923",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:foundry_mold",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2eec1a121740602ab7",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:924",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:foundry_channel",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__d6fb373fe4594ede17",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:925",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:foundry_tank",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__faa43cd0cf13bb1885",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:926",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:foundry_outlet",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2c960c0ac580cd2a9b",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:927",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:foundry_slagtap",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__e93f85c83af8c2237c",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:928",
       "type": "minecraft:crafting_shaped",
@@ -5150,7 +5204,7 @@
       }
     }
   ],
-  "generated_count": 572,
+  "generated_count": 578,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -8109,42 +8163,6 @@
       "callee": "addRecipeAuto",
       "reason": "missing subtype gear_large:1",
       "expression": "new ItemStack(ModItems.gear_large, 1, 1), new Object[] { \"III\", \"ICI\", \"III\", 'I', STEEL.plate(), 'C', TI.ingot()}"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:922",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item foundry_basin",
-      "expression": "new ItemStack(ModBlocks.foundry_basin), new Object[] { \"B B\", \"B B\", \"BSB\", 'B', ModItems.ingot_firebrick, 'S', Blocks.stone_slab }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:923",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item foundry_mold",
-      "expression": "new ItemStack(ModBlocks.foundry_mold), new Object[] { \"B B\", \"BSB\", 'B', ModItems.ingot_firebrick, 'S', Blocks.stone_slab }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:924",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item foundry_channel",
-      "expression": "new ItemStack(ModBlocks.foundry_channel, 4), new Object[] { \"B B\", \" S \", 'B', ModItems.ingot_firebrick, 'S', Blocks.stone_slab }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:925",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item foundry_tank",
-      "expression": "new ItemStack(ModBlocks.foundry_tank), new Object[] { \"B B\", \"I I\", \"BSB\", 'B', ModItems.ingot_firebrick, 'I', STEEL.ingot(), 'S', Blocks.stone_slab }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:926",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item foundry_outlet",
-      "expression": "new ItemStack(ModBlocks.foundry_outlet), new Object[] { ModBlocks.foundry_channel, STEEL.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:927",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item foundry_slagtap",
-      "expression": "new ItemStack(ModBlocks.foundry_slagtap), new Object[] { ModBlocks.foundry_channel, Blocks.stonebrick }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:932",
