@@ -129,6 +129,12 @@ pub const SLOTTED: &[(&str, Layout)] = &[
         },
     ),
     ("ntm:nuke_boy", Layout::Bomb),
+    ("ntm:nuke_gadget", Layout::Bomb),
+    ("ntm:nuke_man", Layout::Bomb),
+    ("ntm:nuke_mike", Layout::Bomb),
+    ("ntm:nuke_tsar", Layout::Bomb),
+    ("ntm:nuke_n2", Layout::Bomb),
+    ("ntm:nuke_fstbmb", Layout::Bomb),
 ];
 
 #[derive(Clone, Debug, PartialEq)]
@@ -285,6 +291,16 @@ fn lay_out(slots: &mut Slots, range: std::ops::Range<usize>, want: &[(String, u3
     }
 }
 
+/// The values a bomb's screen shows (tools/visual-gen/visual.json): the
+/// stages it could set off (Little Boy's lamp; Ivy Mike's and the Tsar's
+/// two, as `isReady` and `isFilled`), and its parts in place (the N² bar).
+fn bomb_data(b: &crate::bomb::Bomb) -> Vec<i32> {
+    let Some(t) = b.kind() else { return vec![0, 0] };
+    let stages = t.stages.iter().filter(|s| (0..s.slots).all(|i| b.slot_ok(i))).count();
+    let parts = (0..t.slots.len()).filter(|&i| b.slot_ok(i)).count();
+    vec![stages as i32, parts as i32]
+}
+
 /// The values the assembly machine's screen shows (tools/visual-gen/visual.json).
 fn crafter_data(c: &Crafter) -> Vec<i32> {
     let clamp = |v: u64| v.min(i32::MAX as u64) as i32;
@@ -439,7 +455,7 @@ impl Server {
                             *cell = s.clone().map(|id| Stack { id, count: 1, damage });
                         }
                     }
-                    vec![b.blast().is_some() as i32]
+                    bomb_data(b)
                 }
                 (data, Layout::Native) => {
                     let Some(n) = slotted(data) else { continue };
@@ -544,6 +560,24 @@ mod tests {
         assert_eq!(cells.len(), 14);
         assert!(cells.contains(&[0, 70, 0]));
         assert!(proxy_cells("ntm:machine_assembly_machine", [0, 64, 0], Some("north")).len() == 8);
+    }
+
+    #[test]
+    fn a_bomb_screen_counts_stages_and_parts() {
+        let mut b = crate::bomb::Bomb::new("ntm:nuke_mike");
+        assert_eq!(bomb_data(&b), [0, 0]);
+        for i in 0..4 {
+            b.slots[i] = Some("ntm:explosive_lenses".into());
+        }
+        // A part in the wrong slot counts for nothing.
+        b.slots[6] = Some("ntm:explosive_lenses".into());
+        assert_eq!(bomb_data(&b), [0, 4]);
+        b.slots[4] = Some("ntm:man_core".into());
+        assert_eq!(bomb_data(&b), [1, 5]);
+        for (i, id) in [(5, "ntm:mike_core"), (6, "ntm:mike_deut"), (7, "ntm:mike_cooling_unit")] {
+            b.slots[i] = Some(id.into());
+        }
+        assert_eq!(bomb_data(&b), [2, 8]);
     }
 
     #[test]
