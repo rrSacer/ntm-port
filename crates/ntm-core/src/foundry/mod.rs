@@ -15,6 +15,7 @@
 
 pub mod crucible;
 pub mod firebox;
+pub mod flow;
 
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -170,6 +171,23 @@ pub fn add(stack: &mut Vec<Mat>, mat: &str, q: u32) {
         Some(s) => s.1 += q,
         None => stack.push((mat.to_string(), q)),
     }
+}
+
+/// Quanta as the NTM's tooltips say them: ingots, nuggets, quanta.
+pub fn quanta_name(q: u32) -> String {
+    let (ingots, rest) = (q / 72, q % 72);
+    let (nuggets, quanta) = (rest / 8, rest % 8);
+    let mut parts = Vec::new();
+    if ingots > 0 {
+        parts.push(format!("{ingots} lingote(s)"));
+    }
+    if nuggets > 0 {
+        parts.push(format!("{nuggets} pepita(s)"));
+    }
+    if quanta > 0 || parts.is_empty() {
+        parts.push(format!("{quanta} quanta"));
+    }
+    parts.join(", ")
 }
 
 /// A heat source under a crucible (`IHeatSource`).

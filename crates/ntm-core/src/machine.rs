@@ -40,6 +40,10 @@ pub enum Kind {
     /// The foundry's heat source and crucible (`crate::foundry`).
     Firebox,
     Crucible,
+    /// Where the molten metal goes (`crate::foundry::flow`).
+    Channel,
+    FoundryTank,
+    Outlet,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -115,6 +119,9 @@ pub enum Data {
     BlastFurnace(crate::blastfurnace::BlastFurnace),
     Firebox(crate::foundry::firebox::Firebox),
     Crucible(crate::foundry::crucible::Crucible),
+    Channel(crate::foundry::flow::Channel),
+    FoundryTank(crate::foundry::flow::Tank),
+    Outlet(crate::foundry::flow::Outlet),
     Inert { name: String },
 }
 
@@ -148,6 +155,9 @@ impl Machine {
             Kind::BlastFurnace => Data::BlastFurnace(crate::blastfurnace::BlastFurnace::default()),
             Kind::Firebox => Data::Firebox(crate::foundry::firebox::Firebox::default()),
             Kind::Crucible => Data::Crucible(crate::foundry::crucible::Crucible::default()),
+            Kind::Channel => Data::Channel(Default::default()),
+            Kind::FoundryTank => Data::FoundryTank(Default::default()),
+            Kind::Outlet => Data::Outlet(Default::default()),
             Kind::Crafter => match crate::crafter::Station::of(block_id) {
                 Some(st) => Data::Crafter(crate::crafter::Crafter::new(st)),
                 None => Data::Inert { name: block_id.into() },
@@ -185,6 +195,9 @@ impl Machine {
             Data::BlastFurnace(_) => Kind::BlastFurnace,
             Data::Firebox(_) => Kind::Firebox,
             Data::Crucible(_) => Kind::Crucible,
+            Data::Channel(_) => Kind::Channel,
+            Data::FoundryTank(_) => Kind::FoundryTank,
+            Data::Outlet(_) => Kind::Outlet,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -205,6 +218,9 @@ impl Machine {
             Data::BlastFurnace(m) => m,
             Data::Firebox(m) => m,
             Data::Crucible(m) => m,
+            Data::Channel(m) => m,
+            Data::FoundryTank(m) => m,
+            Data::Outlet(m) => m,
             Data::Inert { name } => name,
         }
     }
@@ -225,6 +241,9 @@ impl Machine {
             Data::BlastFurnace(m) => m,
             Data::Firebox(m) => m,
             Data::Crucible(m) => m,
+            Data::Channel(m) => m,
+            Data::FoundryTank(m) => m,
+            Data::Outlet(m) => m,
             Data::Inert { name } => name,
         }
     }
