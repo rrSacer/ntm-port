@@ -1086,6 +1086,42 @@ agente de conteúdo (`tools/machine-gen/build.py` → `data/machines/heaters.jso
   - o forno sobre uma firebox, puxando o calor dela.
   - Também: saves inertes carregam como aquecedores.
 
+## Energia, lote 2: motor a vapor, turbinas e condensadores (`steam.rs`)
+
+São o `TileEntitySteamEngine`, o `TileEntityTurbineBase` (com o
+`TileEntityMachineIndustrialTurbine` e o `TileEntityChungus`, a turbina
+Leviatã), o `TileEntityCondenser` e o `TileEntityCondenserPowered`. Os
+números vêm do `steam.json`; o `FT_Coolable` dos vapores, do
+`fluid_traits.json` (a mesma tabela dos aquecedores). É a primeira energia
+real no sobrevivência: caldeira → vapor → gerador → HE, e o condensador
+devolve a água.
+
+| | Motor a vapor | Turbina industrial | Turbina Leviatã | Condensador | Condensador a energia |
+| --- | --- | --- | --- | --- | --- |
+| Tanques | 2.000 vapor / 20 vapor gasto | 750.000 / 3.000.000 | 10⁹ / 10⁹ | 100 / 100 | 1.000.000 / 1.000.000 |
+| Por tick | tudo que a saída deixa | ⌈1/5 da entrada⌉ | toda a entrada | tudo | tudo, com 10 HE/mB |
+| Eficiência | 0,85 | 1 | 0,85 | — | — |
+| Vapor comum | 100 mB → 1 mB + 200·ef HE | o mesmo | o mesmo | 1 mB → 1 mB de água | o mesmo |
+
+**Como trabalha:**
+- Os geradores oferecem a energia do tick à rede e perdem o que ela não leva (o `powerBuffer` do NTM, zerado a cada tick).
+- A turbina industrial põe a energia num volante de 5·10⁷ HE e solta `max(giro, 5 %)` da sua saída máxima por tick.
+- A alavanca das turbinas (botão da tela) troca o vapor: comum → quente → superquente → ultraquente → comum. Na industrial, os tanques encolhem a um décimo a cada passo e voltam ×1000.
+- As turbinas guardam o int do NTM: `operações · calor` multiplica em 32 bits com sinal antes da eficiência. Os vapores densos da Leviatã podem virar o número; aqui uma saída negativa não oferece nada.
+- O condensador a energia só condensa com energia para tudo (aceita 5 % a menos) e então paga.
+- Portas: os proxies de fluido de cada um (`FLUID_PROXIES`) e as de energia por cadeias de células até o núcleo (`ENERGY_CHAINS`), dos `getPorts` do NTM.
+
+**Desvios:**
+- o som, a rotação e as partículas;
+- a alavanca das turbinas é um botão da tela, não um clique no modelo.
+
+**Verificação:**
+- **Unidade:** 5 testes em `steam.rs`. O motor e o teto da saída; o volante da industrial; a Leviatã e o int que vira; a alavanca e os tanques; os dois condensadores.
+- **Mundo falso** (`server/tests/steam_tests.rs`, 3):
+  - firebox → caldeira → motor → forno elétrico, com o vapor gasto num condensador e a água de volta à caldeira por duto. O forno funde, e a água se conserva na volta;
+  - as portas de energia das turbinas no fim das cadeias;
+  - saves inertes carregam como máquinas de vapor.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
