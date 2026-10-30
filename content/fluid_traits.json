@@ -1,0 +1,543 @@
+{
+  "schema": 1,
+  "profile": "NTM source defaults; external fluid trait JSON/config overrides excluded",
+  "units": {
+    "flammable": "TU/bucket (1000 mB)",
+    "coolable": "TU/operation"
+  },
+  "flammable": [
+    {
+      "fluid": "deuterium",
+      "heat_tu_per_bucket": 5000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:269"
+    },
+    {
+      "fluid": "tritium",
+      "heat_tu_per_bucket": 5000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:270"
+    },
+    {
+      "fluid": "oil",
+      "heat_tu_per_bucket": 25000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:705"
+    },
+    {
+      "fluid": "heavyoil",
+      "heat_tu_per_bucket": 55000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:712"
+    },
+    {
+      "fluid": "smear",
+      "heat_tu_per_bucket": 82500,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:713"
+    },
+    {
+      "fluid": "heatingoil",
+      "heat_tu_per_bucket": 391000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:717"
+    },
+    {
+      "fluid": "reclaimed",
+      "heat_tu_per_bucket": 113000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:714"
+    },
+    {
+      "fluid": "petroil",
+      "heat_tu_per_bucket": 130000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:715"
+    },
+    {
+      "fluid": "naphtha",
+      "heat_tu_per_bucket": 110000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:718"
+    },
+    {
+      "fluid": "diesel",
+      "heat_tu_per_bucket": 550000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:724"
+    },
+    {
+      "fluid": "lightoil",
+      "heat_tu_per_bucket": 1460000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:726"
+    },
+    {
+      "fluid": "kerosene",
+      "heat_tu_per_bucket": 2560000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:729"
+    },
+    {
+      "fluid": "gas",
+      "heat_tu_per_bucket": 50000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:710"
+    },
+    {
+      "fluid": "petroleum",
+      "heat_tu_per_bucket": 1650000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:730"
+    },
+    {
+      "fluid": "lpg",
+      "heat_tu_per_bucket": 1810000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:733"
+    },
+    {
+      "fluid": "biogas",
+      "heat_tu_per_bucket": 62500,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:759"
+    },
+    {
+      "fluid": "biofuel",
+      "heat_tu_per_bucket": 500000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:760"
+    },
+    {
+      "fluid": "nitan",
+      "heat_tu_per_bucket": 64000000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:734"
+    },
+    {
+      "fluid": "hydrogen",
+      "heat_tu_per_bucket": 5000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:299"
+    },
+    {
+      "fluid": "balefire",
+      "heat_tu_per_bucket": 256000000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:735"
+    },
+    {
+      "fluid": "gasoline",
+      "heat_tu_per_bucket": 605000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:722"
+    },
+    {
+      "fluid": "coalgas",
+      "heat_tu_per_bucket": 6350000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:754"
+    },
+    {
+      "fluid": "ethanol",
+      "heat_tu_per_bucket": 275000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:757"
+    },
+    {
+      "fluid": "crackoil",
+      "heat_tu_per_bucket": 31200,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:707"
+    },
+    {
+      "fluid": "coaloil",
+      "heat_tu_per_bucket": 1100000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:752"
+    },
+    {
+      "fluid": "naphtha_crack",
+      "heat_tu_per_bucket": 85900,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:720"
+    },
+    {
+      "fluid": "lightoil_crack",
+      "heat_tu_per_bucket": 916000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:728"
+    },
+    {
+      "fluid": "diesel_crack",
+      "heat_tu_per_bucket": 515000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:725"
+    },
+    {
+      "fluid": "aromatics",
+      "heat_tu_per_bucket": 458000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:731"
+    },
+    {
+      "fluid": "unsaturateds",
+      "heat_tu_per_bucket": 3660000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:732"
+    },
+    {
+      "fluid": "petroil_leaded",
+      "heat_tu_per_bucket": 195000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:716"
+    },
+    {
+      "fluid": "gasoline_leaded",
+      "heat_tu_per_bucket": 907000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:723"
+    },
+    {
+      "fluid": "coalgas_leaded",
+      "heat_tu_per_bucket": 9520000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:755"
+    },
+    {
+      "fluid": "woodoil",
+      "heat_tu_per_bucket": 110000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:762"
+    },
+    {
+      "fluid": "coalcreosote",
+      "heat_tu_per_bucket": 250000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:763"
+    },
+    {
+      "fluid": "solvent",
+      "heat_tu_per_bucket": 100000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:767"
+    },
+    {
+      "fluid": "syngas",
+      "heat_tu_per_bucket": 1650000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:770"
+    },
+    {
+      "fluid": "oxyhydrogen",
+      "heat_tu_per_bucket": 5000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:771"
+    },
+    {
+      "fluid": "radiosolvent",
+      "heat_tu_per_bucket": 150000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:768"
+    },
+    {
+      "fluid": "heavyoil_vacuum",
+      "heat_tu_per_bucket": 187000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:736"
+    },
+    {
+      "fluid": "reformate",
+      "heat_tu_per_bucket": 2400000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:737"
+    },
+    {
+      "fluid": "lightoil_vacuum",
+      "heat_tu_per_bucket": 3000000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:738"
+    },
+    {
+      "fluid": "sourgas",
+      "heat_tu_per_bucket": 250000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:739"
+    },
+    {
+      "fluid": "xylene",
+      "heat_tu_per_bucket": 3150000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:740"
+    },
+    {
+      "fluid": "heatingoil_vacuum",
+      "heat_tu_per_bucket": 1310000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:741"
+    },
+    {
+      "fluid": "diesel_reform",
+      "heat_tu_per_bucket": 1370000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:742"
+    },
+    {
+      "fluid": "diesel_crack_reform",
+      "heat_tu_per_bucket": 1280000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:743"
+    },
+    {
+      "fluid": "kerosene_reform",
+      "heat_tu_per_bucket": 6400000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:744"
+    },
+    {
+      "fluid": "reformgas",
+      "heat_tu_per_bucket": 10500000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:745"
+    },
+    {
+      "fluid": "oil_coker",
+      "heat_tu_per_bucket": 31200,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:709"
+    },
+    {
+      "fluid": "naphtha_coker",
+      "heat_tu_per_bucket": 125000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:721"
+    },
+    {
+      "fluid": "gas_coker",
+      "heat_tu_per_bucket": 62500,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:711"
+    },
+    {
+      "fluid": "fishoil",
+      "heat_tu_per_bucket": 75000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:764"
+    },
+    {
+      "fluid": "sunfloweroil",
+      "heat_tu_per_bucket": 50000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:765"
+    },
+    {
+      "fluid": "redmud",
+      "heat_tu_per_bucket": 1000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:374"
+    },
+    {
+      "fluid": "oil_ds",
+      "heat_tu_per_bucket": 50000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:706"
+    },
+    {
+      "fluid": "crackoil_ds",
+      "heat_tu_per_bucket": 62500,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:708"
+    },
+    {
+      "fluid": "naphtha_ds",
+      "heat_tu_per_bucket": 220000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:719"
+    },
+    {
+      "fluid": "lightoil_ds",
+      "heat_tu_per_bucket": 2930000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:727"
+    },
+    {
+      "fluid": "flue",
+      "heat_tu_per_bucket": 25000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:416"
+    }
+  ],
+  "coolable": [
+    {
+      "fluid": "steam",
+      "output": [
+        "spentsteam",
+        1
+      ],
+      "input_mb": 100,
+      "heat_tu": 200,
+      "efficiencies": {
+        "TURBINE": 1.0,
+        "HEATEXCHANGER": 0.5
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:637"
+    },
+    {
+      "fluid": "hotsteam",
+      "output": [
+        "steam",
+        10
+      ],
+      "input_mb": 1,
+      "heat_tu": 2,
+      "efficiencies": {
+        "TURBINE": 1.0,
+        "HEATEXCHANGER": 0.5
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:638"
+    },
+    {
+      "fluid": "superhotsteam",
+      "output": [
+        "hotsteam",
+        10
+      ],
+      "input_mb": 1,
+      "heat_tu": 18,
+      "efficiencies": {
+        "TURBINE": 1.0,
+        "HEATEXCHANGER": 0.5
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:639"
+    },
+    {
+      "fluid": "ultrahotsteam",
+      "output": [
+        "superhotsteam",
+        10
+      ],
+      "input_mb": 1,
+      "heat_tu": 120,
+      "efficiencies": {
+        "TURBINE": 1.0,
+        "HEATEXCHANGER": 0.5
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:640"
+    },
+    {
+      "fluid": "hotoil",
+      "output": [
+        "oil",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 10,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:647"
+    },
+    {
+      "fluid": "hotoil_ds",
+      "output": [
+        "oil_ds",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 10,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:648"
+    },
+    {
+      "fluid": "hotcrackoil",
+      "output": [
+        "crackoil",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 10,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:649"
+    },
+    {
+      "fluid": "hotcrackoil_ds",
+      "output": [
+        "crackoil_ds",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 10,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:650"
+    },
+    {
+      "fluid": "coolant_hot",
+      "output": [
+        "coolant",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 300,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:653"
+    },
+    {
+      "fluid": "perfluoromethyl_hot",
+      "output": [
+        "perfluoromethyl",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 300,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:657"
+    },
+    {
+      "fluid": "mug_hot",
+      "output": [
+        "mug",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 400,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:660"
+    },
+    {
+      "fluid": "blood_hot",
+      "output": [
+        "blood",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 500,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:663"
+    },
+    {
+      "fluid": "heavywater_hot",
+      "output": [
+        "heavywater",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 300,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:666"
+    },
+    {
+      "fluid": "sodium_hot",
+      "output": [
+        "sodium",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 400,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:669"
+    },
+    {
+      "fluid": "lead_hot",
+      "output": [
+        "lead",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 680,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:673"
+    },
+    {
+      "fluid": "thorium_salt_hot",
+      "output": [
+        "thorium_salt_depleted",
+        1
+      ],
+      "input_mb": 1,
+      "heat_tu": 400,
+      "efficiencies": {
+        "TURBINE": 0.0,
+        "HEATEXCHANGER": 1.0
+      },
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:677"
+    }
+  ],
+  "deferred_traits": [
+    "FT_Combustible/FuelGrade: energy batch 3"
+  ],
+  "coverage": {
+    "flammable": 60,
+    "coolable": 16
+  }
+}
