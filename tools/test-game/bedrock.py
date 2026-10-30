@@ -35,6 +35,15 @@ Etapa 3 (forno pirolítico e eletrólise de fluidos), no mesmo mundo:
               ácido sulfúrico e cloro a barris nas portas dele;
   ciclo       o ácido sulfúrico do eletrolisador num cristalizador novo (sem
               outro ácido): PRIMARY → PRIMARY sulfúrico.
+Etapa 4 (forno a arco grande e linha de metal do eletrolisador):
+  hidrogenar  PRIMARY de actinídeos + hidrogênio num cristalizador → PRIMARY
+              FIRST;
+  metal       o eletrolisador da etapa 3 (salvo como a linha de fluidos só:
+              carrega como o de agora) com ácido nítrico de um barril e
+              moldes de lingote a 6 blocos de cada ponta: 1 PRIMARY FIRST →
+              urânio à esquerda, tório à direita, lingotes nos moldes;
+  arco        o forno a arco em modo fluido com 3 eletrodos de grafite e um
+              molde sob a bica: 2 PRIMARY FIRST → urânio fundido → lingotes.
 Grava <pasta>/bedrock-evidence.json e capturas bedrock-*.png.
 """
 import json, subprocess, sys, time
@@ -689,6 +698,152 @@ def ciclo():
     crystallize((kx, y, kz), 'ntm:bedrock_ore__primary_actinide', 2, 'ntm:bedrock_ore__primary_sulfuric_actinide')
     evidence['ciclo'] = {'acido_do_eletrolisador': states[acid], 'sulfuricos': count('ntm:bedrock_ore__primary_sulfuric_actinide')}
     print('ciclo', evidence['ciclo'])
+
+
+# --------------------------------------------------------- etapa 4
+
+DIRS = {'north': (0, -1), 'south': (0, 1), 'east': (1, 0), 'west': (-1, 0)}
+
+
+def facing(x, y, z):
+    st = ctl('block', x, y, z).get('state', '')
+    return DIRS[st.split('facing=')[1].split(',')[0].split(']')[0]]
+
+
+def mold_at(x, y, z, stand):
+    """An ingot mold on (x, y, z), its mold in by shift-click."""
+    if not ctl('block', x, y, z).get('state', '').startswith('ntm:foundry_mold'):
+        place(x, y, z, 'ntm:foundry_mold', stand)
+    open_at(x, y, z, stand)
+    if not any(s[0] == 300 for s in machine_slots()):
+        give('ntm:mold__ingot', 1)
+        open_at(x, y, z, stand)
+        ctl('click-slot', hot('ntm:mold__ingot')[0], 'shift')
+        time.sleep(0.7)
+    got = machine_slots()
+    close()
+    return got
+
+
+def casts(x, y, z, stand):
+    """What the mold's output (machine slot 1) holds, taken out."""
+    open_at(x, y, z, stand)
+    out = [s for s in machine_slots() if s[0] == 301]
+    for s in out:
+        ctl('click-slot', 301, 'shift')
+        time.sleep(0.5)
+    close()
+    return [(s[1], s[2]) for s in out]
+
+
+def hidrogenar():
+    ctl('command', 'clear @s', check=False)
+    h2 = crystallizer(X4 - 12, Z4 - 10, 'ntm:fluid_barrel_full__hydrogen')
+    # PRIMARY ores as the centrifuge gave them in stages 1 and 2.
+    give('ntm:bedrock_ore__primary_actinide', 3)
+    crystallize(h2, 'ntm:bedrock_ore__primary_actinide', 3, 'ntm:bedrock_ore__primary_first_actinide')
+    evidence['hidrogenar'] = {'nucleo': h2, 'primary_first': count('ntm:bedrock_ore__primary_first_actinide')}
+    print('hidrogenar', evidence['hidrogenar'])
+
+
+def metal():
+    y = floor_y()
+    core = tuple(evidence['eletrolisar']['nucleo'])
+    (dx, dz) = facing(*core)
+    # Left 6 behind the core, right 6 ahead (TileEntityElectrolyser:201-245).
+    molds = {side: (core[0] + dx * k, y, core[2] + dz * k) for side, k in (('esquerda', -6), ('direita', 6))}
+    # Where to stand by a mold: beside it, off the machine's line.
+    beside = {side: (m[0] + 2, y, m[2]) if dx == 0 else (m[0], y, m[2] + 2) for side, m in molds.items()}
+    for side, m in molds.items():
+        mold_at(*m, beside[side])
+    # Nitric acid into the stage's (empty) feed barrel, typed by the barrel
+    # in the hand; the electrolyser takes it into its acid tank.
+    feed = (core[0] - 2, y, core[2]) if dx == 0 else (core[0], y, core[2] - 2)
+    give('ntm:fluid_barrel_full__nitric_acid', 1)
+    ctl('select', 'ntm:fluid_barrel_full__nitric_acid')
+    old_screen(*feed, (feed[0], y, feed[2] + 2) if dx == 0 else (feed[0] + 2, y, feed[2]))
+    click_label('Tipo pelo recipiente')
+    click_label('Despejar')
+    while 'Saída' not in ''.join(w.get('label') or '' for w in ctl('ui').get('widgets', [])):
+        click_label('Modo:', 1.0)
+    close()
+    # Its side, off the molds' line.
+    cell, stand = ((core[0] - 1, y, core[2] + 2), (core[0] - 4, y, core[2] + 2)) if dx == 0 else ((core[0] + 2, y, core[2] - 1), (core[0] + 2, y, core[2] - 4))
+    open_at(*cell, stand)
+    if not any(s[0] == 300 for s in machine_slots()):
+        put('ntm:battery_creative', 1, 300)
+    # One of the crystallizer's PRIMARY FIRST (the rest for the arc).
+    ore = 'ntm:bedrock_ore__primary_first_actinide'
+    src = hot(ore)[0]
+    ctl('click-slot', src)
+    time.sleep(0.3)
+    ctl('click-slot', 314, 'right')
+    time.sleep(0.5)
+    ctl('click-slot', src)
+    time.sleep(0.3)
+    put_in = [s for s in machine_slots() if s[0] == 314]
+    close()
+    t0, got = time.time(), {}
+    while time.time() - t0 < 120:
+        time.sleep(6)
+        for side, m in molds.items():
+            for item, n in casts(*m, beside[side]):
+                got.setdefault(side, {}).setdefault(item, 0)
+                got[side][item] += n
+        if sum(got.get('esquerda', {}).values()) >= 3 and got.get('direita'):
+            break
+    open_at(*cell, stand)
+    left = machine_slots()
+    ctl('screenshot', game / 'bedrock-eletrolisador-metal.png')
+    close()
+    evidence['metal'] = {'nucleo': core, 'moldes': molds, 'posto': put_in, 'lingotes': got, 'slots': left, 'barril_nitrico': barrel_state(*feed)}
+    print('metal', evidence['metal'])
+
+
+def arco():
+    y = floor_y()
+    ax, az = X4 - 8, Z4 + 9
+    if not any('arc_furnace' in b[3] for b in ctl('blocks', ax - 4, y, az - 4, ax + 4, y + 4, az + 4).get('blocks', [])):
+        place(ax, y, az, 'ntm:machine_arc_furnace_large', (ax, y, az + 4))
+    core = find('ntm:machine_arc_furnace_large', ax - 4, y, az - 4, ax + 4, y + 4, az + 4)
+    (dx, dz) = facing(*core)
+    # The spout 3 ahead of the core, a block up (…ArcFurnaceLarge:166-171).
+    m = (core[0] + 3 * dx, y, core[2] + 3 * dz)
+    m_stand = (m[0] + 2, y, m[2]) if dx == 0 else (m[0], y, m[2] + 2)
+    mold_at(*m, m_stand)
+    # Its back edge (the core is inside), from behind.
+    cell, stand = (core[0] - 2 * dx, y, core[2] - 2 * dz), (core[0] - 4 * dx, y, core[2] - 4 * dz)
+    open_at(*cell, stand)
+    if not any(s[0] == 303 for s in machine_slots()):
+        put('ntm:battery_creative', 1, 303)
+    for e in (300, 301, 302):
+        if not any(s[0] == e for s in machine_slots()):
+            put('ntm:arc_electrode__graphite', 1, e)
+    labels = [w.get('label') for w in ctl('ui').get('widgets', [])]
+    # A new furnace is in solid mode: its button once.
+    if not (game / 'bedrock-arco-modo').exists():
+        click_label('Modo', 1.0)
+        (game / 'bedrock-arco-modo').write_text('1')
+    ctl('click-slot', hot('ntm:bedrock_ore__primary_first_actinide')[0])
+    time.sleep(0.3)
+    ctl('click-slot', 325)
+    time.sleep(0.5)
+    before = machine_slots()
+    ctl('screenshot', game / 'bedrock-arco-carregado.png')
+    close()
+    t0, got = time.time(), {}
+    while time.time() - t0 < 150:
+        time.sleep(8)
+        for item, n in casts(*m, m_stand):
+            got[item] = got.get(item, 0) + n
+        if got.get('ntm:ingot_uranium', 0) >= 4:
+            break
+    open_at(*cell, stand)
+    after = machine_slots()
+    ctl('screenshot', game / 'bedrock-arco.png')
+    close()
+    evidence['arco'] = {'nucleo': core, 'molde': m, 'botoes': labels, 'antes': before, 'lingotes': got, 'depois': after}
+    print('arco', evidence['arco'])
 
 
 for s in steps:
