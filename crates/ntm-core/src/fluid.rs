@@ -237,6 +237,11 @@ pub trait FluidNode {
     }
     /// The fluid types it holds or wants (the networks it is part of).
     fn fluid_types(&self) -> Vec<String>;
+    /// It takes any fluid now (an empty tank whose type the first fluid
+    /// sets): its proxy cells join every network of its dimension.
+    fn accepts_any(&self) -> bool {
+        false
+    }
     /// `mb` of `fluid` arrived.
     fn fluid_give(&mut self, fluid: &str, mb: u64);
     /// `mb` of `fluid` left.

@@ -224,6 +224,9 @@ impl FluidNode for Excavator {
     fn fluid_types(&self) -> Vec<String> {
         if self.tank.fluid.is_empty() { Vec::new() } else { vec![self.tank.fluid.clone()] }
     }
+    fn accepts_any(&self) -> bool {
+        self.tank.mb == 0
+    }
     fn fluid_give(&mut self, f: &str, mb: u64) {
         if self.tank.mb == 0 {
             self.tank.set_type(f);

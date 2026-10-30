@@ -61,6 +61,7 @@ impl Server {
         let mut ducts: BTreeMap<(String, String), BTreeSet<Pos>> = BTreeMap::new();
         let mut users: BTreeMap<String, BTreeMap<Pos, Vec<crate::energy::Port>>> = BTreeMap::new();
         let mut kinds: BTreeSet<(String, String)> = BTreeSet::new();
+        let mut any: BTreeMap<String, BTreeSet<Pos>> = BTreeMap::new();
         for ((dim, pos), m) in r.world.machines.iter_mut() {
             if r.loaded.get(&(dim.clone(), *pos)) != Some(&true) {
                 continue;
@@ -83,6 +84,10 @@ impl Server {
             let proxies = super::container_bridge::fluid_proxy_cells(&m.block, *pos, m.facing.as_deref());
             let Some(node) = m.logic_mut().fluid() else { continue };
             feed(at.rotate_left(7) ^ crate::hash::fnv64(dim.as_bytes()));
+            if node.accepts_any() && !proxies.is_empty() {
+                feed(0x5a5a_a5a5);
+                any.entry(dim.clone()).or_default().extend(proxies.iter().copied());
+            }
             for t in node.fluid_types() {
                 feed(crate::hash::fnv64(t.as_bytes()));
                 if !proxies.is_empty() {
@@ -91,6 +96,13 @@ impl Server {
                 kinds.insert((dim.clone(), t));
             }
             users.entry(dim.clone()).or_default().insert(*pos, ports);
+        }
+        // Machines that take any fluid: their proxies in every network of
+        // their dimension.
+        for (dim, f) in &kinds {
+            if let Some(cells) = any.get(dim) {
+                ducts.entry((dim.clone(), f.clone())).or_default().extend(cells.iter().copied());
+            }
         }
         let sig = h | 1;
         if sig != self.fluidnet.sig {
