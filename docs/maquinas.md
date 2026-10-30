@@ -672,7 +672,8 @@ barril na camada de portas.
 São o `TileEntityMachinePyroOven` (71 receitas do `PyroOvenRecipes`, entre
 elas a torrefação do minério de bedrock, que dá vitríolo) e a linha de
 fluidos do `TileEntityElectrolyser` (8 receitas do
-`ElectrolyserFluidRecipes`). A linha de metal do eletrolisador é da etapa 4.
+`ElectrolyserFluidRecipes`). A linha de metal do eletrolisador é da etapa 4,
+abaixo.
 Os dois são estações do crafter; telas, multiblocos e portas são do agente de
 visual.
 
@@ -712,6 +713,62 @@ agora recusa o que a própria máquina põe para fora.
   - **`ciclo`:** esse ácido, num cristalizador novo sem outro ácido, faz 2
     PRIMARY → 2 PRIMARY sulfúricos. O ciclo fecha: torrefação → vitríolo →
     eletrólise → ácido sulfúrico → cristalizador.
+  - Sem "took too long".
+
+## Cadeia do bedrock, etapa 4: forno a arco grande e metal do eletrolisador (`arc_furnace.rs`, `electrolyser.rs`)
+
+São o `TileEntityMachineArcFurnaceLarge` (os dois modos do
+`ArcFurnaceRecipes`: 143 receitas sólidas, 2 puladas na extração, e 491
+fluidas) e a linha de metal do `TileEntityElectrolyser` (36 receitas do
+`ElectrolyserMetalRecipes`). O metal fundido dos dois cai na fundição que já
+existe (`server/foundry_server.rs`, `molten_tick`): no primeiro bloco até 6
+abaixo da bica, um canal, um tanque ou um molde.
+
+| | Forno a arco grande | Eletrolisador (metal) |
+| --- | --- | --- |
+| Slots | 0–2 eletrodos, 3 bateria, 4 upgrade (sem efeito), 5–24 a grade, 25–29 a fila | 14 a entrada, 15–20 os subprodutos, nas posições da receita; os da linha de fluidos seguem iguais |
+| Lote | a grade toda, um item por slot (sem upgrade de velocidade); a fila enche a grade com a tampa aberta | um item por vez |
+| Tempo | a tampa fecha em 60 ticks; 400 ticks de trabalho; 120 de espera depois, com a tampa aberta | 600 ticks, 20 nas receitas do bedrock; sem condição o progresso para, não volta a 0 |
+| Energia | 1.000 HE por tick, até 2.500.000 | 10.000 HE por tick, as duas linhas no mesmo buffer |
+| Insumo | 3 eletrodos; cada lote gasta 1 de cada (grafite 10, lantânio 100, desh 500, saturnita 1.500); no fim, o eletrodo vira o gasto (`arc_electrode_burnt__*`) | 100 mB de ácido nítrico, de um tanque próprio de 16.000 mB (tipo fixo) |
+| Saída | modo sólido: o item vira a saída no mesmo slot; modo fluido: um buffer de até 82.944 quanta (as sucatas viram o próprio material) | duas pilhas fundidas, esquerda e direita, até 10.368 quanta cada; cada uma só aceita o mesmo material |
+| Despejo | 72 quanta por tick, só com a tampa aberta, de 3 blocos à frente do núcleo, 1 acima | 24 por tick de cada pilha: a esquerda 6 blocos atrás do núcleo, a direita 6 à frente, 2 acima |
+
+O botão 0 do forno troca o modo. Os valores que a tela e o modelo usam estão
+no contrato com o agente de visual (`tools/visual-gen/visual.json`):
+- **forno:** [20..22] os eletrodos (0 vazio, 1 novo, 2 em uso, 3 gasto), [23] o conteúdo, [24] a tampa (0..1000), [25..27] o fundido, [28] o modo;
+- **eletrolisador:** [30..34] as duas pilhas, [35]/[36] o progresso, [37] a lâmpada.
+
+Um mundo salvo antes desta etapa carrega o eletrolisador (antes um crafter)
+e o forno (antes inerte) como as máquinas novas
+(`Machine::upgraded`). O eletrolisador mantém a linha de fluidos e ganha o
+tanque de ácido nítrico.
+
+**Verificação:**
+- **Unidade** (`arc_furnace.rs`, `electrolyser.rs`, 4 testes):
+  - um lote fecha a tampa, leva 400 ticks e gasta os eletrodos; o grafite
+    queima no 10º;
+  - o modo fluido despeja só com a tampa aberta;
+  - as duas pilhas do eletrolisador e o despejo delas;
+  - a espera sem ácido ou sem lugar na pilha.
+- **Mundo falso** (`server/tests/stage4_tests.rs`, 3; mais 1 em `persist.rs`):
+  - o minério de bedrock fundido no forno vira lingote de ferro num molde
+    sob a bica;
+  - o modo sólido deixa a saída na grade e não despeja;
+  - o eletrolisador enche um molde de cada lado (ferro e cobre);
+  - um save antigo carrega as duas máquinas novas.
+- **Em jogo** (`tools/test-game/bedrock.py`, etapas `hidrogenar`, `metal` e
+  `arco`, no mundo das etapas 1–3):
+  - **`hidrogenar`:** 3 PRIMARY de actinídeos + hidrogênio num cristalizador
+    dão 3 PRIMARY FIRST.
+  - **`metal`:** o eletrolisador da etapa 3, salvo como crafter, carrega como
+    o novo. Com ácido nítrico de um barril e 1 PRIMARY FIRST, dá:
+    - 3 lingotes de urânio no molde da esquerda (216 dos 256 quanta);
+    - 1 lingote de tório-232 no molde da direita (72 dos 128);
+    - 1 crumbs no slot 15.
+  - **`arco`:** o forno a arco em modo fluido, com 3 eletrodos de grafite e
+    2 PRIMARY FIRST na fila, dá 4 lingotes de urânio no molde sob a bica.
+    Os eletrodos saem com dano 1.
   - Sem "took too long".
 
 ## Pontes `m1_temp__`
