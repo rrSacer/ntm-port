@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:bedrock_ore_fragment__fluorite"
+  },
+  "result": {
+    "id": "ntm:fluorite",
+    "count": 1
+  }
+}

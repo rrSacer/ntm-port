@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:bedrock_ore_fragment__lead"
+  },
+  "result": {
+    "id": "ntm:powder_lead",
+    "count": 1
+  }
+}
