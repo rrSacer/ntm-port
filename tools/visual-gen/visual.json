@@ -5511,12 +5511,32 @@
           {
             "x": 136,
             "y": 75,
-            "accept": []
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_effect_1",
+              "ntm:upgrade_effect_2",
+              "ntm:upgrade_effect_3"
+            ]
           },
           {
             "x": 154,
             "y": 75,
-            "accept": []
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_effect_1",
+              "ntm:upgrade_effect_2",
+              "ntm:upgrade_effect_3"
+            ]
           },
           {
             "x": 172,
@@ -5585,7 +5605,7 @@
           41,
           122
         ],
-        "data": 15,
+        "data": 20,
         "multiblock": {
           "min": [
             -3,
