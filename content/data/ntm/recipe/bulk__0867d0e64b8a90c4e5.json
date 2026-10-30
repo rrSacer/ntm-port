@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_slag"
+  ],
+  "result": {
+    "id": "ntm:ingot_raw__slag",
+    "count": 9
+  }
+}

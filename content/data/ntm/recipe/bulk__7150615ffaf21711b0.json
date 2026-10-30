@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:fallout__item"
+  },
+  "result": {
+    "id": "ntm:block_fallout",
+    "count": 1
+  }
+}

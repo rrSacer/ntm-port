@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 59,
+    "emitted": 60,
     "scanned_source_calls": 77,
-    "skipped_source_calls": 18,
+    "skipped_source_calls": 17,
     "expanded_fluid_recipes": 0,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -846,6 +846,42 @@
       "pools": [],
       "label": "Concreto Líquido · 16000 mB",
       "label_en": "Liquid Concrete · 16000 mB"
+    },
+    {
+      "name": "chem.asphalt",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:165",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "minecraft:gravel"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "minecraft:sand"
+          ],
+          "count": 6
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:asphalt",
+          16
+        ]
+      ],
+      "inputFluids": [
+        [
+          "bitumen",
+          1000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Asfalto ×16",
+      "label_en": "Asphalt ×16"
     },
     {
       "name": "chem.batterylead",
@@ -1969,12 +2005,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:150",
       "reason": "nonliteral integer: (GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ? 1 : 4",
       "expression": "new GenericRecipe(\"chem.concreteasbestos\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_cement, 4), new OreDictStack(ASBESTOS.ingot(), (GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ? 1 : 4), new OreDictStack(KEY_SAND, 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 2_000))\n\t\t\t\t.outputItems(new ItemStack(ModBlocks.concrete_asbestos, 16))"
-    },
-    {
-      "name": "chem.asphalt",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:165",
-      "reason": "unregistered/ambiguous source item asphalt",
-      "expression": "new GenericRecipe(\"chem.asphalt\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(Blocks.gravel, 2), new OreDictStack(KEY_SAND, 6))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.BITUMEN, 1_000))\n\t\t\t\t.outputItems(new ItemStack(ModBlocks.asphalt, 16))"
     },
     {
       "name": "chem.desh",

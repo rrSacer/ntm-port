@@ -514,6 +514,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/ams_core_wormhole.png"
     },
     {
+      "id": "ancient_scrap",
+      "type": "block",
+      "source_variable": "ancient_scrap",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1375",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ancient_scrap.png"
+    },
+    {
       "id": "asbestos_cloth",
       "type": "item",
       "source_variable": "asbestos_cloth",
@@ -521,6 +532,48 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2397",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/asbestos_cloth.png"
+    },
+    {
+      "id": "ash_digamma",
+      "type": "block",
+      "source_variable": "ash_digamma",
+      "source_class": "BlockAshes",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1639",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (randomDisplayTick); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ash_digamma.png"
+    },
+    {
+      "id": "asphalt",
+      "type": "block",
+      "source_variable": "asphalt",
+      "source_class": "BlockSpeedy",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1459",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/asphalt.png"
+    },
+    {
+      "id": "asphalt_light",
+      "type": "block",
+      "source_variable": "asphalt_light",
+      "source_class": "BlockSpeedy",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1460",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/asphalt_light.png"
+    },
+    {
+      "id": "asphalt_stairs",
+      "type": "block",
+      "source_variable": "asphalt_stairs",
+      "source_class": "BlockSpeedyStairs",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1554",
+      "category": "decorative",
+      "template": "minecraft:stone_stairs",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/asphalt.png"
     },
     {
       "id": "assembly_nuke",
@@ -7742,6 +7795,132 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cadmium.png"
     },
     {
+      "id": "block_cap__fritz",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.FRITZ",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_fritz.png",
+      "names": {
+        "en_us": "Block Cap Fritz",
+        "pt_br": "Block Cap Fritz"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_fritz.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_fritz_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_fritz_top.png"
+      }
+    },
+    {
+      "id": "block_cap__korl",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.KORL",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_korl.png",
+      "names": {
+        "en_us": "Block Cap Korl",
+        "pt_br": "Block Cap Korl"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_korl.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_korl_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_korl_top.png"
+      }
+    },
+    {
+      "id": "block_cap__nuka",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.NUKA",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_nuka.png",
+      "names": {
+        "en_us": "Block Cap Nuka",
+        "pt_br": "Block Cap Nuka"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_nuka.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_nuka_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_nuka_top.png"
+      }
+    },
+    {
+      "id": "block_cap__quantum",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.QUANTUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_quantum.png",
+      "names": {
+        "en_us": "Block Cap Quantum",
+        "pt_br": "Block Cap Quantum"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_quantum.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_quantum_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_quantum_top.png"
+      }
+    },
+    {
+      "id": "block_cap__rad",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.RAD",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_rad.png",
+      "names": {
+        "en_us": "Block Cap Rad",
+        "pt_br": "Block Cap Rad"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_rad.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_rad_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_rad_top.png"
+      }
+    },
+    {
+      "id": "block_cap__sparkle",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.SPARKLE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_sparkle.png",
+      "names": {
+        "en_us": "Block Cap Sparkle",
+        "pt_br": "Block Cap Sparkle"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_sparkle.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_sparkle_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_sparkle_top.png"
+      }
+    },
+    {
       "id": "block_cdalloy",
       "type": "block",
       "source_variable": "block_cdalloy",
@@ -7845,6 +8024,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_corium.png"
     },
     {
+      "id": "block_corium_cobble",
+      "type": "block",
+      "source_variable": "block_corium_cobble",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1377",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_corium_cobble.png"
+    },
+    {
       "id": "block_desh",
       "type": "block",
       "source_variable": "block_desh",
@@ -7906,6 +8096,18 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_euphemium_cluster_side.png"
     },
     {
+      "id": "block_fallout",
+      "type": "block",
+      "source_variable": "block_fallout",
+      "source_class": "BlockHazardFalling",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1407",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ash.png"
+    },
+    {
       "id": "block_fiberglass",
       "type": "block",
       "source_variable": "block_fiberglass",
@@ -7961,6 +8163,60 @@
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1390",
       "category": "resource_block",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_magnetized_tungsten.png"
+    },
+    {
+      "id": "block_meteor",
+      "type": "block",
+      "source_variable": "block_meteor",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1563",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/meteor.png"
+    },
+    {
+      "id": "block_meteor_broken",
+      "type": "block",
+      "source_variable": "block_meteor_broken",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1566",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/meteor_crushed.png"
+    },
+    {
+      "id": "block_meteor_cobble",
+      "type": "block",
+      "source_variable": "block_meteor_cobble",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1565",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/meteor_cobble.png"
+    },
+    {
+      "id": "block_meteor_molten",
+      "type": "block",
+      "source_variable": "block_meteor_molten",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1567",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/meteor_cobble_molten.png"
+    },
+    {
+      "id": "block_meteor_treasure",
+      "type": "block",
+      "source_variable": "block_meteor_treasure",
+      "source_class": "BlockMeteoriteTreasure",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1568",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/meteor_treasure.png"
     },
     {
       "id": "block_mox_fuel",
@@ -8072,6 +8328,18 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_ra226.png"
     },
     {
+      "id": "block_red_phosphorus",
+      "type": "block",
+      "source_variable": "block_red_phosphorus",
+      "source_class": "BlockHazardFalling",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1406",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_red_phosphorus.png"
+    },
+    {
       "id": "block_rubber",
       "type": "block",
       "source_variable": "block_rubber",
@@ -8144,6 +8412,17 @@
       "category": "decorative",
       "template": "minecraft:gravel",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_scrap.png"
+    },
+    {
+      "id": "block_slag",
+      "type": "block",
+      "source_variable": "block_slag",
+      "source_class": "BlockSlag",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1427",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_slag.png"
     },
     {
       "id": "block_smore",
@@ -8281,6 +8560,39 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_uranium_fuel.png"
     },
     {
+      "id": "block_waste",
+      "type": "block",
+      "source_variable": "block_waste",
+      "source_class": "BlockNuclearWaste",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1372",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_waste.png"
+    },
+    {
+      "id": "block_waste_painted",
+      "type": "block",
+      "source_variable": "block_waste_painted",
+      "source_class": "BlockNuclearWaste",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1373",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_waste_painted.png"
+    },
+    {
+      "id": "block_waste_vitrified",
+      "type": "block",
+      "source_variable": "block_waste_vitrified",
+      "source_class": "BlockNuclearWaste",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1374",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_waste_vitrified.png"
+    },
+    {
       "id": "block_white_phosphorus",
       "type": "block",
       "source_variable": "block_white_phosphorus",
@@ -8289,6 +8601,18 @@
       "category": "resource_block",
       "behavior_gap": "hazard/display effects and beacon base behavior require logic; static storage surface only",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_white_phosphorus.png"
+    },
+    {
+      "id": "block_yellowcake",
+      "type": "block",
+      "source_variable": "block_yellowcake",
+      "source_class": "BlockHazardFalling",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1398",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_yellowcake.png"
     },
     {
       "id": "block_zirconium",
@@ -8393,6 +8717,17 @@
       "category": "component",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/boy_target.png"
+    },
+    {
+      "id": "brick_asbestos",
+      "type": "block",
+      "source_variable": "brick_asbestos",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1516",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_asbestos.png"
     },
     {
       "id": "brick_asbestos_stairs",
@@ -8657,6 +8992,22 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png"
     },
     {
+      "id": "brick_forgotten",
+      "type": "block",
+      "source_variable": "brick_forgotten",
+      "source_class": "BlockForgottenBrick",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1525",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated, isBeaconBase); full-cube surface only",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/brick_forgotten.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/brick_forgotten_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/brick_forgotten_top.png"
+      },
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_forgotten.png"
+    },
+    {
       "id": "brick_jungle",
       "type": "block",
       "source_variable": "brick_jungle",
@@ -8675,6 +9026,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_jungle_cracked.png"
     },
     {
+      "id": "brick_jungle_fragile",
+      "type": "block",
+      "source_variable": "brick_jungle_fragile",
+      "source_class": "FragileBrick",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1581",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, getItemDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_jungle_fragile.png"
+    },
+    {
       "id": "brick_jungle_lava",
       "type": "block",
       "source_variable": "brick_jungle_lava",
@@ -8682,6 +9044,28 @@
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1582",
       "category": "decorative",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_jungle_lava.png"
+    },
+    {
+      "id": "brick_jungle_mystic",
+      "type": "block",
+      "source_variable": "brick_jungle_mystic",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1584",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_jungle_mystic.png"
+    },
+    {
+      "id": "brick_jungle_ooze",
+      "type": "block",
+      "source_variable": "brick_jungle_ooze",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1583",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_jungle_ooze.png"
     },
     {
       "id": "brick_light",
@@ -11419,6 +11803,76 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/cordite.png"
     },
     {
+      "id": "crate",
+      "type": "block",
+      "source_variable": "crate",
+      "source_class": "BlockCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2168",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate.png"
+    },
+    {
+      "id": "crate_jungle",
+      "type": "block",
+      "source_variable": "crate_jungle",
+      "source_class": "BlockJungleCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2176",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate_jungle.png"
+    },
+    {
+      "id": "crate_lead",
+      "type": "block",
+      "source_variable": "crate_lead",
+      "source_class": "BlockCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2171",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate_lead.png"
+    },
+    {
+      "id": "crate_metal",
+      "type": "block",
+      "source_variable": "crate_metal",
+      "source_class": "BlockCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2172",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate_metal.png"
+    },
+    {
+      "id": "crate_red",
+      "type": "block",
+      "source_variable": "crate_red",
+      "source_class": "BlockCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2173",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate_red.png"
+    },
+    {
+      "id": "crate_weapon",
+      "type": "block",
+      "source_variable": "crate_weapon",
+      "source_class": "BlockCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2170",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate_weapon.png"
+    },
+    {
       "id": "crt_display",
       "type": "item",
       "source_variable": "crt_display",
@@ -11751,6 +12205,17 @@
       "behavior_gap": "Isolated source tile; connected texture adjacency stitching not implemented"
     },
     {
+      "id": "deco_asbestos",
+      "type": "block",
+      "source_variable": "deco_asbestos",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1442",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/deco_asbestos.png"
+    },
+    {
       "id": "deco_beryllium",
       "source_variable": "deco_beryllium",
       "source_class": "BlockDecoCT",
@@ -11819,6 +12284,17 @@
       "behavior_gap": "Isolated source tile; connected texture adjacency stitching not implemented"
     },
     {
+      "id": "deco_titanium",
+      "type": "block",
+      "source_variable": "deco_titanium",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1432",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/deco_titanium.png"
+    },
+    {
       "id": "deco_tungsten",
       "source_variable": "deco_tungsten",
       "source_class": "BlockDecoCT",
@@ -11836,6 +12312,61 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2697",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/demon_core_closed.png"
+    },
+    {
+      "id": "depth_brick",
+      "type": "block",
+      "source_variable": "depth_brick",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1301",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/depth_brick.png"
+    },
+    {
+      "id": "depth_dnt",
+      "type": "block",
+      "source_variable": "depth_dnt",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1306",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/depth_dnt.png"
+    },
+    {
+      "id": "depth_nether_brick",
+      "type": "block",
+      "source_variable": "depth_nether_brick",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1304",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/depth_nether_brick.png"
+    },
+    {
+      "id": "depth_nether_tiles",
+      "type": "block",
+      "source_variable": "depth_nether_tiles",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1305",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/depth_nether_tiles.png"
+    },
+    {
+      "id": "depth_tiles",
+      "type": "block",
+      "source_variable": "depth_tiles",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1303",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/depth_tiles.png"
     },
     {
       "id": "desh_hoe",
@@ -12326,6 +12857,28 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/fragment_niobium.png"
     },
     {
+      "id": "frozen_dirt",
+      "type": "block",
+      "source_variable": "frozen_dirt",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1670",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/frozen_dirt.png"
+    },
+    {
+      "id": "frozen_planks",
+      "type": "block",
+      "source_variable": "frozen_planks",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1673",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/frozen_planks.png"
+    },
+    {
       "id": "fuel_additive__antiknock",
       "type": "item",
       "source_variable": "fuel_additive",
@@ -12700,6 +13253,17 @@
       "category": "component",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/trigger.png"
+    },
+    {
+      "id": "impact_dirt",
+      "type": "block",
+      "source_variable": "impact_dirt",
+      "source_class": "BlockDirt",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1683",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, getItemDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/waste_earth_bottom.png"
     },
     {
       "id": "ingot_actinium",
@@ -13754,6 +14318,50 @@
       }
     },
     {
+      "id": "lamp_tritium_blue_off",
+      "type": "block",
+      "source_variable": "lamp_tritium_blue_off",
+      "source_class": "TritiumLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1478",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lamp_tritium_blue_off.png"
+    },
+    {
+      "id": "lamp_tritium_blue_on",
+      "type": "block",
+      "source_variable": "lamp_tritium_blue_on",
+      "source_class": "TritiumLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1479",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lamp_tritium_blue_on.png"
+    },
+    {
+      "id": "lamp_tritium_green_off",
+      "type": "block",
+      "source_variable": "lamp_tritium_green_off",
+      "source_class": "TritiumLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1475",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lamp_tritium_green_off.png"
+    },
+    {
+      "id": "lamp_tritium_green_on",
+      "type": "block",
+      "source_variable": "lamp_tritium_green_on",
+      "source_class": "TritiumLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1477",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lamp_tritium_green_on.png"
+    },
+    {
       "id": "laser_crystal_bismuth",
       "type": "item",
       "source_variable": "laser_crystal_bismuth",
@@ -13842,6 +14450,86 @@
       "category": "component",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/launch_key.png"
+    },
+    {
+      "id": "lightstone__bricks",
+      "type": "block",
+      "source_variable": "lightstone",
+      "source_class": "BlockLightstone",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1523",
+      "category": "decorative",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "LightstoneType.BRICKS",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lightstone.bricks.png",
+      "names": {
+        "en_us": "Lightstone Bricks",
+        "pt_br": "Blocos de Pedra de Luz"
+      }
+    },
+    {
+      "id": "lightstone__bricks_chiseled",
+      "type": "block",
+      "source_variable": "lightstone",
+      "source_class": "BlockLightstone",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1523",
+      "category": "decorative",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "LightstoneType.BRICKS_CHISELED",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lightstone.bricks_chiseled.png",
+      "names": {
+        "en_us": "Lightstone Chiseled Bricks",
+        "pt_br": "Blocos Talhados de Pedra de Luz"
+      }
+    },
+    {
+      "id": "lightstone__chiseled",
+      "type": "block",
+      "source_variable": "lightstone",
+      "source_class": "BlockLightstone",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1523",
+      "category": "decorative",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "LightstoneType.CHISELED",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lightstone.chiseled.png",
+      "names": {
+        "en_us": "Chiseled Lightstone",
+        "pt_br": "Pedra de Luz Talhada"
+      }
+    },
+    {
+      "id": "lightstone__tile",
+      "type": "block",
+      "source_variable": "lightstone",
+      "source_class": "BlockLightstone",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1523",
+      "category": "decorative",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "LightstoneType.TILE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lightstone.tile.png",
+      "names": {
+        "en_us": "Lightstone Tile",
+        "pt_br": "Azulejo de Pedra de Luz"
+      }
+    },
+    {
+      "id": "lightstone__unrefined",
+      "type": "block",
+      "source_variable": "lightstone",
+      "source_class": "BlockLightstone",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1523",
+      "category": "decorative",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "LightstoneType.UNREFINED",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lightstone.unrefined.png",
+      "names": {
+        "en_us": "Raw Lightstone",
+        "pt_br": "Pedra de Luz Bruta"
+      }
     },
     {
       "id": "lignite",
@@ -14348,6 +15036,28 @@
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/mp_warhead.png"
+    },
+    {
+      "id": "mush_block",
+      "type": "block",
+      "source_variable": "mush_block",
+      "source_class": "BlockMushHuge",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1652",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/mush_block_skin.png"
+    },
+    {
+      "id": "mush_block_stem",
+      "type": "block",
+      "source_variable": "mush_block_stem",
+      "source_class": "BlockMushHuge",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1653",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/mush_block_stem.png"
     },
     {
       "id": "n2_charge",
@@ -22436,6 +23146,246 @@
       }
     },
     {
+      "id": "platemetal__base",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.BASE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.base.png",
+      "names": {
+        "en_us": "Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica"
+      }
+    },
+    {
+      "id": "platemetal__black",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.BLACK",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.black.png",
+      "names": {
+        "en_us": "Black Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Preta"
+      }
+    },
+    {
+      "id": "platemetal__blue",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.BLUE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.blue.png",
+      "names": {
+        "en_us": "Blue Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Azul"
+      }
+    },
+    {
+      "id": "platemetal__cyan",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.CYAN",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.cyan.png",
+      "names": {
+        "en_us": "Cyan Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Ciano"
+      }
+    },
+    {
+      "id": "platemetal__green",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.GREEN",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.green.png",
+      "names": {
+        "en_us": "Green Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Verde"
+      }
+    },
+    {
+      "id": "platemetal__light_blue",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 12,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.LIGHT_BLUE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.light_blue.png",
+      "names": {
+        "en_us": "Light Blue Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Azul-Clara"
+      }
+    },
+    {
+      "id": "platemetal__light_gray",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.LIGHT_GRAY",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.light_gray.png",
+      "names": {
+        "en_us": "Light Gray Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Cinza-Clara"
+      }
+    },
+    {
+      "id": "platemetal__lime",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 10,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.LIME",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.lime.png",
+      "names": {
+        "en_us": "Lime Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Verde-Limão"
+      }
+    },
+    {
+      "id": "platemetal__magenta",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 13,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.MAGENTA",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.magenta.png",
+      "names": {
+        "en_us": "Magenta Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Magenta"
+      }
+    },
+    {
+      "id": "platemetal__orange",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 14,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.ORANGE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.orange.png",
+      "names": {
+        "en_us": "Orange Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Laranja"
+      }
+    },
+    {
+      "id": "platemetal__pink",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 9,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.PINK",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.pink.png",
+      "names": {
+        "en_us": "Pink Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Rosa"
+      }
+    },
+    {
+      "id": "platemetal__purple",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.PURPLE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.purple.png",
+      "names": {
+        "en_us": "Purple Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Roxa"
+      }
+    },
+    {
+      "id": "platemetal__red",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.RED",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.red.png",
+      "names": {
+        "en_us": "Red Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Vermelha"
+      }
+    },
+    {
+      "id": "platemetal__white",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.WHITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.white.png",
+      "names": {
+        "en_us": "White Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Branca"
+      }
+    },
+    {
+      "id": "platemetal__yellow",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 11,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.YELLOW",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.yellow.png",
+      "names": {
+        "en_us": "Yellow Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Amarela"
+      }
+    },
+    {
       "id": "powder_actinium",
       "type": "item",
       "source_variable": "powder_actinium",
@@ -24008,6 +24958,28 @@
       "behavior_gap": "Connected texture seams are rendered as isolated source glass faces; no CT adjacency stitching",
       "loot_none": false,
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/reinforced_laminate.png"
+    },
+    {
+      "id": "reinforced_lamp_off",
+      "type": "block",
+      "source_variable": "reinforced_lamp_off",
+      "source_class": "ReinforcedLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1471",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/reinforced_lamp_off.png"
+    },
+    {
+      "id": "reinforced_lamp_on",
+      "type": "block",
+      "source_variable": "reinforced_lamp_on",
+      "source_class": "ReinforcedLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1472",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/reinforced_lamp_on.png"
     },
     {
       "id": "reinforced_light",
@@ -26121,6 +27093,27 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/seg_20.png"
     },
     {
+      "id": "sellafield",
+      "type": "block",
+      "source_variable": "sellafield",
+      "source_class": "BlockSellafield",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1692",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_0.png"
+    },
+    {
+      "id": "sellafield_bedrock",
+      "type": "block",
+      "source_variable": "sellafield_bedrock",
+      "source_class": "BlockSellafieldSlaked",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1691",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_slaked.png"
+    },
+    {
       "id": "shimmer_axe_head",
       "type": "item",
       "source_variable": "shimmer_axe_head",
@@ -26914,6 +27907,28 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/stone_cracked.png"
     },
     {
+      "id": "stone_depth",
+      "type": "block",
+      "source_variable": "stone_depth",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1286",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/stone_depth.png"
+    },
+    {
+      "id": "stone_depth_nether",
+      "type": "block",
+      "source_variable": "stone_depth_nether",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1307",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/stone_depth_nether.png"
+    },
+    {
       "id": "stone_gneiss",
       "type": "block",
       "source_variable": "stone_gneiss",
@@ -26921,6 +27936,16 @@
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1270",
       "category": "decorative",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/stone_gneiss_var.png"
+    },
+    {
+      "id": "stone_porous",
+      "type": "block",
+      "source_variable": "stone_porous",
+      "source_class": "BlockPorous",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1310",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/stone_porous.png"
     },
     {
       "id": "stone_resource__asbestos",
@@ -27134,6 +28159,39 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2616",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/thruster_small.png"
+    },
+    {
+      "id": "tile_lab",
+      "type": "block",
+      "source_variable": "tile_lab",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1559",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/tile_lab.png"
+    },
+    {
+      "id": "tile_lab_broken",
+      "type": "block",
+      "source_variable": "tile_lab_broken",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1562",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/tile_lab_broken.png"
+    },
+    {
+      "id": "tile_lab_cracked",
+      "type": "block",
+      "source_variable": "tile_lab_cracked",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1561",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/tile_lab_cracked.png"
     },
     {
       "id": "titanium_boots",
@@ -27729,6 +28787,38 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/upgrade_template.png"
     },
     {
+      "id": "vinyl_tile__large",
+      "type": "block",
+      "source_variable": "vinyl_tile",
+      "source_class": "BlockEnumMulti",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1557",
+      "category": "decorative",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "TileType.LARGE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/vinyl_tile.large.png",
+      "names": {
+        "en_us": "Large Vinyl Tile",
+        "pt_br": "Piso Vinílico Grande"
+      }
+    },
+    {
+      "id": "vinyl_tile__small",
+      "type": "block",
+      "source_variable": "vinyl_tile",
+      "source_class": "BlockEnumMulti",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1557",
+      "category": "decorative",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "TileType.SMALL",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/vinyl_tile.small.png",
+      "names": {
+        "en_us": "Small Vinyl Tiles",
+        "pt_br": "Pisos Vinílicos Pequenos"
+      }
+    },
+    {
       "id": "warhead_buster_large",
       "type": "item",
       "source_variable": "warhead_buster_large",
@@ -27862,6 +28952,17 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2611",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/warhead_volcano.png"
+    },
+    {
+      "id": "waste_trinitite_red",
+      "type": "block",
+      "source_variable": "waste_trinitite_red",
+      "source_class": "BlockTrinitite",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1666",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/waste_trinitite_red.png"
     },
     {
       "id": "watch",

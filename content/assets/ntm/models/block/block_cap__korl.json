@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "ntm:block/block_cap_korl",
+    "top": "ntm:block/block_cap_korl_top",
+    "bottom": "ntm:block/block_cap_korl_top"
+  }
+}

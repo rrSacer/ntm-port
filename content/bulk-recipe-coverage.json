@@ -236,6 +236,15 @@
       }
     },
     {
+      "id": "ntm:bulk__75ee652ea5b3b4ca79",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:136",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:block_waste_painted",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__b8d5417ffc682847ba",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:138",
       "type": "minecraft:crafting_shaped",
@@ -1019,6 +1028,15 @@
       }
     },
     {
+      "id": "ntm:bulk__d18b5e9369c4240f03",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:361",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:brick_asbestos",
+        "count": 2
+      }
+    },
+    {
       "id": "ntm:bulk__8d74cd765dc3d5fc0c",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:362",
       "type": "minecraft:crafting_shaped",
@@ -1127,6 +1145,15 @@
       }
     },
     {
+      "id": "ntm:bulk__e63561f1bd4f089862",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:374",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:meteor_polished",
+        "count": 4
+      }
+    },
+    {
       "id": "ntm:bulk__035f454104b5a52e90",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:375",
       "type": "minecraft:crafting_shaped",
@@ -1168,6 +1195,51 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:meteor_battery",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7a87db47d7cc61fdc0",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:380",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:tile_lab",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__73fafc80f59e7a43d7",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:381",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:tile_lab_cracked",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__28735f22906aaefd8d",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:382",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:tile_lab_broken",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__a0e87b52aa458b1bba",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:383",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:asphalt_light",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__bd9637c98f80a9ea50",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:384",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:asphalt",
         "count": 1
       }
     },
@@ -1271,6 +1343,42 @@
       }
     },
     {
+      "id": "ntm:bulk__9a08f2bad6e4ca1b27",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:414",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:depth_brick",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__9cf4c301281dc07da6",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:415",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:depth_tiles",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__0e554ed0bd1a9f0504",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:416",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:depth_nether_brick",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__80979fc629c0360397",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:417",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:depth_nether_tiles",
+        "count": 4
+      }
+    },
+    {
       "id": "ntm:bulk__90e85bffe33f207d1d",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:418",
       "type": "minecraft:crafting_shaped",
@@ -1298,6 +1406,51 @@
       }
     },
     {
+      "id": "ntm:bulk__14c5f22cd47621ce49",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:422",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:lightstone__unrefined",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__f1863d46cf4313e490",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:423",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:lightstone__tile",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__e9847ced0797b41597",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:424",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:lightstone__bricks",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__567de04c9b27916fc8",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:425",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:lightstone__bricks_chiseled",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2d86fbcf0db3a2e94e",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:426",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:lightstone__chiseled",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__b66182e419a1587ab9",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:428",
       "type": "minecraft:crafting_shaped",
@@ -1321,6 +1474,15 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:reinforced_light",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2d937e20394d00fee5",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:434",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:reinforced_lamp_off",
         "count": 1
       }
     },
@@ -1523,6 +1685,15 @@
       }
     },
     {
+      "id": "ntm:bulk__28540fcdc7c8e91ca2",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:563",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:crystal_horn",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__3ae2b6bfab9b5cfb8b",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:585",
       "type": "minecraft:crafting_shaped",
@@ -1636,6 +1807,15 @@
       "type": "minecraft:crafting_shapeless",
       "result": {
         "id": "ntm:waste_trinitite",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__065d1aacb52759cffc",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:684",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:waste_trinitite_red",
         "count": 1
       }
     },
@@ -2189,6 +2369,33 @@
       }
     },
     {
+      "id": "ntm:bulk__e5a300e31d04371fa3",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:937",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:vinyl_tile__large",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__594296997fee41b054",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:938",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:vinyl_tile__small",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__c3c208471d2b1c6aec",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:939",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:vinyl_tile__large",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__d003488fcb2da3fb3d",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:941",
       "type": "minecraft:crafting_shapeless",
@@ -2684,6 +2891,24 @@
       }
     },
     {
+      "id": "ntm:bulk__b38921a36d646e6f3b",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:58",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_slag",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0867d0e64b8a90c4e5",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:58",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:ingot_raw__slag",
+        "count": 9
+      }
+    },
+    {
       "id": "ntm:bulk__dd0b236d4829b8cec5",
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:64",
       "type": "minecraft:crafting_shaped",
@@ -2860,6 +3085,24 @@
       "type": "minecraft:crafting_shapeless",
       "result": {
         "id": "ntm:nuclear_waste_vitrified_tiny",
+        "count": 9
+      }
+    },
+    {
+      "id": "ntm:bulk__8c3c7034da6a5f65ba",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:69",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_waste_vitrified",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ecb23bea6ce22adbc5",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:69",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:nuclear_waste_vitrified",
         "count": 9
       }
     },
@@ -3220,6 +3463,24 @@
       "type": "minecraft:crafting_shapeless",
       "result": {
         "id": "ntm:nugget_gh336",
+        "count": 9
+      }
+    },
+    {
+      "id": "ntm:bulk__7150615ffaf21711b0",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:106",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_fallout",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d951b3c34bd0fe2a25",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:106",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:fallout__item",
         "count": 9
       }
     },
@@ -3800,6 +4061,15 @@
       }
     },
     {
+      "id": "ntm:bulk__3fd51b4f1a46bceda6",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:239",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_waste",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__8582a8fba43540e323",
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:240",
       "type": "minecraft:crafting_shaped",
@@ -3895,6 +4165,33 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:block_dura_steel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__69e4057e74148468e1",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:251",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_meteor_cobble",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d960fd7428098e8154",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:252",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_meteor_broken",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2065e17c7e01041114",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:253",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_yellowcake",
         "count": 1
       }
     },
@@ -4061,6 +4358,15 @@
       }
     },
     {
+      "id": "ntm:bulk__70e8a472baa759f1d3",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:272",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_red_phosphorus",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__c2030d02a00426e383",
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:273",
       "type": "minecraft:crafting_shaped",
@@ -4205,6 +4511,24 @@
       }
     },
     {
+      "id": "ntm:bulk__83023a4f467aed6815",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:290",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:nuclear_waste",
+        "count": 9
+      }
+    },
+    {
+      "id": "ntm:bulk__a909acf95bf65d42f2",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:291",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:nuclear_waste",
+        "count": 9
+      }
+    },
+    {
       "id": "ntm:bulk__c03532141c6f1c03a0",
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:292",
       "type": "minecraft:crafting_shaped",
@@ -4273,6 +4597,15 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:ingot_dura_steel",
+        "count": 9
+      }
+    },
+    {
+      "id": "ntm:bulk__8829f4f1c498d32ab8",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:300",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:powder_yellowcake",
         "count": 9
       }
     },
@@ -4435,6 +4768,15 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:ingot_phosphorus",
+        "count": 9
+      }
+    },
+    {
+      "id": "ntm:bulk__116d723ebe48454f3e",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:319",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:powder_fire",
         "count": 9
       }
     },
@@ -6599,6 +6941,42 @@
       }
     },
     {
+      "id": "ntm:bulk__08322ff595a7c2289e",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:131",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:glass_trinitite",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f5a4e852800aad424a",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:131; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:glass_trinitite",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3ae2eeda871d721e62",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:134",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:glass_ash",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__dc4b47cf25d1225945",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:134; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:glass_ash",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__6bf5b9d36b7d5e6b75",
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:135",
       "type": "minecraft:smelting",
@@ -6941,7 +7319,7 @@
       }
     }
   ],
-  "generated_count": 771,
+  "generated_count": 813,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -7032,12 +7410,6 @@
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary ANY_PLASTIC.ingot()",
       "expression": "DictFrame.fromOne(ModItems.circuit, EnumCircuitType.CONTROLLER_CHASSIS), new Object[] { \"PPP\", \"CBB\", \"PPP\", 'P', ANY_PLASTIC.ingot(), 'C', ModItems.crt_display, 'B', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.PCB) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:136",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item block_waste_painted",
-      "expression": "new ItemStack(ModBlocks.block_waste_painted, 1), new Object[] { KEY_YELLOW, ModBlocks.block_waste }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:162",
@@ -7640,48 +8012,6 @@
       "expression": "new ItemStack(ModBlocks.watz_pump, 1), new Object[] { \"MPM\", \"PCP\", \"PSP\", 'M', ModItems.motor_desh, 'P', ANY_RESISTANTALLOY.plateCast(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BISMOID), 'S', DURA.pipe() }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:361",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item brick_asbestos",
-      "expression": "new ItemStack(ModBlocks.brick_asbestos, 2), new Object[] { \" A \", \"ABA\", \" A \", 'B', ModBlocks.brick_light, 'A', ASBESTOS.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:374",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item block_meteor_broken",
-      "expression": "new ItemStack(ModBlocks.meteor_polished, 4), new Object[] { \"CC\", \"CC\", 'C', ModBlocks.block_meteor_broken }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:380",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item tile_lab",
-      "expression": "new ItemStack(ModBlocks.tile_lab, 4), new Object[] { \"CBC\", \"CBC\", \"CBC\", 'C', Items.brick, 'B', ASBESTOS.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:381",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item tile_lab_cracked",
-      "expression": "new ItemStack(ModBlocks.tile_lab_cracked, 6), new Object[] { \" C \" , \"C C\", \" C \", 'C', ModBlocks.tile_lab }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:382",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item tile_lab_broken",
-      "expression": "new ItemStack(ModBlocks.tile_lab_broken, 6), new Object[] { \" C \" , \"C C\", \" C \", 'C', ModBlocks.tile_lab_cracked }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:383",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item asphalt_light",
-      "expression": "new ItemStack(ModBlocks.asphalt_light, 1), new Object[] { ModBlocks.asphalt, Items.glowstone_dust }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:384",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item asphalt",
-      "expression": "new ItemStack(ModBlocks.asphalt, 1), new Object[] { ModBlocks.asphalt_light }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:390",
       "callee": "addRecipeAuto",
       "reason": "dynamic/unsupported metadata i",
@@ -7708,62 +8038,8 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:400",
       "callee": "addShapelessAuto",
-      "reason": "dynamic/unsupported metadata PlatemetalType.BASE.ordinal()",
+      "reason": "dynamic/unsupported metadata OreDictionary.WILDCARD_VALUE",
       "expression": "new ItemStack(ModBlocks.platemetal, 1, PlatemetalType.BASE.ordinal()), new Object[] { new ItemStack(ModBlocks.platemetal, 1, OreDictionary.WILDCARD_VALUE) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:414",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item depth_brick",
-      "expression": "new ItemStack(ModBlocks.depth_brick, 4), new Object[] { \"CC\", \"CC\", 'C', ModBlocks.stone_depth }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:415",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item depth_tiles",
-      "expression": "new ItemStack(ModBlocks.depth_tiles, 4), new Object[] { \"CC\", \"CC\", 'C', ModBlocks.depth_brick }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:416",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item depth_nether_brick",
-      "expression": "new ItemStack(ModBlocks.depth_nether_brick, 4), new Object[] { \"CC\", \"CC\", 'C', ModBlocks.stone_depth_nether }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:417",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item depth_nether_tiles",
-      "expression": "new ItemStack(ModBlocks.depth_nether_tiles, 4), new Object[] { \"CC\", \"CC\", 'C', ModBlocks.depth_nether_brick }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:422",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item lightstone",
-      "expression": "new ItemStack(ModBlocks.lightstone, 4), new Object[] { Blocks.stone, Blocks.stone, Blocks.stone, ModItems.powder_limestone }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:423",
-      "callee": "addRecipeAuto",
-      "reason": "dynamic/unsupported metadata LightstoneType.TILE.ordinal()",
-      "expression": "new ItemStack(ModBlocks.lightstone, 4, LightstoneType.TILE.ordinal()), new Object[] { \"CC\", \"CC\", 'C', new ItemStack(ModBlocks.lightstone, 1, 0) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:424",
-      "callee": "addRecipeAuto",
-      "reason": "dynamic/unsupported metadata LightstoneType.BRICKS.ordinal()",
-      "expression": "new ItemStack(ModBlocks.lightstone, 4, LightstoneType.BRICKS.ordinal()), new Object[] { \"CC\", \"CC\", 'C', new ItemStack(ModBlocks.lightstone, 1, LightstoneType.TILE.ordinal()) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:425",
-      "callee": "addShapelessAuto",
-      "reason": "dynamic/unsupported metadata LightstoneType.BRICKS_CHISELED.ordinal()",
-      "expression": "new ItemStack(ModBlocks.lightstone, 1, LightstoneType.BRICKS_CHISELED.ordinal()), new Object[] { new ItemStack(ModBlocks.lightstone, 1, LightstoneType.BRICKS.ordinal()) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:426",
-      "callee": "addShapelessAuto",
-      "reason": "dynamic/unsupported metadata LightstoneType.CHISELED.ordinal()",
-      "expression": "new ItemStack(ModBlocks.lightstone, 1, LightstoneType.CHISELED.ordinal()), new Object[] { ModBlocks.lightstone }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:429",
@@ -7784,21 +8060,15 @@
       "expression": "new ItemStack(Item.getItemFromBlock(ModBlocks.reinforced_laminate_pane), 16), new Object[] { \"   \", \"LLL\", \"LLL\", 'L', ModBlocks.reinforced_laminate}"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:434",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item reinforced_lamp_off",
-      "expression": "new ItemStack(Item.getItemFromBlock(ModBlocks.reinforced_lamp_off), 1), new Object[] { \"FFF\", \"FBF\", \"FFF\", 'F', Blocks.iron_bars, 'B', Blocks.redstone_lamp }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:437",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item lamp_tritium_green_off",
+      "reason": "unsupported expression Fluids.TRITIUM.getDict(1_000)",
       "expression": "new ItemStack(ModBlocks.lamp_tritium_green_off, 1), new Object[] { KEY_ANYGLASS, P_RED.dust(), Fluids.TRITIUM.getDict(1_000), S.dust() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:438",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item lamp_tritium_blue_off",
+      "reason": "unsupported expression Fluids.TRITIUM.getDict(1_000)",
       "expression": "new ItemStack(ModBlocks.lamp_tritium_blue_off, 1), new Object[] {  KEY_ANYGLASS, P_RED.dust(), Fluids.TRITIUM.getDict(1_000), AL.dust() }"
     },
     {
@@ -8196,12 +8466,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item polaroid",
       "expression": "new ItemStack(ModItems.polaroid, 1), new Object[] { \" C \", \"RPY\", \" B \", 'B', LAPIS.dust(), 'C', COAL.dust(), 'R', MINGRADE.dust(), 'Y', GOLD.dust(), 'P', Items.paper }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:563",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item block_meteor",
-      "expression": "new ItemStack(ModItems.crystal_horn, 1), new Object[] { NP237.dust(), I.dust(), TH232.dust(), AT.dust(), ND.dust(), CS.dust(), ModBlocks.block_meteor, ModBlocks.gravel_obsidian, Items.water_bucket }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:564",
@@ -8634,12 +8898,6 @@
       "callee": "addShapelessAuto",
       "reason": "missing subtype fence_metal:0",
       "expression": "new ItemStack(ModBlocks.fence_metal, 1, 0), new Object[] { new ItemStack(ModBlocks.fence_metal, 1, 1) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:684",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item waste_trinitite_red",
-      "expression": "new ItemStack(ModBlocks.waste_trinitite_red), new Object[] { new ItemStack(Blocks.sand, 1, 1), ModItems.trinitite }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:685",
@@ -9480,24 +9738,6 @@
       "callee": "addRecipeAuto",
       "reason": "dynamic/unsupported metadata DecoCabinetEnum.STEEL.ordinal()",
       "expression": "new ItemStack(ModBlocks.filing_cabinet, 1, DecoCabinetEnum.STEEL.ordinal()), new Object[] { \" P \", \"PIP\", \" P \", 'P', STEEL.plate(), 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:937",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item vinyl_tile",
-      "expression": "new ItemStack(ModBlocks.vinyl_tile, 4), new Object[] { \" I \", \"IBI\", \" I \", 'I', ModItems.plate_polymer, 'B', ModBlocks.brick_light }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:938",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype vinyl_tile:1",
-      "expression": "new ItemStack(ModBlocks.vinyl_tile, 4, 1), new Object[] { \"BB\", \"BB\", 'B', new ItemStack(ModBlocks.vinyl_tile, 1, 0) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:939",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item vinyl_tile",
-      "expression": "new ItemStack(ModBlocks.vinyl_tile), new Object[] { new ItemStack(ModBlocks.vinyl_tile, 1, 1) }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:943",
@@ -11384,28 +11624,10 @@
       "expression": "ModBlocks.block_c4, ModItems.ingot_c4"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:58",
-      "callee": "add1To9Pair",
-      "reason": "unregistered/ambiguous source item block_slag",
-      "expression": "new ItemStack(ModBlocks.block_slag), new ItemStack(ModItems.ingot_raw, 9, MAT_SLAG.id)"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:64",
       "callee": "addMineralSet",
       "reason": "unregistered/ambiguous source item block_niobium",
       "expression": "ModItems.nugget_niobium, ModItems.ingot_niobium, ModBlocks.block_niobium"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:69",
-      "callee": "addMineralSet",
-      "reason": "unregistered/ambiguous source item block_waste_vitrified",
-      "expression": "ModItems.nuclear_waste_vitrified_tiny, ModItems.nuclear_waste_vitrified, ModBlocks.block_waste_vitrified"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:106",
-      "callee": "add1To9Pair",
-      "reason": "unregistered/ambiguous source item block_fallout",
-      "expression": "ModBlocks.block_fallout, ModItems.fallout"
     },
     {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:158",
@@ -11496,60 +11718,6 @@
       "callee": "addShapelessAuto",
       "reason": "conditional/loop source recipe not translated",
       "expression": "nickel, new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.NICKEL.ordinal()) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:239",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item block_waste",
-      "expression": "new ItemStack(Item.getItemFromBlock(ModBlocks.block_waste), 1), new Object[] { \"###\", \"###\", \"###\", '#', ModItems.nuclear_waste }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:251",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item block_meteor_cobble",
-      "expression": "new ItemStack(Item.getItemFromBlock(ModBlocks.block_meteor_cobble), 1), new Object[] { \"##\", \"##\", '#', ModItems.fragment_meteorite }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:252",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item block_meteor_broken",
-      "expression": "new ItemStack(Item.getItemFromBlock(ModBlocks.block_meteor_broken), 1), new Object[] { \"###\", \"###\", \"###\", '#', ModItems.fragment_meteorite }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:253",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item block_yellowcake",
-      "expression": "new ItemStack(Item.getItemFromBlock(ModBlocks.block_yellowcake), 1), new Object[] { \"###\", \"###\", \"###\", '#', ModItems.powder_yellowcake }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:272",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item block_red_phosphorus",
-      "expression": "new ItemStack(ModBlocks.block_red_phosphorus, 1), new Object[] { \"###\", \"###\", \"###\", '#', ModItems.powder_fire }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:290",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item block_waste",
-      "expression": "new ItemStack(ModItems.nuclear_waste, 9), new Object[] { \"#\", '#', Item.getItemFromBlock(ModBlocks.block_waste) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:291",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item block_waste_painted",
-      "expression": "new ItemStack(ModItems.nuclear_waste, 9), new Object[] { \"#\", '#', Item.getItemFromBlock(ModBlocks.block_waste_painted) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:300",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item block_yellowcake",
-      "expression": "new ItemStack(ModItems.powder_yellowcake, 9), new Object[] { \"#\", '#', Item.getItemFromBlock(ModBlocks.block_yellowcake) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:319",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item block_red_phosphorus",
-      "expression": "new ItemStack(ModItems.powder_fire, 9), new Object[] { \"#\", '#', ModBlocks.block_red_phosphorus }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:397",
@@ -12248,12 +12416,6 @@
       "expression": "new ItemStack(ModBlocks.sand_mix, 1, EnumSandType.POLONIUM.ordinal()), new ItemStack(ModBlocks.glass_polonium), 0.75F"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:131",
-      "callee": "GameRegistry.addSmelting",
-      "reason": "unregistered/ambiguous source item waste_trinitite_red",
-      "expression": "new ItemStack(ModBlocks.waste_trinitite_red), new ItemStack(ModBlocks.glass_trinitite), 0.25F"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:132",
       "callee": "GameRegistry.addSmelting",
       "reason": "dynamic/unsupported metadata EnumSandType.BORON.ordinal()",
@@ -12264,12 +12426,6 @@
       "callee": "GameRegistry.addSmelting",
       "reason": "dynamic/unsupported metadata EnumSandType.LEAD.ordinal()",
       "expression": "new ItemStack(ModBlocks.sand_mix, 1, EnumSandType.LEAD.ordinal()), new ItemStack(ModBlocks.glass_lead), 0.25F"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:134",
-      "callee": "GameRegistry.addSmelting",
-      "reason": "unregistered/ambiguous source item ash_digamma",
-      "expression": "new ItemStack(ModBlocks.ash_digamma), new ItemStack(ModBlocks.glass_ash), 10F"
     },
     {
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:139",

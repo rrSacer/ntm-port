@@ -60,6 +60,29 @@ STATIC_BLOCKS={'BlockGeneric','BlockReinforcedBlock','BlockConcrete','BlockConcr
 # Full-cube ore surfaces are useful content; hazards/processing remain explicit gaps.
 ORE_CLASSES={'BlockGeneric','BlockOre','BlockOutgas','BlockNetherCoal','BlockSmolder','BlockDragonProof','BlockDepthOre','BlockDepth','BlockCluster'}
 
+# Generic class -> form mapping for blocks the whitelist does not name. A block
+# class with no shape/render override anywhere in its ancestry is a full cube;
+# behavior hooks are kept as an explicit gap. Everything with another form
+# (doors, panes, fluids, gases, containers, fire, detonators...) stays audited.
+SHAPE_OVERRIDES=re.compile(r'\b(?:isOpaqueCube|renderAsNormalBlock|getRenderType|setBlockBounds|getCollisionBoundingBoxFromPool|getSelectedBoundingBoxFromPool|getBlocksMovement|getCollisionBoundingBoxFromPool)\b')
+BEHAVIOR_HOOKS=('onEntityCollidedWithBlock','updateTick','onBlockActivated','randomDisplayTick','onNeighborBlockChange','onBlockAdded','getItemDropped','quantityDropped','getLightValue','isBeaconBase','onBlockPlacedBy','breakBlock','harvestBlock')
+OTHER_FORMS=re.compile(r'Door|Rail|Conveyor|Pane|Fence|Ladder|Slab|Stairs|Fluid|Gas|Fire|Detonat|Flammable|Container|Liquid|Plant|Reeds|Vine|Mush(?!Huge)|Spike|Barbed|Layering|Struct|Glyph|Keyhole|Seal|Wand|Teleanchor|Machine|Bomb|RBMK|Watz|PWR|Pillar')
+OTHER_FAMILIES=re.compile(r'^(cm_|fusion_|icf_|hadron_|spikes|wand_|det_|crystal_|rad_absorber|taint$|balefire|fire_digamma|digamma_matter|mud_block|acid_block|toxic_block|schrabidic_block|corium_block|volcanic_|rad_lava|ore_oil|ore_bedrock_oil|ore_gneiss_gas|ore_nether_smoldering|stone_keyhole|brick_forgotten_lock|brick_jungle_(glyph|circle)|watz_|glyphid_base|book_guide|conveyor|crane|press_preheater|machine_)')
+
+
+def static_cube(cls,parents,classbody,name,texture_exists,tex):
+    """Return spec updates for a full-cube block class, or None."""
+    if OTHER_FORMS.search(' '.join(parents)) or OTHER_FAMILIES.search(name) or SHAPE_OVERRIDES.search(classbody):return None
+    update={}
+    if 'BlockFalling' in parents:update['template']='minecraft:gravel'
+    hooks=[h for h in BEHAVIOR_HOOKS if re.search(r'\b'+h+r'\b',classbody)]
+    if hooks:update['behavior_gap']='Source hooks not implemented by the static block ('+', '.join(hooks)+'); full-cube surface only'
+    if tex:
+        faces={face:tex+suffix for face,suffix in (('side','_side'),('top','_top'),('bottom','_bottom')) if texture_exists(tex+suffix)}
+        if 'top' in faces or 'side' in faces:
+            update['surface_textures']={'side':faces.get('side',tex),'top':faces.get('top',faces.get('side',tex)),'bottom':faces.get('bottom',faces.get('top',tex))}
+    return update
+
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
@@ -68,6 +91,10 @@ def main():
     a=p.parse_args(); java=a.source/'src/main/java/com/hbm'; assets=a.source/'src/main/resources/assets/hbm'
     translations={loc:lang(assets/f'lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]}
     existing=json.loads((HERE/'m1.json').read_text())['entries']; used={r['id'] for r in existing}
+    # Rows already in bulk.json stay byte-identical on regeneration, and names
+    # another catalog (m3.json, bombs.json) already declares are never claimed here.
+    frozen={r['id']:r for r in json.loads((HERE/'bulk.json').read_text())['entries']} if (HERE/'bulk.json').exists() else {}
+    claimed={r['source_variable'] for f in ('m3.json','bombs.json') if (HERE/f).exists() for r in json.loads((HERE/f).read_text())['entries']}
     source={'item':(java/'items/ModItems.java').read_text()+'\n'+(java/'items/ModItemsArmor.java').read_text(),'block':(java/'blocks/ModBlocks.java').read_text()}
     item_main_lines=len((java/'items/ModItems.java').read_text().splitlines())
     enum=enums(java); rows=[]; audit=[]; machines=[]
@@ -86,6 +113,7 @@ def main():
         mats.append({'constant':m[1],'metadata':meta,'material':material,'forms':set(split(forms[1])) if forms else set(),'colors':colors,'dict':dictname,'smeltable':m[2] in ('makeSmeltable','makeAdditive')})
     def add(spec):
         if spec['id'] in used: return
+        spec=frozen.get(spec['id'],spec)
         if not (a.source/spec['source_texture']).is_file():
             audit.append({'source_variable':spec['source_variable'],'id':spec['id'],'reason':'missing source texture','texture':spec['source_texture']}); return
         used.add(spec['id']); rows.append(spec)
@@ -152,26 +180,33 @@ def main():
                         key='tile.'+name+'.'+color+'.name'
                         add(dict(spec,id=name+'__'+color,category='decorative',metadata=meta,subtype_kind='color',source_texture='src/main/resources/assets/hbm/textures/blocks/'+tex+'_'+color+'.png',names={loc:translations[loc].get(key,translations[loc].get('tile.'+name+'.name','Concrete')+' ('+color.replace('_',' ')+')') for loc in translations}))
                     continue
-                if cls in ('BlockMeteorOre','BlockConcreteColoredExt','BlockOreBasalt','BlockResourceStone','BlockBiomeStone','BlockCoke'):
+                if cls in ('BlockMeteorOre','BlockConcreteColoredExt','BlockOreBasalt','BlockResourceStone','BlockBiomeStone','BlockCoke','BlockCap','BlockLightstone','BlockNTMSand','BlockEnumMulti','BlockEnumMultiCT') and var not in claimed:
                     category='ore' if name.startswith('ore_') else 'resource_block' if name=='block_coke' else 'decorative'
                     if a.stage!='decorative' and category=='decorative':continue
                     body=classes[cls][2]
                     em=re.search(r'super\([^;]*?([A-Za-z0-9_.]+)\.class,\s*(true|false),\s*(true|false)\)',body)
+                    em=em or re.search(r'new \w+\([^;]*?([A-Za-z0-9_.]+)\.class,\s*(true|false),\s*(true|false)\)',stmt)
                     if not em:audit.append({**spec,'reason':'unresolved block enum constructor'});continue
                     enumname=em[1].split('.')[-1];sep='_' if cls=='BlockOreBasalt' else '.'
                     for meta,(value,args) in enumerate(enum.get(enumname,[])):
                         suffix=value.lower();texture=(tex or name)+(sep+suffix if em[3]=='true' else '')
+                        if em[3]=='true' and not (a.source/('src/main/resources/assets/hbm/textures/blocks/'+texture+'.png')).is_file():
+                            # Some enum blocks name their faces with `_` instead of `.`.
+                            alt=(tex or name)+('_' if sep=='.' else '.')+suffix
+                            if (a.source/('src/main/resources/assets/hbm/textures/blocks/'+alt+'.png')).is_file():texture=alt
                         key='tile.'+name+(sep+suffix if em[2]=='true' else '')+'.name'
                         sub=dict(spec,id=name+'__'+suffix,category=category,metadata=meta,subtype_kind='enum',source_enum=enumname+'.'+value,source_texture='src/main/resources/assets/hbm/textures/blocks/'+texture+'.png',names={loc:translations[loc].get(key,(name+' '+suffix).replace('_',' ').title()) for loc in translations})
+                        if cls in ('BlockCap','BlockLightstone','BlockNTMSand','BlockEnumMulti','BlockEnumMultiCT') and (a.source/('src/main/resources/assets/hbm/textures/blocks/'+texture+'_top.png')).is_file():
+                            sub['surface_textures']={k:'src/main/resources/assets/hbm/textures/blocks/'+texture+end+'.png' for k,end in [('side',''),('top','_top'),('bottom','_top')]}
                         if cls=='BlockOreBasalt':
                             sub['surface_textures']={k:'src/main/resources/assets/hbm/textures/blocks/'+texture+end+'.png' for k,end in [('side',''),('top','_top'),('bottom','_top')]}
                             if args and args.startswith('ModItems.'):sub['drop']='ntm:'+args.split('.')[-1]
                         if category=='ore':sub.update(worldgen_status='catalog only; no worldgen translation',behavior_gap='source special generation/hazard/fortune behavior requires logic')
                         add(sub)
                     continue
-                if cls=='BlockGenericStairs':
+                if cls=='BlockGenericStairs' or 'BlockGenericStairs' in ancestry(cls):
                     if a.stage!='decorative':continue
-                    base=re.search(r'new BlockGenericStairs\((\w+)',stmt)
+                    base=re.search(r'new \w+Stairs\((\w+)',stmt)
                     texture=block_texture(base[1]) if base else None
                     if texture:
                         add(dict(spec,category='decorative',template='minecraft:stone_stairs',source_texture='src/main/resources/assets/hbm/textures/blocks/'+texture+'.png'));continue
@@ -197,12 +232,18 @@ def main():
                     continue
                 allowed=(cls in ORE_CLASSES and name.startswith(('ore_','cluster_'))) or cls in STATIC_BLOCKS
                 if not allowed:
-                    audit.append({**spec,'reason':'custom block behavior/model or unsupported block subclass'});continue
+                    form=static_cube(cls,parents,classbody,name,lambda stem:(a.source/('src/main/resources/assets/hbm/textures/blocks/'+stem+'.png')).is_file(),tex) if cls in classes and var not in claimed else None
+                    if form is None:
+                        audit.append({**spec,'reason':'custom block behavior/model or unsupported block subclass'});continue
+                    spec.update(form)
+                    spec['source_form']='generic full-cube class (no shape override in ancestry)'
                 if name.startswith(('ore_oil','ore_bedrock_oil','ore_gneiss_gas','ore_nether_smoldering')):
                     audit.append({**spec,'reason':'dynamic resource extraction/fire logic required'});continue
                 if cls in ('BlockDepth','BlockDepthOre'):spec['behavior_gap']='Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented'
                 if cls=='BlockFalling':spec['template']='minecraft:gravel'
                 if cls in ('BlockGlass','BlockNTMGlass','BlockReinforcedGlass'):spec['template']='minecraft:glass'
+                if spec.get('surface_textures') and not next(iter(spec['surface_textures'].values())).startswith('src/'):
+                    spec['surface_textures']={k:'src/main/resources/assets/hbm/textures/blocks/'+v+'.png' for k,v in spec['surface_textures'].items()}
                 if cls in ('BlockPillar','BlockRotatablePillar'):
                     top=re.search(r'new '+cls+r'\(Material.\w+, RefStrings.MODID\s*\+\s*":([^"]+)"',stmt)
                     if top and tex:

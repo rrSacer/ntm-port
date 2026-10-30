@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:crystal_horn",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/dustneptunium237",
+    "#ntm:bulk/dustiodine",
+    "#ntm:bulk/dustthorium232",
+    "#ntm:bulk/dustastatine",
+    "#ntm:bulk/dustneodymium",
+    "#ntm:bulk/dustcaesium",
+    "ntm:block_meteor",
+    "ntm:gravel_obsidian",
+    "minecraft:water_bucket"
+  ]
+}

@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 55,
+    "emitted": 56,
     "scanned_source_calls": 79,
-    "skipped_source_calls": 24,
+    "skipped_source_calls": 23,
     "expanded_fluid_recipes": 0,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -846,6 +846,36 @@
       ],
       "label": "Pequena Porção de Pó de Meteorito",
       "label_en": "Tiny Pile of Meteorite Powder"
+    },
+    {
+      "name": "source_line_210",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:210",
+      "input": {
+        "ids": [
+          "ntm:block_slag"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "minecraft:gravel",
+          1
+        ],
+        [
+          "ntm:powder_fire",
+          1
+        ],
+        [
+          "ntm:powder_calcium",
+          1
+        ],
+        [
+          "ntm:dust",
+          1
+        ]
+      ],
+      "label": "Cascalho",
+      "label_en": "Gravel"
     },
     {
       "name": "source_line_216",
@@ -1685,12 +1715,6 @@
     }
   ],
   "skipped": [
-    {
-      "name": "source_line_210",
-      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:210",
-      "reason": "unregistered/ambiguous source item block_slag",
-      "expression": "new ComparableStack(ModBlocks.block_slag), new ItemStack[] {\n\t\t\t\tnew ItemStack(Blocks.gravel, 1),\n\t\t\t\tnew ItemStack(ModItems.powder_fire, 1),\n\t\t\t\tnew ItemStack(ModItems.powder_calcium),\n\t\t\t\tnew ItemStack(ModItems.dust) }"
-    },
     {
       "name": "source_line_224",
       "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:224",

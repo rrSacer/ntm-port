@@ -47,6 +47,15 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
+      "id": "weaponized_starblaster_cell",
+      "type": "item",
+      "source_variable": "weaponized_starblaster_cell",
+      "source_class": "WeaponizedCell",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3608",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
       "id": "screwdriver",
       "type": "item",
       "source_variable": "screwdriver",
@@ -151,6 +160,15 @@
       "source_variable": "analysis_tool",
       "source_class": "ItemAnalysisTool",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3841",
+      "category": "component",
+      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+    },
+    {
+      "id": "coupling_tool",
+      "type": "item",
+      "source_variable": "coupling_tool",
+      "source_class": "ItemCouplingTool",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3842",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -2016,32 +2034,6 @@
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2023",
       "category": "decorative",
       "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "coupling_tool",
-      "type": "item",
-      "source_variable": "coupling_tool",
-      "source_class": "ItemCouplingTool",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3842",
-      "category": "component",
-      "source_configuration": "coupling_tool = new ItemCouplingTool().setUnlocalizedName(\"coupling_tool\").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab).setTextureName(RefStrings.MODID + \":coupling_tool\");",
-      "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
-      "max_stack_size": 1,
-      "source_texture": "src/main/resources/assets/hbm/textures/items/coupling_tool.png",
-      "reason": "NBT or special tool/energy/fluid behavior is not plain content"
-    },
-    {
-      "id": "weaponized_starblaster_cell",
-      "type": "item",
-      "source_variable": "weaponized_starblaster_cell",
-      "source_class": "WeaponizedCell",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3608",
-      "category": "component",
-      "source_configuration": "weaponized_starblaster_cell = new WeaponizedCell().setUnlocalizedName(\"weaponized_starblaster_cell\").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab).setTextureName(RefStrings.MODID + \":gun_b92_ammo_weaponized\");",
-      "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
-      "max_stack_size": 1,
-      "source_texture": "src/main/resources/assets/hbm/textures/items/gun_b92_ammo_weaponized.png",
-      "reason": "NBT or special tool/energy/fluid behavior is not plain content"
     }
   ],
   "notes": "Custom abilities, hazmat/radiation protection, firearms and other equipment require logic. Authorized bomb detonator is registered separately."

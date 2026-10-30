@@ -1,13 +1,17 @@
 {
   "replace": false,
   "values": [
+    "ntm:ancient_scrap",
     "ntm:billet_au198",
     "ntm:billet_balefire_gold",
     "ntm:billet_flashlead",
     "ntm:block_corium",
+    "ntm:block_corium_cobble",
     "ntm:block_polonium",
     "ntm:block_schrabidium",
     "ntm:block_solinium",
+    "ntm:block_waste",
+    "ntm:block_waste_painted",
     "ntm:crystal_schrabidium",
     "ntm:crystal_trixite",
     "ntm:debris_fuel",

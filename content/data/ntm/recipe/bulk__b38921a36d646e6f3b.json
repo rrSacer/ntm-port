@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_raw__slag"
+  },
+  "result": {
+    "id": "ntm:block_slag",
+    "count": 1
+  }
+}

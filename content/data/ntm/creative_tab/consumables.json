@@ -25,6 +25,11 @@
     "ntm:egg_glyphid",
     "ntm:rbmk_tool",
     "ntm:pin",
+    "ntm:crate",
+    "ntm:crate_weapon",
+    "ntm:crate_lead",
+    "ntm:crate_metal",
+    "ntm:crate_jungle",
     "ntm:bottle_empty"
   ]
 }

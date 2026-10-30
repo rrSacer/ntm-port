@@ -3695,6 +3695,29 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:ancient_scrap",
+      "type": "block",
+      "source_variable": "ancient_scrap",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1375",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ancient_scrap.png",
+      "source_registry": "hbm:tile.ancient_scrap",
+      "names": {
+        "en_us": "Ancient Scrap Metal",
+        "pt_br": "Sucata Antiga"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.ancient_scrap.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.ancient_scrap.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:asbestos_cloth",
       "type": "item",
       "source_variable": "asbestos_cloth",
@@ -3717,6 +3740,100 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:120"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ash_digamma",
+      "type": "block",
+      "source_variable": "ash_digamma",
+      "source_class": "BlockAshes",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1639",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (randomDisplayTick); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ash_digamma.png",
+      "source_registry": "hbm:tile.ash_digamma",
+      "names": {
+        "en_us": "Ash",
+        "pt_br": "Cinzas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.ash_digamma.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.ash_digamma.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:asphalt",
+      "type": "block",
+      "source_variable": "asphalt",
+      "source_class": "BlockSpeedy",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1459",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/asphalt.png",
+      "source_registry": "hbm:tile.asphalt",
+      "names": {
+        "en_us": "Asphalt",
+        "pt_br": "Asfalto"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.asphalt.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.asphalt.name"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "chemical_plant",
+          "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:168"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:asphalt_light",
+      "type": "block",
+      "source_variable": "asphalt_light",
+      "source_class": "BlockSpeedy",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1460",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/asphalt_light.png",
+      "source_registry": "hbm:tile.asphalt_light",
+      "names": {
+        "en_us": "Glowing Asphalt",
+        "pt_br": "Asfalto Luminoso"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.asphalt_light.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.asphalt_light.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:asphalt_stairs",
+      "type": "block",
+      "source_variable": "asphalt_stairs",
+      "source_class": "BlockSpeedyStairs",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1554",
+      "category": "decorative",
+      "template": "minecraft:stone_stairs",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/asphalt.png",
+      "source_registry": "hbm:tile.asphalt_stairs",
+      "names": {
+        "en_us": "Asphalt Stairs",
+        "pt_br": "Escadas de Asfalto"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.asphalt_stairs.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.asphalt_stairs.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -13505,6 +13622,204 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:block_cap__fritz",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.FRITZ",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_fritz.png",
+      "names": {
+        "en_us": "Block Cap Fritz",
+        "pt_br": "Block Cap Fritz"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_fritz.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_fritz_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_fritz_top.png"
+      },
+      "source_registry": "hbm:tile.block_cap",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:253"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_cap__korl",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.KORL",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_korl.png",
+      "names": {
+        "en_us": "Block Cap Korl",
+        "pt_br": "Block Cap Korl"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_korl.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_korl_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_korl_top.png"
+      },
+      "source_registry": "hbm:tile.block_cap",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:255"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_cap__nuka",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.NUKA",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_nuka.png",
+      "names": {
+        "en_us": "Block Cap Nuka",
+        "pt_br": "Block Cap Nuka"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_nuka.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_nuka_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_nuka_top.png"
+      },
+      "source_registry": "hbm:tile.block_cap",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:245"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_cap__quantum",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.QUANTUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_quantum.png",
+      "names": {
+        "en_us": "Block Cap Quantum",
+        "pt_br": "Block Cap Quantum"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_quantum.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_quantum_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_quantum_top.png"
+      },
+      "source_registry": "hbm:tile.block_cap",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:247"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_cap__rad",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.RAD",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_rad.png",
+      "names": {
+        "en_us": "Block Cap Rad",
+        "pt_br": "Block Cap Rad"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_rad.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_rad_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_rad_top.png"
+      },
+      "source_registry": "hbm:tile.block_cap",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:251"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_cap__sparkle",
+      "type": "block",
+      "source_variable": "block_cap",
+      "source_class": "BlockCap",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1430",
+      "category": "decorative",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumCapBlock.SPARKLE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_cap_sparkle.png",
+      "names": {
+        "en_us": "Block Cap Sparkle",
+        "pt_br": "Block Cap Sparkle"
+      },
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/block_cap_sparkle.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/block_cap_sparkle_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/block_cap_sparkle_top.png"
+      },
+      "source_registry": "hbm:tile.block_cap",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:249"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:block_cdalloy",
       "type": "block",
       "source_variable": "block_cdalloy",
@@ -13704,6 +14019,29 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:block_corium_cobble",
+      "type": "block",
+      "source_variable": "block_corium_cobble",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1377",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_corium_cobble.png",
+      "source_registry": "hbm:tile.block_corium_cobble",
+      "names": {
+        "en_us": "Corebblestone",
+        "pt_br": "Pedregulho de Corium"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_corium_cobble.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_corium_cobble.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:block_desh",
       "type": "block",
       "source_variable": "block_desh",
@@ -13842,6 +14180,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:block_fallout",
+      "type": "block",
+      "source_variable": "block_fallout",
+      "source_class": "BlockHazardFalling",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1407",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ash.png",
+      "source_registry": "hbm:tile.block_fallout",
+      "names": {
+        "en_us": "Block of Fallout",
+        "pt_br": "Bloco de Fallout"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_fallout.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_fallout.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:block_fiberglass",
       "type": "block",
       "source_variable": "block_fiberglass",
@@ -13953,6 +14315,129 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:tile.block_magnetized_tungsten.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_magnetized_tungsten.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_meteor",
+      "type": "block",
+      "source_variable": "block_meteor",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1563",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/meteor.png",
+      "source_registry": "hbm:tile.block_meteor",
+      "names": {
+        "en_us": "Meteorite Block",
+        "pt_br": "Bloco de Meteorito"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_meteor.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_meteor.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:84"
+        },
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:185"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_meteor_broken",
+      "type": "block",
+      "source_variable": "block_meteor_broken",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1566",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/meteor_crushed.png",
+      "source_registry": "hbm:tile.block_meteor_broken",
+      "names": {
+        "en_us": "Broken Meteorite Block",
+        "pt_br": "Bloco de Meteorito Quebrado"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_meteor_broken.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_meteor_broken.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_meteor_cobble",
+      "type": "block",
+      "source_variable": "block_meteor_cobble",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1565",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/meteor_cobble.png",
+      "source_registry": "hbm:tile.block_meteor_cobble",
+      "names": {
+        "en_us": "Meteorite Cobblestone",
+        "pt_br": "Pedregulho de Meteorito"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_meteor_cobble.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_meteor_cobble.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_meteor_molten",
+      "type": "block",
+      "source_variable": "block_meteor_molten",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1567",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/meteor_cobble_molten.png",
+      "source_registry": "hbm:tile.block_meteor_molten",
+      "names": {
+        "en_us": "Hot Meteorite Cobblestone",
+        "pt_br": "Pedregulho de Meteorito Quente"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_meteor_molten.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_meteor_molten.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_meteor_treasure",
+      "type": "block",
+      "source_variable": "block_meteor_treasure",
+      "source_class": "BlockMeteoriteTreasure",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1568",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/meteor_treasure.png",
+      "source_registry": "hbm:tile.block_meteor_treasure",
+      "names": {
+        "en_us": "Meteorite Treasure Block",
+        "pt_br": "Bloco de Tesouro de Meteorito"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_meteor_treasure.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_meteor_treasure.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -14200,6 +14685,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:block_red_phosphorus",
+      "type": "block",
+      "source_variable": "block_red_phosphorus",
+      "source_class": "BlockHazardFalling",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1406",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_red_phosphorus.png",
+      "source_registry": "hbm:tile.block_red_phosphorus",
+      "names": {
+        "en_us": "Block of Red Phosphorus",
+        "pt_br": "Bloco de Fósforo Vermelho"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_red_phosphorus.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_red_phosphorus.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:block_rubber",
       "type": "block",
       "source_variable": "block_rubber",
@@ -14360,6 +14869,38 @@
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_slag",
+      "type": "block",
+      "source_variable": "block_slag",
+      "source_class": "BlockSlag",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1427",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_slag.png",
+      "source_registry": "hbm:tile.block_slag",
+      "names": {
+        "en_us": "Block of Slag",
+        "pt_br": "Bloco de Escória"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_slag.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_slag.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "centrifuge",
+          "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:210"
+        },
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:210"
+        }
+      ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -14654,6 +15195,75 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:block_waste",
+      "type": "block",
+      "source_variable": "block_waste",
+      "source_class": "BlockNuclearWaste",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1372",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_waste.png",
+      "source_registry": "hbm:tile.block_waste",
+      "names": {
+        "en_us": "Block of Nuclear Waste",
+        "pt_br": "Bloco de Resíduo Nuclear"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_waste.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_waste.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_waste_painted",
+      "type": "block",
+      "source_variable": "block_waste_painted",
+      "source_class": "BlockNuclearWaste",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1373",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_waste_painted.png",
+      "source_registry": "hbm:tile.block_waste_painted",
+      "names": {
+        "en_us": "Painted Block of Nuclear Waste",
+        "pt_br": "Bloco Pintado de Resíduo Nuclear"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_waste_painted.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_waste_painted.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_waste_vitrified",
+      "type": "block",
+      "source_variable": "block_waste_vitrified",
+      "source_class": "BlockNuclearWaste",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1374",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_waste_vitrified.png",
+      "source_registry": "hbm:tile.block_waste_vitrified",
+      "names": {
+        "en_us": "Vitrified Block of Nuclear Waste",
+        "pt_br": "Bloco Vitrificado de Resíduo Nuclear"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_waste_vitrified.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_waste_vitrified.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:block_white_phosphorus",
       "type": "block",
       "source_variable": "block_white_phosphorus",
@@ -14670,6 +15280,30 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:tile.block_white_phosphorus.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_white_phosphorus.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:block_yellowcake",
+      "type": "block",
+      "source_variable": "block_yellowcake",
+      "source_class": "BlockHazardFalling",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1398",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_yellowcake.png",
+      "source_registry": "hbm:tile.block_yellowcake",
+      "names": {
+        "en_us": "Block of Yellowcake",
+        "pt_br": "Bloco de Yellowcake"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.block_yellowcake.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.block_yellowcake.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -14934,6 +15568,29 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:705"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:brick_asbestos",
+      "type": "block",
+      "source_variable": "brick_asbestos",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1516",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_asbestos.png",
+      "source_registry": "hbm:tile.brick_asbestos",
+      "names": {
+        "en_us": "Asbestos Bricks",
+        "pt_br": "Tijolos de Amianto"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.brick_asbestos.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.brick_asbestos.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -15459,6 +16116,34 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:brick_forgotten",
+      "type": "block",
+      "source_variable": "brick_forgotten",
+      "source_class": "BlockForgottenBrick",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1525",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated, isBeaconBase); full-cube surface only",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/brick_forgotten.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/brick_forgotten_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/brick_forgotten_top.png"
+      },
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_forgotten.png",
+      "source_registry": "hbm:tile.brick_forgotten",
+      "names": {
+        "en_us": "Block",
+        "pt_br": "Tijolo Esquecido (DEBUG)"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.brick_forgotten.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.brick_forgotten.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:brick_jungle",
       "type": "block",
       "source_variable": "brick_jungle",
@@ -15501,6 +16186,29 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:brick_jungle_fragile",
+      "type": "block",
+      "source_variable": "brick_jungle_fragile",
+      "source_class": "FragileBrick",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1581",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, getItemDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_jungle_fragile.png",
+      "source_registry": "hbm:tile.brick_jungle_fragile",
+      "names": {
+        "en_us": "Brittle Enargite Bricks",
+        "pt_br": "Tijolos de Enargita Frágeis"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.brick_jungle_fragile.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.brick_jungle_fragile.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:brick_jungle_lava",
       "type": "block",
       "source_variable": "brick_jungle_lava",
@@ -15516,6 +16224,52 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:tile.brick_jungle_lava.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:tile.brick_jungle_lava.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:brick_jungle_mystic",
+      "type": "block",
+      "source_variable": "brick_jungle_mystic",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1584",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_jungle_mystic.png",
+      "source_registry": "hbm:tile.brick_jungle_mystic",
+      "names": {
+        "en_us": "Arcane Enargite Bricks",
+        "pt_br": "Tijolos de Enargita Arcanos"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.brick_jungle_mystic.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.brick_jungle_mystic.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:brick_jungle_ooze",
+      "type": "block",
+      "source_variable": "brick_jungle_ooze",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1583",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_jungle_ooze.png",
+      "source_registry": "hbm:tile.brick_jungle_ooze",
+      "names": {
+        "en_us": "Radioactive Enargite Bricks",
+        "pt_br": "Tijolos de Enargita Radioativos"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.brick_jungle_ooze.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.brick_jungle_ooze.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -21191,6 +21945,148 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:crate",
+      "type": "block",
+      "source_variable": "crate",
+      "source_class": "BlockCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2168",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate.png",
+      "source_registry": "hbm:tile.crate",
+      "names": {
+        "en_us": "Supply Crate",
+        "pt_br": "Caixa de Suprimentos"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.crate.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.crate.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:crate_jungle",
+      "type": "block",
+      "source_variable": "crate_jungle",
+      "source_class": "BlockJungleCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2176",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate_jungle.png",
+      "source_registry": "hbm:tile.crate_jungle",
+      "names": {
+        "en_us": "Enargite Crate",
+        "pt_br": "Caixa de Enargita"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.crate_jungle.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.crate_jungle.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:crate_lead",
+      "type": "block",
+      "source_variable": "crate_lead",
+      "source_class": "BlockCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2171",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate_lead.png",
+      "source_registry": "hbm:tile.crate_lead",
+      "names": {
+        "en_us": "Hazmat Crate",
+        "pt_br": "Caixa de Traje Antirradiação"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.crate_lead.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.crate_lead.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:crate_metal",
+      "type": "block",
+      "source_variable": "crate_metal",
+      "source_class": "BlockCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2172",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate_metal.png",
+      "source_registry": "hbm:tile.crate_metal",
+      "names": {
+        "en_us": "Machine Crate",
+        "pt_br": "Caixa de Máquinas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.crate_metal.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.crate_metal.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:crate_red",
+      "type": "block",
+      "source_variable": "crate_red",
+      "source_class": "BlockCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2173",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate_red.png",
+      "source_registry": "hbm:tile.crate_red",
+      "names": {
+        "en_us": "Red Crate",
+        "pt_br": "Caixa Vermelha"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.crate_red.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.crate_red.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:crate_weapon",
+      "type": "block",
+      "source_variable": "crate_weapon",
+      "source_class": "BlockCrate",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2170",
+      "category": "decorative",
+      "template": "minecraft:gravel",
+      "behavior_gap": "Source hooks not implemented by the static block (onBlockActivated); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/crate_weapon.png",
+      "source_registry": "hbm:tile.crate_weapon",
+      "names": {
+        "en_us": "Weapon Crate",
+        "pt_br": "Caixa de Armas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.crate_weapon.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.crate_weapon.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:crt_display",
       "type": "item",
       "source_variable": "crt_display",
@@ -22252,6 +23148,34 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:deco_asbestos",
+      "type": "block",
+      "source_variable": "deco_asbestos",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1442",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/deco_asbestos.png",
+      "source_registry": "hbm:tile.deco_asbestos",
+      "names": {
+        "en_us": "Asbestos Roof",
+        "pt_br": "Telhado de Amianto"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.deco_asbestos.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.deco_asbestos.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:661"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:deco_beryllium",
       "source_variable": "deco_beryllium",
       "source_class": "BlockDecoCT",
@@ -22432,6 +23356,34 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:deco_titanium",
+      "type": "block",
+      "source_variable": "deco_titanium",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1432",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/deco_titanium.png",
+      "source_registry": "hbm:tile.deco_titanium",
+      "names": {
+        "en_us": "Titanium Deco Block",
+        "pt_br": "Bloco Decorativo de Titânio"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.deco_titanium.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.deco_titanium.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:653"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:deco_tungsten",
       "source_variable": "deco_tungsten",
       "source_class": "BlockDecoCT",
@@ -22474,6 +23426,131 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.demon_core_closed.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.demon_core_closed.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:depth_brick",
+      "type": "block",
+      "source_variable": "depth_brick",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1301",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/depth_brick.png",
+      "source_registry": "hbm:tile.depth_brick",
+      "names": {
+        "en_us": "Depth Bricks",
+        "pt_br": "Tijolos Profundos"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.depth_brick.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.depth_brick.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:191"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:depth_dnt",
+      "type": "block",
+      "source_variable": "depth_dnt",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1306",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/depth_dnt.png",
+      "source_registry": "hbm:tile.depth_dnt",
+      "names": {
+        "en_us": "DNT-Reinforced Depth Bricks",
+        "pt_br": "Tijolos Profundos Reforçados com DNT"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.depth_dnt.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.depth_dnt.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:192"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:depth_nether_brick",
+      "type": "block",
+      "source_variable": "depth_nether_brick",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1304",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/depth_nether_brick.png",
+      "source_registry": "hbm:tile.depth_nether_brick",
+      "names": {
+        "en_us": "Nether Depth Bricks",
+        "pt_br": "Tijolos Profundos do Nether"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.depth_nether_brick.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.depth_nether_brick.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:depth_nether_tiles",
+      "type": "block",
+      "source_variable": "depth_nether_tiles",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1305",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/depth_nether_tiles.png",
+      "source_registry": "hbm:tile.depth_nether_tiles",
+      "names": {
+        "en_us": "Nether Depth Tiles",
+        "pt_br": "Azulejos Profundos do Nether"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.depth_nether_tiles.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.depth_nether_tiles.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:depth_tiles",
+      "type": "block",
+      "source_variable": "depth_tiles",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1303",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/depth_tiles.png",
+      "source_registry": "hbm:tile.depth_tiles",
+      "names": {
+        "en_us": "Depth Tiles",
+        "pt_br": "Azulejos Profundos"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.depth_tiles.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.depth_tiles.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -23773,6 +24850,52 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:frozen_dirt",
+      "type": "block",
+      "source_variable": "frozen_dirt",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1670",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/frozen_dirt.png",
+      "source_registry": "hbm:tile.frozen_dirt",
+      "names": {
+        "en_us": "Frozen Dirt",
+        "pt_br": "Terra Congelada"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.frozen_dirt.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.frozen_dirt.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:frozen_planks",
+      "type": "block",
+      "source_variable": "frozen_planks",
+      "source_class": "BlockOre",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1673",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/frozen_planks.png",
+      "source_registry": "hbm:tile.frozen_planks",
+      "names": {
+        "en_us": "Frozen Planks",
+        "pt_br": "Tábuas Congeladas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.frozen_planks.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.frozen_planks.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:fuel_additive__antiknock",
       "type": "item",
       "source_variable": "fuel_additive",
@@ -24662,6 +25785,29 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.igniter.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.igniter.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:impact_dirt",
+      "type": "block",
+      "source_variable": "impact_dirt",
+      "source_class": "BlockDirt",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1683",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, getItemDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/waste_earth_bottom.png",
+      "source_registry": "hbm:tile.impact_dirt",
+      "names": {
+        "en_us": "Scorched Dirt",
+        "pt_br": "Terra Carbonizada"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.impact_dirt.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.impact_dirt.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -27206,6 +28352,98 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:lamp_tritium_blue_off",
+      "type": "block",
+      "source_variable": "lamp_tritium_blue_off",
+      "source_class": "TritiumLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1478",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lamp_tritium_blue_off.png",
+      "source_registry": "hbm:tile.lamp_tritium_blue_off",
+      "names": {
+        "en_us": "Blue Tritium Lamp",
+        "pt_br": "Lâmpada de Trítio Azul"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.lamp_tritium_blue_off.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.lamp_tritium_blue_off.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:lamp_tritium_blue_on",
+      "type": "block",
+      "source_variable": "lamp_tritium_blue_on",
+      "source_class": "TritiumLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1479",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lamp_tritium_blue_on.png",
+      "source_registry": "hbm:tile.lamp_tritium_blue_on",
+      "names": {
+        "en_us": "Blue Tritium Lamp",
+        "pt_br": "Lâmpada de Trítio Azul"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.lamp_tritium_blue_on.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.lamp_tritium_blue_on.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:lamp_tritium_green_off",
+      "type": "block",
+      "source_variable": "lamp_tritium_green_off",
+      "source_class": "TritiumLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1475",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lamp_tritium_green_off.png",
+      "source_registry": "hbm:tile.lamp_tritium_green_off",
+      "names": {
+        "en_us": "Green Tritium Lamp",
+        "pt_br": "Lâmpada de Trítio Verde"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.lamp_tritium_green_off.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.lamp_tritium_green_off.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:lamp_tritium_green_on",
+      "type": "block",
+      "source_variable": "lamp_tritium_green_on",
+      "source_class": "TritiumLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1477",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lamp_tritium_green_on.png",
+      "source_registry": "hbm:tile.lamp_tritium_green_on",
+      "names": {
+        "en_us": "Green Tritium Lamp",
+        "pt_br": "Lâmpada de Trítio Verde"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.lamp_tritium_green_on.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.lamp_tritium_green_on.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:laser_crystal_bismuth",
       "type": "item",
       "source_variable": "laser_crystal_bismuth",
@@ -27386,6 +28624,126 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.launch_key.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.launch_key.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:lightstone__bricks",
+      "type": "block",
+      "source_variable": "lightstone",
+      "source_class": "BlockLightstone",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1523",
+      "category": "decorative",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "LightstoneType.BRICKS",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lightstone.bricks.png",
+      "names": {
+        "en_us": "Lightstone Bricks",
+        "pt_br": "Blocos de Pedra de Luz"
+      },
+      "source_registry": "hbm:tile.lightstone",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:lightstone__bricks_chiseled",
+      "type": "block",
+      "source_variable": "lightstone",
+      "source_class": "BlockLightstone",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1523",
+      "category": "decorative",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "LightstoneType.BRICKS_CHISELED",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lightstone.bricks_chiseled.png",
+      "names": {
+        "en_us": "Lightstone Chiseled Bricks",
+        "pt_br": "Blocos Talhados de Pedra de Luz"
+      },
+      "source_registry": "hbm:tile.lightstone",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:lightstone__chiseled",
+      "type": "block",
+      "source_variable": "lightstone",
+      "source_class": "BlockLightstone",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1523",
+      "category": "decorative",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "LightstoneType.CHISELED",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lightstone.chiseled.png",
+      "names": {
+        "en_us": "Chiseled Lightstone",
+        "pt_br": "Pedra de Luz Talhada"
+      },
+      "source_registry": "hbm:tile.lightstone",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:lightstone__tile",
+      "type": "block",
+      "source_variable": "lightstone",
+      "source_class": "BlockLightstone",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1523",
+      "category": "decorative",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "LightstoneType.TILE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lightstone.tile.png",
+      "names": {
+        "en_us": "Lightstone Tile",
+        "pt_br": "Azulejo de Pedra de Luz"
+      },
+      "source_registry": "hbm:tile.lightstone",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:lightstone__unrefined",
+      "type": "block",
+      "source_variable": "lightstone",
+      "source_class": "BlockLightstone",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1523",
+      "category": "decorative",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "LightstoneType.UNREFINED",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/lightstone.unrefined.png",
+      "names": {
+        "en_us": "Raw Lightstone",
+        "pt_br": "Pedra de Luz Bruta"
+      },
+      "source_registry": "hbm:tile.lightstone",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -28628,6 +29986,52 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.mp_warhead_15_turbine.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.mp_warhead_15_turbine.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mush_block",
+      "type": "block",
+      "source_variable": "mush_block",
+      "source_class": "BlockMushHuge",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1652",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/mush_block_skin.png",
+      "source_registry": "hbm:tile.mush_block",
+      "names": {
+        "en_us": "Mush Block",
+        "pt_br": "Bloco de Cogumelo (DEBUG)"
+      },
+      "name_sources": {
+        "en_us": "fallback",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.mush_block.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mush_block_stem",
+      "type": "block",
+      "source_variable": "mush_block_stem",
+      "source_class": "BlockMushHuge",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1653",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/mush_block_stem.png",
+      "source_registry": "hbm:tile.mush_block_stem",
+      "names": {
+        "en_us": "Mush Block Stem",
+        "pt_br": "Bloco Raiz de Cogumelo (DEBUG)"
+      },
+      "name_sources": {
+        "en_us": "fallback",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.mush_block_stem.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -44205,6 +45609,441 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:platemetal__base",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.BASE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.base.png",
+      "names": {
+        "en_us": "Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__black",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.BLACK",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.black.png",
+      "names": {
+        "en_us": "Black Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Preta"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__blue",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.BLUE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.blue.png",
+      "names": {
+        "en_us": "Blue Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Azul"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__cyan",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.CYAN",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.cyan.png",
+      "names": {
+        "en_us": "Cyan Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Ciano"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__green",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.GREEN",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.green.png",
+      "names": {
+        "en_us": "Green Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Verde"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__light_blue",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 12,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.LIGHT_BLUE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.light_blue.png",
+      "names": {
+        "en_us": "Light Blue Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Azul-Clara"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__light_gray",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.LIGHT_GRAY",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.light_gray.png",
+      "names": {
+        "en_us": "Light Gray Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Cinza-Clara"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__lime",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 10,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.LIME",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.lime.png",
+      "names": {
+        "en_us": "Lime Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Verde-Limão"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__magenta",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 13,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.MAGENTA",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.magenta.png",
+      "names": {
+        "en_us": "Magenta Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Magenta"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__orange",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 14,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.ORANGE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.orange.png",
+      "names": {
+        "en_us": "Orange Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Laranja"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__pink",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 9,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.PINK",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.pink.png",
+      "names": {
+        "en_us": "Pink Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Rosa"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__purple",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.PURPLE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.purple.png",
+      "names": {
+        "en_us": "Purple Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Roxa"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__red",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.RED",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.red.png",
+      "names": {
+        "en_us": "Red Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Vermelha"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__white",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.WHITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.white.png",
+      "names": {
+        "en_us": "White Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Branca"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:platemetal__yellow",
+      "type": "block",
+      "source_variable": "platemetal",
+      "source_class": "BlockEnumMultiCT",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1441",
+      "category": "decorative",
+      "metadata": 11,
+      "subtype_kind": "enum",
+      "source_enum": "PlatemetalType.YELLOW",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/platemetal.yellow.png",
+      "names": {
+        "en_us": "Yellow Platemetal Block",
+        "pt_br": "Bloco de Chapa Metálica Amarela"
+      },
+      "source_registry": "hbm:tile.platemetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:662"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:powder_actinium",
       "type": "item",
       "source_variable": "powder_actinium",
@@ -48260,6 +50099,52 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:reinforced_lamp_off",
+      "type": "block",
+      "source_variable": "reinforced_lamp_off",
+      "source_class": "ReinforcedLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1471",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/reinforced_lamp_off.png",
+      "source_registry": "hbm:tile.reinforced_lamp_off",
+      "names": {
+        "en_us": "Reinforced Lamp",
+        "pt_br": "Lâmpada Reforçada"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.reinforced_lamp_off.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.reinforced_lamp_off.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:reinforced_lamp_on",
+      "type": "block",
+      "source_variable": "reinforced_lamp_on",
+      "source_class": "ReinforcedLamp",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1472",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, onNeighborBlockChange, onBlockAdded, getItemDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/reinforced_lamp_on.png",
+      "source_registry": "hbm:tile.reinforced_lamp_on",
+      "names": {
+        "en_us": "Reinforced Lamp",
+        "pt_br": "Lâmpada Reforçada"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.reinforced_lamp_on.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.reinforced_lamp_on.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:reinforced_light",
       "type": "block",
       "source_variable": "reinforced_light",
@@ -51941,6 +53826,56 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:sellafield",
+      "type": "block",
+      "source_variable": "sellafield",
+      "source_class": "BlockSellafield",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1692",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onBlockAdded, isBeaconBase); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_0.png",
+      "source_registry": "hbm:tile.sellafield",
+      "names": {
+        "en_us": "Sellafield",
+        "pt_br": "Sellafield"
+      },
+      "name_sources": {
+        "en_us": "fallback",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:299"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:sellafield_bedrock",
+      "type": "block",
+      "source_variable": "sellafield_bedrock",
+      "source_class": "BlockSellafieldSlaked",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1691",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_slaked.png",
+      "source_registry": "hbm:tile.sellafield_bedrock",
+      "names": {
+        "en_us": "Bedrock Sellafite",
+        "pt_br": "Sellafita da Rocha Matriz"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.sellafield_bedrock.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.sellafield_bedrock.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:shimmer_axe_head",
       "type": "item",
       "source_variable": "shimmer_axe_head",
@@ -53724,6 +55659,52 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:stone_depth",
+      "type": "block",
+      "source_variable": "stone_depth",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1286",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/stone_depth.png",
+      "source_registry": "hbm:tile.stone_depth",
+      "names": {
+        "en_us": "Depth Rock",
+        "pt_br": "Rocha das Profundezas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.stone_depth.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.stone_depth.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:stone_depth_nether",
+      "type": "block",
+      "source_variable": "stone_depth_nether",
+      "source_class": "BlockDepth",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1307",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "behavior_gap": "Depth rock requires NTM mining tools; imported static content, custom harvesting not implemented",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/stone_depth_nether.png",
+      "source_registry": "hbm:tile.stone_depth_nether",
+      "names": {
+        "en_us": "Nether Depth Rock",
+        "pt_br": "Rocha das Profundezas do Nether"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.stone_depth_nether.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.stone_depth_nether.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:stone_gneiss",
       "type": "block",
       "source_variable": "stone_gneiss",
@@ -53753,6 +55734,33 @@
         {
           "machine": "shredder",
           "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:176"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:stone_porous",
+      "type": "block",
+      "source_variable": "stone_porous",
+      "source_class": "BlockPorous",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1310",
+      "category": "decorative",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/stone_porous.png",
+      "source_registry": "hbm:tile.stone_porous",
+      "names": {
+        "en_us": "Porous Stone",
+        "pt_br": "Pedra Porosa"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.stone_porous.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.stone_porous.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:307"
         }
       ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
@@ -54314,6 +56322,75 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:978"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:tile_lab",
+      "type": "block",
+      "source_variable": "tile_lab",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1559",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/tile_lab.png",
+      "source_registry": "hbm:tile.tile_lab",
+      "names": {
+        "en_us": "Laboratory Tiles",
+        "pt_br": "Pisos de Laboratório"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.tile_lab.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.tile_lab.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:tile_lab_broken",
+      "type": "block",
+      "source_variable": "tile_lab_broken",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1562",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/tile_lab_broken.png",
+      "source_registry": "hbm:tile.tile_lab_broken",
+      "names": {
+        "en_us": "Broken Laboratory Tiles",
+        "pt_br": "Pisos de Laboratório Quebrados"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.tile_lab_broken.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.tile_lab_broken.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:tile_lab_cracked",
+      "type": "block",
+      "source_variable": "tile_lab_cracked",
+      "source_class": "BlockOutgas",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1561",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/tile_lab_cracked.png",
+      "source_registry": "hbm:tile.tile_lab_cracked",
+      "names": {
+        "en_us": "Cracked Laboratory Tiles",
+        "pt_br": "Pisos de Laboratório Rachados"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.tile_lab_cracked.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.tile_lab_cracked.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -55607,6 +57684,54 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:vinyl_tile__large",
+      "type": "block",
+      "source_variable": "vinyl_tile",
+      "source_class": "BlockEnumMulti",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1557",
+      "category": "decorative",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "TileType.LARGE",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/vinyl_tile.large.png",
+      "names": {
+        "en_us": "Large Vinyl Tile",
+        "pt_br": "Piso Vinílico Grande"
+      },
+      "source_registry": "hbm:tile.vinyl_tile",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:vinyl_tile__small",
+      "type": "block",
+      "source_variable": "vinyl_tile",
+      "source_class": "BlockEnumMulti",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1557",
+      "category": "decorative",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "TileType.SMALL",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/vinyl_tile.small.png",
+      "names": {
+        "en_us": "Small Vinyl Tiles",
+        "pt_br": "Pisos Vinílicos Pequenos"
+      },
+      "source_registry": "hbm:tile.vinyl_tile",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:warhead_buster_large",
       "type": "item",
       "source_variable": "warhead_buster_large",
@@ -55979,6 +58104,29 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:819"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_trinitite_red",
+      "type": "block",
+      "source_variable": "waste_trinitite_red",
+      "source_class": "BlockTrinitite",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1666",
+      "category": "decorative",
+      "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped); full-cube surface only",
+      "source_form": "generic full-cube class (no shape override in ancestry)",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/waste_trinitite_red.png",
+      "source_registry": "hbm:tile.waste_trinitite_red",
+      "names": {
+        "en_us": "Red Trinitite Ore",
+        "pt_br": "Minério de Trinitita Vermelha"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:tile.waste_trinitite_red.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:tile.waste_trinitite_red.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {

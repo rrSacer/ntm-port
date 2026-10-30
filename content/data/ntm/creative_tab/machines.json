@@ -4,6 +4,7 @@
   "icon": "ntm:pwr_controller",
   "order": 4,
   "items": [
+    "ntm:ash_digamma",
     "ntm:glass_boron",
     "ntm:glass_lead",
     "ntm:glass_uranium",

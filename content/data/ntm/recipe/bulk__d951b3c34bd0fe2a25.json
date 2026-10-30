@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_fallout"
+  ],
+  "result": {
+    "id": "ntm:fallout__item",
+    "count": 9
+  }
+}

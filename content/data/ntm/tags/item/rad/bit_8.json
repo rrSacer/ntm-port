@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "ntm:ancient_scrap",
     "ntm:billet_am_mix",
     "ntm:billet_americium_fuel",
     "ntm:billet_gh336",
@@ -21,6 +22,8 @@
     "ntm:billet_u235",
     "ntm:block_actinium",
     "ntm:block_corium",
+    "ntm:block_corium_cobble",
+    "ntm:block_fallout",
     "ntm:block_mox_fuel",
     "ntm:block_neptunium",
     "ntm:block_polonium",
@@ -34,6 +37,9 @@
     "ntm:block_u238",
     "ntm:block_uranium",
     "ntm:block_uranium_fuel",
+    "ntm:block_waste",
+    "ntm:block_waste_painted",
+    "ntm:block_yellowcake",
     "ntm:boy_bullet",
     "ntm:boy_target",
     "ntm:cell_balefire",

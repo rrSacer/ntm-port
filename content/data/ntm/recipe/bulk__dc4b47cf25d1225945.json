@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": "ntm:ash_digamma",
+  "result": {
+    "id": "ntm:glass_ash",
+    "count": 1
+  },
+  "experience": 10.0,
+  "cookingtime": 100
+}

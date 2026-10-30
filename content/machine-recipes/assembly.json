@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 462,
+    "emitted": 469,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 169,
+    "skipped_source_calls": 162,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -410,6 +410,31 @@
       "pools": [],
       "label": "Placa Mista ×4",
       "label_en": "Mixed Plate ×4"
+    },
+    {
+      "name": "ass.dalekanium",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:83",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:block_meteor"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:plate_dalekanium",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Metal Raivoso",
+      "label_en": "Angry Metal"
     },
     {
       "name": "ass.platedesh",
@@ -1569,6 +1594,192 @@
       "pools": [],
       "label": "Estrutura da Escotilha de Silo",
       "label_en": "Silo Hatch Frame"
+    },
+    {
+      "name": "ass.capnuka",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:245",
+      "duration": 10,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:cap_nuka"
+          ],
+          "count": 64
+        },
+        {
+          "ids": [
+            "ntm:cap_nuka"
+          ],
+          "count": 64
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:block_cap__nuka",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Block Cap Nuka",
+      "label_en": "Block Cap Nuka"
+    },
+    {
+      "name": "ass.capquantum",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:247",
+      "duration": 10,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:cap_quantum"
+          ],
+          "count": 64
+        },
+        {
+          "ids": [
+            "ntm:cap_quantum"
+          ],
+          "count": 64
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:block_cap__quantum",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Block Cap Quantum",
+      "label_en": "Block Cap Quantum"
+    },
+    {
+      "name": "ass.capsparkle",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:249",
+      "duration": 10,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:cap_sparkle"
+          ],
+          "count": 64
+        },
+        {
+          "ids": [
+            "ntm:cap_sparkle"
+          ],
+          "count": 64
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:block_cap__sparkle",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Block Cap Sparkle",
+      "label_en": "Block Cap Sparkle"
+    },
+    {
+      "name": "ass.caprad",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:251",
+      "duration": 10,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:cap_rad"
+          ],
+          "count": 64
+        },
+        {
+          "ids": [
+            "ntm:cap_rad"
+          ],
+          "count": 64
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:block_cap__rad",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Block Cap Rad",
+      "label_en": "Block Cap Rad"
+    },
+    {
+      "name": "ass.capfritz",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:253",
+      "duration": 10,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:cap_fritz"
+          ],
+          "count": 64
+        },
+        {
+          "ids": [
+            "ntm:cap_fritz"
+          ],
+          "count": 64
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:block_cap__fritz",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Block Cap Fritz",
+      "label_en": "Block Cap Fritz"
+    },
+    {
+      "name": "ass.capkorl",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:255",
+      "duration": 10,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:cap_korl"
+          ],
+          "count": 64
+        },
+        {
+          "ids": [
+            "ntm:cap_korl"
+          ],
+          "count": 64
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:block_cap__korl",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Block Cap Korl",
+      "label_en": "Block Cap Korl"
     },
     {
       "name": "ass.shredder",
@@ -16036,12 +16247,6 @@
   ],
   "skipped": [
     {
-      "name": "ass.dalekanium",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:83",
-      "reason": "unregistered/ambiguous source item block_meteor",
-      "expression": "new GenericRecipe(\"ass.dalekanium\").setup(200, 100).outputItems(new ItemStack(ModItems.plate_dalekanium, 1))\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.block_meteor, 1))"
-    },
-    {
       "name": "ass.exsteelplating",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:91",
       "reason": "dynamic/unsupported metadata EnumExpensiveType.STEEL_PLATING.ordinal()",
@@ -16214,42 +16419,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:242",
       "reason": "unregistered/ambiguous source item cargo_door",
       "expression": "new GenericRecipe(\"ass.cargodoor\").setup(200, 100).outputItems(new ItemStack(ModBlocks.cargo_door, 1))\n\t\t\t.inputItems(new ComparableStack(ModBlocks.steel_beam, 32), new OreDictStack(STEEL.plate(), 4), new OreDictStack(DURA.bolt(), 4), new ComparableStack(ModItems.motor, 2), new OreDictStack(KEY_GRAY, 1))"
-    },
-    {
-      "name": "ass.capnuka",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:245",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.NUKA)",
-      "expression": "new GenericRecipe(\"ass.capnuka\").setup(10, 100).outputItems(DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.NUKA))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.cap_nuka, 64), new ComparableStack(ModItems.cap_nuka, 64))"
-    },
-    {
-      "name": "ass.capquantum",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:247",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.QUANTUM)",
-      "expression": "new GenericRecipe(\"ass.capquantum\").setup(10, 100).outputItems(DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.QUANTUM))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.cap_quantum, 64), new ComparableStack(ModItems.cap_quantum, 64))"
-    },
-    {
-      "name": "ass.capsparkle",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:249",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.SPARKLE)",
-      "expression": "new GenericRecipe(\"ass.capsparkle\").setup(10, 100).outputItems(DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.SPARKLE))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.cap_sparkle, 64), new ComparableStack(ModItems.cap_sparkle, 64))"
-    },
-    {
-      "name": "ass.caprad",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:251",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.RAD)",
-      "expression": "new GenericRecipe(\"ass.caprad\").setup(10, 100).outputItems(DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.RAD))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.cap_rad, 64), new ComparableStack(ModItems.cap_rad, 64))"
-    },
-    {
-      "name": "ass.capfritz",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:253",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.FRITZ)",
-      "expression": "new GenericRecipe(\"ass.capfritz\").setup(10, 100).outputItems(DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.FRITZ))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.cap_fritz, 64), new ComparableStack(ModItems.cap_fritz, 64))"
-    },
-    {
-      "name": "ass.capkorl",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:255",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.KORL)",
-      "expression": "new GenericRecipe(\"ass.capkorl\").setup(10, 100).outputItems(DictFrame.fromOne(ModBlocks.block_cap, EnumCapBlock.KORL))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.cap_korl, 64), new ComparableStack(ModItems.cap_korl, 64))"
     },
     {
       "name": "ass.precass",
