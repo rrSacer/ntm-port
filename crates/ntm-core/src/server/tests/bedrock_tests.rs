@@ -119,3 +119,35 @@ fn the_slopper_reads_the_raw_ores_densities() {
     assert_eq!((count(&s, &slopper::base(0)), count(&s, &slopper::base(2)), count(&s, &slopper::base(4))), (5, 2, 1), "{s:?}");
     assert_eq!(count(&s, slopper::RAW), 0);
 }
+
+/// The centrifuge's bedrock rows (`CentrifugeRecipes.java:267-288`): a
+/// BASE light ore into a PRIMARY and gravel, the PRIMARY into 9 iron and 9
+/// copper fragments.
+#[test]
+fn the_centrifuge_takes_bedrock_ore_to_fragments() {
+    let mut g = game();
+    let at = [8, 70, 2];
+    g.place(at, "ntm:machine_centrifuge[facing=north,honey_level=0]");
+    engine(&mut g, at, 5);
+    g.run(2);
+    let run = |g: &mut Game, ticks: u32| {
+        for _ in 0..ticks {
+            let r = g.ready();
+            if let Some(Data::Crafter(c)) = r.world.machines.get_mut(&(OW.to_string(), at)).map(|m| &mut m.data) {
+                c.power = c.max_power();
+            }
+            g.run(1);
+        }
+    };
+    put(&mut g, at, 0, Some(Stack::new(&slopper::base(0), 1)));
+    run(&mut g, 210);
+    let s = slots(&g, at);
+    assert_eq!((count(&s, "ntm:bedrock_ore__primary_light"), count(&s, "minecraft:gravel")), (1, 1), "{s:?}");
+    // The PRIMARY back in as the input.
+    let i = s.iter().position(|x| x.as_ref().is_some_and(|x| x.id == "ntm:bedrock_ore__primary_light")).unwrap();
+    put(&mut g, at, i, None);
+    put(&mut g, at, 0, Some(Stack::new("ntm:bedrock_ore__primary_light", 1)));
+    run(&mut g, 210);
+    let s = slots(&g, at);
+    assert_eq!((count(&s, "ntm:bedrock_ore_fragment__iron"), count(&s, "ntm:bedrock_ore_fragment__copper")), (9, 9), "{s:?}");
+}
