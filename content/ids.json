@@ -83691,6 +83691,286 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:chemical_dye__black",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.BLACK",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "1E1B1B"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Black)",
+        "pt_br": "Corante Químico (Preto)"
+      },
+      "source_registry": "hbm:item.chemical_dye",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crystallizer",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:chemical_dye__red",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.RED",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "B3312C"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Red)",
+        "pt_br": "Corante Químico (Vermelho)"
+      },
+      "source_registry": "hbm:item.chemical_dye",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crystallizer",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:chemical_dye__green",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.GREEN",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "3B511A"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Green)",
+        "pt_br": "Corante Químico (Verde)"
+      },
+      "source_registry": "hbm:item.chemical_dye",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crystallizer",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:chemical_dye__brown",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.BROWN",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "51301A"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Brown)",
+        "pt_br": "Corante Químico (Marrom)"
+      },
+      "source_registry": "hbm:item.chemical_dye",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crystallizer",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:chemical_dye__blue",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.BLUE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "253192"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Blue)",
+        "pt_br": "Corante Químico (Azul)"
+      },
+      "source_registry": "hbm:item.chemical_dye",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crystallizer",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:chemical_dye__purple",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.PURPLE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "7B2FBE"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Purple)",
+        "pt_br": "Corante Químico (Roxo)"
+      },
+      "source_registry": "hbm:item.chemical_dye",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crystallizer",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:chemical_dye__cyan",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.CYAN",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "287697"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Cyan)",
+        "pt_br": "Corante Químico (Ciano)"
+      },
+      "source_registry": "hbm:item.chemical_dye",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crystallizer",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:chemical_dye__silver",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.SILVER",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "ABABAB"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Light Gray)",
+        "pt_br": "Corante Químico (Cinza Claro)"
+      },
+      "source_registry": "hbm:item.chemical_dye",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crystallizer",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:machine_crucible",
       "source_variable": "machine_crucible",
       "type": "block",
