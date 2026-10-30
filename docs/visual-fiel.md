@@ -629,9 +629,38 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 - O visual-gen agora gera de um export de HEAD nos commits por etapa. Os blocos dos lotes B, C e D sem entrada própria
   ficam com `auto: false`: o modelo extraído errava (o steel_beam pegava um boxcar).
 
+## 3l. Petróleo, lote C
+
+| Máquina | Multibloco | Tela | Modelo |
+|---|---|---|---|
+| Caldeira (`MachineHeatBoiler`) | 3×3×4 | sem tela aqui | `rotation 180`; o modelo estourado (`boiler_burst`) segue a lógica, ainda não |
+| Caldeira industrial | 3×3×5 | sem tela aqui | sem giro |
+| Craqueador catalítico | base 6×7 + as 4 caixas do `fillSpace` (368 células, 15 de altura) | sem tela no NTM | `rotation 90` |
+| Reformador catalítico | 5×3×3 | `GUIMachineCatalyticReformer` 176×238: energia, entrada e 3 saídas, o catalisador (`catalytic_converter`) | `rotation 90` |
+| Hidrotratador | 3×3×7 | óleo, hidrogênio e 2 saídas, catalisador | sem giro |
+| Destilador a vácuo | 3×3×9 | entrada e 4 saídas | sem giro |
+| Coqueificadora | 3×3×23 | calor e progresso em TU, entrada e subproduto, coque | sem giro |
+
+- **Motor:**
+  - A coqueificadora passa do limite de 16 do multibloco: agora 32 de altura e 16 de largura.
+  - A busca do núcleo de um dummy anda por eixo: a largura máxima das máquinas e só as alturas em que um núcleo pode
+    estar, sem um cubo de 45³.
+- **`use_range`:**
+  - Tela aberta até 12 blocos do centro do núcleo, como o `getUseRange` do NTM. Antes valia a regra do baú (alcance
+    + 4 a partir do bloco), e a tela da coqueificadora fechava a 9 blocos acima do núcleo.
+  - O gerador põe 12 em todo multibloco.
+- **Portas:**
+  - As do craqueador e do reformador vão pela camada de baixo inteira.
+  - As do hidrotratador, do destilador e da coqueificadora, pelo anel.
+  - As das caldeiras, pelos lados e pela coluna até o topo.
+- **Em jogo:**
+  - as 7 com as células certas (a coqueificadora 207, o craqueador 368);
+  - as 4 telas abrem;
+  - a tela da coqueificadora abre a 8 acima do núcleo e fecha a 12, como no NTM.
+
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 48 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 51 commits):
 
 | Commit | O quê |
 |---|---|
@@ -682,6 +711,9 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `docs(api): describe parts shown by neighbouring blocks` | |
 | `feat(render): draw translucent mod model parts` | `tint` 0xAARRGGBB por parte (o vidro do liquefator e do solidificador) |
 | `docs(api): describe translucent model parts` | |
+| `feat(world): let a mod multiblock rise 32 blocks` | 32 de altura, ainda 16 de largura (a coqueificadora tem 23); a busca do núcleo por eixo |
+| `feat(client): keep a machine's screen open within its use range` | `use_range` (o `getUseRange` do NTM, 12 a partir do núcleo) |
+| `docs(api): describe taller multiblocks and a machine's use range` | |
 | `fix(lan): send an item's custom data to clients` | O `custom_data` vai aos clientes. No criativo, o cliente devolve os slots que previu (`SetCreativeModeSlot`), e o shift-clique de uma máquina apagava as densidades do minério de bedrock |
 
 **No port:**
