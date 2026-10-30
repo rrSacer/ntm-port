@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:red_pylon",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CWC",
+    "PWP",
+    " S "
+  ],
+  "key": {
+    "C": "ntm:coil_copper",
+    "W": "#ntm:bulk/plankwood",
+    "P": "ntm:plate_polymer",
+    "S": "#ntm:bulk/cobblestone"
+  }
+}

@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 54,
+    "emitted": 59,
     "scanned_source_calls": 77,
-    "skipped_source_calls": 23,
+    "skipped_source_calls": 18,
     "expanded_fluid_recipes": 0,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -846,6 +846,207 @@
       "pools": [],
       "label": "Concreto Líquido · 16000 mB",
       "label_en": "Liquid Concrete · 16000 mB"
+    },
+    {
+      "name": "chem.batterylead",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:171",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:ingot_lead"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:battery_pack__battery_lead",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "sulfuric_acid",
+          8000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Bateria de Chumbo-Ácido",
+      "label_en": "Lead-Acid Battery"
+    },
+    {
+      "name": "chem.batterylithium",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:176",
+      "duration": 100,
+      "power": 1000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_lithium"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:powder_cobalt"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_bakelite",
+            "ntm:ingot_polymer"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:battery_pack__battery_lithium",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "oxygen",
+          2000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Bateria de Íon-Lítio",
+      "label_en": "Lithium-Ion Battery"
+    },
+    {
+      "name": "chem.batterysodium",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:182",
+      "duration": 100,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_sodium"
+          ],
+          "count": 24
+        },
+        {
+          "ids": [
+            "ntm:powder_iron"
+          ],
+          "count": 24
+        },
+        {
+          "ids": [
+            "ntm:ingot_pc",
+            "ntm:ingot_pvc"
+          ],
+          "count": 12
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:battery_pack__battery_sodium",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Bateria de Sódio-Ferro",
+      "label_en": "Sodium-Iron Battery"
+    },
+    {
+      "name": "chem.batteryschrabidium",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:187",
+      "duration": 100,
+      "power": 25000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_schrabidium"
+          ],
+          "count": 24
+        },
+        {
+          "ids": [
+            "ntm:plate_cast__abronze",
+            "ntm:plate_cast__bbronze"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:battery_pack__battery_schrabidium",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "helium4",
+          8000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Bateria de Schrabídio",
+      "label_en": "Schrabidium Battery"
+    },
+    {
+      "name": "chem.batteryquantum",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:192",
+      "duration": 100,
+      "power": 100000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:wire_dense__bscco"
+          ],
+          "count": 24
+        },
+        {
+          "ids": [
+            "ntm:pellet_charged"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:ingot_cft"
+          ],
+          "count": 16
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:battery_pack__battery_quantum",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "perfluoromethyl_cold",
+          8000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "perfluoromethyl",
+          8000
+        ]
+      ],
+      "pools": [],
+      "label": "Bateria Quântica",
+      "label_en": "Quantum Battery"
     },
     {
       "name": "chem.lightconstruction",
@@ -1774,36 +1975,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:165",
       "reason": "unregistered/ambiguous source item asphalt",
       "expression": "new GenericRecipe(\"chem.asphalt\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(Blocks.gravel, 2), new OreDictStack(KEY_SAND, 6))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.BITUMEN, 1_000))\n\t\t\t\t.outputItems(new ItemStack(ModBlocks.asphalt, 16))"
-    },
-    {
-      "name": "chem.batterylead",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:171",
-      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_LEAD.ordinal()",
-      "expression": "new GenericRecipe(\"chem.batterylead\").setup(100, 100)\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 4),\n\t\t\t\t\t\tnew OreDictStack(PB.ingot(), 4))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SULFURIC_ACID, 8_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_LEAD.ordinal()))"
-    },
-    {
-      "name": "chem.batterylithium",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:176",
-      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_LITHIUM.ordinal()",
-      "expression": "new GenericRecipe(\"chem.batterylithium\").setup(100, 1_000)\n\t\t\t\t.inputItems(new OreDictStack(LI.dust(), 12),\n\t\t\t\t\t\tnew OreDictStack(CO.dust(), 8),\n\t\t\t\t\t\tnew OreDictStack(ANY_PLASTIC.ingot(), 4))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.OXYGEN, 2_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_LITHIUM.ordinal()))"
-    },
-    {
-      "name": "chem.batterysodium",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:182",
-      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_SODIUM.ordinal()",
-      "expression": "new GenericRecipe(\"chem.batterysodium\").setup(100, 10_000)\n\t\t\t\t.inputItems(new OreDictStack(NA.dust(), 24),\n\t\t\t\t\t\tnew OreDictStack(IRON.dust(), 24),\n\t\t\t\t\t\tnew OreDictStack(ANY_HARDPLASTIC.ingot(), 12))\n\t\t\t\t.outputItems(new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_SODIUM.ordinal()))"
-    },
-    {
-      "name": "chem.batteryschrabidium",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:187",
-      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_SCHRABIDIUM.ordinal()",
-      "expression": "new GenericRecipe(\"chem.batteryschrabidium\").setup(100, 25_000)\n\t\t\t\t.inputItems(new OreDictStack(SA326.dust(), 24),\n\t\t\t\t\t\tnew OreDictStack(ANY_BISMOIDBRONZE.plateCast(), 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.HELIUM4, 8_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_SCHRABIDIUM.ordinal()))"
-    },
-    {
-      "name": "chem.batteryquantum",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:192",
-      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_QUANTUM.ordinal()",
-      "expression": "new GenericRecipe(\"chem.batteryquantum\").setup(100, 100_000)\n\t\t\t\t.inputItems(new OreDictStack(BSCCO.wireDense(), 24),\n\t\t\t\t\t\tnew ComparableStack(ModItems.pellet_charged, 32),\n\t\t\t\t\t\tnew ComparableStack(ModItems.ingot_cft, 16))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.PERFLUOROMETHYL_COLD, 8_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_QUANTUM.ordinal()))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.PERFLUOROMETHYL, 8_000))"
     },
     {
       "name": "chem.desh",

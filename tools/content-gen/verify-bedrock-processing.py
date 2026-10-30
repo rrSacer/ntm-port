@@ -15,7 +15,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--package',type=Path,required=True)
     parser.add_argument('--horizon-client',type=Path,required=True)
-    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling','energy-radioisotopes','fluid-identifier','migration-c2'],default='bedrock')
+    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling','energy-radioisotopes','energy-storage-network','fluid-identifier','migration-c2'],default='bedrock')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
     evidence=root/'content-gen-evidence'/({'bedrock':'bedrock-stages34'}.get(args.profile,args.profile));evidence.mkdir(parents=True,exist_ok=True)
@@ -59,6 +59,7 @@ def main():
             cmd('time set noon');cmd('weather clear')
             cmd('fill -9 100 -16 16 100 4 minecraft:stone')
             if args.profile=='migration-c2':cmd('fill -9 100 -16 58 100 4 minecraft:stone')
+            if args.profile=='energy-storage-network':cmd('fill -9 100 -16 16 100 16 minecraft:stone')
             machines=['machine_hephaestus','machine_flare'] if args.profile=='petroleum-e' else ['machine_pyrooven','machine_electrolyser','machine_arc_furnace_large']
             if args.profile=='energy-heaters':machines=['heater_oven','heater_oilburner','heater_electric','heater_heatex']
             if args.profile=='energy-steam':machines=['machine_steam_engine','machine_industrial_turbine','machine_chungus','machine_condenser','machine_condenser_powered']
@@ -67,14 +68,18 @@ def main():
             if args.profile=='fluid-identifier':machines=[]
             if args.profile=='migration-c2':machines=['nuke_'+name for name in ['boy','gadget','man','mike','tsar','n2','fstbmb']]
             if args.profile=='energy-radioisotopes':machines=['machine_rtg_grey','machine_radgen']
+            if args.profile=='energy-storage-network':
+                from energy_storage_catalog import CONNECTORS, CONTROLS
+                machines=['machine_battery_socket','machine_battery_redd',*CONNECTORS,*CONTROLS]
             for i,name in enumerate(machines):
-                x=-4+i*(8 if args.profile=='migration-c2' else 4)
+                x=-4+(i%5 if args.profile=='energy-storage-network' else i)*(8 if args.profile=='migration-c2' else 4)
+                z=(i//5)*5 if args.profile=='energy-storage-network' else 0
                 for y,level in [(101,0),(103,5)]:
                     state=f'ntm:{name}[facing=north,honey_level={level}]'
-                    cmd(f'setblock {x} {y} 0 {state}')
+                    cmd(f'setblock {x} {y} {z} {state}')
                     deadline=time.monotonic()+15
                     while True:
-                        reply=ctl(f'block {x} {y} 0')
+                        reply=ctl(f'block {x} {y} {z}')
                         actual=reply['state']
                         if actual.split('[',1)[0]=='ntm:'+name and set(actual.split('[',1)[-1].rstrip(']').split(','))=={'facing=north','honey_level='+str(level)}:break
                         if time.monotonic()>deadline:raise AssertionError((state,reply))
@@ -100,6 +105,9 @@ def main():
             if args.profile.startswith('energy-'):decor=[]
             if args.profile=='fluid-identifier':decor=[]
             if args.profile=='migration-c2':decor=[]
+            if args.profile=='energy-storage-network':
+                from energy_storage_catalog import CABLES
+                decor=list(CABLES)
             for i,name in enumerate(decor):
                 x=-5+i*2 if args.profile=='petroleum-e' else -4+i*4
                 if args.profile=='petroleum-e':cmd(f'setblock {x} 100 3 minecraft:grass_block')
@@ -133,6 +141,9 @@ def main():
             if args.profile=='energy-radioisotopes':
                 catalog=json.loads((root/'content/ids.json').read_text())['entries']
                 samples=machines+[r['id'].split(':',1)[1] for r in catalog if r['source_variable'].startswith(('pellet_rtg','nuclear_waste_short','nuclear_waste_long'))]
+            if args.profile=='energy-storage-network':
+                from energy_storage_catalog import packs
+                samples=machines+decor+[p['id'].split(':',1)[1] for p in packs(root.parent/'ntm-src')]
             cmd('clear @s')
             for start in range(0,len(samples),30):
                 if start:cmd('clear @s')

@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:red_cable_paintable",
+    "count": 16
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WRW",
+    "RIR",
+    "WRW"
+  ],
+  "key": {
+    "W": "#ntm:bulk/platesteel",
+    "I": "#ntm:bulk/ingotmingrade",
+    "R": "#ntm:bulk/wirefinemingrade"
+  }
+}

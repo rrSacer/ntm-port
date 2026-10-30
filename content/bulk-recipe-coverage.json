@@ -641,6 +641,15 @@
       }
     },
     {
+      "id": "ntm:bulk__daa7550217f250360f",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:232",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:red_cable_paintable",
+        "count": 16
+      }
+    },
+    {
       "id": "ntm:bulk__0a4a63f5e05e107656",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:239",
       "type": "minecraft:crafting_shaped",
@@ -650,11 +659,110 @@
       }
     },
     {
+      "id": "ntm:bulk__78f8e190ec7db4cf26",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:240",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:red_cable_classic",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__6f1fca9b5330fd2215",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:241",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:red_cable",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__e89b47102368a42bed",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:243",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:red_connector",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__ae88a0cb08b48d47ce",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:245",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:red_pylon",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__fd8180db6329acb22d",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:247",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:red_pylon_medium_wood",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__e59bd5f983181decac",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:248",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:red_pylon_medium_wood_transformer",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__fe369f53164c3a98c2",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:250",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:red_pylon_medium_steel_transformer",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__6c0a0cd57de48e7151",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:251",
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:machine_wood_burner",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a71e56b8cc564a23af",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:257",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_battery_socket",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7b5945dfac1082a6b8",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:258",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_battery_socket",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__b985f87a1b23bf2cae",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:259",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:battery_pack__battery_redstone",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__dddcc19e7f7e6cd4ea",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:260",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:battery_pack__capacitor_copper",
         "count": 1
       }
     },
@@ -5978,7 +6086,7 @@
       }
     }
   ],
-  "generated_count": 664,
+  "generated_count": 676,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -6293,12 +6401,6 @@
       "expression": "new ItemStack(ModBlocks.red_wire_coated, 16), new Object[] { \"WRW\", \"RIR\", \"WRW\", 'W', ModItems.plate_polymer, 'I', MINGRADE.ingot(), 'R', MINGRADE.wireFine() }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:232",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item red_cable_paintable",
-      "expression": "new ItemStack(ModBlocks.red_cable_paintable, 16), new Object[] { \"WRW\", \"RIR\", \"WRW\", 'W', STEEL.plate(), 'I', MINGRADE.ingot(), 'R', MINGRADE.wireFine() }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:234",
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item oc_cable_paintable",
@@ -6307,13 +6409,13 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:235",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item cable_switch",
+      "reason": "unregistered/ambiguous source item red_wire_coated",
       "expression": "new ItemStack(ModBlocks.cable_switch, 1), new Object[] { \"S\", \"W\", 'S', Blocks.lever, 'W', ModBlocks.red_wire_coated }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:236",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item cable_detector",
+      "reason": "unregistered/ambiguous source item red_wire_coated",
       "expression": "new ItemStack(ModBlocks.cable_detector, 1), new Object[] { \"S\", \"W\", 'S', REDSTONE.dust(), 'W', ModBlocks.red_wire_coated }"
     },
     {
@@ -6329,70 +6431,28 @@
       "expression": "new ItemStack(ModBlocks.network_separator, 1), new Object[] { \"SCS\", \"DTD\", \"SCS\", 'S', STEEL.plate(), 'D', ModItems.coil_copper, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BASIC), 'T', ModBlocks.machine_transformer }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:240",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item red_cable_classic",
-      "expression": "new ItemStack(ModBlocks.red_cable_classic, 1), new Object[] { ModBlocks.red_cable }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:241",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item red_cable_classic",
-      "expression": "new ItemStack(ModBlocks.red_cable, 1), new Object[] { ModBlocks.red_cable_classic }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:242",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item red_cable_gauge",
+      "reason": "unregistered/ambiguous source item red_wire_coated",
       "expression": "new ItemStack(ModBlocks.red_cable_gauge), new Object[] { ModBlocks.red_wire_coated, STEEL.ingot(), DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BASIC) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:243",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item red_connector",
-      "expression": "new ItemStack(ModBlocks.red_connector, 4), new Object[] { \"C\", \"I\", \"S\", 'C', ModItems.coil_copper, 'I', ModItems.plate_polymer, 'S', STEEL.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:244",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item red_connector_super",
+      "reason": "unresolved ore dictionary ANY_RESISTANTALLOY.ingot()",
       "expression": "new ItemStack(ModBlocks.red_connector_super, 2), new Object[] { \"CCC\", \"III\", \" S \", 'C', ModItems.coil_copper, 'I', ModItems.plate_polymer, 'S', ANY_RESISTANTALLOY.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:245",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item red_pylon",
-      "expression": "new ItemStack(ModBlocks.red_pylon, 4), new Object[] { \"CWC\", \"PWP\", \" S \", 'C', ModItems.coil_copper, 'W', KEY_PLANKS, 'P', ModItems.plate_polymer, 'S', KEY_COBBLESTONE }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:246",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item red_pylon_steel",
+      "reason": "unresolved ore dictionary STEEL.pipe()",
       "expression": "new ItemStack(ModBlocks.red_pylon_steel, 4), new Object[] { \"CWC\", \"PWP\", \" S \", 'C', ModItems.coil_copper, 'W', STEEL.pipe(), 'P', ModItems.plate_polymer, 'S', KEY_COBBLESTONE }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:247",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item red_pylon_medium_wood",
-      "expression": "new ItemStack(ModBlocks.red_pylon_medium_wood, 2), new Object[] { \"CCW\", \"IIW\", \"  S\", 'C', ModItems.coil_copper, 'W', KEY_PLANKS, 'I', ModItems.plate_polymer, 'S', KEY_COBBLESTONE }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:248",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item red_pylon_medium_wood_transformer",
-      "expression": "new ItemStack(ModBlocks.red_pylon_medium_wood_transformer, 1), new Object[] { ModBlocks.red_pylon_medium_wood, ModItems.plate_polymer, ModItems.coil_copper }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:249",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item red_pylon_medium_steel",
+      "reason": "unresolved ore dictionary STEEL.pipe()",
       "expression": "new ItemStack(ModBlocks.red_pylon_medium_steel, 2), new Object[] { \"CCW\", \"IIW\", \"  S\", 'C', ModItems.coil_copper, 'W', STEEL.pipe(), 'I', ModItems.plate_polymer, 'S', KEY_COBBLESTONE }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:250",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item red_pylon_medium_steel_transformer",
-      "expression": "new ItemStack(ModBlocks.red_pylon_medium_steel_transformer, 1), new Object[] { ModBlocks.red_pylon_medium_steel, ModItems.plate_polymer, ModItems.coil_copper }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:252",
@@ -6417,30 +6477,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item crate_steel",
       "expression": "new ItemStack(ModBlocks.crate_steel, 1), new Object[] { \"PPP\", \"I I\", \"III\", 'P', STEEL.plate(), 'I', STEEL.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:257",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_battery_socket",
-      "expression": "new ItemStack(ModBlocks.machine_battery_socket), new Object[] { \"I I\", \"I I\", \"IRI\", 'I', ModItems.plate_polymer, 'R', ModItems.coil_copper }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:258",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_battery_socket",
-      "expression": "new ItemStack(ModBlocks.machine_battery_socket), new Object[] { \"PRP\", 'P', STEEL.plate(), 'R', MINGRADE.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:259",
-      "callee": "addRecipeAuto",
-      "reason": "dynamic/unsupported metadata EnumBatteryPack.BATTERY_REDSTONE.ordinal()",
-      "expression": "new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_REDSTONE.ordinal()), new Object[] { \"IRI\", \"PRP\", \"IRI\", 'I', IRON.plate(), 'R', REDSTONE.block(), 'P', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:260",
-      "callee": "addRecipeAuto",
-      "reason": "dynamic/unsupported metadata EnumBatteryPack.CAPACITOR_COPPER.ordinal()",
-      "expression": "new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.CAPACITOR_COPPER.ordinal()), new Object[] { \"IRI\", \"PRP\", \"IRI\", 'I', STEEL.plate(), 'R', CU.block(), 'P', ModItems.plate_polymer }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:262",

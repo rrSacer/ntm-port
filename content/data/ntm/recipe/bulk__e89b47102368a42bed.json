@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:red_connector",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "I",
+    "S"
+  ],
+  "key": {
+    "C": "ntm:coil_copper",
+    "I": "ntm:plate_polymer",
+    "S": "#ntm:bulk/ingotsteel"
+  }
+}

@@ -3173,6 +3173,53 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.86",
+"label": "Torre de Energia Grande",
+"in": [
+{
+"ids": [
+"ntm:concrete",
+"ntm:concrete_asbestos",
+"ntm:concrete_smooth",
+"ntm:ducrete",
+"ntm:ducrete_smooth"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:steel_scaffold"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:red_pylon_large",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.93",
 "label": "Placa de Composto de Desh ×4",
 "in": [
@@ -7799,6 +7846,53 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.86",
+"label": "Torre de Energia Grande",
+"in": [
+{
+"ids": [
+"ntm:concrete",
+"ntm:concrete_asbestos",
+"ntm:concrete_smooth",
+"ntm:ducrete",
+"ntm:ducrete_smooth"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:steel_scaffold"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:red_pylon_large",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.93",
 "label": "Placa de Composto de Desh ×4",
 "in": [
@@ -9255,5 +9349,5 @@
 "tier_upper": -1
 }
 ],
-"skipped": 161
+"skipped": 160
 }

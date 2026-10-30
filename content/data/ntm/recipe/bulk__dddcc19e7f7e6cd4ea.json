@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:battery_pack__capacitor_copper",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IRI",
+    "PRP",
+    "IRI"
+  ],
+  "key": {
+    "I": "#ntm:bulk/platesteel",
+    "R": "#ntm:bulk/blockcopper",
+    "P": "ntm:plate_polymer"
+  }
+}

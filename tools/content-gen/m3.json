@@ -20760,6 +20760,44 @@
       "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
     },
     {
+      "id": "machine_battery_socket",
+      "source_variable": "machine_battery_socket",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Battery Socket",
+        "pt_br": "Soquete de Bateria"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "machine_battery_redd",
+      "source_variable": "machine_battery_redd",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "FEnSU",
+        "pt_br": "FEnSU"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
       "id": "gear_large__iron",
       "source_variable": "gear_large",
       "type": "item",
@@ -21876,6 +21914,548 @@
         "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração Decaído (Schrabídio-326)"
       },
       "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "battery_pack__battery_redstone",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.BATTERY_REDSTONE",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Redstone Battery",
+        "pt_br": "Bateria de Redstone"
+      },
+      "battery": {
+        "capacity_he": 1800000,
+        "charge_he_per_tick": 1000,
+        "discharge_he_per_tick": 100
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/battery_redstone.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__battery_lead",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.BATTERY_LEAD",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Lead-Acid Battery",
+        "pt_br": "Bateria de Chumbo-Ácido"
+      },
+      "battery": {
+        "capacity_he": 18000000,
+        "charge_he_per_tick": 10000,
+        "discharge_he_per_tick": 1000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/battery_lead.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__battery_lithium",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.BATTERY_LITHIUM",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Lithium-Ion Battery",
+        "pt_br": "Bateria de Íon-Lítio"
+      },
+      "battery": {
+        "capacity_he": 180000000,
+        "charge_he_per_tick": 100000,
+        "discharge_he_per_tick": 10000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/battery_lithium.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__battery_sodium",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.BATTERY_SODIUM",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Sodium-Iron Battery",
+        "pt_br": "Bateria de Sódio-Ferro"
+      },
+      "battery": {
+        "capacity_he": 900000000,
+        "charge_he_per_tick": 500000,
+        "discharge_he_per_tick": 50000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/battery_sodium.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__battery_schrabidium",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.BATTERY_SCHRABIDIUM",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Schrabidium Battery",
+        "pt_br": "Bateria de Schrabídio"
+      },
+      "battery": {
+        "capacity_he": 4500000000,
+        "charge_he_per_tick": 2500000,
+        "discharge_he_per_tick": 250000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/battery_schrabidium.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__battery_quantum",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.BATTERY_QUANTUM",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Quantum Battery",
+        "pt_br": "Bateria Quântica"
+      },
+      "battery": {
+        "capacity_he": 72000000000,
+        "charge_he_per_tick": 10000000,
+        "discharge_he_per_tick": 1000000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/battery_quantum.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__capacitor_copper",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.CAPACITOR_COPPER",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Copper Capacitor",
+        "pt_br": "Capacitor de Cobre"
+      },
+      "battery": {
+        "capacity_he": 600000,
+        "charge_he_per_tick": 1000,
+        "discharge_he_per_tick": 1000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/capacitor_copper.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__capacitor_gold",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.CAPACITOR_GOLD",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Gold Capacitor",
+        "pt_br": "Capacitor de Ouro"
+      },
+      "battery": {
+        "capacity_he": 6000000,
+        "charge_he_per_tick": 10000,
+        "discharge_he_per_tick": 10000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/capacitor_gold.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__capacitor_niobium",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.CAPACITOR_NIOBIUM",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Niobium Capacitor",
+        "pt_br": "Capacitor de Nióbio"
+      },
+      "battery": {
+        "capacity_he": 60000000,
+        "charge_he_per_tick": 100000,
+        "discharge_he_per_tick": 100000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/capacitor_niobium.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__capacitor_tantalum",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 9,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.CAPACITOR_TANTALUM",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Tantalum Capacitor",
+        "pt_br": "Capacitor de Tântalo"
+      },
+      "battery": {
+        "capacity_he": 300000000,
+        "charge_he_per_tick": 500000,
+        "discharge_he_per_tick": 500000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/capacitor_tantalum.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__capacitor_bismuth",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 10,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.CAPACITOR_BISMUTH",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Bismuth Capacitor",
+        "pt_br": "Capacitor de Bismuto"
+      },
+      "battery": {
+        "capacity_he": 1500000000,
+        "charge_he_per_tick": 2500000,
+        "discharge_he_per_tick": 2500000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/capacitor_bismuth.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "battery_pack__capacitor_spark",
+      "source_variable": "battery_pack",
+      "type": "item",
+      "category": "component",
+      "metadata": 11,
+      "subtype_kind": "enum",
+      "source_enum": "EnumBatteryPack.CAPACITOR_SPARK",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Spark Capacitor",
+        "pt_br": "Capacitor de Faísca"
+      },
+      "battery": {
+        "capacity_he": 6000000000,
+        "charge_he_per_tick": 10000000,
+        "discharge_he_per_tick": 10000000
+      },
+      "source_model_texture": "src/main/resources/assets/hbm/textures/models/machines/capacitor_spark.png",
+      "behavior_gap": "Registered source item icon fallback; source per-pack 3D renderer and charge NBT, charging/discharging, charged creative variants and energy tooltip require native item support."
+    },
+    {
+      "id": "red_cable_classic",
+      "source_variable": "red_cable_classic",
+      "type": "block",
+      "category": "cable",
+      "template": "minecraft:stone",
+      "network_role": "adjacent_cable",
+      "names": {
+        "en_us": "Red Copper Cable (Classic)",
+        "pt_br": "Cabo de Cobre Vermelho (Clássico)"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_cable_classic.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals."
+    },
+    {
+      "id": "red_cable_paintable",
+      "source_variable": "red_cable_paintable",
+      "type": "block",
+      "category": "cable",
+      "template": "minecraft:stone",
+      "network_role": "adjacent_cable",
+      "names": {
+        "en_us": "Paintable Red Copper Cable",
+        "pt_br": "Cabo de Cobre Vermelho Pintável"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_cable_base.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals."
+    },
+    {
+      "id": "red_cable_gauge",
+      "source_variable": "red_cable_gauge",
+      "type": "block",
+      "category": "cable",
+      "template": "minecraft:stone",
+      "network_role": "adjacent_cable",
+      "names": {
+        "en_us": "Power Gauge",
+        "pt_br": "Medidor de Energia"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/deco_red_copper.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals."
+    },
+    {
+      "id": "red_cable_box",
+      "source_variable": "red_cable_box",
+      "type": "block",
+      "category": "cable",
+      "template": "minecraft:stone",
+      "network_role": "adjacent_cable",
+      "names": {
+        "en_us": "Red Copper Boxcable",
+        "pt_br": "Cabo de Cobre Vermelho em Caixa"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/fluid_duct_box.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals."
+    },
+    {
+      "id": "red_connector",
+      "source_variable": "red_connector",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "wire_endpoint",
+      "names": {
+        "en_us": "Electricity Connector",
+        "pt_br": "Conector Elétrico"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_connector.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/red_connector",
+        "top": "blocks/red_connector",
+        "front": "blocks/red_connector"
+      },
+      "opaque_machine_textures": true
+    },
+    {
+      "id": "red_connector_super",
+      "source_variable": "red_connector_super",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "wire_endpoint",
+      "names": {
+        "en_us": "Heavy Duty Electricity Connector",
+        "pt_br": "Conector Elétrico Reforçado"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_connector.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/red_connector",
+        "top": "blocks/red_connector",
+        "front": "blocks/red_connector"
+      },
+      "opaque_machine_textures": true
+    },
+    {
+      "id": "red_pylon",
+      "source_variable": "red_pylon",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "wire_endpoint",
+      "names": {
+        "en_us": "Wooden Electricity Pylon",
+        "pt_br": "Torre de Energia"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_pylon.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/red_pylon",
+        "top": "blocks/red_pylon",
+        "front": "blocks/red_pylon"
+      },
+      "opaque_machine_textures": true
+    },
+    {
+      "id": "red_pylon_steel",
+      "source_variable": "red_pylon_steel",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "wire_endpoint",
+      "names": {
+        "en_us": "Steel Electricity Pylon",
+        "pt_br": "Poste de Eletricidade de Aço"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_pylon.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/red_pylon",
+        "top": "blocks/red_pylon",
+        "front": "blocks/red_pylon"
+      },
+      "opaque_machine_textures": true
+    },
+    {
+      "id": "red_pylon_medium_wood",
+      "source_variable": "red_pylon_medium_wood",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "wire_endpoint",
+      "names": {
+        "en_us": "Medium Wooden Electricity Pylon",
+        "pt_br": "Torre de Energia Média de Madeira"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_pylon.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/red_pylon",
+        "top": "blocks/red_pylon",
+        "front": "blocks/red_pylon"
+      },
+      "opaque_machine_textures": true
+    },
+    {
+      "id": "red_pylon_medium_wood_transformer",
+      "source_variable": "red_pylon_medium_wood_transformer",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "wire_endpoint",
+      "names": {
+        "en_us": "Medium Wooden Electricity Pylon with Transformer",
+        "pt_br": "Torre de Energia Média de Madeira com Transformador"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_pylon.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/red_pylon",
+        "top": "blocks/red_pylon",
+        "front": "blocks/red_pylon"
+      },
+      "opaque_machine_textures": true
+    },
+    {
+      "id": "red_pylon_medium_steel",
+      "source_variable": "red_pylon_medium_steel",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "wire_endpoint",
+      "names": {
+        "en_us": "Medium Steel Electricity Pylon",
+        "pt_br": "Torre de Energia Média de Aço"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_pylon.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/red_pylon",
+        "top": "blocks/red_pylon",
+        "front": "blocks/red_pylon"
+      },
+      "opaque_machine_textures": true
+    },
+    {
+      "id": "red_pylon_medium_steel_transformer",
+      "source_variable": "red_pylon_medium_steel_transformer",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "wire_endpoint",
+      "names": {
+        "en_us": "Medium Steel Electricity Pylon with Transformer",
+        "pt_br": "Torre de Energia Média de Aço com Transformador"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_pylon.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/red_pylon",
+        "top": "blocks/red_pylon",
+        "front": "blocks/red_pylon"
+      },
+      "opaque_machine_textures": true
+    },
+    {
+      "id": "red_pylon_large",
+      "source_variable": "red_pylon_large",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "wire_endpoint",
+      "names": {
+        "en_us": "Large Electricity Pylon",
+        "pt_br": "Torre de Energia Grande"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/red_pylon_large.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/red_pylon_large",
+        "top": "blocks/red_pylon_large",
+        "front": "blocks/red_pylon_large"
+      },
+      "opaque_machine_textures": true
+    },
+    {
+      "id": "cable_switch",
+      "source_variable": "cable_switch",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "network_control",
+      "names": {
+        "en_us": "Power Switch",
+        "pt_br": "Interruptor de Energia"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/cable_switch_off.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/cable_switch_off",
+        "top": "blocks/cable_switch_off",
+        "front": "blocks/cable_switch_off",
+        "front_on": "blocks/cable_switch_on"
+      },
+      "opaque_machine_textures": true
+    },
+    {
+      "id": "cable_detector",
+      "source_variable": "cable_detector",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "network_role": "network_control",
+      "names": {
+        "en_us": "Redstone Power Switch",
+        "pt_br": "Interruptor de Energia Redstone"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/cable_detector_off.png",
+      "behavior_gap": "Original icon/casing cube fallback. Connectivity, painting/disguise, gauge, cable boxes, long-distance wire links, redstone switching/detection and custom geometry require native logic/visuals.",
+      "textures": {
+        "side": "blocks/cable_detector_off",
+        "top": "blocks/cable_detector_off",
+        "front": "blocks/cable_detector_off",
+        "front_on": "blocks/cable_detector_on"
+      },
+      "opaque_machine_textures": true
     },
     {
       "id": "bio_wafer",

@@ -16389,6 +16389,58 @@
     "ntm:machine_radgen": {
       "auto": false,
       "source": "Energy batch 5; content fallback and source algorithm contract only; visual/model/multiblock deferred."
+    },
+    "ntm:machine_battery_socket": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:machine_battery_redd": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:red_connector": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:red_connector_super": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:red_pylon": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:red_pylon_steel": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:red_pylon_medium_wood": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:red_pylon_medium_wood_transformer": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:red_pylon_medium_steel": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:red_pylon_medium_steel_transformer": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:red_pylon_large": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:cable_switch": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:cable_detector": {
+      "auto": false,
+      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
     }
   }
 }

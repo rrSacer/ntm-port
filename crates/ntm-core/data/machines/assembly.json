@@ -4178,6 +4178,205 @@
 "pools": []
 },
 {
+"name": "ass.capacitorgold",
+"label": "Capacitor de Ouro",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:450",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 8,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"n": 16,
+"label": "Fio de Ouro Denso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:battery_pack__capacitor_gold",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.capacitorniobium",
+"label": "Capacitor de Nióbio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:453",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 12,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:wire_dense__niobium"
+],
+"n": 24,
+"label": "Fio de Nióbio Denso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:battery_pack__capacitor_niobium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.capacitortantalum",
+"label": "Capacitor de Tântalo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:456",
+"duration": 100,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 16,
+"label": "Barra de Plástico Rígido"
+},
+{
+"ids": [
+"ntm:ingot_tantalium"
+],
+"n": 24,
+"label": "Lingote de Tântalo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:battery_pack__capacitor_tantalum",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.capacitorbismuth",
+"label": "Capacitor de Bismuto",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:459",
+"duration": 100,
+"power": 25000,
+"in": [
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 24,
+"label": "Barra de Plástico Rígido"
+},
+{
+"ids": [
+"ntm:ingot_bismuth"
+],
+"n": 24,
+"label": "Lingote de Bismuto"
+},
+{
+"ids": [
+"ntm:circuit__chip_quantum"
+],
+"n": 1,
+"label": "Processador Quântico de Estado Sólido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:battery_pack__capacitor_bismuth",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.capacitorspark",
+"label": "Capacitor de Faísca",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:463",
+"duration": 100,
+"power": 100000,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__combine_steel"
+],
+"n": 12,
+"label": "Placa Fundida de Aço Combine"
+},
+{
+"ids": [
+"ntm:powder_spark_mix"
+],
+"n": 32,
+"label": "Mistura de Faísca"
+},
+{
+"ids": [
+"ntm:pellet_charged"
+],
+"n": 32,
+"label": "Partículas Ionizadas"
+},
+{
+"ids": [
+"ntm:circuit__chip_quantum"
+],
+"n": 16,
+"label": "Processador Quântico de Estado Sólido"
+}
+],
+"fin": [
+[
+"perfluoromethyl_cold",
+8000
+]
+],
+"out": [
+[
+"ntm:battery_pack__capacitor_spark",
+1,
+1.0
+]
+],
+"fout": [
+[
+"perfluoromethyl",
+8000
+]
+],
+"pools": []
+},
+{
 "name": "ass.tank",
 "label": "Tanque de Fluidos",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:472",
@@ -15909,5 +16108,5 @@
 "pools": []
 }
 ],
-"skipped": 188
+"skipped": 183
 }

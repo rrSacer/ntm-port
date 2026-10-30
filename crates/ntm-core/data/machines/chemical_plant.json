@@ -833,6 +833,220 @@
 "pools": []
 },
 {
+"name": "chem.batterylead",
+"label": "Bateria de Chumbo-Ácido",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:171",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 4,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ingot_lead"
+],
+"n": 4,
+"label": "Lingote de Chumbo"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+8000
+]
+],
+"out": [
+[
+"ntm:battery_pack__battery_lead",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.batterylithium",
+"label": "Bateria de Íon-Lítio",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:176",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_lithium"
+],
+"n": 12,
+"label": "Pó de Lítio"
+},
+{
+"ids": [
+"ntm:powder_cobalt"
+],
+"n": 8,
+"label": "Pó de Cobalto"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4,
+"label": "Barra de Baquelita"
+}
+],
+"fin": [
+[
+"oxygen",
+2000
+]
+],
+"out": [
+[
+"ntm:battery_pack__battery_lithium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.batterysodium",
+"label": "Bateria de Sódio-Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:182",
+"duration": 100,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:powder_sodium"
+],
+"n": 24,
+"label": "Sódio"
+},
+{
+"ids": [
+"ntm:powder_iron"
+],
+"n": 24,
+"label": "Pó de Ferro"
+},
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 12,
+"label": "Barra de Plástico Rígido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:battery_pack__battery_sodium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.batteryschrabidium",
+"label": "Bateria de Schrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:187",
+"duration": 100,
+"power": 25000,
+"in": [
+{
+"ids": [
+"ntm:powder_schrabidium"
+],
+"n": 24,
+"label": "Pó de Schrabídio"
+},
+{
+"ids": [
+"ntm:plate_cast__abronze",
+"ntm:plate_cast__bbronze"
+],
+"n": 8,
+"label": "Placa Fundida de Bronze de Arsênio"
+}
+],
+"fin": [
+[
+"helium4",
+8000
+]
+],
+"out": [
+[
+"ntm:battery_pack__battery_schrabidium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.batteryquantum",
+"label": "Bateria Quântica",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:192",
+"duration": 100,
+"power": 100000,
+"in": [
+{
+"ids": [
+"ntm:wire_dense__bscco"
+],
+"n": 24,
+"label": "Fio de BSCCO Denso"
+},
+{
+"ids": [
+"ntm:pellet_charged"
+],
+"n": 32,
+"label": "Partículas Ionizadas"
+},
+{
+"ids": [
+"ntm:ingot_cft"
+],
+"n": 16,
+"label": "Fulerita Cristalina"
+}
+],
+"fin": [
+[
+"perfluoromethyl_cold",
+8000
+]
+],
+"out": [
+[
+"ntm:battery_pack__battery_quantum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"perfluoromethyl",
+8000
+]
+],
+"pools": []
+},
+{
 "name": "chem.lightconstruction",
 "label": "Part Generic Alclad",
 "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:241",
@@ -1771,5 +1985,5 @@
 "pools": []
 }
 ],
-"skipped": 23
+"skipped": 18
 }

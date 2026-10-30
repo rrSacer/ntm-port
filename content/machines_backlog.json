@@ -2015,7 +2015,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_battery_socket"
     },
     {
       "id": "machine_battery_redd",
@@ -2033,7 +2034,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_battery_redd"
     },
     {
       "id": "machine_battery_potato",
