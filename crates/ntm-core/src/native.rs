@@ -163,6 +163,98 @@ pub fn sync_changed(sent: Option<&[i32]>, now: &[i32], synced: &[usize]) -> bool
     synced.iter().any(|&i| sent.get(i) != now.get(i))
 }
 
+// ------------------------------------------------------- recipe selection
+
+/// The menu button that clears a machine's recipe.
+pub const RECIPE_CLEAR: u32 = 9999;
+/// The menu button that picks recipe `i` of [`recipes`]: `RECIPE_BASE + i`.
+pub const RECIPE_BASE: u32 = 10_000;
+
+/// A row of a machine's recipe list. The tables are the port's, compiled
+/// into both sides, so the client lays out, pages and searches the list
+/// itself; only the pick (a menu button) reaches the server.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct RecipeRow {
+    /// Its place in the machine's table (the button is `RECIPE_BASE + index`).
+    pub index: u32,
+    pub label: String,
+    /// The item shown: its first item output, or the fluid identifier when
+    /// it makes only fluids.
+    pub icon: String,
+    /// (item, count): the first of an ingredient's alternatives.
+    pub inputs: Vec<(String, u32)>,
+    pub outputs: Vec<(String, u32)>,
+    /// (fluid, mB).
+    pub fluids_in: Vec<(String, u32)>,
+    pub fluids_out: Vec<(String, u32)>,
+}
+
+const FLUID_ICON: &str = "ntm:fluid_identifier_multi";
+
+/// The recipes block `block`'s machine picks from (None: it has no list,
+/// its recipe follows what it holds). An anvil lists its tier's
+/// constructions, each with its index in the whole table.
+pub fn recipes(block: &str) -> Option<Vec<RecipeRow>> {
+    let icon = |out: &[(String, u32)]| out.first().map_or(FLUID_ICON.to_string(), |o| o.0.clone());
+    if let Some(st) = crate::crafter::Station::of(block) {
+        if st.picks_by_input() {
+            return None;
+        }
+        let rows = st.recipes().iter().enumerate().map(|(i, r)| {
+            let outputs: Vec<(String, u32)> = r.items_out.iter().map(|o| (o.0.clone(), o.1)).collect();
+            RecipeRow {
+                index: i as u32,
+                label: r.label.clone(),
+                icon: icon(&outputs),
+                inputs: r.items_in.iter().filter_map(|i| Some((i.ids.first()?.clone(), i.n))).collect(),
+                outputs,
+                fluids_in: r.fluids_in.clone(),
+                fluids_out: r.fluids_out.clone(),
+            }
+        });
+        return Some(rows.collect());
+    }
+    if registry::spec(block)?.kind != crate::machine::Kind::Anvil {
+        return None;
+    }
+    let t = crate::anvil::Tables::ntm();
+    let rows = t.listed(crate::anvil::tier(block)).into_iter().map(|i| {
+        let c = &t.construction[i];
+        let outputs: Vec<(String, u32)> = c.outputs.iter().map(|o| (o.0.clone(), o.1)).collect();
+        RecipeRow {
+            index: i as u32,
+            label: if c.label.is_empty() { icon(&outputs) } else { c.label.clone() },
+            icon: icon(&outputs),
+            inputs: c.inputs.iter().filter_map(|i| Some((i.ids.first()?.clone(), i.count))).collect(),
+            outputs,
+            fluids_in: Vec::new(),
+            fluids_out: Vec::new(),
+        }
+    });
+    Some(rows.collect())
+}
+
+/// The index in block `block`'s menu data that holds its recipe + 1 (0:
+/// none), for the list to mark it.
+pub fn recipe_slot(block: &str) -> Option<usize> {
+    recipes(block)?;
+    if crate::crafter::Station::of(block).is_some() {
+        Some(crate::server::container_bridge::CRAFTER_RECIPE)
+    } else {
+        Some(crate::anvil::RECIPE_DATA)
+    }
+}
+
+/// A recipe menu button: `Some(None)` clears, `Some(Some(i))` picks recipe
+/// `i`, None is another button.
+pub fn recipe_button(button: u32) -> Option<Option<usize>> {
+    match button {
+        RECIPE_CLEAR => Some(None),
+        b if b >= RECIPE_BASE => Some(Some((b - RECIPE_BASE) as usize)),
+        _ => None,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -283,5 +375,46 @@ mod screens {
         assert_eq!(f.screen_data()[3], 0);
         f.button(0);
         assert_eq!(f.screen_data()[3], 1);
+    }
+
+    /// The recipe lists: the crafters that pick (not those that follow
+    /// their input), the anvils by tier; the pick and the clear by button,
+    /// the pick + 1 in the menu data.
+    #[test]
+    fn recipe_lists_pick_by_button() {
+        use super::{RECIPE_BASE, RECIPE_CLEAR, recipe_button, recipe_slot, recipes};
+        use crate::crafter::{Crafter, Station};
+        const ASM: &str = "ntm:machine_assembly_machine";
+        let rows = recipes(ASM).unwrap();
+        assert_eq!(rows.len(), Station::Assembly.recipes().len());
+        assert!(rows.iter().enumerate().all(|(i, r)| r.index == i as u32 && !r.icon.is_empty()));
+        assert!(recipes("ntm:machine_centrifuge").is_none());
+        assert!(recipes("ntm:machine_battery").is_none());
+        assert_eq!(recipe_slot(ASM), Some(30));
+        let mut c = Crafter::new(Station::Assembly);
+        let r = &Station::Assembly.recipes()[3];
+        c.set_recipe(r);
+        let data = crate::server::container_bridge::crafter_data(&c);
+        assert_eq!(data.len(), 31);
+        assert_eq!(data[30], 4);
+        assert_eq!(recipe_button(RECIPE_BASE + 3), Some(Some(3)));
+        assert_eq!(recipe_button(RECIPE_CLEAR), Some(None));
+        assert_eq!(recipe_button(1), None);
+
+        let iron = recipes("ntm:anvil_iron").unwrap();
+        let t = crate::anvil::Tables::ntm();
+        assert!(!iron.is_empty() && iron.len() < t.construction.len());
+        assert_eq!(recipe_slot("ntm:anvil_iron"), Some(crate::anvil::RECIPE_DATA));
+        let mut a = crate::anvil::Anvil::new(1);
+        let pick = iron[2].index;
+        a.press(t, RECIPE_BASE + pick);
+        assert_eq!(a.screen_data(t)[crate::anvil::RECIPE_DATA], pick as i32 + 1);
+        // Above its tier: nothing picked.
+        let high = (0..t.construction.len()).find(|&i| !t.construction[i].tier_valid(1)).unwrap();
+        a.press(t, RECIPE_BASE + high as u32);
+        assert_eq!(a.screen_data(t)[crate::anvil::RECIPE_DATA], 0);
+        a.press(t, RECIPE_BASE + pick);
+        a.press(t, RECIPE_CLEAR);
+        assert_eq!(a.screen_data(t)[crate::anvil::RECIPE_DATA], 0);
     }
 }

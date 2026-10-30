@@ -42,6 +42,9 @@ pub mod buttons {
     pub const FORGE: u32 = 3;
 }
 
+/// The index of its menu data with the construction picked + 1 (0: none).
+pub const RECIPE_DATA: usize = 1;
+
 pub mod actions {
     pub const BACK: u32 = 1;
     /// A row of the list: `LIST + row` (the recipes the anvil's tier allows).
@@ -348,6 +351,11 @@ impl Anvil {
 
     /// A button of its screen; true when it opens the recipe list.
     pub fn press(&mut self, t: &Tables, id: u32) -> bool {
+        if let Some(pick) = crate::native::recipe_button(id) {
+            // The native list: only its tier's constructions.
+            self.recipe = pick.filter(|&i| t.construction.get(i).is_some_and(|c| c.tier_valid(self.tier)));
+            return false;
+        }
         match id {
             buttons::PICK => {
                 self.picking = true;

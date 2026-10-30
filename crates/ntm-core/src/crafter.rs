@@ -197,7 +197,7 @@ impl Station {
     }
 
     /// The recipe is picked from the input (the centrifuge), not a list.
-    fn picks_by_input(self) -> bool {
+    pub fn picks_by_input(self) -> bool {
         matches!(self, Station::Centrifuge | Station::Crystallizer | Station::PyroOven | Station::Electrolyser | Station::Liquefactor | Station::Solidifier)
     }
 

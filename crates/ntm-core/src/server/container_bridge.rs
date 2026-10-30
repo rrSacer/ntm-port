@@ -803,6 +803,10 @@ fn bomb_data(b: &crate::bomb::Bomb) -> Vec<i32> {
 }
 
 /// The values the assembly machine's screen shows (tools/visual-gen/visual.json).
+/// The index of a crafter's menu data with its recipe + 1 (0: none), in
+/// its station's table (`crate::native::recipes`).
+pub const CRAFTER_RECIPE: usize = 30;
+
 pub(crate) fn crafter_data(c: &Crafter) -> Vec<i32> {
     let clamp = |v: u64| v.min(i32::MAX as u64) as i32;
     let recipe = c.current();
@@ -841,6 +845,7 @@ pub(crate) fn crafter_data(c: &Crafter) -> Vec<i32> {
     // Then every tank, three in and three out (the chemical plant's).
     .chain((0..3).flat_map(|i| tank(c.tin.get(i))))
     .chain((0..3).flat_map(|i| tank(c.tout.get(i))))
+    .chain(std::iter::once(recipe.and_then(|r| c.station.recipes().iter().position(|x| x.name == r.name)).map_or(0, |i| i as i32 + 1)))
     .collect()
 }
 
@@ -1018,6 +1023,22 @@ impl Server {
                     pos: key.1,
                 });
                 self.push_view(true);
+            }
+            return;
+        }
+        if let Data::Crafter(c) = &mut m.data
+            && let Some(pick) = crate::native::recipe_button(button)
+        {
+            if crate::native::recipes(&m.block).is_some() {
+                match pick.and_then(|i| c.station.recipes().get(i)) {
+                    Some(r) => c.set_recipe(r),
+                    None if pick.is_none() => {
+                        c.recipe = None;
+                        c.progress = 0;
+                    }
+                    None => {}
+                }
+                r.dirty = true;
             }
             return;
         }
