@@ -1,13 +1,13 @@
 {
   "variants": {
     "type=bottom": {
-      "model": "ntm:block/steel_grate"
+      "model": "ntm:block/visual/steel_grate_0"
     },
     "type=top": {
-      "model": "ntm:block/steel_grate_top"
+      "model": "ntm:block/visual/steel_grate_1"
     },
     "type=double": {
-      "model": "ntm:block/steel_grate_double"
+      "model": "ntm:block/visual/steel_grate_2"
     }
   }
 }

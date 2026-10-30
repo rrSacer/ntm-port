@@ -1,0 +1,20 @@
+{
+  "obj": "ntm:models/obj/scaffold.obj",
+  "texture": "ntm:textures/block/visual/scaffold_white.png",
+  "rotation": 0,
+  "radius": 1.0,
+  "show": {
+    "Vertical": {
+      "property": "axis",
+      "is": "y"
+    },
+    "NorthSouth": {
+      "property": "axis",
+      "is": "z"
+    },
+    "EastWest": {
+      "property": "axis",
+      "is": "x"
+    }
+  }
+}

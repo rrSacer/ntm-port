@@ -9813,8 +9813,15 @@
       }
     },
     "ntm:steel_beam": {
-      "source": "oil batch B: the extracted model is not this block's (steel_beam got a boxcar, the refinery its exploded form); its own entry comes with the batch's visuals",
-      "auto": false
+      "source": "DecoBlock steel_beam, RenderSteelBeam: the beam OBJ with the steel_beam icon, no turn",
+      "model": {
+        "obj": "ntm:models/obj/beam.obj",
+        "obj_from": "models/blocks/beam.obj",
+        "texture": "ntm:textures/block/visual/steel_beam.png",
+        "texture_from": "textures/blocks/steel_beam.png",
+        "rotation": 0,
+        "radius": 1.0
+      }
     },
     "ntm:machine_boiler": {
       "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
@@ -9843,6 +9850,232 @@
     "ntm:machine_coker": {
       "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
       "auto": false
+    },
+    "ntm:steel_scaffold": {
+      "source": "BlockScaffold (steel), RenderScaffoldBlock: the scaffold OBJ with the scaffold_steel icon, turned by its orientation (here the pillar's axis; HBM's second vertical turn, by the placer's yaw, is left out)",
+      "model": {
+        "obj": "ntm:models/obj/scaffold.obj",
+        "texture": "ntm:textures/block/visual/scaffold_steel.png",
+        "texture_from": "textures/blocks/scaffold_steel.png",
+        "rotation": 0,
+        "radius": 1.0,
+        "variants": {
+          "from": "models/blocks/scaffold.obj",
+          "bones": {
+            "Vertical": {
+              "rot": -90,
+              "pitch": 0,
+              "origin": [
+                0.5,
+                0,
+                0.5
+              ]
+            },
+            "NorthSouth": {
+              "rot": -90,
+              "pitch": 90,
+              "origin": [
+                0.5,
+                0.5,
+                0
+              ]
+            },
+            "EastWest": {
+              "rot": -180,
+              "pitch": 90,
+              "origin": [
+                1,
+                0.5,
+                0.5
+              ]
+            }
+          }
+        },
+        "show": {
+          "Vertical": {
+            "property": "axis",
+            "is": "y"
+          },
+          "NorthSouth": {
+            "property": "axis",
+            "is": "z"
+          },
+          "EastWest": {
+            "property": "axis",
+            "is": "x"
+          }
+        }
+      }
+    },
+    "ntm:steel_scaffold__red": {
+      "source": "BlockScaffold (red), RenderScaffoldBlock: the scaffold OBJ with the scaffold_red icon, turned by its orientation (here the pillar's axis; HBM's second vertical turn, by the placer's yaw, is left out)",
+      "model": {
+        "obj": "ntm:models/obj/scaffold.obj",
+        "texture": "ntm:textures/block/visual/scaffold_red.png",
+        "texture_from": "textures/blocks/scaffold_red.png",
+        "rotation": 0,
+        "radius": 1.0,
+        "show": {
+          "Vertical": {
+            "property": "axis",
+            "is": "y"
+          },
+          "NorthSouth": {
+            "property": "axis",
+            "is": "z"
+          },
+          "EastWest": {
+            "property": "axis",
+            "is": "x"
+          }
+        }
+      }
+    },
+    "ntm:steel_scaffold__white": {
+      "source": "BlockScaffold (white), RenderScaffoldBlock: the scaffold OBJ with the scaffold_white icon, turned by its orientation (here the pillar's axis; HBM's second vertical turn, by the placer's yaw, is left out)",
+      "model": {
+        "obj": "ntm:models/obj/scaffold.obj",
+        "texture": "ntm:textures/block/visual/scaffold_white.png",
+        "texture_from": "textures/blocks/scaffold_white.png",
+        "rotation": 0,
+        "radius": 1.0,
+        "show": {
+          "Vertical": {
+            "property": "axis",
+            "is": "y"
+          },
+          "NorthSouth": {
+            "property": "axis",
+            "is": "z"
+          },
+          "EastWest": {
+            "property": "axis",
+            "is": "x"
+          }
+        }
+      }
+    },
+    "ntm:steel_scaffold__yellow": {
+      "source": "BlockScaffold (yellow), RenderScaffoldBlock: the scaffold OBJ with the scaffold_yellow icon, turned by its orientation (here the pillar's axis; HBM's second vertical turn, by the placer's yaw, is left out)",
+      "model": {
+        "obj": "ntm:models/obj/scaffold.obj",
+        "texture": "ntm:textures/block/visual/scaffold_yellow.png",
+        "texture_from": "textures/blocks/scaffold_yellow.png",
+        "rotation": 0,
+        "radius": 1.0,
+        "show": {
+          "Vertical": {
+            "property": "axis",
+            "is": "y"
+          },
+          "NorthSouth": {
+            "property": "axis",
+            "is": "z"
+          },
+          "EastWest": {
+            "property": "axis",
+            "is": "x"
+          }
+        }
+      }
+    },
+    "ntm:steel_grate": {
+      "source": "BlockGrate, RenderGrate: a 2 px plate at meta * 2 px; on stone_slab's states here: bottom 0 (placed on a block), top 14 (under a block), double both (two grates); HBM's other heights by click are left out",
+      "block_model": {
+        "textures": {
+          "top": "grate_top",
+          "side": "grate_side"
+        },
+        "particle": "top",
+        "states": {
+          "type=bottom": [
+            [
+              [
+                0,
+                0,
+                0
+              ],
+              [
+                16,
+                2,
+                16
+              ],
+              {
+                "up": "top",
+                "down": "top",
+                "north": "side",
+                "south": "side",
+                "west": "side",
+                "east": "side"
+              }
+            ]
+          ],
+          "type=top": [
+            [
+              [
+                0,
+                14,
+                0
+              ],
+              [
+                16,
+                16,
+                16
+              ],
+              {
+                "up": "top",
+                "down": "top",
+                "north": "side",
+                "south": "side",
+                "west": "side",
+                "east": "side"
+              }
+            ]
+          ],
+          "type=double": [
+            [
+              [
+                0,
+                0,
+                0
+              ],
+              [
+                16,
+                2,
+                16
+              ],
+              {
+                "up": "top",
+                "down": "top",
+                "north": "side",
+                "south": "side",
+                "west": "side",
+                "east": "side"
+              }
+            ],
+            [
+              [
+                0,
+                14,
+                0
+              ],
+              [
+                16,
+                16,
+                16
+              ],
+              {
+                "up": "top",
+                "down": "top",
+                "north": "side",
+                "south": "side",
+                "west": "side",
+                "east": "side"
+              }
+            ]
+          ]
+        }
+      }
     },
     "ntm:machine_fracking_tower": {
       "source": "oil batch D: no extracted model until the batch gets its own entry (the extracted ones are not checked)",

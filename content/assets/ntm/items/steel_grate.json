@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ntm:block/steel_grate"
+    "model": "ntm:block/visual/steel_grate_0"
   }
 }
