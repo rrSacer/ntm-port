@@ -152,7 +152,7 @@ impl WorldState {
         for e in s.machines {
             match e.m {
                 MachineSer::Known(m) => {
-                    w.machines.insert((e.d, e.p), m);
+                    w.machines.insert((e.d, e.p), m.upgraded());
                 }
                 MachineSer::Raw(_) => w.unknown.push(e),
             }
@@ -384,5 +384,28 @@ mod tests {
         assert_eq!(w.unknown.len(), 1);
         let back = serde_json::to_string(&w.to_save()).unwrap();
         assert!(back.contains("Reactor"));
+    }
+
+    /// A world saved before stage 4: its electrolyser a crafter (the fluid
+    /// line, no nitric acid tank) and its arc furnace inert. They load as
+    /// their kinds now, the electrolyser's fluid line kept.
+    #[test]
+    fn machines_saved_under_an_older_kind_load_as_their_kind_now() {
+        use crate::crafter::{Crafter, Station};
+        use crate::machine::Data;
+        let mut c = Crafter::new(Station::Electrolyser);
+        c.tin.truncate(1);
+        c.tin[0].set_type("vitriol");
+        c.tin[0].mb = 700;
+        let mut w = WorldState::default();
+        let at = |x| ("minecraft:overworld".to_string(), [x, 64, 0]);
+        let block = |id: &str, data| Machine { block: id.into(), facing: Some("north".into()), data };
+        w.machines.insert(at(0), block("ntm:machine_electrolyser", Data::Crafter(c)));
+        w.machines.insert(at(1), block("ntm:machine_arc_furnace_large", Data::Inert { name: "ntm:machine_arc_furnace_large".into() }));
+        let w = WorldState::from_save(serde_json::from_str(&serde_json::to_string(&w.to_save()).unwrap()).unwrap());
+        let Data::Electrolyser(e) = &w.machines[&at(0)].data else { panic!("{:?}", w.machines[&at(0)]) };
+        assert_eq!((e.fluid.tin[0].fluid.as_str(), e.fluid.tin[0].mb), ("vitriol", 700));
+        assert_eq!(e.fluid.tin[1].fluid, "nitric_acid");
+        assert_eq!(w.machines[&at(1)].kind(), Kind::ArcFurnace);
     }
 }

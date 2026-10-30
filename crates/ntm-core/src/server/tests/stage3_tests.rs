@@ -15,13 +15,17 @@ fn machine(g: &mut Game, at: Pos, block: &str, slots: usize) {
 
 fn edit(g: &mut Game, at: Pos, f: &dyn Fn(&mut Crafter)) {
     let r = g.ready();
-    let Some(Data::Crafter(c)) = r.world.machines.get_mut(&(OW.to_string(), at)).map(|m| &mut m.data) else { panic!() };
-    f(c);
+    match r.world.machines.get_mut(&(OW.to_string(), at)).map(|m| &mut m.data) {
+        Some(Data::Crafter(c)) => f(c),
+        Some(Data::Electrolyser(e)) => f(&mut e.fluid),
+        _ => panic!(),
+    }
 }
 
 fn crafter(g: &mut Game, at: Pos) -> Crafter {
     match g.machine(at).data {
         Data::Crafter(c) => c,
+        Data::Electrolyser(e) => e.fluid.clone(),
         other => panic!("{other:?}"),
     }
 }

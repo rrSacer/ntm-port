@@ -66,6 +66,10 @@ pub struct Recipe {
     pub items_out: Vec<(String, u32, f32)>,
     #[serde(rename = "fout")]
     pub fluids_out: Vec<(String, u32)>,
+    /// Molten outputs (material, quanta): the arc furnace's fluid mode, the
+    /// electrolyser's metal line.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub mout: Vec<(String, u32)>,
     /// `autoSwitchGroup`: within it, the first input of another recipe in
     /// the machine switches to that recipe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -138,8 +142,9 @@ impl Station {
             // identifier; here the first fluid in).
             Station::Crystallizer => (1, 0, 8_000),
             Station::PyroOven => (1, 1, 24_000),
-            // The fluid line's input and two outputs.
-            Station::Electrolyser => (1, 2, 16_000),
+            // The fluid line's input, the metal line's nitric acid (typed in
+            // `new`), and the fluid line's two outputs.
+            Station::Electrolyser => (2, 2, 16_000),
         }
     }
 
@@ -244,7 +249,7 @@ fn remove(list: &mut Vec<(String, u32)>, ids: &[String], mut n: u32) {
 impl Crafter {
     pub fn new(station: Station) -> Self {
         let (i, o, cap) = station.tanks();
-        Self {
+        let mut c = Self {
             station,
             recipe: None,
             items: Vec::new(),
@@ -255,7 +260,11 @@ impl Crafter {
             progress: 0,
             done: 0,
             screen: Screen::Machine,
+        };
+        if station == Station::Electrolyser {
+            c.tin[1].set_type("nitric_acid");
         }
+        c
     }
 
     pub fn current(&self) -> Option<&'static Recipe> {
@@ -465,7 +474,9 @@ impl FluidNode for Crafter {
         // An empty input tank typed by the first fluid takes any, but not
         // what the machine itself puts out (the oven's vitriol would flow
         // back into its own input).
-        if self.accepts_any() {
+        // (A fluid another input tank is typed for goes there: the
+        // electrolyser's nitric acid.)
+        if self.accepts_any() && !self.tin.iter().skip(1).any(|t| t.fluid == f) {
             if self.tout.iter().any(|t| t.fluid == f && t.mb > 0) {
                 return 0;
             }
@@ -482,6 +493,7 @@ impl FluidNode for Crafter {
     }
     fn fluid_give(&mut self, f: &str, mut mb: u64) {
         if self.accepts_any()
+            && !self.tin.iter().skip(1).any(|t| t.fluid == f)
             && let Some(t) = self.tin.first_mut()
         {
             t.set_type(f);
@@ -743,6 +755,7 @@ mod purex_tests {
             fluids_in: vec![("kerosene".into(), 500), ("nitric_acid".into(), 250)],
             items_out: vec![("ntm:nuclear_waste_tiny".into(), 1, 1.0)],
             fluids_out: Vec::new(),
+            mout: Vec::new(),
             group: group.map(Into::into),
         }
     }

@@ -140,6 +140,7 @@ impl Server {
                 Data::Crucible(_) => Some((k.clone(), 0)),
                 Data::Channel(_) => Some((k.clone(), 1)),
                 Data::FoundryTank(_) => Some((k.clone(), 2)),
+                Data::ArcFurnace(_) | Data::Electrolyser(_) => Some((k.clone(), 3)),
                 _ => None,
             })
             .collect();
@@ -148,13 +149,46 @@ impl Server {
             changed |= match kind {
                 0 => crucible_tick(&mut r.world.machines, host, t, &key, tick),
                 1 => channel_tick(&mut r.world.machines, host, t, &key, tick),
-                _ => tank_tick(&mut r.world.machines, host, t, &key, tick),
+                2 => tank_tick(&mut r.world.machines, host, t, &key, tick),
+                _ => molten_tick(&mut r.world.machines, host, t, &key),
             };
         }
         if changed {
             r.dirty = true;
         }
     }
+}
+
+/// The molten metal of the arc furnace (from a spout 3 blocks ahead of its
+/// core, 72 quanta a tick, the lid open: `TileEntityMachineArcFurnaceLarge`
+/// :166-183) and the electrolyser (its left stack 6 blocks behind, its right
+/// 6 ahead, 24 a tick each: `TileEntityElectrolyser`:201-245), onto the
+/// first block up to 6 below; nothing pours with no foundry block there.
+fn molten_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &Key) -> bool {
+    let Some(mut me) = m.remove(key) else { return false };
+    let Some(d) = me.facing.as_deref().and_then(registry::facing_dir) else {
+        m.insert(key.clone(), me);
+        return false;
+    };
+    let at = |k: i32, up: i32| [key.1[0] + d[0] * k, key.1[1] + up, key.1[2] + d[2] * k];
+    let mut changed = false;
+    match &mut me.data {
+        Data::ArcFurnace(f) => {
+            if let Some(target) = below(m, host, &key.0, at(3, 1), 6) {
+                changed |= f.pour(|mat, q| accept_pour(m, t, &target, mat, q));
+            }
+        }
+        Data::Electrolyser(e) => {
+            for (right, k) in [(false, -6), (true, 6)] {
+                if let Some(target) = below(m, host, &key.0, at(k, 2), 6) {
+                    changed |= e.pour(right, |mat, q| accept_pour(m, t, &target, mat, q));
+                }
+            }
+        }
+        _ => {}
+    }
+    m.insert(key.clone(), me);
+    changed
 }
 
 fn crucible_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &Key, tick: u64) -> bool {

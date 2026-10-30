@@ -52,6 +52,10 @@ pub enum Kind {
     /// The bedrock chain (`crate::excavator`, `crate::bedrock::slopper`).
     Excavator,
     OreSlopper,
+    /// The bedrock chain's stage 4 (`crate::arc_furnace`,
+    /// `crate::electrolyser`).
+    ArcFurnace,
+    Electrolyser,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -135,6 +139,9 @@ pub enum Data {
     Anvil(crate::anvil::Anvil),
     Excavator(crate::excavator::Excavator),
     OreSlopper(crate::bedrock::slopper::OreSlopper),
+    ArcFurnace(crate::arc_furnace::ArcFurnace),
+    /// Boxed: the fluid line's crafter and the metal line's stacks.
+    Electrolyser(Box<crate::electrolyser::Electrolyser>),
     Inert { name: String },
 }
 
@@ -176,6 +183,8 @@ impl Machine {
             Kind::Anvil => Data::Anvil(crate::anvil::Anvil::new(crate::anvil::tier(block_id))),
             Kind::Excavator => Data::Excavator(crate::excavator::Excavator::new()),
             Kind::OreSlopper => Data::OreSlopper(Default::default()),
+            Kind::ArcFurnace => Data::ArcFurnace(Default::default()),
+            Kind::Electrolyser => Data::Electrolyser(Default::default()),
             Kind::Crafter => match crate::crafter::Station::of(block_id) {
                 Some(st) => Data::Crafter(crate::crafter::Crafter::new(st)),
                 None => Data::Inert { name: block_id.into() },
@@ -195,6 +204,23 @@ impl Machine {
             facing,
             data,
         }
+    }
+
+    /// A machine saved under an older kind of its block (one inert until
+    /// its stage, the electrolyser's fluid line before its metal line): its
+    /// block's kind now, keeping what carries over.
+    pub fn upgraded(self) -> Self {
+        let Some(spec) = crate::registry::spec(&self.block) else { return self };
+        if spec.kind == self.kind() || matches!(self.data, Data::Inert { .. }) && spec.kind == Kind::Crafter {
+            return self;
+        }
+        let mut new = Machine::new(spec.kind, &self.block, self.facing.clone());
+        if let (Data::Crafter(mut c), Data::Electrolyser(e)) = (self.data, &mut new.data) {
+            // Its fluid line had no nitric acid tank then.
+            c.tin.extend(e.fluid.tin.iter().skip(c.tin.len()).cloned());
+            e.fluid = c;
+        }
+        new
     }
 
     pub fn kind(&self) -> Kind {
@@ -221,6 +247,8 @@ impl Machine {
             Data::Anvil(_) => Kind::Anvil,
             Data::Excavator(_) => Kind::Excavator,
             Data::OreSlopper(_) => Kind::OreSlopper,
+            Data::ArcFurnace(_) => Kind::ArcFurnace,
+            Data::Electrolyser(_) => Kind::Electrolyser,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -249,6 +277,8 @@ impl Machine {
             Data::Anvil(m) => m,
             Data::Excavator(m) => m,
             Data::OreSlopper(m) => m,
+            Data::ArcFurnace(m) => m,
+            Data::Electrolyser(m) => &**m,
             Data::Inert { name } => name,
         }
     }
@@ -277,6 +307,8 @@ impl Machine {
             Data::Anvil(m) => m,
             Data::Excavator(m) => m,
             Data::OreSlopper(m) => m,
+            Data::ArcFurnace(m) => m,
+            Data::Electrolyser(m) => &mut **m,
             Data::Inert { name } => name,
         }
     }

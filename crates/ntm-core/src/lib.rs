@@ -7,6 +7,7 @@
 //! `cargo test` against a fake world.
 
 pub mod anvil;
+pub mod arc_furnace;
 pub mod bedrock;
 pub mod blast;
 pub mod blastfurnace;
@@ -14,6 +15,7 @@ pub mod blockstate;
 pub mod bomb;
 pub mod client;
 pub mod crafter;
+pub mod electrolyser;
 pub mod energy;
 pub mod excavator;
 pub mod fluid;

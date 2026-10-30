@@ -141,7 +141,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_electrolyser",
-        kind: Kind::Crafter,
+        kind: Kind::Electrolyser,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::AllRound,
@@ -344,15 +344,13 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::AllRound,
     },
-    // The bedrock chain's later stages, not approved yet: the content has
-    // their blocks (the large arc furnace, 16e6771); tracked, its screen
-    // says so.
+    // The bedrock chain's stage 4 (`crate::arc_furnace`).
     BlockSpec {
         id: "ntm:machine_arc_furnace_large",
-        kind: Kind::Inert,
+        kind: Kind::ArcFurnace,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     // The oil chain's batch A (9c504cd): coal to fluids and back. Inert
     // until their stage is approved.
@@ -436,7 +434,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, _facing: Option<&str>) -> Vec<crate::energy::Port> {
     match spec.kind {
-        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace | Kind::Excavator | Kind::OreSlopper => vec![crate::energy::DIRS.to_vec()],
+        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace | Kind::Excavator | Kind::OreSlopper | Kind::Electrolyser => vec![crate::energy::DIRS.to_vec()],
         _ => Vec::new(),
     }
 }

@@ -116,6 +116,8 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::GasCent(g) => Some(g),
         Data::Excavator(e) => Some(e),
         Data::OreSlopper(o) => Some(o),
+        Data::ArcFurnace(f) => Some(f),
+        Data::Electrolyser(e) => Some(&mut **e),
         _ => None,
     }
 }
@@ -189,15 +191,10 @@ pub const SLOTTED: &[(&str, Layout)] = &[
             outputs: 2..3,
         },
     ),
-    // ContainerElectrolyser's fluid line: no item in, its byproducts in
-    // 11–13 (the metal line, 14 and 15–20, is stage 4).
-    (
-        "ntm:machine_electrolyser",
-        Layout::Crafter {
-            inputs: 0..0,
-            outputs: 11..14,
-        },
-    ),
+    // ContainerElectrolyser: both lines on its 21 slots (`crate::electrolyser`).
+    ("ntm:machine_electrolyser", Layout::Native),
+    // ContainerMachineArcFurnaceLarge: 30 slots (`crate::arc_furnace`).
+    ("ntm:machine_arc_furnace_large", Layout::Native),
     // ContainerCrystallizer: 0 the input, 2 the output (1 battery, 3–4 fluid
     // containers, 5–6 upgrades, 7 the identifier: no logic in the port).
     (
@@ -546,7 +543,7 @@ fn apply_delta(list: &mut Vec<(String, u32)>, last: &BTreeMap<String, i64>, now:
 
 /// `want` laid over the slots `range` of `slots`: each slot keeps its item
 /// while there is some of it left, the rest fills the empty slots.
-fn lay_out(slots: &mut Slots, range: std::ops::Range<usize>, want: &[(String, u32)], max: u32) {
+pub(crate) fn lay_out(slots: &mut Slots, range: std::ops::Range<usize>, want: &[(String, u32)], max: u32) {
     let mut left: Vec<(String, u32)> = want.to_vec();
     for s in range.clone() {
         if let Some(stack) = &slots[s] {
@@ -585,7 +582,7 @@ fn bomb_data(b: &crate::bomb::Bomb) -> Vec<i32> {
 }
 
 /// The values the assembly machine's screen shows (tools/visual-gen/visual.json).
-fn crafter_data(c: &Crafter) -> Vec<i32> {
+pub(crate) fn crafter_data(c: &Crafter) -> Vec<i32> {
     let clamp = |v: u64| v.min(i32::MAX as u64) as i32;
     let recipe = c.current();
     let progress = recipe.map_or(0, |r| (u64::from(c.progress) * 1000 / u64::from(r.duration.max(1))) as i32);
