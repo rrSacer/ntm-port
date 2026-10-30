@@ -333,6 +333,8 @@ def export(source, output, rows):
     counts['heaters'] = heaters.export(source,output,rows)['coverage']
     import steam
     counts['steam'] = steam.export(source,output,rows)['coverage']
+    import combustion
+    counts['combustion'] = combustion.export(source,output,rows)['coverage']
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 
