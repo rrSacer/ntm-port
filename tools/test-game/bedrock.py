@@ -27,6 +27,14 @@ Etapa 2 (cristalizador), no mesmo mundo:
   acido       PRIMARY + ácido sulfúrico num segundo cristalizador → PRIMARY
               sulfúrico → centrífuga (sem-sulfúrico + subproduto) → os
               fragmentos; 4 subprodutos lavados → os fragmentos dele.
+Etapa 3 (forno pirolítico e eletrólise de fluidos), no mesmo mundo:
+  torrar      40 BASE de actinídeos no forno: 40 torrados e 2.000 mB de
+              vitríolo, que vai a um barril na porta dele; os torrados na
+              centrífuga dão PRIMARY como os BASE;
+  eletrolisar o vitríolo (levado em tanques de 1.000 mB) no eletrolisador:
+              ácido sulfúrico e cloro a barris nas portas dele;
+  ciclo       o ácido sulfúrico do eletrolisador num cristalizador novo (sem
+              outro ácido): PRIMARY → PRIMARY sulfúrico.
 Grava <pasta>/bedrock-evidence.json e capturas bedrock-*.png.
 """
 import json, subprocess, sys, time
@@ -345,8 +353,10 @@ def fluid_barrel(bx, by, bz, barrel, stand):
 
 def escavar3():
     y = floor_y()
-    ctl('fill', X3 - 6, y, Z3 - 12, X3 + 16, y + 9, Z3 + 6, 'minecraft:air')
-    ctl('fill', X3 - 6, y - 1, Z3 - 12, X3 + 16, y - 1, Z3 + 6, 'minecraft:stone')
+    if not (game / 'bedrock-chao2').exists():
+        ctl('fill', X3 - 6, y, Z3 - 12, X3 + 16, y + 9, Z3 + 6, 'minecraft:air')
+        ctl('fill', X3 - 6, y - 1, Z3 - 12, X3 + 16, y - 1, Z3 + 6, 'minecraft:stone')
+        (game / 'bedrock-chao2').write_text('1')
     ctl('command', 'clear @s', check=False)
     if not any('excavator' in b[3] for b in ctl('blocks', X3 - 4, y, Z3 - 7, X3 + 4, y + 6, Z3).get('blocks', [])):
         place(X3, y, Z3, 'ntm:machine_excavator', (X3, y, Z3 + 3))
@@ -510,6 +520,175 @@ def fim():
     centrifuge_run(cx, y, cz, 'ntm:bedrock_ore__sulfuric_washed_actinide')
     evidence['fim'] = {k: v for k, v in ctl('inventory').get('counts', {}).items() if 'bedrock' in k}
     print('fim', evidence['fim'])
+
+
+# --------------------------------------------------------- etapa 3
+
+X4, Z4 = 2920, -1822  # a fresh floor north of stage 2
+
+
+def footprint(block, x0, y0, z0, r):
+    """The core of `block` near (x0, z0) and its bottom layer's box."""
+    (cx, cy, cz) = find(block, x0 - r, y0, z0 - r, x0 + r, y0 + 3, z0 + r)
+    cells = [b for b in ctl('blocks', cx - 7, y0, cz - 7, cx + 7, y0, cz + 7).get('blocks', []) if 'dummy' in b[3] or block in b[3]]
+    xs, zs = [c[0] for c in cells], [c[2] for c in cells]
+    return (cx, cy, cz), (min(xs), max(xs), min(zs), max(zs))
+
+
+def barrel_state(bx, by, bz):
+    """(fluid, mB) of the barrel at (bx, by, bz), from the mod's save."""
+    ctl('save', check=False)
+    time.sleep(12)
+    d = Path('/tmp/ntm-visual-game/dist/.horizon-mod-data/ntmlogic')
+    f = max(d.glob('w.*'), key=lambda p: p.stat().st_mtime)
+    t = f.read_text()
+    w = json.loads(t[t.index('{'):])
+    for m in w['machines']:
+        if m['p'] == [bx, by, bz]:
+            tank = m['m']['data'].get('tank', {})
+            return tank.get('fluid', ''), tank.get('mb', 0)
+    return '', 0
+
+
+def old_screen(x, y, z, stand):
+    close()
+    tp(stand[0] + 0.5, stand[1], stand[2] + 0.5)
+    ctl('look-at-block', x, y, z)
+    ctl('key', 'r', 'down')
+    time.sleep(0.3)
+    ctl('key', 'r', 'up')
+    time.sleep(2.5)
+
+
+def carry(src, dst, n, mode_out):
+    """`n` × 1 000 mB from the barrel `src` to the barrel `dst` in fluid
+    tanks (fill on one, pour on the other); `dst` then gives (output)."""
+    for _ in range(n):
+        give('ntm:fluid_tank_empty', 1)
+        ctl('select', 'ntm:fluid_tank_empty')
+        old_screen(*src, (src[0], src[1], src[2] + 2))
+        click_label('Encher')
+        close()
+        full = [k for k in ctl('inventory').get('counts', {}) if k.startswith('ntm:fluid_tank_full__')]
+        if not full:
+            raise SystemExit(f'o barril {src} não encheu o tanque')
+        ctl('select', full[0])
+        old_screen(*dst, (dst[0], dst[1], dst[2] + 2))
+        click_label('Despejar')
+        close()
+    if mode_out:
+        old_screen(*dst, (dst[0], dst[1], dst[2] + 2))
+        while 'Saída' not in ''.join(w.get('label') or '' for w in ctl('ui').get('widgets', [])):
+            click_label('Modo:', 1.0)
+        close()
+
+
+def torrar():
+    y = floor_y()
+    # Cleared once: a second fill would wipe the machines and barrels.
+    if not (game / 'bedrock-chao3').exists():
+        ctl('fill', X4 - 14, y, Z4 - 14, X4 + 14, y + 6, Z4 + 14, 'minecraft:air')
+        ctl('fill', X4 - 14, y - 1, Z4 - 14, X4 + 14, y - 1, Z4 + 14, 'minecraft:stone')
+        (game / 'bedrock-chao3').write_text('1')
+    ctl('command', 'clear @s', check=False)
+    ox, oz = X4 - 6, Z4
+    if not any('pyrooven' in b[3] for b in ctl('blocks', ox - 4, y, oz - 4, ox + 4, y + 3, oz + 4).get('blocks', [])):
+        place(ox, y, oz, 'ntm:machine_pyrooven', (ox, y, oz + 4))
+    (core, (x0, x1, z0, z1)) = footprint('ntm:machine_pyrooven', ox, y, oz, 5)
+    # Barrels against both long sides, at the core's row: the vitriol goes to
+    # whichever touches a port.
+    for bx in (x0 - 1, x1 + 1):
+        if not ctl('block', bx, y, core[2]).get('state', '').startswith('ntm:barrel_steel'):
+            place(bx, y, core[2], 'ntm:barrel_steel', (bx, y, core[2] + 2))
+    stand, cell = (core[0], y, z1 + 3), (core[0], y, z1)
+    open_at(*cell, stand)
+    put('ntm:battery_creative', 1, 300)
+    give('ntm:bedrock_ore__base_actinide', 40)
+    ctl('click-slot', hot('ntm:bedrock_ore__base_actinide')[0])
+    time.sleep(0.3)
+    ctl('click-slot', 301)
+    time.sleep(1)
+    t0 = time.time()
+    while time.time() - t0 < 120:
+        time.sleep(5)
+        open_at(*cell, stand)
+        if not any(s[0] == 301 for s in machine_slots()):
+            break
+    time.sleep(3)
+    roasted = sum(s[2] for s in machine_slots() if s[1] == 'ntm:bedrock_ore__base_roasted_actinide')
+    ctl('click-slot', 302, 'shift')
+    time.sleep(0.5)
+    ctl('screenshot', game / 'bedrock-forno.png')
+    close()
+    barrels = {bx: barrel_state(bx, y, core[2]) for bx in (x0 - 1, x1 + 1)}
+    # The roasted ores in the centrifuge: PRIMARY, as from BASE (once).
+    if 'torrar' not in evidence:
+        centrifuge_run(X + 4, y, Z + 10, 'ntm:bedrock_ore__base_roasted_actinide')
+    first = evidence.get('torrar', {})
+    evidence['torrar'] = {**first, 'nucleo': core, 'torrados': roasted, 'barris': barrels,
+                          'primary_dos_torrados': first.get('primary_dos_torrados', count('ntm:bedrock_ore__primary_actinide'))}
+    print('torrar', evidence['torrar'])
+
+
+def eletrolisar():
+    y = floor_y()
+    ex, ez = X4 + 7, Z4
+    if not any('electrolyser' in b[3] for b in ctl('blocks', ex - 6, y, ez - 6, ex + 6, y + 3, ez + 6).get('blocks', [])):
+        place(ex, y, ez, 'ntm:machine_electrolyser', (ex, y, ez + 4))
+    (core, (x0, x1, z0, z1)) = footprint('ntm:machine_electrolyser', ex, y, ez, 7)
+    stand, cell = (core[0], y, z1 + 3), (core[0], y, z1)
+    open_at(*cell, stand)
+    put('ntm:battery_creative', 1, 300)
+    close()
+    # The oven's vitriol (whichever barrel got it) into a barrel at the
+    # electrolyser's port; the output barrel only after it went in (an empty
+    # barrel takes any fluid, the vitriol too).
+    oven = evidence['torrar']['barris']
+    src_x = max(oven, key=lambda k: oven[k][1])
+    (_, _, ocz) = evidence['torrar']['nucleo']
+    src = (int(src_x), y, ocz)
+    feed = (x0 - 1, y, core[2])
+    if not ctl('block', *feed).get('state', '').startswith('ntm:barrel_steel'):
+        place(*feed, 'ntm:barrel_steel', (feed[0], y, feed[2] + 2))
+    carry(src, feed, 2, True)
+    time.sleep(10)
+    # The acid's barrel, typed by an acid tank in the hand (chlorine comes
+    # first in the networks' order and would take an untyped one).
+    out = (x1 + 1, y, core[2])
+    if not ctl('block', *out).get('state', '').startswith('ntm:barrel_steel'):
+        place(*out, 'ntm:barrel_steel', (out[0], y, out[2] + 2))
+    give('ntm:fluid_tank_full__sulfuric_acid', 1)
+    ctl('select', 'ntm:fluid_tank_full__sulfuric_acid')
+    old_screen(*out, (out[0], y, out[2] + 2))
+    click_label('Tipo pelo recipiente')
+    close()
+    ctl('command', 'clear @s ntm:fluid_tank_full__sulfuric_acid', check=False)
+    time.sleep(10)
+    evidence['eletrolisar'] = {'nucleo': core, 'entrada': barrel_state(*feed), 'acido': barrel_state(*out), 'barris_saida': [out]}
+    open_at(*cell, stand)
+    evidence['eletrolisar']['subprodutos'] = [s for s in machine_slots() if s[0] >= 311]
+    ctl('screenshot', game / 'bedrock-eletrolisador.png')
+    close()
+    print('eletrolisar', evidence['eletrolisar'])
+
+
+def ciclo():
+    y = floor_y()
+    acid = tuple(evidence['eletrolisar']['barris_saida'][0])
+    states = {acid: barrel_state(*acid)}
+    # A new crystallizer whose only fluid is the electrolyser's acid.
+    px, pz = X4 + 2, Z4 + 9
+    if not any('crystallizer' in b[3] for b in ctl('blocks', px - 3, y, pz - 3, px + 3, y, pz + 3).get('blocks', [])):
+        place(px, y, pz, 'ntm:machine_crystallizer', (px, y, pz + 4))
+    (kx, ky, kz) = find('ntm:machine_crystallizer', px - 3, y, pz - 3, px + 3, y, pz + 3)
+    dst = (kx + 2, y, kz)
+    if not ctl('block', *dst).get('state', '').startswith('ntm:barrel_steel'):
+        place(*dst, 'ntm:barrel_steel', (dst[0] + 2, y, kz))
+    carry(acid, dst, 1, True)
+    give('ntm:bedrock_ore__primary_actinide', 2)
+    crystallize((kx, y, kz), 'ntm:bedrock_ore__primary_actinide', 2, 'ntm:bedrock_ore__primary_sulfuric_actinide')
+    evidence['ciclo'] = {'acido_do_eletrolisador': states[acid], 'sulfuricos': count('ntm:bedrock_ore__primary_sulfuric_actinide')}
+    print('ciclo', evidence['ciclo'])
 
 
 for s in steps:
