@@ -9530,7 +9530,7 @@
       }
     },
     "ntm:machine_mixer": {
-      "source": "ContainerMixer, GUIMixer (gui_mixer.png 176x204), MachineMixer {2,0,0,0,0,0} offset 0, RenderMixer (Mixer turning 20 degrees a tick about -y while it works, value 10 = 2; the Fluid at the output tank's fill and colour, opaque here, 75% in HBM)",
+      "source": "ContainerMixer, GUIMixer (gui_mixer.png 176x204; slot 2 is the output fluid's identifier, no effect in the port; button 0 opens the crafter's recipe list, in place of HBM's recipe index button), MachineMixer {2,0,0,0,0,0} offset 0, RenderMixer (Mixer turning 20 degrees a tick about -y while it works, value 10 = 2; the Fluid at the output tank's fill and colour, opaque here, 75% in HBM)",
       "machine": {
         "slots": [
           {
@@ -9549,7 +9549,7 @@
           {
             "x": 126,
             "y": 72,
-            "output": true
+            "accept": []
           },
           {
             "x": 148,
@@ -9807,6 +9807,20 @@
               "§lMelhorias Aceitáveis:§r",
               "* §4Velocidade§r: Acumula até o nível 3",
               "* §1Economia de Energia§r: Acumula até o nível 3"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              71,
+              17,
+              12,
+              12
+            ],
+            "lines": [
+              "Receita"
             ]
           }
         ]

@@ -135,5 +135,19 @@
         "* §1Economia de Energia§r: Acumula até o nível 3"
       ]
     }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "rect": [
+        71,
+        17,
+        12,
+        12
+      ],
+      "lines": [
+        "Receita"
+      ]
+    }
   ]
 }
