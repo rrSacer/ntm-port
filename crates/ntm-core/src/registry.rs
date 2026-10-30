@@ -520,6 +520,43 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
+    // Energy batch 2 (3e13ddb): steam engines, turbines and condensers.
+    // Inert until their stage is approved.
+    BlockSpec {
+        id: "ntm:machine_steam_engine",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_industrial_turbine",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_chungus",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_condenser",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_condenser_powered",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
     // The shredder (`crate::shredder`): `TilePortShapes.around`, energy only.
     BlockSpec {
         id: "ntm:machine_shredder",
