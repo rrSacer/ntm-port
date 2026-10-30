@@ -416,6 +416,15 @@
       }
     },
     {
+      "id": "ntm:bulk__7ad2d643da113a8c39",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:159",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:biomass",
+        "count": 4
+      }
+    },
+    {
       "id": "ntm:bulk__6f24a15b5ebb721c7e",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:171",
       "type": "minecraft:crafting_shaped",
@@ -560,12 +569,39 @@
       }
     },
     {
+      "id": "ntm:bulk__137e02c565892a4333",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:199",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:powder_poison",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__9efbb34d533402388c",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:202",
       "type": "minecraft:crafting_shapeless",
       "result": {
         "id": "ntm:plant_item__rope",
         "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__9c5b1573cdb97351ae",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:203",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:plant_item__rope",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__06bd83d605f8a33e47",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:204",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "minecraft:string",
+        "count": 3
       }
     },
     {
@@ -5285,6 +5321,24 @@
       }
     },
     {
+      "id": "ntm:bulk__ba0f0afce76b6936b0",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:120",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:plant_item__tobacco",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__32e1d39f23b4da1e61",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:120; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:plant_item__tobacco",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__f7e7ef6fa298b63760",
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:125",
       "type": "minecraft:smelting",
@@ -5672,7 +5726,7 @@
       }
     }
   ],
-  "generated_count": 630,
+  "generated_count": 636,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -5771,12 +5825,6 @@
       "expression": "new ItemStack(ModBlocks.block_waste_painted, 1), new Object[] { KEY_YELLOW, ModBlocks.block_waste }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:159",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED)",
-      "expression": "new ItemStack(ModItems.biomass, 4), new Object[] { DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED), DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED), DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED), DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED), DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED), DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED) }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:162",
       "callee": "addRecipeAuto",
       "reason": "unsupported expression ingot",
@@ -5873,12 +5921,6 @@
       "expression": "new ItemStack(ModItems.flywheel_beryllium, 1), new Object[] { \"IBI\", \"BTB\", \"IBI\", 'B', BE.block(), 'I', IRON.plateCast(), 'T', DURA.pipe() }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:199",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.NIGHTSHADE)",
-      "expression": "new ItemStack(ModItems.powder_poison), new Object[] { DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.NIGHTSHADE) }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:200",
       "callee": "addShapelessAuto",
       "reason": "unregistered/ambiguous source item syringe_metal_stimpak",
@@ -5887,20 +5929,8 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:201",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pill_herbal",
+      "reason": "unresolved ore dictionary COAL.dust()",
       "expression": "new ItemStack(ModItems.pill_herbal), new Object[] { COAL.dust(), Items.poisonous_potato, Items.nether_wart, DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.FOXGLOVE) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:203",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED)",
-      "expression": "DictFrame.fromOne(ModItems.plant_item, EnumPlantType.ROPE, 4), new Object[] { \"W\", \"W\", \"W\", 'W', DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:204",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED)",
-      "expression": "new ItemStack(Items.string, 3), new Object[] { DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.WEED) }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:207",
@@ -11433,12 +11463,6 @@
       "callee": "GameRegistry.addSmelting",
       "reason": "unregistered/ambiguous source item rag",
       "expression": "ModItems.rag_piss, new ItemStack(ModItems.rag), 0.1F"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:120",
-      "callee": "GameRegistry.addSmelting",
-      "reason": "missing enum DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.TOBACCO)",
-      "expression": "DictFrame.fromOne(ModBlocks.plant_flower, EnumFlowerType.TOBACCO), DictFrame.fromOne(ModItems.plant_item, EnumPlantType.TOBACCO), 0.1F"
     },
     {
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:128",

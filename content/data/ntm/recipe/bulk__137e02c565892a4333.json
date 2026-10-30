@@ -1,0 +1,11 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_poison",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:plant_flower__nightshade"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "minecraft:string",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:plant_flower__weed"
+  ]
+}

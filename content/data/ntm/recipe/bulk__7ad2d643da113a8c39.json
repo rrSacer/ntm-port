@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:biomass",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:plant_flower__weed",
+    "ntm:plant_flower__weed",
+    "ntm:plant_flower__weed",
+    "ntm:plant_flower__weed",
+    "ntm:plant_flower__weed",
+    "ntm:plant_flower__weed"
+  ]
+}

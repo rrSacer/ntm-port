@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:plant_item__rope",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "W",
+    "W",
+    "W"
+  ],
+  "key": {
+    "W": "ntm:plant_flower__weed"
+  }
+}
