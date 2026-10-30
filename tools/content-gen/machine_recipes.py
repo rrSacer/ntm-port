@@ -310,8 +310,8 @@ def export(source, output, rows):
     import pyrooven_recipes, electrolyser_recipes, arc_furnace_recipes
     for module, name in [(pyrooven_recipes, 'pyrooven'), (electrolyser_recipes, 'electrolyser'), (arc_furnace_recipes, 'arc_furnace')]:
         counts[name] = module.export(source, output, rows)['coverage']
-    import petroleum_recipes, petroleum_refining
-    for module in [petroleum_recipes, petroleum_refining]:
+    import petroleum_recipes, petroleum_refining, petroleum_processing
+    for module in [petroleum_recipes, petroleum_refining, petroleum_processing]:
         counts.update({name: data['coverage'] for name,data in module.export(source,output,rows).items()})
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts

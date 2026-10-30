@@ -7,12 +7,14 @@ from machine_recipes import integer
 from bedrock_processing_common import Context, body, config, events, skip, write
 
 
-def fuel_heat(source):
+def fuel_heat(source, include_combustion=False):
     text = clean((source / 'src/main/java/com/hbm/inventory/fluid/Fluids.java').read_text())
-    heat = {}
+    heat = {}; combustion = {}
     for match in re.finditer(r'\b([A-Z][A-Z0-9_]*)\s*=\s*new FluidType\((.*?);', text, re.S):
         trait = re.search(r'new FT_Flammable\(([^)]+)\)', match[2])
         if trait: heat[match[1]] = integer(trait[1])
+        trait = re.search(r'new FT_Combustible\(FuelGrade.\w+,\s*([^)]+)\)', match[2])
+        if trait: combustion[match[1]] = integer(trait[1])
     values = {}
     def number(expr):
         expr = re.sub(r'(\w+)\.getTrait\(FT_Flammable.class\)\.getHeatEnergy\(\)', lambda m: str(heat[m[1]]), expr)
@@ -37,12 +39,19 @@ def fuel_heat(source):
             except (Unsupported, KeyError, SyntaxError): continue  # unrelated fluid code
         else:
             amount = int(number(args[1]))
+            combustible = int(number(args[1]) * number(args[2])) if args[3] != 'null' else None
+            if combustible is not None:
+                for limit, quantum in [(10000000,100000),(1000000,10000),(100000,1000),(10000,100),(1000,10)]:
+                    if combustible > limit:
+                        combustible -= combustible % quantum
+                        break
+                if combustible > 0: combustion[args[0]] = combustible
             for limit, quantum in [(10000000,100000),(1000000,10000),(100000,1000),(10000,100),(1000,10)]:
                 if amount > limit:
                     amount -= amount % quantum
                     break
             heat[args[0]] = amount
-    return heat
+    return {var:max(heat.get(var,0),combustion.get(var,0)) for var in heat.keys() | combustion.keys()} if include_combustion else heat
 
 
 def export(source, output, rows):
