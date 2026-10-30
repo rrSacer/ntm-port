@@ -177,19 +177,24 @@ def sheet_obj(src, spec):
     order = list(dict.fromkeys(list(boxes) + [p['bone'] for p in parts]))
     for bone in order:
         lines.append(f'o {bone}')
-        for (x0, y0, z0), (x1, y1, z1), faces, *lift in boxes.get(bone, []):
-            dy = 16 * (lift[0] if lift else 0)
+        for (x0, y0, z0), (x1, y1, z1), faces, *rest in boxes.get(bone, []):
+            # `lift`: blocks up, or [x, y, z] blocks away; `full`: each face
+            # shows its whole icon (SmallBlockPronter's blocks).
+            lift = rest[0] if rest else 0
+            dx, dy, dz = (16 * c for c in (lift if isinstance(lift, list) else [0, lift, 0]))
+            full = len(rest) > 1 and rest[1].get('full')
+            u0, v0, w0, u1, v1, w1 = (0, 0, 0, 16, 16, 16) if full else (x0, y0, z0, x1, y1, z1)
             quads = {
-                'up': ([(x0, y1, z0), (x0, y1, z1), (x1, y1, z1), (x1, y1, z0)], [(x0, z0), (x0, z1), (x1, z1), (x1, z0)]),
-                'down': ([(x0, y0, z0), (x1, y0, z0), (x1, y0, z1), (x0, y0, z1)], [(x0, z0), (x1, z0), (x1, z1), (x0, z1)]),
-                'north': ([(x1, y1, z0), (x1, y0, z0), (x0, y0, z0), (x0, y1, z0)], [(16 - x1, 16 - y1), (16 - x1, 16 - y0), (16 - x0, 16 - y0), (16 - x0, 16 - y1)]),
-                'south': ([(x0, y1, z1), (x0, y0, z1), (x1, y0, z1), (x1, y1, z1)], [(x0, 16 - y1), (x0, 16 - y0), (x1, 16 - y0), (x1, 16 - y1)]),
-                'west': ([(x0, y1, z0), (x0, y0, z0), (x0, y0, z1), (x0, y1, z1)], [(z0, 16 - y1), (z0, 16 - y0), (z1, 16 - y0), (z1, 16 - y1)]),
-                'east': ([(x1, y1, z1), (x1, y0, z1), (x1, y0, z0), (x1, y1, z0)], [(16 - z1, 16 - y1), (16 - z1, 16 - y0), (16 - z0, 16 - y0), (16 - z0, 16 - y1)]),
+                'up': ([(x0, y1, z0), (x0, y1, z1), (x1, y1, z1), (x1, y1, z0)], [(u0, w0), (u0, w1), (u1, w1), (u1, w0)]),
+                'down': ([(x0, y0, z0), (x1, y0, z0), (x1, y0, z1), (x0, y0, z1)], [(u0, w0), (u1, w0), (u1, w1), (u0, w1)]),
+                'north': ([(x1, y1, z0), (x1, y0, z0), (x0, y0, z0), (x0, y1, z0)], [(16 - u1, 16 - v1), (16 - u1, 16 - v0), (16 - u0, 16 - v0), (16 - u0, 16 - v1)]),
+                'south': ([(x0, y1, z1), (x0, y0, z1), (x1, y0, z1), (x1, y1, z1)], [(u0, 16 - v1), (u0, 16 - v0), (u1, 16 - v0), (u1, 16 - v1)]),
+                'west': ([(x0, y1, z0), (x0, y0, z0), (x0, y0, z1), (x0, y1, z1)], [(w0, 16 - v1), (w0, 16 - v0), (w1, 16 - v0), (w1, 16 - v1)]),
+                'east': ([(x1, y1, z1), (x1, y0, z1), (x1, y0, z0), (x1, y1, z0)], [(16 - w1, 16 - v1), (16 - w1, 16 - v0), (16 - w0, 16 - v0), (16 - w0, 16 - v1)]),
             }
             for face, tex in faces.items():
                 corners, uvs = quads[face]
-                lines.append('f ' + ' '.join(corner(x / 16 - 0.5, (y + dy) / 16, z / 16 - 0.5, tex, u, v)
+                lines.append('f ' + ' '.join(corner((x + dx) / 16 - 0.5, (y + dy) / 16, (z + dz) / 16 - 0.5, tex, u, v)
                                              for (x, y, z), (u, v) in zip(corners, uvs)))
         for p in (p for p in parts if p['bone'] == bone):
             text = (src / p['obj']).read_text().splitlines()
