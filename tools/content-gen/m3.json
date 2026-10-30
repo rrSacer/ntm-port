@@ -20428,6 +20428,133 @@
       "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
     },
     {
+      "id": "machine_steam_engine",
+      "source_variable": "machine_steam_engine",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Steam Engine",
+        "pt_br": "Motor a Vapor"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "machine_industrial_turbine",
+      "source_variable": "machine_industrial_turbine",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Industrial Steam Turbine",
+        "pt_br": "Turbina a Vapor Industrial"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "machine_chungus",
+      "source_variable": "machine_chungus",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Leviathan Steam Turbine",
+        "pt_br": "Turbina de Vapor Leviatã"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "machine_condenser",
+      "source_variable": "machine_condenser",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Steam Condenser",
+        "pt_br": "Condensador de Vapor"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/condenser.png",
+      "textures": {
+        "side": "blocks/condenser",
+        "top": "blocks/condenser",
+        "front": "blocks/condenser"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "machine_condenser_powered",
+      "source_variable": "machine_condenser_powered",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "High-Power Steam Condenser",
+        "pt_br": "Condensador de Vapor de Alta Potência"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel_machine.png",
+      "textures": {
+        "side": "blocks/block_steel_machine",
+        "top": "blocks/block_steel_machine",
+        "front": "blocks/block_steel_machine"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "gear_large__iron",
+      "source_variable": "gear_large",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "palette",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gear_large.png",
+      "names": {
+        "en_us": "Large Gear",
+        "pt_br": "Engrenagem Grande"
+      },
+      "behavior_gap": "Source ItemGear has metadata/localization only; Stirling repair interactions belong to machine logic."
+    },
+    {
+      "id": "gear_large__steel",
+      "source_variable": "gear_large",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "palette",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gear_large.png",
+      "names": {
+        "en_us": "Large Steel Gear",
+        "pt_br": "Engrenagem Grande de Aço"
+      },
+      "behavior_gap": "Source ItemGear has metadata/localization only; Stirling repair interactions belong to machine logic."
+    },
+    {
       "id": "bio_wafer",
       "source_variable": "bio_wafer",
       "type": "item",

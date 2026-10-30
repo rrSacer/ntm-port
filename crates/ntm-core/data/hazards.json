@@ -24369,6 +24369,69 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:machine_steam_engine",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:machine_industrial_turbine",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:machine_chungus",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:machine_condenser",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:machine_condenser_powered",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:gear_large__iron",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:gear_large__steel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:bio_wafer",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,

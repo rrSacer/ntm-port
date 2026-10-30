@@ -6567,7 +6567,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_steam_engine"
     },
     {
       "id": "machine_large_turbine",
@@ -6603,7 +6604,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_industrial_turbine"
     },
     {
       "id": "machine_chungus",
@@ -6621,7 +6623,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_chungus"
     },
     {
       "id": "machine_condenser",
@@ -6638,7 +6641,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_condenser"
     },
     {
       "id": "machine_tower_small",
@@ -6692,7 +6696,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_condenser_powered"
     },
     {
       "id": "machine_deuterium_extractor",

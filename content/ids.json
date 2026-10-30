@@ -61,6 +61,11 @@
     "ntm:heater_oilburner",
     "ntm:heater_electric",
     "ntm:heater_heatex",
+    "ntm:machine_steam_engine",
+    "ntm:machine_industrial_turbine",
+    "ntm:machine_chungus",
+    "ntm:machine_condenser",
+    "ntm:machine_condenser_powered",
     "ntm:machine_crucible",
     "ntm:heater_firebox",
     "ntm:foundry_channel",
@@ -85808,6 +85813,266 @@
           "max": 5
         }
       }
+    },
+    {
+      "id": "ntm:machine_steam_engine",
+      "source_variable": "machine_steam_engine",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Steam Engine",
+        "pt_br": "Motor a Vapor"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_steam_engine",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:358"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_industrial_turbine",
+      "source_variable": "machine_industrial_turbine",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Industrial Steam Turbine",
+        "pt_br": "Turbina a Vapor Industrial"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_industrial_turbine",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:434"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_chungus",
+      "source_variable": "machine_chungus",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Leviathan Steam Turbine",
+        "pt_br": "Turbina de Vapor Leviatã"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_chungus",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:437"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_condenser",
+      "source_variable": "machine_condenser",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Steam Condenser",
+        "pt_br": "Condensador de Vapor"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/condenser.png",
+      "textures": {
+        "side": "blocks/condenser",
+        "top": "blocks/condenser",
+        "front": "blocks/condenser"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_condenser",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:444"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_condenser_powered",
+      "source_variable": "machine_condenser_powered",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "High-Power Steam Condenser",
+        "pt_br": "Condensador de Vapor de Alta Potência"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel_machine.png",
+      "textures": {
+        "side": "blocks/block_steel_machine",
+        "top": "blocks/block_steel_machine",
+        "front": "blocks/block_steel_machine"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_condenser_powered",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:445"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:gear_large__iron",
+      "source_variable": "gear_large",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "palette",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gear_large.png",
+      "names": {
+        "en_us": "Large Gear",
+        "pt_br": "Engrenagem Grande"
+      },
+      "behavior_gap": "Source ItemGear has metadata/localization only; Stirling repair interactions belong to machine logic.",
+      "source_registry": "hbm:item.gear_large",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:719"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:gear_large__steel",
+      "source_variable": "gear_large",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "palette",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gear_large.png",
+      "names": {
+        "en_us": "Large Steel Gear",
+        "pt_br": "Engrenagem Grande de Aço"
+      },
+      "behavior_gap": "Source ItemGear has metadata/localization only; Stirling repair interactions belong to machine logic.",
+      "source_registry": "hbm:item.gear_large",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:719"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:bio_wafer",

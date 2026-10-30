@@ -2,7 +2,9 @@
 from generate import lang, registration
 
 BASE = 'src/main/java/com/hbm/'
-MACHINES = ('heater_oven', 'heater_oilburner', 'heater_electric', 'heater_heatex')
+MACHINES = ('heater_oven', 'heater_oilburner', 'heater_electric', 'heater_heatex',
+            'machine_steam_engine', 'machine_industrial_turbine', 'machine_chungus',
+            'machine_condenser', 'machine_condenser_powered')
 
 
 def build(source):
@@ -19,4 +21,14 @@ def build(source):
                      'textures': {face: 'blocks/' + texture for face in ('side', 'top', 'front')},
                      'opaque_machine_textures': True,
                      'model_gap': 'Source casing cube fallback; visual-gen owns source model, screen and multiblock'})
+    items = (source / (BASE + 'items/ModItems.java')).read_text()
+    name, texture = registration(items, 'gear_large', 'item')
+    for metadata, material in [(0, 'iron'), (1, 'steel')]:
+        key = 'item.' + name + ('_steel' if metadata else '') + '.name'
+        rows.append({'id': name + '__' + material, 'source_variable': 'gear_large',
+                     'type': 'item', 'category': 'component', 'metadata': metadata,
+                     'subtype_kind': 'palette', 'template': 'minecraft:iron_ingot', 'max_stack_size': 64,
+                     'source_texture': f'src/main/resources/assets/hbm/textures/items/{texture}.png',
+                     'names': {loc: tr[key] for loc, tr in translations.items()},
+                     'behavior_gap': 'Source ItemGear has metadata/localization only; Stirling repair interactions belong to machine logic.'})
     return rows
