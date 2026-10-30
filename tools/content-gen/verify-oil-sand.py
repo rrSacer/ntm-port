@@ -40,7 +40,11 @@ def main():
         checks.append({'command':command,'reply':{k:v for k,v in reply.items() if k!='blocks'}})
         if reply.get('ok') is False or 'error' in reply:raise AssertionError((command,reply))
         return reply
-    def cmd(command):return ctl('command '+command)
+    def cmd(command):
+        reply=ctl('command '+command)
+        if any(s in str(reply.get('chat',[])).lower() for s in ['unknown or incomplete','incorrect argument','unknown block','unknown item']):
+            raise AssertionError((command,reply))
+        return reply
     def wait_for(fn,seconds=30):
         end=time.monotonic()+seconds
         while time.monotonic()<end:
@@ -66,12 +70,15 @@ def main():
             cmd('tp @s 520.5 150 -1815.5')
             wait_for(lambda:abs(ctl('state')['player']['position'][0]-520.5)<.5)
             ctl('wait 50')
-            report['pregeneration']=cmd('pregen start 64 square 520 -1816')
-            end=time.monotonic()+600
-            while time.monotonic()<end:
-                ctl('wait 20');reply=cmd('pregen status')
-                if 'No pregeneration' in str(reply) or '100%' in str(reply) or 'not running' in str(reply).lower():break
-            else:raise TimeoutError('small desert pregeneration')
+            # The patched client has no pregen command. Load the small sample
+            # through ordinary player chunk tickets, checking actual terrain.
+            report['generation_method']='nine player positions; terrain acknowledged before moving'
+            for x in [488,520,552]:
+                for z in [-1848,-1816,-1784]:
+                    cmd(f'tp @s {x+.5} 150 {z+.5}')
+                    wait_for(lambda:abs(ctl('state')['player']['position'][0]-(x+.5))<.5)
+                    wait_for(lambda:any(b[3]!='minecraft:air' for b in ctl(f'blocks {x} 56 {z} {x} 84 {z}')['blocks']))
+                    ctl('wait 20')
             cmd('save-all flush')
             cmd('tp @s 416.5 150 -1727.5')
             wait_for(lambda:abs(ctl('state')['player']['position'][0]-416.5)<.5)
