@@ -324,7 +324,14 @@ def main():
             # A liquid file: drawn over the block's own model (horizon_liquid).
             l = {'liquids': [dict(x) for x in b['liquid']['liquids']]}
             for x in l['liquids']:
-                copy(x.pop('texture_from'), 'assets/ntm/' + x['texture'].split(':', 1)[1])
+                target = 'assets/ntm/' + x['texture'].split(':', 1)[1]
+                copy(x.pop('texture_from'), target)
+                # `crop`: the part of the texture HBM's face shows (RenderBlocks
+                # takes its UVs from the face's bounds), as the whole sprite.
+                if 'crop' in x:
+                    from PIL import Image
+                    cx, cy, cw, ch = x.pop('crop')
+                    Image.open(out / target).crop((cx, cy, cx + cw, cy + ch)).save(out / target)
             write_json(own(f'assets/ntm/horizon_liquid/{name}.json'), l)
         if 'block_model' in b:
             bm = b['block_model']
