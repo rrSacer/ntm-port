@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ntm:block_graphite"
+  ],
+  "result": {
+    "id": "ntm:ingot_graphite",
+    "count": 9
+  }
+}

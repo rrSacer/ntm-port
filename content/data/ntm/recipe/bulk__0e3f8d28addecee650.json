@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_graphite"
+  },
+  "result": {
+    "id": "ntm:block_graphite",
+    "count": 1
+  }
+}

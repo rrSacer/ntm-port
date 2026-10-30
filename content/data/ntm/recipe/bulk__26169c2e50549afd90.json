@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:ingot_schraranium"
+  },
+  "result": {
+    "id": "ntm:block_schraranium",
+    "count": 1
+  }
+}
