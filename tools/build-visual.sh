@@ -10,8 +10,9 @@ B=${BUILD_DIR:-$P/target/visual-build}
 H=${HORIZON_VISUAL:-/home/sacer/Workspace/horizon-visual}
 
 mkdir -p $B
-# Fresh sources every time, the target kept.
-find $B -mindepth 1 -maxdepth 1 ! -name target -exec rm -rf {} +
+# Fresh sources every time;  target and dist stay: a `test` run leaves the last
+# built mods where install-side-by-side.sh and run-visual.sh read them.
+find $B -mindepth 1 -maxdepth 1 ! -name target ! -name dist -exec rm -rf {} +
 # The working tree (HEAD's ntm-explosion does not build on its own), minus
 # targets and outputs.
 rsync -a --exclude target --exclude dist --exclude spikes --exclude '*-evidence' --exclude .git $P/ $B/
