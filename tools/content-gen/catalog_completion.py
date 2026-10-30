@@ -22,4 +22,16 @@ def build(source):
                      'source_texture':f'src/main/resources/assets/hbm/textures/items/{texture}.png',
                      'names':{loc:loc_tr['item.scrap_plastic.name'] for loc,loc_tr in tr.items()},
                      'behavior_gap':'Original hidden intermediate; enum retained, no item logic'})
+    text = clean((source / (BASE + 'items/machine/ItemChemicalDye.java')).read_text())
+    body = text.split('enum EnumChemDye {',1)[1].split(';',1)[0]
+    colors = re.findall(r'(\w+)\((\d+),\s*"[^"\n]+"\)',body)
+    if len(colors) != 16: raise ValueError('Chemical dye enum drift')
+    name, texture = registration(items,'chemical_dye','item')
+    for meta,(member,color) in enumerate(colors[:8]):
+        suffix = member.lower()
+        rows.append({'id':name+'__'+suffix,'type':'item','category':'component','source_variable':'chemical_dye',
+                     'metadata':meta,'subtype_kind':'enum','source_enum':'EnumChemDye.'+member,
+                     'source_texture':f'src/main/resources/assets/hbm/textures/items/{texture}.png',
+                     'overlay_textures':[{'source':'src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png','tint':{'multiply':f'{int(color):06X}'}}],
+                     'names':{loc:loc_tr[f'item.chemical_dye.{suffix}.name'] for loc,loc_tr in tr.items()}})
     return rows
