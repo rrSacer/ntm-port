@@ -14,6 +14,8 @@
 //! (`horizon_machine/<block>.json`) names its `screen`, the other `screens`
 //! its buttons switch to, its `title`, the slots' places (`x`/`y` or a
 //! `grid` `[x, y, columns, rows]`) and the player `inventory`'s top left.
+pub mod list;
+
 use serde_json::Value;
 use std::collections::HashMap;
 
