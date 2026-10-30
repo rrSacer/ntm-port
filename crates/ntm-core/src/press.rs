@@ -425,7 +425,7 @@ pub struct ElectricPress {
     pub core: PressCore,
     pub power: u64,
     /// The engine's slots (`ContainerMachineEPress`: battery, stamp, input,
-    /// output, upgrade); the battery and the upgrade aren't used yet.
+    /// output, upgrade); the upgrade isn't used yet.
     #[serde(skip)]
     pub slots: Slots,
 }
@@ -591,8 +591,10 @@ impl Slotted for ElectricPress {
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
+    /// Its battery slot charges it too (`chargeTEFromItems(slots, 0)`).
     fn sync_in(&mut self) {
         self.core.sync_in(&self.slots);
+        self.power = crate::machine::charge_from_slot(&self.slots, slot::BATTERY, self.power, Self::MAX);
     }
     fn sync_out(&mut self) {
         self.core.sync_out(&mut self.slots, 5);
@@ -619,6 +621,15 @@ impl Slotted for ElectricPress {
 
 #[cfg(test)]
 mod tests {
+    /// The creative battery in slot 0 fills the electric press.
+    #[test]
+    fn the_electric_press_charges_from_its_battery_slot() {
+        let mut p = ElectricPress { slots: vec![None; 5], ..Default::default() };
+        p.slots[slot::BATTERY] = Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1));
+        p.sync_in();
+        assert_eq!(p.power, ElectricPress::MAX);
+    }
+
     use super::*;
 
     fn loaded() -> PressCore {
