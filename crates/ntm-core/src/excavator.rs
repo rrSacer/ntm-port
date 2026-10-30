@@ -171,7 +171,9 @@ fn blockstate_id(state: &str) -> &str {
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Excavator {
-    #[serde(skip)]
+    /// The engine's slots, laid over on the first tick; a machine loaded
+    /// from the save starts with them empty but the right length.
+    #[serde(skip, default = "empty_slots")]
     pub slots: Slots,
     pub power: u64,
     pub tank: Tank,
@@ -201,6 +203,10 @@ pub struct Excavator {
 
 /// A ring of the current layer, as scanned (1: the 3×3 round the shaft's
 /// axis, then each square's edge).
+fn empty_slots() -> Slots {
+    vec![None; slot::COUNT]
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct Layer {
     pub y: i32,

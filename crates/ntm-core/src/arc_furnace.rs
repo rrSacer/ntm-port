@@ -82,7 +82,9 @@ pub fn fluid_output(item: &str) -> Option<Vec<(String, u32)>> {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArcFurnace {
-    #[serde(skip)]
+    /// The engine's slots, laid over on the first tick; a machine loaded
+    /// from the save starts with them empty but the right length.
+    #[serde(skip, default = "empty_slots")]
     pub slots: Slots,
     pub power: u64,
     pub progress: u32,
@@ -95,6 +97,10 @@ pub struct ArcFurnace {
     pub liquids: Vec<Mat>,
     #[serde(skip)]
     pub progressing: bool,
+}
+
+fn empty_slots() -> Slots {
+    vec![None; slot::COUNT]
 }
 
 impl Default for ArcFurnace {
@@ -344,6 +350,16 @@ mod tests {
         f.slots[1] = Some(Stack::new("ntm:arc_electrode__graphite", 1));
         f.slots[2] = Some(Stack::new("ntm:arc_electrode__graphite", 1));
         f.slots[slot::BATTERY] = Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1));
+    }
+
+    /// Loaded from the save (its slots not kept there), it ticks before the
+    /// engine's slots come: in game that panicked the whole server mod.
+    #[test]
+    fn a_furnace_loaded_from_the_save_ticks() {
+        let mut f: ArcFurnace = serde_json::from_str(&serde_json::to_string(&ArcFurnace::default()).unwrap()).unwrap();
+        assert_eq!(f.slots.len(), slot::COUNT);
+        f.step();
+        f.screen_data();
     }
 
     #[test]

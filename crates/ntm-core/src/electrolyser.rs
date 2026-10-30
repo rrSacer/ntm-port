@@ -53,7 +53,9 @@ pub struct Electrolyser {
     /// The fluid line, its tanks (the 2nd input is the metal line's nitric
     /// acid) and the power both lines draw.
     pub fluid: Crafter,
-    #[serde(skip)]
+    /// The engine's slots, laid over on the first tick; a machine loaded
+    /// from the save starts with them empty but the right length.
+    #[serde(skip, default = "empty_slots")]
     pub slots: Slots,
     #[serde(default)]
     pub progress_metal: u32,
@@ -61,6 +63,10 @@ pub struct Electrolyser {
     pub left: Option<Mat>,
     #[serde(default)]
     pub right: Option<Mat>,
+}
+
+fn empty_slots() -> Slots {
+    vec![None; slot::COUNT]
 }
 
 impl Default for Electrolyser {
@@ -276,6 +282,15 @@ mod tests {
         // No target: nothing pours, nothing is lost.
         assert!(!e.pour(true, |_, _| None));
         assert_eq!(e.right, Some(("copper".into(), 576)));
+    }
+
+    /// Loaded from the save, it ticks before the engine's slots come.
+    #[test]
+    fn an_electrolyser_loaded_from_the_save_ticks() {
+        let mut e: Electrolyser = serde_json::from_str(&serde_json::to_string(&Electrolyser::default()).unwrap()).unwrap();
+        assert_eq!(e.slots.len(), slot::COUNT);
+        e.tick();
+        e.screen_data();
     }
 
     /// Without nitric acid, or a stack of another metal, it waits.
