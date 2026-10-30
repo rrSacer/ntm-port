@@ -1,0 +1,98 @@
+{
+  "slots": [
+    {
+      "x": 152,
+      "y": 72,
+      "accept": [
+        "ntm:battery_creative"
+      ],
+      "max": 1
+    },
+    {
+      "x": 35,
+      "y": 45,
+      "accept": [
+        "minecraft:coal",
+        "ntm:bedrock_ore__base_actinide",
+        "ntm:bedrock_ore__base_crystal",
+        "ntm:bedrock_ore__base_heavy",
+        "ntm:bedrock_ore__base_light",
+        "ntm:bedrock_ore__base_nonmetal",
+        "ntm:bedrock_ore__base_rare",
+        "ntm:bedrock_ore__primary_actinide",
+        "ntm:bedrock_ore__primary_crystal",
+        "ntm:bedrock_ore__primary_heavy",
+        "ntm:bedrock_ore__primary_light",
+        "ntm:bedrock_ore__primary_nonmetal",
+        "ntm:bedrock_ore__primary_rare",
+        "ntm:bedrock_ore__rad_byproduct_actinide",
+        "ntm:bedrock_ore__rad_byproduct_crystal",
+        "ntm:bedrock_ore__rad_byproduct_heavy",
+        "ntm:bedrock_ore__rad_byproduct_light",
+        "ntm:bedrock_ore__rad_byproduct_nonmetal",
+        "ntm:bedrock_ore__rad_byproduct_rare",
+        "ntm:bedrock_ore__solvent_byproduct_actinide",
+        "ntm:bedrock_ore__solvent_byproduct_crystal",
+        "ntm:bedrock_ore__solvent_byproduct_heavy",
+        "ntm:bedrock_ore__solvent_byproduct_light",
+        "ntm:bedrock_ore__solvent_byproduct_nonmetal",
+        "ntm:bedrock_ore__solvent_byproduct_rare",
+        "ntm:bedrock_ore__sulfuric_byproduct_actinide",
+        "ntm:bedrock_ore__sulfuric_byproduct_crystal",
+        "ntm:bedrock_ore__sulfuric_byproduct_heavy",
+        "ntm:bedrock_ore__sulfuric_byproduct_light",
+        "ntm:bedrock_ore__sulfuric_byproduct_nonmetal",
+        "ntm:bedrock_ore__sulfuric_byproduct_rare",
+        "ntm:biomass",
+        "ntm:coke__coal",
+        "ntm:coke__lignite",
+        "ntm:coke__petroleum",
+        "ntm:oil_tar__coal",
+        "ntm:oil_tar__crack",
+        "ntm:oil_tar__crude",
+        "ntm:oil_tar__wood",
+        "ntm:powder_coal",
+        "ntm:powder_tungsten"
+      ]
+    },
+    {
+      "x": 89,
+      "y": 45,
+      "output": true
+    },
+    {
+      "x": 8,
+      "y": 72,
+      "accept": []
+    },
+    {
+      "x": 71,
+      "y": 72,
+      "accept": []
+    },
+    {
+      "x": 89,
+      "y": 72,
+      "accept": []
+    }
+  ],
+  "inventory": [
+    8,
+    122
+  ],
+  "data": 30,
+  "multiblock": {
+    "min": [
+      -2,
+      0,
+      -3
+    ],
+    "max": [
+      2,
+      2,
+      3
+    ],
+    "offset": 3,
+    "dummy": "ntm:dummy_machine"
+  }
+}

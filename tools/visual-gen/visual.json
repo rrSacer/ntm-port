@@ -6661,6 +6661,243 @@
           }
         ]
       }
+    },
+    "ntm:machine_pyrooven": {
+      "source": "ContainerPyroOven, GUIPyroOven (gui_pyrooven.png 176x204), MachinePyroOven {2,0,3,3,2,2} offset 3, RenderPyroOven (case 2: 180; Slider sways by sps(anim * 0.125) / 2 - 0.5 on x, Fan turns 45 degrees a tick about (1.5, 0, 1.5), anim counting while it works)",
+      "machine": {
+        "slots": [
+          {
+            "x": 152,
+            "y": 72,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 35,
+            "y": 45,
+            "accept_recipes": "pyrooven"
+          },
+          {
+            "x": 89,
+            "y": 45,
+            "output": true
+          },
+          {
+            "x": 8,
+            "y": 72,
+            "accept": []
+          },
+          {
+            "x": 71,
+            "y": 72,
+            "accept": []
+          },
+          {
+            "x": 89,
+            "y": 72,
+            "accept": []
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 30,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -3
+          ],
+          "max": [
+            2,
+            2,
+            3
+          ],
+          "offset": 3,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_pyrooven.png",
+        "texture_from": "textures/gui/processing/gui_pyrooven.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "compose": [
+          {
+            "from": "textures/gui/gui_utility.png",
+            "src": [
+              0,
+              32,
+              8,
+              8
+            ],
+            "at": [
+              108,
+              76
+            ]
+          }
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              12
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              57,
+              47,
+              27,
+              12
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              8,
+              18,
+              16,
+              52
+            ],
+            "color": 6,
+            "dir": "up"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "rect": [
+              116,
+              18,
+              16,
+              52
+            ],
+            "color": 9,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              8,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              116,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{7} / {8} mB"
+            ]
+          },
+          {
+            "rect": [
+              108,
+              76,
+              8,
+              8
+            ],
+            "lines": [
+              "§lMelhorias Aceitáveis:§r",
+              "* §4Velocidade§r: Acumula até o nível 3",
+              "* §1Economia de Energia§r: Acumula até o nível 3",
+              "* §7Sobrecarga§r: Acumula até o nível 3"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/pyrooven.obj",
+        "obj_from": "models/machines/pyrooven.obj",
+        "texture": "ntm:textures/models/machines/pyrooven.png",
+        "texture_from": "textures/models/machines/pyrooven.png",
+        "rotation": 180,
+        "radius": 5.0,
+        "bones": {
+          "Fan": {
+            "pivot": [
+              1.5,
+              0,
+              1.5
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.pyrooven.work",
+          "length": 12.57,
+          "bones": {
+            "Slider": {
+              "sway": {
+                "axis": "x",
+                "amp": 8,
+                "offset": -8,
+                "cycles": 5
+              }
+            },
+            "Fan": {
+              "turn": [
+                0,
+                11160,
+                0
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.pyrooven.work",
+            "property": "honey_level",
+            "not": "0"
+          }
+        ]
+      }
     }
   }
 }

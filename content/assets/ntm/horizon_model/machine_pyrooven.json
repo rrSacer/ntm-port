@@ -1,6 +1,23 @@
 {
   "obj": "ntm:models/obj/pyrooven.obj",
   "texture": "ntm:textures/models/machines/pyrooven.png",
-  "rotation": 180.0,
-  "radius": 4.5
+  "rotation": 180,
+  "radius": 5.0,
+  "bones": {
+    "Fan": {
+      "pivot": [
+        1.5,
+        0,
+        1.5
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.pyrooven.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_pyrooven.animation.json"
 }
