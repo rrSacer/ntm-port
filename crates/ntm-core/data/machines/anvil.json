@@ -1305,10 +1305,12 @@
 "ntm:block_pu_mix",
 "ntm:block_ra226",
 "ntm:block_red_copper",
+"ntm:block_red_phosphorus",
 "ntm:block_rubber",
 "ntm:block_schrabidate",
 "ntm:block_schrabidium",
 "ntm:block_schraranium",
+"ntm:block_slag",
 "ntm:block_solinium",
 "ntm:block_starmetal",
 "ntm:block_steel",
@@ -2078,6 +2080,28 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.30",
+"label": "Bloco de Chapa Metálica ×4",
+"in": [
+{
+"ids": [
+"ntm:plate_iron"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:platemetal__base",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.31",
 "label": "Bloco Decorativo de Alumínio ×4",
 "in": [
@@ -2188,6 +2212,28 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.36",
+"label": "Bloco Decorativo de Titânio ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_titanium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_titanium",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.37",
 "label": "Bloco Decorativo de Tungstênio ×4",
 "in": [
@@ -2207,6 +2253,35 @@
 ]
 ],
 "tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.38",
+"label": "Tijolos Profundos Reforçados com DNT",
+"in": [
+{
+"ids": [
+"ntm:ingot_dineutronium"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:depth_brick"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:depth_dnt",
+1,
+1.0
+]
+],
+"tier_lower": 1916169,
 "tier_upper": -1
 },
 {
@@ -4303,6 +4378,28 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.204",
+"label": "Lingote de Titânio",
+"in": [
+{
+"ids": [
+"ntm:deco_titanium"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_titanium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.205",
 "label": "Cobre Vermelho",
 "in": [
@@ -4449,6 +4546,50 @@
 "out": [
 [
 "ntm:ingot_beryllium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.212",
+"label": "Placa de Amianto",
+"in": [
+{
+"ids": [
+"ntm:deco_asbestos"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_asbestos",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.213",
+"label": "Placa de Ferro",
+"in": [
+{
+"ids": [
+"ntm:platemetal__base"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_iron",
 1,
 1.0
 ]
@@ -6469,10 +6610,12 @@
 "ntm:block_pu_mix",
 "ntm:block_ra226",
 "ntm:block_red_copper",
+"ntm:block_red_phosphorus",
 "ntm:block_rubber",
 "ntm:block_schrabidate",
 "ntm:block_schrabidium",
 "ntm:block_schraranium",
+"ntm:block_slag",
 "ntm:block_solinium",
 "ntm:block_starmetal",
 "ntm:block_steel",
@@ -7240,6 +7383,28 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.30",
+"label": "Bloco de Chapa Metálica ×4",
+"in": [
+{
+"ids": [
+"ntm:plate_iron"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:platemetal__base",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.31",
 "label": "Bloco Decorativo de Alumínio ×4",
 "in": [
@@ -7350,6 +7515,28 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.36",
+"label": "Bloco Decorativo de Titânio ×4",
+"in": [
+{
+"ids": [
+"ntm:ingot_titanium"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:deco_titanium",
+4,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.37",
 "label": "Bloco Decorativo de Tungstênio ×4",
 "in": [
@@ -7369,6 +7556,35 @@
 ]
 ],
 "tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.38",
+"label": "Tijolos Profundos Reforçados com DNT",
+"in": [
+{
+"ids": [
+"ntm:ingot_dineutronium"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:depth_brick"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:depth_dnt",
+1,
+1.0
+]
+],
+"tier_lower": 1916169,
 "tier_upper": -1
 },
 {
@@ -9465,6 +9681,28 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.204",
+"label": "Lingote de Titânio",
+"in": [
+{
+"ids": [
+"ntm:deco_titanium"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_titanium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.205",
 "label": "Cobre Vermelho",
 "in": [
@@ -9611,6 +9849,50 @@
 "out": [
 [
 "ntm:ingot_beryllium",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.212",
+"label": "Placa de Amianto",
+"in": [
+{
+"ids": [
+"ntm:deco_asbestos"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_asbestos",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.213",
+"label": "Placa de Ferro",
+"in": [
+{
+"ids": [
+"ntm:platemetal__base"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_iron",
 1,
 1.0
 ]
@@ -10327,5 +10609,5 @@
 "tier_upper": -1
 }
 ],
-"skipped": 143
+"skipped": 137
 }

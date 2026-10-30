@@ -1330,6 +1330,32 @@
 "pools": []
 },
 {
+"name": "arc.furnace.bulk__08322ff595a7c2289e",
+"label": "Vidro de Trinitita",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:waste_trinitite_red"
+],
+"n": 1,
+"label": "Minério de Trinitita Vermelha"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:glass_trinitite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "arc.furnace.bulk__09453acd394d77a167",
 "label": "Cobre de Grau Industrial ×16",
 "source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
@@ -1764,6 +1790,32 @@
 "out": [
 [
 "ntm:ingot_lead",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__3ae2eeda871d721e62",
+"label": "Vidro de Cinzas",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ash_digamma"
+],
+"n": 1,
+"label": "Cinzas"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:glass_ash",
 1,
 1.0
 ]

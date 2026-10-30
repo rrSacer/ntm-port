@@ -2472,6 +2472,12 @@
 648
 ]
 ],
+"ntm:block_slag": [
+[
+"slag",
+648
+]
+],
 "ntm:block_solinium": [
 [
 "solinium",
@@ -8104,6 +8110,10 @@
 ],
 "dnt": [
 "ntm:block_dineutronium",
+1
+],
+"slag": [
+"ntm:block_slag",
 1
 ]
 }

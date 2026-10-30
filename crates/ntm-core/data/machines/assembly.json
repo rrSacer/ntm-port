@@ -408,6 +408,32 @@
 "pools": []
 },
 {
+"name": "ass.dalekanium",
+"label": "Metal Raivoso",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:83",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:block_meteor"
+],
+"n": 1,
+"label": "Bloco de Meteorito"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:plate_dalekanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.platedesh",
 "label": "Placa de Composto de Desh ×4",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:85",
@@ -1641,6 +1667,204 @@
 "out": [
 [
 "ntm:seal_frame",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.capnuka",
+"label": "Block Cap Nuka",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:245",
+"duration": 10,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:cap_nuka"
+],
+"n": 64,
+"label": "Tampinha de Garrafa Nuka Cola"
+},
+{
+"ids": [
+"ntm:cap_nuka"
+],
+"n": 64,
+"label": "Tampinha de Garrafa Nuka Cola"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:block_cap__nuka",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.capquantum",
+"label": "Block Cap Quantum",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:247",
+"duration": 10,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:cap_quantum"
+],
+"n": 64,
+"label": "Tampinha de Garrafa Nuka Cola Quantum"
+},
+{
+"ids": [
+"ntm:cap_quantum"
+],
+"n": 64,
+"label": "Tampinha de Garrafa Nuka Cola Quantum"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:block_cap__quantum",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.capsparkle",
+"label": "Block Cap Sparkle",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:249",
+"duration": 10,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:cap_sparkle"
+],
+"n": 64,
+"label": "Tampinha de Garrafa S~Cola"
+},
+{
+"ids": [
+"ntm:cap_sparkle"
+],
+"n": 64,
+"label": "Tampinha de Garrafa S~Cola"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:block_cap__sparkle",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.caprad",
+"label": "Block Cap Rad",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:251",
+"duration": 10,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:cap_rad"
+],
+"n": 64,
+"label": "Tampinha de Garrafa S~Cola RAD"
+},
+{
+"ids": [
+"ntm:cap_rad"
+],
+"n": 64,
+"label": "Tampinha de Garrafa S~Cola RAD"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:block_cap__rad",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.capfritz",
+"label": "Block Cap Fritz",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:253",
+"duration": 10,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:cap_fritz"
+],
+"n": 64,
+"label": "Tampinha de Garrafa Fritz Cola"
+},
+{
+"ids": [
+"ntm:cap_fritz"
+],
+"n": 64,
+"label": "Tampinha de Garrafa Fritz Cola"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:block_cap__fritz",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.capkorl",
+"label": "Block Cap Korl",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:255",
+"duration": 10,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:cap_korl"
+],
+"n": 64,
+"label": "Tampinha de Garrafa Korl"
+},
+{
+"ids": [
+"ntm:cap_korl"
+],
+"n": 64,
+"label": "Tampinha de Garrafa Korl"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:block_cap__korl",
 1,
 1.0
 ]
@@ -16643,5 +16867,5 @@
 "pools": []
 }
 ],
-"skipped": 169
+"skipped": 162
 }

@@ -11181,6 +11181,32 @@
 ]
 },
 {
+"name": "arc.auto.slag.block",
+"label": "Metal: Escória",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:87",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:block_slag"
+],
+"n": 1,
+"label": "Bloco de Escória"
+}
+],
+"fin": [],
+"out": [],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"slag",
+648
+]
+]
+},
+{
 "name": "arc.auto.mud.ingot",
 "label": "Metal: Lama Venenosa",
 "source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:87",

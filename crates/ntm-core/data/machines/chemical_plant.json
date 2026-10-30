@@ -833,6 +833,44 @@
 "pools": []
 },
 {
+"name": "chem.asphalt",
+"label": "Asfalto ×16",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:165",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"minecraft:gravel"
+],
+"n": 2,
+"label": "gravel"
+},
+{
+"ids": [
+"minecraft:sand"
+],
+"n": 6,
+"label": "sand"
+}
+],
+"fin": [
+[
+"bitumen",
+1000
+]
+],
+"out": [
+[
+"ntm:asphalt",
+16,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "chem.batterylead",
 "label": "Bateria de Chumbo-Ácido",
 "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:171",
@@ -1985,5 +2023,5 @@
 "pools": []
 }
 ],
-"skipped": 18
+"skipped": 17
 }

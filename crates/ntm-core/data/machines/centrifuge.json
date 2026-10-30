@@ -1125,6 +1125,47 @@
 "pools": []
 },
 {
+"name": "source_line_210",
+"label": "Bloco de Escória",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:210",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:block_slag"
+],
+"n": 1,
+"label": "Bloco de Escória"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:gravel",
+1,
+1.0
+],
+[
+"ntm:powder_fire",
+1,
+1.0
+],
+[
+"ntm:powder_calcium",
+1,
+1.0
+],
+[
+"ntm:dust",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "source_line_216",
 "label": "Cinzas de Carvão",
 "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:216",
@@ -5754,5 +5795,5 @@
 "pools": []
 }
 ],
-"skipped": 24
+"skipped": 23
 }

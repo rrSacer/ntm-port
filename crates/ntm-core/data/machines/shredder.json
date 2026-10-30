@@ -1150,6 +1150,10 @@
 "ntm:powder_magnetized_tungsten",
 9
 ],
+"ntm:block_meteor": [
+"ntm:powder_meteorite",
+10
+],
 "ntm:block_neptunium": [
 "ntm:powder_neptunium",
 9
@@ -1178,6 +1182,10 @@
 "ntm:powder_red_copper",
 9
 ],
+"ntm:block_red_phosphorus": [
+"ntm:powder_fire",
+4
+],
 "ntm:block_schrabidate": [
 "ntm:powder_schrabidate",
 9
@@ -1185,6 +1193,10 @@
 "ntm:block_schrabidium": [
 "ntm:powder_schrabidium",
 9
+],
+"ntm:block_slag": [
+"ntm:powder_cement",
+4
 ],
 "ntm:block_steel": [
 "ntm:powder_steel",
@@ -2906,6 +2918,10 @@
 "ntm:powder_lithium_tiny",
 1
 ],
+"ntm:stone_porous": [
+"ntm:scrap_oil",
+1
+],
 "ntm:stone_resource__asbestos": [
 "ntm:powder_asbestos",
 2
@@ -2937,5 +2953,5 @@
 0
 ]
 ],
-"skipped": 195
+"skipped": 193
 }
