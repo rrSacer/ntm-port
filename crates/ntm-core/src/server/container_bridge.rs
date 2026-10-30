@@ -243,6 +243,16 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
     ("ntm:machine_ore_slopper", [-1, 0, -3], [1, 0, 3]),
     // MachineCrystallizer.fillSpace: the makeExtra ports on its bottom layer.
     ("ntm:machine_crystallizer", [-1, 0, -1], [1, 0, 1]),
+    // MachineLiquefactor and MachineSolidifier: their second layer. HBM's
+    // ports are its four sides and the top; a box can't leave the corners out.
+    ("ntm:machine_liquefactor", [-1, 1, -1], [1, 1, 1]),
+    ("ntm:machine_solidifier", [-1, 1, -1], [1, 1, 1]),
+    // MachinePyroOven: its bottom layer (HBM's ports are a column of it on
+    // the placer's right and one on top).
+    ("ntm:machine_pyrooven", [-2, 0, -3], [2, 0, 3]),
+    // MachineElectrolyser and MachineArcFurnaceLarge: their bottom layer.
+    ("ntm:machine_electrolyser", [-1, 0, -5], [3, 0, 5]),
+    ("ntm:machine_arc_furnace_large", [-2, 0, -2], [2, 0, 2]),
 ];
 
 /// The cells of the multiblock of `block` at `core` that pass energy to
@@ -382,6 +392,70 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     (
         "ntm:machine_crystallizer",
         &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1]],
+    ),
+    // getAllPorts of MachineLiquefactor and MachineSolidifier: the top, and
+    // the four sides of the second layer, each reaching the core down the
+    // centre column.
+    (
+        "ntm:machine_liquefactor",
+        &[[0, 1, 0], [0, 2, 0], [0, 3, 0], [1, 1, 0], [-1, 1, 0], [0, 1, 1], [0, 1, -1]],
+    ),
+    (
+        "ntm:machine_solidifier",
+        &[[0, 1, 0], [0, 2, 0], [0, 3, 0], [1, 1, 0], [-1, 1, 0], [0, 1, 1], [0, 1, -1]],
+    ),
+    // MachinePyroOven.getAllPorts, (-x, y, -z) here: rotatePorts turns HBM's
+    // x to the placer's left and z to them. (-2, 0, -2..2) is the column on
+    // their right, reaching the core through (1, 0, 0); (1, 2, 0) is on top,
+    // down through (-1, 1, 0) and (-1, 0, 0).
+    (
+        "ntm:machine_pyrooven",
+        &[
+            [2, 0, -2],
+            [2, 0, -1],
+            [2, 0, 0],
+            [2, 0, 1],
+            [2, 0, 2],
+            [1, 0, 0],
+            [-1, 2, 0],
+            [-1, 1, 0],
+            [-1, 0, 0],
+        ],
+    ),
+    // MachineElectrolyser.getAllPorts, (-x, y, -z) here: three at each end,
+    // five down its left edge (x -1) and five down its right one (x 3).
+    // The left edge's row and the right one's reach the core, the right
+    // through (2, 0, 0) and (1, 0, 0).
+    (
+        "ntm:machine_electrolyser",
+        &[
+            [-1, 0, -5],
+            [-1, 0, -4],
+            [-1, 0, -3],
+            [-1, 0, -2],
+            [-1, 0, -1],
+            [-1, 0, 0],
+            [-1, 0, 1],
+            [-1, 0, 2],
+            [-1, 0, 3],
+            [-1, 0, 4],
+            [-1, 0, 5],
+            [0, 0, -5],
+            [1, 0, -5],
+            [0, 0, 5],
+            [1, 0, 5],
+            [3, 0, -4],
+            [3, 0, -3],
+            [3, 0, -2],
+            [3, 0, -1],
+            [3, 0, 0],
+            [3, 0, 1],
+            [3, 0, 2],
+            [3, 0, 3],
+            [3, 0, 4],
+            [2, 0, 0],
+            [1, 0, 0],
+        ],
     ),
     // MachineChemicalPlant.getAllPorts: its bottom ring.
     (
@@ -781,6 +855,18 @@ mod tests {
         assert_eq!(ring.len(), 8);
         assert!(ring.contains(&[1, 64, 1]) && ring.contains(&[0, 64, 1]));
         assert_eq!(proxy_cells("ntm:machine_crystallizer", [0, 64, 0], Some("west")).len(), 8);
+        // The liquefactor's top port reaches its core down the centre column.
+        let column = fluid_proxy_cells("ntm:machine_liquefactor", [0, 64, 0], Some("north"));
+        assert!([65, 66, 67].iter().all(|&y| column.contains(&[0, y, 0])));
+        assert_eq!(proxy_cells("ntm:machine_solidifier", [0, 64, 0], Some("south")).len(), 8);
+        // Facing north, the placer looked south: the oven's port column on
+        // their right is west of the core, its top port east.
+        let oven = fluid_proxy_cells("ntm:machine_pyrooven", [0, 64, 0], Some("north"));
+        assert!((-2..=2).all(|z| oven.contains(&[-2, 64, z])));
+        assert!(oven.contains(&[1, 66, 0]));
+        // The electrolyser's right-hand ports are three cells from its core.
+        let cell = fluid_proxy_cells("ntm:machine_electrolyser", [0, 64, 0], Some("north"));
+        assert!(cell.contains(&[-3, 64, 4]) && cell.contains(&[1, 64, -5]));
     }
 
     #[test]
