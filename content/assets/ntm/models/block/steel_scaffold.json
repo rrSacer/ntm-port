@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_column",
   "textures": {
-    "all": "ntm:block/scaffold_steel"
+    "side": "ntm:block/scaffold_steel",
+    "end": "ntm:block/scaffold_steel"
   }
 }

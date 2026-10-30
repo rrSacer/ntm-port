@@ -1,5 +1,5 @@
 {
-  "template": "minecraft:iron_block",
+  "template": "minecraft:stone_slab",
   "properties": {
     "hardness": 2,
     "explosion_resistance": 5,

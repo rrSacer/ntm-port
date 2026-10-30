@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "side": "ntm:block/grate_top",
+    "top": "ntm:block/grate_top",
+    "bottom": "ntm:block/grate_top",
+    "all": "ntm:block/grate_top"
+  }
+}

@@ -1,7 +1,13 @@
 {
   "variants": {
-    "": {
+    "type=bottom": {
       "model": "ntm:block/steel_grate"
+    },
+    "type=top": {
+      "model": "ntm:block/steel_grate_top"
+    },
+    "type=double": {
+      "model": "ntm:block/steel_grate_double"
     }
   }
 }

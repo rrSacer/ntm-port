@@ -6,7 +6,22 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "ntm:steel_grate"
+          "name": "ntm:steel_grate",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2,
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "ntm:steel_grate",
+                  "properties": {
+                    "type": "double"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     }

@@ -1,5 +1,5 @@
 {
-  "template": "minecraft:iron_block",
+  "template": "minecraft:quartz_pillar",
   "properties": {
     "hardness": 5,
     "explosion_resistance": 15,
