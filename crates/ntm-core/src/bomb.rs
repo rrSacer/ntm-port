@@ -15,7 +15,7 @@
 
 use crate::{
     machine::{Effect, Logic, remove_one},
-    proto::Held,
+    machine::Held,
     view::{self, ViewModel},
 };
 use serde::{Deserialize, Serialize};

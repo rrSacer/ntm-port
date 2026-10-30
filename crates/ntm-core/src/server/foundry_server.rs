@@ -130,7 +130,7 @@ impl Server {
     pub(super) fn foundry_tick(&mut self, host: &mut impl ServerHost) {
         let tick = self.tick;
         let t = Tables::ntm();
-        let Session::Ready(r) = &mut self.session else { return };
+        let r = &mut self.ready;
         let mine: Vec<(Key, u8)> = r
             .world
             .machines
@@ -144,17 +144,13 @@ impl Server {
                 _ => None,
             })
             .collect();
-        let mut changed = false;
         for (key, kind) in mine {
-            changed |= match kind {
+            match kind {
                 0 => crucible_tick(&mut r.world.machines, host, t, &key, tick),
                 1 => channel_tick(&mut r.world.machines, host, t, &key, tick),
                 2 => tank_tick(&mut r.world.machines, host, t, &key, tick),
                 _ => molten_tick(&mut r.world.machines, host, t, &key),
             };
-        }
-        if changed {
-            r.dirty = true;
         }
     }
 }

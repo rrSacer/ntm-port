@@ -12,7 +12,7 @@ use crate::machine::Data;
 
 impl Server {
     pub(super) fn fraction_tick(&mut self) {
-        let Session::Ready(r) = &mut self.session else { return };
+        let r = &mut self.ready;
         let mut keys: Vec<Key> = r
             .world
             .machines
@@ -22,17 +22,13 @@ impl Server {
             .collect();
         // From the bottom of each stack up, as the NTM's lower tower acts.
         keys.sort_by_key(|k| k.1[1]);
-        let mut changed = false;
         for key in keys {
             let above = (key.0.clone(), [key.1[0], key.1[1] + STACK_DY, key.1[2]]);
             let Some(mut upper) = r.world.machines.remove(&above) else { continue };
             if let (Some(Data::FractionTower(low)), Data::FractionTower(high)) = (r.world.machines.get_mut(&key).map(|m| &mut m.data), &mut upper.data) {
-                changed |= FractionTower::stack(low, high);
+                FractionTower::stack(low, high);
             }
             r.world.machines.insert(above, upper);
-        }
-        if changed {
-            r.dirty = true;
         }
     }
 
@@ -40,7 +36,7 @@ impl Server {
     /// from the source under them (`tryPullHeat`), before they run; from the
     /// bottom up, so a stack of heaters passes it on within the tick.
     pub(super) fn heat_tick(&mut self) {
-        let Session::Ready(r) = &mut self.session else { return };
+        let r = &mut self.ready;
         let mut keys: Vec<Key> = r
             .world
             .machines
@@ -82,7 +78,7 @@ impl Server {
     /// down the pipe to the first other block, sucked if it is a deposit,
     /// else drilled into pipe.
     pub(super) fn drill_tick(&mut self, host: &mut impl ServerHost) {
-        let Session::Ready(r) = &mut self.session else { return };
+        let r = &mut self.ready;
         let keys: Vec<Key> = r
             .world
             .machines
@@ -90,10 +86,8 @@ impl Server {
             .filter(|(k, m)| r.loaded.get(*k) == Some(&true) && matches!(m.data, Data::Drill(_)))
             .map(|(k, _)| k.clone())
             .collect();
-        let mut changed = false;
         for key in keys {
             let Some(Data::Drill(d)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) else { continue };
-            let before = (d.power, d.indicator, d.tanks.iter().map(|t| t.mb).sum::<u32>());
             if d.tick_power() {
                 let writes = work(d, host, &key);
                 if !writes.is_empty()
@@ -102,10 +96,6 @@ impl Server {
                     host.log(&format!("drill: {e}"));
                 }
             }
-            changed |= before != (d.power, d.indicator, d.tanks.iter().map(|t| t.mb).sum::<u32>());
-        }
-        if changed {
-            r.dirty = true;
         }
     }
 }

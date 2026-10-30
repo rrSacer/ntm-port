@@ -35,13 +35,6 @@ struct Rebuild {
 /// tick's 50M of fuel.
 pub const REBUILD_CELLS_PER_TICK: usize = 600;
 
-impl FluidNet {
-    pub fn networks(&self) -> usize {
-        self.nets.iter().map(|n| n.2.len()).sum()
-    }
-
-}
-
 impl Server {
     pub(super) fn fluids_tick(&mut self) {
         // The networks are checked for changes every 10 ticks (a duct put
@@ -51,8 +44,7 @@ impl Server {
             self.fluid_shape();
         }
         self.fluid_rebuild_step();
-        let Session::Ready(r) = &mut self.session else { return };
-        let mut moved = 0;
+        let r = &mut self.ready;
         for (dim, f, nets) in &self.fluidnet.nets {
             for net in nets {
                 let mut group: Vec<&mut dyn fluid::FluidNode> = r
@@ -63,11 +55,8 @@ impl Server {
                     .filter(|(k, _)| r.loaded.get(*k) == Some(&true))
                     .filter_map(|(_, m)| m.logic_mut().fluid())
                     .collect();
-                moved += fluid::distribute(f, &mut group);
+                fluid::distribute(f, &mut group);
             }
-        }
-        if moved > 0 {
-            r.dirty = true;
         }
         if self.tick.is_multiple_of(10) {
             self.gascent_cascades();
@@ -78,7 +67,7 @@ impl Server {
     /// machines and the types they hold), hashed without building strings;
     /// the networks are rebuilt when it changed.
     fn fluid_shape(&mut self) {
-        let Session::Ready(r) = &mut self.session else { return };
+        let r = &mut self.ready;
         let mut h: u64 = 0x6e74_6d66;
         let mut feed = |v: u64| h = crate::hash::mix(h ^ v);
         let mut ducts: BTreeMap<(String, String), BTreeSet<Pos>> = BTreeMap::new();
@@ -139,7 +128,6 @@ impl Server {
             }
             members.push(((dim.clone(), f.clone()), m));
         }
-        super::trace(30);
         let sig = h | 1;
         let target = self.fluidnet.pending.as_ref().map_or(self.fluidnet.sig, |p| p.sig);
         if sig != target {
@@ -174,13 +162,12 @@ impl Server {
             self.fluidnet.sig = p.sig;
             self.fluidnet.nets = p.done;
         }
-        super::trace(31);
     }
 
     /// Each loaded gas centrifuge passes its output to the one behind it, or
     /// ends a LEUF6 line (`TileEntityMachineGasCent.java:217-231`).
     fn gascent_cascades(&mut self) {
-        let Session::Ready(r) = &mut self.session else { return };
+        let r = &mut self.ready;
         let cents: Vec<(Key, Option<String>)> = r
             .world
             .machines
@@ -193,22 +180,20 @@ impl Server {
             let back = behind.as_ref().filter(|b| r.loaded.get(*b) == Some(&true) && matches!(r.world.machines.get(*b).map(|m| &m.data), Some(Data::GasCent(_))));
             let Some(mut a) = r.world.machines.remove(&key) else { continue };
             let Data::GasCent(ga) = &mut a.data else { continue };
-            let changed = match back {
+            let cascaded = match back {
                 Some(b) => {
                     let mut bm = r.world.machines.remove(b).expect("checked");
                     let Data::GasCent(gb) = &mut bm.data else { unreachable!() };
-                    let was = (ga.output.1, gb.input.1);
                     let cascaded = crate::gascent::cascade(ga, gb);
-                    let changed = (ga.output.1, gb.input.1) != was;
                     r.world.machines.insert(b.clone(), bm);
-                    if cascaded { changed } else { crate::gascent::end_of_line(ga) }
+                    cascaded
                 }
-                None => crate::gascent::end_of_line(ga),
+                None => false,
             };
-            r.world.machines.insert(key, a);
-            if changed {
-                r.dirty = true;
+            if !cascaded {
+                crate::gascent::end_of_line(ga);
             }
+            r.world.machines.insert(key, a);
         }
     }
 }

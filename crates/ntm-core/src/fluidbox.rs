@@ -11,7 +11,7 @@
 use crate::{
     fluid::{self, FluidNode, PRIORITY_LOW, Tank},
     machine::{Effect, Logic, fill_level},
-    proto::Held,
+    machine::Held,
     view::{self, ViewModel},
 };
 use serde::{Deserialize, Serialize};

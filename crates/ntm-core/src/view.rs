@@ -20,7 +20,7 @@ pub enum Widget {
         max: u64,
         unit: String,
     },
-    /// A click is [`crate::proto::C2S::Action`] with this `action`.
+    /// A click is the machine's `action` with this `action`.
     Button { action: u32, label: String },
     Item { item: String, name: String },
     /// Rows to pick one of (a `ui` list): picking row `r` is the action

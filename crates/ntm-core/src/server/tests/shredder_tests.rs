@@ -18,7 +18,6 @@ fn set_slots(g: &mut Game, f: impl FnOnce(&mut Shredder)) {
     let r = g.ready();
     let Some(Data::Shredder(s)) = r.world.machines.get_mut(&(OW.to_string(), AT)).map(|m| &mut m.data) else { panic!() };
     f(s);
-    r.urgent = true;
 }
 
 /// A full battery in output mode beside the shredder.
@@ -59,8 +58,8 @@ fn the_shredder_grinds_with_network_power_and_wears_its_blades() {
     assert!(worked, "o bloco não mostrou o progresso");
     // The damage is in the world's save.
     g.run(250);
-    let saved = g.saved();
-    let Some(Data::Shredder(s)) = saved.machines.get(&(OW.to_string(), AT)).map(|m| m.data.clone()) else { panic!() };
+    let saved: Machine = serde_json::from_str(&g.world.borrow().saved[&(OW.to_string(), AT)]).unwrap();
+    let Data::Shredder(s) = saved.data else { panic!() };
     assert_eq!(s.slots[27].as_ref().map(|b| b.damage), Some(3));
 }
 
@@ -77,7 +76,7 @@ fn without_power_nothing_happens_and_breaking_drops_its_items() {
     g.run(2 * shredder::TICKS as usize);
     assert_eq!(shredder_at(&mut g).slots[0], Some(Stack::new("minecraft:iron_ingot", 2)));
     g.world.borrow_mut().set(OW, AT, "minecraft:air");
-    g.server.block_broken(OW, AT, "ntm:machine_shredder[facing=north,honey_level=0]");
+    g.break_block(AT);
     g.run(60);
     assert_eq!(g.world.borrow().dropped.len(), 3, "{:?}", g.world.borrow().dropped);
 }

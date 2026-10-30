@@ -17,7 +17,7 @@ use crate::{
     fluid::{FluidNode, Tank},
     heater::{Coolable, tables},
     machine::{Effect, Logic, fill_level},
-    proto::Held,
+    machine::Held,
     server::container_bridge::{Slots, Slotted},
     view::{self, ViewModel},
 };

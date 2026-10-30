@@ -3,7 +3,7 @@
 //! the old screen, and the waste stream pours into what is under it. Items
 //! are set on the machines directly (their slots are the engine's).
 use super::*;
-use crate::foundry::{crucible::{Crucible, actions as ca}, firebox::Firebox};
+use crate::foundry::{crucible::Crucible, firebox::Firebox};
 use crate::server::container_bridge::Stack;
 
 const FIRE: Pos = [0, 70, 0];
@@ -28,7 +28,6 @@ fn firebox(g: &mut Game) -> Firebox {
 fn edit<F: FnOnce(&mut Data)>(g: &mut Game, at: Pos, f: F) {
     let r = g.ready();
     f(&mut r.world.machines.get_mut(&(OW.to_string(), at)).unwrap().data);
-    r.urgent = true;
 }
 
 fn foundry(g: &mut Game) {
@@ -75,15 +74,13 @@ fn a_firebox_heats_the_crucible_and_iron_melts_and_pours() {
 }
 
 #[test]
-fn an_alloy_is_picked_on_the_old_screen_and_made() {
+fn an_alloy_picked_is_made() {
     let mut g = game();
     foundry(&mut g);
-    g.open(CORE);
-    g.click(ca::PICK);
-    assert!(g.screen_text().contains("Cadinho: liga"), "{}", g.screen_text());
-    // Row 1: the first alloy (steel); row 0 is none.
-    g.click(ca::LIST + 1);
-    assert_eq!(crucible(&mut g, CORE).recipe.as_deref(), Some("crucible.steel"));
+    edit(&mut g, CORE, |d| {
+        let Data::Crucible(c) = d else { panic!() };
+        c.recipe = Some("crucible.steel".into());
+    });
     // Iron, carbon and flux in the recipe stack become steel; nothing to
     // pour into, so it stays.
     edit(&mut g, CORE, |d| {
@@ -104,12 +101,12 @@ fn breaking_a_crucible_drops_its_items_and_scraps() {
         c.waste_stack = vec![("iron".into(), 150), ("copper".into(), 30)];
     });
     g.world.borrow_mut().set(OW, CORE, "minecraft:air");
-    g.server.block_broken(OW, CORE, "ntm:machine_crucible[facing=north,honey_level=0]");
+    g.break_block(CORE);
     g.run(60);
     let dropped = g.world.borrow().dropped.clone();
     // The ingot, and two iron scraps (150 quanta); copper is under an ingot.
     assert_eq!(dropped.len(), 2, "{dropped:?}");
-    assert!(dropped.iter().any(|d| d.contains("scraps__iron") && d.contains("count:2")), "{dropped:?}");
+    assert!(dropped.iter().any(|d| d.ends_with("ntm:scraps__iron 2")), "{dropped:?}");
 }
 
 // ------------------------------------------------------------- stage 2

@@ -9,7 +9,7 @@
 use super::{Tables, quanta_name};
 use crate::{
     machine::{Effect, Logic, fill_level},
-    proto::Held,
+    machine::Held,
     server::container_bridge::{Slots, Slotted},
     view::{self, ViewModel},
 };

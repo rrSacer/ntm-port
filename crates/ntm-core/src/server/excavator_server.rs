@@ -18,7 +18,7 @@ fn floor(dim: &str) -> i32 {
 
 impl Server {
     pub(super) fn excavator_tick(&mut self, host: &mut impl ServerHost) {
-        let Session::Ready(r) = &mut self.session else { return };
+        let r = &mut self.ready;
         let keys: Vec<Key> = r
             .world
             .machines
@@ -26,14 +26,10 @@ impl Server {
             .filter(|(k, m)| r.loaded.get(*k) == Some(&true) && matches!(m.data, Data::Excavator(_)))
             .map(|(k, _)| k.clone())
             .collect();
-        let mut changed = false;
         for key in keys {
             if let Some(Data::Excavator(e)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) {
-                changed |= step(e, host, &key);
+                step(e, host, &key);
             }
-        }
-        if changed {
-            r.dirty = true;
         }
     }
 }

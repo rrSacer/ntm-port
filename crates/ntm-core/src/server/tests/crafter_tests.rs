@@ -1,8 +1,12 @@
-//! Recipe machines in the fake world (docs/maquinas.md): a recipe picked in
-//! the list, items from the hand through transactions, energy, the output
-//! back; fluids by container; the centrifuge picks by its input.
+//! Recipe machines in the fake world (docs/maquinas.md): a recipe picked by
+//! its menu button (`native::recipes`), items through the block entity's
+//! slots, energy, the output back; the centrifuge picks by its input.
 use super::*;
-use crate::crafter::{Crafter, Station, actions as ca};
+use crate::crafter::{Crafter, Station};
+use crate::native::{RECIPE_BASE, RECIPE_CLEAR};
+use crate::server::container_bridge::{Slots, Stack};
+
+const ASSEMBLY: &str = "ntm:machine_assembly_machine[facing=north,honey_level=0]";
 
 fn crafter(g: &mut Game, at: Pos) -> Crafter {
     match g.machine(at).data {
@@ -18,39 +22,39 @@ fn charge(g: &mut Game, at: Pos) {
     }
 }
 
-fn settle(g: &mut Game) {
-    for _ in 0..300 {
-        if g.server.txs().is_empty() {
-            return;
-        }
-        g.run(1);
-    }
-    panic!("transações paradas");
-}
-
 fn row(st: Station, name: &str) -> u32 {
     st.recipes().iter().position(|r| r.name == name).unwrap_or_else(|| panic!("sem {name}")) as u32
 }
 
+/// The machine at `at` with `n` block entity slots.
+fn with_slots(g: &mut Game, at: Pos, state: &str, n: usize) {
+    g.place(at, state);
+    g.world.borrow_mut().engine.insert((OW.to_string(), at), (vec![None; n], Vec::new()));
+    g.run(2);
+}
+
+fn slots(g: &Game, at: Pos) -> Slots {
+    g.world.borrow().engine[&(OW.to_string(), at)].0.clone()
+}
+
+fn press(g: &mut Game, at: Pos, button: u32) {
+    g.world.borrow_mut().presses.push((OW.to_string(), at, button));
+    g.run(1);
+}
+
 #[test]
-fn the_assembly_machine_makes_iron_plates_from_the_hand() {
+fn the_assembly_machine_makes_iron_plates_from_its_slots() {
     let mut g = game();
     let at = [0, 70, 0];
-    g.place(at, "ntm:machine_assembly_machine[facing=north,honey_level=0]");
-    g.run(2);
-    g.open(at);
-    g.click(ca::PICK_SCREEN);
-    assert!(g.ch.screen.as_ref().unwrap().widgets.iter().any(|w| matches!(w, UiWidget::List { .. })), "lista de receitas");
-    // A pick in the list is `select(LIST, row)`.
-    let held = g.held_now();
-    g.client.select_row(&mut g.ch, ca::LIST, row(Station::Assembly, "ass.plateiron"), held);
-    g.run(2);
+    with_slots(&mut g, at, ASSEMBLY, 17);
+    let plate = row(Station::Assembly, "ass.plateiron");
+    press(&mut g, at, RECIPE_BASE + plate);
     assert_eq!(crafter(&mut g, at).recipe.as_deref(), Some("ass.plateiron"));
-    assert!(g.screen_text().contains("Falta: 1×"), "{}", g.screen_text());
-    g.hold("minecraft:iron_ingot", 5);
-    g.click(ca::INSERT);
-    settle(&mut g);
-    assert_eq!(g.held(), None, "os 5 lingotes entraram");
+    g.run(1);
+    let data = g.world.borrow().engine[&(OW.to_string(), at)].1.clone();
+    assert_eq!(data[crate::native::recipe_slot("ntm:machine_assembly_machine").unwrap()], plate as i32 + 1, "a receita na tela");
+    g.world.borrow_mut().engine.get_mut(&(OW.to_string(), at)).unwrap().0[4] = Some(Stack::new("minecraft:iron_ingot", 5));
+    g.run(2);
     assert_eq!(crafter(&mut g, at).items, vec![("minecraft:iron_ingot".to_string(), 5)]);
     // Without energy nothing happens; with it, 60 ticks a plate.
     g.run(80);
@@ -60,108 +64,76 @@ fn the_assembly_machine_makes_iron_plates_from_the_hand() {
     let c = crafter(&mut g, at);
     assert_eq!(c.out, vec![("ntm:plate_iron".to_string(), 5)]);
     assert!(c.items.is_empty());
-    g.open(at);
-    g.click(ca::TAKE_OUT);
-    settle(&mut g);
-    assert_eq!(g.inv("ntm:plate_iron"), 5);
-    // An item the recipe doesn't take stays in the hand.
-    g.hold("minecraft:dirt", 1);
-    g.click(ca::INSERT);
-    settle(&mut g);
-    assert_eq!(g.held(), Some(("minecraft:dirt".to_string(), 1)));
+    assert_eq!(slots(&g, at)[16], Some(Stack::new("ntm:plate_iron", 5)));
+    // Cleared: no recipe, nothing made.
+    press(&mut g, at, RECIPE_CLEAR);
+    assert_eq!(crafter(&mut g, at).recipe, None);
 }
 
 #[test]
-fn the_chemical_plant_turns_air_into_oxygen_through_containers() {
+fn the_chemical_plant_turns_air_into_oxygen() {
     let mut g = game();
     let at = [0, 70, 0];
     g.place(at, "ntm:machine_chemical_plant[facing=north,honey_level=0]");
     g.run(2);
-    g.open(at);
-    g.click(ca::PICK_SCREEN);
-    let held = g.held_now();
-    g.client.select_row(&mut g.ch, ca::LIST, row(Station::ChemicalPlant, "chem.oxygen"), held);
-    g.run(2);
+    press(&mut g, at, RECIPE_BASE + row(Station::ChemicalPlant, "chem.oxygen"));
     charge(&mut g, at);
-    g.click(ca::FLUID_SCREEN);
-    for _ in 0..8 {
-        g.hold("ntm:fluid_tank_full__air", 1);
-        g.click(ca::POUR);
-        settle(&mut g);
+    {
+        let r = g.ready();
+        let Some(Data::Crafter(c)) = r.world.machines.get_mut(&(OW.to_string(), at)).map(|m| &mut m.data) else { panic!() };
+        assert_eq!(c.tin[0].fill("air", 8000), 8000, "o tanque tem o tipo da receita");
     }
-    assert_eq!(g.inv("ntm:fluid_tank_empty"), 8);
-    assert_eq!(crafter(&mut g, at).tin[0].mb, 8000);
     g.run(25);
     let c = crafter(&mut g, at);
     assert_eq!((c.tout[0].fluid.as_str(), c.tout[0].mb), ("oxygen", 500));
     assert_eq!(c.tin[0].mb, 0);
-    // Not enough oxygen for a gas tank of 1 000: refused, nothing taken.
-    g.hold("ntm:gas_empty", 1);
-    g.click(ca::FILL);
-    settle(&mut g);
-    assert_eq!(g.held(), Some(("ntm:gas_empty".to_string(), 1)));
 }
 
+/// The centrifuge has no list: a pick by button changes nothing.
 #[test]
 fn the_centrifuge_picks_its_recipe_by_the_input() {
     let mut g = game();
     let at = [0, 70, 0];
-    g.place(at, "ntm:machine_centrifuge[facing=north,honey_level=0]");
-    g.run(2);
-    g.open(at);
+    with_slots(&mut g, at, "ntm:machine_centrifuge[facing=north,honey_level=0]", 5);
     let r = &Station::Centrifuge.recipes()[0];
-    let input = r.items_in[0].ids[0].clone();
-    g.hold(&input, 2);
-    g.click(ca::INSERT);
-    settle(&mut g);
+    press(&mut g, at, RECIPE_BASE + 1);
+    assert_eq!(crafter(&mut g, at).recipe, None);
+    g.world.borrow_mut().engine.get_mut(&(OW.to_string(), at)).unwrap().0[0] = Some(Stack::new(&r.items_in[0].ids[0], 2));
+    g.run(2);
     assert_eq!(crafter(&mut g, at).recipe.as_deref(), Some(r.name.as_str()));
-    charge(&mut g, at);
-    g.run(2 * 200 + 10);
-    let c = crafter(&mut g, at);
-    for (item, n, _) in &r.items_out {
-        let got = c.out.iter().filter(|o| o.0 == *item).map(|o| o.1).sum::<u32>();
-        assert!(got >= 2 * n, "{item}: {got}");
-    }
 }
 
 #[test]
-fn a_crafter_broken_drops_what_it_holds() {
+fn a_crafter_broken_drops_only_what_its_slots_cant_show() {
     let mut g = game();
     let at = [0, 70, 0];
-    g.place(at, "ntm:machine_assembly_machine[facing=north,honey_level=0]");
+    g.place(at, ASSEMBLY);
     g.run(2);
-    g.open(at);
-    g.click(ca::PICK_SCREEN);
-    let held = g.held_now();
-    g.client.select_row(&mut g.ch, ca::LIST, row(Station::Assembly, "ass.plateiron"), held);
-    g.run(2);
-    g.hold("minecraft:iron_ingot", 3);
-    g.click(ca::INSERT);
-    settle(&mut g);
-    g.world.borrow_mut().set(OW, at, "minecraft:air");
-    g.server.block_broken(OW, at, "ntm:machine_assembly_machine[facing=north,honey_level=0]");
+    {
+        let r = g.ready();
+        let Some(Data::Crafter(c)) = r.world.machines.get_mut(&(OW.to_string(), at)).map(|m| &mut m.data) else { panic!() };
+        c.items = vec![("minecraft:iron_ingot".into(), 3)];
+    }
+    g.break_block(at);
     g.run(40);
     let dropped = g.world.borrow().dropped.clone();
-    assert_eq!(dropped.len(), 1, "{dropped:?}");
-    assert!(dropped[0].contains("iron_ingot") && dropped[0].contains("Count:3") || dropped[0].contains("count:3"), "{dropped:?}");
+    assert_eq!(dropped, ["minecraft:overworld 0 70 0 minecraft:iron_ingot 3"], "sem slots: tudo cai");
 }
 
 #[test]
 fn gas_centrifuges_in_a_row_cascade_uf6() {
-    use crate::gascent::{GasCent, Pseudo, actions as ga};
+    use crate::gascent::{GasCent, Pseudo};
     let mut g = game();
     // Facing north: the one behind is to the south (+z).
     let (front, back) = ([0, 70, 0], [0, 70, 1]);
     g.place(front, "ntm:machine_gascent[facing=north,honey_level=0]");
     g.place(back, "ntm:machine_gascent[facing=north,honey_level=0]");
     g.run(2);
-    g.open(front);
-    for _ in 0..2 {
-        g.hold("ntm:cell_uf6", 1);
-        g.click(ga::POUR);
-        settle(&mut g);
+    {
+        let r = g.ready();
+        let Some(Data::GasCent(c)) = r.world.machines.get_mut(&(OW.to_string(), front)).map(|m| &mut m.data) else { panic!() };
+        c.tank.fill("uf6", 2000);
     }
-    assert_eq!(g.inv("ntm:cell_empty"), 2);
     let gc = |g: &mut Game, at: Pos| -> GasCent {
         match g.machine(at).data {
             Data::GasCent(c) => c,

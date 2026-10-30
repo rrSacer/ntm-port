@@ -22,7 +22,6 @@ fn slot(g: &Game, at: Pos, i: usize) -> Option<Stack> {
 fn edit<F: FnOnce(&mut Data)>(g: &mut Game, at: Pos, f: F) {
     let r = g.ready();
     f(&mut r.world.machines.get_mut(&(OW.to_string(), at)).unwrap().data);
-    r.urgent = true;
 }
 
 /// An ingot mold on `at`, its mold in.

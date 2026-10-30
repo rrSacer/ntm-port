@@ -54,9 +54,8 @@ fn forging_an_anvil_upgrade_through_the_engine_slots() {
 #[test]
 fn construction_from_the_grid_and_the_recipe_kept_over_a_restart() {
     let t = Tables::ntm();
-    let kv = Rc::new(RefCell::new(MemKv::default()));
     let w = Rc::new(RefCell::new(World::new()));
-    let mut g = Game::new(w.clone(), kv.clone(), 1);
+    let mut g = Game::new(w.clone());
     g.run(10);
     anvil(&mut g, "ntm:anvil_desh");
     let plate = t
@@ -81,12 +80,11 @@ fn construction_from_the_grid_and_the_recipe_kept_over_a_restart() {
     let s = slots(&g);
     assert_eq!(count(&s[OUT], "ntm:plate_steel"), 65, "um pacote de 64 a mais");
     assert_eq!(count(&s[GRID], "ntm:ingot_steel"), 15);
-    // The world saved (its slots and values) and the mod's save lost: the
-    // recipe comes back from the block entity.
+    // The world saved and opened again: the recipe comes back from the
+    // block entity.
     g.run(5);
     drop(g);
-    *kv.borrow_mut() = MemKv::default();
-    let mut g = Game::new(w.clone(), kv.clone(), 2);
+    let mut g = Game::new(w.clone());
     g.run(10);
     g.place(AT, "ntm:anvil_desh[facing=north,honey_level=0]");
     g.run(3);

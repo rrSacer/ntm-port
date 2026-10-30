@@ -5,7 +5,7 @@
 use super::*;
 use crate::blastfurnace::{self as bf, BlastFurnace};
 use crate::fluid::Tank;
-use crate::fluidbox::{FluidStore, Mode, actions as fa};
+use crate::fluidbox::{FluidStore, Mode};
 use crate::server::container_bridge::Stack;
 
 const AT: Pos = [2, 70, 0];
@@ -21,7 +21,6 @@ fn set_furnace(g: &mut Game, f: impl FnOnce(&mut BlastFurnace)) {
     let r = g.ready();
     let Some(Data::BlastFurnace(b)) = r.world.machines.get_mut(&(OW.to_string(), AT)).map(|m| &mut m.data) else { panic!() };
     f(b);
-    r.urgent = true;
 }
 
 fn set_store(g: &mut Game, at: Pos, f: impl FnOnce(&mut FluidStore)) {
@@ -41,8 +40,7 @@ fn store(g: &mut Game, at: Pos) -> FluidStore {
 fn duct(g: &mut Game, at: Pos, fluid: &str) {
     g.place(at, "ntm:fluid_duct_neo");
     g.run(2);
-    g.open(at);
-    g.click(fa::PICK + u32::from(crate::fluid::get(fluid).unwrap().id));
+    g.type_duct(at, fluid);
 }
 
 /// Steel in iron, sand and coal; `air`: a big tank of hot air on its
@@ -108,7 +106,7 @@ fn the_block_shows_its_work_and_drops_its_items() {
     let s = g.world.borrow().get(OW, AT);
     assert!(!s.contains("honey_level=0"), "{s}");
     g.world.borrow_mut().set(OW, AT, "minecraft:air");
-    g.server.block_broken(OW, AT, "ntm:machine_blast_furnace[facing=north,honey_level=2]");
+    g.break_block(AT);
     g.run(60);
     // Iron and sand (the coal went in as fuel).
     assert_eq!(g.world.borrow().dropped.len(), 2, "{:?}", g.world.borrow().dropped);

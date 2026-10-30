@@ -1,10 +1,9 @@
-//! NTM port: the logic shared by `ntm-logic-server` and `ntm-logic-client`
-//! (docs/fundacao.md).
+//! NTM port: the logic the native bundle runs (docs/nativo.md).
 //!
-//! Nothing here calls the Horizon API: the mods hand the engines a host
-//! ([`server::ServerHost`], [`client::ClientHost`]) that does. So every piece
-//! (protocol, persistence, world identity, machines, energy) runs in
-//! `cargo test` against a fake world.
+//! Nothing here calls the game: the bundle's glue hands the server a host
+//! ([`server::ServerHost`]) that does. So every piece (machines, energy,
+//! fluids, bombs, the world's state) runs in `cargo test` against a fake
+//! world.
 
 pub mod anvil;
 pub mod arc_furnace;
@@ -14,7 +13,6 @@ pub mod blastfurnace;
 pub mod blockstate;
 pub mod boiler;
 pub mod bomb;
-pub mod client;
 pub mod coker;
 pub mod crafter;
 pub mod electrolyser;
@@ -35,8 +33,6 @@ pub mod oil_drill;
 pub mod persist;
 pub mod processing;
 pub mod press;
-pub mod probes;
-pub mod proto;
 pub mod recipes;
 pub mod refinery;
 pub mod screens;
@@ -46,10 +42,7 @@ pub mod registry;
 pub mod server;
 pub mod snbt;
 pub mod steam;
-pub mod token;
-pub mod tx;
 pub mod view;
-pub mod worldid;
 
 /// The pool allocator of the explosion engine, for the server mod's
 /// `#[global_allocator]` (single-threaded WebAssembly only).

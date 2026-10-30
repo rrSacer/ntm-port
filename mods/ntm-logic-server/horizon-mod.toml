@@ -1,8 +1,0 @@
-id = "ntmlogic"
-name = "NTM: lógica (servidor)"
-version = "0.1.0"
-description = "Máquinas, energia HE e persistência do port do HBM's Nuclear Tech Mod. Precisa do mod irmão ntm-logic-client e de comandos ligados."
-authors = ["NTM port"]
-api = "0.3"
-side = "server"
-capabilities = ["storage", "world", "players"]

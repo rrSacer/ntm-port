@@ -1,8 +1,7 @@
-//! The server as the native bundle runs it (docs/nativo.md, stage L3 of the
-//! migration): in a world from the start, with no world id, transactions,
-//! probes or client channel. Each machine's state is its block entity's
-//! (the host's `save_machine`, read back by [`Server::native_adopt`]); the
-//! phases are [`Server::tick`]'s, on the same [`ServerHost`].
+//! The native bundle's entry points (docs/nativo.md): the world from the
+//! start, each machine's state its block entity's (the host's
+//! `save_machine`, read back by [`Server::native_adopt`]), the cables found
+//! from the blocks, the tick's phases.
 use super::*;
 
 /// The fluid identifier (`ItemFluidIDMulti`; its type in `custom_data`
@@ -15,11 +14,22 @@ pub const CABLE_READS_PER_TICK: usize = 256;
 impl Server {
     /// A server for the native bundle, in its world.
     pub fn native(host: &mut impl ServerHost, tick: u64) -> Self {
-        let mut s = Server::new(&mut crate::kv::MemKv::default(), tick);
-        s.tick = tick;
-        s.native = true;
-        s.enter_world(host, "native".into());
-        s
+        crate::radiation::warm();
+        let world = WorldState::load(host);
+        let kept = world.kept(0);
+        Server {
+            blasts: crate::blast::Runtime::default(),
+            fluidnet: fluid_server::FluidNet::default(),
+            tick,
+            players: Vec::new(),
+            queued: Vec::new(),
+            ready: Ready {
+                world,
+                topo_dirty: true,
+                kept,
+                ..Ready::default()
+            },
+        }
     }
 
     /// One server tick: the blocks that changed, the slots players moved,
@@ -42,6 +52,22 @@ impl Server {
         self.bombs_tick(host);
         self.slots_out(host);
         self.native_save(host);
+        self.keep_world(host);
+    }
+
+    /// The world's state outside the blocks, kept when it changed (the
+    /// clock alone, every [`crate::persist::TICKS_EVERY`] ticks).
+    fn keep_world(&mut self, host: &mut impl ServerHost) {
+        let r = &mut self.ready;
+        r.world.ticks += 1;
+        // Compared without the clock, which changes every tick.
+        let now = r.world.kept(0);
+        if now != r.kept || r.world.ticks.is_multiple_of(crate::persist::TICKS_EVERY) {
+            match host.set(crate::persist::KEY, &r.world.kept(r.world.ticks)) {
+                Ok(()) => r.kept = now,
+                Err(e) => host.log(&format!("world state: {e}")),
+            }
+        }
     }
 
     /// A block changed (`Level.setBlock`): a machine or cable put, taken
@@ -129,7 +155,6 @@ impl Server {
             host.tell(player, "Cannot change compressor setting while operational!");
         } else {
             t.lever();
-            r.dirty = true;
         }
         true
     }
@@ -148,7 +173,6 @@ impl Server {
         let crate::machine::Data::Duct(d) = &mut m.data else { return false };
         if d.fluid != fluid {
             d.fluid = fluid.to_string();
-            r.urgent = true;
         }
         true
     }

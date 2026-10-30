@@ -32,7 +32,7 @@ fn count(s: &Slots, id: &str) -> u32 {
 
 /// The engine breaks the block: its slots spill (as `dropped` lines), then
 /// the mod hears of it.
-fn engine_break(g: &mut Game, at: Pos, state: &str) {
+fn engine_break(g: &mut Game, at: Pos) {
     let (s, _) = g.world.borrow_mut().engine.remove(&(OW.to_string(), at)).unwrap();
     {
         let mut w = g.world.borrow_mut();
@@ -41,7 +41,7 @@ fn engine_break(g: &mut Game, at: Pos, state: &str) {
         }
         w.set(OW, at, "minecraft:air");
     }
-    g.server.block_broken(OW, at, state);
+    g.break_block(at);
     g.run(60);
 }
 
@@ -95,7 +95,7 @@ fn breaking_a_slotted_machine_drops_its_items_once() {
     put(&mut g, AT, 0, Some(Stack::new("minecraft:iron_ingot", 5)));
     put(&mut g, AT, 27, Some(Stack::new("ntm:blades_steel", 1)));
     g.run(3);
-    engine_break(&mut g, AT, "ntm:machine_shredder[facing=north,honey_level=0]");
+    engine_break(&mut g, AT);
     let dropped = g.world.borrow().dropped.clone();
     assert_eq!(dropped.len(), 2, "{dropped:?}");
     assert!(dropped.iter().all(|d| d.starts_with("engine ")), "o mod soltou de novo: {dropped:?}");
@@ -114,32 +114,23 @@ fn breaking_a_crucible_keeps_its_molten_metal_as_scraps() {
         c.waste_stack = vec![("iron".into(), 144)];
     }
     g.run(3);
-    engine_break(&mut g, core, "ntm:machine_crucible[facing=north,honey_level=0]");
+    engine_break(&mut g, core);
     let dropped = g.world.borrow().dropped.clone();
-    assert!(dropped.iter().any(|d| d.contains("scraps__iron") && d.contains("count:2")), "o metal sumiu: {dropped:?}");
+    assert!(dropped.iter().any(|d| d.ends_with("ntm:scraps__iron 2")), "o metal sumiu: {dropped:?}");
 }
 
-/// The engine's world (slots) and the mod's save are written at different
-/// times: a crash between them rolls one back and not the other. An ingot
-/// that melts after the world's autosave, and is in the mod's save as
-/// metal, comes back as an ingot too.
+/// The world's save holds a machine's slots and its state together (its
+/// block entity's): an ingot melted before the save comes back as metal,
+/// not as an ingot too.
 #[test]
-fn a_crash_between_the_saves_neither_dupes_nor_loses_molten_metal() {
-    let kv = Rc::new(RefCell::new(MemKv::default()));
+fn a_reopened_world_neither_dupes_nor_loses_molten_metal() {
     let w = Rc::new(RefCell::new(World::new()));
-    let mut g = Game::new(w.clone(), kv.clone(), 1);
+    let mut g = Game::new(w.clone());
     g.run(10);
     let core = [0, 71, 0];
     engine_block(&mut g, core, "ntm:machine_crucible[facing=north,honey_level=0]", 10);
     put(&mut g, core, 1, Some(Stack::new("minecraft:iron_ingot", 1)));
     g.run(3);
-    // The world's autosave: the ingot still in its slot.
-    let autosave = w.borrow().clone();
-    {
-        let r = g.ready();
-        let Some(Data::Crucible(c)) = r.world.machines.get_mut(&(OW.to_string(), core)).map(|m| &mut m.data) else { panic!() };
-        c.heat = 100_000;
-    }
     for _ in 0..20 {
         let r = g.ready();
         if let Some(Data::Crucible(c)) = r.world.machines.get_mut(&(OW.to_string(), core)).map(|m| &mut m.data) {
@@ -152,52 +143,13 @@ fn a_crash_between_the_saves_neither_dupes_nor_loses_molten_metal() {
         _ => 0,
     };
     assert_eq!(molten(&mut g), 72, "não fundiu");
-    // The mod's save has the metal.
-    g.run(400);
-    drop(g);
-    *w.borrow_mut() = autosave; // the crash: the world from before the melt
-    let mut g = Game::new(w.clone(), kv.clone(), 2);
-    g.run(40);
-    let total = molten(&mut g) + 72 * count(&slots(&g, core), "minecraft:iron_ingot");
-    assert_eq!(total, 72, "ferro depois da queda: {total} quanta (era 72)");
-}
-
-/// The other way round: the mod's save is the older one (from before the
-/// melt), the world's the newer. The metal comes back from the world's
-/// save with the empty slot: nothing is lost.
-#[test]
-fn a_crash_with_an_older_mod_save_loses_no_molten_metal() {
-    let kv = Rc::new(RefCell::new(MemKv::default()));
-    let w = Rc::new(RefCell::new(World::new()));
-    let mut g = Game::new(w.clone(), kv.clone(), 1);
-    g.run(10);
-    let core = [0, 71, 0];
-    engine_block(&mut g, core, "ntm:machine_crucible[facing=north,honey_level=0]", 10);
-    put(&mut g, core, 1, Some(Stack::new("minecraft:iron_ingot", 1)));
-    g.run(300);
-    // The mod's last save: the ingot not melted yet.
-    let old_save = kv.borrow().clone();
-    for _ in 0..20 {
-        let r = g.ready();
-        if let Some(Data::Crucible(c)) = r.world.machines.get_mut(&(OW.to_string(), core)).map(|m| &mut m.data) {
-            c.heat = 100_000;
-        }
-        g.run(1);
-    }
-    // The world's autosave: melted (the slot empty, the metal in the
-    // block entity's values).
     let autosave = w.borrow().clone();
     drop(g);
     *w.borrow_mut() = autosave;
-    *kv.borrow_mut() = old_save;
-    let mut g = Game::new(w.clone(), kv.clone(), 2);
+    let mut g = Game::new(w.clone());
     g.run(40);
-    let molten = match g.machine(core).data {
-        Data::Crucible(c) => c.waste_stack.iter().map(|m| m.1).sum::<u32>(),
-        _ => 0,
-    };
-    let total = molten + 72 * count(&slots(&g, core), "minecraft:iron_ingot");
-    assert_eq!(total, 72, "ferro depois da queda: {total} quanta (era 72)");
+    let total = molten(&mut g) + 72 * count(&slots(&g, core), "minecraft:iron_ingot");
+    assert_eq!(total, 72, "ferro depois de reabrir: {total} quanta (era 72)");
 }
 
 /// From slot to slot through the metal: ingots melt in a crucible, pour
@@ -241,43 +193,6 @@ fn iron_is_conserved_from_crucible_to_mold() {
         }
     }
     assert_eq!(taken, 5, "não fundiu e moldou os 5");
-}
-
-/// A bomb assembled through transactions before its block had engine slots:
-/// on its first view with empty slots, its parts go to the slots, once each,
-/// and the bomb keeps them (`Layout::Bomb`).
-#[test]
-fn a_bomb_assembled_before_the_slots_shows_its_parts_in_them() {
-    for id in ["ntm:nuke_boy", "ntm:nuke_gadget", "ntm:nuke_man", "ntm:nuke_mike", "ntm:nuke_tsar", "ntm:nuke_n2", "ntm:nuke_fstbmb"] {
-        let mut g = game();
-        let state = format!("{id}[lit=false]");
-        g.place(AT, &state);
-        g.run(2);
-        let kind = crate::bomb::bomb_type(id).unwrap();
-        g.open(AT);
-        for s in kind.slots {
-            g.hold(s.item, 1);
-            g.click(crate::bomb::actions::INSERT);
-            for _ in 0..200 {
-                if g.held().is_none() && g.server.txs().is_empty() {
-                    break;
-                }
-                g.run(1);
-            }
-            assert_eq!(g.held(), None, "{id}: {} not taken", s.item);
-        }
-        // The patched engine: the block gets its (empty) slots.
-        g.world.borrow_mut().engine.insert((OW.to_string(), AT), (vec![None; kind.slots.len()], Vec::new()));
-        g.run(5);
-        let slots = slots(&g, AT);
-        let want: Vec<Option<Stack>> = kind.slots.iter().map(|s| Some(Stack::new(s.item, 1))).collect();
-        assert_eq!(slots, want, "{id}");
-        let parts = match g.ready().world.machines.get(&(OW.to_string(), AT)).map(|m| m.data.clone()) {
-            Some(Data::Bomb(b)) => b.slots.iter().flatten().count(),
-            _ => 0,
-        };
-        assert_eq!(parts, kind.slots.len(), "{id}: the bomb lost parts");
-    }
 }
 
 /// A centrifuge on the engine's slots: its input slot feeds it, its outputs

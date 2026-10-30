@@ -12,7 +12,7 @@ use crate::{
     energy::{EnergyNode, Role},
     server::container_bridge::{Slots, Slotted, Stack},
     machine::{Effect, Logic, burn_ticks},
-    proto::Held,
+    machine::Held,
     recipes::{self, PressRecipe},
     view::{self, ViewModel},
 };

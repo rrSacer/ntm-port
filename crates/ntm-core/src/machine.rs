@@ -1,19 +1,24 @@
 //! Machines (docs/fundacao.md, "Máquinas"): the state the server keeps per
 //! machine block, its tick, its screen and its buttons.
 //!
-//! A machine never touches the world or the player itself: its buttons
-//! return [`Effect`]s (take the held item, give items, say something), and
-//! the server turns them into vanilla commands the client runs, confirmed
-//! through the world ([`crate::token`]).
+//! A machine never touches the world or the player itself: the server
+//! (`server/native_server.rs`) moves its items through its block entity's
+//! slots.
 
 use crate::{
     energy::{EnergyNode, Role},
     press::{BurnerPress, ElectricPress},
-    proto::Held,
     recipes,
     view::{self, ViewModel},
 };
 use serde::{Deserialize, Serialize};
+
+/// What the main hand holds (the old screen's actions).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Held {
+    pub item: String,
+    pub count: u32,
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Kind {

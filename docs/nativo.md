@@ -104,9 +104,24 @@ Os slots, as regras e o `synced` de cada máquina vêm dos `horizon_machine/*.js
 **Lacunas:**
 
 - **Nether e End:** o block entity de uma máquina só é alcançado na dimensão em tick (`native_with_mod_block_entity` usa `game.dim`); as máquinas das outras dimensões ainda não passam pelo servidor.
-- **Máquinas só com a tela antiga:** 12 máquinas registradas não têm `horizon_machine` (bateria, queimador a lenha, duto, barril, tanque, `ntm:teste` e as 5 do lote de vapor; a fornalha elétrica usa o menu de fornalha). Os controles delas eram botões da tela antiga (o modo da bateria, o tipo do duto, despejar no barril), que sai com a camada WASM. Precisam de arquivo de máquina e tela nativa (`horizon_screen` e o intérprete da L2).
+- **Máquinas só com a tela antiga:** 12 máquinas registradas não têm `horizon_machine` (bateria, queimador a lenha, duto, barril, tanque, `ntm:teste` e as 5 do lote de vapor; a fornalha elétrica usa o menu de fornalha). Os controles delas eram botões da tela antiga (o modo da bateria, o tipo do duto, despejar no barril), que saiu com a camada WASM. Precisam de arquivo de máquina e tela nativa (`horizon_screen` e o intérprete da L2).
 
 **A fornalha no caminho comum** (`native_l1.py` e `native_l3.py montar` no mesmo build): a fornalha fundiu pelos funis como na L1 (5 lingotes em 25 s), e a firebox e a prensa seguiram iguais.
+
+## Sem a camada WASM (30/10)
+
+O servidor do `ntm-core` agora só existe no modo nativo (`Server::native`, `native_tick`). Saíram os mods `mods/ntm-logic-*`, o `client.rs`, o protocolo e as caixas de correio (`proto`), as transações de itens (`tx`), as sondas e fichas de bloco (`probes`, `token`), a identidade do mundo (`worldid`), a amostra de radiação por comandos (`radiation_server`) e o save do mundo inteiro (`persist` antigo). Com eles foram os testes que só valiam para esse caminho: transações, quedas entre os dois saves, lag do cliente, identidade e sondas. O `tools/build-logic.sh` virou `tools/build-content.sh`, que só monta o `ntm.hmod` de conteúdo.
+
+O que o mundo guarda fora dos block entities (`ntm_core::persist`): as detonações na fila, as zonas de fallout, os detonadores ligados, as doses dos jogadores e o relógio do mundo, que é o das zonas. Vai na chave `world` do `Kv` do host, quando muda; o relógio sozinho vai a cada 600 ticks. As explosões em andamento (`nx.*`) e a configuração das bombas (`bombcfg`) usam o mesmo `Kv`. No bundle, cada chave é um arquivo em `<mundo>/data/ntm/<chave>` (`native_world_dir`, API 21), escrito inteiro e renomeado por cima do antigo.
+
+**Lacunas que a remoção deixa** (todas com hook ou helper já previstos no plano):
+
+- **Radiação do inventário:** a dose crescia pela amostra por comandos. Volta na L4, com `native_player_inventory` e `native_effect`/`native_hurt`. As bombas já somam dose (pulso e zonas) ao mundo, mas ninguém a aplica ao jogador ainda.
+- **Efeitos e dano das bombas:** som, partículas, pavio aceso e dano de explosão eram linhas de comando do cliente. Ficam para a L4. A cratera, o fallout e a fila não mudaram.
+- **Detonador:** `Server::detonator(host, jogador, alvo, ligar)` responde com o texto para o jogador, mas o item ainda não tem hook.
+- **O que a máquina guarda fora dos slots** (metal fundido como sucata, itens de uma máquina sem slots) vai a `ServerHost::drop_items`, que o bundle ainda não implementa: não há helper para soltar itens no mundo.
+- **Lista de jogadores:** `Server::set_players` alimenta as doses e quem vê a explosão; o bundle ainda não a chama.
+- O código da tela antiga (`view.rs` e os `view`/`action` das máquinas) ficou, sem caminho que o chame. Sai quando as telas nativas cobrirem tudo.
 
 ## A alavanca das turbinas (30/10, `ntm-next` `c6ad4a73e`, API 24)
 

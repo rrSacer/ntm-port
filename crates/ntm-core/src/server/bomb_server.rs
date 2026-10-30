@@ -3,7 +3,7 @@
 //! radiation and effects, and `/ntmbomba`.
 use super::*;
 use crate::{
-    blast::{self, Config, PULSE_EVERY, PULSE_MAX, PULSE_TICKS, Pulse, Queued, Recorder, Zone, vanilla, visuals},
+    blast::{self, Config, Queued, Recorder, Zone, vanilla},
     bomb::{Blast, FUSE_TICKS},
     machine::Data,
     radiation,
@@ -71,17 +71,9 @@ fn shielding(host: &mut impl ServerHost, dim: &str, a: [f64; 3], b: [f64; 3]) ->
     sum * len / n as f64
 }
 
-/// Whether a block stands between `a` and `b` (`Library.isObstructed`),
-/// sampled at up to 24 points.
-fn obstructed(host: &mut impl ServerHost, dim: &str, a: [f64; 3], b: [f64; 3]) -> bool {
-    let len = dist(a, b);
-    let n = (len as usize).clamp(1, 24);
-    (1..n).any(|i| {
-        let t = i as f64 / n as f64;
-        let p = [0, 1, 2].map(|k| (a[k] + (b[k] - a[k]) * t).floor() as i32);
-        host.get_block(dim, p).is_some_and(|s| vanilla::resistance(&s) > 0.5)
-    })
-}
+/// The world's tag in its explosions' ids (`w<world>n<number>`): the
+/// host's storage is the world's own.
+const WORLD: &str = "native";
 
 /// `lit=true` in a bomb's state: redstone powers it.
 /// The lamp template has `lit` alone, so the state ends with it.
@@ -108,24 +100,17 @@ impl Server {
     /// Each tick of a world in play: bombs, explosions, damage, zones.
     pub(super) fn bombs_tick(&mut self, host: &mut impl ServerHost) {
         let tick = self.tick;
-        let wid = self.wid().map(str::to_string);
-        if wid != self.blasts.wid {
-            // Another world: its explosions (and only its) come back.
-            self.blasts.nukes.unload();
-            self.blasts.pulses.clear();
-            self.blasts.lit.clear();
-            self.blasts.entered.clear();
-            self.blasts.wid = wid.clone();
-            if let Some(w) = &wid {
-                let prefix = format!("w{w}n");
-                let mut rec = Recorder::default();
-                let resumed = {
-                    let engine = Engine { host: RefCell::new(&mut *host), players: &[] };
-                    self.blasts.nukes.resume_matching(&mut &engine, tick, &mut rec, |id| id.starts_with(&prefix))
-                };
-                for r in resumed {
-                    host.log(&format!("explosion resumed: {r:?}"));
-                }
+        if self.blasts.wid.is_none() {
+            // The world's explosions come back (its storage holds only its).
+            self.blasts.wid = Some(WORLD.into());
+            let prefix = format!("w{WORLD}n");
+            let mut rec = Recorder::default();
+            let resumed = {
+                let engine = Engine { host: RefCell::new(&mut *host), players: &[] };
+                self.blasts.nukes.resume_matching(&mut &engine, tick, &mut rec, |id| id.starts_with(&prefix))
+            };
+            for r in resumed {
+                host.log(&format!("explosion resumed: {r:?}"));
             }
         }
         for p in &self.players {
@@ -135,7 +120,6 @@ impl Server {
         self.blasts.entered.retain(|id, _| online.contains(id));
         self.bombs_triggers(host);
         self.blasts.nukes.fuel = u64::from(self.bomb_config(host).fuel) * 1_000_000;
-        self.blasts.nukes.limits = self.explosion_limits();
         self.bombs_admit(host);
         // The explosions (one at a time gets the tick's fuel; none in the
         // tick a charge went off, which spent it).
@@ -157,15 +141,10 @@ impl Server {
                 crate::explosion::Event::ResumeFailed { reason } => host.log(&format!("{id}: not resumed ({reason}); its keys were removed")),
                 crate::explosion::Event::PersistFailed { reason } => {
                     host.log(&format!("{id}: explosion not saved: {reason}"));
-                    if !self.blasts.warned_persist {
-                        self.blasts.warned_persist = true;
-                        self.tell_all(host, "NTM: a explosão não cabe na pasta de dados; ela continua, mas não volta se o jogo fechar.");
-                    }
                 }
                 _ => {}
             }
         }
-        self.bomb_pulses(host);
         if tick.is_multiple_of(20) {
             self.area_dose();
         }
@@ -173,11 +152,7 @@ impl Server {
             && let Some(r) = self.ready()
         {
             let now = r.world.ticks;
-            let before = r.world.bombs.zones.len();
             r.world.bombs.zones.retain(|z| !z.spent(now));
-            if r.world.bombs.zones.len() != before {
-                r.dirty = true;
-            }
         }
     }
 
@@ -199,12 +174,6 @@ impl Server {
             if blockstate::id_of(&state) != block {
                 continue; // gone: the reconciliation decides
             }
-            if self.unconfirmed(&key) {
-                // Its parts may still be undone (a transaction in flight, or
-                // one a crash may have rolled back): nothing irreversible
-                // yet. Its `lit` waits too, so the edge isn't lost.
-                continue;
-            }
             // The native host's signal when it reads one (the nukes on beehive
             // have no `lit`); else the lamp's `lit`, a substring, not a parse:
             // this runs for every loaded bomb, every tick.
@@ -219,60 +188,20 @@ impl Server {
                     self.trigger(host, key, b, "pavio");
                 }
             } else if rising && unlit_charge {
-                self.light_fuse(host, &key);
+                self.light_fuse(&key);
             } else if rising && !unlit_charge && let Some(b) = blast.filter(|b| !matches!(b, Blast::Conventional { .. })) {
                 self.trigger(host, key, b, "redstone");
             }
         }
     }
 
-    /// Whether the bomb at `key` has item transactions that may still be
-    /// undone: in flight, or kept ones not yet checked against the world
-    /// after a restart (revisão do M2, P1-5).
-    fn unconfirmed(&self, key: &Key) -> bool {
-        let Session::Ready(r) = &self.session else { return true };
-        r.world.txs.iter().any(|t| t.dim == key.0 && t.pos == key.1)
-            || r.world.applied.iter().any(|a| a.tx.dim == key.0 && a.tx.pos == key.1 && r.verify.contains(&a.tx.id))
-    }
-
-    /// What the explosions may keep in the folder: what the worlds' saves
-    /// leave, with room for them to grow (one save more), and what a hook
-    /// call may write after the worst save (revisão do M2, P2-11).
-    fn explosion_limits(&self) -> crate::explosion::engine::Limits {
-        let (core, keys) = self.worlds.usage();
-        let largest = self.worlds.worlds.values().map(|w| w.bytes).max().unwrap_or(0).max(16 << 10);
-        let save = persist::MAX_SAVE as u64;
-        let call = 1u64 << 20;
-        crate::explosion::engine::Limits {
-            tick_bytes: call.saturating_sub(3 * largest + crate::proto::MAX_ENVELOPE as u64 + (64 << 10)).max(32 << 10),
-            total_bytes: persist::QUOTA.saturating_sub(core + save),
-            keys: persist::MAX_KEYS.saturating_sub(keys + 4),
-        }
-    }
-
-    fn light_fuse(&mut self, host: &mut impl ServerHost, key: &Key) {
-        let cfg = self.bomb_config(host);
+    fn light_fuse(&mut self, key: &Key) {
         let Some(r) = self.ready() else { return };
         if let Some(Data::Bomb(b)) = r.world.machines.get_mut(key).map(|m| &mut m.data)
             && b.fuse.is_none()
         {
             b.fuse = Some(FUSE_TICKS);
-            r.urgent = true;
-            let (vis, _) = visuals::backend(cfg.mode);
-            let lines = vis.fuse(&cfg, &key.0, key.1);
-            self.send_lines(&key.0.clone(), lines);
-            self.push_view(true);
         }
-    }
-
-    /// Effect lines for the client to run (`execute in` the blast's dimension).
-    fn send_lines(&mut self, dim: &str, lines: Vec<String>) {
-        if lines.is_empty() || self.mail.peer.is_none() {
-            return;
-        }
-        let lines: Vec<String> = token::in_dim(dim, lines).into_iter().filter(|l| l.len() <= token::MAX_LINE).collect();
-        let tx = self.take_id();
-        self.mail.send(S2C::Run { tx, lines });
     }
 
     /// Sets the bomb at `key` off: it leaves the world now, and its blast
@@ -285,7 +214,6 @@ impl Server {
         r.shown.remove(&key);
         r.seen.remove(&key);
         r.suspect.remove(&key);
-        r.urgent = true;
         r.topo_dirty = true;
         let n = r.world.bombs.next;
         r.world.bombs.next += 1;
@@ -297,7 +225,6 @@ impl Server {
         {
             host.log(&format!("bomb block: {e}"));
         }
-        self.push_view(false);
     }
 
     /// The queue: blasts go off in order while the tick's fuel lasts (a
@@ -305,7 +232,6 @@ impl Server {
     /// engine leave it once the engine has them in the folder.
     fn bombs_admit(&mut self, host: &mut impl ServerHost) {
         let budget = u64::from(self.bomb_config(host).fuel) * 1_000_000;
-        let wid = self.wid().unwrap_or("x").to_string();
         let Some(r) = self.ready() else { return };
         if r.world.bombs.queue.is_empty() {
             return;
@@ -313,13 +239,10 @@ impl Server {
         let queue = r.world.bombs.queue.clone();
         let mut spent = 0;
         let mut keep = Vec::new();
-        let mut changed = false;
         for mut q in queue {
-            let id = format!("w{wid}n{}", q.n);
+            let id = format!("w{WORLD}n{}", q.n);
             if q.started {
-                if self.blasts.nukes.durable(&id) {
-                    changed = true; // the engine has it
-                } else {
+                if !self.blasts.nukes.durable(&id) {
                     if !self.blasts.nukes.contains(&id) {
                         // Lost with a restart before it was in the folder.
                         self.hand_to_engine(host, &q, &id);
@@ -334,7 +257,6 @@ impl Server {
                 continue;
             }
             spent += cost;
-            changed = true;
             self.fire(host, &q, &id);
             if !matches!(q.blast, Blast::Conventional { .. }) {
                 q.started = true;
@@ -343,9 +265,6 @@ impl Server {
         }
         if let Some(r) = self.ready() {
             r.world.bombs.queue = keep;
-            if changed {
-                r.urgent = true;
-            }
         }
     }
 
@@ -373,36 +292,15 @@ impl Server {
         let now = r.world.ticks;
         let (dim, pos, name, why) = (q.dim.clone(), q.pos, q.name.clone(), q.why.clone());
         let players: Vec<PlayerInfo> = self.players.iter().filter(|p| p.dim == dim).cloned().collect();
-        let (vis, fell_back) = visuals::backend(cfg.mode);
-        if fell_back && !self.blasts.warned_fallback {
-            self.blasts.warned_fallback = true;
-            host.log("bomb visuals: modo aprimorado indisponível (APIs do motor em pesquisa): usando o otimizado");
-        }
         let blast = match q.blast {
             Blast::Nuke { radius, fallout } => Blast::Nuke { radius: radius.min(cfg.max_radius), fallout },
             Blast::Balefire { radius } => Blast::Balefire { radius: radius.min(cfg.max_radius) },
             b => b,
         };
-        let mut lines = vis.detonation(&cfg, &visuals::Shot { dim: &dim, pos, blast, players: &players });
         let c = center(pos);
         match blast {
             Blast::Conventional { power } => {
                 self.blasts.charged_at = Some(tick);
-                // Damage first, over the blocks as they are (vanilla's order),
-                // through what the blast sees of each player.
-                if cfg.damage {
-                    for p in players.iter().filter(|p| !p.creative) {
-                        let d = dist(c, eye(p));
-                        if d >= 2.0 * f64::from(power) {
-                            continue;
-                        }
-                        let seen = vanilla::exposure(c, p.pos, &mut |b| host.get_block(&dim, b));
-                        let dmg = vanilla::damage(power, d, seen);
-                        if dmg >= 1.0 {
-                            lines.push(format!("damage {} {dmg:.1} minecraft:explosion", p.name));
-                        }
-                    }
-                }
                 let (cells, reads) = vanilla::explode(c, power, &mut |p| host.get_block(&dim, p));
                 let writes: Vec<(Pos, String)> = cells.iter().map(|p| (*p, "minecraft:air".to_string())).collect();
                 for chunk in writes.chunks(crate::explosion::BLOCKS_PER_CALL) {
@@ -415,9 +313,6 @@ impl Server {
             Blast::Nuke { radius, .. } | Blast::Balefire { radius } => {
                 self.hand_to_engine(host, q, id);
                 let fallout = matches!(blast, Blast::Nuke { fallout: true, .. });
-                if cfg.damage {
-                    self.blasts.pulses.push(Pulse { dim: dim.clone(), center: c, reach: 2.0 * f64::from(radius), next: tick, until: tick + PULSE_TICKS });
-                }
                 let radioactive = fallout || matches!(blast, Blast::Balefire { .. });
                 if cfg.radiation && radioactive {
                     self.radiation_pulse(host, &dim, c, radius, &players);
@@ -439,7 +334,6 @@ impl Server {
         if self.blasts.log.len() > 8 {
             self.blasts.log.remove(0);
         }
-        self.send_lines(&dim, lines);
     }
 
     /// The first ticks' radiation of `EntityNukeExplosionMK5.radiate`:
@@ -460,35 +354,8 @@ impl Server {
             }
             if let Some(r) = self.ready() {
                 radiation::add_dose(r.world.radiation.entry(p.id.clone()).or_default(), millirad);
-                r.urgent = true;
             }
             host.log(&format!("blast radiation: {} RAD to {}", millirad / 1000, p.name));
-        }
-    }
-
-    /// Blast damage while the craters are dug.
-    fn bomb_pulses(&mut self, host: &mut impl ServerHost) {
-        let tick = self.tick;
-        self.blasts.pulses.retain(|p| tick < p.until);
-        let due: Vec<Pulse> = self.blasts.pulses.iter().filter(|p| tick >= p.next).cloned().collect();
-        for p in &mut self.blasts.pulses {
-            if tick >= p.next {
-                p.next = tick + PULSE_EVERY;
-            }
-        }
-        for p in due {
-            let mut lines = Vec::new();
-            for pl in self.players.iter().filter(|x| x.dim == p.dim && !x.creative).cloned().collect::<Vec<_>>() {
-                let d = dist(p.center, eye(&pl));
-                if d > p.reach || obstructed(host, &p.dim, p.center, eye(&pl)) {
-                    continue;
-                }
-                let dmg = PULSE_MAX * (p.reach - d) / p.reach;
-                if dmg >= 1.0 {
-                    lines.push(format!("damage {} {dmg:.1} minecraft:explosion", pl.name));
-                }
-            }
-            self.send_lines(&p.dim, lines);
         }
     }
 
@@ -516,15 +383,13 @@ impl Server {
             // A sickness threshold (every 200 RAD) is saved at once, as the
             // inventory's dose does.
             if before / 200_000 != dose.millirad / 200_000 {
-                r.urgent = true;
             }
-            r.dirty = true;
         }
     }
 
     /// Area radiation at the player's place now (milliRAD/s).
     pub(super) fn area_rate(&self, player: &str) -> u32 {
-        let Session::Ready(r) = &self.session else { return 0 };
+        let r = &self.ready;
         // Criativo e espectador não se contaminam (`ContaminationUtil`;
         // `PlayerInfo.creative` cobre os dois, ver o server mod).
         let Some(p) = self.players.iter().find(|p| p.id == player && !p.creative) else { return 0 };
@@ -532,25 +397,18 @@ impl Server {
         r.world.bombs.zones.iter().map(|z| z.rate(&p.dim, p.pos, now)).fold(0u32, u32::saturating_add)
     }
 
-    /// The detonator: link it (sneaking, on a bomb) or set its bomb off.
-    pub(super) fn detonator(&mut self, host: &mut impl ServerHost, dim: String, target: Option<Pos>, link: bool) {
+    /// The detonator of `player`: link it (sneaking, on a bomb) or set its
+    /// bomb off. What the player is told.
+    pub fn detonator(&mut self, host: &mut impl ServerHost, player: &PlayerInfo, target: Option<Pos>, link: bool) -> String {
+        let dim = player.dim.clone();
         host.log(&format!("detonator: {dim} {target:?} link={link}"));
-        let Some(player) = self.client_player().cloned() else { return };
-        let toast = |s: &mut Server, text: &str| {
-            s.mail.send_latest(S2C::Toast { text: text.into() }, "toast");
-        };
-        if self.ready().is_none() {
-            return toast(self, "NTM: o mundo ainda está carregando.");
-        }
+        let toast = |_: &mut Server, text: &str| text.to_string();
         if link {
             let Some(pos) = target else {
                 return toast(self, "Agache e use o detonador numa bomba do NTM para ligá-lo.");
             };
             let key = (dim.clone(), pos);
-            if !self.within_reach(&key) {
-                return;
-            }
-            let r = self.ready().unwrap();
+            let r = &mut self.ready;
             if !r.world.machines.contains_key(&key)
                 && let Some(state) = host.get_block(&dim, pos)
                 && let Some(m) = machine_from_state(&state)
@@ -564,11 +422,10 @@ impl Server {
                 _ => return toast(self, "Isso não é uma bomba do NTM."),
             };
             r.world.bombs.links.insert(player.id.clone(), key.clone());
-            r.urgent = true;
             let text = format!("Detonador ligado: {name} em {} {} {}.", pos[0], pos[1], pos[2]);
             return toast(self, &text);
         }
-        let r = self.ready().unwrap();
+        let r = &mut self.ready;
         let Some(key) = r.world.bombs.links.get(&player.id).cloned() else {
             return toast(self, "Detonador sem bomba: agache e use-o numa bomba para ligá-lo.");
         };
@@ -577,7 +434,6 @@ impl Server {
         }
         let Some(Data::Bomb(b)) = r.world.machines.get(&key).map(|m| m.data.clone()) else {
             r.world.bombs.links.remove(&player.id);
-            r.urgent = true;
             return toast(self, "A bomba ligada não existe mais.");
         };
         let block = r.world.machines.get(&key).map(|m| m.block.clone()).unwrap_or_default();
@@ -589,18 +445,15 @@ impl Server {
             // to the record): nothing goes off (revisão do M2, P2-10).
             return toast(self, "A bomba ligada não está mais lá.");
         }
-        if self.unconfirmed(&key) {
-            return toast(self, "Aguarde: os componentes da bomba ainda estão sendo confirmados.");
-        }
         match b.blast() {
             None => toast(self, "A bomba não está pronta: faltam componentes."),
             Some(Blast::Conventional { .. }) => {
-                self.light_fuse(host, &key);
-                toast(self, "Pavio aceso.");
+                self.light_fuse(&key);
+                toast(self, "Pavio aceso.")
             }
             Some(blast) => {
                 self.trigger(host, key, blast, "detonador");
-                toast(self, "Detonada.");
+                toast(self, "Detonada.")
             }
         }
     }
@@ -651,7 +504,6 @@ impl Server {
                     ["limpar"] if !global => {
                         let r = self.ready().ok_or("nenhum mundo identificado")?;
                         r.world.bombs.cfg = None;
-                        r.urgent = true;
                         return Ok("o mundo volta a usar a configuração global".into());
                     }
                     [k, v] => cfg.set(k, v)?,
@@ -663,7 +515,6 @@ impl Server {
                 } else {
                     let r = self.ready().ok_or("nenhum mundo identificado")?;
                     r.world.bombs.cfg = Some(cfg.clone());
-                    r.urgent = true;
                 }
                 Ok(cfg.describe())
             }
@@ -700,7 +551,6 @@ impl Server {
                 self.blasts.pulses.clear();
                 if let Some(r) = self.ready() {
                     r.world.bombs.queue.clear();
-                    r.urgent = true;
                 }
                 Ok(format!("{} explosão(ões) cancelada(s)", ids.len()))
             }

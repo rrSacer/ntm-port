@@ -209,7 +209,7 @@ pub fn network_of(topology: &Topology, p: Pos) -> Option<usize> {
     topology.networks.iter().position(|n| n.binary_search(&p).is_ok())
 }
 
-/// Sizes per network, for `/ntmlogic status`.
+/// Sizes per network.
 pub fn summary(topology: &Topology) -> BTreeMap<usize, usize> {
     topology
         .networks

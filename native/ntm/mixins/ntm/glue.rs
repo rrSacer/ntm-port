@@ -127,18 +127,35 @@ struct Host<'a, 'g> {
     buttons: Vec<(String, String, [i32; 3], u32)>,
 }
 
-/// No storage of its own: the state is the block entities'.
+/// The world's state outside its blocks (`ntm_core::persist`, the
+/// explosions in progress, the bombs' settings): a file per key in the
+/// world's folder, `<world>/data/ntm/<key>`, each written whole.
 impl Kv for Host<'_, '_> {
-    fn get(&mut self, _key: &str) -> Option<Vec<u8>> {
-        None
+    fn get(&mut self, key: &str) -> Option<Vec<u8>> {
+        std::fs::read(self.store(key)?).ok()
     }
-    fn set(&mut self, _key: &str, _value: &[u8]) -> Result<(), String> {
-        Ok(())
+    fn set(&mut self, key: &str, value: &[u8]) -> Result<(), String> {
+        let path = self.store(key).ok_or_else(|| format!("key {key}"))?;
+        let dir = path.parent().expect("under the world");
+        std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
+        // A new file renamed over the old: a crash leaves one or the other.
+        let tmp = dir.join(format!("{key}.tmp"));
+        std::fs::write(&tmp, value).and_then(|()| std::fs::rename(&tmp, &path)).map_err(|e| e.to_string())
     }
-    fn delete(&mut self, _key: &str) {}
+    fn delete(&mut self, key: &str) {
+        if let Some(p) = self.store(key) {
+            let _ = std::fs::remove_file(p);
+        }
+    }
 }
 
 impl Host<'_, '_> {
+    /// The file of storage key `key` (letters, digits, `.`, `_`, `-`).
+    fn store(&self, key: &str) -> Option<std::path::PathBuf> {
+        let plain = !key.starts_with('.') && key.bytes().all(|b| b.is_ascii_alphanumeric() || b".-_".contains(&b));
+        (plain && !key.is_empty()).then(|| self.game.native_world_dir().join("data").join("ntm").join(key))
+    }
+
     /// The machine block entity at `pos` of `dim`, when it is in the
     /// dimension being ticked.
     fn entity<R>(&mut self, dim: &str, pos: [i32; 3], f: impl FnOnce(&mut ModBlockEntity) -> R) -> Option<R> {

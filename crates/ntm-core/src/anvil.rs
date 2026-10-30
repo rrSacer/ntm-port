@@ -395,7 +395,7 @@ impl Logic for Anvil {
         self.view_with(Tables::ntm())
     }
 
-    fn action(&mut self, action: u32, _held: Option<&crate::proto::Held>, _fx: &mut Vec<crate::machine::Effect>) {
+    fn action(&mut self, action: u32, _held: Option<&crate::machine::Held>, _fx: &mut Vec<crate::machine::Effect>) {
         match action {
             actions::BACK => self.picking = false,
             a if (actions::LIST..actions::LIST + view::LIST_MAX as u32).contains(&a) => {

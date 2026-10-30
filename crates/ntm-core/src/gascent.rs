@@ -17,7 +17,7 @@ use crate::{
     energy::{EnergyNode, Role},
     fluid::{self, FluidNode, Tank},
     machine::{Effect, Logic},
-    proto::Held,
+    machine::Held,
     server::container_bridge::{Slots, Slotted, Stack},
     view::{self, ViewModel},
 };

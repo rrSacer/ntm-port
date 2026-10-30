@@ -9,14 +9,12 @@ use crate::steam::Steam;
 fn edit<F: FnOnce(&mut Data)>(g: &mut Game, at: Pos, f: F) {
     let r = g.ready();
     f(&mut r.world.machines.get_mut(&(OW.to_string(), at)).unwrap().data);
-    r.urgent = true;
 }
 
 fn duct(g: &mut Game, at: Pos, fluid: &str) {
     g.place(at, "ntm:fluid_duct_neo");
     g.run(2);
-    g.open(at);
-    g.click(crate::fluidbox::actions::PICK + u32::from(crate::fluid::get(fluid).unwrap().id));
+    g.type_duct(at, fluid);
 }
 
 fn steam(g: &mut Game, at: Pos) -> Steam {

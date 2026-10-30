@@ -1,19 +1,13 @@
-//! Machines whose items live in the engine's slots (Horizon patch
-//! `ntm-visual`, capability `machines`; docs/visual-fiel.md). The slots
-//! are the truth: each tick, before the machines run, what players moved in
-//! the slots since the last write is applied to the machine; after the
-//! machines (and the transactions) ran, the machine's items are written
-//! back. Transactions keep working beside the slots: they change the
-//! machine, which the next write shows.
-//!
-//! The machine's screen values go with the write (`set-data`); a press of
-//! the recipe button opens the recipe list of the old screen.
+//! Machines whose items live in their block entity's slots (docs/nativo.md).
+//! The slots are the truth: each tick, before the machines run, what
+//! players moved in the slots since the last write is applied to the
+//! machine; after the machines ran, the machine's items are written back,
+//! with its menu's data.
 use super::{Key, Server, ServerHost};
 use crate::{
     Pos,
-    crafter::{Crafter, Screen, Station},
+    crafter::Crafter,
     machine::Data,
-    proto::S2C,
 };
 use std::collections::BTreeMap;
 
@@ -57,8 +51,8 @@ pub trait Slotted {
     fn slots_mut(&mut self) -> &mut Slots;
     /// The values its screen shows (`horizon_screen/<block>.json`).
     fn screen_data(&self) -> Vec<i32>;
-    /// A button of its screen; true when it opens the machine's old
-    /// screen (a list, as the crucible's alloy selector).
+    /// A button of its menu (the return value is the old screen's: true
+    /// when the button opened a list there).
     fn button(&mut self, _id: u32) -> bool {
         false
     }
@@ -930,7 +924,6 @@ impl Server {
                 _ => continue,
             }
             r.bridge.last.insert(key, now);
-            r.dirty = true;
         }
         for (_, dim, pos, button) in presses {
             self.machine_button(&(dim, pos), button);
@@ -992,12 +985,6 @@ impl Server {
         }
     }
 
-    /// Whether the engine opens its own screen of the machine at `key`
-    /// (the bridge has seen its slots): the use button then opens no other.
-    pub(super) fn slots_open(&mut self, key: &Key) -> bool {
-        self.ready().is_some_and(|r| r.bridge.last.contains_key(key))
-    }
-
     /// The machine at `key` went away: true when its items were the
     /// engine's slots, which the engine drops itself.
     pub(super) fn slots_gone(&mut self, key: &Key) -> bool {
@@ -1006,53 +993,27 @@ impl Server {
         r.bridge.last.remove(key).is_some()
     }
 
-    /// A screen button: 0 opens the recipe list (the old screen's).
+    /// A menu button: the machine's own, or a recipe picked from the
+    /// list (`crate::native::recipes`).
     fn machine_button(&mut self, key: &Key, button: u32) {
-        if !self.within_reach(key) {
-            return;
-        }
         let Some(r) = self.ready() else { return };
         let Some(m) = r.world.machines.get_mut(key) else { return };
         if let Some(n) = slotted(&mut m.data) {
-            let open = n.button(button);
-            r.dirty = true;
-            if open {
-                r.viewer = Some((key.clone(), None));
-                self.mail.send(S2C::Show {
-                    dim: key.0.clone(),
-                    pos: key.1,
-                });
-                self.push_view(true);
-            }
+            n.button(button);
             return;
         }
         if let Data::Crafter(c) = &mut m.data
             && let Some(pick) = crate::native::recipe_button(button)
+            && crate::native::recipes(&m.block).is_some()
         {
-            if crate::native::recipes(&m.block).is_some() {
-                match pick.and_then(|i| c.station.recipes().get(i)) {
-                    Some(r) => c.set_recipe(r),
-                    None if pick.is_none() => {
-                        c.recipe = None;
-                        c.progress = 0;
-                    }
-                    None => {}
+            match pick.and_then(|i| c.station.recipes().get(i)) {
+                Some(r) => c.set_recipe(r),
+                None if pick.is_none() => {
+                    c.recipe = None;
+                    c.progress = 0;
                 }
-                r.dirty = true;
+                None => {}
             }
-            return;
-        }
-        if let Data::Crafter(c) = &mut m.data
-            && button == 0
-            && c.station != Station::Centrifuge
-        {
-            c.screen = Screen::Pick;
-            r.viewer = Some((key.clone(), None));
-            self.mail.send(S2C::Show {
-                dim: key.0.clone(),
-                pos: key.1,
-            });
-            self.push_view(true);
         }
     }
 }

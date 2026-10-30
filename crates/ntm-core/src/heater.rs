@@ -18,7 +18,7 @@ use crate::{
     fluid::{FluidNode, Tank},
     foundry::{Fuel, HeatSource},
     machine::{Effect, Logic, fill_level},
-    proto::Held,
+    machine::Held,
     server::container_bridge::{Slots, Slotted, Stack},
     view::{self, ViewModel},
 };
