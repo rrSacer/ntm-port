@@ -9,6 +9,7 @@ from blast_furnace_recipes import block_end
 from bulk_recipes import Unsupported, calls, clean, split
 from foundry_recipes import quantity
 from machine_recipes import integer
+from generate import lang
 
 BASE = 'src/main/java/com/hbm/'
 
@@ -25,6 +26,7 @@ class Context:
                                   for r in rows if r['source_variable'] == 'bedrock_ore_fragment'}
         self.types, self.grades, _ = tables(source, rows)
         self.names = {r['id']: r['names'] for r in rows}
+        self.source_langs = {loc:lang(source / f'src/main/resources/assets/hbm/lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]}
         self.langs = {loc: json.loads((Path('/home/sacer/Games/horizon/.local/horizon-client/26.3/assets/minecraft/lang') / (loc + '.json')).read_text()) for loc in ('en_us', 'pt_br')}
 
     def stack(self, expr, ore_type=None):
@@ -71,9 +73,12 @@ class Context:
                 title = self.names[ident][loc] if ident in self.names else self.langs[loc].get('item.' + ident.replace(':', '.'), self.langs[loc].get('block.' + ident.replace(':', '.'), ident))
                 row[key] = title + (f' ×{count}' if count > 1 else '')
             elif row['outputMaterials']:
-                row[key] = ('Metal: ' if loc == 'pt_br' else 'Molten: ') + row['outputMaterials'][0][0]
+                material = row['outputMaterials'][0][0]
+                title = self.source_langs[loc].get('hbmmat.' + self.byname[material]['names'][0].lower(), material)
+                row[key] = ('Metal: ' if loc == 'pt_br' else 'Molten: ') + title
             else:
-                row[key] = row['outputFluids'][0][0]
+                fluid = row['outputFluids'][0][0]
+                row[key] = self.source_langs[loc].get('hbmfluid.' + fluid, fluid)
         if not (row['outputItems'] or row['outputMaterials'] or row['outputFluids']):
             raise Unsupported('no output in this mode')
         return row
