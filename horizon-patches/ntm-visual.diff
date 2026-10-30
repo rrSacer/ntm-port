@@ -53,7 +53,7 @@ index 75cf5ee85..1262f15cd 100644
  miniz_oxide = "0.8"
  naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
 diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
-index b415748c4..9e5666680 100644
+index b415748c4..6229d172f 100644
 --- a/crates/horizon-client-render/src/block_entity_render.rs
 +++ b/crates/horizon-client-render/src/block_entity_render.rs
 @@ -94,6 +94,11 @@ pub fn diffuse(normal: Vec3, lights: (Vec3, Vec3)) -> f32 {
@@ -162,7 +162,7 @@ index b415748c4..9e5666680 100644
              let packed = scene.world.light(pos[0], pos[1], pos[2]);
              if matches!(kind, Kind::Sign { .. }) && scene.texts.is_none() {
                  self.sign_text(scene, *pos, *state, origin, packed, out);
-@@ -1089,6 +1152,236 @@ impl BlockEntityRenderer {
+@@ -1089,6 +1152,239 @@ impl BlockEntityRenderer {
      pub fn renders(&self, state: u32) -> bool {
          !matches!(self.kind(state), Kind::None)
      }
@@ -275,6 +275,12 @@ index b415748c4..9e5666680 100644
 +        let Some(m) = self.mod_models.get(model) else {
 +            return;
 +        };
++        let values = match scene.world.block_entities.get(&(pos[0], pos[1], pos[2])) {
++            Some(crate::containers::BlockEntity::ModContainer(c)) => c.data.as_slice(),
++            _ => &[],
++        };
++        // Parts shown by the block entity's values (`show` by `value`).
++        let hidden = hidden | m.hidden_by_values(values);
 +        // How open the block is (its screen on this client) poses `open`.
 +        let opened = m
 +            .open
@@ -298,12 +304,9 @@ index b415748c4..9e5666680 100644
 +        }
 +        let light = vertex_light(sky << 4 | block);
 +        // Liquids by the block entity's values (`synced`), drawn as vertices.
-+        if !m.liquids.is_empty()
-+            && let Some(crate::containers::BlockEntity::ModContainer(c)) =
-+                scene.world.block_entities.get(&(pos[0], pos[1], pos[2]))
-+        {
++        if !m.liquids.is_empty() && !values.is_empty() {
 +            let place = Mat4::from_translation(origin);
-+            m.emit_liquids(&c.data, yaw, place, light, scene.sprites, out);
++            m.emit_liquids(values, yaw, place, light, scene.sprites, out);
 +        }
 +        let Some(sprite) = scene.sprites.get(&m.sprite).copied() else {
 +            return;
@@ -399,7 +402,7 @@ index b415748c4..9e5666680 100644
      /// ChestRenderer and BannerRenderer submit their animated models for crumbling.
      pub fn render_breaking(
          &self,
-@@ -1239,7 +1532,8 @@ impl BlockEntityRenderer {
+@@ -1239,7 +1535,8 @@ impl BlockEntityRenderer {
          };
          let none = |_: &str, _: &mut [f32; 9]| {};
          match kind {
@@ -409,7 +412,7 @@ index b415748c4..9e5666680 100644
              Kind::Sign {
                  hanging,
                  wall,
-@@ -2278,6 +2572,10 @@ mod tests {
+@@ -2278,6 +2575,10 @@ mod tests {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
@@ -874,10 +877,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..42c991486
+index 000000000..f93166537
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,859 @@
+@@ -0,0 +1,909 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -898,6 +901,9 @@ index 000000000..42c991486
 +//!   "animations": "ntm:animations/assembly_machine.animation.json",
 +//!   "play": [{"animation": "animation.assembler.work", "property": "honey_level", "not": "0"}],
 +//!   "show": {"InnerBurning": {"property": "honey_level", "not": "0"}},   objects drawn only so
++//!           {"Electrode1": {"value": 20, "min": 1, "max": 1}},   or while a synced value of the
++//!                                       block entity is in min..=max (max: none; the file's
++//!                                       `synced` must hold it)
 +//!   "glow": ["InnerBurning"],   drawn at full light (HBM's lightmap 240, 240)
 +//!   "open": "animation.firebox.open"   posed by how open its screen is (a non-looping
 +//!   animation: its last frame is fully open)
@@ -1023,6 +1029,9 @@ index 000000000..42c991486
 +    /// Bones shown only while a block state property matches (HBM's
 +    /// renderers draw `InnerBurning` or `InnerEmpty` by `wasOn`).
 +    pub show: Vec<(usize, Play)>,
++    /// Bones shown only while a synced value is in a range: (bone, the
++    /// value's index, min, max).
++    pub show_values: Vec<(usize, usize, i32, i32)>,
 +    pub liquids: Vec<Liquid>,
 +    /// Bones no animation moves, nor their ancestors: drawn from a cache.
 +    pub still: Vec<bool>,
@@ -1280,13 +1289,27 @@ index 000000000..42c991486
 +    let open = doc["open"]
 +        .as_str()
 +        .and_then(|n| animations.iter().position(|a| a.name == n));
++    let bone_at = |name: &str| bones.iter().position(|b| b.name == name);
++    let show_values = doc["show"]
++        .as_object()
++        .into_iter()
++        .flatten()
++        .filter_map(|(bone, c)| {
++            Some((
++                bone_at(bone)?,
++                c["value"].as_u64()? as usize,
++                c["min"].as_i64().unwrap_or(1) as i32,
++                c["max"].as_i64().map_or(i32::MAX, |m| m as i32),
++            ))
++        })
++        .collect();
 +    let show = doc["show"]
 +        .as_object()
 +        .into_iter()
 +        .flatten()
 +        .filter_map(|(bone, c)| {
 +            Some((
-+                bones.iter().position(|b| b.name == *bone)?,
++                bone_at(bone)?,
 +                Play {
 +                    animation: 0,
 +                    property: c["property"].as_str()?.to_owned(),
@@ -1332,6 +1355,7 @@ index 000000000..42c991486
 +        play,
 +        open,
 +        show,
++        show_values,
 +        liquids,
 +        still,
 +        triangles,
@@ -1384,6 +1408,18 @@ index 000000000..42c991486
 +            .iter()
 +            .filter(|(b, c)| *b < 64 && !c.matches(prop))
 +            .fold(0, |m, (b, _)| m | 1 << b)
++    }
++
++    /// The bones the block entity's synced values hide by `show` (bit `i`
++    /// for bone `i`); a value it lacks counts as 0.
++    pub fn hidden_by_values(&self, values: &[i32]) -> u64 {
++        self.show_values
++            .iter()
++            .filter(|&&(b, i, min, max)| {
++                let v = values.get(i).copied().unwrap_or(0);
++                b < 64 && !(min..=max).contains(&v)
++            })
++            .fold(0, |m, &(b, ..)| m | 1 << b)
 +    }
 +
 +    /// The block-space transform of the whole model for a turn of `yaw`
@@ -1710,6 +1746,23 @@ index 000000000..42c991486
 +    }
 +
 +    #[test]
++    fn a_synced_value_shows_a_part() {
++        let bone = |name: &str| Bone {
++            name: name.into(),
++            ..Default::default()
++        };
++        let m = Model {
++            bones: vec![bone("Main"), bone("Fresh"), bone("Any")],
++            show_values: vec![(1, 1, 1, 1), (2, 1, 1, i32::MAX)],
++            ..Default::default()
++        };
++        assert_eq!(m.hidden_by_values(&[5, 0]), 0b110, "none: both hidden");
++        assert_eq!(m.hidden_by_values(&[5, 1]), 0b000);
++        assert_eq!(m.hidden_by_values(&[5, 3]), 0b010, "worn: only Any");
++        assert_eq!(m.hidden_by_values(&[]), 0b110, "no values yet");
++    }
++
++    #[test]
 +    fn a_model_at_rest_holds_its_first_frame() {
 +        let mut m = Model {
 +            bones: vec![Bone::default()],
@@ -1739,10 +1792,10 @@ index 000000000..42c991486
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
 new file mode 100644
-index 000000000..e3f74175c
+index 000000000..f326d6dbc
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_screens.rs
-@@ -0,0 +1,606 @@
+@@ -0,0 +1,652 @@
 +//! Screens of content mods' machines (`horizon_world::mod_machines`): the
 +//! machine's own background texture, with bars, lights and tooltips drawn
 +//! from the values the mod sets. Each `assets/<namespace>/horizon_screen/<name>.json`
@@ -1771,10 +1824,20 @@ index 000000000..e3f74175c
 +//!     {"value": 2, "max": 3, "at": [34, 25], "tip": 5, "back": 2, "side": 1, "color": "#7f0000"}
 +//!   ],                                       round 270 degrees to the value's share of `max`
 +//!   "tooltips": [{"rect": [152, 18, 16, 61], "lines": ["{0:si} / {1:si} HE"]}],
-+//!   "buttons": [{"id": 0, "rect": [7, 125, 18, 18], "lines": ["Choose a recipe"]}]
-+//! }                                          a button's "shift": the id sent while shift is held
-+//!                                            (HBM's shift-click: the anvil crafts all it can)
++//!   "buttons": [{"id": 0, "rect": [7, 125, 18, 18], "lines": ["Choose a recipe"]}],
++//!                                            a button's "shift": the id sent while shift is held
++//!                                            (HBM's shift-click: the anvil crafts all it can);
++//!                                            its "screen": another of the machine's screens
++//!                                            (its file's `screens`) shown in place of this
++//!                                            one, nothing sent
++//!   "slots": {"14": [10, 22], "3": null}     where the machine's slots sit on this screen,
++//! }                                          by index (null: not on it); the others where
++//!                                            the machine file puts them
 +//! ```
++//!
++//! Switching screens only changes what this window shows: the machine and its
++//! slots stay the same, so a shift-click may still move a stack into a slot
++//! the screen hides.
 +use crate::hud::{HudAtlas, HudBatch, Rect};
 +use serde_json::Value;
 +use std::{
@@ -1856,6 +1919,8 @@ index 000000000..e3f74175c
 +#[derive(Clone, Debug, PartialEq)]
 +pub struct Button {
 +    pub id: u32,
++    /// The screen it switches to, when it sends nothing.
++    pub screen: Option<String>,
 +    /// The id sent while shift is held, when not `id`.
 +    pub shift: Option<u32>,
 +    pub rect: [f32; 4],
@@ -1878,6 +1943,8 @@ index 000000000..e3f74175c
 +    pub overlays: Vec<Overlay>,
 +    pub tips: Vec<Tip>,
 +    pub buttons: Vec<Button>,
++    /// The machine's slots this screen moves (`Some`) or leaves out (`None`).
++    pub slots: HashMap<usize, Option<[f32; 2]>>,
 +}
 +
 +static SCREENS: RwLock<Option<Arc<HashMap<String, Arc<ScreenDef>>>>> = RwLock::new(None);
@@ -2043,13 +2110,21 @@ index 000000000..e3f74175c
 +        .into_iter()
 +        .flatten()
 +        .filter_map(|b| {
++            let screen = b["screen"].as_str().map(str::to_owned);
 +            Some(Button {
-+                id: b["id"].as_u64()? as u32,
++                id: b["id"].as_u64().or(screen.as_ref().map(|_| 0))? as u32,
++                screen,
 +                shift: b["shift"].as_u64().map(|i| i as u32),
 +                rect: floats::<4>(&b["rect"])?,
 +                lines: lines(&b["lines"]),
 +            })
 +        })
++        .collect();
++    let slots = doc["slots"]
++        .as_object()
++        .into_iter()
++        .flatten()
++        .filter_map(|(k, v)| Some((k.parse().ok()?, floats::<2>(v))))
 +        .collect();
 +    Ok(ScreenDef {
 +        sprite,
@@ -2063,6 +2138,7 @@ index 000000000..e3f74175c
 +        overlays,
 +        tips,
 +        buttons,
++        slots,
 +    })
 +}
 +
@@ -2272,13 +2348,27 @@ index 000000000..e3f74175c
 +        Some(lines.iter().map(|l| format(l, values)).collect())
 +    }
 +
-+    /// The button under the pointer (screen-relative).
-+    /// The id the button under `(x, y)` sends, `shift` held or not.
++    /// The id the button under `(x, y)` (screen-relative) sends, `shift`
++    /// held or not; None for a button that switches screens.
 +    pub fn button_at(&self, x: f32, y: f32, shift: bool) -> Option<u32> {
 +        self.buttons
 +            .iter()
-+            .find(|b| inside(b.rect, x, y))
++            .find(|b| inside(b.rect, x, y) && b.screen.is_none())
 +            .map(|b| b.shift.filter(|_| shift).unwrap_or(b.id))
++    }
++
++    /// The screen the button under `(x, y)` switches to.
++    pub fn switch_at(&self, x: f32, y: f32) -> Option<&str> {
++        self.buttons
++            .iter()
++            .find(|b| inside(b.rect, x, y))
++            .and_then(|b| b.screen.as_deref())
++    }
++
++    /// Where this screen puts machine slot `i`: `default` (the machine
++    /// file's place) unless the screen moves it; None when it leaves it out.
++    pub fn slot_at(&self, i: usize, default: [f32; 2]) -> Option<[f32; 2]> {
++        self.slots.get(&i).copied().unwrap_or(Some(default))
 +    }
 +}
 +
@@ -2333,7 +2423,9 @@ index 000000000..e3f74175c
 +                "bars":[{"value":0,"max":1,"rect":[1,2,3,4],"uv":[176,0],"dir":"up"}],
 +                "overlays":[{"slot":0,"rect":[1,1,2,2],"uv":[3,3]}],
 +                "tooltips":[{"rect":[0,0,10,10],"lines":["{0}"]}],
-+                "buttons":[{"id":2,"rect":[20,20,5,5]},{"id":3,"shift":4,"rect":[30,30,5,5]}]}"#,
++                "buttons":[{"id":2,"rect":[20,20,5,5]},{"id":3,"shift":4,"rect":[30,30,5,5]},
++                           {"screen":"ntm:b","rect":[40,40,5,5]}],
++                "slots":{"1":[9,9],"2":null}}"#,
 +        )
 +        .unwrap();
 +        let def = parse(Path::new("/r"), &doc).unwrap();
@@ -2347,10 +2439,17 @@ index 000000000..e3f74175c
 +        assert_eq!(def.button_at(31.0, 31.0, false), Some(3));
 +        assert_eq!(def.button_at(31.0, 31.0, true), Some(4));
 +        assert_eq!(def.button_at(0.0, 0.0, false), None);
++        // A switch sends nothing: it shows the machine's other screen.
++        assert_eq!(def.button_at(41.0, 41.0, false), None);
++        assert_eq!(def.switch_at(41.0, 41.0), Some("ntm:b"));
++        assert_eq!(def.switch_at(21.0, 21.0), None);
++        assert_eq!(def.slot_at(0, [1.0, 1.0]), Some([1.0, 1.0]));
++        assert_eq!(def.slot_at(1, [1.0, 1.0]), Some([9.0, 9.0]));
++        assert_eq!(def.slot_at(2, [1.0, 1.0]), None);
 +    }
 +}
 diff --git a/crates/horizon-client/src/game.rs b/crates/horizon-client/src/game.rs
-index ffa8a66eb..fd0537445 100644
+index ffa8a66eb..88e54afa8 100644
 --- a/crates/horizon-client/src/game.rs
 +++ b/crates/horizon-client/src/game.rs
 @@ -111,6 +111,7 @@ mod mob_blocks;
@@ -2361,7 +2460,17 @@ index ffa8a66eb..fd0537445 100644
  #[cfg(feature = "mods")]
  mod mod_panel;
  mod mod_render;
-@@ -2074,6 +2075,9 @@ impl Game<'_> {
+@@ -1463,6 +1464,9 @@ struct Game<'a> {
+     last_quick_moved: Option<ItemStack>,
+     /// Open container block entity, if any.
+     container: Option<(i32, i32, i32)>,
++    /// The screen a mod machine's switch button chose, for the machine
++    /// under that key (game/mod_machines.rs); its first screen otherwise.
++    machine_view: Option<((i32, i32, i32), String)>,
+     /// Open workstation menu (enchanting table, anvil, ...).
+     station: Option<stations::Station>,
+     /// Status effects and thrown potions (game/potions.rs).
+@@ -2074,6 +2078,9 @@ impl Game<'_> {
      /// grows with the lid (`ShulkerBoxBlockEntity.getBoundingBox`).
      fn context_outline(&self, pos: [i32; 3], state: BlockStateId) -> Option<[f64; 6]> {
          let name = &self.res.facts().get(state).name;
@@ -2371,7 +2480,7 @@ index ffa8a66eb..fd0537445 100644
          if matches!(&**name, "minecraft:light" | "minecraft:scaffolding") {
              return self
                  .held()
-@@ -4057,6 +4061,10 @@ impl Game<'_> {
+@@ -4057,6 +4064,10 @@ impl Game<'_> {
              return Ok(());
          }
          self.pad_rumble(horizon_client::gamepad::Rumble::BlockBroken);
@@ -2382,7 +2491,7 @@ index ffa8a66eb..fd0537445 100644
          // ServerPlayerGameMode.destroyBlock.
          let state = self.world.block(pos[0], pos[1], pos[2]);
          let broken = state;
-@@ -4117,6 +4125,9 @@ impl Game<'_> {
+@@ -4117,6 +4128,9 @@ impl Game<'_> {
          });
          if removed {
              self.mod_block_event(pos, broken, false);
@@ -2392,7 +2501,7 @@ index ffa8a66eb..fd0537445 100644
          }
          if removed && !creative {
              let held = self.held().cloned();
-@@ -4574,8 +4585,21 @@ impl Game<'_> {
+@@ -4574,8 +4588,21 @@ impl Game<'_> {
          let target = [pos.x, pos.y, pos.z];
          let state = self.apply_item_block_state(target, state, &stack)?;
          self.mod_block_event(target, state, true);
@@ -2415,7 +2524,7 @@ index ffa8a66eb..fd0537445 100644
              self.world.block_entities.insert(key, entity);
              let game_master = self.can_use_game_master_blocks();
              self.apply_placed_item(target, &stack, game_master);
-@@ -6366,7 +6390,8 @@ impl Game<'_> {
+@@ -6366,7 +6393,8 @@ impl Game<'_> {
          if self.screen == Screen::Creative {
              return Self::creative_origin(batch);
          }
@@ -2425,15 +2534,19 @@ index ffa8a66eb..fd0537445 100644
          (x + self.recipe_book_shift(batch.width), y)
      }
      /// Slot ids: 0..36 player inventory, 100..109 crafting grid, 200 result.
-@@ -6410,6 +6435,7 @@ impl Game<'_> {
+@@ -6410,6 +6438,11 @@ impl Game<'_> {
                  | BlockEntity::Campfire(_)
                  | BlockEntity::ChiseledBookshelf(_),
              ) => {}
-+            Some(BlockEntity::ModContainer(m)) => v.extend((0..m.items.len()).map(|i| 300 + i)),
++            Some(BlockEntity::ModContainer(m)) => v.extend(
++                (0..m.items.len())
++                    .map(|i| 300 + i)
++                    .filter(|&i| self.mod_slot_position(i).is_some()),
++            ),
              None => {
                  v.extend((0..self.craft_size * self.craft_size).map(|i| 100 + i));
                  v.push(200);
-@@ -6434,6 +6460,7 @@ impl Game<'_> {
+@@ -6434,6 +6467,7 @@ impl Game<'_> {
          }
          if let Some(p) = self
              .station_slot_position(i)
@@ -2441,7 +2554,7 @@ index ffa8a66eb..fd0537445 100644
              .or_else(|| self.machine_slot_position(i))
              .or_else(|| self.crafter_slot_position(i))
              .or_else(|| self.mount_slot_position(i))
-@@ -6572,6 +6599,7 @@ impl Game<'_> {
+@@ -6572,6 +6606,7 @@ impl Game<'_> {
          if self.draw_station(batch) {
              return;
          }
@@ -2449,7 +2562,7 @@ index ffa8a66eb..fd0537445 100644
          let (ox, oy) = self.inventory_origin(batch);
          {
              let atlas = &self.gui.atlas;
-@@ -6665,6 +6693,7 @@ impl Game<'_> {
+@@ -6665,6 +6700,7 @@ impl Game<'_> {
                  }
                  Some(BlockEntity::Brewing(_)) => {}
                  Some(BlockEntity::Crafter(_)) => self.draw_crafter_screen(batch, ox, oy),
@@ -2457,7 +2570,7 @@ index ffa8a66eb..fd0537445 100644
                  Some(
                      BlockEntity::Sign(_)
                      | BlockEntity::Jukebox(_)
-@@ -6721,6 +6750,7 @@ impl Game<'_> {
+@@ -6721,6 +6757,7 @@ impl Game<'_> {
          }
          self.draw_carried(batch);
          self.draw_slot_tooltip(batch);
@@ -2465,7 +2578,7 @@ index ffa8a66eb..fd0537445 100644
          if self.container.is_none() && self.craft_size == 2 && !self.mount_active() {
              self.draw_inventory_effects(batch, (ox, oy), 176);
          }
-@@ -7077,6 +7107,12 @@ impl Game<'_> {
+@@ -7077,6 +7114,12 @@ impl Game<'_> {
                          (kind, size)
                      }
                      Some(BlockEntity::Brewing(_)) => (Kind::Brewing, 5),
@@ -2478,7 +2591,7 @@ index ffa8a66eb..fd0537445 100644
                      Some(BlockEntity::Furnace(f)) => (
                          Kind::Furnace(
                              match f.kind.recipe_type().trim_start_matches("minecraft:") {
-@@ -7843,6 +7879,9 @@ impl Game<'_> {
+@@ -7843,6 +7886,9 @@ impl Game<'_> {
          if self.station_click(right) {
              return;
          }
@@ -2488,7 +2601,7 @@ index ffa8a66eb..fd0537445 100644
          if self.remote.is_some() {
              return self.remote_click(right);
          }
-@@ -8222,7 +8261,18 @@ impl Game<'_> {
+@@ -8222,7 +8268,18 @@ impl Game<'_> {
          }
          // Block entities (BlockEntityRenderers): chests, shulker boxes, banners, skulls...
          if let Some(r) = &self.renderer {
@@ -2508,7 +2621,7 @@ index ffa8a66eb..fd0537445 100644
              let anim = |p: [i32; 3]| self.block_anim(p, alpha as f32);
              let scene = horizon_client::block_entity_render::Scene {
                  camera,
-@@ -8270,7 +8320,15 @@ impl Game<'_> {
+@@ -8270,7 +8327,15 @@ impl Game<'_> {
                              (glam::DVec3::new(f64::from(p[0]), f64::from(p[1]), f64::from(p[2]))
                                  - camera)
                                  .as_vec3();
@@ -2525,7 +2638,7 @@ index ffa8a66eb..fd0537445 100644
                      })
              });
              if self.entity_culler.is_some() || self.pack_ids.is_some() {
-@@ -11961,11 +12019,16 @@ impl Game<'_> {
+@@ -11961,11 +12026,16 @@ impl Game<'_> {
          entities.clear();
          self.see_through_vertices.clear();
          self.glowing_vertices.get_mut().clear();
@@ -2542,7 +2655,7 @@ index ffa8a66eb..fd0537445 100644
          let bolts = if title {
              Vec::new()
          } else {
-@@ -12029,6 +12092,16 @@ impl Game<'_> {
+@@ -12029,6 +12099,16 @@ impl Game<'_> {
          hud.patches.append(&mut self.map_patches);
          let entity_spans = std::mem::take(self.entity_spans.get_mut());
          let glowing = std::mem::take(self.glowing_vertices.get_mut());
@@ -2559,7 +2672,7 @@ index ffa8a66eb..fd0537445 100644
          let frame = Frame {
              weather: &weather,
              weather_time: horizon_client::weather::Time::new(self.world.game_time, alpha as f32),
-@@ -12111,6 +12184,11 @@ impl Game<'_> {
+@@ -12111,6 +12191,11 @@ impl Game<'_> {
              entity_spans: &entity_spans,
              glowing: &glowing,
              dynamic_lights: &self.dynamic_lights,
@@ -2571,7 +2684,15 @@ index ffa8a66eb..fd0537445 100644
              lightning: horizon_client::gfx::lightning::Input {
                  bolts: &bolts,
                  uv: [
-@@ -14804,6 +14882,15 @@ fn load_world_rest(
+@@ -13948,6 +14033,7 @@ impl<'a> Game<'a> {
+             last_inv_click: None,
+             last_quick_moved: None,
+             container: None,
++            machine_view: None,
+             station: None,
+             potions: Default::default(),
+             scratch_slot: None,
+@@ -14804,6 +14890,15 @@ fn load_world_rest(
      progress.set(6);
      let mob_data = horizon_client::mobs::MobData::load(root, facts);
      horizon_client::mobs::trial_spawner::load_registry(root);
@@ -2587,7 +2708,7 @@ index ffa8a66eb..fd0537445 100644
  
      let items = Items::load(root, assets.registry, facts)?;
      log::info!("load items: {:.2}s", started.elapsed().as_secs_f32());
-@@ -15025,6 +15112,7 @@ fn loading_frame(hud: &HudBatch) -> Frame<'_> {
+@@ -15025,6 +15120,7 @@ fn loading_frame(hud: &HudBatch) -> Frame<'_> {
          dynamic_lights: &[],
          clouds: None,
          lightning: Default::default(),
@@ -2756,10 +2877,10 @@ index 4a6fca181..ff6f945ae 100644
              .as_ref()
 diff --git a/crates/horizon-client/src/game/mod_machines.rs b/crates/horizon-client/src/game/mod_machines.rs
 new file mode 100644
-index 000000000..8fb7beb9b
+index 000000000..a2ad64059
 --- /dev/null
 +++ b/crates/horizon-client/src/game/mod_machines.rs
-@@ -0,0 +1,366 @@
+@@ -0,0 +1,383 @@
 +//! Content mods' machines in the game (`horizon_world::mod_machines`): a
 +//! multiblock breaks as one block, whichever of its cells the player mines.
 +use super::Game;
@@ -2814,13 +2935,19 @@ index 000000000..8fb7beb9b
 +use winit::keyboard::KeyCode;
 +
 +impl Game<'_> {
-+    /// The open container's machine and screen, when it is a mod machine.
++    /// The open container's machine and screen, when it is a mod machine:
++    /// the one a switch button chose for it, else its first.
 +    pub(super) fn open_machine(&self) -> Option<(Arc<MachineDef>, Option<Arc<ScreenDef>>)> {
 +        let Some(BlockEntity::ModContainer(m)) = self.container_kind() else {
 +            return None;
 +        };
 +        let def = horizon_world::mod_machines::get(&m.block)?;
-+        let screen = horizon_client::mod_screens::get(&def.screen);
++        let name = self
++            .machine_view
++            .as_ref()
++            .filter(|(key, name)| Some(*key) == self.container && def.screens.contains(name))
++            .map_or(&def.screen, |(_, name)| name);
++        let screen = horizon_client::mod_screens::get(name);
 +        Some((def, screen))
 +    }
 +
@@ -2831,9 +2958,10 @@ index 000000000..8fb7beb9b
 +    }
 +
 +    /// Where the open machine screen puts slot `i`: the machine file's slots
-+    /// (300 and up), the inventory where the file says.
++    /// (300 and up) unless the screen moves them, the inventory where the
++    /// file says. None for a slot the screen leaves out.
 +    pub(super) fn mod_slot_position(&self, i: usize) -> Option<(f32, f32)> {
-+        let (def, _) = self.open_machine()?;
++        let (def, screen) = self.open_machine()?;
 +        let [ix, iy] = def.inventory.map(|v| v as f32);
 +        Some(match i {
 +            0..9 => (ix + i as f32 * 18.0, iy + 58.0),
@@ -2843,7 +2971,9 @@ index 000000000..8fb7beb9b
 +            ),
 +            300..500 => {
 +                let s = def.slots.get(i - 300)?;
-+                (s.x as f32, s.y as f32)
++                let at = [s.x as f32, s.y as f32];
++                let [x, y] = screen.map_or(Some(at), |sc| sc.slot_at(i - 300, at))?;
++                (x, y)
 +            }
 +            _ => return None,
 +        })
@@ -2974,9 +3104,17 @@ index 000000000..8fb7beb9b
 +        };
 +        let batch = HudBatch::new(size);
 +        let (ox, oy) = self.inventory_origin(&batch);
++        let (x, y) = (self.cursor.0 - ox, self.cursor.1 - oy);
++        if let (Some(to), Some(key)) = (screen.switch_at(x, y), self.container) {
++            // A switch shows another of the machine's screens, here only.
++            self.audio
++                .play("minecraft:ui.button.click", None, 0.25, 1.0);
++            self.machine_view = Some((key, to.to_owned()));
++            return true;
++        }
 +        let shift =
 +            self.keys.contains(&KeyCode::ShiftLeft) || self.keys.contains(&KeyCode::ShiftRight);
-+        let Some(button) = screen.button_at(self.cursor.0 - ox, self.cursor.1 - oy, shift) else {
++        let Some(button) = screen.button_at(x, y, shift) else {
 +            return false;
 +        };
 +        self.audio
@@ -3965,10 +4103,10 @@ index 1e7120091..271e9b11f 100644
      pub use horizon::mods::world::{self, BlockChange};
  
 diff --git a/crates/horizon-mod-sdk/wit/horizon.wit b/crates/horizon-mod-sdk/wit/horizon.wit
-index 0680cce92..db559c361 100644
+index 0680cce92..632aae2b7 100644
 --- a/crates/horizon-mod-sdk/wit/horizon.wit
 +++ b/crates/horizon-mod-sdk/wit/horizon.wit
-@@ -691,6 +691,59 @@ interface %world {
+@@ -691,6 +691,60 @@ interface %world {
      set-blocks: func(dimension: string, blocks: list<block-change>) -> result<_, string>;
  }
  
@@ -3978,7 +4116,8 @@ index 0680cce92..db559c361 100644
 +/// saves them with the chunk, shows them in the machine's screen, where
 +/// players move items as in a furnace's, and drops them when the block
 +/// goes. The item record and the slot rules are those of API 0.4's
-+/// `machine` interface, here addressed by position.
++/// `machine` interface, here addressed by position. The machine, screen and
++/// model files: [machine-files.md](machine-files.md).
 +interface machines {
 +    /// An item, how many, its wear and its custom data. Other item
 +    /// components are not carried: a slot set to the item it holds keeps
@@ -4028,7 +4167,7 @@ index 0680cce92..db559c361 100644
  /// What the server calls in a server mod (manifest `api = "0.3"`,
  /// experimental). Only the hooks `init` asks for are ever called. The player
  /// in each event is as the server saw them when it happened.
-@@ -802,6 +855,7 @@ world horizon-server-mod {
+@@ -802,6 +856,7 @@ world horizon-server-mod {
      import storage;
      import players;
      import %world;
@@ -4574,10 +4713,10 @@ index 6df870d42..5a5ad71f7 100644
  pub mod movement_restitution;
 diff --git a/crates/horizon-world/src/mod_machines.rs b/crates/horizon-world/src/mod_machines.rs
 new file mode 100644
-index 000000000..4c51ab352
+index 000000000..f4d381b6a
 --- /dev/null
 +++ b/crates/horizon-world/src/mod_machines.rs
-@@ -0,0 +1,500 @@
+@@ -0,0 +1,511 @@
 +//! Machines from content mods: blocks with slots the game keeps, a screen
 +//! layout and, optionally, a multiblock volume. Each
 +//! `data/<namespace>/horizon_machine/<name>.json` in the resource root
@@ -4589,6 +4728,8 @@ index 000000000..4c51ab352
 +//! {
 +//!   "title": "container.ntm.assembler",   translation key (else the block's name)
 +//!   "screen": "ntm:assembler",            assets/ntm/horizon_screen/assembler.json (default: the block's id)
++//!   "screens": ["ntm:assembler_alt"],     more screens its buttons switch to (a screen's
++//!                                         button `screen`); the first is "screen"
 +//!   "slots": [                            in slot order; positions as the screen draws them
 +//!     {"x": 152, "y": 81, "accept": ["ntm:battery_generic"]},
 +//!     {"grid": [8, 18, 4, 3]},            x, y, columns, rows: one input slot each
@@ -4670,6 +4811,8 @@ index 000000000..4c51ab352
 +    pub index: u16,
 +    pub title: Option<String>,
 +    pub screen: String,
++    /// The other screens a screen's button may switch to.
++    pub screens: Vec<String>,
 +    pub slots: Vec<SlotDef>,
 +    pub inventory: [i32; 2],
 +    pub data: usize,
@@ -4800,6 +4943,12 @@ index 000000000..4c51ab352
 +        index: 0,
 +        title: doc["title"].as_str().map(str::to_owned),
 +        screen: doc["screen"].as_str().unwrap_or(block).to_owned(),
++        screens: doc["screens"]
++            .as_array()
++            .into_iter()
++            .flatten()
++            .filter_map(|v| v.as_str().map(str::to_owned))
++            .collect(),
 +        slots,
 +        inventory: ints::<2>(&doc["inventory"]).unwrap_or([8, 84]),
 +        data,
@@ -5062,7 +5211,7 @@ index 000000000..4c51ab352
 +    fn grids_expand_and_rules_read() {
 +        let doc: Value = serde_json::from_str(
 +            r#"{"slots":[{"x":1,"y":2,"accept":["a:b"],"max":1},{"grid":[8,18,4,3]},{"x":9,"y":9,"output":true},{"x":0,"y":0,"reject":["a:b"]}],
-+                "data":3,"synced":[2,0,7],"multiblock":{"min":[-1,0,-1],"max":[1,2,1],"offset":1,"dummy":"a:d"}}"#,
++                "data":3,"synced":[2,0,7],"screens":["a:alt"],"multiblock":{"min":[-1,0,-1],"max":[1,2,1],"offset":1,"dummy":"a:d"}}"#,
 +        )
 +        .unwrap();
 +        let def = parse("a:m", &doc).unwrap();
@@ -5073,13 +5222,204 @@ index 000000000..4c51ab352
 +        assert_eq!((def.slots[0].max, def.slots[1].max), (Some(1), None));
 +        assert!(!def.slots[13].accepts("a:b"));
 +        assert_eq!(def.screen, "a:m");
++        assert_eq!(def.screens, ["a:alt"]);
 +        // A synced index past the values is dropped.
 +        assert_eq!(def.synced, [2, 0]);
 +        assert_eq!(def.multiblock.unwrap().offset, 1);
 +    }
 +}
+diff --git a/docs/api/README.md b/docs/api/README.md
+index 960d336bb..264ad80b8 100644
+--- a/docs/api/README.md
++++ b/docs/api/README.md
+@@ -7,7 +7,7 @@ section has one page per surface, plus the rules every surface follows:
+ 
+ | Surface | For | API today | Stability | Reference |
+ | --- | --- | --- | --- | --- |
+-| [Mods](mods.md) | mod authors | WIT `horizon:mods@0.1.0`, manifest `api` 0.1 (code) and 0.2 (content) | preview | [mods-reference.md](mods-reference.md) (generated) |
++| [Mods](mods.md) | mod authors | WIT `horizon:mods@0.1.0`, manifest `api` 0.1 (code) and 0.2 (content) | preview | [mods-reference.md](mods-reference.md) (generated), [machine-files.md](machine-files.md) |
+ | [Shaders](shaders.md) | shader authors | none yet: packs were removed on 2026-10-24 | planned | none |
+ | [Agent control](agent-control.md) | agents, scripts, tests | `horizon-ctl`, its MCP server, the game's control socket | preview | [horizon-ctl-commands.md](../horizon-ctl-commands.md) (generated) |
+ | [Servers](server.md) | hosts, panels, bots | `horizon-server` commands, `server.toml`, control API `/api/v1` | stable | [server-reference.md](server-reference.md) (generated) |
+diff --git a/docs/api/data-formats.md b/docs/api/data-formats.md
+index 3127248a1..3283882f7 100644
+--- a/docs/api/data-formats.md
++++ b/docs/api/data-formats.md
+@@ -11,6 +11,7 @@ and worlds. Each entry names its version field, its documentation and its level
+ | Telemetry batch | `POST /v1/batch` from the launcher | `"schema": 1` | stable | [telemetry.md](../telemetry.md) |
+ | Telemetry consent | `telemetry/consent.json` in the game folder | `"version": 2` | stable | [telemetry.md](../telemetry.md) |
+ | Mod package | `.hmod`: a zip with `horizon-mod.toml`, `mod.wasm`, `assets/`, `data/` | the manifest's `api` | preview | [mods.md](../mods.md#the-manifest), [mods-reference.md](mods-reference.md) |
++| Machine files | a content mod's `data/<ns>/horizon_machine/`, `assets/<ns>/horizon_screen/`, `horizon_model/`, `horizon_liquid/` | the manifest's `api` | preview | [machine-files.md](machine-files.md) |
+ | Mods turned on | `horizon-mods.txt` | none | preview | [mods.md](../mods.md#playing-with-mods) |
+ | Horizon settings | `horizon-graphics.txt`, `horizon-extras.txt` (`key:value`, as `options.txt`) | none: unknown keys fall back to defaults | preview | [graphics.md](../graphics.md), [extras.md](../extras.md#options-storage) |
+ | Server settings | `server.toml` | its keys | stable | [server-reference.md](server-reference.md) |
+diff --git a/docs/api/machine-files.md b/docs/api/machine-files.md
+new file mode 100644
+index 000000000..775745e55
+--- /dev/null
++++ b/docs/api/machine-files.md
+@@ -0,0 +1,159 @@
++# Machine files
++
++A content mod (manifest `api = "0.2"`) can give a block slots, a screen, a 3D model and a multiblock shape with data
++files alone. A server mod with the [`machines`](mods-reference.md#machines) capability then runs it: it reads and
++sets the slots and sets the values the screen and the model show. Level: preview ([stability.md](stability.md)).
++
++| File | What it is |
++| --- | --- |
++| `data/<ns>/horizon_machine/<block>.json` | The machine: slots, values, screens, multiblock |
++| `assets/<ns>/horizon_screen/<name>.json` | A screen: its texture, bars, lights, needles, tooltips, buttons |
++| `assets/<ns>/horizon_model/<block>.json` | The block's model: an OBJ, its texture, animations, parts shown by state or value, liquids |
++| `assets/<ns>/horizon_liquid/<block>.json` | Liquids alone, over the block's own blockstate model |
++| `assets/<ns>/animations/<name>.animation.json` | Animations in the Bedrock/GeckoLib format (numbers only) |
++
++Positions on screens are texture pixels from the screen's top left. Positions in the world are blocks.
++
++## The machine file
++
++```json
++{
++  "title": "container.mymod.press",
++  "screen": "mymod:press",
++  "screens": ["mymod:press_settings"],
++  "slots": [
++    {"x": 152, "y": 81, "accept": ["mymod:battery"], "max": 1},
++    {"grid": [8, 18, 4, 3]},
++    {"x": 8, "y": 90, "reject": ["mymod:blade"]},
++    {"x": 98, "y": 45, "output": true}
++  ],
++  "inventory": [8, 174],
++  "data": 12,
++  "synced": [4, 5, 6],
++  "multiblock": {
++    "min": [-1, 0, -1], "max": [1, 2, 1], "offset": 1, "height": 0,
++    "extra": [{"min": [-1, -2, -1], "max": [-1, -1, -1]}],
++    "dummy": "mymod:dummy"
++  }
++}
++```
++
++- **Text:**
++  - `title`: a translation key. Without it, the block's name.
++- **Screens:**
++  - `screen`: the screen the machine opens with. Default: the block's id.
++  - `screens`: more screens that a screen's button may switch to.
++- **Slots:** in slot order.
++  - `grid` is `[x, y, columns, rows]`: one slot per cell.
++  - `accept` lists the only items a player may put in; `reject` lists items they may not.
++  - `output: true`: players only take from the slot.
++  - `max`: how many items the slot holds at most.
++- **Inventory:**
++  - `inventory`: where the player's inventory sits. The hotbar is 58 pixels below.
++- **Values:**
++  - `data`: how many values (`s32`) the server mod sets (`set-data`).
++  - `synced`: the values every nearby client gets with the block, for models (parts, liquids). The open screen
++    gets all of them.
++- **Multiblock:** it is laid out in the placer's frame: x to their right, y up, z away from them.
++  - **Core:** `offset` is how far away from the clicked cell the core sits; `height` is how far above it.
++  - **Shape:** `min..max` must hold the core and span 16 blocks at most. `extra` adds more boxes.
++  - **Dummies:** every other cell holds `dummy`. Breaking any cell breaks the machine.
++
++## The screen file
++
++```json
++{
++  "texture": "mymod:textures/gui/press.png",
++  "size": [176, 222],
++  "title": [88, 6, "center"],
++  "title_color": "#404040",
++  "inventory_label": [8, 128],
++  "bars": [
++    {"value": 0, "max": 1, "rect": [152, 18, 16, 52], "uv": [176, 0], "dir": "up"},
++    {"value": 4, "max_value": 16000, "rect": [8, 18, 16, 52], "color": 6, "dir": "up"},
++    {"value": 2, "from": 250, "max_value": 500, "rect": [92, 21, 12, 36], "uv": [182, 37], "dir": "down"}
++  ],
++  "overlays": [
++    {"slot": 0, "rect": [142, 90, 16, 16], "uv": [176, 60]},
++    {"value": 7, "min": 1, "rect": [51, 121, 6, 8], "uv": [195, 0]}
++  ],
++  "gauges": [{"value": 2, "max": 3, "at": [34, 25], "tip": 5, "back": 2, "side": 1, "color": "#7f0000"}],
++  "tooltips": [{"rect": [152, 18, 16, 52], "lines": ["{0:si} / {1:si} HE"]}],
++  "buttons": [
++    {"id": 0, "rect": [7, 125, 18, 18], "lines": ["Start"]},
++    {"id": 1, "shift": 2, "rect": [27, 125, 18, 18], "lines": ["Make one", "Shift: make all"]},
++    {"screen": "mymod:press_settings", "rect": [8, 82, 54, 12], "lines": ["Settings"]}
++  ],
++  "slots": {"14": [10, 22], "3": null}
++}
++```
++
++- **The texture:** drawn from its top left, at most 512 × 512.
++- **Title:** `title` is `[x, y, "left" | "center"]`. `inventory_label` is null for none.
++- **Bars:** each fills toward `dir` by `value` out of `max` (both indices) or `max_value` (a number).
++  - The fill comes from the texture at `uv`, or is a flat colour taken from the value `color` (0xRRGGBB).
++  - `from`: the bar stays empty up to that value.
++- **Overlays:** a part of the texture drawn while a slot holds something, or while a value is in `min..=max`.
++- **Gauges:** a needle that turns 270° from the lower left as `value` goes from 0 to `max`.
++- **Tooltips:** lines shown over a rectangle. `{i}` is value `i`; `{i:si}` writes it with k, M, G, T.
++- **Buttons:**
++  - **Sending an id:** a click sends `id` to the server mods (`poll-buttons`), or `shift` while shift is held.
++  - **Switching screens:** a button with `screen` shows that screen instead and sends nothing. It must be one of the
++    machine file's `screen` and `screens`. The switch is only what this window shows: the slots and values stay the
++    machine's, and a shift-click can still move a stack into a slot the screen hides.
++- **Slots:**
++  - `slots` moves the machine's slots on this screen, by index.
++  - Null leaves a slot off the screen: it is not drawn or clicked there.
++  - The other slots sit where the machine file puts them.
++
++## The model file
++
++```json
++{
++  "obj": "mymod:models/obj/press.obj",
++  "texture": "mymod:textures/models/press.png",
++  "rotation": 90,
++  "translate": [0, 0, 0],
++  "scale": 1.0,
++  "radius": 2.5,
++  "hide": ["Spare"],
++  "bones": {"Arm": {"pivot": [0, 1.625, 0.9375], "parent": "Body"}},
++  "animations": "mymod:animations/press.animation.json",
++  "play": [{"animation": "animation.press.work", "property": "lit", "is": "true"}],
++  "show": {
++    "Flame": {"property": "lit", "is": "true"},
++    "Electrode": {"value": 4, "min": 1, "max": 1},
++    "ElectrodeWorn": {"value": 4, "min": 2}
++  },
++  "glow": ["Flame"],
++  "open": "animation.press.door",
++  "liquids": [{"texture": "mymod:textures/models/white.png", "box": [-1, 1, -1, 1, 2, 1], "value": 5, "max": 6, "color": 7}]
++}
++```
++
++- **The OBJ:** each of its objects is a bone, drawn with `texture`.
++  - **Turning:** the model turns by the block's `facing`, after `rotation` (the turn when facing north) and
++    `translate`.
++  - **Culling:** `radius` is how far from the block's centre it reaches.
++  - **Bones:** `hide` leaves objects out. In `bones`, `pivot` is where a bone turns, and `parent` is the bone whose
++    motion it follows.
++- **Animations:**
++  - `play`: the first entry whose block-state property matches plays its animation. With no animation playing, the
++    model rests on the first animation's first frame.
++  - `open`: posed by how open the machine's screen is in this window. Use a non-looping animation: its last frame is
++    fully open.
++- **Showing parts:**
++  - `show`: a bone is drawn only while its condition holds.
++  - The condition is either a block-state `property` that `is` (or is `not`) a value, or a synced `value` in
++    `min..=max`. `max` defaults to no limit.
++  - A value the client hasn't received yet counts as 0. The machine file's `synced` must list it.
++- **Light:** `glow` bones are drawn at full light.
++- **Liquids:** boxes filled to `value / max` of their height, in the colour of the value `color` (0 draws nothing).
++  - `column: true` draws the four sides only, as a falling jet.
++  - `tint: false` draws the texture as it is, while the colour value is set.
++
++An animation file is `{"animations": {"<name>": {"loop": true, "animation_length": 4.0, "bones": {"<bone>":
++{"rotation": {"0.0": [x, y, z], ...}, "position": {...}}}}}}`:
++- rotations are degrees about the pivot (applied z, y, then x);
++- positions are pixels (1/16 block);
++- both are linear between keyframes.
 diff --git a/docs/api/mods-reference.md b/docs/api/mods-reference.md
-index b25ef5b9e..6586c059b 100644
+index b25ef5b9e..8e1bbecbe 100644
 --- a/docs/api/mods-reference.md
 +++ b/docs/api/mods-reference.md
 @@ -19,6 +19,7 @@ The contract between Horizon and its mods: the WIT package `horizon:mods@0.1.0`,
@@ -5107,7 +5447,7 @@ index b25ef5b9e..6586c059b 100644
 +
 +Access: capability `machines`.
 +
-+Capability `machines`, server mods only (manifest `api = "0.3"`, experimental): the slots and screen values of content mods' machines (`data/<ns>/horizon_machine/<block>.json`). The game keeps the slots: it saves them with the chunk, shows them in the machine's screen, where players move items as in a furnace's, and drops them when the block goes. The item record and the slot rules are those of API 0.4's `machine` interface, here addressed by position.
++Capability `machines`, server mods only (manifest `api = "0.3"`, experimental): the slots and screen values of content mods' machines (`data/<ns>/horizon_machine/<block>.json`). The game keeps the slots: it saves them with the chunk, shows them in the machine's screen, where players move items as in a furnace's, and drops them when the block goes. The item record and the slot rules are those of API 0.4's `machine` interface, here addressed by position. The machine, screen and model files: [machine-files.md](machine-files.md).
 +
 +### record `item-stack`
 +
