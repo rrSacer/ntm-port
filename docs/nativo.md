@@ -119,3 +119,9 @@ No NTM, o duto não tem tela: o tipo vem do identificador de fluido na mão (`Fl
 ## Redstone (30/10, `ntm-next` `15d31b261`, API 25)
 
 O host do bundle lê o sinal com `native_redstone_many`, uma chamada por dimensão para todas as baterias e bombas carregadas (`Server::native_redstone`). A bateria usa o modo redHigh com sinal e o redLow sem (as duas do `GUIMachineBattery`). A bomba usa o sinal no lugar do `lit` da lâmpada: as nukes da C2 estão em beehive e não têm `lit`; as 4 cargas simples seguem na lâmpada e leem igual. Em jogo, uma bateria posta por `/setblock` encheu com a bateria criativa vinda de um funil (dados `[1.000.000, 1.000.000, 1, 2, 1]`) e seguiu sem pânico com um bloco de redstone ao lado. O efeito do redHigh se vê pela tela nativa, que depende da L2.
+
+## As redes em jogo (30/10, `tools/test-game/native_redes.py`)
+
+- **energia:** uma bateria em buffer, enchida pela bateria criativa de um funil, três `red_cable` e uma fornalha elétrica sem bateria, com minério de um funil e um baú embaixo. A fornalha ficou com a energia cheia e mandou os 4 lingotes ao baú só com a energia da rede.
+- **fluido:** dois barris ligados por três dutos. Os dutos ganharam o tipo `water` pelo identificador de fluido na mão; o balde de água entrou no barril A pela tela nativa (slot 302); o botão de modo, clicado por pixel (a origem é o slot 0 da barra menos a sua posição no `horizon_machine`), levou A a saída; os 1.000 mB foram ao barril B.
+- O botão só chegou à lógica depois do `7b56d7d7`: o servidor nativo conferia o alcance pela posição do jogador da sessão WASM, que no nativo não existe; o motor já valida o alcance do menu.
