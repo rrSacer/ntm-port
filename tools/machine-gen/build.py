@@ -236,6 +236,22 @@ if (root / 'content/machine-recipes/heaters.json').exists():
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0, sort_keys=True) + '\n')
     print(f"heaters: {len(fuels)} combustíveis, {len(flammable)} inflamáveis, {len(coolable)} resfriáveis → {p.relative_to(root)}")
 
+# Lote 3 de energia: os combustíveis (FT_Combustible: grade e HE por balde),
+# a eficiência do diesel por grade e a matriz dos pistões do motor a combustão.
+if (root / 'content/machine-recipes/combustion.json').exists():
+    src = json.loads((root / 'content/machine-recipes/combustion.json').read_text())
+    traits = json.loads((root / 'content/fluid_traits.json').read_text())
+    cfg = src['machine_config']
+    grades = traits['fuel_grades']
+    fuels = {t['fluid']: [t['grade_ordinal'], t['he_per_bucket']] for t in traits['combustible']}
+    pistons = {f"ntm:piston_set__{k.lower()}": [v[g] for g in grades] for k, v in cfg['ntm:machine_combustion_engine']['piston_efficiency'].items()}
+    diesel = {g: e for g, e in cfg['ntm:machine_diesel']['efficiency_by_grade'].items()}
+    data = {'source': 'content/machine-recipes/combustion.json, content/fluid_traits.json', 'grades': grades, 'fuels': fuels,
+            'diesel_efficiency': diesel, 'pistons': pistons}
+    p = root / 'crates/ntm-core/data/machines/combustion.json'
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=0, sort_keys=True) + '\n')
+    print(f"combustion: {len(fuels)} combustíveis, {len(pistons)} pistões → {p.relative_to(root)}")
+
 # Os arquivos de máquina (horizon_machine) que o bundle nativo usa sem ler o
 # conteúdo em tempo de execução: as regras de cada slot (accept, reject,
 # max, output, grid, a posição x/y) e os índices sincronizados com os modelos,

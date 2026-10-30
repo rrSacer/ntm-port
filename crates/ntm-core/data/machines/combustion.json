@@ -1,0 +1,219 @@
+{
+"diesel_efficiency": {
+"AERO": 0.1,
+"HIGH": 0.75,
+"MEDIUM": 0.5
+},
+"fuels": {
+"balefire": [
+2,
+640000000
+],
+"biofuel": [
+2,
+1250000
+],
+"biogas": [
+4,
+78100
+],
+"coalgas": [
+1,
+9520000
+],
+"coalgas_leaded": [
+1,
+14200000
+],
+"deuterium": [
+2,
+10000
+],
+"diesel": [
+2,
+1370000
+],
+"diesel_crack": [
+2,
+1280000
+],
+"diesel_crack_reform": [
+2,
+3210000
+],
+"diesel_reform": [
+2,
+3430000
+],
+"ethanol": [
+2,
+687000
+],
+"gas": [
+4,
+75000
+],
+"gas_coker": [
+4,
+93700
+],
+"gasoline": [
+2,
+1510000
+],
+"gasoline_leaded": [
+2,
+2260000
+],
+"heatingoil": [
+0,
+489000
+],
+"heatingoil_vacuum": [
+0,
+1640000
+],
+"heavyoil": [
+0,
+68700
+],
+"heavyoil_vacuum": [
+0,
+234000
+],
+"hydrogen": [
+2,
+10000
+],
+"kerosene": [
+3,
+3850000
+],
+"kerosene_reform": [
+3,
+9600000
+],
+"lightoil": [
+1,
+2200000
+],
+"lightoil_crack": [
+1,
+1370000
+],
+"lightoil_ds": [
+1,
+4400000
+],
+"lightoil_vacuum": [
+1,
+4500000
+],
+"lpg": [
+2,
+4530000
+],
+"naphtha": [
+1,
+165000
+],
+"naphtha_coker": [
+1,
+187000
+],
+"naphtha_crack": [
+1,
+128000
+],
+"naphtha_ds": [
+1,
+330000
+],
+"nitan": [
+2,
+160000000
+],
+"oxyhydrogen": [
+4,
+15000
+],
+"petroil": [
+1,
+195000
+],
+"petroil_leaded": [
+1,
+293000
+],
+"petroleum": [
+4,
+2470000
+],
+"reclaimed": [
+0,
+141000
+],
+"reformate": [
+2,
+6000000
+],
+"reformgas": [
+4,
+15700000
+],
+"smear": [
+0,
+103000
+],
+"syngas": [
+4,
+2060000
+],
+"tritium": [
+2,
+10000
+],
+"xylene": [
+2,
+7870000
+]
+},
+"grades": [
+"LOW",
+"MEDIUM",
+"HIGH",
+"AERO",
+"GAS"
+],
+"pistons": {
+"ntm:piston_set__desh": [
+0.0,
+0.5,
+1.0,
+0.75,
+0.0
+],
+"ntm:piston_set__dura": [
+0.5,
+1.0,
+0.9,
+0.5,
+0.0
+],
+"ntm:piston_set__starmetal": [
+0.5,
+0.75,
+1.0,
+0.9,
+0.5
+],
+"ntm:piston_set__steel": [
+1.0,
+0.75,
+0.25,
+0.0,
+0.0
+]
+},
+"source": "content/machine-recipes/combustion.json, content/fluid_traits.json"
+}

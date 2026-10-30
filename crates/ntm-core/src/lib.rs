@@ -15,6 +15,7 @@ pub mod boiler;
 pub mod bomb;
 pub mod client_rad;
 pub mod coker;
+pub mod combustion;
 pub mod crafter;
 pub mod electrolyser;
 pub mod energy;
@@ -93,6 +94,7 @@ pub fn warm_tables() {
     recipes::furnace();
     recipes::press();
     radiation::hazards();
+    combustion::warm();
     radiation::bits();
     fluid::types();
     bedrock::deposit(0, 0);
