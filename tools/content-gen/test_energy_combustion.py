@@ -43,8 +43,7 @@ class EnergyCombustion(unittest.TestCase):
         for path in (ROOT / 'content/data/ntm/recipe').glob('*.json'):
             recipe = json.loads(path.read_text())
             if recipe.get('result', {}).get('id') == 'ntm:ingot_starmetal': producers.append(recipe['type'].split(':')[-1])
-        # Crystal smelting/blasting appear twice, as for every other crystal: the bulk crafting-manager and the crystal rule.
-        self.assertEqual(sorted(producers), ['blasting', 'blasting', 'crafting_shaped', 'smelting', 'smelting'])
+        self.assertEqual(sorted(producers), ['blasting', 'crafting_shaped', 'smelting'])
         star = next(r for r in self.assembly['recipes'] if r['name'] == 'ass.pistonsetstar')
         self.assertIn({'ids': ['ntm:ingot_starmetal'], 'count': 24}, star['inputItems'])
 

@@ -10,7 +10,7 @@ O 4º pistão exige `STAR.ingot()` (`ingot_starmetal`), que não existia no cat�
 
 ## Construções destravadas
 
-Todas as oito construções da montadora do fonte agora são emitidas, nenhuma em skipped: `ass.dieselgen`, `ass.combustiongen`, os quatro `ass.pistonset*`, `ass.turbofan` e `ass.gasturbine`. As variantes Ex (que usam `item_expensive`, ainda fora do catálogo) continuam omitidas. Montadora **433/198 → 441/190** (emitidas/skipped). Efeitos colaterais do `ingot_starmetal` nas outras tabelas: bigorna construção **113/144 → 114/143**, centrífuga 54 → 55, forno de arco sólido 143 → 144 e fluido 491 → 492, fundição 611 → 612 itens, triturador 624 → 625 chaves. Receitas vanilla: 12 bulk + 2 do cristal (o cristal aparece duas vezes, em bulk e na regra de cristais, como todos os outros cristais).
+Todas as oito construções da montadora do fonte agora são emitidas, nenhuma em skipped: `ass.dieselgen`, `ass.combustiongen`, os quatro `ass.pistonset*`, `ass.turbofan` e `ass.gasturbine`. As variantes Ex (que usam `item_expensive`, ainda fora do catálogo) continuam omitidas. Montadora **433/198 → 441/190** (emitidas/skipped). Efeitos colaterais do `ingot_starmetal` nas outras tabelas: bigorna construção **113/144 → 114/143**, centrífuga 54 → 55, forno de arco sólido 143 → 144 e fluido 491 → 492, fundição 611 → 612 itens, triturador 624 → 625 chaves. Receitas vanilla: 10 bulk + 2 da regra de cristais (fundição e alto-forno do cristal; a cópia bulk dessas duas é descartada pelo gerador, então uma regeneração limpa reproduz o conteúdo).
 
 ## FT_Combustible e FuelGrade (`fluid_traits.json`)
 
@@ -32,8 +32,10 @@ Schema 1, quatro `machine_config`, `recipes: []`, `skipped: []`; nenhuma duraç�
 ## Verificação
 
 - **162 testes Python em cada seed (PYTHONHASHSEED 1 e 42)**; dez novos em `test_energy_combustion.py` (estados suportados, enum/metadata/textura/empilhamento dos pistões, starmetal só com origens do fonte, as oito construções emitidas, tabela de graus separada de flammable, diesel com divisão antes da multiplicação, matriz dos pistões, turbofan/turbina, ausência de potência/duração falsas, regeneração independente). Foram atualizadas as contagens de `test_anvil` e a lista de itens faltantes de `test_blast_furnace`. `validate-bulk.py` e `tools/recipe-gen/validate.py` passaram.
-- Build/check: **6.393.253 bytes**, SHA-256 `3d8ba4d80c4e586c2e5db9f0fdd7391876a693d938281052a86187f7b658744f`.
+- Build/check: **6.341.578 bytes**, SHA-256 `7e4ff5a0c11d4a91ba6bda059fedd1a8f317bde79b58ad6e0db60852125ef031`.
 - Prova em jogo: ver a seção abaixo.
+
+Uma regeneração limpa a partir de um `git archive` do HEAD reproduz `content/` sem diferenças (as duas cópias bulk duplicadas do cristal, geradas na primeira passada, foram removidas por não serem idempotentes).
 
 Reaproveitado em vez de criado: `energy_catalog`, `fluid_traits`, `fuel_heat` (estendido para devolver a grade), o molde `steam.py`/`heaters.py` para o contrato e o perfil novo `energy-combustion` do `verify-bedrock-processing.py`. Nenhum formato, gerador ou validador novo.
 

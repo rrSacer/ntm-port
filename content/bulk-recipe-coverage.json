@@ -5609,24 +5609,6 @@
       }
     },
     {
-      "id": "ntm:bulk__741b07ffc92cf98ca5",
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:162",
-      "type": "minecraft:smelting",
-      "result": {
-        "id": "ntm:ingot_starmetal",
-        "count": 2
-      }
-    },
-    {
-      "id": "ntm:bulk__30b37b47aa4cfb7919",
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:162; blasting extension",
-      "type": "minecraft:blasting",
-      "result": {
-        "id": "ntm:ingot_starmetal",
-        "count": 2
-      }
-    },
-    {
       "id": "ntm:bulk__c0c2a3993277e6c7e4",
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:89",
       "type": "minecraft:crafting_shaped",
@@ -5861,7 +5843,7 @@
       }
     }
   ],
-  "generated_count": 651,
+  "generated_count": 649,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
