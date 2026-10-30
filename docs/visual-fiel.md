@@ -564,7 +564,11 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
     ciclo fixo de 1 s.
   - Os valores sincronizados vão como dado do block entity, sem atualizar o bloco: a cabeça que se move a cada tick
     custa um pacote pequeno.
-- **Ainda não desenhado:** o vidro do liquefator e do solidificador, 15% translúcido no NTM, que aqui fica de fora.
+- **O vidro do liquefator e do solidificador:**
+  - Desenhado com `tint` `#26bfffff`: o (0,75, 1, 1, 0,15) do NTM, por cima do tanque.
+  - Diferença: aqui o vidro leva a textura do modelo; o NTM o desenha sem textura.
+  - Um modelo com parte translúcida sai como vértices, com a parte translúcida por último.
+  - Em jogo: os painéis aparecem leves, com o fundo visível através deles.
 - **Em jogo (os dois recursos):**
   - A alavanca troca as telas do eletrolisador nos dois sentidos: 57 slots na de fluidos, 46 na de metal.
   - Com os valores [20..23] = 1, 2, 3, 2, o forno a arco mostra os anéis e os eletrodos, e o eletrodo quente brilha.
@@ -600,7 +604,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 46 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 48 commits):
 
 | Commit | O quê |
 |---|---|
@@ -649,6 +653,8 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `docs(api): describe animations played by synced values` | |
 | `feat(render): show mod model parts by their neighbouring blocks` | `show` por `neighbor` (os braços do canal da fundição) |
 | `docs(api): describe parts shown by neighbouring blocks` | |
+| `feat(render): draw translucent mod model parts` | `tint` 0xAARRGGBB por parte (o vidro do liquefator e do solidificador) |
+| `docs(api): describe translucent model parts` | |
 | `fix(lan): send an item's custom data to clients` | O `custom_data` vai aos clientes. No criativo, o cliente devolve os slots que previu (`SetCreativeModeSlot`), e o shift-clique de uma máquina apagava as densidades do minério de bedrock |
 
 **No port:**
