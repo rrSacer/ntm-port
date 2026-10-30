@@ -1,7 +1,7 @@
 //! A segunda fase (fallout de 2,5R) e a persistência leve, no mundo falso.
 mod common;
 use common::*;
-use ntm_explosion::{Detonation, Event, Explosions, Hooks, Phase};
+use ntm_core::explosion::{Detonation, Event, Explosions, Hooks, Phase};
 use std::collections::{HashMap, HashSet};
 
 const DIM: &str = "minecraft:overworld";

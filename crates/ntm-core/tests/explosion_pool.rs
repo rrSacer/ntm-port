@@ -1,4 +1,4 @@
-use ntm_explosion::pool::Pool;
+use ntm_core::explosion::pool::Pool;
 use std::alloc::{GlobalAlloc, Layout};
 
 #[test]

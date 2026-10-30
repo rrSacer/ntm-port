@@ -29,7 +29,7 @@
 //! Na retomada todas as seções voltam a pendentes: reescrever ar sobre ar é
 //! barato (~0,6 µs no host) e cobre também um mundo que voltou ao último
 //! autosave depois de uma queda.
-use crate::crater::{Kind, Plan};
+use crate::explosion::crater::{Kind, Plan};
 
 /// Tamanho de cada bloco do diário no storage.
 pub const DATA_CHUNK: usize = 96 * 1024;

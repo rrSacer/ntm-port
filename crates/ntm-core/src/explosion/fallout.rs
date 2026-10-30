@@ -19,8 +19,8 @@
 //! de chunk descarregado fica **pendente por chunk** e é feita quando um
 //! jogador chega perto (`Linger`). Troca de bioma e blocos caindo como
 //! entidade não existem na API: ficam de fora.
-use crate::crater::{BuildFnv, Kind, MAX_Y, MIN_Y, Mats, rand01};
-use crate::engine::{AIR, Change};
+use crate::explosion::crater::{BuildFnv, Kind, MAX_Y, MIN_Y, Mats, rand01};
+use crate::explosion::engine::{AIR, Change};
 use std::collections::{HashMap, HashSet};
 
 /// Fuel por leitura (get-block + classificação em cache), por coluna (busca
@@ -228,7 +228,7 @@ pub fn stomp(p: &FalloutProfile, cls: &mut Classes, x: i32, z: i32, d: f32, star
         if first {
             top = y;
         }
-        let m = crate::crater::Mat { res: 0.0, kind: info.kind.unwrap_or(Kind::Other), gravity: false };
+        let m = crate::explosion::crater::Mat { res: 0.0, kind: info.kind.unwrap_or(Kind::Other), gravity: false };
         let mut put = |state: &str, at: i32| out.push(Change { x, y: at, z, state: state.into() });
         if first
             && above_air

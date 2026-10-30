@@ -11,10 +11,10 @@
 //! é por coluna de chunk, com conjuntos em vez de buscas lineares, limitado
 //! por tick e descontado do fuel: R=500 tem ~70 mil seções e milhares de
 //! chunks que podem estar sem carregar (revisão do M2, P1-1).
-use crate::crater::{BuildFnv, Kind, MAX_RADIUS, MAX_Y, MIN_Y, Plan};
-use crate::effects::{EdgeHit, EffectProfile, Event, Hooks};
-use crate::fallout::{FalloutProfile, Sweep};
-use crate::persist::{self, DATA_CHUNK, Header, JOURNAL_MAX_RADIUS, MAX_DATA_KEYS, RING, Sealed, State, Store};
+use crate::explosion::crater::{BuildFnv, Kind, MAX_RADIUS, MAX_Y, MIN_Y, Plan};
+use crate::explosion::effects::{EdgeHit, EffectProfile, Event, Hooks};
+use crate::explosion::fallout::{FalloutProfile, Sweep};
+use crate::explosion::persist::{self, DATA_CHUNK, Header, JOURNAL_MAX_RADIUS, MAX_DATA_KEYS, RING, Sealed, State, Store};
 use std::collections::{HashMap, HashSet, VecDeque};
 
 type Set = HashSet<(i32, i32), BuildFnv>;
@@ -983,7 +983,7 @@ impl Explosion {
             } else if !finished {
                 self.fallout_tick(tick, world, store, hooks);
             }
-            crate::trace(22);
+            crate::explosion::trace(22);
             self.check_done(tick, store, hooks);
             return;
         }
@@ -1103,13 +1103,13 @@ impl Explosion {
             }
             self.set(si, SecState::Done);
         }
-        crate::trace(1);
+        crate::explosion::trace(1);
 
         // Fim da passada principal: a lista de recálculo, aos poucos.
         fuel = fuel.saturating_sub(self.mark_step(tick, fuel / 4));
         // Colunas que a frente já passou: para a fila de escrita.
         fuel = fuel.saturating_sub(self.admit(self.plan.front_h2()));
-        crate::trace(2);
+        crate::explosion::trace(2);
 
         // Reserva de fuel só para as escritas já prontas (a varredura é o
         // gargalo: reservar o orçamento inteiro a deixaria mais lenta) e para
@@ -1117,13 +1117,13 @@ impl Explosion {
         let mut budget = self.budget.saturating_sub(out.len());
         let tail = self.persist.as_ref().map_or(0, |p| p.cur.len() + p.ebands.iter().map(|b| b.1.len()).sum::<usize>()) + self.lite_bits.len();
         let reserve = self.ready_cells(budget) as u64 * (COST_WRITE + 4 * COST_SCAN) + 2_000_000 + 2 * tail as u64 * persist::COST_BYTE;
-        crate::trace(3);
+        crate::explosion::trace(3);
 
         if self.plan.finished() && !self.reeval.is_empty() && (tick - self.started).is_multiple_of(5) {
             fuel = fuel.saturating_sub(self.reeval_begin_step(world, &dim));
         }
 
-        crate::trace(4);
+        crate::explosion::trace(4);
         // (2) Varredura de energia com o fuel que sobra.
         // Depois de retomar, espera o chunk da próxima coluna carregar.
         let waiting = self.wait_until.is_some_and(|t| tick < t)
@@ -1150,7 +1150,7 @@ impl Explosion {
                 fuel = fuel.saturating_sub(self.mark_step(tick, fuel / 4));
             }
         }
-        crate::trace(5);
+        crate::explosion::trace(5);
         // Chunks recalculados por inteiro.
         if !self.reeval_started.is_empty() {
             let qd = self.plan.queue_done;
@@ -1164,7 +1164,7 @@ impl Explosion {
 
         // (3) Diário: grava as colunas novas antes de qualquer escrita delas.
         let durable = self.save(store, hooks, tick, false);
-        crate::trace(6);
+        crate::explosion::trace(6);
 
         // (4) Escrita das seções prontas.
         let front = self.plan.front_h2();
@@ -1173,16 +1173,16 @@ impl Explosion {
             // Nada mais a recalcular: a energia guardada não serve mais.
             self.plan.release_all();
         }
-        crate::trace(7);
+        crate::explosion::trace(7);
         if durable {
             fuel = fuel.saturating_sub(self.admit(front));
             fuel = fuel.saturating_sub(self.deferred_step(tick, finished));
             fuel = fuel.saturating_sub(self.sort_pool());
-            crate::trace(8);
+            crate::explosion::trace(8);
             self.write_sections(tick, finished, world, &dim, &mut out, &mut budget, &mut fuel);
         }
 
-        crate::trace(9);
+        crate::explosion::trace(9);
         // (5) Efeitos depois da cratera inteira.
         let pending = self.counts[SecState::Pending as usize] > 0;
         if finished && self.plan.queue_idle() && !pending && self.written.is_empty() && self.crater_done.is_none() {
@@ -1193,7 +1193,7 @@ impl Explosion {
             self.edge_effects(&mut out, budget, fuel, tick, world, hooks);
         }
 
-        crate::trace(10);
+        crate::explosion::trace(10);
         let n = out.len();
         self.max_tick_writes = self.max_tick_writes.max(n);
         if n > 0 && self.first_write.is_none() {
@@ -1205,7 +1205,7 @@ impl Explosion {
             let _ = world.set_blocks(&dim, std::mem::replace(&mut out, rest));
         }
         self.writes += n as u64;
-        crate::trace(11);
+        crate::explosion::trace(11);
 
         let all_written = self.crater_done.is_some() && self.edges_done >= self.plan.edges.len() && self.written.is_empty();
         if all_written && self.sweep.is_none() && let Some(fp) = self.profile.fallout.clone() {
@@ -1314,7 +1314,7 @@ impl Explosion {
             let mut read = |x: i32, y: i32, z: i32| world.block(&dim, x, y, z);
             sweep.step(fp, self.fuel, self.budget, &mut read, &mut out);
         }
-        crate::trace(20);
+        crate::explosion::trace(20);
         let n = out.len();
         self.effects += n as u64;
         self.writes += n as u64;
@@ -1324,7 +1324,7 @@ impl Explosion {
             let _ = world.set_blocks(&dim, std::mem::replace(&mut out, rest));
         }
         self.sweep = Some(sweep);
-        crate::trace(21);
+        crate::explosion::trace(21);
         if tick >= self.fallout_saved + 20 {
             self.fallout_saved = tick;
             self.save(store, hooks, tick, true);

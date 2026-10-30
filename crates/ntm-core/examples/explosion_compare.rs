@@ -1,7 +1,7 @@
 //! Benchmark do cálculo da cratera contra o algoritmo de raios do NTM
 //! (ExplosionNukeRayBatched) reimplementado aqui, no mesmo terreno sintético.
 //! uso: cargo run --release --example compare -- 25 50 100 150
-use ntm_explosion::crater::{Kind, Plan, classify, rand01};
+use ntm_core::explosion::crater::{Kind, Plan, classify, rand01};
 use std::collections::HashSet;
 use std::time::Instant;
 

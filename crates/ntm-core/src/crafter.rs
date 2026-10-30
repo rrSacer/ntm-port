@@ -420,7 +420,7 @@ impl Crafter {
         for (k, (i, n, chance)) in r.items_out.iter().enumerate() {
             // `ChanceOutput`: a fixed hash of (recipes done, output) instead
             // of the world's random.
-            let roll = ntm_explosion::crater::rand01(self.done as i32, k as i32, (self.done >> 31) as i32, 77);
+            let roll = crate::explosion::crater::rand01(self.done as i32, k as i32, (self.done >> 31) as i32, 77);
             if *chance >= 1.0 || roll < *chance {
                 add(&mut self.out, i, *n);
             }

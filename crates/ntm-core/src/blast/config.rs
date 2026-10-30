@@ -65,8 +65,8 @@ impl Default for Config {
             radiation: true,
             zone_peak: 10_000,
             zone_half_life: 12_000,
-            budget: ntm_explosion::DEFAULT_BUDGET,
-            max_radius: ntm_explosion::MAX_RADIUS,
+            budget: crate::explosion::DEFAULT_BUDGET,
+            max_radius: crate::explosion::MAX_RADIUS,
             fuel: 22,
         }
     }
@@ -101,7 +101,7 @@ impl Config {
             "meiavida" | "meia-vida" => self.zone_half_life = num(value)?.clamp(20, 10_000_000) as u64,
             "orcamento" | "orçamento" => self.budget = num(value)?.clamp(256, 60_000) as usize,
             "fuel" | "combustivel" => self.fuel = num(value)?.clamp(4, 34) as u32,
-            "raio" | "raiomax" => self.max_radius = num(value)?.clamp(1, i64::from(ntm_explosion::MAX_RADIUS)) as i32,
+            "raio" | "raiomax" => self.max_radius = num(value)?.clamp(1, i64::from(crate::explosion::MAX_RADIUS)) as i32,
             _ => return Err(format!("chave desconhecida {key}: modo fallout efeitos particulas dano radiacao zona meiavida orcamento raiomax fuel")),
         }
         Ok(())

@@ -5,12 +5,12 @@
 
 | Peça | Onde |
 | --- | --- |
-| Motor de explosão (cratera, fallout 2,5R, energia esparsa, persistência) | `crates/ntm-explosion` (ver também [explosoes.md](explosoes.md)) |
+| Motor de explosão (cratera, fallout 2,5R, energia esparsa, persistência) | `crates/ntm-core/src/explosion` (ver também [explosoes.md](explosoes.md)) |
 | Catálogo de bombas e a bomba como máquina (componentes, tela) | `crates/ntm-core/src/bomb.rs` |
 | Explosão convencional (vanilla), efeitos, config de dois modos, zonas de radiação | `crates/ntm-core/src/blast/` |
 | Gatilhos, detonação, dano, radiação, `/ntmbomba` (servidor) | `crates/ntm-core/src/server/bomb_server.rs` |
 | Detonador (cliente) | `Client::detonator` + `mods/ntm-logic-client/src/lib.rs` |
-| Testes no mundo falso | `crates/ntm-core/src/server/tests/bomb_tests.rs`, `crates/ntm-explosion/tests/fallout.rs` |
+| Testes no mundo falso | `crates/ntm-core/src/server/tests/bomb_tests.rs`, `crates/ntm-core/tests/explosion_fallout.rs` |
 | Medição de fuel | `spikes/m2-fuel/` (`run.sh`, `results.txt`) |
 
 Mudanças em arquivos compartilhados, todas pequenas:
@@ -129,7 +129,7 @@ antes disso, ela é entregue de novo, sem repetir efeitos.
 
 ## Explosões
 
-Nukes usam o motor do `ntm-explosion`, uma por mundo: o id é `w<mundo>n<n>`,
+Nukes usam o motor do `ntm_core::explosion`, uma por mundo: o id é `w<mundo>n<n>`,
 retomado só no mundo certo (`resume_matching`), e as chaves `nx.*` ficam na
 mesma pasta do ntmlogic. Ao sair do mundo, as explosões ficam no storage e
 continuam quando ele voltar.
@@ -141,7 +141,7 @@ inteira), areia 5% `ntm:waste_trinitite`, troncos `ntm:waste_log`, tábuas
 
 ### Fallout de 2,5R
 
-`crates/ntm-explosion/src/fallout.rs` (desenho em explosoes.md §8), segunda
+`crates/ntm-core/src/explosion/fallout.rs` (desenho em explosoes.md §8), segunda
 fase da mesma explosão, depois das bordas:
 
 - Colunas em anéis de R a 2,5R; cada coluna começa a busca do topo em
@@ -181,7 +181,7 @@ coluna, só as bordas expostas, e a espiral gerada anel a anel. Resultado
 | 250 | 8,8 MB | 119,6 MB | 4.713 | 837 |
 | 500 | 25,5 MB | 600,3 MB | 9.410 | 4.604 |
 
-(`cargo run --release -p ntm-explosion --example big -- 150 175 250 500`,
+(`cargo run --release -p ntm-core --example explosion_big -- 150 175 250 500`,
 terreno sintético, nativo.) O teto de um mod é 64 MB.
 
 **Persistência leve para R > 150:** o diário de R=500 passaria de 10 MB (a pasta
@@ -306,7 +306,7 @@ Medição final (orçamento 22 M, fallout ligado, diário ligado):
 ### Pool allocator: antes e depois
 
 Instalado no `ntmlogic-server` (`#[global_allocator]`, só em wasm32;
-`ntm_core::Pool` reexporta `ntm_explosion::pool::Pool`). Ganhos medidos na
+`ntm_core::Pool` reexporta `ntm_core::explosion::pool::Pool`). Ganhos medidos na
 tabela acima: 16–27% por operação, ~12% no motor e −12% a −17% no pior tick.
 O ganho é menor que o das rampas do S7 (≥ 4,3×) porque, no ntmlogic, o custo
 dominante passou a ser o `BlockState::parse` (~3 k fuel por estado), não o
@@ -325,7 +325,7 @@ da carga, os tempos sim.
 ## Verificação
 
 `cargo test --workspace` (134 testes: 115 do `ntm-core`, 19 do
-`ntm-explosion`) e `cargo clippy --workspace --all-targets -- -D warnings`
+`ntm_core::explosion`) e `cargo clippy --workspace --all-targets -- -D warnings`
 limpos. Testes novos:
 
 | Teste | O quê |
@@ -338,7 +338,7 @@ limpos. Testes novos:
 | `…breaking_a_bomb_gives_its_components_back_once` | quebrar solta os componentes uma vez |
 | `…an_explosion_resumes_after_a_restart` | reinício com a explosão no meio: retoma e termina |
 | `…settings_are_global_or_per_world_and_enhanced_falls_back` | config global/mundo, `limpar`, valor inválido, aprimorado cai no otimizado |
-| `ntm-explosion` `fallout.rs` (5) | regras e limites por distância, retomada no meio do fallout com rollback, chunk pendente até um jogador chegar (e após reinício), persistência leve, cratera esperando chunk sem segurar fallout nem a fila |
+| `ntm_core::explosion` `fallout.rs` (5) | regras e limites por distância, retomada no meio do fallout com rollback, chunk pendente até um jogador chegar (e após reinício), persistência leve, cratera esperando chunk sem segurar fallout nem a fila |
 | `fallout::tests::rings_cover_the_annulus_once` | anéis cobrem o anel uma vez |
 | `engine.rs` (10, antigos) | inalterados, passam com o plano esparso |
 | `registry::tests` | bombas de `ids.json` = `BLOCKS`, template `redstone_lamp`, `lit`, componentes e detonador existem |
@@ -346,7 +346,7 @@ limpos. Testes novos:
 ## Revisão do M2 (segunda, independente)
 
 Cada achado tem um teste que falhava no código entregue no M2 e passa
-agora. Os do motor estão em `crates/ntm-explosion/tests/review.rs`; os do
+agora. Os do motor estão em `crates/ntm-core/tests/explosion_review.rs`; os do
 servidor, em `crates/ntm-core/src/server/tests/review_m2_tests.rs`.
 
 | Achado | Correção | Teste |

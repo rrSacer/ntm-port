@@ -9,7 +9,7 @@
 //! ```ignore
 //! // No server mod:
 //! #[global_allocator]
-//! static A: ntm_explosion::pool::Pool = ntm_explosion::pool::Pool::new();
+//! static A: ntm_core::explosion::pool::Pool = ntm_core::explosion::pool::Pool::new();
 //!
 //! let mut ex = Explosions::new();
 //! ex.resume(&mut store, 0, &mut NoHooks);          // em init: retoma após reinício

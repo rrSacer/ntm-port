@@ -25,7 +25,7 @@ use serde::{Deserialize, Serialize};
 pub enum Blast {
     /// Vanilla's explosion (`world.createExplosion`) of this strength.
     Conventional { power: f32 },
-    /// `EntityNukeExplosionMK5`: the crater engine (`ntm-explosion`) of this
+    /// `EntityNukeExplosionMK5`: the crater engine (`crate::explosion`) of this
     /// radius; `fallout` adds the 2.5R fallout and the area radiation
     /// (`statFacNoRad` turns both off: the N2).
     Nuke { radius: i32, fallout: bool },

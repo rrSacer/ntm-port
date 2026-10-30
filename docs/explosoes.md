@@ -59,7 +59,7 @@ O alocador padrão (dlmalloc) é o grosso do custo, porque cada string devolvida
 - Escrever às cegas a esfera inteira em 60 mil blocos/tick **derruba o TPS** (8,7 em r=100). Com o motor deste spike (≤ 8192 escritas/tick, fuel controlado) o TPS fica ≥ 19,8 em todos os raios.
 - O cliente recebe as mudanças por seção e por tick, e o relight acontece no próprio cliente (veja a seção 5).
 
-## 3. O motor de explosão (hoje em `crates/ntm-explosion`, seção 6)
+## 3. O motor de explosão (hoje em `crates/ntm-core/src/explosion`, seção 6)
 
 ```mermaid
 flowchart LR
@@ -158,7 +158,7 @@ No meio da bacia da vista aérea aparece um disco cor de céu. Foi investigado (
 
 A câmera estava a 130 blocos na horizontal e em y=210; o fundo da bacia (y≈38) fica a ~215 blocos em 3D, além do fim da neblina esférica de render distance 10 (160 blocos), e é pintado na cor do céu. A borda da cratera, mais alta e mais perto, ainda aparece. É o comportamento normal da neblina, **nem do Horizon nem do motor**: com render distance maior, ou de mais perto, a bacia aparece.
 
-## 6. O crate `crates/ntm-explosion`
+## 6. O módulo `crates/ntm-core/src/explosion`
 
 O motor saiu do spike para um crate reutilizável **sem dependência do SDK**. O mod implementa três traits pequenas, e o crate compila nativo (testes) e em WebAssembly. É membro do workspace da raiz (`cargo test --workspace` e `cargo clippy --workspace --all-targets -- -D warnings` limpos). O `spikes/s7/nuke-mod` virou só o adaptador (~200 linhas) e foi o que rodou nos testes no jogo abaixo.
 
@@ -166,11 +166,11 @@ O motor saiu do spike para um crate reutilizável **sem dependência do SDK**. O
 // No server mod (api 0.3, capabilities world + players + storage):
 #[cfg(target_arch = "wasm32")]
 #[global_allocator]
-static A: ntm_explosion::pool::Pool = ntm_explosion::pool::Pool::new();
+static A: ntm_core::explosion::pool::Pool = ntm_core::explosion::pool::Pool::new();
 
-impl ntm_explosion::World for Hz { /* block, set_blocks (≤ 4096), viewers */ }
-impl ntm_explosion::Store for Hz { /* storage::get/set/delete */ }
-impl ntm_explosion::Hooks for Hz { /* edge(...) opcional; event(...) */ }
+impl ntm_core::explosion::World for Hz { /* block, set_blocks (≤ 4096), viewers */ }
+impl ntm_core::explosion::Store for Hz { /* storage::get/set/delete */ }
+impl ntm_core::explosion::Hooks for Hz { /* edge(...) opcional; event(...) */ }
 
 let mut nukes = Explosions::new();
 nukes.resume(&mut Hz, 0, &mut Hz);                    // no init: retoma após reinício
@@ -190,7 +190,7 @@ nukes.progress("boy1");  nukes.active();  nukes.cancel("boy1", &mut Hz);
 | Persistência | `src/persist.rs` | Diário por coluna + anel de energia (seção 7) |
 | Alocador | `src/pool.rs` | `Pool::new()` para `#[global_allocator]` (só alvo de uma thread) |
 | Testes | `tests/` | 27 testes: forma contra o NTM, determinismo por passos, orçamento por tick e por chamada, mundo final = plano, chunks descarregados, retomada (a cada 3 ticks de uma explosão R=40 e em pontos extras, com e sem o mundo voltar ao estado anterior, com chunks atrasados), limites de storage em R=150, cancelamento, perfil, pool; e os 8 da revisão do M2 (`tests/review.rs`, seção 11) |
-| Benchmark | `examples/compare.rs` | `cargo run --release --example compare -- 25 50 100 150` |
+| Benchmark | `crates/ntm-core/examples/explosion_compare.rs` | `cargo run --release -p ntm-core --example explosion_compare -- 25 50 100 150` |
 
 Uma explosão por vez recebe o tick (o fuel é dela); as outras esperam na fila. O plano de uma detonação nova ou retomada é montado num tick só para ele, um por tick (R=500 custa ~21 M de fuel), e o estado inicial é gravado nesse tick. Os ids viram prefixo de chave no storage (`nx.<id>.*`), por isso usam só `[a-z0-9_-]`, até 40 caracteres.
 
@@ -235,7 +235,7 @@ A primeira versão retomava e varria **antes** de os chunks carregarem: 400 mil 
 
 ## 8. Fallout de 2,5R (implementado no M2)
 
-**Estado (2026-10-29):** implementado em `crates/ntm-explosion/src/fallout.rs`, com as diferenças descritas em [bombas.md](bombas.md#fallout-de-25r). O texto abaixo é o desenho original.
+**Estado (2026-10-29):** implementado em `crates/ntm-core/src/explosion/fallout.rs`, com as diferenças descritas em [bombas.md](bombas.md#fallout-de-25r). O texto abaixo é o desenho original.
 
 
 **O que o NTM faz** (`EntityFalloutRain`, FalloutRain:57-220; regras em `FalloutConfigJSON` 54-120):
@@ -313,7 +313,7 @@ O custo é o `dlmalloc`, porque cada string que o host devolve é alocada no gue
 // threads; o pool não tem trava.
 #[cfg(target_arch = "wasm32")]
 #[global_allocator]
-static ALLOC: ntm_explosion::pool::Pool = ntm_explosion::pool::Pool::new();
+static ALLOC: ntm_core::explosion::pool::Pool = ntm_core::explosion::pool::Pool::new();
 ```
 
 Como alternativa, o `pool.rs` (~70 linhas, sem dependências) pode ir para o `ntm-core` e ser compartilhado.
@@ -380,7 +380,7 @@ gravação, e respeita a parte do storage que o mod dá às explosões
 
 | Arquivo | O que é |
 |---|---|
-| `crates/ntm-explosion/` | O motor (seção 6) |
+| `crates/ntm-core/src/explosion/` | O motor (seção 6) |
 | `spikes/s7/nuke-mod/` | Server mod adaptador: `/ntmnuke <raio> [orcamento]`, `/ntmnukestatus`, `/ntmnukecancel <id>`, gatilho de teste por storage, retomada no `init`; `bench.rs` com os modos de medição brutos |
 | `spikes/s7/old-engine/` | O motor como estava dentro do spike (histórico) |
 | `spikes/s7/bench-native/` | Comparação com o algoritmo do NTM (versão do spike; a atual é o exemplo do crate) |

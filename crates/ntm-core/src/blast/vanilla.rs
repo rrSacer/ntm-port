@@ -7,7 +7,7 @@
 //! the random is a hash of the position (deterministic), and no drops.
 
 use crate::Pos;
-use ntm_explosion::crater::{Kind, Mats, classify, rand01};
+use crate::explosion::crater::{Kind, Mats, classify, rand01};
 
 /// Explosion resistance as vanilla has it: the crater's table, but liquids
 /// stop rays (water 100) and obsidian really resists (1200).

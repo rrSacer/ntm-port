@@ -353,7 +353,7 @@ pub struct Plan {
     costs: Vec<Vec<f32>>,
     /// Diário (persistência): com `Some`, cada coluna terminada é anexada
     /// como registro (ver `persist.rs`); o motor esvazia a cada tick.
-    pub journal: Option<crate::persist::Journal>,
+    pub journal: Option<crate::explosion::persist::Journal>,
     col_edges: usize,
     /// Voxels do fundo da coluna em curso pulados pela poda (energia 0, nada removido).
     col_dead: usize,
@@ -1065,7 +1065,7 @@ impl Plan {
         self.set_alive(ci, self.cur_alive);
         if self.journal.is_some() {
             let mut j = self.journal.take().unwrap();
-            crate::persist::encode_column(self, ci, self.col_edges, self.col_dead, main, &mut j);
+            crate::explosion::persist::encode_column(self, ci, self.col_edges, self.col_dead, main, &mut j);
             self.journal = Some(j);
             self.extra += (len - self.col_dead) as u64 * 48;
         }

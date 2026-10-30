@@ -1,7 +1,7 @@
 mod common;
 use common::*;
-use ntm_explosion::{Detonation, EffectProfile, Event, Explosions, Hooks, Phase, Plan};
-use ntm_explosion::persist::Store;
+use ntm_core::explosion::{Detonation, EffectProfile, Event, Explosions, Hooks, Phase, Plan};
+use ntm_core::explosion::persist::Store;
 use std::collections::HashSet;
 
 const DIM: &str = "minecraft:overworld";

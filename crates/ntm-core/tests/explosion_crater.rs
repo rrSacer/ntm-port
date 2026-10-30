@@ -1,6 +1,6 @@
 mod common;
 use common::*;
-use ntm_explosion::Plan;
+use ntm_core::explosion::Plan;
 use std::collections::HashSet;
 
 fn ours(r: i32) -> (HashSet<[i32; 3]>, Plan) {

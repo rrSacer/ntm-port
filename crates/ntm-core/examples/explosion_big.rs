@@ -2,8 +2,8 @@
 //! uso: cargo run --release --example big -- 150 175 250 500
 //! Passos do tamanho do tick (34 M de fuel estimado): mede o pico de memória
 //! do plano, os buffers de energia vivos e quantos "ticks" a varredura leva.
-use ntm_explosion::crater::{Plan, rand01};
-use ntm_explosion::engine::FUEL_PLAN;
+use ntm_core::explosion::crater::{Plan, rand01};
+use ntm_core::explosion::engine::FUEL_PLAN;
 use std::time::Instant;
 
 fn surface(x: i32, z: i32) -> i32 {

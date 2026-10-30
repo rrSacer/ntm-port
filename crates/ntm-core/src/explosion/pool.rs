@@ -2,7 +2,7 @@
 //!
 //! ```ignore
 //! #[global_allocator]
-//! static A: ntm_explosion::pool::Pool = ntm_explosion::pool::Pool::new();
+//! static A: ntm_core::explosion::pool::Pool = ntm_core::explosion::pool::Pool::new();
 //! ```
 //!
 //! Cada `world.get-block` devolve uma string que o host aloca no guest via

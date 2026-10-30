@@ -5,7 +5,7 @@
 //! bordas saem de graça da varredura (nenhuma leitura extra), em ordem do
 //! centro para fora. Regras padrão: `FalloutConfigJSON` do NTM (linhas 54-120)
 //! e `EntityFalloutRain.stomp` (fogo 1/5 até 65% do raio, linhas 182-185).
-use crate::crater::{Kind, rand01};
+use crate::explosion::crater::{Kind, rand01};
 
 /// Uma borda exposta, para o perfil ou para um gancho.
 #[derive(Clone, Copy, Debug)]
@@ -39,7 +39,7 @@ pub struct EffectProfile {
     /// Fogo acima de madeira exposta: (chance, até f, bloco).
     pub fire: Option<(f32, f32, String)>,
     /// Segunda fase: fallout até `scale`·R (None: só a cratera).
-    pub fallout: Option<crate::fallout::FalloutProfile>,
+    pub fallout: Option<crate::explosion::fallout::FalloutProfile>,
 }
 
 impl EffectProfile {
@@ -58,7 +58,7 @@ impl EffectProfile {
             planks: Some("minecraft:dark_oak_planks".into()),
             foliage: Some("minecraft:air".into()),
             fire: Some((0.2, 0.65, "minecraft:fire".into())),
-            fallout: Some(crate::fallout::FalloutProfile::ntm_placeholder()),
+            fallout: Some(crate::explosion::fallout::FalloutProfile::ntm_placeholder()),
         }
     }
 
@@ -154,7 +154,7 @@ impl EffectProfile {
             foliage: opt(p[5]),
             fire,
             fallout: match p.get(7) {
-                Some(f) => Some(crate::fallout::FalloutProfile::decode(f)?),
+                Some(f) => Some(crate::explosion::fallout::FalloutProfile::decode(f)?),
                 None => None,
             },
         })

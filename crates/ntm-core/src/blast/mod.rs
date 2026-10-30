@@ -1,5 +1,5 @@
 //! Explosions of the NTM's bombs on the server (docs/bombas.md): the crater
-//! engine (`ntm-explosion`) per world, vanilla's explosion for charges, the
+//! engine (`crate::explosion`) per world, vanilla's explosion for charges, the
 //! effects as vanilla commands, blast damage, and the radiation a nuke
 //! leaves (a pulse at the blast, then an area that decays).
 
@@ -124,7 +124,7 @@ pub const PULSE_MAX: f64 = 250.0;
 /// The bombs' state on the server that isn't saved with the world.
 #[derive(Default)]
 pub struct Runtime {
-    pub nukes: ntm_explosion::Explosions,
+    pub nukes: crate::explosion::Explosions,
     /// The world whose explosions are in `nukes`.
     pub wid: Option<String>,
     /// The `lit` each bomb showed last (redstone sets bombs off on its
@@ -145,12 +145,12 @@ pub struct Runtime {
     pub entered: BTreeMap<String, u64>,
 }
 
-/// What an explosion's engine tells (`ntm_explosion::Hooks`).
+/// What an explosion's engine tells (`crate::explosion::Hooks`).
 #[derive(Default)]
-pub struct Recorder(pub Vec<(String, ntm_explosion::Event)>);
+pub struct Recorder(pub Vec<(String, crate::explosion::Event)>);
 
-impl ntm_explosion::Hooks for Recorder {
-    fn event(&mut self, id: &str, e: &ntm_explosion::Event) {
+impl crate::explosion::Hooks for Recorder {
+    fn event(&mut self, id: &str, e: &crate::explosion::Event) {
         self.0.push((id.to_string(), e.clone()));
     }
 }
@@ -160,9 +160,9 @@ pub const FALLOUT_LAYER: &str = "ntm:fallout[layers=1]";
 
 /// The crater's and the fallout's blocks for a blast, with the content
 /// mod's waste blocks (`ids.json`, category `fallout`).
-pub fn profile(blast: crate::bomb::Blast, fallout: bool) -> ntm_explosion::EffectProfile {
+pub fn profile(blast: crate::bomb::Blast, fallout: bool) -> crate::explosion::EffectProfile {
     use crate::bomb::Blast;
-    use ntm_explosion::{EffectProfile, FalloutProfile};
+    use crate::explosion::{EffectProfile, FalloutProfile};
     match blast {
         // statFacNoRad: no fallout rain, so no slag either.
         Blast::Nuke { fallout: false, .. } | Blast::Conventional { .. } => EffectProfile::none(),

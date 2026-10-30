@@ -8,4 +8,7 @@ license.workspace = true
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
-ntm-explosion.workspace = true
+
+[features]
+# Fuel marks for the harness (spikes/m2-fuel): imports `host.trace`.
+trace = []

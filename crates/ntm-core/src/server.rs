@@ -1956,5 +1956,5 @@ mod tests;
 
 /// A fuel mark for the harness of `spikes/m2-fuel` (nothing in the mod).
 pub(super) fn trace(id: u32) {
-    ntm_explosion::trace(100 + id);
+    crate::explosion::trace(100 + id);
 }

@@ -19,6 +19,7 @@ pub mod coker;
 pub mod crafter;
 pub mod electrolyser;
 pub mod energy;
+pub mod explosion;
 pub mod excavator;
 pub mod fluid;
 pub mod fluidbox;
@@ -50,7 +51,7 @@ pub mod worldid;
 
 /// The pool allocator of the explosion engine, for the server mod's
 /// `#[global_allocator]` (single-threaded WebAssembly only).
-pub use ntm_explosion::pool::Pool;
+pub use crate::explosion::pool::Pool;
 
 /// A block position.
 pub type Pos = [i32; 3];

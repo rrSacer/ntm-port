@@ -209,7 +209,7 @@ impl Drill {
     /// A draw in [0, 1), from its own count (no world random).
     pub fn roll(&mut self) -> f64 {
         self.rolls += 1;
-        f64::from(ntm_explosion::crater::rand01(self.rolls as i32, (self.rolls >> 31) as i32, self.shape as i32, 31))
+        f64::from(crate::explosion::crater::rand01(self.rolls as i32, (self.rolls >> 31) as i32, self.shape as i32, 31))
     }
 
     /// `onSuck` from `block`: its oil and gas; true when the deposit

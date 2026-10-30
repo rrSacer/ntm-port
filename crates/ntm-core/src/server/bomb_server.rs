@@ -17,11 +17,11 @@ struct Engine<'a, H: ServerHost> {
     players: &'a [PlayerInfo],
 }
 
-impl<H: ServerHost> ntm_explosion::World for &Engine<'_, H> {
+impl<H: ServerHost> crate::explosion::World for &Engine<'_, H> {
     fn block(&mut self, dim: &str, x: i32, y: i32, z: i32) -> Option<String> {
         self.host.borrow_mut().get_block(dim, [x, y, z])
     }
-    fn set_blocks(&mut self, dim: &str, changes: Vec<ntm_explosion::Change>) -> Result<(), String> {
+    fn set_blocks(&mut self, dim: &str, changes: Vec<crate::explosion::Change>) -> Result<(), String> {
         let blocks: Vec<(Pos, String)> = changes.into_iter().map(|c| ([c.x, c.y, c.z], c.state)).collect();
         self.host.borrow_mut().set_blocks(dim, &blocks)
     }
@@ -30,7 +30,7 @@ impl<H: ServerHost> ntm_explosion::World for &Engine<'_, H> {
     }
 }
 
-impl<H: ServerHost> ntm_explosion::Store for &Engine<'_, H> {
+impl<H: ServerHost> crate::explosion::Store for &Engine<'_, H> {
     fn get(&mut self, key: &str) -> Option<Vec<u8>> {
         self.host.borrow_mut().get(key)
     }
@@ -152,10 +152,10 @@ impl Server {
         }
         for (id, e) in rec.0 {
             match e {
-                ntm_explosion::Event::CraterDone { tick } => host.log(&format!("{id}: crater done after {tick} ticks")),
-                ntm_explosion::Event::FalloutStart { tick } => host.log(&format!("{id}: fallout starts after {tick} ticks")),
-                ntm_explosion::Event::ResumeFailed { reason } => host.log(&format!("{id}: not resumed ({reason}); its keys were removed")),
-                ntm_explosion::Event::PersistFailed { reason } => {
+                crate::explosion::Event::CraterDone { tick } => host.log(&format!("{id}: crater done after {tick} ticks")),
+                crate::explosion::Event::FalloutStart { tick } => host.log(&format!("{id}: fallout starts after {tick} ticks")),
+                crate::explosion::Event::ResumeFailed { reason } => host.log(&format!("{id}: not resumed ({reason}); its keys were removed")),
+                crate::explosion::Event::PersistFailed { reason } => {
                     host.log(&format!("{id}: explosion not saved: {reason}"));
                     if !self.blasts.warned_persist {
                         self.blasts.warned_persist = true;
@@ -233,12 +233,12 @@ impl Server {
     /// What the explosions may keep in the folder: what the worlds' saves
     /// leave, with room for them to grow (one save more), and what a hook
     /// call may write after the worst save (revisão do M2, P2-11).
-    fn explosion_limits(&self) -> ntm_explosion::engine::Limits {
+    fn explosion_limits(&self) -> crate::explosion::engine::Limits {
         let (core, keys) = self.worlds.usage();
         let largest = self.worlds.worlds.values().map(|w| w.bytes).max().unwrap_or(0).max(16 << 10);
         let save = persist::MAX_SAVE as u64;
         let call = 1u64 << 20;
-        ntm_explosion::engine::Limits {
+        crate::explosion::engine::Limits {
             tick_bytes: call.saturating_sub(3 * largest + crate::proto::MAX_ENVELOPE as u64 + (64 << 10)).max(32 << 10),
             total_bytes: persist::QUOTA.saturating_sub(core + save),
             keys: persist::MAX_KEYS.saturating_sub(keys + 4),
@@ -351,7 +351,7 @@ impl Server {
             Blast::Balefire { radius } => (radius.min(cfg.max_radius), false),
             Blast::Conventional { .. } => return,
         };
-        let mut det = ntm_explosion::Detonation::new(id, q.dim.clone(), q.pos, radius);
+        let mut det = crate::explosion::Detonation::new(id, q.dim.clone(), q.pos, radius);
         det.budget = cfg.budget;
         det.profile = blast::profile(q.blast, fallout && cfg.fallout);
         match self.blasts.nukes.detonate(det, self.tick) {
@@ -400,7 +400,7 @@ impl Server {
                 }
                 let (cells, reads) = vanilla::explode(c, power, &mut |p| host.get_block(&dim, p));
                 let writes: Vec<(Pos, String)> = cells.iter().map(|p| (*p, "minecraft:air".to_string())).collect();
-                for chunk in writes.chunks(ntm_explosion::BLOCKS_PER_CALL) {
+                for chunk in writes.chunks(crate::explosion::BLOCKS_PER_CALL) {
                     if let Err(e) = host.set_blocks(&dim, chunk) {
                         host.log(&format!("charge: {e}"));
                     }
@@ -670,7 +670,7 @@ impl Server {
                 let radius: i32 = r.parse().map_err(|e| format!("{r}: {e}"))?;
                 // Range first: nothing is spent or allocated for a bad one
                 // (revisão do M2, P1-13).
-                let max = if kind == ["forca"] { vanilla::MAX_POWER as i32 } else { ntm_explosion::MAX_RADIUS };
+                let max = if kind == ["forca"] { vanilla::MAX_POWER as i32 } else { crate::explosion::MAX_RADIUS };
                 if !(1..=max).contains(&radius) {
                     return Err(format!("{radius} fora de 1..={max}"));
                 }

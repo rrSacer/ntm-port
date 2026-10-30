@@ -2,8 +2,8 @@
 //! §11): cada teste aqui falhava antes da correção.
 mod common;
 use common::*;
-use ntm_explosion::fallout::{self, FalloutProfile, Sweep};
-use ntm_explosion::{Detonation, Event, Explosions, Hooks, Phase};
+use ntm_core::explosion::fallout::{self, FalloutProfile, Sweep};
+use ntm_core::explosion::{Detonation, Event, Explosions, Hooks, Phase};
 use std::cell::Cell;
 use std::collections::{HashMap, HashSet};
 use std::panic::{AssertUnwindSafe, catch_unwind};

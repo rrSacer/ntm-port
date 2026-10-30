@@ -1,6 +1,6 @@
 //! Mundo e storage falsos para testar o motor sem o jogo.
 #![allow(dead_code)]
-use ntm_explosion::{Change, Store, World, crater::{Kind, classify, rand01}};
+use ntm_core::explosion::{Change, Store, World, crater::{Kind, classify, rand01}};
 use std::collections::{HashMap, HashSet};
 
 /// Terreno sintético: colinas, grama/terra/pedra/deepslate/bedrock, água
