@@ -1,0 +1,248 @@
+{
+  "texture": "ntm:textures/gui/reactors/gui_pwr.png",
+  "size": [
+    176,
+    188
+  ],
+  "title": false,
+  "inventory_label": [
+    8,
+    94
+  ],
+  "bars": [
+    {
+      "value": 4,
+      "max": 5,
+      "rect": [
+        54,
+        33,
+        33,
+        14
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 6,
+      "max_value": 100,
+      "rect": [
+        53,
+        54,
+        52,
+        2
+      ],
+      "uv": [
+        176,
+        40
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 8,
+      "max": 9,
+      "rect": [
+        8,
+        5,
+        16,
+        52
+      ],
+      "color": 10,
+      "dir": "up"
+    },
+    {
+      "value": 11,
+      "max": 12,
+      "rect": [
+        26,
+        5,
+        16,
+        52
+      ],
+      "color": 13,
+      "dir": "up"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 7,
+      "min": 1,
+      "rect": [
+        147,
+        0,
+        26,
+        26
+      ],
+      "uv": [
+        176,
+        14
+      ]
+    }
+  ],
+  "gauges": [
+    {
+      "value": 0,
+      "max": 1,
+      "at": [
+        124,
+        40
+      ],
+      "tip": 5,
+      "back": 2,
+      "side": 1,
+      "color": "#7f0000"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "at": [
+        160,
+        40
+      ],
+      "tip": 5,
+      "back": 2,
+      "side": 1,
+      "color": "#7f0000"
+    }
+  ],
+  "texts": [
+    {
+      "at": [
+        165,
+        64
+      ],
+      "text": "{14}",
+      "color": "#00ff00",
+      "align": "right"
+    },
+    {
+      "at": [
+        57,
+        63
+      ],
+      "text": "{15}",
+      "color": "#00ff00",
+      "align": "left"
+    },
+    {
+      "at": [
+        97,
+        14
+      ],
+      "text": "{16}/{17}",
+      "color": "#ffff55",
+      "align": "center",
+      "shadow": true
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        115,
+        31,
+        18,
+        18
+      ],
+      "lines": [
+        "Core: {0} / {1} TU"
+      ]
+    },
+    {
+      "rect": [
+        151,
+        31,
+        18,
+        18
+      ],
+      "lines": [
+        "Hull: {2} / {3} TU"
+      ]
+    },
+    {
+      "rect": [
+        52,
+        31,
+        36,
+        18
+      ],
+      "lines": [
+        "{4} / {5}"
+      ]
+    },
+    {
+      "rect": [
+        52,
+        53,
+        54,
+        4
+      ],
+      "lines": [
+        "Control rod level: {18}%"
+      ]
+    },
+    {
+      "rect": [
+        8,
+        5,
+        16,
+        52
+      ],
+      "lines": [
+        "{8} / {9} mB"
+      ]
+    },
+    {
+      "rect": [
+        26,
+        5,
+        16,
+        52
+      ],
+      "lines": [
+        "{11} / {12} mB"
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "shift": 2,
+      "rect": [
+        55,
+        61,
+        16,
+        11
+      ],
+      "lines": [
+        "-1 (shift: -10)"
+      ]
+    },
+    {
+      "id": 1,
+      "shift": 3,
+      "rect": [
+        71,
+        61,
+        16,
+        11
+      ],
+      "lines": [
+        "+1 (shift: +10)"
+      ]
+    },
+    {
+      "id": 4,
+      "rect": [
+        88,
+        58,
+        18,
+        18
+      ],
+      "lines": [
+        "Set control rods"
+      ]
+    }
+  ]
+}

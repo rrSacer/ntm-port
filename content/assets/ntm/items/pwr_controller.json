@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ntm:block/pwr_controller_0"
+    "model": "ntm:block/visual/pwr_controller"
   }
 }

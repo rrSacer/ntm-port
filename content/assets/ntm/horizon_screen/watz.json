@@ -1,0 +1,165 @@
+{
+  "texture": "ntm:textures/gui/reactors/gui_watz.png",
+  "size": [
+    176,
+    229
+  ],
+  "title": false,
+  "inventory_label": [
+    8,
+    136
+  ],
+  "bars": [
+    {
+      "value": 5,
+      "max": 6,
+      "rect": [
+        143,
+        26,
+        4,
+        43
+      ],
+      "color": 7,
+      "dir": "up"
+    },
+    {
+      "value": 8,
+      "max": 9,
+      "rect": [
+        149,
+        26,
+        4,
+        43
+      ],
+      "color": 10,
+      "dir": "up"
+    },
+    {
+      "value": 11,
+      "max": 12,
+      "rect": [
+        155,
+        26,
+        4,
+        43
+      ],
+      "color": 13,
+      "dir": "up"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 2,
+      "min": 1,
+      "rect": [
+        147,
+        8,
+        8,
+        8
+      ],
+      "uv": [
+        176,
+        0
+      ]
+    },
+    {
+      "value": 3,
+      "min": 1,
+      "rect": [
+        142,
+        70,
+        18,
+        18
+      ],
+      "uv": [
+        210,
+        0
+      ]
+    }
+  ],
+  "gauges": [
+    {
+      "value": 1,
+      "max_value": 1000,
+      "at": [
+        22,
+        109
+      ],
+      "tip": 5,
+      "back": 2,
+      "side": 1,
+      "color": "#7f0000"
+    }
+  ],
+  "texts": [
+    {
+      "at": [
+        161,
+        107
+      ],
+      "text": "{4}",
+      "color": "#00ff00",
+      "align": "right"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        13,
+        100,
+        18,
+        18
+      ],
+      "lines": [
+        "{0} TU"
+      ]
+    },
+    {
+      "rect": [
+        142,
+        23,
+        6,
+        45
+      ],
+      "lines": [
+        "{5} / {6} mB"
+      ]
+    },
+    {
+      "rect": [
+        148,
+        23,
+        6,
+        45
+      ],
+      "lines": [
+        "{8} / {9} mB"
+      ]
+    },
+    {
+      "rect": [
+        154,
+        23,
+        6,
+        45
+      ],
+      "lines": [
+        "{11} / {12} mB"
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "rect": [
+        142,
+        70,
+        18,
+        18
+      ],
+      "lines": [
+        "Lock pellet IO configuration"
+      ]
+    }
+  ]
+}

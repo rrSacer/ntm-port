@@ -31756,8 +31756,308 @@
       "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
     },
     "ntm:pwr_controller": {
-      "auto": false,
-      "source": "Reactor R3 (PWR) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "MachinePWRController (pwr_casing_blank, pwr_controller on the side it faces); ContainerPWR (3 slots), GUIPWR 176x188 (reactors/gui_pwr.png): core and hull gauges, progress and control rod bars, the two coolant tanks, the heat warning, flux in green; its text field as -/+ buttons and the apply button; the loaded fuel item as an amount/count text",
+      "block_model": {
+        "textures": {
+          "front": "pwr_controller",
+          "side": "pwr_casing_blank"
+        },
+        "particle": "side",
+        "facing": true,
+        "elements": [
+          [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              16,
+              16,
+              16
+            ],
+            {
+              "down": "side",
+              "up": "side",
+              "north": "front",
+              "south": "side",
+              "west": "side",
+              "east": "side"
+            }
+          ]
+        ]
+      },
+      "machine": {
+        "slots": [
+          {
+            "x": 53,
+            "y": 5
+          },
+          {
+            "x": 89,
+            "y": 32,
+            "output": true
+          },
+          {
+            "x": 8,
+            "y": 59
+          }
+        ],
+        "inventory": [
+          8,
+          106
+        ],
+        "data": 19
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/reactors/gui_pwr.png",
+        "texture_from": "textures/gui/reactors/gui_pwr.png",
+        "size": [
+          176,
+          188
+        ],
+        "title": false,
+        "inventory_label": [
+          8,
+          94
+        ],
+        "bars": [
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              54,
+              33,
+              33,
+              14
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 6,
+            "max_value": 100,
+            "rect": [
+              53,
+              54,
+              52,
+              2
+            ],
+            "uv": [
+              176,
+              40
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 8,
+            "max": 9,
+            "rect": [
+              8,
+              5,
+              16,
+              52
+            ],
+            "color": 10,
+            "dir": "up"
+          },
+          {
+            "value": 11,
+            "max": 12,
+            "rect": [
+              26,
+              5,
+              16,
+              52
+            ],
+            "color": 13,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 7,
+            "min": 1,
+            "rect": [
+              147,
+              0,
+              26,
+              26
+            ],
+            "uv": [
+              176,
+              14
+            ]
+          }
+        ],
+        "gauges": [
+          {
+            "value": 0,
+            "max": 1,
+            "at": [
+              124,
+              40
+            ],
+            "tip": 5,
+            "back": 2,
+            "side": 1,
+            "color": "#7f0000"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "at": [
+              160,
+              40
+            ],
+            "tip": 5,
+            "back": 2,
+            "side": 1,
+            "color": "#7f0000"
+          }
+        ],
+        "texts": [
+          {
+            "at": [
+              165,
+              64
+            ],
+            "text": "{14}",
+            "color": "#00ff00",
+            "align": "right"
+          },
+          {
+            "at": [
+              57,
+              63
+            ],
+            "text": "{15}",
+            "color": "#00ff00",
+            "align": "left"
+          },
+          {
+            "at": [
+              97,
+              14
+            ],
+            "text": "{16}/{17}",
+            "color": "#ffff55",
+            "align": "center",
+            "shadow": true
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              115,
+              31,
+              18,
+              18
+            ],
+            "lines": [
+              "Core: {0} / {1} TU"
+            ]
+          },
+          {
+            "rect": [
+              151,
+              31,
+              18,
+              18
+            ],
+            "lines": [
+              "Hull: {2} / {3} TU"
+            ]
+          },
+          {
+            "rect": [
+              52,
+              31,
+              36,
+              18
+            ],
+            "lines": [
+              "{4} / {5}"
+            ]
+          },
+          {
+            "rect": [
+              52,
+              53,
+              54,
+              4
+            ],
+            "lines": [
+              "Control rod level: {18}%"
+            ]
+          },
+          {
+            "rect": [
+              8,
+              5,
+              16,
+              52
+            ],
+            "lines": [
+              "{8} / {9} mB"
+            ]
+          },
+          {
+            "rect": [
+              26,
+              5,
+              16,
+              52
+            ],
+            "lines": [
+              "{11} / {12} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "shift": 2,
+            "rect": [
+              55,
+              61,
+              16,
+              11
+            ],
+            "lines": [
+              "-1 (shift: -10)"
+            ]
+          },
+          {
+            "id": 1,
+            "shift": 3,
+            "rect": [
+              71,
+              61,
+              16,
+              11
+            ],
+            "lines": [
+              "+1 (shift: +10)"
+            ]
+          },
+          {
+            "id": 4,
+            "rect": [
+              88,
+              58,
+              18,
+              18
+            ],
+            "lines": [
+              "Set control rods"
+            ]
+          }
+        ]
+      }
     },
     "ntm:pwr_block__internal": {
       "auto": false,
@@ -31768,16 +32068,3561 @@
       "source": "Reactor R3 (PWR) content fallback only; faithful models/multiblocks and native logic deferred."
     },
     "ntm:watz": {
-      "auto": false,
-      "source": "Reactor R4 (Watz) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "Watz {2,0,3,3,1,1} offset 3 and the four of getAllDimensions (a 7x3x7 octagon); RenderWatz (watz.obj, no turn); ContainerWatz (24 pellet slots), GUIWatz 176x229 (reactors/gui_watz.png drawn in pieces, its fixed sprites composed on; the heat tint of the left panel left out): heat gauge, on and lock lights, the three tanks, flux in green, lock button",
+      "machine": {
+        "slots": [
+          {
+            "x": 53,
+            "y": 8
+          },
+          {
+            "x": 71,
+            "y": 8
+          },
+          {
+            "x": 35,
+            "y": 26
+          },
+          {
+            "x": 53,
+            "y": 26
+          },
+          {
+            "x": 71,
+            "y": 26
+          },
+          {
+            "x": 89,
+            "y": 26
+          },
+          {
+            "x": 17,
+            "y": 44
+          },
+          {
+            "x": 35,
+            "y": 44
+          },
+          {
+            "x": 53,
+            "y": 44
+          },
+          {
+            "x": 71,
+            "y": 44
+          },
+          {
+            "x": 89,
+            "y": 44
+          },
+          {
+            "x": 107,
+            "y": 44
+          },
+          {
+            "x": 17,
+            "y": 62
+          },
+          {
+            "x": 35,
+            "y": 62
+          },
+          {
+            "x": 53,
+            "y": 62
+          },
+          {
+            "x": 71,
+            "y": 62
+          },
+          {
+            "x": 89,
+            "y": 62
+          },
+          {
+            "x": 107,
+            "y": 62
+          },
+          {
+            "x": 35,
+            "y": 80
+          },
+          {
+            "x": 53,
+            "y": 80
+          },
+          {
+            "x": 71,
+            "y": 80
+          },
+          {
+            "x": 89,
+            "y": 80
+          },
+          {
+            "x": 53,
+            "y": 98
+          },
+          {
+            "x": 71,
+            "y": 98
+          }
+        ],
+        "inventory": [
+          8,
+          147
+        ],
+        "data": 14,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -3
+          ],
+          "max": [
+            1,
+            2,
+            3
+          ],
+          "offset": 3,
+          "dummy": "ntm:dummy_machine",
+          "extra": [
+            {
+              "min": [
+                -2,
+                0,
+                -2
+              ],
+              "max": [
+                -2,
+                2,
+                2
+              ]
+            },
+            {
+              "min": [
+                2,
+                0,
+                -2
+              ],
+              "max": [
+                2,
+                2,
+                2
+              ]
+            },
+            {
+              "min": [
+                -3,
+                0,
+                -1
+              ],
+              "max": [
+                -3,
+                2,
+                1
+              ]
+            },
+            {
+              "min": [
+                3,
+                0,
+                -1
+              ],
+              "max": [
+                3,
+                2,
+                1
+              ]
+            }
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/reactors/gui_watz.png",
+        "texture_from": "textures/gui/reactors/gui_watz.png",
+        "size": [
+          176,
+          229
+        ],
+        "title": false,
+        "inventory_label": [
+          8,
+          136
+        ],
+        "keep": [
+          [
+            0,
+            0,
+            167,
+            122
+          ],
+          [
+            0,
+            130,
+            176,
+            99
+          ]
+        ],
+        "compose": [
+          {
+            "from": "textures/gui/reactors/gui_watz.png",
+            "src": [
+              176,
+              31,
+              9,
+              60
+            ],
+            "at": [
+              126,
+              31
+            ]
+          },
+          {
+            "from": "textures/gui/reactors/gui_watz.png",
+            "src": [
+              185,
+              26,
+              30,
+              26
+            ],
+            "at": [
+              105,
+              96
+            ]
+          },
+          {
+            "from": "textures/gui/reactors/gui_watz.png",
+            "src": [
+              184,
+              0,
+              26,
+              26
+            ],
+            "at": [
+              9,
+              96
+            ]
+          }
+        ],
+        "bars": [
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              143,
+              26,
+              4,
+              43
+            ],
+            "color": 7,
+            "dir": "up"
+          },
+          {
+            "value": 8,
+            "max": 9,
+            "rect": [
+              149,
+              26,
+              4,
+              43
+            ],
+            "color": 10,
+            "dir": "up"
+          },
+          {
+            "value": 11,
+            "max": 12,
+            "rect": [
+              155,
+              26,
+              4,
+              43
+            ],
+            "color": 13,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "rect": [
+              147,
+              8,
+              8,
+              8
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 3,
+            "min": 1,
+            "rect": [
+              142,
+              70,
+              18,
+              18
+            ],
+            "uv": [
+              210,
+              0
+            ]
+          }
+        ],
+        "gauges": [
+          {
+            "value": 1,
+            "max_value": 1000,
+            "at": [
+              22,
+              109
+            ],
+            "tip": 5,
+            "back": 2,
+            "side": 1,
+            "color": "#7f0000"
+          }
+        ],
+        "texts": [
+          {
+            "at": [
+              161,
+              107
+            ],
+            "text": "{4}",
+            "color": "#00ff00",
+            "align": "right"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              13,
+              100,
+              18,
+              18
+            ],
+            "lines": [
+              "{0} TU"
+            ]
+          },
+          {
+            "rect": [
+              142,
+              23,
+              6,
+              45
+            ],
+            "lines": [
+              "{5} / {6} mB"
+            ]
+          },
+          {
+            "rect": [
+              148,
+              23,
+              6,
+              45
+            ],
+            "lines": [
+              "{8} / {9} mB"
+            ]
+          },
+          {
+            "rect": [
+              154,
+              23,
+              6,
+              45
+            ],
+            "lines": [
+              "{11} / {12} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              142,
+              70,
+              18,
+              18
+            ],
+            "lines": [
+              "Lock pellet IO configuration"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/watz.obj",
+        "obj_from": "models/reactors/watz.obj",
+        "texture": "ntm:textures/models/machines/watz.png",
+        "texture_from": "textures/models/machines/watz.png",
+        "radius": 4.5
+      }
     },
     "ntm:watz_pump": {
-      "auto": false,
-      "source": "Reactor R4 (Watz) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "WatzPump {1,0,0,0,0,0} offset 0; RenderWatzPump (watz_pump.obj, no turn); no GUI",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            1,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/watz_pump.obj",
+        "obj_from": "models/machines/watz_pump.obj",
+        "texture": "ntm:textures/models/machines/watz_pump.png",
+        "texture_from": "textures/models/machines/watz_pump.png",
+        "radius": 2.5
+      }
     },
     "ntm:struct_watz_core": {
-      "auto": false,
-      "source": "Reactor R4 (Watz) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "BlockWatzStruct (a cube, light 15); RenderWatzMultiblock: the Watz's elements, coolers and bolted casings drawn as 5-pixel blocks where they go (SmallBlockPronter); no GUI",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0
+      },
+      "model": {
+        "obj": "ntm:models/obj/struct_watz_core.obj",
+        "texture": "ntm:textures/models/machines/struct_watz_core.png",
+        "radius": 4.5,
+        "sheet": {
+          "boxes": {
+            "core": [
+              [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  16,
+                  16,
+                  16
+                ],
+                {
+                  "up": "struct_watz_core",
+                  "down": "struct_watz_core",
+                  "north": "struct_watz_core",
+                  "south": "struct_watz_core",
+                  "west": "struct_watz_core",
+                  "east": "struct_watz_core"
+                },
+                0
+              ]
+            ],
+            "blueprint": [
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  0,
+                  1,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  0,
+                  2,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  1,
+                  0,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  2,
+                  0,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  0,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  0,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -1,
+                  0,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -2,
+                  0,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  0,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  0,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  1,
+                  0,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  1,
+                  0,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -1,
+                  0,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -1,
+                  0,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  2,
+                  0,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  2,
+                  0,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  1,
+                  0,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -1,
+                  0,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -2,
+                  0,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -2,
+                  0,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  1,
+                  0,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -1,
+                  0,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  3,
+                  0,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -1,
+                  0,
+                  3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -3,
+                  0,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -1,
+                  0,
+                  -3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  3,
+                  0,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  0,
+                  0,
+                  3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -3,
+                  0,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  0,
+                  0,
+                  -3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  3,
+                  0,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  1,
+                  0,
+                  3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -3,
+                  0,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  1,
+                  0,
+                  -3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  2,
+                  0,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  2,
+                  0,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -2,
+                  0,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -2,
+                  0,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  1,
+                  1,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  2,
+                  1,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  1,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  1,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -1,
+                  1,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -2,
+                  1,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  1,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  1,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  1,
+                  1,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  1,
+                  1,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -1,
+                  1,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -1,
+                  1,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  2,
+                  1,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  2,
+                  1,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  1,
+                  1,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -1,
+                  1,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -2,
+                  1,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -2,
+                  1,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  1,
+                  1,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -1,
+                  1,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  3,
+                  1,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -1,
+                  1,
+                  3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -3,
+                  1,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -1,
+                  1,
+                  -3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  3,
+                  1,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  0,
+                  1,
+                  3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -3,
+                  1,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  0,
+                  1,
+                  -3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  3,
+                  1,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  1,
+                  1,
+                  3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -3,
+                  1,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  1,
+                  1,
+                  -3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  2,
+                  1,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  2,
+                  1,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -2,
+                  1,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -2,
+                  1,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  1,
+                  2,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  2,
+                  2,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  2,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  2,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -1,
+                  2,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -2,
+                  2,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  2,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  0,
+                  2,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  1,
+                  2,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  1,
+                  2,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -1,
+                  2,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_element_top",
+                  "down": "watz_element_top",
+                  "north": "watz_element_side",
+                  "south": "watz_element_side",
+                  "west": "watz_element_side",
+                  "east": "watz_element_side"
+                },
+                [
+                  -1,
+                  2,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  2,
+                  2,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  2,
+                  2,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  1,
+                  2,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -1,
+                  2,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -2,
+                  2,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -2,
+                  2,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  1,
+                  2,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_cooler_top",
+                  "down": "watz_cooler_top",
+                  "north": "watz_cooler_side",
+                  "south": "watz_cooler_side",
+                  "west": "watz_cooler_side",
+                  "east": "watz_cooler_side"
+                },
+                [
+                  -1,
+                  2,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  3,
+                  2,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -1,
+                  2,
+                  3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -3,
+                  2,
+                  -1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -1,
+                  2,
+                  -3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  3,
+                  2,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  0,
+                  2,
+                  3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -3,
+                  2,
+                  0
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  0,
+                  2,
+                  -3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  3,
+                  2,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  1,
+                  2,
+                  3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -3,
+                  2,
+                  1
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  1,
+                  2,
+                  -3
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  2,
+                  2,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  2,
+                  2,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -2,
+                  2,
+                  2
+                ],
+                {
+                  "full": true
+                }
+              ],
+              [
+                [
+                  5.5,
+                  5.5,
+                  5.5
+                ],
+                [
+                  10.5,
+                  10.5,
+                  10.5
+                ],
+                {
+                  "up": "watz_casing_bolted",
+                  "down": "watz_casing_bolted",
+                  "north": "watz_casing_bolted",
+                  "south": "watz_casing_bolted",
+                  "west": "watz_casing_bolted",
+                  "east": "watz_casing_bolted"
+                },
+                [
+                  -2,
+                  2,
+                  -2
+                ],
+                {
+                  "full": true
+                }
+              ]
+            ]
+          }
+        }
+      }
     }
   },
   "textures": {
