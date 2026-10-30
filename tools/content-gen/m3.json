@@ -18969,6 +18969,186 @@
       "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption"
     },
     {
+      "id": "scrap_plastic__board_blank",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.BOARD_BLANK",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__board_transistor",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.BOARD_TRANSISTOR",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__board_converter",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.BOARD_CONVERTER",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__bridge_north",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.BRIDGE_NORTH",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__bridge_south",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.BRIDGE_SOUTH",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__bridge_io",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.BRIDGE_IO",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__bridge_bus",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.BRIDGE_BUS",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__bridge_chipset",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.BRIDGE_CHIPSET",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__bridge_cmos",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.BRIDGE_CMOS",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__bridge_bios",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 9,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.BRIDGE_BIOS",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__cpu_register",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 10,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.CPU_REGISTER",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__cpu_clock",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 11,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.CPU_CLOCK",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
       "id": "machine_crucible",
       "source_variable": "machine_crucible",
       "type": "block",
