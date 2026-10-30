@@ -141,6 +141,80 @@ def box_obj(src, model):
     return '\n'.join(lines) + '\n', sheet
 
 
+def sheet_obj(src, spec):
+    """`sheet`: a model built as HBM's RBMK renderers draw a column, cell by
+    cell: `boxes` ({bone: [[from, to, {face: texture}, lift], ...]}, as
+    `boxes` takes them, `lift` blocks up) and `parts` (objects of HBM's OBJs
+    drawn with a block icon, as ObjUtil.renderPartWithIcon does: {"obj",
+    "part", "texture", "bone", "lifts": [blocks...], "offset": [x, y, z]}),
+    their textures (under textures/blocks/, `.png` left out) side by side,
+    each scaled to the largest one's size. Returns the OBJ and the sheet."""
+    from PIL import Image
+    boxes = spec.get('boxes', {})
+    parts = spec.get('parts', [])
+    names = sorted({t for bs in boxes.values() for b in bs for t in b[2].values()}
+                   | {p['texture'] for p in parts})
+    # `#rrggbb`: a plain colour (what HBM draws untextured, the Cherenkov glow).
+    images = [Image.new('RGBA', (16, 16), n) if n.startswith('#') else
+              Image.open(src / f'textures/blocks/{n}.png').convert('RGBA') for n in names]
+    # An animated strip (a frame per square tile) keeps its first frame.
+    images = [im.crop((0, 0, im.width, im.width)) for im in images]
+    tile = max(im.width for im in images)
+    sheet = Image.new('RGBA', (tile * len(names), tile))
+    for i, im in enumerate(images):
+        sheet.paste(im.resize((tile, tile), Image.NEAREST), (tile * i, 0))
+    w = tile * len(names)
+    # Positions and UVs written once each (the rods' tinted copies share
+    # them), faces by index.
+    vs, ts, lines = {}, {}, []
+    def index(table, line):
+        return table.setdefault(line, len(table) + 1)
+    def corner(x, y, z, tex, u, v):
+        # u, v in pixels of a 16-pixel icon, v down; OBJ's v up.
+        i = index(vs, f'v {x:.6f} {y:.6f} {z:.6f}')
+        j = index(ts, f'vt {(tile * names.index(tex) + u * tile / 16) / w:.6f} {1 - v / 16:.6f}')
+        return f'{i}/{j}'
+    order = list(dict.fromkeys(list(boxes) + [p['bone'] for p in parts]))
+    for bone in order:
+        lines.append(f'o {bone}')
+        for (x0, y0, z0), (x1, y1, z1), faces, *lift in boxes.get(bone, []):
+            dy = 16 * (lift[0] if lift else 0)
+            quads = {
+                'up': ([(x0, y1, z0), (x0, y1, z1), (x1, y1, z1), (x1, y1, z0)], [(x0, z0), (x0, z1), (x1, z1), (x1, z0)]),
+                'down': ([(x0, y0, z0), (x1, y0, z0), (x1, y0, z1), (x0, y0, z1)], [(x0, z0), (x1, z0), (x1, z1), (x0, z1)]),
+                'north': ([(x1, y1, z0), (x1, y0, z0), (x0, y0, z0), (x0, y1, z0)], [(16 - x1, 16 - y1), (16 - x1, 16 - y0), (16 - x0, 16 - y0), (16 - x0, 16 - y1)]),
+                'south': ([(x0, y1, z1), (x0, y0, z1), (x1, y0, z1), (x1, y1, z1)], [(x0, 16 - y1), (x0, 16 - y0), (x1, 16 - y0), (x1, 16 - y1)]),
+                'west': ([(x0, y1, z0), (x0, y0, z0), (x0, y0, z1), (x0, y1, z1)], [(z0, 16 - y1), (z0, 16 - y0), (z1, 16 - y0), (z1, 16 - y1)]),
+                'east': ([(x1, y1, z1), (x1, y0, z1), (x1, y0, z0), (x1, y1, z0)], [(16 - z1, 16 - y1), (16 - z1, 16 - y0), (16 - z0, 16 - y0), (16 - z0, 16 - y1)]),
+            }
+            for face, tex in faces.items():
+                corners, uvs = quads[face]
+                lines.append('f ' + ' '.join(corner(x / 16 - 0.5, (y + dy) / 16, z / 16 - 0.5, tex, u, v)
+                                             for (x, y, z), (u, v) in zip(corners, uvs)))
+        for p in (p for p in parts if p['bone'] == bone):
+            text = (src / p['obj']).read_text().splitlines()
+            v = [tuple(map(float, l.split()[1:4])) for l in text if l.startswith('v ')]
+            t = [tuple(map(float, l.split()[1:3])) for l in text if l.startswith('vt ')]
+            faces, cur = [], None
+            for l in text:
+                if l.startswith(('o ', 'g ')):
+                    cur = l.split()[1]
+                elif l.startswith('f ') and cur == p['part']:
+                    faces.append([c.split('/') for c in l.split()[1:]])
+            ox, oy, oz = p.get('offset', [0, 0, 0])
+            for lift in p.get('lifts', [0]):
+                for f in faces:
+                    out = []
+                    for c in f:
+                        x, y, z = v[int(c[0]) - 1]
+                        # HFRWavefrontObject flips v; the icon takes u, v * 16.
+                        u, tv = t[int(c[1]) - 1]
+                        out.append(corner(x + ox, y + oy + lift, z + oz, p['texture'], u * 16, (1 - tv) * 16))
+                    lines.append('f ' + ' '.join(out))
+    lines = list(vs) + list(ts) + lines
+    return '\n'.join(lines) + '\n', sheet
+
+
 def variants_obj(src, spec):
     """`variants`: {"from": OBJ, "bones": {name: {"rot": deg, "pitch": deg,
     "origin": [x, y, z]}}}: one copy of the OBJ per bone, each turned as
@@ -254,17 +328,52 @@ def loop_animation(spec):
     return {'format_version': '1.8.0', 'animations': {spec['name']: {'loop': spec.get('loop', True), 'animation_length': length, 'bones': bones}}}
 
 
+def only_objects(text, names):
+    """An OBJ's objects `names` alone: their faces and the positions, UVs
+    and normals those use, renumbered."""
+    kinds = {'v': [], 'vt': [], 'vn': []}
+    faces, cur = [], None
+    for raw in text.splitlines():
+        t = raw.split()
+        if not t:
+            continue
+        if t[0] in kinds:
+            kinds[t[0]].append(raw)
+        elif t[0] in ('o', 'g'):
+            cur = t[1] if len(t) > 1 else None
+        elif t[0] == 'f' and cur in names:
+            faces.append((cur, [c.split('/') for c in t[1:]]))
+    used = [{} for _ in range(3)]
+    out_faces, last = [], None
+    for obj, f in faces:
+        if obj != last:
+            out_faces.append(f'o {obj}')
+            last = obj
+        corners = []
+        for c in f:
+            idx = [used[k].setdefault(int(i), len(used[k]) + 1) if i else None for k, i in enumerate(c)]
+            corners.append('/'.join('' if i is None else str(i) for i in idx))
+        out_faces.append('f ' + ' '.join(corners))
+    lines = []
+    for k, kind in enumerate(('v', 'vt', 'vn')):
+        lines += [kinds[kind][i - 1] for i in used[k]]
+    return '\n'.join(lines + out_faces) + '\n'
+
+
 def merge_obj(src, model):
     """One OBJ and one texture from a model's own and its `merge` parts
     (RenderPress draws press_body and press_head, each with its texture):
     the textures side by side on one sheet, each part's UVs moved onto its
     place there, each part one object (bone) named by its `name`, turned
-    `turn` degrees about y and lifted `lift` blocks into the model's frame.
+    `turn` degrees about y and lifted `lift` blocks into the model's frame;
+    `only` keeps a part's faces of those objects alone.
     Returns the OBJ text and the sheet."""
     import math
     from PIL import Image
     parts = [{'obj_from': model['obj_from'], 'texture_from': model['texture_from']}] + model['merge']
-    images = [Image.open(src / q['texture_from']).convert('RGBA') for q in parts]
+    # `#rrggbb`: a plain colour (a lamp HBM draws untextured, tinted).
+    images = [Image.new('RGBA', (16, 16), q['texture_from']) if q['texture_from'].startswith('#')
+              else Image.open(src / q['texture_from']).convert('RGBA') for q in parts]
     W, H = sum(i.width for i in images), max(i.height for i in images)
     sheet = Image.new('RGBA', (W, H))
     lines, base = ['# merged by tools/visual-gen/generate.py'], [0, 0, 0]
@@ -278,7 +387,10 @@ def merge_obj(src, model):
         if 'name' in q:
             # A part is one bone: its own objects become one.
             lines.append(f"o {q['name']}")
-        for raw in (src / q['obj_from']).read_text().splitlines():
+        text = (src / q['obj_from']).read_text()
+        if 'only' in q:
+            text = only_objects(text, q['only'])
+        for raw in text.splitlines():
             t = raw.split()
             if not t:
                 continue
@@ -522,9 +634,9 @@ def main():
                 obj_out.parent.mkdir(parents=True, exist_ok=True)
                 obj_out.write_text(variants_obj(src, m.pop('variants')))
                 copy(m.pop('texture_from'), 'assets/ntm/' + m['texture'].split(':', 1)[1])
-            elif 'boxes' in m:
-                text, sheet = box_obj(src, m)
-                m.pop('boxes')
+            elif 'boxes' in m or 'sheet' in m:
+                text, sheet = sheet_obj(src, m.pop('sheet')) if 'sheet' in m else box_obj(src, m)
+                m.pop('boxes', None)
                 obj_out = own('assets/ntm/' + m['obj'].split(':', 1)[1])
                 obj_out.parent.mkdir(parents=True, exist_ok=True)
                 obj_out.write_text(text)
