@@ -45,6 +45,7 @@ impl Server {
                 r.loaded.get(*k) == Some(&true)
                     && match &m.data {
                         Data::Boiler(_) | Data::Coker(_) => true,
+                        Data::SolarStirling(s) => matches!(**s, crate::solar_stirling::SolarStirling::Stirling(_)),
                         Data::Firebox(f) => f.oven,
                         Data::Heater(h) => matches!(**h, Heater::Electric(_)),
                         _ => false,
@@ -57,6 +58,7 @@ impl Server {
             let under = heat_source_under(&r.world.machines, &key);
             let source = under.as_ref().and_then(|u| r.world.machines.get_mut(u)).and_then(|m| heat_source(&mut m.data)).map(|s| s.heat_stored());
             let taken = match r.world.machines.get_mut(&key).map(|m| &mut m.data) {
+                Some(Data::SolarStirling(s)) => match &mut **s { crate::solar_stirling::SolarStirling::Stirling(s) => s.pull_heat(source), _ => 0 },
                 Some(Data::Boiler(b)) => b.pull_heat(source),
                 Some(Data::Coker(c)) => c.pull_heat(source),
                 Some(Data::Firebox(f)) => f.pull_heat(source),

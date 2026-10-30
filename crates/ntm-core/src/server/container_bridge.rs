@@ -123,6 +123,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::ElectricFurnace(f) => Some(f),
         Data::Steam(s) => s.slotted(),
         Data::Combustion(c) => Some(c.slotted()),
+        Data::SolarStirling(s) => Some(&mut **s),
         _ => None,
     }
 }
@@ -130,6 +131,11 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
 /// The blocks whose machines use the engine's slots, and their layout:
 /// (block, first input slot, inputs, output slot).
 pub const SLOTTED: &[(&str, Layout)] = &[
+    ("ntm:machine_solar_boiler", Layout::Native),
+    ("ntm:solar_mirror", Layout::Native),
+    ("ntm:machine_stirling", Layout::Native),
+    ("ntm:machine_stirling_steel", Layout::Native),
+    ("ntm:machine_stirling_creative", Layout::Native),
     ("ntm:machine_shredder", Layout::Native),
     ("ntm:machine_blast_furnace", Layout::Native),
     ("ntm:heater_firebox", Layout::Native),
@@ -360,6 +366,7 @@ pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
 /// that join the core's fluid networks as ducts. A chain of them reaches the
 /// core: the blast furnace's ports up its front reach it down its column.
 pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
+    ("ntm:machine_solar_boiler", &[[0,1,0], [0,2,0]]),
     // MachineExcavator.getAllPorts: (±1, 1, 3) and (±3, 1, 0). The whole
     // layer above the core holds them and reaches the core through the cell
     // over it.
@@ -699,6 +706,9 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
 /// each a chain of cells from the one next to the core to the port, in the
 /// placer's frame, as energy proxies.
 pub const ENERGY_CHAINS: &[(&str, &[[i32; 3]])] = &[
+    ("ntm:machine_stirling", &[[-1,0,0],[1,0,0],[0,0,-1],[0,0,1]]),
+    ("ntm:machine_stirling_steel", &[[-1,0,0],[1,0,0],[0,0,-1],[0,0,1]]),
+    ("ntm:machine_stirling_creative", &[[-1,0,0],[1,0,0],[0,0,-1],[0,0,1]]),
     // TileEntitySteamEngine.getPorts: power and fluid at the same three.
     ("ntm:machine_steam_engine", &[[0, 1, 0], [-1, 1, 0], [-1, 1, -1], [-1, 1, 1]]),
     // getPowerPorts: at the back, a layer up.

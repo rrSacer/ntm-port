@@ -85,6 +85,28 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
     let Some((server, _)) = guard.as_mut() else { return false };
     let dim = game.dim.id().to_string();
     let player = game.native_actor_uuid().unwrap_or_default();
+    if let Some(held) = game.held().cloned() {
+        if &*held.item == "ntm:mirror_tool" {
+            if let Some(target) = server.native_solar_target(&dim, core) {
+                let mut data = held.data().and_then(|d| d.other("minecraft:custom_data")).and_then(|t| match t { Tag::Compound(c) => Some(c.clone()), _ => None }).unwrap_or_default();
+                for (key,value) in ["posX","posY","posZ"].into_iter().zip(target) { data.insert(JavaString::from(key), Tag::Int(value)); }
+                if let Some(h) = game.held_mut() { h.data_mut().set_other("minecraft:custom_data", Some(Tag::Compound(data))); }
+                return true;
+            }
+            if let Some(Tag::Compound(data)) = held.data().and_then(|d| d.other("minecraft:custom_data")) {
+                let target = ["posX","posY","posZ"].map(|key| match data.get(&JavaString::from(key)) { Some(Tag::Int(n)) => *n, _ => 0 });
+                if let Some(result) = server.native_mirror_link(&dim,core,target) {
+                    if let Err(text) = result { eprintln!("ntm: {player}: {text}"); }
+                    return true;
+                }
+            }
+        }
+        if server.native_stirling_gear(&dim,core) == Some(&*held.item) {
+            if let Some(h) = game.held_mut() { h.count -= 1; if h.count == 0 { *game.held_mut() = None; } }
+            server.native_stirling_repair(&dim,core,&held.item);
+            return true;
+        }
+    }
     let mut host = Host { game, buttons: Vec::new() };
     server.native_use(&mut host, &dim, core, pos, &player)
 }
@@ -190,6 +212,16 @@ impl Host<'_, '_> {
 }
 
 impl ServerHost for Host<'_, '_> {
+    fn solar_sample(&mut self, dim: &str, p: [i32;3]) -> Option<(i32,i32,bool)> {
+        self.game.native_loaded_block(dim,p)?;
+        if dim != self.game.dim.id() { return None; }
+        let world = &self.game.world;
+        let sky = i32::from(world.light(p[0],p[1],p[2]) >> 4);
+        // `canBlockSeeTheSky(y+1)`: light-blocking height, so glass lets
+        // sunlight through, leaves and opaque roofs don't.
+        let visible = (p[1]+1..world.top_y()).all(|y| self.game.res.facts().get(world.block(p[0],y,p[2])).dampening == 0);
+        Some((sky,self.game.sky_darken(),visible))
+    }
     fn get_block(&mut self, dim: &str, p: [i32; 3]) -> Option<String> {
         self.game.native_loaded_block(dim, p)
     }

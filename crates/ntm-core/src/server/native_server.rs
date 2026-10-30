@@ -49,7 +49,9 @@ impl Server {
         self.native_redstone(host);
         self.slots_in(host);
         self.heat_tick();
+        self.solar_tick(host);
         self.simulate(host);
+        self.stirling_finish();
         self.fluids_tick();
         self.fraction_tick();
         self.foundry_tick(host);

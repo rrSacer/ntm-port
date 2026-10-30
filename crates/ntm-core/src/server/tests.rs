@@ -24,6 +24,7 @@ struct World {
     presses: Vec<(String, Pos, u32)>,
     /// The redstone signal at cells (0 elsewhere).
     signal: BTreeMap<(String, Pos), u8>,
+    sun: BTreeMap<(String, Pos), (i32,i32,bool)>,
     /// What each machine kept with its block entity.
     saved: BTreeMap<(String, Pos), String>,
     kv: MemKv,
@@ -49,6 +50,7 @@ impl World {
             engine: BTreeMap::new(),
             presses: Vec::new(),
             signal: BTreeMap::new(),
+            sun: BTreeMap::new(),
             saved: BTreeMap::new(),
             kv: MemKv::default(),
             carried: BTreeMap::new(),
@@ -106,6 +108,7 @@ impl Kv for SHost {
 }
 
 impl ServerHost for SHost {
+    fn solar_sample(&mut self, dim: &str, p: Pos) -> Option<(i32,i32,bool)> { self.world.borrow().sun.get(&(dim.into(),p)).copied() }
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String> {
         self.reads += 1;
         let w = self.world.borrow();
@@ -368,6 +371,7 @@ fn radiation_from_what_a_player_carries() {
 
 mod bomb_tests;
 mod combustion_tests;
+mod solar_stirling_tests;
 mod fluid_tests;
 mod crafter_tests;
 mod review_m2_tests;

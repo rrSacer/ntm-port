@@ -21,6 +21,8 @@ pub trait ServerHost: Kv {
     fn set_blocks(&mut self, dim: &str, blocks: &[(Pos, String)]) -> Result<(), String>;
     fn tell(&mut self, player: &str, text: &str);
     fn log(&mut self, text: &str);
+    /// Saved sky light, weather/time subtraction, and visibility at y+1.
+    fn solar_sample(&mut self, _dim: &str, _p: Pos) -> Option<(i32, i32, bool)> { None }
     /// The slots of the machine's block entity at `p`.
     fn machine_slots(&mut self, _dim: &str, _p: Pos) -> Option<container_bridge::Slots> {
         None
@@ -376,6 +378,7 @@ fn same_look(actual: &str, want: &str) -> bool {
 mod bomb_server;
 mod excavator_server;
 mod oil_server;
+mod solar_server;
 pub mod container_bridge;
 mod fluid_server;
 mod foundry_server;

@@ -1518,41 +1518,41 @@ pub const BLOCKS: &[BlockSpec] = &[
         ports: Ports::None,
     },
     // Energy batch 4 (fa0862a): the solar boiler, its mirrors and the
-    // Stirling engines. Inert until their stage is approved.
+    // Stirling engines (`crate::solar_stirling`).
     BlockSpec {
         id: "ntm:machine_solar_boiler",
-        kind: Kind::Inert,
+        kind: Kind::SolarStirling,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:solar_mirror",
-        kind: Kind::Inert,
+        kind: Kind::SolarStirling,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_stirling",
-        kind: Kind::Inert,
+        kind: Kind::SolarStirling,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::Sides,
     },
     BlockSpec {
         id: "ntm:machine_stirling_steel",
-        kind: Kind::Inert,
+        kind: Kind::SolarStirling,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::Sides,
     },
     BlockSpec {
         id: "ntm:machine_stirling_creative",
-        kind: Kind::Inert,
+        kind: Kind::SolarStirling,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::Sides,
     },
     // Energy batch 3 (3c93924): the combustion generators
     // (`crate::combustion`); the multiblocks' power and fluid come through
@@ -1699,6 +1699,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// A machine's fluid ports (the NTM's `TilePortShapes`, on one block): every
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, _facing: Option<&str>) -> Vec<crate::energy::Port> {
+    if spec.id == "ntm:machine_solar_boiler" { return vec![vec![[0,-1,0], [0,1,0]]]; }
     match spec.kind {
         Kind::FluidStore
         | Kind::Crafter
