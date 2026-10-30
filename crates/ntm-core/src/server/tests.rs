@@ -465,6 +465,8 @@ struct SHost {
     kv: Rc<RefCell<MemKv>>,
     world: Rc<RefCell<World>>,
     told: Vec<String>,
+    /// Blocks read so far: what the game's fuel mostly pays for.
+    reads: u64,
 }
 impl Kv for SHost {
     fn get(&mut self, key: &str) -> Option<Vec<u8>> {
@@ -479,6 +481,7 @@ impl Kv for SHost {
 }
 impl ServerHost for SHost {
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String> {
+        self.reads += 1;
         let w = self.world.borrow();
         w.loaded(dim, p).then(|| w.get(dim, p))
     }
@@ -619,6 +622,7 @@ impl Game {
             kv: kv.clone(),
             world: world.clone(),
             told: vec![],
+            reads: 0,
         };
         let server = Server::new(&mut sh, 0);
         let mut client = Client::new();
@@ -1076,7 +1080,7 @@ fn single_player_without_its_client_mod_pauses_instead_of_mixing_worlds() {
     let mut g = Game::new(w.clone(), kv.clone(), 1);
     g.run(10);
     assert!(g.server.wid().is_some());
-    let mut sh = SHost { kv: kv.clone(), world: w.clone(), told: vec![] };
+    let mut sh = SHost { kv: kv.clone(), world: w.clone(), told: vec![], reads: 0 };
     let mut server = Server::new(&mut sh, 0);
     for t in 1..=(NO_CLIENT_TICKS + 20) {
         server.tick(&mut sh, t, vec![player()]);
@@ -1085,7 +1089,7 @@ fn single_player_without_its_client_mod_pauses_instead_of_mixing_worlds() {
     assert_eq!(server.wid(), None);
     assert_eq!(sh.told.iter().filter(|t| t.contains("mod cliente")).count(), 1);
     let kv = Rc::new(RefCell::new(MemKv::default()));
-    let mut sh = SHost { kv: kv.clone(), world: w.clone(), told: vec![] };
+    let mut sh = SHost { kv: kv.clone(), world: w.clone(), told: vec![], reads: 0 };
     let mut server = Server::new(&mut sh, 0);
     for t in 1..=(NO_CLIENT_TICKS + 1) {
         server.tick(&mut sh, t, vec![player()]);
@@ -1853,3 +1857,67 @@ mod stage4_tests;
 mod excavator_tests;
 
 mod oil_tests;
+
+/// A world saved at the end of the bedrock chain's stage 4 (25 machines, 24
+/// transactions kept for checking) loaded after crashes that left world-id
+/// columns behind. In the game such a load ran out of the tick's fuel and
+/// the mod stopped, leaving more probes: the world stayed stuck. The tick
+/// it loads in does nothing else, and every tick after reads a bounded
+/// number of blocks while the checks and the old columns are worked off.
+#[test]
+fn a_world_loaded_after_crashes_spreads_its_first_work() {
+    let save = include_bytes!("tests/fixtures/bedrock_stage4.save");
+    let (_, _, data) = persist::decode(save).expect("the fixture decodes");
+    let applied = data.applied.len();
+    assert!(applied >= 20, "{applied}");
+    let kv = Rc::new(RefCell::new(MemKv::default()));
+    let w = Rc::new(RefCell::new(World::new()));
+    let wid = {
+        let mut g = Game::new(w.clone(), kv.clone(), 1);
+        g.run(10);
+        g.server.wid().unwrap().to_string()
+    };
+    let bytes = persist::encode(&wid, 5_000, &data).unwrap();
+    kv.borrow_mut().map.insert(crate::kv::keys::world(&wid), bytes);
+    // A crash in the middle of identifying the world: its column stays.
+    for seed in 2..3 {
+        let mut g = Game::new(w.clone(), kv.clone(), seed);
+        for _ in 0..10 {
+            g.client_step();
+            g.world.borrow_mut().run_commands();
+            if !column_untouched(&w.borrow()) {
+                break;
+            }
+            g.server.tick(&mut g.sh, g.tick, vec![player()]);
+            g.world.borrow_mut().apply_writes();
+        }
+    }
+    let mut g = Game::new(w.clone(), kv.clone(), 9);
+    let left = g.server.probes.len();
+    assert!(left >= 1, "probes left by the crash: {left}");
+    let mut most = 0;
+    let mut entered = None;
+    for t in 0..400 {
+        let before = g.sh.reads;
+        let was = g.server.wid().is_some();
+        let sent = if was { g.ready().verify_publish.len() } else { 0 };
+        g.run(1);
+        most = most.max(g.sh.reads - before);
+        if was {
+            let now = g.ready().verify_publish.len();
+            assert!(now <= sent + ANSWER_CELLS_PER_TICK as usize, "{} checks in one tick", now - sent);
+        }
+        if !was && g.server.wid().is_some() {
+            entered = Some(t);
+            // The load is all that tick did: no machine ran.
+            assert_eq!(g.ready().world.ticks, data.ticks, "o tick da carga não roda as máquinas");
+        }
+    }
+    assert!(entered.is_some(), "the world loads");
+    // A chunk's bottom (256) for each of 4 answer cells, the old probes' 40
+    // cells and the identify search (64 columns of 10) at most.
+    assert!(most <= 4 * 256 + 40 + 640, "{most} blocks read in a tick");
+    let r = g.ready();
+    assert!(r.verify.is_empty() || r.verify_publish.len() >= applied.min(24), "checks sent: {} of {}", r.verify_publish.len(), r.verify.len());
+    assert!(column_untouched(&w.borrow()), "the old columns were put back");
+}
