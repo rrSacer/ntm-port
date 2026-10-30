@@ -82009,6 +82009,32 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:battery_creative",
+      "source_variable": "battery_creative",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Infinite Battery",
+        "pt_br": "Bateria Infinita"
+      },
+      "behavior_gap": "Creative-only infinite battery; server logic owns charging, no crafting recipe in NTM",
+      "source_registry": "hbm:item.battery_creative",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/MachineRecipes.java:52"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:machine_excavator",
       "source_variable": "machine_excavator",
       "type": "block",

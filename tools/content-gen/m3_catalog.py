@@ -137,6 +137,12 @@ def build(source=SOURCE, output=ROOT / 'content'):
                          'fluid': {'id': fluid['id'], 'amount_mb': amount, 'empty': 'ntm:' + empty},
                          'behavior_gap': 'Filled item only; server logic must consume/return container, never a temporary crafting bridge',
                          'source_container': 'src/main/java/com/hbm/inventory/FluidContainerRegistry.java:69-91'})
+    name, texture = registration(items, 'battery_creative', 'item')
+    rows.append({'id': name, 'source_variable': 'battery_creative', 'type': 'item', 'category': 'component',
+                 'max_stack_size': 1,
+                 'source_texture': 'src/main/resources/assets/hbm/textures/items/' + texture + '.png',
+                 'names': {loc: tr['item.battery_creative.name'] for loc, tr in translations.items()},
+                 'behavior_gap': 'Creative-only infinite battery; server logic owns charging, no crafting recipe in NTM'})
     import bedrock_catalog
     rows.extend(bedrock_catalog.build(source))
     import foundry_catalog

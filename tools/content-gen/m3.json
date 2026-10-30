@@ -18419,6 +18419,19 @@
       "source_container": "src/main/java/com/hbm/inventory/FluidContainerRegistry.java:69-91"
     },
     {
+      "id": "battery_creative",
+      "source_variable": "battery_creative",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/battery_creative_new.png",
+      "names": {
+        "en_us": "Infinite Battery",
+        "pt_br": "Bateria Infinita"
+      },
+      "behavior_gap": "Creative-only infinite battery; server logic owns charging, no crafting recipe in NTM"
+    },
+    {
       "id": "machine_excavator",
       "source_variable": "machine_excavator",
       "type": "block",

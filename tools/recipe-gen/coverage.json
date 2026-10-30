@@ -1,5 +1,5 @@
 {
-  "catalog_items": 2578,
+  "catalog_items": 2579,
   "vanilla_recipe_count": 235,
   "temporary_count": 10,
   "press_count": 47,
@@ -1242,6 +1242,7 @@
     "ntm:basalt_polished",
     "ntm:basalt_smooth",
     "ntm:basalt_tiles",
+    "ntm:battery_creative",
     "ntm:battery_spark",
     "ntm:battery_trixite",
     "ntm:bedrock_ore__base_actinide",
