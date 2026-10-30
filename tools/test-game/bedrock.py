@@ -562,7 +562,8 @@ def barrel_state(bx, by, bz):
     """(fluid, mB) of the barrel at (bx, by, bz), from the mod's save."""
     ctl('save', check=False)
     time.sleep(12)
-    d = Path('/tmp/ntm-visual-game/dist/.horizon-mod-data/ntmlogic')
+    # run-visual.sh: each game has its own copy of the mods and their data.
+    d = game / 'dist/.horizon-mod-data/ntmlogic'
     f = max(d.glob('w.*'), key=lambda p: p.stat().st_mtime)
     t = f.read_text()
     w = json.loads(t[t.index('{'):])
