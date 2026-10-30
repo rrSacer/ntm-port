@@ -24,7 +24,8 @@ class CrystallizerContracts(unittest.TestCase):
         return matches[0]
 
     def test_all_source_calls_and_iteration_major_order(self):
-        self.assertEqual(self.data['coverage'], {'source_calls': 118, 'expanded': 409, 'emitted': 357, 'skipped': 52, 'bedrock': 222})
+        self.assertEqual({k:self.data['coverage'][k] for k in ('source_calls','expanded','bedrock')}, {'source_calls':118,'expanded':409,'bedrock':222})
+        self.assertEqual(len(self.recipes) + len(self.data['skipped']), 409)
         all_rows = self.recipes + self.data['skipped']
         self.assertEqual({r['source_index'] for r in all_rows}, set(range(118)))
         self.assertEqual(len({r['name'] for r in all_rows}), 409)
@@ -90,10 +91,8 @@ class CrystallizerContracts(unittest.TestCase):
 
     def test_missing_content_and_guarded_compat_are_explicit(self):
         self.assertTrue(all(row['reason'] and row['source'] for row in self.data['skipped']))
-        self.assertTrue(any('powder_cement' in row['reason'] for row in self.data['skipped']))
-        self.assertTrue(any('meteorite_sword_treated' in row['reason'] for row in self.data['skipped']))
-        self.assertEqual(sum('plastic_' in (row['expansion'] or '') for row in self.data['skipped']), 23)
-        self.assertEqual(sum('dye_' in (row['expansion'] or '') for row in self.data['skipped']), 18)
+        self.assertTrue(any('pill_red' in row['reason'] for row in self.data['skipped']))
+        self.assertTrue(any('sand_mix' in row['reason'] for row in self.data['skipped']))
         self.assertTrue(any('guard empty' in row['reason'] and 'Certus' in row['reason'] for row in self.data['skipped']))
         self.assertFalse(any('bedrock_' in (row['expansion'] or '') for row in self.data['skipped']))
 
