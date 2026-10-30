@@ -533,6 +533,31 @@
 "pools": []
 },
 {
+"name": "liquefaction.21",
+"label": "Betume",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:61",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:ore_oil_sand"
+],
+"n": 1,
+"label": "Areia Betuminosa"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"bitumen",
+100
+]
+],
+"pools": []
+},
+{
 "name": "liquefaction.22",
 "label": "Etanol",
 "source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:64",
@@ -786,5 +811,5 @@
 "pools": []
 }
 ],
-"skipped": 3
+"skipped": 2
 }

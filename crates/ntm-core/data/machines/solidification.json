@@ -210,6 +210,29 @@
 "pools": []
 },
 {
+"name": "solidification.10",
+"label": "Areia Betuminosa",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:74",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"slop",
+250
+]
+],
+"out": [
+[
+"ntm:ore_oil_sand",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "solidification.11",
 "label": "Alcatrão de Petróleo",
 "source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:76",
@@ -1038,5 +1061,5 @@
 "pools": []
 }
 ],
-"skipped": 2
+"skipped": 1
 }

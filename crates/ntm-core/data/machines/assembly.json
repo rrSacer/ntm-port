@@ -1878,6 +1878,72 @@
 "pools": []
 },
 {
+"name": "ass.arcfurnace",
+"label": "Forno Elétrico a Arco",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:286",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:concrete",
+"ntm:concrete_asbestos",
+"ntm:concrete_smooth",
+"ntm:ducrete",
+"ntm:ducrete_smooth"
+],
+"n": 12,
+"label": "Azulejo de Concreto"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 8,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"n": 16,
+"label": "Tijolo Refratário"
+},
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 8,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:machine_transformer"
+],
+"n": 1,
+"label": "Transformador 10k-20Hz"
+},
+{
+"ids": [
+"ntm:circuit__analog"
+],
+"n": 1,
+"label": "Placa de Circuito Analógico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_arc_furnace_large",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.acidizer",
 "label": "Acidificador de Minério",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:289",
@@ -1985,6 +2051,565 @@
 "out": [
 [
 "ntm:machine_electrolyser",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.derrick",
+"label": "Torre de Extração de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:297",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 8,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"n": 2,
+"label": "Placa Fundida de Cobre"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 4,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 1,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:drill_titanium"
+],
+"n": 1,
+"label": "Broca de Titânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_well",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pumpjack",
+"label": "Bomba de Extração de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:301",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"n": 8,
+"label": "Placa de Aço Rápido"
+},
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 8,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 12,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:motor_desh"
+],
+"n": 1,
+"label": "Motor de Desh"
+},
+{
+"ids": [
+"ntm:drill_titanium"
+],
+"n": 1,
+"label": "Broca de Titânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_pumpjack",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.fracker",
+"label": "Torre de Fraturamento Hidráulico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:305",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 24,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 12,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:concrete_smooth"
+],
+"n": 64,
+"label": "Concreto"
+},
+{
+"ids": [
+"ntm:drill_titanium"
+],
+"n": 1,
+"label": "Broca de Titânio"
+},
+{
+"ids": [
+"ntm:motor_desh"
+],
+"n": 2,
+"label": "Motor de Desh"
+},
+{
+"ids": [
+"ntm:plate_desh"
+],
+"n": 24,
+"label": "Placa de Composto de Desh"
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 16,
+"label": "Capacitor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_fracking_tower",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.refinery",
+"label": "Refinaria de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:313",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 3,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 8,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 12,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 8,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:circuit__analog"
+],
+"n": 3,
+"label": "Placa de Circuito Analógico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_refinery",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.crackingtower",
+"label": "Torre de Craqueamento Catalítico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:316",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:steel_scaffold"
+],
+"n": 16,
+"label": "Andaime de Aço"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 6,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"n": 12,
+"label": "Lingote de Desh"
+},
+{
+"ids": [
+"ntm:ingot_niobium"
+],
+"n": 4,
+"label": "Lingote de Nióbio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_catalytic_cracker",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.coker",
+"label": "Unidade de Coqueificação",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:323",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 8,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 8,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 4,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:ingot_niobium"
+],
+"n": 4,
+"label": "Lingote de Nióbio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_coker",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.vaccumrefinery",
+"label": "Refinaria a Vácuo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:327",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 16,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 16,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 4,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:sphere_steel"
+],
+"n": 1,
+"label": "Esfera de Aço"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 12,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:motor_desh"
+],
+"n": 3,
+"label": "Motor de Desh"
+},
+{
+"ids": [
+"ntm:circuit__chip_bismoid"
+],
+"n": 4,
+"label": "Circuito Integrado Versátil"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_vacuum_distill",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.reformer",
+"label": "Reformador Catalítico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:330",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 12,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 8,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_niobium"
+],
+"n": 8,
+"label": "Lingote de Nióbio"
+},
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 4,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 3,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 8,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 1,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:circuit__bismoid"
+],
+"n": 1,
+"label": "Placa de Circuito Versátil"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_catalytic_reformer",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.hydrotreater",
+"label": "Hidrotratador",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:334",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 8,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"n": 4,
+"label": "Placa Fundida de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_niobium"
+],
+"n": 8,
+"label": "Lingote de Nióbio"
+},
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 4,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 2,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 8,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:motor_desh"
+],
+"n": 2,
+"label": "Motor de Desh"
+},
+{
+"ids": [
+"ntm:circuit__bismoid"
+],
+"n": 1,
+"label": "Placa de Circuito Versátil"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_hydrotreater",
 1,
 1.0
 ]
@@ -14408,5 +15033,5 @@
 "pools": []
 }
 ],
-"skipped": 213
+"skipped": 203
 }

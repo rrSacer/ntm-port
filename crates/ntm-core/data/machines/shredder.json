@@ -2250,6 +2250,10 @@
 "ntm:ore_enriched__uranium",
 1
 ],
+"ntm:ore_oil_empty": [
+"minecraft:gravel",
+1
+],
 "ntm:ore_purified__asbestos": [
 "ntm:ore_enriched__asbestos",
 1
@@ -2870,6 +2874,30 @@
 "minecraft:gravel",
 1
 ],
+"ntm:steel_beam": [
+"ntm:powder_steel_tiny",
+3
+],
+"ntm:steel_grate": [
+"ntm:powder_steel_tiny",
+3
+],
+"ntm:steel_scaffold": [
+"ntm:powder_steel_tiny",
+4
+],
+"ntm:steel_scaffold__red": [
+"ntm:powder_steel_tiny",
+4
+],
+"ntm:steel_scaffold__white": [
+"ntm:powder_steel_tiny",
+4
+],
+"ntm:steel_scaffold__yellow": [
+"ntm:powder_steel_tiny",
+4
+],
 "ntm:stone_cracked": [
 "ntm:scrap_oil",
 1
@@ -2909,5 +2937,5 @@
 0
 ]
 ],
-"skipped": 198
+"skipped": 194
 }

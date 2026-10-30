@@ -460,6 +460,47 @@
 ]
 },
 {
+"name": "chem.tarsand",
+"label": "Areia ×16",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:118",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ore_oil_sand"
+],
+"n": 16,
+"label": "Areia Betuminosa"
+},
+{
+"ids": [
+"ntm:oil_tar__coal",
+"ntm:oil_tar__crack",
+"ntm:oil_tar__crude",
+"ntm:oil_tar__wood"
+],
+"n": 1,
+"label": "Alcatrão de Carvão"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:sand",
+16,
+1.0
+]
+],
+"fout": [
+[
+"bitumen",
+1000
+]
+],
+"pools": []
+},
+{
 "name": "chem.tel",
 "label": "Agente Antidetonante de Chumbo Tetraetila",
 "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:123",
@@ -1730,5 +1771,5 @@
 "pools": []
 }
 ],
-"skipped": 24
+"skipped": 23
 }

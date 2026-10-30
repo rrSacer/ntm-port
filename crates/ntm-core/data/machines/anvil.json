@@ -2769,6 +2769,79 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.75",
+"label": "Caldeira",
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_boiler",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.78",
+"label": "Caldeira Industrial",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_industrial_boiler",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.93",
 "label": "Placa de Composto de Desh ×4",
 "in": [
@@ -6795,6 +6868,79 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.75",
+"label": "Caldeira",
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_boiler",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.78",
+"label": "Caldeira Industrial",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_industrial_boiler",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.93",
 "label": "Placa de Composto de Desh ×4",
 "in": [
@@ -8055,5 +8201,5 @@
 "tier_upper": -1
 }
 ],
-"skipped": 176
+"skipped": 174
 }
