@@ -570,7 +570,10 @@ mod tests {
         let ids = ids_sample_lines(1, "minecraft:overworld", &cells);
         let ticks = ids.len().div_ceil(COMMANDS_PER_TICK) as u64;
         assert!(ticks < ids_period(), "{} id lines take {ticks} ticks", ids.len());
-        assert!(ids_period() <= 80, "about one id sample every 3-4 s");
+        // About one id sample every 4-5 s with energy batch 5's 63 more
+        // radioactive items (292). This is the WebAssembly mods' channel,
+        // which the native host's inventory read replaces (stage L4).
+        assert!(ids_period() <= 100, "about one id sample every 4-5 s: {} ticks", ids_period());
         let h = hazards().len();
         assert_eq!(ids.len(), 5 + 4 * h + h / 64 + 3 + 8 * 11 + 2);
         let cells: [(Pos, String); CELLS] = std::array::from_fn(|_| {
