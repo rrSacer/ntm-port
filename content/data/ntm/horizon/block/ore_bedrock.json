@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:bedrock",
+  "properties": {
+    "hardness": -1,
+    "explosion_resistance": 3600000,
+    "requires_tool": true,
+    "sounds": "minecraft:stone",
+    "light": 0
+  },
+  "item": true
+}
