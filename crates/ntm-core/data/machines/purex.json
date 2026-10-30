@@ -1075,6 +1075,516 @@
 "pools": []
 },
 {
+"name": "purex.watzschrab",
+"label": "Reprocessamento de Pastilha Watz de Schrabídio (Esgotada)",
+"source": "PUREXRecipes.java:384",
+"duration": 60,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:watz_pellet_depleted__schrabidium"
+],
+"n": 1,
+"label": "Pastilha Watz de Schrabídio (Esgotada)"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_solinium",
+15,
+1.0
+],
+[
+"ntm:nugget_euphemium",
+3,
+1.0
+],
+[
+"ntm:nuclear_waste",
+2,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+1000
+]
+],
+"pools": [],
+"group": "autoswitch.watz"
+},
+{
+"name": "purex.watzhes",
+"label": "Reprocessamento de Pastilha Watz HES (Esgotada)",
+"source": "PUREXRecipes.java:393",
+"duration": 60,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:watz_pellet_depleted__hes"
+],
+"n": 1,
+"label": "Pastilha Watz HES (Esgotada)"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_solinium",
+17,
+1.0
+],
+[
+"ntm:nugget_euphemium",
+1,
+1.0
+],
+[
+"ntm:nuclear_waste",
+2,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+1000
+]
+],
+"pools": [],
+"group": "autoswitch.watz"
+},
+{
+"name": "purex.watzmes",
+"label": "Reprocessamento de Pastilha Watz MES (Esgotada)",
+"source": "PUREXRecipes.java:402",
+"duration": 60,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:watz_pellet_depleted__mes"
+],
+"n": 1,
+"label": "Pastilha Watz MES (Esgotada)"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_solinium",
+12,
+1.0
+],
+[
+"ntm:nugget_tantalium",
+6,
+1.0
+],
+[
+"ntm:nuclear_waste",
+2,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+1000
+]
+],
+"pools": [],
+"group": "autoswitch.watz"
+},
+{
+"name": "purex.watzles",
+"label": "Reprocessamento de Pastilha Watz LES (Esgotada)",
+"source": "PUREXRecipes.java:411",
+"duration": 60,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:watz_pellet_depleted__les"
+],
+"n": 1,
+"label": "Pastilha Watz LES (Esgotada)"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_solinium",
+9,
+1.0
+],
+[
+"ntm:nugget_tantalium",
+9,
+1.0
+],
+[
+"ntm:nuclear_waste",
+2,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+1000
+]
+],
+"pools": [],
+"group": "autoswitch.watz"
+},
+{
+"name": "purex.watzhen",
+"label": "Reprocessamento de Pastilha Watz HEN (Esgotada)",
+"source": "PUREXRecipes.java:420",
+"duration": 60,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:watz_pellet_depleted__hen"
+],
+"n": 1,
+"label": "Pastilha Watz HEN (Esgotada)"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_pu239",
+12,
+1.0
+],
+[
+"ntm:nugget_technetium",
+6,
+1.0
+],
+[
+"ntm:nuclear_waste",
+2,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+1000
+]
+],
+"pools": [],
+"group": "autoswitch.watz"
+},
+{
+"name": "purex.watzmeu",
+"label": "Reprocessamento de Pastilha Watz MEU (Esgotada)",
+"source": "PUREXRecipes.java:429",
+"duration": 60,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:watz_pellet_depleted__meu"
+],
+"n": 1,
+"label": "Pastilha Watz MEU (Esgotada)"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_pu239",
+12,
+1.0
+],
+[
+"ntm:nugget_bismuth",
+6,
+1.0
+],
+[
+"ntm:nuclear_waste",
+2,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+1000
+]
+],
+"pools": [],
+"group": "autoswitch.watz"
+},
+{
+"name": "purex.watzmep",
+"label": "Reprocessamento de Pastilha Watz MEP (Esgotada)",
+"source": "PUREXRecipes.java:438",
+"duration": 60,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:watz_pellet_depleted__mep"
+],
+"n": 1,
+"label": "Pastilha Watz MEP (Esgotada)"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_pu241",
+12,
+1.0
+],
+[
+"ntm:nugget_bismuth",
+6,
+1.0
+],
+[
+"ntm:nuclear_waste",
+2,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+1000
+]
+],
+"pools": [],
+"group": "autoswitch.watz"
+},
+{
+"name": "purex.watzlead",
+"label": "Reprocessamento de Pastilha Absorvedora de Chumbo (Esgotada)",
+"source": "PUREXRecipes.java:447",
+"duration": 60,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:watz_pellet_depleted__lead"
+],
+"n": 1,
+"label": "Pastilha Absorvedora de Chumbo (Esgotada)"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_lead",
+6,
+1.0
+],
+[
+"ntm:nugget_bismuth",
+12,
+1.0
+],
+[
+"ntm:nuclear_waste",
+2,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+1000
+]
+],
+"pools": [],
+"group": "autoswitch.watz"
+},
+{
+"name": "purex.watzboron",
+"label": "Reprocessamento de Pastilha Absorvedora de Boro (Esgotada)",
+"source": "PUREXRecipes.java:456",
+"duration": 60,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:watz_pellet_depleted__boron"
+],
+"n": 1,
+"label": "Pastilha Absorvedora de Boro (Esgotada)"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:powder_coal_tiny",
+12,
+1.0
+],
+[
+"ntm:nugget_co60",
+6,
+1.0
+],
+[
+"ntm:nuclear_waste",
+2,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+1000
+]
+],
+"pools": [],
+"group": "autoswitch.watz"
+},
+{
+"name": "purex.watzdu",
+"label": "Reprocessamento de Pastilha Absorvedora de Urânio Empobrecido (Esgotada)",
+"source": "PUREXRecipes.java:465",
+"duration": 60,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:watz_pellet_depleted__du"
+],
+"n": 1,
+"label": "Pastilha Absorvedora de Urânio Empobrecido (Esgotada)"
+}
+],
+"fin": [
+[
+"kerosene",
+500
+],
+[
+"nitric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:nugget_polonium",
+12,
+1.0
+],
+[
+"ntm:nugget_pu238",
+6,
+1.0
+],
+[
+"ntm:nuclear_waste",
+2,
+1.0
+]
+],
+"fout": [
+[
+"watz",
+1000
+]
+],
+"pools": [],
+"group": "autoswitch.watz"
+},
+{
 "name": "purex.icf",
 "label": "Reprocessamento de Pastilha de Combustível ICF Esgotada",
 "source": "PUREXRecipes.java:500",
@@ -1253,5 +1763,5 @@
 "group": "autoswitch.schrab"
 }
 ],
-"skipped": 32
+"skipped": 22
 }

@@ -2696,6 +2696,40 @@
 ],
 "synced": []
 },
+"ntm:machine_combustion_engine": {
+"inventory": [
+8,
+121
+],
+"slots": [
+{
+"x": 17,
+"y": 17
+},
+{
+"output": true,
+"x": 17,
+"y": 53
+},
+{
+"max": 1,
+"x": 88,
+"y": 71
+},
+{
+"x": 143,
+"y": 71
+},
+{
+"max": 1,
+"x": 35,
+"y": 71
+}
+],
+"synced": [
+4
+]
+},
 "ntm:machine_condenser": {
 "inventory": [
 8,
@@ -3080,6 +3114,33 @@
 "accept": [],
 "x": 35,
 "y": 72
+}
+],
+"synced": []
+},
+"ntm:machine_diesel": {
+"inventory": [
+8,
+121
+],
+"slots": [
+{
+"x": 17,
+"y": 17
+},
+{
+"output": true,
+"x": 17,
+"y": 53
+},
+{
+"x": 141,
+"y": 71
+},
+{
+"max": 1,
+"x": 35,
+"y": 71
 }
 ],
 "synced": []
@@ -4477,6 +4538,34 @@
 ],
 "synced": []
 },
+"ntm:machine_radgen": {
+"inventory": [
+8,
+102
+],
+"slots": [
+{
+"grid": [
+8,
+17,
+3,
+4
+]
+},
+{
+"grid": [
+116,
+17,
+3,
+4
+],
+"output": true
+}
+],
+"synced": [
+26
+]
+},
 "ntm:machine_refinery": {
 "inventory": [
 11,
@@ -4557,6 +4646,23 @@
 20
 ]
 },
+"ntm:machine_rtg_grey": {
+"inventory": [
+8,
+106
+],
+"slots": [
+{
+"grid": [
+16,
+18,
+5,
+3
+]
+}
+],
+"synced": []
+},
 "ntm:machine_shredder": {
 "inventory": [
 8,
@@ -4616,6 +4722,14 @@
 ],
 "synced": []
 },
+"ntm:machine_solar_boiler": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
 "ntm:machine_solidifier": {
 "inventory": [
 8,
@@ -4665,6 +4779,91 @@
 "slots": [],
 "synced": [
 0
+]
+},
+"ntm:machine_stirling": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0,
+1
+]
+},
+"ntm:machine_stirling_creative": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0,
+1
+]
+},
+"ntm:machine_stirling_steel": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0,
+1
+]
+},
+"ntm:machine_turbinegas": {
+"inventory": [
+8,
+141
+],
+"slots": [
+{
+"x": 8,
+"y": 109
+},
+{
+"max": 1,
+"x": 36,
+"y": 17
+}
+],
+"synced": []
+},
+"ntm:machine_turbofan": {
+"inventory": [
+8,
+121
+],
+"slots": [
+{
+"x": 17,
+"y": 17
+},
+{
+"output": true,
+"x": 17,
+"y": 53
+},
+{
+"x": 98,
+"y": 71
+},
+{
+"x": 143,
+"y": 71
+},
+{
+"max": 1,
+"x": 44,
+"y": 71
+}
+],
+"synced": [
+5,
+6
 ]
 },
 "ntm:machine_vacuum_distill": {
@@ -4864,6 +5063,129 @@
 {
 "x": 143,
 "y": 54
+}
+],
+"synced": []
+},
+"ntm:machine_zirnox": {
+"inventory": [
+8,
+174
+],
+"slots": [
+{
+"x": 26,
+"y": 16
+},
+{
+"x": 62,
+"y": 16
+},
+{
+"x": 98,
+"y": 16
+},
+{
+"x": 8,
+"y": 34
+},
+{
+"x": 44,
+"y": 34
+},
+{
+"x": 80,
+"y": 34
+},
+{
+"x": 116,
+"y": 34
+},
+{
+"x": 26,
+"y": 52
+},
+{
+"x": 62,
+"y": 52
+},
+{
+"x": 98,
+"y": 52
+},
+{
+"x": 8,
+"y": 70
+},
+{
+"x": 44,
+"y": 70
+},
+{
+"x": 80,
+"y": 70
+},
+{
+"x": 116,
+"y": 70
+},
+{
+"x": 26,
+"y": 88
+},
+{
+"x": 62,
+"y": 88
+},
+{
+"x": 98,
+"y": 88
+},
+{
+"x": 8,
+"y": 106
+},
+{
+"x": 44,
+"y": 106
+},
+{
+"x": 80,
+"y": 106
+},
+{
+"x": 116,
+"y": 106
+},
+{
+"x": 26,
+"y": 124
+},
+{
+"x": 62,
+"y": 124
+},
+{
+"x": 98,
+"y": 124
+},
+{
+"x": 143,
+"y": 124
+},
+{
+"x": 179,
+"y": 124
+},
+{
+"output": true,
+"x": 143,
+"y": 142
+},
+{
+"output": true,
+"x": 179,
+"y": 142
 }
 ],
 "synced": []
@@ -5291,6 +5613,45 @@
 ],
 "synced": []
 },
+"ntm:pile_device__control": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0
+]
+},
+"ntm:pile_device__loader": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0,
+1
+]
+},
+"ntm:pile_device__vent": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0
+]
+},
+"ntm:solar_mirror": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
 "ntm:teste": {
 "inventory": [
 8,
@@ -5307,6 +5668,14 @@
 "y": 53
 }
 ],
+"synced": []
+},
+"ntm:zirnox_destroyed": {
+"inventory": [
+8,
+84
+],
+"slots": [],
 "synced": []
 }
 }

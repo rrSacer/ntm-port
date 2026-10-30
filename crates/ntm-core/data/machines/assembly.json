@@ -5238,6 +5238,47 @@
 "pools": []
 },
 {
+"name": "ass.watzcasing",
+"label": "Elemento de Estabilidade do Reator Watz ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:624",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__cdalloy",
+"ntm:plate_welded__tcalloy"
+],
+"n": 1,
+"label": "Placa Soldada de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:ingot_boron"
+],
+"n": 3,
+"label": "Lingote de Boro"
+},
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 2,
+"label": "Placa Soldada de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:watz_end",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.overdrive1",
 "label": "Melhoria de Sobrecarga Mk.I",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:631",
@@ -16602,5 +16643,5 @@
 "pools": []
 }
 ],
-"skipped": 170
+"skipped": 169
 }

@@ -627,6 +627,29 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
+    // Reactors R4 (c1e30d25): the Watz, its pump and its core structure.
+    // Inert until their stage is approved.
+    BlockSpec {
+        id: "ntm:watz",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:watz_pump",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:struct_watz_core",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
     // Reactors R3 (6fb2e04f): the PWR's controller and its casing.
     // Inert until their stage is approved.
     BlockSpec {
