@@ -394,6 +394,8 @@ impl Slotted for GasCent {
         &mut self.slots
     }
     fn sync_in(&mut self) {
+        // A creative battery in its battery slot keeps it full.
+        self.power = crate::machine::charge_from_slot(&self.slots, slot::BATTERY, self.power, MAX_POWER);
         self.out = self.slots[slot::OUT].iter().flatten().filter(|s| s.count > 0).map(|s| (s.id.clone(), s.count)).collect();
         self.upgrade = self.slots.get(slot::UPGRADE).is_some_and(|s| s.as_ref().is_some_and(|s| s.id == UPGRADE));
     }
@@ -513,5 +515,15 @@ mod tests {
         let h = Held { item: "ntm:fluid_tank_full__water".into(), count: 1 };
         g.action(actions::POUR, Some(&h), &mut fx);
         assert!(matches!(fx[0], Effect::Toast(_)));
+    }
+
+    /// A creative battery in slot 4 keeps it full, as the electric press's.
+    #[test]
+    fn the_battery_slot_charges_it() {
+        use crate::server::container_bridge::Slotted;
+        let mut g = GasCent { slots: vec![None; slot::COUNT], ..GasCent::default() };
+        g.slots[slot::BATTERY] = Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1));
+        g.sync_in();
+        assert_eq!(g.power, MAX_POWER);
     }
 }
