@@ -1847,3 +1847,5 @@ mod bedrock_tests;
 mod crystallizer_tests;
 
 mod stage3_tests;
+
+mod stage4_tests;
