@@ -1,0 +1,47 @@
+{
+  "obj": "ntm:models/obj/arc_furnace.obj",
+  "texture": "ntm:textures/models/machines/arc_furnace.png",
+  "rotation": 90,
+  "radius": 6.0,
+  "hide": [
+    "ContentsHot",
+    "ContentsCold",
+    "Electrode1Hot",
+    "Electrode2Hot",
+    "Electrode3Hot",
+    "Electrode1Short",
+    "Electrode2Short",
+    "Electrode3Short"
+  ],
+  "bones": {
+    "Cable1": {
+      "pivot": [
+        0,
+        5.5,
+        0.5
+      ]
+    },
+    "Cable2": {
+      "pivot": [
+        0,
+        5.5,
+        0
+      ]
+    },
+    "Cable3": {
+      "pivot": [
+        0,
+        5.5,
+        -0.5
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.arc_furnace.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_arc_furnace_large.animation.json"
+}

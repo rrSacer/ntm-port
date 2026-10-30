@@ -7329,6 +7329,254 @@
         "rotation": 180,
         "radius": 6.8
       }
+    },
+    "ntm:machine_arc_furnace_large": {
+      "source": "ContainerMachineArcFurnaceLarge, GUIMachineArcFurnaceLarge (gui_arc_furnace.png 176x256), MachineArcFurnaceLarge {4,0,2,2,2,2} offset 2, RenderArcFurnace (case 2: 90; the lid, the contents and each electrode's state follow the machine's values: drawn here with fresh electrodes and the lid down; the cables swing while it works)",
+      "machine": {
+        "slots": [
+          {
+            "x": 62,
+            "y": 22,
+            "accept": [
+              "ntm:arc_electrode__graphite",
+              "ntm:arc_electrode__lanthanium",
+              "ntm:arc_electrode__desh",
+              "ntm:arc_electrode__saturnite",
+              "ntm:arc_electrode_burnt__graphite",
+              "ntm:arc_electrode_burnt__lanthanium",
+              "ntm:arc_electrode_burnt__desh",
+              "ntm:arc_electrode_burnt__saturnite"
+            ],
+            "max": 1
+          },
+          {
+            "x": 80,
+            "y": 22,
+            "accept": [
+              "ntm:arc_electrode__graphite",
+              "ntm:arc_electrode__lanthanium",
+              "ntm:arc_electrode__desh",
+              "ntm:arc_electrode__saturnite",
+              "ntm:arc_electrode_burnt__graphite",
+              "ntm:arc_electrode_burnt__lanthanium",
+              "ntm:arc_electrode_burnt__desh",
+              "ntm:arc_electrode_burnt__saturnite"
+            ],
+            "max": 1
+          },
+          {
+            "x": 98,
+            "y": 22,
+            "accept": [
+              "ntm:arc_electrode__graphite",
+              "ntm:arc_electrode__lanthanium",
+              "ntm:arc_electrode__desh",
+              "ntm:arc_electrode__saturnite",
+              "ntm:arc_electrode_burnt__graphite",
+              "ntm:arc_electrode_burnt__lanthanium",
+              "ntm:arc_electrode_burnt__desh",
+              "ntm:arc_electrode_burnt__saturnite"
+            ],
+            "max": 1
+          },
+          {
+            "x": 8,
+            "y": 108,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 152,
+            "y": 108,
+            "accept": []
+          },
+          {
+            "grid": [
+              44,
+              54,
+              5,
+              4
+            ],
+            "accept_recipes": "arc_furnace"
+          },
+          {
+            "grid": [
+              44,
+              129,
+              5,
+              1
+            ],
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          174
+        ],
+        "data": 30,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -2
+          ],
+          "max": [
+            2,
+            4,
+            2
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_arc_furnace.png",
+        "texture_from": "textures/gui/processing/gui_arc_furnace.png",
+        "size": [
+          176,
+          256
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              8,
+              36,
+              7,
+              70
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              17,
+              36,
+              7,
+              70
+            ],
+            "uv": [
+              183,
+              0
+            ],
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 10,
+            "min": 1,
+            "rect": [
+              7,
+              17,
+              18,
+              18
+            ],
+            "uv": [
+              190,
+              0
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              8,
+              36,
+              7,
+              70
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/arc_furnace.obj",
+        "obj_from": "models/machines/arc_furnace.obj",
+        "texture": "ntm:textures/models/machines/arc_furnace.png",
+        "texture_from": "textures/models/machines/arc_furnace.png",
+        "rotation": 90,
+        "radius": 6.0,
+        "hide": [
+          "ContentsHot",
+          "ContentsCold",
+          "Electrode1Hot",
+          "Electrode2Hot",
+          "Electrode3Hot",
+          "Electrode1Short",
+          "Electrode2Short",
+          "Electrode3Short"
+        ],
+        "bones": {
+          "Cable1": {
+            "pivot": [
+              0,
+              5.5,
+              0.5
+            ]
+          },
+          "Cable2": {
+            "pivot": [
+              0,
+              5.5,
+              0
+            ]
+          },
+          "Cable3": {
+            "pivot": [
+              0,
+              5.5,
+              -0.5
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.arc_furnace.work",
+          "length": 0.6283,
+          "bones": {
+            "Cable1": {
+              "swing": {
+                "axis": "x",
+                "amp": 30
+              }
+            },
+            "Cable2": {
+              "swing": {
+                "axis": "x",
+                "amp": 30
+              }
+            },
+            "Cable3": {
+              "swing": {
+                "axis": "x",
+                "amp": 30
+              }
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.arc_furnace.work",
+            "property": "honey_level",
+            "not": "0"
+          }
+        ]
+      }
     }
   }
 }
