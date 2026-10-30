@@ -5,21 +5,14 @@
 use horizon_client::hud::HudBatch;
 use ntm_core::screens::{self as model, Layout, ScreenDef};
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex, OnceLock};
-
-/// The machine files embedded in ntm-core (`tools/machine-gen`): slot places,
-/// screens, title, inventory.
-fn machine_files() -> &'static HashMap<String, serde_json::Value> {
-    static T: OnceLock<HashMap<String, serde_json::Value>> = OnceLock::new();
-    T.get_or_init(|| serde_json::from_str(include_str!("ntm-core/data/machine_files.json")).unwrap_or_default())
-}
+use std::sync::{Arc, Mutex};
 
 fn lock<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
     m.lock().unwrap_or_else(|e| e.into_inner())
 }
 
 fn layout(block: &str) -> Option<Layout> {
-    machine_files().get(block).map(|file| model::layout(block, file))
+    model::layout_of(block)
 }
 
 /// Screen `name` (`ntm:machine_battery`), read once from the mounted

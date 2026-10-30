@@ -344,6 +344,14 @@ pub fn layout(block: &str, file: &Value) -> Layout {
     }
 }
 
+/// Block `block`'s layout, from the machine files embedded by
+/// tools/machine-gen (none for a block without one).
+pub fn layout_of(block: &str) -> Option<Layout> {
+    static FILES: std::sync::OnceLock<HashMap<String, Value>> = std::sync::OnceLock::new();
+    let files = FILES.get_or_init(|| serde_json::from_str(include_str!("../data/machine_files.json")).unwrap_or_default());
+    files.get(block).map(|file| layout(block, file))
+}
+
 /// `{0}` is value 0; `{0:si}` writes it with an SI prefix (`12.5k`), as
 /// HBM's `BobMathUtil.getShortNumber`.
 pub fn format(line: &str, values: &[i32]) -> String {
