@@ -1,0 +1,21 @@
+{
+  "obj": "ntm:models/obj/heating_oven.obj",
+  "texture": "ntm:textures/models/machines/heating_oven.png",
+  "rotation": 90,
+  "radius": 2.0,
+  "show": {
+    "InnerBurning": {
+      "property": "honey_level",
+      "not": "0"
+    },
+    "Inner": {
+      "property": "honey_level",
+      "is": "0"
+    }
+  },
+  "glow": [
+    "InnerBurning"
+  ],
+  "open": "animation.heating_oven.open",
+  "animations": "ntm:animations/heater_oven.animation.json"
+}

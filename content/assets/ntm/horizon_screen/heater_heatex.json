@@ -1,0 +1,144 @@
+{
+  "texture": "ntm:textures/gui/machine/gui_heatex.png",
+  "size": [
+    176,
+    204
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    110
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        44,
+        36,
+        16,
+        52
+      ],
+      "color": 2,
+      "dir": "up"
+    },
+    {
+      "value": 3,
+      "max": 4,
+      "rect": [
+        116,
+        36,
+        16,
+        52
+      ],
+      "color": 5,
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        44,
+        36,
+        16,
+        52
+      ],
+      "lines": [
+        "{0} / {1} mB"
+      ]
+    },
+    {
+      "rect": [
+        116,
+        36,
+        16,
+        52
+      ],
+      "lines": [
+        "{3} / {4} mB"
+      ]
+    }
+  ],
+  "texts": [
+    {
+      "at": [
+        73,
+        31
+      ],
+      "text": "{6}",
+      "color": "#00ff00",
+      "shadow": true
+    },
+    {
+      "at": [
+        73,
+        49
+      ],
+      "text": "{7}",
+      "color": "#00ff00",
+      "shadow": true
+    }
+  ],
+  "buttons": [
+    {
+      "id": 2,
+      "shift": 3,
+      "rect": [
+        70,
+        26,
+        18,
+        18
+      ],
+      "lines": [
+        "Amount per cycle",
+        "-1000 (shift: -1)"
+      ]
+    },
+    {
+      "id": 0,
+      "shift": 1,
+      "rect": [
+        88,
+        26,
+        18,
+        18
+      ],
+      "lines": [
+        "Amount per cycle",
+        "+1000 (shift: +1)"
+      ]
+    },
+    {
+      "id": 6,
+      "shift": 7,
+      "rect": [
+        70,
+        44,
+        18,
+        18
+      ],
+      "lines": [
+        "Cycle tick delay",
+        "-1 (shift: -20)"
+      ]
+    },
+    {
+      "id": 4,
+      "shift": 5,
+      "rect": [
+        88,
+        44,
+        18,
+        18
+      ],
+      "lines": [
+        "Cycle tick delay",
+        "+1 (shift: +20)"
+      ]
+    }
+  ]
+}
