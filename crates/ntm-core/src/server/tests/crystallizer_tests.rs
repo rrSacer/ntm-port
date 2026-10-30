@@ -83,3 +83,16 @@ fn the_tanks_fluid_picks_the_line_and_the_output_slot_holds_one_item() {
     run(&mut g, 205);
     assert_eq!(slots(&g)[2], Some(Stack::new("ntm:bedrock_ore__primary_first_light", 1)));
 }
+
+/// The creative battery in its battery slot (1) keeps it full: it washes
+/// with no other power.
+#[test]
+fn a_creative_battery_in_its_slot_powers_the_crystallizer() {
+    let mut g = game();
+    crystallizer(&mut g);
+    edit(&mut g, &|c| c.fluid_give("water", 1_000));
+    put(&mut g, 1, Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1)));
+    put(&mut g, 0, Some(Stack::new("ntm:bedrock_ore__base_light", 1)));
+    g.run(105);
+    assert_eq!(slots(&g)[2], Some(Stack::new("ntm:bedrock_ore__base_washed_light", 1)));
+}
