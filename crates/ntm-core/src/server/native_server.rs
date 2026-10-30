@@ -5,6 +5,9 @@
 //! phases are [`Server::tick`]'s, on the same [`ServerHost`].
 use super::*;
 
+/// Blocks read a tick to find the cables next to adopted machines.
+pub const CABLE_READS_PER_TICK: usize = 256;
+
 impl Server {
     /// A server for the native bundle, in its world.
     pub fn native(host: &mut impl ServerHost, tick: u64) -> Self {
@@ -21,6 +24,7 @@ impl Server {
         for e in std::mem::take(&mut self.queued) {
             self.block_event(host, e);
         }
+        self.native_find_cables(host);
         self.slots_in(host);
         self.heat_tick();
         self.simulate(host);
@@ -63,9 +67,38 @@ impl Server {
         }
         let Ok(m) = serde_json::from_str::<Machine>(json) else { return false };
         r.world.machines.insert(key.clone(), m.upgraded());
-        r.seen.insert(key);
+        r.seen.insert(key.clone());
         r.topo_dirty = true;
+        // Its cables aren't kept anywhere: found again from the blocks.
+        r.native_scan.push_back(key);
         true
+    }
+
+    /// The cables next to the cells waiting, and next to those found, from
+    /// the blocks: [`CABLE_READS_PER_TICK`] reads a tick at most. Each cell
+    /// is looked around once a session (a cable put later comes as a
+    /// block change).
+    fn native_find_cables(&mut self, host: &mut impl ServerHost) {
+        let Some(r) = self.ready() else { return };
+        let mut reads = 0;
+        while reads + 6 <= CABLE_READS_PER_TICK {
+            let Some(key) = r.native_scan.pop_front() else { break };
+            if !r.native_scanned.insert(key.clone()) {
+                continue;
+            }
+            for d in crate::energy::DIRS {
+                let n = (key.0.clone(), [key.1[0] + d[0], key.1[1] + d[1], key.1[2] + d[2]]);
+                if r.world.cables.contains(&n) || r.world.machines.contains_key(&n) {
+                    continue;
+                }
+                reads += 1;
+                if host.get_block(&n.0, n.1).is_some_and(|b| registry::is_cable(blockstate::id_of(&b))) {
+                    r.world.cables.insert(n.clone());
+                    r.topo_dirty = true;
+                    r.native_scan.push_back(n);
+                }
+            }
+        }
     }
 
     /// Whether the machine at (`dim`, `pos`) is known.
@@ -94,6 +127,7 @@ impl Server {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::machine::Data;
     use crate::server::container_bridge::{Slots, Stack};
 
     /// The native game as the bundle's host sees it: blocks, each block
@@ -176,6 +210,30 @@ mod tests {
         assert!(again.native_adopt(OW, AT, &saved));
         again.native_tick(&mut w, 101);
         assert!(w.data[&AT][0] > 0, "o calor voltou com o estado");
+
+        // A battery adopted beside the firebox's cable line: the cables are
+        // found from the blocks, and its power goes on to a furnace.
+        let (bat, fur) = ([10, 64, 0], [14, 64, 0]);
+        for x in 11..14 {
+            w.blocks.insert([x, 64, 0], "ntm:red_cable".into());
+        }
+        w.blocks.insert(bat, "ntm:machine_battery[facing=north,honey_level=0]".into());
+        w.blocks.insert(fur, "ntm:machine_electric_furnace_off[facing=north,honey_level=0]".into());
+        let mut b = Machine::new(crate::machine::Kind::Battery, "ntm:machine_battery", Some("north".into()));
+        if let Data::Battery(x) = &mut b.data {
+            x.power = x.max;
+            x.mode = crate::machine::BatteryMode::Output;
+        }
+        let f = Machine::new(crate::machine::Kind::ElectricFurnace, "ntm:machine_electric_furnace_off", Some("north".into()));
+        assert!(again.native_adopt(OW, bat, &serde_json::to_string(&b).unwrap()));
+        assert!(again.native_adopt(OW, fur, &serde_json::to_string(&f).unwrap()));
+        for t in 110..130 {
+            again.native_tick(&mut w, t);
+        }
+        let r = again.ready().unwrap();
+        assert_eq!(r.world.cables.len(), 3, "os três cabos achados nos blocos");
+        let Data::ElectricFurnace(f) = &r.world.machines[&(OW.to_string(), fur)].data else { panic!() };
+        assert!(f.power > 0, "a energia chegou pelos cabos");
 
         // Broken: gone from the server.
         w.blocks.insert(AT, "minecraft:air".into());

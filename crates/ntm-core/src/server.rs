@@ -158,6 +158,11 @@ struct Ready {
     verify_publish: BTreeSet<u64>,
     /// The state each machine last kept with its block entity (native).
     native_saved: BTreeMap<Key, String>,
+    /// Cells whose neighbours may hold cables not yet known (a machine
+    /// adopted, a cable found): the cables are found from the blocks, a
+    /// few reads a tick (native).
+    native_scan: std::collections::VecDeque<Key>,
+    native_scanned: BTreeSet<Key>,
 }
 
 #[derive(Debug)]
@@ -611,6 +616,8 @@ impl Server {
             verify,
             verify_publish: BTreeSet::new(),
             native_saved: BTreeMap::new(),
+            native_scan: Default::default(),
+            native_scanned: BTreeSet::new(),
         }));
     }
 

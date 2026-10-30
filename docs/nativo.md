@@ -94,3 +94,12 @@ Desenho no artifact "L3: todas as máquinas nativas". O `Server` roda as mesmas 
 Os slots, as regras e o `synced` de cada máquina vêm dos `horizon_machine/*.json` do conteúdo, embutidos no ntm-core pelo `tools/machine-gen/build.py` (`data/machine_files.json`). O `native_data` não lê o `data/` dos content mods, e o `native_asset` só lê `assets/`.
 
 **Prova** (`tools/test-game/native_l3.py`): uma firebox e uma prensa a carvão postas por `/setblock` e alimentadas por funis. As regras dos slots levaram o carvão ao combustível, a matriz ao slot dela e os lingotes à entrada. Em 20 s, a firebox chegou a 85.800 de calor e apareceu acesa (`honey_level=4`); a prensa fez 7 placas, com a matriz em desgaste 7 (`minecraft:damage`). Depois de fechar e reabrir, o servidor adotou as duas do estado salvo: a prensa tinha 8 placas e a matriz em desgaste 8, e a firebox seguia acesa com calor cheio.
+
+## Cabos, e lacunas da L3 (30/10)
+
+**Cabos:** não são guardados em lugar nenhum. Quando o servidor adota uma máquina, ele procura nos blocos vizinhos os cabos (`native_find_cables`, até 256 leituras por tick), e de cada cabo achado os vizinhos dele; um cabo posto depois chega como mudança de bloco, e o `simulate` tira os que somem. O mundo é a única fonte. Os dutos são máquinas e voltam como as outras.
+
+**Lacunas:**
+
+- **Nether e End:** o block entity de uma máquina só é alcançado na dimensão em tick (`native_with_mod_block_entity` usa `game.dim`); as máquinas das outras dimensões ainda não passam pelo servidor.
+- **Máquinas só com a tela antiga:** 12 máquinas registradas não têm `horizon_machine` (bateria, queimador a lenha, duto, barril, tanque, `ntm:teste` e as 5 do lote de vapor; a fornalha elétrica usa o menu de fornalha). Os controles delas eram botões da tela antiga (o modo da bateria, o tipo do duto, despejar no barril), que sai com a camada WASM. Precisam de arquivo de máquina e tela nativa (`horizon_screen` e o intérprete da L2).
