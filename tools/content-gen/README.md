@@ -1,6 +1,6 @@
 ## Triturador (2026-10-29)
 
-O catálogo tem **2516 IDs**, incluindo `ntm:machine_shredder`; o pipeline exporta **722 receitas do triturador** com precedência fonte e contratos das três lâminas. A receita real de montagem também está disponível. A flag `--max-damage` emite a durabilidade por `components.minecraft:max_damage`, compatível com o upstream atual e o fork; o padrão conserva as declarações sem durabilidade. `tools/build-visual.sh` aplica o mesmo componente aos 26 itens duráveis ao empacotar. Contratos, limites e reprodução em [docs/content-shredder.md](../../docs/content-shredder.md).
+O catálogo tem **2516 IDs**, incluindo `ntm:machine_shredder`; o pipeline exporta **722 receitas do triturador** com precedência fonte e contratos das três lâminas. A receita real de montagem também está disponível. A durabilidade dos 26 itens é emitida por padrão em `components.minecraft:max_damage`, compatível com o upstream atual e o fork com suporte C1. A flag `--max-damage` continua aceita por compatibilidade. `tools/build-visual.sh` conserva o mesmo formato ao empacotar. Contratos, limites e reprodução em [docs/content-shredder.md](../../docs/content-shredder.md).
 
 ## M3: fluidos e máquinas (2026-10-29)
 

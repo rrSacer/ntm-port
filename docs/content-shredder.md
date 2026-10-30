@@ -36,7 +36,7 @@ A montadora passa a ter a receita real `ass.shredder`: oito placas de aço, quat
 
 As três lâminas já existiam e empilham até um. A seção `blades` do JSON registra aço=400, titânio=500 e desh=0/sem desgaste, extraídos dos construtores `ItemBlades`. O gerador também registra esses dados no catálogo.
 
-`--max-damage` é uma extensão **opt-in** para o motor com o patch `ntm-visual`. Ativada, emite `max_damage:400`/`500` nas declarações das lâminas de aço/titânio. Desh sempre omite o campo. O padrão mantém a compatibilidade com API 0.2 base, que rejeita campos desconhecidos; nesse modo o desgaste pode ser administrado pela lógica, mas a barra de durabilidade não aparece. O template continua sendo um item comum, sem herdar comportamento de arco ou ferramenta vanilla.
+A geração emite por padrão `components: {"minecraft:max_damage": 400}`/`500` nas declarações das lâminas de aço/titânio, no formato oficial do upstream atual e aceito pelo fork após o patch C1. Desh sempre omite o componente. A flag `--max-damage` continua aceita por compatibilidade com os comandos anteriores. Veja [migração C1](content-migration-c1.md). O template continua sendo um item comum, sem herdar comportamento de arco ou ferramenta vanilla.
 
 ## Reprodução e validação
 
@@ -46,7 +46,7 @@ As três lâminas já existiam e empilham até um. A seção `blades` do JSON re
 # Pipeline completo; restaura a sobreposição visual autorizada em seguida:
 /usr/local/bin/agent-run python3 tools/content-gen/generate.py
 /usr/local/bin/agent-run python3 tools/visual-gen/generate.py
-# Somente se o alvo tiver a extensão max_damage:
+# Para o upstream atual ou o fork com suporte C1 a componentes:
 durable_content=$(mktemp -d /tmp/ntm-durable-content-XXXXXX)
 cp -a content/. "$durable_content/"
 /usr/local/bin/agent-run python3 tools/content-gen/generate.py --max-damage --output "$durable_content"

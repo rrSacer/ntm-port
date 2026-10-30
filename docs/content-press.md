@@ -32,7 +32,7 @@ A escrita direta de `crates/ntm-core/data/press_recipes.json` que existia desde 
 
 ## As 32 matrizes (`stamps`), `max_damage` e lacunas documentadas
 
-Todas as **32 instâncias de `ItemStamp`** declaradas em `ModItems.java:2724-2757` já existem em `content/ids.json` com `max_stack_size: 1`. Assim como nas lâminas do triturador (`ItemBlades`), `m3_catalog.py` registra `max_damage` em `content/ids.json` para as **24 matrizes desgastáveis** e omite `max_damage` nas **8 matrizes eternas de desh** (`durability == 0`): o pacote base em `content/data/ntm/horizon/item/stamp_*.json` permanece compatível com a API 0.2 sem o campo, enquanto `tools/build-visual.sh` (e `generate.py --max-damage`) injeta `max_damage` nas declarações do motor `ntm-visual` para preservar o dano real do slot no inventário.
+Todas as **32 instâncias de `ItemStamp`** declaradas em `ModItems.java:2724-2757` já existem em `content/ids.json` com `max_stack_size: 1`. Assim como nas lâminas do triturador (`ItemBlades`), `m3_catalog.py` registra `max_damage` em `content/ids.json` para as **24 matrizes desgastáveis** e omite `max_damage` nas **8 matrizes eternas de desh** (`durability == 0`): o conteúdo em `content/data/ntm/horizon/item/stamp_*.json` já declara o componente, e `tools/build-visual.sh` conserva `components: {"minecraft:max_damage": N}` nas declarações para preservar o dano real do slot no inventário. O componente é aceito pelo upstream atual e pelo fork com o patch de compatibilidade da [migração C1](content-migration-c1.md); o campo solto não é mais emitido.
 
 | Família | Durabilidade (`maxDamage`) | `max_damage` em `ids.json` | Tipos (`type`) | Quantidade |
 |---|---:|---:|---|---:|
