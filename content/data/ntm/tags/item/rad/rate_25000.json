@@ -7,6 +7,11 @@
     "ntm:gem_rad",
     "ntm:ingot_pu241",
     "ntm:ore_sellafield_radgem",
+    "ntm:pwr_fuel__hep241",
+    "ntm:pwr_fuel_depleted__hen237",
+    "ntm:pwr_fuel_depleted__mox",
+    "ntm:pwr_fuel_hot__hen237",
+    "ntm:pwr_fuel_hot__mox",
     "ntm:rbmk_fuel_mep"
   ]
 }

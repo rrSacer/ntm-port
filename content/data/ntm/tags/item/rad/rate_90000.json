@@ -3,6 +3,8 @@
   "values": [
     "ntm:powder_actinium",
     "ntm:powder_co60",
+    "ntm:pwr_fuel_depleted__mea",
+    "ntm:pwr_fuel_hot__mea",
     "ntm:rbmk_fuel_ra226be"
   ]
 }

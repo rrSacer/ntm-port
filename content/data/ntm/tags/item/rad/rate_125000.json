@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:pwr_fuel_depleted__bfb_pu241",
+    "ntm:pwr_fuel_hot__bfb_pu241"
+  ]
+}

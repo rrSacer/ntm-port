@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 457,
+    "emitted": 461,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 174,
+    "skipped_source_calls": 170,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -4407,6 +4407,105 @@
       "label_en": "RBMK Autoloader"
     },
     {
+      "name": "ass.pwrfuel",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:538",
+      "duration": 200,
+      "power": 500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__lead"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:plate_welded__zirconium"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:pwr_fuel",
+          4
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Barra de Combustível do PWR ×4",
+      "label_en": "PWR Fuel Rod ×4"
+    },
+    {
+      "name": "ass.pwrcontrol",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:541",
+      "duration": 200,
+      "power": 500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:ingot_boron"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:pwr_control",
+          4
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Barra de Controle do PWR ×4",
+      "label_en": "PWR Control Rod ×4"
+    },
+    {
+      "name": "ass.pwrchannel",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:544",
+      "duration": 200,
+      "power": 500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pipe__steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:plate_copper"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:pwr_channel",
+          4
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Canal de Refrigeração do PWR ×4",
+      "label_en": "PWR Coolant Channel ×4"
+    },
+    {
       "name": "ass.pwrheatex",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:547",
       "duration": 200,
@@ -4564,6 +4663,43 @@
       "pools": [],
       "label": "Vaso de Pressão do PWR ×4",
       "label_en": "PWR Pressure Vessel ×4"
+    },
+    {
+      "name": "ass.pwrcontroller",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:563",
+      "duration": 200,
+      "power": 500,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__lead"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:pwr_controller",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Controlador do PWR",
+      "label_en": "PWR Controller"
     },
     {
       "name": "ass.pwrport",
@@ -16250,30 +16386,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:514",
       "reason": "unregistered/ambiguous source item machine_exposure_chamber",
       "expression": "new GenericRecipe(\"ass.exposurechamber\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_exposure_chamber, 1))\n\t\t\t\t.inputItems(new OreDictStack(AL.plateCast(), 12), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(ANY_HARDPLASTIC.ingot(), 12), new OreDictStack(GOLD.wireDense(), 32), new ComparableStack(ModItems.motor_desh, 2), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.battery_pack, 1, EnumBatteryPack.CAPACITOR_TANTALUM), new ComparableStack(ModBlocks.glass_quartz, 16))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.LEAD_PLATING), new OreDictStack(ANY_HARDPLASTIC.ingot(), 24), new OreDictStack(GOLD.wireDense(), 32), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.COMPUTER))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"chip_quantum\")"
-    },
-    {
-      "name": "ass.pwrfuel",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:538",
-      "reason": "unregistered/ambiguous source item pwr_fuel",
-      "expression": "new GenericRecipe(\"ass.pwrfuel\").setup(200, 500).outputItems(new ItemStack(ModBlocks.pwr_fuel, 4))\n\t\t\t\t.inputItems(new OreDictStack(PB.plateCast(), 4), new OreDictStack(ZR.plateWelded(), 2))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.LEAD_PLATING), new OreDictStack(ZR.plateWelded(), 2))"
-    },
-    {
-      "name": "ass.pwrcontrol",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:541",
-      "reason": "unregistered/ambiguous source item pwr_control",
-      "expression": "new GenericRecipe(\"ass.pwrcontrol\").setup(200, 500).outputItems(new ItemStack(ModBlocks.pwr_control, 4))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 2), new OreDictStack(B.ingot(), 4), new ComparableStack(ModItems.motor, 1))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.STEEL_PLATING), new OreDictStack(B.ingot(), 4), new ComparableStack(ModItems.motor, 1))"
-    },
-    {
-      "name": "ass.pwrchannel",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:544",
-      "reason": "unregistered/ambiguous source item pwr_channel",
-      "expression": "new GenericRecipe(\"ass.pwrchannel\").setup(200, 500).outputItems(new ItemStack(ModBlocks.pwr_channel, 4))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.pipe(), 4), new OreDictStack(CU.plate(), 4))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.STEEL_PLATING), new OreDictStack(STEEL.pipe(), 4))"
-    },
-    {
-      "name": "ass.pwrcontroller",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:563",
-      "reason": "unregistered/ambiguous source item pwr_controller",
-      "expression": "new GenericRecipe(\"ass.pwrcontroller\").setup(200, 500).outputItems(new ItemStack(ModBlocks.pwr_controller, 1))\n\t\t\t\t.inputItems(new OreDictStack(PB.plateCast(), 4), new OreDictStack(RUBBER.ingot(), 4), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BASIC))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.LEAD_PLATING), new ComparableStack(ModItems.item_expensive, 3, EnumExpensiveType.CIRCUIT))"
     },
     {
       "name": "ass.fusioncore",

@@ -157,6 +157,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
     rows.extend(reactor_catalog.build(source))
     import rbmk_catalog
     rows.extend(rbmk_catalog.build(source))
+    import pwr_catalog
+    rows.extend(pwr_catalog.build(source))
     import energy_catalog
     rows.extend(energy_catalog.build(source))
     import petroleum_auxiliary_catalog
@@ -193,12 +195,14 @@ def build(source=SOURCE, output=ROOT / 'content'):
     if backlog.is_file():
         data = json.loads(backlog.read_text())
         for entry in data['entries']:
-            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES) | set(bedrock_processing_catalog.MACHINES) | set(petroleum_catalog.MACHINES) | set(energy_catalog.MACHINES) | set(reactor_catalog.MACHINES) | set(rbmk_catalog.MACHINES):
+            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES) | set(bedrock_processing_catalog.MACHINES) | set(petroleum_catalog.MACHINES) | set(energy_catalog.MACHINES) | set(reactor_catalog.MACHINES) | set(rbmk_catalog.MACHINES) | set(pwr_catalog.MACHINES):
                 entry['content_id'] = 'ntm:' + entry['id'] + ('_large' if entry['source_variable'] == 'machine_arc_furnace' else '')
-                if entry['source_variable'] in reactor_catalog.MACHINES:
+                if entry['source_variable'] in set(reactor_catalog.MACHINES) | set(pwr_catalog.MACHINES):
                     entry['content_ids']=['ntm:'+r['id'] for r in rows if r['type']=='block' and r['source_variable']==entry['source_variable']]
                     entry['content_id']=entry['content_ids'][0]
-                entry['status'] = ('Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred'
+                entry['status'] = ('Reactor R3 (PWR) content declared; native structure/fuel logic and visuals deferred'
+                                   if entry['source_variable'] in pwr_catalog.MACHINES else
+                                   'Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred'
                                    if entry['source_variable'] in rbmk_catalog.MACHINES else
                                    'Reactor R1 content declared; native structure/fuel logic and visuals deferred'
                                    if entry['source_variable'] in reactor_catalog.MACHINES else

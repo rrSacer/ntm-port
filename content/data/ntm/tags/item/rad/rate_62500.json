@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "ntm:block_pu_mix"
+    "ntm:block_pu_mix",
+    "ntm:pwr_fuel_depleted__mep",
+    "ntm:pwr_fuel_hot__mep"
   ]
 }

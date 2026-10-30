@@ -4,6 +4,8 @@
     "ntm:billet_au198",
     "ntm:billet_balefire_gold",
     "ntm:crystal_trixite",
+    "ntm:pwr_fuel_depleted__hep241",
+    "ntm:pwr_fuel_hot__hep241",
     "ntm:rbmk_pellet_balefire_gold"
   ]
 }

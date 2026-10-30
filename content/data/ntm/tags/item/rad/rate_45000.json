@@ -6,6 +6,8 @@
     "ntm:plate_cast__schrabidium",
     "ntm:powder_i131_tiny",
     "ntm:powder_schrabidium",
-    "ntm:powder_sr90"
+    "ntm:powder_sr90",
+    "ntm:pwr_fuel_depleted__bfb_am_mix",
+    "ntm:pwr_fuel_hot__bfb_am_mix"
   ]
 }

@@ -4,6 +4,10 @@
     "ntm:block_pu239",
     "ntm:block_u233",
     "ntm:cell_balefire",
-    "ntm:nugget_au198"
+    "ntm:nugget_au198",
+    "ntm:pwr_fuel_depleted__hep239",
+    "ntm:pwr_fuel_depleted__heu233",
+    "ntm:pwr_fuel_hot__hep239",
+    "ntm:pwr_fuel_hot__heu233"
   ]
 }

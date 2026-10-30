@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:ingot_am242"
+    "ntm:ingot_am242",
+    "ntm:pwr_fuel__hea242"
   ]
 }

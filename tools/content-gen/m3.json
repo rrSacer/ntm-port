@@ -22547,6 +22547,356 @@
       "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution."
     },
     {
+      "id": "pwr_fuel",
+      "source_variable": "pwr_fuel",
+      "type": "block",
+      "category": "decorative",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pwr_fuel_side.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/pwr_fuel_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/pwr_fuel_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/pwr_fuel_top.png"
+      },
+      "names": {
+        "en_us": "PWR Fuel Rod",
+        "pt_br": "Barra de Combustível do PWR"
+      },
+      "behavior_gap": "Source BlockPillarPWR: axis orientation, multiblock membership and the conversion by the controller into pwr_block are native logic; plain cube here. Shares its variable name with the item pwr_fuel; the item subtypes are pwr_fuel__<enum>."
+    },
+    {
+      "id": "pwr_control",
+      "source_variable": "pwr_control",
+      "type": "block",
+      "category": "decorative",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pwr_control_side.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/pwr_control_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/pwr_control_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/pwr_control_top.png"
+      },
+      "names": {
+        "en_us": "PWR Control Rod",
+        "pt_br": "Barra de Controle do PWR"
+      },
+      "behavior_gap": "Source BlockPillarPWR: axis orientation, multiblock membership and the conversion by the controller into pwr_block are native logic; plain cube here. Shares its variable name with the item pwr_fuel; the item subtypes are pwr_fuel__<enum>."
+    },
+    {
+      "id": "pwr_channel",
+      "source_variable": "pwr_channel",
+      "type": "block",
+      "category": "decorative",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pwr_channel_side.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/pwr_channel_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/pwr_channel_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/pwr_channel_top.png"
+      },
+      "names": {
+        "en_us": "PWR Coolant Channel",
+        "pt_br": "Canal de Refrigeração do PWR"
+      },
+      "behavior_gap": "Source BlockPillarPWR: axis orientation, multiblock membership and the conversion by the controller into pwr_block are native logic; plain cube here. Shares its variable name with the item pwr_fuel; the item subtypes are pwr_fuel__<enum>."
+    },
+    {
+      "id": "pwr_controller",
+      "source_variable": "pwr_controller",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pwr_casing_blank.png",
+      "textures": {
+        "side": "blocks/pwr_casing_blank",
+        "top": "blocks/pwr_casing_blank",
+        "front": "blocks/pwr_casing_blank"
+      },
+      "names": {
+        "en_us": "PWR Controller",
+        "pt_br": "Controlador do PWR"
+      },
+      "behavior_gap": "Source controller: structure validation, flux/heat/coolant ticking, GUI and the conversion of casing into pwr_block are native/visual work; casing cube fallback only."
+    },
+    {
+      "id": "pwr_block__internal",
+      "source_variable": "pwr_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pwr_block.png",
+      "textures": {
+        "side": "blocks/pwr_block",
+        "top": "blocks/pwr_block",
+        "front": "blocks/pwr_block"
+      },
+      "names": {
+        "en_us": "PWR",
+        "pt_br": "PWR"
+      },
+      "behavior_gap": "Internal block the controller swaps in for assembled parts (metadata 0 body, 1 port variant); remembers the original block and the core position. Hidden, no loot, connected textures are visual work."
+    },
+    {
+      "id": "pwr_block__port",
+      "source_variable": "pwr_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pwr_block.png",
+      "textures": {
+        "side": "blocks/pwr_block",
+        "top": "blocks/pwr_block",
+        "front": "blocks/pwr_block"
+      },
+      "names": {
+        "en_us": "PWR (Port)",
+        "pt_br": "PWR"
+      },
+      "behavior_gap": "Internal block the controller swaps in for assembled parts (metadata 0 body, 1 port variant); remembers the original block and the core position. Hidden, no loot, connected textures are visual work."
+    },
+    {
+      "id": "pwr_fuel__meu",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.MEU",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.meu.png",
+      "names": {
+        "en_us": "MEU PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR MEU"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__heu233",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.HEU233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.heu233.png",
+      "names": {
+        "en_us": "HEU-233 PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR HEU-233"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__heu235",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.HEU235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.heu235.png",
+      "names": {
+        "en_us": "HEU-235 PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR HEU-235"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__men",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.MEN",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.men.png",
+      "names": {
+        "en_us": "MEN PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR MEN"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__hen237",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.HEN237",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.hen237.png",
+      "names": {
+        "en_us": "HEN-237 PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR HEN-237"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__mox",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.MOX",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.mox.png",
+      "names": {
+        "en_us": "MOX PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR MOX"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__mep",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.MEP",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.mep.png",
+      "names": {
+        "en_us": "MEP PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR MEP"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__hep239",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.HEP239",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.hep239.png",
+      "names": {
+        "en_us": "HEP-239 PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR HEP-239"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__hep241",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.HEP241",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.hep241.png",
+      "names": {
+        "en_us": "HEP-241 PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR HEP-241"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__mea",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 9,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.MEA",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.mea.png",
+      "names": {
+        "en_us": "MEA PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR MEA"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__hea242",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 10,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.HEA242",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.hea242.png",
+      "names": {
+        "en_us": "HEA-242 PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR HEA-242"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__hes326",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 11,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.HES326",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.hes326.png",
+      "names": {
+        "en_us": "HES-326 PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR HES-326"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__hes327",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 12,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.HES327",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.hes327.png",
+      "names": {
+        "en_us": "HES-327 PWR Fuel Rod",
+        "pt_br": "Haste de Combustível PWR HES-327"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__bfb_am_mix",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 13,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.BFB_AM_MIX",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.bfb_am_mix.png",
+      "names": {
+        "en_us": "Fuel Grade Americium PWR BFB Rod",
+        "pt_br": "Haste BFB de Combustível PWR de Amerício de Grau Combustível"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_fuel__bfb_pu241",
+      "source_variable": "pwr_fuel",
+      "type": "item",
+      "category": "component",
+      "metadata": 14,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPWRFuel.BFB_PU241",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_fuel.bfb_pu241.png",
+      "names": {
+        "en_us": "Plutonium-241 PWR BFB Rod",
+        "pt_br": "Haste BFB de PWR de Plutônio-241"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_pwr.json; hot/depleted conversion and per-stack flux state belong to the native reactor."
+    },
+    {
+      "id": "pwr_printer",
+      "source_variable": "pwr_printer",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pwr_printer.png",
+      "names": {
+        "en_us": "PWR Printer",
+        "pt_br": "Impressora PWR"
+      },
+      "behavior_gap": "Source ItemPWRPrinter opens a slice-printer GUI over a selected cuboid; native item/GUI logic."
+    },
+    {
       "id": "heater_oven",
       "source_variable": "heater_oven",
       "type": "block",

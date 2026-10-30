@@ -15,6 +15,10 @@
     "ntm:nuclear_waste_long__thorium",
     "ntm:nuclear_waste_long__uranium233",
     "ntm:nuclear_waste_long__uranium235",
+    "ntm:pwr_fuel__hep239",
+    "ntm:pwr_fuel__heu233",
+    "ntm:pwr_fuel_depleted__meu",
+    "ntm:pwr_fuel_hot__meu",
     "ntm:rod_zirnox__u233_fuel"
   ]
 }

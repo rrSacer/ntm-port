@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:ingot_pu_mix"
+    "ntm:ingot_pu_mix",
+    "ntm:pwr_fuel__mep"
   ]
 }

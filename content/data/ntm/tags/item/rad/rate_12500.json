@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "ntm:billet_pu241",
+    "ntm:pwr_fuel__bfb_pu241",
     "ntm:rbmk_pellet_hep241"
   ]
 }

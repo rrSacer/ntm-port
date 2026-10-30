@@ -22978,6 +22978,18 @@
     "ntm:rbmk_steam_outlet": {
       "auto": false,
       "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pwr_controller": {
+      "auto": false,
+      "source": "Reactor R3 (PWR) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pwr_block__internal": {
+      "auto": false,
+      "source": "Reactor R3 (PWR) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pwr_block__port": {
+      "auto": false,
+      "source": "Reactor R3 (PWR) content fallback only; faithful models/multiblocks and native logic deferred."
     }
   },
   "textures": {

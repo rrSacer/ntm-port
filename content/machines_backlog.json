@@ -3751,7 +3751,11 @@
       "energy": false,
       "fluid": true,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R3 (PWR) content declared; native structure/fuel logic and visuals deferred",
+      "content_id": "ntm:pwr_controller",
+      "content_ids": [
+        "ntm:pwr_controller"
+      ]
     },
     {
       "id": "pwr_block",
@@ -3768,7 +3772,12 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R3 (PWR) content declared; native structure/fuel logic and visuals deferred",
+      "content_id": "ntm:pwr_block__internal",
+      "content_ids": [
+        "ntm:pwr_block__internal",
+        "ntm:pwr_block__port"
+      ]
     },
     {
       "id": "fusion_torus",

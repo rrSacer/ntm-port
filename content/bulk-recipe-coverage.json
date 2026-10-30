@@ -5969,6 +5969,141 @@
       }
     },
     {
+      "id": "ntm:bulk__da86fbc98bb1f327ed",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:135",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__meu",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a44e72d8c8dadbef74",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:136",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__heu233",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1dcf980d1657d41bf5",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:137",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__heu235",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c2524ab9ce97a16ea2",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:138",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__men",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__16dda490af6a2ac27a",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:139",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__hen237",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5a5b45efbb3cf9d5a0",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:140",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__mox",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f2672a1f73e2141b35",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:141",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__mep",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f2b54acff04b8cd5be",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:142",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__hep239",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1e42b7491be373618a",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:143",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__hep241",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__89716b25fc971f5b34",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:144",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__mea",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c19df943f225ee141e",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:145",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__hea242",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__02c187e8601d2cd9ec",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:146",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__hes326",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__e8a65a62bb81cf1d06",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:147",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__hes327",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__26e8a4a72cf14a01b0",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:148",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__bfb_am_mix",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__397e482cd30788f841",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:149",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pwr_fuel__bfb_pu241",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__18e6453d9eddb8ed7e",
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:151",
       "type": "minecraft:crafting_shaped",
@@ -6716,7 +6851,7 @@
       }
     }
   ],
-  "generated_count": 746,
+  "generated_count": 761,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -11745,96 +11880,6 @@
       "callee": "addShapelessAuto",
       "reason": "unregistered/ambiguous source item particle_digamma",
       "expression": "new ItemStack(ModItems.rbmk_fuel_drx, 1), new Object[] { ModItems.rbmk_fuel_balefire, ModItems.particle_digamma }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:135",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.MEU)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.MEU), new Object[] { \"F\", \"I\", \"F\", 'F', ModItems.billet_uranium_fuel, 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:136",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEU233)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEU233), new Object[] { \"F\", \"I\", \"F\", 'F', U233.billet(), 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:137",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEU235)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEU235), new Object[] { \"F\", \"I\", \"F\", 'F', U235.billet(), 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:138",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.MEN)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.MEN), new Object[] { \"F\", \"I\", \"F\", 'F', ModItems.billet_neptunium_fuel, 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:139",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEN237)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEN237), new Object[] { \"F\", \"I\", \"F\", 'F', NP237.billet(), 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:140",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.MOX)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.MOX), new Object[] { \"F\", \"I\", \"F\", 'F', ModItems.billet_mox_fuel, 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:141",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.MEP)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.MEP), new Object[] { \"F\", \"I\", \"F\", 'F', ModItems.billet_pu_mix, 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:142",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEP239)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEP239), new Object[] { \"F\", \"I\", \"F\", 'F', PU239.billet(), 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:143",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEP241)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEP241), new Object[] { \"F\", \"I\", \"F\", 'F', PU241.billet(), 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:144",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.MEA)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.MEA), new Object[] { \"F\", \"I\", \"F\", 'F', ModItems.billet_am_mix, 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:145",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEA242)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HEA242), new Object[] { \"F\", \"I\", \"F\", 'F', AM242.billet(), 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:146",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HES326)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HES326), new Object[] { \"F\", \"I\", \"F\", 'F', SA326.billet(), 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:147",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HES327)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.HES327), new Object[] { \"F\", \"I\", \"F\", 'F', SA327.billet(), 'I', ModItems.plate_polymer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:148",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.BFB_AM_MIX)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.BFB_AM_MIX), new Object[] { \"NFN\", \"NIN\", \"NBN\", 'F', ModItems.billet_am_mix, 'I', ModItems.plate_polymer, 'B', BI.billet(), 'N', ModItems.nugget_plutonium_fuel }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:149",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.BFB_PU241)",
-      "expression": "DictFrame.fromOne(ModItems.pwr_fuel, EnumPWRFuel.BFB_PU241), new Object[] { \"NFN\", \"NIN\", \"NBN\", 'F', PU241.billet(), 'I', ModItems.plate_polymer, 'B', BI.billet(), 'N', ModItems.nugget_uranium_fuel }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:162",

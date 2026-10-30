@@ -122,6 +122,19 @@ for pos,args,_ in calls(registry,r'\bregisterOtherFuel'):
     put(item,'radiation',base,source)
     if parts[4]=='true':put(item,'blinding',20,source)
     gaps.append({'id':item,'source':source,'expression':'HazardModifierFuelRadiation(target='+str(target)+'): fresh base exported; life-dependent interpolation requires native item data.'})
+# PWR rods: registerPWRFuel(enum, base) registers fresh=base, hot=10*base plus HOT 5, depleted=10*base.
+for pos,args,_ in calls(registry,r'\bregisterPWRFuel'):
+    parts=split(args)
+    if len(parts)!=2 or not parts[0].startswith('EnumPWRFuel.'):continue
+    try:base=number(parts[1])
+    except (ValueError,SyntaxError):continue
+    suffix=parts[0].split('.',1)[1].lower()
+    source='src/main/java/com/hbm/hazard/HazardRegistry.java:'+str(registry[:pos].count('\n')+1)
+    for form,factor in (('pwr_fuel',1),('pwr_fuel_hot',10),('pwr_fuel_depleted',10)):
+        item='ntm:'+form+'__'+suffix
+        if item not in {row['id'] for row in rows}:continue
+        put(item,'radiation',base*factor,source)
+        if form=='pwr_fuel_hot':put(item,'hot',5,source)
 # RBMK rods and pellets: fresh radiation is exported; the depletion
 # interpolation (HazardModifierRBMKRadiation) and rod heat (RBMKHot) are NBT.
 for pos,args,method in calls(registry,r'\bregisterRBMK(?:Rod|Pellet)?\b'):

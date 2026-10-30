@@ -4,6 +4,8 @@
     "ntm:block_u235",
     "ntm:fleija_core",
     "ntm:ingot_pu238",
+    "ntm:pwr_fuel_depleted__heu235",
+    "ntm:pwr_fuel_hot__heu235",
     "ntm:rbmk_fuel_hen",
     "ntm:rbmk_fuel_mox",
     "ntm:rbmk_fuel_zfb_am_mix",

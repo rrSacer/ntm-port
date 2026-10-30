@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "ntm:block_solinium"
+    "ntm:block_solinium",
+    "ntm:pwr_fuel_depleted__hes327",
+    "ntm:pwr_fuel_hot__hes327"
   ]
 }

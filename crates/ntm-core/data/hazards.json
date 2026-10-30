@@ -14528,273 +14528,363 @@
     },
     {
       "id": "ntm:pwr_fuel_depleted__bfb_am_mix",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 45.0,
+      "radiation_millirad_s": 45000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:470"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__bfb_pu241",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 125.0,
+      "radiation_millirad_s": 125000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:471"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__hea242",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 95.0,
+      "radiation_millirad_s": 95000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:467"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__hen237",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 25.0,
+      "radiation_millirad_s": 25000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:461"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__hep239",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 50.0,
+      "radiation_millirad_s": 50000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:464"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__hep241",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 250.0,
+      "radiation_millirad_s": 250000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:465"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__hes326",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 150.0,
+      "radiation_millirad_s": 150000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:468"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__hes327",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 175.0,
+      "radiation_millirad_s": 175000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:469"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__heu233",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 50.0,
+      "radiation_millirad_s": 50000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:458"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__heu235",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 10.0,
+      "radiation_millirad_s": 10000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:459"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__mea",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 90.0,
+      "radiation_millirad_s": 90000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:466"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__men",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 15.0,
+      "radiation_millirad_s": 15000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:460"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__mep",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 62.5,
+      "radiation_millirad_s": 62500,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:463"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__meu",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:457"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_depleted__mox",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 25.0,
+      "radiation_millirad_s": 25000,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:462"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__bfb_am_mix",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 45.0,
+      "radiation_millirad_s": 45000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:470"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__bfb_pu241",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 125.0,
+      "radiation_millirad_s": 125000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:471"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__hea242",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 95.0,
+      "radiation_millirad_s": 95000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:467"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__hen237",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 25.0,
+      "radiation_millirad_s": 25000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:461"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__hep239",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 50.0,
+      "radiation_millirad_s": 50000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:464"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__hep241",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 250.0,
+      "radiation_millirad_s": 250000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:465"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__hes326",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 150.0,
+      "radiation_millirad_s": 150000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:468"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__hes327",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 175.0,
+      "radiation_millirad_s": 175000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:469"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__heu233",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 50.0,
+      "radiation_millirad_s": 50000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:458"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__heu235",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 10.0,
+      "radiation_millirad_s": 10000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:459"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__mea",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 90.0,
+      "radiation_millirad_s": 90000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:466"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__men",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 15.0,
+      "radiation_millirad_s": 15000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:460"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__mep",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 62.5,
+      "radiation_millirad_s": 62500,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:463"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__meu",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:457"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_fuel_hot__mox",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
-      "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "radiation_rad_s": 25.0,
+      "radiation_millirad_s": 25000,
+      "other_hazards": {
+        "hot": 5
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:462"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:pwr_heatex",
@@ -25764,6 +25854,234 @@
     },
     {
       "id": "ntm:rbmk_fuel_test",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pwr_control",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pwr_channel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pwr_controller",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pwr_block__internal",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pwr_block__port",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__meu",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:457"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__heu233",
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:458"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__heu235",
+      "radiation_rad_s": 1.0,
+      "radiation_millirad_s": 1000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:459"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__men",
+      "radiation_rad_s": 1.5,
+      "radiation_millirad_s": 1500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:460"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__hen237",
+      "radiation_rad_s": 2.5,
+      "radiation_millirad_s": 2500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:461"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__mox",
+      "radiation_rad_s": 2.5,
+      "radiation_millirad_s": 2500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:462"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__mep",
+      "radiation_rad_s": 6.25,
+      "radiation_millirad_s": 6250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:463"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__hep239",
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:464"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__hep241",
+      "radiation_rad_s": 25.0,
+      "radiation_millirad_s": 25000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:465"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__mea",
+      "radiation_rad_s": 9.0,
+      "radiation_millirad_s": 9000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:466"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__hea242",
+      "radiation_rad_s": 9.5,
+      "radiation_millirad_s": 9500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:467"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__hes326",
+      "radiation_rad_s": 15.0,
+      "radiation_millirad_s": 15000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:468"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__hes327",
+      "radiation_rad_s": 17.5,
+      "radiation_millirad_s": 17500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:469"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__bfb_am_mix",
+      "radiation_rad_s": 4.5,
+      "radiation_millirad_s": 4500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:470"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_fuel__bfb_pu241",
+      "radiation_rad_s": 12.5,
+      "radiation_millirad_s": 12500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:471"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pwr_printer",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
