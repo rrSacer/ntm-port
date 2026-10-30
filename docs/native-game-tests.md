@@ -94,4 +94,3 @@ python3 tools/test-game/native_recipes.py /caminho/do/jogo montadora bigorna
 | bigorna | bigorna de desh; `aço` filtra; o primeiro resultado é a Placa de Aço; o botão Fechar manda a escolha (data 1 = 5); 20 lingotes de aço, "Construir uma vez" faz 1 chapa e Shift faz as outras 19 |
 
 Prova de 30/10/2026: motor `b9d905189` (API 31), bundle NTM com a lista, Recipes oficial `ae217daa`, conteúdo do HEAD do port (`56d6cff4`, com a textura do seletor). Capturas e o JSON dos comandos ficam na pasta de cada jogo (`native-recipes*.png`, `native-recipes.json`).
-

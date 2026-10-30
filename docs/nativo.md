@@ -145,4 +145,3 @@ Prova em jogo (`tools/test-game/native_recipes.py`, ver `docs/native-game-tests.
 - Fechar a tela por outro caminho com a lista aberta (o jogador se afasta, morre, o servidor fecha) perde a escolha provisória; o NTM a manda no `onGuiClosed`.
 - A busca não tem seleção de texto nem ctrl+A/C/V (o `GuiTextField` do NTM tem); só inserir, Backspace, Delete, Left, Right, Home e End.
 - As dicas dos botões estão em inglês, como no NTM; as dos itens usam os nomes da lang do conteúdo.
-
