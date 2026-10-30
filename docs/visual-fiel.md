@@ -848,6 +848,36 @@ montados pelo `sheet` do visual-gen célula a célula, como os ISBRH do NTM (`Re
   - tampas de concreto e de vidro, hastes coloridas, as barras de controle na altura e na cor e os canos aparecem;
   - as telas do canal, da irradiação, do armazenamento, do aquecedor e do autoloader batem com os GUIs do NTM.
 
+## 3s. Reatores, R3 (PWR) e R4 (Watz)
+
+| Bloco | Multibloco | Tela | Modelo |
+|---|---|---|---|
+| Controlador do PWR | bloco único | `gui_pwr.png` 176×188, sem título, 3 slots | modelo de bloco: `pwr_casing_blank` e a frente `pwr_controller` no lado do facing |
+| `pwr_block__internal`, `__port` | — | — | sem modelo: no NTM são textura conectada (CT), ficam com o bloco do conteúdo |
+| Watz | octógono 7×3×7 (111 células), offset 3 | `gui_watz.png` 176×229, 24 slots de pellet | `watz.obj`, sem giro |
+| Bomba do Watz | coluna 1×2 | sem GUI | `watz_pump.obj` |
+| Núcleo estrutural do Watz | bloco único | sem GUI | o cubo e o projeto do reator em blocos de 5 pixels (`RenderWatzMultiblock`: 110 elementos, resfriadores e carcaças) |
+
+- **Índices:** combinados com o agente das bombas. A lógica do PWR e do Watz ainda é inerte, então as telas e os
+  modelos ficam neutros até ela ligar os valores.
+- **Tela do PWR:**
+  - ponteiros de núcleo e casco;
+  - barras de progresso e de barras de controle;
+  - os dois tanques na cor do fluido;
+  - o aviso de calor;
+  - o fluxo em verde;
+  - o campo de texto vira −/+ (shift ±10) com o botão de aplicar;
+  - o item de combustível carregado vira o texto "quantidade/total".
+- **Tela do Watz:** o fundo é composto em pedaços, como no NTM (`keep` e `compose`). Tem o ponteiro de calor, as luzes de
+  ligado e de trava, os três tanques e o fluxo.
+- **Desvios:**
+  - o NTM tinge de vermelho o painel esquerdo do Watz pelo calor, e aqui fica só o ponteiro;
+  - os textos de fluxo não usam a escala 1,25 nem a casa decimal.
+- **Em jogo** (motor antigo, com valores por `data merge`):
+  - as contagens de células batem com o NTM (Watz 111, bomba 2);
+  - os modelos e o projeto aparecem;
+  - as telas do PWR e do Watz batem com os GUIs do NTM.
+
 ## 4. Motor (patch) e port
 
 **Patch no motor** (`horizon-visual`, branch `ntm-visual`, 56 commits):
