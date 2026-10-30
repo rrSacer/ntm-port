@@ -728,6 +728,43 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
   - os modelos de frente para quem coloca;
   - a porta do forno sai do lugar com a tela aberta.
 
+## 3o. Energia, lote 2 (vapor) e as telas nativas da bateria, dos barris e do queimador
+
+Para a migração nativa (L2 e L3), as máquinas que só tinham a tela antiga (ViewModel) ganham arquivos de máquina e de
+tela com as texturas GUI do NTM. As do vapor ganham modelos e multiblocos, sem tela, como no NTM. Índices combinados com
+o agente das bombas.
+
+| Máquina | Multibloco | Tela | Modelo |
+|---|---|---|---|
+| Motor a vapor | 3×2×7, offset 1 | sem GUI no NTM | `rotation 270`, 2 ao longo do x; volante, eixo, biela e pistão na manivela |
+| Turbina industrial | 3×3×7, offset 3 | sem GUI | `rotation 180`; o rotor gira com [0]; o ponteiro pelo tipo de vapor [1] |
+| Turbina Leviatã | 5×4×4 e as 3 caixas do `fillSpace`, mais a célula da alavanca (z −4, y 2) | sem GUI | `rotation 180`, 3 para trás; as pás giram com [0]; a alavanca pelo tipo de vapor [1] |
+| Condensador a energia | 7×3×3, offset 1 | sem GUI | `rotation 90`; os dois ventiladores com [0] |
+| Condensador | bloco comum | sem GUI | sem modelo (só o arquivo de máquina, sem slots) |
+| Bateria (e `ntm:teste`) | — | `gui_battery.png` | — |
+| Barril de aço e tanque | — | `gui_barrel.png` e `gui_tank.png` | — |
+| Queimador a lenha | — | `gui_wood_burner_alt.png` 176×186 | — |
+
+- **Vapor:**
+  - O motor anima pelas fórmulas do `RenderSteamEngine` (`renderCommon(rot)`), amostradas 24 vezes por volta.
+  - As rotações giram a velocidade fixa enquanto [0] ≥ 1; o NTM acelera o rotor.
+  - O tipo de vapor (0 comum a 3 ultraquente) posa o ponteiro (135° a −135°) e a alavanca (15° a −15°).
+  - A alavanca das turbinas é uma interação no bloco (lógica), não uma tela.
+- **Bateria, data 5:**
+  - [0]/[1] energia;
+  - [2] o modo sem sinal de redstone, [3] o modo com sinal (0 entrada, 1 buffer, 2 saída, 3 nenhum);
+  - [4] a prioridade;
+  - botões 0, 1 e 2, os do `GUIMachineBattery`. A energia no título vai para o tooltip.
+- **Barril e tanque, data 4:** o tanque na cor do fluido e o modo. Os slots 1, 3 e 5 só de saída.
+- **Queimador, data 9:**
+  - energia, queima (em ticks no tooltip; o NTM mostra segundos), ligado;
+  - o modo fluido [5] troca o painel e mostra o tanque [6..8];
+  - botões 0 liga/desliga, 1 sólido/fluido.
+- **Em jogo** (motor antigo do fork, que desenha `horizon_screen`; o desenho nativo é a L2):
+  - as 4 telas com os valores postos por `data merge`;
+  - os 4 modelos de vapor cobrem exatamente os seus multiblocos;
+  - o motor a vapor anima.
+
 ## 4. Motor (patch) e port
 
 **Patch no motor** (`horizon-visual`, branch `ntm-visual`, 56 commits):
