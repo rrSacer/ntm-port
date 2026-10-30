@@ -2,5 +2,42 @@
   "obj": "ntm:models/obj/ore_slopper.obj",
   "texture": "ntm:textures/models/machines/ore_slopper.png",
   "rotation": 0,
-  "radius": 6.3
+  "radius": 5.0,
+  "bones": {
+    "Hydraulics": {
+      "parent": "Slider"
+    },
+    "Bucket": {
+      "parent": "Hydraulics"
+    },
+    "BladesLeft": {
+      "pivot": [
+        0.375,
+        2.75,
+        0
+      ]
+    },
+    "BladesRight": {
+      "pivot": [
+        -0.375,
+        2.75,
+        0
+      ]
+    },
+    "Fan": {
+      "pivot": [
+        0,
+        1.875,
+        -1
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.slopper.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_ore_slopper.animation.json"
 }

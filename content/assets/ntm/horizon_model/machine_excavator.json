@@ -1,6 +1,45 @@
 {
   "obj": "ntm:models/obj/mining_drill.obj",
   "texture": "ntm:textures/models/machines/mining_drill.png",
-  "rotation": 180.0,
-  "radius": 8.2
+  "rotation": 180,
+  "translate": [
+    0,
+    -3,
+    0
+  ],
+  "radius": 8.5,
+  "bones": {
+    "Drillbit": {
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    },
+    "Shaft": {
+      "parent": "Drillbit"
+    },
+    "Crusher1": {
+      "pivot": [
+        0,
+        2,
+        2.8125
+      ]
+    },
+    "Crusher2": {
+      "pivot": [
+        0,
+        2,
+        2.1875
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.excavator.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_excavator.animation.json"
 }

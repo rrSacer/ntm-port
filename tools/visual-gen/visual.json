@@ -5749,6 +5749,65 @@
             ]
           }
         ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/mining_drill.obj",
+        "obj_from": "models/machines/mining_drill.obj",
+        "texture": "ntm:textures/models/machines/mining_drill.png",
+        "texture_from": "textures/models/machines/mining_drill.png",
+        "rotation": 180,
+        "translate": [
+          0,
+          -3,
+          0
+        ],
+        "radius": 8.5,
+        "bones": {
+          "Drillbit": {
+            "pivot": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Shaft": {
+            "parent": "Drillbit"
+          },
+          "Crusher1": {
+            "pivot": [
+              0,
+              2,
+              2.8125
+            ]
+          },
+          "Crusher2": {
+            "pivot": [
+              0,
+              2,
+              2.1875
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.excavator.work",
+          "length": 1.2,
+          "bones": {
+            "Drillbit": {
+              "turn": [
+                0,
+                -360,
+                0
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.excavator.work",
+            "property": "honey_level",
+            "not": "0"
+          }
+        ]
       }
     },
     "ntm:machine_ore_slopper": {
@@ -6046,6 +6105,299 @@
             "lines": [
               "Slop: {6} / {7} mB"
             ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/ore_slopper.obj",
+        "obj_from": "models/machines/ore_slopper.obj",
+        "texture": "ntm:textures/models/machines/ore_slopper.png",
+        "texture_from": "textures/models/machines/ore_slopper.png",
+        "rotation": 0,
+        "radius": 5.0,
+        "bones": {
+          "Hydraulics": {
+            "parent": "Slider"
+          },
+          "Bucket": {
+            "parent": "Hydraulics"
+          },
+          "BladesLeft": {
+            "pivot": [
+              0.375,
+              2.75,
+              0
+            ]
+          },
+          "BladesRight": {
+            "pivot": [
+              -0.375,
+              2.75,
+              0
+            ]
+          },
+          "Fan": {
+            "pivot": [
+              0,
+              1.875,
+              -1
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.slopper.work",
+          "length": 14.05,
+          "bones": {
+            "Slider": {
+              "position": {
+                "0.000": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "0.333": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "1.667": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "2.000": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "3.000": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "3.333": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "4.667": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "5.000": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "5.500": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "8.000": [
+                  0,
+                  0,
+                  -48.0
+                ],
+                "11.000": [
+                  0,
+                  0,
+                  -48
+                ],
+                "11.050": [
+                  0,
+                  0,
+                  -48
+                ],
+                "13.550": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "14.050": [
+                  0,
+                  0,
+                  0
+                ]
+              }
+            },
+            "Hydraulics": {
+              "position": {
+                "0.000": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "0.333": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "1.667": [
+                  0,
+                  -16.0,
+                  0
+                ],
+                "2.000": [
+                  0,
+                  -20.0,
+                  0
+                ],
+                "3.000": [
+                  0,
+                  -20.0,
+                  0
+                ],
+                "3.333": [
+                  0,
+                  -16.0,
+                  0
+                ],
+                "4.667": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "5.000": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "5.500": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "8.000": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "11.000": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "11.050": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "13.550": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "14.050": [
+                  0,
+                  -0.0,
+                  0
+                ]
+              }
+            },
+            "Bucket": {
+              "position": {
+                "0.000": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "0.333": [
+                  0,
+                  -4.0,
+                  0
+                ],
+                "1.667": [
+                  0,
+                  -20.0,
+                  0
+                ],
+                "2.000": [
+                  0,
+                  -20.0,
+                  0
+                ],
+                "3.000": [
+                  0,
+                  -20.0,
+                  0
+                ],
+                "3.333": [
+                  0,
+                  -20.0,
+                  0
+                ],
+                "4.667": [
+                  0,
+                  -4.0,
+                  0
+                ],
+                "5.000": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "5.500": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "8.000": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "11.000": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "11.050": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "13.550": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "14.050": [
+                  0,
+                  -0.0,
+                  0
+                ]
+              }
+            },
+            "BladesLeft": {
+              "turn": [
+                0,
+                0,
+                4320
+              ]
+            },
+            "BladesRight": {
+              "turn": [
+                0,
+                0,
+                -4320
+              ]
+            },
+            "Fan": {
+              "turn": [
+                -9720,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.slopper.work",
+            "property": "honey_level",
+            "not": "0"
           }
         ]
       }
