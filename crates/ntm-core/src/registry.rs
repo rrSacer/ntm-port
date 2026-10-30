@@ -352,21 +352,21 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::AllRound,
     },
-    // The oil chain's batch A (9c504cd): coal to fluids and back. Inert
-    // until their stage is approved.
+    // The oil chain's batch A (9c504cd): coal to fluids and back
+    // (`crafter::Station::Liquefactor`, `Station::Solidifier`).
     BlockSpec {
         id: "ntm:machine_liquefactor",
-        kind: Kind::Inert,
+        kind: Kind::Crafter,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_solidifier",
-        kind: Kind::Inert,
+        kind: Kind::Crafter,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     // The shredder (`crate::shredder`): `TilePortShapes.around`, energy only.
     BlockSpec {

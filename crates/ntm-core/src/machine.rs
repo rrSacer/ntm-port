@@ -211,7 +211,8 @@ impl Machine {
     /// block's kind now, keeping what carries over.
     pub fn upgraded(self) -> Self {
         let Some(spec) = crate::registry::spec(&self.block) else { return self };
-        if spec.kind == self.kind() || matches!(self.data, Data::Inert { .. }) && spec.kind == Kind::Crafter {
+        let no_station = spec.kind == Kind::Crafter && crate::crafter::Station::of(&self.block).is_none();
+        if spec.kind == self.kind() || matches!(self.data, Data::Inert { .. }) && no_station {
             return self;
         }
         let mut new = Machine::new(spec.kind, &self.block, self.facing.clone());

@@ -38,9 +38,13 @@ pub enum Station {
     /// `TileEntityMachinePyroOven`: the recipe by its input item and its
     /// input tank's fluid.
     PyroOven,
-    /// `TileEntityElectrolyser`, its fluid line (the metal line is stage 4):
-    /// the recipe by its input tank's fluid.
+    /// `TileEntityElectrolyser`, its fluid line (the metal line is
+    /// `crate::electrolyser`): the recipe by its input tank's fluid.
     Electrolyser,
+    /// `TileEntityMachineLiquefactor`: an item into its tank's fluid.
+    Liquefactor,
+    /// `TileEntityMachineSolidifier`: its tank's fluid into an item.
+    Solidifier,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -95,6 +99,8 @@ impl Station {
             "ntm:machine_crystallizer" => Some(Station::Crystallizer),
             "ntm:machine_pyrooven" => Some(Station::PyroOven),
             "ntm:machine_electrolyser" => Some(Station::Electrolyser),
+            "ntm:machine_liquefactor" => Some(Station::Liquefactor),
+            "ntm:machine_solidifier" => Some(Station::Solidifier),
             _ => None,
         }
     }
@@ -107,6 +113,8 @@ impl Station {
         static X: OnceLock<Vec<Recipe>> = OnceLock::new();
         static Y: OnceLock<Vec<Recipe>> = OnceLock::new();
         static E: OnceLock<Vec<Recipe>> = OnceLock::new();
+        static L: OnceLock<Vec<Recipe>> = OnceLock::new();
+        static S: OnceLock<Vec<Recipe>> = OnceLock::new();
         match self {
             Station::Assembly => A.get_or_init(|| table(include_str!("../data/machines/assembly.json"))),
             Station::ChemicalPlant => C.get_or_init(|| table(include_str!("../data/machines/chemical_plant.json"))),
@@ -115,6 +123,8 @@ impl Station {
             Station::Crystallizer => X.get_or_init(|| table(include_str!("../data/machines/crystallizer.json"))),
             Station::PyroOven => Y.get_or_init(|| table(include_str!("../data/machines/pyrooven.json"))),
             Station::Electrolyser => E.get_or_init(|| table(include_str!("../data/machines/electrolyser.json"))),
+            Station::Liquefactor => L.get_or_init(|| table(include_str!("../data/machines/liquefaction.json"))),
+            Station::Solidifier => S.get_or_init(|| table(include_str!("../data/machines/solidification.json"))),
         }
     }
 
@@ -127,6 +137,8 @@ impl Station {
             Station::Crystallizer => "Cristalizador",
             Station::PyroOven => "Forno pirolítico",
             Station::Electrolyser => "Eletrolisador",
+            Station::Liquefactor => "Liquefator",
+            Station::Solidifier => "Solidificador",
         }
     }
 
@@ -145,6 +157,9 @@ impl Station {
             // The fluid line's input, the metal line's nitric acid (typed in
             // `new`), and the fluid line's two outputs.
             Station::Electrolyser => (2, 2, 16_000),
+            // One tank of 24 000 mB each, typed by what it makes or holds.
+            Station::Liquefactor => (0, 1, 24_000),
+            Station::Solidifier => (1, 0, 24_000),
         }
     }
 
@@ -152,7 +167,7 @@ impl Station {
     /// creative battery keeps it full; `None` where the port doesn't know it.
     pub fn battery_slot(self) -> Option<usize> {
         match self {
-            Station::Crystallizer => Some(1),
+            Station::Crystallizer | Station::Liquefactor | Station::Solidifier => Some(1),
             Station::Purex | Station::PyroOven | Station::Electrolyser => Some(0),
             _ => None,
         }
@@ -160,13 +175,19 @@ impl Station {
 
     /// The recipe is picked from the input (the centrifuge), not a list.
     fn picks_by_input(self) -> bool {
-        matches!(self, Station::Centrifuge | Station::Crystallizer | Station::PyroOven | Station::Electrolyser)
+        matches!(self, Station::Centrifuge | Station::Crystallizer | Station::PyroOven | Station::Electrolyser | Station::Liquefactor | Station::Solidifier)
     }
 
     /// Its input tank is typed apart from the recipe (the NTM's identifier;
     /// here the first fluid in), and the recipe follows it.
     pub fn typed_by_fluid(self) -> bool {
-        matches!(self, Station::Crystallizer | Station::PyroOven | Station::Electrolyser)
+        matches!(self, Station::Crystallizer | Station::PyroOven | Station::Electrolyser | Station::Solidifier)
+    }
+
+    /// `canProcess` checks the power too: short of it, the progress
+    /// restarts.
+    fn resets_without_power(self) -> bool {
+        matches!(self, Station::Liquefactor | Station::Solidifier)
     }
 }
 
@@ -280,6 +301,7 @@ impl Crafter {
             Station::Crystallizer => 1_000_000,
             Station::PyroOven => 10_000_000,
             Station::Electrolyser => 20_000_000,
+            Station::Liquefactor | Station::Solidifier => 100_000,
             _ => self.current().map_or(100_000, |r| (r.power * 100).max(100_000)),
         }
     }
@@ -308,6 +330,11 @@ impl Crafter {
             if self.station == Station::Assembly {
                 t.cap = 4_000.max(r.fluids_in.first().map_or(0, |f| f.1 * 2));
             }
+        }
+        // The liquefactor's tank takes the fluid as it makes it, and only
+        // empty (`canProcess`): a recipe picked doesn't touch it.
+        if self.station == Station::Liquefactor {
+            return;
         }
         for (t, f) in self.tout.iter_mut().zip(r.fluids_out.iter().map(|f| f.0.as_str()).chain(std::iter::repeat(""))) {
             t.set_type(f);
@@ -342,12 +369,15 @@ impl Crafter {
             && r.fluids_out.iter().all(|(f, mb)| {
                 // The oven's output tank takes the recipe's fluid, whatever it
                 // held (`finishRecipe`'s `setTankType`).
-                self.tout.iter().any(|t| (t.fluid == *f && t.free() >= *mb) || (self.station == Station::PyroOven && t.fluid != *f))
+                self.tout.iter().any(|t| {
+                    let typed = t.fluid == *f || (self.station == Station::Liquefactor && t.mb == 0);
+                    (typed && t.free() >= *mb) || (self.station == Station::PyroOven && t.fluid != *f)
+                })
             })
             && (self.out.len() < 6 || r.items_out.iter().all(|(i, ..)| self.out.iter().any(|o| o.0 == *i)))
             // One output slot: another item in it stops the crystallizer and
             // the oven.
-            && (!matches!(self.station, Station::Crystallizer | Station::PyroOven) || self.out.iter().all(|o| r.items_out.iter().any(|x| x.0 == o.0)))
+            && (!matches!(self.station, Station::Crystallizer | Station::PyroOven | Station::Solidifier) || self.out.iter().all(|o| r.items_out.iter().any(|x| x.0 == o.0)))
     }
 
     fn finish(&mut self, r: &Recipe) {
@@ -371,7 +401,7 @@ impl Crafter {
         for (f, mb) in &r.fluids_out {
             if let Some(t) = self.tout.iter_mut().find(|t| t.fluid == *f) {
                 t.fill(f, *mb);
-            } else if self.station == Station::PyroOven
+            } else if (self.station == Station::PyroOven || self.station == Station::Liquefactor && self.tout.first().is_some_and(|t| t.mb == 0))
                 && let Some(t) = self.tout.first_mut()
             {
                 t.set_type(f);
@@ -525,7 +555,7 @@ impl Logic for Crafter {
         if !self.can_run(r) || self.power < r.power {
             // The electrolyser keeps its progress (`canProcessFluid` false
             // leaves it).
-            if self.progress > 0 && !self.can_run(r) && self.station != Station::Electrolyser {
+            if self.progress > 0 && (!self.can_run(r) || self.station.resets_without_power()) && self.station != Station::Electrolyser {
                 self.progress = 0;
                 return true;
             }

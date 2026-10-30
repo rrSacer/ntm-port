@@ -191,6 +191,24 @@ pub const SLOTTED: &[(&str, Layout)] = &[
             outputs: 2..3,
         },
     ),
+    // ContainerLiquefactor: 0 the input, 1 the battery, 2–3 upgrades (no
+    // item out).
+    (
+        "ntm:machine_liquefactor",
+        Layout::Crafter {
+            inputs: 0..1,
+            outputs: 1..1,
+        },
+    ),
+    // ContainerSolidifier: 0 the output, 1 the battery, 2–3 upgrades, 4 the
+    // identifier (the tank takes the first fluid in instead).
+    (
+        "ntm:machine_solidifier",
+        Layout::Crafter {
+            inputs: 0..0,
+            outputs: 0..1,
+        },
+    ),
     // ContainerElectrolyser: both lines on its 21 slots (`crate::electrolyser`).
     ("ntm:machine_electrolyser", Layout::Native),
     // ContainerMachineArcFurnaceLarge: 30 slots (`crate::arc_furnace`).
