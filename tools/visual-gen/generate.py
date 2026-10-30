@@ -431,7 +431,12 @@ def main():
     for block, b in blocks.items():
         name = block.split(':', 1)[1]
         if 'machine' in b:
-            write_json(own(f'data/ntm/horizon_machine/{name}.json'), machine_slots(b['machine']))
+            mach = machine_slots(b['machine'])
+            # TileEntityMachineBase.getUseRange: a multiblock's screen stays
+            # open 12 blocks from its core (a tall one is used from far above).
+            if 'multiblock' in mach:
+                mach = {'use_range': 12.0, **mach}
+            write_json(own(f'data/ntm/horizon_machine/{name}.json'), mach)
         # The machine's screen, and `more_screens` its buttons switch to
         # (the machine file's `screens`), each under its own name.
         screens = [(name, b['screen'])] if 'screen' in b else []
