@@ -102,7 +102,8 @@ def loop_animation(spec):
     by their `anim` tick counter: `turn` is degrees per loop about the bone's
     pivot (two keyframes, linear), `sway` a slide along an axis by
     BobMathUtil.sps, `cycles` times per loop, sampled 24 times a cycle;
-    `position` keyframes as they are (a press head's stroke)."""
+    `position` keyframes as they are (a press head's stroke). `loop: false`
+    holds the last frame (a door posed open by its screen)."""
     import math
     length = spec['length']
     bones = {}
@@ -125,7 +126,7 @@ def loop_animation(spec):
                 keys[f'{t:.4f}'] = pos
             out['position'] = keys
         bones[bone] = out
-    return {'format_version': '1.8.0', 'animations': {spec['name']: {'loop': True, 'animation_length': length, 'bones': bones}}}
+    return {'format_version': '1.8.0', 'animations': {spec['name']: {'loop': spec.get('loop', True), 'animation_length': length, 'bones': bones}}}
 
 
 def merge_obj(src, model):
