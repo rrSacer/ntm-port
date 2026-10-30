@@ -788,6 +788,18 @@
       "experience": 0.1
     },
     {
+      "id": "ntm:ingot_schraranium",
+      "input": {
+        "item": "ntm:ingot_schraranium",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:nugget_schrabidium",
+        "count": 1
+      },
+      "experience": 2.0
+    },
+    {
       "id": "ntm:crystal_uranium",
       "input": {
         "item": "ntm:crystal_uranium",

@@ -145,7 +145,7 @@
     {
       "tag": "ntm:rad/rate_1500",
       "radiation_millirad_s": 1500,
-      "item_count": 5
+      "item_count": 6
     },
     {
       "tag": "ntm:rad/rate_1750",
@@ -502,17 +502,17 @@
     {
       "tag": "ntm:rad/bit_2",
       "bit": 2,
-      "item_count": 90
+      "item_count": 91
     },
     {
       "tag": "ntm:rad/bit_3",
       "bit": 3,
-      "item_count": 128
+      "item_count": 129
     },
     {
       "tag": "ntm:rad/bit_4",
       "bit": 4,
-      "item_count": 114
+      "item_count": 115
     },
     {
       "tag": "ntm:rad/bit_5",
@@ -522,17 +522,17 @@
     {
       "tag": "ntm:rad/bit_6",
       "bit": 6,
-      "item_count": 127
+      "item_count": 128
     },
     {
       "tag": "ntm:rad/bit_7",
       "bit": 7,
-      "item_count": 139
+      "item_count": 140
     },
     {
       "tag": "ntm:rad/bit_8",
       "bit": 8,
-      "item_count": 129
+      "item_count": 130
     },
     {
       "tag": "ntm:rad/bit_9",
@@ -542,7 +542,7 @@
     {
       "tag": "ntm:rad/bit_10",
       "bit": 10,
-      "item_count": 75
+      "item_count": 76
     },
     {
       "tag": "ntm:rad/bit_11",

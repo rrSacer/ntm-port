@@ -352,6 +352,8 @@
     "ntm:machine_pyrooven",
     "ntm:machine_electrolyser",
     "ntm:machine_arc_furnace_large",
+    "ntm:block_graphite",
+    "ntm:rebar",
     "ntm:machine_crucible",
     "ntm:heater_firebox",
     "ntm:foundry_channel",
