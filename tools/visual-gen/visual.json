@@ -11095,6 +11095,14 @@
     "ntm:machine_well": {
       "source": "oil batch D: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
       "auto": false
+    },
+    "ntm:machine_hephaestus": {
+      "source": "no extracted model until the block gets its own entry (the extracted ones are not checked)",
+      "auto": false
+    },
+    "ntm:machine_flare": {
+      "source": "no extracted model until the block gets its own entry (the extracted ones are not checked)",
+      "auto": false
     }
   }
 }
