@@ -219,3 +219,19 @@ if (root / 'content/machine-recipes/press.json').exists():
     p = root / 'crates/ntm-core/data/press_recipes.json'
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"press: {len(data['recipes'])} receitas por item, {len(data['stamps'])} matrizes ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
+
+# Lote 1 de energia: os combustíveis do forno de aquecimento (já com o
+# módulo de queima e o timeMult), o calor por balde dos inflamáveis
+# (queimador de óleo) e os resfriáveis (trocador de calor; turbinas no lote 2).
+if (root / 'content/machine-recipes/heaters.json').exists():
+    src = json.loads((root / 'content/machine-recipes/heaters.json').read_text())
+    traits = json.loads((root / 'content/fluid_traits.json').read_text())
+    fuels = {k: {'ticks': v['burn_ticks'], 'heat': v['heat_tu_per_tick'], 'container': v['container']} for k, v in src['oven_fuels'].items()}
+    flammable = {t['fluid']: t['heat_tu_per_bucket'] for t in traits['flammable']}
+    coolable = {t['fluid']: {'out': t['output'][0], 'out_mb': t['output'][1], 'in_mb': t['input_mb'], 'heat': t['heat_tu'],
+                             'heatex': t['efficiencies'].get('HEATEXCHANGER', 0), 'turbine': t['efficiencies'].get('TURBINE', 0)}
+                for t in traits['coolable']}
+    data = {'source': 'content/machine-recipes/heaters.json, content/fluid_traits.json', 'oven_fuels': fuels, 'flammable': flammable, 'coolable': coolable}
+    p = root / 'crates/ntm-core/data/machines/heaters.json'
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=0, sort_keys=True) + '\n')
+    print(f"heaters: {len(fuels)} combustíveis, {len(flammable)} inflamáveis, {len(coolable)} resfriáveis → {p.relative_to(root)}")

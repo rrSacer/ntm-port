@@ -1,0 +1,622 @@
+{
+"coolable": {
+"blood_hot": {
+"heat": 500,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "blood",
+"out_mb": 1,
+"turbine": 0.0
+},
+"coolant_hot": {
+"heat": 300,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "coolant",
+"out_mb": 1,
+"turbine": 0.0
+},
+"heavywater_hot": {
+"heat": 300,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "heavywater",
+"out_mb": 1,
+"turbine": 0.0
+},
+"hotcrackoil": {
+"heat": 10,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "crackoil",
+"out_mb": 1,
+"turbine": 0.0
+},
+"hotcrackoil_ds": {
+"heat": 10,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "crackoil_ds",
+"out_mb": 1,
+"turbine": 0.0
+},
+"hotoil": {
+"heat": 10,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "oil",
+"out_mb": 1,
+"turbine": 0.0
+},
+"hotoil_ds": {
+"heat": 10,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "oil_ds",
+"out_mb": 1,
+"turbine": 0.0
+},
+"hotsteam": {
+"heat": 2,
+"heatex": 0.5,
+"in_mb": 1,
+"out": "steam",
+"out_mb": 10,
+"turbine": 1.0
+},
+"lead_hot": {
+"heat": 680,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "lead",
+"out_mb": 1,
+"turbine": 0.0
+},
+"mug_hot": {
+"heat": 400,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "mug",
+"out_mb": 1,
+"turbine": 0.0
+},
+"perfluoromethyl_hot": {
+"heat": 300,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "perfluoromethyl",
+"out_mb": 1,
+"turbine": 0.0
+},
+"sodium_hot": {
+"heat": 400,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "sodium",
+"out_mb": 1,
+"turbine": 0.0
+},
+"steam": {
+"heat": 200,
+"heatex": 0.5,
+"in_mb": 100,
+"out": "spentsteam",
+"out_mb": 1,
+"turbine": 1.0
+},
+"superhotsteam": {
+"heat": 18,
+"heatex": 0.5,
+"in_mb": 1,
+"out": "hotsteam",
+"out_mb": 10,
+"turbine": 1.0
+},
+"thorium_salt_hot": {
+"heat": 400,
+"heatex": 1.0,
+"in_mb": 1,
+"out": "thorium_salt_depleted",
+"out_mb": 1,
+"turbine": 0.0
+},
+"ultrahotsteam": {
+"heat": 120,
+"heatex": 0.5,
+"in_mb": 1,
+"out": "superhotsteam",
+"out_mb": 10,
+"turbine": 1.0
+}
+},
+"flammable": {
+"aromatics": 458000,
+"balefire": 256000000,
+"biofuel": 500000,
+"biogas": 62500,
+"coalcreosote": 250000,
+"coalgas": 6350000,
+"coalgas_leaded": 9520000,
+"coaloil": 1100000,
+"crackoil": 31200,
+"crackoil_ds": 62500,
+"deuterium": 5000,
+"diesel": 550000,
+"diesel_crack": 515000,
+"diesel_crack_reform": 1280000,
+"diesel_reform": 1370000,
+"ethanol": 275000,
+"fishoil": 75000,
+"flue": 25000,
+"gas": 50000,
+"gas_coker": 62500,
+"gasoline": 605000,
+"gasoline_leaded": 907000,
+"heatingoil": 391000,
+"heatingoil_vacuum": 1310000,
+"heavyoil": 55000,
+"heavyoil_vacuum": 187000,
+"hydrogen": 5000,
+"kerosene": 2560000,
+"kerosene_reform": 6400000,
+"lightoil": 1460000,
+"lightoil_crack": 916000,
+"lightoil_ds": 2930000,
+"lightoil_vacuum": 3000000,
+"lpg": 1810000,
+"naphtha": 110000,
+"naphtha_coker": 125000,
+"naphtha_crack": 85900,
+"naphtha_ds": 220000,
+"nitan": 64000000,
+"oil": 25000,
+"oil_coker": 31200,
+"oil_ds": 50000,
+"oxyhydrogen": 5000,
+"petroil": 130000,
+"petroil_leaded": 195000,
+"petroleum": 1650000,
+"radiosolvent": 150000,
+"reclaimed": 113000,
+"redmud": 1000,
+"reformate": 2400000,
+"reformgas": 10500000,
+"smear": 82500,
+"solvent": 100000,
+"sourgas": 250000,
+"sunfloweroil": 50000,
+"syngas": 1650000,
+"tritium": 5000,
+"unsaturateds": 3660000,
+"woodoil": 110000,
+"xylene": 3150000
+},
+"oven_fuels": {
+"minecraft:acacia_log": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:acacia_planks": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:acacia_sapling": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"minecraft:acacia_slab": {
+"container": null,
+"heat": 500,
+"ticks": 18
+},
+"minecraft:acacia_stairs": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:birch_log": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:birch_planks": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:birch_sapling": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"minecraft:birch_slab": {
+"container": null,
+"heat": 500,
+"ticks": 18
+},
+"minecraft:birch_stairs": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:blaze_rod": {
+"container": null,
+"heat": 500,
+"ticks": 300
+},
+"minecraft:bookshelf": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:charcoal": {
+"container": null,
+"heat": 500,
+"ticks": 200
+},
+"minecraft:chest": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:coal": {
+"container": null,
+"heat": 1000,
+"ticks": 250
+},
+"minecraft:coal_block": {
+"container": null,
+"heat": 1000,
+"ticks": 2500
+},
+"minecraft:crafting_table": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:dark_oak_log": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:dark_oak_planks": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:dark_oak_sapling": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"minecraft:dark_oak_slab": {
+"container": null,
+"heat": 500,
+"ticks": 18
+},
+"minecraft:dark_oak_stairs": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:daylight_detector": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:jukebox": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:jungle_log": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:jungle_planks": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:jungle_sapling": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"minecraft:jungle_slab": {
+"container": null,
+"heat": 500,
+"ticks": 18
+},
+"minecraft:jungle_stairs": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:lava_bucket": {
+"container": "minecraft:bucket",
+"heat": 500,
+"ticks": 2500
+},
+"minecraft:note_block": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:oak_fence": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:oak_fence_gate": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:oak_log": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:oak_planks": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:oak_pressure_plate": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:oak_sapling": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"minecraft:oak_slab": {
+"container": null,
+"heat": 500,
+"ticks": 18
+},
+"minecraft:oak_stairs": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:oak_trapdoor": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:spruce_log": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:spruce_planks": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:spruce_sapling": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"minecraft:spruce_slab": {
+"container": null,
+"heat": 500,
+"ticks": 18
+},
+"minecraft:spruce_stairs": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:stick": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"minecraft:trapped_chest": {
+"container": null,
+"heat": 500,
+"ticks": 37
+},
+"minecraft:wooden_axe": {
+"container": null,
+"heat": 500,
+"ticks": 25
+},
+"minecraft:wooden_hoe": {
+"container": null,
+"heat": 500,
+"ticks": 25
+},
+"minecraft:wooden_pickaxe": {
+"container": null,
+"heat": 500,
+"ticks": 25
+},
+"minecraft:wooden_shovel": {
+"container": null,
+"heat": 500,
+"ticks": 25
+},
+"minecraft:wooden_sword": {
+"container": null,
+"heat": 500,
+"ticks": 25
+},
+"ntm:biomass": {
+"container": null,
+"heat": 500,
+"ticks": 50
+},
+"ntm:biomass_compressed": {
+"container": null,
+"heat": 500,
+"ticks": 100
+},
+"ntm:block_coke__coal": {
+"container": null,
+"heat": 1000,
+"ticks": 5000
+},
+"ntm:block_coke__lignite": {
+"container": null,
+"heat": 1000,
+"ticks": 5000
+},
+"ntm:block_coke__petroleum": {
+"container": null,
+"heat": 1000,
+"ticks": 5000
+},
+"ntm:block_scrap": {
+"container": null,
+"heat": 500,
+"ticks": 50
+},
+"ntm:briquette__coal": {
+"container": null,
+"heat": 1000,
+"ticks": 312
+},
+"ntm:briquette__lignite": {
+"container": null,
+"heat": 1000,
+"ticks": 250
+},
+"ntm:briquette__wood": {
+"container": null,
+"heat": 500,
+"ticks": 50
+},
+"ntm:coal_infernal": {
+"container": null,
+"heat": 500,
+"ticks": 600
+},
+"ntm:coke__coal": {
+"container": null,
+"heat": 1000,
+"ticks": 500
+},
+"ntm:coke__lignite": {
+"container": null,
+"heat": 1000,
+"ticks": 500
+},
+"ntm:coke__petroleum": {
+"container": null,
+"heat": 1000,
+"ticks": 500
+},
+"ntm:crystal_coal": {
+"container": null,
+"heat": 500,
+"ticks": 800
+},
+"ntm:dust": {
+"container": null,
+"heat": 500,
+"ticks": 3
+},
+"ntm:lignite": {
+"container": null,
+"heat": 1000,
+"ticks": 187
+},
+"ntm:powder_ash__coal": {
+"container": null,
+"heat": 500,
+"ticks": 25
+},
+"ntm:powder_ash__fly": {
+"container": null,
+"heat": 500,
+"ticks": 25
+},
+"ntm:powder_ash__misc": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"ntm:powder_ash__soot": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"ntm:powder_ash__wood": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"ntm:powder_coal": {
+"container": null,
+"heat": 1000,
+"ticks": 250
+},
+"ntm:powder_fire": {
+"container": null,
+"heat": 500,
+"ticks": 800
+},
+"ntm:powder_lignite": {
+"container": null,
+"heat": 1000,
+"ticks": 187
+},
+"ntm:powder_sawdust": {
+"container": null,
+"heat": 500,
+"ticks": 12
+},
+"ntm:rocket_fuel": {
+"container": null,
+"heat": 2500,
+"ticks": 1200
+},
+"ntm:scrap": {
+"container": null,
+"heat": 500,
+"ticks": 6
+},
+"ntm:solid_fuel": {
+"container": null,
+"heat": 1500,
+"ticks": 600
+},
+"ntm:solid_fuel_bf": {
+"container": null,
+"heat": 7500,
+"ticks": 2000
+},
+"ntm:solid_fuel_presto": {
+"container": null,
+"heat": 1500,
+"ticks": 1500
+},
+"ntm:solid_fuel_presto_bf": {
+"container": null,
+"heat": 7500,
+"ticks": 5000
+},
+"ntm:solid_fuel_presto_triplet": {
+"container": null,
+"heat": 1500,
+"ticks": 7500
+},
+"ntm:solid_fuel_presto_triplet_bf": {
+"container": null,
+"heat": 7500,
+"ticks": 25000
+}
+},
+"source": "content/machine-recipes/heaters.json, content/fluid_traits.json"
+}
