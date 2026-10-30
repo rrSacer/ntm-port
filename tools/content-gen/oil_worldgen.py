@@ -44,8 +44,14 @@ def bridge(emit,name,config,chance,low,high,salt,biomes='#minecraft:is_overworld
     def put(kind,value):emit(f'data/ntm/worldgen/{kind}/{name}.json',value)
     put('structure_set',{'structures':[{'structure':ident,'weight':1}],
         'placement':{'type':'minecraft:random_spread','spacing':1,'separation':0,'salt':salt,'spread_type':'linear'}})
-    put('structure',{'type':'minecraft:jigsaw','biomes':biomes,'step':'underground_ores','terrain_adaptation':'none',
-        'start_pool':ident,'size':1,'start_height':{'absolute':32},'use_expansion_hack':False,'max_distance_from_center':16})
+    structure={'type':'minecraft:jigsaw','biomes':biomes,'step':'underground_ores','terrain_adaptation':'none',
+        'start_pool':ident,'size':1,'start_height':{'absolute':32},'use_expansion_hack':False,'max_distance_from_center':16}
+    if biomes=='#ntm:oil_hot_dry':
+        # The final jigsaw biome check is at the start's height. Checking Y32
+        # sees 3D cave biomes instead of the dry-hot surface biome.
+        structure['start_height']={'absolute':0}
+        structure['project_start_to_heightmap']='WORLD_SURFACE_WG'
+    put('structure',structure)
     put('template_pool',{'fallback':'minecraft:empty','elements':[{'weight':1,'element':{
         'element_type':'minecraft:feature_pool_element','projection':'rigid','feature':ident}}]})
     height={'type':'minecraft:constant','value':{'absolute':low}} if low==high else {

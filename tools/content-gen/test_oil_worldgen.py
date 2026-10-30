@@ -33,6 +33,8 @@ class OilWorldgen(unittest.TestCase):
             probability=1/first+1/second-1/(first*second)
             self.assertLess(abs(probability/target-1),.004)
             self.assertEqual(self.get('structure',extra)['biomes'],'#ntm:oil_hot_dry')
+            self.assertEqual(self.get('structure',extra)['start_height'],{'absolute':0})
+            self.assertEqual(self.get('structure',extra)['project_start_to_heightmap'],'WORLD_SURFACE_WG')
         self.assertEqual(self.get('structure','oil_bubble')['biomes'],'#minecraft:is_overworld')
 
     def test_bedrock_deposit_stays_in_five_adapted_layers(self):
@@ -45,6 +47,7 @@ class OilWorldgen(unittest.TestCase):
     def test_sand_only_and_bounded_surface_height(self):
         cfg=self.get('configured_feature','oil_sand');height=self.get('placed_feature','oil_sand')['placement'][-1]['height']
         self.assertEqual(cfg['target']['blocks'],['minecraft:sand','minecraft:red_sand'])
+        self.assertEqual(self.get('structure','oil_sand')['project_start_to_heightmap'],'WORLD_SURFACE_WG')
         self.assertEqual(height['min_inclusive']['absolute']-cfg['half_height'],56)
         self.assertEqual(height['max_inclusive']['absolute']+cfg['half_height'],71)
 
