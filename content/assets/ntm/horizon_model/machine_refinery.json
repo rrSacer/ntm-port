@@ -1,0 +1,25 @@
+{
+  "obj": "ntm:models/obj/refinery.obj",
+  "texture": "ntm:textures/models/refinery.png",
+  "rotation": 180,
+  "radius": 10.0,
+  "show": {
+    "Plane": {
+      "value": 19,
+      "min": 0,
+      "max": 0
+    },
+    "Exploded": {
+      "value": 19,
+      "min": 1
+    }
+  },
+  "pose": [
+    {
+      "animation": "animation.refinery.tilt",
+      "value": 20,
+      "max_value": 1
+    }
+  ],
+  "animations": "ntm:animations/machine_refinery.animation.json"
+}

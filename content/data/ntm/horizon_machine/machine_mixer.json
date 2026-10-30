@@ -1,0 +1,84 @@
+{
+  "slots": [
+    {
+      "x": 12,
+      "y": 72,
+      "accept": [
+        "ntm:battery_creative"
+      ],
+      "max": 1
+    },
+    {
+      "x": 52,
+      "y": 72,
+      "accept": [
+        "minecraft:cod",
+        "minecraft:egg",
+        "minecraft:pufferfish",
+        "minecraft:salmon",
+        "minecraft:sunflower",
+        "minecraft:tropical_fish",
+        "ntm:chunk_ore__cryolite",
+        "ntm:dust",
+        "ntm:fluorite",
+        "ntm:fuel_additive__antiknock",
+        "ntm:niter",
+        "ntm:oil_tar__coal",
+        "ntm:oil_tar__crack",
+        "ntm:oil_tar__crude",
+        "ntm:oil_tar__wood",
+        "ntm:pellet_charged",
+        "ntm:powder_ash__soot",
+        "ntm:powder_ash__wood",
+        "ntm:powder_chlorocalcite",
+        "ntm:powder_diamond",
+        "ntm:powder_flux",
+        "ntm:powder_ice",
+        "ntm:powder_nitan_mix",
+        "ntm:powder_thorium",
+        "ntm:stone_resource__bauxite",
+        "ntm:sulfur"
+      ]
+    },
+    {
+      "x": 126,
+      "y": 72,
+      "output": true
+    },
+    {
+      "x": 148,
+      "y": 18,
+      "accept": []
+    },
+    {
+      "x": 148,
+      "y": 36,
+      "accept": []
+    }
+  ],
+  "inventory": [
+    8,
+    122
+  ],
+  "data": 30,
+  "synced": [
+    10,
+    21,
+    22,
+    23
+  ],
+  "multiblock": {
+    "min": [
+      0,
+      0,
+      0
+    ],
+    "max": [
+      0,
+      2,
+      0
+    ],
+    "offset": 0,
+    "dummy": "ntm:dummy_machine"
+  }
+}

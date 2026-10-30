@@ -9091,16 +9091,726 @@
       }
     },
     "ntm:machine_refinery": {
-      "source": "oil batch B: the extracted model is not this block's (steel_beam got a boxcar, the refinery its exploded form); its own entry comes with the batch's visuals",
-      "auto": false
+      "source": "ContainerMachineRefinery, GUIMachineRefinery (gui_refinery.png 182x240; the pipes, tinted by the recipe's outputs in HBM, untinted here), MachineRefinery {8,0,1,1,1,1} offset 1, RenderRefinery (always turned 180; the exploded model by value 19, tilted by value 20)",
+      "machine": {
+        "slots": [
+          {
+            "x": 158,
+            "y": 108,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 12,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 12,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 64,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 64,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 82,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 82,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 100,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 100,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 118,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 118,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 38,
+            "y": 90,
+            "output": true
+          },
+          {
+            "x": 38,
+            "y": 108,
+            "accept": []
+          }
+        ],
+        "inventory": [
+          11,
+          158
+        ],
+        "data": 32,
+        "synced": [
+          19,
+          20
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            8,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/refinery.obj",
+        "obj_from": "models/refinery.obj",
+        "texture": "ntm:textures/models/refinery.png",
+        "texture_from": "textures/models/refinery.png",
+        "rotation": 180,
+        "radius": 10.0,
+        "merge": [
+          {
+            "obj_from": "models/refinery_exploded.obj",
+            "texture_from": "textures/models/refinery.png",
+            "name": "Exploded"
+          }
+        ],
+        "show": {
+          "Plane": {
+            "value": 19,
+            "min": 0,
+            "max": 0
+          },
+          "Exploded": {
+            "value": 19,
+            "min": 1
+          }
+        },
+        "loop_animation": {
+          "name": "animation.refinery.tilt",
+          "length": 1.0,
+          "loop": false,
+          "bones": {
+            "Plane": {
+              "position": {
+                "0.0": [
+                  0,
+                  0,
+                  0
+                ],
+                "1.0": [
+                  0,
+                  -4,
+                  0
+                ]
+              },
+              "rotation": {
+                "0.0": [
+                  0,
+                  0,
+                  0
+                ],
+                "1.0": [
+                  0,
+                  5,
+                  10
+                ]
+              }
+            },
+            "Exploded": {
+              "position": {
+                "0.0": [
+                  0,
+                  0,
+                  0
+                ],
+                "1.0": [
+                  0,
+                  -4,
+                  0
+                ]
+              },
+              "rotation": {
+                "0.0": [
+                  0,
+                  0,
+                  0
+                ],
+                "1.0": [
+                  0,
+                  5,
+                  10
+                ]
+              }
+            }
+          }
+        },
+        "pose": [
+          {
+            "animation": "animation.refinery.tilt",
+            "value": 20,
+            "max_value": 1
+          }
+        ]
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_refinery.png",
+        "texture_from": "textures/gui/processing/gui_refinery.png",
+        "size": [
+          182,
+          240
+        ],
+        "title": [
+          73,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          11,
+          146
+        ],
+        "compose": [
+          {
+            "from": "textures/gui/processing/gui_refinery.png",
+            "src": [
+              0,
+              248,
+              43,
+              4
+            ],
+            "at": [
+              30,
+              30
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_refinery.png",
+            "src": [
+              0,
+              240,
+              61,
+              8
+            ],
+            "at": [
+              30,
+              26
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_refinery.png",
+            "src": [
+              61,
+              240,
+              79,
+              12
+            ],
+            "at": [
+              30,
+              22
+            ]
+          },
+          {
+            "from": "textures/gui/processing/gui_refinery.png",
+            "src": [
+              140,
+              240,
+              97,
+              16
+            ],
+            "at": [
+              30,
+              18
+            ]
+          }
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              158,
+              18,
+              16,
+              88
+            ],
+            "uv": [
+              182,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              12,
+              18,
+              16,
+              70
+            ],
+            "color": 6,
+            "dir": "up"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "rect": [
+              64,
+              36,
+              16,
+              52
+            ],
+            "color": 9,
+            "dir": "up"
+          },
+          {
+            "value": 10,
+            "max": 11,
+            "rect": [
+              82,
+              36,
+              16,
+              52
+            ],
+            "color": 12,
+            "dir": "up"
+          },
+          {
+            "value": 13,
+            "max": 14,
+            "rect": [
+              100,
+              36,
+              16,
+              52
+            ],
+            "color": 15,
+            "dir": "up"
+          },
+          {
+            "value": 16,
+            "max": 17,
+            "rect": [
+              118,
+              36,
+              16,
+              52
+            ],
+            "color": 18,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              158,
+              18,
+              16,
+              88
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              12,
+              18,
+              16,
+              70
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              64,
+              36,
+              16,
+              52
+            ],
+            "lines": [
+              "{7} / {8} mB"
+            ]
+          },
+          {
+            "rect": [
+              82,
+              36,
+              16,
+              52
+            ],
+            "lines": [
+              "{10} / {11} mB"
+            ]
+          },
+          {
+            "rect": [
+              100,
+              36,
+              16,
+              52
+            ],
+            "lines": [
+              "{13} / {14} mB"
+            ]
+          },
+          {
+            "rect": [
+              118,
+              36,
+              16,
+              52
+            ],
+            "lines": [
+              "{16} / {17} mB"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_fraction_tower": {
-      "source": "oil batch B: the extracted model is not this block's (steel_beam got a boxcar, the refinery its exploded form); its own entry comes with the batch's visuals",
-      "auto": false
+      "source": "MachineFractionTower {2,0,1,1,1,1} offset 1, RenderFractionTower (no turn, no screen)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            2,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/fraction_tower.obj",
+        "obj_from": "models/machines/fraction_tower.obj",
+        "texture": "ntm:textures/models/machines/fraction_tower.png",
+        "texture_from": "textures/models/machines/fraction_tower.png",
+        "rotation": 0,
+        "radius": 3.5
+      }
     },
     "ntm:machine_mixer": {
-      "source": "oil batch B: the extracted model is not this block's (steel_beam got a boxcar, the refinery its exploded form); its own entry comes with the batch's visuals",
-      "auto": false
+      "source": "ContainerMixer, GUIMixer (gui_mixer.png 176x204), MachineMixer {2,0,0,0,0,0} offset 0, RenderMixer (Mixer turning 20 degrees a tick about -y while it works, value 10 = 2; the Fluid at the output tank's fill and colour, opaque here, 75% in HBM)",
+      "machine": {
+        "slots": [
+          {
+            "x": 12,
+            "y": 72,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 52,
+            "y": 72,
+            "accept_recipes": "mixer"
+          },
+          {
+            "x": 126,
+            "y": 72,
+            "output": true
+          },
+          {
+            "x": 148,
+            "y": 18,
+            "accept": []
+          },
+          {
+            "x": 148,
+            "y": 36,
+            "accept": []
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 30,
+        "synced": [
+          10,
+          21,
+          22,
+          23
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            2,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/mixer.obj",
+        "obj_from": "models/machines/mixer.obj",
+        "texture": "ntm:textures/models/machines/mixer.png",
+        "texture_from": "textures/models/machines/mixer.png",
+        "rotation": 0,
+        "radius": 3.2,
+        "hide": [
+          "Fluid"
+        ],
+        "bones": {
+          "Mixer": {
+            "pivot": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.mixer.work",
+          "length": 0.9,
+          "bones": {
+            "Mixer": {
+              "turn": [
+                0,
+                -360,
+                0
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.mixer.work",
+            "values": [
+              {
+                "value": 10,
+                "min": 2,
+                "max": 2
+              }
+            ]
+          }
+        ],
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/fluid_white.png",
+            "texture_from": "textures/models/machines/arc_furnace.png",
+            "crop": [
+              232,
+              141,
+              8,
+              8
+            ],
+            "box": [
+              0.199,
+              1.0,
+              0.199,
+              0.801,
+              2.5,
+              0.801
+            ],
+            "value": 21,
+            "max": 22,
+            "color": 23
+          }
+        ]
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_mixer.png",
+        "texture_from": "textures/gui/processing/gui_mixer.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          108,
+          6,
+          "center"
+        ],
+        "compose": [
+          {
+            "from": "textures/gui/gui_utility.png",
+            "src": [
+              0,
+              32,
+              8,
+              8
+            ],
+            "at": [
+              152,
+              55
+            ]
+          }
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              12,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              71,
+              31,
+              52,
+              44
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 12,
+            "max": 13,
+            "rect": [
+              52,
+              18,
+              7,
+              52
+            ],
+            "color": 14,
+            "dir": "up"
+          },
+          {
+            "value": 15,
+            "max": 16,
+            "rect": [
+              61,
+              18,
+              7,
+              52
+            ],
+            "color": 17,
+            "dir": "up"
+          },
+          {
+            "value": 21,
+            "max": 22,
+            "rect": [
+              126,
+              18,
+              16,
+              52
+            ],
+            "color": 23,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              12,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              52,
+              18,
+              7,
+              52
+            ],
+            "lines": [
+              "{12} / {13} mB"
+            ]
+          },
+          {
+            "rect": [
+              61,
+              18,
+              7,
+              52
+            ],
+            "lines": [
+              "{15} / {16} mB"
+            ]
+          },
+          {
+            "rect": [
+              126,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{21} / {22} mB"
+            ]
+          },
+          {
+            "rect": [
+              152,
+              55,
+              8,
+              8
+            ],
+            "lines": [
+              "§lMelhorias Aceitáveis:§r",
+              "* §4Velocidade§r: Acumula até o nível 3",
+              "* §1Economia de Energia§r: Acumula até o nível 3"
+            ]
+          }
+        ]
+      }
     },
     "ntm:steel_beam": {
       "source": "oil batch B: the extracted model is not this block's (steel_beam got a boxcar, the refinery its exploded form); its own entry comes with the batch's visuals",

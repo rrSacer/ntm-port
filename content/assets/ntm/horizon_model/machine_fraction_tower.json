@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/fraction_tower.obj",
+  "texture": "ntm:textures/models/machines/fraction_tower.png",
+  "rotation": 0,
+  "radius": 3.5
+}

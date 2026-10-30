@@ -1,0 +1,95 @@
+{
+  "slots": [
+    {
+      "x": 158,
+      "y": 108,
+      "accept": [
+        "ntm:battery_creative"
+      ],
+      "max": 1
+    },
+    {
+      "x": 12,
+      "y": 90,
+      "accept": []
+    },
+    {
+      "x": 12,
+      "y": 108,
+      "output": true
+    },
+    {
+      "x": 64,
+      "y": 90,
+      "accept": []
+    },
+    {
+      "x": 64,
+      "y": 108,
+      "output": true
+    },
+    {
+      "x": 82,
+      "y": 90,
+      "accept": []
+    },
+    {
+      "x": 82,
+      "y": 108,
+      "output": true
+    },
+    {
+      "x": 100,
+      "y": 90,
+      "accept": []
+    },
+    {
+      "x": 100,
+      "y": 108,
+      "output": true
+    },
+    {
+      "x": 118,
+      "y": 90,
+      "accept": []
+    },
+    {
+      "x": 118,
+      "y": 108,
+      "output": true
+    },
+    {
+      "x": 38,
+      "y": 90,
+      "output": true
+    },
+    {
+      "x": 38,
+      "y": 108,
+      "accept": []
+    }
+  ],
+  "inventory": [
+    11,
+    158
+  ],
+  "data": 32,
+  "synced": [
+    19,
+    20
+  ],
+  "multiblock": {
+    "min": [
+      -1,
+      0,
+      -1
+    ],
+    "max": [
+      1,
+      8,
+      1
+    ],
+    "offset": 1,
+    "dummy": "ntm:dummy_machine"
+  }
+}

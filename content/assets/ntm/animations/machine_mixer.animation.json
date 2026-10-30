@@ -1,0 +1,25 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.mixer.work": {
+      "loop": true,
+      "animation_length": 0.9,
+      "bones": {
+        "Mixer": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "0.90": [
+              0,
+              -360,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

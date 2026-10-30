@@ -1,0 +1,63 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.refinery.tilt": {
+      "loop": false,
+      "animation_length": 1.0,
+      "bones": {
+        "Plane": {
+          "position": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.0": [
+              0,
+              -4,
+              0
+            ]
+          },
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.0": [
+              0,
+              5,
+              10
+            ]
+          }
+        },
+        "Exploded": {
+          "position": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.0": [
+              0,
+              -4,
+              0
+            ]
+          },
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.0": [
+              0,
+              5,
+              10
+            ]
+          }
+        }
+      }
+    }
+  }
+}

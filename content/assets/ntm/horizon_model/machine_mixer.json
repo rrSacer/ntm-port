@@ -1,0 +1,47 @@
+{
+  "obj": "ntm:models/obj/mixer.obj",
+  "texture": "ntm:textures/models/machines/mixer.png",
+  "rotation": 0,
+  "radius": 3.2,
+  "hide": [
+    "Fluid"
+  ],
+  "bones": {
+    "Mixer": {
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.mixer.work",
+      "values": [
+        {
+          "value": 10,
+          "min": 2,
+          "max": 2
+        }
+      ]
+    }
+  ],
+  "liquids": [
+    {
+      "texture": "ntm:textures/models/machines/fluid_white.png",
+      "box": [
+        0.199,
+        1.0,
+        0.199,
+        0.801,
+        2.5,
+        0.801
+      ],
+      "value": 21,
+      "max": 22,
+      "color": 23
+    }
+  ],
+  "animations": "ntm:animations/machine_mixer.animation.json"
+}
