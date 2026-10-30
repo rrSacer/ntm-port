@@ -603,6 +603,32 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
   - O tanque e a saída não têm braços no NTM.
   - Em jogo: um T de canais liga os três lados, e um canal sozinho fica fechado.
 
+## 3k. Petróleo, lote B, e as estruturas de aço
+
+- **Refinaria (`MachineRefinery`):**
+  - 3×3×9, offset 1;
+  - tela `gui_refinery.png` 182×240 com os 13 slots do `ContainerMachineRefinery`;
+  - o óleo e as 4 saídas na cor de cada fluido, pelos valores do agente das bombas ([4..18]).
+  - Os canos da tela vão sem tinta: o NTM os pinta com as cores das saídas da receita. Faltou isso porque o overlay não
+    tinge.
+  - O modelo explodido e a inclinação seguem [19] e [20] (`show` e `pose`).
+- **Torre de fração:** só modelo, multibloco 3×3×3 e as 4 portas dos lados (o NTM não tem tela).
+- **Misturador:**
+  - 1×1×3;
+  - tela `gui_mixer.png` com os dois tanques de entrada e o de saída;
+  - o Mixer gira com [10] = 2 (trabalhando, `play` por `values`);
+  - o Fluid sobe com o tanque de saída, na cor dele (opaco aqui, 75% no NTM).
+- **Estruturas** (combinado com o agente de importação; o motor não tem estados próprios de bloco de conteúdo):
+  - `steel_beam`: o OBJ `beam` do NTM.
+  - Andaime em 4 IDs, um por cor, no template `quartz_pillar`: o OBJ `scaffold` em 3 cópias giradas como o
+    `ObjUtil` gira (`variants`), mostradas pelo `axis`. Perde-se a 2ª orientação vertical do NTM, pelo yaw.
+  - Grade no template `stone_slab`: a placa de 2 px embaixo (bottom), em cima (top) ou as duas (double). As 10 alturas
+    por clique do NTM ficam de fora.
+- **Em jogo:** todos foram postos com os dummies certos (a refinaria 80, a torre 26), as telas abrem, e as estruturas
+  aparecem nas 3 orientações e nos 3 tipos.
+- O visual-gen agora gera de um export de HEAD nos commits por etapa. Os blocos dos lotes B, C e D sem entrada própria
+  ficam com `auto: false`: o modelo extraído errava (o steel_beam pegava um boxcar).
+
 ## 4. Motor (patch) e port
 
 **Patch no motor** (`horizon-visual`, branch `ntm-visual`, 48 commits):
