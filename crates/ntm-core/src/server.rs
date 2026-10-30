@@ -63,6 +63,9 @@ pub trait ServerHost: Kv {
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
     /// A status effect on player `id` (`poison`).
     fn effect(&mut self, _id: &str, _effect: &str, _seconds: u32, _amplifier: u8) {}
+    /// Particles or a sound in `dim` (`crate::blast::visuals::Show`, not
+    /// its effects).
+    fn show(&mut self, _dim: &str, _show: &crate::blast::visuals::Show) {}
     /// A named number player `id`'s client reads (the Geiger's).
     fn set_player_value(&mut self, _id: &str, _key: &str, _value: i64) {}
 }

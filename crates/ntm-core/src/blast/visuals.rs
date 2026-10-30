@@ -1,8 +1,10 @@
-//! What a detonation shows and sounds like, as vanilla commands the client
-//! runs (`S2C::Run`). This is the extension point of the `aprimorado` mode:
-//! a [`Visuals`] backend turns a blast into lines; the enhanced one needs
-//! engine APIs (shaders, camera, sky) another agent is researching, so for
-//! now it reports itself unavailable and the optimized one is used.
+//! What a detonation shows and sounds like: vanilla particles, sounds and
+//! effects the server sends through its host (`ServerHost::particles`,
+//! `sound`, `effect`). This is the extension point of the `aprimorado`
+//! mode: a [`Visuals`] backend turns a blast into [`Show`]s; the enhanced
+//! one needs engine APIs (shaders, camera, sky) another agent is
+//! researching, so for now it reports itself unavailable and the optimized
+//! one is used.
 
 use super::config::{Config, Mode};
 use crate::{Pos, bomb::Blast, server::PlayerInfo};
@@ -16,69 +18,83 @@ pub struct Shot<'a> {
     pub players: &'a [PlayerInfo],
 }
 
+/// One thing a blast shows, in its dimension.
+#[derive(Clone, Debug, PartialEq)]
+pub enum Show {
+    /// Vanilla particles (`ServerLevel.sendParticles`): `id` as
+    /// `minecraft:<name>`, RGBA for the coloured ones.
+    Particles { id: &'static str, color: [f32; 4], at: [f64; 3], spread: [f64; 3], speed: f64, count: i32 },
+    /// A vanilla sound event, heard to 16·volume blocks.
+    Sound { id: &'static str, at: [f64; 3], volume: f32, pitch: f32 },
+    /// A status effect on a player (by id).
+    Effect { player: String, id: &'static str, seconds: u32, amplifier: u8 },
+}
+
 pub trait Visuals {
     fn name(&self) -> &'static str;
     /// Whether this backend can run here (the enhanced one: engine APIs).
     fn available(&self) -> bool {
         true
     }
-    /// Lines at the moment of the blast.
-    fn detonation(&self, cfg: &Config, shot: &Shot) -> Vec<String>;
-    /// Lines when a charge's fuse is lit.
-    fn fuse(&self, cfg: &Config, dim: &str, pos: Pos) -> Vec<String>;
+    /// What the blast shows at its moment.
+    fn detonation(&self, cfg: &Config, shot: &Shot) -> Vec<Show>;
+    /// What a charge shows when its fuse is lit.
+    fn fuse(&self, cfg: &Config, dim: &str, pos: Pos) -> Vec<Show>;
 }
 
-/// Vanilla `playsound` and `particle`: a handful of lines per blast, no
-/// matter its size (the client draws them; the server pays nothing).
+/// Vanilla particles and sounds: a handful per blast, no matter its size
+/// (the clients draw them; the server pays nothing).
 pub struct Optimized;
 
-fn at(p: Pos) -> String {
-    format!("{}.5 {}.5 {}.5", p[0], p[1], p[2])
+fn center(p: Pos) -> [f64; 3] {
+    [f64::from(p[0]) + 0.5, f64::from(p[1]) + 0.5, f64::from(p[2]) + 0.5]
 }
+
+const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 
 impl Visuals for Optimized {
     fn name(&self) -> &'static str {
         "otimizado"
     }
 
-    fn detonation(&self, cfg: &Config, s: &Shot) -> Vec<String> {
+    fn detonation(&self, cfg: &Config, s: &Shot) -> Vec<Show> {
         if !cfg.effects {
             return Vec::new();
         }
-        let p = at(s.pos);
-        let n = cfg.particles;
+        let at = center(s.pos);
+        let n = cfg.particles as i32;
         let mut out = Vec::new();
         match s.blast {
             Blast::Conventional { power } => {
                 let v = (power / 4.0).max(1.0);
-                out.push(format!("playsound minecraft:entity.generic.explode block @a {p} {v:.1} 0.7"));
+                out.push(Show::Sound { id: "minecraft:entity.generic.explode", at, volume: v, pitch: 0.7 });
                 if n > 0 {
-                    let spread = (power / 4.0).max(1.0);
-                    out.push(format!("particle minecraft:explosion_emitter {p} {spread:.1} {spread:.1} {spread:.1} 0 {} force", (n / 8).max(1)));
+                    let spread = f64::from((power / 4.0).max(1.0));
+                    out.push(Show::Particles { id: "minecraft:explosion_emitter", color: WHITE, at, spread: [spread; 3], speed: 0.0, count: (n / 8).max(1) });
                 }
             }
             Blast::Nuke { radius, .. } | Blast::Balefire { radius } => {
                 let r = radius as f32;
                 // Heard to 16·volume blocks.
                 let v = (r / 8.0).clamp(4.0, 64.0);
-                out.push(format!("playsound minecraft:entity.generic.explode master @a {p} {v:.0} 0.5 1"));
-                out.push(format!("playsound minecraft:entity.lightning_bolt.thunder weather @a {p} {v:.0} 0.5 1"));
+                out.push(Show::Sound { id: "minecraft:entity.generic.explode", at, volume: v, pitch: 0.5 });
+                out.push(Show::Sound { id: "minecraft:entity.lightning_bolt.thunder", at, volume: v, pitch: 0.5 });
                 if n > 0 {
-                    let flash = if matches!(s.blast, Blast::Balefire { .. }) { "0.3,1.0,0.3,1.0" } else { "1.0,1.0,1.0,1.0" };
-                    out.push(format!("particle minecraft:flash{{color:[{flash}]}} {p} 0 0 0 0 1 force"));
-                    let sp = (r / 8.0).min(24.0);
-                    out.push(format!("particle minecraft:explosion_emitter {p} {sp:.1} {:.1} {sp:.1} 0 {n} force", sp / 2.0));
+                    let flash = if matches!(s.blast, Blast::Balefire { .. }) { [0.3, 1.0, 0.3, 1.0] } else { WHITE };
+                    out.push(Show::Particles { id: "minecraft:flash", color: flash, at, spread: [0.0; 3], speed: 0.0, count: 1 });
+                    let sp = f64::from((r / 8.0).min(24.0));
+                    out.push(Show::Particles { id: "minecraft:explosion_emitter", color: WHITE, at, spread: [sp, sp / 2.0, sp], speed: 0.0, count: n });
                     // The mushroom: a stem of signal smoke, a cap of large smoke.
-                    let [x, y, z] = s.pos;
-                    let (stem, cap) = (y + radius / 4, y + radius / 2);
-                    out.push(format!("particle minecraft:campfire_signal_smoke {x}.5 {stem} {z}.5 {:.1} {:.1} {:.1} 0.02 {} force", r / 24.0, r / 8.0, r / 24.0, n * 4));
-                    out.push(format!("particle minecraft:large_smoke {x}.5 {cap} {z}.5 {:.1} {:.1} {:.1} 0.05 {} force", r / 6.0, r / 16.0, r / 6.0, n * 4));
+                    let r = f64::from(r);
+                    let (stem, cap) = (f64::from(s.pos[1]) + r / 4.0, f64::from(s.pos[1]) + r / 2.0);
+                    out.push(Show::Particles { id: "minecraft:campfire_signal_smoke", color: WHITE, at: [at[0], stem, at[2]], spread: [r / 24.0, r / 8.0, r / 24.0], speed: 0.02, count: n * 4 });
+                    out.push(Show::Particles { id: "minecraft:large_smoke", color: WHITE, at: [at[0], cap, at[2]], spread: [r / 6.0, r / 16.0, r / 6.0], speed: 0.05, count: n * 4 });
                 }
                 // The shock: nausea for who is inside the radius.
                 for pl in s.players {
                     let d2 = (0..3).map(|i| (pl.pos[i] - f64::from(s.pos[i])).powi(2)).sum::<f64>();
                     if d2 <= f64::from(radius).powi(2) && !pl.creative {
-                        out.push(format!("effect give {} minecraft:nausea 8 0 true", pl.name));
+                        out.push(Show::Effect { player: pl.id.clone(), id: "nausea", seconds: 8, amplifier: 0 });
                     }
                 }
             }
@@ -86,16 +102,21 @@ impl Visuals for Optimized {
         out
     }
 
-    fn fuse(&self, cfg: &Config, _dim: &str, pos: Pos) -> Vec<String> {
+    fn fuse(&self, cfg: &Config, _dim: &str, pos: Pos) -> Vec<Show> {
         if !cfg.effects {
             return Vec::new();
         }
-        vec![format!("playsound minecraft:entity.tnt.primed block @a {} 1 1", at(pos))]
+        let at = center(pos);
+        let mut out = vec![Show::Sound { id: "minecraft:entity.tnt.primed", at, volume: 1.0, pitch: 1.0 }];
+        if cfg.particles > 0 {
+            out.push(Show::Particles { id: "minecraft:smoke", color: WHITE, at: [at[0], at[1] + 0.5, at[2]], spread: [0.1; 3], speed: 0.01, count: 8 });
+        }
+        out
     }
 }
 
 /// The enhanced mode's backend: not available until the engine has the APIs
-/// it needs. Its lines are the optimized ones (the fallback).
+/// it needs. What it shows is the optimized one's (the fallback).
 pub struct Enhanced;
 
 impl Visuals for Enhanced {
@@ -105,10 +126,10 @@ impl Visuals for Enhanced {
     fn available(&self) -> bool {
         false
     }
-    fn detonation(&self, cfg: &Config, s: &Shot) -> Vec<String> {
+    fn detonation(&self, cfg: &Config, s: &Shot) -> Vec<Show> {
         Optimized.detonation(cfg, s)
     }
-    fn fuse(&self, cfg: &Config, dim: &str, pos: Pos) -> Vec<String> {
+    fn fuse(&self, cfg: &Config, dim: &str, pos: Pos) -> Vec<Show> {
         Optimized.fuse(cfg, dim, pos)
     }
 }
@@ -119,5 +140,29 @@ pub fn backend(mode: Mode) -> (&'static dyn Visuals, bool) {
         Mode::Otimizado => (&Optimized, false),
         Mode::Aprimorado if Enhanced.available() => (&Enhanced, false),
         Mode::Aprimorado => (&Optimized, true),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// A nuke shows a flash, the emitter and the mushroom, and sounds; a
+    /// player inside the radius (not in creative) gets nausea. With effects
+    /// off, nothing.
+    #[test]
+    fn a_nuke_shows_its_flash_cloud_and_shock() {
+        let cfg = Config::default();
+        let p = PlayerInfo { id: "p".into(), name: "P".into(), dim: "d".into(), pos: [3.0, 0.0, 0.0], creative: false };
+        let shot = Shot { dim: "d", pos: [0, 0, 0], blast: Blast::Nuke { radius: 40, fallout: true }, players: std::slice::from_ref(&p) };
+        let shows = Optimized.detonation(&cfg, &shot);
+        let ids: Vec<&str> = shows.iter().filter_map(|s| if let Show::Particles { id, .. } = s { Some(*id) } else { None }).collect();
+        if cfg.particles > 0 {
+            assert_eq!(ids, ["minecraft:flash", "minecraft:explosion_emitter", "minecraft:campfire_signal_smoke", "minecraft:large_smoke"]);
+        }
+        assert!(shows.iter().any(|s| matches!(s, Show::Sound { id: "minecraft:entity.lightning_bolt.thunder", .. })));
+        assert!(shows.contains(&Show::Effect { player: "p".into(), id: "nausea", seconds: 8, amplifier: 0 }));
+        let off = Config { effects: false, ..cfg };
+        assert!(Optimized.detonation(&off, &shot).is_empty());
     }
 }

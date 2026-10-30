@@ -117,7 +117,7 @@ O que o mundo guarda fora dos block entities (`ntm_core::persist`): as detonaç�
 **Lacunas que a remoção deixa** (todas com hook ou helper já previstos no plano):
 
 - ~~**Radiação do inventário**~~, ~~**dano das bombas**~~, ~~**detonador**~~ e ~~**lista de jogadores**~~: voltaram na L4 (abaixo).
-- **Efeitos das bombas:** som e partículas da explosão e do pavio eram linhas de comando do cliente; não há helper nativo para eles ainda. A cratera, o fallout, a fila e o dano não mudaram.
+- **Sons das bombas:** eram linhas de comando do cliente; voltam com o `native_play_sound` (abaixo). As partículas já voltaram.
 - **O que a máquina guarda fora dos slots** (metal fundido como sucata, itens de uma máquina sem slots) vai a `ServerHost::drop_items`, que o bundle ainda não implementa: não há helper para soltar itens no mundo.
 - O código da tela antiga (`view.rs` e os `view`/`action` das máquinas) ficou, sem caminho que o chame. Sai quando as telas nativas cobrirem tudo.
 
@@ -133,8 +133,8 @@ O host do bundle lê os jogadores vivos (`native_players`) a cada tick; o UUID �
 
 | Lacuna | Upstream | Estado |
 | --- | --- | --- |
-| Partículas das bombas | `GameLevel::native_send_particles` (#4390, contraparte de `ServerLevel.sendParticles`) | Integrado; já está na `ntm-next` `29b4726b4`. Partículas de bloco sim, de item não. Falta usar nas explosões e no pavio. |
-| Sons das bombas | `GameLevel::native_play_sound` (#4574, issue #4400) | PR aberto. Usar quando entrar. |
+| Partículas das bombas | `GameLevel::native_send_particles` (#4390, contraparte de `ServerLevel.sendParticles`) | Em uso: o pavio solta fumaça; a carga, o `explosion_emitter`; a nuke, o clarão, o emissor e o cogumelo (`blast::visuals`, `ServerHost::show`). Só na dimensão em tick. |
+| Sons das bombas | `GameLevel::native_play_sound` (#4574, issue #4400) | PR aberto; o fbef4942 o fixa como API 32 na `ntm-next`. Os sons já saem de `blast::visuals` e o host os ignora até lá. |
 | Texto ao próprio jogador (detonador) | Nada. `native_tell` só alcança convidados LAN; `native_chat` é do cliente. | Lacuna; pedir ao upstream. |
 | Agachar com item na mão (ligar o detonador) | Nada. `use_block` traz `sneaking` só de mãos vazias. | Lacuna; pedir ao upstream. |
 

@@ -3,7 +3,7 @@
 //! radiation and effects, and `/ntmbomba`.
 use super::*;
 use crate::{
-    blast::{self, Config, PULSE_EVERY, PULSE_MAX, PULSE_TICKS, Pulse, Queued, Recorder, Zone, vanilla},
+    blast::{self, Config, PULSE_EVERY, PULSE_MAX, PULSE_TICKS, Pulse, Queued, Recorder, Zone, vanilla, visuals},
     bomb::{Blast, FUSE_TICKS},
     machine::Data,
     radiation,
@@ -39,6 +39,17 @@ impl<H: ServerHost> crate::explosion::Store for &Engine<'_, H> {
     }
     fn delete(&mut self, key: &str) {
         self.host.borrow_mut().delete(key)
+    }
+}
+
+/// What a blast or a fuse shows, sent through the host: effects to their
+/// players, the rest to the dimension.
+fn show(host: &mut impl ServerHost, dim: &str, shows: Vec<visuals::Show>) {
+    for s in shows {
+        match s {
+            visuals::Show::Effect { player, id, seconds, amplifier } => host.effect(&player, id, seconds, amplifier),
+            other => host.show(dim, &other),
+        }
     }
 }
 
@@ -201,19 +212,22 @@ impl Server {
                     self.trigger(host, key, b, "pavio");
                 }
             } else if rising && unlit_charge {
-                self.light_fuse(&key);
+                self.light_fuse(host, &key);
             } else if rising && !unlit_charge && let Some(b) = blast.filter(|b| !matches!(b, Blast::Conventional { .. })) {
                 self.trigger(host, key, b, "redstone");
             }
         }
     }
 
-    fn light_fuse(&mut self, key: &Key) {
+    fn light_fuse(&mut self, host: &mut impl ServerHost, key: &Key) {
+        let cfg = self.bomb_config(host);
         let Some(r) = self.ready() else { return };
         if let Some(Data::Bomb(b)) = r.world.machines.get_mut(key).map(|m| &mut m.data)
             && b.fuse.is_none()
         {
             b.fuse = Some(FUSE_TICKS);
+            let (vis, _) = visuals::backend(cfg.mode);
+            show(host, &key.0, vis.fuse(&cfg, &key.0, key.1));
         }
     }
 
@@ -310,6 +324,12 @@ impl Server {
             Blast::Balefire { radius } => Blast::Balefire { radius: radius.min(cfg.max_radius) },
             b => b,
         };
+        let (vis, fell_back) = visuals::backend(cfg.mode);
+        if fell_back && !self.blasts.warned_fallback {
+            self.blasts.warned_fallback = true;
+            host.log("bomb visuals: modo aprimorado indisponível (APIs do motor em pesquisa): usando o otimizado");
+        }
+        show(host, &dim, vis.detonation(&cfg, &visuals::Shot { dim: &dim, pos, blast, players: &players }));
         let c = center(pos);
         match blast {
             Blast::Conventional { power } => {
@@ -514,7 +534,7 @@ impl Server {
         match b.blast() {
             None => toast(self, "A bomba não está pronta: faltam componentes."),
             Some(Blast::Conventional { .. }) => {
-                self.light_fuse(&key);
+                self.light_fuse(host, &key);
                 toast(self, "Pavio aceso.")
             }
             Some(blast) => {

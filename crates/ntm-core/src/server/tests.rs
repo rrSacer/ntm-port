@@ -35,6 +35,8 @@ struct World {
     effects: Vec<(String, String, u32, u8)>,
     /// The values each player's client was sent.
     values: BTreeMap<(String, String), i64>,
+    /// Particles and sounds shown: (dimension, what).
+    shown: Vec<(String, crate::blast::visuals::Show)>,
 }
 
 impl World {
@@ -53,6 +55,7 @@ impl World {
             hurts: Vec::new(),
             effects: Vec::new(),
             values: BTreeMap::new(),
+            shown: Vec::new(),
         };
         for x in -32..32 {
             for z in -32..32 {
@@ -162,6 +165,9 @@ impl ServerHost for SHost {
     }
     fn effect(&mut self, id: &str, effect: &str, seconds: u32, amplifier: u8) {
         self.world.borrow_mut().effects.push((id.into(), effect.into(), seconds, amplifier));
+    }
+    fn show(&mut self, dim: &str, show: &crate::blast::visuals::Show) {
+        self.world.borrow_mut().shown.push((dim.into(), show.clone()));
     }
     fn set_player_value(&mut self, id: &str, key: &str, value: i64) {
         self.world.borrow_mut().values.insert((id.into(), key.into()), value);

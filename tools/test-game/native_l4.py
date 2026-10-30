@@ -81,7 +81,15 @@ elif phase == 'detonador':
     ctl('use-item')
     time.sleep(1)
     ev['pavio'] = log_lines('Pavio aceso')
-    time.sleep(8)
+    # The charge's fuse (80 ticks), then its blast: the particles it sends.
+    seen = 0
+    for _ in range(40):
+        time.sleep(0.25)
+        st = ctl('status')
+        seen = max(seen, st.get('particles', 0) if isinstance(st.get('particles'), int) else len(st.get('particles') or []))
+    ev['particulas_max'] = seen
+    ctl('screenshot', game / 'native-l4-explosao.png')
+    time.sleep(2)
     ev['depois'] = cmd(f'execute if block {x} {Y} {z} minecraft:air run say vazio') or ctl('block', x, Y, z)
     ev['cratera'] = ctl('block', x, Y - 1, z)
 out_path.write_text(json.dumps(ev, indent=1, ensure_ascii=False))

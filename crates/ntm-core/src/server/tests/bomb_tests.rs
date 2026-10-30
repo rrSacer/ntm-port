@@ -2,6 +2,7 @@
 //! redstone, fuses, the detonator, the explosions, their radiation and
 //! settings.
 use super::*;
+use crate::blast::visuals::Show;
 use crate::bomb;
 use crate::server::container_bridge::Stack;
 
@@ -146,8 +147,12 @@ fn a_charge_burns_its_fuse_then_digs_like_vanilla() {
     g.run(2);
     let fuse = bomb_data(&mut g, at).and_then(|b| b.fuse);
     assert!(fuse.is_some_and(|f| f > 60), "{fuse:?}");
+    let shown = |g: &Game, id: &str| g.world.borrow().shown.iter().filter(|(_, s)| matches!(s, Show::Sound { id: i, .. } | Show::Particles { id: i, .. } if *i == id)).count();
+    assert_eq!(shown(&g, "minecraft:entity.tnt.primed"), 1, "o som do pavio");
     g.run(bomb::FUSE_TICKS as usize + 4);
     assert!(bomb_data(&mut g, at).is_none());
+    assert_eq!(shown(&g, "minecraft:entity.generic.explode"), 1);
+    assert_eq!(shown(&g, "minecraft:explosion_emitter"), 1);
     let w = g.world.borrow();
     assert_eq!(w.get(OW, [0, 69, 0]), "minecraft:air");
     assert_eq!(w.get(OW, [0, 60, 0]), "minecraft:stone", "fundo da carga");
