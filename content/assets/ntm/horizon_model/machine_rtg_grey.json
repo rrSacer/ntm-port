@@ -1,0 +1,81 @@
+{
+  "obj": "ntm:models/obj/rtg.obj",
+  "obj_from": "models/machines/rtg.obj",
+  "texture": "ntm:textures/models/machines/rtg.png",
+  "rotation": 180,
+  "radius": 1.0,
+  "show": {
+    "ConnPX": {
+      "neighbor": [
+        1,
+        0,
+        0
+      ],
+      "blocks": [
+        "ntm:red_cable",
+        "ntm:red_cable_classic",
+        "ntm:red_cable_paintable",
+        "ntm:red_cable_gauge",
+        "ntm:red_cable_box",
+        "ntm:red_connector",
+        "ntm:red_connector_super",
+        "ntm:cable_switch",
+        "ntm:cable_detector"
+      ]
+    },
+    "ConnNX": {
+      "neighbor": [
+        -1,
+        0,
+        0
+      ],
+      "blocks": [
+        "ntm:red_cable",
+        "ntm:red_cable_classic",
+        "ntm:red_cable_paintable",
+        "ntm:red_cable_gauge",
+        "ntm:red_cable_box",
+        "ntm:red_connector",
+        "ntm:red_connector_super",
+        "ntm:cable_switch",
+        "ntm:cable_detector"
+      ]
+    },
+    "ConnNZ": {
+      "neighbor": [
+        0,
+        0,
+        -1
+      ],
+      "blocks": [
+        "ntm:red_cable",
+        "ntm:red_cable_classic",
+        "ntm:red_cable_paintable",
+        "ntm:red_cable_gauge",
+        "ntm:red_cable_box",
+        "ntm:red_connector",
+        "ntm:red_connector_super",
+        "ntm:cable_switch",
+        "ntm:cable_detector"
+      ]
+    },
+    "ConnPZ": {
+      "neighbor": [
+        0,
+        0,
+        1
+      ],
+      "blocks": [
+        "ntm:red_cable",
+        "ntm:red_cable_classic",
+        "ntm:red_cable_paintable",
+        "ntm:red_cable_gauge",
+        "ntm:red_cable_box",
+        "ntm:red_connector",
+        "ntm:red_connector_super",
+        "ntm:cable_switch",
+        "ntm:cable_detector"
+      ]
+    }
+  }
+}

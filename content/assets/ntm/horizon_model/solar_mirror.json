@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/solar_mirror.obj",
+  "texture": "ntm:textures/models/machines/solar_mirror.png",
+  "rotation": 0,
+  "radius": 1.0
+}

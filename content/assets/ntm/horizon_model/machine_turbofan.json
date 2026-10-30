@@ -1,0 +1,34 @@
+{
+  "obj": "ntm:models/obj/turbofan.obj",
+  "texture": "ntm:textures/models/machines/turbofan.png",
+  "rotation": 90,
+  "radius": 4.0,
+  "bones": {
+    "Blades": {
+      "pivot": [
+        0,
+        1.5,
+        0
+      ]
+    }
+  },
+  "show": {
+    "Afterburner": {
+      "value": 5,
+      "min": 0,
+      "max": 0
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.turbofan.spin",
+      "values": [
+        {
+          "value": 6,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "animations": "ntm:animations/machine_turbofan.animation.json"
+}

@@ -1,0 +1,11 @@
+{
+  "obj": "ntm:models/obj/solar_boiler.obj",
+  "texture": "ntm:textures/models/machines/solar_boiler.png",
+  "rotation": 90,
+  "radius": 2.0,
+  "hide": [
+    "Overglow_1",
+    "Overglow_2",
+    "Overglow_3"
+  ]
+}

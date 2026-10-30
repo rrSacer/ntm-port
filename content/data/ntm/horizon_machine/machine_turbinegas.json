@@ -1,0 +1,33 @@
+{
+  "use_range": 12.0,
+  "slots": [
+    {
+      "x": 8,
+      "y": 109
+    },
+    {
+      "x": 36,
+      "y": 17,
+      "max": 1
+    }
+  ],
+  "inventory": [
+    8,
+    141
+  ],
+  "data": 21,
+  "multiblock": {
+    "min": [
+      -4,
+      0,
+      -1
+    ],
+    "max": [
+      5,
+      2,
+      1
+    ],
+    "offset": 1,
+    "dummy": "ntm:dummy_machine"
+  }
+}

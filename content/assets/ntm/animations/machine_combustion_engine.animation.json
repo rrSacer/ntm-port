@@ -1,0 +1,25 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.combustion_engine.hatch": {
+      "loop": false,
+      "animation_length": 1.0,
+      "bones": {
+        "Hatch": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.00": [
+              0,
+              135,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

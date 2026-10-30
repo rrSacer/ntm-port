@@ -15408,40 +15408,4957 @@
       }
     },
     "ntm:machine_combustion_engine": {
-      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
-      "auto": false
+      "source": "MachineCombustionEngine {1,0,1,0,3,2} offset 0, ContainerCombustionEngine, GUICombustionEngine 176x203 (generators/gui_combustion.png): the setting slider clicked by pixel (100+k), the piston set icon by value 7, HE/t in value 8; RenderCombustionEngine (case 2: 90, then -0.5, 0, 3; the Canister while a fluid type is set (value 4), untinted where HBM tints it; the Hatch opening up to 135 degrees with the screen)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 17
+          },
+          {
+            "x": 17,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 88,
+            "y": 71,
+            "max": 1
+          },
+          {
+            "x": 143,
+            "y": 71
+          },
+          {
+            "x": 35,
+            "y": 71,
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          121
+        ],
+        "data": 9,
+        "synced": [
+          4
+        ],
+        "multiblock": {
+          "min": [
+            -3,
+            0,
+            0
+          ],
+          "max": [
+            2,
+            1,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/generators/gui_combustion.png",
+        "texture_from": "textures/gui/generators/gui_combustion.png",
+        "size": [
+          176,
+          203
+        ],
+        "title": false,
+        "inventory_label": [
+          8,
+          109
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              143,
+              17,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              35,
+              17,
+              16,
+              52
+            ],
+            "color": 4,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 5,
+            "min": 1,
+            "rect": [
+              79,
+              13,
+              35,
+              15
+            ],
+            "uv": [
+              192,
+              0
+            ]
+          },
+          {
+            "value": 7,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              80,
+              51,
+              25,
+              12
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 7,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              80,
+              51,
+              25,
+              12
+            ],
+            "uv": [
+              176,
+              64
+            ]
+          },
+          {
+            "value": 7,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              80,
+              51,
+              25,
+              12
+            ],
+            "uv": [
+              176,
+              76
+            ]
+          },
+          {
+            "value": 7,
+            "min": 4,
+            "max": 4,
+            "rect": [
+              80,
+              51,
+              25,
+              12
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 6,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              79,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              80,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              81,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              82,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 4,
+            "max": 4,
+            "rect": [
+              83,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 5,
+            "max": 5,
+            "rect": [
+              84,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 6,
+            "max": 6,
+            "rect": [
+              85,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 7,
+            "max": 7,
+            "rect": [
+              86,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 8,
+            "max": 8,
+            "rect": [
+              87,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 9,
+            "max": 9,
+            "rect": [
+              88,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 10,
+            "max": 10,
+            "rect": [
+              89,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 11,
+            "max": 11,
+            "rect": [
+              90,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 12,
+            "max": 12,
+            "rect": [
+              91,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 13,
+            "max": 13,
+            "rect": [
+              92,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 14,
+            "max": 14,
+            "rect": [
+              93,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 15,
+            "max": 15,
+            "rect": [
+              95,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 16,
+            "max": 16,
+            "rect": [
+              96,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 17,
+            "max": 17,
+            "rect": [
+              97,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 18,
+            "max": 18,
+            "rect": [
+              98,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 19,
+            "max": 19,
+            "rect": [
+              99,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 20,
+            "max": 20,
+            "rect": [
+              100,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 21,
+            "max": 21,
+            "rect": [
+              101,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 22,
+            "max": 22,
+            "rect": [
+              102,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 23,
+            "max": 23,
+            "rect": [
+              103,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 24,
+            "max": 24,
+            "rect": [
+              104,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 25,
+            "max": 25,
+            "rect": [
+              105,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 26,
+            "max": 26,
+            "rect": [
+              106,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 27,
+            "max": 27,
+            "rect": [
+              107,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 28,
+            "max": 28,
+            "rect": [
+              108,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 29,
+            "max": 29,
+            "rect": [
+              109,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          },
+          {
+            "value": 6,
+            "min": 30,
+            "max": 30,
+            "rect": [
+              111,
+              38,
+              4,
+              8
+            ],
+            "uv": [
+              192,
+              15
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              143,
+              17,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              35,
+              17,
+              16,
+              52
+            ],
+            "lines": [
+              "{2} / {3} mB"
+            ]
+          },
+          {
+            "rect": [
+              79,
+              50,
+              35,
+              14
+            ],
+            "lines": [
+              "{8} HE/t"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              89,
+              13,
+              16,
+              14
+            ],
+            "lines": [
+              "Ignition"
+            ]
+          },
+          {
+            "id": 100,
+            "rect": [
+              79,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 101,
+            "rect": [
+              80,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 102,
+            "rect": [
+              81,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 103,
+            "rect": [
+              82,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 104,
+            "rect": [
+              83,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 105,
+            "rect": [
+              84,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 106,
+            "rect": [
+              85,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 107,
+            "rect": [
+              86,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 108,
+            "rect": [
+              87,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 109,
+            "rect": [
+              88,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 110,
+            "rect": [
+              89,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 111,
+            "rect": [
+              90,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 112,
+            "rect": [
+              91,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 113,
+            "rect": [
+              92,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 114,
+            "rect": [
+              93,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 115,
+            "rect": [
+              94,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 116,
+            "rect": [
+              95,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 117,
+            "rect": [
+              96,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 118,
+            "rect": [
+              97,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 119,
+            "rect": [
+              98,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 120,
+            "rect": [
+              99,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 121,
+            "rect": [
+              100,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 122,
+            "rect": [
+              101,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 123,
+            "rect": [
+              102,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 124,
+            "rect": [
+              103,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 125,
+            "rect": [
+              104,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 126,
+            "rect": [
+              105,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 127,
+            "rect": [
+              106,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 128,
+            "rect": [
+              107,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 129,
+            "rect": [
+              108,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 130,
+            "rect": [
+              109,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 131,
+            "rect": [
+              110,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 132,
+            "rect": [
+              111,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 133,
+            "rect": [
+              112,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 134,
+            "rect": [
+              113,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          },
+          {
+            "id": 135,
+            "rect": [
+              114,
+              38,
+              1,
+              8
+            ],
+            "lines": [
+              "{6} / 30"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/combustion_engine.obj",
+        "obj_from": "models/machines/combustion_engine.obj",
+        "texture": "ntm:textures/models/machines/combustion_engine.png",
+        "texture_from": "textures/models/machines/combustion_engine.png",
+        "rotation": 90,
+        "radius": 6.5,
+        "translate": [
+          -0.5,
+          0,
+          3
+        ],
+        "bones": {
+          "Hatch": {
+            "pivot": [
+              1,
+              0,
+              -2.6875
+            ]
+          }
+        },
+        "show": {
+          "Canister": {
+            "value": 4,
+            "min": 1
+          }
+        },
+        "loop_animation": {
+          "name": "animation.combustion_engine.hatch",
+          "length": 1.0,
+          "loop": false,
+          "bones": {
+            "Hatch": {
+              "turn": [
+                0,
+                135,
+                0
+              ]
+            }
+          }
+        },
+        "open": "animation.combustion_engine.hatch"
+      }
     },
     "ntm:machine_diesel": {
-      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
-      "auto": false
+      "source": "MachineDiesel (one block), ContainerMachineDiesel, GUIMachineDiesel 176x203 (generators/gui_diesel.png, no title); RenderDieselGen (case 2: 90; the Engine shakes 0.005 while running: left out)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 17
+          },
+          {
+            "x": 17,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 141,
+            "y": 71
+          },
+          {
+            "x": 35,
+            "y": 71,
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          121
+        ],
+        "data": 8
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/generators/gui_diesel.png",
+        "texture_from": "textures/gui/generators/gui_diesel.png",
+        "size": [
+          176,
+          203
+        ],
+        "title": false,
+        "inventory_label": [
+          8,
+          109
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              141,
+              17,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              35,
+              17,
+              16,
+              52
+            ],
+            "color": 4,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 5,
+            "min": 1,
+            "rect": [
+              79,
+              61,
+              35,
+              14
+            ],
+            "uv": [
+              192,
+              16
+            ]
+          },
+          {
+            "value": 6,
+            "min": 1,
+            "rect": [
+              89,
+              42,
+              16,
+              16
+            ],
+            "uv": [
+              192,
+              0
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              141,
+              17,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              35,
+              17,
+              16,
+              52
+            ],
+            "lines": [
+              "{2} / {3} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              89,
+              61,
+              16,
+              14
+            ],
+            "lines": [
+              "Ignition"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/dieselgen.obj",
+        "obj_from": "models/machines/dieselgen.obj",
+        "texture": "ntm:textures/models/machines/dieselgen.png",
+        "texture_from": "textures/models/machines/dieselgen.png",
+        "rotation": 90,
+        "radius": 1.0
+      }
     },
     "ntm:machine_turbinegas": {
-      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
-      "auto": false
+      "source": "MachineTurbineGas {2,0,1,1,4,5} offset 1, ContainerMachineTurbineGas, GUIMachineTurbineGas 176x223 (generators/gui_turbinegas.png): the state light by value 14 (-1 starting, 0 off, 1 on), auto mode, the power slider clicked by pixel (100+k, 0..60), the thermometer (value 18 of 800); the rpm ring is a needle and the seven LED digits a line of text here; RenderTurbineGas (case 2: 90), one part",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 109
+          },
+          {
+            "x": 36,
+            "y": 17,
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          141
+        ],
+        "data": 21,
+        "multiblock": {
+          "min": [
+            -4,
+            0,
+            -1
+          ],
+          "max": [
+            5,
+            2,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/generators/gui_turbinegas.png",
+        "texture_from": "textures/gui/generators/gui_turbinegas.png",
+        "size": [
+          176,
+          223
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          129
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              26,
+              109,
+              142,
+              16
+            ],
+            "uv": [
+              0,
+              223
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 18,
+            "max_value": 800,
+            "rect": [
+              136,
+              28,
+              2,
+              64
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              8,
+              17,
+              16,
+              48
+            ],
+            "color": 4,
+            "dir": "up"
+          },
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              8,
+              71,
+              16,
+              32
+            ],
+            "color": 7,
+            "dir": "up"
+          },
+          {
+            "value": 8,
+            "max": 9,
+            "rect": [
+              147,
+              62,
+              16,
+              36
+            ],
+            "color": 10,
+            "dir": "up"
+          },
+          {
+            "value": 11,
+            "max": 12,
+            "rect": [
+              147,
+              22,
+              16,
+              36
+            ],
+            "color": 13,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 15,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              74,
+              86,
+              29,
+              13
+            ],
+            "uv": [
+              194,
+              11
+            ]
+          },
+          {
+            "value": 15,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              74,
+              86,
+              29,
+              13
+            ],
+            "uv": [
+              194,
+              24
+            ]
+          },
+          {
+            "value": 14,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              80,
+              32,
+              16,
+              16
+            ],
+            "uv": [
+              178,
+              38
+            ]
+          },
+          {
+            "value": 14,
+            "min": -1,
+            "max": -1,
+            "rect": [
+              80,
+              32,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              38
+            ]
+          },
+          {
+            "value": 14,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              80,
+              32,
+              16,
+              16
+            ],
+            "uv": [
+              210,
+              38
+            ]
+          },
+          {
+            "value": 16,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              36,
+              97,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              36,
+              96,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              36,
+              95,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              36,
+              94,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 4,
+            "max": 4,
+            "rect": [
+              36,
+              93,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 5,
+            "max": 5,
+            "rect": [
+              36,
+              92,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 6,
+            "max": 6,
+            "rect": [
+              36,
+              91,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 7,
+            "max": 7,
+            "rect": [
+              36,
+              90,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 8,
+            "max": 8,
+            "rect": [
+              36,
+              89,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 9,
+            "max": 9,
+            "rect": [
+              36,
+              88,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 10,
+            "max": 10,
+            "rect": [
+              36,
+              87,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 11,
+            "max": 11,
+            "rect": [
+              36,
+              86,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 12,
+            "max": 12,
+            "rect": [
+              36,
+              85,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 13,
+            "max": 13,
+            "rect": [
+              36,
+              84,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 14,
+            "max": 14,
+            "rect": [
+              36,
+              83,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 15,
+            "max": 15,
+            "rect": [
+              36,
+              82,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 16,
+            "max": 16,
+            "rect": [
+              36,
+              81,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 17,
+            "max": 17,
+            "rect": [
+              36,
+              80,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 18,
+            "max": 18,
+            "rect": [
+              36,
+              79,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 19,
+            "max": 19,
+            "rect": [
+              36,
+              78,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 20,
+            "max": 20,
+            "rect": [
+              36,
+              77,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 21,
+            "max": 21,
+            "rect": [
+              36,
+              76,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 22,
+            "max": 22,
+            "rect": [
+              36,
+              75,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 23,
+            "max": 23,
+            "rect": [
+              36,
+              74,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 24,
+            "max": 24,
+            "rect": [
+              36,
+              73,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 25,
+            "max": 25,
+            "rect": [
+              36,
+              72,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 26,
+            "max": 26,
+            "rect": [
+              36,
+              71,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 27,
+            "max": 27,
+            "rect": [
+              36,
+              70,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 28,
+            "max": 28,
+            "rect": [
+              36,
+              69,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 29,
+            "max": 29,
+            "rect": [
+              36,
+              68,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 30,
+            "max": 30,
+            "rect": [
+              36,
+              67,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 31,
+            "max": 31,
+            "rect": [
+              36,
+              66,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 32,
+            "max": 32,
+            "rect": [
+              36,
+              65,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 33,
+            "max": 33,
+            "rect": [
+              36,
+              64,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 34,
+            "max": 34,
+            "rect": [
+              36,
+              63,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 35,
+            "max": 35,
+            "rect": [
+              36,
+              62,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 36,
+            "max": 36,
+            "rect": [
+              36,
+              61,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 37,
+            "max": 37,
+            "rect": [
+              36,
+              60,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 38,
+            "max": 38,
+            "rect": [
+              36,
+              59,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 39,
+            "max": 39,
+            "rect": [
+              36,
+              58,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 40,
+            "max": 40,
+            "rect": [
+              36,
+              57,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 41,
+            "max": 41,
+            "rect": [
+              36,
+              56,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 42,
+            "max": 42,
+            "rect": [
+              36,
+              55,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 43,
+            "max": 43,
+            "rect": [
+              36,
+              54,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 44,
+            "max": 44,
+            "rect": [
+              36,
+              53,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 45,
+            "max": 45,
+            "rect": [
+              36,
+              52,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 46,
+            "max": 46,
+            "rect": [
+              36,
+              51,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 47,
+            "max": 47,
+            "rect": [
+              36,
+              50,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 48,
+            "max": 48,
+            "rect": [
+              36,
+              49,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 49,
+            "max": 49,
+            "rect": [
+              36,
+              48,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 50,
+            "max": 50,
+            "rect": [
+              36,
+              47,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 51,
+            "max": 51,
+            "rect": [
+              36,
+              46,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 52,
+            "max": 52,
+            "rect": [
+              36,
+              45,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 53,
+            "max": 53,
+            "rect": [
+              36,
+              44,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 54,
+            "max": 54,
+            "rect": [
+              36,
+              43,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 55,
+            "max": 55,
+            "rect": [
+              36,
+              42,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 56,
+            "max": 56,
+            "rect": [
+              36,
+              41,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 57,
+            "max": 57,
+            "rect": [
+              36,
+              40,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 58,
+            "max": 58,
+            "rect": [
+              36,
+              39,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 59,
+            "max": 59,
+            "rect": [
+              36,
+              38,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          },
+          {
+            "value": 16,
+            "min": 60,
+            "max": 60,
+            "rect": [
+              36,
+              37,
+              16,
+              6
+            ],
+            "uv": [
+              178,
+              0
+            ]
+          }
+        ],
+        "gauges": [
+          {
+            "value": 17,
+            "max_value": 100,
+            "at": [
+              88,
+              40
+            ],
+            "tip": 22,
+            "back": 2,
+            "side": 1,
+            "color": "#00c000"
+          }
+        ],
+        "texts": [
+          {
+            "at": [
+              114,
+              72
+            ],
+            "text": "{19}",
+            "color": "#ff3030",
+            "align": "right"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              26,
+              109,
+              142,
+              16
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              133,
+              23,
+              8,
+              72
+            ],
+            "lines": [
+              "Temperature: {18} C"
+            ]
+          },
+          {
+            "rect": [
+              8,
+              17,
+              16,
+              48
+            ],
+            "lines": [
+              "{2} / {3} mB"
+            ]
+          },
+          {
+            "rect": [
+              8,
+              71,
+              16,
+              32
+            ],
+            "lines": [
+              "{5} / {6} mB"
+            ]
+          },
+          {
+            "rect": [
+              147,
+              62,
+              16,
+              36
+            ],
+            "lines": [
+              "{8} / {9} mB"
+            ]
+          },
+          {
+            "rect": [
+              147,
+              22,
+              16,
+              36
+            ],
+            "lines": [
+              "{11} / {12} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              80,
+              32,
+              16,
+              16
+            ],
+            "lines": [
+              "Start / stop"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              74,
+              86,
+              29,
+              13
+            ],
+            "lines": [
+              "Auto mode"
+            ]
+          },
+          {
+            "id": 100,
+            "rect": [
+              36,
+              97,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 101,
+            "rect": [
+              36,
+              96,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 102,
+            "rect": [
+              36,
+              95,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 103,
+            "rect": [
+              36,
+              94,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 104,
+            "rect": [
+              36,
+              93,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 105,
+            "rect": [
+              36,
+              92,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 106,
+            "rect": [
+              36,
+              91,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 107,
+            "rect": [
+              36,
+              90,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 108,
+            "rect": [
+              36,
+              89,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 109,
+            "rect": [
+              36,
+              88,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 110,
+            "rect": [
+              36,
+              87,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 111,
+            "rect": [
+              36,
+              86,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 112,
+            "rect": [
+              36,
+              85,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 113,
+            "rect": [
+              36,
+              84,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 114,
+            "rect": [
+              36,
+              83,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 115,
+            "rect": [
+              36,
+              82,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 116,
+            "rect": [
+              36,
+              81,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 117,
+            "rect": [
+              36,
+              80,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 118,
+            "rect": [
+              36,
+              79,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 119,
+            "rect": [
+              36,
+              78,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 120,
+            "rect": [
+              36,
+              77,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 121,
+            "rect": [
+              36,
+              76,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 122,
+            "rect": [
+              36,
+              75,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 123,
+            "rect": [
+              36,
+              74,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 124,
+            "rect": [
+              36,
+              73,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 125,
+            "rect": [
+              36,
+              72,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 126,
+            "rect": [
+              36,
+              71,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 127,
+            "rect": [
+              36,
+              70,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 128,
+            "rect": [
+              36,
+              69,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 129,
+            "rect": [
+              36,
+              68,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 130,
+            "rect": [
+              36,
+              67,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 131,
+            "rect": [
+              36,
+              66,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 132,
+            "rect": [
+              36,
+              65,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 133,
+            "rect": [
+              36,
+              64,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 134,
+            "rect": [
+              36,
+              63,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 135,
+            "rect": [
+              36,
+              62,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 136,
+            "rect": [
+              36,
+              61,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 137,
+            "rect": [
+              36,
+              60,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 138,
+            "rect": [
+              36,
+              59,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 139,
+            "rect": [
+              36,
+              58,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 140,
+            "rect": [
+              36,
+              57,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 141,
+            "rect": [
+              36,
+              56,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 142,
+            "rect": [
+              36,
+              55,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 143,
+            "rect": [
+              36,
+              54,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 144,
+            "rect": [
+              36,
+              53,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 145,
+            "rect": [
+              36,
+              52,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 146,
+            "rect": [
+              36,
+              51,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 147,
+            "rect": [
+              36,
+              50,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 148,
+            "rect": [
+              36,
+              49,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 149,
+            "rect": [
+              36,
+              48,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 150,
+            "rect": [
+              36,
+              47,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 151,
+            "rect": [
+              36,
+              46,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 152,
+            "rect": [
+              36,
+              45,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 153,
+            "rect": [
+              36,
+              44,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 154,
+            "rect": [
+              36,
+              43,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 155,
+            "rect": [
+              36,
+              42,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 156,
+            "rect": [
+              36,
+              41,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 157,
+            "rect": [
+              36,
+              40,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 158,
+            "rect": [
+              36,
+              39,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 159,
+            "rect": [
+              36,
+              38,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          },
+          {
+            "id": 160,
+            "rect": [
+              36,
+              37,
+              16,
+              1
+            ],
+            "lines": [
+              "Power: {16} / 60"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/turbinegas.obj",
+        "obj_from": "models/machines/turbinegas.obj",
+        "texture": "ntm:textures/models/machines/turbinegas.png",
+        "texture_from": "textures/models/machines/turbinegas.png",
+        "rotation": 90,
+        "radius": 6.0
+      }
     },
     "ntm:machine_turbofan": {
-      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
-      "auto": false
+      "source": "MachineTurbofan {2,0,1,1,3,3} offset 1, ContainerMachineTurbofan, GUIMachineTurbofan 176x203 (generators/gui_turbofan.png, title at 43; the blood gauge left out); RenderTurbofan (case 2: 90; Blades turning while value 6, the closed Afterburner while value 5 is 0)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 17
+          },
+          {
+            "x": 17,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 98,
+            "y": 71
+          },
+          {
+            "x": 143,
+            "y": 71
+          },
+          {
+            "x": 44,
+            "y": 71,
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          121
+        ],
+        "data": 7,
+        "synced": [
+          5,
+          6
+        ],
+        "multiblock": {
+          "min": [
+            -3,
+            0,
+            -1
+          ],
+          "max": [
+            3,
+            2,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/generators/gui_turbofan.png",
+        "texture_from": "textures/gui/generators/gui_turbofan.png",
+        "size": [
+          176,
+          203
+        ],
+        "title": [
+          43,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          109
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              143,
+              17,
+              16,
+              52
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              35,
+              17,
+              34,
+              52
+            ],
+            "color": 4,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 5,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              98,
+              44,
+              16,
+              16
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 5,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              98,
+              44,
+              16,
+              16
+            ],
+            "uv": [
+              176,
+              16
+            ]
+          },
+          {
+            "value": 5,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              98,
+              44,
+              16,
+              16
+            ],
+            "uv": [
+              176,
+              32
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              143,
+              17,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              35,
+              17,
+              34,
+              52
+            ],
+            "lines": [
+              "{2} / {3} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/turbofan.obj",
+        "obj_from": "models/machines/turbofan.obj",
+        "texture": "ntm:textures/models/machines/turbofan.png",
+        "texture_from": "textures/models/machines/turbofan.png",
+        "rotation": 90,
+        "radius": 4.0,
+        "bones": {
+          "Blades": {
+            "pivot": [
+              0,
+              1.5,
+              0
+            ]
+          }
+        },
+        "show": {
+          "Afterburner": {
+            "value": 5,
+            "min": 0,
+            "max": 0
+          }
+        },
+        "loop_animation": {
+          "name": "animation.turbofan.spin",
+          "length": 0.5,
+          "bones": {
+            "Blades": {
+              "turn": [
+                0,
+                0,
+                -360
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.turbofan.spin",
+            "values": [
+              {
+                "value": 6,
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_solar_boiler": {
-      "source": "Energy batch 4: source casing fallback until visual integration is requested",
-      "auto": false
+      "source": "MachineSolarBoiler {2,0,1,1,1,1} offset 1, no GUI in HBM; RenderSolarBoiler (90, then case 2: 0; the Base; the mirrors' beams left out)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            2,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/solar_boiler.obj",
+        "obj_from": "models/machines/solar_boiler.obj",
+        "texture": "ntm:textures/models/machines/solar_boiler.png",
+        "texture_from": "textures/models/machines/solar_boiler.png",
+        "rotation": 90,
+        "radius": 2.0,
+        "hide": [
+          "Overglow_1",
+          "Overglow_2",
+          "Overglow_3"
+        ]
+      }
     },
     "ntm:solar_mirror": {
-      "source": "Energy batch 4: source casing fallback until visual integration is requested",
-      "auto": false
+      "source": "SolarMirror (one block), RenderMirror (ISBRH turning the mirror toward its boiler): here level, at rest; no GUI",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0
+      },
+      "model": {
+        "obj": "ntm:models/obj/solar_mirror.obj",
+        "obj_from": "models/machines/solar_mirror.obj",
+        "texture": "ntm:textures/models/machines/solar_mirror.png",
+        "texture_from": "textures/models/machines/solar_mirror.png",
+        "rotation": 0,
+        "radius": 1.0
+      }
     },
     "ntm:machine_stirling": {
-      "source": "Energy batch 4: source casing fallback until visual integration is requested",
-      "auto": false
+      "source": "MachineStirling {1,0,1,1,1,1} offset 1, no GUI in HBM; RenderStirling (case 2: 180; the grey texture; the Cog with the gear in (value 0), Cog, CogSmall and Piston turning while value 1)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 2,
+        "synced": [
+          0,
+          1
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            1,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/stirling.obj",
+        "obj_from": "models/machines/stirling.obj",
+        "texture": "ntm:textures/models/machines/stirling.png",
+        "texture_from": "textures/models/machines/stirling.png",
+        "rotation": 180,
+        "radius": 2.0,
+        "bones": {
+          "Cog": {
+            "pivot": [
+              0,
+              1.375,
+              0
+            ]
+          },
+          "CogSmall": {
+            "pivot": [
+              0,
+              1.375,
+              0.25
+            ]
+          }
+        },
+        "show": {
+          "Cog": {
+            "value": 0,
+            "min": 1
+          }
+        },
+        "loop_animation": {
+          "name": "animation.stirling.run",
+          "length": 1.0,
+          "bones": {
+            "Cog": {
+              "rotation": {
+                "0.0000": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "0.0417": [
+                  0,
+                  0,
+                  -15.0
+                ],
+                "0.0833": [
+                  0,
+                  0,
+                  -30.0
+                ],
+                "0.1250": [
+                  0,
+                  0,
+                  -45.0
+                ],
+                "0.1667": [
+                  0,
+                  0,
+                  -60.0
+                ],
+                "0.2083": [
+                  0,
+                  0,
+                  -75.0
+                ],
+                "0.2500": [
+                  0,
+                  0,
+                  -90.0
+                ],
+                "0.2917": [
+                  0,
+                  0,
+                  -105.0
+                ],
+                "0.3333": [
+                  0,
+                  0,
+                  -120.0
+                ],
+                "0.3750": [
+                  0,
+                  0,
+                  -135.0
+                ],
+                "0.4167": [
+                  0,
+                  0,
+                  -150.0
+                ],
+                "0.4583": [
+                  0,
+                  0,
+                  -165.0
+                ],
+                "0.5000": [
+                  0,
+                  0,
+                  -180.0
+                ],
+                "0.5417": [
+                  0,
+                  0,
+                  -195.0
+                ],
+                "0.5833": [
+                  0,
+                  0,
+                  -210.0
+                ],
+                "0.6250": [
+                  0,
+                  0,
+                  -225.0
+                ],
+                "0.6667": [
+                  0,
+                  0,
+                  -240.0
+                ],
+                "0.7083": [
+                  0,
+                  0,
+                  -255.0
+                ],
+                "0.7500": [
+                  0,
+                  0,
+                  -270.0
+                ],
+                "0.7917": [
+                  0,
+                  0,
+                  -285.0
+                ],
+                "0.8333": [
+                  0,
+                  0,
+                  -300.0
+                ],
+                "0.8750": [
+                  0,
+                  0,
+                  -315.0
+                ],
+                "0.9167": [
+                  0,
+                  0,
+                  -330.0
+                ],
+                "0.9583": [
+                  0,
+                  0,
+                  -345.0
+                ],
+                "1.0000": [
+                  0,
+                  0,
+                  -360.0
+                ]
+              }
+            },
+            "CogSmall": {
+              "rotation": {
+                "0.0000": [
+                  3.0,
+                  0,
+                  0
+                ],
+                "0.0417": [
+                  33.0,
+                  0,
+                  0
+                ],
+                "0.0833": [
+                  63.0,
+                  0,
+                  0
+                ],
+                "0.1250": [
+                  93.0,
+                  0,
+                  0
+                ],
+                "0.1667": [
+                  123.0,
+                  0,
+                  0
+                ],
+                "0.2083": [
+                  153.0,
+                  0,
+                  0
+                ],
+                "0.2500": [
+                  183.0,
+                  0,
+                  0
+                ],
+                "0.2917": [
+                  213.0,
+                  0,
+                  0
+                ],
+                "0.3333": [
+                  243.0,
+                  0,
+                  0
+                ],
+                "0.3750": [
+                  273.0,
+                  0,
+                  0
+                ],
+                "0.4167": [
+                  303.0,
+                  0,
+                  0
+                ],
+                "0.4583": [
+                  333.0,
+                  0,
+                  0
+                ],
+                "0.5000": [
+                  363.0,
+                  0,
+                  0
+                ],
+                "0.5417": [
+                  393.0,
+                  0,
+                  0
+                ],
+                "0.5833": [
+                  423.0,
+                  0,
+                  0
+                ],
+                "0.6250": [
+                  453.0,
+                  0,
+                  0
+                ],
+                "0.6667": [
+                  483.0,
+                  0,
+                  0
+                ],
+                "0.7083": [
+                  513.0,
+                  0,
+                  0
+                ],
+                "0.7500": [
+                  543.0,
+                  0,
+                  0
+                ],
+                "0.7917": [
+                  573.0,
+                  0,
+                  0
+                ],
+                "0.8333": [
+                  603.0,
+                  0,
+                  0
+                ],
+                "0.8750": [
+                  633.0,
+                  0,
+                  0
+                ],
+                "0.9167": [
+                  663.0,
+                  0,
+                  0
+                ],
+                "0.9583": [
+                  693.0,
+                  0,
+                  0
+                ],
+                "1.0000": [
+                  723.0,
+                  0,
+                  0
+                ]
+              }
+            },
+            "Piston": {
+              "position": {
+                "0.0000": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.0417": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.0833": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.1250": [
+                  6.0,
+                  0,
+                  0
+                ],
+                "0.1667": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.2083": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.2500": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.2917": [
+                  -0.0,
+                  0,
+                  0
+                ],
+                "0.3333": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.3750": [
+                  -2.0,
+                  0,
+                  0
+                ],
+                "0.4167": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.4583": [
+                  -0.0,
+                  0,
+                  0
+                ],
+                "0.5000": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.5417": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.5833": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.6250": [
+                  6.0,
+                  0,
+                  0
+                ],
+                "0.6667": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.7083": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.7500": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.7917": [
+                  0.0,
+                  0,
+                  0
+                ],
+                "0.8333": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.8750": [
+                  -2.0,
+                  0,
+                  0
+                ],
+                "0.9167": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.9583": [
+                  0.0,
+                  0,
+                  0
+                ],
+                "1.0000": [
+                  2.0,
+                  0,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.stirling.run",
+            "values": [
+              {
+                "value": 1,
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_stirling_steel": {
-      "source": "Energy batch 4: source casing fallback until visual integration is requested",
-      "auto": false
+      "source": "MachineStirling {1,0,1,1,1,1} offset 1, no GUI in HBM; RenderStirling (case 2: 180; the steel texture; the Cog with the gear in (value 0), Cog, CogSmall and Piston turning while value 1)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 2,
+        "synced": [
+          0,
+          1
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            1,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/stirling.obj",
+        "obj_from": "models/machines/stirling.obj",
+        "texture": "ntm:textures/models/machines/stirling_steel.png",
+        "texture_from": "textures/models/machines/stirling_steel.png",
+        "rotation": 180,
+        "radius": 2.0,
+        "bones": {
+          "Cog": {
+            "pivot": [
+              0,
+              1.375,
+              0
+            ]
+          },
+          "CogSmall": {
+            "pivot": [
+              0,
+              1.375,
+              0.25
+            ]
+          }
+        },
+        "show": {
+          "Cog": {
+            "value": 0,
+            "min": 1
+          }
+        },
+        "loop_animation": {
+          "name": "animation.stirling.run",
+          "length": 1.0,
+          "bones": {
+            "Cog": {
+              "rotation": {
+                "0.0000": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "0.0417": [
+                  0,
+                  0,
+                  -15.0
+                ],
+                "0.0833": [
+                  0,
+                  0,
+                  -30.0
+                ],
+                "0.1250": [
+                  0,
+                  0,
+                  -45.0
+                ],
+                "0.1667": [
+                  0,
+                  0,
+                  -60.0
+                ],
+                "0.2083": [
+                  0,
+                  0,
+                  -75.0
+                ],
+                "0.2500": [
+                  0,
+                  0,
+                  -90.0
+                ],
+                "0.2917": [
+                  0,
+                  0,
+                  -105.0
+                ],
+                "0.3333": [
+                  0,
+                  0,
+                  -120.0
+                ],
+                "0.3750": [
+                  0,
+                  0,
+                  -135.0
+                ],
+                "0.4167": [
+                  0,
+                  0,
+                  -150.0
+                ],
+                "0.4583": [
+                  0,
+                  0,
+                  -165.0
+                ],
+                "0.5000": [
+                  0,
+                  0,
+                  -180.0
+                ],
+                "0.5417": [
+                  0,
+                  0,
+                  -195.0
+                ],
+                "0.5833": [
+                  0,
+                  0,
+                  -210.0
+                ],
+                "0.6250": [
+                  0,
+                  0,
+                  -225.0
+                ],
+                "0.6667": [
+                  0,
+                  0,
+                  -240.0
+                ],
+                "0.7083": [
+                  0,
+                  0,
+                  -255.0
+                ],
+                "0.7500": [
+                  0,
+                  0,
+                  -270.0
+                ],
+                "0.7917": [
+                  0,
+                  0,
+                  -285.0
+                ],
+                "0.8333": [
+                  0,
+                  0,
+                  -300.0
+                ],
+                "0.8750": [
+                  0,
+                  0,
+                  -315.0
+                ],
+                "0.9167": [
+                  0,
+                  0,
+                  -330.0
+                ],
+                "0.9583": [
+                  0,
+                  0,
+                  -345.0
+                ],
+                "1.0000": [
+                  0,
+                  0,
+                  -360.0
+                ]
+              }
+            },
+            "CogSmall": {
+              "rotation": {
+                "0.0000": [
+                  3.0,
+                  0,
+                  0
+                ],
+                "0.0417": [
+                  33.0,
+                  0,
+                  0
+                ],
+                "0.0833": [
+                  63.0,
+                  0,
+                  0
+                ],
+                "0.1250": [
+                  93.0,
+                  0,
+                  0
+                ],
+                "0.1667": [
+                  123.0,
+                  0,
+                  0
+                ],
+                "0.2083": [
+                  153.0,
+                  0,
+                  0
+                ],
+                "0.2500": [
+                  183.0,
+                  0,
+                  0
+                ],
+                "0.2917": [
+                  213.0,
+                  0,
+                  0
+                ],
+                "0.3333": [
+                  243.0,
+                  0,
+                  0
+                ],
+                "0.3750": [
+                  273.0,
+                  0,
+                  0
+                ],
+                "0.4167": [
+                  303.0,
+                  0,
+                  0
+                ],
+                "0.4583": [
+                  333.0,
+                  0,
+                  0
+                ],
+                "0.5000": [
+                  363.0,
+                  0,
+                  0
+                ],
+                "0.5417": [
+                  393.0,
+                  0,
+                  0
+                ],
+                "0.5833": [
+                  423.0,
+                  0,
+                  0
+                ],
+                "0.6250": [
+                  453.0,
+                  0,
+                  0
+                ],
+                "0.6667": [
+                  483.0,
+                  0,
+                  0
+                ],
+                "0.7083": [
+                  513.0,
+                  0,
+                  0
+                ],
+                "0.7500": [
+                  543.0,
+                  0,
+                  0
+                ],
+                "0.7917": [
+                  573.0,
+                  0,
+                  0
+                ],
+                "0.8333": [
+                  603.0,
+                  0,
+                  0
+                ],
+                "0.8750": [
+                  633.0,
+                  0,
+                  0
+                ],
+                "0.9167": [
+                  663.0,
+                  0,
+                  0
+                ],
+                "0.9583": [
+                  693.0,
+                  0,
+                  0
+                ],
+                "1.0000": [
+                  723.0,
+                  0,
+                  0
+                ]
+              }
+            },
+            "Piston": {
+              "position": {
+                "0.0000": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.0417": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.0833": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.1250": [
+                  6.0,
+                  0,
+                  0
+                ],
+                "0.1667": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.2083": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.2500": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.2917": [
+                  -0.0,
+                  0,
+                  0
+                ],
+                "0.3333": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.3750": [
+                  -2.0,
+                  0,
+                  0
+                ],
+                "0.4167": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.4583": [
+                  -0.0,
+                  0,
+                  0
+                ],
+                "0.5000": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.5417": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.5833": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.6250": [
+                  6.0,
+                  0,
+                  0
+                ],
+                "0.6667": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.7083": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.7500": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.7917": [
+                  0.0,
+                  0,
+                  0
+                ],
+                "0.8333": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.8750": [
+                  -2.0,
+                  0,
+                  0
+                ],
+                "0.9167": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.9583": [
+                  0.0,
+                  0,
+                  0
+                ],
+                "1.0000": [
+                  2.0,
+                  0,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.stirling.run",
+            "values": [
+              {
+                "value": 1,
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_stirling_creative": {
-      "source": "Energy batch 4: source casing fallback until visual integration is requested",
-      "auto": false
+      "source": "MachineStirling {1,0,1,1,1,1} offset 1, no GUI in HBM; RenderStirling (case 2: 180; the creative texture; the Cog with the gear in (value 0), Cog, CogSmall and Piston turning while value 1)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 2,
+        "synced": [
+          0,
+          1
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            1,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/stirling.obj",
+        "obj_from": "models/machines/stirling.obj",
+        "texture": "ntm:textures/models/machines/stirling_creative.png",
+        "texture_from": "textures/models/machines/stirling_creative.png",
+        "rotation": 180,
+        "radius": 2.0,
+        "bones": {
+          "Cog": {
+            "pivot": [
+              0,
+              1.375,
+              0
+            ]
+          },
+          "CogSmall": {
+            "pivot": [
+              0,
+              1.375,
+              0.25
+            ]
+          }
+        },
+        "show": {
+          "Cog": {
+            "value": 0,
+            "min": 1
+          }
+        },
+        "loop_animation": {
+          "name": "animation.stirling.run",
+          "length": 1.0,
+          "bones": {
+            "Cog": {
+              "rotation": {
+                "0.0000": [
+                  0,
+                  0,
+                  -0.0
+                ],
+                "0.0417": [
+                  0,
+                  0,
+                  -15.0
+                ],
+                "0.0833": [
+                  0,
+                  0,
+                  -30.0
+                ],
+                "0.1250": [
+                  0,
+                  0,
+                  -45.0
+                ],
+                "0.1667": [
+                  0,
+                  0,
+                  -60.0
+                ],
+                "0.2083": [
+                  0,
+                  0,
+                  -75.0
+                ],
+                "0.2500": [
+                  0,
+                  0,
+                  -90.0
+                ],
+                "0.2917": [
+                  0,
+                  0,
+                  -105.0
+                ],
+                "0.3333": [
+                  0,
+                  0,
+                  -120.0
+                ],
+                "0.3750": [
+                  0,
+                  0,
+                  -135.0
+                ],
+                "0.4167": [
+                  0,
+                  0,
+                  -150.0
+                ],
+                "0.4583": [
+                  0,
+                  0,
+                  -165.0
+                ],
+                "0.5000": [
+                  0,
+                  0,
+                  -180.0
+                ],
+                "0.5417": [
+                  0,
+                  0,
+                  -195.0
+                ],
+                "0.5833": [
+                  0,
+                  0,
+                  -210.0
+                ],
+                "0.6250": [
+                  0,
+                  0,
+                  -225.0
+                ],
+                "0.6667": [
+                  0,
+                  0,
+                  -240.0
+                ],
+                "0.7083": [
+                  0,
+                  0,
+                  -255.0
+                ],
+                "0.7500": [
+                  0,
+                  0,
+                  -270.0
+                ],
+                "0.7917": [
+                  0,
+                  0,
+                  -285.0
+                ],
+                "0.8333": [
+                  0,
+                  0,
+                  -300.0
+                ],
+                "0.8750": [
+                  0,
+                  0,
+                  -315.0
+                ],
+                "0.9167": [
+                  0,
+                  0,
+                  -330.0
+                ],
+                "0.9583": [
+                  0,
+                  0,
+                  -345.0
+                ],
+                "1.0000": [
+                  0,
+                  0,
+                  -360.0
+                ]
+              }
+            },
+            "CogSmall": {
+              "rotation": {
+                "0.0000": [
+                  3.0,
+                  0,
+                  0
+                ],
+                "0.0417": [
+                  33.0,
+                  0,
+                  0
+                ],
+                "0.0833": [
+                  63.0,
+                  0,
+                  0
+                ],
+                "0.1250": [
+                  93.0,
+                  0,
+                  0
+                ],
+                "0.1667": [
+                  123.0,
+                  0,
+                  0
+                ],
+                "0.2083": [
+                  153.0,
+                  0,
+                  0
+                ],
+                "0.2500": [
+                  183.0,
+                  0,
+                  0
+                ],
+                "0.2917": [
+                  213.0,
+                  0,
+                  0
+                ],
+                "0.3333": [
+                  243.0,
+                  0,
+                  0
+                ],
+                "0.3750": [
+                  273.0,
+                  0,
+                  0
+                ],
+                "0.4167": [
+                  303.0,
+                  0,
+                  0
+                ],
+                "0.4583": [
+                  333.0,
+                  0,
+                  0
+                ],
+                "0.5000": [
+                  363.0,
+                  0,
+                  0
+                ],
+                "0.5417": [
+                  393.0,
+                  0,
+                  0
+                ],
+                "0.5833": [
+                  423.0,
+                  0,
+                  0
+                ],
+                "0.6250": [
+                  453.0,
+                  0,
+                  0
+                ],
+                "0.6667": [
+                  483.0,
+                  0,
+                  0
+                ],
+                "0.7083": [
+                  513.0,
+                  0,
+                  0
+                ],
+                "0.7500": [
+                  543.0,
+                  0,
+                  0
+                ],
+                "0.7917": [
+                  573.0,
+                  0,
+                  0
+                ],
+                "0.8333": [
+                  603.0,
+                  0,
+                  0
+                ],
+                "0.8750": [
+                  633.0,
+                  0,
+                  0
+                ],
+                "0.9167": [
+                  663.0,
+                  0,
+                  0
+                ],
+                "0.9583": [
+                  693.0,
+                  0,
+                  0
+                ],
+                "1.0000": [
+                  723.0,
+                  0,
+                  0
+                ]
+              }
+            },
+            "Piston": {
+              "position": {
+                "0.0000": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.0417": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.0833": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.1250": [
+                  6.0,
+                  0,
+                  0
+                ],
+                "0.1667": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.2083": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.2500": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.2917": [
+                  -0.0,
+                  0,
+                  0
+                ],
+                "0.3333": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.3750": [
+                  -2.0,
+                  0,
+                  0
+                ],
+                "0.4167": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.4583": [
+                  -0.0,
+                  0,
+                  0
+                ],
+                "0.5000": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.5417": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.5833": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.6250": [
+                  6.0,
+                  0,
+                  0
+                ],
+                "0.6667": [
+                  5.4641,
+                  0,
+                  0
+                ],
+                "0.7083": [
+                  4.0,
+                  0,
+                  0
+                ],
+                "0.7500": [
+                  2.0,
+                  0,
+                  0
+                ],
+                "0.7917": [
+                  0.0,
+                  0,
+                  0
+                ],
+                "0.8333": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.8750": [
+                  -2.0,
+                  0,
+                  0
+                ],
+                "0.9167": [
+                  -1.4641,
+                  0,
+                  0
+                ],
+                "0.9583": [
+                  0.0,
+                  0,
+                  0
+                ],
+                "1.0000": [
+                  2.0,
+                  0,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.stirling.run",
+            "values": [
+              {
+                "value": 1,
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_condenser": {
       "source": "MachineCondenser, a plain block (no GUI, no model in HBM): its machine file only, no slots or values",
@@ -16383,12 +21300,530 @@
       }
     },
     "ntm:machine_rtg_grey": {
-      "auto": false,
-      "source": "Energy batch 5; content fallback and source algorithm contract only; visual/model/multiblock deferred."
+      "source": "MachineRTG (one block, no facing), ContainerMachineRTG, GUIMachineRTG 176x188 (gui_rtg.png, title at 60 in 0xA6B5AE); RenderRTG (always 180; a Connector toward each side that connects: here toward HBM cables)",
+      "machine": {
+        "slots": [
+          {
+            "grid": [
+              16,
+              18,
+              5,
+              3
+            ]
+          }
+        ],
+        "inventory": [
+          8,
+          106
+        ],
+        "data": 4
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/gui_rtg.png",
+        "texture_from": "textures/gui/gui_rtg.png",
+        "size": [
+          176,
+          188
+        ],
+        "title": [
+          60,
+          7,
+          "center"
+        ],
+        "title_color": "#a6b5ae",
+        "inventory_label": [
+          8,
+          94
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              124,
+              10,
+              16,
+              51
+            ],
+            "uv": [
+              176,
+              10
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              146,
+              10,
+              16,
+              51
+            ],
+            "uv": [
+              192,
+              10
+            ],
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              124,
+              10,
+              16,
+              51
+            ],
+            "lines": [
+              "{0} / {1} heat"
+            ]
+          },
+          {
+            "rect": [
+              146,
+              10,
+              16,
+              51
+            ],
+            "lines": [
+              "{2:si} / {3:si} HE"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/rtg.obj",
+        "obj_from": "models/machines/rtg.obj",
+        "texture": "ntm:textures/models/machines/rtg.png",
+        "texture_from": "textures/models/machines/rtg.png",
+        "rotation": 180,
+        "radius": 1.0,
+        "variants": {
+          "from": "models/machines/rtg.obj",
+          "keep": [
+            "Gen"
+          ],
+          "bones": {
+            "ConnPX": {
+              "part": "Connector",
+              "rot": 0
+            },
+            "ConnNX": {
+              "part": "Connector",
+              "rot": 180
+            },
+            "ConnNZ": {
+              "part": "Connector",
+              "rot": 90
+            },
+            "ConnPZ": {
+              "part": "Connector",
+              "rot": -90
+            }
+          }
+        },
+        "show": {
+          "ConnPX": {
+            "neighbor": [
+              1,
+              0,
+              0
+            ],
+            "blocks": [
+              "ntm:red_cable",
+              "ntm:red_cable_classic",
+              "ntm:red_cable_paintable",
+              "ntm:red_cable_gauge",
+              "ntm:red_cable_box",
+              "ntm:red_connector",
+              "ntm:red_connector_super",
+              "ntm:cable_switch",
+              "ntm:cable_detector"
+            ]
+          },
+          "ConnNX": {
+            "neighbor": [
+              -1,
+              0,
+              0
+            ],
+            "blocks": [
+              "ntm:red_cable",
+              "ntm:red_cable_classic",
+              "ntm:red_cable_paintable",
+              "ntm:red_cable_gauge",
+              "ntm:red_cable_box",
+              "ntm:red_connector",
+              "ntm:red_connector_super",
+              "ntm:cable_switch",
+              "ntm:cable_detector"
+            ]
+          },
+          "ConnNZ": {
+            "neighbor": [
+              0,
+              0,
+              -1
+            ],
+            "blocks": [
+              "ntm:red_cable",
+              "ntm:red_cable_classic",
+              "ntm:red_cable_paintable",
+              "ntm:red_cable_gauge",
+              "ntm:red_cable_box",
+              "ntm:red_connector",
+              "ntm:red_connector_super",
+              "ntm:cable_switch",
+              "ntm:cable_detector"
+            ]
+          },
+          "ConnPZ": {
+            "neighbor": [
+              0,
+              0,
+              1
+            ],
+            "blocks": [
+              "ntm:red_cable",
+              "ntm:red_cable_classic",
+              "ntm:red_cable_paintable",
+              "ntm:red_cable_gauge",
+              "ntm:red_cable_box",
+              "ntm:red_connector",
+              "ntm:red_connector_super",
+              "ntm:cable_switch",
+              "ntm:cable_detector"
+            ]
+          }
+        }
+      }
     },
     "ntm:machine_radgen": {
-      "auto": false,
-      "source": "Energy batch 5; content fallback and source algorithm contract only; visual/model/multiblock deferred."
+      "source": "MachineRadGen {2,0,3,2,1,1} offset 2, ContainerMachineRadGen (12 slots in, 12 out), GUIMachineRadGen 176x184 (reactors/gui_radgen.png); RenderRadGen (case 2: 90; the Rotor turning and the Light lit while on, value 26; the Glass)",
+      "machine": {
+        "slots": [
+          {
+            "grid": [
+              8,
+              17,
+              3,
+              4
+            ]
+          },
+          {
+            "grid": [
+              116,
+              17,
+              3,
+              4
+            ],
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          102
+        ],
+        "data": 27,
+        "synced": [
+          26
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -2
+          ],
+          "max": [
+            1,
+            2,
+            3
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/reactors/gui_radgen.png",
+        "texture_from": "textures/gui/reactors/gui_radgen.png",
+        "size": [
+          176,
+          184
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          90
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              64,
+              83,
+              48,
+              4
+            ],
+            "uv": [
+              176,
+              3
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              66,
+              19,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              66,
+              24,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              66,
+              29,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 8,
+            "max": 9,
+            "rect": [
+              66,
+              34,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 10,
+            "max": 11,
+            "rect": [
+              66,
+              39,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 12,
+            "max": 13,
+            "rect": [
+              66,
+              44,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 14,
+            "max": 15,
+            "rect": [
+              66,
+              49,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 16,
+            "max": 17,
+            "rect": [
+              66,
+              54,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 18,
+            "max": 19,
+            "rect": [
+              66,
+              59,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 20,
+            "max": 21,
+            "rect": [
+              66,
+              64,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 22,
+            "max": 23,
+            "rect": [
+              66,
+              69,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 24,
+            "max": 25,
+            "rect": [
+              66,
+              74,
+              44,
+              3
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              64,
+              83,
+              48,
+              4
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/radgen.obj",
+        "obj_from": "models/machines/radgen.obj",
+        "texture": "ntm:textures/models/machines/radgen.png",
+        "texture_from": "textures/models/machines/radgen.png",
+        "rotation": 90,
+        "radius": 4.0,
+        "bones": {
+          "Rotor": {
+            "pivot": [
+              0,
+              1.5,
+              0
+            ]
+          }
+        },
+        "show": {
+          "Light": {
+            "value": 26,
+            "min": 1
+          }
+        },
+        "glow": [
+          "Light"
+        ],
+        "tint": {
+          "Glass": "#ffffffff"
+        },
+        "loop_animation": {
+          "name": "animation.radgen.rotor",
+          "length": 10.0,
+          "bones": {
+            "Rotor": {
+              "turn": [
+                -360,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.radgen.rotor",
+            "values": [
+              {
+                "value": 26,
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_battery_socket": {
       "auto": false,

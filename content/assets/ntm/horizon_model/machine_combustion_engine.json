@@ -1,0 +1,28 @@
+{
+  "obj": "ntm:models/obj/combustion_engine.obj",
+  "texture": "ntm:textures/models/machines/combustion_engine.png",
+  "rotation": 90,
+  "radius": 6.5,
+  "translate": [
+    -0.5,
+    0,
+    3
+  ],
+  "bones": {
+    "Hatch": {
+      "pivot": [
+        1,
+        0,
+        -2.6875
+      ]
+    }
+  },
+  "show": {
+    "Canister": {
+      "value": 4,
+      "min": 1
+    }
+  },
+  "open": "animation.combustion_engine.hatch",
+  "animations": "ntm:animations/machine_combustion_engine.animation.json"
+}

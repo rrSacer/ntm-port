@@ -1,0 +1,25 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.turbofan.spin": {
+      "loop": true,
+      "animation_length": 0.5,
+      "bones": {
+        "Blades": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "0.50": [
+              0,
+              0,
+              -360
+            ]
+          }
+        }
+      }
+    }
+  }
+}

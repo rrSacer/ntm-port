@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/turbinegas.obj",
+  "texture": "ntm:textures/models/machines/turbinegas.png",
+  "rotation": 90,
+  "radius": 6.0
+}

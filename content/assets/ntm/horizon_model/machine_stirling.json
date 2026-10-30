@@ -1,0 +1,40 @@
+{
+  "obj": "ntm:models/obj/stirling.obj",
+  "texture": "ntm:textures/models/machines/stirling.png",
+  "rotation": 180,
+  "radius": 2.0,
+  "bones": {
+    "Cog": {
+      "pivot": [
+        0,
+        1.375,
+        0
+      ]
+    },
+    "CogSmall": {
+      "pivot": [
+        0,
+        1.375,
+        0.25
+      ]
+    }
+  },
+  "show": {
+    "Cog": {
+      "value": 0,
+      "min": 1
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.stirling.run",
+      "values": [
+        {
+          "value": 1,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "animations": "ntm:animations/machine_stirling.animation.json"
+}

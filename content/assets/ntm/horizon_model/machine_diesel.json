@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/dieselgen.obj",
+  "texture": "ntm:textures/models/machines/dieselgen.png",
+  "rotation": 90,
+  "radius": 1.0
+}

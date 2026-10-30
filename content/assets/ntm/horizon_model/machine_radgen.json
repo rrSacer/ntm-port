@@ -1,0 +1,39 @@
+{
+  "obj": "ntm:models/obj/radgen.obj",
+  "texture": "ntm:textures/models/machines/radgen.png",
+  "rotation": 90,
+  "radius": 4.0,
+  "bones": {
+    "Rotor": {
+      "pivot": [
+        0,
+        1.5,
+        0
+      ]
+    }
+  },
+  "show": {
+    "Light": {
+      "value": 26,
+      "min": 1
+    }
+  },
+  "glow": [
+    "Light"
+  ],
+  "tint": {
+    "Glass": "#ffffffff"
+  },
+  "play": [
+    {
+      "animation": "animation.radgen.rotor",
+      "values": [
+        {
+          "value": 26,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "animations": "ntm:animations/machine_radgen.animation.json"
+}

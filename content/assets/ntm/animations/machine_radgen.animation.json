@@ -1,0 +1,25 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.radgen.rotor": {
+      "loop": true,
+      "animation_length": 10.0,
+      "bones": {
+        "Rotor": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "10.00": [
+              -360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}
