@@ -19,7 +19,7 @@
 //!   (`crate::foundry::cast`; they cool on their own tick).
 use super::*;
 use crate::foundry::{
-    Acceptor, HeatSource, Tables,
+    Acceptor, Tables,
     crucible::Stream,
     flow::{self, CHANNEL_CAP, CHANNEL_EVERY, Melt, SIDES, TANK_CAP},
 };
@@ -198,10 +198,11 @@ fn crucible_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: 
         m.insert(key.clone(), me);
         return false;
     };
-    let under = (key.0.clone(), [key.1[0], key.1[1] - 1, key.1[2]]);
-    let mut changed = match m.get_mut(&under).map(|b| &mut b.data) {
-        Some(Data::Firebox(f)) => c.step(t, Some(f as &mut dyn HeatSource), tick),
-        _ => c.step(t, None, tick),
+    // Any heat source under it: a firebox, the oven, a heater.
+    let under = super::oil_server::heat_source_under(m, key);
+    let mut changed = match under.as_ref().and_then(|u| m.get_mut(u)).and_then(|b| super::oil_server::heat_source(&mut b.data)) {
+        Some(s) => c.step(t, Some(s), tick),
+        None => c.step(t, None, tick),
     };
     if c.fade_jets() {
         changed = true;

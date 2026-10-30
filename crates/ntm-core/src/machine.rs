@@ -66,6 +66,9 @@ pub enum Kind {
     Processor,
     /// The oil chain's batch D (`crate::oil_drill`).
     Drill,
+    /// Energy batch 1's heaters but the oven (`crate::heater`): the oven is
+    /// a [`Kind::Firebox`].
+    Heater,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -158,6 +161,7 @@ pub enum Data {
     Coker(Box<crate::coker::Coker>),
     Processor(Box<crate::processing::Processor>),
     Drill(Box<crate::oil_drill::Drill>),
+    Heater(Box<crate::heater::Heater>),
     Inert { name: String },
 }
 
@@ -189,6 +193,7 @@ impl Machine {
             Kind::GasCent => Data::GasCent(crate::gascent::GasCent::default()),
             Kind::Shredder => Data::Shredder(crate::shredder::Shredder::default()),
             Kind::BlastFurnace => Data::BlastFurnace(crate::blastfurnace::BlastFurnace::default()),
+            Kind::Firebox if block_id == "ntm:heater_oven" => Data::Firebox(crate::foundry::firebox::Firebox::oven()),
             Kind::Firebox => Data::Firebox(crate::foundry::firebox::Firebox::default()),
             Kind::Crucible => Data::Crucible(crate::foundry::crucible::Crucible::default()),
             Kind::Channel => Data::Channel(Default::default()),
@@ -207,6 +212,10 @@ impl Machine {
             Kind::Coker => Data::Coker(Default::default()),
             Kind::Drill => match crate::oil_drill::Shape::of(block_id) {
                 Some(s) => Data::Drill(Box::new(crate::oil_drill::Drill::new(s))),
+                None => Data::Inert { name: block_id.into() },
+            },
+            Kind::Heater => match crate::heater::Heater::of(block_id) {
+                Some(h) => Data::Heater(Box::new(h)),
                 None => Data::Inert { name: block_id.into() },
             },
             Kind::Processor => match crate::processing::Shape::of(block_id) {
@@ -284,6 +293,7 @@ impl Machine {
             Data::Coker(_) => Kind::Coker,
             Data::Processor(_) => Kind::Processor,
             Data::Drill(_) => Kind::Drill,
+            Data::Heater(_) => Kind::Heater,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -320,6 +330,7 @@ impl Machine {
             Data::Coker(m) => &**m,
             Data::Processor(m) => &**m,
             Data::Drill(m) => &**m,
+            Data::Heater(m) => &**m,
             Data::Inert { name } => name,
         }
     }
@@ -356,6 +367,7 @@ impl Machine {
             Data::Coker(m) => &mut **m,
             Data::Processor(m) => &mut **m,
             Data::Drill(m) => &mut **m,
+            Data::Heater(m) => &mut **m,
             Data::Inert { name } => name,
         }
     }

@@ -490,32 +490,33 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
-    // Energy batch 1 (828b4fa): the heaters but the firebox. Inert until
-    // their stage is approved.
+    // Energy batch 1 (`crate::heater`): the heaters but the firebox. The
+    // oven is a firebox with its own fuels; the electric heater's power
+    // comes in at its plug (container_bridge's MULTIBLOCKS).
     BlockSpec {
         id: "ntm:heater_oven",
-        kind: Kind::Inert,
+        kind: Kind::Firebox,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:heater_oilburner",
-        kind: Kind::Inert,
+        kind: Kind::Heater,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:heater_electric",
-        kind: Kind::Inert,
+        kind: Kind::Heater,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:heater_heatex",
-        kind: Kind::Inert,
+        kind: Kind::Heater,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -624,6 +625,9 @@ pub const TOKEN: &str = "ntm:logic_token";
 pub fn fluid_ports(spec: &BlockSpec, _facing: Option<&str>) -> Vec<crate::energy::Port> {
     match spec.kind {
         Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace | Kind::Excavator | Kind::OreSlopper | Kind::Electrolyser | Kind::Refinery | Kind::FractionTower | Kind::Boiler | Kind::Coker | Kind::Processor | Kind::Drill => vec![crate::energy::DIRS.to_vec()],
+        // The heaters' ports are on their sides (`getPorts`): the boiler on
+        // top never pours into them.
+        Kind::Heater => vec![crate::energy::DIRS.iter().filter(|d| d[1] == 0).copied().collect()],
         _ => Vec::new(),
     }
 }

@@ -1,9 +1,11 @@
 //! The oil chain's world (docs/maquinas.md, "Petróleo"): fractioning towers
 //! stacked one on another (`TileEntityMachineFractionTower`: the one below
 //! pushes its input up and pulls the fractions down, each tick), and the
-//! heat boilers and cokers take from the firebox under them.
+//! heat boilers, cokers and heaters take from the heat source under them.
 use super::*;
 use crate::foundry::HeatSource;
+use crate::heater::Heater;
+use std::collections::BTreeMap;
 use crate::oil_drill::{self, Drill, Shape, indicator};
 use crate::fraction::{FractionTower, STACK_DY};
 use crate::machine::Data;
@@ -34,32 +36,44 @@ impl Server {
         }
     }
 
-    /// Boilers and cokers take heat from the source under them (a firebox:
-    /// `tryPullHeat`), before they run.
+    /// Boilers, cokers, the heating oven and the electric heater take heat
+    /// from the source under them (`tryPullHeat`), before they run; from the
+    /// bottom up, so a stack of heaters passes it on within the tick.
     pub(super) fn heat_tick(&mut self) {
         let Session::Ready(r) = &mut self.session else { return };
-        let keys: Vec<Key> = r
+        let mut keys: Vec<Key> = r
             .world
             .machines
             .iter()
-            .filter(|(k, m)| r.loaded.get(*k) == Some(&true) && matches!(m.data, Data::Boiler(_) | Data::Coker(_)))
+            .filter(|(k, m)| {
+                r.loaded.get(*k) == Some(&true)
+                    && match &m.data {
+                        Data::Boiler(_) | Data::Coker(_) => true,
+                        Data::Firebox(f) => f.oven,
+                        Data::Heater(h) => matches!(**h, Heater::Electric(_)),
+                        _ => false,
+                    }
+            })
             .map(|(k, _)| k.clone())
             .collect();
+        keys.sort_by_key(|k| k.1[1]);
         for key in keys {
-            let under = (key.0.clone(), [key.1[0], key.1[1] - 1, key.1[2]]);
-            let source = match r.world.machines.get(&under).map(|m| &m.data) {
-                Some(Data::Firebox(f)) => Some(f.heat_stored()),
-                _ => None,
-            };
+            let under = heat_source_under(&r.world.machines, &key);
+            let source = under.as_ref().and_then(|u| r.world.machines.get_mut(u)).and_then(|m| heat_source(&mut m.data)).map(|s| s.heat_stored());
             let taken = match r.world.machines.get_mut(&key).map(|m| &mut m.data) {
                 Some(Data::Boiler(b)) => b.pull_heat(source),
                 Some(Data::Coker(c)) => c.pull_heat(source),
+                Some(Data::Firebox(f)) => f.pull_heat(source),
+                Some(Data::Heater(h)) => match &mut **h {
+                    Heater::Electric(e) => e.pull_heat(source),
+                    _ => 0,
+                },
                 _ => 0,
             };
             if taken > 0
-                && let Some(Data::Firebox(f)) = r.world.machines.get_mut(&under).map(|m| &mut m.data)
+                && let Some(s) = under.as_ref().and_then(|u| r.world.machines.get_mut(u)).and_then(|m| heat_source(&mut m.data))
             {
-                f.use_heat(taken);
+                s.use_heat(taken);
             }
         }
     }
@@ -93,6 +107,27 @@ impl Server {
         if changed {
             r.dirty = true;
         }
+    }
+}
+
+/// What stores heat for the machine above it (`IHeatSource`): the
+/// firebox, the heating oven and the heaters.
+pub(super) fn heat_source(d: &mut Data) -> Option<&mut dyn HeatSource> {
+    match d {
+        Data::Firebox(f) => Some(f),
+        Data::Heater(h) => Some(&mut **h),
+        _ => None,
+    }
+}
+
+/// The heat source a machine at `key` sits on: the core right under it, or
+/// an oil burner's two under (its top centre is its heat proxy).
+pub(super) fn heat_source_under(machines: &BTreeMap<Key, crate::machine::Machine>, key: &Key) -> Option<Key> {
+    let at = |dy: i32| (key.0.clone(), [key.1[0], key.1[1] - dy, key.1[2]]);
+    match machines.get(&at(1)).map(|m| &m.data) {
+        Some(Data::Firebox(_) | Data::Heater(_)) => Some(at(1)),
+        Some(_) => None,
+        None => matches!(machines.get(&at(2)).map(|m| &m.data), Some(Data::Heater(h)) if h.height() == 2).then(|| at(2)),
     }
 }
 

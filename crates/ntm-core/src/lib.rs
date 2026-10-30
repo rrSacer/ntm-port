@@ -26,6 +26,7 @@ pub mod foundry;
 pub mod fraction;
 pub mod gascent;
 pub mod hash;
+pub mod heater;
 pub mod kv;
 pub mod machine;
 pub mod oil_drill;
@@ -82,6 +83,7 @@ pub fn warm_tables() {
     fraction::recipes();
     boiler::steps();
     coker::recipes();
+    heater::tables();
     for s in [processing::Shape::Cracker, processing::Shape::Reformer, processing::Shape::Hydrotreater, processing::Shape::Vacuum] {
         s.recipes();
     }

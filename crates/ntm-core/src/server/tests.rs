@@ -1927,3 +1927,5 @@ mod oil_b_tests;
 mod oil_c_tests;
 
 mod oil_d_tests;
+
+mod heater_tests;

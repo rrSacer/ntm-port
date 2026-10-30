@@ -122,6 +122,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Coker(c) => Some(&mut **c),
         Data::Processor(p) => Some(&mut **p),
         Data::Drill(d) => Some(&mut **d),
+        Data::Heater(h) => h.slotted(),
         _ => None,
     }
 }
@@ -132,6 +133,9 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_shredder", Layout::Native),
     ("ntm:machine_blast_furnace", Layout::Native),
     ("ntm:heater_firebox", Layout::Native),
+    ("ntm:heater_oven", Layout::Native),
+    ("ntm:heater_oilburner", Layout::Native),
+    ("ntm:heater_heatex", Layout::Native),
     ("ntm:machine_crucible", Layout::Native),
     ("ntm:foundry_mold", Layout::Native),
     ("ntm:foundry_basin", Layout::Native),
@@ -304,6 +308,9 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
     ("ntm:machine_flare", [-1, 0, -1], [1, 0, 1]),
     // MachinePumpjack: its bottom layer.
     ("ntm:machine_pumpjack", [0, 0, -1], [6, 0, 1]),
+    // HeaterElectric.getAllPorts: its plug, two cells towards the placer
+    // (offset 2), and the cell between it and the core.
+    ("ntm:heater_electric", [0, 0, -2], [0, 0, -1]),
 ];
 
 /// The cells of the multiblock of `block` at `core` that pass energy to
@@ -636,6 +643,12 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
         [0, 5, -1],
     ],
     ),
+    // HeaterOilburner.getAllPorts (`TilePortShapes.flare`): the four sides
+    // of its bottom layer.
+    ("ntm:heater_oilburner", &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]),
+    // TileEntityHeaterHeatex.getPorts: its four corners (the NTM's connect
+    // front and back only).
+    ("ntm:heater_heatex", &[[1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1]]),
 ];
 
 /// Cell `l` (placer's frame) of the multiblock with its core at `core`.
