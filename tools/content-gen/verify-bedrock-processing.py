@@ -71,7 +71,12 @@ def main():
                         ctl('wait 2')
             for i,name in enumerate(['block_graphite','rebar','concrete_rebar']):
                 cmd(f'setblock {-4+i*4} 101 3 ntm:{name}')
-                assert ctl(f'block {-4+i*4} 101 3')['block']=='ntm:'+name
+                deadline=time.monotonic()+15
+                while True:
+                    reply=ctl(f'block {-4+i*4} 101 3')
+                    if reply['block']=='ntm:'+name:break
+                    if time.monotonic()>deadline:raise AssertionError((name,reply))
+                    ctl('wait 2')
             cmd('tp @s 0.5 101 -7.5');ctl('look 0 -7');ctl('wait 10')
             ctl('screenshot '+str(evidence/'machines.png'))
             samples=['arc_electrode__graphite','arc_electrode_burnt__saturnite','scrap_plastic__board_blank',
@@ -79,8 +84,12 @@ def main():
                 'powder_cement','ingot_semtex','ingot_schraranium','meteorite_sword_treated','meteorite_sword_etched']
             cmd('clear @s')
             for name in samples:cmd('give @s ntm:'+name+' 1')
-            counts=ctl('inventory')['counts']
-            assert all(counts.get('ntm:'+name,0)==1 for name in samples)
+            deadline=time.monotonic()+15
+            while True:
+                counts=ctl('inventory')['counts']
+                if all(counts.get('ntm:'+name,0)==1 for name in samples):break
+                if time.monotonic()>deadline:raise AssertionError(counts)
+                ctl('wait 2')
             ctl('open-inventory');ctl('wait 5');ctl('screenshot '+str(evidence/'items.png'));ctl('close')
             ctl('quit');process.wait(timeout=60)
         text=(scratch/'client.log').read_text()
