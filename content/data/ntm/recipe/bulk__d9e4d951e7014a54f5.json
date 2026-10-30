@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:stealth_boy",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " B",
+    "LI",
+    "LC"
+  ],
+  "key": {
+    "B": "minecraft:stone_button",
+    "L": "minecraft:leather",
+    "I": "#ntm:bulk/ingotsteel",
+    "C": "ntm:circuit__basic"
+  }
+}

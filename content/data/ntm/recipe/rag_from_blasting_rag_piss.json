@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": "ntm:rag_piss",
+  "result": {
+    "id": "ntm:rag",
+    "count": 1
+  },
+  "experience": 0.1,
+  "cookingtime": 100
+}

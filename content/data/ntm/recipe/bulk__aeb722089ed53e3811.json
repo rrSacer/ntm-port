@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rune_thurisaz",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:rune_blank",
+    "ntm:powder_spark_mix",
+    "ntm:black_hole"
+  ]
+}

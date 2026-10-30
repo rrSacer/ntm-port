@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 60,
+    "emitted": 62,
     "scanned_source_calls": 77,
-    "skipped_source_calls": 17,
+    "skipped_source_calls": 15,
     "expanded_fluid_recipes": 0,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1165,6 +1165,46 @@
       "label_en": "Aviation Grade Sheeting"
     },
     {
+      "name": "chem.meth",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:248",
+      "duration": 60,
+      "power": 300,
+      "inputItems": [
+        {
+          "ids": [
+            "minecraft:wheat"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "minecraft:cocoa_beans"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:chocolate",
+          4
+        ]
+      ],
+      "inputFluids": [
+        [
+          "lubricant",
+          400
+        ],
+        [
+          "peroxide",
+          500
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Chocolate de Rádio da Marca Ithis ×4",
+      "label_en": "Ithis-Brand Radium Chocolate ×4"
+    },
+    {
       "name": "chem.epearl",
       "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:253",
       "duration": 100,
@@ -1193,6 +1233,46 @@
       "pools": [],
       "label": "Suco de Ender · 100 mB",
       "label_en": "Ender Juice · 100 mB"
+    },
+    {
+      "name": "chem.meatprocessing",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:258",
+      "duration": 200,
+      "power": 200,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:glyphid_meat",
+            "ntm:glyphid_meat_grilled"
+          ],
+          "count": 3
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:sulfur",
+          4
+        ],
+        [
+          "ntm:niter",
+          3
+        ]
+      ],
+      "inputFluids": [
+        [
+          "water",
+          1000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "salient",
+          250
+        ]
+      ],
+      "pools": [],
+      "label": "Enxofre ×4",
+      "label_en": "Sulfur ×4"
     },
     {
       "name": "chem.rustysteel",
@@ -2055,18 +2135,6 @@
       "expression": "new GenericRecipe(\"chem.kevlar\").setup(60, 300)\n\t\t\t\t.inputFluids(new FluidStack(Fluids.AROMATICS, 200), new FluidStack(Fluids.NITRIC_ACID, 100), new FluidStack(GeneralConfig.enable528PressurizedRecipes ? Fluids.PHOSGENE : Fluids.CHLORINE, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.plate_kevlar, 4))"
     },
     {
-      "name": "chem.meth",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:248",
-      "reason": "unregistered/ambiguous source item chocolate",
-      "expression": "new GenericRecipe(\"chem.meth\").setup(60, 300)\n\t\t\t\t.inputItems(new ComparableStack(Items.wheat), new ComparableStack(Items.dye, 2, 3))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.LUBRICANT, 400), new FluidStack(Fluids.PEROXIDE, 500))\n\t\t\t\t.outputItems(new ItemStack(ModItems.chocolate, 4))"
-    },
-    {
-      "name": "chem.meatprocessing",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:258",
-      "reason": "unresolved ore dictionary KEY_GLYPHID_MEAT",
-      "expression": "new GenericRecipe(\"chem.meatprocessing\").setupNamed(200, 200).setIcon(ModItems.glyphid_meat)\n\t\t\t\t.inputItems(new OreDictStack(KEY_GLYPHID_MEAT, 3))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 1_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.sulfur, 4), new ItemStack(ModItems.niter, 3))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.SALIENT, 250))"
-    },
-    {
       "name": "chem.cordite",
       "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:333",
       "reason": "unresolved fluid: (GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ? new FluidStack(Fluids.HEATINGOIL, 200) : new FluidStack(Fluids.GAS, 200)",
@@ -2093,7 +2161,7 @@
     {
       "name": "chem.c4",
       "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:357",
-      "reason": "unregistered/ambiguous source item ingot_c4",
+      "reason": "nonliteral integer:  500, GeneralConfig.enable528PressurizedRecipes ? 1 : 0",
       "expression": "new GenericRecipe(\"chem.c4\").setup(100, 1_000)\n\t\t\t\t.inputItems(new OreDictStack(KNO.dust()))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.UNSATURATEDS, 500, GeneralConfig.enable528PressurizedRecipes ? 1 : 0))\n\t\t\t\t.outputItems(new ItemStack(ModItems.ingot_c4, 4))"
     },
     {

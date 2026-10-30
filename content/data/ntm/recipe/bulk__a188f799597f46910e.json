@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:ams_lens",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PDP",
+    "GDG",
+    "PDP"
+  ],
+  "key": {
+    "P": "ntm:plate_dineutronium",
+    "G": "ntm:reinforced_glass",
+    "D": "minecraft:diamond_block"
+  }
+}

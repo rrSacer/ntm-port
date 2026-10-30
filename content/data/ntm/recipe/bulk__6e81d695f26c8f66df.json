@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:loops",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:flame_pony",
+    "minecraft:wheat",
+    "minecraft:sugar"
+  ]
+}

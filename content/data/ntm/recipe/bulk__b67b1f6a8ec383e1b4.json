@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:bomb_waffle",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WEW",
+    "MPM",
+    "WEW"
+  ],
+  "key": {
+    "W": "minecraft:wheat",
+    "E": "minecraft:egg",
+    "M": "minecraft:milk_bucket",
+    "P": "ntm:man_core"
+  }
+}

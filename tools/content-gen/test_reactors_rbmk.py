@@ -63,7 +63,7 @@ class RbmkContent(unittest.TestCase):
         for rod in ['rbmk_fuel_ueu','rbmk_fuel_hes','rbmk_fuel_zfb_am_mix']:
             (r,)=recipes['ntm:'+rod];self.assertEqual(sum(1 for i in r['ingredients'] if 'rbmk_fuel_empty' in json.dumps(i)),1)
             self.assertEqual(len(r['ingredients']),9)
-        self.assertNotIn('ntm:rbmk_fuel_drx',recipes);self.assertNotIn('ntm:rbmk_fuel_test',recipes)
+        self.assertIn('ntm:rbmk_fuel_drx',recipes);self.assertNotIn('ntm:rbmk_fuel_test',recipes)
         # enable528 defaults off: the base control rods are craftable, the ReaSim ones are not.
         self.assertIn('ntm:rbmk_control',recipes);self.assertIn('ntm:rbmk_console',recipes)
         self.assertNotIn('ntm:rbmk_control_reasim',recipes);self.assertNotIn('ntm:rbmk_control_reasim_auto',recipes)

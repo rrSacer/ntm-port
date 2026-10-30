@@ -3695,6 +3695,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:ams_lens",
+      "type": "item",
+      "source_variable": "ams_lens",
+      "source_class": "ItemLens",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3721",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (addInformation, showDurabilityBar); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ams_lens.png",
+      "source_registry": "hbm:item.ams_lens",
+      "names": {
+        "en_us": "Stabilizer Lens",
+        "pt_br": "Lente Estabilizadora"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.ams_lens.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.ams_lens.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:ancient_scrap",
       "type": "block",
       "source_variable": "ancient_scrap",
@@ -3712,6 +3736,30 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:tile.ancient_scrap.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:tile.ancient_scrap.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:apple_euphemium",
+      "type": "item",
+      "source_variable": "apple_euphemium",
+      "source_class": "ItemAppleEuphemium",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3812",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (hasEffect)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/apple_euphemium.png",
+      "source_registry": "hbm:item.apple_euphemium",
+      "names": {
+        "en_us": "Euphemium Apple",
+        "pt_br": "Maçã de Eufêmio"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.apple_euphemium.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.apple_euphemium.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -3860,6 +3908,81 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AmmoPressRecipes.java:412"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:balefire_and_ham",
+      "type": "item",
+      "source_variable": "balefire_and_ham",
+      "source_class": "ItemSoup",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3619",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/balefire_and_ham.png",
+      "source_registry": "hbm:item.balefire_and_ham",
+      "names": {
+        "en_us": "Ham and Balefire Eggs",
+        "pt_br": "Ovos de Presunto e Balefire"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.balefire_and_ham.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.balefire_and_ham.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:balefire_and_steel",
+      "type": "item",
+      "source_variable": "balefire_and_steel",
+      "source_class": "ItemBalefireMatch",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4295",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/balefire_and_steel.png",
+      "source_registry": "hbm:item.balefire_and_steel",
+      "names": {
+        "en_us": "Balefire and Steel",
+        "pt_br": "Balefire e Aço"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.balefire_and_steel.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.balefire_and_steel.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "magic",
+          "source": "src/main/java/com/hbm/inventory/recipes/MagicRecipes.java:44"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:balefire_scrambled",
+      "type": "item",
+      "source_variable": "balefire_scrambled",
+      "source_class": "ItemSoup",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3618",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/balefire_scrambled.png",
+      "source_registry": "hbm:item.balefire_scrambled",
+      "names": {
+        "en_us": "Scrambled Balefire Egg",
+        "pt_br": "Ovo de Balefire Mexido"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.balefire_scrambled.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.balefire_scrambled.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -4163,6 +4286,29 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.battery_trixite.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.battery_trixite.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:bdcl",
+      "type": "item",
+      "source_variable": "bdcl",
+      "source_class": "ItemBDCL",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2849",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, onUsingTick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bdcl.png",
+      "source_registry": "hbm:item.bdcl",
+      "names": {
+        "en_us": "BDCL",
+        "pt_br": "Bdcl"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.bdcl.name",
+        "pt_br": "port translation"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -12136,6 +12282,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:beta",
+      "type": "item",
+      "source_variable": "beta",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:35",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/beta.png",
+      "source_registry": "hbm:item.beta",
+      "names": {
+        "en_us": "Beta Features",
+        "pt_br": "Recursos Beta"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.beta.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.beta.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:billet_actinium",
       "type": "item",
       "source_variable": "billet_actinium",
@@ -13339,6 +13509,30 @@
           "source": "src/main/java/com/hbm/inventory/recipes/PressRecipes.java:65"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:black_hole",
+      "type": "item",
+      "source_variable": "black_hole",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2719",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/singularity_4.png",
+      "source_registry": "hbm:item.black_hole",
+      "names": {
+        "en_us": "Miniature Black Hole",
+        "pt_br": "Buraco Negro Miniatura"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.black_hole.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.black_hole.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -15331,6 +15525,53 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:boat_rubber",
+      "type": "item",
+      "source_variable": "boat_rubber",
+      "source_class": "ItemBoatRubber",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2950",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/boat_rubber.png",
+      "source_registry": "hbm:item.boat_rubber",
+      "names": {
+        "en_us": "Rubber Boat",
+        "pt_br": "Barco de Borracha"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.boat_rubber.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.boat_rubber.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:bobmazon",
+      "type": "item",
+      "source_variable": "bobmazon",
+      "source_class": "ItemCatalog",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3894",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bobmazon.png",
+      "source_registry": "hbm:item.bobmazon",
+      "names": {
+        "en_us": "Bobmazon",
+        "pt_br": "Bobcado Livre"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.bobmazon.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.bobmazon.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:bolt_spike",
       "type": "item",
       "source_variable": "bolt_spike",
@@ -15354,6 +15595,29 @@
           "source": "src/main/java/com/hbm/inventory/recipes/PedestalRecipes.java:78"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:bomb_waffle",
+      "type": "item",
+      "source_variable": "bomb_waffle",
+      "source_class": "ItemWaffle",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3610",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bomb_waffle.png",
+      "source_registry": "hbm:item.bomb_waffle",
+      "names": {
+        "en_us": "Waffle of Mass Destruction",
+        "pt_br": "Waffle de Destruição em Massa"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.bomb_waffle.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.bomb_waffle.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -15399,6 +15663,75 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:bottle2_fritz",
+      "type": "item",
+      "source_variable": "bottle2_fritz",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2942",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle2_fritz.png",
+      "source_registry": "hbm:item.bottle2_fritz",
+      "names": {
+        "en_us": "Fritz Cola",
+        "pt_br": "Bottle2 Fritz"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.bottle2_fritz.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:bottle2_korl",
+      "type": "item",
+      "source_variable": "bottle2_korl",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2941",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle2_korl.png",
+      "source_registry": "hbm:item.bottle2_korl",
+      "names": {
+        "en_us": "Korl",
+        "pt_br": "Bottle2 Korl"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.bottle2_korl.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:bottle_cherry",
+      "type": "item",
+      "source_variable": "bottle_cherry",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2936",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_cherry.png",
+      "source_registry": "hbm:item.bottle_cherry",
+      "names": {
+        "en_us": "Bottle of Nuka Cherry",
+        "pt_br": "Garrafa de Nuka Cherry"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.bottle_cherry.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.bottle_cherry.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:bottle_empty",
       "type": "item",
       "source_variable": "bottle_empty",
@@ -15435,6 +15768,103 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.bottle_mercury.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.bottle_mercury.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:bottle_nuka",
+      "type": "item",
+      "source_variable": "bottle_nuka",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2935",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_nuka.png",
+      "source_registry": "hbm:item.bottle_nuka",
+      "names": {
+        "en_us": "Bottle of Nuka Cola",
+        "pt_br": "Garrafa de Nuka Cola"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.bottle_nuka.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.bottle_nuka.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:94"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:bottle_quantum",
+      "type": "item",
+      "source_variable": "bottle_quantum",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2937",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_quantum.png",
+      "source_registry": "hbm:item.bottle_quantum",
+      "names": {
+        "en_us": "Bottle of Nuka Cola Quantum",
+        "pt_br": "Garrafa de Nuka Cola Quantum"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.bottle_quantum.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.bottle_quantum.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:bottle_rad",
+      "type": "item",
+      "source_variable": "bottle_rad",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2939",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_rad.png",
+      "source_registry": "hbm:item.bottle_rad",
+      "names": {
+        "en_us": "Bottle of S~Cola RAD",
+        "pt_br": "Garrafa de S~Cola RAD"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.bottle_rad.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.bottle_rad.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:bottle_sparkle",
+      "type": "item",
+      "source_variable": "bottle_sparkle",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2938",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_sparkle.png",
+      "source_registry": "hbm:item.bottle_sparkle",
+      "names": {
+        "en_us": "Bottle of S~Cola",
+        "pt_br": "Garrafa de S~Cola"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.bottle_sparkle.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.bottle_sparkle.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -15490,6 +15920,30 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:711"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:boy_kit",
+      "type": "item",
+      "source_variable": "boy_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3786",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/boy_kit.png",
+      "source_registry": "hbm:item.boy_kit",
+      "names": {
+        "en_us": "Little Boy Kit",
+        "pt_br": "Kit Little Boy"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.boy_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.boy_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -16635,6 +17089,75 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:can_bepis",
+      "type": "item",
+      "source_variable": "can_bepis",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2931",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_bepis.png",
+      "source_registry": "hbm:item.can_bepis",
+      "names": {
+        "en_us": "Bepis",
+        "pt_br": "Can Bepis"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.can_bepis.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:can_breen",
+      "type": "item",
+      "source_variable": "can_breen",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2932",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_breen.png",
+      "source_registry": "hbm:item.can_breen",
+      "names": {
+        "en_us": "Dr>Breens Private Reserve",
+        "pt_br": "Reserva Particular do Dr. Breen"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.can_breen.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.can_breen.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:can_creature",
+      "type": "item",
+      "source_variable": "can_creature",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2926",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_creature.png",
+      "source_registry": "hbm:item.can_creature",
+      "names": {
+        "en_us": "'Creature' Energy Drink",
+        "pt_br": "Bebida Energética \"Creature\""
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.can_creature.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.can_creature.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:can_empty",
       "type": "item",
       "source_variable": "can_empty",
@@ -16676,6 +17199,144 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.can_key.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.can_key.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:can_luna",
+      "type": "item",
+      "source_variable": "can_luna",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2930",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_luna.png",
+      "source_registry": "hbm:item.can_luna",
+      "names": {
+        "en_us": "Black Mesa Luna - Dark Cola",
+        "pt_br": "Black Mesa Luna - Cola Escura"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.can_luna.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.can_luna.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:can_mrsugar",
+      "type": "item",
+      "source_variable": "can_mrsugar",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2928",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_mrsugar.png",
+      "source_registry": "hbm:item.can_mrsugar",
+      "names": {
+        "en_us": "'Dr. Sugar' Soft Drink",
+        "pt_br": "Refrigerante \"Dr. Sugar\""
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.can_mrsugar.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.can_mrsugar.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:can_mug",
+      "type": "item",
+      "source_variable": "can_mug",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2933",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_mug.png",
+      "source_registry": "hbm:item.can_mug",
+      "names": {
+        "en_us": "MUG Root Beer",
+        "pt_br": "Can Mug"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.can_mug.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:can_overcharge",
+      "type": "item",
+      "source_variable": "can_overcharge",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2929",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_overcharge.png",
+      "source_registry": "hbm:item.can_overcharge",
+      "names": {
+        "en_us": "Overcharge Delirium XT",
+        "pt_br": "Can Overcharge"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.can_overcharge.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:can_redbomb",
+      "type": "item",
+      "source_variable": "can_redbomb",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2927",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_redbomb.png",
+      "source_registry": "hbm:item.can_redbomb",
+      "names": {
+        "en_us": "'Red Bomb' Energy Drink",
+        "pt_br": "Bebida Energética \"Red Bomb\""
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.can_redbomb.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.can_redbomb.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:can_smart",
+      "type": "item",
+      "source_variable": "can_smart",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2925",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_smart.png",
+      "source_registry": "hbm:item.can_smart",
+      "names": {
+        "en_us": "'Smart' Energy Drink",
+        "pt_br": "Bebida Energética \"Smart\""
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.can_smart.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.can_smart.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -16742,6 +17403,30 @@
           "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:365"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:canteen_vodka",
+      "type": "item",
+      "source_variable": "canteen_vodka",
+      "source_class": "ItemCanteen",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3632",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onUpdate, onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/canteen_vodka.png",
+      "source_registry": "hbm:item.canteen_vodka",
+      "names": {
+        "en_us": "Stylish Flask",
+        "pt_br": "Cantil Estiloso"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.canteen_vodka.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.canteen_vodka.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -17124,6 +17809,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:casing_bag",
+      "type": "item",
+      "source_variable": "casing_bag",
+      "source_class": "ItemCasingBag",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3362",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/casing_bag.png",
+      "source_registry": "hbm:item.casing_bag",
+      "names": {
+        "en_us": "Bullet Casing Bag",
+        "pt_br": "Saco de Estojos de Munição"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.casing_bag.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.casing_bag.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:catalyst_clay",
       "type": "item",
       "source_variable": "catalyst_clay",
@@ -17161,6 +17870,52 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.catalytic_converter.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.catalytic_converter.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:cell_anti_schrabidium",
+      "type": "item",
+      "source_variable": "cell_anti_schrabidium",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2693",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cell_anti_schrabidium.png",
+      "source_registry": "hbm:item.cell_anti_schrabidium",
+      "names": {
+        "en_us": "Antischrabidium Cell",
+        "pt_br": "Célula de Antischrabidium"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cell_anti_schrabidium.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cell_anti_schrabidium.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:cell_antimatter",
+      "type": "item",
+      "source_variable": "cell_antimatter",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2689",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cell_antimatter.png",
+      "source_registry": "hbm:item.cell_antimatter",
+      "names": {
+        "en_us": "Antimatter Cell",
+        "pt_br": "Célula de Antimatéria"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cell_antimatter.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cell_antimatter.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -17339,6 +18094,52 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:cheese",
+      "type": "item",
+      "source_variable": "cheese",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3637",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cheese.png",
+      "source_registry": "hbm:item.cheese",
+      "names": {
+        "en_us": "Cheese",
+        "pt_br": "Queijo"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cheese.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cheese.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:cheese_quesadilla",
+      "type": "item",
+      "source_variable": "quesadilla",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3638",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/quesadilla.png",
+      "source_registry": "hbm:item.cheese_quesadilla",
+      "names": {
+        "en_us": "Cheese Quesadilla",
+        "pt_br": "Quesadilla de Queijo"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cheese_quesadilla.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cheese_quesadilla.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:chlorine1",
       "type": "item",
       "source_variable": "chlorine1",
@@ -17501,6 +18302,56 @@
       "name_sources": {
         "en_us": "fallback",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.chlorine8.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:chocolate",
+      "type": "item",
+      "source_variable": "chocolate",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2947",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chocolate.png",
+      "source_registry": "hbm:item.chocolate",
+      "names": {
+        "en_us": "Ithis-Brand Radium Chocolate",
+        "pt_br": "Chocolate de Rádio da Marca Ithis"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.chocolate.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.chocolate.name"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "chemical_plant",
+          "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:251"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:chocolate_milk",
+      "type": "item",
+      "source_variable": "chocolate_milk",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2944",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chocolate_milk.png",
+      "source_registry": "hbm:item.chocolate_milk",
+      "names": {
+        "en_us": "Chocolate Milk",
+        "pt_br": "Leite com Chocolate"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.chocolate_milk.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.chocolate_milk.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -17760,6 +18611,30 @@
           "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:640"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:cigarette",
+      "type": "item",
+      "source_variable": "cigarette",
+      "source_class": "ItemCigarette",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2847",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cigarette.png",
+      "source_registry": "hbm:item.cigarette",
+      "names": {
+        "en_us": "FFI-Brand Cigarette",
+        "pt_br": "Cigarro da Marca FFI"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cigarette.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cigarette.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -20130,6 +21005,52 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:coffee",
+      "type": "item",
+      "source_variable": "coffee",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2945",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/coffee.png",
+      "source_registry": "hbm:item.coffee",
+      "names": {
+        "en_us": "Coffee",
+        "pt_br": "Café"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.coffee.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.coffee.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:coffee_radium",
+      "type": "item",
+      "source_variable": "coffee_radium",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2946",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/coffee_radium.png",
+      "source_registry": "hbm:item.coffee_radium",
+      "names": {
+        "en_us": "Radium Coffee",
+        "pt_br": "Café com Rádio"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.coffee_radium.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.coffee_radium.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:coil_copper",
       "type": "item",
       "source_variable": "coil_copper",
@@ -21920,6 +22841,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:containment_box",
+      "type": "item",
+      "source_variable": "containment_box",
+      "source_class": "ItemLeadBox",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3357",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/containment_box.png",
+      "source_registry": "hbm:item.containment_box",
+      "names": {
+        "en_us": "Containment Box",
+        "pt_br": "Caixa de Contenção"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.containment_box.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.containment_box.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:cordite",
       "type": "item",
       "source_variable": "cordite",
@@ -21942,6 +22887,53 @@
           "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:336"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:cotton_candy",
+      "type": "item",
+      "source_variable": "cotton_candy",
+      "source_class": "ItemCottonCandy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3613",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cotton_candy.png",
+      "source_registry": "hbm:item.cotton_candy",
+      "names": {
+        "en_us": "Radioactive Cotton Candy",
+        "pt_br": "Algodão-Doce Radioativo"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cotton_candy.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cotton_candy.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:crackpipe",
+      "type": "item",
+      "source_variable": "crackpipe",
+      "source_class": "ItemCigarette",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2848",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/crackpipe.png",
+      "source_registry": "hbm:item.crackpipe",
+      "names": {
+        "en_us": "Health Pipe",
+        "pt_br": "Cachimbo da Saúde"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.crackpipe.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.crackpipe.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -22790,6 +23782,35 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:crystal_xen",
+      "type": "item",
+      "source_variable": "crystal_xen",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2722",
+      "category": "crystal",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/crystal_xen.png",
+      "source_registry": "hbm:item.crystal_xen",
+      "names": {
+        "en_us": "Artificial Xen Crystal",
+        "pt_br": "Cristal Artificial de Xen"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.crystal_xen.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.crystal_xen.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1063"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:custom_amat",
       "type": "item",
       "source_variable": "custom_amat",
@@ -22872,6 +23893,30 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.custom_hydro.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.custom_hydro.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:custom_kit",
+      "type": "item",
+      "source_variable": "custom_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3791",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/custom_kit.png",
+      "source_registry": "hbm:item.custom_kit",
+      "names": {
+        "en_us": "Custom Nuke Kit",
+        "pt_br": "Kit de Bomba Personalizada"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.custom_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.custom_kit.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -23411,6 +24456,29 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:definitelyfood",
+      "type": "item",
+      "source_variable": "definitelyfood",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3621",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/definitelyfood.png",
+      "source_registry": "hbm:item.definitelyfood",
+      "names": {
+        "en_us": "MRE",
+        "pt_br": "Definitelyfood"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.definitelyfood.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:demon_core_closed",
       "type": "item",
       "source_variable": "demon_core_closed",
@@ -23429,6 +24497,34 @@
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:demon_core_open",
+      "type": "item",
+      "source_variable": "demon_core_open",
+      "source_class": "ItemDemonCore",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2695",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/demon_core_open.png",
+      "source_registry": "hbm:item.demon_core_open",
+      "names": {
+        "en_us": "Suspended Demon Core",
+        "pt_br": "Núcleo Demoníaco Suspenso"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.demon_core_open.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.demon_core_open.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:528"
+        }
+      ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -24095,6 +25191,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:euphemium_kit",
+      "type": "item",
+      "source_variable": "euphemium_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3795",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/code.png",
+      "source_registry": "hbm:item.euphemium_kit",
+      "names": {
+        "en_us": "Euphemium Kit",
+        "pt_br": "Kit de Eufêmio"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.euphemium_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.euphemium_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:explosive_lenses",
       "type": "item",
       "source_variable": "explosive_lenses",
@@ -24302,6 +25422,29 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:five_htp",
+      "type": "item",
+      "source_variable": "five_htp",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2833",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/5htp.png",
+      "source_registry": "hbm:item.five_htp",
+      "names": {
+        "en_us": "Enteramine Pills",
+        "pt_br": "Pílulas de Enteramina"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.five_htp.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.five_htp.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:flame_conspiracy",
       "type": "item",
       "source_variable": "flame_conspiracy",
@@ -24447,6 +25590,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:fleija_kit",
+      "type": "item",
+      "source_variable": "fleija_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3792",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/fleija_kit.png",
+      "source_registry": "hbm:item.fleija_kit",
+      "names": {
+        "en_us": "F.L.E.I.J.A. Kit",
+        "pt_br": "Kit F.L.E.I.J.A."
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.fleija_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.fleija_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:fleija_propellant",
       "type": "item",
       "source_variable": "fleija_propellant",
@@ -24586,6 +25753,52 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:439"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:fmn",
+      "type": "item",
+      "source_variable": "fmn",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2832",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/tablet.png",
+      "source_registry": "hbm:item.fmn",
+      "names": {
+        "en_us": "Flunitrazepam Tablet",
+        "pt_br": "Comprimido de Flunitrazepam"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.fmn.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.fmn.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:fooditem",
+      "type": "item",
+      "source_variable": "fooditem",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3628",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/fooditem.png",
+      "source_registry": "hbm:item.fooditem",
+      "names": {
+        "en_us": "food item",
+        "pt_br": "item de comida"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.fooditem.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.fooditem.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -25108,6 +26321,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:gadget_kit",
+      "type": "item",
+      "source_variable": "gadget_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3785",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gadget_kit.png",
+      "source_registry": "hbm:item.gadget_kit",
+      "names": {
+        "en_us": "The Gadget Kit",
+        "pt_br": "O Kit Artefato"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.gadget_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.gadget_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:gadget_wireing",
       "type": "item",
       "source_variable": "gadget_wireing",
@@ -25149,6 +26386,126 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.gas_empty.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.gas_empty.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:gas_mask_filter",
+      "type": "item",
+      "source_variable": "gas_mask_filter",
+      "source_class": "ItemFilter",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2838",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter.png",
+      "source_registry": "hbm:item.gas_mask_filter",
+      "names": {
+        "en_us": "Gas Mask Filter",
+        "pt_br": "Filtro de Máscara de Gás"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.gas_mask_filter.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.gas_mask_filter.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:gas_mask_filter_combo",
+      "type": "item",
+      "source_variable": "gas_mask_filter_combo",
+      "source_class": "ItemFilter",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2840",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_combo.png",
+      "source_registry": "hbm:item.gas_mask_filter_combo",
+      "names": {
+        "en_us": "Gas Mask Combo Filter",
+        "pt_br": "Filtro Combinado de Máscara de Gás"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.gas_mask_filter_combo.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.gas_mask_filter_combo.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:gas_mask_filter_mono",
+      "type": "item",
+      "source_variable": "gas_mask_filter_mono",
+      "source_class": "ItemFilter",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2839",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_mono.png",
+      "source_registry": "hbm:item.gas_mask_filter_mono",
+      "names": {
+        "en_us": "Catalytic Mask Filter",
+        "pt_br": "Filtro Catalítico de Máscara"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.gas_mask_filter_mono.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.gas_mask_filter_mono.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:gas_mask_filter_piss",
+      "type": "item",
+      "source_variable": "gas_mask_filter_piss",
+      "source_class": "ItemFilter",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2842",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_piss.png",
+      "source_registry": "hbm:item.gas_mask_filter_piss",
+      "names": {
+        "en_us": "Advanced Makeshift Gas Mask Filter",
+        "pt_br": "Filtro Avançado Improvisado de Máscara de Gás"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.gas_mask_filter_piss.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.gas_mask_filter_piss.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:gas_mask_filter_rag",
+      "type": "item",
+      "source_variable": "gas_mask_filter_rag",
+      "source_class": "ItemFilter",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2841",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_rag.png",
+      "source_registry": "hbm:item.gas_mask_filter_rag",
+      "names": {
+        "en_us": "Makeshift Gas Mask Filter",
+        "pt_br": "Filtro Improvisado de Máscara de Gás"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.gas_mask_filter_rag.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.gas_mask_filter_rag.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -25504,6 +26861,34 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:glowing_stew",
+      "type": "item",
+      "source_variable": "glowing_stew",
+      "source_class": "ItemSoup",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3617",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/glowing_stew.png",
+      "source_registry": "hbm:item.glowing_stew",
+      "names": {
+        "en_us": "Glowing Mushroom Stew",
+        "pt_br": "Ensopado de Cogumelo Brilhante"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.glowing_stew.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.glowing_stew.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "outgasser",
+          "source": "src/main/java/com/hbm/inventory/recipes/OutgasserRecipes.java:53"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:glyphid_gland_empty",
       "type": "item",
       "source_variable": "glyphid_gland_empty",
@@ -25527,6 +26912,61 @@
           "source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:69"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:glyphid_meat",
+      "type": "item",
+      "source_variable": "glyphid_meat",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3640",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/glyphid_meat.png",
+      "source_registry": "hbm:item.glyphid_meat",
+      "names": {
+        "en_us": "Glyphid Meat",
+        "pt_br": "Carne de Glyphid"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.glyphid_meat.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.glyphid_meat.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "chemical_plant",
+          "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:258"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:982"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:glyphid_meat_grilled",
+      "type": "item",
+      "source_variable": "glyphid_meat_grilled",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3641",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/glyphid_meat_grilled.png",
+      "source_registry": "hbm:item.glyphid_meat_grilled",
+      "names": {
+        "en_us": "Grilled Glyphid Meat",
+        "pt_br": "Carne de Glyphid Grelhada"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.glyphid_meat_grilled.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.glyphid_meat_grilled.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -25711,6 +27151,78 @@
       "name_sources": {
         "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_cloth_red.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_cloth_red.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_grey_kit",
+      "type": "item",
+      "source_variable": "hazmat_grey_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3799",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_grey_kit.png",
+      "source_registry": "hbm:item.hazmat_grey_kit",
+      "names": {
+        "en_us": "High-Performance Hazmat Kit",
+        "pt_br": "Kit Antirradição de Alto Desempenho"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_grey_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_grey_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_kit",
+      "type": "item",
+      "source_variable": "hazmat_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3797",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_kit.png",
+      "source_registry": "hbm:item.hazmat_kit",
+      "names": {
+        "en_us": "Hazmat Kit",
+        "pt_br": "Kit Antirradição"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_red_kit",
+      "type": "item",
+      "source_variable": "hazmat_red_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3798",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_red_kit.png",
+      "source_registry": "hbm:item.hazmat_red_kit",
+      "names": {
+        "en_us": "Advanced Hazmat Kit",
+        "pt_br": "Kit Antirradição Avançado"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_red_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_red_kit.name"
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
@@ -26182,6 +27694,33 @@
         {
           "machine": "lemegeton",
           "source": "src/main/java/com/hbm/inventory/recipes/LemegetonRecipes.java:31"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ingot_c4",
+      "type": "item",
+      "source_variable": "ingot_c4",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2170",
+      "category": "ingot",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_c4.png",
+      "source_registry": "hbm:item.ingot_c4",
+      "names": {
+        "en_us": "Bar of Composition C-4",
+        "pt_br": "Barra de Composição C-4"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.ingot_c4.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.ingot_c4.name"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "chemical_plant",
+          "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:360"
         }
       ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
@@ -27851,6 +29390,29 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:ingot_smore",
+      "type": "item",
+      "source_variable": "ingot_smore",
+      "source_class": "ItemFood",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2122",
+      "category": "ingot",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_smore.png",
+      "source_registry": "hbm:item.ingot_smore",
+      "names": {
+        "en_us": "S'more Ingot",
+        "pt_br": "Lingote de S'more"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.ingot_smore.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.ingot_smore.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:ingot_solinium",
       "type": "item",
       "source_variable": "ingot_solinium",
@@ -28352,6 +29914,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:key_kit",
+      "type": "item",
+      "source_variable": "key_kit",
+      "source_class": "ItemCounterfeitKeys",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3852",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/key_pair.png",
+      "source_registry": "hbm:item.key_kit",
+      "names": {
+        "en_us": "Key Imitation Kit",
+        "pt_br": "Kit de Cópia de Chaves"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.key_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.key_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:lamp_tritium_blue_off",
       "type": "block",
       "source_variable": "lamp_tritium_blue_off",
@@ -28630,6 +30216,29 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:lemon",
+      "type": "item",
+      "source_variable": "lemon",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3620",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/lemon.png",
+      "source_registry": "hbm:item.lemon",
+      "names": {
+        "en_us": "\"Lemon\"",
+        "pt_br": "\"Limão\""
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.lemon.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.lemon.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:lightstone__bricks",
       "type": "block",
       "source_variable": "lightstone",
@@ -28776,6 +30385,125 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:loop_stew",
+      "type": "item",
+      "source_variable": "loop_stew",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3626",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/loop_stew.png",
+      "source_registry": "hbm:item.loop_stew",
+      "names": {
+        "en_us": "IT Breakfast",
+        "pt_br": "Café da Manhã de TI"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.loop_stew.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.loop_stew.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:loops",
+      "type": "item",
+      "source_variable": "loops",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3625",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/loops.png",
+      "source_registry": "hbm:item.loops",
+      "names": {
+        "en_us": "Lööps",
+        "pt_br": "Loops"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.loops.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:loot_10",
+      "type": "item",
+      "source_variable": "loot_10",
+      "source_class": "ItemLootCrate",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3802",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/loot_10.png",
+      "source_registry": "hbm:item.loot_10",
+      "names": {
+        "en_us": "Size 10 Missile Loot Crate",
+        "pt_br": "Caixote de Saque para Míssil Tamanho 10"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.loot_10.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.loot_10.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:loot_15",
+      "type": "item",
+      "source_variable": "loot_15",
+      "source_class": "ItemLootCrate",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3804",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/loot_15.png",
+      "source_registry": "hbm:item.loot_15",
+      "names": {
+        "en_us": "Size 15 Missile Loot Crate",
+        "pt_br": "Caixote de Saque para Míssil Tamanho 15"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.loot_15.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.loot_15.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:loot_misc",
+      "type": "item",
+      "source_variable": "loot_misc",
+      "source_class": "ItemLootCrate",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3805",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/loot_misc.png",
+      "source_registry": "hbm:item.loot_misc",
+      "names": {
+        "en_us": "General Missile Loot Crate",
+        "pt_br": "Caixote de Saque Geral para Mísseis"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.loot_misc.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.loot_misc.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:magnetron",
       "type": "item",
       "source_variable": "magnetron",
@@ -28850,6 +30578,122 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:713"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:man_kit",
+      "type": "item",
+      "source_variable": "man_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3787",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/man_kit.png",
+      "source_registry": "hbm:item.man_kit",
+      "names": {
+        "en_us": "Fat Man Kit",
+        "pt_br": "Kit Fat Man"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.man_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.man_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:matchstick",
+      "type": "item",
+      "source_variable": "matchstick",
+      "source_class": "ItemMatch",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4294",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/matchstick.png",
+      "source_registry": "hbm:item.matchstick",
+      "names": {
+        "en_us": "Matchstick",
+        "pt_br": "Palito de Fósforo"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.matchstick.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.matchstick.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:med_bag",
+      "type": "item",
+      "source_variable": "med_bag",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2826",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/med_bag.png",
+      "source_registry": "hbm:item.med_bag",
+      "names": {
+        "en_us": "First Aid Kit",
+        "pt_br": "Kit de Primeiros Socorros"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.med_bag.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.med_bag.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:med_ipecac",
+      "type": "item",
+      "source_variable": "med_ipecac",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3622",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/med_ipecac_new.png",
+      "source_registry": "hbm:item.med_ipecac",
+      "names": {
+        "en_us": "Ipecac Syrup",
+        "pt_br": "Xarope de Ipeca"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.med_ipecac.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.med_ipecac.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:med_ptsd",
+      "type": "item",
+      "source_variable": "med_ptsd",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3623",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/med_ptsd_new.png",
+      "source_registry": "hbm:item.med_ptsd",
+      "names": {
+        "en_us": "PTSD Medication",
+        "pt_br": "Medicamento para TEPT"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.med_ptsd.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.med_ptsd.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -29117,6 +30961,30 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:719"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:mike_kit",
+      "type": "item",
+      "source_variable": "mike_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3788",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mike_kit.png",
+      "source_registry": "hbm:item.mike_kit",
+      "names": {
+        "en_us": "Ivy Mike Kit",
+        "pt_br": "Kit Ivy Mike"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.mike_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.mike_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -29992,6 +31860,53 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:mucho_mango",
+      "type": "item",
+      "source_variable": "mucho_mango",
+      "source_class": "ItemMuchoMango",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3639",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mucho_mango.png",
+      "source_registry": "hbm:item.mucho_mango",
+      "names": {
+        "en_us": "AriZona Mucho Mango",
+        "pt_br": "Mucho Mango"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.mucho_mango.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:multi_kit",
+      "type": "item",
+      "source_variable": "multi_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3790",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/multi_kit.png",
+      "source_registry": "hbm:item.multi_kit",
+      "names": {
+        "en_us": "Multi Purpose Bomb Kit",
+        "pt_br": "Kit de Bomba Multiuso"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.multi_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.multi_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:mush_block",
       "type": "block",
       "source_variable": "mush_block",
@@ -30286,6 +32201,34 @@
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:nugget",
+      "type": "item",
+      "source_variable": "nugget",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3634",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nugget.png",
+      "source_registry": "hbm:item.nugget",
+      "names": {
+        "en_us": "Chicken Nugget",
+        "pt_br": "Nugget de Frango"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.nugget.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.nugget.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "particle_accelerator",
+          "source": "src/main/java/com/hbm/inventory/recipes/ParticleAcceleratorRecipes.java:104"
+        }
+      ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -31655,6 +33598,102 @@
           "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:331"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:nuke_advanced_kit",
+      "type": "item",
+      "source_variable": "nuke_advanced_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3782",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_advanced_kit.png",
+      "source_registry": "hbm:item.nuke_advanced_kit",
+      "names": {
+        "en_us": "Atomic Science Advanced Kit",
+        "pt_br": "Kit Avançado de Ciência Atômica"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.nuke_advanced_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.nuke_advanced_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:nuke_commercially_kit",
+      "type": "item",
+      "source_variable": "nuke_commercially_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3783",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_commercially_kit.png",
+      "source_registry": "hbm:item.nuke_commercially_kit",
+      "names": {
+        "en_us": "Atomic Science Kit for Commercial Uses",
+        "pt_br": "Kit de Ciência Atômica para Uso Comercial"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.nuke_commercially_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.nuke_commercially_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:nuke_electric_kit",
+      "type": "item",
+      "source_variable": "nuke_electric_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3784",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_electric_kit.png",
+      "source_registry": "hbm:item.nuke_electric_kit",
+      "names": {
+        "en_us": "Electronic Engineer's Kit",
+        "pt_br": "Kit do Engenheiro Eletrônico"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.nuke_electric_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.nuke_electric_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:nuke_starter_kit",
+      "type": "item",
+      "source_variable": "nuke_starter_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3780",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_starter_kit.png",
+      "source_registry": "hbm:item.nuke_starter_kit",
+      "names": {
+        "en_us": "Atomic Science Starter Kit",
+        "pt_br": "Kit Inicial de Ciência Atômica"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.nuke_starter_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.nuke_starter_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -40624,6 +42663,29 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:pancake",
+      "type": "item",
+      "source_variable": "pancake",
+      "source_class": "ItemPancake",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3633",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pancake.png",
+      "source_registry": "hbm:item.pancake",
+      "names": {
+        "en_us": "Pancake made from Scrap Metal, Nails and Gem Dust",
+        "pt_br": "Panqueca feita de Sucata, Pregos e Pó de Gemas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.pancake.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.pancake.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:part_barrel_heavy__cdalloy",
       "type": "item",
       "source_variable": "part_barrel_heavy",
@@ -43188,6 +45250,34 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:particle_digamma",
+      "type": "item",
+      "source_variable": "particle_digamma",
+      "source_class": "ItemDigamma",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2713",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onUpdate, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/particle_digamma.png",
+      "source_registry": "hbm:item.particle_digamma",
+      "names": {
+        "en_us": "§cThe Digamma Particle§r",
+        "pt_br": "§cPartícula Digama§r"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.particle_digamma.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.particle_digamma.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "particle_accelerator",
+          "source": "src/main/java/com/hbm/inventory/recipes/ParticleAcceleratorRecipes.java:89"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:particle_empty",
       "type": "item",
       "source_variable": "particle_empty",
@@ -43683,6 +45773,29 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:peas",
+      "type": "item",
+      "source_variable": "peas",
+      "source_class": "ItemPeas",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3635",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/peas.png",
+      "source_registry": "hbm:item.peas",
+      "names": {
+        "en_us": "Peas",
+        "pt_br": "Ervilhas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.peas.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.peas.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:pedestal_steel",
       "type": "item",
       "source_variable": "pedestal_steel",
@@ -43706,6 +45819,29 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:655"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pellet_antimatter",
+      "type": "item",
+      "source_variable": "pellet_antimatter",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2721",
+      "category": "pellet",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_antimatter.png",
+      "source_registry": "hbm:item.pellet_antimatter",
+      "names": {
+        "en_us": "Antimatter Cluster",
+        "pt_br": "Aglomerado de Antimatéria"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.pellet_antimatter.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.pellet_antimatter.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -43835,6 +45971,61 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:pill_iodine",
+      "type": "item",
+      "source_variable": "pill_iodine",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2834",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pill_iodine.png",
+      "source_registry": "hbm:item.pill_iodine",
+      "names": {
+        "en_us": "Iodine Pill",
+        "pt_br": "Pílula de Iodo"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.pill_iodine.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.pill_iodine.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pill_red",
+      "type": "item",
+      "source_variable": "pill_red",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2836",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pill_red.png",
+      "source_registry": "hbm:item.pill_red",
+      "names": {
+        "en_us": "Red Pill",
+        "pt_br": "Pílula Vermelha"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.pill_red.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.pill_red.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "crystallizer",
+          "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:216"
+        },
+        {
+          "machine": "anvil_smithing_cyanide_recipe",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilSmithingCyanideRecipe.java:41"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:pin",
       "type": "item",
       "source_variable": "pin",
@@ -43947,6 +46138,34 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:plan_c",
+      "type": "item",
+      "source_variable": "plan_c",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2835",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/plan_c.png",
+      "source_registry": "hbm:item.plan_c",
+      "names": {
+        "en_us": "Plan C",
+        "pt_br": "Plano C"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.plan_c.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.plan_c.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil_smithing_cyanide_recipe",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilSmithingCyanideRecipe.java:14"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:plant_item__mustardwillow",
       "type": "item",
       "source_variable": "plant_item",
@@ -44031,6 +46250,30 @@
           "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:108"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:plastic_bag",
+      "type": "item",
+      "source_variable": "plastic_bag",
+      "source_class": "ItemPlasticBag",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3358",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/plastic_bag.png",
+      "source_registry": "hbm:item.plastic_bag",
+      "names": {
+        "en_us": "Plastic Bag",
+        "pt_br": "Saco Plástico"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.plastic_bag.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.plastic_bag.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -47354,6 +49597,29 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:powder_fertilizer",
+      "type": "item",
+      "source_variable": "powder_fertilizer",
+      "source_class": "ItemFertilizer",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2529",
+      "category": "powder",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/powder_fertilizer.png",
+      "source_registry": "hbm:item.powder_fertilizer",
+      "names": {
+        "en_us": "Industrial Fertilizer",
+        "pt_br": "Fertilizante Industrial"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.powder_fertilizer.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.powder_fertilizer.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:powder_fire",
       "type": "item",
       "source_variable": "powder_fire",
@@ -48788,6 +51054,53 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:prototype_kit",
+      "type": "item",
+      "source_variable": "prototype_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3793",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/prototype_kit.png",
+      "source_registry": "hbm:item.prototype_kit",
+      "names": {
+        "en_us": "Prototype Kit",
+        "pt_br": "Kit de Protótipo"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.prototype_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.prototype_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pudding",
+      "type": "item",
+      "source_variable": "pudding",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3631",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pudding.png",
+      "source_registry": "hbm:item.pudding",
+      "names": {
+        "en_us": "Pudding",
+        "pt_br": "Pudim"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.pudding.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.pudding.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:pwr_casing",
       "source_variable": "pwr_casing",
       "source_class": "BlockGenericTooltip",
@@ -49868,6 +52181,52 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:radx",
+      "type": "item",
+      "source_variable": "radx",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2828",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/radx.png",
+      "source_registry": "hbm:item.radx",
+      "names": {
+        "en_us": "Rad-X",
+        "pt_br": "Radx"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.radx.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rag",
+      "type": "item",
+      "source_variable": "rag",
+      "source_class": "ItemRag",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2398",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rag.png",
+      "source_registry": "hbm:item.rag",
+      "names": {
+        "en_us": "Cloth",
+        "pt_br": "Pano"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.rag.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.rag.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:rag_damp",
       "type": "item",
       "source_variable": "rag_damp",
@@ -50943,6 +53302,29 @@
           "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:412"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:schnitzel_vegan",
+      "type": "item",
+      "source_variable": "schnitzel_vegan",
+      "source_class": "ItemSchnitzelVegan",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3612",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/schnitzel_vegan.png",
+      "source_registry": "hbm:item.schnitzel_vegan",
+      "names": {
+        "en_us": "Vegan Schnitzel",
+        "pt_br": "Schnitzel Vegano"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.schnitzel_vegan.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.schnitzel_vegan.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -53944,6 +56326,130 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:singularity",
+      "type": "item",
+      "source_variable": "singularity",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2715",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/singularity.png",
+      "source_registry": "hbm:item.singularity",
+      "names": {
+        "en_us": "Singularity",
+        "pt_br": "Singularidade"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.singularity.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.singularity.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:singularity_counter_resonant",
+      "type": "item",
+      "source_variable": "singularity_counter_resonant",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2717",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/singularity_alt.png",
+      "source_registry": "hbm:item.singularity_counter_resonant",
+      "names": {
+        "en_us": "Contained Counter-Resonant Singularity",
+        "pt_br": "Singularidade Contrarressonante Contida"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.singularity_counter_resonant.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.singularity_counter_resonant.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:singularity_spark",
+      "type": "item",
+      "source_variable": "singularity_spark",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2720",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/singularity_spark_alt.png",
+      "source_registry": "hbm:item.singularity_spark",
+      "names": {
+        "en_us": "Spark Singularity",
+        "pt_br": "Singularidade de Faísca"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.singularity_spark.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.singularity_spark.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "plasma_forge",
+          "source": "src/main/java/com/hbm/inventory/recipes/PlasmaForgeRecipes.java:280"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:singularity_super_heated",
+      "type": "item",
+      "source_variable": "singularity_super_heated",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2718",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/singularity_5.png",
+      "source_registry": "hbm:item.singularity_super_heated",
+      "names": {
+        "en_us": "Superheated Resonating Singularity",
+        "pt_br": "Singularidade Ressonante Superaquecida"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.singularity_super_heated.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.singularity_super_heated.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:siox",
+      "type": "item",
+      "source_variable": "siox",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2829",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/siox.png",
+      "source_registry": "hbm:item.siox",
+      "names": {
+        "en_us": "SiOX Cancer Medication",
+        "pt_br": "Medicamento SiOX para Câncer"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.siox.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.siox.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:solid_fuel",
       "type": "item",
       "source_variable": "solid_fuel",
@@ -54139,6 +56645,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:solinium_kit",
+      "type": "item",
+      "source_variable": "solinium_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3796",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/solinium_kit.png",
+      "source_registry": "hbm:item.solinium_kit",
+      "names": {
+        "en_us": "Solinium Kit",
+        "pt_br": "Kit de Solínio"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.solinium_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.solinium_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:solinium_propellant",
       "type": "item",
       "source_variable": "solinium_propellant",
@@ -54190,6 +56720,29 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:682"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:spongebob_macaroni",
+      "type": "item",
+      "source_variable": "spongebob_macaroni",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3627",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/spongebob_macaroni.png",
+      "source_registry": "hbm:item.spongebob_macaroni",
+      "names": {
+        "en_us": "Spongebob Macaroni",
+        "pt_br": "Macarrão do Bob Esponja"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.spongebob_macaroni.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.spongebob_macaroni.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -55336,6 +57889,52 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:static_sandwich",
+      "type": "item",
+      "source_variable": "static_sandwich",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3630",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/static_sandwich.png",
+      "source_registry": "hbm:item.static_sandwich",
+      "names": {
+        "en_us": "Sandwich Garnished with TV Static",
+        "pt_br": "Sanduíche com Estática de TV"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.static_sandwich.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.static_sandwich.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:stealth_boy",
+      "type": "item",
+      "source_variable": "stealth_boy",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2837",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stealth_boy.png",
+      "source_registry": "hbm:item.stealth_boy",
+      "names": {
+        "en_us": "Stealth Device",
+        "pt_br": "Dispositivo de Furtividade"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.stealth_boy.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.stealth_boy.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:steel_boots",
       "type": "item",
       "source_variable": "steel_boots",
@@ -56117,6 +58716,121 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:syringe_metal_medx",
+      "type": "item",
+      "source_variable": "syringe_metal_medx",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2821",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_medx.png",
+      "source_registry": "hbm:item.syringe_metal_medx",
+      "names": {
+        "en_us": "Med-X",
+        "pt_br": "Syringe Metal Medx"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.syringe_metal_medx.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:syringe_metal_psycho",
+      "type": "item",
+      "source_variable": "syringe_metal_psycho",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2822",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_psycho.png",
+      "source_registry": "hbm:item.syringe_metal_psycho",
+      "names": {
+        "en_us": "Psycho",
+        "pt_br": "Syringe Metal Psycho"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.syringe_metal_psycho.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:syringe_metal_stimpak",
+      "type": "item",
+      "source_variable": "syringe_metal_stimpak",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2820",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_stimpak.png",
+      "source_registry": "hbm:item.syringe_metal_stimpak",
+      "names": {
+        "en_us": "Stimpak",
+        "pt_br": "Syringe Metal Stimpak"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.syringe_metal_stimpak.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:syringe_metal_super",
+      "type": "item",
+      "source_variable": "syringe_metal_super",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2823",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_super.png",
+      "source_registry": "hbm:item.syringe_metal_super",
+      "names": {
+        "en_us": "Super Stimpak",
+        "pt_br": "Syringe Metal Super"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.syringe_metal_super.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:syringe_taint",
+      "type": "item",
+      "source_variable": "syringe_taint",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2824",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_taint.png",
+      "source_registry": "hbm:item.syringe_taint",
+      "names": {
+        "en_us": "Watery Taint Injection",
+        "pt_br": "Injeção de Contaminação Aquosa"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.syringe_taint.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.syringe_taint.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:tank_steel",
       "type": "item",
       "source_variable": "tank_steel",
@@ -56735,6 +59449,30 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:tsar_kit",
+      "type": "item",
+      "source_variable": "tsar_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3789",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/tsar_kit.png",
+      "source_registry": "hbm:item.tsar_kit",
+      "names": {
+        "en_us": "Tsar Bomba Kit",
+        "pt_br": "Kit da Bomba Tsar"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.tsar_kit.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.tsar_kit.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:turbine_titanium",
       "type": "item",
       "source_variable": "turbine_titanium",
@@ -56784,6 +59522,29 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:439"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:twinkie",
+      "type": "item",
+      "source_variable": "twinkie",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3629",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/twinkie.png",
+      "source_registry": "hbm:item.twinkie",
+      "names": {
+        "en_us": "Twinkie",
+        "pt_br": "Twinkie"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.twinkie.name",
+        "pt_br": "port translation"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
@@ -58750,6 +61511,29 @@
           "source": "NTM MaterialShapes/recipe autogen; material-specific recipe requires machine port"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:xanax",
+      "type": "item",
+      "source_variable": "xanax",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2831",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/xanax.png",
+      "source_registry": "hbm:item.xanax",
+      "names": {
+        "en_us": "NAXA Anti-Digamma Medication",
+        "pt_br": "Medicamento Antidigamma NAXA"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.xanax.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.xanax.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {

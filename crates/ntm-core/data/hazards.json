@@ -1245,6 +1245,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:ams_lens",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:ancient_scrap",
       "radiation_rad_s": 150.0,
       "radiation_millirad_s": 150000,
@@ -1254,6 +1263,15 @@
       ],
       "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
       "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:apple_euphemium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
     },
     {
       "id": "ntm:asbestos_cloth",
@@ -1302,6 +1320,33 @@
     },
     {
       "id": "ntm:assembly_nuke",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:balefire_and_ham",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:balefire_and_steel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:balefire_scrambled",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -1427,6 +1472,15 @@
     },
     {
       "id": "ntm:battery_trixite",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:bdcl",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -3244,6 +3298,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:beta",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:billet_actinium",
       "radiation_rad_s": 15.0,
       "radiation_millirad_s": 15000,
@@ -3826,6 +3889,15 @@
     },
     {
       "id": "ntm:biomass_compressed",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:black_hole",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -4657,7 +4729,34 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:boat_rubber",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:bobmazon",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:bolt_spike",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:bomb_waffle",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -4684,6 +4783,33 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:bottle2_fritz",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:bottle2_korl",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:bottle_cherry",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:bottle_empty",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -4694,6 +4820,42 @@
     },
     {
       "id": "ntm:bottle_mercury",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:bottle_nuka",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:bottle_quantum",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:bottle_rad",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:bottle_sparkle",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -4714,6 +4876,15 @@
     },
     {
       "id": "ntm:boy_igniter",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:boy_kit",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -5155,6 +5326,33 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:can_bepis",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:can_breen",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:can_creature",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:can_empty",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -5173,6 +5371,60 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:can_luna",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:can_mrsugar",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:can_mug",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:can_overcharge",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:can_redbomb",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:can_smart",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:canister_empty",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -5183,6 +5435,15 @@
     },
     {
       "id": "ntm:canister_napalm",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:canteen_vodka",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -5308,6 +5569,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:casing_bag",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:catalyst_clay",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -5318,6 +5588,24 @@
     },
     {
       "id": "ntm:catalytic_converter",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cell_anti_schrabidium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cell_antimatter",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -5406,6 +5694,24 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:cheese",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cheese_quesadilla",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:chlorine1",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -5478,6 +5784,24 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:chocolate",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:chocolate_milk",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:chunk_ore__cryolite",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -5515,6 +5839,15 @@
     },
     {
       "id": "ntm:chunk_ore__rare",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cigarette",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -6162,6 +6495,24 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:coffee",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:coffee_radium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:coil_copper",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -6801,6 +7152,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:containment_box",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:cordite",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -6812,6 +7172,24 @@
       ],
       "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
       "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:cotton_candy",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:crackpipe",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
     },
     {
       "id": "ntm:crate",
@@ -7069,6 +7447,15 @@
       "resolution": "resolved source registration"
     },
     {
+      "id": "ntm:crystal_xen",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:custom_amat",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -7097,6 +7484,15 @@
     },
     {
       "id": "ntm:custom_hydro",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:custom_kit",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -7312,12 +7708,32 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:definitelyfood",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:demon_core_closed",
       "radiation_rad_s": 100000.0,
       "radiation_millirad_s": 100000000,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:183"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:demon_core_open",
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:182"
       ],
       "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
       "resolution": "resolved source registration"
@@ -7552,6 +7968,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:euphemium_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:explosive_lenses",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -7626,6 +8051,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:five_htp",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:flame_conspiracy",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -7674,6 +8108,15 @@
     },
     {
       "id": "ntm:fleija_igniter",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:fleija_kit",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -7733,6 +8176,24 @@
     },
     {
       "id": "ntm:flywheel_beryllium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:fmn",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:fooditem",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -7914,6 +8375,15 @@
       "resolution": "resolved source registration"
     },
     {
+      "id": "ntm:gadget_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:gadget_wireing",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -7924,6 +8394,51 @@
     },
     {
       "id": "ntm:gas_empty",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:gas_mask_filter",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:gas_mask_filter_combo",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:gas_mask_filter_mono",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:gas_mask_filter_piss",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:gas_mask_filter_rag",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -8051,7 +8566,34 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:glowing_stew",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:glyphid_gland_empty",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:glyphid_meat",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:glyphid_meat_grilled",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -8124,6 +8666,33 @@
     },
     {
       "id": "ntm:hazmat_cloth_red",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:hazmat_grey_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:hazmat_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:hazmat_red_kit",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -8309,6 +8878,15 @@
     },
     {
       "id": "ntm:ingot_bscco",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:ingot_c4",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -8963,6 +9541,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:ingot_smore",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:ingot_solinium",
       "radiation_rad_s": 17.5,
       "radiation_millirad_s": 17500,
@@ -9155,6 +9742,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:key_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:lamp_tritium_blue_off",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -9263,6 +9859,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:lemon",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:lightstone__bricks",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -9317,6 +9922,51 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:loop_stew",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:loops",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:loot_10",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:loot_15",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:loot_misc",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:magnetron",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -9338,6 +9988,51 @@
     },
     {
       "id": "ntm:man_igniter",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:man_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:matchstick",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:med_bag",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:med_ipecac",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:med_ptsd",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -9430,6 +10125,15 @@
     },
     {
       "id": "ntm:mike_deut",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:mike_kit",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -9726,6 +10430,24 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:mucho_mango",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:multi_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:mush_block",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -9831,6 +10553,15 @@
       ],
       "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
       "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nugget",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
     },
     {
       "id": "ntm:nugget_actinium",
@@ -10397,6 +11128,42 @@
     },
     {
       "id": "ntm:nugget_zirconium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:nuke_advanced_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:nuke_commercially_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:nuke_electric_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:nuke_starter_kit",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -12551,6 +13318,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:pancake",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:part_barrel_heavy__cdalloy",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -13262,6 +14038,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:particle_digamma",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:particle_empty",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -13442,7 +14227,25 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:peas",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:pedestal_steel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pellet_antimatter",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -13496,6 +14299,24 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:pill_iodine",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pill_red",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:pin",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -13541,6 +14362,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:plan_c",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:plant_item__mustardwillow",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -13560,6 +14390,15 @@
     },
     {
       "id": "ntm:plant_item__tobacco",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:plastic_bag",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -14621,6 +15460,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:powder_fertilizer",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:powder_fire",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -15175,6 +16023,24 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:prototype_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pudding",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:pwr_casing",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -15581,6 +16447,24 @@
     },
     {
       "id": "ntm:pwr_reflector",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:radx",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rag",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -16026,6 +16910,15 @@
     },
     {
       "id": "ntm:sawblade",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:schnitzel_vegan",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -16882,6 +17775,51 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:singularity",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:singularity_counter_resonant",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:singularity_spark",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:singularity_super_heated",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:siox",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:solid_fuel",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -16964,6 +17902,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:solinium_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:solinium_propellant",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -16978,6 +17925,15 @@
     },
     {
       "id": "ntm:sphere_steel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:spongebob_macaroni",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -17292,6 +18248,24 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:static_sandwich",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:stealth_boy",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:steel_boots",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -17542,6 +18516,51 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:syringe_metal_medx",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:syringe_metal_psycho",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:syringe_metal_stimpak",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:syringe_metal_super",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:syringe_taint",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:tank_steel",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -17739,6 +18758,15 @@
       "resolution": "resolved source registration"
     },
     {
+      "id": "ntm:tsar_kit",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:turbine_titanium",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -17749,6 +18777,15 @@
     },
     {
       "id": "ntm:turbine_tungsten",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:twinkie",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},
@@ -18361,6 +19398,15 @@
     },
     {
       "id": "ntm:wire_fine__zirconium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:xanax",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},

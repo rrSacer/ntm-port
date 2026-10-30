@@ -8,6 +8,18 @@
   },
   "recipes": [
     {
+      "id": "ntm:glyphid_meat",
+      "input": {
+        "item": "ntm:glyphid_meat",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:glyphid_meat_grilled",
+        "count": 1
+      },
+      "experience": 1.0
+    },
+    {
       "id": "ntm:ore_thorium",
       "input": {
         "item": "ntm:ore_thorium",
@@ -774,6 +786,30 @@
         "count": 1
       },
       "experience": 1.0
+    },
+    {
+      "id": "ntm:rag_damp",
+      "input": {
+        "item": "ntm:rag_damp",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:rag",
+        "count": 1
+      },
+      "experience": 0.1
+    },
+    {
+      "id": "ntm:rag_piss",
+      "input": {
+        "item": "ntm:rag_piss",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:rag",
+        "count": 1
+      },
+      "experience": 0.1
     },
     {
       "id": "ntm:ball_fireclay",

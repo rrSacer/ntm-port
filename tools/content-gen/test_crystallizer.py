@@ -91,7 +91,7 @@ class CrystallizerContracts(unittest.TestCase):
 
     def test_missing_content_and_guarded_compat_are_explicit(self):
         self.assertTrue(all(row['reason'] and row['source'] for row in self.data['skipped']))
-        self.assertTrue(any('pill_red' in row['reason'] for row in self.data['skipped']))
+        self.assertFalse(any('pill_red' in row['reason'] for row in self.data['skipped']))
         self.assertTrue(any('sand_mix' in row['reason'] for row in self.data['skipped']))
         self.assertTrue(any('guard empty' in row['reason'] and 'Certus' in row['reason'] for row in self.data['skipped']))
         self.assertFalse(any('bedrock_' in (row['expansion'] or '') for row in self.data['skipped']))

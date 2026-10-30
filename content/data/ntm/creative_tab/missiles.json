@@ -33,6 +33,9 @@
     "ntm:mp_c_3",
     "ntm:mp_c_4",
     "ntm:mp_c_5",
+    "ntm:loot_10",
+    "ntm:loot_15",
+    "ntm:loot_misc",
     "ntm:struct_launcher",
     "ntm:struct_scaffold"
   ]

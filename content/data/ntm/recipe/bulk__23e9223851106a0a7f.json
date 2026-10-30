@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:upgrade_screm",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SUS",
+    "SCS",
+    "SUS"
+  ],
+  "key": {
+    "S": "#ntm:bulk/platesteel",
+    "U": "ntm:upgrade_template",
+    "C": "ntm:crystal_xen"
+  }
+}

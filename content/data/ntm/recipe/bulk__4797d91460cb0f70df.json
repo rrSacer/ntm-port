@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:matchstick",
+    "count": 24
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I",
+    "S"
+  ],
+  "key": {
+    "I": "#ntm:bulk/dustredphosphorus",
+    "S": "#ntm:bulk/stickwood"
+  }
+}

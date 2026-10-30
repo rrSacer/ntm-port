@@ -1,27 +1,27 @@
 {
   "schema": 1,
   "stage": "decorative",
-  "imported": 1851,
+  "imported": 1967,
   "source_declarations": 2654,
   "categories": {
     "armor": 20,
     "billet": 52,
     "cinnebar": 1,
     "coal": 1,
-    "component": 593,
-    "crystal": 19,
+    "component": 704,
+    "crystal": 20,
     "decorative": 264,
     "dust": 2,
     "fragment": 54,
     "gem": 5,
-    "ingot": 84,
+    "ingot": 86,
     "lignite": 1,
     "material": 11,
     "nugget": 53,
     "ore": 48,
-    "pellet": 4,
+    "pellet": 5,
     "plate": 52,
-    "powder": 94,
+    "powder": 95,
     "processed_ore": 320,
     "resource_block": 58,
     "scrap": 85,
@@ -57,15 +57,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "ingot_smore",
-      "type": "item",
-      "source_variable": "ingot_smore",
-      "source_class": "ItemFood",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2122",
-      "category": "ingot",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "ingot_schraranium",
       "type": "item",
       "source_variable": "ingot_schraranium",
@@ -80,15 +71,6 @@
       "source_variable": "ingot_semtex",
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2169",
-      "category": "ingot",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "ingot_c4",
-      "type": "item",
-      "source_variable": "ingot_c4",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2170",
       "category": "ingot",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -197,24 +179,6 @@
       "source_variable": "powder_cement",
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2341",
-      "category": "powder",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rag",
-      "type": "item",
-      "source_variable": "rag",
-      "source_class": "ItemRag",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2398",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "powder_fertilizer",
-      "type": "item",
-      "source_variable": "powder_fertilizer",
-      "source_class": "ItemFertilizer",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2529",
       "category": "powder",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -399,111 +363,12 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "cell_antimatter",
-      "type": "item",
-      "source_variable": "cell_antimatter",
-      "source_class": "ItemDrop",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2689",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "cell_anti_schrabidium",
-      "type": "item",
-      "source_variable": "cell_anti_schrabidium",
-      "source_class": "ItemDrop",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2693",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "demon_core_open",
-      "type": "item",
-      "source_variable": "demon_core_open",
-      "source_class": "ItemDemonCore",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2695",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "pa_coil",
       "type": "item",
       "source_variable": "pa_coil",
       "source_class": "ItemPACoil",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2698",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "particle_digamma",
-      "type": "item",
-      "source_variable": "particle_digamma",
-      "source_class": "ItemDigamma",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2713",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "singularity",
-      "type": "item",
-      "source_variable": "singularity",
-      "source_class": "ItemDrop",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2715",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "singularity_counter_resonant",
-      "type": "item",
-      "source_variable": "singularity_counter_resonant",
-      "source_class": "ItemDrop",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2717",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "singularity_super_heated",
-      "type": "item",
-      "source_variable": "singularity_super_heated",
-      "source_class": "ItemDrop",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2718",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "black_hole",
-      "type": "item",
-      "source_variable": "black_hole",
-      "source_class": "ItemDrop",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2719",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "singularity_spark",
-      "type": "item",
-      "source_variable": "singularity_spark",
-      "source_class": "ItemDrop",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2720",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_antimatter",
-      "type": "item",
-      "source_variable": "pellet_antimatter",
-      "source_class": "ItemDrop",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2721",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "crystal_xen",
-      "type": "item",
-      "source_variable": "crystal_xen",
-      "source_class": "ItemDrop",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2722",
-      "category": "crystal",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
@@ -543,85 +408,15 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "syringe_metal_stimpak",
-      "type": "item",
-      "source_variable": "syringe_metal_stimpak",
-      "source_class": "ItemSyringe",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2820",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "syringe_metal_medx",
-      "type": "item",
-      "source_variable": "syringe_metal_medx",
-      "source_class": "ItemSyringe",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2821",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "syringe_metal_psycho",
-      "type": "item",
-      "source_variable": "syringe_metal_psycho",
-      "source_class": "ItemSyringe",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2822",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "syringe_metal_super",
-      "type": "item",
-      "source_variable": "syringe_metal_super",
-      "source_class": "ItemSyringe",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2823",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "syringe_taint",
-      "type": "item",
-      "source_variable": "syringe_taint",
-      "source_class": "ItemSyringe",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2824",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "syringe_mkunicorn",
       "type": "item",
       "source_variable": "syringe_mkunicorn",
       "source_class": "ItemSyringe",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2825",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "med_bag",
-      "type": "item",
-      "source_variable": "med_bag",
-      "source_class": "ItemSyringe",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2826",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "radx",
-      "type": "item",
-      "source_variable": "radx",
-      "source_class": "ItemPill",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2828",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "siox",
-      "type": "item",
-      "source_variable": "siox",
-      "source_class": "ItemPill",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2829",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "reason": "hidden/technical source item"
     },
     {
       "id": "pill_herbal",
@@ -629,114 +424,6 @@
       "source_variable": "pill_herbal",
       "source_class": "ItemPill",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2830",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "xanax",
-      "type": "item",
-      "source_variable": "xanax",
-      "source_class": "ItemPill",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2831",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "fmn",
-      "type": "item",
-      "source_variable": "fmn",
-      "source_class": "ItemPill",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2832",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "five_htp",
-      "type": "item",
-      "source_variable": "five_htp",
-      "source_class": "ItemPill",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2833",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pill_iodine",
-      "type": "item",
-      "source_variable": "pill_iodine",
-      "source_class": "ItemPill",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2834",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "plan_c",
-      "type": "item",
-      "source_variable": "plan_c",
-      "source_class": "ItemPill",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2835",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pill_red",
-      "type": "item",
-      "source_variable": "pill_red",
-      "source_class": "ItemPill",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2836",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "stealth_boy",
-      "type": "item",
-      "source_variable": "stealth_boy",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2837",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "gas_mask_filter",
-      "type": "item",
-      "source_variable": "gas_mask_filter",
-      "source_class": "ItemFilter",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2838",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "gas_mask_filter_mono",
-      "type": "item",
-      "source_variable": "gas_mask_filter_mono",
-      "source_class": "ItemFilter",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2839",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "gas_mask_filter_combo",
-      "type": "item",
-      "source_variable": "gas_mask_filter_combo",
-      "source_class": "ItemFilter",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2840",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "gas_mask_filter_rag",
-      "type": "item",
-      "source_variable": "gas_mask_filter_rag",
-      "source_class": "ItemFilter",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2841",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "gas_mask_filter_piss",
-      "type": "item",
-      "source_variable": "gas_mask_filter_piss",
-      "source_class": "ItemFilter",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2842",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -774,34 +461,9 @@
       "source_class": "ItemSyringe",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2846",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "cigarette",
-      "type": "item",
-      "source_variable": "cigarette",
-      "source_class": "ItemCigarette",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2847",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "crackpipe",
-      "type": "item",
-      "source_variable": "crackpipe",
-      "source_class": "ItemCigarette",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2848",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "bdcl",
-      "type": "item",
-      "source_variable": "bdcl",
-      "source_class": "ItemBDCL",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2849",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "reason": "hidden/technical source item"
     },
     {
       "id": "attachment_mask",
@@ -1380,150 +1042,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "can_smart",
-      "type": "item",
-      "source_variable": "can_smart",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2925",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "can_creature",
-      "type": "item",
-      "source_variable": "can_creature",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2926",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "can_redbomb",
-      "type": "item",
-      "source_variable": "can_redbomb",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2927",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "can_mrsugar",
-      "type": "item",
-      "source_variable": "can_mrsugar",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2928",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "can_overcharge",
-      "type": "item",
-      "source_variable": "can_overcharge",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2929",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "can_luna",
-      "type": "item",
-      "source_variable": "can_luna",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2930",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "can_bepis",
-      "type": "item",
-      "source_variable": "can_bepis",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2931",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "can_breen",
-      "type": "item",
-      "source_variable": "can_breen",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2932",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "can_mug",
-      "type": "item",
-      "source_variable": "can_mug",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2933",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "bottle_nuka",
-      "type": "item",
-      "source_variable": "bottle_nuka",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2935",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "bottle_cherry",
-      "type": "item",
-      "source_variable": "bottle_cherry",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2936",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "bottle_quantum",
-      "type": "item",
-      "source_variable": "bottle_quantum",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2937",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "bottle_sparkle",
-      "type": "item",
-      "source_variable": "bottle_sparkle",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2938",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "bottle_rad",
-      "type": "item",
-      "source_variable": "bottle_rad",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2939",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "bottle2_korl",
-      "type": "item",
-      "source_variable": "bottle2_korl",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2941",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "bottle2_fritz",
-      "type": "item",
-      "source_variable": "bottle2_fritz",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2942",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "flask_infusion",
       "type": "item",
       "source_variable": "flask_infusion",
@@ -1533,56 +1051,11 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "chocolate_milk",
-      "type": "item",
-      "source_variable": "chocolate_milk",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2944",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "coffee",
-      "type": "item",
-      "source_variable": "coffee",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2945",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "coffee_radium",
-      "type": "item",
-      "source_variable": "coffee_radium",
-      "source_class": "ItemEnergy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2946",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "chocolate",
-      "type": "item",
-      "source_variable": "chocolate",
-      "source_class": "ItemPill",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2947",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "canned_conserve",
       "type": "item",
       "source_variable": "canned_conserve",
       "source_class": "ItemConserve",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2948",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "boat_rubber",
-      "type": "item",
-      "source_variable": "boat_rubber",
-      "source_class": "ItemBoatRubber",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2950",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -2658,24 +2131,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "containment_box",
-      "type": "item",
-      "source_variable": "containment_box",
-      "source_class": "ItemLeadBox",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3357",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "plastic_bag",
-      "type": "item",
-      "source_variable": "plastic_bag",
-      "source_class": "ItemPlasticBag",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3358",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "ammo_bag",
       "type": "item",
       "source_variable": "ammo_bag",
@@ -2690,15 +2145,6 @@
       "source_variable": "ammo_bag_infinite",
       "source_class": "ItemAmmoBag",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3361",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "casing_bag",
-      "type": "item",
-      "source_variable": "casing_bag",
-      "source_class": "ItemCasingBag",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3362",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -3744,33 +3190,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "bomb_waffle",
-      "type": "item",
-      "source_variable": "bomb_waffle",
-      "source_class": "ItemWaffle",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3610",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "schnitzel_vegan",
-      "type": "item",
-      "source_variable": "schnitzel_vegan",
-      "source_class": "ItemSchnitzelVegan",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3612",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "cotton_candy",
-      "type": "item",
-      "source_variable": "cotton_candy",
-      "source_class": "ItemCottonCandy",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3613",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "apple_lead",
       "type": "item",
       "source_variable": "apple_lead",
@@ -3798,171 +3217,9 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "glowing_stew",
-      "type": "item",
-      "source_variable": "glowing_stew",
-      "source_class": "ItemSoup",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3617",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "balefire_scrambled",
-      "type": "item",
-      "source_variable": "balefire_scrambled",
-      "source_class": "ItemSoup",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3618",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "balefire_and_ham",
-      "type": "item",
-      "source_variable": "balefire_and_ham",
-      "source_class": "ItemSoup",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3619",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "lemon",
-      "type": "item",
-      "source_variable": "lemon",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3620",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "definitelyfood",
-      "type": "item",
-      "source_variable": "definitelyfood",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3621",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "med_ipecac",
-      "type": "item",
-      "source_variable": "med_ipecac",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3622",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "med_ptsd",
-      "type": "item",
-      "source_variable": "med_ptsd",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3623",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "source_variable": "med_schizophrenia",
       "class": "ItemLemon",
       "reason": "not registered by supported source helper"
-    },
-    {
-      "id": "loops",
-      "type": "item",
-      "source_variable": "loops",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3625",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "loop_stew",
-      "type": "item",
-      "source_variable": "loop_stew",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3626",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "spongebob_macaroni",
-      "type": "item",
-      "source_variable": "spongebob_macaroni",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3627",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "fooditem",
-      "type": "item",
-      "source_variable": "fooditem",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3628",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "twinkie",
-      "type": "item",
-      "source_variable": "twinkie",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3629",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "static_sandwich",
-      "type": "item",
-      "source_variable": "static_sandwich",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3630",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pudding",
-      "type": "item",
-      "source_variable": "pudding",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3631",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "canteen_vodka",
-      "type": "item",
-      "source_variable": "canteen_vodka",
-      "source_class": "ItemCanteen",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3632",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pancake",
-      "type": "item",
-      "source_variable": "pancake",
-      "source_class": "ItemPancake",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3633",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nugget",
-      "type": "item",
-      "source_variable": "nugget",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3634",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "peas",
-      "type": "item",
-      "source_variable": "peas",
-      "source_class": "ItemPeas",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3635",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
       "id": "marshmallow",
@@ -3970,51 +3227,6 @@
       "source_variable": "marshmallow",
       "source_class": "ItemMarshmallow",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3636",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "cheese",
-      "type": "item",
-      "source_variable": "cheese",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3637",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "cheese_quesadilla",
-      "type": "item",
-      "source_variable": "quesadilla",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3638",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "mucho_mango",
-      "type": "item",
-      "source_variable": "mucho_mango",
-      "source_class": "ItemMuchoMango",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3639",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "glyphid_meat",
-      "type": "item",
-      "source_variable": "glyphid_meat",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3640",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "glyphid_meat_grilled",
-      "type": "item",
-      "source_variable": "glyphid_meat_grilled",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3641",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -4189,7 +3401,10 @@
       "source_class": "ItemBlowtorch",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3716",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation, showDurabilityBar); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "reason": "custom texture/model; no direct texture declaration"
     },
     {
       "id": "acetylene_torch",
@@ -4198,7 +3413,10 @@
       "source_class": "ItemBlowtorch",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3717",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation, showDurabilityBar); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "reason": "custom texture/model; no direct texture declaration"
     },
     {
       "id": "boltgun",
@@ -4207,7 +3425,10 @@
       "source_class": "ItemBoltgun",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3718",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "reason": "custom texture/model; no direct texture declaration"
     },
     {
       "id": "arc_electrode",
@@ -4224,15 +3445,6 @@
       "source_variable": "arc_electrode_burnt",
       "source_class": "ItemArcElectrodeBurnt",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3720",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "ams_lens",
-      "type": "item",
-      "source_variable": "ams_lens",
-      "source_class": "ItemLens",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3721",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -4410,173 +3622,11 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "nuke_starter_kit",
-      "type": "item",
-      "source_variable": "nuke_starter_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3780",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuke_advanced_kit",
-      "type": "item",
-      "source_variable": "nuke_advanced_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3782",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuke_commercially_kit",
-      "type": "item",
-      "source_variable": "nuke_commercially_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3783",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuke_electric_kit",
-      "type": "item",
-      "source_variable": "nuke_electric_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3784",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "gadget_kit",
-      "type": "item",
-      "source_variable": "gadget_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3785",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "boy_kit",
-      "type": "item",
-      "source_variable": "boy_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3786",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "man_kit",
-      "type": "item",
-      "source_variable": "man_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3787",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "mike_kit",
-      "type": "item",
-      "source_variable": "mike_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3788",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "tsar_kit",
-      "type": "item",
-      "source_variable": "tsar_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3789",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "multi_kit",
-      "type": "item",
-      "source_variable": "multi_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3790",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "custom_kit",
-      "type": "item",
-      "source_variable": "custom_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3791",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "fleija_kit",
-      "type": "item",
-      "source_variable": "fleija_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3792",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "prototype_kit",
-      "type": "item",
-      "source_variable": "prototype_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3793",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "missile_kit",
       "type": "item",
       "source_variable": "missile_kit",
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3794",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "euphemium_kit",
-      "type": "item",
-      "source_variable": "euphemium_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3795",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "solinium_kit",
-      "type": "item",
-      "source_variable": "solinium_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3796",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "hazmat_kit",
-      "type": "item",
-      "source_variable": "hazmat_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3797",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "hazmat_red_kit",
-      "type": "item",
-      "source_variable": "hazmat_red_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3798",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "hazmat_grey_kit",
-      "type": "item",
-      "source_variable": "hazmat_grey_kit",
-      "source_class": "ItemStarterKit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3799",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -4599,47 +3649,11 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "loot_10",
-      "type": "item",
-      "source_variable": "loot_10",
-      "source_class": "ItemLootCrate",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3802",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "loot_15",
-      "type": "item",
-      "source_variable": "loot_15",
-      "source_class": "ItemLootCrate",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3804",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "loot_misc",
-      "type": "item",
-      "source_variable": "loot_misc",
-      "source_class": "ItemLootCrate",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3805",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "ammo_container",
       "type": "item",
       "source_variable": "ammo_container",
       "source_class": "ItemAmmoContainer",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3806",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "apple_euphemium",
-      "type": "item",
-      "source_variable": "apple_euphemium",
-      "source_class": "ItemAppleEuphemium",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3812",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -4968,15 +3982,6 @@
       "reason": "hidden/technical source item"
     },
     {
-      "id": "key_kit",
-      "type": "item",
-      "source_variable": "key_kit",
-      "source_class": "ItemCounterfeitKeys",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3852",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "key_fake",
       "type": "item",
       "source_variable": "key_fake",
@@ -5202,22 +4207,15 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "bobmazon",
-      "type": "item",
-      "source_variable": "bobmazon",
-      "source_class": "ItemCatalog",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3894",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "bobmazon_hidden",
       "type": "item",
       "source_variable": "bobmazon_hidden",
       "source_class": "ItemCatalog",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3896",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "reason": "hidden/technical source item"
     },
     {
       "id": "chainsaw",
@@ -6053,24 +5051,6 @@
       "reason": "not registered by supported source helper"
     },
     {
-      "id": "matchstick",
-      "type": "item",
-      "source_variable": "matchstick",
-      "source_class": "ItemMatch",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:4294",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "balefire_and_steel",
-      "type": "item",
-      "source_variable": "balefire_and_steel",
-      "source_class": "ItemBalefireMatch",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:4295",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "crowbar",
       "type": "item",
       "source_variable": "crowbar",
@@ -6338,7 +5318,10 @@
       "source_class": "ItemClayTablet",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:4339",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick); per-stack NBT state",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "reason": "hidden/technical source item"
     },
     {
       "id": "polaroid",
@@ -6347,7 +5330,9 @@
       "source_class": "ItemPolaroid",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:4340",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onUpdate, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "reason": "custom texture/model; no direct texture declaration"
     },
     {
       "id": "glitch",
@@ -6356,7 +5341,10 @@
       "source_class": "ItemGlitch",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:4342",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "reason": "custom texture/model; no direct texture declaration"
     },
     {
       "id": "book_of_",
@@ -6365,7 +5353,9 @@
       "source_class": "ItemBook",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:4344",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "reason": "hidden/technical source item"
     },
     {
       "id": "book_lemegeton",
@@ -6374,7 +5364,9 @@
       "source_class": "ItemBookLemegeton",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:4346",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "reason": "hidden/technical source item"
     },
     {
       "id": "burnt_bark",
@@ -6517,15 +5509,6 @@
       "source_variable": "no9",
       "source_class": "ArmorNo9",
       "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:34",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "beta",
-      "type": "item",
-      "source_variable": "beta",
-      "source_class": "ItemDrop",
-      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:35",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },

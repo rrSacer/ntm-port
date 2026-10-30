@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:ams_core_wormhole",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DPD",
+    "PSP",
+    "DPD"
+  ],
+  "key": {
+    "D": "ntm:plate_dineutronium",
+    "P": "ntm:powder_spark_mix",
+    "S": "ntm:singularity"
+  }
+}

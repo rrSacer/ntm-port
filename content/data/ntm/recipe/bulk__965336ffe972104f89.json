@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:loop_stew",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:loops",
+    "ntm:can_smart",
+    "minecraft:bowl"
+  ]
+}

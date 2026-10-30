@@ -83,6 +83,27 @@ def static_cube(cls,parents,classbody,name,texture_exists,tex):
             update['surface_textures']={'side':faces.get('side',tex),'top':faces.get('top',faces.get('side',tex)),'bottom':faces.get('bottom',faces.get('top',tex))}
     return update
 
+# Generic item class -> form mapping. A consumable/kit/loose-material item class that
+# keeps its behavior in use hooks (right click, eat, tooltip, hit, NBT state) is
+# declared as an inert item with those hooks listed as a gap; classes that carry
+# equipment, tool, render-pass or machine state stay audited.
+ITEM_FORBIDDEN_BASES={'ItemArmor','ItemTool','ItemSword','ItemHoe','ItemPickaxe','ItemAxe','ItemSpade','ItemBucket','ItemRecord','ItemArmorMod','ItemBlock','ItemFuelRod','ItemNuclearWaste','ItemEnumMulti','ItemGenericPart','ItemBattery','ItemKeyPin','ItemCraftingDegradation','ItemFluidIdentifier'}
+ITEM_RENDER_HOOKS=re.compile(r'\b(?:registerIcons|getIconFromDamage|getIconFromDamageForRenderPass|getColorFromItemStack|getSubItems|requiresMultipleRenderPasses|getRenderPasses|getItemStackDisplayName)\b')
+ITEM_OTHER_FAMILIES=re.compile(r'Missile|Sat|Chip|Pile|Plate|Depleted|Armor|Gun|Weapon|Sword|Tool|Fusion|Chopper|Lock|Door|Mod|Hot$|Pipette|Infinite|Designator|Detonator|Grenade|Breeding|Rod|Dosimeter|Geiger|Detector|Scanner|Linker|RTTY|Remote|Sensor|Wand|Siphon|Rebar|TeleLink|Muffler|Diagnostic|MS$')
+ITEM_OTHER_NAMES=re.compile(r'^(mp_|missile_|gun_|ammo_|sat_|designator|spawn_|padlock|door_|detonator|grenade_|pile_|plate_fuel|waste_|rod|fusion_|icf_|pa_|wand_|reactor_sensor|meltdown_tool|jetpack_|mysteryshovel|upgrade_|linker|siphon|rebar_placer|rtty_)')
+ITEM_HOOKS=('onUpdate','onItemRightClick','onItemUse','onItemUseFirst','hitEntity','onEaten','getMaxItemUseDuration','getItemUseAction','onUsingTick','onPlayerStoppedUsing','itemInteractionForEntity','hasEffect','getContainerItem','addInformation','getDamage','showDurabilityBar')
+
+
+def static_item(cls,chain,body,name):
+    """Return spec updates for an inert consumable/kit/material item class, or None."""
+    if ITEM_FORBIDDEN_BASES & set(chain) or ITEM_RENDER_HOOKS.search(body):return None
+    if ITEM_OTHER_FAMILIES.search(cls) or ITEM_OTHER_NAMES.search(name):return None
+    hooks=[h for h in ITEM_HOOKS if re.search(r'\b'+h+r'\b',body)]
+    state=bool(re.search(r'\b(?:NBTTagCompound|stackTagCompound|setTagCompound)\b',body))
+    update={'behavior_gap':'Inert item: source hooks not implemented ('+(', '.join(hooks) or 'none')+')'+('; per-stack NBT state' if state else '')}
+    if re.search(r'\bsetMaxDamage\(',body):update['max_stack_size']=1
+    return update
+
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
@@ -279,7 +300,13 @@ def main():
                     if default_stack:spec['max_stack_size']=int(default_stack[1])
                     elif 'setMaxDamage(' in body:spec['max_stack_size']=1
                 else:
-                    audit.append({**spec,'reason':'requires item logic/durability/equipment/fluid API; not plain content'});continue
+                    chain=ancestry(cls)
+                    form=static_item(cls,chain,'\n'.join(classes[c][2] for c in chain if c in classes),name) if var not in claimed else None
+                    if form is None:
+                        audit.append({**spec,'reason':'requires item logic/durability/equipment/fluid API; not plain content'});continue
+                    spec.update(form);spec['source_form']='generic inert item class (use hooks only)'
+                    default_stack=re.search(r'setMaxStackSize\((\d+)\)',classes.get(cls,('','',''))[2])
+                    if default_stack and 'max_stack_size' not in form:spec['max_stack_size']=int(default_stack[1])
             if a.stage=='materials' and stage!='materials':continue
             if a.stage=='components' and stage=='decorative':continue
             if not tex:

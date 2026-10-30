@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rag",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SW",
+    "WS"
+  ],
+  "key": {
+    "S": "minecraft:string",
+    "W": "minecraft:white_wool"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:powder_ash__coal",
+    "ntm:powder_ash__fly",
+    "ntm:powder_ash__misc",
+    "ntm:powder_ash__soot",
+    "ntm:powder_ash__wood"
+  ]
+}

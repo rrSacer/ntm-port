@@ -5672,6 +5672,7 @@
         },
         {
           "ids": [
+            "ntm:ingot_c4",
             "ntm:ingot_semtex"
           ],
           "count": 4
@@ -17179,7 +17180,7 @@
     {
       "name": "ass.xenrelay",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1060",
-      "reason": "unregistered/ambiguous source item crystal_xen",
+      "reason": "dynamic/unsupported metadata EnumSatType.XENIUM_RESONATOR.ordinal()",
       "expression": "new GenericRecipe(\"ass.xenrelay\").setup(1_200, 25_000).outputItems(new ItemStack(ModItems.satellite, 1, EnumSatType.XENIUM_RESONATOR.ordinal()))\n\t\t\t\t.inputItems(new OreDictStack(GOLD.plateCast(), 16),\n\t\t\t\t\t\tnew ComparableStack(ModItems.photo_panel, 32),\n\t\t\t\t\t\tnew ComparableStack(ModItems.crystal_xen, 1),\n\t\t\t\t\t\tnew ComparableStack(ModItems.circuit, 24, EnumCircuitType.BISMOID),\n\t\t\t\t\t\tnew ComparableStack(ModItems.part_generic, 4, EnumPartType.LDE),\n\t\t\t\t\t\tnew ComparableStack(ModItems.circuit, 1, EnumCircuitType.CONTROLLER_ADVANCED))"
     },
     {

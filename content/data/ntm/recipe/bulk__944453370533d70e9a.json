@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:cotton_candy",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "SPS",
+    " H "
+  ],
+  "key": {
+    "P": "#ntm:bulk/nuggetplutonium239",
+    "S": "minecraft:sugar",
+    "H": "minecraft:stick"
+  }
+}

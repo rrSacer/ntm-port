@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:laser_crystal_cmb",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "QBQ",
+    "CSC",
+    "QBQ"
+  ],
+  "key": {
+    "Q": "ntm:glass_quartz",
+    "B": "#ntm:bulk/ingotcmbsteel",
+    "C": "#ntm:bulk/ingotschrabidate",
+    "S": "ntm:cell_anti_schrabidium"
+  }
+}

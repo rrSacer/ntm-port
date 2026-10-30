@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:cheese_quesadilla",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:cheese",
+    "ntm:cheese",
+    "minecraft:bread"
+  ]
+}

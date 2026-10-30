@@ -42,8 +42,8 @@ class CompletedCatalog(unittest.TestCase):
         expected={'ntm:powder_cement','ntm:ingot_semtex','ntm:ingot_schraranium','ntm:block_graphite',
                   'ntm:rebar','ntm:concrete_rebar','ntm:meteorite_sword_treated','ntm:meteorite_sword_etched'}
         self.assertTrue(expected<=set(self.rows))
-        self.assertEqual(self.crystal['coverage']['emitted'],404)
-        self.assertEqual(self.crystal['coverage']['skipped'],5)
+        self.assertEqual(self.crystal['coverage']['emitted'],405)
+        self.assertEqual(self.crystal['coverage']['skipped'],4)
         self.assertFalse(any(any(i.split(':')[1] in r.get('reason','') for i in expected) for r in self.crystal['skipped']))
         for name in ['meteorite_sword_treated','meteorite_sword_etched']:
             r=self.rows['ntm:'+name]

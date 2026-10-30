@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_fertilizer",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/dustcalcium",
+    "#ntm:bulk/dustredphosphorus",
+    "#ntm:bulk/dustsaltpeter",
+    "#ntm:bulk/dustsulfur"
+  ]
+}

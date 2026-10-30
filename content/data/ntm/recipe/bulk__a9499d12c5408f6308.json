@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:schnitzel_vegan",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RWR",
+    "WPW",
+    "RWR"
+  ],
+  "key": {
+    "W": "ntm:nuclear_waste",
+    "R": "minecraft:sugar_cane",
+    "P": "minecraft:pumpkin_seeds"
+  }
+}

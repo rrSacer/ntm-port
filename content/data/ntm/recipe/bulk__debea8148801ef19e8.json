@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:syringe_metal_stimpak",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:nitra_small",
+    "ntm:nitra_small",
+    "ntm:nitra_small",
+    "ntm:syringe_metal_empty"
+  ]
+}

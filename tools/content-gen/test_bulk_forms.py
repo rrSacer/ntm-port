@@ -43,5 +43,28 @@ class StaticCubeRule(unittest.TestCase):
         self.assertNotIn('source_form',rows['pwr_casing'])
 
 
+class InertItemRule(unittest.TestCase):
+    def test_use_hook_classes_become_inert_items(self):
+        form=bulk.static_item('ItemPill',['ItemPill','ItemFood','Item'],'public ItemStack onItemRightClick(){} public int getMaxItemUseDuration(){}','xanax')
+        self.assertIn('onItemRightClick',form['behavior_gap'])
+        form=bulk.static_item('ItemFilter',['ItemFilter','Item'],'setMaxDamage(1)','gas_mask_filter')
+        self.assertEqual(form['max_stack_size'],1)
+        self.assertIn('NBT',bulk.static_item('ItemLemon',['ItemLemon','ItemFood'],'new NBTTagCompound()','lemon')['behavior_gap'])
+
+    def test_equipment_render_and_other_families_stay_out(self):
+        for cls,chain,body,name in [('ArmorFSB',['ArmorFSB','ItemArmor'],'','steel_helmet'),('ItemToolAbility',['ItemToolAbility','ItemTool'],'','x_pickaxe'),
+                                    ('ItemHot',['ItemHot','Item'],'','ingot_meteorite'),('ItemCustom',['ItemCustom','Item'],'getSubItems','thing'),
+                                    ('ItemMissile',['ItemMissile','Item'],'','missile_generic'),('ItemGeigerCounter',['ItemGeigerCounter','Item'],'','geiger_counter'),
+                                    ('ItemBattery',['ItemBattery','Item'],'','battery_x')]:
+            self.assertIsNone(bulk.static_item(cls,chain,body,name),name)
+
+    def test_catalog_has_the_k2_items(self):
+        ids={e['id'] for e in json.loads((ROOT/'tools/content-gen/bulk.json').read_text())['entries']}
+        for name in ['lemon','radx','xanax','syringe_metal_stimpak','can_smart','nuke_starter_kit','gas_mask_filter','loot_10','cigarette','cheese','bottle_nuka','plastic_bag']:
+            self.assertIn(name,ids,name)
+        for name in ['missile_generic','gun_uzi','geiger_counter','t51_helmet','hev_plate','wand_d','mp_thruster_10_solid']:
+            self.assertNotIn(name,ids,name)
+
+
 if __name__=='__main__':
     unittest.main()

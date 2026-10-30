@@ -514,6 +514,18 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/ams_core_wormhole.png"
     },
     {
+      "id": "ams_lens",
+      "type": "item",
+      "source_variable": "ams_lens",
+      "source_class": "ItemLens",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3721",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (addInformation, showDurabilityBar); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ams_lens.png"
+    },
+    {
       "id": "ancient_scrap",
       "type": "block",
       "source_variable": "ancient_scrap",
@@ -523,6 +535,18 @@
       "behavior_gap": "Source hooks not implemented by the static block (updateTick, randomDisplayTick, onNeighborBlockChange, onBlockAdded, getItemDropped, quantityDropped, breakBlock); full-cube surface only",
       "source_form": "generic full-cube class (no shape override in ancestry)",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/ancient_scrap.png"
+    },
+    {
+      "id": "apple_euphemium",
+      "type": "item",
+      "source_variable": "apple_euphemium",
+      "source_class": "ItemAppleEuphemium",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3812",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (hasEffect)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/apple_euphemium.png"
     },
     {
       "id": "asbestos_cloth",
@@ -583,6 +607,40 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2639",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/assembly_nuke.png"
+    },
+    {
+      "id": "balefire_and_ham",
+      "type": "item",
+      "source_variable": "balefire_and_ham",
+      "source_class": "ItemSoup",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3619",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/balefire_and_ham.png"
+    },
+    {
+      "id": "balefire_and_steel",
+      "type": "item",
+      "source_variable": "balefire_and_steel",
+      "source_class": "ItemBalefireMatch",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4295",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/balefire_and_steel.png"
+    },
+    {
+      "id": "balefire_scrambled",
+      "type": "item",
+      "source_variable": "balefire_scrambled",
+      "source_class": "ItemSoup",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3618",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/balefire_scrambled.png"
     },
     {
       "id": "ball_dynamite",
@@ -707,6 +765,17 @@
       "category": "component",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/battery_trixite.png"
+    },
+    {
+      "id": "bdcl",
+      "type": "item",
+      "source_variable": "bdcl",
+      "source_class": "ItemBDCL",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2849",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, onUsingTick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bdcl.png"
     },
     {
       "id": "bedrock_ore__base_actinide",
@@ -7200,6 +7269,18 @@
       }
     },
     {
+      "id": "beta",
+      "type": "item",
+      "source_variable": "beta",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItemsArmor.java:35",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/beta.png"
+    },
+    {
       "id": "billet_actinium",
       "type": "item",
       "source_variable": "billet_actinium",
@@ -7684,6 +7765,18 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2552",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/biomass_compressed.png"
+    },
+    {
+      "id": "black_hole",
+      "type": "item",
+      "source_variable": "black_hole",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2719",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/singularity_4.png"
     },
     {
       "id": "blade_titanium",
@@ -8624,6 +8717,29 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_zirconium.png"
     },
     {
+      "id": "boat_rubber",
+      "type": "item",
+      "source_variable": "boat_rubber",
+      "source_class": "ItemBoatRubber",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2950",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/boat_rubber.png"
+    },
+    {
+      "id": "bobmazon",
+      "type": "item",
+      "source_variable": "bobmazon",
+      "source_class": "ItemCatalog",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3894",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bobmazon.png"
+    },
+    {
       "id": "bolt_spike",
       "type": "item",
       "source_variable": "bolt_spike",
@@ -8631,6 +8747,17 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2181",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/bolt_spike.png"
+    },
+    {
+      "id": "bomb_waffle",
+      "type": "item",
+      "source_variable": "bomb_waffle",
+      "source_class": "ItemWaffle",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3610",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bomb_waffle.png"
     },
     {
       "id": "book_secret",
@@ -8651,6 +8778,39 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/bottle2_empty.png"
     },
     {
+      "id": "bottle2_fritz",
+      "type": "item",
+      "source_variable": "bottle2_fritz",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2942",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle2_fritz.png"
+    },
+    {
+      "id": "bottle2_korl",
+      "type": "item",
+      "source_variable": "bottle2_korl",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2941",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle2_korl.png"
+    },
+    {
+      "id": "bottle_cherry",
+      "type": "item",
+      "source_variable": "bottle_cherry",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2936",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_cherry.png"
+    },
+    {
       "id": "bottle_empty",
       "type": "item",
       "source_variable": "bottle_empty",
@@ -8667,6 +8827,50 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2283",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_mercury.png"
+    },
+    {
+      "id": "bottle_nuka",
+      "type": "item",
+      "source_variable": "bottle_nuka",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2935",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_nuka.png"
+    },
+    {
+      "id": "bottle_quantum",
+      "type": "item",
+      "source_variable": "bottle_quantum",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2937",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_quantum.png"
+    },
+    {
+      "id": "bottle_rad",
+      "type": "item",
+      "source_variable": "bottle_rad",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2939",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_rad.png"
+    },
+    {
+      "id": "bottle_sparkle",
+      "type": "item",
+      "source_variable": "bottle_sparkle",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2938",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_sparkle.png"
     },
     {
       "id": "boy_bullet",
@@ -8687,6 +8891,18 @@
       "category": "component",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/boy_igniter.png"
+    },
+    {
+      "id": "boy_kit",
+      "type": "item",
+      "source_variable": "boy_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3786",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/boy_kit.png"
     },
     {
       "id": "boy_propellant",
@@ -9273,6 +9489,39 @@
       }
     },
     {
+      "id": "can_bepis",
+      "type": "item",
+      "source_variable": "can_bepis",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2931",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_bepis.png"
+    },
+    {
+      "id": "can_breen",
+      "type": "item",
+      "source_variable": "can_breen",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2932",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_breen.png"
+    },
+    {
+      "id": "can_creature",
+      "type": "item",
+      "source_variable": "can_creature",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2926",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_creature.png"
+    },
+    {
       "id": "can_empty",
       "type": "item",
       "source_variable": "can_empty",
@@ -9291,6 +9540,72 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/can_key.png"
     },
     {
+      "id": "can_luna",
+      "type": "item",
+      "source_variable": "can_luna",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2930",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_luna.png"
+    },
+    {
+      "id": "can_mrsugar",
+      "type": "item",
+      "source_variable": "can_mrsugar",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2928",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_mrsugar.png"
+    },
+    {
+      "id": "can_mug",
+      "type": "item",
+      "source_variable": "can_mug",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2933",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_mug.png"
+    },
+    {
+      "id": "can_overcharge",
+      "type": "item",
+      "source_variable": "can_overcharge",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2929",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_overcharge.png"
+    },
+    {
+      "id": "can_redbomb",
+      "type": "item",
+      "source_variable": "can_redbomb",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2927",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_redbomb.png"
+    },
+    {
+      "id": "can_smart",
+      "type": "item",
+      "source_variable": "can_smart",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2925",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/can_smart.png"
+    },
+    {
       "id": "canister_empty",
       "type": "item",
       "source_variable": "canister_empty",
@@ -9307,6 +9622,18 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2811",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/canister_napalm.png"
+    },
+    {
+      "id": "canteen_vodka",
+      "type": "item",
+      "source_variable": "canteen_vodka",
+      "source_class": "ItemCanteen",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3632",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onUpdate, onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/canteen_vodka.png"
     },
     {
       "id": "cap_fritz",
@@ -9475,6 +9802,18 @@
       }
     },
     {
+      "id": "casing_bag",
+      "type": "item",
+      "source_variable": "casing_bag",
+      "source_class": "ItemCasingBag",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3362",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/casing_bag.png"
+    },
+    {
       "id": "catalyst_clay",
       "type": "item",
       "source_variable": "catalyst_clay",
@@ -9492,6 +9831,28 @@
       "category": "component",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/catalytic_converter.png"
+    },
+    {
+      "id": "cell_anti_schrabidium",
+      "type": "item",
+      "source_variable": "cell_anti_schrabidium",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2693",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cell_anti_schrabidium.png"
+    },
+    {
+      "id": "cell_antimatter",
+      "type": "item",
+      "source_variable": "cell_antimatter",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2689",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cell_antimatter.png"
     },
     {
       "id": "cell_balefire",
@@ -9566,6 +9927,28 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/centrifuge_element.png"
     },
     {
+      "id": "cheese",
+      "type": "item",
+      "source_variable": "cheese",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3637",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cheese.png"
+    },
+    {
+      "id": "cheese_quesadilla",
+      "type": "item",
+      "source_variable": "quesadilla",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3638",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/quesadilla.png"
+    },
+    {
       "id": "chlorine1",
       "type": "item",
       "source_variable": "chlorine1",
@@ -9636,6 +10019,28 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:4356",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/chlorine8.png"
+    },
+    {
+      "id": "chocolate",
+      "type": "item",
+      "source_variable": "chocolate",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2947",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chocolate.png"
+    },
+    {
+      "id": "chocolate_milk",
+      "type": "item",
+      "source_variable": "chocolate_milk",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2944",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chocolate_milk.png"
     },
     {
       "id": "chunk_ore__cryolite",
@@ -9716,6 +10121,18 @@
         "en_us": "Rare Earth Ore Chunk",
         "pt_br": "Fragmento de Minério de Terra Rara"
       }
+    },
+    {
+      "id": "cigarette",
+      "type": "item",
+      "source_variable": "cigarette",
+      "source_class": "ItemCigarette",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2847",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cigarette.png"
     },
     {
       "id": "cinnebar",
@@ -10796,6 +11213,28 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/cobalt_sword.png"
     },
     {
+      "id": "coffee",
+      "type": "item",
+      "source_variable": "coffee",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2945",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/coffee.png"
+    },
+    {
+      "id": "coffee_radium",
+      "type": "item",
+      "source_variable": "coffee_radium",
+      "source_class": "ItemEnergy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2946",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/coffee_radium.png"
+    },
+    {
       "id": "coil_copper",
       "type": "item",
       "source_variable": "coil_copper",
@@ -11794,6 +12233,18 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/concrete_super_broken.png"
     },
     {
+      "id": "containment_box",
+      "type": "item",
+      "source_variable": "containment_box",
+      "source_class": "ItemLeadBox",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3357",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/containment_box.png"
+    },
+    {
       "id": "cordite",
       "type": "item",
       "source_variable": "cordite",
@@ -11801,6 +12252,29 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3377",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/cordite.png"
+    },
+    {
+      "id": "cotton_candy",
+      "type": "item",
+      "source_variable": "cotton_candy",
+      "source_class": "ItemCottonCandy",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3613",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cotton_candy.png"
+    },
+    {
+      "id": "crackpipe",
+      "type": "item",
+      "source_variable": "crackpipe",
+      "source_class": "ItemCigarette",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2848",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/crackpipe.png"
     },
     {
       "id": "crate",
@@ -12062,6 +12536,18 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/crystal_trixite.png"
     },
     {
+      "id": "crystal_xen",
+      "type": "item",
+      "source_variable": "crystal_xen",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2722",
+      "category": "crystal",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/crystal_xen.png"
+    },
+    {
       "id": "custom_amat",
       "type": "item",
       "source_variable": "custom_amat",
@@ -12100,6 +12586,18 @@
       "category": "component",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/custom_hydro.png"
+    },
+    {
+      "id": "custom_kit",
+      "type": "item",
+      "source_variable": "custom_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3791",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/custom_kit.png"
     },
     {
       "id": "custom_nuke",
@@ -12305,6 +12803,17 @@
       "behavior_gap": "Isolated source tile; connected texture adjacency stitching not implemented"
     },
     {
+      "id": "definitelyfood",
+      "type": "item",
+      "source_variable": "definitelyfood",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3621",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/definitelyfood.png"
+    },
+    {
       "id": "demon_core_closed",
       "type": "item",
       "source_variable": "demon_core_closed",
@@ -12312,6 +12821,17 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2697",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/demon_core_closed.png"
+    },
+    {
+      "id": "demon_core_open",
+      "type": "item",
+      "source_variable": "demon_core_open",
+      "source_class": "ItemDemonCore",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2695",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/demon_core_open.png"
     },
     {
       "id": "depth_brick",
@@ -12587,6 +13107,18 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/entanglement_kit.png"
     },
     {
+      "id": "euphemium_kit",
+      "type": "item",
+      "source_variable": "euphemium_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3795",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/code.png"
+    },
+    {
       "id": "explosive_lenses",
       "type": "item",
       "source_variable": "explosive_lenses",
@@ -12659,6 +13191,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/fins_tri_steel.png"
     },
     {
+      "id": "five_htp",
+      "type": "item",
+      "source_variable": "five_htp",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2833",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/5htp.png"
+    },
+    {
       "id": "flame_conspiracy",
       "type": "item",
       "source_variable": "flame_conspiracy",
@@ -12719,6 +13262,18 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/fleija_igniter.png"
     },
     {
+      "id": "fleija_kit",
+      "type": "item",
+      "source_variable": "fleija_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3792",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/fleija_kit.png"
+    },
+    {
       "id": "fleija_propellant",
       "type": "item",
       "source_variable": "fleija_propellant",
@@ -12774,6 +13329,28 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2572",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/flywheel_beryllium.png"
+    },
+    {
+      "id": "fmn",
+      "type": "item",
+      "source_variable": "fmn",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2832",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/tablet.png"
+    },
+    {
+      "id": "fooditem",
+      "type": "item",
+      "source_variable": "fooditem",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3628",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/fooditem.png"
     },
     {
       "id": "fragment_actinium",
@@ -12971,6 +13548,18 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/gadget_core.png"
     },
     {
+      "id": "gadget_kit",
+      "type": "item",
+      "source_variable": "gadget_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3785",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gadget_kit.png"
+    },
+    {
       "id": "gadget_wireing",
       "type": "item",
       "source_variable": "gadget_wireing",
@@ -12988,6 +13577,66 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2812",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/gas_empty.png"
+    },
+    {
+      "id": "gas_mask_filter",
+      "type": "item",
+      "source_variable": "gas_mask_filter",
+      "source_class": "ItemFilter",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2838",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter.png"
+    },
+    {
+      "id": "gas_mask_filter_combo",
+      "type": "item",
+      "source_variable": "gas_mask_filter_combo",
+      "source_class": "ItemFilter",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2840",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_combo.png"
+    },
+    {
+      "id": "gas_mask_filter_mono",
+      "type": "item",
+      "source_variable": "gas_mask_filter_mono",
+      "source_class": "ItemFilter",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2839",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_mono.png"
+    },
+    {
+      "id": "gas_mask_filter_piss",
+      "type": "item",
+      "source_variable": "gas_mask_filter_piss",
+      "source_class": "ItemFilter",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2842",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_piss.png"
+    },
+    {
+      "id": "gas_mask_filter_rag",
+      "type": "item",
+      "source_variable": "gas_mask_filter_rag",
+      "source_class": "ItemFilter",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2841",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "max_stack_size": 1,
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_rag.png"
     },
     {
       "id": "gem_alexandrite",
@@ -13138,6 +13787,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/glass_uranium.png"
     },
     {
+      "id": "glowing_stew",
+      "type": "item",
+      "source_variable": "glowing_stew",
+      "source_class": "ItemSoup",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3617",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/glowing_stew.png"
+    },
+    {
       "id": "glyphid_gland_empty",
       "type": "item",
       "source_variable": "glyphid_gland_empty",
@@ -13145,6 +13805,28 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3888",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/glyphid_gland.png"
+    },
+    {
+      "id": "glyphid_meat",
+      "type": "item",
+      "source_variable": "glyphid_meat",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3640",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/glyphid_meat.png"
+    },
+    {
+      "id": "glyphid_meat_grilled",
+      "type": "item",
+      "source_variable": "glyphid_meat_grilled",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3641",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/glyphid_meat_grilled.png"
     },
     {
       "id": "gneiss_brick",
@@ -13224,6 +13906,42 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2395",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_cloth_red.png"
+    },
+    {
+      "id": "hazmat_grey_kit",
+      "type": "item",
+      "source_variable": "hazmat_grey_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3799",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_grey_kit.png"
+    },
+    {
+      "id": "hazmat_kit",
+      "type": "item",
+      "source_variable": "hazmat_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3797",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_kit.png"
+    },
+    {
+      "id": "hazmat_red_kit",
+      "type": "item",
+      "source_variable": "hazmat_red_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3798",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_red_kit.png"
     },
     {
       "id": "icf_pellet_depleted",
@@ -13399,6 +14117,17 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2145",
       "category": "ingot",
       "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_bscco.png"
+    },
+    {
+      "id": "ingot_c4",
+      "type": "item",
+      "source_variable": "ingot_c4",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2170",
+      "category": "ingot",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_c4.png"
     },
     {
       "id": "ingot_cadmium",
@@ -14112,6 +14841,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_silicon.png"
     },
     {
+      "id": "ingot_smore",
+      "type": "item",
+      "source_variable": "ingot_smore",
+      "source_class": "ItemFood",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2122",
+      "category": "ingot",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_smore.png"
+    },
+    {
       "id": "ingot_solinium",
       "type": "item",
       "source_variable": "ingot_solinium",
@@ -14318,6 +15058,18 @@
       }
     },
     {
+      "id": "key_kit",
+      "type": "item",
+      "source_variable": "key_kit",
+      "source_class": "ItemCounterfeitKeys",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3852",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/key_pair.png"
+    },
+    {
       "id": "lamp_tritium_blue_off",
       "type": "block",
       "source_variable": "lamp_tritium_blue_off",
@@ -14452,6 +15204,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/launch_key.png"
     },
     {
+      "id": "lemon",
+      "type": "item",
+      "source_variable": "lemon",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3620",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/lemon.png"
+    },
+    {
       "id": "lightstone__bricks",
       "type": "block",
       "source_variable": "lightstone",
@@ -14541,6 +15304,65 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/lignite.png"
     },
     {
+      "id": "loop_stew",
+      "type": "item",
+      "source_variable": "loop_stew",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3626",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/loop_stew.png"
+    },
+    {
+      "id": "loops",
+      "type": "item",
+      "source_variable": "loops",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3625",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/loops.png"
+    },
+    {
+      "id": "loot_10",
+      "type": "item",
+      "source_variable": "loot_10",
+      "source_class": "ItemLootCrate",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3802",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/loot_10.png"
+    },
+    {
+      "id": "loot_15",
+      "type": "item",
+      "source_variable": "loot_15",
+      "source_class": "ItemLootCrate",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3804",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/loot_15.png"
+    },
+    {
+      "id": "loot_misc",
+      "type": "item",
+      "source_variable": "loot_misc",
+      "source_class": "ItemLootCrate",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3805",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/loot_misc.png"
+    },
+    {
       "id": "magnetron",
       "type": "item",
       "source_variable": "magnetron",
@@ -14568,6 +15390,62 @@
       "category": "component",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/man_igniter.png"
+    },
+    {
+      "id": "man_kit",
+      "type": "item",
+      "source_variable": "man_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3787",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/man_kit.png"
+    },
+    {
+      "id": "matchstick",
+      "type": "item",
+      "source_variable": "matchstick",
+      "source_class": "ItemMatch",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:4294",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/matchstick.png"
+    },
+    {
+      "id": "med_bag",
+      "type": "item",
+      "source_variable": "med_bag",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2826",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/med_bag.png"
+    },
+    {
+      "id": "med_ipecac",
+      "type": "item",
+      "source_variable": "med_ipecac",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3622",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/med_ipecac_new.png"
+    },
+    {
+      "id": "med_ptsd",
+      "type": "item",
+      "source_variable": "med_ptsd",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3623",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/med_ptsd_new.png"
     },
     {
       "id": "meteor_battery",
@@ -14672,6 +15550,18 @@
       "category": "component",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/mike_deut.png"
+    },
+    {
+      "id": "mike_kit",
+      "type": "item",
+      "source_variable": "mike_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3788",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mike_kit.png"
     },
     {
       "id": "missile_assembly",
@@ -15038,6 +15928,29 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/mp_warhead.png"
     },
     {
+      "id": "mucho_mango",
+      "type": "item",
+      "source_variable": "mucho_mango",
+      "source_class": "ItemMuchoMango",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3639",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, getItemUseAction, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mucho_mango.png"
+    },
+    {
+      "id": "multi_kit",
+      "type": "item",
+      "source_variable": "multi_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3790",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/multi_kit.png"
+    },
+    {
       "id": "mush_block",
       "type": "block",
       "source_variable": "mush_block",
@@ -15150,6 +16063,17 @@
       "source_configuration": "nuclear_waste_vitrified_tiny = new ItemNuclearWaste().setUnlocalizedName(\"nuclear_waste_vitrified_tiny\").setCreativeTab(MainRegistry.partsTab).setTextureName(RefStrings.MODID + \":nuclear_waste_vitrified_tiny\");",
       "behavior_gap": "Static component identity; machine-consumed configuration/durability/tooltips require consuming machine logic",
       "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_vitrified_tiny.png"
+    },
+    {
+      "id": "nugget",
+      "type": "item",
+      "source_variable": "nugget",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3634",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nugget.png"
     },
     {
       "id": "nugget_actinium",
@@ -15675,6 +16599,54 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2280",
       "category": "nugget",
       "source_texture": "src/main/resources/assets/hbm/textures/items/nugget_zirconium.png"
+    },
+    {
+      "id": "nuke_advanced_kit",
+      "type": "item",
+      "source_variable": "nuke_advanced_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3782",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_advanced_kit.png"
+    },
+    {
+      "id": "nuke_commercially_kit",
+      "type": "item",
+      "source_variable": "nuke_commercially_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3783",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_commercially_kit.png"
+    },
+    {
+      "id": "nuke_electric_kit",
+      "type": "item",
+      "source_variable": "nuke_electric_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3784",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_electric_kit.png"
+    },
+    {
+      "id": "nuke_starter_kit",
+      "type": "item",
+      "source_variable": "nuke_starter_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3780",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_starter_kit.png"
     },
     {
       "id": "oil_tar__coal",
@@ -20488,6 +21460,17 @@
       }
     },
     {
+      "id": "pancake",
+      "type": "item",
+      "source_variable": "pancake",
+      "source_class": "ItemPancake",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3633",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pancake.png"
+    },
+    {
       "id": "part_barrel_heavy__cdalloy",
       "type": "item",
       "source_variable": "part_barrel_heavy",
@@ -22004,6 +22987,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/particle_dark.png"
     },
     {
+      "id": "particle_digamma",
+      "type": "item",
+      "source_variable": "particle_digamma",
+      "source_class": "ItemDigamma",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2713",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onUpdate, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/particle_digamma.png"
+    },
+    {
       "id": "particle_empty",
       "type": "item",
       "source_variable": "particle_empty",
@@ -22205,6 +23199,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/pc8.png"
     },
     {
+      "id": "peas",
+      "type": "item",
+      "source_variable": "peas",
+      "source_class": "ItemPeas",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3635",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/peas.png"
+    },
+    {
       "id": "pedestal_steel",
       "type": "item",
       "source_variable": "pedestal_steel",
@@ -22212,6 +23217,17 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2587",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/pedestal_steel.png"
+    },
+    {
+      "id": "pellet_antimatter",
+      "type": "item",
+      "source_variable": "pellet_antimatter",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2721",
+      "category": "pellet",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_antimatter.png"
     },
     {
       "id": "pellet_buckshot",
@@ -22257,6 +23273,28 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2189",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/photo_panel.png"
+    },
+    {
+      "id": "pill_iodine",
+      "type": "item",
+      "source_variable": "pill_iodine",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2834",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pill_iodine.png"
+    },
+    {
+      "id": "pill_red",
+      "type": "item",
+      "source_variable": "pill_red",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2836",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pill_red.png"
     },
     {
       "id": "pin",
@@ -22306,6 +23344,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/piston_selenium.png"
     },
     {
+      "id": "plan_c",
+      "type": "item",
+      "source_variable": "plan_c",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2835",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/plan_c.png"
+    },
+    {
       "id": "plant_item__mustardwillow",
       "type": "item",
       "source_variable": "plant_item",
@@ -22352,6 +23401,18 @@
         "en_us": "Tobacco",
         "pt_br": "Tabaco"
       }
+    },
+    {
+      "id": "plastic_bag",
+      "type": "item",
+      "source_variable": "plastic_bag",
+      "source_class": "ItemPlasticBag",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3358",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/plastic_bag.png"
     },
     {
       "id": "plate_armor_ajr",
@@ -23833,6 +24894,17 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/powder_euphemium.png"
     },
     {
+      "id": "powder_fertilizer",
+      "type": "item",
+      "source_variable": "powder_fertilizer",
+      "source_class": "ItemFertilizer",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2529",
+      "category": "powder",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/powder_fertilizer.png"
+    },
+    {
       "id": "powder_fire",
       "type": "item",
       "source_variable": "powder_fire",
@@ -24326,6 +25398,29 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2485",
       "category": "powder",
       "source_texture": "src/main/resources/assets/hbm/textures/items/powder_zirconium.png"
+    },
+    {
+      "id": "prototype_kit",
+      "type": "item",
+      "source_variable": "prototype_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3793",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/prototype_kit.png"
+    },
+    {
+      "id": "pudding",
+      "type": "item",
+      "source_variable": "pudding",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3631",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pudding.png"
     },
     {
       "id": "pwr_casing",
@@ -24862,6 +25957,28 @@
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/pwr_reflector.png"
     },
     {
+      "id": "radx",
+      "type": "item",
+      "source_variable": "radx",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2828",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/radx.png"
+    },
+    {
+      "id": "rag",
+      "type": "item",
+      "source_variable": "rag",
+      "source_class": "ItemRag",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2398",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rag.png"
+    },
+    {
       "id": "rag_damp",
       "type": "item",
       "source_variable": "rag_damp",
@@ -25315,6 +26432,17 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2577",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/sawblade.png"
+    },
+    {
+      "id": "schnitzel_vegan",
+      "type": "item",
+      "source_variable": "schnitzel_vegan",
+      "source_class": "ItemSchnitzelVegan",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3612",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (none)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/schnitzel_vegan.png"
     },
     {
       "id": "scrap",
@@ -27141,6 +28269,65 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/shimmer_head_original.png"
     },
     {
+      "id": "singularity",
+      "type": "item",
+      "source_variable": "singularity",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2715",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/singularity.png"
+    },
+    {
+      "id": "singularity_counter_resonant",
+      "type": "item",
+      "source_variable": "singularity_counter_resonant",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2717",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/singularity_alt.png"
+    },
+    {
+      "id": "singularity_spark",
+      "type": "item",
+      "source_variable": "singularity_spark",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2720",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/singularity_spark_alt.png"
+    },
+    {
+      "id": "singularity_super_heated",
+      "type": "item",
+      "source_variable": "singularity_super_heated",
+      "source_class": "ItemDrop",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2718",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemUse, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/singularity_5.png"
+    },
+    {
+      "id": "siox",
+      "type": "item",
+      "source_variable": "siox",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2829",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/siox.png"
+    },
+    {
       "id": "solid_fuel",
       "type": "item",
       "source_variable": "solid_fuel",
@@ -27219,6 +28406,18 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/solinium_igniter.png"
     },
     {
+      "id": "solinium_kit",
+      "type": "item",
+      "source_variable": "solinium_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3796",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/solinium_kit.png"
+    },
+    {
       "id": "solinium_propellant",
       "type": "item",
       "source_variable": "solinium_propellant",
@@ -27238,6 +28437,17 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2586",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/sphere_steel.png"
+    },
+    {
+      "id": "spongebob_macaroni",
+      "type": "item",
+      "source_variable": "spongebob_macaroni",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3627",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/spongebob_macaroni.png"
     },
     {
       "id": "stamp_357",
@@ -27713,6 +28923,28 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/starmetal_plate.png"
     },
     {
+      "id": "static_sandwich",
+      "type": "item",
+      "source_variable": "static_sandwich",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3630",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/static_sandwich.png"
+    },
+    {
+      "id": "stealth_boy",
+      "type": "item",
+      "source_variable": "stealth_boy",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2837",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/stealth_boy.png"
+    },
+    {
       "id": "steel_boots",
       "type": "item",
       "source_variable": "steel_boots",
@@ -28089,6 +29321,61 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_empty.png"
     },
     {
+      "id": "syringe_metal_medx",
+      "type": "item",
+      "source_variable": "syringe_metal_medx",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2821",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_medx.png"
+    },
+    {
+      "id": "syringe_metal_psycho",
+      "type": "item",
+      "source_variable": "syringe_metal_psycho",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2822",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_psycho.png"
+    },
+    {
+      "id": "syringe_metal_stimpak",
+      "type": "item",
+      "source_variable": "syringe_metal_stimpak",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2820",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_stimpak.png"
+    },
+    {
+      "id": "syringe_metal_super",
+      "type": "item",
+      "source_variable": "syringe_metal_super",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2823",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_super.png"
+    },
+    {
+      "id": "syringe_taint",
+      "type": "item",
+      "source_variable": "syringe_taint",
+      "source_class": "ItemSyringe",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2824",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_taint.png"
+    },
+    {
       "id": "tank_steel",
       "type": "item",
       "source_variable": "tank_steel",
@@ -28415,6 +29702,18 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/tsar_core.png"
     },
     {
+      "id": "tsar_kit",
+      "type": "item",
+      "source_variable": "tsar_kit",
+      "source_class": "ItemStarterKit",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3789",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/tsar_kit.png"
+    },
+    {
       "id": "turbine_titanium",
       "type": "item",
       "source_variable": "turbine_titanium",
@@ -28431,6 +29730,17 @@
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2592",
       "category": "component",
       "source_texture": "src/main/resources/assets/hbm/textures/items/turbine_tungsten.png"
+    },
+    {
+      "id": "twinkie",
+      "type": "item",
+      "source_variable": "twinkie",
+      "source_class": "ItemLemon",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:3629",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/twinkie.png"
     },
     {
       "id": "undefined",
@@ -29338,6 +30648,17 @@
         "en_us": "Zirconium Wire",
         "pt_br": "Fio de Zircônio"
       }
+    },
+    {
+      "id": "xanax",
+      "type": "item",
+      "source_variable": "xanax",
+      "source_class": "ItemPill",
+      "source_location": "src/main/java/com/hbm/items/ModItems.java:2831",
+      "category": "component",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
+      "source_form": "generic inert item class (use hooks only)",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/xanax.png"
     }
   ]
 }

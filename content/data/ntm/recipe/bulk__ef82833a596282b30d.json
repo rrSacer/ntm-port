@@ -1,0 +1,12 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:balefire_and_ham",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:balefire_scrambled",
+    "minecraft:cooked_beef"
+  ]
+}

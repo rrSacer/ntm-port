@@ -1,0 +1,15 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:pill_iodine",
+    "count": 8
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IF"
+  ],
+  "key": {
+    "I": "#ntm:bulk/dustiodine",
+    "F": "#ntm:bulk/dustfluorite"
+  }
+}

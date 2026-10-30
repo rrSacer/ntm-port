@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:singularity_super_heated",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CTC",
+    "TST",
+    "CTC"
+  ],
+  "key": {
+    "C": "#ntm:bulk/platesaturnite",
+    "T": "ntm:powder_power",
+    "S": "ntm:singularity"
+  }
+}
