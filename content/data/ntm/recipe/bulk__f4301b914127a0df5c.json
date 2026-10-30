@@ -1,0 +1,12 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:chemical_dye__lightblue",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:chemical_dye__blue",
+    "ntm:chemical_dye__white"
+  ]
+}

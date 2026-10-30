@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:powder_cement",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#ntm:bulk/dustlimestone",
+    "minecraft:clay_ball",
+    "minecraft:clay_ball",
+    "minecraft:clay_ball"
+  ]
+}

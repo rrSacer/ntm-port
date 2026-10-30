@@ -1,0 +1,12 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:chemical_dye__silver",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:chemical_dye__gray",
+    "ntm:chemical_dye__white"
+  ]
+}
