@@ -3084,6 +3084,28 @@
 ],
 "synced": []
 },
+"ntm:machine_electric_furnace_off": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 20,
+"y": 35
+},
+{
+"x": 152,
+"y": 54
+},
+{
+"output": true,
+"x": 80,
+"y": 35
+}
+],
+"synced": []
+},
 "ntm:machine_electrolyser": {
 "inventory": [
 8,
