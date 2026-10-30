@@ -194,5 +194,9 @@
     ],
     "offset": 0,
     "dummy": "ntm:dummy_machine"
-  }
+  },
+  "synced": [
+    0,
+    1
+  ]
 }

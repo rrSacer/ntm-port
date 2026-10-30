@@ -3,11 +3,11 @@
   "texture": "ntm:textures/models/press/press.png",
   "rotation": 180,
   "radius": 2.0,
-  "play": [
+  "pose": [
     {
-      "animation": "animation.press.work",
-      "property": "honey_level",
-      "not": "0"
+      "animation": "animation.press.head",
+      "value": 0,
+      "max": 1
     }
   ],
   "animations": "ntm:animations/machine_press.animation.json"
