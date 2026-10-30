@@ -22,9 +22,9 @@
   },
   "ingredient_policy": "conservative Forge 1.7.10 OreDict snapshot; first ntm id, then lexical vanilla",
   "coverage": {
-    "emitted": 22,
+    "emitted": 23,
     "scanned_source_calls": 59,
-    "skipped_source_calls": 37,
+    "skipped_source_calls": 36,
     "by_family": {
       "synthesis": {
         "emitted": 3,
@@ -63,8 +63,8 @@
         "skipped": 3
       },
       "schrabidium": {
-        "emitted": 2,
-        "skipped": 2
+        "emitted": 3,
+        "skipped": 1
       }
     },
     "note": "Preserves exact PUREXRecipes.registerDefaults() source_index order (0..58), conservative 1.7.10 OreDict snapshot, independent duplicate output entries, and conditional nuggetNaquadria OreDict guard."
@@ -1119,6 +1119,53 @@
       "autoSwitchGroup": null
     },
     {
+      "name": "purex.schraranium",
+      "source_index": 55,
+      "source": "PUREXRecipes.java:524",
+      "duration": 200,
+      "power": 1000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_schraranium"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_schrabidium",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_uranium",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nugget_neptunium",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          2000
+        ],
+        [
+          "nitric_acid",
+          1000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Extração de Schrabídio de Lingote de Schrarânio",
+      "label_en": "Schrabidium extraction from Schraranium Ingot",
+      "autoSwitchGroup": null
+    },
+    {
       "name": "purex.schrabpwr",
       "source_index": 57,
       "source": "PUREXRecipes.java:540",
@@ -1633,18 +1680,6 @@
         "ModBlocks.sand_mix"
       ],
       "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.vitsolid\").setup(300, vitrification)\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.sand_mix, 1, EnumSandType.LEAD), new ComparableStack(ModItems.nuclear_waste, 4))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nuclear_waste_vitrified, 4))"
-    },
-    {
-      "name": "purex.schraranium",
-      "source_index": 55,
-      "source": "PUREXRecipes.java:524",
-      "family": "schrabidium",
-      "autoSwitchGroup": null,
-      "reason": "missing catalog identities: ModItems.ingot_schraranium",
-      "missing_items": [
-        "ModItems.ingot_schraranium"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.schraranium\").setup(200, 1_000).setNameWrapper(\"purex.schrab\")\n\t\t\t\t.inputItems(new ComparableStack(ModItems.ingot_schraranium))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 2_000), new FluidStack(Fluids.NITRIC_ACID, 1_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_schrabidium, 3),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_uranium, 3),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_neptunium, 2))\n\t\t\t\t.setIconToFirstIngredient()"
     },
     {
       "name": "purex.schrabzirnox",

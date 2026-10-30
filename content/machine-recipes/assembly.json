@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 415,
+    "emitted": 416,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 216,
+    "skipped_source_calls": 215,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -3302,6 +3302,55 @@
       "pools": [],
       "label": "Bomba Balefire",
       "label_en": "Balefire Bomb"
+    },
+    {
+      "name": "ass.explosivelenses2",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:697",
+      "duration": 400,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_aluminium"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_semtex"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:neutron_reflector"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:ball_tatb"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:explosive_lenses",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Conjunto de Lentes Explosivas de Alta Potência",
+      "label_en": "Array of High-Explosive Lenses"
     },
     {
       "name": "ass.wiring",
@@ -14589,7 +14638,7 @@
     {
       "name": "ass.minenaval",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:652",
-      "reason": "unresolved ore dictionary ANY_PLASTICEXPLOSIVE.ingot()",
+      "reason": "unregistered/ambiguous source item mine_naval",
       "expression": "new GenericRecipe(\"ass.minenaval\").setup(300, 100).outputItems(new ItemStack(ModBlocks.mine_naval, 1))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.sphere_steel, 1), new OreDictStack(STEEL.pipe(), 3), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.ADVANCED), new OreDictStack(ANY_PLASTICEXPLOSIVE.ingot(), 24))"
     },
     {
@@ -14639,12 +14688,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:695",
       "reason": "unregistered/ambiguous source item det_cord",
       "expression": "new GenericRecipe(\"ass.explosivelenses1\").setup(400, 100).outputItems(new ItemStack(ModItems.early_explosive_lenses, 1))\n\t\t\t\t.inputItems(new OreDictStack(AL.plate(), 8), new ComparableStack(ModBlocks.det_cord, 8), new OreDictStack(BIGMT.plate(), 2), new OreDictStack(ANY_HIGHEXPLOSIVE.ingot(), 20), new OreDictStack(ANY_PLASTIC.ingot(), 4))"
-    },
-    {
-      "name": "ass.explosivelenses2",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:697",
-      "reason": "unresolved ore dictionary ANY_PLASTICEXPLOSIVE.ingot()",
-      "expression": "new GenericRecipe(\"ass.explosivelenses2\").setup(400, 100).outputItems(new ItemStack(ModItems.explosive_lenses, 1))\n\t\t\t\t.inputItems(new OreDictStack(AL.plate(), 8), new OreDictStack(ANY_PLASTICEXPLOSIVE.ingot(), 4), new ComparableStack(ModItems.neutron_reflector, 2), new ComparableStack(ModItems.ball_tatb, 16), new OreDictStack(RUBBER.ingot(), 2))"
     },
     {
       "name": "ass.turretchekhov",
@@ -14715,7 +14758,7 @@
     {
       "name": "ass.himarssmallhe",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:770",
-      "reason": "unresolved ore dictionary ANY_PLASTICEXPLOSIVE.ingot()",
+      "reason": "dynamic/unsupported metadata ItemAmmoHIMARS.SMALL_HE",
       "expression": "new GenericRecipe(\"ass.himarssmallhe\").setup(100, 100).outputItems(new ItemStack(ModItems.ammo_himars, 1, ItemAmmoHIMARS.SMALL_HE))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 24), new OreDictStack(ANY_PLASTIC.ingot(), 24), new ComparableStack(ModItems.rocket_fuel, 48), new OreDictStack(ANY_PLASTICEXPLOSIVE.ingot(), 18), new OreDictStack(ANY_HIGHEXPLOSIVE.ingot(), 48), new ComparableStack(ModItems.circuit, 6, EnumCircuitType.BASIC))"
     },
     {

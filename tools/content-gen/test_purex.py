@@ -121,8 +121,8 @@ class PurexContracts(unittest.TestCase):
         self.assertEqual(self.purex['machine'], 'purex')
         cov = self.purex['coverage']
         self.assertEqual(cov['scanned_source_calls'], 59)
-        self.assertEqual(cov['emitted'], 22)
-        self.assertEqual(cov['skipped_source_calls'], 37)
+        self.assertEqual(cov['emitted'], 23)
+        self.assertEqual(cov['skipped_source_calls'], 36)
         self.assertEqual(
             cov['by_family'],
             {
@@ -135,7 +135,7 @@ class PurexContracts(unittest.TestCase):
                 'watz': {'emitted': 0, 'skipped': 12},
                 'icf': {'emitted': 1, 'skipped': 0},
                 'vitrification': {'emitted': 0, 'skipped': 3},
-                'schrabidium': {'emitted': 2, 'skipped': 2},
+                'schrabidium': {'emitted': 3, 'skipped': 1},
             },
         )
 
@@ -175,6 +175,10 @@ class PurexContracts(unittest.TestCase):
         )
         self.assertEqual(fl['inputFluids'], [['amat', 1000]])
         self.assertEqual(fl['outputItems'], [['ntm:billet_flashlead', 1, 1.0]])
+
+        srn = self.by_name['purex.schraranium']
+        self.assertEqual(srn['inputItems'], [{'ids':['ntm:ingot_schraranium'],'count':1}])
+        self.assertEqual(srn['inputFluids'], [['kerosene',2000],['nitric_acid',1000]])
 
         pwr_recipes = [r for r in self.purex['recipes'] if r['autoSwitchGroup'] == 'autoswitch.pwr']
         self.assertEqual(len(pwr_recipes), 15)

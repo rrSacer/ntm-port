@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 49,
+    "emitted": 52,
     "scanned_source_calls": 77,
-    "skipped_source_calls": 28,
+    "skipped_source_calls": 25,
     "expanded_fluid_recipes": 0,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -638,6 +638,132 @@
       ],
       "label": "Cascalho ×8",
       "label_en": "Gravel ×8"
+    },
+    {
+      "name": "chem.concrete",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:145",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_cement"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "minecraft:gravel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "minecraft:sand"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:concrete_smooth",
+          16
+        ]
+      ],
+      "inputFluids": [
+        [
+          "water",
+          2000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Concreto ×16",
+      "label_en": "Concrete ×16"
+    },
+    {
+      "name": "chem.ducrete",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:155",
+      "duration": 150,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_cement"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:ingot_ferrouranium"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "minecraft:sand"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:ducrete_smooth",
+          8
+        ]
+      ],
+      "inputFluids": [
+        [
+          "water",
+          2000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Ducrete Smooth ×8",
+      "label_en": "Ducrete ×8"
+    },
+    {
+      "name": "chem.liquidconk",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:160",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:powder_cement"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "minecraft:gravel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "minecraft:sand"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [],
+      "inputFluids": [
+        [
+          "water",
+          2000
+        ]
+      ],
+      "outputFluids": [
+        [
+          "concrete",
+          16000
+        ]
+      ],
+      "pools": [],
+      "label": "Concreto Líquido · 16000 mB",
+      "label_en": "Liquid Concrete · 16000 mB"
     },
     {
       "name": "chem.lightconstruction",
@@ -1568,28 +1694,10 @@
       "expression": "new GenericRecipe(\"chem.tel\").setup(40, 100)\n\t\t\t\t.inputItems(new OreDictStack(ANY_TAR.any()), new OreDictStack(PB.dust()))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.PETROLEUM, 100), new FluidStack(Fluids.STEAM, 1000))\n\t\t\t\t.outputItems(DictFrame.fromOne(ModItems.fuel_additive, EnumFuelAdditive.ANTIKNOCK))"
     },
     {
-      "name": "chem.concrete",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:145",
-      "reason": "unregistered/ambiguous source item powder_cement",
-      "expression": "new GenericRecipe(\"chem.concrete\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_cement, 1), new ComparableStack(Blocks.gravel, 8), new OreDictStack(KEY_SAND, 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 2_000))\n\t\t\t\t.outputItems(new ItemStack(ModBlocks.concrete_smooth, 16))"
-    },
-    {
       "name": "chem.concreteasbestos",
       "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:150",
-      "reason": "unregistered/ambiguous source item powder_cement",
+      "reason": "nonliteral integer: (GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ? 1 : 4",
       "expression": "new GenericRecipe(\"chem.concreteasbestos\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_cement, 4), new OreDictStack(ASBESTOS.ingot(), (GeneralConfig.enableLBSM && GeneralConfig.enableLBSMSimpleChemsitry) ? 1 : 4), new OreDictStack(KEY_SAND, 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 2_000))\n\t\t\t\t.outputItems(new ItemStack(ModBlocks.concrete_asbestos, 16))"
-    },
-    {
-      "name": "chem.ducrete",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:155",
-      "reason": "unregistered/ambiguous source item powder_cement",
-      "expression": "new GenericRecipe(\"chem.ducrete\").setup(150, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_cement, 4), new OreDictStack(FERRO.ingot()), new OreDictStack(KEY_SAND, 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 2_000))\n\t\t\t\t.outputItems(new ItemStack(ModBlocks.ducrete_smooth, 8))"
-    },
-    {
-      "name": "chem.liquidconk",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:160",
-      "reason": "unregistered/ambiguous source item powder_cement",
-      "expression": "new GenericRecipe(\"chem.liquidconk\").setup(100, 100)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.powder_cement, 1), new ComparableStack(Blocks.gravel, 8), new OreDictStack(KEY_SAND, 8))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 2_000))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.CONCRETE, 16_000))"
     },
     {
       "name": "chem.asphalt",
