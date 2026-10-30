@@ -331,8 +331,11 @@ def main():
         name = block.split(':', 1)[1]
         if 'machine' in b:
             write_json(own(f'data/ntm/horizon_machine/{name}.json'), machine_slots(b['machine']))
-        if 'screen' in b:
-            s = dict(b['screen'])
+        # The machine's screen, and `more_screens` its buttons switch to
+        # (the machine file's `screens`), each under its own name.
+        screens = [(name, b['screen'])] if 'screen' in b else []
+        for sname, sspec in screens + sorted(b.get('more_screens', {}).items()):
+            s = dict(sspec)
             # HBM's title colour (extracted.json), when the entry names none.
             color = extracted.get(block, {}).get('gui', {}).get('title_color')
             if color and 'title_color' not in s:
@@ -374,7 +377,7 @@ def main():
                 for im, at in parts:
                     sheet.paste(im, tuple(at))
                 sheet.save(out / target)
-            write_json(own(f'assets/ntm/horizon_screen/{name}.json'), s)
+            write_json(own(f'assets/ntm/horizon_screen/{sname}.json'), s)
         if 'liquid' in b:
             # A liquid file: drawn over the block's own model (horizon_liquid).
             l = {'liquids': [dict(x) for x in b['liquid']['liquids']]}
