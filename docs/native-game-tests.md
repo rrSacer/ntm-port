@@ -125,7 +125,7 @@ Evidência: `.agent-tmp/sonnet-l2/runs/` (cada pasta tem `native-stations.json`,
 | tooltip | O ponteiro X11 real sobre uma pilha de 64 tarugos de urânio: `[Radioactive]`, `0.175RAD/s`, `Stack: 11.2RAD/s` |
 | eletrolisador | A tela de fluidos mostra os slots 3 a 13 e deixa 14 a 20 fora; o botão de eletrólise de metal mostra 14 a 20 e esconde 3 a 13 na hora; o botão de volta restaura a primeira |
 
-Prova de 30/10: motor `b9d905189`. A fase `hud` só passa num jogo cujo servidor grave `ntm_rad_dose` e `ntm_rad_rate` por jogador; a prova abaixo usou, **só no build de teste**, uma sobreposição que grava 321,5 RAD e 1,819 RAD/s no hook de tick do servidor (nunca commitada), por o servidor ainda não publicar esses valores. As capturas mostram `NTM Geiger | 1.819 RAD/s`, `Dose: 321.50 RAD` em amarelo (200 a 400 RAD) e a dica do tarugo de urânio.
+Prova de 30/10: a fase `hud` passou com os valores do servidor de verdade (`0651422a`, `ntm_rad_dose` e `ntm_rad_rate` por jogador), sem nenhuma sobreposição: com 64 tarugos de urânio na mão a caixa mostra `NTM Geiger | 11.200 RAD/s` e `Dose: 0.00 RAD` (carência de 10 s), em verde. A dica do tarugo (`[Radioactive]`, `0.175RAD/s`, `Stack: 11.2RAD/s`) e o relayout do eletrolisador foram provados no motor `b9d905189`.
 
 ## Energia, lote 3 (L3)
 

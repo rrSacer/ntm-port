@@ -180,6 +180,6 @@ Prova em jogo (`tools/test-game/native_recipes.py`, ver `docs/native-game-tests.
 | Dica de item | `client.rs` (`tooltip`), hook `tooltip` | Como `HazardTypeRadiation.addHazardInformation`: `[Radioactive]` em verde, `0.175RAD/s` em amarelo e, com mais de um item, `Stack: 11.2RAD/s`. A taxa por item é `radiation_millirad_s` da tabela de hazards (`client_rad::item_rate`). |
 | Troca de tela | `screens.rs` (`switch_screen`) | O botão que mostra a outra tela de uma máquina (o eletrolisador: fluidos e metal) agora recoloca os slots na hora, com `native_screen_set_layout`: cada tela põe os slots onde a sua textura os tem e esconde os que não usa. |
 
-O servidor (870f7ba7) grava os valores por jogador com `native_set_player_value`: `ntm_rad_dose` (dose em milésimos de RAD) e `ntm_rad_rate` (milésimos de RAD/s no ponto do jogador, com blindagem), os dois i64, só quando mudam. Até ele publicar, a caixa não aparece num jogo real.
+O servidor (870f7ba7) grava os valores por jogador com `native_set_player_value`: `ntm_rad_dose` (dose em milésimos de RAD) e `ntm_rad_rate` (milésimos de RAD/s no ponto do jogador, com blindagem), os dois i64, só quando mudam. O servidor publica os dois valores a cada segundo, só quando mudam (`radiation_server.rs`); com 64 tarugos de urânio a caixa mostra 11,2 RAD/s em jogo.
 
 Prova em jogo: `tools/test-game/native_client.py` (ver `docs/native-game-tests.md`).
