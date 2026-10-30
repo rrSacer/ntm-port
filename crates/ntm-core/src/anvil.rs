@@ -584,7 +584,7 @@ mod tests {
     #[test]
     fn the_ntm_tables_are_embedded() {
         let t = Tables::ntm();
-        assert_eq!((t.smithing.len(), t.construction.len()), (36, 118));
+        assert_eq!((t.smithing.len(), t.construction.len()), (36, 119));
         // The 17 mold engravings: the example stays, exactly one.
         let molds: Vec<_> = t.smithing.iter().filter(|s| s.out.0.starts_with("ntm:mold__")).collect();
         assert_eq!(molds.len(), 17);

@@ -533,6 +533,100 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
+    // Energy batch 6 (3c5a6573): the battery socket and REDD, the
+    // connectors and pylons (long wires), the switch and the detector.
+    // Inert until their stage is approved.
+    BlockSpec {
+        id: "ntm:machine_battery_socket",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_battery_redd",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:red_connector",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:red_connector_super",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:red_pylon",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:red_pylon_steel",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:red_pylon_medium_wood",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:red_pylon_medium_wood_transformer",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:red_pylon_medium_steel",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:red_pylon_medium_steel_transformer",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:red_pylon_large",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:cable_switch",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:cable_detector",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
     // Energy batch 5 (db859b71): the RTG and the radiation generator.
     // Inert until their stage is approved.
     BlockSpec {
@@ -711,8 +805,11 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
 ];
 
-/// HE conductors: no state, the server reads the neighbours.
-pub const CABLES: &[&str] = &["ntm:red_cable"];
+/// HE conductors (`BlockCable`): no state, the server reads the
+/// neighbours. The red cable and energy batch 6's classic, paintable, gauge
+/// and box, all plain conductors (the gauge's reading and the box's look
+/// aside).
+pub const CABLES: &[&str] = &["ntm:red_cable", "ntm:red_cable_classic", "ntm:red_cable_paintable", "ntm:red_cable_gauge", "ntm:red_cable_box"];
 
 /// The internal block the client writes to answer the server
 /// (`token`): a composter-template block, `level` 0..=8.
