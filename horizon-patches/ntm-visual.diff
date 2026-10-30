@@ -3965,6 +3965,28 @@ index a5a4b0f3f..9ca7dd4ed 100644
                  Output::SetBlocks {
                      name,
                      dimension,
+diff --git a/crates/horizon-client/src/game/storage.rs b/crates/horizon-client/src/game/storage.rs
+index 81895dba3..035d97360 100644
+--- a/crates/horizon-client/src/game/storage.rs
++++ b/crates/horizon-client/src/game/storage.rs
+@@ -268,7 +268,16 @@ impl Game<'_> {
+         }
+         let range = self.reach() + 4.0;
+         let near = self.container_parts().iter().all(|&((x, y, z), _)| {
+-            horizon_client::lan::guest::within_block_range(eye, range, [x, y, z])
++            // A mod machine's `use_range` from its core, when it has one.
++            let machine = match self.world.block_entities.get(&(x, y, z)) {
++                Some(BlockEntity::ModContainer(m)) => {
++                    horizon_world::mod_machines::within_use_range(&m.block, [x, y, z], eye)
++                }
++                _ => None,
++            };
++            machine.unwrap_or_else(|| {
++                horizon_client::lan::guest::within_block_range(eye, range, [x, y, z])
++            })
+         });
+         if !near {
+             self.close_container();
 diff --git a/crates/horizon-client/src/lan/chunks.rs b/crates/horizon-client/src/lan/chunks.rs
 index b93197dc0..1f882fe81 100644
 --- a/crates/horizon-client/src/lan/chunks.rs
@@ -4174,6 +4196,38 @@ index 84d690dab..8e797648e 100644
      // ---- entities ------------------------------------------------------
  
      /// `LivingEntity.updateSynchronizedMobEffectParticles`: DATA_EFFECT_PARTICLES
+diff --git a/crates/horizon-client/src/lan/menu.rs b/crates/horizon-client/src/lan/menu.rs
+index 641e45b1b..fa91d570f 100644
+--- a/crates/horizon-client/src/lan/menu.rs
++++ b/crates/horizon-client/src/lan/menu.rs
+@@ -78,10 +78,24 @@ impl Slots {
+         };
+         // A vehicle's container is kept under a key, not a block: the game
+         // checks its reach to the vehicle (`isChestVehicleStillValid`).
++        let eye = [
++            guest.position[0],
++            guest.position[1] + guest.eye_height(),
++            guest.position[2],
++        ];
++        // A mod machine with a `use_range` (a tall multiblock) keeps its
++        // screen open that far from its core, as HBM's machines do.
++        let machine = |k: &(i32, i32, i32)| match world.block_entities.get(k) {
++            Some(crate::containers::BlockEntity::ModContainer(m)) => {
++                horizon_world::mod_machines::within_use_range(&m.block, [k.0, k.1, k.2], eye)
++            }
++            _ => None,
++        };
+         self.valid(world)
+-            && blocks
+-                .iter()
+-                .all(|k| k.1 == VEHICLE_KEY_Y || guest.within_block_range([k.0, k.1, k.2], 4.0))
++            && blocks.iter().all(|k| {
++                k.1 == VEHICLE_KEY_Y
++                    || machine(k).unwrap_or_else(|| guest.within_block_range([k.0, k.1, k.2], 4.0))
++            })
+     }
+     /// Container slot `n`.
+     pub fn get(self, world: &World, guest: &Guest, mut n: usize) -> Option<ItemStack> {
 diff --git a/crates/horizon-client/src/lib.rs b/crates/horizon-client/src/lib.rs
 index 4e6c902a5..8bcbef0bf 100644
 --- a/crates/horizon-client/src/lib.rs
@@ -5141,10 +5195,10 @@ index 6df870d42..5a5ad71f7 100644
  pub mod movement_restitution;
 diff --git a/crates/horizon-world/src/mod_machines.rs b/crates/horizon-world/src/mod_machines.rs
 new file mode 100644
-index 000000000..f4d381b6a
+index 000000000..42925adca
 --- /dev/null
 +++ b/crates/horizon-world/src/mod_machines.rs
-@@ -0,0 +1,511 @@
+@@ -0,0 +1,571 @@
 +//! Machines from content mods: blocks with slots the game keeps, a screen
 +//! layout and, optionally, a multiblock volume. Each
 +//! `data/<namespace>/horizon_machine/<name>.json` in the resource root
@@ -5166,6 +5220,8 @@ index 000000000..f4d381b6a
 +//!     {"x": 26, "y": 36, "accept": ["ntm:explosive_lenses"], "max": 1}   at most 1 item
 +//!   ],
 +//!   "inventory": [8, 174],                the player's inventory (hotbar 58 below)
++//!   "use_range": 12.0,                    the screen stays open while the player is this
++//!                                         close to the core's centre (else as a chest's)
 +//!   "data": 4,                            values the mod sets and the screen shows
 +//!   "synced": [0, 1, 2],                  those clients get (a model's liquids)
 +//!   "multiblock": {                       the volume around the core, in the placer's frame:
@@ -5243,6 +5299,9 @@ index 000000000..f4d381b6a
 +    pub screens: Vec<String>,
 +    pub slots: Vec<SlotDef>,
 +    pub inventory: [i32; 2],
++    /// How far from the core's centre the screen stays open (HBM's
++    /// `getUseRange`); none: as a chest's (`stillValidBlockEntity`).
++    pub use_range: Option<f64>,
 +    pub data: usize,
 +    /// The values clients get (a model's liquid levels and colours).
 +    pub synced: Vec<usize>,
@@ -5258,8 +5317,10 @@ index 000000000..f4d381b6a
 +    list: Vec<Arc<MachineDef>>,
 +    by_block: HashMap<String, usize>,
 +    dummies: HashMap<String, ()>,
-+    /// The largest distance from a core to one of its cells, on any axis.
++    /// The largest distance across from a core to one of its cells (x or
++    /// z, which a facing swaps), and the lowest and highest cell above it.
 +    reach: i32,
++    rise: (i32, i32),
 +}
 +
 +static REGISTRY: RwLock<Option<Arc<Registry>>> = RwLock::new(None);
@@ -5336,8 +5397,13 @@ index 000000000..f4d381b6a
 +        Some(m) => {
 +            let min = ints::<3>(&m["min"]).ok_or("multiblock: no min [x, y, z]")?;
 +            let max = ints::<3>(&m["max"]).ok_or("multiblock: no max [x, y, z]")?;
-+            if (0..3).any(|i| min[i] > 0 || max[i] < 0 || max[i] - min[i] > 15) {
-+                return Err("multiblock: min..max must hold the core and span 16 at most".into());
++            // Across, 16 at most; up, 32 (HBM's coker is 23 high).
++            let most = |i: usize| if i == 1 { 31 } else { 15 };
++            if (0..3).any(|i| min[i] > 0 || max[i] < 0 || max[i] - min[i] > most(i)) {
++                return Err(
++                    "multiblock: min..max must hold the core and span 16 across, 32 up at most"
++                        .into(),
++                );
 +            }
 +            let mut extra = Vec::new();
 +            for b in m["extra"].as_array().into_iter().flatten() {
@@ -5345,10 +5411,13 @@ index 000000000..f4d381b6a
 +                    return Err("multiblock: an extra box without min and max".into());
 +                };
 +                if (0..3).any(|i| {
-+                    lo[i] > hi[i] || hi[i] - lo[i] > 15 || lo[i].abs().max(hi[i].abs()) > 15
++                    lo[i] > hi[i]
++                        || hi[i] - lo[i] > most(i)
++                        || lo[i].abs().max(hi[i].abs()) > most(i)
 +                }) {
 +                    return Err(
-+                        "multiblock: an extra box spans 16 at most, 15 from the core".into(),
++                        "multiblock: an extra box spans 16 across and 32 up at most, as far from the core"
++                            .into(),
 +                    );
 +                }
 +                extra.push((lo, hi));
@@ -5379,6 +5448,7 @@ index 000000000..f4d381b6a
 +            .collect(),
 +        slots,
 +        inventory: ints::<2>(&doc["inventory"]).unwrap_or([8, 84]),
++        use_range: doc["use_range"].as_f64().filter(|r| *r > 0.0),
 +        data,
 +        synced: doc["synced"]
 +            .as_array()
@@ -5437,6 +5507,8 @@ index 000000000..f4d381b6a
 +                if let Some(m) = &def.multiblock {
 +                    reg.dummies.insert(m.dummy.clone(), ());
 +                    reg.reach = reg.reach.max(m.reach());
++                    let (lo, hi) = m.rise();
++                    reg.rise = (reg.rise.0.min(lo), reg.rise.1.max(hi));
 +                }
 +                reg.by_block.insert(block, reg.list.len());
 +                reg.list.push(Arc::new(def));
@@ -5472,9 +5544,21 @@ index 000000000..f4d381b6a
 +    registry().is_some_and(|r| r.dummies.contains_key(name))
 +}
 +
-+/// How far from a cell its core may be, on any axis (0 with no multiblocks).
-+pub fn reach() -> i32 {
-+    registry().map_or(0, |r| r.reach)
++/// Whether an eye at `eye` may keep machine `block`'s screen open at
++/// `core`: within its `use_range` of the core's centre; None for a machine
++/// without one (the caller's own reach rule holds).
++pub fn within_use_range(block: &str, core: [i32; 3], eye: [f64; 3]) -> Option<bool> {
++    let range = get(block)?.use_range?;
++    let d: f64 = (0..3)
++        .map(|i| (f64::from(core[i]) + 0.5 - eye[i]).powi(2))
++        .sum();
++    Some(d <= range * range)
++}
++
++/// How far across from a cell its core may be (0 with no multiblocks), and
++/// the lowest and highest a cell is above its core.
++pub fn reach() -> (i32, (i32, i32)) {
++    registry().map_or((0, (0, 0)), |r| (r.reach, r.rise))
 +}
 +
 +/// The horizontal step of a `facing` value: the way the block's front looks.
@@ -5547,12 +5631,17 @@ index 000000000..f4d381b6a
 +            (0..3).all(|i| pos[i] >= a[i].min(b[i]) && pos[i] <= a[i].max(b[i]))
 +        })
 +    }
-+    /// The farthest a cell is from the core on any axis.
++    /// The farthest a cell is from the core across (x or z).
 +    fn reach(&self) -> i32 {
 +        self.boxes()
-+            .flat_map(|(lo, hi)| (0..3).map(move |i| lo[i].abs().max(hi[i].abs())))
++            .flat_map(|(lo, hi)| [0, 2].map(move |i| lo[i].abs().max(hi[i].abs())))
 +            .max()
 +            .unwrap_or(0)
++    }
++    /// The lowest and highest a cell is above the core.
++    fn rise(&self) -> (i32, i32) {
++        self.boxes()
++            .fold((0, 0), |(lo, hi), (a, b)| (lo.min(a[1]), hi.max(b[1])))
 +    }
 +}
 +
@@ -5562,11 +5651,12 @@ index 000000000..f4d381b6a
 +    pos: [i32; 3],
 +    mut block_at: impl FnMut([i32; 3]) -> (String, Option<String>),
 +) -> Option<[i32; 3]> {
-+    let reach = reach();
-+    if reach == 0 {
++    let (reach, (low, high)) = reach();
++    if reach == 0 && low == high {
 +        return None;
 +    }
-+    for dy in -reach..=reach {
++    // The core is as far below a cell as the cell can be above it.
++    for dy in -high..=-low {
 +        for dz in -reach..=reach {
 +            for dx in -reach..=reach {
 +                let c = [pos[0] + dx, pos[1] + dy, pos[2] + dz];
@@ -5588,6 +5678,30 @@ index 000000000..f4d381b6a
 +#[cfg(test)]
 +mod tests {
 +    use super::*;
++
++    #[test]
++    fn a_multiblock_may_rise_higher_than_it_spreads() {
++        let doc = |min: &str, max: &str| -> Value {
++            serde_json::from_str(&format!(
++                r#"{{"slots":[],"multiblock":{{"min":{min},"max":{max},"offset":1,"dummy":"a:d"}}}}"#
++            ))
++            .unwrap()
++        };
++        // HBM's coker: 3x3, 23 high.
++        let m = parse("a:m", &doc("[-1,0,-1]", "[1,22,1]"))
++            .unwrap()
++            .multiblock
++            .unwrap();
++        assert_eq!((m.reach(), m.rise()), (1, (0, 22)));
++        assert!(
++            parse("a:m", &doc("[-1,0,-1]", "[1,32,1]")).is_err(),
++            "33 high"
++        );
++        assert!(
++            parse("a:m", &doc("[-8,0,-1]", "[8,1,1]")).is_err(),
++            "17 across"
++        );
++    }
 +
 +    #[test]
 +    fn a_footprint_turns_with_the_facing() {
@@ -5683,10 +5797,10 @@ index 3127248a1..3283882f7 100644
  | Server settings | `server.toml` | its keys | stable | [server-reference.md](server-reference.md) |
 diff --git a/docs/api/machine-files.md b/docs/api/machine-files.md
 new file mode 100644
-index 000000000..1f60c3265
+index 000000000..a9f7b27df
 --- /dev/null
 +++ b/docs/api/machine-files.md
-@@ -0,0 +1,179 @@
+@@ -0,0 +1,183 @@
 +# Machine files
 +
 +A content mod (manifest `api = "0.2"`) can give a block slots, a screen, a 3D model and a multiblock shape with data
@@ -5717,6 +5831,7 @@ index 000000000..1f60c3265
 +    {"x": 98, "y": 45, "output": true}
 +  ],
 +  "inventory": [8, 174],
++  "use_range": 12.0,
 +  "data": 12,
 +  "synced": [4, 5, 6],
 +  "multiblock": {
@@ -5739,6 +5854,8 @@ index 000000000..1f60c3265
 +  - `max`: how many items the slot holds at most.
 +- **Inventory:**
 +  - `inventory`: where the player's inventory sits. The hotbar is 58 pixels below.
++  - `use_range`: how far from the core's centre the screen stays open. Without it, as a chest's: the player's reach
++    plus 4 from the block. A tall machine needs it to be used from above.
 +- **Values:**
 +  - `data`: how many values (`s32`) the server mod sets (`set-data`).
 +  - `synced`: the values every nearby client gets with the block, for models (parts, poses, liquids). When the
@@ -5746,7 +5863,8 @@ index 000000000..1f60c3265
 +    gets all of them.
 +- **Multiblock:** it is laid out in the placer's frame: x to their right, y up, z away from them.
 +  - **Core:** `offset` is how far away from the clicked cell the core sits; `height` is how far above it.
-+  - **Shape:** `min..max` must hold the core and span 16 blocks at most. `extra` adds more boxes.
++  - **Shape:** `min..max` must hold the core and span 16 blocks across and 32 up at most. `extra` adds more boxes,
++    each as far from the core at most.
 +  - **Dummies:** every other cell holds `dummy`. Breaking any cell breaks the machine.
 +
 +## The screen file
