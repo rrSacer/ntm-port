@@ -696,6 +696,37 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
   - os rotores do hefesto giram e a lava aparece.
   - O balanço do pumpjack não foi visto: pede um poço trabalhando, com energia e óleo embaixo.
 
+## 3n. Energia, lote 1: os aquecedores
+
+| Aquecedor | Multibloco | Tela | Modelo |
+|---|---|---|---|
+| Forno de aquecimento (`HeaterOven`) | 3×1×3, offset 1 | a da fornalha (`GUIFirebox`) com `gui_heating_oven.png` | `rotation 90`; o interior aceso com `honey_level`; a porta desliza 0,75 ao abrir a tela |
+| Queimador de fluido (`HeaterOilburner`) | 3×2×3, offset 1 | `gui_oilburner.png` 176×203 | sem giro no NTM; aqui gira com o facing |
+| Aquecedor elétrico (`HeaterElectric`) | 3×1×4, offset 2, o plugue do lado de quem coloca | sem tela no NTM | `rotation 90` |
+| Trocador de calor (`HeaterHeatex`) | 3×1×3, offset 1 | `gui_heatex.png` 176×204 | `rotation 90` |
+
+- **Índices** (combinados com o agente das bombas, que fez a lógica):
+  - forno: os da fornalha;
+  - queimador, data 11: [0]/[1] calor, [2..4] tanque, [5] ligado, [6] chama, [7]/[8] taxa e taxa máxima,
+    [9] posição do controle deslizante (0..32), [10] TU/t;
+  - trocador, data 9: [0..2] entrada, [3..5] saída, [6] quantidade por ciclo, [7] atraso, [8] calor.
+- **Controles do NTM sem equivalente:**
+  - O controle deslizante do queimador é clicado, não arrastado: um botão por pixel (100+k), e a lógica faz a
+    conta do GUI do NTM. O botão aparece pelo valor [9], com 33 overlays.
+  - Os campos de número do trocador viram botões: metade esquerda diminui, direita aumenta; com shift, o outro passo
+    (quantidade 1000 ou 1, atraso 1 ou 20). Os números aparecem escritos nos campos (`texts`).
+  - O aquecedor elétrico troca a potência com a chave de fenda no NTM. Não há `ntm:screwdriver`, então a lógica usa a
+    tela antiga com um botão (desvio documentado por ela). O arquivo da máquina não tem slots, e o motor não abre
+    menu próprio.
+- **Portas:** o bridge é da lógica (a coluna de energia do elétrico, os 4 lados do queimador, os 4 cantos do trocador).
+- **Gerador:** os blocos dos lotes 2 e 3 de energia (vapor, turbinas, combustão) ficam com `auto: false` até terem
+  entrada própria.
+- **Em jogo:**
+  - os 4 com as células certas (9, 18, 12 e 9);
+  - as 3 telas abrem (o queimador com 37 botões, o trocador com os números nos campos);
+  - os modelos de frente para quem coloca;
+  - a porta do forno sai do lugar com a tela aberta.
+
 ## 4. Motor (patch) e port
 
 **Patch no motor** (`horizon-visual`, branch `ntm-visual`, 56 commits):
