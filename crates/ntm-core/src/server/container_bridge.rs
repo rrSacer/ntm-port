@@ -300,6 +300,10 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
     ("ntm:machine_catalytic_reformer", [-2, 0, -1], [2, 0, 1]),
     ("ntm:machine_hydrotreater", [-1, 0, -1], [1, 0, 1]),
     ("ntm:machine_vacuum_distill", [-1, 0, -1], [1, 0, 1]),
+    // MachineGasFlare: its bottom layer.
+    ("ntm:machine_flare", [-1, 0, -1], [1, 0, 1]),
+    // MachinePumpjack: its bottom layer.
+    ("ntm:machine_pumpjack", [0, 0, -1], [6, 0, 1]),
 ];
 
 /// The cells of the multiblock of `block` at `core` that pass energy to
@@ -581,6 +585,32 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     (
         "ntm:machine_industrial_boiler",
         &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1], [0, 1, 0], [0, 2, 0], [0, 3, 0], [0, 4, 0]],
+    ),
+    // MachineGasFlare.getAllPorts: the middle of each side, next to the core.
+    ("ntm:machine_flare", &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]),
+    // MachineHephaestus.getAllPorts: the middle of each side at the bottom
+    // and at the top (y 11), joined by the centre column.
+    (
+        "ntm:machine_hephaestus",
+        &[
+            [1, 0, 0],
+            [-1, 0, 0],
+            [0, 0, 1],
+            [0, 0, -1],
+            [0, 1, 0], [0, 2, 0], [0, 3, 0], [0, 4, 0], [0, 5, 0], [0, 6, 0],
+            [0, 7, 0], [0, 8, 0], [0, 9, 0], [0, 10, 0], [0, 11, 0],
+            [1, 11, 0],
+            [-1, 11, 0],
+            [0, 11, 1],
+            [0, 11, -1],
+        ],
+    ),
+    // MachinePumpjack.getAllPorts, at (-x, 0, -z) here: two each side of its
+    // base, reaching the core along it. The oil well's and fracking tower's
+    // ports are their core.
+    (
+        "ntm:machine_pumpjack",
+        &[[2, 0, -1], [4, 0, -1], [2, 0, 1], [4, 0, 1], [1, 0, 0], [2, 0, 0], [3, 0, 0], [4, 0, 0]],
     ),
     // MachineChemicalPlant.getAllPorts: its bottom ring.
     (
