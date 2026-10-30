@@ -52,7 +52,7 @@ O binário sai em `$BUILD_DIR/target/release/horizon-client`.
 | `block_entity_types` | 1 | `types.rs` | Registra os ids de block entity das máquinas (o próprio id do bloco), iguais em todos os pares. |
 | `block_entity_update_tag` | 1 | `update_tag.rs` | Manda aos clientes `data` (IntArray, o vetor do menu) e `facing` (só nos blocos sem a propriedade, as bombas), o contrato com os modelos da V3. |
 
-O tick grava o `data` no compound, porque o `update_tag` só enxerga o compound, e chama `native_block_entity_changed` só quando muda um índice listado em `synced` no `horizon_machine/<bloco>.json` (lido uma vez por bloco com `native_data`). Os outros valores só importam à tela aberta. `ntm_core::native::slot_filters` já dá as regras dos slots para o hook `slot_filters` da V2 (API 20), que entra quando a V2 for integrada à `ntm-next`.
+O tick grava o `data` no compound, porque o `update_tag` só enxerga o compound, e chama `native_block_entity_changed` só quando muda um índice listado em `synced` no `horizon_machine/<bloco>.json` (lido uma vez por bloco com `native_data`). Os outros valores só importam à tela aberta. O hook `slot_filters` (V2, API 20) dá as regras dos slots, de `ntm_core::native::slot_filters`: a fornalha aceita o que funde, uma bateria criativa, e o resultado é só de saída. As regras valem para o menu, os cliques e os funis.
 
 A cola fica no módulo `ntm_glue` (`glue.rs`), que converte `ModBlockEntity` e `ItemStack` para os tipos simples do `ntm_core::native` e de volta. Um slot que a lógica não mudou mantém a pilha do jogo, com todos os componentes.
 
@@ -60,7 +60,7 @@ A cola fica no módulo `ntm_glue` (`glue.rs`), que converte `ModBlockEntity` e `
 
 `ntm_core::native` roda a fornalha elétrica (`machine_electric_furnace_off`) no menu vanilla de fornalha: entrada (slot 0, por cima), bateria (slot 1, pelos lados) e resultado (slot 2, por baixo). Os 4 data slots são energia, máximo, progresso e total, desenhados como a chama e a seta. A energia vem da bateria criativa no slot (`charge_from_slot`); as redes de energia entram na L3.
 
-O template das máquinas é `beehive`, que não abre menu. Até o patch de menus da V2, o jogador não abre a tela; os funis fazem o papel dele na prova.
+Com a V2 na `ntm-next` (`88b45bdb2`), o menu abre pelo jogador, independente do template `beehive` das máquinas.
 
 ## Prova da L0 (30/10)
 
@@ -74,3 +74,10 @@ O template das máquinas é `beehive`, que não abre menu. Até o patch de menus
 
 - **montar:** por `/setblock`, a fornalha com um funil de 8 minérios de ferro por cima, um funil com a bateria criativa ao lado e um funil embaixo para um baú. O block entity nasceu com o estado `ntm`. Em 25 s, 5 lingotes no baú e a fornalha no meio do sexto (progresso 13 de 100, energia cheia).
 - **conferir**, depois de fechar e reabrir o jogo: o baú com os 8 lingotes, a fornalha com a bateria no slot 1 e o mesmo estado. Um minério novo no funil virou o nono lingote.
+
+## A tela da fornalha (30/10, `ntm-next` `88b45bdb2`)
+
+Fase `tela` do `native_l1.py`: o jogador abre a fornalha (menu `container`, título "Electric Furnace"), e a terra é recusada na entrada pelo filtro. Faltam duas coisas, da V2/L2:
+
+- a tela não desenha o fundo: os itens aparecem soltos (`native-l1-tela.png`). Isso é o intérprete de telas da L2 ou o desenho do menu vanilla para um `Kind::Mod`;
+- o `horizon-ctl screen` não lista os slots do container (só os 36 do jogador), então o roteiro não clica neles.

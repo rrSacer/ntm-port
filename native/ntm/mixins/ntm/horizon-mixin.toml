@@ -6,7 +6,7 @@ priority = 100
 # The commit it was built and tested on: ntm-next (upstream main plus the
 # merged hook PRs; its `pins`). It uses only named hook points.
 [compatibility]
-horizon_revision = "b3a734d2a4d61603ec7b88c9ec044840da66a253"
+horizon_revision = "88b45bdb21dbf32d8d2550ecba604f33a9fe84eb"
 
 # The logic, plain Rust (cargo test against the fake world): copied into
 # this folder by tools/package-native.sh, never kept here.
@@ -98,4 +98,16 @@ bindings = [
   { name = "id", ty = "&str", value = "id" },
   { name = "nbt", ty = "&horizon_world::nbt::Compound", value = "nbt" },
   { name = "tag", ty = "&mut Option<horizon_world::nbt::Compound>", value = "&mut *tag" },
+]
+
+# The slots' rules (V2, API 20).
+[[injection]]
+id = "slot-filters"
+hook = "slot_filters"
+hook_version = 1
+kind = "HEAD"
+helper = "filters.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "filters", ty = "&mut Vec<horizon_client::containers::ModSlotFilter>", value = "&mut *filters" },
 ]

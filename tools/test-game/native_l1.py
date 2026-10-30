@@ -9,7 +9,9 @@ Fases:
            bateria criativa ao lado e, embaixo, um funil para um baú; espera
            e lê o baú e o block entity (estado "ntm" e itens);
   conferir depois de fechar e reabrir o mundo: o block entity tem o mesmo
-           estado e o baú os mesmos lingotes, e a fornalha continua fundindo.
+           estado e o baú os mesmos lingotes, e a fornalha continua fundindo;
+  tela     o jogador abre a fornalha (o menu de fornalha vanilla): terra não
+           entra na entrada (filtro de slot), minério entra e vira lingote.
 Grava <pasta>/native-l1.json.
 """
 import json, subprocess, sys, time
@@ -70,5 +72,47 @@ elif phase == 'conferir':
     first = data_get(x, y, z)
     time.sleep(15)
     ev['conferir'] = {'fornalha_ao_abrir': first, 'fornalha_depois': data_get(x, y, z), 'bau': data_get(x, y - 3, z, 'Items')}
+elif phase == 'tela':
+    # Its own furnace, no hoppers around: the player is the hopper.
+    tx, tz = x + 6, z
+    # The floor before the player: a tp into the air falls.
+    cmd(f'forceload add {tx} {tz}')
+    time.sleep(2)
+    cmd(f'fill {tx - 1} {y - 1} {tz - 1} {tx + 1} {y + 2} {tz + 3} minecraft:air')
+    cmd(f'fill {tx - 1} {y - 1} {tz - 1} {tx + 1} {y - 1} {tz + 3} minecraft:stone')
+    cmd(f'setblock {tx} {y} {tz} ntm:machine_electric_furnace_off[facing=south]')
+    cmd(f'tp @s {tx + 0.5} {y} {tz + 2.5} facing {tx + 0.5} {y + 0.5} {tz + 0.5}')
+    time.sleep(3)
+    cmd('clear @s')
+    cmd('give @s minecraft:dirt 4')
+    cmd('give @s minecraft:iron_ore 2')
+    cmd('give @s ntm:battery_creative 1')
+    time.sleep(1)
+    ctl('interact', tx, y, tz)
+    time.sleep(2)
+    sc = ctl('screen')
+    hot = lambda item: [sl['slot'] for sl in ctl('screen').get('slots', []) if sl.get('item') == item and sl['slot'] < 36]
+    if sc.get('screen') != 'container':
+        raise SystemExit(f'a tela da fornalha não abriu: {sc.get("screen")}')
+    def put(item, slot):
+        ctl('click-slot', hot(item)[0])
+        time.sleep(0.4)
+        ctl('click-slot', slot)
+        time.sleep(0.6)
+        carried = ctl('screen').get('carried')
+        if carried:
+            ctl('click-slot', hot(item)[0] if hot(item) else 35)
+            time.sleep(0.4)
+        return carried
+    ev['tela'] = {'aberta': sc.get('screen'), 'titulo': sc.get('title'), 'container': sc.get('container')}
+    ev['tela']['terra_recusada'] = put('minecraft:dirt', 300) is not None or not any(sl['slot'] == 300 and sl.get('item') == 'minecraft:dirt' for sl in ctl('screen').get('slots', []))
+    put('ntm:battery_creative', 301)
+    put('minecraft:iron_ore', 300)
+    time.sleep(7)
+    slots = [(sl['slot'], sl.get('item'), sl.get('count')) for sl in ctl('screen').get('slots', []) if sl['slot'] >= 300]
+    ev['tela']['slots'] = slots
+    ev['tela']['data'] = data_get(tx, y, tz, 'data')
+    ctl('screenshot', game / 'native-l1-tela.png')
+    ctl('close')
 out_path.write_text(json.dumps(ev, indent=1, ensure_ascii=False))
 print(json.dumps(ev, ensure_ascii=False))

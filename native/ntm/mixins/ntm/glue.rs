@@ -1,7 +1,7 @@
 // The NTM bundle's edges in the game (docs/nativo.md of ntm-port): a
 // machine's block entity to and from ntm_core::native's plain data. Its
 // state is a JSON string under "ntm" in the block entity's compound.
-use horizon_client::containers::{ModBlockEntity, ModContainer};
+use horizon_client::containers::{ModBlockEntity, ModContainer, ModSlotFilter};
 use horizon_client::items::ItemStack;
 use horizon_world::nbt::{Compound, JavaString, Tag};
 use ntm_core::server::container_bridge::Stack;
@@ -79,6 +79,17 @@ pub(super) fn container(block: &str, container: &mut Option<ModContainer>) {
             menu: c.menu.map(str::to_string),
         });
     }
+}
+
+/// The rules of a machine's slots: what each takes, its limit, the output
+/// ones (the same for the menu, clicks and hoppers).
+pub(super) fn slot_filters(block: &str, filters: &mut Vec<ModSlotFilter>) {
+    filters.extend(ntm_core::native::slot_filters(block).into_iter().map(|f| ModSlotFilter {
+        accept: f.accept,
+        reject: f.reject,
+        max: f.max,
+        output: f.output,
+    }));
 }
 
 /// A slot as ntm-core sees it: id, count and damage (an empty slot, or air,
