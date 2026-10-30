@@ -1,0 +1,1042 @@
+{
+"station": "solidification",
+"source": "content/machine-recipes/solidification.json",
+"recipes": [
+{
+"name": "solidification.0",
+"label": "Gelo",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:64",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"water",
+1000
+]
+],
+"out": [
+[
+"minecraft:ice",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.1",
+"label": "Obsidiana",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:65",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"lava",
+1000
+]
+],
+"out": [
+[
+"minecraft:obsidian",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.2",
+"label": "Gota de Mercúrio",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:66",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"mercury",
+125
+]
+],
+"out": [
+[
+"ntm:nugget_mercury",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.3",
+"label": "Biomassa Compactada ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:67",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"biogas",
+250
+]
+],
+"out": [
+[
+"ntm:biomass_compressed",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.5",
+"label": "Pérola de Ender",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:69",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"enderjuice",
+100
+]
+],
+"out": [
+[
+"minecraft:ender_pearl",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.6",
+"label": "Tijolo de Lama Sólida",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:70",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"watz",
+1000
+]
+],
+"out": [
+[
+"ntm:ingot_mud",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.7",
+"label": "Lingote de Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:71",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"redmud",
+450
+]
+],
+"out": [
+[
+"minecraft:iron_ingot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.8",
+"label": "Sódio",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:72",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"sodium",
+100
+]
+],
+"out": [
+[
+"ntm:powder_sodium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.9",
+"label": "Lingote de Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:73",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"lead",
+100
+]
+],
+"out": [
+[
+"ntm:ingot_lead",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.11",
+"label": "Alcatrão de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:76",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"oil",
+200
+]
+],
+"out": [
+[
+"ntm:oil_tar__crude",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.12",
+"label": "Alcatrão de Craqueamento",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:77",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"crackoil",
+200
+]
+],
+"out": [
+[
+"ntm:oil_tar__crack",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.13",
+"label": "Alcatrão de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:78",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"coaloil",
+200
+]
+],
+"out": [
+[
+"ntm:oil_tar__coal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.14",
+"label": "Alcatrão de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:79",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"heavyoil",
+150
+]
+],
+"out": [
+[
+"ntm:oil_tar__crude",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.15",
+"label": "Alcatrão de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:80",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"heavyoil_vacuum",
+150
+]
+],
+"out": [
+[
+"ntm:oil_tar__crude",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.16",
+"label": "Alcatrão de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:81",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"bitumen",
+100
+]
+],
+"out": [
+[
+"ntm:oil_tar__crude",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.17",
+"label": "Alcatrão de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:82",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"coalcreosote",
+200
+]
+],
+"out": [
+[
+"ntm:oil_tar__coal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.18",
+"label": "Alcatrão de Madeira",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:83",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"woodoil",
+1000
+]
+],
+"out": [
+[
+"ntm:oil_tar__wood",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.19",
+"label": "Cera de Parafina",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:84",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"lubricant",
+100
+]
+],
+"out": [
+[
+"ntm:oil_tar__paraffin",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.21",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:88",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"smear",
+21000
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.22",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:89",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"heatingoil",
+4600
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.23",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:90",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"heatingoil_vacuum",
+1300
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.24",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:91",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"reclaimed",
+15000
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.25",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:92",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"petroil",
+13000
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.26",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:93",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"naphtha",
+16000
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.27",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:94",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"naphtha_crack",
+20000
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.28",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:95",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"diesel",
+3200
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.29",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:96",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"diesel_reform",
+1300
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.30",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:97",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"diesel_crack",
+3400
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.31",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:98",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"diesel_crack_reform",
+1400
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.32",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:99",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"lightoil",
+1200
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.33",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:100",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"lightoil_crack",
+1900
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.34",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:101",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"lightoil_vacuum",
+600
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.35",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:102",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"kerosene",
+700
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.36",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:103",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"kerosene_reform",
+280
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.37",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:105",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"sourgas",
+7200
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.38",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:106",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"reformgas",
+170
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.39",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:107",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"syngas",
+1000
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.40",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:108",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"petroleum",
+1000
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.41",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:109",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"lpg",
+990
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.42",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:111",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"biofuel",
+3600
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.43",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:112",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"aromatics",
+3900
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.44",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:113",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"unsaturateds",
+490
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.45",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:114",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"reformate",
+750
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.46",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:115",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"xylene",
+570
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "solidification.47",
+"label": "Combustível Sólido (Balefire)",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:116",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"balefire",
+110
+]
+],
+"out": [
+[
+"ntm:solid_fuel_bf",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+}
+],
+"skipped": 2
+}

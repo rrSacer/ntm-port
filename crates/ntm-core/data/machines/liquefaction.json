@@ -1,0 +1,790 @@
+{
+"station": "liquefaction",
+"source": "content/machine-recipes/liquefaction.json",
+"recipes": [
+{
+"name": "liquefaction.0",
+"label": "Óleo de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:38",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:coal"
+],
+"n": 1,
+"label": "coal"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"coaloil",
+250
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.1",
+"label": "Óleo de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:39",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"n": 1,
+"label": "Pó de Carvão"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"coaloil",
+250
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.2",
+"label": "Óleo de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:40",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:lignite"
+],
+"n": 1,
+"label": "Linhito"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"coaloil",
+150
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.3",
+"label": "Óleo de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:41",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:powder_lignite"
+],
+"n": 1,
+"label": "Pó de Linhito"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"coaloil",
+150
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.4",
+"label": "Betume",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:42",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:oil_tar__crude"
+],
+"n": 1,
+"label": "Alcatrão de Petróleo"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"bitumen",
+75
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.5",
+"label": "Betume",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:43",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:oil_tar__crack"
+],
+"n": 1,
+"label": "Alcatrão de Craqueamento"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"bitumen",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.6",
+"label": "Betume",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:44",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:oil_tar__coal"
+],
+"n": 1,
+"label": "Alcatrão de Carvão"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"bitumen",
+50
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.7",
+"label": "Cerveja de Raiz de Caneca",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:45",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:acacia_log",
+"minecraft:birch_log",
+"minecraft:dark_oak_log",
+"minecraft:jungle_log",
+"minecraft:oak_log",
+"minecraft:spruce_log"
+],
+"n": 1,
+"label": "acacia log"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"mug",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.8",
+"label": "Sódio Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:46",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:powder_sodium"
+],
+"n": 1,
+"label": "Sódio"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"sodium",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.9",
+"label": "Chumbo Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:47",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:ingot_lead"
+],
+"n": 1,
+"label": "Lingote de Chumbo"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"lead",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.10",
+"label": "Chumbo Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:48",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:powder_lead"
+],
+"n": 1,
+"label": "Pó de Chumbo"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"lead",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.11",
+"label": "Chumbo Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:49",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:block_lead"
+],
+"n": 1,
+"label": "Bloco de Chumbo"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"lead",
+900
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.12",
+"label": "Lava",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:52",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:netherrack"
+],
+"n": 1,
+"label": "netherrack"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"lava",
+250
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.13",
+"label": "Lava",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:53",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:cobblestone"
+],
+"n": 1,
+"label": "cobblestone"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"lava",
+250
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.14",
+"label": "Lava",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:54",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:stone"
+],
+"n": 1,
+"label": "stone"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"lava",
+250
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.15",
+"label": "Lava",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:55",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:obsidian"
+],
+"n": 1,
+"label": "obsidian"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"lava",
+500
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.16",
+"label": "Água",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:56",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:snowball"
+],
+"n": 1,
+"label": "snowball"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"water",
+125
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.17",
+"label": "Água",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:57",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:snow_block"
+],
+"n": 1,
+"label": "snow block"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"water",
+500
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.18",
+"label": "Água",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:58",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:ice"
+],
+"n": 1,
+"label": "ice"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"water",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.19",
+"label": "Água",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:59",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:packed_ice"
+],
+"n": 1,
+"label": "packed ice"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"water",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.20",
+"label": "Suco de Ender",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:60",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:ender_pearl"
+],
+"n": 1,
+"label": "ender pearl"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"enderjuice",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.22",
+"label": "Etanol",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:64",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:sugar"
+],
+"n": 1,
+"label": "sugar"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"ethanol",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.23",
+"label": "Etanol",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:65",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:melon_slice"
+],
+"n": 1,
+"label": "melon slice"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"ethanol",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.26",
+"label": "Biogás",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:68",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:biomass"
+],
+"n": 1,
+"label": "Biomassa"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"biogas",
+125
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.27",
+"label": "Biogás",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:69",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:glyphid_gland_empty"
+],
+"n": 1,
+"label": "Glândula de Fluido de Glyphid"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"biogas",
+2000
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.28",
+"label": "Óleo de Peixe",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:70",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:cod",
+"minecraft:salmon",
+"minecraft:tropical_fish",
+"minecraft:pufferfish"
+],
+"n": 1,
+"label": "cod"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"fishoil",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.29",
+"label": "Óleo de Semente de Girassol",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:71",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:sunflower"
+],
+"n": 1,
+"label": "sunflower"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"sunfloweroil",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.30",
+"label": "Polpa de Semeadura",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:74",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:wheat_seeds"
+],
+"n": 1,
+"label": "wheat seeds"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"seedslurry",
+50
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.31",
+"label": "Polpa de Semeadura",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:75",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:short_grass"
+],
+"n": 1,
+"label": "short grass"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"seedslurry",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.32",
+"label": "Polpa de Semeadura",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:76",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:fern"
+],
+"n": 1,
+"label": "fern"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"seedslurry",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.33",
+"label": "Polpa de Semeadura",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:77",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:vine"
+],
+"n": 1,
+"label": "vine"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"seedslurry",
+100
+]
+],
+"pools": []
+}
+],
+"skipped": 3
+}

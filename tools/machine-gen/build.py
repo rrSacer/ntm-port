@@ -188,8 +188,10 @@ if (root / 'content/machine-recipes/crystallizer.json').exists():
     print(f"crystallizer: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
 
 # Etapas 3 e 4 da cadeia do bedrock: o forno pirolítico, as duas linhas do
-# eletrolisador e os dois modos do forno a arco grande.
-for st, section in (('pyrooven', None), ('electrolyser', 'fluid'), ('electrolyser_metal', 'metal'), ('arc_furnace_solid', 'solid'), ('arc_furnace_fluid', 'fluid')):
+# eletrolisador e os dois modos do forno a arco grande; o lote A do
+# petróleo: o liquefator e o solidificador.
+for st, section in (('pyrooven', None), ('electrolyser', 'fluid'), ('electrolyser_metal', 'metal'), ('arc_furnace_solid', 'solid'), ('arc_furnace_fluid', 'fluid'),
+                    ('liquefaction', None), ('solidification', None)):
     src = st.split('_metal')[0].replace('_solid', '').replace('_fluid', '')
     if (root / f'content/machine-recipes/{src}.json').exists():
         data = generic(src, section)
