@@ -51,11 +51,11 @@ def main():
                 if process.poll() is not None:raise RuntimeError('client exited during startup')
                 if (scratch/'control.sock').exists():
                     state=ctl('state')
-                    if state.get('screen')=='playing':break
+                    if state.get('screen')=='playing' and state.get('player') and state.get('gamemode')=='creative':break
                 time.sleep(.5)
             else:raise TimeoutError('client did not reach playing')
             cmd('time set noon');cmd('weather clear')
-            cmd('fill -9 100 -3 9 100 3 minecraft:stone')
+            cmd('fill -9 100 -10 9 100 4 minecraft:stone')
             machines=['machine_pyrooven','machine_electrolyser','machine_arc_furnace_large']
             for i,name in enumerate(machines):
                 x=-4+i*4
@@ -77,7 +77,14 @@ def main():
                     if reply['block']=='ntm:'+name:break
                     if time.monotonic()>deadline:raise AssertionError((name,reply))
                     ctl('wait 2')
-            cmd('tp @s 0.5 101 -7.5');ctl('look 0 -7');ctl('wait 10')
+            cmd('tp @s 0.5 101 -7.5')
+            deadline=time.monotonic()+15
+            while True:
+                player=ctl('state').get('player')
+                if player and abs(player['position'][2]+7.5)<0.2 and abs(player['position'][1]-101)<0.2:break
+                if time.monotonic()>deadline:raise AssertionError(player)
+                ctl('wait 2')
+            ctl('look 0 -7');ctl('wait 10');ctl('key f1 tap')
             ctl('screenshot '+str(evidence/'machines.png'))
             samples=['arc_electrode__graphite','arc_electrode_burnt__saturnite','scrap_plastic__board_blank',
                 'scrap_plastic__card_processor','chemical_dye__black','chemical_dye__white','chemical_dye__lightblue',
@@ -90,7 +97,7 @@ def main():
                 if all(counts.get('ntm:'+name,0)==1 for name in samples):break
                 if time.monotonic()>deadline:raise AssertionError(counts)
                 ctl('wait 2')
-            ctl('open-inventory');ctl('wait 5');ctl('screenshot '+str(evidence/'items.png'));ctl('close')
+            ctl('key f1 tap');ctl('open-inventory');ctl('wait 5');ctl('screenshot '+str(evidence/'items.png'));ctl('close')
             ctl('quit');process.wait(timeout=60)
         text=(scratch/'client.log').read_text()
         refused=[line for line in text.splitlines() if any(s in line.lower() for s in ['content mod rejected','refused','panicked at'])]
