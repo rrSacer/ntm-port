@@ -151,7 +151,15 @@ impl Server {
         let mut walked = 0;
         while let Some(((dim, f), cables, machines, proxies)) = p.todo.pop() {
             walked += cables.len() + machines.len() + proxies.values().map(Vec::len).sum::<usize>();
-            let nets = fluid_networks(&cables, &machines, &proxies);
+            // Solar boiler ports are only the bottom and top, facing out.
+            let mut faces = Members::new();
+            for &core in machines.keys() {
+                if self.ready.world.machines.get(&(dim.clone(),core)).is_some_and(|m| m.block == "ntm:machine_solar_boiler") {
+                    faces.insert(core,vec![vec![[0,-1,0]]]);
+                    faces.insert([core[0],core[1]+2,core[2]],vec![vec![[0,1,0]]]);
+                }
+            }
+            let nets = if faces.is_empty() { fluid_networks(&cables,&machines,&proxies) } else { fluid_networks_at(&cables, &machines, &proxies, &faces) };
             p.done.push((dim, f, nets));
             if walked >= REBUILD_CELLS_PER_TICK {
                 break;
@@ -205,6 +213,11 @@ impl Server {
 /// carry: built as one graph, a barrel on one port of the cracker filled
 /// another barrel on its other port.
 pub fn fluid_networks(ducts: &BTreeSet<Pos>, machines: &Members, proxies: &Proxies) -> Vec<Vec<Pos>> {
+    fluid_networks_at(ducts,machines,proxies,&Members::new())
+}
+
+/// Port faces for displaced endpoints, overriding the default proxy faces.
+pub fn fluid_networks_at(ducts: &BTreeSet<Pos>, machines: &Members, proxies: &Proxies, faces: &Members) -> Vec<Vec<Pos>> {
     use crate::energy::DIRS;
     let add = |p: Pos, d: Pos| [p[0] + d[0], p[1] + d[1], p[2] + d[2]];
     // Every cell a machine answers at, and the machine.
@@ -216,7 +229,7 @@ pub fn fluid_networks(ducts: &BTreeSet<Pos>, machines: &Members, proxies: &Proxi
         }
     }
     // A machine's core is open where its ports are; its proxies all round.
-    let open = |cell: Pos, d: Pos| match machines.get(&cell) {
+    let open = |cell: Pos, d: Pos| match faces.get(&cell).or_else(||machines.get(&cell)) {
         Some(ports) => ports.iter().any(|port| port.contains(&d)),
         None => true,
     };

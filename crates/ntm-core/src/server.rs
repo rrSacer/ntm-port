@@ -328,7 +328,9 @@ impl Server {
 
 fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
     type Ports = BTreeMap<Pos, Vec<crate::energy::Port>>;
-    let mut dims: BTreeMap<&str, (BTreeSet<Pos>, Ports)> = BTreeMap::new();
+    type PortCells = BTreeMap<(Pos,usize),Pos>;
+    type Shape = (BTreeSet<Pos>, Ports, PortCells);
+    let mut dims: BTreeMap<&str, Shape> = BTreeMap::new();
     for (d, p) in &w.cables {
         dims.entry(d).or_default().0.insert(*p);
     }
@@ -337,13 +339,16 @@ fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
         let ports = registry::ports(spec, m.facing.as_deref());
         if m.kind() != Kind::Inert && !ports.is_empty() {
             dims.entry(d).or_default().1.insert(*p, ports);
+            for (i,cell) in container_bridge::energy_port_cells(&m.block,*p).into_iter().enumerate() {
+                dims.entry(d).or_default().2.insert((*p,i),cell);
+            }
             // A multiblock's bottom cells carry its power, as HBM's proxies.
             let cells = container_bridge::proxy_cells(&m.block, *p, m.facing.as_deref());
             dims.entry(d).or_default().0.extend(cells);
         }
     }
     dims.into_iter()
-        .map(|(d, (c, m))| (d.to_string(), Topology::build(&c, &m)))
+        .map(|(d, (c, m, at))| (d.to_string(), Topology::build_at(&c, &m, &at)))
         .collect()
 }
 

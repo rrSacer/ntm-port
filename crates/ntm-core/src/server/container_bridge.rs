@@ -337,6 +337,14 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
     ("ntm:heater_electric", [0, 0, -2], [0, 0, -1]),
 ];
 
+/// Exact outward port cells, in the order of registry::ports. These do not
+/// become cables: the graph keeps each cell's faces and machine owner.
+pub fn energy_port_cells(block: &str, core: Pos) -> Vec<Pos> {
+    if matches!(block, "ntm:machine_stirling" | "ntm:machine_stirling_steel" | "ntm:machine_stirling_creative") {
+        crate::energy::DIRS.iter().filter(|d| d[1] == 0).map(|d| [core[0]+d[0], core[1], core[2]+d[2]]).collect()
+    } else { Vec::new() }
+}
+
 /// The cells of the multiblock of `block` at `core` that pass energy to
 /// it (HBM's `makeExtra` proxies): its bottom layer but the core.
 pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
@@ -366,7 +374,7 @@ pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
 /// that join the core's fluid networks as ducts. A chain of them reaches the
 /// core: the blast furnace's ports up its front reach it down its column.
 pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
-    ("ntm:machine_solar_boiler", &[[0,1,0], [0,2,0]]),
+    ("ntm:machine_solar_boiler", &[[0,2,0]]),
     // MachineExcavator.getAllPorts: (±1, 1, 3) and (±3, 1, 0). The whole
     // layer above the core holds them and reaches the core through the cell
     // over it.
@@ -706,9 +714,6 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
 /// each a chain of cells from the one next to the core to the port, in the
 /// placer's frame, as energy proxies.
 pub const ENERGY_CHAINS: &[(&str, &[[i32; 3]])] = &[
-    ("ntm:machine_stirling", &[[-1,0,0],[1,0,0],[0,0,-1],[0,0,1]]),
-    ("ntm:machine_stirling_steel", &[[-1,0,0],[1,0,0],[0,0,-1],[0,0,1]]),
-    ("ntm:machine_stirling_creative", &[[-1,0,0],[1,0,0],[0,0,-1],[0,0,1]]),
     // TileEntitySteamEngine.getPorts: power and fluid at the same three.
     ("ntm:machine_steam_engine", &[[0, 1, 0], [-1, 1, 0], [-1, 1, -1], [-1, 1, 1]]),
     // getPowerPorts: at the back, a layer up.

@@ -45,6 +45,14 @@ impl Server {
         for e in std::mem::take(&mut self.queued) {
             self.block_event(host, e);
         }
+        // Adopted block entities must be classified before heat/solar phases,
+        // not first in simulate: otherwise their first thermal tick is lost.
+        for (key,m) in &self.ready.world.machines {
+            if !self.ready.loaded.contains_key(key) {
+                let loaded = host.get_block(&key.0,key.1).is_some_and(|b| blockstate::id_of(&b) == m.block);
+                self.ready.loaded.insert(key.clone(),loaded);
+            }
+        }
         self.native_find_cables(host);
         self.native_redstone(host);
         self.slots_in(host);
@@ -107,7 +115,9 @@ impl Server {
             return true;
         }
         let Ok(m) = serde_json::from_str::<Machine>(json) else { return false };
-        r.world.machines.insert(key.clone(), m.upgraded());
+        let m = m.upgraded();
+        for cell in container_bridge::energy_port_cells(&m.block,pos) { r.native_scan.push_back((dim.to_string(),cell)); }
+        r.world.machines.insert(key.clone(), m);
         r.seen.insert(key.clone());
         r.topo_dirty = true;
         // Its cables aren't kept anywhere: found again from the blocks.

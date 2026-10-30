@@ -1699,7 +1699,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// A machine's fluid ports (the NTM's `TilePortShapes`, on one block): every
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, _facing: Option<&str>) -> Vec<crate::energy::Port> {
-    if spec.id == "ntm:machine_solar_boiler" { return vec![vec![[0,-1,0], [0,1,0]]]; }
+    if spec.id == "ntm:machine_solar_boiler" { return vec![vec![[0,-1,0]]]; }
     match spec.kind {
         Kind::FluidStore
         | Kind::Crafter

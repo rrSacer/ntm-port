@@ -77,12 +77,22 @@ impl Topology {
     /// Flood fill over nodes joined face to face. `machines` holds each
     /// machine's ports (none: not on any network).
     pub fn build(cables: &BTreeSet<Pos>, machines: &BTreeMap<Pos, Vec<Port>>) -> Self {
+        Self::build_at(cables, machines, &BTreeMap::new())
+    }
+
+    /// A port may sit on a multiblock's edge instead of its core. It keeps
+    /// its owner's identity and outward faces; it isn't a six-face cable.
+    pub fn build_at(cables: &BTreeSet<Pos>, machines: &BTreeMap<Pos, Vec<Port>>, positions: &BTreeMap<(Pos, usize), Pos>) -> Self {
+        let mut ports_at: BTreeMap<Pos, Vec<(Pos,usize)>> = BTreeMap::new();
+        for (&core,ports) in machines {
+            for i in 0..ports.len() { ports_at.entry(positions.get(&(core,i)).copied().unwrap_or(core)).or_default().push((core,i)); }
+        }
         let open = |p: Pos, i: usize, d: Pos| machines.get(&p).is_some_and(|ports| ports[i].contains(&d));
         // The nodes joined to `n`.
         let next = |n: Node| -> Vec<Node> {
             let (p, faces): (Pos, Vec<Pos>) = match n {
                 Node::Cable(p) => (p, DIRS.to_vec()),
-                Node::Port(p, i) => (p, machines[&p][i].clone()),
+                Node::Port(p, i) => (positions.get(&(p,i)).copied().unwrap_or(p), machines[&p][i].clone()),
             };
             let mut out = Vec::new();
             for d in faces {
@@ -90,11 +100,9 @@ impl Topology {
                 if cables.contains(&q) {
                     out.push(Node::Cable(q));
                 }
-                if let Some(ports) = machines.get(&q) {
-                    for j in 0..ports.len() {
-                        if open(q, j, neg(d)) {
-                            out.push(Node::Port(q, j));
-                        }
+                if let Some(ports) = ports_at.get(&q) {
+                    for &(core,j) in ports {
+                        if open(core, j, neg(d)) { out.push(Node::Port(core, j)); }
                     }
                 }
             }

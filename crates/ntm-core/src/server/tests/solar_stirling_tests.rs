@@ -172,3 +172,140 @@ fn repair_accepts_only_the_gears_material_and_not_on_a_good_engine() {
     );
     assert!(stirling(&mut g, core).has_cog);
 }
+
+#[test]
+fn stirling_ports_only_connect_outwards_and_find_the_cable_after_reopening() {
+    let mut g = game();
+    let core = [0, 71, 0];
+    g.place(core, "ntm:machine_stirling[facing=north,honey_level=0]");
+    g.place([1, 70, 0], "ntm:red_cable"); // below an arm: not an outward connection
+    let bad = [2, 70, 0];
+    g.place(bad, "ntm:machine_battery[facing=north]");
+    g.run(1);
+    let Data::SolarStirling(s) = &mut g
+        .ready()
+        .world
+        .machines
+        .get_mut(&(OW.into(), core))
+        .unwrap()
+        .data
+    else {
+        panic!()
+    };
+    let SolarStirling::Stirling(s) = &mut **s else {
+        panic!()
+    };
+    s.power = 100;
+    g.run(1);
+    let Data::Battery(b) = g.machine(bad).data else {
+        panic!()
+    };
+    assert_eq!(b.power, 0);
+    g.place([2, 71, 0], "ntm:red_cable");
+    let good = [3, 71, 0];
+    g.place(good, "ntm:machine_battery[facing=north]");
+    g.run(1);
+    let Data::SolarStirling(s) = &mut g
+        .ready()
+        .world
+        .machines
+        .get_mut(&(OW.into(), core))
+        .unwrap()
+        .data
+    else {
+        panic!()
+    };
+    let SolarStirling::Stirling(s) = &mut **s else {
+        panic!()
+    };
+    s.power = 100;
+    // Save the buffer without ticking it away; cables aren't persisted.
+    let json = serde_json::to_string(&g.machine(core)).unwrap();
+    g.world.borrow_mut().saved.insert((OW.into(), core), json);
+    let mut loaded = Game::new(g.world.clone());
+    loaded.run(1);
+    let Data::Battery(b) = loaded.machine(good).data else {
+        panic!()
+    };
+    assert_eq!(b.power, 100);
+}
+#[test]
+fn reopening_a_hot_engine_does_not_reset_its_saved_overspeed() {
+    let mut g = game();
+    let core = [0, 71, 0];
+    let source = [0, 70, 0];
+    g.place(core, "ntm:machine_stirling[facing=north,honey_level=0]");
+    g.place(source, "ntm:heater_firebox[facing=north,honey_level=0]");
+    g.run(1);
+    let Data::SolarStirling(s) = &mut g
+        .ready()
+        .world
+        .machines
+        .get_mut(&(OW.into(), core))
+        .unwrap()
+        .data
+    else {
+        panic!()
+    };
+    let SolarStirling::Stirling(s) = &mut **s else {
+        panic!()
+    };
+    s.overspeed = 300;
+    let Data::Firebox(f) = &mut g
+        .ready()
+        .world
+        .machines
+        .get_mut(&(OW.into(), source))
+        .unwrap()
+        .data
+    else {
+        panic!()
+    };
+    f.heat = 4000;
+    for p in [core, source] {
+        let json = serde_json::to_string(&g.machine(p)).unwrap();
+        g.world.borrow_mut().saved.insert((OW.into(), p), json);
+    }
+    let mut loaded = Game::new(g.world.clone());
+    loaded.run(1);
+    assert!(
+        !stirling(&mut loaded, core).has_cog,
+        "301st hot tick still loses the gear on reload"
+    );
+}
+
+#[test]
+fn solar_boiler_has_only_the_bottom_and_top_fluid_ports() {
+    use super::super::fluid_server::fluid_networks_at;
+    let core = [0, 70, 0];
+    let machines = BTreeMap::from([
+        (core, vec![vec![[0, -1, 0]]]),
+        ([0, 68, 0], vec![crate::energy::DIRS.to_vec()]),
+        ([0, 74, 0], vec![crate::energy::DIRS.to_vec()]),
+    ]);
+    let proxies = BTreeMap::from([(core, vec![[0, 72, 0]])]);
+    let faces = BTreeMap::from([
+        (core, vec![vec![[0, -1, 0]]]),
+        ([0, 72, 0], vec![vec![[0, 1, 0]]]),
+    ]);
+    assert_eq!(
+        fluid_networks_at(
+            &BTreeSet::from([[0, 69, 0], [0, 73, 0]]),
+            &machines,
+            &proxies,
+            &faces
+        )
+        .len(),
+        2
+    );
+    // Side access to the middle and to the top is not a real port.
+    assert!(
+        fluid_networks_at(
+            &BTreeSet::from([[0, 71, 0], [1, 71, 0], [1, 72, 0], [1, 73, 0], [1, 74, 0]]),
+            &machines,
+            &proxies,
+            &faces
+        )
+        .is_empty()
+    );
+}
