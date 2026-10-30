@@ -141,6 +141,7 @@ impl Server {
             }
             members.push(((dim.clone(), f.clone()), m));
         }
+        super::trace(30);
         let sig = h | 1;
         let target = self.fluidnet.pending.as_ref().map_or(self.fluidnet.sig, |p| p.sig);
         if sig != target {
@@ -173,6 +174,7 @@ impl Server {
             self.fluidnet.sig = p.sig;
             self.fluidnet.nets = p.done;
         }
+        super::trace(31);
     }
 
     /// Each loaded gas centrifuge passes its output to the one behind it, or

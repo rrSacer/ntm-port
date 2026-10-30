@@ -359,7 +359,9 @@ impl Server {
         if matches!(self.session, Session::Identifying) {
             self.identify(host);
         }
+        trace(1);
         self.run_probes(host);
+        trace(2);
         if was_ready && self.ready().is_some() {
             if let Some(wid) = self.wid().map(str::to_string) {
                 self.recover_columns(host, &wid);
@@ -368,15 +370,23 @@ impl Server {
                 self.block_event(host, e);
             }
             self.radiation_tick(host);
+            trace(3);
             self.slots_in(host);
+            trace(4);
             self.simulate(host);
+            trace(5);
             self.fluids_tick();
+            trace(6);
             self.fraction_tick();
             self.foundry_tick(host);
+            trace(7);
             self.excavator_tick(host);
             self.bombs_tick(host);
+            trace(8);
             self.run_txs(host);
+            trace(9);
             self.slots_out(host);
+            trace(10);
         } else if self.queued.len() > 4096 {
             self.queued.drain(..2048);
         }
@@ -384,6 +394,7 @@ impl Server {
         // its transactions) and the probes are written first, and only what
         // they made durable is published.
         let saved = self.save_urgent(host);
+        trace(11);
         let probes_stored = self.store_probes(host);
         self.probes_durable = probes_stored;
         if probes_stored {
@@ -536,10 +547,12 @@ impl Server {
     }
 
     fn enter_world(&mut self, host: &mut impl ServerHost, wid: Wid) {
+        trace(20);
         let (generation, mut world) = match persist::load(host, &wid) {
             Some((g, d)) => (g, WorldState::from_save(d)),
             None => (0, WorldState::default()),
         };
+        trace(21);
         if world.salt.is_empty() {
             world.salt = format!("{:06x}", self.entropy.draw() & 0xff_ffff);
         }
@@ -1938,3 +1951,8 @@ mod radiation_server;
 
 #[cfg(test)]
 mod tests;
+
+/// A fuel mark for the harness of `spikes/m2-fuel` (nothing in the mod).
+pub(super) fn trace(id: u32) {
+    ntm_explosion::trace(100 + id);
+}
