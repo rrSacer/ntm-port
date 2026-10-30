@@ -182,7 +182,8 @@ pub fn deposit(x: i32, z: i32) -> Deposit {
 /// fortune: 1 + 0.1 a level).
 pub fn ore_data(d: &[f64; 6], mult: f64) -> String {
     let parts: Vec<String> = TYPES.iter().zip(d).map(|(t, v)| format!("{t}:{}d", (v * mult * 1e6).round() / 1e6)).collect();
-    format!("{{ntm_ore:{{{}}}}}", parts.join(","))
+    let s = format!("{{ntm_ore:{{{}}}}}", parts.join(","));
+    crate::snbt::canonical(&s).unwrap_or(s)
 }
 
 /// The densities back from the item data (0 for what isn't there).
@@ -443,7 +444,7 @@ mod tests {
     fn ore_data_round_trips() {
         let d = [1.25, 0.5, 0.0, 0.125, 2.0, 0.75];
         let s = ore_data(&d, 1.2);
-        assert_eq!(s, "{ntm_ore:{light:1.5d,heavy:0.6d,rare:0d,actinide:0.15d,nonmetal:2.4d,crystal:0.9d}}");
+        assert_eq!(s, "{ntm_ore:{actinide:0.15d,crystal:0.9d,heavy:0.6d,light:1.5d,nonmetal:2.4d,rare:0.0d}}");
         let back = read_ore_data(Some(&s));
         for (a, b) in back.iter().zip(d.iter().map(|v| v * 1.2)) {
             assert!((a - b).abs() < 1e-6);

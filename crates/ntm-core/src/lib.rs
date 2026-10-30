@@ -32,6 +32,7 @@ pub mod shredder;
 pub mod radiation;
 pub mod registry;
 pub mod server;
+pub mod snbt;
 pub mod token;
 pub mod tx;
 pub mod view;

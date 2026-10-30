@@ -530,9 +530,16 @@ impl Server {
             .map(|(k, _)| k.clone())
             .collect();
         for key in keys {
-            let Some(now) = host.machine_slots(&key.0, key.1) else {
+            let Some(mut now) = host.machine_slots(&key.0, key.1) else {
                 continue;
             };
+            // Item data as the engine writes it back, canonical: compared
+            // and piled as the same data the port wrote.
+            for s in now.iter_mut().flatten() {
+                if let Some(c) = s.custom.as_deref().and_then(crate::snbt::canonical) {
+                    s.custom = Some(c);
+                }
+            }
             let Some(m) = r.world.machines.get_mut(&key) else { continue };
             let Some(layout) = layout(&m.block) else { continue };
             let first = !r.bridge.last.contains_key(&key);
