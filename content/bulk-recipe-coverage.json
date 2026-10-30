@@ -1370,6 +1370,15 @@
       }
     },
     {
+      "id": "ntm:bulk__36bc85e91262b337e9",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:611",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_transformer",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__4cf23a1312df8ddb68",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:634",
       "type": "minecraft:crafting_shaped",
@@ -1573,6 +1582,24 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:upgrade_nullifier",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2711902f470dc685ca",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:723",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:upgrade_smelter",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a9a8798a99a51e79eb",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:724",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:upgrade_shredder",
         "count": 1
       }
     },
@@ -5645,7 +5672,7 @@
       }
     }
   ],
-  "generated_count": 627,
+  "generated_count": 630,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -7250,12 +7277,6 @@
       "expression": "new ItemStack(ModItems.sat_coord), new Object[] { \"SII\", \"SCA\", \"SPP\", 'I', STEEL.ingot(), 'S', STAR.ingot(), 'P', ModItems.plate_polymer, 'C', ModItems.sat_chip, 'A', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ADVANCED) }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:611",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_transformer",
-      "expression": "new ItemStack(ModBlocks.machine_transformer), new Object[] { \"SCS\", \"MDM\", \"SCS\", 'S', IRON.ingot(), 'D', MINGRADE.ingot(), 'M',ModItems.coil_copper, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.CAPACITOR) }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:612",
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item radiobox",
@@ -7602,18 +7623,6 @@
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary ANY_HARDPLASTIC.ingot()",
       "expression": "new ItemStack(ModItems.catalytic_converter, 1), new Object[] { \"PCP\", \"PBP\", \"PCP\", 'P', ANY_HARDPLASTIC.ingot(), 'C', CO.dust(), 'B', ANY_BISMOID.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:723",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_transformer",
-      "expression": "new ItemStack(ModItems.upgrade_smelter, 1), new Object[] { \"PHP\", \"CUC\", \"DTD\", 'P', CU.plate(), 'H', Blocks.hopper, 'C', ModItems.coil_tungsten, 'U', ModItems.upgrade_template, 'D', ModItems.coil_copper, 'T', ModBlocks.machine_transformer }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:724",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_transformer",
-      "expression": "new ItemStack(ModItems.upgrade_shredder, 1), new Object[] { \"PHP\", \"CUC\", \"DTD\", 'P', ModItems.motor, 'H', Blocks.hopper, 'C', ModItems.blades_titanium, 'U', ModItems.upgrade_smelter, 'D', TI.plate(), 'T', ModBlocks.machine_transformer }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:725",

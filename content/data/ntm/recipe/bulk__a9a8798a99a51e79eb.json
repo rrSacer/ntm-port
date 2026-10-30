@@ -1,0 +1,21 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:upgrade_shredder",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PHP",
+    "CUC",
+    "DTD"
+  ],
+  "key": {
+    "P": "ntm:motor",
+    "H": "minecraft:hopper",
+    "C": "ntm:blades_titanium",
+    "U": "ntm:upgrade_smelter",
+    "D": "#ntm:bulk/platetitanium",
+    "T": "ntm:machine_transformer"
+  }
+}

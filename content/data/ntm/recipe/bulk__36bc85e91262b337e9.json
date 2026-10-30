@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:machine_transformer",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SCS",
+    "MDM",
+    "SCS"
+  ],
+  "key": {
+    "S": "#ntm:bulk/ingotiron",
+    "D": "#ntm:bulk/ingotmingrade",
+    "M": "ntm:coil_copper",
+    "C": "ntm:circuit__capacitor"
+  }
+}
