@@ -24,8 +24,9 @@ pub enum Show {
     /// Vanilla particles (`ServerLevel.sendParticles`): `id` as
     /// `minecraft:<name>`, RGBA for the coloured ones.
     Particles { id: &'static str, color: [f32; 4], at: [f64; 3], spread: [f64; 3], speed: f64, count: i32 },
-    /// A vanilla sound event, heard to 16·volume blocks.
-    Sound { id: &'static str, at: [f64; 3], volume: f32, pitch: f32 },
+    /// A vanilla sound event from a vanilla source (`block`, `weather`...),
+    /// heard to 16·volume blocks.
+    Sound { id: &'static str, source: &'static str, at: [f64; 3], volume: f32, pitch: f32 },
     /// A status effect on a player (by id).
     Effect { player: String, id: &'static str, seconds: u32, amplifier: u8 },
 }
@@ -67,7 +68,7 @@ impl Visuals for Optimized {
         match s.blast {
             Blast::Conventional { power } => {
                 let v = (power / 4.0).max(1.0);
-                out.push(Show::Sound { id: "minecraft:entity.generic.explode", at, volume: v, pitch: 0.7 });
+                out.push(Show::Sound { id: "minecraft:entity.generic.explode", source: "block", at, volume: v, pitch: 0.7 });
                 if n > 0 {
                     let spread = f64::from((power / 4.0).max(1.0));
                     out.push(Show::Particles { id: "minecraft:explosion_emitter", color: WHITE, at, spread: [spread; 3], speed: 0.0, count: (n / 8).max(1) });
@@ -77,8 +78,8 @@ impl Visuals for Optimized {
                 let r = radius as f32;
                 // Heard to 16·volume blocks.
                 let v = (r / 8.0).clamp(4.0, 64.0);
-                out.push(Show::Sound { id: "minecraft:entity.generic.explode", at, volume: v, pitch: 0.5 });
-                out.push(Show::Sound { id: "minecraft:entity.lightning_bolt.thunder", at, volume: v, pitch: 0.5 });
+                out.push(Show::Sound { id: "minecraft:entity.generic.explode", source: "master", at, volume: v, pitch: 0.5 });
+                out.push(Show::Sound { id: "minecraft:entity.lightning_bolt.thunder", source: "weather", at, volume: v, pitch: 0.5 });
                 if n > 0 {
                     let flash = if matches!(s.blast, Blast::Balefire { .. }) { [0.3, 1.0, 0.3, 1.0] } else { WHITE };
                     out.push(Show::Particles { id: "minecraft:flash", color: flash, at, spread: [0.0; 3], speed: 0.0, count: 1 });
@@ -107,7 +108,7 @@ impl Visuals for Optimized {
             return Vec::new();
         }
         let at = center(pos);
-        let mut out = vec![Show::Sound { id: "minecraft:entity.tnt.primed", at, volume: 1.0, pitch: 1.0 }];
+        let mut out = vec![Show::Sound { id: "minecraft:entity.tnt.primed", source: "block", at, volume: 1.0, pitch: 1.0 }];
         if cfg.particles > 0 {
             out.push(Show::Particles { id: "minecraft:smoke", color: WHITE, at: [at[0], at[1] + 0.5, at[2]], spread: [0.1; 3], speed: 0.01, count: 8 });
         }

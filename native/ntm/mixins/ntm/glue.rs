@@ -262,20 +262,29 @@ impl ServerHost for Host<'_, '_> {
             eprintln!("ntm: effect {id}: {e}");
         }
     }
-    /// Particles in the dimension in play (`native_send_particles`, API 11);
-    /// sounds wait for `native_play_sound` (upstream #4574).
+    /// Particles and sounds in the dimension in play (`native_send_particles`,
+    /// API 11; `native_play_sound`, API 32).
     fn show(&mut self, dim: &str, show: &ntm_core::blast::visuals::Show) {
         use horizon_client::particles::{ParticleOptions, ParticleType};
-        let ntm_core::blast::visuals::Show::Particles { id, color, at, spread, speed, count } = show else { return };
+        use ntm_core::blast::visuals::Show;
         if dim != self.game.dim.id() {
             return;
         }
-        let Some(ty) = ParticleType::from_name(id) else { return };
-        let mut options = ParticleOptions::simple(ty);
-        options.color = *color;
-        let sent = self.game.with_level(|_, level, _| level.native_send_particles(&options, None, *at, *spread, *speed, *count));
+        let (what, sent) = match show {
+            Show::Particles { id, color, at, spread, speed, count } => {
+                let Some(ty) = ParticleType::from_name(id) else { return };
+                let mut options = ParticleOptions::simple(ty);
+                options.color = *color;
+                (id, self.game.with_level(|_, level, _| level.native_send_particles(&options, None, *at, *spread, *speed, *count)))
+            }
+            Show::Sound { id, source, at, volume, pitch } => {
+                let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| s == source) else { return };
+                (id, self.game.with_level(|_, level, _| level.native_play_sound(id, *at, source, *volume, *pitch)))
+            }
+            Show::Effect { .. } => return,
+        };
         if !sent {
-            eprintln!("ntm: particles {id} refused");
+            eprintln!("ntm: {what} refused");
         }
     }
     fn set_player_value(&mut self, id: &str, key: &str, value: i64) {

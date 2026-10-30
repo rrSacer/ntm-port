@@ -117,7 +117,7 @@ O que o mundo guarda fora dos block entities (`ntm_core::persist`): as detonaç�
 **Lacunas que a remoção deixa** (todas com hook ou helper já previstos no plano):
 
 - ~~**Radiação do inventário**~~, ~~**dano das bombas**~~, ~~**detonador**~~ e ~~**lista de jogadores**~~: voltaram na L4 (abaixo).
-- **Sons das bombas:** eram linhas de comando do cliente; voltam com o `native_play_sound` (abaixo). As partículas já voltaram.
+- ~~**Sons e partículas das bombas**~~: voltaram (abaixo).
 - **O que a máquina guarda fora dos slots** (metal fundido como sucata, itens de uma máquina sem slots) vai a `ServerHost::drop_items`, que o bundle ainda não implementa: não há helper para soltar itens no mundo.
 - O código da tela antiga (`view.rs` e os `view`/`action` das máquinas) ficou, sem caminho que o chame. Sai quando as telas nativas cobrirem tudo.
 
@@ -134,7 +134,7 @@ O host do bundle lê os jogadores vivos (`native_players`) a cada tick; o UUID �
 | Lacuna | Upstream | Estado |
 | --- | --- | --- |
 | Partículas das bombas | `GameLevel::native_send_particles` (#4390, contraparte de `ServerLevel.sendParticles`) | Em uso: o pavio solta fumaça; a carga, o `explosion_emitter`; a nuke, o clarão, o emissor e o cogumelo (`blast::visuals`, `ServerHost::show`). Só na dimensão em tick. |
-| Sons das bombas | `GameLevel::native_play_sound` (#4574, issue #4400) | PR aberto; o fbef4942 o fixa como API 32 na `ntm-next`. Os sons já saem de `blast::visuals` e o host os ignora até lá. |
+| Sons das bombas | `GameLevel::native_play_sound` (#4574, issue #4400) | Em uso desde a `ntm-next` `908d043ef` (API 32, #4574 e #4595 fixados pelo fbef4942): estouro, trovão da nuke e pavio, cada um com a sua fonte vanilla. Em jogo, o motor aceitou todos; ouvir depende de um dispositivo de áudio, que o ambiente dos agentes não tem. |
 | Texto ao próprio jogador (detonador) | Nada. `native_tell` só alcança convidados LAN; `native_chat` é do cliente. | Lacuna; pedir ao upstream. |
 | Agachar com item na mão (ligar o detonador) | Nada. `use_block` traz `sneaking` só de mãos vazias. | Lacuna; pedir ao upstream. |
 
