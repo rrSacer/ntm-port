@@ -1085,6 +1085,12 @@ agente de conteúdo (`tools/machine-gen/build.py` → `data/machines/heaters.jso
   - o trocador, com líquido de arrefecimento quente virando frio;
   - o forno sobre uma firebox, puxando o calor dela.
   - Também: saves inertes carregam como aquecedores.
+- **Em jogo** (`tools/test-game/bedrock.py`, etapa `energia_1`, sem "took too long"), cada um com uma caldeira em cima e água de barril:
+  - o queimador de óleo, carregado por 16 tanques de óleo de aquecimento no slot de entrada, ligado e posto a 10 mB/t pelo controle deslizante: a caldeira, 2 acima, encheu os 1.600.000 mB de vapor;
+  - o aquecedor elétrico, com a potência 4 pela tela antiga e uma bateria no plugue: 192.200 mB de vapor;
+  - o trocador de calor: 16.000 mB de líquido de arrefecimento quente de um barril viraram frio, e a caldeira encheu de vapor (e gastou toda a água do barril).
+  - A tela antiga do elétrico só abre olhando o núcleo, que fica cercado: a potência se ajusta antes de pôr a caldeira em cima.
+  - Máquinas postas com o motor sem mods não são reconhecidas depois (o limite já descrito em `fundacao.md`); foi preciso pô-las de novo.
 
 ## Energia, lote 2: motor a vapor, turbinas e condensadores (`steam.rs`)
 
