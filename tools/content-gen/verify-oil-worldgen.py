@@ -37,6 +37,10 @@ def main():
     parser.add_argument('--resources',type=Path,required=True)
     parser.add_argument('--radius',type=int,default=192)
     parser.add_argument('--seed',type=int,default=1768123)
+    parser.add_argument('--center',nargs=2,type=int,default=[0,0])
+    parser.add_argument('--skip-desert',action='store_true')
+    parser.add_argument('--require-sand',action='store_true')
+    parser.add_argument('--label',default='worldgen')
     args=parser.parse_args()
     evidence=ROOT/'content-gen-evidence/petroleum-d';evidence.mkdir(parents=True,exist_ok=True)
     home=Path(tempfile.mkdtemp(prefix='content-oil-worldgen-',dir=ROOT.parent/'.agent-tmp'))
@@ -70,14 +74,14 @@ def main():
                     except (OSError,ValueError):pass
                 time.sleep(.5)
             else:raise TimeoutError('server startup')
-            print(ctl(f'console execute in minecraft:overworld run pregen start {args.radius} square 0 0'),flush=True)
+            print(ctl(f'console execute in minecraft:overworld run pregen start {args.radius} square {args.center[0]} {args.center[1]}'),flush=True)
             deadline=time.monotonic()+3600
             while time.monotonic()<deadline:
                 time.sleep(2);r=ctl('console pregen status');text=str(r)
                 if 'No pregeneration' in text or '100%' in text or 'not running' in text.lower():break
             else:raise TimeoutError('oil pregeneration')
             desert=None
-            located=ctl('console locate biome minecraft:desert')
+            located=ctl('console locate biome minecraft:desert') if not args.skip_desert else {}
             print({'locate_desert':located},flush=True)
             match=re.search(r'\[(-?\d+),\s*(-?\d+),\s*(-?\d+)\]',str(located))
             if match:
@@ -93,7 +97,8 @@ def main():
         spec=importlib.util.spec_from_file_location('scan',ROOT/'tools/content-gen/world-scan.py')
         scan=importlib.util.module_from_spec(spec);spec.loader.exec_module(scan)
         n=args.radius//16;world=home/'world/dimensions/minecraft/overworld'
-        ores,chunks=scan.ore_map(world,(-n,n,-n,n));report={'home':str(home),'seed':args.seed,'radius':args.radius,'chunks':len(chunks),'deposits':{}}
+        cx,cz=[v//16 for v in args.center]
+        ores,chunks=scan.ore_map(world,(cx-n,cx+n,cz-n,cz+n));report={'home':str(home),'seed':args.seed,'radius':args.radius,'center':args.center,'chunks':len(chunks),'deposits':{}}
         for name in ['ore_oil','ore_bedrock_oil','ore_oil_sand']:
             ps=[p for p,ident in ores.items() if ident=='ntm:'+name]
             groups=components(ps);report['deposits'][name]={'blocks':len(ps),'y_counts':dict(sorted(collections.Counter(p[1] for p in ps).items())),
@@ -108,13 +113,16 @@ def main():
                     'components':components(ps)}
         refused=[line for line in (home/'server.log').read_text().splitlines() if any(s in line.lower() for s in ['content mod rejected','refused','panicked at'])]
         report['refused']=refused
-        (evidence/'worldgen.json').write_text(json.dumps(report,indent=2)+'\n')
+        (evidence/f'{args.label}.json').write_text(json.dumps(report,indent=2)+'\n')
         print(json.dumps(report),flush=True)
         assert not refused,refused
         assert report['chunks']==(2*n+1)**2,report['chunks']
-        assert report['deposits']['ore_oil']['blocks']>0,'no oil'
-        bedrock=report['deposits']['ore_bedrock_oil'];assert bedrock['blocks']>0,'no bedrock oil'
-        assert all(-64<=int(y)<=-60 for y in bedrock['y_counts']),'bedrock oil height'
+        if args.require_sand:
+            assert report['deposits']['ore_oil_sand']['blocks']>0,'no oil sand'
+        else:
+            assert report['deposits']['ore_oil']['blocks']>0,'no oil'
+            bedrock=report['deposits']['ore_bedrock_oil'];assert bedrock['blocks']>0,'no bedrock oil'
+            assert all(-64<=int(y)<=-60 for y in bedrock['y_counts']),'bedrock oil height'
         assert all(56<=int(y)<=71 for y in report['deposits']['ore_oil_sand']['y_counts']),'oil sand height'
     finally:
         if process and process.poll() is None:
@@ -122,8 +130,8 @@ def main():
             try:process.wait(timeout=30)
             except subprocess.TimeoutExpired:process.kill();process.wait()
         if mute and mute.poll() is None:mute.terminate();mute.wait(timeout=10)
-        (evidence/'worldgen-control.json').write_text(json.dumps(checks,indent=2)+'\n')
-        if (home/'server.log').exists():shutil.copy2(home/'server.log',evidence/'worldgen-server.log')
+        (evidence/f'{args.label}-control.json').write_text(json.dumps(checks,indent=2)+'\n')
+        if (home/'server.log').exists():shutil.copy2(home/'server.log',evidence/f'{args.label}-server.log')
 
 
 if __name__=='__main__':main()
