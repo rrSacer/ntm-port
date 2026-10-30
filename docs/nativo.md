@@ -115,3 +115,7 @@ O hook `use_block` leva o clique direito numa célula de máquina ao `Server::na
 ## O duto pelo identificador de fluido (30/10)
 
 No NTM, o duto não tem tela: o tipo vem do identificador de fluido na mão (`FluidDuctBase.handleActivation`). O conteúdo tem o `ntm:fluid_identifier_multi`, com o tipo em `custom_data` `{ntm_fluid:"<fluido>"}` (`bec9b460`). O hook `use_item` lê esse tipo e o `Server::native_use_item` o põe no duto. Em jogo, um duto posto por `/setblock` passou de sem tipo a `water` com um clique do identificador. Ainda faltam: o clique agachado que muda os dutos ligados (`changeTypeRecursively`), o ALT que copia o tipo do duto para o identificador, a GUI de escolha do identificador e o slot dele no barril.
+
+## Redstone (30/10, `ntm-next` `15d31b261`, API 25)
+
+O host do bundle lê o sinal com `native_redstone_many`, uma chamada por dimensão para todas as baterias e bombas carregadas (`Server::native_redstone`). A bateria usa o modo redHigh com sinal e o redLow sem (as duas do `GUIMachineBattery`). A bomba usa o sinal no lugar do `lit` da lâmpada: as nukes da C2 estão em beehive e não têm `lit`; as 4 cargas simples seguem na lâmpada e leem igual. Em jogo, uma bateria posta por `/setblock` encheu com a bateria criativa vinda de um funil (dados `[1.000.000, 1.000.000, 1, 2, 1]`) e seguiu sem pânico com um bloco de redstone ao lado. O efeito do redHigh se vê pela tela nativa, que depende da L2.

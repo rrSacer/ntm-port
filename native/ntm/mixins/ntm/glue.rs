@@ -196,6 +196,9 @@ impl ServerHost for Host<'_, '_> {
     fn machine_buttons(&mut self) -> Vec<(String, String, [i32; 3], u32)> {
         std::mem::take(&mut self.buttons)
     }
+    fn redstone_many(&mut self, dim: &str, cells: &[[i32; 3]]) -> Vec<Option<u8>> {
+        self.game.native_redstone_many(dim, cells)
+    }
     fn save_machine(&mut self, dim: &str, p: [i32; 3], json: &str) {
         self.entity(dim, p, |e| {
             e.nbt.insert(JavaString::from(STATE), Tag::String(JavaString::from(json)));

@@ -6,7 +6,7 @@ priority = 100
 # The commit it was built and tested on: ntm-next (upstream main plus the
 # merged hook PRs; its `pins`). It uses only named hook points.
 [compatibility]
-horizon_revision = "c6ad4a73ec15fbfacd62b46593459220e156a636"
+horizon_revision = "15d31b261028dbf336d3f7294512c5a4a7eb19cc"
 
 # The logic, plain Rust (cargo test against the fake world): copied into
 # this folder by tools/package-native.sh, never kept here.
