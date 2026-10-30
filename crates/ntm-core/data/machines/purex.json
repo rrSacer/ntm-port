@@ -968,6 +968,51 @@
 "pools": []
 },
 {
+"name": "purex.schraranium",
+"label": "Extração de Schrabídio de Lingote de Schrarânio",
+"source": "PUREXRecipes.java:524",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_schraranium"
+],
+"n": 1,
+"label": "Lingote de Schrarânio"
+}
+],
+"fin": [
+[
+"kerosene",
+2000
+],
+[
+"nitric_acid",
+1000
+]
+],
+"out": [
+[
+"ntm:nugget_schrabidium",
+3,
+1.0
+],
+[
+"ntm:nugget_uranium",
+3,
+1.0
+],
+[
+"ntm:nugget_neptunium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "purex.schrabpwr",
 "label": "Extração de Schrabídio de Haste de Combustível PWR MEP Esgotado",
 "source": "PUREXRecipes.java:540",
@@ -1060,5 +1105,5 @@
 "group": "autoswitch.schrab"
 }
 ],
-"skipped": 37
+"skipped": 36
 }

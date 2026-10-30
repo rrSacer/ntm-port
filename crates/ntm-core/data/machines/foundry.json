@@ -2370,6 +2370,12 @@
 648
 ]
 ],
+"ntm:block_graphite": [
+[
+"graphite",
+648
+]
+],
 "ntm:block_lanthanium": [
 [
 "lanthanium",
@@ -2989,6 +2995,12 @@
 "ntm:ingot_schrabidium": [
 [
 "schrabidium",
+72
+]
+],
+"ntm:ingot_schraranium": [
+[
+"schraranium",
 72
 ]
 ],
@@ -6754,6 +6766,10 @@
 "ntm:ingot_schrabidate",
 1
 ],
+"schraranium": [
+"ntm:ingot_schraranium",
+1
+],
 "ghiorsium": [
 "ntm:ingot_gh336",
 1
@@ -7466,6 +7482,10 @@
 ],
 "schrabidate": [
 "ntm:ingot_schrabidate",
+9
+],
+"schraranium": [
+"ntm:ingot_schraranium",
 9
 ],
 "ghiorsium": [

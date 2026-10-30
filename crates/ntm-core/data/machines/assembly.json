@@ -1878,6 +1878,288 @@
 "pools": []
 },
 {
+"name": "ass.acidizer",
+"label": "Acidificador de Minério",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:289",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 2,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:shell__titanium"
+],
+"n": 3,
+"label": "Carcaça de Titânio"
+},
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"n": 4,
+"label": "Lingote de Desh"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 1,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 2,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_crystallizer",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.electrolyzer",
+"label": "Máquina de Eletrólise",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:292",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 8,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 16,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 8,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"n": 16,
+"label": "Tijolo Refratário"
+},
+{
+"ids": [
+"ntm:arc_electrode__graphite"
+],
+"n": 1,
+"label": "Eletrodo de Grafite"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 4,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_electrolyser",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pyrooven",
+"label": "Forno de Pirólise",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:338",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 16,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 24,
+"label": "Barra de Plástico Rígido"
+},
+{
+"ids": [
+"ntm:pipe__copper"
+],
+"n": 12,
+"label": "Tubo de Cobre"
+},
+{
+"ids": [
+"ntm:motor_desh"
+],
+"n": 1,
+"label": "Motor de Desh"
+},
+{
+"ids": [
+"ntm:circuit__bismoid"
+],
+"n": 1,
+"label": "Placa de Circuito Versátil"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_pyrooven",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.liquefactor",
+"label": "Máquina Industrial de Liquefação",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:342",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 12,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:oil_tar__coal",
+"ntm:oil_tar__crack",
+"ntm:oil_tar__crude",
+"ntm:oil_tar__wood"
+],
+"n": 4,
+"label": "Alcatrão de Carvão"
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 12,
+"label": "Capacitor"
+},
+{
+"ids": [
+"ntm:coil_tungsten"
+],
+"n": 8,
+"label": "Bobina de Aquecimento"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_liquefactor",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.solidifier",
+"label": "Máquina Industrial de Solidificação",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:345",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:plate_aluminium"
+],
+"n": 12,
+"label": "Placa de Alumínio"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 12,
+"label": "Capacitor"
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"n": 4,
+"label": "Bobina de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_solidifier",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.epress",
 "label": "Prensa Elétrica",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:354",
@@ -3363,6 +3645,60 @@
 "out": [
 [
 "ntm:nuke_fstbmb",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.explosivelenses2",
+"label": "Conjunto de Lentes Explosivas de Alta Potência",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:697",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_aluminium"
+],
+"n": 8,
+"label": "Placa de Alumínio"
+},
+{
+"ids": [
+"ntm:ingot_semtex"
+],
+"n": 4,
+"label": "Barra de Semtex"
+},
+{
+"ids": [
+"ntm:neutron_reflector"
+],
+"n": 2,
+"label": "Refletor de Nêutrons"
+},
+{
+"ids": [
+"ntm:ball_tatb"
+],
+"n": 16,
+"label": "Ball Tatb"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 2,
+"label": "Barra de Borracha"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:explosive_lenses",
 1,
 1.0
 ]
@@ -14072,5 +14408,5 @@
 "pools": []
 }
 ],
-"skipped": 219
+"skipped": 213
 }

@@ -460,6 +460,51 @@
 ]
 },
 {
+"name": "chem.tel",
+"label": "Agente Antidetonante de Chumbo Tetraetila",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:123",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:oil_tar__coal",
+"ntm:oil_tar__crack",
+"ntm:oil_tar__crude",
+"ntm:oil_tar__wood"
+],
+"n": 1,
+"label": "Alcatrão de Carvão"
+},
+{
+"ids": [
+"ntm:powder_lead"
+],
+"n": 1,
+"label": "Pó de Chumbo"
+}
+],
+"fin": [
+[
+"petroleum",
+100
+],
+[
+"steam",
+1000
+]
+],
+"out": [
+[
+"ntm:fuel_additive__antiknock",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "chem.deicer",
 "label": "Anticongelante",
 "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:128",
@@ -611,6 +656,140 @@
 "pools": [
 "discover..stone"
 ]
+},
+{
+"name": "chem.concrete",
+"label": "Concreto ×16",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:145",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_cement"
+],
+"n": 1,
+"label": "Cimento"
+},
+{
+"ids": [
+"minecraft:gravel"
+],
+"n": 8,
+"label": "gravel"
+},
+{
+"ids": [
+"minecraft:sand"
+],
+"n": 8,
+"label": "sand"
+}
+],
+"fin": [
+[
+"water",
+2000
+]
+],
+"out": [
+[
+"ntm:concrete_smooth",
+16,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.ducrete",
+"label": "Ducrete Smooth ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:155",
+"duration": 150,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_cement"
+],
+"n": 4,
+"label": "Cimento"
+},
+{
+"ids": [
+"ntm:ingot_ferrouranium"
+],
+"n": 1,
+"label": "Lingote de Ferrourânio"
+},
+{
+"ids": [
+"minecraft:sand"
+],
+"n": 8,
+"label": "sand"
+}
+],
+"fin": [
+[
+"water",
+2000
+]
+],
+"out": [
+[
+"ntm:ducrete_smooth",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "chem.liquidconk",
+"label": "Concreto Líquido · 16000 mB",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:160",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_cement"
+],
+"n": 1,
+"label": "Cimento"
+},
+{
+"ids": [
+"minecraft:gravel"
+],
+"n": 8,
+"label": "gravel"
+},
+{
+"ids": [
+"minecraft:sand"
+],
+"n": 8,
+"label": "sand"
+}
+],
+"fin": [
+[
+"water",
+2000
+]
+],
+"out": [],
+"fout": [
+[
+"concrete",
+16000
+]
+],
+"pools": []
 },
 {
 "name": "chem.lightconstruction",
@@ -815,6 +994,56 @@
 "fout": [],
 "pools": [
 "alt..biosolidfuel"
+]
+},
+{
+"name": "chem.oilelectrodes",
+"label": "Eletrodo de Grafite",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:278",
+"duration": 600,
+"power": 100,
+"in": [],
+"fin": [
+[
+"heatingoil",
+4000
+]
+],
+"out": [
+[
+"ntm:arc_electrode__graphite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt..electrodes"
+]
+},
+{
+"name": "chem.lubeelectrodes",
+"label": "Eletrodo de Grafite",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:282",
+"duration": 600,
+"power": 100,
+"in": [],
+"fin": [
+[
+"lubricant",
+8000
+]
+],
+"out": [
+[
+"ntm:arc_electrode__graphite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"alt..electrodes"
 ]
 },
 {
@@ -1501,5 +1730,5 @@
 "pools": []
 }
 ],
-"skipped": 30
+"skipped": 24
 }

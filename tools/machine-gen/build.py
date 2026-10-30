@@ -54,6 +54,7 @@ def generic(st):
             'in': ins, 'fin': r['inputFluids'], 'out': outs, 'fout': r['outputFluids'],
             'pools': r.get('pools', []),
             **({'group': r['autoSwitchGroup']} if r.get('autoSwitchGroup') else {}),
+            **({'productivity': r['productivity']} if r.get('productivity') else {}),
         })
     return {'station': st, 'source': f'content/machine-recipes/{st}.json', 'recipes': out, 'skipped': len(src['skipped'])}
 
@@ -175,6 +176,13 @@ if (root / 'content/machine-recipes/purex.json').exists():
     p = root / 'crates/ntm-core/data/machines/purex.json'
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"purex: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
+
+# O cristalizador (etapa 2 da cadeia do bedrock), no formato da planta química.
+if (root / 'content/machine-recipes/crystallizer.json').exists():
+    data = generic('crystallizer')
+    p = root / 'crates/ntm-core/data/machines/crystallizer.json'
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
+    print(f"crystallizer: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
 
 # A prensa fica fora de machines/: as duas prensas do M1 a leem de data/.
 if (root / 'content/machine-recipes/press.json').exists():

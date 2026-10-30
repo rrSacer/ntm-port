@@ -1,0 +1,12623 @@
+{
+"station": "crystallizer",
+"source": "content/machine-recipes/crystallizer.json",
+"recipes": [
+{
+"name": "crystallizer.0",
+"label": "Cristais de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:61",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:coal_ore"
+],
+"n": 1,
+"label": "coal ore"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_coal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.1",
+"label": "Cristais de Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:62",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_enriched__iron",
+"ntm:ore_gneiss_iron",
+"minecraft:iron_ore"
+],
+"n": 1,
+"label": "Minério de Ferro Enriquecido"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_iron",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.2",
+"label": "Cristais de Ouro",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:63",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_enriched__gold",
+"ntm:ore_gneiss_gold",
+"minecraft:gold_ore"
+],
+"n": 1,
+"label": "Minério de Ouro Enriquecido"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_gold",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.3",
+"label": "Cristais de Redstone",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:64",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:redstone_ore"
+],
+"n": 1,
+"label": "redstone ore"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_redstone",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.4",
+"label": "Cristais de Lápis-Lazúli",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:65",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:lapis_ore"
+],
+"n": 1,
+"label": "lapis ore"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_lapis",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.5",
+"label": "Cristais de Diamante",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:66",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:gravel_diamond",
+"ntm:ore_sellafield_diamond",
+"minecraft:diamond_ore"
+],
+"n": 1,
+"label": "Cascalho de Diamante"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_diamond",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.6",
+"label": "Cristais de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:67",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_enriched__uranium",
+"ntm:ore_gneiss_uranium",
+"ntm:ore_gneiss_uranium_scorched",
+"ntm:ore_nether_uranium",
+"ntm:ore_nether_uranium_scorched",
+"ntm:ore_sellafield_uranium_scorched",
+"ntm:ore_uranium",
+"ntm:ore_uranium_scorched"
+],
+"n": 1,
+"label": "Minério de Urânio Enriquecido"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.7.thorium_0",
+"label": "Cristais de Tório",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:68",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_enriched__thorium",
+"ntm:ore_thorium"
+],
+"n": 1,
+"label": "Minério de Tório Enriquecido"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_thorium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.7.thorium_1",
+"label": "Cristais de Tório",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:68",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_thorium"
+],
+"n": 1,
+"label": "Minério de Tório"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_thorium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.7.thorium_2",
+"label": "Cristais de Tório",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:68",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_thorium"
+],
+"n": 1,
+"label": "Minério de Tório"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_thorium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.8",
+"label": "Cristais de Plutônio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:69",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_plutonium"
+],
+"n": 1,
+"label": "Minério de Plutônio do Nether"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_plutonium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.9",
+"label": "Cristais de Titânio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:70",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_enriched__titanium",
+"ntm:ore_titanium"
+],
+"n": 1,
+"label": "Minério de Titânio Enriquecido"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_titanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.10",
+"label": "Cristais de Enxofre",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:71",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_basalt__sulfur",
+"ntm:ore_nether_sulfur",
+"ntm:ore_sulfur",
+"ntm:stone_resource__sulfur"
+],
+"n": 1,
+"label": "Basalto Rico em Enxofre"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_sulfur",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.11",
+"label": "Cristais de Salitre",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:72",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_niter"
+],
+"n": 1,
+"label": "Minério de Salitre"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_niter",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.12",
+"label": "Cristais de Cobre",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:73",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_copper",
+"ntm:ore_enriched__copper",
+"ntm:ore_gneiss_copper"
+],
+"n": 1,
+"label": "Minério de Cobre"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.13",
+"label": "Cristais de Tungstênio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:74",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_enriched__tungsten",
+"ntm:ore_nether_tungsten",
+"ntm:ore_tungsten"
+],
+"n": 1,
+"label": "Minério de Tungstênio Enriquecido"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_tungsten",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.14",
+"label": "Cristais de Alumínio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:75",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_aluminium"
+],
+"n": 1,
+"label": "Minério Rico em Alumínio"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_aluminium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.15",
+"label": "Cristais de Fluorita",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:76",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_basalt__fluorite",
+"ntm:ore_enriched__fluorite",
+"ntm:ore_fluorite"
+],
+"n": 1,
+"label": "Basalto Rico em Fluorita"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_fluorite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.16",
+"label": "Cristais de Berílio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:77",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_beryllium"
+],
+"n": 1,
+"label": "Minério de Berílio"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_beryllium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.17",
+"label": "Cristais de Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:78",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_lead"
+],
+"n": 1,
+"label": "Minério de Chumbo"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_lead",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.18",
+"label": "Cristais de Schrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:79",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_schrabidium",
+"ntm:ore_nether_schrabidium",
+"ntm:ore_schrabidium",
+"ntm:ore_sellafield_schrabidium"
+],
+"n": 1,
+"label": "Minério de Schrabídio em Xisto"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_schrabidium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.19",
+"label": "Cristais de Lítio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:80",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_lithium"
+],
+"n": 1,
+"label": "Minério de Lítio em Xisto"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_lithium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.20",
+"label": "Cristais de Cobalto",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:81",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_cobalt",
+"ntm:ore_nether_cobalt"
+],
+"n": 1,
+"label": "Minério de Cobalto"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_cobalt",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.21",
+"label": "Cimento ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:83",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_calcium"
+],
+"n": 1,
+"label": "Pó de Cálcio"
+}
+],
+"fin": [
+[
+"redmud",
+75
+]
+],
+"out": [
+[
+"ntm:powder_cement",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.1
+},
+{
+"name": "crystallizer.22",
+"label": "Sucata de Cobre",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:84",
+"duration": 300,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:chunk_ore__malachite"
+],
+"n": 1,
+"label": "Fragmento de Malaquita"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:scraps__copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.1
+},
+{
+"name": "crystallizer.23",
+"label": "Cristais de Terras Raras",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:86",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_rare",
+"ntm:ore_rare"
+],
+"n": 1,
+"label": "Minério de Terras Raras em Xisto"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.24",
+"label": "Cristais de Cinábrio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:87",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_cinnebar",
+"ntm:ore_depth_cinnebar"
+],
+"n": 1,
+"label": "Minério de Cinábrio"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_cinnebar",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.25",
+"label": "Cristais de Fósforo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:89",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_fire"
+],
+"n": 1,
+"label": "Minério de Fósforo do Nether"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_phosphorus",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.26",
+"label": "Cristais de Trixita",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:90",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_tikite"
+],
+"n": 1,
+"label": "Trixita"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_trixite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.27",
+"label": "Cristais de Diamante",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:91",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:gravel_diamond"
+],
+"n": 1,
+"label": "Cascalho de Diamante"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_diamond",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.28",
+"label": "Cristais de Schraranium",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:92",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_schraranium"
+],
+"n": 1,
+"label": "Lingote de Schrarânio"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:crystal_schraranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.05
+},
+{
+"name": "crystallizer.29",
+"label": "Barra de Fibra de Vidro",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:94",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:red_sand",
+"minecraft:sand"
+],
+"n": 1,
+"label": "red sand"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ingot_fiberglass",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.30",
+"label": "Quartzo do Nether ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:95",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_silicon"
+],
+"n": 1,
+"label": "Lingote de Silício"
+}
+],
+"fin": [
+[
+"oxygen",
+250
+]
+],
+"out": [
+[
+"minecraft:quartz",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.1
+},
+{
+"name": "crystallizer.31",
+"label": "Gota de Mercúrio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:96",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:redstone_block"
+],
+"n": 1,
+"label": "redstone block"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:nugget_mercury",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.25
+},
+{
+"name": "crystallizer.32",
+"label": "Gota de Mercúrio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:97",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:cinnebar"
+],
+"n": 1,
+"label": "Cinábrio"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:nugget_mercury",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.25
+},
+{
+"name": "crystallizer.33",
+"label": "Pequena Porção de Pó de Boro ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:98",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_borax"
+],
+"n": 1,
+"label": "Bórax"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:powder_boron_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.25
+},
+{
+"name": "crystallizer.34",
+"label": "Bloco de Grafite",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:99",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:coal_block"
+],
+"n": 1,
+"label": "coal block"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:block_graphite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.35",
+"label": "Pedra Densa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:101",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:cobblestone"
+],
+"n": 1,
+"label": "cobblestone"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:reinforced_stone",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.36",
+"label": "Tijolos de Obsidiana",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:102",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:gravel_obsidian"
+],
+"n": 1,
+"label": "Obsidiana Triturada"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:brick_obsidian",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.37",
+"label": "Couro",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:103",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:rotten_flesh"
+],
+"n": 1,
+"label": "rotten flesh"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"minecraft:leather",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.25
+},
+{
+"name": "crystallizer.38",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:104",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:coal_infernal"
+],
+"n": 1,
+"label": "Carvão Infernal"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.39",
+"label": "Pó de Lítio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:105",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:stone_gneiss"
+],
+"n": 1,
+"label": "Xisto Grafítico"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:powder_lithium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.25
+},
+{
+"name": "crystallizer.40",
+"label": "Bola de Slime ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:106",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:bone_meal"
+],
+"n": 1,
+"label": "bone meal"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"minecraft:slime_ball",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.41",
+"label": "Bola de Slime ×16",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:107",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:bone"
+],
+"n": 1,
+"label": "bone"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+1000
+]
+],
+"out": [
+[
+"minecraft:slime_ball",
+16,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.42",
+"label": "Pó de Cádmio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:108",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:plant_item__mustardwillow"
+],
+"n": 10,
+"label": "Folha de Salgueiro-Mostarda"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:powder_cadmium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.43",
+"label": "Pepita de Arsênio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:109",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_oil"
+],
+"n": 16,
+"label": "Sucata Oleosa"
+}
+],
+"fin": [
+[
+"radiosolvent",
+100
+]
+],
+"out": [
+[
+"ntm:nugget_arsenic",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.3
+},
+{
+"name": "crystallizer.44",
+"label": "Fulerita Cristalina",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:110",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_ash__fullerene"
+],
+"n": 4,
+"label": "Fulereno"
+}
+],
+"fin": [
+[
+"xylene",
+1000
+]
+],
+"out": [
+[
+"ntm:ingot_cft",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.1
+},
+{
+"name": "crystallizer.45",
+"label": "Diamante",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:112",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_diamond"
+],
+"n": 1,
+"label": "Pó de Diamante"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"minecraft:diamond",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.46",
+"label": "Esmeralda",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:113",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_emerald"
+],
+"n": 1,
+"label": "Pó de Esmeralda"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"minecraft:emerald",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.47",
+"label": "Lápis-Lazúli",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:114",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_lapis"
+],
+"n": 1,
+"label": "Pó de Lápis-Lazúli"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"minecraft:lapis_lazuli",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.48",
+"label": "Barra de Semtex",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:115",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_semtex_mix"
+],
+"n": 1,
+"label": "Mistura de Semtex"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ingot_semtex",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.49",
+"label": "Lingote de Desh",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:116",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_desh_ready"
+],
+"n": 1,
+"label": "Mistura DeshReady™"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ingot_desh",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.50",
+"label": "Fragmento de Meteorito",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:117",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_meteorite"
+],
+"n": 1,
+"label": "Pó de Meteorito"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:fragment_meteorite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.51",
+"label": "Barra de Borracha ×16",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:118",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_cadmium"
+],
+"n": 1,
+"label": "Pó de Cádmio"
+}
+],
+"fin": [
+[
+"fishoil",
+4000
+]
+],
+"out": [
+[
+"ntm:ingot_rubber",
+16,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.52",
+"label": "Barra de Borracha",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:119",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_biorubber"
+],
+"n": 1,
+"label": "Barra de Látex"
+}
+],
+"fin": [
+[
+"sourgas",
+25
+]
+],
+"out": [
+[
+"ntm:ingot_rubber",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.53",
+"label": "Cordita",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:120",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_sawdust"
+],
+"n": 1,
+"label": "Seragem"
+}
+],
+"fin": [
+[
+"nitroglycerin",
+250
+]
+],
+"out": [
+[
+"ntm:cordite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.25
+},
+{
+"name": "crystallizer.54",
+"label": "Concreto Armado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:121",
+"duration": 1,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:rebar"
+],
+"n": 1,
+"label": "Vergalhão"
+}
+],
+"fin": [
+[
+"concrete",
+1000
+]
+],
+"out": [
+[
+"ntm:concrete_rebar",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.55",
+"label": "Espada de Meteorito (Gravada)",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:123",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:meteorite_sword_treated"
+],
+"n": 1,
+"label": "Espada de Meteorito (Tratada)"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:meteorite_sword_etched",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.56",
+"label": "Cristais de Osmirídio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:124",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_impure_osmiridium"
+],
+"n": 1,
+"label": "Pó de Osmirídio Impuro"
+}
+],
+"fin": [
+[
+"schrabidic",
+1000
+]
+],
+"out": [
+[
+"ntm:crystal_osmiridium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_board_blank",
+"label": "SC - Placa de Circuito Impresso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__board_blank"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__board_blank",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_board_transistor",
+"label": "SC - Transistores",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__board_transistor"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__board_transistor",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_board_converter",
+"label": "SC - Conversor de Tensão",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__board_converter"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__board_converter",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_bridge_north",
+"label": "SC - Ponte Norte",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__bridge_north"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__bridge_north",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_bridge_south",
+"label": "SC - Ponte Sul",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__bridge_south"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__bridge_south",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_bridge_io",
+"label": "SC - Chip de E/S",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__bridge_io"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__bridge_io",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_bridge_bus",
+"label": "SC - Barramento",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__bridge_bus"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__bridge_bus",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_bridge_chipset",
+"label": "SC - Chipset",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__bridge_chipset"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__bridge_chipset",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_bridge_cmos",
+"label": "SC - RAM CMOS",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__bridge_cmos"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__bridge_cmos",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_bridge_bios",
+"label": "SC - Chip da BIOS",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__bridge_bios"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__bridge_bios",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_cpu_register",
+"label": "SC - Registrador da CPU",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__cpu_register"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__cpu_register",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_cpu_clock",
+"label": "SC - Clock da CPU",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__cpu_clock"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__cpu_clock",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_cpu_logic",
+"label": "SC - Unidade Lógica e Aritmética",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__cpu_logic"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__cpu_logic",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_cpu_cache",
+"label": "SC - Cache da CPU",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__cpu_cache"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__cpu_cache",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_cpu_ext",
+"label": "SC - Extensão de Semicondutor de Arsênio",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__cpu_ext"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__cpu_ext",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_cpu_socket",
+"label": "SC - Soquete da CPU",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__cpu_socket"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__cpu_socket",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_mem_socket",
+"label": "SC - Soquete de Memória",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__mem_socket"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__mem_socket",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_mem_16k_a",
+"label": "SC - Slot de Memória 16k A",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__mem_16k_a"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__mem_16k_a",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_mem_16k_b",
+"label": "SC - Slot de Memória 16k B",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__mem_16k_b"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__mem_16k_b",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_mem_16k_c",
+"label": "SC - Slot de Memória 16k C",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__mem_16k_c"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__mem_16k_c",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_mem_16k_d",
+"label": "SC - Slot de Memória 16k D",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__mem_16k_d"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__mem_16k_d",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_card_board",
+"label": "SC - Placa de Expansão",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__card_board"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__card_board",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.57.plastic_card_processor",
+"label": "SC - Processador da Placa de Expansão",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:127",
+"duration": 600,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:scrap_plastic__card_processor"
+],
+"n": 1,
+"label": "Sucata Plástica"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:circuit_star_piece__card_processor",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_iron",
+"label": "Minério de Ferro Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__iron"
+],
+"n": 1,
+"label": "Minério de Ferro Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__iron",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_iron",
+"label": "Minério de Ferro Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__iron"
+],
+"n": 1,
+"label": "Minério de Ferro Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__iron",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_iron",
+"label": "Minério de Ferro Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__iron"
+],
+"n": 1,
+"label": "Minério de Ferro Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__iron",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_iron",
+"label": "Minério de Ferro Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__iron"
+],
+"n": 1,
+"label": "Minério de Ferro Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__iron",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_iron",
+"label": "Minério de Ferro Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__iron"
+],
+"n": 1,
+"label": "Minério de Ferro Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__iron",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_copper",
+"label": "Minério de Cobre Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__copper"
+],
+"n": 1,
+"label": "Minério de Cobre Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_copper",
+"label": "Minério de Cobre Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__copper"
+],
+"n": 1,
+"label": "Minério de Cobre Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_copper",
+"label": "Minério de Cobre Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__copper"
+],
+"n": 1,
+"label": "Minério de Cobre Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_copper",
+"label": "Minério de Cobre Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__copper"
+],
+"n": 1,
+"label": "Minério de Cobre Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_copper",
+"label": "Minério de Cobre Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__copper"
+],
+"n": 1,
+"label": "Minério de Cobre Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_borax",
+"label": "Minério de Bórax Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__borax"
+],
+"n": 1,
+"label": "Minério de Bórax Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__borax",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_borax",
+"label": "Minério de Bórax Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__borax"
+],
+"n": 1,
+"label": "Minério de Bórax Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__borax",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_borax",
+"label": "Minério de Bórax Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__borax"
+],
+"n": 1,
+"label": "Minério de Bórax Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__borax",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_borax",
+"label": "Minério de Bórax Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__borax"
+],
+"n": 1,
+"label": "Minério de Bórax Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__borax",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_borax",
+"label": "Minério de Bórax Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__borax"
+],
+"n": 1,
+"label": "Minério de Bórax Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__borax",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_asbestos",
+"label": "Minério de Asbesto Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__asbestos"
+],
+"n": 1,
+"label": "Minério de Asbesto Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__asbestos",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_asbestos",
+"label": "Minério de Asbesto Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__asbestos"
+],
+"n": 1,
+"label": "Minério de Asbesto Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__asbestos",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_asbestos",
+"label": "Minério de Asbesto Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__asbestos"
+],
+"n": 1,
+"label": "Minério de Asbesto Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__asbestos",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_asbestos",
+"label": "Minério de Asbesto Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__asbestos"
+],
+"n": 1,
+"label": "Minério de Asbesto Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__asbestos",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_asbestos",
+"label": "Minério de Asbesto Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__asbestos"
+],
+"n": 1,
+"label": "Minério de Asbesto Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__asbestos",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_niobium",
+"label": "Minério de Nióbio Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__niobium"
+],
+"n": 1,
+"label": "Minério de Nióbio Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__niobium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_niobium",
+"label": "Minério de Nióbio Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__niobium"
+],
+"n": 1,
+"label": "Minério de Nióbio Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__niobium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_niobium",
+"label": "Minério de Nióbio Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__niobium"
+],
+"n": 1,
+"label": "Minério de Nióbio Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__niobium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_niobium",
+"label": "Minério de Nióbio Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__niobium"
+],
+"n": 1,
+"label": "Minério de Nióbio Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__niobium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_niobium",
+"label": "Minério de Nióbio Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__niobium"
+],
+"n": 1,
+"label": "Minério de Nióbio Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__niobium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_titanium",
+"label": "Minério de Titânio Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__titanium"
+],
+"n": 1,
+"label": "Minério de Titânio Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__titanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_titanium",
+"label": "Minério de Titânio Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__titanium"
+],
+"n": 1,
+"label": "Minério de Titânio Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__titanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_titanium",
+"label": "Minério de Titânio Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__titanium"
+],
+"n": 1,
+"label": "Minério de Titânio Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__titanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_titanium",
+"label": "Minério de Titânio Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__titanium"
+],
+"n": 1,
+"label": "Minério de Titânio Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__titanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_titanium",
+"label": "Minério de Titânio Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__titanium"
+],
+"n": 1,
+"label": "Minério de Titânio Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__titanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_tungsten",
+"label": "Minério de Tungstênio Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__tungsten"
+],
+"n": 1,
+"label": "Minério de Tungstênio Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__tungsten",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_tungsten",
+"label": "Minério de Tungstênio Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__tungsten"
+],
+"n": 1,
+"label": "Minério de Tungstênio Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__tungsten",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_tungsten",
+"label": "Minério de Tungstênio Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__tungsten"
+],
+"n": 1,
+"label": "Minério de Tungstênio Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__tungsten",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_tungsten",
+"label": "Minério de Tungstênio Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__tungsten"
+],
+"n": 1,
+"label": "Minério de Tungstênio Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__tungsten",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_tungsten",
+"label": "Minério de Tungstênio Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__tungsten"
+],
+"n": 1,
+"label": "Minério de Tungstênio Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__tungsten",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_gold",
+"label": "Minério de Ouro Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__gold"
+],
+"n": 1,
+"label": "Minério de Ouro Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__gold",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_gold",
+"label": "Minério de Ouro Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__gold"
+],
+"n": 1,
+"label": "Minério de Ouro Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__gold",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_gold",
+"label": "Minério de Ouro Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__gold"
+],
+"n": 1,
+"label": "Minério de Ouro Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__gold",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_gold",
+"label": "Minério de Ouro Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__gold"
+],
+"n": 1,
+"label": "Minério de Ouro Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__gold",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_gold",
+"label": "Minério de Ouro Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__gold"
+],
+"n": 1,
+"label": "Minério de Ouro Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__gold",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_uranium",
+"label": "Minério de Urânio Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__uranium"
+],
+"n": 1,
+"label": "Minério de Urânio Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_uranium",
+"label": "Minério de Urânio Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__uranium"
+],
+"n": 1,
+"label": "Minério de Urânio Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_uranium",
+"label": "Minério de Urânio Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__uranium"
+],
+"n": 1,
+"label": "Minério de Urânio Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_uranium",
+"label": "Minério de Urânio Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__uranium"
+],
+"n": 1,
+"label": "Minério de Urânio Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_uranium",
+"label": "Minério de Urânio Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__uranium"
+],
+"n": 1,
+"label": "Minério de Urânio Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_thorium",
+"label": "Minério de Tório Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__thorium"
+],
+"n": 1,
+"label": "Minério de Tório Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__thorium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_thorium",
+"label": "Minério de Tório Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__thorium"
+],
+"n": 1,
+"label": "Minério de Tório Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__thorium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_thorium",
+"label": "Minério de Tório Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__thorium"
+],
+"n": 1,
+"label": "Minério de Tório Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__thorium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_thorium",
+"label": "Minério de Tório Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__thorium"
+],
+"n": 1,
+"label": "Minério de Tório Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__thorium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_thorium",
+"label": "Minério de Tório Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__thorium"
+],
+"n": 1,
+"label": "Minério de Tório Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__thorium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_chlorocalcite",
+"label": "Minério de Clorocalcita Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__chlorocalcite"
+],
+"n": 1,
+"label": "Minério de Clorocalcita Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__chlorocalcite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_chlorocalcite",
+"label": "Minério de Clorocalcita Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__chlorocalcite"
+],
+"n": 1,
+"label": "Minério de Clorocalcita Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__chlorocalcite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_chlorocalcite",
+"label": "Minério de Clorocalcita Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__chlorocalcite"
+],
+"n": 1,
+"label": "Minério de Clorocalcita Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__chlorocalcite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_chlorocalcite",
+"label": "Minério de Clorocalcita Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__chlorocalcite"
+],
+"n": 1,
+"label": "Minério de Clorocalcita Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__chlorocalcite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_chlorocalcite",
+"label": "Minério de Clorocalcita Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__chlorocalcite"
+],
+"n": 1,
+"label": "Minério de Clorocalcita Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__chlorocalcite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_fluorite",
+"label": "Minério de Fluorita Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__fluorite"
+],
+"n": 1,
+"label": "Minério de Fluorita Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__fluorite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_fluorite",
+"label": "Minério de Fluorita Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__fluorite"
+],
+"n": 1,
+"label": "Minério de Fluorita Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__fluorite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_fluorite",
+"label": "Minério de Fluorita Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__fluorite"
+],
+"n": 1,
+"label": "Minério de Fluorita Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__fluorite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_fluorite",
+"label": "Minério de Fluorita Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__fluorite"
+],
+"n": 1,
+"label": "Minério de Fluorita Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__fluorite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_fluorite",
+"label": "Minério de Fluorita Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__fluorite"
+],
+"n": 1,
+"label": "Minério de Fluorita Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__fluorite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_hematite",
+"label": "Minério de Hematita Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__hematite"
+],
+"n": 1,
+"label": "Minério de Hematita Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__hematite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_hematite",
+"label": "Minério de Hematita Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__hematite"
+],
+"n": 1,
+"label": "Minério de Hematita Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__hematite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_hematite",
+"label": "Minério de Hematita Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__hematite"
+],
+"n": 1,
+"label": "Minério de Hematita Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__hematite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_hematite",
+"label": "Minério de Hematita Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__hematite"
+],
+"n": 1,
+"label": "Minério de Hematita Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__hematite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_hematite",
+"label": "Minério de Hematita Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__hematite"
+],
+"n": 1,
+"label": "Minério de Hematita Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__hematite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_malachite",
+"label": "Minério de Malaquita Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__malachite"
+],
+"n": 1,
+"label": "Minério de Malaquita Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__malachite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_malachite",
+"label": "Minério de Malaquita Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__malachite"
+],
+"n": 1,
+"label": "Minério de Malaquita Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__malachite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_malachite",
+"label": "Minério de Malaquita Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__malachite"
+],
+"n": 1,
+"label": "Minério de Malaquita Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__malachite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_malachite",
+"label": "Minério de Malaquita Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__malachite"
+],
+"n": 1,
+"label": "Minério de Malaquita Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__malachite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_malachite",
+"label": "Minério de Malaquita Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__malachite"
+],
+"n": 1,
+"label": "Minério de Malaquita Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__malachite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.58.legacy_neodymium",
+"label": "Minério de Neodímio Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:139",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_centrifuged__neodymium"
+],
+"n": 1,
+"label": "Minério de Neodímio Centrifugado"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:ore_cleaned__neodymium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.59.legacy_neodymium",
+"label": "Minério de Neodímio Purificado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:140",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__neodymium"
+],
+"n": 1,
+"label": "Minério de Neodímio Separado"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_purified__neodymium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.60.legacy_neodymium",
+"label": "Minério de Neodímio Nitratado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:141",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_separated__neodymium"
+],
+"n": 1,
+"label": "Minério de Neodímio Separado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+500
+]
+],
+"out": [
+[
+"ntm:ore_nitrated__neodymium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.61.legacy_neodymium",
+"label": "Minério de Neodímio Profundamente Limpo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:142",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__neodymium"
+],
+"n": 1,
+"label": "Minério de Neodímio Nitrocristalino"
+}
+],
+"fin": [
+[
+"solvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_deepcleaned__neodymium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.62.legacy_neodymium",
+"label": "Minério de Neodímio Calcinado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:143",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nitrocrystalline__neodymium"
+],
+"n": 1,
+"label": "Minério de Neodímio Nitrocristalino"
+}
+],
+"fin": [
+[
+"radiosolvent",
+500
+]
+],
+"out": [
+[
+"ntm:ore_seared__neodymium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.63.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:149",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.64.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:150",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.65.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:152",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.66.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:153",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.67.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:155",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.68.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:156",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.69.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:157",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.70.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:159",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.71.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:160",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.72.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:161",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.73.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:162",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.74.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:165",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_light"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.75.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:166",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_light"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.76.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:167",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_arc_light"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.77.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:170",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_light"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.78.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:171",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_light"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.79.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:172",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_arc_light"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.80.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:175",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_light"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.81.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:176",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_light"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.82.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:177",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_arc_light"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.83.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:180",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.84.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:181",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.85.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:182",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.86.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:183",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.87.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:184",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.88.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:185",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.89.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:186",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.90.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:187",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.91.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:190",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.92.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:191",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.93.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:192",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.94.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:193",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.95.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:194",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.96.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:195",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.97.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:196",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.98.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:197",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.99.bedrock_light",
+"label": "Minério de Rocha-Mãe de Metal Leve",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:199",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_light"
+],
+"n": 64,
+"label": "Fragmentos de Minério de Rocha-Mãe de Metal Leve"
+}
+],
+"fin": [
+[
+"slop",
+1000
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.63.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:149",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.64.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:150",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.65.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:152",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.66.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:153",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.67.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:155",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.68.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:156",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.69.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:157",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.70.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:159",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.71.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:160",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.72.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:161",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.73.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:162",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.74.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:165",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_heavy"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.75.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:166",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_heavy"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.76.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:167",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_arc_heavy"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.77.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:170",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_heavy"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.78.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:171",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_heavy"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.79.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:172",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_arc_heavy"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.80.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:175",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_heavy"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.81.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:176",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_heavy"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.82.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:177",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_arc_heavy"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.83.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:180",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.84.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:181",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.85.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:182",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.86.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:183",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.87.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:184",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.88.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:185",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.89.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:186",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.90.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:187",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.91.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:190",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.92.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:191",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.93.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:192",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.94.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:193",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.95.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:194",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.96.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:195",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.97.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:196",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.98.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:197",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.99.bedrock_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:199",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_heavy"
+],
+"n": 64,
+"label": "Fragmentos de Minério de Rocha-Mãe de Metal Pesado"
+}
+],
+"fin": [
+[
+"slop",
+1000
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.63.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:149",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.64.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:150",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.65.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:152",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.66.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:153",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.67.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:155",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.68.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:156",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.69.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:157",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.70.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:159",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.71.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:160",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.72.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:161",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.73.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:162",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.74.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:165",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_rare"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.75.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:166",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_rare"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.76.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:167",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_arc_rare"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.77.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:170",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_rare"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.78.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:171",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_rare"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.79.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:172",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_arc_rare"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.80.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:175",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_rare"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.81.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:176",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_rare"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.82.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:177",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_arc_rare"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.83.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:180",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.84.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:181",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.85.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:182",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.86.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:183",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.87.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:184",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.88.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:185",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.89.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:186",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.90.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:187",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.91.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:190",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.92.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:191",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.93.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:192",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.94.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:193",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.95.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:194",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.96.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:195",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.97.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:196",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.98.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:197",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.99.bedrock_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:199",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_rare"
+],
+"n": 64,
+"label": "Fragmentos de Minério de Rocha-Mãe de Terra Rara"
+}
+],
+"fin": [
+[
+"slop",
+1000
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.63.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:149",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.64.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:150",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.65.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:152",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.66.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:153",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.67.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:155",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.68.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:156",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.69.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:157",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.70.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:159",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.71.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:160",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.72.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:161",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.73.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:162",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.74.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:165",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_actinide"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.75.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:166",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_actinide"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.76.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:167",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_arc_actinide"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.77.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:170",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_actinide"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.78.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:171",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_actinide"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.79.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:172",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_arc_actinide"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.80.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:175",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_actinide"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.81.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:176",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_actinide"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.82.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:177",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_arc_actinide"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.83.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:180",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.84.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:181",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.85.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:182",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.86.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:183",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.87.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:184",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.88.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:185",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.89.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:186",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.90.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:187",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.91.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:190",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.92.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:191",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.93.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:192",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.94.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:193",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.95.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:194",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.96.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:195",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.97.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:196",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.98.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:197",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.99.bedrock_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:199",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_actinide"
+],
+"n": 64,
+"label": "Fragmentos de Minério de Rocha-Mãe de Actinídeo"
+}
+],
+"fin": [
+[
+"slop",
+1000
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.63.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:149",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.64.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:150",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.65.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:152",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.66.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:153",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.67.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:155",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.68.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:156",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.69.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:157",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.70.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:159",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.71.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:160",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.72.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:161",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.73.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:162",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.74.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:165",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_nonmetal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.75.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:166",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_nonmetal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.76.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:167",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_arc_nonmetal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.77.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:170",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_nonmetal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.78.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:171",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_nonmetal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.79.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:172",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_arc_nonmetal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.80.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:175",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_nonmetal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.81.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:176",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_nonmetal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.82.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:177",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_arc_nonmetal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.83.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:180",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.84.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:181",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.85.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:182",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.86.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:183",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.87.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:184",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.88.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:185",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.89.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:186",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.90.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:187",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.91.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:190",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.92.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:191",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.93.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:192",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.94.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:193",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.95.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:194",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.96.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:195",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.97.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:196",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.98.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:197",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.99.bedrock_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:199",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_nonmetal"
+],
+"n": 64,
+"label": "Fragmentos de Minério de Rocha-Mãe de Não Metal"
+}
+],
+"fin": [
+[
+"slop",
+1000
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.63.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:149",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.64.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:150",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.65.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:152",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.66.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:153",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_sulfuric_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.67.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:155",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.68.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:156",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.69.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:157",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"solvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_solvent_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.70.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:159",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.71.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:160",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.72.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:161",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.73.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:162",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"radiosolvent",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_rad_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.74.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:165",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_crystal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.75.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:166",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_crystal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.76.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:167",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_arc_crystal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.77.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:170",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_crystal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.78.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:171",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_crystal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.79.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:172",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_arc_crystal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__solvent_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.80.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:175",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_crystal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.81.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:176",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_crystal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Torrado"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.82.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:177",
+"duration": 100,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_arc_crystal"
+],
+"n": 4,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Fundido por Arco"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__rad_washed_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.83.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:180",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.84.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:181",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.85.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:182",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.86.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:183",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.87.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:184",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.88.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:185",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.89.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:186",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.90.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:187",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"hydrogen",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_first_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.91.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:190",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.92.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:191",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Torrada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.93.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:192",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.94.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:193",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.95.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:194",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.96.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:195",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.97.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:196",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.98.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:197",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa Separada"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__primary_second_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.99.bedrock_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:199",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_crystal"
+],
+"n": 64,
+"label": "Fragmentos de Minério de Rocha-Mãe de Cristalino"
+}
+],
+"fin": [
+[
+"slop",
+1000
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__base_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.100.dye_woodoil",
+"label": "Corante Químico (Preto) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:204",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"n": 1,
+"label": "Pó de Carvão"
+}
+],
+"fin": [
+[
+"woodoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__black",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.101.dye_woodoil",
+"label": "Corante Químico (Branco) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:205",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_titanium"
+],
+"n": 1,
+"label": "Pó de Titânio"
+}
+],
+"fin": [
+[
+"woodoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__white",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.102.dye_woodoil",
+"label": "Corante Químico (Vermelho) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:206",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_iron"
+],
+"n": 1,
+"label": "Pó de Ferro"
+}
+],
+"fin": [
+[
+"woodoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__red",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.103.dye_woodoil",
+"label": "Corante Químico (Amarelo) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:207",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_tungsten"
+],
+"n": 1,
+"label": "Pó de Tungstênio"
+}
+],
+"fin": [
+[
+"woodoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__yellow",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.104.dye_woodoil",
+"label": "Corante Químico (Verde) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:208",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_copper"
+],
+"n": 1,
+"label": "Pó de Cobre"
+}
+],
+"fin": [
+[
+"woodoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__green",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.105.dye_woodoil",
+"label": "Corante Químico (Azul) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_cobalt"
+],
+"n": 1,
+"label": "Pó de Cobalto"
+}
+],
+"fin": [
+[
+"woodoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__blue",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.100.dye_fishoil",
+"label": "Corante Químico (Preto) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:204",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"n": 1,
+"label": "Pó de Carvão"
+}
+],
+"fin": [
+[
+"fishoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__black",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.101.dye_fishoil",
+"label": "Corante Químico (Branco) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:205",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_titanium"
+],
+"n": 1,
+"label": "Pó de Titânio"
+}
+],
+"fin": [
+[
+"fishoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__white",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.102.dye_fishoil",
+"label": "Corante Químico (Vermelho) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:206",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_iron"
+],
+"n": 1,
+"label": "Pó de Ferro"
+}
+],
+"fin": [
+[
+"fishoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__red",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.103.dye_fishoil",
+"label": "Corante Químico (Amarelo) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:207",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_tungsten"
+],
+"n": 1,
+"label": "Pó de Tungstênio"
+}
+],
+"fin": [
+[
+"fishoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__yellow",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.104.dye_fishoil",
+"label": "Corante Químico (Verde) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:208",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_copper"
+],
+"n": 1,
+"label": "Pó de Cobre"
+}
+],
+"fin": [
+[
+"fishoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__green",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.105.dye_fishoil",
+"label": "Corante Químico (Azul) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_cobalt"
+],
+"n": 1,
+"label": "Pó de Cobalto"
+}
+],
+"fin": [
+[
+"fishoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__blue",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.100.dye_lightoil",
+"label": "Corante Químico (Preto) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:204",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"n": 1,
+"label": "Pó de Carvão"
+}
+],
+"fin": [
+[
+"lightoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__black",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.101.dye_lightoil",
+"label": "Corante Químico (Branco) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:205",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_titanium"
+],
+"n": 1,
+"label": "Pó de Titânio"
+}
+],
+"fin": [
+[
+"lightoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__white",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.102.dye_lightoil",
+"label": "Corante Químico (Vermelho) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:206",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_iron"
+],
+"n": 1,
+"label": "Pó de Ferro"
+}
+],
+"fin": [
+[
+"lightoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__red",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.103.dye_lightoil",
+"label": "Corante Químico (Amarelo) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:207",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_tungsten"
+],
+"n": 1,
+"label": "Pó de Tungstênio"
+}
+],
+"fin": [
+[
+"lightoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__yellow",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.104.dye_lightoil",
+"label": "Corante Químico (Verde) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:208",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_copper"
+],
+"n": 1,
+"label": "Pó de Cobre"
+}
+],
+"fin": [
+[
+"lightoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__green",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.105.dye_lightoil",
+"label": "Corante Químico (Azul) ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:209",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_cobalt"
+],
+"n": 1,
+"label": "Pó de Cobalto"
+}
+],
+"fin": [
+[
+"lightoil",
+100
+]
+],
+"out": [
+[
+"ntm:chemical_dye__blue",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"productivity": 0.15
+},
+{
+"name": "crystallizer.106",
+"label": "Cera de Petróleo Clorada",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:212",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:oil_tar__crude"
+],
+"n": 1,
+"label": "Alcatrão de Petróleo"
+}
+],
+"fin": [
+[
+"chlorine",
+250
+]
+],
+"out": [
+[
+"ntm:oil_tar__wax",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.107",
+"label": "Cera de Petróleo Clorada",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:213",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:oil_tar__crack"
+],
+"n": 1,
+"label": "Alcatrão de Craqueamento"
+}
+],
+"fin": [
+[
+"chlorine",
+100
+]
+],
+"out": [
+[
+"ntm:oil_tar__wax",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.108",
+"label": "Cera de Petróleo Clorada",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:214",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:oil_tar__paraffin"
+],
+"n": 1,
+"label": "Cera de Parafina"
+}
+],
+"fin": [
+[
+"chlorine",
+100
+]
+],
+"out": [
+[
+"ntm:oil_tar__wax",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.109",
+"label": "Partículas Ionizadas",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:215",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:oil_tar__wax"
+],
+"n": 1,
+"label": "Cera de Petróleo Clorada"
+}
+],
+"fin": [
+[
+"iongel",
+500
+]
+],
+"out": [
+[
+"ntm:pellet_charged",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.111",
+"label": "Argila",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:218",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:red_sand",
+"minecraft:sand"
+],
+"n": 1,
+"label": "red sand"
+}
+],
+"fin": [
+[
+"colloid",
+1000
+]
+],
+"out": [
+[
+"minecraft:clay",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.113",
+"label": "Dinamite ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:220",
+"duration": 20,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_quartz"
+],
+"n": 1,
+"label": "Pó de Quartzo"
+}
+],
+"fin": [
+[
+"nitroglycerin",
+250
+]
+],
+"out": [
+[
+"ntm:ball_dynamite",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "crystallizer.117",
+"label": "Pedra Lunar",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:242",
+"duration": 1200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:moon_turf"
+],
+"n": 16,
+"label": "Solo Lunar"
+}
+],
+"fin": [
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:chunk_ore__moonstone",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+}
+],
+"skipped": 5
+}
