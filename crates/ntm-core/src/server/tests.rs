@@ -1923,3 +1923,5 @@ fn a_world_loaded_after_crashes_spreads_its_first_work() {
 }
 
 mod oil_b_tests;
+
+mod oil_c_tests;
