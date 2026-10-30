@@ -1,413 +1,1136 @@
 {
 "ntm:anvil_arsenic_bronze": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_bismuth_bronze": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_desh": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_dnt": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_ferrouranium": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_iron": {
+"inventory": [
+8,
+140
+],
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_lead": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_murky": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_osmiridium": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_saturnite": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_schrabidate": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
 }
 ],
 "synced": []
 },
 "ntm:anvil_steel": {
+"inventory": [
+8,
+140
+],
+"screen": "ntm:anvil_iron",
 "slots": [
-{},
-{},
 {
-"output": true
-},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{
-"output": true
+"x": 17,
+"y": 27
 },
 {
-"output": true
+"x": 53,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 27
 },
 {
-"output": true
+"x": 8,
+"y": 72
+},
+{
+"x": 26,
+"y": 72
+},
+{
+"x": 44,
+"y": 72
+},
+{
+"x": 62,
+"y": 72
+},
+{
+"x": 80,
+"y": 72
+},
+{
+"x": 98,
+"y": 72
+},
+{
+"x": 8,
+"y": 90
+},
+{
+"x": 26,
+"y": 90
+},
+{
+"x": 44,
+"y": 90
+},
+{
+"x": 62,
+"y": 90
+},
+{
+"x": 80,
+"y": 90
+},
+{
+"x": 98,
+"y": 90
+},
+{
+"output": true,
+"x": 133,
+"y": 53
+},
+{
+"output": true,
+"x": 151,
+"y": 53
+},
+{
+"output": true,
+"x": 133,
+"y": 71
+},
+{
+"output": true,
+"x": 151,
+"y": 71
+}
+],
+"synced": []
+},
+"ntm:barrel_steel": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 8,
+"y": 17
+},
+{
+"output": true,
+"x": 8,
+"y": 53
+},
+{
+"x": 35,
+"y": 17
+},
+{
+"output": true,
+"x": 35,
+"y": 53
+},
+{
+"x": 125,
+"y": 17
+},
+{
+"output": true,
+"x": 125,
+"y": 53
 }
 ],
 "synced": []
 },
 "ntm:foundry_basin": {
+"inventory": [
+8,
+84
+],
 "slots": [
 {
 "accept": [
@@ -416,10 +1139,14 @@
 "ntm:mold__plates_cast",
 "ntm:mold__wires_dense",
 "ntm:mold__block"
-]
+],
+"x": 62,
+"y": 35
 },
 {
-"output": true
+"output": true,
+"x": 98,
+"y": 35
 }
 ],
 "synced": [
@@ -437,6 +1164,10 @@
 ]
 },
 "ntm:foundry_mold": {
+"inventory": [
+8,
+84
+],
 "slots": [
 {
 "accept": [
@@ -461,10 +1192,14 @@
 "ntm:mold__mechanism",
 "ntm:mold__stock",
 "ntm:mold__grip"
-]
+],
+"x": 62,
+"y": 35
 },
 {
-"output": true
+"output": true,
+"x": 98,
+"y": 35
 }
 ],
 "synced": [
@@ -488,10 +1223,18 @@
 ]
 },
 "ntm:heater_electric": {
+"inventory": [
+8,
+84
+],
 "slots": [],
 "synced": []
 },
 "ntm:heater_firebox": {
+"inventory": [
+8,
+86
+],
 "slots": [
 {
 "accept": [
@@ -580,7 +1323,9 @@
 "ntm:solid_fuel_presto_bf",
 "ntm:solid_fuel_presto_triplet",
 "ntm:solid_fuel_presto_triplet_bf"
-]
+],
+"x": 44,
+"y": 27
 },
 {
 "accept": [
@@ -669,27 +1414,46 @@
 "ntm:solid_fuel_presto_bf",
 "ntm:solid_fuel_presto_triplet",
 "ntm:solid_fuel_presto_triplet_bf"
-]
+],
+"x": 62,
+"y": 27
 }
 ],
 "synced": []
 },
 "ntm:heater_heatex": {
+"inventory": [
+8,
+122
+],
 "slots": [
 {
-"max": 1
+"max": 1,
+"x": 80,
+"y": 72
 }
 ],
 "synced": []
 },
 "ntm:heater_oilburner": {
+"inventory": [
+8,
+121
+],
 "slots": [
-{},
 {
-"output": true
+"x": 26,
+"y": 17
 },
 {
-"max": 1
+"output": true,
+"x": 26,
+"y": 53
+},
+{
+"max": 1,
+"x": 44,
+"y": 71
 },
 {
 "accept": [
@@ -697,12 +1461,18 @@
 "ntm:upgrade_overdrive_2",
 "ntm:upgrade_overdrive_3"
 ],
-"max": 1
+"max": 1,
+"x": 80,
+"y": 73
 }
 ],
 "synced": []
 },
 "ntm:heater_oven": {
+"inventory": [
+8,
+86
+],
 "slots": [
 {
 "accept": [
@@ -791,7 +1561,9 @@
 "ntm:solid_fuel_presto_bf",
 "ntm:solid_fuel_presto_triplet",
 "ntm:solid_fuel_presto_triplet_bf"
-]
+],
+"x": 44,
+"y": 27
 },
 {
 "accept": [
@@ -880,12 +1652,18 @@
 "ntm:solid_fuel_presto_bf",
 "ntm:solid_fuel_presto_triplet",
 "ntm:solid_fuel_presto_triplet_bf"
-]
+],
+"x": 62,
+"y": 27
 }
 ],
 "synced": []
 },
 "ntm:machine_arc_furnace_large": {
+"inventory": [
+8,
+174
+],
 "slots": [
 {
 "accept": [
@@ -894,7 +1672,9 @@
 "ntm:arc_electrode__desh",
 "ntm:arc_electrode__saturnite"
 ],
-"max": 1
+"max": 1,
+"x": 62,
+"y": 22
 },
 {
 "accept": [
@@ -903,7 +1683,9 @@
 "ntm:arc_electrode__desh",
 "ntm:arc_electrode__saturnite"
 ],
-"max": 1
+"max": 1,
+"x": 80,
+"y": 22
 },
 {
 "accept": [
@@ -912,16 +1694,22 @@
 "ntm:arc_electrode__desh",
 "ntm:arc_electrode__saturnite"
 ],
-"max": 1
+"max": 1,
+"x": 98,
+"y": 22
 },
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 8,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 152,
+"y": 108
 },
 {
 "accept": [
@@ -1544,28 +2332,23 @@
 ]
 },
 "ntm:machine_assembly_machine": {
+"inventory": [
+8,
+174
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_spark",
 "ntm:battery_trixite"
-]
+],
+"x": 152,
+"y": 81
 },
 {
-"accept": []
-},
-{
-"accept": [
-"ntm:upgrade_speed_1",
-"ntm:upgrade_speed_2",
-"ntm:upgrade_speed_3",
-"ntm:upgrade_power_1",
-"ntm:upgrade_power_2",
-"ntm:upgrade_power_3",
-"ntm:upgrade_overdrive_1",
-"ntm:upgrade_overdrive_2",
-"ntm:upgrade_overdrive_3"
-]
+"accept": [],
+"x": 35,
+"y": 126
 },
 {
 "accept": [
@@ -1578,7 +2361,24 @@
 "ntm:upgrade_overdrive_1",
 "ntm:upgrade_overdrive_2",
 "ntm:upgrade_overdrive_3"
-]
+],
+"x": 152,
+"y": 108
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3"
+],
+"x": 152,
+"y": 126
 },
 {
 "grid": [
@@ -1589,12 +2389,35 @@
 ]
 },
 {
-"output": true
+"output": true,
+"x": 98,
+"y": 45
+}
+],
+"synced": []
+},
+"ntm:machine_battery": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 26,
+"y": 17
+},
+{
+"x": 26,
+"y": 53
 }
 ],
 "synced": []
 },
 "ntm:machine_blast_furnace": {
+"inventory": [
+8,
+140
+],
 "slots": [
 {
 "accept": [
@@ -1618,7 +2441,9 @@
 "ntm:solid_fuel_presto_bf",
 "ntm:solid_fuel_presto_triplet",
 "ntm:solid_fuel_presto_triplet_bf"
-]
+],
+"x": 80,
+"y": 81
 },
 {
 "accept": [
@@ -1643,7 +2468,9 @@
 "ntm:powder_flux",
 "ntm:powder_iron",
 "ntm:powder_limestone"
-]
+],
+"x": 80,
+"y": 27
 },
 {
 "accept": [
@@ -1668,118 +2495,235 @@
 "ntm:powder_flux",
 "ntm:powder_iron",
 "ntm:powder_limestone"
-]
+],
+"x": 80,
+"y": 45
 },
 {
-"output": true
+"output": true,
+"x": 134,
+"y": 72
 },
 {
-"output": true
+"output": true,
+"x": 134,
+"y": 90
 }
 ],
 "synced": []
 },
 "ntm:machine_boiler": {
+"inventory": [
+8,
+84
+],
 "slots": [],
 "synced": []
 },
 "ntm:machine_catalytic_cracker": {
+"inventory": [
+8,
+84
+],
 "slots": [],
 "synced": []
 },
 "ntm:machine_catalytic_reformer": {
+"inventory": [
+8,
+156
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 17,
+"y": 90
 },
 {
-"accept": []
+"accept": [],
+"x": 35,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 35,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 107,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 107,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 125,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 125,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 143,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 143,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 17,
+"y": 108
 },
 {
 "accept": [
 "ntm:catalytic_converter"
-]
+],
+"x": 71,
+"y": 36
 }
 ],
 "synced": []
 },
 "ntm:machine_centrifuge": {
+"inventory": [
+11,
+107
+],
 "slots": [
-{},
 {
-"output": true
+"x": 44,
+"y": 57
 },
 {
-"output": true
+"output": true,
+"x": 70,
+"y": 57
 },
 {
-"output": true
+"output": true,
+"x": 90,
+"y": 57
 },
 {
-"output": true
+"output": true,
+"x": 110,
+"y": 57
+},
+{
+"output": true,
+"x": 130,
+"y": 57
 }
 ],
 "synced": []
 },
 "ntm:machine_chemical_plant": {
+"inventory": [
+8,
+174
+],
 "slots": [
-{},
-{},
-{},
 {
-"output": true
+"x": 8,
+"y": 99
 },
 {
-"output": true
+"x": 26,
+"y": 99
 },
 {
-"output": true
+"x": 44,
+"y": 99
+},
+{
+"output": true,
+"x": 80,
+"y": 99
+},
+{
+"output": true,
+"x": 98,
+"y": 99
+},
+{
+"output": true,
+"x": 116,
+"y": 99
 }
 ],
 "synced": []
+},
+"ntm:machine_chungus": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0,
+1
+]
 },
 "ntm:machine_coker": {
+"inventory": [
+8,
+122
+],
 "slots": [
 {
-"accept": []
+"accept": [],
+"x": 35,
+"y": 72
 },
 {
-"output": true
+"output": true,
+"x": 97,
+"y": 27
 }
 ],
 "synced": []
 },
+"ntm:machine_condenser": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:machine_condenser_powered": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0
+]
+},
 "ntm:machine_crucible": {
+"inventory": [
+8,
+132
+],
 "slots": [
 {
-"accept": []
+"accept": [],
+"x": -10000,
+"y": -10000
 },
 {
 "grid": [
@@ -1801,6 +2745,10 @@
 ]
 },
 "ntm:machine_crystallizer": {
+"inventory": [
+8,
+122
+],
 "slots": [
 {
 "accept": [
@@ -2091,81 +3039,132 @@
 "ntm:scrap_plastic__mem_socket",
 "ntm:stone_gneiss",
 "ntm:stone_resource__sulfur"
-]
+],
+"x": 62,
+"y": 45
 },
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 152,
+"y": 72
 },
 {
-"output": true
+"output": true,
+"x": 113,
+"y": 45
 },
 {
-"accept": []
+"accept": [],
+"x": 17,
+"y": 18
 },
 {
-"output": true
+"output": true,
+"x": 17,
+"y": 54
 },
 {
-"accept": []
+"accept": [],
+"x": 80,
+"y": 18
 },
 {
-"accept": []
+"accept": [],
+"x": 98,
+"y": 18
 },
 {
-"accept": []
+"accept": [],
+"x": 35,
+"y": 72
 }
 ],
 "synced": []
 },
 "ntm:machine_electrolyser": {
+"inventory": [
+8,
+122
+],
+"screens": [
+"ntm:machine_electrolyser_metal"
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 186,
+"y": 109
 },
 {
-"accept": []
+"accept": [],
+"x": 186,
+"y": 140
 },
 {
-"accept": []
+"accept": [],
+"x": 186,
+"y": 158
 },
 {
-"accept": []
+"accept": [],
+"x": 6,
+"y": 18
 },
 {
-"output": true
+"output": true,
+"x": 6,
+"y": 54
 },
 {
-"accept": []
+"accept": [],
+"x": 24,
+"y": 18
 },
 {
-"output": true
+"output": true,
+"x": 24,
+"y": 54
 },
 {
-"accept": []
+"accept": [],
+"x": 78,
+"y": 18
 },
 {
-"output": true
+"output": true,
+"x": 78,
+"y": 54
 },
 {
-"accept": []
+"accept": [],
+"x": 134,
+"y": 18
 },
 {
-"output": true
+"output": true,
+"x": 134,
+"y": 54
 },
 {
-"output": true
+"output": true,
+"x": 154,
+"y": 18
 },
 {
-"output": true
+"output": true,
+"x": 154,
+"y": 36
 },
 {
-"output": true
+"output": true,
+"x": 154,
+"y": 54
 },
 {
 "accept": [
@@ -2205,36 +3204,56 @@
 "ntm:crystal_trixite",
 "ntm:crystal_tungsten",
 "ntm:crystal_uranium"
-]
+],
+"x": -10000,
+"y": -10000
 },
 {
-"output": true
+"output": true,
+"x": -10000,
+"y": -10000
 },
 {
-"output": true
+"output": true,
+"x": -10000,
+"y": -10000
 },
 {
-"output": true
+"output": true,
+"x": -10000,
+"y": -10000
 },
 {
-"output": true
+"output": true,
+"x": -10000,
+"y": -10000
 },
 {
-"output": true
+"output": true,
+"x": -10000,
+"y": -10000
 },
 {
-"output": true
+"output": true,
+"x": -10000,
+"y": -10000
 }
 ],
 "synced": []
 },
 "ntm:machine_epress": {
+"inventory": [
+8,
+104
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 152,
+"y": 54
 },
 {
 "accept": [
@@ -2271,7 +3290,9 @@
 "ntm:stamp_titanium_plate",
 "ntm:stamp_titanium_wire"
 ],
-"max": 1
+"max": 1,
+"x": 19,
+"y": 15
 },
 {
 "accept": [
@@ -2309,13 +3330,19 @@
 "ntm:powder_lignite",
 "ntm:powder_quartz",
 "ntm:powder_sawdust"
-]
+],
+"x": 19,
+"y": 51
 },
 {
-"output": true
+"output": true,
+"x": 79,
+"y": 33
 },
 {
-"accept": []
+"accept": [],
+"x": 111,
+"y": 32
 }
 ],
 "synced": [
@@ -2324,28 +3351,23 @@
 ]
 },
 "ntm:machine_excavator": {
+"inventory": [
+41,
+122
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 220,
+"y": 72
 },
 {
-"accept": []
-},
-{
-"accept": [
-"ntm:upgrade_speed_1",
-"ntm:upgrade_speed_2",
-"ntm:upgrade_speed_3",
-"ntm:upgrade_power_1",
-"ntm:upgrade_power_2",
-"ntm:upgrade_power_3",
-"ntm:upgrade_effect_1",
-"ntm:upgrade_effect_2",
-"ntm:upgrade_effect_3"
-]
+"accept": [],
+"x": 202,
+"y": 72
 },
 {
 "accept": [
@@ -2358,7 +3380,24 @@
 "ntm:upgrade_effect_1",
 "ntm:upgrade_effect_2",
 "ntm:upgrade_effect_3"
-]
+],
+"x": 136,
+"y": 75
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_effect_1",
+"ntm:upgrade_effect_2",
+"ntm:upgrade_effect_3"
+],
+"x": 154,
+"y": 75
 },
 {
 "accept": [
@@ -2373,34 +3412,54 @@
 "ntm:drillbit__tcalloy",
 "ntm:drillbit__tcalloy_diamond"
 ],
-"max": 1
+"max": 1,
+"x": 172,
+"y": 75
 },
 {
-"output": true
+"output": true,
+"x": 136,
+"y": 5
 },
 {
-"output": true
+"output": true,
+"x": 154,
+"y": 5
 },
 {
-"output": true
+"output": true,
+"x": 172,
+"y": 5
 },
 {
-"output": true
+"output": true,
+"x": 136,
+"y": 23
 },
 {
-"output": true
+"output": true,
+"x": 154,
+"y": 23
 },
 {
-"output": true
+"output": true,
+"x": 172,
+"y": 23
 },
 {
-"output": true
+"output": true,
+"x": 136,
+"y": 41
 },
 {
-"output": true
+"output": true,
+"x": 154,
+"y": 41
 },
 {
-"output": true
+"output": true,
+"x": 172,
+"y": 41
 }
 ],
 "synced": [
@@ -2409,27 +3468,43 @@
 ]
 },
 "ntm:machine_flare": {
+"inventory": [
+8,
+121
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 143,
+"y": 71
 },
 {
-"accept": []
+"accept": [],
+"x": 17,
+"y": 17
 },
 {
-"output": true
+"output": true,
+"x": 17,
+"y": 53
 },
 {
-"accept": []
+"accept": [],
+"x": 35,
+"y": 71
 },
 {
-"accept": []
+"accept": [],
+"x": 80,
+"y": 71
 },
 {
-"accept": []
+"accept": [],
+"x": 98,
+"y": 71
 }
 ],
 "synced": [
@@ -2437,41 +3512,75 @@
 8
 ]
 },
+"ntm:machine_fluidtank": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 8,
+"y": 17
+},
+{
+"output": true,
+"x": 8,
+"y": 53
+},
+{
+"x": 35,
+"y": 17
+},
+{
+"output": true,
+"x": 35,
+"y": 53
+},
+{
+"x": 125,
+"y": 17
+},
+{
+"output": true,
+"x": 125,
+"y": 53
+}
+],
+"synced": []
+},
 "ntm:machine_fracking_tower": {
+"inventory": [
+12,
+108
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 8,
+"y": 58
 },
 {
-"accept": []
+"accept": [],
+"x": 94,
+"y": 22
 },
 {
-"output": true
+"output": true,
+"x": 94,
+"y": 58
 },
 {
-"accept": []
+"accept": [],
+"x": 130,
+"y": 22
 },
 {
-"output": true
-},
-{
-"accept": [
-"ntm:upgrade_speed_1",
-"ntm:upgrade_speed_2",
-"ntm:upgrade_speed_3",
-"ntm:upgrade_power_1",
-"ntm:upgrade_power_2",
-"ntm:upgrade_power_3",
-"ntm:upgrade_overdrive_1",
-"ntm:upgrade_overdrive_2",
-"ntm:upgrade_overdrive_3",
-"ntm:upgrade_afterburn_1",
-"ntm:upgrade_afterburn_2",
-"ntm:upgrade_afterburn_3"
-]
+"output": true,
+"x": 130,
+"y": 58
 },
 {
 "accept": [
@@ -2487,7 +3596,9 @@
 "ntm:upgrade_afterburn_1",
 "ntm:upgrade_afterburn_2",
 "ntm:upgrade_afterburn_3"
-]
+],
+"x": 156,
+"y": 36
 },
 {
 "accept": [
@@ -2503,7 +3614,27 @@
 "ntm:upgrade_afterburn_1",
 "ntm:upgrade_afterburn_2",
 "ntm:upgrade_afterburn_3"
-]
+],
+"x": 156,
+"y": 54
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+],
+"x": -10000,
+"y": -10000
 }
 ],
 "synced": [
@@ -2512,95 +3643,166 @@
 ]
 },
 "ntm:machine_fraction_tower": {
+"inventory": [
+8,
+84
+],
 "slots": [],
 "synced": []
 },
 "ntm:machine_gascent": {
+"inventory": [
+8,
+122
+],
 "slots": [
 {
-"output": true
+"output": true,
+"x": 71,
+"y": 53
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 53
 },
 {
-"output": true
+"output": true,
+"x": 71,
+"y": 71
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 71
 },
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 182,
+"y": 71
 },
 {
-"accept": []
+"accept": [],
+"x": 91,
+"y": 15
 },
 {
 "accept": [
 "ntm:upgrade_gc_speed"
 ],
-"max": 1
+"max": 1,
+"x": 69,
+"y": 15
 }
 ],
 "synced": []
 },
 "ntm:machine_hephaestus": {
+"inventory": [
+8,
+84
+],
 "slots": [],
 "synced": [
 0
 ]
 },
 "ntm:machine_hydrotreater": {
+"inventory": [
+8,
+156
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 17,
+"y": 90
 },
 {
-"accept": []
+"accept": [],
+"x": 35,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 35,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 53,
+"y": 90
 },
 {
-"accept": []
+"accept": [],
+"x": 53,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 125,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 125,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 143,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 143,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 17,
+"y": 108
 },
 {
 "accept": [
 "ntm:catalytic_converter"
-]
+],
+"x": 89,
+"y": 36
 }
 ],
 "synced": []
 },
 "ntm:machine_industrial_boiler": {
+"inventory": [
+8,
+84
+],
 "slots": [],
 "synced": []
 },
+"ntm:machine_industrial_turbine": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0,
+1
+]
+},
 "ntm:machine_liquefactor": {
+"inventory": [
+8,
+122
+],
 "slots": [
 {
 "accept": [
@@ -2646,19 +3848,27 @@
 "ntm:powder_lead",
 "ntm:powder_lignite",
 "ntm:powder_sodium"
-]
+],
+"x": 35,
+"y": 54
 },
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 134,
+"y": 72
 },
 {
-"accept": []
+"accept": [],
+"x": 98,
+"y": 36
 },
 {
-"accept": []
+"accept": [],
+"x": 98,
+"y": 54
 }
 ],
 "synced": [
@@ -2668,12 +3878,18 @@
 ]
 },
 "ntm:machine_mixer": {
+"inventory": [
+8,
+122
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 12,
+"y": 72
 },
 {
 "accept": [
@@ -2704,16 +3920,24 @@
 "ntm:powder_thorium",
 "ntm:stone_resource__bauxite",
 "ntm:sulfur"
-]
+],
+"x": 52,
+"y": 72
 },
 {
-"accept": []
+"accept": [],
+"x": 126,
+"y": 72
 },
 {
-"accept": []
+"accept": [],
+"x": 148,
+"y": 18
 },
 {
-"accept": []
+"accept": [],
+"x": 148,
+"y": 36
 }
 ],
 "synced": [
@@ -2724,49 +3948,79 @@
 ]
 },
 "ntm:machine_ore_slopper": {
+"inventory": [
+8,
+122
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 8,
+"y": 72
 },
 {
-"accept": []
+"accept": [],
+"x": 26,
+"y": 72
 },
 {
 "accept": [
 "ntm:bedrock_ore_base"
-]
+],
+"x": 71,
+"y": 27
 },
 {
-"output": true
+"output": true,
+"x": 134,
+"y": 18
 },
 {
-"output": true
+"output": true,
+"x": 152,
+"y": 18
 },
 {
-"output": true
+"output": true,
+"x": 134,
+"y": 36
 },
 {
-"output": true
+"output": true,
+"x": 152,
+"y": 36
 },
 {
-"output": true
+"output": true,
+"x": 134,
+"y": 54
 },
 {
-"output": true
+"output": true,
+"x": 152,
+"y": 54
 },
 {
-"accept": []
+"accept": [],
+"x": 62,
+"y": 72
 },
 {
-"accept": []
+"accept": [],
+"x": 80,
+"y": 72
 }
 ],
 "synced": []
 },
 "ntm:machine_press": {
+"inventory": [
+8,
+132
+],
 "slots": [
 {
 "accept": [
@@ -2855,7 +4109,9 @@
 "ntm:powder_ash__wood",
 "ntm:waste_log",
 "ntm:waste_planks"
-]
+],
+"x": 26,
+"y": 53
 },
 {
 "accept": [
@@ -2892,7 +4148,9 @@
 "ntm:stamp_titanium_plate",
 "ntm:stamp_titanium_wire"
 ],
-"max": 1
+"max": 1,
+"x": 80,
+"y": 17
 },
 {
 "accept": [
@@ -2930,10 +4188,14 @@
 "ntm:powder_lignite",
 "ntm:powder_quartz",
 "ntm:powder_sawdust"
-]
+],
+"x": 80,
+"y": 53
 },
 {
-"output": true
+"output": true,
+"x": 140,
+"y": 35
 }
 ],
 "synced": [
@@ -2942,40 +4204,38 @@
 ]
 },
 "ntm:machine_pumpjack": {
+"inventory": [
+12,
+108
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 8,
+"y": 58
 },
 {
-"accept": []
+"accept": [],
+"x": 94,
+"y": 22
 },
 {
-"output": true
+"output": true,
+"x": 94,
+"y": 58
 },
 {
-"accept": []
+"accept": [],
+"x": 130,
+"y": 22
 },
 {
-"output": true
-},
-{
-"accept": [
-"ntm:upgrade_speed_1",
-"ntm:upgrade_speed_2",
-"ntm:upgrade_speed_3",
-"ntm:upgrade_power_1",
-"ntm:upgrade_power_2",
-"ntm:upgrade_power_3",
-"ntm:upgrade_overdrive_1",
-"ntm:upgrade_overdrive_2",
-"ntm:upgrade_overdrive_3",
-"ntm:upgrade_afterburn_1",
-"ntm:upgrade_afterburn_2",
-"ntm:upgrade_afterburn_3"
-]
+"output": true,
+"x": 130,
+"y": 58
 },
 {
 "accept": [
@@ -2991,7 +4251,9 @@
 "ntm:upgrade_afterburn_1",
 "ntm:upgrade_afterburn_2",
 "ntm:upgrade_afterburn_3"
-]
+],
+"x": 156,
+"y": 36
 },
 {
 "accept": [
@@ -3007,7 +4269,27 @@
 "ntm:upgrade_afterburn_1",
 "ntm:upgrade_afterburn_2",
 "ntm:upgrade_afterburn_3"
-]
+],
+"x": 156,
+"y": 54
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+],
+"x": -10000,
+"y": -10000
 }
 ],
 "synced": [
@@ -3016,53 +4298,92 @@
 ]
 },
 "ntm:machine_purex": {
+"inventory": [
+8,
+174
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 152,
+"y": 81
 },
 {
-"accept": []
+"accept": [],
+"x": -10000,
+"y": -10000
 },
 {
-"accept": []
+"accept": [],
+"x": 152,
+"y": 108
 },
 {
-"accept": []
-},
-{},
-{},
-{},
-{
-"output": true
+"accept": [],
+"x": 152,
+"y": 126
 },
 {
-"output": true
+"x": 8,
+"y": 90
 },
 {
-"output": true
+"x": 26,
+"y": 90
 },
 {
-"output": true
+"x": 44,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 80,
+"y": 36
 },
 {
-"output": true
+"output": true,
+"x": 98,
+"y": 36
+},
+{
+"output": true,
+"x": 80,
+"y": 54
+},
+{
+"output": true,
+"x": 98,
+"y": 54
+},
+{
+"output": true,
+"x": 80,
+"y": 72
+},
+{
+"output": true,
+"x": 98,
+"y": 72
 }
 ],
 "synced": []
 },
 "ntm:machine_pyrooven": {
+"inventory": [
+8,
+122
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 152,
+"y": 72
 },
 {
 "accept": [
@@ -3107,66 +4428,106 @@
 "ntm:oil_tar__wood",
 "ntm:powder_coal",
 "ntm:powder_tungsten"
-]
+],
+"x": 35,
+"y": 45
 },
 {
-"output": true
+"output": true,
+"x": 89,
+"y": 45
 },
 {
-"accept": []
+"accept": [],
+"x": 8,
+"y": 72
 },
 {
-"accept": []
+"accept": [],
+"x": 71,
+"y": 72
 },
 {
-"accept": []
+"accept": [],
+"x": 89,
+"y": 72
 }
 ],
 "synced": []
 },
 "ntm:machine_refinery": {
+"inventory": [
+11,
+158
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 158,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 12,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 12,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 64,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 64,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 82,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 82,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 100,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 100,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 118,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 118,
+"y": 108
 },
 {
-"output": true
+"output": true,
+"x": 38,
+"y": 90
 },
 {
-"accept": []
+"accept": [],
+"x": 38,
+"y": 108
 }
 ],
 "synced": [
@@ -3175,6 +4536,10 @@
 ]
 },
 "ntm:machine_shredder": {
+"inventory": [
+8,
+151
+],
 "slots": [
 {
 "grid": [
@@ -3203,14 +4568,18 @@
 "ntm:blades_steel",
 "ntm:blades_titanium",
 "ntm:blades_desh"
-]
+],
+"x": 44,
+"y": 108
 },
 {
 "accept": [
 "ntm:blades_steel",
 "ntm:blades_titanium",
 "ntm:blades_desh"
-]
+],
+"x": 80,
+"y": 108
 },
 {
 "accept": [
@@ -3218,30 +4587,46 @@
 "ntm:battery_trixite",
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 8,
+"y": 108
 }
 ],
 "synced": []
 },
 "ntm:machine_solidifier": {
+"inventory": [
+8,
+122
+],
 "slots": [
 {
-"output": true
+"output": true,
+"x": 71,
+"y": 45
 },
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 134,
+"y": 72
 },
 {
-"accept": []
+"accept": [],
+"x": 98,
+"y": 36
 },
 {
-"accept": []
+"accept": [],
+"x": 98,
+"y": 54
 },
 {
-"accept": []
+"accept": [],
+"x": 71,
+"y": 72
 }
 ],
 "synced": [
@@ -3250,85 +4635,121 @@
 6
 ]
 },
+"ntm:machine_steam_engine": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0
+]
+},
 "ntm:machine_vacuum_distill": {
+"inventory": [
+8,
+156
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 26,
+"y": 90
 },
 {
-"accept": []
+"accept": [],
+"x": 44,
+"y": 90
 },
 {
-"accept": []
+"accept": [],
+"x": 44,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 80,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 80,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 98,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 98,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 116,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 116,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 134,
+"y": 90
 },
 {
-"output": true
+"output": true,
+"x": 134,
+"y": 108
 },
 {
-"accept": []
+"accept": [],
+"x": 26,
+"y": 108
 }
 ],
 "synced": []
 },
 "ntm:machine_well": {
+"inventory": [
+12,
+108
+],
 "slots": [
 {
 "accept": [
 "ntm:battery_creative"
 ],
-"max": 1
+"max": 1,
+"x": 8,
+"y": 58
 },
 {
-"accept": []
+"accept": [],
+"x": 94,
+"y": 22
 },
 {
-"output": true
+"output": true,
+"x": 94,
+"y": 58
 },
 {
-"accept": []
+"accept": [],
+"x": 130,
+"y": 22
 },
 {
-"output": true
-},
-{
-"accept": [
-"ntm:upgrade_speed_1",
-"ntm:upgrade_speed_2",
-"ntm:upgrade_speed_3",
-"ntm:upgrade_power_1",
-"ntm:upgrade_power_2",
-"ntm:upgrade_power_3",
-"ntm:upgrade_overdrive_1",
-"ntm:upgrade_overdrive_2",
-"ntm:upgrade_overdrive_3",
-"ntm:upgrade_afterburn_1",
-"ntm:upgrade_afterburn_2",
-"ntm:upgrade_afterburn_3"
-]
+"output": true,
+"x": 130,
+"y": 58
 },
 {
 "accept": [
@@ -3344,7 +4765,9 @@
 "ntm:upgrade_afterburn_1",
 "ntm:upgrade_afterburn_2",
 "ntm:upgrade_afterburn_3"
-]
+],
+"x": 156,
+"y": 36
 },
 {
 "accept": [
@@ -3360,7 +4783,27 @@
 "ntm:upgrade_afterburn_1",
 "ntm:upgrade_afterburn_2",
 "ntm:upgrade_afterburn_3"
-]
+],
+"x": 156,
+"y": 54
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+],
+"x": -10000,
+"y": -10000
 }
 ],
 "synced": [
@@ -3368,307 +4811,478 @@
 2
 ]
 },
+"ntm:machine_wood_burner": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 26,
+"y": 18
+},
+{
+"output": true,
+"x": 26,
+"y": 54
+},
+{
+"x": 98,
+"y": 54
+},
+{
+"x": 98,
+"y": 18
+},
+{
+"output": true,
+"x": 98,
+"y": 36
+},
+{
+"x": 143,
+"y": 54
+}
+],
+"synced": []
+},
 "ntm:nuke_boy": {
+"inventory": [
+8,
+140
+],
 "slots": [
 {
 "accept": [
 "ntm:boy_shielding"
 ],
-"max": 1
+"max": 1,
+"x": 26,
+"y": 36
 },
 {
 "accept": [
 "ntm:boy_target"
 ],
-"max": 1
+"max": 1,
+"x": 44,
+"y": 36
 },
 {
 "accept": [
 "ntm:boy_bullet"
 ],
-"max": 1
+"max": 1,
+"x": 62,
+"y": 36
 },
 {
 "accept": [
 "ntm:boy_propellant"
 ],
-"max": 1
+"max": 1,
+"x": 80,
+"y": 36
 },
 {
 "accept": [
 "ntm:boy_igniter"
 ],
-"max": 1
+"max": 1,
+"x": 98,
+"y": 36
 }
 ],
 "synced": []
 },
 "ntm:nuke_fstbmb": {
+"inventory": [
+8,
+140
+],
 "slots": [
 {
 "accept": [
 "ntm:egg_balefire"
 ],
-"max": 1
+"max": 1,
+"x": 17,
+"y": 36
 },
 {
 "accept": [
 "ntm:battery_spark"
 ],
-"max": 1
+"max": 1,
+"x": 53,
+"y": 36
 }
 ],
 "synced": []
 },
 "ntm:nuke_gadget": {
+"inventory": [
+8,
+84
+],
 "slots": [
 {
 "accept": [
 "ntm:gadget_wireing"
 ],
-"max": 1
+"max": 1,
+"x": 26,
+"y": 35
 },
 {
 "accept": [
 "ntm:early_explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 8,
+"y": 17
 },
 {
 "accept": [
 "ntm:early_explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 44,
+"y": 17
 },
 {
 "accept": [
 "ntm:early_explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 8,
+"y": 53
 },
 {
 "accept": [
 "ntm:early_explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 44,
+"y": 53
 },
 {
 "accept": [
 "ntm:gadget_core"
 ],
-"max": 1
+"max": 1,
+"x": 98,
+"y": 35
 }
 ],
 "synced": []
 },
 "ntm:nuke_man": {
+"inventory": [
+8,
+84
+],
 "slots": [
 {
 "accept": [
 "ntm:man_igniter"
 ],
-"max": 1
+"max": 1,
+"x": 26,
+"y": 35
 },
 {
 "accept": [
 "ntm:early_explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 8,
+"y": 17
 },
 {
 "accept": [
 "ntm:early_explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 44,
+"y": 17
 },
 {
 "accept": [
 "ntm:early_explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 8,
+"y": 53
 },
 {
 "accept": [
 "ntm:early_explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 44,
+"y": 53
 },
 {
 "accept": [
 "ntm:man_core"
 ],
-"max": 1
+"max": 1,
+"x": 98,
+"y": 35
 }
 ],
 "synced": []
 },
 "ntm:nuke_mike": {
+"inventory": [
+8,
+135
+],
 "slots": [
 {
 "accept": [
 "ntm:explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 26,
+"y": 83
 },
 {
 "accept": [
 "ntm:explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 26,
+"y": 101
 },
 {
 "accept": [
 "ntm:explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 44,
+"y": 83
 },
 {
 "accept": [
 "ntm:explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 44,
+"y": 101
 },
 {
 "accept": [
 "ntm:man_core"
 ],
-"max": 1
+"max": 1,
+"x": 39,
+"y": 35
 },
 {
 "accept": [
 "ntm:mike_core"
 ],
-"max": 1
+"max": 1,
+"x": 98,
+"y": 91
 },
 {
 "accept": [
 "ntm:mike_deut"
 ],
-"max": 1
+"max": 1,
+"x": 116,
+"y": 91
 },
 {
 "accept": [
 "ntm:mike_cooling_unit"
 ],
-"max": 1
+"max": 1,
+"x": 134,
+"y": 91
 }
 ],
 "synced": []
 },
 "ntm:nuke_n2": {
+"inventory": [
+8,
+140
+],
 "slots": [
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 98,
+"y": 36
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 116,
+"y": 36
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 134,
+"y": 36
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 98,
+"y": 54
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 116,
+"y": 54
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 134,
+"y": 54
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 98,
+"y": 72
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 116,
+"y": 72
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 134,
+"y": 72
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 98,
+"y": 90
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 116,
+"y": 90
 },
 {
 "accept": [
 "ntm:n2_charge"
 ],
-"max": 1
+"max": 1,
+"x": 134,
+"y": 90
 }
 ],
 "synced": []
 },
 "ntm:nuke_tsar": {
+"inventory": [
+48,
+151
+],
 "slots": [
 {
 "accept": [
 "ntm:explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 48,
+"y": 101
 },
 {
 "accept": [
 "ntm:explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 66,
+"y": 101
 },
 {
 "accept": [
 "ntm:explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 84,
+"y": 101
 },
 {
 "accept": [
 "ntm:explosive_lenses"
 ],
-"max": 1
+"max": 1,
+"x": 102,
+"y": 101
 },
 {
 "accept": [
 "ntm:man_core"
 ],
-"max": 1
+"max": 1,
+"x": 55,
+"y": 51
 },
 {
 "accept": [
 "ntm:tsar_core"
 ],
-"max": 1
+"max": 1,
+"x": 138,
+"y": 101
+}
+],
+"synced": []
+},
+"ntm:teste": {
+"inventory": [
+8,
+84
+],
+"screen": "ntm:machine_battery",
+"slots": [
+{
+"x": 26,
+"y": 17
+},
+{
+"x": 26,
+"y": 53
 }
 ],
 "synced": []

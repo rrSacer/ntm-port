@@ -238,14 +238,17 @@ if (root / 'content/machine-recipes/heaters.json').exists():
 
 # Os arquivos de máquina (horizon_machine) que o bundle nativo usa sem ler o
 # conteúdo em tempo de execução: as regras de cada slot (accept, reject,
-# max, output, grid) e os índices sincronizados com os modelos.
+# max, output, grid, a posição x/y) e os índices sincronizados com os modelos,
+# mais o desenho da tela (título, telas, inventário) que o intérprete lê.
 hm = root / 'content/data/ntm/horizon_machine'
 if hm.is_dir():
-    keep = ('accept', 'reject', 'max', 'output', 'grid')
+    keep = ('accept', 'reject', 'max', 'output', 'grid', 'x', 'y')
+    layout = ('title', 'screen', 'screens', 'inventory')
     files = {}
     for f in sorted(hm.glob('*.json')):
         d = json.loads(f.read_text())
-        files[f'ntm:{f.stem}'] = {'slots': [{k: s[k] for k in keep if k in s} for s in d.get('slots', [])], 'synced': d.get('synced', [])}
+        files[f'ntm:{f.stem}'] = {'slots': [{k: s[k] for k in keep if k in s} for s in d.get('slots', [])], 'synced': d.get('synced', []),
+                           **{k: d[k] for k in layout if k in d}}
     p = root / 'crates/ntm-core/data/machine_files.json'
     p.write_text(json.dumps(files, ensure_ascii=False, indent=0, sort_keys=True) + '\n')
     print(f"machine_files: {len(files)} máquinas → {p.relative_to(root)}")
