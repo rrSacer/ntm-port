@@ -18,7 +18,8 @@ def main():
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
     evidence=root/'content-gen-evidence/bedrock-stages34';evidence.mkdir(parents=True,exist_ok=True)
-    scratch=Path(tempfile.mkdtemp(prefix='ntm-processing-probe-'))
+    temporary=root.parent/'.agent-tmp';temporary.mkdir(exist_ok=True)
+    scratch=Path(tempfile.mkdtemp(prefix='content-processing-probe-',dir=temporary))
     for d in ['game','home','launcher','data','config']:(scratch/d).mkdir()
     (scratch/'game/options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nrenderDistance:2\nsimulationDistance:2\nmaxFps:15\nenableVsync:false\n')
     env={**os.environ,'HOME':str(scratch/'home'),'HORIZON_HOME':str(scratch/'game'),
@@ -61,7 +62,13 @@ def main():
                 for y,level in [(101,0),(103,5)]:
                     state=f'ntm:{name}[facing=north,honey_level={level}]'
                     cmd(f'setblock {x} {y} 0 {state}')
-                    assert ctl(f'block {x} {y} 0')['state']==state
+                    deadline=time.monotonic()+15
+                    while True:
+                        reply=ctl(f'block {x} {y} 0')
+                        actual=reply['state']
+                        if actual.split('[',1)[0]=='ntm:'+name and set(actual.split('[',1)[-1].rstrip(']').split(','))=={'facing=north','honey_level='+str(level)}:break
+                        if time.monotonic()>deadline:raise AssertionError((state,reply))
+                        ctl('wait 2')
             for i,name in enumerate(['block_graphite','rebar','concrete_rebar']):
                 cmd(f'setblock {-4+i*4} 101 3 ntm:{name}')
                 assert ctl(f'block {-4+i*4} 101 3')['block']=='ntm:'+name
@@ -88,6 +95,7 @@ def main():
             try:process.wait(timeout=20)
             except subprocess.TimeoutExpired:process.kill();process.wait()
         if mute and mute.poll() is None:mute.terminate();mute.wait(timeout=10)
+        (evidence/'game-checks.json').write_text(json.dumps(checks,ensure_ascii=False,indent=2)+'\n')
         shutil.copy2(scratch/'client.log',evidence/'game-client.log') if (scratch/'client.log').exists() else None
 
 
