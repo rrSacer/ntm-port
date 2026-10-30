@@ -474,11 +474,65 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 - **Em jogo:** a escavadora foi posta com 261 dummies (corpo 196, pernas 24, parede 42), com as pernas no lado das
   pernas do modelo. A tela abre, e o interruptor da broca liga (valor 5 = 1). O slopper foi posto 3×7 ao longo do
   modelo, e a tela abriu (`img/visual-bedrock.png`).
-- **Falta:** as animações (broca, britadores, pás do slopper) e os outros 4 interruptores, que dependem de lógica.
+- **Animações (feito, b07e829):**
+  - A broca gira (`-360°` em y, como o `glRotatef(..., 0, -1, 0)`), e os britadores giram em sentidos opostos.
+  - O slopper faz o ciclo do `RenderOreSlopper`: carrinho, hidráulica, balde, pás e ventoinha.
+  - Tocam com `honey_level ≠ 0`.
+  - O modelo da escavadora desce 3 blocos (`translate [0,-3,0]`, o `-getHeightOffset` do renderer).
+- **Falta:** os outros 4 interruptores e as conexões de canal e tanque, a combinar com o agente das bombas depois da
+  aceitação dele.
+
+## 3h. A porta da fornalha e o cristalizador
+
+- **Porta da fornalha:**
+  - No NTM, a porta do `RenderFirebox` abre com a GUI: `doorAngle` sobe até 135° enquanto `playersUsing > 0`.
+  - No motor, o modelo ganha `"open": "<animação>"`. Enquanto a tela da máquina está aberta nesta janela, essa
+    animação fica posada pela abertura do `Scene.lid` (a mesma do baú). Com a tela aberta, a abertura é 1: a porta
+    abre de uma vez, sem os ticks de abrir.
+  - Clicar num dummy abre a tela do núcleo, então o cliente remoto passa a guardar o menu na posição do núcleo, e
+    não na do dummy clicado.
+  - No port, o `loop_animation` aceita `"loop": false`. A porta é `Door` com o pivô na dobradiça, girando `-135°` em y.
+- **Cristalizador (`MachineCrystallizer`, "Acidificador de Minério"):**
+  - Multibloco 3×3×6 (`{5,0,1,1,1,1}`, offset 1). As 8 portas (`makeExtra` em `(±1,0,±1)`) ficam na camada de baixo,
+    dentro do footprint.
+  - Tela `gui_crystallizer_alt.png` 176×204, com os 8 slots do `ContainerCrystallizer`:
+    - 0 entrada;
+    - 1 bateria;
+    - 2 saída;
+    - 3 e 4 recipientes de fluido;
+    - 5 e 6 upgrades;
+    - 7 identificador de fluido.
+  - A entrada aceita só os itens das receitas (`accept_recipes: crystallizer`, de
+    `content/machine-recipes/crystallizer.json`), como o `isItemValidForSlot`: a bateria vai para o slot dela no
+    shift-clique.
+  - Os slots sem lógica ainda não aceitam nada (`accept []`, como na PUREX).
+  - Elementos da tela:
+    - energia, para cima;
+    - progresso, à direita, 28 px;
+    - o tanque na cor do fluido (`data[6]`), porque o fluido muda com a receita (água, ácido sulfúrico, cloro,
+      peróxido...);
+    - a estrela azul do `drawInfoPanel` (tipo 8, de `gui_utility.png`), composta no fundo, com o tooltip dos upgrades.
+  - Modelo `acidizer.obj`:
+    - `rotation 90`;
+    - `Windows` escondido, porque o renderer não o desenha;
+    - o `Spinner` gira 360° em 3,6 s (5°/tick) com `honey_level ≠ 0`.
+  - O renderer do NTM chama `renderPart("Fluid")`, mas o OBJ não tem essa parte: não há líquido a desenhar.
+  - A lógica é do agente das bombas, como estação do crafter (`Layout::Crafter { inputs: 0..1, outputs: 2..3 }`,
+    f2bd500).
+  - Os 30 valores do `crafter_data`: energia, máxima, progresso ‰ e 1000; tanque (mB, capacidade, cor); led.
+  - No bridge:
+    - energia pela camada de baixo;
+    - fluido pelo anel de 8 células dessa camada.
+  - No NTM as portas são só os 4 cantos. As células do meio de cada lado ligam os cantos ao núcleo, que um canto só
+    toca na diagonal.
+- **Em jogo:**
+  - A porta abre com a tela (aberta pelo dummy da frente, fornalha virada para o sul).
+  - O cristalizador foi posto com os dummies 3×3×6. A tela abre, e a bateria vai para o slot 1 no shift-clique.
+  - O `custom_data` passa pelo shift-clique no criativo. Antes da correção, 3 brutos chegavam crus ao inventário.
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 33 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 36 commits):
 
 | Commit | O quê |
 |---|---|
@@ -515,6 +569,9 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(render): show mod model parts by block state, some at full light` | `show` e `glow` (a fornalha acesa) |
 | `feat(render): draw an untinted liquid as an icon` | `tint: false` (o filtro da saída da fundição) |
 | `feat(world): let a multiblock rise above its cell and stand on legs` | `height` e `extra` (a escavadora) |
+| `fix(client): keep a multiblock dummy's menu under its core` | O cliente de um servidor guarda o menu aberto por um dummy no núcleo |
+| `feat(render): pose a mod model open while its screen is open` | `open` (a porta da fornalha) |
+| `fix(lan): send an item's custom data to clients` | O `custom_data` vai aos clientes. No criativo, o cliente devolve os slots que previu (`SetCreativeModeSlot`), e o shift-clique de uma máquina apagava as densidades do minério de bedrock |
 
 **No port:**
 
