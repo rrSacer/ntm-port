@@ -382,6 +382,7 @@ impl Server {
             self.foundry_tick(host);
             trace(7);
             self.excavator_tick(host);
+            self.drill_tick(host);
             self.bombs_tick(host);
             trace(8);
             self.run_txs(host);

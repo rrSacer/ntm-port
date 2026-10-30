@@ -64,6 +64,8 @@ pub enum Kind {
     Boiler,
     Coker,
     Processor,
+    /// The oil chain's batch D (`crate::oil_drill`).
+    Drill,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -155,6 +157,7 @@ pub enum Data {
     Boiler(crate::boiler::Boiler),
     Coker(Box<crate::coker::Coker>),
     Processor(Box<crate::processing::Processor>),
+    Drill(Box<crate::oil_drill::Drill>),
     Inert { name: String },
 }
 
@@ -202,6 +205,10 @@ impl Machine {
             Kind::FractionTower => Data::FractionTower(Default::default()),
             Kind::Boiler => Data::Boiler(crate::boiler::Boiler::new(block_id == "ntm:machine_industrial_boiler")),
             Kind::Coker => Data::Coker(Default::default()),
+            Kind::Drill => match crate::oil_drill::Shape::of(block_id) {
+                Some(s) => Data::Drill(Box::new(crate::oil_drill::Drill::new(s))),
+                None => Data::Inert { name: block_id.into() },
+            },
             Kind::Processor => match crate::processing::Shape::of(block_id) {
                 Some(s) => Data::Processor(Box::new(crate::processing::Processor::new(s))),
                 None => Data::Inert { name: block_id.into() },
@@ -276,6 +283,7 @@ impl Machine {
             Data::Boiler(_) => Kind::Boiler,
             Data::Coker(_) => Kind::Coker,
             Data::Processor(_) => Kind::Processor,
+            Data::Drill(_) => Kind::Drill,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -311,6 +319,7 @@ impl Machine {
             Data::Boiler(m) => m,
             Data::Coker(m) => &**m,
             Data::Processor(m) => &**m,
+            Data::Drill(m) => &**m,
             Data::Inert { name } => name,
         }
     }
@@ -346,6 +355,7 @@ impl Machine {
             Data::Boiler(m) => m,
             Data::Coker(m) => &mut **m,
             Data::Processor(m) => &mut **m,
+            Data::Drill(m) => &mut **m,
             Data::Inert { name } => name,
         }
     }

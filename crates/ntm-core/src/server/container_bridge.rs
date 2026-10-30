@@ -121,6 +121,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Refinery(r) => Some(&mut **r),
         Data::Coker(c) => Some(&mut **c),
         Data::Processor(p) => Some(&mut **p),
+        Data::Drill(d) => Some(&mut **d),
         _ => None,
     }
 }
@@ -216,6 +217,10 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     // identifier, 1 the coke), the reformer and hydrotreater (11: 0 the
     // battery, 10 the catalyst), the vacuum distiller (12: 0 the battery).
     ("ntm:machine_coker", Layout::Native),
+    // The oil drills: 0 the battery, 1–4 containers, 5–7 upgrades.
+    ("ntm:machine_well", Layout::Native),
+    ("ntm:machine_pumpjack", Layout::Native),
+    ("ntm:machine_fracking_tower", Layout::Native),
     ("ntm:machine_catalytic_reformer", Layout::Native),
     ("ntm:machine_hydrotreater", Layout::Native),
     ("ntm:machine_vacuum_distill", Layout::Native),

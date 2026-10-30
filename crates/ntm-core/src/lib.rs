@@ -28,6 +28,7 @@ pub mod gascent;
 pub mod hash;
 pub mod kv;
 pub mod machine;
+pub mod oil_drill;
 pub mod persist;
 pub mod processing;
 pub mod press;
