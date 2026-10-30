@@ -82,6 +82,20 @@ def arm_animation(spec):
     return {'format_version': '1.8.0', 'animations': {spec['name']: {'loop': True, 'animation_length': length, 'bones': bones}}}
 
 
+def machine_slots(machine):
+    """A slot's `accept_recipes: <machine>` becomes `accept`: the input items
+    of content/machine-recipes/<machine>.json, as HBM's isItemValidForSlot
+    takes only what a recipe uses (a battery then goes to its own slot)."""
+    slots = []
+    for slot in machine.get('slots', []):
+        if 'accept_recipes' in slot:
+            slot = dict(slot)
+            recipes = json.loads((ROOT / 'content/machine-recipes' / f"{slot.pop('accept_recipes')}.json").read_text())
+            slot['accept'] = sorted({i for r in recipes['recipes'] for it in r['inputItems'] for i in it['ids']})
+        slots.append(slot)
+    return {**machine, 'slots': slots} if 'slots' in machine else machine
+
+
 def obj_info(path):
     """The OBJ's object names and how far it reaches from the block's centre."""
     names, reach = [], 1.0
@@ -290,7 +304,7 @@ def main():
     for block, b in blocks.items():
         name = block.split(':', 1)[1]
         if 'machine' in b:
-            write_json(own(f'data/ntm/horizon_machine/{name}.json'), b['machine'])
+            write_json(own(f'data/ntm/horizon_machine/{name}.json'), machine_slots(b['machine']))
         if 'screen' in b:
             s = dict(b['screen'])
             # HBM's title colour (extracted.json), when the entry names none.
