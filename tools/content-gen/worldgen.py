@@ -12,3 +12,7 @@ def generate(emit, rows, distributions):
   put('template_pool',{'fallback':'minecraft:empty','elements':[{'weight':1,'element':{'element_type':'minecraft:feature_pool_element','projection':'rigid','feature':feature}}]})
   put('placed_feature',{'feature':feature,'placement':[{'type':'minecraft:count','count':spec['attempts_per_chunk']},{'type':'minecraft:in_square'},{'type':'minecraft:offset','x':8,'y':0,'z':8},{'type':'minecraft:height_range','height':{'type':'minecraft:uniform','min_inclusive':{'absolute':spec['min_y']},'max_inclusive':{'absolute':spec['max_y']}}}]})
   put('configured_feature',{'type':'minecraft:ore','size':spec['size'],'discard_chance_on_air_exposure':0.0,'targets':[{'target':{'predicate_type':'minecraft:block_match','block':'minecraft:'+target},'state':{'id':ore}} for target in ['stone','deepslate']]})
+
+ if "ntm:ore_bedrock" in ids:
+  import bedrock_worldgen
+  bedrock_worldgen.generate(emit)

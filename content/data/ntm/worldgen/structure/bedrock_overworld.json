@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#minecraft:is_overworld",
+  "step": "underground_ores",
+  "terrain_adaptation": "none",
+  "start_pool": "ntm:bedrock_overworld",
+  "size": 1,
+  "start_height": {
+    "absolute": -64
+  },
+  "use_expansion_hack": false,
+  "max_distance_from_center": 16
+}
