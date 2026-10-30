@@ -1046,6 +1046,46 @@ em três formas. A parte do mundo fica em `server/oil_server.rs`, `drill_tick`.
   - A geração natural do petróleo é do fc8e1d8f e foi medida por ele.
 - **Telas:** abrem por uma célula de perna ou extra; os núcleos ficam cercados. No pumpjack, o extra sul, a +3 e +1 do núcleo.
 
+## Energia, lote 1: os aquecedores (`heater.rs`, `foundry/firebox.rs`)
+
+São o `TileEntityHeaterOven`, o `TileEntityHeaterOilburner`, o
+`TileEntityHeaterElectric` e o `TileEntityHeaterHeatex`. Guardam calor (TU)
+para a máquina de cima: caldeira, coqueificadora, cadinho ou outro
+aquecedor. As tabelas vêm do `heaters.json` e do `fluid_traits.json` do
+agente de conteúdo (`tools/machine-gen/build.py` → `data/machines/heaters.json`).
+
+| | Forno de aquecimento | Queimador de óleo | Aquecedor elétrico | Trocador de calor |
+| --- | --- | --- | --- | --- |
+| Fonte | combustível sólido (2 slots) | fluido inflamável, 1–10 mB/t | 0–10: `setting^1,4·200` HE/t | fluido resfriável |
+| Calor | o do combustível (carvão 1.000 TU/t por 250 t) | TU por balde ÷ 1000 por mB | `setting·100` TU/t | `heat · operações · eficiência` |
+| Teto | 500.000 | 500.000 ×(overdrive+1) | nenhum (int) | nenhum (int) |
+| Puxa de baixo | o que cabe, guarda metade | 85 % de tudo | — | — |
+| Perde | `max(calor/1000, 1)` parado | o mesmo, fora do teto | 0,1 % por tick | 0,1 % por tick |
+
+**Como liga:**
+- A caldeira (e as outras) lê o núcleo logo abaixo do seu. O queimador tem 2 de altura: quem fica nele tem o núcleo 2 acima, e o calor passa pelo centro do topo, como o proxy do NTM.
+- `heat_tick` passa de baixo para cima, então uma pilha de aquecedores repassa o calor no mesmo tick. O cadinho usa a mesma busca de fonte.
+- O forno é uma firebox com `oven`: mesma tela, mesmo save.
+- O elétrico recebe energia pelo plugue, duas células para o lado de quem o pôs (`MULTIBLOCKS`).
+- O queimador e o trocador têm fluido só pelos lados (as 4 laterais de baixo; os 4 cantos). A caldeira em cima não despeja neles.
+- Telas nativas, nos índices combinados com o fbef4942. Queimador: liga/desliga, controle deslizante (botão 100+k), entrada e saída de recipiente, overdrive. Trocador: botões de ±1000/±1 operações e ±1/±20 ticks de atraso.
+
+**Desvios:**
+- os identificadores de fluido: os slots existem e não são lidos. O queimador aceita o primeiro fluido inflamável enquanto vazio; o trocador, o primeiro resfriável;
+- a fumaça e a poluição do queimador;
+- as cinzas e a fuligem do forno;
+- a chave de fenda não existe no conteúdo: a potência do elétrico troca por um botão da tela genérica;
+- o atraso do trocador conta no relógio dele, não no do mundo.
+
+**Verificação:**
+- **Unidade:** 7 testes em `heater.rs` e `firebox.rs`. Taxa, teto e esfriamento do queimador; overdrive, controle e recipientes; potência e puxada do elétrico; operações, eficiência e atraso do trocador; os botões dele; combustível e puxada do forno.
+- **Mundo falso** (`server/tests/heater_tests.rs`, 5). Cada aquecedor sob uma caldeira até 10.000 mB de vapor:
+  - o queimador, 2 abaixo, só depois de ligado;
+  - o elétrico, pago por uma bateria pelo plugue;
+  - o trocador, com líquido de arrefecimento quente virando frio;
+  - o forno sobre uma firebox, puxando o calor dela.
+  - Também: saves inertes carregam como aquecedores.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
