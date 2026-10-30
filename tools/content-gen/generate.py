@@ -291,6 +291,8 @@ def generate(src,out,rows,distributions,max_damage=False):
  emit('data/minecraft/tags/block/needs_iron_tool.json',{'replace':False,'values':[r['id'] for r in rows if r['category']=='ore']})
  worldgen.generate(emit,rows,distributions)
  bulk_recipes.generate(src,out,rows,emit)
+ import bedrock_recipes
+ bedrock_recipes.generate_crafting(src,rows,emit)
  # Only remove files this generator owned previously. Never delete sibling pipeline output.
  previous=out/'.content-gen-files.json'
  if previous.exists():

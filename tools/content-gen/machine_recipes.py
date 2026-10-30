@@ -297,6 +297,8 @@ def export(source, output, rows):
     counts['press'] = press_recipes.export(source, output, rows)['coverage']
     import purex_recipes
     counts['purex'] = purex_recipes.export(source, output, rows)['coverage']
+    import bedrock_recipes
+    counts['bedrock'] = bedrock_recipes.export(source, output, rows)['coverage']
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 
