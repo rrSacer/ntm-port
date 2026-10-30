@@ -43,6 +43,12 @@ pub fn handles(block: &str) -> bool {
     BLOCKS.contains(&block)
 }
 
+/// A machine block (any the registry runs): its block entity carries the
+/// machine's state, slots and data, and the server's phases run it.
+pub fn machine_block(block: &str) -> bool {
+    !handles(block) && registry::spec(block).is_some_and(|s| s.kind != crate::machine::Kind::Inert)
+}
+
 /// As a vanilla furnace: the input from above, the battery from the sides,
 /// the result from below.
 pub fn container(block: &str) -> Option<Container> {
@@ -141,6 +147,61 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
     ]
 }
 
+/// The machine files (`horizon_machine/<block>.json` of the content, by
+/// `tools/machine-gen/build.py`): each block's slot rules and synced data
+/// indices, as `{"slots": [...], "synced": [...]}`.
+fn machine_files() -> &'static std::collections::HashMap<String, serde_json::Value> {
+    static T: std::sync::OnceLock<std::collections::HashMap<String, serde_json::Value>> = std::sync::OnceLock::new();
+    T.get_or_init(|| serde_json::from_str(include_str!("../data/machine_files.json")).expect("machine_files.json"))
+}
+
+/// Block `block`'s slot rules, from its machine file (none without one).
+pub fn block_slots(block: &str) -> Vec<SlotFilter> {
+    machine_files().get(block).map(|v| file_slots(v.to_string().as_bytes())).unwrap_or_default()
+}
+
+/// Block `block`'s synced data indices.
+pub fn block_synced(block: &str) -> Vec<usize> {
+    machine_files().get(block).map(|v| synced(v.to_string().as_bytes())).unwrap_or_default()
+}
+
+/// The slots of a machine file (`horizon_machine/<block>.json`, the same
+/// the screens and the old engine read): one rule a slot, a `grid`
+/// `[x, y, columns, rows]` one rule for each of its cells.
+pub fn file_slots(file: &[u8]) -> Vec<SlotFilter> {
+    let Ok(v) = serde_json::from_slice::<serde_json::Value>(file) else { return Vec::new() };
+    let mut out = Vec::new();
+    for s in v.get("slots").and_then(|s| s.as_array()).into_iter().flatten() {
+        let list = |k: &str| s.get(k).and_then(|a| a.as_array()).map(|a| a.iter().filter_map(|i| i.as_str().map(str::to_string)).collect::<Vec<_>>());
+        let rule = SlotFilter {
+            accept: list("accept"),
+            reject: list("reject").unwrap_or_default(),
+            max: s.get("max").and_then(|m| m.as_u64()).map(|m| m as u32),
+            output: s.get("output").and_then(|o| o.as_bool()).unwrap_or(false),
+        };
+        let cells = match s.get("grid").and_then(|g| g.as_array()) {
+            Some(g) if g.len() == 4 => (g[2].as_u64().unwrap_or(1) * g[3].as_u64().unwrap_or(1)) as usize,
+            _ => 1,
+        };
+        out.extend(std::iter::repeat_n(rule, cells));
+    }
+    out
+}
+
+/// The container of a machine with these slots: hoppers put into the
+/// inputs and take from the outputs, through any face. `menu` is only the
+/// wire's envelope (the client lays the slots out itself, API 19).
+pub fn file_container(slots: &[SlotFilter]) -> Container {
+    let all: Vec<usize> = (0..slots.len()).collect();
+    Container {
+        slots: slots.len(),
+        faces: std::array::from_fn(|_| all.clone()),
+        inputs: all.iter().copied().filter(|&i| !slots[i].output).collect(),
+        outputs: all.iter().copied().filter(|&i| slots[i].output).collect(),
+        menu: Some("minecraft:generic_9x3"),
+    }
+}
+
 // ------------------------------------------------------- client sync
 
 /// Where block `block`'s machine file is among the content's data
@@ -215,6 +276,24 @@ mod tests {
         assert!(f[0].accept.as_ref().is_some_and(|a| a.iter().any(|i| i == "minecraft:iron_ore")));
         assert_eq!((f[1].max, f[2].output), (Some(1), true));
         assert!(slot_filters("minecraft:stone").is_empty());
+    }
+
+    /// A machine file's slots: a grid's cells each with its rule.
+    #[test]
+    fn a_machine_file_gives_each_slot_its_rule() {
+        let f = br#"{"slots": [{"grid": [44, 18, 3, 3], "reject": ["ntm:blades_steel"]}, {"grid": [116, 18, 3, 6], "output": true}, {"x": 44, "y": 108, "accept": ["ntm:blades_steel"], "max": 1}]}"#;
+        let s = file_slots(f);
+        assert_eq!(s.len(), 9 + 18 + 1);
+        assert_eq!(s[0].reject, vec!["ntm:blades_steel".to_string()]);
+        assert!(s[9].output && s[26].output && !s[8].output);
+        assert_eq!((s[27].accept.as_deref(), s[27].max), (Some(&["ntm:blades_steel".to_string()][..]), Some(1)));
+        let c = file_container(&s);
+        assert_eq!((c.slots, c.inputs.len(), c.outputs.len()), (28, 10, 18));
+        // The content's own files, embedded.
+        let press = block_slots("ntm:machine_press");
+        assert_eq!((press.len(), press[1].max, press[3].output), (4, Some(1), true));
+        assert_eq!(block_synced("ntm:machine_press"), vec![0, 1]);
+        assert!(block_slots("ntm:machine_boiler").is_empty() || block_slots("ntm:machine_boiler").len() < 64);
     }
 
     /// Without the battery nothing smelts; a state that doesn't read starts

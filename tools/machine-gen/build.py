@@ -235,3 +235,17 @@ if (root / 'content/machine-recipes/heaters.json').exists():
     p = root / 'crates/ntm-core/data/machines/heaters.json'
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0, sort_keys=True) + '\n')
     print(f"heaters: {len(fuels)} combustíveis, {len(flammable)} inflamáveis, {len(coolable)} resfriáveis → {p.relative_to(root)}")
+
+# Os arquivos de máquina (horizon_machine) que o bundle nativo usa sem ler o
+# conteúdo em tempo de execução: as regras de cada slot (accept, reject,
+# max, output, grid) e os índices sincronizados com os modelos.
+hm = root / 'content/data/ntm/horizon_machine'
+if hm.is_dir():
+    keep = ('accept', 'reject', 'max', 'output', 'grid')
+    files = {}
+    for f in sorted(hm.glob('*.json')):
+        d = json.loads(f.read_text())
+        files[f'ntm:{f.stem}'] = {'slots': [{k: s[k] for k in keep if k in s} for s in d.get('slots', [])], 'synced': d.get('synced', [])}
+    p = root / 'crates/ntm-core/data/machine_files.json'
+    p.write_text(json.dumps(files, ensure_ascii=False, indent=0, sort_keys=True) + '\n')
+    print(f"machine_files: {len(files)} máquinas → {p.relative_to(root)}")

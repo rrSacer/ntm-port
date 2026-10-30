@@ -81,3 +81,16 @@ Fase `tela` do `native_l1.py`: o jogador abre a fornalha (menu `container`, tít
 
 - a tela não desenha o fundo: os itens aparecem soltos (`native-l1-tela.png`). Isso é o intérprete de telas da L2 ou o desenho do menu vanilla para um `Kind::Mod`;
 - o `horizon-ctl screen` não lista os slots do container (só os 36 do jogador), então o roteiro não clica neles.
+
+## L3, passo 1: o servidor do ntm-core no `server_tick` (30/10, `ntm-next` `88b45bdb2`)
+
+Desenho no artifact "L3: todas as máquinas nativas". O `Server` roda as mesmas fases de antes (`Server::native_tick`, em `crates/ntm-core/src/server/native_server.rs`) no fim de cada tick do servidor. Ele fala com o jogo pelo `ServerHost` da cola (`Host` em `glue.rs`):
+
+- `get_block` e `set_blocks` são `native_loaded_block` e `native_set_blocks`;
+- slots, data e estado são os do `ModBlockEntity` (`native_with_mod_block_entity`, só na dimensão em tick por ora);
+- o `block_changed` vira os eventos de máquina e cabo, e o `menu_button` vai para a fila de botões;
+- o tick do block entity só adota a máquina do estado salvo quando o servidor não a tem (o mundo foi reaberto).
+
+Os slots, as regras e o `synced` de cada máquina vêm dos `horizon_machine/*.json` do conteúdo, embutidos no ntm-core pelo `tools/machine-gen/build.py` (`data/machine_files.json`). O `native_data` não lê o `data/` dos content mods, e o `native_asset` só lê `assets/`.
+
+**Prova** (`tools/test-game/native_l3.py`): uma firebox e uma prensa a carvão postas por `/setblock` e alimentadas por funis. As regras dos slots levaram o carvão ao combustível, a matriz ao slot dela e os lingotes à entrada. Em 20 s, a firebox chegou a 85.800 de calor e apareceu acesa (`honey_level=4`); a prensa fez 7 placas, com a matriz em desgaste 7 (`minecraft:damage`). Depois de fechar e reabrir, o servidor adotou as duas do estado salvo: a prensa tinha 8 placas e a matriz em desgaste 8, e a firebox seguia acesa com calor cheio.

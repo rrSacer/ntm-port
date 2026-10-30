@@ -1,7 +1,8 @@
-// A world opened: the bundle says it is in, and how many machine blocks
-// its logic knows.
+// A world opened or closed: the NTM server starts over with it.
 fn ntm_world_lifecycle(phase: crate::game::native_lifecycle::WorldPhase) {
-    if phase == crate::game::native_lifecycle::WorldPhase::WorldOpenReady {
-        eprintln!("ntm native: {} machine blocks", ntm_core::registry::machine_ids().count());
+    use crate::game::native_lifecycle::WorldPhase as P;
+    match phase {
+        P::WorldOpenReady => crate::game::ntm_glue::world(true),
+        P::WorldCloseFinal | P::WorldCloseFailed | P::WorldOpenFailed => crate::game::ntm_glue::world(false),
     }
 }

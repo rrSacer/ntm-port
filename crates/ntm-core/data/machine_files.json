@@ -1,0 +1,3676 @@
+{
+"ntm:anvil_arsenic_bronze": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_bismuth_bronze": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_desh": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_dnt": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_ferrouranium": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_iron": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_lead": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_murky": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_osmiridium": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_saturnite": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_schrabidate": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:anvil_steel": {
+"slots": [
+{},
+{},
+{
+"output": true
+},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:foundry_basin": {
+"slots": [
+{
+"accept": [
+"ntm:mold__ingots",
+"ntm:mold__plates",
+"ntm:mold__plates_cast",
+"ntm:mold__wires_dense",
+"ntm:mold__block"
+]
+},
+{
+"output": true
+}
+],
+"synced": [
+0,
+1,
+2
+]
+},
+"ntm:foundry_channel": {
+"slots": [],
+"synced": [
+0,
+1,
+2
+]
+},
+"ntm:foundry_mold": {
+"slots": [
+{
+"accept": [
+"ntm:mold__nugget",
+"ntm:mold__billet",
+"ntm:mold__ingot",
+"ntm:mold__plate",
+"ntm:mold__wire",
+"ntm:mold__plate_cast",
+"ntm:mold__wire_dense",
+"ntm:mold__blade",
+"ntm:mold__blades",
+"ntm:mold__stamp",
+"ntm:mold__shell",
+"ntm:mold__pipe",
+"ntm:mold__c9",
+"ntm:mold__c50",
+"ntm:mold__barrel_light",
+"ntm:mold__barrel_heavy",
+"ntm:mold__receiver_light",
+"ntm:mold__receiver_heavy",
+"ntm:mold__mechanism",
+"ntm:mold__stock",
+"ntm:mold__grip"
+]
+},
+{
+"output": true
+}
+],
+"synced": [
+0,
+1,
+2
+]
+},
+"ntm:foundry_outlet": {
+"slots": [],
+"synced": [
+0
+]
+},
+"ntm:foundry_tank": {
+"slots": [],
+"synced": [
+0,
+1,
+2
+]
+},
+"ntm:heater_electric": {
+"slots": [],
+"synced": []
+},
+"ntm:heater_firebox": {
+"slots": [
+{
+"accept": [
+"minecraft:acacia_log",
+"minecraft:acacia_planks",
+"minecraft:acacia_sapling",
+"minecraft:acacia_slab",
+"minecraft:acacia_stairs",
+"minecraft:birch_log",
+"minecraft:birch_planks",
+"minecraft:birch_sapling",
+"minecraft:birch_slab",
+"minecraft:birch_stairs",
+"minecraft:blaze_rod",
+"minecraft:bookshelf",
+"minecraft:charcoal",
+"minecraft:chest",
+"minecraft:coal",
+"minecraft:coal_block",
+"minecraft:crafting_table",
+"minecraft:dark_oak_log",
+"minecraft:dark_oak_planks",
+"minecraft:dark_oak_sapling",
+"minecraft:dark_oak_slab",
+"minecraft:dark_oak_stairs",
+"minecraft:daylight_detector",
+"minecraft:jukebox",
+"minecraft:jungle_log",
+"minecraft:jungle_planks",
+"minecraft:jungle_sapling",
+"minecraft:jungle_slab",
+"minecraft:jungle_stairs",
+"minecraft:lava_bucket",
+"minecraft:note_block",
+"minecraft:oak_fence",
+"minecraft:oak_fence_gate",
+"minecraft:oak_log",
+"minecraft:oak_planks",
+"minecraft:oak_pressure_plate",
+"minecraft:oak_sapling",
+"minecraft:oak_slab",
+"minecraft:oak_stairs",
+"minecraft:oak_trapdoor",
+"minecraft:spruce_log",
+"minecraft:spruce_planks",
+"minecraft:spruce_sapling",
+"minecraft:spruce_slab",
+"minecraft:spruce_stairs",
+"minecraft:stick",
+"minecraft:trapped_chest",
+"minecraft:wooden_axe",
+"minecraft:wooden_hoe",
+"minecraft:wooden_pickaxe",
+"minecraft:wooden_shovel",
+"minecraft:wooden_sword",
+"ntm:biomass",
+"ntm:biomass_compressed",
+"ntm:block_coke__coal",
+"ntm:block_coke__lignite",
+"ntm:block_coke__petroleum",
+"ntm:block_scrap",
+"ntm:briquette__coal",
+"ntm:briquette__lignite",
+"ntm:briquette__wood",
+"ntm:coal_infernal",
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum",
+"ntm:crystal_coal",
+"ntm:dust",
+"ntm:lignite",
+"ntm:powder_ash__coal",
+"ntm:powder_ash__fly",
+"ntm:powder_ash__misc",
+"ntm:powder_ash__soot",
+"ntm:powder_ash__wood",
+"ntm:powder_coal",
+"ntm:powder_fire",
+"ntm:powder_lignite",
+"ntm:powder_sawdust",
+"ntm:rocket_fuel",
+"ntm:scrap",
+"ntm:solid_fuel",
+"ntm:solid_fuel_bf",
+"ntm:solid_fuel_presto",
+"ntm:solid_fuel_presto_bf",
+"ntm:solid_fuel_presto_triplet",
+"ntm:solid_fuel_presto_triplet_bf"
+]
+},
+{
+"accept": [
+"minecraft:acacia_log",
+"minecraft:acacia_planks",
+"minecraft:acacia_sapling",
+"minecraft:acacia_slab",
+"minecraft:acacia_stairs",
+"minecraft:birch_log",
+"minecraft:birch_planks",
+"minecraft:birch_sapling",
+"minecraft:birch_slab",
+"minecraft:birch_stairs",
+"minecraft:blaze_rod",
+"minecraft:bookshelf",
+"minecraft:charcoal",
+"minecraft:chest",
+"minecraft:coal",
+"minecraft:coal_block",
+"minecraft:crafting_table",
+"minecraft:dark_oak_log",
+"minecraft:dark_oak_planks",
+"minecraft:dark_oak_sapling",
+"minecraft:dark_oak_slab",
+"minecraft:dark_oak_stairs",
+"minecraft:daylight_detector",
+"minecraft:jukebox",
+"minecraft:jungle_log",
+"minecraft:jungle_planks",
+"minecraft:jungle_sapling",
+"minecraft:jungle_slab",
+"minecraft:jungle_stairs",
+"minecraft:lava_bucket",
+"minecraft:note_block",
+"minecraft:oak_fence",
+"minecraft:oak_fence_gate",
+"minecraft:oak_log",
+"minecraft:oak_planks",
+"minecraft:oak_pressure_plate",
+"minecraft:oak_sapling",
+"minecraft:oak_slab",
+"minecraft:oak_stairs",
+"minecraft:oak_trapdoor",
+"minecraft:spruce_log",
+"minecraft:spruce_planks",
+"minecraft:spruce_sapling",
+"minecraft:spruce_slab",
+"minecraft:spruce_stairs",
+"minecraft:stick",
+"minecraft:trapped_chest",
+"minecraft:wooden_axe",
+"minecraft:wooden_hoe",
+"minecraft:wooden_pickaxe",
+"minecraft:wooden_shovel",
+"minecraft:wooden_sword",
+"ntm:biomass",
+"ntm:biomass_compressed",
+"ntm:block_coke__coal",
+"ntm:block_coke__lignite",
+"ntm:block_coke__petroleum",
+"ntm:block_scrap",
+"ntm:briquette__coal",
+"ntm:briquette__lignite",
+"ntm:briquette__wood",
+"ntm:coal_infernal",
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum",
+"ntm:crystal_coal",
+"ntm:dust",
+"ntm:lignite",
+"ntm:powder_ash__coal",
+"ntm:powder_ash__fly",
+"ntm:powder_ash__misc",
+"ntm:powder_ash__soot",
+"ntm:powder_ash__wood",
+"ntm:powder_coal",
+"ntm:powder_fire",
+"ntm:powder_lignite",
+"ntm:powder_sawdust",
+"ntm:rocket_fuel",
+"ntm:scrap",
+"ntm:solid_fuel",
+"ntm:solid_fuel_bf",
+"ntm:solid_fuel_presto",
+"ntm:solid_fuel_presto_bf",
+"ntm:solid_fuel_presto_triplet",
+"ntm:solid_fuel_presto_triplet_bf"
+]
+}
+],
+"synced": []
+},
+"ntm:heater_heatex": {
+"slots": [
+{
+"max": 1
+}
+],
+"synced": []
+},
+"ntm:heater_oilburner": {
+"slots": [
+{},
+{
+"output": true
+},
+{
+"max": 1
+},
+{
+"accept": [
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3"
+],
+"max": 1
+}
+],
+"synced": []
+},
+"ntm:heater_oven": {
+"slots": [
+{
+"accept": [
+"minecraft:acacia_log",
+"minecraft:acacia_planks",
+"minecraft:acacia_sapling",
+"minecraft:acacia_slab",
+"minecraft:acacia_stairs",
+"minecraft:birch_log",
+"minecraft:birch_planks",
+"minecraft:birch_sapling",
+"minecraft:birch_slab",
+"minecraft:birch_stairs",
+"minecraft:blaze_rod",
+"minecraft:bookshelf",
+"minecraft:charcoal",
+"minecraft:chest",
+"minecraft:coal",
+"minecraft:coal_block",
+"minecraft:crafting_table",
+"minecraft:dark_oak_log",
+"minecraft:dark_oak_planks",
+"minecraft:dark_oak_sapling",
+"minecraft:dark_oak_slab",
+"minecraft:dark_oak_stairs",
+"minecraft:daylight_detector",
+"minecraft:jukebox",
+"minecraft:jungle_log",
+"minecraft:jungle_planks",
+"minecraft:jungle_sapling",
+"minecraft:jungle_slab",
+"minecraft:jungle_stairs",
+"minecraft:lava_bucket",
+"minecraft:note_block",
+"minecraft:oak_fence",
+"minecraft:oak_fence_gate",
+"minecraft:oak_log",
+"minecraft:oak_planks",
+"minecraft:oak_pressure_plate",
+"minecraft:oak_sapling",
+"minecraft:oak_slab",
+"minecraft:oak_stairs",
+"minecraft:oak_trapdoor",
+"minecraft:spruce_log",
+"minecraft:spruce_planks",
+"minecraft:spruce_sapling",
+"minecraft:spruce_slab",
+"minecraft:spruce_stairs",
+"minecraft:stick",
+"minecraft:trapped_chest",
+"minecraft:wooden_axe",
+"minecraft:wooden_hoe",
+"minecraft:wooden_pickaxe",
+"minecraft:wooden_shovel",
+"minecraft:wooden_sword",
+"ntm:biomass",
+"ntm:biomass_compressed",
+"ntm:block_coke__coal",
+"ntm:block_coke__lignite",
+"ntm:block_coke__petroleum",
+"ntm:block_scrap",
+"ntm:briquette__coal",
+"ntm:briquette__lignite",
+"ntm:briquette__wood",
+"ntm:coal_infernal",
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum",
+"ntm:crystal_coal",
+"ntm:dust",
+"ntm:lignite",
+"ntm:powder_ash__coal",
+"ntm:powder_ash__fly",
+"ntm:powder_ash__misc",
+"ntm:powder_ash__soot",
+"ntm:powder_ash__wood",
+"ntm:powder_coal",
+"ntm:powder_fire",
+"ntm:powder_lignite",
+"ntm:powder_sawdust",
+"ntm:rocket_fuel",
+"ntm:scrap",
+"ntm:solid_fuel",
+"ntm:solid_fuel_bf",
+"ntm:solid_fuel_presto",
+"ntm:solid_fuel_presto_bf",
+"ntm:solid_fuel_presto_triplet",
+"ntm:solid_fuel_presto_triplet_bf"
+]
+},
+{
+"accept": [
+"minecraft:acacia_log",
+"minecraft:acacia_planks",
+"minecraft:acacia_sapling",
+"minecraft:acacia_slab",
+"minecraft:acacia_stairs",
+"minecraft:birch_log",
+"minecraft:birch_planks",
+"minecraft:birch_sapling",
+"minecraft:birch_slab",
+"minecraft:birch_stairs",
+"minecraft:blaze_rod",
+"minecraft:bookshelf",
+"minecraft:charcoal",
+"minecraft:chest",
+"minecraft:coal",
+"minecraft:coal_block",
+"minecraft:crafting_table",
+"minecraft:dark_oak_log",
+"minecraft:dark_oak_planks",
+"minecraft:dark_oak_sapling",
+"minecraft:dark_oak_slab",
+"minecraft:dark_oak_stairs",
+"minecraft:daylight_detector",
+"minecraft:jukebox",
+"minecraft:jungle_log",
+"minecraft:jungle_planks",
+"minecraft:jungle_sapling",
+"minecraft:jungle_slab",
+"minecraft:jungle_stairs",
+"minecraft:lava_bucket",
+"minecraft:note_block",
+"minecraft:oak_fence",
+"minecraft:oak_fence_gate",
+"minecraft:oak_log",
+"minecraft:oak_planks",
+"minecraft:oak_pressure_plate",
+"minecraft:oak_sapling",
+"minecraft:oak_slab",
+"minecraft:oak_stairs",
+"minecraft:oak_trapdoor",
+"minecraft:spruce_log",
+"minecraft:spruce_planks",
+"minecraft:spruce_sapling",
+"minecraft:spruce_slab",
+"minecraft:spruce_stairs",
+"minecraft:stick",
+"minecraft:trapped_chest",
+"minecraft:wooden_axe",
+"minecraft:wooden_hoe",
+"minecraft:wooden_pickaxe",
+"minecraft:wooden_shovel",
+"minecraft:wooden_sword",
+"ntm:biomass",
+"ntm:biomass_compressed",
+"ntm:block_coke__coal",
+"ntm:block_coke__lignite",
+"ntm:block_coke__petroleum",
+"ntm:block_scrap",
+"ntm:briquette__coal",
+"ntm:briquette__lignite",
+"ntm:briquette__wood",
+"ntm:coal_infernal",
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum",
+"ntm:crystal_coal",
+"ntm:dust",
+"ntm:lignite",
+"ntm:powder_ash__coal",
+"ntm:powder_ash__fly",
+"ntm:powder_ash__misc",
+"ntm:powder_ash__soot",
+"ntm:powder_ash__wood",
+"ntm:powder_coal",
+"ntm:powder_fire",
+"ntm:powder_lignite",
+"ntm:powder_sawdust",
+"ntm:rocket_fuel",
+"ntm:scrap",
+"ntm:solid_fuel",
+"ntm:solid_fuel_bf",
+"ntm:solid_fuel_presto",
+"ntm:solid_fuel_presto_bf",
+"ntm:solid_fuel_presto_triplet",
+"ntm:solid_fuel_presto_triplet_bf"
+]
+}
+],
+"synced": []
+},
+"ntm:machine_arc_furnace_large": {
+"slots": [
+{
+"accept": [
+"ntm:arc_electrode__graphite",
+"ntm:arc_electrode__lanthanium",
+"ntm:arc_electrode__desh",
+"ntm:arc_electrode__saturnite"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:arc_electrode__graphite",
+"ntm:arc_electrode__lanthanium",
+"ntm:arc_electrode__desh",
+"ntm:arc_electrode__saturnite"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:arc_electrode__graphite",
+"ntm:arc_electrode__lanthanium",
+"ntm:arc_electrode__desh",
+"ntm:arc_electrode__saturnite"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"accept": [
+"minecraft:coal_ore",
+"minecraft:cobblestone",
+"minecraft:detector_rail",
+"minecraft:emerald",
+"minecraft:emerald_block",
+"minecraft:flint",
+"minecraft:gold_block",
+"minecraft:gold_ingot",
+"minecraft:gold_nugget",
+"minecraft:gold_ore",
+"minecraft:iron_block",
+"minecraft:iron_ingot",
+"minecraft:iron_ore",
+"minecraft:minecart",
+"minecraft:obsidian",
+"minecraft:powered_rail",
+"minecraft:quartz",
+"minecraft:quartz_block",
+"minecraft:rail",
+"minecraft:red_sand",
+"minecraft:redstone",
+"minecraft:redstone_block",
+"minecraft:redstone_ore",
+"minecraft:sand",
+"minecraft:stone",
+"ntm:arc_electrode_burnt__desh",
+"ntm:arc_electrode_burnt__graphite",
+"ntm:arc_electrode_burnt__lanthanium",
+"ntm:arc_electrode_burnt__saturnite",
+"ntm:ball_resin",
+"ntm:bedrock_ore__crumbs_actinide",
+"ntm:bedrock_ore__crumbs_crystal",
+"ntm:bedrock_ore__crumbs_heavy",
+"ntm:bedrock_ore__crumbs_light",
+"ntm:bedrock_ore__crumbs_rare",
+"ntm:bedrock_ore__primary_first_actinide",
+"ntm:bedrock_ore__primary_first_crystal",
+"ntm:bedrock_ore__primary_first_heavy",
+"ntm:bedrock_ore__primary_first_light",
+"ntm:bedrock_ore__primary_first_rare",
+"ntm:bedrock_ore__primary_second_actinide",
+"ntm:bedrock_ore__primary_second_crystal",
+"ntm:bedrock_ore__primary_second_heavy",
+"ntm:bedrock_ore__primary_second_light",
+"ntm:bedrock_ore__primary_second_rare",
+"ntm:bedrock_ore__rad_byproduct_actinide",
+"ntm:bedrock_ore__rad_byproduct_crystal",
+"ntm:bedrock_ore__rad_byproduct_heavy",
+"ntm:bedrock_ore__rad_byproduct_light",
+"ntm:bedrock_ore__rad_byproduct_nonmetal",
+"ntm:bedrock_ore__rad_byproduct_rare",
+"ntm:bedrock_ore__rad_roasted_actinide",
+"ntm:bedrock_ore__rad_roasted_crystal",
+"ntm:bedrock_ore__rad_roasted_heavy",
+"ntm:bedrock_ore__rad_roasted_light",
+"ntm:bedrock_ore__rad_roasted_nonmetal",
+"ntm:bedrock_ore__rad_roasted_rare",
+"ntm:bedrock_ore__rad_washed_actinide",
+"ntm:bedrock_ore__rad_washed_crystal",
+"ntm:bedrock_ore__rad_washed_heavy",
+"ntm:bedrock_ore__rad_washed_light",
+"ntm:bedrock_ore__rad_washed_nonmetal",
+"ntm:bedrock_ore__rad_washed_rare",
+"ntm:bedrock_ore__solvent_byproduct_actinide",
+"ntm:bedrock_ore__solvent_byproduct_crystal",
+"ntm:bedrock_ore__solvent_byproduct_heavy",
+"ntm:bedrock_ore__solvent_byproduct_light",
+"ntm:bedrock_ore__solvent_byproduct_nonmetal",
+"ntm:bedrock_ore__solvent_byproduct_rare",
+"ntm:bedrock_ore__solvent_roasted_actinide",
+"ntm:bedrock_ore__solvent_roasted_crystal",
+"ntm:bedrock_ore__solvent_roasted_heavy",
+"ntm:bedrock_ore__solvent_roasted_light",
+"ntm:bedrock_ore__solvent_roasted_nonmetal",
+"ntm:bedrock_ore__solvent_roasted_rare",
+"ntm:bedrock_ore__solvent_washed_actinide",
+"ntm:bedrock_ore__solvent_washed_crystal",
+"ntm:bedrock_ore__solvent_washed_heavy",
+"ntm:bedrock_ore__solvent_washed_light",
+"ntm:bedrock_ore__solvent_washed_rare",
+"ntm:bedrock_ore__sulfuric_byproduct_actinide",
+"ntm:bedrock_ore__sulfuric_byproduct_crystal",
+"ntm:bedrock_ore__sulfuric_byproduct_heavy",
+"ntm:bedrock_ore__sulfuric_byproduct_light",
+"ntm:bedrock_ore__sulfuric_byproduct_nonmetal",
+"ntm:bedrock_ore__sulfuric_byproduct_rare",
+"ntm:bedrock_ore__sulfuric_roasted_actinide",
+"ntm:bedrock_ore__sulfuric_roasted_crystal",
+"ntm:bedrock_ore__sulfuric_roasted_heavy",
+"ntm:bedrock_ore__sulfuric_roasted_light",
+"ntm:bedrock_ore__sulfuric_roasted_nonmetal",
+"ntm:bedrock_ore__sulfuric_roasted_rare",
+"ntm:bedrock_ore__sulfuric_washed_actinide",
+"ntm:bedrock_ore__sulfuric_washed_crystal",
+"ntm:bedrock_ore__sulfuric_washed_heavy",
+"ntm:bedrock_ore__sulfuric_washed_rare",
+"ntm:bedrock_ore_fragment__aluminium",
+"ntm:bedrock_ore_fragment__asbestos",
+"ntm:bedrock_ore_fragment__beryllium",
+"ntm:bedrock_ore_fragment__bismuth",
+"ntm:bedrock_ore_fragment__borax",
+"ntm:bedrock_ore_fragment__boron",
+"ntm:bedrock_ore_fragment__cobalt",
+"ntm:bedrock_ore_fragment__copper",
+"ntm:bedrock_ore_fragment__emerald",
+"ntm:bedrock_ore_fragment__gold",
+"ntm:bedrock_ore_fragment__iron",
+"ntm:bedrock_ore_fragment__lanthanium",
+"ntm:bedrock_ore_fragment__lead",
+"ntm:bedrock_ore_fragment__lithium",
+"ntm:bedrock_ore_fragment__neodymium",
+"ntm:bedrock_ore_fragment__niobium",
+"ntm:bedrock_ore_fragment__polonium",
+"ntm:bedrock_ore_fragment__radium",
+"ntm:bedrock_ore_fragment__redstone",
+"ntm:bedrock_ore_fragment__silicon",
+"ntm:bedrock_ore_fragment__sodium",
+"ntm:bedrock_ore_fragment__strontium",
+"ntm:bedrock_ore_fragment__tantalium",
+"ntm:bedrock_ore_fragment__technetium",
+"ntm:bedrock_ore_fragment__thorium",
+"ntm:bedrock_ore_fragment__titanium",
+"ntm:bedrock_ore_fragment__tungsten",
+"ntm:bedrock_ore_fragment__u238",
+"ntm:bedrock_ore_fragment__uranium",
+"ntm:bedrock_ore_fragment__zirconium",
+"ntm:billet_actinium",
+"ntm:billet_am241",
+"ntm:billet_am242",
+"ntm:billet_am_mix",
+"ntm:billet_au198",
+"ntm:billet_beryllium",
+"ntm:billet_bismuth",
+"ntm:billet_co60",
+"ntm:billet_cobalt",
+"ntm:billet_gh336",
+"ntm:billet_neptunium",
+"ntm:billet_pb209",
+"ntm:billet_plutonium",
+"ntm:billet_polonium",
+"ntm:billet_pu238",
+"ntm:billet_pu239",
+"ntm:billet_pu240",
+"ntm:billet_pu241",
+"ntm:billet_pu_mix",
+"ntm:billet_ra226",
+"ntm:billet_schrabidium",
+"ntm:billet_silicon",
+"ntm:billet_solinium",
+"ntm:billet_technetium",
+"ntm:billet_th232",
+"ntm:billet_u233",
+"ntm:billet_u235",
+"ntm:billet_u238",
+"ntm:billet_uranium",
+"ntm:billet_zirconium",
+"ntm:blade_titanium",
+"ntm:blade_tungsten",
+"ntm:blades_steel",
+"ntm:blades_titanium",
+"ntm:block_actinium",
+"ntm:block_aluminium",
+"ntm:block_asbestos",
+"ntm:block_beryllium",
+"ntm:block_bismuth",
+"ntm:block_boron",
+"ntm:block_cadmium",
+"ntm:block_cdalloy",
+"ntm:block_cobalt",
+"ntm:block_combine_steel",
+"ntm:block_copper",
+"ntm:block_desh",
+"ntm:block_dineutronium",
+"ntm:block_dura_steel",
+"ntm:block_fiberglass",
+"ntm:block_lanthanium",
+"ntm:block_lead",
+"ntm:block_lithium",
+"ntm:block_magnetized_tungsten",
+"ntm:block_neptunium",
+"ntm:block_plutonium",
+"ntm:block_polonium",
+"ntm:block_pu238",
+"ntm:block_pu239",
+"ntm:block_pu240",
+"ntm:block_pu_mix",
+"ntm:block_ra226",
+"ntm:block_red_copper",
+"ntm:block_schrabidate",
+"ntm:block_schrabidium",
+"ntm:block_schraranium",
+"ntm:block_solinium",
+"ntm:block_starmetal",
+"ntm:block_steel",
+"ntm:block_tantalium",
+"ntm:block_tcalloy",
+"ntm:block_thorium",
+"ntm:block_titanium",
+"ntm:block_tungsten",
+"ntm:block_u233",
+"ntm:block_u235",
+"ntm:block_u238",
+"ntm:block_uranium",
+"ntm:block_zirconium",
+"ntm:bolt__dura_steel",
+"ntm:bolt__lead",
+"ntm:bolt__steel",
+"ntm:bolt__tungsten",
+"ntm:casing__large",
+"ntm:casing__large_steel",
+"ntm:casing__small",
+"ntm:casing__small_steel",
+"ntm:chunk_ore__cryolite",
+"ntm:chunk_ore__ilmenite",
+"ntm:combine_scrap",
+"ntm:crystal_aluminium",
+"ntm:crystal_beryllium",
+"ntm:crystal_cobalt",
+"ntm:crystal_copper",
+"ntm:crystal_gold",
+"ntm:crystal_iron",
+"ntm:crystal_lead",
+"ntm:crystal_lithium",
+"ntm:crystal_osmiridium",
+"ntm:crystal_plutonium",
+"ntm:crystal_schrabidium",
+"ntm:crystal_starmetal",
+"ntm:crystal_thorium",
+"ntm:crystal_titanium",
+"ntm:crystal_trixite",
+"ntm:crystal_tungsten",
+"ntm:crystal_uranium",
+"ntm:fragment_boron",
+"ntm:fragment_cobalt",
+"ntm:fragment_lanthanium",
+"ntm:fragment_neodymium",
+"ntm:fragment_niobium",
+"ntm:gem_tantalium",
+"ntm:gravel_diamond",
+"ntm:ingot_actinium",
+"ntm:ingot_aluminium",
+"ntm:ingot_am241",
+"ntm:ingot_am242",
+"ntm:ingot_am_mix",
+"ntm:ingot_arsenic",
+"ntm:ingot_arsenic_bronze",
+"ntm:ingot_asbestos",
+"ntm:ingot_au198",
+"ntm:ingot_beryllium",
+"ntm:ingot_bismuth",
+"ntm:ingot_bismuth_bronze",
+"ntm:ingot_boron",
+"ntm:ingot_bscco",
+"ntm:ingot_cadmium",
+"ntm:ingot_calcium",
+"ntm:ingot_cdalloy",
+"ntm:ingot_co60",
+"ntm:ingot_cobalt",
+"ntm:ingot_combine_steel",
+"ntm:ingot_copper",
+"ntm:ingot_desh",
+"ntm:ingot_dineutronium",
+"ntm:ingot_dura_steel",
+"ntm:ingot_ferrouranium",
+"ntm:ingot_fiberglass",
+"ntm:ingot_gh336",
+"ntm:ingot_gunmetal",
+"ntm:ingot_lanthanium",
+"ntm:ingot_lead",
+"ntm:ingot_magnetized_tungsten",
+"ntm:ingot_mud",
+"ntm:ingot_neptunium",
+"ntm:ingot_niobium",
+"ntm:ingot_osmiridium",
+"ntm:ingot_pb209",
+"ntm:ingot_plutonium",
+"ntm:ingot_polonium",
+"ntm:ingot_pu238",
+"ntm:ingot_pu239",
+"ntm:ingot_pu240",
+"ntm:ingot_pu241",
+"ntm:ingot_pu_mix",
+"ntm:ingot_ra226",
+"ntm:ingot_raw__borax",
+"ntm:ingot_raw__neodymium",
+"ntm:ingot_raw__redstone",
+"ntm:ingot_raw__slag",
+"ntm:ingot_raw__sodium",
+"ntm:ingot_raw__strontium",
+"ntm:ingot_red_copper",
+"ntm:ingot_saturnite",
+"ntm:ingot_schrabidate",
+"ntm:ingot_schrabidium",
+"ntm:ingot_schraranium",
+"ntm:ingot_silicon",
+"ntm:ingot_solinium",
+"ntm:ingot_starmetal",
+"ntm:ingot_steel",
+"ntm:ingot_tantalium",
+"ntm:ingot_tcalloy",
+"ntm:ingot_technetium",
+"ntm:ingot_th232",
+"ntm:ingot_titanium",
+"ntm:ingot_tungsten",
+"ntm:ingot_u233",
+"ntm:ingot_u235",
+"ntm:ingot_u238",
+"ntm:ingot_uranium",
+"ntm:ingot_weaponsteel",
+"ntm:ingot_zirconium",
+"ntm:lithium",
+"ntm:nugget_actinium",
+"ntm:nugget_am241",
+"ntm:nugget_am242",
+"ntm:nugget_am_mix",
+"ntm:nugget_arsenic",
+"ntm:nugget_au198",
+"ntm:nugget_beryllium",
+"ntm:nugget_bismuth",
+"ntm:nugget_co60",
+"ntm:nugget_cobalt",
+"ntm:nugget_desh",
+"ntm:nugget_dineutronium",
+"ntm:nugget_gh336",
+"ntm:nugget_lead",
+"ntm:nugget_neptunium",
+"ntm:nugget_niobium",
+"ntm:nugget_osmiridium",
+"ntm:nugget_pb209",
+"ntm:nugget_plutonium",
+"ntm:nugget_polonium",
+"ntm:nugget_pu238",
+"ntm:nugget_pu239",
+"ntm:nugget_pu240",
+"ntm:nugget_pu241",
+"ntm:nugget_pu_mix",
+"ntm:nugget_ra226",
+"ntm:nugget_raw__aluminium",
+"ntm:nugget_raw__boron",
+"ntm:nugget_raw__copper",
+"ntm:nugget_raw__lithium",
+"ntm:nugget_raw__sodium",
+"ntm:nugget_raw__strontium",
+"ntm:nugget_raw__titanium",
+"ntm:nugget_raw__tungsten",
+"ntm:nugget_schrabidium",
+"ntm:nugget_silicon",
+"ntm:nugget_solinium",
+"ntm:nugget_tantalium",
+"ntm:nugget_technetium",
+"ntm:nugget_th232",
+"ntm:nugget_u233",
+"ntm:nugget_u235",
+"ntm:nugget_u238",
+"ntm:nugget_uranium",
+"ntm:nugget_zirconium",
+"ntm:ore_aluminium",
+"ntm:ore_australium",
+"ntm:ore_beryllium",
+"ntm:ore_cobalt",
+"ntm:ore_copper",
+"ntm:ore_enriched__copper",
+"ntm:ore_enriched__gold",
+"ntm:ore_enriched__iron",
+"ntm:ore_enriched__titanium",
+"ntm:ore_enriched__tungsten",
+"ntm:ore_enriched__uranium",
+"ntm:ore_gneiss_copper",
+"ntm:ore_gneiss_gold",
+"ntm:ore_gneiss_iron",
+"ntm:ore_gneiss_lithium",
+"ntm:ore_gneiss_schrabidium",
+"ntm:ore_gneiss_uranium",
+"ntm:ore_gneiss_uranium_scorched",
+"ntm:ore_lead",
+"ntm:ore_meteor__cobalt",
+"ntm:ore_meteor__copper",
+"ntm:ore_meteor__iron",
+"ntm:ore_meteor__rareearth",
+"ntm:ore_nether_cobalt",
+"ntm:ore_nether_plutonium",
+"ntm:ore_nether_schrabidium",
+"ntm:ore_nether_tungsten",
+"ntm:ore_nether_uranium",
+"ntm:ore_nether_uranium_scorched",
+"ntm:ore_schrabidium",
+"ntm:ore_sellafield_uranium_scorched",
+"ntm:ore_thorium",
+"ntm:ore_titanium",
+"ntm:ore_tungsten",
+"ntm:ore_uranium",
+"ntm:ore_uranium_scorched",
+"ntm:part_barrel_heavy__cdalloy",
+"ntm:part_barrel_heavy__desh",
+"ntm:part_barrel_heavy__dura_steel",
+"ntm:part_barrel_heavy__ferro",
+"ntm:part_barrel_heavy__gunmetal",
+"ntm:part_barrel_heavy__saturn",
+"ntm:part_barrel_heavy__steel",
+"ntm:part_barrel_heavy__tcalloy",
+"ntm:part_barrel_heavy__weaponsteel",
+"ntm:part_barrel_light__abronze",
+"ntm:part_barrel_light__bbronze",
+"ntm:part_barrel_light__cdalloy",
+"ntm:part_barrel_light__desh",
+"ntm:part_barrel_light__dura_steel",
+"ntm:part_barrel_light__gunmetal",
+"ntm:part_barrel_light__saturn",
+"ntm:part_barrel_light__steel",
+"ntm:part_barrel_light__tcalloy",
+"ntm:part_barrel_light__weaponsteel",
+"ntm:part_grip__desh",
+"ntm:part_grip__dura_steel",
+"ntm:part_grip__gunmetal",
+"ntm:part_grip__saturn",
+"ntm:part_grip__steel",
+"ntm:part_grip__weaponsteel",
+"ntm:part_mechanism__gunmetal",
+"ntm:part_mechanism__saturn",
+"ntm:part_mechanism__weaponsteel",
+"ntm:part_receiver_heavy__abronze",
+"ntm:part_receiver_heavy__bbronze",
+"ntm:part_receiver_heavy__cdalloy",
+"ntm:part_receiver_heavy__dura_steel",
+"ntm:part_receiver_heavy__ferro",
+"ntm:part_receiver_heavy__gunmetal",
+"ntm:part_receiver_heavy__saturn",
+"ntm:part_receiver_heavy__tcalloy",
+"ntm:part_receiver_heavy__weaponsteel",
+"ntm:part_receiver_light__abronze",
+"ntm:part_receiver_light__bbronze",
+"ntm:part_receiver_light__cdalloy",
+"ntm:part_receiver_light__desh",
+"ntm:part_receiver_light__dura_steel",
+"ntm:part_receiver_light__gunmetal",
+"ntm:part_receiver_light__saturn",
+"ntm:part_receiver_light__steel",
+"ntm:part_receiver_light__tcalloy",
+"ntm:part_receiver_light__weaponsteel",
+"ntm:part_stock__desh",
+"ntm:part_stock__gunmetal",
+"ntm:part_stock__saturn",
+"ntm:part_stock__weaponsteel",
+"ntm:pipe__aluminium",
+"ntm:pipe__copper",
+"ntm:pipe__dura_steel",
+"ntm:pipe__iron",
+"ntm:pipe__lead",
+"ntm:pipe__steel",
+"ntm:pipes_steel",
+"ntm:plate_aluminium",
+"ntm:plate_cast__abronze",
+"ntm:plate_cast__aluminium",
+"ntm:plate_cast__bbronze",
+"ntm:plate_cast__cdalloy",
+"ntm:plate_cast__combine_steel",
+"ntm:plate_cast__copper",
+"ntm:plate_cast__desh",
+"ntm:plate_cast__dura_steel",
+"ntm:plate_cast__ferro",
+"ntm:plate_cast__gold",
+"ntm:plate_cast__iron",
+"ntm:plate_cast__lead",
+"ntm:plate_cast__osmiridium",
+"ntm:plate_cast__saturn",
+"ntm:plate_cast__schrabidate",
+"ntm:plate_cast__schrabidium",
+"ntm:plate_cast__starmetal",
+"ntm:plate_cast__steel",
+"ntm:plate_cast__tcalloy",
+"ntm:plate_cast__titanium",
+"ntm:plate_cast__tungsten",
+"ntm:plate_cast__weaponsteel",
+"ntm:plate_cast__zirconium",
+"ntm:plate_combine_steel",
+"ntm:plate_copper",
+"ntm:plate_dura_steel",
+"ntm:plate_gold",
+"ntm:plate_gunmetal",
+"ntm:plate_iron",
+"ntm:plate_lead",
+"ntm:plate_saturnite",
+"ntm:plate_schrabidium",
+"ntm:plate_steel",
+"ntm:plate_titanium",
+"ntm:plate_weaponsteel",
+"ntm:plate_welded__aluminium",
+"ntm:plate_welded__cdalloy",
+"ntm:plate_welded__combine_steel",
+"ntm:plate_welded__copper",
+"ntm:plate_welded__iron",
+"ntm:plate_welded__osmiridium",
+"ntm:plate_welded__steel",
+"ntm:plate_welded__tcalloy",
+"ntm:plate_welded__titanium",
+"ntm:plate_welded__tungsten",
+"ntm:plate_welded__zirconium",
+"ntm:powder_actinium",
+"ntm:powder_actinium_tiny",
+"ntm:powder_aluminium",
+"ntm:powder_asbestos",
+"ntm:powder_au198",
+"ntm:powder_australium",
+"ntm:powder_bakelite",
+"ntm:powder_beryllium",
+"ntm:powder_bismuth",
+"ntm:powder_borax",
+"ntm:powder_boron",
+"ntm:powder_boron_tiny",
+"ntm:powder_cadmium",
+"ntm:powder_calcium",
+"ntm:powder_co60",
+"ntm:powder_cobalt",
+"ntm:powder_cobalt_tiny",
+"ntm:powder_combine_steel",
+"ntm:powder_copper",
+"ntm:powder_desh",
+"ntm:powder_dineutronium",
+"ntm:powder_dura_steel",
+"ntm:powder_emerald",
+"ntm:powder_euphemium",
+"ntm:powder_gold",
+"ntm:powder_iron",
+"ntm:powder_lanthanium",
+"ntm:powder_lanthanium_tiny",
+"ntm:powder_lead",
+"ntm:powder_lithium",
+"ntm:powder_lithium_tiny",
+"ntm:powder_magnetized_tungsten",
+"ntm:powder_neodymium",
+"ntm:powder_neodymium_tiny",
+"ntm:powder_neptunium",
+"ntm:powder_niobium",
+"ntm:powder_niobium_tiny",
+"ntm:powder_plutonium",
+"ntm:powder_polonium",
+"ntm:powder_polymer",
+"ntm:powder_quartz",
+"ntm:powder_ra226",
+"ntm:powder_red_copper",
+"ntm:powder_schrabidate",
+"ntm:powder_schrabidium",
+"ntm:powder_sodium",
+"ntm:powder_sr90",
+"ntm:powder_steel",
+"ntm:powder_steel_tiny",
+"ntm:powder_strontium",
+"ntm:powder_tantalium",
+"ntm:powder_tcalloy",
+"ntm:powder_thorium",
+"ntm:powder_titanium",
+"ntm:powder_tungsten",
+"ntm:powder_uranium",
+"ntm:powder_zirconium",
+"ntm:shell__aluminium",
+"ntm:shell__copper",
+"ntm:shell__saturn",
+"ntm:shell__steel",
+"ntm:shell__titanium",
+"ntm:shell__weaponsteel",
+"ntm:stamp_iron_flat",
+"ntm:stamp_obsidian_flat",
+"ntm:stamp_steel_flat",
+"ntm:stamp_stone_flat",
+"ntm:stamp_titanium_flat",
+"ntm:waste_trinitite",
+"ntm:wire_dense__bscco",
+"ntm:wire_dense__copper",
+"ntm:wire_dense__dnt",
+"ntm:wire_dense__gold",
+"ntm:wire_dense__magnetized_tungsten",
+"ntm:wire_dense__neodymium",
+"ntm:wire_dense__niobium",
+"ntm:wire_dense__red_copper",
+"ntm:wire_dense__schrabidate",
+"ntm:wire_dense__schrabidium",
+"ntm:wire_dense__starmetal",
+"ntm:wire_dense__titanium",
+"ntm:wire_dense__tungsten",
+"ntm:wire_fine__aluminium",
+"ntm:wire_fine__copper",
+"ntm:wire_fine__gold",
+"ntm:wire_fine__lead",
+"ntm:wire_fine__magnetized_tungsten",
+"ntm:wire_fine__red_copper",
+"ntm:wire_fine__schrabidium",
+"ntm:wire_fine__steel",
+"ntm:wire_fine__tungsten",
+"ntm:wire_fine__zirconium"
+],
+"grid": [
+44,
+54,
+5,
+4
+]
+},
+{
+"grid": [
+44,
+129,
+5,
+1
+]
+}
+],
+"synced": [
+20,
+21,
+22,
+23,
+24,
+25,
+26,
+27,
+28
+]
+},
+"ntm:machine_assembly_machine": {
+"slots": [
+{
+"accept": [
+"ntm:battery_spark",
+"ntm:battery_trixite"
+]
+},
+{
+"accept": []
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3"
+]
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3"
+]
+},
+{
+"grid": [
+8,
+18,
+3,
+4
+]
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:machine_blast_furnace": {
+"slots": [
+{
+"accept": [
+"minecraft:coal",
+"minecraft:coal_block",
+"ntm:block_coke__coal",
+"ntm:block_coke__lignite",
+"ntm:block_coke__petroleum",
+"ntm:briquette__coal",
+"ntm:briquette__lignite",
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum",
+"ntm:lignite",
+"ntm:powder_coal",
+"ntm:powder_lignite",
+"ntm:rocket_fuel",
+"ntm:solid_fuel",
+"ntm:solid_fuel_bf",
+"ntm:solid_fuel_presto",
+"ntm:solid_fuel_presto_bf",
+"ntm:solid_fuel_presto_triplet",
+"ntm:solid_fuel_presto_triplet_bf"
+]
+},
+{
+"accept": [
+"minecraft:clay_ball",
+"minecraft:copper_ingot",
+"minecraft:gold_ingot",
+"minecraft:iron_ingot",
+"minecraft:iron_ore",
+"minecraft:red_sand",
+"minecraft:redstone",
+"minecraft:sand",
+"ntm:ingot_copper",
+"ntm:ingot_raw__redstone",
+"ntm:ore_copper",
+"ntm:ore_enriched__copper",
+"ntm:ore_enriched__iron",
+"ntm:ore_gneiss_copper",
+"ntm:ore_gneiss_iron",
+"ntm:plate_mixed",
+"ntm:powder_aluminium",
+"ntm:powder_copper",
+"ntm:powder_flux",
+"ntm:powder_iron",
+"ntm:powder_limestone"
+]
+},
+{
+"accept": [
+"minecraft:clay_ball",
+"minecraft:copper_ingot",
+"minecraft:gold_ingot",
+"minecraft:iron_ingot",
+"minecraft:iron_ore",
+"minecraft:red_sand",
+"minecraft:redstone",
+"minecraft:sand",
+"ntm:ingot_copper",
+"ntm:ingot_raw__redstone",
+"ntm:ore_copper",
+"ntm:ore_enriched__copper",
+"ntm:ore_enriched__iron",
+"ntm:ore_gneiss_copper",
+"ntm:ore_gneiss_iron",
+"ntm:plate_mixed",
+"ntm:powder_aluminium",
+"ntm:powder_copper",
+"ntm:powder_flux",
+"ntm:powder_iron",
+"ntm:powder_limestone"
+]
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:machine_boiler": {
+"slots": [],
+"synced": []
+},
+"ntm:machine_catalytic_cracker": {
+"slots": [],
+"synced": []
+},
+"ntm:machine_catalytic_reformer": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"accept": [
+"ntm:catalytic_converter"
+]
+}
+],
+"synced": []
+},
+"ntm:machine_centrifuge": {
+"slots": [
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:machine_chemical_plant": {
+"slots": [
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:machine_coker": {
+"slots": [
+{
+"accept": []
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:machine_crucible": {
+"slots": [
+{
+"accept": []
+},
+{
+"grid": [
+107,
+18,
+3,
+3
+]
+}
+],
+"synced": [
+4,
+5,
+6,
+7,
+8,
+41,
+42
+]
+},
+"ntm:machine_crystallizer": {
+"slots": [
+{
+"accept": [
+"minecraft:bone",
+"minecraft:bone_meal",
+"minecraft:coal_block",
+"minecraft:coal_ore",
+"minecraft:cobblestone",
+"minecraft:diamond_ore",
+"minecraft:gold_ore",
+"minecraft:iron_ore",
+"minecraft:lapis_ore",
+"minecraft:red_sand",
+"minecraft:redstone_block",
+"minecraft:redstone_ore",
+"minecraft:rotten_flesh",
+"minecraft:sand",
+"ntm:bedrock_ore__base_actinide",
+"ntm:bedrock_ore__base_crystal",
+"ntm:bedrock_ore__base_heavy",
+"ntm:bedrock_ore__base_light",
+"ntm:bedrock_ore__base_nonmetal",
+"ntm:bedrock_ore__base_rare",
+"ntm:bedrock_ore__base_roasted_actinide",
+"ntm:bedrock_ore__base_roasted_crystal",
+"ntm:bedrock_ore__base_roasted_heavy",
+"ntm:bedrock_ore__base_roasted_light",
+"ntm:bedrock_ore__base_roasted_nonmetal",
+"ntm:bedrock_ore__base_roasted_rare",
+"ntm:bedrock_ore__crumbs_actinide",
+"ntm:bedrock_ore__crumbs_crystal",
+"ntm:bedrock_ore__crumbs_heavy",
+"ntm:bedrock_ore__crumbs_light",
+"ntm:bedrock_ore__crumbs_nonmetal",
+"ntm:bedrock_ore__crumbs_rare",
+"ntm:bedrock_ore__primary_actinide",
+"ntm:bedrock_ore__primary_crystal",
+"ntm:bedrock_ore__primary_heavy",
+"ntm:bedrock_ore__primary_light",
+"ntm:bedrock_ore__primary_nonmetal",
+"ntm:bedrock_ore__primary_norad_actinide",
+"ntm:bedrock_ore__primary_norad_crystal",
+"ntm:bedrock_ore__primary_norad_heavy",
+"ntm:bedrock_ore__primary_norad_light",
+"ntm:bedrock_ore__primary_norad_nonmetal",
+"ntm:bedrock_ore__primary_norad_rare",
+"ntm:bedrock_ore__primary_nosolvent_actinide",
+"ntm:bedrock_ore__primary_nosolvent_crystal",
+"ntm:bedrock_ore__primary_nosolvent_heavy",
+"ntm:bedrock_ore__primary_nosolvent_light",
+"ntm:bedrock_ore__primary_nosolvent_nonmetal",
+"ntm:bedrock_ore__primary_nosolvent_rare",
+"ntm:bedrock_ore__primary_nosulfuric_actinide",
+"ntm:bedrock_ore__primary_nosulfuric_crystal",
+"ntm:bedrock_ore__primary_nosulfuric_heavy",
+"ntm:bedrock_ore__primary_nosulfuric_light",
+"ntm:bedrock_ore__primary_nosulfuric_nonmetal",
+"ntm:bedrock_ore__primary_nosulfuric_rare",
+"ntm:bedrock_ore__primary_rad_actinide",
+"ntm:bedrock_ore__primary_rad_crystal",
+"ntm:bedrock_ore__primary_rad_heavy",
+"ntm:bedrock_ore__primary_rad_light",
+"ntm:bedrock_ore__primary_rad_nonmetal",
+"ntm:bedrock_ore__primary_rad_rare",
+"ntm:bedrock_ore__primary_rare",
+"ntm:bedrock_ore__primary_roasted_actinide",
+"ntm:bedrock_ore__primary_roasted_crystal",
+"ntm:bedrock_ore__primary_roasted_heavy",
+"ntm:bedrock_ore__primary_roasted_light",
+"ntm:bedrock_ore__primary_roasted_nonmetal",
+"ntm:bedrock_ore__primary_roasted_rare",
+"ntm:bedrock_ore__primary_solvent_actinide",
+"ntm:bedrock_ore__primary_solvent_crystal",
+"ntm:bedrock_ore__primary_solvent_heavy",
+"ntm:bedrock_ore__primary_solvent_light",
+"ntm:bedrock_ore__primary_solvent_nonmetal",
+"ntm:bedrock_ore__primary_solvent_rare",
+"ntm:bedrock_ore__primary_sulfuric_actinide",
+"ntm:bedrock_ore__primary_sulfuric_crystal",
+"ntm:bedrock_ore__primary_sulfuric_heavy",
+"ntm:bedrock_ore__primary_sulfuric_light",
+"ntm:bedrock_ore__primary_sulfuric_nonmetal",
+"ntm:bedrock_ore__primary_sulfuric_rare",
+"ntm:bedrock_ore__rad_arc_actinide",
+"ntm:bedrock_ore__rad_arc_crystal",
+"ntm:bedrock_ore__rad_arc_heavy",
+"ntm:bedrock_ore__rad_arc_light",
+"ntm:bedrock_ore__rad_arc_nonmetal",
+"ntm:bedrock_ore__rad_arc_rare",
+"ntm:bedrock_ore__rad_byproduct_actinide",
+"ntm:bedrock_ore__rad_byproduct_crystal",
+"ntm:bedrock_ore__rad_byproduct_heavy",
+"ntm:bedrock_ore__rad_byproduct_light",
+"ntm:bedrock_ore__rad_byproduct_nonmetal",
+"ntm:bedrock_ore__rad_byproduct_rare",
+"ntm:bedrock_ore__rad_roasted_actinide",
+"ntm:bedrock_ore__rad_roasted_crystal",
+"ntm:bedrock_ore__rad_roasted_heavy",
+"ntm:bedrock_ore__rad_roasted_light",
+"ntm:bedrock_ore__rad_roasted_nonmetal",
+"ntm:bedrock_ore__rad_roasted_rare",
+"ntm:bedrock_ore__solvent_arc_actinide",
+"ntm:bedrock_ore__solvent_arc_crystal",
+"ntm:bedrock_ore__solvent_arc_heavy",
+"ntm:bedrock_ore__solvent_arc_light",
+"ntm:bedrock_ore__solvent_arc_nonmetal",
+"ntm:bedrock_ore__solvent_arc_rare",
+"ntm:bedrock_ore__solvent_byproduct_actinide",
+"ntm:bedrock_ore__solvent_byproduct_crystal",
+"ntm:bedrock_ore__solvent_byproduct_heavy",
+"ntm:bedrock_ore__solvent_byproduct_light",
+"ntm:bedrock_ore__solvent_byproduct_nonmetal",
+"ntm:bedrock_ore__solvent_byproduct_rare",
+"ntm:bedrock_ore__solvent_roasted_actinide",
+"ntm:bedrock_ore__solvent_roasted_crystal",
+"ntm:bedrock_ore__solvent_roasted_heavy",
+"ntm:bedrock_ore__solvent_roasted_light",
+"ntm:bedrock_ore__solvent_roasted_nonmetal",
+"ntm:bedrock_ore__solvent_roasted_rare",
+"ntm:bedrock_ore__sulfuric_arc_actinide",
+"ntm:bedrock_ore__sulfuric_arc_crystal",
+"ntm:bedrock_ore__sulfuric_arc_heavy",
+"ntm:bedrock_ore__sulfuric_arc_light",
+"ntm:bedrock_ore__sulfuric_arc_nonmetal",
+"ntm:bedrock_ore__sulfuric_arc_rare",
+"ntm:bedrock_ore__sulfuric_byproduct_actinide",
+"ntm:bedrock_ore__sulfuric_byproduct_crystal",
+"ntm:bedrock_ore__sulfuric_byproduct_heavy",
+"ntm:bedrock_ore__sulfuric_byproduct_light",
+"ntm:bedrock_ore__sulfuric_byproduct_nonmetal",
+"ntm:bedrock_ore__sulfuric_byproduct_rare",
+"ntm:bedrock_ore__sulfuric_roasted_actinide",
+"ntm:bedrock_ore__sulfuric_roasted_crystal",
+"ntm:bedrock_ore__sulfuric_roasted_heavy",
+"ntm:bedrock_ore__sulfuric_roasted_light",
+"ntm:bedrock_ore__sulfuric_roasted_nonmetal",
+"ntm:bedrock_ore__sulfuric_roasted_rare",
+"ntm:chunk_ore__malachite",
+"ntm:cinnebar",
+"ntm:coal_infernal",
+"ntm:gravel_diamond",
+"ntm:gravel_obsidian",
+"ntm:ingot_biorubber",
+"ntm:ingot_schraranium",
+"ntm:ingot_silicon",
+"ntm:meteorite_sword_treated",
+"ntm:moon_turf",
+"ntm:oil_tar__crack",
+"ntm:oil_tar__crude",
+"ntm:oil_tar__paraffin",
+"ntm:oil_tar__wax",
+"ntm:ore_aluminium",
+"ntm:ore_basalt__fluorite",
+"ntm:ore_basalt__sulfur",
+"ntm:ore_beryllium",
+"ntm:ore_centrifuged__asbestos",
+"ntm:ore_centrifuged__borax",
+"ntm:ore_centrifuged__chlorocalcite",
+"ntm:ore_centrifuged__copper",
+"ntm:ore_centrifuged__fluorite",
+"ntm:ore_centrifuged__gold",
+"ntm:ore_centrifuged__hematite",
+"ntm:ore_centrifuged__iron",
+"ntm:ore_centrifuged__malachite",
+"ntm:ore_centrifuged__neodymium",
+"ntm:ore_centrifuged__niobium",
+"ntm:ore_centrifuged__thorium",
+"ntm:ore_centrifuged__titanium",
+"ntm:ore_centrifuged__tungsten",
+"ntm:ore_centrifuged__uranium",
+"ntm:ore_cinnebar",
+"ntm:ore_cobalt",
+"ntm:ore_copper",
+"ntm:ore_depth_cinnebar",
+"ntm:ore_enriched__copper",
+"ntm:ore_enriched__fluorite",
+"ntm:ore_enriched__gold",
+"ntm:ore_enriched__iron",
+"ntm:ore_enriched__thorium",
+"ntm:ore_enriched__titanium",
+"ntm:ore_enriched__tungsten",
+"ntm:ore_enriched__uranium",
+"ntm:ore_fluorite",
+"ntm:ore_gneiss_copper",
+"ntm:ore_gneiss_gold",
+"ntm:ore_gneiss_iron",
+"ntm:ore_gneiss_lithium",
+"ntm:ore_gneiss_rare",
+"ntm:ore_gneiss_schrabidium",
+"ntm:ore_gneiss_uranium",
+"ntm:ore_gneiss_uranium_scorched",
+"ntm:ore_lead",
+"ntm:ore_nether_cobalt",
+"ntm:ore_nether_fire",
+"ntm:ore_nether_plutonium",
+"ntm:ore_nether_schrabidium",
+"ntm:ore_nether_sulfur",
+"ntm:ore_nether_tungsten",
+"ntm:ore_nether_uranium",
+"ntm:ore_nether_uranium_scorched",
+"ntm:ore_niter",
+"ntm:ore_nitrocrystalline__asbestos",
+"ntm:ore_nitrocrystalline__borax",
+"ntm:ore_nitrocrystalline__chlorocalcite",
+"ntm:ore_nitrocrystalline__copper",
+"ntm:ore_nitrocrystalline__fluorite",
+"ntm:ore_nitrocrystalline__gold",
+"ntm:ore_nitrocrystalline__hematite",
+"ntm:ore_nitrocrystalline__iron",
+"ntm:ore_nitrocrystalline__malachite",
+"ntm:ore_nitrocrystalline__neodymium",
+"ntm:ore_nitrocrystalline__niobium",
+"ntm:ore_nitrocrystalline__thorium",
+"ntm:ore_nitrocrystalline__titanium",
+"ntm:ore_nitrocrystalline__tungsten",
+"ntm:ore_nitrocrystalline__uranium",
+"ntm:ore_rare",
+"ntm:ore_schrabidium",
+"ntm:ore_sellafield_diamond",
+"ntm:ore_sellafield_schrabidium",
+"ntm:ore_sellafield_uranium_scorched",
+"ntm:ore_separated__asbestos",
+"ntm:ore_separated__borax",
+"ntm:ore_separated__chlorocalcite",
+"ntm:ore_separated__copper",
+"ntm:ore_separated__fluorite",
+"ntm:ore_separated__gold",
+"ntm:ore_separated__hematite",
+"ntm:ore_separated__iron",
+"ntm:ore_separated__malachite",
+"ntm:ore_separated__neodymium",
+"ntm:ore_separated__niobium",
+"ntm:ore_separated__thorium",
+"ntm:ore_separated__titanium",
+"ntm:ore_separated__tungsten",
+"ntm:ore_separated__uranium",
+"ntm:ore_sulfur",
+"ntm:ore_thorium",
+"ntm:ore_tikite",
+"ntm:ore_titanium",
+"ntm:ore_tungsten",
+"ntm:ore_uranium",
+"ntm:ore_uranium_scorched",
+"ntm:plant_item__mustardwillow",
+"ntm:powder_ash__fullerene",
+"ntm:powder_borax",
+"ntm:powder_cadmium",
+"ntm:powder_calcium",
+"ntm:powder_coal",
+"ntm:powder_cobalt",
+"ntm:powder_copper",
+"ntm:powder_desh_ready",
+"ntm:powder_diamond",
+"ntm:powder_emerald",
+"ntm:powder_impure_osmiridium",
+"ntm:powder_iron",
+"ntm:powder_lapis",
+"ntm:powder_meteorite",
+"ntm:powder_quartz",
+"ntm:powder_sawdust",
+"ntm:powder_semtex_mix",
+"ntm:powder_titanium",
+"ntm:powder_tungsten",
+"ntm:rebar",
+"ntm:scrap_oil",
+"ntm:scrap_plastic__board_blank",
+"ntm:scrap_plastic__board_converter",
+"ntm:scrap_plastic__board_transistor",
+"ntm:scrap_plastic__bridge_bios",
+"ntm:scrap_plastic__bridge_bus",
+"ntm:scrap_plastic__bridge_chipset",
+"ntm:scrap_plastic__bridge_cmos",
+"ntm:scrap_plastic__bridge_io",
+"ntm:scrap_plastic__bridge_north",
+"ntm:scrap_plastic__bridge_south",
+"ntm:scrap_plastic__card_board",
+"ntm:scrap_plastic__card_processor",
+"ntm:scrap_plastic__cpu_cache",
+"ntm:scrap_plastic__cpu_clock",
+"ntm:scrap_plastic__cpu_ext",
+"ntm:scrap_plastic__cpu_logic",
+"ntm:scrap_plastic__cpu_register",
+"ntm:scrap_plastic__cpu_socket",
+"ntm:scrap_plastic__mem_16k_a",
+"ntm:scrap_plastic__mem_16k_b",
+"ntm:scrap_plastic__mem_16k_c",
+"ntm:scrap_plastic__mem_16k_d",
+"ntm:scrap_plastic__mem_socket",
+"ntm:stone_gneiss",
+"ntm:stone_resource__sulfur"
+]
+},
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"accept": []
+}
+],
+"synced": []
+},
+"ntm:machine_electrolyser": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"accept": [
+"ntm:bedrock_ore__crumbs_actinide",
+"ntm:bedrock_ore__crumbs_crystal",
+"ntm:bedrock_ore__crumbs_heavy",
+"ntm:bedrock_ore__crumbs_light",
+"ntm:bedrock_ore__crumbs_nonmetal",
+"ntm:bedrock_ore__crumbs_rare",
+"ntm:bedrock_ore__primary_first_actinide",
+"ntm:bedrock_ore__primary_first_crystal",
+"ntm:bedrock_ore__primary_first_heavy",
+"ntm:bedrock_ore__primary_first_light",
+"ntm:bedrock_ore__primary_first_nonmetal",
+"ntm:bedrock_ore__primary_first_rare",
+"ntm:bedrock_ore__primary_second_actinide",
+"ntm:bedrock_ore__primary_second_crystal",
+"ntm:bedrock_ore__primary_second_heavy",
+"ntm:bedrock_ore__primary_second_light",
+"ntm:bedrock_ore__primary_second_nonmetal",
+"ntm:bedrock_ore__primary_second_rare",
+"ntm:crystal_aluminium",
+"ntm:crystal_beryllium",
+"ntm:crystal_cobalt",
+"ntm:crystal_copper",
+"ntm:crystal_gold",
+"ntm:crystal_iron",
+"ntm:crystal_lead",
+"ntm:crystal_lithium",
+"ntm:crystal_plutonium",
+"ntm:crystal_rare",
+"ntm:crystal_schrabidium",
+"ntm:crystal_schraranium",
+"ntm:crystal_starmetal",
+"ntm:crystal_thorium",
+"ntm:crystal_titanium",
+"ntm:crystal_trixite",
+"ntm:crystal_tungsten",
+"ntm:crystal_uranium"
+]
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:machine_epress": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:stamp_357",
+"ntm:stamp_44",
+"ntm:stamp_50",
+"ntm:stamp_9",
+"ntm:stamp_desh_357",
+"ntm:stamp_desh_44",
+"ntm:stamp_desh_50",
+"ntm:stamp_desh_9",
+"ntm:stamp_desh_circuit",
+"ntm:stamp_desh_flat",
+"ntm:stamp_desh_plate",
+"ntm:stamp_desh_wire",
+"ntm:stamp_iron_circuit",
+"ntm:stamp_iron_flat",
+"ntm:stamp_iron_plate",
+"ntm:stamp_iron_wire",
+"ntm:stamp_obsidian_circuit",
+"ntm:stamp_obsidian_flat",
+"ntm:stamp_obsidian_plate",
+"ntm:stamp_obsidian_wire",
+"ntm:stamp_steel_circuit",
+"ntm:stamp_steel_flat",
+"ntm:stamp_steel_plate",
+"ntm:stamp_steel_wire",
+"ntm:stamp_stone_circuit",
+"ntm:stamp_stone_flat",
+"ntm:stamp_stone_plate",
+"ntm:stamp_stone_wire",
+"ntm:stamp_titanium_circuit",
+"ntm:stamp_titanium_flat",
+"ntm:stamp_titanium_plate",
+"ntm:stamp_titanium_wire"
+],
+"max": 1
+},
+{
+"accept": [
+"minecraft:gold_ingot",
+"minecraft:iron_ingot",
+"minecraft:jungle_log",
+"minecraft:paper",
+"ntm:billet_silicon",
+"ntm:biomass",
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum",
+"ntm:ingot_aluminium",
+"ntm:ingot_combine_steel",
+"ntm:ingot_copper",
+"ntm:ingot_dura_steel",
+"ntm:ingot_graphite",
+"ntm:ingot_gunmetal",
+"ntm:ingot_lead",
+"ntm:ingot_magnetized_tungsten",
+"ntm:ingot_red_copper",
+"ntm:ingot_saturnite",
+"ntm:ingot_schrabidium",
+"ntm:ingot_steel",
+"ntm:ingot_titanium",
+"ntm:ingot_tungsten",
+"ntm:ingot_weaponsteel",
+"ntm:ingot_zirconium",
+"ntm:plate_gunmetal",
+"ntm:plate_weaponsteel",
+"ntm:powder_coal",
+"ntm:powder_diamond",
+"ntm:powder_emerald",
+"ntm:powder_lapis",
+"ntm:powder_lignite",
+"ntm:powder_quartz",
+"ntm:powder_sawdust"
+]
+},
+{
+"output": true
+},
+{
+"accept": []
+}
+],
+"synced": [
+0,
+1
+]
+},
+"ntm:machine_excavator": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_effect_1",
+"ntm:upgrade_effect_2",
+"ntm:upgrade_effect_3"
+]
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_effect_1",
+"ntm:upgrade_effect_2",
+"ntm:upgrade_effect_3"
+]
+},
+{
+"accept": [
+"ntm:drillbit__desh",
+"ntm:drillbit__desh_diamond",
+"ntm:drillbit__ferro",
+"ntm:drillbit__ferro_diamond",
+"ntm:drillbit__hss",
+"ntm:drillbit__hss_diamond",
+"ntm:drillbit__steel",
+"ntm:drillbit__steel_diamond",
+"ntm:drillbit__tcalloy",
+"ntm:drillbit__tcalloy_diamond"
+],
+"max": 1
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": [
+6,
+8
+]
+},
+"ntm:machine_flare": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"accept": []
+}
+],
+"synced": [
+4,
+8
+]
+},
+"ntm:machine_fracking_tower": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+]
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+]
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+]
+}
+],
+"synced": [
+0,
+2
+]
+},
+"ntm:machine_fraction_tower": {
+"slots": [],
+"synced": []
+},
+"ntm:machine_gascent": {
+"slots": [
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"accept": [
+"ntm:upgrade_gc_speed"
+],
+"max": 1
+}
+],
+"synced": []
+},
+"ntm:machine_hephaestus": {
+"slots": [],
+"synced": [
+0
+]
+},
+"ntm:machine_hydrotreater": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"accept": [
+"ntm:catalytic_converter"
+]
+}
+],
+"synced": []
+},
+"ntm:machine_industrial_boiler": {
+"slots": [],
+"synced": []
+},
+"ntm:machine_liquefactor": {
+"slots": [
+{
+"accept": [
+"minecraft:acacia_log",
+"minecraft:birch_log",
+"minecraft:coal",
+"minecraft:cobblestone",
+"minecraft:cod",
+"minecraft:dark_oak_log",
+"minecraft:ender_pearl",
+"minecraft:fern",
+"minecraft:ice",
+"minecraft:jungle_log",
+"minecraft:melon_slice",
+"minecraft:netherrack",
+"minecraft:oak_log",
+"minecraft:obsidian",
+"minecraft:packed_ice",
+"minecraft:pufferfish",
+"minecraft:salmon",
+"minecraft:short_grass",
+"minecraft:snow_block",
+"minecraft:snowball",
+"minecraft:spruce_log",
+"minecraft:stone",
+"minecraft:sugar",
+"minecraft:sunflower",
+"minecraft:tropical_fish",
+"minecraft:vine",
+"minecraft:wheat_seeds",
+"ntm:biomass",
+"ntm:block_lead",
+"ntm:glyphid_gland_empty",
+"ntm:ingot_lead",
+"ntm:lignite",
+"ntm:oil_tar__coal",
+"ntm:oil_tar__crack",
+"ntm:oil_tar__crude",
+"ntm:ore_oil_sand",
+"ntm:plant_flower__cd0",
+"ntm:plant_flower__weed",
+"ntm:powder_coal",
+"ntm:powder_lead",
+"ntm:powder_lignite",
+"ntm:powder_sodium"
+]
+},
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"accept": []
+}
+],
+"synced": [
+7,
+8,
+9
+]
+},
+"ntm:machine_mixer": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": [
+"minecraft:cod",
+"minecraft:egg",
+"minecraft:pufferfish",
+"minecraft:salmon",
+"minecraft:sunflower",
+"minecraft:tropical_fish",
+"ntm:chunk_ore__cryolite",
+"ntm:dust",
+"ntm:fluorite",
+"ntm:fuel_additive__antiknock",
+"ntm:niter",
+"ntm:oil_tar__coal",
+"ntm:oil_tar__crack",
+"ntm:oil_tar__crude",
+"ntm:oil_tar__wood",
+"ntm:pellet_charged",
+"ntm:pill_herbal",
+"ntm:powder_ash__soot",
+"ntm:powder_ash__wood",
+"ntm:powder_chlorocalcite",
+"ntm:powder_diamond",
+"ntm:powder_flux",
+"ntm:powder_ice",
+"ntm:powder_nitan_mix",
+"ntm:powder_thorium",
+"ntm:stone_resource__bauxite",
+"ntm:sulfur"
+]
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"accept": []
+}
+],
+"synced": [
+10,
+21,
+22,
+23
+]
+},
+"ntm:machine_ore_slopper": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"accept": [
+"ntm:bedrock_ore_base"
+]
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"accept": []
+}
+],
+"synced": []
+},
+"ntm:machine_press": {
+"slots": [
+{
+"accept": [
+"minecraft:acacia_log",
+"minecraft:acacia_planks",
+"minecraft:acacia_sapling",
+"minecraft:acacia_wood",
+"minecraft:bamboo",
+"minecraft:bamboo_planks",
+"minecraft:birch_log",
+"minecraft:birch_planks",
+"minecraft:birch_sapling",
+"minecraft:birch_wood",
+"minecraft:blaze_rod",
+"minecraft:charcoal",
+"minecraft:cherry_log",
+"minecraft:cherry_planks",
+"minecraft:cherry_sapling",
+"minecraft:cherry_wood",
+"minecraft:coal",
+"minecraft:coal_block",
+"minecraft:crimson_hyphae",
+"minecraft:crimson_planks",
+"minecraft:crimson_stem",
+"minecraft:dark_oak_log",
+"minecraft:dark_oak_planks",
+"minecraft:dark_oak_sapling",
+"minecraft:dark_oak_wood",
+"minecraft:jungle_log",
+"minecraft:jungle_planks",
+"minecraft:jungle_sapling",
+"minecraft:jungle_wood",
+"minecraft:mangrove_log",
+"minecraft:mangrove_planks",
+"minecraft:mangrove_wood",
+"minecraft:mushroom_stem",
+"minecraft:oak_log",
+"minecraft:oak_planks",
+"minecraft:oak_sapling",
+"minecraft:oak_wood",
+"minecraft:pale_oak_log",
+"minecraft:pale_oak_planks",
+"minecraft:pale_oak_sapling",
+"minecraft:pale_oak_wood",
+"minecraft:poplar_log",
+"minecraft:poplar_planks",
+"minecraft:poplar_sapling",
+"minecraft:poplar_wood",
+"minecraft:spruce_log",
+"minecraft:spruce_planks",
+"minecraft:spruce_sapling",
+"minecraft:spruce_wood",
+"minecraft:stick",
+"minecraft:stripped_acacia_log",
+"minecraft:stripped_acacia_wood",
+"minecraft:stripped_birch_log",
+"minecraft:stripped_birch_wood",
+"minecraft:stripped_cherry_log",
+"minecraft:stripped_cherry_wood",
+"minecraft:stripped_crimson_hyphae",
+"minecraft:stripped_crimson_stem",
+"minecraft:stripped_dark_oak_log",
+"minecraft:stripped_dark_oak_wood",
+"minecraft:stripped_jungle_log",
+"minecraft:stripped_jungle_wood",
+"minecraft:stripped_mangrove_log",
+"minecraft:stripped_mangrove_wood",
+"minecraft:stripped_oak_log",
+"minecraft:stripped_oak_wood",
+"minecraft:stripped_pale_oak_log",
+"minecraft:stripped_pale_oak_wood",
+"minecraft:stripped_poplar_log",
+"minecraft:stripped_poplar_wood",
+"minecraft:stripped_spruce_log",
+"minecraft:stripped_spruce_wood",
+"minecraft:stripped_warped_hyphae",
+"minecraft:stripped_warped_stem",
+"minecraft:warped_hyphae",
+"minecraft:warped_planks",
+"minecraft:warped_stem",
+"ntm:briquette__wood",
+"ntm:oil_tar__wood",
+"ntm:part_grip__wood",
+"ntm:part_stock__wood",
+"ntm:pink_planks",
+"ntm:powder_ash__wood",
+"ntm:waste_log",
+"ntm:waste_planks"
+]
+},
+{
+"accept": [
+"ntm:stamp_357",
+"ntm:stamp_44",
+"ntm:stamp_50",
+"ntm:stamp_9",
+"ntm:stamp_desh_357",
+"ntm:stamp_desh_44",
+"ntm:stamp_desh_50",
+"ntm:stamp_desh_9",
+"ntm:stamp_desh_circuit",
+"ntm:stamp_desh_flat",
+"ntm:stamp_desh_plate",
+"ntm:stamp_desh_wire",
+"ntm:stamp_iron_circuit",
+"ntm:stamp_iron_flat",
+"ntm:stamp_iron_plate",
+"ntm:stamp_iron_wire",
+"ntm:stamp_obsidian_circuit",
+"ntm:stamp_obsidian_flat",
+"ntm:stamp_obsidian_plate",
+"ntm:stamp_obsidian_wire",
+"ntm:stamp_steel_circuit",
+"ntm:stamp_steel_flat",
+"ntm:stamp_steel_plate",
+"ntm:stamp_steel_wire",
+"ntm:stamp_stone_circuit",
+"ntm:stamp_stone_flat",
+"ntm:stamp_stone_plate",
+"ntm:stamp_stone_wire",
+"ntm:stamp_titanium_circuit",
+"ntm:stamp_titanium_flat",
+"ntm:stamp_titanium_plate",
+"ntm:stamp_titanium_wire"
+],
+"max": 1
+},
+{
+"accept": [
+"minecraft:gold_ingot",
+"minecraft:iron_ingot",
+"minecraft:jungle_log",
+"minecraft:paper",
+"ntm:billet_silicon",
+"ntm:biomass",
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum",
+"ntm:ingot_aluminium",
+"ntm:ingot_combine_steel",
+"ntm:ingot_copper",
+"ntm:ingot_dura_steel",
+"ntm:ingot_graphite",
+"ntm:ingot_gunmetal",
+"ntm:ingot_lead",
+"ntm:ingot_magnetized_tungsten",
+"ntm:ingot_red_copper",
+"ntm:ingot_saturnite",
+"ntm:ingot_schrabidium",
+"ntm:ingot_steel",
+"ntm:ingot_titanium",
+"ntm:ingot_tungsten",
+"ntm:ingot_weaponsteel",
+"ntm:ingot_zirconium",
+"ntm:plate_gunmetal",
+"ntm:plate_weaponsteel",
+"ntm:powder_coal",
+"ntm:powder_diamond",
+"ntm:powder_emerald",
+"ntm:powder_lapis",
+"ntm:powder_lignite",
+"ntm:powder_quartz",
+"ntm:powder_sawdust"
+]
+},
+{
+"output": true
+}
+],
+"synced": [
+0,
+1
+]
+},
+"ntm:machine_pumpjack": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+]
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+]
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+]
+}
+],
+"synced": [
+0,
+2
+]
+},
+"ntm:machine_purex": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{},
+{},
+{},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"output": true
+}
+],
+"synced": []
+},
+"ntm:machine_pyrooven": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": [
+"minecraft:coal",
+"ntm:bedrock_ore__base_actinide",
+"ntm:bedrock_ore__base_crystal",
+"ntm:bedrock_ore__base_heavy",
+"ntm:bedrock_ore__base_light",
+"ntm:bedrock_ore__base_nonmetal",
+"ntm:bedrock_ore__base_rare",
+"ntm:bedrock_ore__primary_actinide",
+"ntm:bedrock_ore__primary_crystal",
+"ntm:bedrock_ore__primary_heavy",
+"ntm:bedrock_ore__primary_light",
+"ntm:bedrock_ore__primary_nonmetal",
+"ntm:bedrock_ore__primary_rare",
+"ntm:bedrock_ore__rad_byproduct_actinide",
+"ntm:bedrock_ore__rad_byproduct_crystal",
+"ntm:bedrock_ore__rad_byproduct_heavy",
+"ntm:bedrock_ore__rad_byproduct_light",
+"ntm:bedrock_ore__rad_byproduct_nonmetal",
+"ntm:bedrock_ore__rad_byproduct_rare",
+"ntm:bedrock_ore__solvent_byproduct_actinide",
+"ntm:bedrock_ore__solvent_byproduct_crystal",
+"ntm:bedrock_ore__solvent_byproduct_heavy",
+"ntm:bedrock_ore__solvent_byproduct_light",
+"ntm:bedrock_ore__solvent_byproduct_nonmetal",
+"ntm:bedrock_ore__solvent_byproduct_rare",
+"ntm:bedrock_ore__sulfuric_byproduct_actinide",
+"ntm:bedrock_ore__sulfuric_byproduct_crystal",
+"ntm:bedrock_ore__sulfuric_byproduct_heavy",
+"ntm:bedrock_ore__sulfuric_byproduct_light",
+"ntm:bedrock_ore__sulfuric_byproduct_nonmetal",
+"ntm:bedrock_ore__sulfuric_byproduct_rare",
+"ntm:biomass",
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum",
+"ntm:oil_tar__coal",
+"ntm:oil_tar__crack",
+"ntm:oil_tar__crude",
+"ntm:oil_tar__wood",
+"ntm:powder_coal",
+"ntm:powder_tungsten"
+]
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"accept": []
+}
+],
+"synced": []
+},
+"ntm:machine_refinery": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"output": true
+},
+{
+"accept": []
+}
+],
+"synced": [
+19,
+20
+]
+},
+"ntm:machine_shredder": {
+"slots": [
+{
+"grid": [
+44,
+18,
+3,
+3
+],
+"reject": [
+"ntm:blades_steel",
+"ntm:blades_titanium",
+"ntm:blades_desh"
+]
+},
+{
+"grid": [
+116,
+18,
+3,
+6
+],
+"output": true
+},
+{
+"accept": [
+"ntm:blades_steel",
+"ntm:blades_titanium",
+"ntm:blades_desh"
+]
+},
+{
+"accept": [
+"ntm:blades_steel",
+"ntm:blades_titanium",
+"ntm:blades_desh"
+]
+},
+{
+"accept": [
+"ntm:battery_spark",
+"ntm:battery_trixite",
+"ntm:battery_creative"
+],
+"max": 1
+}
+],
+"synced": []
+},
+"ntm:machine_solidifier": {
+"slots": [
+{
+"output": true
+},
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"accept": []
+}
+],
+"synced": [
+4,
+5,
+6
+]
+},
+"ntm:machine_vacuum_distill": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+}
+],
+"synced": []
+},
+"ntm:machine_well": {
+"slots": [
+{
+"accept": [
+"ntm:battery_creative"
+],
+"max": 1
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": []
+},
+{
+"output": true
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+]
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+]
+},
+{
+"accept": [
+"ntm:upgrade_speed_1",
+"ntm:upgrade_speed_2",
+"ntm:upgrade_speed_3",
+"ntm:upgrade_power_1",
+"ntm:upgrade_power_2",
+"ntm:upgrade_power_3",
+"ntm:upgrade_overdrive_1",
+"ntm:upgrade_overdrive_2",
+"ntm:upgrade_overdrive_3",
+"ntm:upgrade_afterburn_1",
+"ntm:upgrade_afterburn_2",
+"ntm:upgrade_afterburn_3"
+]
+}
+],
+"synced": [
+0,
+2
+]
+},
+"ntm:nuke_boy": {
+"slots": [
+{
+"accept": [
+"ntm:boy_shielding"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:boy_target"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:boy_bullet"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:boy_propellant"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:boy_igniter"
+],
+"max": 1
+}
+],
+"synced": []
+},
+"ntm:nuke_fstbmb": {
+"slots": [
+{
+"accept": [
+"ntm:egg_balefire"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:battery_spark"
+],
+"max": 1
+}
+],
+"synced": []
+},
+"ntm:nuke_gadget": {
+"slots": [
+{
+"accept": [
+"ntm:gadget_wireing"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:early_explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:early_explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:early_explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:early_explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:gadget_core"
+],
+"max": 1
+}
+],
+"synced": []
+},
+"ntm:nuke_man": {
+"slots": [
+{
+"accept": [
+"ntm:man_igniter"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:early_explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:early_explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:early_explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:early_explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:man_core"
+],
+"max": 1
+}
+],
+"synced": []
+},
+"ntm:nuke_mike": {
+"slots": [
+{
+"accept": [
+"ntm:explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:man_core"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:mike_core"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:mike_deut"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:mike_cooling_unit"
+],
+"max": 1
+}
+],
+"synced": []
+},
+"ntm:nuke_n2": {
+"slots": [
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:n2_charge"
+],
+"max": 1
+}
+],
+"synced": []
+},
+"ntm:nuke_tsar": {
+"slots": [
+{
+"accept": [
+"ntm:explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:explosive_lenses"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:man_core"
+],
+"max": 1
+},
+{
+"accept": [
+"ntm:tsar_core"
+],
+"max": 1
+}
+],
+"synced": []
+}
+}
