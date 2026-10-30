@@ -64,15 +64,17 @@ def main():
     spec = importlib.util.spec_from_file_location('scan', ROOT / 'tools/content-gen/world-scan.py')
     scan = importlib.util.module_from_spec(spec); spec.loader.exec_module(scan)
     report = {'home': str(root), 'seed': 1768123, 'dimensions': {}}
+    failures = []
     for dimension, y in [('overworld', -64), ('the_nether', 0)]:
         world = root / 'world/dimensions/minecraft' / dimension
         ores, chunks = scan.ore_map(world, (-4, 4, -4, 4))
         deposits = sorted([*position] for position, name in ores.items() if name == 'ntm:ore_bedrock')
         report['dimensions'][dimension] = {'chunks': len(chunks), 'deposits': len(deposits), 'y_counts': dict(collections.Counter(p[1] for p in deposits)), 'positions': deposits}
-        assert deposits, 'No bedrock ore in ' + dimension
-        assert all(p[1] == y for p in deposits), 'Wrong floor in ' + dimension
+        if not deposits: failures.append('No bedrock ore in ' + dimension)
+        if any(p[1] != y for p in deposits): failures.append('Wrong floor in ' + dimension)
     (EVIDENCE / 'worldgen.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report), flush=True)
+    assert not failures, '; '.join(failures)
 
 
 if __name__ == '__main__': main()
