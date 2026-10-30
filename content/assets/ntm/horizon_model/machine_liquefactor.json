@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/liquefactor.obj",
+  "texture": "ntm:textures/models/machines/liquefactor.png",
+  "rotation": 0,
+  "radius": 4.5,
+  "hide": []
+}

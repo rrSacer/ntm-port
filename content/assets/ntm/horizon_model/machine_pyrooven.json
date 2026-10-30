@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/pyrooven.obj",
+  "texture": "ntm:textures/models/machines/pyrooven.png",
+  "rotation": 180.0,
+  "radius": 4.5
+}

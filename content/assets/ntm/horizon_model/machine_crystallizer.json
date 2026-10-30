@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/acidizer.obj",
+  "texture": "ntm:textures/models/machines/acidizer.png",
+  "rotation": 90.0,
+  "radius": 7.1,
+  "hide": []
+}

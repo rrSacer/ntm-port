@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/solidifier.obj",
+  "texture": "ntm:textures/models/machines/solidifier.png",
+  "rotation": 90.0,
+  "radius": 4.5,
+  "hide": []
+}
