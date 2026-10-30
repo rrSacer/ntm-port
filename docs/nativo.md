@@ -107,3 +107,7 @@ Os slots, as regras e o `synced` de cada máquina vêm dos `horizon_machine/*.js
 - **Máquinas só com a tela antiga:** 12 máquinas registradas não têm `horizon_machine` (bateria, queimador a lenha, duto, barril, tanque, `ntm:teste` e as 5 do lote de vapor; a fornalha elétrica usa o menu de fornalha). Os controles delas eram botões da tela antiga (o modo da bateria, o tipo do duto, despejar no barril), que sai com a camada WASM. Precisam de arquivo de máquina e tela nativa (`horizon_screen` e o intérprete da L2).
 
 **A fornalha no caminho comum** (`native_l1.py` e `native_l3.py montar` no mesmo build): a fornalha fundiu pelos funis como na L1 (5 lingotes em 25 s), e a firebox e a prensa seguiram iguais.
+
+## A alavanca das turbinas (30/10, `ntm-next` `c6ad4a73e`, API 24)
+
+O hook `use_block` leva o clique direito numa célula de máquina ao `Server::native_use` (célula clicada e núcleo, da V4). Nas células de alavanca do NTM, ele troca o vapor com a turbina parada e consome o clique, então nenhum menu abre. Em jogo, uma turbina industrial posta pelo jogador (63 células): o clique na célula `(0, 1, −3)` do referencial de quem pôs passou o vapor de `steam` a `hotsteam` e o tanque de 750.000 a 75.000. Foi uma troca só por clique; um clique em outra célula não mudou nada.

@@ -6,7 +6,7 @@ priority = 100
 # The commit it was built and tested on: ntm-next (upstream main plus the
 # merged hook PRs; its `pins`). It uses only named hook points.
 [compatibility]
-horizon_revision = "88b45bdb21dbf32d8d2550ecba604f33a9fe84eb"
+horizon_revision = "c6ad4a73ec15fbfacd62b46593459220e156a636"
 
 # The logic, plain Rust (cargo test against the fake world): copied into
 # this folder by tools/package-native.sh, never kept here.
@@ -212,4 +212,18 @@ bindings = [
   { name = "data", ty = "&[i32]", value = "data" },
   { name = "at", ty = "[f32; 2]", value = "at" },
   { name = "lines", ty = "&mut Vec<String>", value = "&mut *lines" },
+]
+
+# A right click on a machine's cell (API 24): the turbines' levers.
+[[injection]]
+id = "use-block"
+hook = "use_block"
+hook_version = 1
+kind = "HEAD"
+helper = "use_block.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "core", ty = "[i32; 3]", value = "core" },
+  { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
 ]

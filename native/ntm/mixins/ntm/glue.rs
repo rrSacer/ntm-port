@@ -77,6 +77,17 @@ pub(super) fn menu_button(game: &crate::game::Game<'_>, pos: [i32; 3], id: i32) 
     }
 }
 
+/// A player's right click on a cell of a machine (`core` its core): the
+/// machine may take it (the turbines' levers). True when it did.
+pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [i32; 3]) -> bool {
+    let mut guard = lock(&SERVER);
+    let Some((server, _)) = guard.as_mut() else { return false };
+    let dim = game.dim.id().to_string();
+    let player = game.native_actor_uuid().unwrap_or_default();
+    let mut host = Host { game, buttons: Vec::new() };
+    server.native_use(&mut host, &dim, core, pos, &player)
+}
+
 /// The end of a server tick: the server's phases.
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
     let mut guard = lock(&SERVER);
