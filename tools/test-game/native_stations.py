@@ -9,7 +9,7 @@ battery in a hopper) beside it, picks the recipe on the native list
   misturador  Refrigerante: 2 water buckets in a barrel, a typed duct, niter: 2000 mB coolant;
   purex       Haste de Plutônio-239: a rod, sulfuric acid by barrel and duct: 2 Pu-239 billets and 1 uranium;
   m3_fluidos  Oxigênio: 8 air tanks in a barrel, a typed duct, a chemical plant: 500 mB oxygen;
-  m3_centrifuga  2 UF6 cells in a barrel, a duct, a gas centrifuge: a U-238 nugget.
+  m3_centrifuga  2 UF6 cells in a barrel, a duct, a gas centrifuge with a creative battery in its slot 4: a U-238 nugget.
 """
 import sys
 import time
@@ -205,11 +205,11 @@ def m3_centrifuga(game):
     time.sleep(1)
     game.ctl(f'place {x} {y} {z} --item ntm:machine_gascent')
     game.command('clear @s')
-    power(game, x, y, z, beside=1)
     type_duct(game, 'uf6', [(x - 1, y, z)], (x - 1, y, z + 3))
     fill_barrel(game, (x - 2, y, z), 2, 'ntm:cell_uf6')
     game.command(f'tp @s {x + .5} {y} {z + 3.5}')
     open_machine(game, x, y, z)
+    game.put('ntm:battery_creative', 1, 4)
     slots = game.poll(lambda s: count(s, 'ntm:nugget_u238') >= 1, timeout=150)
     game.snapshot('stations-m3-centrifuga')
     for name, at in (('barrel', (x - 2, y, z)), ('gascent', (x, y, z)), ('duct', (x - 1, y, z))):
