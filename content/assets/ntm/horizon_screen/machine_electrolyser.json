@@ -1,0 +1,143 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_electrolyser_fluid.png",
+  "size": [
+    210,
+    204
+  ],
+  "title": [
+    89,
+    7,
+    "center"
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        186,
+        18,
+        16,
+        89
+      ],
+      "uv": [
+        210,
+        0
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        62,
+        26,
+        12,
+        41
+      ],
+      "uv": [
+        226,
+        0
+      ],
+      "dir": "down"
+    },
+    {
+      "value": 4,
+      "max": 5,
+      "rect": [
+        42,
+        18,
+        16,
+        52
+      ],
+      "color": 6,
+      "dir": "up"
+    },
+    {
+      "value": 7,
+      "max": 8,
+      "rect": [
+        96,
+        18,
+        16,
+        52
+      ],
+      "color": 9,
+      "dir": "up"
+    },
+    {
+      "value": 12,
+      "max": 13,
+      "rect": [
+        116,
+        18,
+        16,
+        52
+      ],
+      "color": 14,
+      "dir": "up"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 11,
+      "min": 1,
+      "rect": [
+        190,
+        4,
+        9,
+        12
+      ],
+      "uv": [
+        226,
+        40
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        186,
+        18,
+        16,
+        89
+      ],
+      "lines": [
+        "{0:si} / {1:si} HE"
+      ]
+    },
+    {
+      "rect": [
+        42,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{4} / {5} mB"
+      ]
+    },
+    {
+      "rect": [
+        96,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{7} / {8} mB"
+      ]
+    },
+    {
+      "rect": [
+        116,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{12} / {13} mB"
+      ]
+    }
+  ],
+  "title_color": "#ffffff"
+}

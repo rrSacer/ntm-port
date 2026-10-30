@@ -1,6 +1,6 @@
 {
   "obj": "ntm:models/obj/electrolyser.obj",
   "texture": "ntm:textures/models/machines/electrolyser.png",
-  "rotation": 0,
+  "rotation": 180,
   "radius": 6.8
 }
