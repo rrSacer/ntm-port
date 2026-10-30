@@ -2,7 +2,7 @@
 
 Entram **cinco máquinas**: `machine_solar_boiler`, `solar_mirror`, `machine_stirling`, `machine_stirling_steel` e `machine_stirling_creative`. O catálogo chega a **2.700 IDs** (427 blocos, 2.273 itens), **76 máquinas** e **936 receitas vanilla**. Os blocos têm nomes originais en_us/pt_br, loot próprio e o barramento beehive com facing e honey_level 0..5.
 
-O lote entrega conteúdo e o contrato algorítmico `content/machine-recipes/solar_stirling.json`. As cinco máquinas devem ficar **Inert**, sem lógica nova de energia nesta fase da migração. Os cubos são fallback com texturas do NTM; `auto: false` impede importar modelos OBJ automaticamente. Multiblocos, portas, animações, luz solar e ferramenta de apontamento ainda dependem do runtime/visual. Existir no catálogo não significa funcionar como gerador.
+O lote entrega conteúdo e o contrato algorítmico `content/machine-recipes/solar_stirling.json`. As cinco máquinas ficam registradas como **Inert** (`bc6b2727`), sem lógica nova de energia nesta fase da migração. Os cubos são fallback com texturas do NTM; `auto: false` impede importar modelos OBJ automaticamente. Multiblocos, portas, animações, luz solar e ferramenta de apontamento ainda dependem do runtime/visual. Existir no catálogo não significa funcionar como gerador.
 
 ## Construções originais
 
@@ -38,7 +38,7 @@ A ferramenta original grava o core da caldeira com Y+1. Ao vincular um espelho, 
 - **168 testes Python por seed 1 e 42**, incluindo seis testes do lote: IDs/estados/loot, construções originais, ausência de receita creative, limites solares, vínculo da ferramenta e semântica dos Stirling. Os validadores de conteúdo e receitas passaram.
 - Build/check: **6.356.238 bytes**, SHA-256 `ce49762047b1d29895f8f7bca5f4af0a1819511ea4849bdb264baad8230a94f0`. Durabilidade segue `components`, já aceito no fork após C1.
 - Prova **horizon-patched**, content-only, Xvfb e áudio desligado, mundo temporário: **66 conferências**, `/setblock` dos cinco IDs nos níveis 0 e 5 e `/give` dos cinco itens, confirmados no inventário. Detector de rejeição/panic vazio. Isso prova carregamento e identidade dos blocos/itens, não geração funcional de calor ou HE.
-- Regeneração limpa de `fa0862a1` com content-gen e visual-gen: **14.024 arquivos comparados sem diferenças**, incluindo conteúdo, hazards, buckets e receitas de fornalha. Verificação Rust do HEAD conjunto: pendente do registro Inert pelo agente de lógica.
+- Regeneração limpa de `fa0862a1` com content-gen e visual-gen: **14.024 arquivos comparados sem diferenças**, incluindo conteúdo, hazards, buckets e receitas de fornalha. O agente de lógica registrou os cinco Inert (`bc6b2727`) e regenerou suas tabelas (`a7d1aaeb`), incluindo a bigorna com 118 construções. Na exportação isolada de `a7d1aaeb`, `cargo test --workspace` passou (**296 testes do ntm-core**) e `cargo clippy --workspace -- -D warnings` ficou limpo. Esses commits não alteraram o conteúdo empacotado/provado.
 
 Evidências em `content-gen-evidence/energy-solar-stirling/`, com os logs Python em `content-gen-evidence/energy-solar-stirling-tests-{1,42}.log`. Nenhuma instalação ou mundo do usuário foi alterado.
 
