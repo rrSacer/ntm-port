@@ -462,8 +462,13 @@ impl FluidNode for Crafter {
         self.tout.iter().filter(|t| t.fluid == f).map(|t| u64::from(t.mb)).sum()
     }
     fn fluid_demand(&self, f: &str) -> u64 {
-        // The crystallizer's empty tank takes any fluid (its type follows).
+        // An empty input tank typed by the first fluid takes any, but not
+        // what the machine itself puts out (the oven's vitriol would flow
+        // back into its own input).
         if self.accepts_any() {
+            if self.tout.iter().any(|t| t.fluid == f && t.mb > 0) {
+                return 0;
+            }
             return u64::from(self.tin[0].cap);
         }
         // Only the fluids the recipe takes (each input tank is typed by it).

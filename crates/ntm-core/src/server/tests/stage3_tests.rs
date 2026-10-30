@@ -55,6 +55,10 @@ fn the_oven_roasts_bedrock_ore_into_vitriol() {
     assert_eq!(s[2], Some(Stack::new("ntm:bedrock_ore__base_roasted_light", 2)), "{s:?}");
     let c = crafter(&mut g, OVEN);
     assert_eq!((c.tout[0].fluid.as_str(), c.tout[0].mb), ("vitriol", 100));
+    // Its empty input doesn't take back its own vitriol (in game it did,
+    // through the network).
+    assert_eq!(c.fluid_demand("vitriol"), 0);
+    assert!(c.fluid_demand("water") > 0);
 }
 
 /// A fluid-only recipe needs the input empty; its tank takes the first
