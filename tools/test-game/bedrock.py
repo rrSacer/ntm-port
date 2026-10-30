@@ -64,6 +64,13 @@ Petróleo, lote B, no mesmo chão:
               pesado: betume e smear descem à de baixo; um misturador com a
               receita do refrigerante (escolhida na lista), água de um
               barril e nitro: refrigerante.
+Petróleo, lote C, num chão novo a leste:
+  petroleo_c  uma caldeira sobre um firebox com carvão ferve a água de um
+              barril em vapor; uma coqueificadora sobre outro firebox faz
+              coque de óleo pesado; o craqueador com óleo e vapor de barris;
+              o reformador (bateria e catalisador) com óleo leve dá
+              aromáticos e reformgas; o hidrotratador com óleo e hidrogênio;
+              o destilador a vácuo com óleo.
 Grava <pasta>/bedrock-evidence.json e capturas bedrock-*.png.
 """
 import json, subprocess, sys, time
@@ -363,6 +370,8 @@ def count(item):
 def fluid_barrel(bx, by, bz, barrel, stand):
     """A steel barrel at (bx, by, bz) with `barrel` poured in, in output
     mode."""
+    # A full hotbar puts the next item in the main inventory, out of reach.
+    ctl('command', 'clear @s', check=False)
     if not ctl('block', bx, by, bz).get('state', '').startswith('ntm:barrel_steel'):
         place(bx, by, bz, 'ntm:barrel_steel', stand)
     give(barrel, 1)
@@ -1048,6 +1057,123 @@ def petroleo_b():
         'misturador': {'receita': m.get('recipe'), 'entradas': [tank(t) for t in m.get('tin', [])], 'saida': [tank(t) for t in m.get('tout', [])]},
     }
     print('petroleo_b', evidence['petroleo_b'])
+
+
+X7, Z7 = 3010, -1800
+
+
+def oil_floor_c():
+    """A stone floor cleared 25 high at X7 (once)."""
+    y = floor_y()
+    if not (game / 'bedrock-chao7').exists():
+        tp(X7 + 30.5, y + 2, Z7 + 0.5)
+        time.sleep(4)
+        for x0 in range(X7 - 6, X7 + 66, 10):
+            ctl('fill', x0, y, Z7 - 12, x0 + 9, y + 24, Z7 + 12, 'minecraft:air')
+            ctl('fill', x0, y - 3, Z7 - 12, x0 + 9, y - 1, Z7 + 12, 'minecraft:stone')
+        (game / 'bedrock-chao7').write_text('1')
+    return y
+
+
+def on_firebox(x, z, block):
+    """A firebox on the floor at (x, z) with coal, and `block` on it (placed
+    from a pillar: the firebox's top is seen from above); both cores."""
+    y = floor_y()
+    if not any('heater_firebox' in b[3] for b in ctl('blocks', x - 2, y, z - 3, x + 2, y, z + 1).get('blocks', [])):
+        place(x, y, z, 'ntm:heater_firebox', (x, y, z + 3))
+    fire = find('ntm:heater_firebox', x - 2, y, z - 3, x + 2, y, z + 1)
+    open_at(fire[0], y, fire[2] + 1, (fire[0], y, fire[2] + 3))
+    if not any(sl[0] == 300 for sl in machine_slots()):
+        put('minecraft:coal', 64, 300)
+    close()
+    if not ctl('block', fire[0], y + 1, fire[2]).get('state', '').startswith(block):
+        # Two from the click (reach): 4 blocks away it was out of reach.
+        pillar = (x, y, z + 2, x, y + 2, z + 2)
+        ctl('fill', *pillar, 'minecraft:stone')
+        close()
+        tp(x + 0.5, y + 3, z + 2.5)
+        give(block, 1)
+        # Sneaking: a plain click on the firebox opens its screen.
+        ctl('key', 'shift', 'down')
+        ctl('place', x, y + 1, z, '--item', block, check=False)
+        ctl('key', 'shift', 'up')
+        time.sleep(2)
+        close()
+        ctl('fill', *pillar, 'minecraft:air')
+    core = (fire[0], y + 1, fire[2])
+    if not ctl('block', *core).get('state', '').startswith(block):
+        raise SystemExit(f'{block} fora de cima do firebox {fire}')
+    return fire, core
+
+
+def barrel_up(bx, by, bz, barrel):
+    """A barrel at (bx, by, bz), one up from the floor, on a stone; with
+    `barrel` poured in (output), or empty (input) when None."""
+    y = floor_y()
+    if by > y:
+        ctl('fill', bx, y, bz, bx, by - 1, bz, 'minecraft:stone')
+    if barrel:
+        fluid_barrel(bx, by, bz, barrel, (bx, y, bz + 2))
+    elif not ctl('block', bx, by, bz).get('state', '').startswith('ntm:barrel_steel'):
+        place(bx, by, bz, 'ntm:barrel_steel', (bx, y, bz + 2))
+
+
+def petroleo_c():
+    y = oil_floor_c()
+    ctl('command', 'clear @s', check=False)
+    tank = lambda t: (t.get('fluid', ''), t.get('mb', 0))
+    ev = {}
+    # The boiler on a firebox: water in from the west side, steam out east.
+    fire, boil = on_firebox(X7, Z7, 'ntm:machine_boiler')
+    barrel_up(boil[0] - 2, y + 1, boil[2], 'ntm:fluid_barrel_full__water')
+    barrel_up(boil[0] + 2, y + 1, boil[2], None)
+    # The coker on another: heavy oil from the west.
+    fire2, cok = on_firebox(X7 + 10, Z7, 'ntm:machine_coker')
+    barrel_up(cok[0] - 2, y + 1, cok[2], 'ntm:fluid_barrel_full__heavyoil')
+    # The cracker: oil west, steam east (its bottom layer: x -2..3).
+    cx = X7 + 22
+    if not any('catalytic_cracker' in b[3] for b in ctl('blocks', cx - 4, y, Z7 - 6, cx + 4, y, Z7 + 2).get('blocks', [])):
+        place(cx, y, Z7, 'ntm:machine_catalytic_cracker', (cx, y, Z7 + 3))
+    crk = find('ntm:machine_catalytic_cracker', cx - 4, y, Z7 - 6, cx + 4, y, Z7 + 2)
+    fluid_barrel(crk[0] - 3, y, crk[2], 'ntm:fluid_barrel_full__oil', (crk[0] - 5, y, crk[2]))
+    fluid_barrel(crk[0] + 4, y, crk[2], 'ntm:fluid_barrel_full__steam', (crk[0] + 6, y, crk[2]))
+    # The electric three: battery, catalyst, their fluids from barrels.
+    elec = {}
+    for name, block, x, west, east, cat, half in (
+            ('reformador', 'ntm:machine_catalytic_reformer', X7 + 34, 'ntm:fluid_barrel_full__lightoil', None, True, 2),
+            ('hidrotratador', 'ntm:machine_hydrotreater', X7 + 44, 'ntm:fluid_barrel_full__oil', 'ntm:fluid_barrel_full__hydrogen', True, 1),
+            ('destilador', 'ntm:machine_vacuum_distill', X7 + 54, 'ntm:fluid_barrel_full__oil', None, False, 1)):
+        if not any(block in b[3] for b in ctl('blocks', x - 3, y, Z7 - 3, x + 3, y, Z7 + 2).get('blocks', [])):
+            place(x, y, Z7, block, (x, y, Z7 + 3))
+        core = find(block, x - 3, y, Z7 - 3, x + 3, y, Z7 + 2)
+        open_at(core[0], y, core[2] + 1, (core[0], y, core[2] + 3))
+        have = {sl[0] for sl in machine_slots()}
+        if 300 not in have:
+            put('ntm:battery_creative', 1, 300)
+        if cat and 310 not in have:
+            put('ntm:catalytic_converter', 1, 310)
+        close()
+        fluid_barrel(core[0] - half - 1, y, core[2], west, (core[0] - half - 3, y, core[2]))
+        if east:
+            fluid_barrel(core[0] + half + 1, y, core[2], east, (core[0] + half + 3, y, core[2]))
+        elec[name] = core
+    time.sleep(40)
+    b = machine_state(*boil) or {}
+    ev['caldeira'] = {'nucleo': boil, 'calor': b.get('heat'), 'entrada': tank(b.get('input', {})), 'saida': tank(b.get('output', {})),
+                      'barril_vapor': barrel_state(boil[0] + 2, y + 1, boil[2])}
+    open_at(cok[0], y + 1, cok[2] + 1, (cok[0], y, cok[2] + 3))
+    coke = [sl for sl in machine_slots() if sl[0] == 301]
+    ctl('screenshot', game / 'petroleo-coqueificadora.png')
+    close()
+    c = machine_state(*cok) or {}
+    ev['coqueificadora'] = {'nucleo': cok, 'calor': c.get('heat'), 'entrada': tank(c.get('input', {})), 'subproduto': tank(c.get('output', {})), 'coque': coke}
+    k = machine_state(*crk) or {}
+    ev['craqueador'] = {'nucleo': crk, 'entradas': [tank(t) for t in k.get('inputs', [])], 'saidas': [tank(t) for t in k.get('outputs', [])]}
+    for name, core in elec.items():
+        m = machine_state(*core) or {}
+        ev[name] = {'nucleo': core, 'energia': m.get('power'), 'entradas': [tank(t) for t in m.get('inputs', [])], 'saidas': [tank(t) for t in m.get('outputs', [])]}
+    evidence['petroleo_c'] = ev
+    print('petroleo_c', json.dumps(ev, ensure_ascii=False))
 
 
 def oil_machine(x, z, block):
