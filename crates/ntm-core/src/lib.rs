@@ -39,6 +39,7 @@ pub mod probes;
 pub mod proto;
 pub mod recipes;
 pub mod refinery;
+pub mod screens;
 pub mod shredder;
 pub mod radiation;
 pub mod registry;
