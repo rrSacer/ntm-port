@@ -1,0 +1,25 @@
+[mod]
+id = "ntm"
+version = "0.1.0"
+priority = 100
+
+# The commit it was built and tested on: ntm-next (upstream main plus the
+# merged hook PRs; its `pins`). It uses only named hook points.
+[compatibility]
+horizon_revision = "b3a734d2a4d61603ec7b88c9ec044840da66a253"
+
+# The logic, plain Rust (cargo test against the fake world): copied into
+# this folder by tools/package-native.sh, never kept here.
+[[crate]]
+id = "core"
+path = "ntm-core"
+
+[[injection]]
+id = "lifecycle"
+hook = "world_lifecycle"
+hook_version = 1
+kind = "HEAD"
+helper = "lifecycle.rs"
+bindings = [
+  { name = "phase", ty = "crate::game::native_lifecycle::WorldPhase", value = "phase" },
+]
