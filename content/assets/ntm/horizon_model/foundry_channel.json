@@ -1,0 +1,128 @@
+{
+  "obj": "ntm:models/obj/foundry_channel.obj",
+  "texture": "ntm:textures/models/machines/foundry_channel.png",
+  "rotation": 0,
+  "radius": 1.0,
+  "show": {
+    "ArmNorth": {
+      "neighbor": [
+        0,
+        0,
+        -1
+      ],
+      "blocks": [
+        "ntm:foundry_channel",
+        "ntm:foundry_mold",
+        "ntm:foundry_outlet[facing=north]",
+        "ntm:foundry_slagtap[facing=north]"
+      ]
+    },
+    "WallNorth": {
+      "neighbor": [
+        0,
+        0,
+        -1
+      ],
+      "not_blocks": [
+        "ntm:foundry_channel",
+        "ntm:foundry_mold",
+        "ntm:foundry_outlet[facing=north]",
+        "ntm:foundry_slagtap[facing=north]"
+      ]
+    },
+    "ArmSouth": {
+      "neighbor": [
+        0,
+        0,
+        1
+      ],
+      "blocks": [
+        "ntm:foundry_channel",
+        "ntm:foundry_mold",
+        "ntm:foundry_outlet[facing=south]",
+        "ntm:foundry_slagtap[facing=south]"
+      ]
+    },
+    "WallSouth": {
+      "neighbor": [
+        0,
+        0,
+        1
+      ],
+      "not_blocks": [
+        "ntm:foundry_channel",
+        "ntm:foundry_mold",
+        "ntm:foundry_outlet[facing=south]",
+        "ntm:foundry_slagtap[facing=south]"
+      ]
+    },
+    "ArmWest": {
+      "neighbor": [
+        -1,
+        0,
+        0
+      ],
+      "blocks": [
+        "ntm:foundry_channel",
+        "ntm:foundry_mold",
+        "ntm:foundry_outlet[facing=west]",
+        "ntm:foundry_slagtap[facing=west]"
+      ]
+    },
+    "WallWest": {
+      "neighbor": [
+        -1,
+        0,
+        0
+      ],
+      "not_blocks": [
+        "ntm:foundry_channel",
+        "ntm:foundry_mold",
+        "ntm:foundry_outlet[facing=west]",
+        "ntm:foundry_slagtap[facing=west]"
+      ]
+    },
+    "ArmEast": {
+      "neighbor": [
+        1,
+        0,
+        0
+      ],
+      "blocks": [
+        "ntm:foundry_channel",
+        "ntm:foundry_mold",
+        "ntm:foundry_outlet[facing=east]",
+        "ntm:foundry_slagtap[facing=east]"
+      ]
+    },
+    "WallEast": {
+      "neighbor": [
+        1,
+        0,
+        0
+      ],
+      "not_blocks": [
+        "ntm:foundry_channel",
+        "ntm:foundry_mold",
+        "ntm:foundry_outlet[facing=east]",
+        "ntm:foundry_slagtap[facing=east]"
+      ]
+    }
+  },
+  "liquids": [
+    {
+      "texture": "ntm:textures/models/machines/lava_gray.png",
+      "box": [
+        0.375,
+        0.125,
+        0.375,
+        0.625,
+        0.375,
+        0.625
+      ],
+      "value": 0,
+      "max": 1,
+      "color": 2
+    }
+  ]
+}

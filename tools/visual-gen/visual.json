@@ -1976,7 +1976,7 @@
       }
     },
     "ntm:foundry_channel": {
-      "source": "RenderFoundryChannel (block renderer): metal 0.125 + amount*0.25/cap in the centre",
+      "source": "RenderFoundryChannel (block renderer): the centre, and toward each neighbour canConnectTo takes (a channel, a mold, an outlet or slag tap facing away) an arm, else a wall; the metal 0.125 + amount*0.25/cap in the centre (HBM also fills the arms)",
       "machine": {
         "slots": [],
         "data": 5,
@@ -1984,25 +1984,6 @@
           0,
           1,
           2
-        ]
-      },
-      "liquid": {
-        "liquids": [
-          {
-            "texture": "ntm:textures/models/machines/lava_gray.png",
-            "texture_from": "textures/models/machines/lava_gray.png",
-            "box": [
-              0.375,
-              0.125,
-              0.375,
-              0.625,
-              0.375,
-              0.625
-            ],
-            "value": 0,
-            "max": 1,
-            "color": 2
-          }
         ]
       },
       "block_model": {
@@ -2102,6 +2083,451 @@
               "up": "top"
             }
           ]
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/foundry_channel.obj",
+        "texture": "ntm:textures/models/machines/foundry_channel.png",
+        "rotation": 0,
+        "radius": 1.0,
+        "boxes": {
+          "Center": [
+            [
+              [
+                5,
+                0,
+                5
+              ],
+              [
+                11,
+                2,
+                11
+              ],
+              {
+                "up": "foundry_channel_bottom",
+                "down": "foundry_channel_bottom"
+              }
+            ]
+          ],
+          "ArmEast": [
+            [
+              [
+                10,
+                0,
+                5
+              ],
+              [
+                16,
+                2,
+                11
+              ],
+              {
+                "up": "foundry_channel_bottom",
+                "down": "foundry_channel_bottom",
+                "east": "foundry_channel_side"
+              }
+            ],
+            [
+              [
+                10,
+                0,
+                5
+              ],
+              [
+                16,
+                8,
+                6
+              ],
+              {
+                "up": "foundry_channel_top",
+                "north": "foundry_channel_side",
+                "south": "foundry_channel_inner",
+                "east": "foundry_channel_side"
+              }
+            ],
+            [
+              [
+                10,
+                0,
+                10
+              ],
+              [
+                16,
+                8,
+                11
+              ],
+              {
+                "up": "foundry_channel_top",
+                "north": "foundry_channel_inner",
+                "south": "foundry_channel_side",
+                "east": "foundry_channel_side"
+              }
+            ]
+          ],
+          "WallEast": [
+            [
+              [
+                10,
+                0,
+                5
+              ],
+              [
+                11,
+                8,
+                11
+              ],
+              {
+                "up": "foundry_channel_top",
+                "east": "foundry_channel_side",
+                "west": "foundry_channel_inner"
+              }
+            ]
+          ],
+          "ArmWest": [
+            [
+              [
+                0,
+                0,
+                5
+              ],
+              [
+                6,
+                2,
+                11
+              ],
+              {
+                "up": "foundry_channel_bottom",
+                "down": "foundry_channel_bottom",
+                "west": "foundry_channel_side"
+              }
+            ],
+            [
+              [
+                0,
+                0,
+                5
+              ],
+              [
+                6,
+                8,
+                6
+              ],
+              {
+                "up": "foundry_channel_top",
+                "north": "foundry_channel_side",
+                "south": "foundry_channel_inner",
+                "west": "foundry_channel_side"
+              }
+            ],
+            [
+              [
+                0,
+                0,
+                10
+              ],
+              [
+                6,
+                8,
+                11
+              ],
+              {
+                "up": "foundry_channel_top",
+                "north": "foundry_channel_inner",
+                "south": "foundry_channel_side",
+                "west": "foundry_channel_side"
+              }
+            ]
+          ],
+          "WallWest": [
+            [
+              [
+                5,
+                0,
+                5
+              ],
+              [
+                6,
+                8,
+                11
+              ],
+              {
+                "up": "foundry_channel_top",
+                "west": "foundry_channel_side",
+                "east": "foundry_channel_inner"
+              }
+            ]
+          ],
+          "ArmSouth": [
+            [
+              [
+                5,
+                0,
+                10
+              ],
+              [
+                11,
+                2,
+                16
+              ],
+              {
+                "up": "foundry_channel_bottom",
+                "down": "foundry_channel_bottom",
+                "south": "foundry_channel_side"
+              }
+            ],
+            [
+              [
+                5,
+                0,
+                10
+              ],
+              [
+                6,
+                8,
+                16
+              ],
+              {
+                "up": "foundry_channel_top",
+                "west": "foundry_channel_side",
+                "east": "foundry_channel_inner",
+                "south": "foundry_channel_side"
+              }
+            ],
+            [
+              [
+                10,
+                0,
+                10
+              ],
+              [
+                11,
+                8,
+                16
+              ],
+              {
+                "up": "foundry_channel_top",
+                "west": "foundry_channel_inner",
+                "east": "foundry_channel_side",
+                "south": "foundry_channel_side"
+              }
+            ]
+          ],
+          "WallSouth": [
+            [
+              [
+                5,
+                0,
+                10
+              ],
+              [
+                11,
+                8,
+                11
+              ],
+              {
+                "up": "foundry_channel_top",
+                "south": "foundry_channel_side",
+                "north": "foundry_channel_inner"
+              }
+            ]
+          ],
+          "ArmNorth": [
+            [
+              [
+                5,
+                0,
+                0
+              ],
+              [
+                11,
+                2,
+                6
+              ],
+              {
+                "up": "foundry_channel_bottom",
+                "down": "foundry_channel_bottom",
+                "north": "foundry_channel_side"
+              }
+            ],
+            [
+              [
+                5,
+                0,
+                0
+              ],
+              [
+                6,
+                8,
+                6
+              ],
+              {
+                "up": "foundry_channel_top",
+                "west": "foundry_channel_side",
+                "east": "foundry_channel_inner",
+                "north": "foundry_channel_side"
+              }
+            ],
+            [
+              [
+                10,
+                0,
+                0
+              ],
+              [
+                11,
+                8,
+                6
+              ],
+              {
+                "up": "foundry_channel_top",
+                "west": "foundry_channel_inner",
+                "east": "foundry_channel_side",
+                "north": "foundry_channel_side"
+              }
+            ]
+          ],
+          "WallNorth": [
+            [
+              [
+                5,
+                0,
+                5
+              ],
+              [
+                11,
+                8,
+                6
+              ],
+              {
+                "up": "foundry_channel_top",
+                "north": "foundry_channel_side",
+                "south": "foundry_channel_inner"
+              }
+            ]
+          ]
+        },
+        "show": {
+          "ArmNorth": {
+            "neighbor": [
+              0,
+              0,
+              -1
+            ],
+            "blocks": [
+              "ntm:foundry_channel",
+              "ntm:foundry_mold",
+              "ntm:foundry_outlet[facing=north]",
+              "ntm:foundry_slagtap[facing=north]"
+            ]
+          },
+          "WallNorth": {
+            "neighbor": [
+              0,
+              0,
+              -1
+            ],
+            "not_blocks": [
+              "ntm:foundry_channel",
+              "ntm:foundry_mold",
+              "ntm:foundry_outlet[facing=north]",
+              "ntm:foundry_slagtap[facing=north]"
+            ]
+          },
+          "ArmSouth": {
+            "neighbor": [
+              0,
+              0,
+              1
+            ],
+            "blocks": [
+              "ntm:foundry_channel",
+              "ntm:foundry_mold",
+              "ntm:foundry_outlet[facing=south]",
+              "ntm:foundry_slagtap[facing=south]"
+            ]
+          },
+          "WallSouth": {
+            "neighbor": [
+              0,
+              0,
+              1
+            ],
+            "not_blocks": [
+              "ntm:foundry_channel",
+              "ntm:foundry_mold",
+              "ntm:foundry_outlet[facing=south]",
+              "ntm:foundry_slagtap[facing=south]"
+            ]
+          },
+          "ArmWest": {
+            "neighbor": [
+              -1,
+              0,
+              0
+            ],
+            "blocks": [
+              "ntm:foundry_channel",
+              "ntm:foundry_mold",
+              "ntm:foundry_outlet[facing=west]",
+              "ntm:foundry_slagtap[facing=west]"
+            ]
+          },
+          "WallWest": {
+            "neighbor": [
+              -1,
+              0,
+              0
+            ],
+            "not_blocks": [
+              "ntm:foundry_channel",
+              "ntm:foundry_mold",
+              "ntm:foundry_outlet[facing=west]",
+              "ntm:foundry_slagtap[facing=west]"
+            ]
+          },
+          "ArmEast": {
+            "neighbor": [
+              1,
+              0,
+              0
+            ],
+            "blocks": [
+              "ntm:foundry_channel",
+              "ntm:foundry_mold",
+              "ntm:foundry_outlet[facing=east]",
+              "ntm:foundry_slagtap[facing=east]"
+            ]
+          },
+          "WallEast": {
+            "neighbor": [
+              1,
+              0,
+              0
+            ],
+            "not_blocks": [
+              "ntm:foundry_channel",
+              "ntm:foundry_mold",
+              "ntm:foundry_outlet[facing=east]",
+              "ntm:foundry_slagtap[facing=east]"
+            ]
+          }
+        },
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/lava_gray.png",
+            "texture_from": "textures/models/machines/lava_gray.png",
+            "box": [
+              0.375,
+              0.125,
+              0.375,
+              0.625,
+              0.375,
+              0.625
+            ],
+            "value": 0,
+            "max": 1,
+            "color": 2
+          }
         ]
       }
     },
