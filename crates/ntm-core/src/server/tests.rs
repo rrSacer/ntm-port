@@ -1843,3 +1843,5 @@ mod press_slots_tests;
 mod purex_tests;
 
 mod bedrock_tests;
+
+mod crystallizer_tests;
