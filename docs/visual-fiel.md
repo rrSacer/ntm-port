@@ -658,6 +658,44 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
   - as 4 telas abrem;
   - a tela da coqueificadora abre a 8 acima do núcleo e fecha a 12, como no NTM.
 
+## 3m. Petróleo, lotes E e D
+
+| Máquina | Multibloco | Tela | Modelo |
+|---|---|---|---|
+| Queimador (`MachineGasFlare`) | 3×3×12, offset 1 | `gui_flare_stack.png` 176×203, sem título | `rotation 180` |
+| Hefesto (`MachineHephaestus`) | 3×3×12, offset 1 | sem tela no NTM | `Main` e o `Rotor` 3 vezes |
+| Poço (`MachineOilWell`) | núcleo, 3×3×9 em cima, os 4 cantos embaixo (86 células) | `gui_well` 184×190 | derrick, `rotation 180` |
+| Pumpjack (`MachinePumpjack`) | 7×4×1 e os 8 canos dos lados (36) | `gui_well` | `rotation 90`, animado |
+| Torre de fraturamento | coluna, plataforma 7×2×7, 4 pernas e a torre (445) | `gui_well_fracking`, com o tanque de solução | `rotation 180` |
+
+- **Queimador:**
+  - energia, o tanque na cor do fluido;
+  - a válvula e a ignição são os botões 0 e 1, com as luzes [2] e [3]; a chama aparece com [4].
+- **Hefesto:**
+  - Os 3 rotores são o `Rotor` do OBJ a 0, 120 e 240° (`variants` com `keep` e `part`). Giram 0,5°/tick (36 s a
+    volta) com [0] ≥ 1, o calor guardado.
+  - O `Core` vira lava (os 4 lados e o topo, por [0]). Sem a rolagem da textura do NTM, e frio não mostra pedregulho:
+    o líquido não tem condição de "igual a 0".
+- **Poço, pumpjack e torre:**
+  - Uma tela para os três, com os índices do agente das bombas:
+    - energia [0]/[1]; óleo [3..5] e gás [6..8] na cor do fluido;
+    - o indicador [2] (1 fundo, 2 parado, 3 sem solução) como os ícones do NTM;
+    - na torre, a solução [9..11]; nos outros, a moldura vazia do NTM no lugar.
+  - Slots: bateria 0, óleo 1–2, gás 3–4, melhorias 5–6 (a tela do NTM tem 2). O slot 7 fica fora da tela.
+  - O pumpjack balança (balancim, cabeça e carro, 3,6 s) enquanto [2] = 0 e [0] ≥ 1.
+- **Portas:**
+  - O queimador, pelo meio de cada lado.
+  - O hefesto, pelo meio dos lados embaixo e em cima (y 11), ligados pela coluna do centro.
+  - O pumpjack, por 2 canos de cada lado, ligados ao núcleo pela base.
+  - O poço e a torre, pelo núcleo.
+- **Gerador:** `variants` ganhou `keep` (objetos do OBJ copiados como estão) e `part` (a cópia de um objeto só, e não
+  do OBJ inteiro).
+- **Em jogo:**
+  - as 5 com as células certas;
+  - as 4 telas abrem (o queimador com a válvula, a ignição e a chama acesas pelos valores);
+  - os rotores do hefesto giram e a lava aparece.
+  - O balanço do pumpjack não foi visto: pede um poço trabalhando, com energia e óleo embaixo.
+
 ## 4. Motor (patch) e port
 
 **Patch no motor** (`horizon-visual`, branch `ntm-visual`, 51 commits):
