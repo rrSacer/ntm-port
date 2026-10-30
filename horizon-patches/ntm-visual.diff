@@ -863,10 +863,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..0c1d0dac0
+index 000000000..6dc7f4fcf
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,836 @@
+@@ -0,0 +1,849 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -907,7 +907,8 @@ index 000000000..0c1d0dac0
 +//!  "box": [0.125, 0.125, 0.125, 0.875, 0.875, 0.875],   blocks, turned with the model
 +//!  "value": 0, "max": 1,     its top face at value / max of the height (indices; no max: full)
 +//!  "color": 2,               the value holding 0xRRGGBB; 0 draws nothing
-+//!  "column": false}          a jet: the box's four sides, while its colour is set
++//!  "column": false,         a jet: the box's four sides, while its colour is set
++//!  "tint": true}             false: the texture as it is (an icon shown while the value is set)
 +//! ```
 +//!
 +//! The values are the machine's synced ones (`horizon_world::mod_machines`).
@@ -963,6 +964,9 @@ index 000000000..0c1d0dac0
 +    pub color: usize,
 +    pub sprite: String,
 +    pub column: bool,
++    /// Tinted by the colour value (molten metal); false draws the texture
++    /// as it is while the value is set (the foundry outlet's filter icon).
++    pub tint: bool,
 +}
 +
 +/// Which animation a block state plays: `property` is (or is not) `value`.
@@ -1175,6 +1179,7 @@ index 000000000..0c1d0dac0
 +            color: l["color"].as_u64().ok_or("a liquid without color")? as usize,
 +            sprite,
 +            column: l["column"].as_bool().unwrap_or(false),
++            tint: l["tint"].as_bool().unwrap_or(true),
 +        });
 +    }
 +    // A liquid file (`horizon_liquid`) has no OBJ: the block's own model stays.
@@ -1442,7 +1447,11 @@ index 000000000..0c1d0dac0
 +                continue;
 +            };
 +            let [x0, y0, z0, x1, y1, z1] = l.bounds;
-+            let color = 255 << 24 | (rgb & 255) << 16 | (rgb >> 8 & 255) << 8 | rgb >> 16;
++            let color = if l.tint {
++                255 << 24 | (rgb & 255) << 16 | (rgb >> 8 & 255) << 8 | rgb >> 16
++            } else {
++                u32::MAX
++            };
 +            let mut quad = |corners: [Vec3; 4]| {
 +                let uvs = [[r.u0, r.v0], [r.u0, r.v1], [r.u1, r.v1], [r.u1, r.v0]];
 +                for (c, uv) in corners.into_iter().zip(uvs) {
@@ -1573,6 +1582,7 @@ index 000000000..0c1d0dac0
 +                    color: 2,
 +                    sprite: "s".into(),
 +                    column: false,
++                    tint: true,
 +                },
 +                Liquid {
 +                    bounds: [0.4, -1.0, 0.4, 0.6, 0.5, 0.6],
@@ -1581,6 +1591,8 @@ index 000000000..0c1d0dac0
 +                    color: 3,
 +                    sprite: "s".into(),
 +                    column: true,
++                    // An icon: the texture as it is.
++                    tint: false,
 +                },
 +            ],
 +            ..Default::default()
@@ -1619,6 +1631,7 @@ index 000000000..0c1d0dac0
 +            &mut out,
 +        );
 +        assert_eq!(out.len(), 16, "no colour, no level; the pour's four sides");
++        assert!(out.iter().all(|v| v.color == u32::MAX), "untinted");
 +    }
 +
 +    #[test]
@@ -4448,10 +4461,10 @@ index 6df870d42..5a5ad71f7 100644
  pub mod movement_restitution;
 diff --git a/crates/horizon-world/src/mod_machines.rs b/crates/horizon-world/src/mod_machines.rs
 new file mode 100644
-index 000000000..86708df3b
+index 000000000..4c51ab352
 --- /dev/null
 +++ b/crates/horizon-world/src/mod_machines.rs
-@@ -0,0 +1,429 @@
+@@ -0,0 +1,500 @@
 +//! Machines from content mods: blocks with slots the game keeps, a screen
 +//! layout and, optionally, a multiblock volume. Each
 +//! `data/<namespace>/horizon_machine/<name>.json` in the resource root
@@ -4527,6 +4540,12 @@ index 000000000..86708df3b
 +    pub min: [i32; 3],
 +    pub max: [i32; 3],
 +    pub offset: i32,
++    /// How far above the cell used the core goes (`getHeightOffset`: HBM's
++    /// excavator stands on legs).
++    pub height: i32,
++    /// More boxes of the volume, in the same frame (`getAllDimensions`: the
++    /// excavator's legs below its body).
++    pub extra: Vec<([i32; 3], [i32; 3])>,
 +    pub dummy: String,
 +}
 +
@@ -4636,10 +4655,26 @@ index 000000000..86708df3b
 +            if (0..3).any(|i| min[i] > 0 || max[i] < 0 || max[i] - min[i] > 15) {
 +                return Err("multiblock: min..max must hold the core and span 16 at most".into());
 +            }
++            let mut extra = Vec::new();
++            for b in m["extra"].as_array().into_iter().flatten() {
++                let (Some(lo), Some(hi)) = (ints::<3>(&b["min"]), ints::<3>(&b["max"])) else {
++                    return Err("multiblock: an extra box without min and max".into());
++                };
++                if (0..3).any(|i| {
++                    lo[i] > hi[i] || hi[i] - lo[i] > 15 || lo[i].abs().max(hi[i].abs()) > 15
++                }) {
++                    return Err(
++                        "multiblock: an extra box spans 16 at most, 15 from the core".into(),
++                    );
++                }
++                extra.push((lo, hi));
++            }
 +            Some(Multiblock {
 +                min,
 +                max,
 +                offset: m["offset"].as_i64().unwrap_or(0) as i32,
++                height: m["height"].as_i64().unwrap_or(0).clamp(-15, 15) as i32,
++                extra,
 +                dummy: m["dummy"]
 +                    .as_str()
 +                    .ok_or("multiblock: no dummy block")?
@@ -4711,11 +4746,7 @@ index 000000000..86708df3b
 +                def.index = reg.list.len() as u16;
 +                if let Some(m) = &def.multiblock {
 +                    reg.dummies.insert(m.dummy.clone(), ());
-+                    let reach = (0..3)
-+                        .map(|i| m.min[i].abs().max(m.max[i].abs()))
-+                        .max()
-+                        .unwrap_or(0);
-+                    reg.reach = reg.reach.max(reach);
++                    reg.reach = reg.reach.max(m.reach());
 +                }
 +                reg.by_block.insert(block, reg.list.len());
 +                reg.list.push(Arc::new(def));
@@ -4779,31 +4810,59 @@ index 000000000..86708df3b
 +            core[2] + right[1] * l[0] + forward[1] * l[2],
 +        ]
 +    }
-+    /// Every cell but the core's.
++    /// The boxes of the volume, the main one first.
++    fn boxes(&self) -> impl Iterator<Item = ([i32; 3], [i32; 3])> + '_ {
++        std::iter::once((self.min, self.max)).chain(self.extra.iter().copied())
++    }
++    /// Every cell but the core's, each once.
 +    pub fn cells(&self, core: [i32; 3], facing: [i32; 2]) -> Vec<[i32; 3]> {
-+        let mut out = Vec::new();
-+        for y in self.min[1]..=self.max[1] {
-+            for z in self.min[2]..=self.max[2] {
-+                for x in self.min[0]..=self.max[0] {
-+                    if [x, y, z] != [0, 0, 0] {
-+                        out.push(self.cell(core, facing, [x, y, z]));
++        let mut local = std::collections::BTreeSet::new();
++        for (lo, hi) in self.boxes() {
++            for y in lo[1]..=hi[1] {
++                for z in lo[2]..=hi[2] {
++                    for x in lo[0]..=hi[0] {
++                        local.insert([x, y, z]);
 +                    }
 +                }
 +            }
 +        }
-+        out
++        local.remove(&[0, 0, 0]);
++        local
++            .into_iter()
++            .map(|l| self.cell(core, facing, l))
++            .collect()
 +    }
 +    /// Where the core goes when the item is used on cell `placed`.
 +    pub fn core_for(&self, placed: [i32; 3], facing: [i32; 2]) -> [i32; 3] {
-+        self.cell(placed, facing, [0, 0, self.offset])
++        self.cell(placed, facing, [0, self.height, self.offset])
 +    }
-+    /// The volume's box in world coordinates (min corner, max corner + 1).
++    /// The box around the whole volume in world coordinates (min corner, max
++    /// corner + 1).
 +    pub fn bounds(&self, core: [i32; 3], facing: [i32; 2]) -> ([i32; 3], [i32; 3]) {
-+        let a = self.cell(core, facing, self.min);
-+        let b = self.cell(core, facing, self.max);
-+        let lo = [a[0].min(b[0]), a[1].min(b[1]), a[2].min(b[2])];
-+        let hi = [a[0].max(b[0]) + 1, a[1].max(b[1]) + 1, a[2].max(b[2]) + 1];
++        let (mut lo, mut hi) = ([i32::MAX; 3], [i32::MIN; 3]);
++        for (bmin, bmax) in self.boxes() {
++            for c in [self.cell(core, facing, bmin), self.cell(core, facing, bmax)] {
++                for i in 0..3 {
++                    lo[i] = lo[i].min(c[i]);
++                    hi[i] = hi[i].max(c[i] + 1);
++                }
++            }
++        }
 +        (lo, hi)
++    }
++    /// Whether world cell `pos` is in the volume of a core at `core`.
++    pub fn contains(&self, core: [i32; 3], facing: [i32; 2], pos: [i32; 3]) -> bool {
++        self.boxes().any(|(bmin, bmax)| {
++            let (a, b) = (self.cell(core, facing, bmin), self.cell(core, facing, bmax));
++            (0..3).all(|i| pos[i] >= a[i].min(b[i]) && pos[i] <= a[i].max(b[i]))
++        })
++    }
++    /// The farthest a cell is from the core on any axis.
++    fn reach(&self) -> i32 {
++        self.boxes()
++            .flat_map(|(lo, hi)| (0..3).map(move |i| lo[i].abs().max(hi[i].abs())))
++            .max()
++            .unwrap_or(0)
 +    }
 +}
 +
@@ -4827,8 +4886,7 @@ index 000000000..86708df3b
 +                else {
 +                    continue;
 +                };
-+                let (lo, hi) = m.bounds(c, f);
-+                if (0..3).all(|i| pos[i] >= lo[i] && pos[i] < hi[i]) {
++                if m.contains(c, f, pos) {
 +                    return Some(c);
 +                }
 +            }
@@ -4847,6 +4905,8 @@ index 000000000..86708df3b
 +            min: [-1, 0, 0],
 +            max: [1, 1, 2],
 +            offset: 1,
++            height: 0,
++            extra: Vec::new(),
 +            dummy: "x:d".into(),
 +        };
 +        // Facing north: the placer looked south (+z), their right is west.
@@ -4859,6 +4919,30 @@ index 000000000..86708df3b
 +        // Facing east: the placer looked west (-x), their right is north.
 +        let f = facing_step("east").unwrap();
 +        assert_eq!(m.cell([0, 64, 0], f, [1, 0, 2]), [-2, 64, -1]);
++    }
++
++    /// HBM's excavator: the core three above the cell used, a body over it
++    /// and legs below, with gaps between them.
++    #[test]
++    fn a_volume_stands_on_legs() {
++        let m = Multiblock {
++            min: [-3, 0, -3],
++            max: [3, 3, 3],
++            offset: 3,
++            height: 3,
++            extra: vec![([-3, -3, -3], [-2, -1, -2]), ([-3, -3, 2], [3, -1, 3])],
++            dummy: "x:d".into(),
++        };
++        let f = facing_step("north").unwrap();
++        let core = m.core_for([0, 64, 0], f);
++        assert_eq!(core, [0, 67, 3]);
++        let cells = m.cells(core, f);
++        assert_eq!(cells.len(), 7 * 4 * 7 + 2 * 3 * 2 + 7 * 3 * 2 - 1);
++        assert_eq!(m.bounds(core, f), ([-3, 64, 0], [4, 71, 7]));
++        // A leg's cell is in, the gap beside it under the body is not.
++        assert!(m.contains(core, f, m.cell(core, f, [-3, -3, -3])));
++        assert!(!m.contains(core, f, m.cell(core, f, [0, -2, 0])));
++        assert!(cells.iter().all(|&c| m.contains(core, f, c)));
 +    }
 +
 +    #[test]
