@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 400,
+    "emitted": 412,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 231,
+    "skipped_source_calls": 219,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1815,6 +1815,441 @@
       "pools": [],
       "label": "Prensa Elétrica",
       "label_en": "Electric Press"
+    },
+    {
+      "name": "ass.excavator",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:363",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "minecraft:stone_bricks"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "minecraft:iron_ingot"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:circuit__analog"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_excavator",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Mineração Grande",
+      "label_en": "Large Mining Drill"
+    },
+    {
+      "name": "ass.drillsteel",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:365",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:ingot_tungsten"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:drillbit__steel",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Aço",
+      "label_en": "Steel Drill bit"
+    },
+    {
+      "name": "ass.drillsteeldiamond",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:367",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:drillbit__steel"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:powder_diamond"
+          ],
+          "count": 16
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:drillbit__steel_diamond",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Aço (Ponta de Diamante)",
+      "label_en": "Steel Drill bit (Diamond-Tipped)"
+    },
+    {
+      "name": "ass.drilldura",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:369",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_dura_steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:ingot_bakelite",
+            "ntm:ingot_polymer"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:ingot_titanium"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:drillbit__hss",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Aço Rápido",
+      "label_en": "High-Speed Steel Drill bit"
+    },
+    {
+      "name": "ass.drillduradiamond",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:371",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:drillbit__hss"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:powder_diamond"
+          ],
+          "count": 24
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:drillbit__hss_diamond",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Aço Rápido (Ponta de Diamante)",
+      "label_en": "High-Speed Steel Drill bit (Diamond-Tipped)"
+    },
+    {
+      "name": "ass.drilldesh",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:373",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_desh"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:ingot_niobium"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:drillbit__desh",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Desh",
+      "label_en": "Desh Drill bit"
+    },
+    {
+      "name": "ass.drilldeshdiamond",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:375",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:drillbit__desh"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:powder_diamond"
+          ],
+          "count": 32
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:drillbit__desh_diamond",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Desh (Ponta de Diamante)",
+      "label_en": "Desh Drill bit (Diamond-Tipped)"
+    },
+    {
+      "name": "ass.drilltc",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:377",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_cdalloy",
+            "ntm:ingot_tcalloy"
+          ],
+          "count": 20
+        },
+        {
+          "ids": [
+            "ntm:ingot_desh"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:drillbit__tcalloy",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Aço Tecnécio",
+      "label_en": "Technetium Steel Drill bit"
+    },
+    {
+      "name": "ass.drilltcdiamond",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:379",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:drillbit__tcalloy"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:powder_diamond"
+          ],
+          "count": 48
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:drillbit__tcalloy_diamond",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Aço Tecnécio (Ponta de Diamante)",
+      "label_en": "Technetium Steel Drill bit (Diamond-Tipped)"
+    },
+    {
+      "name": "ass.drillferro",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:381",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_ferrouranium"
+          ],
+          "count": 24
+        },
+        {
+          "ids": [
+            "ntm:ingot_cdalloy",
+            "ntm:ingot_tcalloy"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:ingot_bismuth"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:drillbit__ferro",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Ferrourânio",
+      "label_en": "Ferrouranium Drill bit"
+    },
+    {
+      "name": "ass.drillferrodiamond",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:383",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:drillbit__ferro"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:powder_diamond"
+          ],
+          "count": 56
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:drillbit__ferro_diamond",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Broca de Ferrourânio (Ponta de Diamante)",
+      "label_en": "Ferrouranium Drill bit (Diamond-Tipped)"
+    },
+    {
+      "name": "ass.slopper",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:385",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 6
+        },
+        {
+          "ids": [
+            "ntm:plate_titanium"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:pipe__copper"
+          ],
+          "count": 3
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 3
+        },
+        {
+          "ids": [
+            "ntm:circuit__analog"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_ore_slopper",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Processador de Minério de Rocha Matriz",
+      "label_en": "Bedrock Ore Processor"
     },
     {
       "name": "ass.tank",
@@ -13642,78 +14077,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:360",
       "reason": "unregistered/ambiguous source item machine_silex",
       "expression": "new GenericRecipe(\"ass.silex\").setup(400, 100).outputItems(new ItemStack(ModBlocks.machine_silex, 1))\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.glass_quartz, 16), new OreDictStack(STEEL.plateCast(), 8), new OreDictStack(DESH.ingot(), 4), new OreDictStack(RUBBER.ingot(), 8), new OreDictStack(STEEL.pipe(), 8))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.FERRO_PLATING), new ComparableStack(ModBlocks.glass_quartz, 16), new OreDictStack(RUBBER.ingot(), 16))"
-    },
-    {
-      "name": "ass.excavator",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:363",
-      "reason": "unregistered/ambiguous source item machine_excavator",
-      "expression": "new GenericRecipe(\"ass.excavator\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_excavator, 1))\n\t\t\t\t.inputItems(new ComparableStack(Blocks.stonebrick, 8), new OreDictStack(STEEL.ingot(), 8), new OreDictStack(IRON.ingot(), 8), new ComparableStack(ModItems.motor, 2), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.ANALOG))"
-    },
-    {
-      "name": "ass.drillsteel",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:365",
-      "reason": "dynamic/unsupported metadata EnumDrillType.STEEL.ordinal()",
-      "expression": "new GenericRecipe(\"ass.drillsteel\").setup(100, 100).outputItems(new ItemStack(ModItems.drillbit, 1, EnumDrillType.STEEL.ordinal()))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.ingot(), 12), new OreDictStack(W.ingot(), 4))"
-    },
-    {
-      "name": "ass.drillsteeldiamond",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:367",
-      "reason": "dynamic/unsupported metadata EnumDrillType.STEEL.ordinal()",
-      "expression": "new GenericRecipe(\"ass.drillsteeldiamond\").setup(100, 100).outputItems(new ItemStack(ModItems.drillbit, 1, EnumDrillType.STEEL_DIAMOND.ordinal()))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.drillbit, 1, EnumDrillType.STEEL.ordinal()), new OreDictStack(DIAMOND.dust(), 16))"
-    },
-    {
-      "name": "ass.drilldura",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:369",
-      "reason": "dynamic/unsupported metadata EnumDrillType.HSS.ordinal()",
-      "expression": "new GenericRecipe(\"ass.drilldura\").setup(100, 100).outputItems(new ItemStack(ModItems.drillbit, 1, EnumDrillType.HSS.ordinal()))\n\t\t\t\t.inputItems(new OreDictStack(DURA.ingot(), 12), new OreDictStack(ANY_PLASTIC.ingot(), 12), new OreDictStack(TI.ingot(), 8))"
-    },
-    {
-      "name": "ass.drillduradiamond",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:371",
-      "reason": "dynamic/unsupported metadata EnumDrillType.HSS.ordinal()",
-      "expression": "new GenericRecipe(\"ass.drillduradiamond\").setup(100, 100).outputItems(new ItemStack(ModItems.drillbit, 1, EnumDrillType.HSS_DIAMOND.ordinal()))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.drillbit, 1, EnumDrillType.HSS.ordinal()), new OreDictStack(DIAMOND.dust(), 24))"
-    },
-    {
-      "name": "ass.drilldesh",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:373",
-      "reason": "dynamic/unsupported metadata EnumDrillType.DESH.ordinal()",
-      "expression": "new GenericRecipe(\"ass.drilldesh\").setup(100, 100).outputItems(new ItemStack(ModItems.drillbit, 1, EnumDrillType.DESH.ordinal()))\n\t\t\t\t.inputItems(new OreDictStack(DESH.ingot(), 16), new OreDictStack(RUBBER.ingot(), 12), new OreDictStack(NB.ingot(), 4))"
-    },
-    {
-      "name": "ass.drilldeshdiamond",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:375",
-      "reason": "dynamic/unsupported metadata EnumDrillType.DESH.ordinal()",
-      "expression": "new GenericRecipe(\"ass.drilldeshdiamond\").setup(100, 100).outputItems(new ItemStack(ModItems.drillbit, 1, EnumDrillType.DESH_DIAMOND.ordinal()))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.drillbit, 1, EnumDrillType.DESH.ordinal()), new OreDictStack(DIAMOND.dust(), 32))"
-    },
-    {
-      "name": "ass.drilltc",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:377",
-      "reason": "dynamic/unsupported metadata EnumDrillType.TCALLOY.ordinal()",
-      "expression": "new GenericRecipe(\"ass.drilltc\").setup(100, 100).outputItems(new ItemStack(ModItems.drillbit, 1, EnumDrillType.TCALLOY.ordinal()))\n\t\t\t\t.inputItems(new OreDictStack(ANY_RESISTANTALLOY.ingot(), 20), new OreDictStack(DESH.ingot(), 12), new OreDictStack(RUBBER.ingot(), 8))"
-    },
-    {
-      "name": "ass.drilltcdiamond",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:379",
-      "reason": "dynamic/unsupported metadata EnumDrillType.TCALLOY.ordinal()",
-      "expression": "new GenericRecipe(\"ass.drilltcdiamond\").setup(100, 100).outputItems(new ItemStack(ModItems.drillbit, 1, EnumDrillType.TCALLOY_DIAMOND.ordinal()))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.drillbit, 1, EnumDrillType.TCALLOY.ordinal()), new OreDictStack(DIAMOND.dust(), 48))"
-    },
-    {
-      "name": "ass.drillferro",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:381",
-      "reason": "dynamic/unsupported metadata EnumDrillType.FERRO.ordinal()",
-      "expression": "new GenericRecipe(\"ass.drillferro\").setup(100, 100).outputItems(new ItemStack(ModItems.drillbit, 1, EnumDrillType.FERRO.ordinal()))\n\t\t\t\t.inputItems(new OreDictStack(FERRO.ingot(), 24), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 12), new OreDictStack(BI.ingot(), 4))"
-    },
-    {
-      "name": "ass.drillferrodiamond",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:383",
-      "reason": "dynamic/unsupported metadata EnumDrillType.FERRO.ordinal()",
-      "expression": "new GenericRecipe(\"ass.drillferrodiamond\").setup(100, 100).outputItems(new ItemStack(ModItems.drillbit, 1, EnumDrillType.FERRO_DIAMOND.ordinal()))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.drillbit, 1, EnumDrillType.FERRO.ordinal()), new OreDictStack(DIAMOND.dust(), 56))"
-    },
-    {
-      "name": "ass.slopper",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:385",
-      "reason": "unregistered/ambiguous source item machine_ore_slopper",
-      "expression": "new GenericRecipe(\"ass.slopper\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_ore_slopper, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 6), new OreDictStack(TI.plate(), 8), new OreDictStack(CU.pipe(), 3), new ComparableStack(ModItems.motor, 3), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.ANALOG))"
     },
     {
       "name": "ass.mininglaser",
