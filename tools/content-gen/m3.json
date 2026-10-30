@@ -18419,6 +18419,294 @@
       "source_container": "src/main/java/com/hbm/inventory/FluidContainerRegistry.java:69-91"
     },
     {
+      "id": "machine_excavator",
+      "source_variable": "machine_excavator",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Large Mining Drill",
+        "pt_br": "Broca de Mineração Grande"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Original steel casing cube fallback; visual-gen owns multiblock/OBJ/screen"
+    },
+    {
+      "id": "machine_ore_slopper",
+      "source_variable": "machine_ore_slopper",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Bedrock Ore Processor",
+        "pt_br": "Processador de Minério de Rocha Matriz"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Original steel casing cube fallback; visual-gen owns multiblock/OBJ/screen"
+    },
+    {
+      "id": "ore_bedrock",
+      "source_variable": "ore_bedrock",
+      "type": "block",
+      "category": "bedrock_deposit",
+      "template": "minecraft:bedrock",
+      "texture_reference": "minecraft:block/bedrock",
+      "block_properties": {
+        "hardness": -1,
+        "explosion_resistance": 3600000
+      },
+      "loot_none": true,
+      "names": {
+        "en_us": "Bedrock Ore",
+        "pt_br": "Minério de Rocha-Matriz"
+      },
+      "behavior_gap": "No block entity: density/type/tier/acid/yield derived server-side from chunk; dynamic ore overlay omitted. Optional command/creative item is retained."
+    },
+    {
+      "id": "bedrock_ore_base",
+      "source_variable": "bedrock_ore_base",
+      "type": "item",
+      "category": "processed_ore",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bedrock_ore_new.png",
+      "names": {
+        "en_us": "Raw Bedrock Ore",
+        "pt_br": "Minério de Rocha-Mãe Bruto"
+      },
+      "behavior_gap": "Densities stored by server in custom_data; asset has no independent logic"
+    },
+    {
+      "id": "drillbit__steel",
+      "source_variable": "drillbit",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumDrillType.STEEL",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/drillbit_steel.png",
+      "names": {
+        "en_us": "Steel Drill bit",
+        "pt_br": "Broca de Aço"
+      },
+      "max_stack_size": 1,
+      "drill": {
+        "speed": 1.0,
+        "tier": 1,
+        "fortune": 0,
+        "vein": false,
+        "silk": false
+      }
+    },
+    {
+      "id": "drillbit__steel_diamond",
+      "source_variable": "drillbit",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumDrillType.STEEL_DIAMOND",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/drillbit_steel_diamond.png",
+      "names": {
+        "en_us": "Steel Drill bit (Diamond-Tipped)",
+        "pt_br": "Broca de Aço (Ponta de Diamante)"
+      },
+      "max_stack_size": 1,
+      "drill": {
+        "speed": 1.0,
+        "tier": 1,
+        "fortune": 2,
+        "vein": false,
+        "silk": true
+      }
+    },
+    {
+      "id": "drillbit__hss",
+      "source_variable": "drillbit",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumDrillType.HSS",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/drillbit_hss.png",
+      "names": {
+        "en_us": "High-Speed Steel Drill bit",
+        "pt_br": "Broca de Aço Rápido"
+      },
+      "max_stack_size": 1,
+      "drill": {
+        "speed": 1.2,
+        "tier": 2,
+        "fortune": 0,
+        "vein": true,
+        "silk": false
+      }
+    },
+    {
+      "id": "drillbit__hss_diamond",
+      "source_variable": "drillbit",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumDrillType.HSS_DIAMOND",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/drillbit_hss_diamond.png",
+      "names": {
+        "en_us": "High-Speed Steel Drill bit (Diamond-Tipped)",
+        "pt_br": "Broca de Aço Rápido (Ponta de Diamante)"
+      },
+      "max_stack_size": 1,
+      "drill": {
+        "speed": 1.2,
+        "tier": 2,
+        "fortune": 3,
+        "vein": true,
+        "silk": true
+      }
+    },
+    {
+      "id": "drillbit__desh",
+      "source_variable": "drillbit",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "EnumDrillType.DESH",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/drillbit_desh.png",
+      "names": {
+        "en_us": "Desh Drill bit",
+        "pt_br": "Broca de Desh"
+      },
+      "max_stack_size": 1,
+      "drill": {
+        "speed": 1.5,
+        "tier": 3,
+        "fortune": 1,
+        "vein": true,
+        "silk": true
+      }
+    },
+    {
+      "id": "drillbit__desh_diamond",
+      "source_variable": "drillbit",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "EnumDrillType.DESH_DIAMOND",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/drillbit_desh_diamond.png",
+      "names": {
+        "en_us": "Desh Drill bit (Diamond-Tipped)",
+        "pt_br": "Broca de Desh (Ponta de Diamante)"
+      },
+      "max_stack_size": 1,
+      "drill": {
+        "speed": 1.5,
+        "tier": 3,
+        "fortune": 4,
+        "vein": true,
+        "silk": true
+      }
+    },
+    {
+      "id": "drillbit__tcalloy",
+      "source_variable": "drillbit",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "EnumDrillType.TCALLOY",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/drillbit_tcalloy.png",
+      "names": {
+        "en_us": "Technetium Steel Drill bit",
+        "pt_br": "Broca de Aço Tecnécio"
+      },
+      "max_stack_size": 1,
+      "drill": {
+        "speed": 2.0,
+        "tier": 4,
+        "fortune": 1,
+        "vein": true,
+        "silk": true
+      }
+    },
+    {
+      "id": "drillbit__tcalloy_diamond",
+      "source_variable": "drillbit",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "EnumDrillType.TCALLOY_DIAMOND",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/drillbit_tcalloy_diamond.png",
+      "names": {
+        "en_us": "Technetium Steel Drill bit (Diamond-Tipped)",
+        "pt_br": "Broca de Aço Tecnécio (Ponta de Diamante)"
+      },
+      "max_stack_size": 1,
+      "drill": {
+        "speed": 2.0,
+        "tier": 4,
+        "fortune": 4,
+        "vein": true,
+        "silk": true
+      }
+    },
+    {
+      "id": "drillbit__ferro",
+      "source_variable": "drillbit",
+      "type": "item",
+      "category": "component",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "EnumDrillType.FERRO",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/drillbit_ferro.png",
+      "names": {
+        "en_us": "Ferrouranium Drill bit",
+        "pt_br": "Broca de Ferrourânio"
+      },
+      "max_stack_size": 1,
+      "drill": {
+        "speed": 2.5,
+        "tier": 5,
+        "fortune": 1,
+        "vein": true,
+        "silk": true
+      }
+    },
+    {
+      "id": "drillbit__ferro_diamond",
+      "source_variable": "drillbit",
+      "type": "item",
+      "category": "component",
+      "metadata": 9,
+      "subtype_kind": "enum",
+      "source_enum": "EnumDrillType.FERRO_DIAMOND",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/drillbit_ferro_diamond.png",
+      "names": {
+        "en_us": "Ferrouranium Drill bit (Diamond-Tipped)",
+        "pt_br": "Broca de Ferrourânio (Ponta de Diamante)"
+      },
+      "max_stack_size": 1,
+      "drill": {
+        "speed": 2.5,
+        "tier": 5,
+        "fortune": 4,
+        "vein": true,
+        "silk": true
+      }
+    },
+    {
       "id": "machine_crucible",
       "source_variable": "machine_crucible",
       "type": "block",
