@@ -140,3 +140,35 @@ fn p1_13_test_blasts_are_bounded() {
     assert!(g.server.bomb_command(&mut g.sh, Some(&who), "teste 4 forca").is_ok());
 }
 
+
+/// P2-12: a charge's damage needs a line of sight (vanilla's exposure):
+/// behind an obsidian wall, none.
+#[test]
+fn p2_12_charge_damage_is_blocked_by_walls() {
+    for wall in [false, true] {
+        let mut g = bomb_game(8);
+        let mut p = player();
+        p.creative = false;
+        p.pos = [6.5, 70.0, 0.5];
+        g.server.set_players(vec![p]);
+        if wall {
+            let mut w = g.world.borrow_mut();
+            for y in 69..75 {
+                for z in -4..=4 {
+                    w.set(OW, [3, y, z], "minecraft:obsidian");
+                }
+            }
+        }
+        let at = [0, 70, 0];
+        place_bomb(&mut g, at, "ntm:tnt_ntm");
+        power(&mut g, at, true);
+        g.run(bomb::FUSE_TICKS as usize + 10);
+        assert!(bomb_at(&mut g, at).is_none());
+        let hits = g.world.borrow().hurts.iter().filter(|h| h.0 == "p1" && h.2 == "minecraft:explosion").count();
+        if wall {
+            assert_eq!(hits, 0, "dano através de obsidiana");
+        } else {
+            assert!(hits > 0, "sem dano em campo aberto");
+        }
+    }
+}

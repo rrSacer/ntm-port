@@ -7,6 +7,8 @@ use super::*;
 /// The fluid identifier (`ItemFluidIDMulti`; its type in `custom_data`
 /// `ntm_fluid`).
 pub const IDENTIFIER: &str = "ntm:fluid_identifier_multi";
+/// The detonator (`ItemDetonator`).
+pub const DETONATOR: &str = "ntm:detonator";
 
 /// Blocks read a tick to find the cables next to adopted machines.
 pub const CABLE_READS_PER_TICK: usize = 256;
@@ -22,6 +24,7 @@ impl Server {
             fluidnet: fluid_server::FluidNet::default(),
             tick,
             players: Vec::new(),
+            radiation_shown: BTreeMap::new(),
             queued: Vec::new(),
             ready: Ready {
                 world,
@@ -36,6 +39,9 @@ impl Server {
     /// the machines and networks, the slots and states back.
     pub fn native_tick(&mut self, host: &mut impl ServerHost, tick: u64) {
         self.tick = tick;
+        if let Some(players) = host.players() {
+            self.players = players;
+        }
         for e in std::mem::take(&mut self.queued) {
             self.block_event(host, e);
         }
@@ -50,6 +56,7 @@ impl Server {
         self.excavator_tick(host);
         self.drill_tick(host);
         self.bombs_tick(host);
+        self.radiation_tick(host);
         self.slots_out(host);
         self.native_save(host);
         self.keep_world(host);

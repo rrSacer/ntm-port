@@ -276,7 +276,8 @@ bindings = [
   { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
 ]
 
-# An item used on a block (`use_item_on`): the fluid identifier on a duct.
+# An item used on a block (`use_item_on`): the fluid identifier on a duct,
+# the detonator on a bomb.
 [[injection]]
 id = "use-item"
 hook = "use_item_on"
@@ -287,5 +288,18 @@ bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
   { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
+]
+
+# An item used in the air (`use_item`): the detonator sets its bomb off.
+[[injection]]
+id = "use-item-air"
+hook = "use_item"
+hook_version = 1
+kind = "HEAD"
+helper = "use_item_air.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
   { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
 ]

@@ -1,12 +1,17 @@
 //! Radiation (docs/radiacao.md): the items' rates, the players' doses and
-//! sickness. Values are NTM gameplay RAD, not physical dosimetry. The native
-//! host's inventory read and effects bring it to the players (stage L4 of
-//! the migration); the bombs' pulses and zones add to the doses already.
+//! sickness. Values are NTM gameplay RAD, not physical dosimetry. The
+//! server reads each player's inventory once a second
+//! (`server/radiation_server.rs`); the bombs' pulses and zones add to the
+//! same doses.
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 
 /// Ticks after a player joins before their dose grows.
 pub const GRACE_TICKS: u64 = 200;
+/// The per-player values the client's Geiger reads: the dose (milliRAD)
+/// and the rate where the player stands (milliRAD/s).
+pub const KEY_DOSE: &str = "ntm_rad_dose";
+pub const KEY_RATE: &str = "ntm_rad_rate";
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Dose {
@@ -113,43 +118,41 @@ pub fn add_dose(dose: &mut Dose, millirad: u64) {
 
 pub const MAX_DOSE: u64 = 2_500_000;
 
-/// Deterministic M1 approximation of NTM's random sickness rolls. Vanilla
-/// effects expire naturally; never clear unrelated effects from other sources.
-pub fn effect_lines(dose: &mut Dose) -> Vec<String> {
-    let mut out = Vec::new();
+/// What radiation sickness does to a player: an effect for some seconds,
+/// or damage of a kind.
+#[derive(Clone, Debug, PartialEq)]
+pub enum Harm {
+    Effect { id: &'static str, amplifier: u8, seconds: u32 },
+    Hurt { amount: f32, kind: &'static str },
+}
+
+/// How long each sickness effect lasts: it outlives the second between
+/// doses, so it stays on while the dose is high.
+pub const SICKNESS_SECONDS: u32 = 5;
+
+/// Deterministic approximation of NTM's random sickness rolls, once a
+/// second: effects by the dose's band, damage above 800 RAD, death at
+/// 1000 RAD (the dose starts again from zero). Effects expire by
+/// themselves; nothing clears effects from other sources. The host skips
+/// creative and spectator players.
+pub fn sickness(dose: &mut Dose) -> Vec<Harm> {
     let rad = dose.millirad;
     if rad >= 1_000_000 {
-        out.push("execute unless entity @s[gamemode=creative] unless entity @s[gamemode=spectator] run damage @s 1000 minecraft:generic_kill".into());
         dose.millirad = 0;
-        return out;
+        return vec![Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" }];
     }
-    let effects: &[(&str, u32)] = match rad {
-        800_000.. => &[
-            ("nausea", 0),
-            ("slowness", 2),
-            ("weakness", 2),
-            ("poison", 2),
-            ("wither", 1),
-        ],
-        600_000.. => &[
-            ("nausea", 0),
-            ("slowness", 2),
-            ("weakness", 2),
-            ("poison", 1),
-        ],
+    let effects: &[(&'static str, u8)] = match rad {
+        800_000.. => &[("nausea", 0), ("slowness", 2), ("weakness", 2), ("poison", 2), ("wither", 1)],
+        600_000.. => &[("nausea", 0), ("slowness", 2), ("weakness", 2), ("poison", 1)],
         400_000.. => &[("nausea", 0), ("slowness", 0), ("weakness", 1)],
         200_000.. => &[("nausea", 0), ("weakness", 0)],
         _ => &[],
     };
-    for (effect, amplifier) in effects {
-        out.push(format!(
-            "effect give @s minecraft:{effect} 5 {amplifier} true"
-        ));
-    }
+    let mut out: Vec<Harm> = effects.iter().map(|&(id, amplifier)| Harm::Effect { id, amplifier, seconds: SICKNESS_SECONDS }).collect();
     if rad >= 800_000 {
-        out.push("damage @s 1 minecraft:magic".into());
+        out.push(Harm::Hurt { amount: 1.0, kind: "minecraft:magic" });
     }
-    out.into_iter().map(|line| format!("execute unless entity @s[gamemode=creative] unless entity @s[gamemode=spectator] run {line}")).collect()
+    out
 }
 
 #[cfg(test)]
@@ -259,22 +262,13 @@ mod tests {
             accumulate(&mut d, 22400);
         }
         assert_eq!(d.millirad, 224000);
-        assert!(effect_lines(&mut d).iter().any(|s| s.contains("weakness")));
+        assert!(sickness(&mut d).iter().any(|h| matches!(h, Harm::Effect { id: "weakness", .. })));
         accumulate(&mut d, 0);
         assert_eq!(d.millirad, 224000, "no natural player-dose decay in NTM");
         d.millirad = 810000;
-        assert!(
-            effect_lines(&mut d)
-                .iter()
-                .any(|s| s.contains("damage @s 1"))
-        );
+        assert!(sickness(&mut d).contains(&Harm::Hurt { amount: 1.0, kind: "minecraft:magic" }));
         d.millirad = 1000000;
-        assert_eq!(
-            effect_lines(&mut d),
-            [
-                "execute unless entity @s[gamemode=creative] unless entity @s[gamemode=spectator] run damage @s 1000 minecraft:generic_kill"
-            ]
-        );
+        assert_eq!(sickness(&mut d), [Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" }]);
         assert_eq!(d.millirad, 0);
     }
 }

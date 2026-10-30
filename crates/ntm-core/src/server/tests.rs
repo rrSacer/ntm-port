@@ -27,6 +27,14 @@ struct World {
     /// What each machine kept with its block entity.
     saved: BTreeMap<(String, Pos), String>,
     kv: MemKv,
+    /// What each player carries, by id.
+    carried: BTreeMap<String, Vec<(String, u32)>>,
+    /// Damage done: (player, amount, type).
+    hurts: Vec<(String, f32, String)>,
+    /// Effects given: (player, effect, seconds, amplifier).
+    effects: Vec<(String, String, u32, u8)>,
+    /// The values each player's client was sent.
+    values: BTreeMap<(String, String), i64>,
 }
 
 impl World {
@@ -41,6 +49,10 @@ impl World {
             signal: BTreeMap::new(),
             saved: BTreeMap::new(),
             kv: MemKv::default(),
+            carried: BTreeMap::new(),
+            hurts: Vec::new(),
+            effects: Vec::new(),
+            values: BTreeMap::new(),
         };
         for x in -32..32 {
             for z in -32..32 {
@@ -141,6 +153,18 @@ impl ServerHost for SHost {
     fn redstone_many(&mut self, dim: &str, cells: &[Pos]) -> Vec<Option<u8>> {
         let w = self.world.borrow();
         cells.iter().map(|p| w.loaded(dim, *p).then(|| w.signal.get(&(dim.to_string(), *p)).copied().unwrap_or(0))).collect()
+    }
+    fn inventory(&mut self, id: &str) -> Option<Vec<(String, u32)>> {
+        Some(self.world.borrow().carried.get(id).cloned().unwrap_or_default())
+    }
+    fn hurt(&mut self, id: &str, amount: f32, kind: &str) {
+        self.world.borrow_mut().hurts.push((id.into(), amount, kind.into()));
+    }
+    fn effect(&mut self, id: &str, effect: &str, seconds: u32, amplifier: u8) {
+        self.world.borrow_mut().effects.push((id.into(), effect.into(), seconds, amplifier));
+    }
+    fn set_player_value(&mut self, id: &str, key: &str, value: i64) {
+        self.world.borrow_mut().values.insert((id.into(), key.into()), value);
     }
     fn drop_items(&mut self, dim: &str, p: Pos, items: &[(String, u32)]) {
         let mut w = self.world.borrow_mut();
@@ -298,6 +322,42 @@ fn the_world_keeps_its_state_outside_the_blocks() {
     let r = g.ready();
     assert_eq!((r.world.bombs.next, r.world.radiation["p1"].millirad), (7, 42));
     assert_eq!(r.world.ticks, crate::persist::TICKS_EVERY, "the clock kept at its period");
+}
+
+/// What a player carries gives a dose once a second past the joining
+/// grace, sickness acts at its bands, and the client reads the dose and
+/// the rate; a creative player gets no dose but reads the rate.
+#[test]
+fn radiation_from_what_a_player_carries() {
+    use crate::radiation::{GRACE_TICKS, KEY_DOSE, KEY_RATE};
+    let mut g = game();
+    let mut p = player();
+    p.creative = false;
+    g.server.set_players(vec![p]);
+    g.world.borrow_mut().carried.insert("p1".into(), vec![("ntm:ingot_uranium".into(), 64), ("minecraft:dirt".into(), 3)]);
+    let value = |g: &Game, k: &str| g.world.borrow().values.get(&("p1".to_string(), k.to_string())).copied();
+    g.run(40);
+    assert_eq!(value(&g, KEY_RATE), Some(64 * 350), "a taxa aparece já na carência");
+    assert_eq!(value(&g, KEY_DOSE), Some(0), "nada de dose na carência");
+    g.run(GRACE_TICKS as usize + 20 * 10);
+    let dose = value(&g, KEY_DOSE).unwrap();
+    assert!((9 * 64 * 350..=12 * 64 * 350).contains(&dose), "{dose}");
+    // 200 RAD: nausea and weakness, every second.
+    g.ready().world.radiation.get_mut("p1").unwrap().millirad = 300_000;
+    g.run(20);
+    let effects = g.world.borrow().effects.clone();
+    assert!(effects.iter().any(|e| e.1 == "weakness" && e.3 == 0), "{effects:?}");
+    // 1000 RAD: death, and the dose starts again.
+    g.ready().world.radiation.get_mut("p1").unwrap().millirad = 999_999;
+    g.run(40);
+    assert!(g.world.borrow().hurts.iter().any(|h| h.2 == "minecraft:generic_kill"), "{:?}", g.world.borrow().hurts);
+    assert!(value(&g, KEY_DOSE).unwrap() < 999_999);
+    // Creative: the rate, no dose.
+    g.server.set_players(vec![player()]);
+    let before = g.ready().world.radiation["p1"].millirad;
+    g.run(100);
+    assert_eq!(g.ready().world.radiation["p1"].millirad, before);
+    assert_eq!(value(&g, KEY_RATE), Some(64 * 350));
 }
 
 mod bomb_tests;

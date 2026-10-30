@@ -112,16 +112,27 @@ Os slots, as regras e o `synced` de cada máquina vêm dos `horizon_machine/*.js
 
 O servidor do `ntm-core` agora só existe no modo nativo (`Server::native`, `native_tick`). Saíram os mods `mods/ntm-logic-*`, o `client.rs`, o protocolo e as caixas de correio (`proto`), as transações de itens (`tx`), as sondas e fichas de bloco (`probes`, `token`), a identidade do mundo (`worldid`), a amostra de radiação por comandos (`radiation_server`) e o save do mundo inteiro (`persist` antigo). Com eles foram os testes que só valiam para esse caminho: transações, quedas entre os dois saves, lag do cliente, identidade e sondas. O `tools/build-logic.sh` virou `tools/build-content.sh`, que só monta o `ntm.hmod` de conteúdo.
 
-O que o mundo guarda fora dos block entities (`ntm_core::persist`): as detonações na fila, as zonas de fallout, os detonadores ligados, as doses dos jogadores e o relógio do mundo, que é o das zonas. Vai na chave `world` do `Kv` do host, quando muda; o relógio sozinho vai a cada 600 ticks. As explosões em andamento (`nx.*`) e a configuração das bombas (`bombcfg`) usam o mesmo `Kv`. No bundle, cada chave é um arquivo em `<mundo>/data/ntm/<chave>` (`native_world_dir`, API 21), escrito inteiro e renomeado por cima do antigo.
+O que o mundo guarda fora dos block entities (`ntm_core::persist`): as detonações na fila, as zonas de fallout, os detonadores ligados, as doses dos jogadores e o relógio do mundo, que é o das zonas. Vai na chave `world` do `Kv` do host, quando muda; o relógio sozinho vai a cada 600 ticks. As explosões em andamento (`nx.*`) e a configuração das bombas (`bombcfg`) usam o mesmo `Kv`. No bundle, cada chave é um arquivo em `<mundo>/data/ntm/<chave>` (`native_world_dir`; sem mundo aberto, nenhum), escrito inteiro e renomeado por cima do antigo.
 
 **Lacunas que a remoção deixa** (todas com hook ou helper já previstos no plano):
 
-- **Radiação do inventário:** a dose crescia pela amostra por comandos. Volta na L4, com `native_player_inventory` e `native_effect`/`native_hurt`. As bombas já somam dose (pulso e zonas) ao mundo, mas ninguém a aplica ao jogador ainda.
-- **Efeitos e dano das bombas:** som, partículas, pavio aceso e dano de explosão eram linhas de comando do cliente. Ficam para a L4. A cratera, o fallout e a fila não mudaram.
-- **Detonador:** `Server::detonator(host, jogador, alvo, ligar)` responde com o texto para o jogador, mas o item ainda não tem hook.
+- ~~**Radiação do inventário**~~, ~~**dano das bombas**~~, ~~**detonador**~~ e ~~**lista de jogadores**~~: voltaram na L4 (abaixo).
+- **Efeitos das bombas:** som e partículas da explosão e do pavio eram linhas de comando do cliente; não há helper nativo para eles ainda. A cratera, o fallout, a fila e o dano não mudaram.
 - **O que a máquina guarda fora dos slots** (metal fundido como sucata, itens de uma máquina sem slots) vai a `ServerHost::drop_items`, que o bundle ainda não implementa: não há helper para soltar itens no mundo.
-- **Lista de jogadores:** `Server::set_players` alimenta as doses e quem vê a explosão; o bundle ainda não a chama.
 - O código da tela antiga (`view.rs` e os `view`/`action` das máquinas) ficou, sem caminho que o chame. Sai quando as telas nativas cobrirem tudo.
+
+## A L4 no servidor: radiação, dano e detonador (30/10, `ntm-next` `29b4726b4`, API 28)
+
+O host do bundle lê os jogadores vivos (`native_players`) a cada tick; o UUID é a chave da dose, no estado do mundo.
+
+- **Radiação** (`server/radiation_server.rs`): uma vez por segundo, a taxa de cada jogador é a do que ele carrega (`native_player_inventory`, pela tabela de hazards) mais a das zonas de fallout onde está. Passada a carência de 10 s ao entrar, a dose cresce pelo que ele carrega (a das zonas vem das bombas) e a doença age pelas faixas (`radiation::sickness`): efeitos de 5 s (`native_effect`), dano de magia acima de 800 RAD e morte em 1000 RAD, quando a dose recomeça (`native_hurt`). Criativo e espectador não recebem dose nem doença. O cliente lê `ntm_rad_dose` (mRAD) e `ntm_rad_rate` (mRAD/s) por `native_set_player_value`, mandados só quando mudam: é o contrato com o lado do cliente.
+- **Dano das bombas:** a carga fere pelo que a explosão vê do jogador (exposição vanilla), e as nukes por pulsos enquanto cavam a cratera, bloqueados por obstáculos (`native_hurt`, `minecraft:explosion`).
+- **Detonador** (`ntm:detonator`): usado numa bomba, liga (hook `use_item_on`); usado em outro bloco ou no ar (hook `use_item`), detona a bomba ligada ou acende o pavio de uma carga. No NTM a ligação é com o jogador agachado; o hook com item na mão não diz se ele agacha. O texto do detonador vai ao log: o servidor não tem helper para o chat do jogador.
+
+Prova em jogo (`tools/test-game/native_l4.py`, mundo novo):
+
+- **radiacao:** em sobrevivência com 64 lingotes de urânio (22,4 RAD/s), a dose ficou em 0 na carência e chegou a 470,4 RAD depois de ~21 s, guardada em `<mundo>/data/ntm/world`. O jogador ficou com náusea, fraqueza II e lentidão, a faixa de 400 RAD.
+- **detonador:** uma carga `ntm:tnt_ntm` posta por `/setblock`: o detonador nela a ligou, o clique seguinte acendeu o pavio, e a carga explodiu (força 10, 63 blocos), deixando a cratera.
 
 ## A alavanca das turbinas (30/10, `ntm-next` `c6ad4a73e`, API 24)
 
@@ -129,7 +140,7 @@ O hook `use_block` leva o clique direito numa célula de máquina ao `Server::na
 
 ## O duto pelo identificador de fluido (30/10)
 
-No NTM, o duto não tem tela: o tipo vem do identificador de fluido na mão (`FluidDuctBase.handleActivation`). O conteúdo tem o `ntm:fluid_identifier_multi`, com o tipo em `custom_data` `{ntm_fluid:"<fluido>"}` (`bec9b460`). O hook `use_item` lê esse tipo e o `Server::native_use_item` o põe no duto. Em jogo, um duto posto por `/setblock` passou de sem tipo a `water` com um clique do identificador. Ainda faltam: o clique agachado que muda os dutos ligados (`changeTypeRecursively`), o ALT que copia o tipo do duto para o identificador, a GUI de escolha do identificador e o slot dele no barril.
+No NTM, o duto não tem tela: o tipo vem do identificador de fluido na mão (`FluidDuctBase.handleActivation`). O conteúdo tem o `ntm:fluid_identifier_multi`, com o tipo em `custom_data` `{ntm_fluid:"<fluido>"}` (`bec9b460`). O hook `use_item_on` (o clique com item num bloco) lê esse tipo e o `Server::native_use_item` o põe no duto. Em jogo, um duto posto por `/setblock` passou de sem tipo a `water` com um clique do identificador. Ainda faltam: o clique agachado que muda os dutos ligados (`changeTypeRecursively`), o ALT que copia o tipo do duto para o identificador, a GUI de escolha do identificador e o slot dele no barril.
 
 ## Redstone (30/10, `ntm-next` `15d31b261`, API 25)
 

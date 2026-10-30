@@ -111,6 +111,7 @@ fn a_little_boy_assembled_in_its_slots_goes_off_by_redstone() {
     // R=10 em pedra: o modelo do NTM cava pouco (custo 6^(0,5+3,5i/R)).
     assert!(dug >= 2, "cratera rasa: {dug}");
     assert!(w.blocks.values().any(|s| s == "ntm:sellafield_slaked"));
+    assert!(w.hurts.iter().any(|h| h.0 == "p1" && h.2 == "minecraft:explosion"), "sem dano");
     drop(w);
     let dose = g.ready().world.radiation.get("p1").map_or(0, |d| d.millirad);
     assert!(dose > 0, "sem dose");
@@ -245,4 +246,23 @@ fn settings_are_global_or_per_world() {
     until_quiet(&mut g, 2000);
     // The global settings live in the storage; a new server reads them.
     assert!(g.world.borrow().kv.map.contains_key(crate::blast::config::KEY));
+}
+
+/// The native detonator: used on a bomb it links, used anywhere else (the
+/// air, another block) it sets the linked bomb off; a player not in the
+/// world gets nothing.
+#[test]
+fn the_native_detonator_links_on_a_bomb_and_fires_elsewhere() {
+    let mut g = bomb_game(8);
+    let at = [4, 70, 0];
+    let id = "ntm:nuke_n2";
+    place_bomb(&mut g, at, id);
+    assemble(&mut g, at, id, 0..12);
+    assert_eq!(g.server.native_detonator(&mut g.sh, "nobody", None), None);
+    let said = g.server.native_detonator(&mut g.sh, "p1", Some(at)).unwrap();
+    assert!(said.contains("Detonador ligado"), "{said}");
+    assert!(bomb_data(&mut g, at).is_some());
+    let said = g.server.native_detonator(&mut g.sh, "p1", Some([0, 69, 0])).unwrap();
+    assert!(said.contains("Detonada"), "{said}");
+    assert!(bomb_data(&mut g, at).is_none());
 }

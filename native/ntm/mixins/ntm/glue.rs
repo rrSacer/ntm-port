@@ -9,7 +9,8 @@ use horizon_world::nbt::{Compound, JavaString, Tag};
 use ntm_core::kv::Kv;
 use ntm_core::native::SlotFilter;
 use ntm_core::server::container_bridge::{Slots, Stack};
-use ntm_core::server::{Server, ServerHost};
+use ntm_core::server::native_server::DETONATOR;
+use ntm_core::server::{PlayerInfo, Server, ServerHost};
 use std::collections::HashMap;
 use std::sync::{Mutex, OnceLock};
 
@@ -91,6 +92,9 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
 /// A player used `stack` on the block at `pos`: the fluid identifier on a
 /// duct sets its fluid (`custom_data` `ntm_fluid`). True when taken.
 pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
+    if &*stack.item == DETONATOR {
+        return detonator(game, Some(pos));
+    }
     let fluid = stack.data().and_then(|d| {
         let (_, data) = d.other.iter().find(|(k, _)| k == "minecraft:custom_data")?;
         match data.get("ntm_fluid")? {
@@ -101,6 +105,23 @@ pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos:
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
     server.native_use_item(game.dim.id(), pos, &stack.item, fluid.as_deref())
+}
+
+/// A player used `stack` in the air: the detonator sets its bomb off.
+pub(super) fn use_item_air(game: &mut crate::game::Game<'_>, stack: &ItemStack) -> bool {
+    &*stack.item == DETONATOR && detonator(game, None)
+}
+
+/// The detonator used by the acting player, on block `target` or in the
+/// air (`Server::native_detonator`); they are told what it did.
+fn detonator(game: &mut crate::game::Game<'_>, target: Option<[i32; 3]>) -> bool {
+    let Some(player) = game.native_actor_uuid() else { return false };
+    let mut guard = lock(&SERVER);
+    let Some((server, _)) = guard.as_mut() else { return false };
+    let mut host = Host { game, buttons: Vec::new() };
+    let Some(said) = server.native_detonator(&mut host, &player, target) else { return false };
+    host.tell(&player, &said);
+    true
 }
 
 /// The end of a server tick: the server's phases.
@@ -175,6 +196,7 @@ impl ServerHost for Host<'_, '_> {
     fn set_blocks(&mut self, dim: &str, blocks: &[([i32; 3], String)]) -> Result<(), String> {
         self.game.native_set_blocks(dim, blocks)
     }
+    /// To the log: the server's thread has no helper for a player's chat.
     fn tell(&mut self, player: &str, text: &str) {
         eprintln!("ntm: {player}: {text}");
     }
@@ -217,6 +239,33 @@ impl ServerHost for Host<'_, '_> {
     }
     fn redstone_many(&mut self, dim: &str, cells: &[[i32; 3]]) -> Vec<Option<u8>> {
         self.game.native_redstone_many(dim, cells)
+    }
+    /// The living players, by UUID (API 28).
+    fn players(&mut self) -> Option<Vec<PlayerInfo>> {
+        let players = self.game.native_players().into_iter().filter(|p| p.alive);
+        Some(
+            players
+                .map(|p| PlayerInfo { id: p.uuid, name: p.name, dim: p.dimension, pos: p.pos, creative: p.creative_or_spectator })
+                .collect(),
+        )
+    }
+    fn inventory(&mut self, id: &str) -> Option<Vec<(String, u32)>> {
+        Some(self.game.native_player_inventory(id)?.into_iter().map(|c| (c.item, c.count)).collect())
+    }
+    fn hurt(&mut self, id: &str, amount: f32, kind: &str) {
+        if let Err(e) = self.game.native_hurt(id, amount, kind) {
+            eprintln!("ntm: hurt {id}: {e}");
+        }
+    }
+    fn effect(&mut self, id: &str, effect: &str, seconds: u32, amplifier: u8) {
+        if let Err(e) = self.game.native_effect(id, effect, seconds * 20, amplifier, true) {
+            eprintln!("ntm: effect {id}: {e}");
+        }
+    }
+    fn set_player_value(&mut self, id: &str, key: &str, value: i64) {
+        if let Err(e) = self.game.native_set_player_value(id, key, value) {
+            eprintln!("ntm: value {key} of {id}: {e}");
+        }
     }
     fn save_machine(&mut self, dim: &str, p: [i32; 3], json: &str) {
         self.entity(dim, p, |e| {

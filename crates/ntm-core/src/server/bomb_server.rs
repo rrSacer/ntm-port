@@ -3,7 +3,7 @@
 //! radiation and effects, and `/ntmbomba`.
 use super::*;
 use crate::{
-    blast::{self, Config, Queued, Recorder, Zone, vanilla},
+    blast::{self, Config, PULSE_EVERY, PULSE_MAX, PULSE_TICKS, Pulse, Queued, Recorder, Zone, vanilla},
     bomb::{Blast, FUSE_TICKS},
     machine::Data,
     radiation,
@@ -71,6 +71,18 @@ fn shielding(host: &mut impl ServerHost, dim: &str, a: [f64; 3], b: [f64; 3]) ->
     sum * len / n as f64
 }
 
+/// Whether a block stands between `a` and `b` (`Library.isObstructed`),
+/// sampled at up to 24 points.
+fn obstructed(host: &mut impl ServerHost, dim: &str, a: [f64; 3], b: [f64; 3]) -> bool {
+    let len = dist(a, b);
+    let n = (len as usize).clamp(1, 24);
+    (1..n).any(|i| {
+        let t = i as f64 / n as f64;
+        let p = [0, 1, 2].map(|k| (a[k] + (b[k] - a[k]) * t).floor() as i32);
+        host.get_block(dim, p).is_some_and(|s| vanilla::resistance(&s) > 0.5)
+    })
+}
+
 /// The world's tag in its explosions' ids (`w<world>n<number>`): the
 /// host's storage is the world's own.
 const WORLD: &str = "native";
@@ -121,6 +133,7 @@ impl Server {
         self.bombs_triggers(host);
         self.blasts.nukes.fuel = u64::from(self.bomb_config(host).fuel) * 1_000_000;
         self.bombs_admit(host);
+        self.bomb_pulses(host);
         // The explosions (one at a time gets the tick's fuel; none in the
         // tick a charge went off, which spent it).
         let mut rec = Recorder::default();
@@ -301,6 +314,21 @@ impl Server {
         match blast {
             Blast::Conventional { power } => {
                 self.blasts.charged_at = Some(tick);
+                // Damage first, over the blocks as they are (vanilla's order),
+                // through what the blast sees of each player.
+                if cfg.damage {
+                    for p in players.iter().filter(|p| !p.creative) {
+                        let d = dist(c, eye(p));
+                        if d >= 2.0 * f64::from(power) {
+                            continue;
+                        }
+                        let seen = vanilla::exposure(c, p.pos, &mut |b| host.get_block(&dim, b));
+                        let dmg = vanilla::damage(power, d, seen);
+                        if dmg >= 1.0 {
+                            host.hurt(&p.id, dmg, "minecraft:explosion");
+                        }
+                    }
+                }
                 let (cells, reads) = vanilla::explode(c, power, &mut |p| host.get_block(&dim, p));
                 let writes: Vec<(Pos, String)> = cells.iter().map(|p| (*p, "minecraft:air".to_string())).collect();
                 for chunk in writes.chunks(crate::explosion::BLOCKS_PER_CALL) {
@@ -313,6 +341,9 @@ impl Server {
             Blast::Nuke { radius, .. } | Blast::Balefire { radius } => {
                 self.hand_to_engine(host, q, id);
                 let fallout = matches!(blast, Blast::Nuke { fallout: true, .. });
+                if cfg.damage {
+                    self.blasts.pulses.push(Pulse { dim: dim.clone(), center: c, reach: 2.0 * f64::from(radius), next: tick, until: tick + PULSE_TICKS });
+                }
                 let radioactive = fallout || matches!(blast, Blast::Balefire { .. });
                 if cfg.radiation && radioactive {
                     self.radiation_pulse(host, &dim, c, radius, &players);
@@ -359,6 +390,30 @@ impl Server {
         }
     }
 
+    /// Blast damage while the craters are dug.
+    fn bomb_pulses(&mut self, host: &mut impl ServerHost) {
+        let tick = self.tick;
+        self.blasts.pulses.retain(|p| tick < p.until);
+        let due: Vec<Pulse> = self.blasts.pulses.iter().filter(|p| tick >= p.next).cloned().collect();
+        for p in &mut self.blasts.pulses {
+            if tick >= p.next {
+                p.next = tick + PULSE_EVERY;
+            }
+        }
+        for p in due {
+            for pl in self.players.iter().filter(|x| x.dim == p.dim && !x.creative).cloned().collect::<Vec<_>>() {
+                let d = dist(p.center, eye(&pl));
+                if d > p.reach || obstructed(host, &p.dim, p.center, eye(&pl)) {
+                    continue;
+                }
+                let dmg = PULSE_MAX * (p.reach - d) / p.reach;
+                if dmg >= 1.0 {
+                    host.hurt(&pl.id, dmg as f32, "minecraft:explosion");
+                }
+            }
+        }
+    }
+
     /// One second of the fallout zones' radiation, for each player in one:
     /// the server knows where they are, so this needs no sample from the
     /// client (`radiation_done` only shows the rate in the Geiger).
@@ -395,6 +450,17 @@ impl Server {
         let Some(p) = self.players.iter().find(|p| p.id == player && !p.creative) else { return 0 };
         let now = r.world.ticks;
         r.world.bombs.zones.iter().map(|z| z.rate(&p.dim, p.pos, now)).fold(0u32, u32::saturating_add)
+    }
+
+    /// The detonator used by player `id` in the native game, on block
+    /// `target` or in the air: on a bomb it links (NTM's sneaking click; the
+    /// hook doesn't say whether the player sneaks), anywhere else it sets the
+    /// linked bomb off. What the player is told; None when `id` isn't in
+    /// the world.
+    pub fn native_detonator(&mut self, host: &mut impl ServerHost, id: &str, target: Option<Pos>) -> Option<String> {
+        let p = self.players.iter().find(|p| p.id == id)?.clone();
+        let on_bomb = target.filter(|t| matches!(self.ready.world.machines.get(&(p.dim.clone(), *t)).map(|m| &m.data), Some(Data::Bomb(_))));
+        Some(self.detonator(host, &p, on_bomb, on_bomb.is_some()))
     }
 
     /// The detonator of `player`: link it (sneaking, on a bomb) or set its

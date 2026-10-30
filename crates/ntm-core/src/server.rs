@@ -49,10 +49,27 @@ pub trait ServerHost: Kv {
     /// Items a broken machine held outside its slots (the slots the game
     /// spills itself), dropped at `p`.
     fn drop_items(&mut self, _dim: &str, _p: Pos, _items: &[(String, u32)]) {}
+    /// The players in the world (None: the host can't tell, and
+    /// [`Server::set_players`] says).
+    fn players(&mut self) -> Option<Vec<PlayerInfo>> {
+        None
+    }
+    /// What player `id` carries: (item, count).
+    fn inventory(&mut self, _id: &str) -> Option<Vec<(String, u32)>> {
+        None
+    }
+    /// Damage to player `id` of a registered type (`minecraft:magic`); the
+    /// host skips creative and spectator players.
+    fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
+    /// A status effect on player `id` (`poison`).
+    fn effect(&mut self, _id: &str, _effect: &str, _seconds: u32, _amplifier: u8) {}
+    /// A named number player `id`'s client reads (the Geiger's).
+    fn set_player_value(&mut self, _id: &str, _key: &str, _value: i64) {}
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct PlayerInfo {
+    /// The player's UUID, hyphenated: the key of their dose.
     pub id: String,
     pub name: String,
     pub dim: String,
@@ -107,6 +124,8 @@ pub struct Server {
     fluidnet: fluid_server::FluidNet,
     tick: u64,
     players: Vec<PlayerInfo>,
+    /// What each player's client was last told: dose and rate.
+    radiation_shown: BTreeMap<String, (i64, i64)>,
     queued: Vec<BlockEvent>,
     ready: Ready,
 }
@@ -357,7 +376,8 @@ mod oil_server;
 pub mod container_bridge;
 mod fluid_server;
 mod foundry_server;
-mod native_server;
+pub mod native_server;
+mod radiation_server;
 
 #[cfg(test)]
 mod tests;
