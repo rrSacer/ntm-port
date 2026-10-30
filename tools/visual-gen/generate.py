@@ -419,8 +419,9 @@ def main():
                         draw.rectangle((kx, ky, kx + kw - 1, ky + kh - 1), fill=255)
                     clear = Image.new('RGBA', (w, h))
                     sheet = Image.composite(sheet, clear, mask)
+                # Over what is there, by the part's alpha (HBM draws them so).
                 for im, at in parts:
-                    sheet.paste(im, tuple(at))
+                    sheet.alpha_composite(im, tuple(at))
                 sheet.save(out / target)
             write_json(own(f'assets/ntm/horizon_screen/{sname}.json'), s)
         if 'liquid' in b:
