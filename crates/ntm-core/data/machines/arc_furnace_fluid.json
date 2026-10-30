@@ -9777,6 +9777,32 @@
 ]
 },
 {
+"name": "arc.auto.star.ingot",
+"label": "Metal: Metal Estelar",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:87",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_starmetal"
+],
+"n": 1,
+"label": "§9Lingote de Metal Estelar§r"
+}
+],
+"fin": [],
+"out": [],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"star",
+72
+]
+]
+},
+{
 "name": "arc.auto.star.densewire",
 "label": "Metal: Metal Estelar",
 "source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:87",

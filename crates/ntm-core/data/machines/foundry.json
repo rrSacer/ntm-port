@@ -3016,6 +3016,12 @@
 72
 ]
 ],
+"ntm:ingot_starmetal": [
+[
+"star",
+72
+]
+],
 "ntm:ingot_steel": [
 [
 "steel",
@@ -6886,6 +6892,10 @@
 "ntm:ingot_desh",
 1
 ],
+"star": [
+"ntm:ingot_starmetal",
+1
+],
 "ferro": [
 "ntm:ingot_ferrouranium",
 1
@@ -7602,6 +7612,10 @@
 ],
 "desh": [
 "ntm:ingot_desh",
+9
+],
+"star": [
+"ntm:ingot_starmetal",
 9
 ],
 "ferro": [

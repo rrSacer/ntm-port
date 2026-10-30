@@ -2344,6 +2344,32 @@
 "pools": []
 },
 {
+"name": "arc.furnace.bulk__741b07ffc92cf98ca5",
+"label": "§9Lingote de Metal Estelar§r ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_starmetal"
+],
+"n": 1,
+"label": "Cristais de Metal Estelar"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_starmetal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "arc.furnace.bulk__7474fd8fb0ce6255c9",
 "label": "Lingote de Tório-232 ×2",
 "source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",

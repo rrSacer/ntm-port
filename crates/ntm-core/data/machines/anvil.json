@@ -734,6 +734,7 @@
 "ntm:ingot_silicon",
 "ntm:ingot_solinium",
 "ntm:ingot_sr90",
+"ntm:ingot_starmetal",
 "ntm:ingot_steel",
 "ntm:ingot_tantalium",
 "ntm:ingot_tcalloy",
@@ -1180,6 +1181,7 @@
 "ntm:ingot_silicon",
 "ntm:ingot_solinium",
 "ntm:ingot_sr90",
+"ntm:ingot_starmetal",
 "ntm:ingot_steel",
 "ntm:ingot_tantalium",
 "ntm:ingot_tcalloy",
@@ -2906,6 +2908,112 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.70",
+"label": "Motor Stirling",
+"in": [
+{
+"ids": [
+"ntm:pink_planks",
+"minecraft:acacia_planks",
+"minecraft:birch_planks",
+"minecraft:dark_oak_planks",
+"minecraft:jungle_planks",
+"minecraft:oak_planks",
+"minecraft:spruce_planks"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 6,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:gear_large__iron"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_stirling",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.71",
+"label": "Motor Stirling Pesado",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_beryllium"
+],
+"count": 6,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_gold"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:gear_large__steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_stirling_steel",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.72",
 "label": "Motor a Vapor",
 "in": [
@@ -3238,6 +3346,42 @@
 "out": [
 [
 "ntm:plate_armor_hev",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.98",
+"label": "Blindagem Lunar",
+"in": [
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_starmetal"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:wire_fine__magnetized_tungsten"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_armor_lunar",
 1,
 1.0
 ]
@@ -4320,6 +4464,85 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.216",
+"label": "Placa de Aço ×6 (+3)",
+"in": [
+{
+"ids": [
+"ntm:machine_stirling"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+6,
+1.0
+],
+[
+"ntm:ingot_copper",
+8,
+1.0
+],
+[
+"ntm:coil_copper",
+4,
+1.0
+],
+[
+"ntm:gear_large__iron",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.218",
+"label": "Placa de Aço ×16 (+4)",
+"in": [
+{
+"ids": [
+"ntm:machine_stirling_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+16,
+1.0
+],
+[
+"ntm:ingot_beryllium",
+6,
+1.0
+],
+[
+"ntm:ingot_copper",
+4,
+1.0
+],
+[
+"ntm:coil_gold",
+8,
+1.0
+],
+[
+"ntm:gear_large__steel",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.219",
 "label": "Placa de Aço ×8 (+1)",
 "in": [
@@ -5139,6 +5362,7 @@
 "ntm:ingot_silicon",
 "ntm:ingot_solinium",
 "ntm:ingot_sr90",
+"ntm:ingot_starmetal",
 "ntm:ingot_steel",
 "ntm:ingot_tantalium",
 "ntm:ingot_tcalloy",
@@ -5585,6 +5809,7 @@
 "ntm:ingot_silicon",
 "ntm:ingot_solinium",
 "ntm:ingot_sr90",
+"ntm:ingot_starmetal",
 "ntm:ingot_steel",
 "ntm:ingot_tantalium",
 "ntm:ingot_tcalloy",
@@ -7309,6 +7534,112 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.70",
+"label": "Motor Stirling",
+"in": [
+{
+"ids": [
+"ntm:pink_planks",
+"minecraft:acacia_planks",
+"minecraft:birch_planks",
+"minecraft:dark_oak_planks",
+"minecraft:jungle_planks",
+"minecraft:oak_planks",
+"minecraft:spruce_planks"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 6,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:gear_large__iron"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_stirling",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.71",
+"label": "Motor Stirling Pesado",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_beryllium"
+],
+"count": 6,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_gold"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:gear_large__steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_stirling_steel",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.72",
 "label": "Motor a Vapor",
 "in": [
@@ -7641,6 +7972,42 @@
 "out": [
 [
 "ntm:plate_armor_hev",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.98",
+"label": "Blindagem Lunar",
+"in": [
+{
+"ids": [
+"ntm:plate_weaponsteel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_starmetal"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:wire_fine__magnetized_tungsten"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_armor_lunar",
 1,
 1.0
 ]
@@ -8723,6 +9090,85 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.216",
+"label": "Placa de Aço ×6 (+3)",
+"in": [
+{
+"ids": [
+"ntm:machine_stirling"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+6,
+1.0
+],
+[
+"ntm:ingot_copper",
+8,
+1.0
+],
+[
+"ntm:coil_copper",
+4,
+1.0
+],
+[
+"ntm:gear_large__iron",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.218",
+"label": "Placa de Aço ×16 (+4)",
+"in": [
+{
+"ids": [
+"ntm:machine_stirling_steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+16,
+1.0
+],
+[
+"ntm:ingot_beryllium",
+6,
+1.0
+],
+[
+"ntm:ingot_copper",
+4,
+1.0
+],
+[
+"ntm:coil_gold",
+8,
+1.0
+],
+[
+"ntm:gear_large__steel",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.219",
 "label": "Placa de Aço ×8 (+1)",
 "in": [
@@ -8809,5 +9255,5 @@
 "tier_upper": -1
 }
 ],
-"skipped": 166
+"skipped": 161
 }

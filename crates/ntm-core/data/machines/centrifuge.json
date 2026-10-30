@@ -960,6 +960,47 @@
 "pools": []
 },
 {
+"name": "source_line_186",
+"label": "Agregado de Schrabídio Gravado com Eufêmio",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:186",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:block_euphemium_cluster"
+],
+"n": 1,
+"label": "Agregado de Schrabídio Gravado com Eufêmio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_euphemium",
+7,
+1.0
+],
+[
+"ntm:powder_schrabidium",
+4,
+1.0
+],
+[
+"ntm:ingot_starmetal",
+2,
+1.0
+],
+[
+"ntm:nugget_solinium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "source_line_192",
 "label": "Minério de Fósforo do Nether",
 "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:192",
@@ -5713,5 +5754,5 @@
 "pools": []
 }
 ],
-"skipped": 25
+"skipped": 24
 }

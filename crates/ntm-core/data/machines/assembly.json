@@ -3349,6 +3349,434 @@
 "pools": []
 },
 {
+"name": "ass.dieselgen",
+"label": "Gerador a Diesel",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:411",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 1,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"n": 2,
+"label": "Placa Fundida de Cobre"
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"n": 4,
+"label": "Bobina de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_diesel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.combustiongen",
+"label": "Motor de Combustão Industrial",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:414",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 16,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ingot_copper",
+"minecraft:copper_ingot"
+],
+"n": 12,
+"label": "Cobre de Grau Industrial"
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"n": 8,
+"label": "Fio de Ouro Denso"
+},
+{
+"ids": [
+"ntm:canister_empty"
+],
+"n": 4,
+"label": "Canister Vazio"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 1,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_combustion_engine",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pistonsetsteel",
+"label": "Conjunto de Pistões de Aço",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:417",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 16,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"n": 8,
+"label": "Lingote de Tungstênio"
+},
+{
+"ids": [
+"ntm:bolt__tungsten"
+],
+"n": 16,
+"label": "Parafuso de Tungstênio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:piston_set__steel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pistonsetdura",
+"label": "Conjunto de Pistões de Aço Rápido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:419",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 24,
+"label": "Lingote de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 8,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"n": 8,
+"label": "Lingote de Tungstênio"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 16,
+"label": "Parafuso de Aço de Alta Velocidade"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:piston_set__dura",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pistonsetdesh",
+"label": "Conjunto de Pistões de Desh",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:421",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"n": 24,
+"label": "Lingote de Desh"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 12,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 24,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"n": 16,
+"label": "Lingote de Tungstênio"
+},
+{
+"ids": [
+"ntm:pipe__dura_steel"
+],
+"n": 4,
+"label": "Tubo de Aço de Alta Velocidade"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:piston_set__desh",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pistonsetstar",
+"label": "Conjunto de Pistões de Metal Estelar",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:423",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_starmetal"
+],
+"n": 24,
+"label": "§9Lingote de Metal Estelar§r"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 16,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:plate_saturnite"
+],
+"n": 24,
+"label": "Placa de Saturnita"
+},
+{
+"ids": [
+"ntm:ingot_niobium"
+],
+"n": 16,
+"label": "Lingote de Nióbio"
+},
+{
+"ids": [
+"ntm:pipe__dura_steel"
+],
+"n": 4,
+"label": "Tubo de Aço de Alta Velocidade"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:piston_set__starmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.turbofan",
+"label": "Turbofan",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:425",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__titanium"
+],
+"n": 8,
+"label": "Carcaça de Titânio"
+},
+{
+"ids": [
+"ntm:pipe__dura_steel"
+],
+"n": 4,
+"label": "Tubo de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 12,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:turbine_tungsten"
+],
+"n": 1,
+"label": "Pás de Turbofan Reforçadas"
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"n": 12,
+"label": "Fio de Ouro Denso"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 3,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_turbofan",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.gasturbine",
+"label": "Turbina a Gás de Ciclo Combinado",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:428",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 10,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"n": 12,
+"label": "Fio de Ouro Denso"
+},
+{
+"ids": [
+"ntm:pipe__dura_steel"
+],
+"n": 4,
+"label": "Tubo de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 4,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:turbine_tungsten"
+],
+"n": 1,
+"label": "Pás de Turbofan Reforçadas"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 12,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 3,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_turbinegas",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.hephaestus",
 "label": "Trocador de Calor Geotérmico",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:431",
@@ -15356,5 +15784,5 @@
 "pools": []
 }
 ],
-"skipped": 198
+"skipped": 190
 }
