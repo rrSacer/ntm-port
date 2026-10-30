@@ -6662,6 +6662,383 @@
         ]
       }
     },
+    "ntm:machine_liquefactor": {
+      "source": "ContainerLiquefactor, GUILiquefactor (gui_liquefactor.png 176x204), MachineLiquefactor {3,0,1,1,1,1} offset 1, RenderLiquefactor (no facing turn: Main is the same under a 90 degree turn; Fluid untextured in the tank's colour, scaled from y 1 by the fill; Glass 15% translucent, left out)",
+      "machine": {
+        "slots": [
+          {
+            "x": 35,
+            "y": 54,
+            "accept_recipes": "liquefaction"
+          },
+          {
+            "x": 134,
+            "y": 72,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 98,
+            "y": 36,
+            "accept": []
+          },
+          {
+            "x": 98,
+            "y": 54,
+            "accept": []
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 30,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            3,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        },
+        "synced": [
+          7,
+          8,
+          9
+        ]
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_liquefactor.png",
+        "texture_from": "textures/gui/processing/gui_liquefactor.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              134,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              42,
+              17,
+              42,
+              35
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "rect": [
+              71,
+              36,
+              16,
+              52
+            ],
+            "color": 9,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 0,
+            "min": 1,
+            "rect": [
+              138,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              134,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              71,
+              36,
+              16,
+              52
+            ],
+            "lines": [
+              "{7} / {8} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/liquefactor.obj",
+        "obj_from": "models/machines/liquefactor.obj",
+        "texture": "ntm:textures/models/machines/liquefactor.png",
+        "texture_from": "textures/models/machines/liquefactor.png",
+        "rotation": 0,
+        "radius": 4.5,
+        "hide": [
+          "Fluid",
+          "Glass"
+        ],
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/fluid_white.png",
+            "texture_from": "textures/models/machines/arc_furnace.png",
+            "crop": [
+              232,
+              141,
+              8,
+              8
+            ],
+            "box": [
+              -1.4375,
+              1,
+              -1.4375,
+              1.4375,
+              2,
+              1.4375
+            ],
+            "value": 7,
+            "max": 8,
+            "color": 9
+          }
+        ]
+      }
+    },
+    "ntm:machine_solidifier": {
+      "source": "ContainerSolidifier, GUISolidifier (gui_solidifier.png 176x204), MachineSolidifier {3,0,1,1,1,1} offset 1, RenderSolidifier (case 2: 90; Fluid untextured in the tank's colour, scaled from y 1.25 by the fill; Glass 15% translucent, left out)",
+      "machine": {
+        "slots": [
+          {
+            "x": 71,
+            "y": 45,
+            "output": true
+          },
+          {
+            "x": 134,
+            "y": 72,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 98,
+            "y": 36,
+            "accept": []
+          },
+          {
+            "x": 98,
+            "y": 54,
+            "accept": []
+          },
+          {
+            "x": 71,
+            "y": 72,
+            "accept": []
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 30,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            3,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        },
+        "synced": [
+          4,
+          5,
+          6
+        ]
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_solidifier.png",
+        "texture_from": "textures/gui/processing/gui_solidifier.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              134,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              42,
+              17,
+              42,
+              35
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              35,
+              36,
+              16,
+              52
+            ],
+            "color": 6,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 0,
+            "min": 1,
+            "rect": [
+              138,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              134,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              35,
+              36,
+              16,
+              52
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/solidifier.obj",
+        "obj_from": "models/machines/solidifier.obj",
+        "texture": "ntm:textures/models/machines/solidifier.png",
+        "texture_from": "textures/models/machines/solidifier.png",
+        "rotation": 90,
+        "radius": 4.5,
+        "hide": [
+          "Fluid",
+          "Glass"
+        ],
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/fluid_white.png",
+            "texture_from": "textures/models/machines/arc_furnace.png",
+            "crop": [
+              232,
+              141,
+              8,
+              8
+            ],
+            "box": [
+              0.4375,
+              1.25,
+              -1.1875,
+              1.1875,
+              2.75,
+              -0.4375
+            ],
+            "value": 4,
+            "max": 5,
+            "color": 6
+          }
+        ]
+      }
+    },
     "ntm:machine_pyrooven": {
       "source": "ContainerPyroOven, GUIPyroOven (gui_pyrooven.png 176x204), MachinePyroOven {2,0,3,3,2,2} offset 3, RenderPyroOven (case 2: 180; Slider sways by sps(anim * 0.125) / 2 - 0.5 on x, Fan turns 45 degrees a tick about (1.5, 0, 1.5), anim counting while it works)",
       "machine": {

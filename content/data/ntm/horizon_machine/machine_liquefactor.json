@@ -1,0 +1,91 @@
+{
+  "slots": [
+    {
+      "x": 35,
+      "y": 54,
+      "accept": [
+        "minecraft:acacia_log",
+        "minecraft:birch_log",
+        "minecraft:coal",
+        "minecraft:cobblestone",
+        "minecraft:cod",
+        "minecraft:dark_oak_log",
+        "minecraft:ender_pearl",
+        "minecraft:fern",
+        "minecraft:ice",
+        "minecraft:jungle_log",
+        "minecraft:melon_slice",
+        "minecraft:netherrack",
+        "minecraft:oak_log",
+        "minecraft:obsidian",
+        "minecraft:packed_ice",
+        "minecraft:pufferfish",
+        "minecraft:salmon",
+        "minecraft:short_grass",
+        "minecraft:snow_block",
+        "minecraft:snowball",
+        "minecraft:spruce_log",
+        "minecraft:stone",
+        "minecraft:sugar",
+        "minecraft:sunflower",
+        "minecraft:tropical_fish",
+        "minecraft:vine",
+        "minecraft:wheat_seeds",
+        "ntm:biomass",
+        "ntm:block_lead",
+        "ntm:glyphid_gland_empty",
+        "ntm:ingot_lead",
+        "ntm:lignite",
+        "ntm:oil_tar__coal",
+        "ntm:oil_tar__crack",
+        "ntm:oil_tar__crude",
+        "ntm:powder_coal",
+        "ntm:powder_lead",
+        "ntm:powder_lignite",
+        "ntm:powder_sodium"
+      ]
+    },
+    {
+      "x": 134,
+      "y": 72,
+      "accept": [
+        "ntm:battery_creative"
+      ],
+      "max": 1
+    },
+    {
+      "x": 98,
+      "y": 36,
+      "accept": []
+    },
+    {
+      "x": 98,
+      "y": 54,
+      "accept": []
+    }
+  ],
+  "inventory": [
+    8,
+    122
+  ],
+  "data": 30,
+  "multiblock": {
+    "min": [
+      -1,
+      0,
+      -1
+    ],
+    "max": [
+      1,
+      3,
+      1
+    ],
+    "offset": 1,
+    "dummy": "ntm:dummy_machine"
+  },
+  "synced": [
+    7,
+    8,
+    9
+  ]
+}

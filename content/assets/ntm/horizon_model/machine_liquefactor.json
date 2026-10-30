@@ -3,5 +3,24 @@
   "texture": "ntm:textures/models/machines/liquefactor.png",
   "rotation": 0,
   "radius": 4.5,
-  "hide": []
+  "hide": [
+    "Fluid",
+    "Glass"
+  ],
+  "liquids": [
+    {
+      "texture": "ntm:textures/models/machines/fluid_white.png",
+      "box": [
+        -1.4375,
+        1,
+        -1.4375,
+        1.4375,
+        2,
+        1.4375
+      ],
+      "value": 7,
+      "max": 8,
+      "color": 9
+    }
+  ]
 }

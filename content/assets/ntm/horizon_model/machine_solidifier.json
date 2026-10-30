@@ -1,7 +1,26 @@
 {
   "obj": "ntm:models/obj/solidifier.obj",
   "texture": "ntm:textures/models/machines/solidifier.png",
-  "rotation": 90.0,
+  "rotation": 90,
   "radius": 4.5,
-  "hide": []
+  "hide": [
+    "Fluid",
+    "Glass"
+  ],
+  "liquids": [
+    {
+      "texture": "ntm:textures/models/machines/fluid_white.png",
+      "box": [
+        0.4375,
+        1.25,
+        -1.1875,
+        1.1875,
+        2.75,
+        -0.4375
+      ],
+      "value": 4,
+      "max": 5,
+      "color": 6
+    }
+  ]
 }
