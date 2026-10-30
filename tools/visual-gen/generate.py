@@ -267,18 +267,29 @@ def block_model(spec, block):
     textures = {k: f'ntm:block/visual/{v}' for k, v in spec['textures'].items()}
     textures.setdefault('particle', textures[spec.get('particle', 'side')])
     edge = {'down': (1, 0), 'up': (1, 16), 'north': (2, 0), 'south': (2, 16), 'west': (0, 0), 'east': (0, 16)}
-    elements = []
-    for frm, to, faces in spec['elements']:
-        out = {}
-        for face, tex in faces.items():
-            f = {'texture': '#' + tex}
-            axis, at = edge[face]
-            if (frm if at == 0 else to)[axis] == at:
-                f['cullface'] = face
-            out[face] = f
-        elements.append({'from': frm, 'to': to, 'faces': out})
-    model = {'ambientocclusion': False, 'textures': textures, 'elements': elements}
+
+    def elements_of(boxes):
+        elements = []
+        for frm, to, faces in boxes:
+            out = {}
+            for face, tex in faces.items():
+                f = {'texture': '#' + tex}
+                axis, at = edge[face]
+                if (frm if at == 0 else to)[axis] == at:
+                    f['cullface'] = face
+                out[face] = f
+            elements.append({'from': frm, 'to': to, 'faces': out})
+        return {'ambientocclusion': False, 'textures': textures, 'elements': elements}
     ref = f'ntm:block/visual/{name}'
+    # `states`: a model per block state ({"type=bottom": elements, ...}),
+    # named <block>_<n> in that order; the item shows the first.
+    if 'states' in spec:
+        models, variants = {}, {}
+        for n, (state, boxes) in enumerate(spec['states'].items()):
+            models[f'{name}_{n}'] = elements_of(boxes)
+            variants[state] = {'model': f'{ref}_{n}'}
+        return models, {'variants': variants}, {'model': {'type': 'minecraft:model', 'model': f'{ref}_0'}}
+    model = elements_of(spec['elements'])
     if spec.get('facing'):
         turns = {'north': 0, 'east': 90, 'south': 180, 'west': 270}
         variants = {f'facing={f}': ({'model': ref, 'y': y} if y else {'model': ref}) for f, y in turns.items()}
@@ -439,7 +450,8 @@ def main():
             for tex in sorted(set(bm['textures'].values())):
                 copy(f'textures/blocks/{tex}.png', f'assets/ntm/textures/block/visual/{tex}.png')
             model, states, item = block_model(bm, block)
-            write_json(own(f'assets/ntm/models/block/visual/{name}.json'), model)
+            for mname, m in (model.items() if 'states' in bm else [(name, model)]):
+                write_json(own(f'assets/ntm/models/block/visual/{mname}.json'), m)
             write_json(own(f'assets/ntm/blockstates/{name}.json'), states)
             write_json(own(f'assets/ntm/items/{name}.json'), item)
         if 'model' in b:
