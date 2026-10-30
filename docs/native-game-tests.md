@@ -94,3 +94,25 @@ python3 tools/test-game/native_recipes.py /caminho/do/jogo montadora bigorna
 | bigorna | bigorna de desh; `aço` filtra; o primeiro resultado é a Placa de Aço; o botão Fechar manda a escolha (data 1 = 5); 20 lingotes de aço, "Construir uma vez" faz 1 chapa e Shift faz as outras 19 |
 
 Prova de 30/10/2026: motor `b9d905189` (API 31), bundle NTM com a lista, Recipes oficial `ae217daa`, conteúdo do HEAD do port (`56d6cff4`, com a textura do seletor). Capturas e o JSON dos comandos ficam na pasta de cada jogo (`native-recipes*.png`, `native-recipes.json`).
+
+## Máquinas com lista de receitas (L2) e as redes
+
+`native_stations.py` (uma fase por máquina) escolhe a receita na lista nativa (`native_recipes.pick`, com `horizon-ctl key` e `type`), alimenta a máquina e confere o que sai. A energia vem de uma bateria em buffer ao lado da máquina, enchida por uma bateria criativa num funil (ou do slot de bateria, quando a máquina carrega por ele); os fluidos vêm de um barril com recipientes cheios, no modo saída, e de um duto tipado com o identificador de fluido.
+
+```sh
+python3 tools/test-game/native_stations.py /caminho/do/jogo planta misturador purex m3_fluidos m3_centrifuga
+```
+
+| Fase | Conta | Resultado em 30/10 |
+| --- | --- | --- |
+| planta | Dinamite: açúcar, salitre e areia dão 2 dinamites | passou |
+| misturador | Refrigerante: 2 baldes de água num barril, duto de água, salitre; 2000 mB de refrigerante (sobram 200 de água), com a bateria criativa no slot dele | passou |
+| purex | Haste de Plutônio-239: ácido sulfúrico por barril e duto; 2 tarugos de Pu-239 e 1 de urânio | passou |
+| m3_fluidos | Oxigênio: 8 tanques de ar num barril, duto de ar, planta química; 500 mB de oxigênio | passou |
+| m3_centrifuga | 2 células de UF6 num barril, duto de UF6, centrífuga a gás na rede; uma pepita de U-238 | passou na rede; **falha com a bateria criativa no slot 4** |
+
+Também passaram em jogo: `native_presses.py eprensa` (16 fios, 3 lingotes, matriz quebrada), `native_anvil.py` (forja: bigorna de ferro + 12 de aço dá a de aço) e `native_recipes.py` (montadora e bigorna).
+
+**Pendência de lógica (para quem cuida do `ntm-core`):** a centrífuga a gás não carrega pela bateria do slot 4: com a bateria criativa lá, a máquina enche de UF6 mas `power` fica em 0 e nada sai (o mesmo defeito que a prensa elétrica teve, corrigido em `530635fc`). Pela rede ela funciona.
+
+Evidência: `.agent-tmp/sonnet-l2/runs/` (cada pasta tem `native-stations.json`, `client.log`, capturas). Motor `b9d905189`, bundle NTM e Recipes oficial `ae217daa`.

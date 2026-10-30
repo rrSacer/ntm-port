@@ -75,6 +75,29 @@ def recipe_data(game, x, y, z, index):
     return values[index] if index < len(values) else None
 
 
+def pick(game, screen_name, query, core, data_slot, label_check=None):
+    """Open the machine's recipe list from its button 0, search `query` (ctl type,
+    Enter focuses), choose the first match and close with the Close button.
+    Returns the data slot's value (recipe + 1) once the server has it."""
+    machine = screen_json(screen_name)
+    opener = next(b for b in machine['buttons'] if b['id'] == 0)
+    ox, oy = origin(game, machine['size'])
+    rx, ry, rw, rh = opener['rect']
+    game.ctl(f'click-at {ox + rx + rw / 2} {oy + ry + rh / 2}')
+    time.sleep(.5)
+    game.ctl('key enter tap')
+    game.ctl(f'type {query}')
+    time.sleep(.5)
+    game.snapshot(f'recipes-{screen_name}-search')
+    click(game, SELECTOR, FIRST_CELL)
+    time.sleep(.3)
+    click(game, SELECTOR, CLOSE)
+    time.sleep(1)
+    chosen = recipe_data(game, *core, data_slot)
+    game.check(f'{screen_name}_recipe_sent', chosen is not None and chosen > 0, chosen)
+    return chosen
+
+
 def montadora(game, keys):
     game.evidence['phase'] = 'montadora'
     x, y, z = 80, 100, 8
