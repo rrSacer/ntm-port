@@ -1841,3 +1841,5 @@ mod anvil_tests;
 mod press_slots_tests;
 
 mod purex_tests;
+
+mod bedrock_tests;
