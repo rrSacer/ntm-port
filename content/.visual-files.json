@@ -443,6 +443,9 @@
   "assets/ntm/models/obj/wood_burner.obj",
   "assets/ntm/textures/models/machines/wood_burner.png",
   "assets/ntm/horizon_model/machine_wood_burner.json",
+  "data/ntm/horizon_machine/machine_electric_furnace_off.json",
+  "assets/ntm/textures/gui/processing/gui_electric_furnace.png",
+  "assets/ntm/horizon_screen/machine_electric_furnace_off.json",
   "data/ntm/horizon/block/dummy_machine.json",
   "assets/ntm/blockstates/dummy_machine.json",
   "assets/ntm/models/block/dummy_machine.json"
