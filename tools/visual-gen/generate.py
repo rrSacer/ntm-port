@@ -98,6 +98,48 @@ def machine_slots(machine):
     return {**machine, 'slots': slots} if 'slots' in machine else machine
 
 
+def box_obj(src, model):
+    """`boxes`: {bone: [[from, to, {face: texture}], ...]} in pixels of a
+    block (0..16, its corner at 0) as HBM's block renderers set their render
+    bounds, each face showing the part of its 16x16 texture its bounds cover
+    (RenderBlocks' UVs). Returns the OBJ text (centred on the block, as a
+    model's frame is) and the sheet: the textures side by side."""
+    from PIL import Image
+    names = sorted({t for boxes in model['boxes'].values() for _, _, faces in boxes for t in faces.values()})
+    sheet = Image.new('RGBA', (16 * len(names), 16))
+    for i, n in enumerate(names):
+        sheet.paste(Image.open(src / f'textures/blocks/{n}.png').convert('RGBA').crop((0, 0, 16, 16)), (16 * i, 0))
+    w = 16 * len(names)
+    lines, vt, nv = [], [], 0
+    def emit(corners, uvs, tex):
+        nonlocal nv
+        u0 = 16 * names.index(tex)
+        for (x, y, z), (u, v) in zip(corners, uvs):
+            lines.append(f'v {x / 16 - 0.5:.6f} {y / 16:.6f} {z / 16 - 0.5:.6f}')
+            # HFRWavefrontObject flips v: the engine reads 1 - v.
+            lines.append(f'vt {(u0 + u) / w:.6f} {1 - v / 16:.6f}')
+        i = nv + 1
+        lines.append(f'f {i}/{i} {i + 1}/{i + 1} {i + 2}/{i + 2} {i + 3}/{i + 3}')
+        nv += 4
+    for bone, boxes in model['boxes'].items():
+        lines.append(f'o {bone}')
+        for (x0, y0, z0), (x1, y1, z1), faces in boxes:
+            # Corners counter-clockwise seen from outside; u, v as RenderBlocks
+            # takes them from the bounds (v down from the top for the sides).
+            quads = {
+                'up': ([(x0, y1, z0), (x0, y1, z1), (x1, y1, z1), (x1, y1, z0)], [(x0, z0), (x0, z1), (x1, z1), (x1, z0)]),
+                'down': ([(x0, y0, z0), (x1, y0, z0), (x1, y0, z1), (x0, y0, z1)], [(x0, z0), (x1, z0), (x1, z1), (x0, z1)]),
+                'north': ([(x1, y1, z0), (x1, y0, z0), (x0, y0, z0), (x0, y1, z0)], [(16 - x1, 16 - y1), (16 - x1, 16 - y0), (16 - x0, 16 - y0), (16 - x0, 16 - y1)]),
+                'south': ([(x0, y1, z1), (x0, y0, z1), (x1, y0, z1), (x1, y1, z1)], [(x0, 16 - y1), (x0, 16 - y0), (x1, 16 - y0), (x1, 16 - y1)]),
+                'west': ([(x0, y1, z0), (x0, y0, z0), (x0, y0, z1), (x0, y1, z1)], [(z0, 16 - y1), (z0, 16 - y0), (z1, 16 - y0), (z1, 16 - y1)]),
+                'east': ([(x1, y1, z1), (x1, y0, z1), (x1, y0, z0), (x1, y1, z0)], [(16 - z1, 16 - y1), (16 - z1, 16 - y0), (16 - z0, 16 - y0), (16 - z0, 16 - y1)]),
+            }
+            for face, tex in faces.items():
+                corners, uvs = quads[face]
+                emit(corners, uvs, tex)
+    return '\n'.join(lines) + '\n', sheet
+
+
 def obj_info(path):
     """The OBJ's object names and how far it reaches from the block's centre."""
     names, reach = [], 1.0
@@ -399,7 +441,16 @@ def main():
                 liquid_texture(x)
             if not m['liquids']:
                 del m['liquids']
-            if 'merge' in m:
+            if 'boxes' in m:
+                text, sheet = box_obj(src, m)
+                m.pop('boxes')
+                obj_out = own('assets/ntm/' + m['obj'].split(':', 1)[1])
+                obj_out.parent.mkdir(parents=True, exist_ok=True)
+                obj_out.write_text(text)
+                tex_out = own('assets/ntm/' + m['texture'].split(':', 1)[1])
+                tex_out.parent.mkdir(parents=True, exist_ok=True)
+                sheet.save(tex_out)
+            elif 'merge' in m:
                 text, sheet = merge_obj(src, m)
                 for k in ('obj_from', 'texture_from', 'merge'):
                     m.pop(k)
