@@ -4732,6 +4732,407 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.237",
+"label": "Coluna Estrutural RBMK (+1)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_moderator"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:block_graphite",
+4,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.238",
+"label": "Coluna Estrutural RBMK (+1)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_absorber"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:ingot_boron",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.239",
+"label": "Coluna Estrutural RBMK (+1)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_reflector"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:neutron_reflector",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.240",
+"label": "Absorvedor de Nêutrons de Boro RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_control"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_absorber",
+1,
+1.0
+],
+[
+"ntm:ingot_graphite",
+2,
+1.0
+],
+[
+"ntm:motor",
+2,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.241",
+"label": "Hastes de Controle RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_control_mod"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_control",
+1,
+1.0
+],
+[
+"ntm:block_graphite",
+4,
+1.0
+],
+[
+"ntm:nugget_bismuth",
+4,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.242",
+"label": "Hastes de Controle RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_control_auto"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_control",
+1,
+1.0
+],
+[
+"ntm:circuit__advanced",
+1,
+1.0
+],
+[
+"ntm:crt_display",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.243",
+"label": "Coluna Estrutural RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_rod_reasim"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:ingot_zirconium",
+4,
+1.0
+],
+[
+"ntm:shell__steel",
+2,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.244",
+"label": "Canal de Combustível RBMK (ReaSim) (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_rod_reasim_mod"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_rod_reasim",
+1,
+1.0
+],
+[
+"ntm:block_graphite",
+4,
+1.0
+],
+[
+"ntm:ingot_tcalloy",
+4,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.245",
+"label": "Coluna Estrutural RBMK (+3)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_outgasser"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:steel_grate",
+6,
+1.0
+],
+[
+"ntm:tank_steel",
+1,
+1.0
+],
+[
+"minecraft:hopper",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.247",
+"label": "Coluna Estrutural RBMK (+1)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_rod"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:shell__steel",
+2,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.248",
+"label": "Canal de Combustível RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_rod_mod"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_rod",
+1,
+1.0
+],
+[
+"ntm:block_graphite",
+4,
+1.0
+],
+[
+"ntm:nugget_bismuth",
+4,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.249",
+"label": "Coluna Estrutural RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_boiler"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:pipe__copper",
+6,
+1.0
+],
+[
+"ntm:shell__copper",
+2,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.250",
+"label": "Coluna Estrutural RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_cooler"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:steel_grate",
+4,
+1.0
+],
+[
+"ntm:plate_polymer",
+4,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.255",
 "label": "Tubo de Aço ×4 (+2)",
 "in": [
@@ -9493,6 +9894,407 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.237",
+"label": "Coluna Estrutural RBMK (+1)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_moderator"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:block_graphite",
+4,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.238",
+"label": "Coluna Estrutural RBMK (+1)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_absorber"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:ingot_boron",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.239",
+"label": "Coluna Estrutural RBMK (+1)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_reflector"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:neutron_reflector",
+8,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.240",
+"label": "Absorvedor de Nêutrons de Boro RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_control"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_absorber",
+1,
+1.0
+],
+[
+"ntm:ingot_graphite",
+2,
+1.0
+],
+[
+"ntm:motor",
+2,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.241",
+"label": "Hastes de Controle RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_control_mod"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_control",
+1,
+1.0
+],
+[
+"ntm:block_graphite",
+4,
+1.0
+],
+[
+"ntm:nugget_bismuth",
+4,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.242",
+"label": "Hastes de Controle RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_control_auto"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_control",
+1,
+1.0
+],
+[
+"ntm:circuit__advanced",
+1,
+1.0
+],
+[
+"ntm:crt_display",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.243",
+"label": "Coluna Estrutural RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_rod_reasim"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:ingot_zirconium",
+4,
+1.0
+],
+[
+"ntm:shell__steel",
+2,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.244",
+"label": "Canal de Combustível RBMK (ReaSim) (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_rod_reasim_mod"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_rod_reasim",
+1,
+1.0
+],
+[
+"ntm:block_graphite",
+4,
+1.0
+],
+[
+"ntm:ingot_tcalloy",
+4,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.245",
+"label": "Coluna Estrutural RBMK (+3)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_outgasser"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:steel_grate",
+6,
+1.0
+],
+[
+"ntm:tank_steel",
+1,
+1.0
+],
+[
+"minecraft:hopper",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.247",
+"label": "Coluna Estrutural RBMK (+1)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_rod"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:shell__steel",
+2,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.248",
+"label": "Canal de Combustível RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_rod_mod"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_rod",
+1,
+1.0
+],
+[
+"ntm:block_graphite",
+4,
+1.0
+],
+[
+"ntm:nugget_bismuth",
+4,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.249",
+"label": "Coluna Estrutural RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_boiler"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:pipe__copper",
+6,
+1.0
+],
+[
+"ntm:shell__copper",
+2,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.250",
+"label": "Coluna Estrutural RBMK (+2)",
+"in": [
+{
+"ids": [
+"ntm:rbmk_cooler"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+],
+[
+"ntm:steel_grate",
+4,
+1.0
+],
+[
+"ntm:plate_polymer",
+4,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.255",
 "label": "Tubo de Aço ×4 (+2)",
 "in": [
@@ -9525,5 +10327,5 @@
 "tier_upper": -1
 }
 ],
-"skipped": 156
+"skipped": 143
 }

@@ -4664,6 +4664,100 @@
 "pools": []
 },
 {
+"name": "ass.rbmk",
+"label": "Coluna Estrutural RBMK",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:528",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:concrete_asbestos"
+],
+"n": 4,
+"label": "Concreto de Amianto"
+},
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 2,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 2,
+"label": "Barra de Borracha"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:rbmk_blank",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.rbmkautoloader",
+"label": "Carregador Automático RBMK",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:532",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 4,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:plate_cast__lead"
+],
+"n": 4,
+"label": "Placa Fundida de Chumbo"
+},
+{
+"ids": [
+"ntm:ingot_boron"
+],
+"n": 4,
+"label": "Lingote de Boro"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 3,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:rbmk_autoloader",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.pwrheatex",
 "label": "Trocador de Calor do PWR ×4",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:547",
@@ -16362,5 +16456,5 @@
 "pools": []
 }
 ],
-"skipped": 176
+"skipped": 174
 }
