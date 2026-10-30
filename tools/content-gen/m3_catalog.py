@@ -147,6 +147,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
                  'behavior_gap': 'Creative-only infinite battery; server logic owns charging, no crafting recipe in NTM'})
     import bedrock_catalog
     rows.extend(bedrock_catalog.build(source))
+    import bedrock_processing_catalog
+    rows.extend(bedrock_processing_catalog.build(source))
     import foundry_catalog
     rows.extend(foundry_catalog.build(source))
     import anvil_catalog
@@ -179,10 +181,12 @@ def build(source=SOURCE, output=ROOT / 'content'):
     if backlog.is_file():
         data = json.loads(backlog.read_text())
         for entry in data['entries']:
-            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES):
-                entry['content_id'] = 'ntm:' + entry['id']
+            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES) | set(bedrock_processing_catalog.MACHINES):
+                entry['content_id'] = 'ntm:' + entry['id'] + ('_large' if entry['source_variable'] == 'machine_arc_furnace' else '')
                 entry['status'] = ('Crystallizer content declared; stage-two processing/upgrades tracked separately'
                                    if entry['source_variable'] == 'machine_crystallizer' else
+                                   'Bedrock stage-three/four content declared; processing and visuals tracked separately'
+                                   if entry['source_variable'] in bedrock_processing_catalog.MACHINES else
                                    'Bedrock stage-one content contract declared; extraction/slopping and visuals tracked by their agents'
                                    if entry['source_variable'] in bedrock_catalog.MACHINES else
                                    'Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents'

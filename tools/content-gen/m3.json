@@ -18740,6 +18740,235 @@
       }
     },
     {
+      "id": "machine_pyrooven",
+      "source_variable": "machine_pyrooven",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Pyrolysis Oven",
+        "pt_br": "Forno de Pirólise"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Steel casing cube fallback; visual-gen owns OBJ, screen and multiblock"
+    },
+    {
+      "id": "machine_electrolyser",
+      "source_variable": "machine_electrolyser",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Electrolysis Machine",
+        "pt_br": "Máquina de Eletrólise"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel_machine.png",
+      "textures": {
+        "side": "blocks/block_steel_machine",
+        "top": "blocks/block_steel_machine",
+        "front": "blocks/block_steel_machine"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Steel casing cube fallback; visual-gen owns OBJ, screen and multiblock"
+    },
+    {
+      "id": "machine_arc_furnace_large",
+      "source_variable": "machine_arc_furnace",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Electric Arc Furnace",
+        "pt_br": "Forno Elétrico a Arco"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Steel casing cube fallback; visual-gen owns OBJ, screen and multiblock"
+    },
+    {
+      "id": "arc_electrode__graphite",
+      "source_variable": "arc_electrode",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.GRAPHITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode.graphite.png",
+      "names": {
+        "en_us": "Graphite Electrode",
+        "pt_br": "Eletrodo de Grafite"
+      },
+      "max_stack_size": 1,
+      "electrode": {
+        "max_uses": 10,
+        "spent": false,
+        "burnt_item": "ntm:arc_electrode_burnt__graphite",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption"
+    },
+    {
+      "id": "arc_electrode__lanthanium",
+      "source_variable": "arc_electrode",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.LANTHANIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode.lanthanium.png",
+      "names": {
+        "en_us": "Lanthanium Electrode",
+        "pt_br": "Eletrodo de Lantânio"
+      },
+      "max_stack_size": 1,
+      "electrode": {
+        "max_uses": 100,
+        "spent": false,
+        "burnt_item": "ntm:arc_electrode_burnt__lanthanium",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption"
+    },
+    {
+      "id": "arc_electrode__desh",
+      "source_variable": "arc_electrode",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.DESH",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode.desh.png",
+      "names": {
+        "en_us": "Desh Electrode",
+        "pt_br": "Eletrodo de Desh"
+      },
+      "max_stack_size": 1,
+      "electrode": {
+        "max_uses": 500,
+        "spent": false,
+        "burnt_item": "ntm:arc_electrode_burnt__desh",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption"
+    },
+    {
+      "id": "arc_electrode__saturnite",
+      "source_variable": "arc_electrode",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.SATURNITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode.saturnite.png",
+      "names": {
+        "en_us": "Saturnite Electrode",
+        "pt_br": "Eletrodo de Saturnita"
+      },
+      "max_stack_size": 1,
+      "electrode": {
+        "max_uses": 1500,
+        "spent": false,
+        "burnt_item": "ntm:arc_electrode_burnt__saturnite",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption"
+    },
+    {
+      "id": "arc_electrode_burnt__graphite",
+      "source_variable": "arc_electrode_burnt",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.GRAPHITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode_burnt.graphite.png",
+      "names": {
+        "en_us": "Molten Graphite Electrode",
+        "pt_br": "Eletrodo de Grafite Derretido"
+      },
+      "electrode": {
+        "max_uses": 10,
+        "spent": true,
+        "burnt_item": "ntm:arc_electrode_burnt__graphite",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption"
+    },
+    {
+      "id": "arc_electrode_burnt__lanthanium",
+      "source_variable": "arc_electrode_burnt",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.LANTHANIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode_burnt.lanthanium.png",
+      "names": {
+        "en_us": "Molten Lanthanium Electrode",
+        "pt_br": "Eletrodo de Lantânio Derretido"
+      },
+      "electrode": {
+        "max_uses": 100,
+        "spent": true,
+        "burnt_item": "ntm:arc_electrode_burnt__lanthanium",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption"
+    },
+    {
+      "id": "arc_electrode_burnt__desh",
+      "source_variable": "arc_electrode_burnt",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.DESH",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode_burnt.desh.png",
+      "names": {
+        "en_us": "Molten Desh Electrode",
+        "pt_br": "Eletrodo de Desh Derretido"
+      },
+      "electrode": {
+        "max_uses": 500,
+        "spent": true,
+        "burnt_item": "ntm:arc_electrode_burnt__desh",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption"
+    },
+    {
+      "id": "arc_electrode_burnt__saturnite",
+      "source_variable": "arc_electrode_burnt",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.SATURNITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode_burnt.saturnite.png",
+      "names": {
+        "en_us": "Molten Saturnite Electrode",
+        "pt_br": "Eletrodo de Saturnita Derretido"
+      },
+      "electrode": {
+        "max_uses": 1500,
+        "spent": true,
+        "burnt_item": "ntm:arc_electrode_burnt__saturnite",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption"
+    },
+    {
       "id": "machine_crucible",
       "source_variable": "machine_crucible",
       "type": "block",
