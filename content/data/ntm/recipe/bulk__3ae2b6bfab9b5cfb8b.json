@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:template_folder",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LPL",
+    "BPB",
+    "LPL"
+  ],
+  "key": {
+    "P": "minecraft:paper",
+    "L": "#ntm:bulk/dye",
+    "B": "#ntm:bulk/dye"
+  }
+}

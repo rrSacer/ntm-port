@@ -12,6 +12,18 @@ def build(source):
     tr = {loc: lang(source / f'src/main/resources/assets/hbm/lang/{old}.lang')
           for loc, old in [('en_us','en_US'),('pt_br','pt_BR')]}
     rows = []
+    name, texture = registration(items, 'fluid_identifier_multi', 'item')
+    from m3_catalog import fluids
+    none = fluids(source)[0]
+    rows.append({'id': name, 'type': 'item', 'category': 'component',
+                 'source_variable': 'fluid_identifier_multi', 'max_stack_size': 1,
+                 'source_texture': f'src/main/resources/assets/hbm/textures/items/{texture}.png',
+                 'overlay_textures': [{'source': 'src/main/resources/assets/hbm/textures/items/fluid_identifier_overlay.png',
+                                       'tint': {'multiply': none['color']}}],
+                 'names': {loc: translations['item.fluid_identifier_multi.name'] for loc, translations in tr.items()},
+                 'fluid_identifier': {'custom_data_key': 'ntm_fluid', 'value': 'fluids.json string id', 'default': none['id'],
+                                      'source_primary': 'fluid1', 'source_secondary': 'fluid2'},
+                 'behavior_gap': 'Native logic reads custom_data.ntm_fluid; selection GUI, secondary type swap, ALT capture and dynamic overlay tint require native item hooks. Static overlay uses NONE color.'})
     text = clean((source / (BASE + 'items/special/ItemPlasticScrap.java')).read_text())
     members = [s.strip() for s in split(text.split('enum ScrapType {',1)[1].split('}',1)[0])]
     if len(members) != 23: raise ValueError('Plastic scrap enum drift')

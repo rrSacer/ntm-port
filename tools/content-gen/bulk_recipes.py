@@ -86,6 +86,17 @@ class Resolver:
         vanilla_ores={'ingotIron':'iron_ingot','ingotGold':'gold_ingot','ingotCopper':'copper_ingot','ingotBrick':'brick','ingotBrickNether':'nether_brick','ingotNetherBrick':'nether_brick','nuggetIron':'iron_nugget','nuggetGold':'gold_nugget','dustRedstone':'redstone','dustGlowstone':'glowstone_dust','dustGunpowder':'gunpowder','gemDiamond':'diamond','gemEmerald':'emerald','gemQuartz':'quartz','gemLapis':'lapis_lazuli','blockIron':'iron_block','blockGold':'gold_block','blockDiamond':'diamond_block','blockEmerald':'emerald_block','blockGlass':'glass','blockGlassColorless':'glass','paneGlass':'glass_pane','paneGlassColorless':'glass_pane','sand':'sand','stone':'stone','cobblestone':'cobblestone','stickWood':'stick','slimeball':'slime_ball'}
         for ore,item in vanilla_ores.items():self.ore[ore].add('minecraft:'+item)
         for color in COLORS:self.ore['dye'+''.join(x.title() for x in color.split('_'))].add('minecraft:'+color+'_dye')
+        # Forge's generic dye key includes all vanilla dye metadata and NTM's
+        # explicit registrations (including wildcard enum families).
+        self.ore['dye'].update('minecraft:'+name for name in DYES)
+        for _, args, _ in calls(text, r'OreDictionary\.registerOre'):
+            parts=split(args)
+            if len(parts)!=2 or parts[0]!='"dye"':continue
+            wildcard=re.fullmatch(r'new ItemStack\((\w+),\s*1,\s*OreDictionary\.WILDCARD_VALUE\)',parts[1])
+            if wildcard:self.ore['dye'].update(r['id'] for r in self.byvar.get(wildcard[1],[]))
+            else:
+                try:self.ore['dye'].add(self.item(parts[1],unqualified=True)[0])
+                except Unsupported:pass
         for ore,tag in [('logWood','logs'),('plankWood','planks'),('slabWood','wooden_slabs'),('treeLeaves','leaves'),('treeSapling','saplings')]:self.ore[ore].add('#minecraft:'+tag)
     def row(self,var,meta=None,kind=None):
         candidates=[r for r in self.byvar.get(var,[]) if kind is None or r['type']==kind]
@@ -259,7 +270,12 @@ def generate(src,out,rows,emit):
                     for kind,ticks in [('smelting',200),('blasting',100)]:
                         add({'type':'minecraft:'+kind,'category':'misc','ingredient':ingredient,'result':{'id':result,'count':count},'experience':xp,'cookingtime':ticks},location+('; blasting extension' if kind=='blasting' else ''))
                 else:
-                    result,count=resolver.item(parts[0]);array=re.fullmatch(r'new Object\[\]\s*\{(.*)\}',parts[1],re.S)
+                    # This item's wildcard output exists solely for NEI; its
+                    # type is stored in NBT, not a metadata-split identity.
+                    output=parts[0]
+                    if output=='new ItemStack(ModItems.fluid_identifier_multi, 1, OreDictionary.WILDCARD_VALUE)':
+                        output='new ItemStack(ModItems.fluid_identifier_multi, 1)'
+                    result,count=resolver.item(output);array=re.fullmatch(r'new Object\[\]\s*\{(.*)\}',parts[1],re.S)
                     if not array:raise Unsupported('unsupported recipe ingredient array')
                     ingredients=split(array[1]);recipe={'category':'misc','result':{'id':result,'count':count}}
                     if callee=='addRecipeAuto':

@@ -295,6 +295,7 @@ def generate(src,out,rows,distributions,max_damage=True):
   emit(f'assets/ntm/lang/{loc}.json',value)
  emit('data/minecraft/tags/block/mineable/pickaxe.json',{'replace':False,'values':blocks})
  emit('data/minecraft/tags/block/needs_iron_tool.json',{'replace':False,'values':[r['id'] for r in rows if r['category']=='ore']})
+ emit('data/ntm/tags/item/fluid_identifiers.json',{'replace':False,'values':[r['id'] for r in rows if r.get('fluid_identifier')]})
  worldgen.generate(emit,rows,distributions)
  bulk_recipes.generate(src,out,rows,emit)
  import bedrock_recipes

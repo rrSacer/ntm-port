@@ -1,0 +1,9 @@
+{
+  "title": "itemGroup.ntm.templates",
+  "fallback": "NTM Templates",
+  "icon": "ntm:fluid_identifier_multi",
+  "order": 2,
+  "items": [
+    "ntm:fluid_identifier_multi"
+  ]
+}

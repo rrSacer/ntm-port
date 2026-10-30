@@ -1388,6 +1388,15 @@
       }
     },
     {
+      "id": "ntm:bulk__3ae2b6bfab9b5cfb8b",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:585",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:template_folder",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__2805f5b67faa26bb4e",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:587",
       "type": "minecraft:crafting_shaped",
@@ -1726,6 +1735,15 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:machine_condenser",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a3a6fb4cd2b27a63f5",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:853",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:fluid_identifier_multi",
         "count": 1
       }
     },
@@ -5870,7 +5888,7 @@
       }
     }
   ],
-  "generated_count": 652,
+  "generated_count": 654,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -7337,12 +7355,6 @@
       "expression": "new ItemStack(ModBlocks.pipe_anchor_pneumatic, 2), new Object[] { \"P\", \"P\", \"S\", 'P', CU.plateWelded(), 'S', ANY_RUBBER.ingot() }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:585",
-      "callee": "addRecipeAuto",
-      "reason": "unresolved ore dictionary \"dye\"",
-      "expression": "new ItemStack(ModItems.template_folder, 1), new Object[] { \"LPL\", \"BPB\", \"LPL\", 'P', Items.paper, 'L', \"dye\", 'B', \"dye\" }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:586",
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item pellet_antimatter",
@@ -8361,12 +8373,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item press_preheater",
       "expression": "new ItemStack(ModBlocks.press_preheater), new Object[] { \"CCC\", \"SLS\", \"TST\", 'C', CU.plate(), 'S', Blocks.stone, 'L', Fluids.LAVA.getDict(1000), 'T', W.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:853",
-      "callee": "addRecipeAuto",
-      "reason": "dynamic/unsupported metadata OreDictionary.WILDCARD_VALUE",
-      "expression": "new ItemStack(ModItems.fluid_identifier_multi, 1, OreDictionary.WILDCARD_VALUE), new Object[] { \"D\", \"C\", \"P\", 'D', \"dye\", 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.VACUUM_TUBE), 'P', IRON.plate() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:855",

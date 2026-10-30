@@ -18969,6 +18969,34 @@
       "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption"
     },
     {
+      "id": "fluid_identifier_multi",
+      "type": "item",
+      "category": "component",
+      "source_variable": "fluid_identifier_multi",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/fluid_identifier_multi.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/fluid_identifier_overlay.png",
+          "tint": {
+            "multiply": "888888"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Multi Fluid Identifier",
+        "pt_br": "Identificador Múltiplo de Fluidos"
+      },
+      "fluid_identifier": {
+        "custom_data_key": "ntm_fluid",
+        "value": "fluids.json string id",
+        "default": "none",
+        "source_primary": "fluid1",
+        "source_secondary": "fluid2"
+      },
+      "behavior_gap": "Native logic reads custom_data.ntm_fluid; selection GUI, secondary type swap, ALT capture and dynamic overlay tint require native item hooks. Static overlay uses NONE color."
+    },
+    {
       "id": "scrap_plastic__board_blank",
       "type": "item",
       "category": "scrap",

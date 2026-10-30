@@ -15,7 +15,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--package',type=Path,required=True)
     parser.add_argument('--horizon-client',type=Path,required=True)
-    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling'],default='bedrock')
+    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling','fluid-identifier'],default='bedrock')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
     evidence=root/'content-gen-evidence'/({'bedrock':'bedrock-stages34'}.get(args.profile,args.profile));evidence.mkdir(parents=True,exist_ok=True)
@@ -63,6 +63,7 @@ def main():
             if args.profile=='energy-steam':machines=['machine_steam_engine','machine_industrial_turbine','machine_chungus','machine_condenser','machine_condenser_powered']
             if args.profile=='energy-combustion':machines=['machine_diesel','machine_combustion_engine','machine_turbofan','machine_turbinegas']
             if args.profile=='energy-solar-stirling':machines=['machine_solar_boiler','solar_mirror','machine_stirling','machine_stirling_steel','machine_stirling_creative']
+            if args.profile=='fluid-identifier':machines=[]
             for i,name in enumerate(machines):
                 x=-4+i*4
                 for y,level in [(101,0),(103,5)]:
@@ -77,6 +78,7 @@ def main():
                         ctl('wait 2')
             decor=['plant_flower__'+n for n in ['foxglove','tobacco','nightshade','weed','cd0','cd1']] if args.profile=='petroleum-e' else ['block_graphite','rebar','concrete_rebar']
             if args.profile.startswith('energy-'):decor=[]
+            if args.profile=='fluid-identifier':decor=[]
             for i,name in enumerate(decor):
                 x=-5+i*2 if args.profile=='petroleum-e' else -4+i*4
                 if args.profile=='petroleum-e':cmd(f'setblock {x} 100 3 minecraft:grass_block')
@@ -105,14 +107,22 @@ def main():
             if args.profile=='energy-steam':samples=machines+['gear_large__iron','gear_large__steel']
             if args.profile=='energy-combustion':samples=machines+['piston_set__'+n for n in ['steel','dura','desh','starmetal']]+['ingot_starmetal']
             if args.profile=='energy-solar-stirling':samples=machines
+            if args.profile=='fluid-identifier':samples=['fluid_identifier_multi']
             cmd('clear @s')
-            for name in samples:cmd('give @s ntm:'+name+' 1')
+            for name in samples:
+                components='[minecraft:custom_data={ntm_fluid:"water"}]' if args.profile=='fluid-identifier' else ''
+                cmd('give @s ntm:'+name+components+' 1')
             deadline=time.monotonic()+15
             while True:
                 counts=ctl('inventory')['counts']
                 if all(counts.get('ntm:'+name,0)==1 for name in samples):break
                 if time.monotonic()>deadline:raise AssertionError(counts)
                 ctl('wait 2')
+            if args.profile=='fluid-identifier':
+                inventory=json.dumps(ctl('inventory'))
+                assert 'ntm_fluid' in inventory and 'water' in inventory,inventory
+                cmd('clear @s #ntm:fluid_identifiers 0')
+                cmd('data get entity @s Inventory')
             ctl('key f1 tap');ctl('open-inventory');ctl('wait 5');ctl('screenshot '+str(evidence/'items.png'));ctl('close')
             ctl('quit');process.wait(timeout=60)
         text=(scratch/'client.log').read_text()

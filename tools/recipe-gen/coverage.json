@@ -1,5 +1,5 @@
 {
-  "catalog_items": 2700,
+  "catalog_items": 2701,
   "vanilla_recipe_count": 239,
   "temporary_count": 10,
   "press_count": 47,
@@ -2133,6 +2133,7 @@
     "ntm:fluid_barrel_full__xpjuice",
     "ntm:fluid_barrel_full__xylene",
     "ntm:fluid_duct_neo",
+    "ntm:fluid_identifier_multi",
     "ntm:fluid_pack_empty",
     "ntm:fluid_pack_full__air",
     "ntm:fluid_pack_full__airblast",
