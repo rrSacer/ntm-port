@@ -319,10 +319,32 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::AllRound,
     },
-    // The crystallizer: the bedrock chain's stage 2, not approved yet. The
-    // content has the block (34732d5); tracked, its screen says so.
+    // The bedrock chain's later stages, not approved yet: the content has
+    // their blocks (crystallizer 34732d5; pyrolysis oven, electrolyser, arc
+    // furnace 16e6771); tracked, their screens say so.
     BlockSpec {
         id: "ntm:machine_crystallizer",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_pyrooven",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_electrolyser",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_arc_furnace_large",
         kind: Kind::Inert,
         facing: Some("facing"),
         level: HONEY,
