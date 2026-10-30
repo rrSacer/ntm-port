@@ -81,9 +81,9 @@ class PetroleumA(unittest.TestCase):
 
     def test_coverage_missing_later_batches_and_dynamic_food_gap(self):
         liq=self.tables['liquefaction'];solid=self.tables['solidification']
-        self.assertEqual(liq['coverage'],{'source_calls':34,'emitted':31,'skipped':3,'runtime_gaps':1})
-        self.assertEqual(solid['coverage'],{'source_calls':48,'emitted':45,'skipped':2,'superseded':1})
-        self.assertTrue(any('ore_oil_sand' in r['reason'] for r in liq['skipped']))
+        self.assertEqual(liq['coverage'],{'source_calls':34,'emitted':32,'skipped':2,'runtime_gaps':1})
+        self.assertEqual(solid['coverage'],{'source_calls':48,'emitted':46,'skipped':1,'superseded':1})
+        self.assertFalse(any('ore_oil_sand' in r['reason'] for r in liq['skipped']))
         self.assertEqual(sum('plant_flower' in r['expression'] for r in liq['skipped']),2)
         self.assertTrue(any('bio_wafer' in r['reason'] for r in solid['skipped']))
         self.assertEqual(liq['runtime_gaps'][0]['amount_formula'],'int(food_value * saturation_modifier * 20)')

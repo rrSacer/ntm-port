@@ -4,7 +4,7 @@ import copy
 from generate import lang, registration
 
 BASE = 'src/main/java/com/hbm/'
-MACHINES = ('machine_liquefactor', 'machine_solidifier', 'machine_refinery', 'machine_fraction_tower', 'machine_mixer', 'machine_boiler', 'machine_industrial_boiler', 'machine_catalytic_cracker', 'machine_catalytic_reformer', 'machine_hydrotreater', 'machine_vacuum_distill', 'machine_coker')
+MACHINES = ('machine_liquefactor', 'machine_solidifier', 'machine_refinery', 'machine_fraction_tower', 'machine_mixer', 'machine_boiler', 'machine_industrial_boiler', 'machine_catalytic_cracker', 'machine_catalytic_reformer', 'machine_hydrotreater', 'machine_vacuum_distill', 'machine_coker', 'machine_well', 'machine_pumpjack', 'machine_fracking_tower', 'machine_transformer')
 
 
 def build(source):
@@ -46,4 +46,17 @@ def build(source):
     grate=next(r for r in result if r['source_variable']=='steel_grate')
     grate['template']='minecraft:stone_slab'
     grate['model_gap']='Vanilla bottom/top/double slab states; source ten click-selected 2px heights and fine collision remain gaps. visual-gen owns source geometry.'
+    for var in ['ore_oil','ore_oil_empty','ore_bedrock_oil','ore_oil_sand','oil_pipe']:
+        name,texture=registration(blocks,var,'block')
+        sand=var=='ore_oil_sand';bedrock=var=='ore_bedrock_oil';pipe=var=='oil_pipe'
+        result.append({'id':name,'source_variable':var,'type':'block','category':'oil_deposit' if not pipe else 'oil_pipe',
+                       'template':'minecraft:sand' if sand else 'minecraft:bedrock' if bedrock else 'minecraft:stone',
+                       'source_texture':f'src/main/resources/assets/hbm/textures/blocks/{texture}.png',
+                       'names':{loc:tr['tile.'+name+'.name'] for loc,tr in translations.items()},
+                       'block_properties':{'hardness':-1 if bedrock else 0.5 if sand else 5,
+                                           'explosion_resistance':1000000 if bedrock else 1 if sand else 10,
+                                           'requires_tool':not sand,
+                                           **({'sounds':'minecraft:sand'} if sand else {})},
+                       **({'creative_hidden':True,'loot_none':True} if pipe else {}),
+                       'behavior_gap':'Oil extraction/depletion belongs to server logic; no independent tile entity. Sand keeps vanilla falling behavior.'})
     return result
