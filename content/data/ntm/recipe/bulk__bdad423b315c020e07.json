@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:mirror_tool",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    " IA",
+    "I  "
+  ],
+  "key": {
+    "A": "#ntm:bulk/ingotaluminum",
+    "I": "#ntm:bulk/ingotiron"
+  }
+}

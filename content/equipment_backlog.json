@@ -128,15 +128,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "mirror_tool",
-      "type": "item",
-      "source_variable": "mirror_tool",
-      "source_class": "ItemMirrorTool",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3837",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "rbmk_tool",
       "type": "item",
       "source_variable": "rbmk_tool",
@@ -2036,5 +2027,5 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     }
   ],
-  "notes": "Custom abilities, hazmat/radiation protection, firearms and other equipment require logic. Authorized bomb detonator is registered separately."
+  "notes": "Custom abilities, hazmat/radiation protection, firearms and other equipment require logic. Authorized bomb detonator and mirror adjustment tool are registered separately."
 }

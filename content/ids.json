@@ -104625,6 +104625,27 @@
       }
     },
     {
+      "id": "ntm:mirror_tool",
+      "source_variable": "mirror_tool",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/mirror_tool.png",
+      "behavior_gap": "Content identity only; native ItemMirrorTool position linking is implemented by solar logic.",
+      "source_registry": "hbm:item.mirror_tool",
+      "names": {
+        "en_us": "Mirror Adjustment Tool",
+        "pt_br": "Ferramenta de Alinhamento de Espelhos"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.mirror_tool.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.mirror_tool.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:bio_wafer",
       "source_variable": "bio_wafer",
       "type": "item",

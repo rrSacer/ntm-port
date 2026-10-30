@@ -58,4 +58,8 @@ def build(source):
     rows.extend(radioisotope_catalog.build(source))
     import energy_storage_catalog
     rows.extend(energy_storage_catalog.build(source))
+    rows.append({'id': 'mirror_tool', 'source_variable': 'mirror_tool',
+                 'type': 'item', 'category': 'component', 'max_stack_size': 1,
+                 'source_texture': 'src/main/resources/assets/hbm/textures/items/mirror_tool.png',
+                 'behavior_gap': 'Content identity only; native ItemMirrorTool position linking is implemented by solar logic.'})
     return rows

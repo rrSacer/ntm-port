@@ -30324,6 +30324,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:mirror_tool",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:bio_wafer",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,

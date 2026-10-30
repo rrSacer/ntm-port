@@ -324,7 +324,7 @@ def main():
             stmt=row['equipment_gap']['source_stats'];row['equipment_gap']['source_material_definitions']=[definition for key,definition in definitions.items() if re.search(r'\b'+key+r'\b',stmt)]
     from bulk_extra import extend
     extend(a.source,rows,audit,a.stage,classes,enum,add)
-    write_json(ROOT/'content/equipment_backlog.json',{'schema':1,'entries':[r for r in audit if r.get('source_variable')!='detonator' and any(x in r.get('source_class','') for x in ('Armor','Sword','Tool','Hoe','Gun','Weapon','Detonator','Pickaxe','Spade','Axe'))],'notes':'Custom abilities, hazmat/radiation protection, firearms and other equipment require logic. Authorized bomb detonator is registered separately.'})
+    write_json(ROOT/'content/equipment_backlog.json',{'schema':1,'entries':[r for r in audit if r.get('source_variable') not in ('detonator', 'mirror_tool') and any(x in r.get('source_class','') for x in ('Armor','Sword','Tool','Hoe','Gun','Weapon','Detonator','Pickaxe','Spade','Axe'))],'notes':'Custom abilities, hazmat/radiation protection, firearms and other equipment require logic. Authorized bomb detonator and mirror adjustment tool are registered separately.'})
     write_json(HERE/'bulk.json',{'schema':1,'stage':a.stage,'entries':sorted(rows,key=lambda x:x['id'])})
     bomb_variables={r['source_variable'] for r in json.loads((HERE/'bombs.json').read_text())['entries']} if (HERE/'bombs.json').exists() else set()
     machines=[r for r in machines if r['source_variable'] not in bomb_variables]

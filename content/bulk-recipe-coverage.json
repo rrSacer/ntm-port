@@ -7778,6 +7778,15 @@
       }
     },
     {
+      "id": "ntm:bulk__bdad423b315c020e07",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:132",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:mirror_tool",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__3219967bb8a4466b6d",
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:133",
       "type": "minecraft:crafting_shaped",
@@ -8048,7 +8057,7 @@
       }
     }
   ],
-  "generated_count": 894,
+  "generated_count": 895,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -13035,12 +13044,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item siphon",
       "expression": "new ItemStack(ModItems.siphon, 1), new Object[] { \" GR\", \" GR\", \" G \", 'G', KEY_CLEARGLASS, 'R', ANY_RUBBER.ingot()}"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:132",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item mirror_tool",
-      "expression": "new ItemStack(ModItems.mirror_tool), new Object[] { \" A \", \" IA\", \"I  \", 'A', AL.ingot(), 'I', IRON.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:134",
