@@ -1,0 +1,123 @@
+{
+  "obj": "ntm:models/rbmk/rbmk_rod.obj",
+  "texture": "ntm:textures/models/rbmk/rbmk_rod.png",
+  "radius": 6.0,
+  "show": {
+    "rods_uranium": {
+      "value": 1,
+      "min": 8818050,
+      "max": 8818050
+    },
+    "rods_neptunium": {
+      "value": 1,
+      "min": 7700083,
+      "max": 7700083
+    },
+    "rods_plutonium": {
+      "value": 1,
+      "min": 6647403,
+      "max": 6647403
+    },
+    "rods_americium": {
+      "value": 1,
+      "min": 11045519,
+      "max": 11045519
+    },
+    "rods_thorium": {
+      "value": 1,
+      "min": 6706248,
+      "max": 6706248
+    },
+    "rods_zirconium": {
+      "value": 1,
+      "min": 11182954,
+      "max": 11182954
+    },
+    "rods_schrabidium": {
+      "value": 1,
+      "min": 2988692,
+      "max": 2988692
+    },
+    "rods_polonium": {
+      "value": 1,
+      "min": 5650982,
+      "max": 5650982
+    },
+    "rods_radium": {
+      "value": 1,
+      "min": 11777709,
+      "max": 11777709
+    },
+    "rods_australium": {
+      "value": 1,
+      "min": 16772608,
+      "max": 16772608
+    },
+    "rods_flashgold": {
+      "value": 1,
+      "min": 14456339,
+      "max": 14456339
+    },
+    "rods_flashlead": {
+      "value": 1,
+      "min": 8092551,
+      "max": 8092551
+    },
+    "rods_balefire": {
+      "value": 1,
+      "min": 11730715,
+      "max": 11730715
+    },
+    "rods_drx": {
+      "value": 1,
+      "min": 14119542,
+      "max": 14119542
+    },
+    "rods_uzh": {
+      "value": 1,
+      "min": 7370671,
+      "max": 7370671
+    },
+    "rods_default": {
+      "value": 1,
+      "min": 3164197,
+      "max": 3164197
+    },
+    "lid_cover": {
+      "value": 0,
+      "min": 1,
+      "max": 1
+    },
+    "lid_glass": {
+      "value": 0,
+      "min": 2,
+      "max": 2
+    },
+    "cherenkov": {
+      "value": 2,
+      "min": 1
+    }
+  },
+  "tint": {
+    "rods_uranium": "#ff868d82",
+    "rods_neptunium": "#ff757e73",
+    "rods_plutonium": "#ff656e6b",
+    "rods_americium": "#ffa88a8f",
+    "rods_thorium": "#ff665448",
+    "rods_zirconium": "#ffaaa36a",
+    "rods_schrabidium": "#ff2d9a94",
+    "rods_polonium": "#ff563a26",
+    "rods_radium": "#ffb3b6ad",
+    "rods_australium": "#ffffee00",
+    "rods_flashgold": "#ffdc9613",
+    "rods_flashlead": "#ff7b7b87",
+    "rods_balefire": "#ffb2ff1b",
+    "rods_drx": "#ffd77276",
+    "rods_uzh": "#ff7077af",
+    "rods_default": "#ff304825",
+    "cherenkov": "#1a66e6ff"
+  },
+  "glow": [
+    "cherenkov"
+  ]
+}

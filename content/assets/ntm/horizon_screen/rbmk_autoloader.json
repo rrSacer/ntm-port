@@ -1,0 +1,54 @@
+{
+  "texture": "ntm:textures/gui/machine/gui_autoloader.png",
+  "size": [
+    176,
+    182
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "title_color": "#ffffff",
+  "inventory_label": [
+    8,
+    88
+  ],
+  "texts": [
+    {
+      "at": [
+        88,
+        23
+      ],
+      "text": "{1}%",
+      "color": "#00ff00",
+      "align": "center"
+    }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "rect": [
+        74,
+        36,
+        12,
+        12
+      ],
+      "lines": [
+        "-"
+      ]
+    },
+    {
+      "id": 1,
+      "rect": [
+        90,
+        36,
+        12,
+        12
+      ],
+      "lines": [
+        "+"
+      ]
+    }
+  ]
+}

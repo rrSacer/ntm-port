@@ -1,0 +1,88 @@
+{
+  "obj": "ntm:models/rbmk/crane_console.obj",
+  "texture": "ntm:textures/models/rbmk/crane_console.png",
+  "rotation": 90,
+  "translate": [
+    0.5,
+    0,
+    0
+  ],
+  "radius": 3.0,
+  "hide": [
+    "Shotgun",
+    "Shotgun1",
+    "MiniNuke",
+    "Lamp1",
+    "Lamp2"
+  ],
+  "bones": {
+    "Meter1": {
+      "pivot": [
+        0,
+        1.25,
+        0.75
+      ]
+    },
+    "Meter2": {
+      "pivot": [
+        0,
+        1.25,
+        0.25
+      ]
+    }
+  },
+  "show": {
+    "Lamp1_off": {
+      "value": 4,
+      "min": 0,
+      "max": 0
+    },
+    "Lamp1_loading": {
+      "value": 4,
+      "min": 1,
+      "max": 1
+    },
+    "Lamp1_loaded": {
+      "value": 4,
+      "min": 2,
+      "max": 2
+    },
+    "Lamp2_invalid": {
+      "value": 5,
+      "min": 0,
+      "max": 0
+    },
+    "Lamp2_valid": {
+      "value": 5,
+      "min": 1,
+      "max": 1
+    }
+  },
+  "tint": {
+    "Lamp1_off": "#ff001a00",
+    "Lamp1_loading": "#ffcccc00",
+    "Lamp1_loaded": "#ff00ff00",
+    "Lamp2_invalid": "#ffff0000",
+    "Lamp2_valid": "#ff00ff00"
+  },
+  "glow": [
+    "Lamp1_off",
+    "Lamp1_loading",
+    "Lamp1_loaded",
+    "Lamp2_invalid",
+    "Lamp2_valid"
+  ],
+  "pose": [
+    {
+      "animation": "animation.crane_console.heat",
+      "value": 2,
+      "max_value": 1000
+    },
+    {
+      "animation": "animation.crane_console.enrichment",
+      "value": 3,
+      "max_value": 1000
+    }
+  ],
+  "animations": "ntm:animations/rbmk_crane_console.animation.json"
+}

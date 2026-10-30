@@ -1,0 +1,64 @@
+{
+  "texture": "ntm:textures/gui/reactors/gui_rbmk_element.png",
+  "size": [
+    176,
+    186
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    92
+  ],
+  "bars": [
+    {
+      "value": 3,
+      "max_value": 1000,
+      "rect": [
+        34,
+        21,
+        18,
+        67
+      ],
+      "uv": [
+        194,
+        0
+      ],
+      "dir": "down"
+    },
+    {
+      "value": 4,
+      "max_value": 1000,
+      "rect": [
+        126,
+        24,
+        14,
+        58
+      ],
+      "uv": [
+        212,
+        0
+      ],
+      "dir": "up"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 1,
+      "min": 1,
+      "rect": [
+        34,
+        21,
+        18,
+        67
+      ],
+      "uv": [
+        176,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "obj": "ntm:models/rbmk/autoloader.obj",
+  "texture": "ntm:textures/models/rbmk/rbmk_autoloader.png",
+  "radius": 9.5,
+  "pose": [
+    {
+      "animation": "animation.rbmk_autoloader.piston",
+      "value": 0,
+      "max_value": 1000
+    }
+  ],
+  "animations": "ntm:animations/rbmk_autoloader.animation.json"
+}

@@ -1,0 +1,16 @@
+{
+  "texture": "ntm:textures/gui/reactors/gui_rbmk_storage.png",
+  "size": [
+    176,
+    186
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    92
+  ]
+}

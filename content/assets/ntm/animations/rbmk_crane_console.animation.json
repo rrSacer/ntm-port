@@ -1,0 +1,45 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.crane_console.heat": {
+      "loop": false,
+      "animation_length": 1.0,
+      "bones": {
+        "Meter1": {
+          "rotation": {
+            "0.0": [
+              135,
+              0,
+              0
+            ],
+            "1.0": [
+              -135,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.crane_console.enrichment": {
+      "loop": false,
+      "animation_length": 1.0,
+      "bones": {
+        "Meter2": {
+          "rotation": {
+            "0.0": [
+              135,
+              0,
+              0
+            ],
+            "1.0": [
+              -135,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

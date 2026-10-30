@@ -1,0 +1,13 @@
+{
+  "obj": "ntm:models/rbmk/rbmk_control_auto.obj",
+  "texture": "ntm:textures/models/rbmk/rbmk_control_auto.png",
+  "radius": 6.0,
+  "pose": [
+    {
+      "animation": "animation.rbmk_control.level",
+      "value": 1,
+      "max_value": 1000
+    }
+  ],
+  "animations": "ntm:animations/rbmk_control_auto.animation.json"
+}

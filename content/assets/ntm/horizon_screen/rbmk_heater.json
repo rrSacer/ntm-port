@@ -1,0 +1,96 @@
+{
+  "texture": "ntm:textures/gui/reactors/gui_rbmk_heater.png",
+  "size": [
+    176,
+    186
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    92
+  ],
+  "bars": [
+    {
+      "value": 1,
+      "max": 2,
+      "rect": [
+        68,
+        24,
+        14,
+        58
+      ],
+      "color": 3,
+      "dir": "up"
+    },
+    {
+      "value": 4,
+      "max": 5,
+      "rect": [
+        126,
+        24,
+        14,
+        58
+      ],
+      "color": 6,
+      "dir": "up"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 0,
+      "min": 0,
+      "rect": [
+        72,
+        72,
+        10,
+        10
+      ],
+      "uv": [
+        176,
+        0
+      ]
+    },
+    {
+      "value": 0,
+      "min": 0,
+      "rect": [
+        130,
+        72,
+        10,
+        10
+      ],
+      "uv": [
+        186,
+        0
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        68,
+        24,
+        16,
+        58
+      ],
+      "lines": [
+        "{1} / {2} mB"
+      ]
+    },
+    {
+      "rect": [
+        126,
+        24,
+        16,
+        58
+      ],
+      "lines": [
+        "{4} / {5} mB"
+      ]
+    }
+  ]
+}

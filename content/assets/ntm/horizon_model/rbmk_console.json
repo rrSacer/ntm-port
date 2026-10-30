@@ -1,0 +1,11 @@
+{
+  "obj": "ntm:models/rbmk/rbmk_console.obj",
+  "texture": "ntm:textures/models/rbmk/rbmk_console.png",
+  "rotation": 90,
+  "translate": [
+    0.5,
+    0,
+    0
+  ],
+  "radius": 4.5
+}

@@ -1,0 +1,61 @@
+{
+  "texture": "ntm:textures/gui/reactors/gui_rbmk_outgasser.png",
+  "size": [
+    176,
+    186
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    92
+  ],
+  "bars": [
+    {
+      "value": 1,
+      "max": 2,
+      "rect": [
+        82,
+        50,
+        13,
+        6
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 3,
+      "max": 4,
+      "rect": [
+        115,
+        24,
+        10,
+        42
+      ],
+      "uv": [
+        188,
+        0
+      ],
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        112,
+        21,
+        16,
+        48
+      ],
+      "lines": [
+        "{3} / {4} mB"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "obj": "ntm:models/rbmk/rbmk_control_mod.obj",
+  "texture": "ntm:textures/models/rbmk/rbmk_control_mod.png",
+  "radius": 6.0,
+  "pose": [
+    {
+      "animation": "animation.rbmk_control.level",
+      "value": 1,
+      "max_value": 1000
+    }
+  ],
+  "show": {
+    "rod": {
+      "value": 2,
+      "min": 0,
+      "max": 0
+    },
+    "rod_red": {
+      "value": 2,
+      "min": 1,
+      "max": 1
+    },
+    "rod_yellow": {
+      "value": 2,
+      "min": 2,
+      "max": 2
+    },
+    "rod_green": {
+      "value": 2,
+      "min": 3,
+      "max": 3
+    },
+    "rod_blue": {
+      "value": 2,
+      "min": 4,
+      "max": 4
+    },
+    "rod_purple": {
+      "value": 2,
+      "min": 5,
+      "max": 5
+    }
+  },
+  "animations": "ntm:animations/rbmk_control_mod.animation.json"
+}
