@@ -20058,6 +20058,44 @@
       "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock"
     },
     {
+      "id": "machine_hephaestus",
+      "source_variable": "machine_hephaestus",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Geothermal Heat Exchanger",
+        "pt_br": "Trocador de Calor Geotérmico"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel_machine.png",
+      "textures": {
+        "side": "blocks/block_steel_machine",
+        "top": "blocks/block_steel_machine",
+        "front": "blocks/block_steel_machine"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock"
+    },
+    {
+      "id": "machine_flare",
+      "source_variable": "machine_flare",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Flare Stack",
+        "pt_br": "Chaminé de Queima"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock"
+    },
+    {
       "id": "steel_scaffold",
       "source_variable": "steel_scaffold",
       "type": "block",
@@ -20312,6 +20350,179 @@
       "creative_hidden": true,
       "loot_none": true,
       "behavior_gap": "Oil extraction/depletion belongs to server logic; no independent tile entity. Sand keeps vanilla falling behavior."
+    },
+    {
+      "id": "bio_wafer",
+      "source_variable": "bio_wafer",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/bio_wafer.png",
+      "names": {
+        "en_us": "Algae Wafer",
+        "pt_br": "Pastilha de Alga"
+      },
+      "behavior_gap": "Recipe component only; source nutrition/eating and ItemPill medical effects/side effects require consumable logic."
+    },
+    {
+      "id": "pill_herbal",
+      "source_variable": "pill_herbal",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pill_herbal.png",
+      "names": {
+        "en_us": "Herbal Paste",
+        "pt_br": "Pasta de Ervas"
+      },
+      "behavior_gap": "Recipe component only; source nutrition/eating and ItemPill medical effects/side effects require consumable logic."
+    },
+    {
+      "id": "plant_flower__foxglove",
+      "source_variable": "plant_flower",
+      "type": "block",
+      "category": "plant",
+      "template": "minecraft:poppy",
+      "metadata": 0,
+      "subtype_kind": "palette",
+      "source_enum": "EnumFlowerType.FOXGLOVE",
+      "needs_oil": false,
+      "cross_model": true,
+      "block_properties": {
+        "hardness": 0,
+        "explosion_resistance": 0,
+        "requires_tool": false,
+        "sounds": "minecraft:grass"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.foxglove.png",
+      "names": {
+        "en_us": "Foxglove",
+        "pt_br": "Dedaleira"
+      },
+      "behavior_gap": "Vanilla flower placement/soil only; source growth, oil dependence, CD1 to CD0 regrowth and plant interactions require server logic. Surface oil worldgen vegetation remains outside this approximation."
+    },
+    {
+      "id": "plant_flower__tobacco",
+      "source_variable": "plant_flower",
+      "type": "block",
+      "category": "plant",
+      "template": "minecraft:poppy",
+      "metadata": 1,
+      "subtype_kind": "palette",
+      "source_enum": "EnumFlowerType.TOBACCO",
+      "needs_oil": false,
+      "cross_model": true,
+      "block_properties": {
+        "hardness": 0,
+        "explosion_resistance": 0,
+        "requires_tool": false,
+        "sounds": "minecraft:grass"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.tobacco.png",
+      "names": {
+        "en_us": "Tobacco Plant",
+        "pt_br": "Planta de Tabaco"
+      },
+      "behavior_gap": "Vanilla flower placement/soil only; source growth, oil dependence, CD1 to CD0 regrowth and plant interactions require server logic. Surface oil worldgen vegetation remains outside this approximation."
+    },
+    {
+      "id": "plant_flower__nightshade",
+      "source_variable": "plant_flower",
+      "type": "block",
+      "category": "plant",
+      "template": "minecraft:poppy",
+      "metadata": 2,
+      "subtype_kind": "palette",
+      "source_enum": "EnumFlowerType.NIGHTSHADE",
+      "needs_oil": false,
+      "cross_model": true,
+      "block_properties": {
+        "hardness": 0,
+        "explosion_resistance": 0,
+        "requires_tool": false,
+        "sounds": "minecraft:grass"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.nightshade.png",
+      "names": {
+        "en_us": "Deadly Nightshade",
+        "pt_br": "Beladona"
+      },
+      "behavior_gap": "Vanilla flower placement/soil only; source growth, oil dependence, CD1 to CD0 regrowth and plant interactions require server logic. Surface oil worldgen vegetation remains outside this approximation."
+    },
+    {
+      "id": "plant_flower__weed",
+      "source_variable": "plant_flower",
+      "type": "block",
+      "category": "plant",
+      "template": "minecraft:poppy",
+      "metadata": 3,
+      "subtype_kind": "palette",
+      "source_enum": "EnumFlowerType.WEED",
+      "needs_oil": false,
+      "cross_model": true,
+      "block_properties": {
+        "hardness": 0,
+        "explosion_resistance": 0,
+        "requires_tool": false,
+        "sounds": "minecraft:grass"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.weed.png",
+      "names": {
+        "en_us": "Hemp",
+        "pt_br": "Cânhamo"
+      },
+      "behavior_gap": "Vanilla flower placement/soil only; source growth, oil dependence, CD1 to CD0 regrowth and plant interactions require server logic. Surface oil worldgen vegetation remains outside this approximation."
+    },
+    {
+      "id": "plant_flower__cd0",
+      "source_variable": "plant_flower",
+      "type": "block",
+      "category": "plant",
+      "template": "minecraft:poppy",
+      "metadata": 4,
+      "subtype_kind": "palette",
+      "source_enum": "EnumFlowerType.CD0",
+      "needs_oil": true,
+      "cross_model": true,
+      "block_properties": {
+        "hardness": 0,
+        "explosion_resistance": 0,
+        "requires_tool": false,
+        "sounds": "minecraft:grass"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.cd0.png",
+      "names": {
+        "en_us": "Mustard Willow",
+        "pt_br": "Salgueiro-Mostarda"
+      },
+      "behavior_gap": "Vanilla flower placement/soil only; source growth, oil dependence, CD1 to CD0 regrowth and plant interactions require server logic. Surface oil worldgen vegetation remains outside this approximation."
+    },
+    {
+      "id": "plant_flower__cd1",
+      "source_variable": "plant_flower",
+      "type": "block",
+      "category": "plant",
+      "template": "minecraft:poppy",
+      "metadata": 5,
+      "subtype_kind": "palette",
+      "source_enum": "EnumFlowerType.CD1",
+      "needs_oil": true,
+      "cross_model": true,
+      "block_properties": {
+        "hardness": 0,
+        "explosion_resistance": 0,
+        "requires_tool": false,
+        "sounds": "minecraft:grass"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.cd1.png",
+      "names": {
+        "en_us": "Mustard Willow",
+        "pt_br": "Salgueiro-Mostarda"
+      },
+      "drop": "ntm:plant_flower__cd0",
+      "behavior_gap": "Vanilla flower placement/soil only; source growth, oil dependence, CD1 to CD0 regrowth and plant interactions require server logic. Surface oil worldgen vegetation remains outside this approximation."
     },
     {
       "id": "machine_crucible",
