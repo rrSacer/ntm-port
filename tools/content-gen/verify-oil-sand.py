@@ -56,6 +56,7 @@ def main():
                 '--render-distance','2','--width','640','--height','360','--name','SandProbe'],cwd=home/'game',env=env,stdout=log,stderr=subprocess.STDOUT)
             end=time.monotonic()+600
             while time.monotonic()<end:
+                if 'content mods not loaded' in (home/'client.log').read_text():raise RuntimeError('content mods not loaded; see client.log')
                 if process.poll() is not None:raise RuntimeError('client startup')
                 if (home/'ctl.sock').exists():
                     state=ctl('state')
@@ -115,7 +116,7 @@ def main():
         assert ps,'surface biome profile placed no oil sand'
         assert all(56<=p[1]<=71 for p in ps),'oil sand outside declared height'
         assert starts,'no dry-hot profile starts'
-        refused=[l for l in (home/'client.log').read_text().splitlines() if any(s in l.lower() for s in ['content mod rejected','refused','panicked at'])]
+        refused=[l for l in (home/'client.log').read_text().splitlines() if any(s in l.lower() for s in ['content mod rejected','content mods not loaded','refused','panicked at'])]
         report['refused']=refused;assert not refused,refused
         (evidence/'sand-check.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report),flush=True)
     finally:

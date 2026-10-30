@@ -111,7 +111,7 @@ def main():
                 ps=[p for p,ident in dry_ores.items() if ident=='ntm:'+name]
                 report['desert']['deposits'][name]={'blocks':len(ps),'y_counts':dict(sorted(collections.Counter(p[1] for p in ps).items())),
                     'components':components(ps)}
-        refused=[line for line in (home/'server.log').read_text().splitlines() if any(s in line.lower() for s in ['content mod rejected','refused','panicked at'])]
+        refused=[line for line in (home/'server.log').read_text().splitlines() if any(s in line.lower() for s in ['content mod rejected','content mods not loaded','refused','panicked at'])]
         report['refused']=refused
         (evidence/f'{args.label}.json').write_text(json.dumps(report,indent=2)+'\n')
         print(json.dumps(report),flush=True)

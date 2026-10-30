@@ -49,6 +49,7 @@ def main():
                 cwd=scratch/'game',env=env,stdout=log,stderr=subprocess.STDOUT)
             deadline=time.monotonic()+600
             while time.monotonic()<deadline:
+                if 'content mods not loaded' in (scratch/'client.log').read_text():raise RuntimeError('content mods not loaded; see client.log')
                 if process.poll() is not None:raise RuntimeError('client exited during startup')
                 if (scratch/'control.sock').exists():
                     state=ctl('state')
@@ -105,7 +106,7 @@ def main():
             ctl('key f1 tap');ctl('open-inventory');ctl('wait 5');ctl('screenshot '+str(evidence/'items.png'));ctl('close')
             ctl('quit');process.wait(timeout=60)
         text=(scratch/'client.log').read_text()
-        refused=[line for line in text.splitlines() if any(s in line.lower() for s in ['content mod rejected','refused','panicked at'])]
+        refused=[line for line in text.splitlines() if any(s in line.lower() for s in ['content mod rejected','content mods not loaded','refused','panicked at'])]
         assert not refused,refused
         (evidence/'game.json').write_text(json.dumps({'home':str(scratch),'machines':machines,'item_samples':samples,
             'checks':checks,'refused':refused,'status':'pass'},ensure_ascii=False,indent=2)+'\n')

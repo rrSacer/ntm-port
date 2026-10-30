@@ -116,7 +116,7 @@ def main():
             group=[r for r in records if r['feature']==f]
             summary['candidates'][f]={'samples':len(group),'mean_volume':statistics.mean(r['volume'] for r in group),'min_volume':min(r['volume'] for r in group),'max_volume':max(r['volume'] for r in group),'mean_extents_xyz':[statistics.mean(r['extents_xyz'][a] for r in group) for a in range(3)]}
         text=(scratch/'client.log').read_text()
-        refused=[line for line in text.splitlines() if any(s in line.lower() for s in ['content mod rejected','refused','panicked at'])]
+        refused=[line for line in text.splitlines() if any(s in line.lower() for s in ['content mod rejected','content mods not loaded','refused','panicked at'])]
         if refused:raise AssertionError(refused)
         summary['refused']=refused
         (evidence/f'{args.label}-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
