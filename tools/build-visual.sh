@@ -23,9 +23,8 @@ grep -q '^default = \["machines"\]' $c
 m=$B/mods/ntm-logic-server/horizon-mod.toml
 sed -i 's/^capabilities = \["storage", "world", "players"\]$/capabilities = ["storage", "world", "players", "machines"]\nexperimental = ["machines"]/' $m
 grep -q machines $m
-# Durable items carry max_damage (the patched engine reads it; the base one
-# rejects it, so the repo's content stays without): what ids.json says, as
-# tools/content-gen/generate.py --max-damage writes it.
+# Durable items use the upstream components schema, matching
+# tools/content-gen/generate.py --max-damage. ids.json keeps the source limits.
 python3 - $B/content <<'PY'
 import json, sys
 from pathlib import Path
@@ -35,7 +34,8 @@ for e in json.loads((c / 'ids.json').read_text())['entries']:
         f = c / 'data/ntm/horizon/item' / (e['id'].split(':', 1)[1] + '.json')
         d = json.loads(f.read_text())
         assert d.get('max_stack_size') == 1, f
-        d['max_damage'] = e['max_damage']
+        d.pop('max_damage', None)
+        d.setdefault('components', {})['minecraft:max_damage'] = e['max_damage']
         f.write_text(json.dumps(d, indent=2) + '\n')
 PY
 cd $B

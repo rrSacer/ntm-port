@@ -206,7 +206,7 @@ def generate(src,out,rows,distributions,max_damage=False):
    declaration={'template':row.get('template','minecraft:iron_ingot'),'max_stack_size':row.get('max_stack_size',64)}
    if max_damage and row.get('max_damage'):
     if declaration['max_stack_size']!=1:raise ValueError('Durable item must have stack size 1: '+row['id'])
-    declaration['max_damage']=row['max_damage']
+    declaration['components']={'minecraft:max_damage':row['max_damage']}
    emit(f'data/ntm/horizon/item/{name}.json',declaration)
    emit(f'assets/ntm/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':tex}})
    if row.get('overlay_textures'):
@@ -314,7 +314,7 @@ def main():
  parser.add_argument('--output',type=Path,default=ROOT/'content')
  parser.add_argument('--catalog',type=Path,default=HERE/'m1.json')
  parser.add_argument('--ids-only',action='store_true')
- parser.add_argument('--max-damage',action='store_true',help='Emit max_damage for durable items; requires the ntm-visual engine extension')
+ parser.add_argument('--max-damage',action='store_true',help='Emit minecraft:max_damage components for durable items')
  args=parser.parse_args()
  if args.catalog.resolve()==(HERE/'m1.json').resolve():
   import m3_catalog

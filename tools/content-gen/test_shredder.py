@@ -79,10 +79,13 @@ class ShredderContracts(unittest.TestCase):
         states = json.loads((ROOT / 'content/assets/ntm/blockstates/machine_shredder.json').read_text())
         self.assertEqual(len(states['variants']), 24)
 
-    def test_damage_extension_is_explicit_and_desh_never_gets_it(self):
+    def test_damage_components_are_explicit_and_desh_never_gets_them(self):
         entries = [{'id': 'blades_' + material, 'source_variable': 'blades_' + material, 'type': 'item',
                     'category': 'component', 'max_stack_size': 1, **({'max_damage': damage} if damage else {})}
                    for material, damage in [('steel', 400), ('titanium', 500), ('desh', 0)]]
+        stamp = self.rows['ntm:stamp_357']
+        entries.append({'id': 'stamp_357', 'source_variable': 'stamp_357', 'type': 'item',
+                        'category': 'component', 'max_stack_size': 1, 'max_damage': stamp['max_damage']})
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory); spec = path / 'catalog.json'; spec.write_text(json.dumps({'entries': entries}))
             for enabled in (False, True):
@@ -93,7 +96,8 @@ class ShredderContracts(unittest.TestCase):
                 for row in entries:
                     declaration = json.loads((out / f'data/ntm/horizon/item/{row["id"]}.json').read_text())
                     self.assertEqual(declaration['max_stack_size'], 1)
-                    self.assertEqual(declaration.get('max_damage'), row.get('max_damage') if enabled else None)
+                    self.assertNotIn('max_damage', declaration)
+                    self.assertEqual(declaration.get('components', {}).get('minecraft:max_damage'), row.get('max_damage') if enabled else None)
                     self.assertEqual(declaration['template'], 'minecraft:iron_ingot')
 
 
