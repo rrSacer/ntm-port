@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/fracking_tower.obj",
+  "texture": "ntm:textures/models/machines/fracking_tower.png",
+  "rotation": 180,
+  "radius": 25.0
+}

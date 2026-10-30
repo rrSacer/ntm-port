@@ -11085,16 +11085,1255 @@
       }
     },
     "ntm:machine_fracking_tower": {
-      "source": "oil batch D: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "ContainerMachineOilWell, GUIMachineOilWell (with the fracking solution's tank), MachineFrackingTower's fillSpace (25 high: platform, legs, column, the arm; HBM puts the arm south whatever the facing, here it turns with it), RenderFrackingTower (always 180; its pipes left out)",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 58,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 94,
+            "y": 22,
+            "accept": []
+          },
+          {
+            "x": 94,
+            "y": 58,
+            "output": true
+          },
+          {
+            "x": 130,
+            "y": 22,
+            "accept": []
+          },
+          {
+            "x": 130,
+            "y": 58,
+            "output": true
+          },
+          {
+            "x": 156,
+            "y": 36,
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_overdrive_1",
+              "ntm:upgrade_overdrive_2",
+              "ntm:upgrade_overdrive_3",
+              "ntm:upgrade_afterburn_1",
+              "ntm:upgrade_afterburn_2",
+              "ntm:upgrade_afterburn_3"
+            ]
+          },
+          {
+            "x": 156,
+            "y": 54,
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_overdrive_1",
+              "ntm:upgrade_overdrive_2",
+              "ntm:upgrade_overdrive_3",
+              "ntm:upgrade_afterburn_1",
+              "ntm:upgrade_afterburn_2",
+              "ntm:upgrade_afterburn_3"
+            ]
+          },
+          {
+            "x": -10000,
+            "y": -10000,
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_overdrive_1",
+              "ntm:upgrade_overdrive_2",
+              "ntm:upgrade_overdrive_3",
+              "ntm:upgrade_afterburn_1",
+              "ntm:upgrade_afterburn_2",
+              "ntm:upgrade_afterburn_3"
+            ]
+          }
+        ],
+        "inventory": [
+          12,
+          108
+        ],
+        "data": 12,
+        "synced": [
+          0,
+          2
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            3,
+            0
+          ],
+          "offset": 0,
+          "extra": [
+            {
+              "min": [
+                -3,
+                2,
+                -3
+              ],
+              "max": [
+                3,
+                3,
+                3
+              ]
+            },
+            {
+              "min": [
+                -3,
+                0,
+                -3
+              ],
+              "max": [
+                -2,
+                1,
+                -2
+              ]
+            },
+            {
+              "min": [
+                -3,
+                0,
+                2
+              ],
+              "max": [
+                -2,
+                1,
+                3
+              ]
+            },
+            {
+              "min": [
+                2,
+                0,
+                -3
+              ],
+              "max": [
+                3,
+                1,
+                -2
+              ]
+            },
+            {
+              "min": [
+                2,
+                0,
+                2
+              ],
+              "max": [
+                3,
+                1,
+                3
+              ]
+            },
+            {
+              "min": [
+                -2,
+                4,
+                -2
+              ],
+              "max": [
+                2,
+                10,
+                2
+              ]
+            },
+            {
+              "min": [
+                -1,
+                9,
+                -1
+              ],
+              "max": [
+                1,
+                24,
+                1
+              ]
+            },
+            {
+              "min": [
+                -1,
+                15,
+                2
+              ],
+              "max": [
+                1,
+                16,
+                3
+              ]
+            }
+          ],
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/machine/gui_well_fracking.png",
+        "texture_from": "textures/gui/machine/gui_well.png",
+        "size": [
+          184,
+          190
+        ],
+        "title": [
+          126,
+          10,
+          "center"
+        ],
+        "inventory_label": [
+          12,
+          96
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              8,
+              22,
+              16,
+              34
+            ],
+            "uv": [
+              184,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 3,
+            "max": 4,
+            "rect": [
+              76,
+              22,
+              16,
+              52
+            ],
+            "color": 5,
+            "dir": "up"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              112,
+              22,
+              16,
+              52
+            ],
+            "color": 8,
+            "dir": "up"
+          },
+          {
+            "value": 9,
+            "max": 10,
+            "rect": [
+              54,
+              45,
+              6,
+              32
+            ],
+            "color": 11,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              50,
+              19,
+              14,
+              14
+            ],
+            "uv": [
+              184,
+              34
+            ]
+          },
+          {
+            "value": 2,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              50,
+              19,
+              14,
+              14
+            ],
+            "uv": [
+              198,
+              34
+            ]
+          },
+          {
+            "value": 2,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              50,
+              19,
+              14,
+              14
+            ],
+            "uv": [
+              212,
+              34
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              8,
+              22,
+              16,
+              34
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              76,
+              22,
+              16,
+              52
+            ],
+            "lines": [
+              "{3} / {4} mB"
+            ]
+          },
+          {
+            "rect": [
+              112,
+              22,
+              16,
+              52
+            ],
+            "lines": [
+              "{6} / {7} mB"
+            ]
+          },
+          {
+            "rect": [
+              160,
+              21,
+              8,
+              8
+            ],
+            "lines": [
+              "§lMelhorias Aceitáveis:§r",
+              "* §4Velocidade§r: Acumula até o nível 3",
+              "* §1Economia de Energia§r: Acumula até o nível 3",
+              "* §7Sobrecarga§r: Acumula até o nível 3",
+              "* §dPós-Combustor§r: Acumula até o nível 3"
+            ]
+          },
+          {
+            "rect": [
+              54,
+              45,
+              6,
+              32
+            ],
+            "lines": [
+              "{9} / {10} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/fracking_tower.obj",
+        "obj_from": "models/machines/fracking_tower.obj",
+        "texture": "ntm:textures/models/machines/fracking_tower.png",
+        "texture_from": "textures/models/machines/fracking_tower.png",
+        "rotation": 180,
+        "radius": 25.0
+      }
     },
     "ntm:machine_pumpjack": {
-      "source": "oil batch D: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "ContainerMachineOilWell, GUIMachineOilWell, MachinePumpjack {3,0,0,0,0,6} offset 0 and its two ground rows, RenderPumpjack (case 2: 90; the rotor turns 5 degrees a tick from -90, the head rocks 0.25 sin and the carriage moves -sin blocks while it works: value 2 = 0 with power; its cables, drawn by hand in HBM, are left out)",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 58,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 94,
+            "y": 22,
+            "accept": []
+          },
+          {
+            "x": 94,
+            "y": 58,
+            "output": true
+          },
+          {
+            "x": 130,
+            "y": 22,
+            "accept": []
+          },
+          {
+            "x": 130,
+            "y": 58,
+            "output": true
+          },
+          {
+            "x": 156,
+            "y": 36,
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_overdrive_1",
+              "ntm:upgrade_overdrive_2",
+              "ntm:upgrade_overdrive_3",
+              "ntm:upgrade_afterburn_1",
+              "ntm:upgrade_afterburn_2",
+              "ntm:upgrade_afterburn_3"
+            ]
+          },
+          {
+            "x": 156,
+            "y": 54,
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_overdrive_1",
+              "ntm:upgrade_overdrive_2",
+              "ntm:upgrade_overdrive_3",
+              "ntm:upgrade_afterburn_1",
+              "ntm:upgrade_afterburn_2",
+              "ntm:upgrade_afterburn_3"
+            ]
+          },
+          {
+            "x": -10000,
+            "y": -10000,
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_overdrive_1",
+              "ntm:upgrade_overdrive_2",
+              "ntm:upgrade_overdrive_3",
+              "ntm:upgrade_afterburn_1",
+              "ntm:upgrade_afterburn_2",
+              "ntm:upgrade_afterburn_3"
+            ]
+          }
+        ],
+        "inventory": [
+          12,
+          108
+        ],
+        "data": 9,
+        "synced": [
+          0,
+          2
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            6,
+            3,
+            0
+          ],
+          "offset": 0,
+          "extra": [
+            {
+              "min": [
+                2,
+                0,
+                -1
+              ],
+              "max": [
+                4,
+                0,
+                -1
+              ]
+            },
+            {
+              "min": [
+                1,
+                0,
+                1
+              ],
+              "max": [
+                5,
+                0,
+                1
+              ]
+            }
+          ],
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/machine/gui_well.png",
+        "texture_from": "textures/gui/machine/gui_well.png",
+        "size": [
+          184,
+          190
+        ],
+        "title": [
+          126,
+          10,
+          "center"
+        ],
+        "inventory_label": [
+          12,
+          96
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              8,
+              22,
+              16,
+              34
+            ],
+            "uv": [
+              184,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 3,
+            "max": 4,
+            "rect": [
+              76,
+              22,
+              16,
+              52
+            ],
+            "color": 5,
+            "dir": "up"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              112,
+              22,
+              16,
+              52
+            ],
+            "color": 8,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              50,
+              19,
+              14,
+              14
+            ],
+            "uv": [
+              184,
+              34
+            ]
+          },
+          {
+            "value": 2,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              50,
+              19,
+              14,
+              14
+            ],
+            "uv": [
+              198,
+              34
+            ]
+          },
+          {
+            "value": 2,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              50,
+              19,
+              14,
+              14
+            ],
+            "uv": [
+              212,
+              34
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              8,
+              22,
+              16,
+              34
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              76,
+              22,
+              16,
+              52
+            ],
+            "lines": [
+              "{3} / {4} mB"
+            ]
+          },
+          {
+            "rect": [
+              112,
+              22,
+              16,
+              52
+            ],
+            "lines": [
+              "{6} / {7} mB"
+            ]
+          },
+          {
+            "rect": [
+              160,
+              21,
+              8,
+              8
+            ],
+            "lines": [
+              "§lMelhorias Aceitáveis:§r",
+              "* §4Velocidade§r: Acumula até o nível 3",
+              "* §1Economia de Energia§r: Acumula até o nível 3",
+              "* §7Sobrecarga§r: Acumula até o nível 3",
+              "* §dPós-Combustor§r: Acumula até o nível 3"
+            ]
+          }
+        ],
+        "compose": [
+          {
+            "from": "textures/gui/machine/gui_well.png",
+            "src": [
+              200,
+              0,
+              18,
+              34
+            ],
+            "at": [
+              48,
+              44
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/pumpjack.obj",
+        "obj_from": "models/machines/pumpjack.obj",
+        "texture": "ntm:textures/models/machines/pumpjack.png",
+        "texture_from": "textures/models/machines/pumpjack.png",
+        "rotation": 90,
+        "radius": 7.5,
+        "bones": {
+          "Rotor": {
+            "pivot": [
+              0,
+              1.5,
+              -5.5
+            ]
+          },
+          "Head": {
+            "pivot": [
+              0,
+              3.5,
+              -3.5
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.pumpjack.work",
+          "length": 3.6,
+          "bones": {
+            "Rotor": {
+              "rotation": {
+                "0.0": [
+                  -90,
+                  0,
+                  0
+                ],
+                "3.60": [
+                  270,
+                  0,
+                  0
+                ]
+              }
+            },
+            "Head": {
+              "swing": {
+                "axis": "x",
+                "amp": 14.324
+              }
+            },
+            "Carriage": {
+              "position": {
+                "0.0000": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "0.1500": [
+                  0,
+                  -4.1411,
+                  0
+                ],
+                "0.3000": [
+                  0,
+                  -8.0,
+                  0
+                ],
+                "0.4500": [
+                  0,
+                  -11.3137,
+                  0
+                ],
+                "0.6000": [
+                  0,
+                  -13.8564,
+                  0
+                ],
+                "0.7500": [
+                  0,
+                  -15.4548,
+                  0
+                ],
+                "0.9000": [
+                  0,
+                  -16.0,
+                  0
+                ],
+                "1.0500": [
+                  0,
+                  -15.4548,
+                  0
+                ],
+                "1.2000": [
+                  0,
+                  -13.8564,
+                  0
+                ],
+                "1.3500": [
+                  0,
+                  -11.3137,
+                  0
+                ],
+                "1.5000": [
+                  0,
+                  -8.0,
+                  0
+                ],
+                "1.6500": [
+                  0,
+                  -4.1411,
+                  0
+                ],
+                "1.8000": [
+                  0,
+                  -0.0,
+                  0
+                ],
+                "1.9500": [
+                  0,
+                  4.1411,
+                  0
+                ],
+                "2.1000": [
+                  0,
+                  8.0,
+                  0
+                ],
+                "2.2500": [
+                  0,
+                  11.3137,
+                  0
+                ],
+                "2.4000": [
+                  0,
+                  13.8564,
+                  0
+                ],
+                "2.5500": [
+                  0,
+                  15.4548,
+                  0
+                ],
+                "2.7000": [
+                  0,
+                  16.0,
+                  0
+                ],
+                "2.8500": [
+                  0,
+                  15.4548,
+                  0
+                ],
+                "3.0000": [
+                  0,
+                  13.8564,
+                  0
+                ],
+                "3.1500": [
+                  0,
+                  11.3137,
+                  0
+                ],
+                "3.3000": [
+                  0,
+                  8.0,
+                  0
+                ],
+                "3.4500": [
+                  0,
+                  4.1411,
+                  0
+                ],
+                "3.6000": [
+                  0,
+                  0.0,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.pumpjack.work",
+            "values": [
+              {
+                "value": 2,
+                "min": 0,
+                "max": 0
+              },
+              {
+                "value": 0,
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_well": {
-      "source": "oil batch D: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "ContainerMachineOilWell, GUIMachineOilWell (gui_well.png 184x190; HBM covers the fracking tank), MachineOilWell's fillSpace (3x3 from y 1 to 9 over the core and the four bottom corners), RenderDerrick (90, then case 2: 90; static); the pipe below the core is the logic's",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 58,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 94,
+            "y": 22,
+            "accept": []
+          },
+          {
+            "x": 94,
+            "y": 58,
+            "output": true
+          },
+          {
+            "x": 130,
+            "y": 22,
+            "accept": []
+          },
+          {
+            "x": 130,
+            "y": 58,
+            "output": true
+          },
+          {
+            "x": 156,
+            "y": 36,
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_overdrive_1",
+              "ntm:upgrade_overdrive_2",
+              "ntm:upgrade_overdrive_3",
+              "ntm:upgrade_afterburn_1",
+              "ntm:upgrade_afterburn_2",
+              "ntm:upgrade_afterburn_3"
+            ]
+          },
+          {
+            "x": 156,
+            "y": 54,
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_overdrive_1",
+              "ntm:upgrade_overdrive_2",
+              "ntm:upgrade_overdrive_3",
+              "ntm:upgrade_afterburn_1",
+              "ntm:upgrade_afterburn_2",
+              "ntm:upgrade_afterburn_3"
+            ]
+          },
+          {
+            "x": -10000,
+            "y": -10000,
+            "accept": [
+              "ntm:upgrade_speed_1",
+              "ntm:upgrade_speed_2",
+              "ntm:upgrade_speed_3",
+              "ntm:upgrade_power_1",
+              "ntm:upgrade_power_2",
+              "ntm:upgrade_power_3",
+              "ntm:upgrade_overdrive_1",
+              "ntm:upgrade_overdrive_2",
+              "ntm:upgrade_overdrive_3",
+              "ntm:upgrade_afterburn_1",
+              "ntm:upgrade_afterburn_2",
+              "ntm:upgrade_afterburn_3"
+            ]
+          }
+        ],
+        "inventory": [
+          12,
+          108
+        ],
+        "data": 9,
+        "synced": [
+          0,
+          2
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            0,
+            0
+          ],
+          "offset": 0,
+          "extra": [
+            {
+              "min": [
+                -1,
+                1,
+                -1
+              ],
+              "max": [
+                1,
+                9,
+                1
+              ]
+            },
+            {
+              "min": [
+                -1,
+                0,
+                -1
+              ],
+              "max": [
+                -1,
+                0,
+                -1
+              ]
+            },
+            {
+              "min": [
+                -1,
+                0,
+                1
+              ],
+              "max": [
+                -1,
+                0,
+                1
+              ]
+            },
+            {
+              "min": [
+                1,
+                0,
+                -1
+              ],
+              "max": [
+                1,
+                0,
+                -1
+              ]
+            },
+            {
+              "min": [
+                1,
+                0,
+                1
+              ],
+              "max": [
+                1,
+                0,
+                1
+              ]
+            }
+          ],
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/machine/gui_well.png",
+        "texture_from": "textures/gui/machine/gui_well.png",
+        "size": [
+          184,
+          190
+        ],
+        "title": [
+          126,
+          10,
+          "center"
+        ],
+        "inventory_label": [
+          12,
+          96
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              8,
+              22,
+              16,
+              34
+            ],
+            "uv": [
+              184,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 3,
+            "max": 4,
+            "rect": [
+              76,
+              22,
+              16,
+              52
+            ],
+            "color": 5,
+            "dir": "up"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              112,
+              22,
+              16,
+              52
+            ],
+            "color": 8,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              50,
+              19,
+              14,
+              14
+            ],
+            "uv": [
+              184,
+              34
+            ]
+          },
+          {
+            "value": 2,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              50,
+              19,
+              14,
+              14
+            ],
+            "uv": [
+              198,
+              34
+            ]
+          },
+          {
+            "value": 2,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              50,
+              19,
+              14,
+              14
+            ],
+            "uv": [
+              212,
+              34
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              8,
+              22,
+              16,
+              34
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              76,
+              22,
+              16,
+              52
+            ],
+            "lines": [
+              "{3} / {4} mB"
+            ]
+          },
+          {
+            "rect": [
+              112,
+              22,
+              16,
+              52
+            ],
+            "lines": [
+              "{6} / {7} mB"
+            ]
+          },
+          {
+            "rect": [
+              160,
+              21,
+              8,
+              8
+            ],
+            "lines": [
+              "§lMelhorias Aceitáveis:§r",
+              "* §4Velocidade§r: Acumula até o nível 3",
+              "* §1Economia de Energia§r: Acumula até o nível 3",
+              "* §7Sobrecarga§r: Acumula até o nível 3",
+              "* §dPós-Combustor§r: Acumula até o nível 3"
+            ]
+          }
+        ],
+        "compose": [
+          {
+            "from": "textures/gui/machine/gui_well.png",
+            "src": [
+              200,
+              0,
+              18,
+              34
+            ],
+            "at": [
+              48,
+              44
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/derrick.obj",
+        "obj_from": "models/machines/derrick.obj",
+        "texture": "ntm:textures/models/machines/derrick.png",
+        "texture_from": "textures/models/machines/derrick.png",
+        "rotation": 180,
+        "radius": 11.0
+      }
     },
     "ntm:machine_hephaestus": {
       "source": "MachineHephaestus {11,0,1,1,1,1} offset 1, RenderHephaestus (no turn; Rotor drawn three times 120 degrees apart, turning 0.5 a tick while it holds heat, value 0; the Core lava while hot, cobblestone else: here a lava column (its four sides and its top) shown by value 0, without the texture's scroll and with no cobblestone while cold); no screen in HBM",

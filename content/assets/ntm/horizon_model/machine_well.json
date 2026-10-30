@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/derrick.obj",
+  "texture": "ntm:textures/models/machines/derrick.png",
+  "rotation": 180,
+  "radius": 11.0
+}

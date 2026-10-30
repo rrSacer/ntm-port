@@ -1,0 +1,39 @@
+{
+  "obj": "ntm:models/obj/pumpjack.obj",
+  "texture": "ntm:textures/models/machines/pumpjack.png",
+  "rotation": 90,
+  "radius": 7.5,
+  "bones": {
+    "Rotor": {
+      "pivot": [
+        0,
+        1.5,
+        -5.5
+      ]
+    },
+    "Head": {
+      "pivot": [
+        0,
+        3.5,
+        -3.5
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.pumpjack.work",
+      "values": [
+        {
+          "value": 2,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "value": 0,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "animations": "ntm:animations/machine_pumpjack.animation.json"
+}
