@@ -650,6 +650,42 @@
       }
     },
     {
+      "id": "ntm:bulk__2759e90a10883c3785",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:310",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:arc_electrode__lanthanium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__882bf6f0c5f144c048",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:311",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:arc_electrode__desh",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__50c6e73bd5ddc835ee",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:312",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:arc_electrode__desh",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__82cfa296416cd8beb5",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:313",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:arc_electrode__saturnite",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__ce065a3eba5a5dd448",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:319",
       "type": "minecraft:crafting_shaped",
@@ -4862,6 +4898,78 @@
       }
     },
     {
+      "id": "ntm:bulk__c5643ffbac650909fb",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:112",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_graphite",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__dec798f11af8a878f3",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:112; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_graphite",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__762d78883149b7be09",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:113",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_lanthanium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__45579eec7237c86785",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:113; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_lanthanium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f9c379f52447c61855",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:114",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_desh",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ec6c107291eae5070b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:114; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_desh",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d5dcaa8f91f48d2c46",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:115",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_saturnite",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__38c7b75daf71e6f2b0",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:115; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_saturnite",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__f7e7ef6fa298b63760",
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:125",
       "type": "minecraft:smelting",
@@ -5231,7 +5339,7 @@
       }
     }
   ],
-  "generated_count": 581,
+  "generated_count": 593,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -5944,38 +6052,14 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:308",
       "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.GRAPHITE)",
+      "reason": "unresolved ore dictionary STEEL.bolt()",
       "expression": "DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.GRAPHITE), new Object[] { \"C\", \"T\", \"C\", 'C', GRAPHITE.ingot(), 'T', STEEL.bolt() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:309",
       "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.GRAPHITE)",
+      "reason": "unresolved ore dictionary ANY_TAR.any()",
       "expression": "DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.GRAPHITE), new Object[] { \"C\", \"T\", \"C\", 'C', PETCOKE.gem(), 'T', ANY_TAR.any() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:310",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.LANTHANIUM)",
-      "expression": "DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.LANTHANIUM), new Object[] { \"C\", \"T\", \"C\", 'C', LA.ingot(), 'T', KEY_BRICK }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:311",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.DESH)",
-      "expression": "DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.DESH), new Object[] { \"C\", \"T\", \"C\", 'C', DESH.ingot(), 'T', TI.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:312",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.DESH)",
-      "expression": "DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.DESH), new Object[] { \"C\", \"T\", \"C\", 'C', DESH.ingot(), 'T', W.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:313",
-      "callee": "addRecipeAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.SATURNITE)",
-      "expression": "DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.SATURNITE), new Object[] { \"C\", \"T\", \"C\", 'C', BIGMT.ingot(), 'T', NB.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:315",
@@ -11202,30 +11286,6 @@
       "callee": "GameRegistry.addSmelting",
       "reason": "unregistered/ambiguous source item glyphid_meat",
       "expression": "ModItems.glyphid_meat, new ItemStack(ModItems.glyphid_meat_grilled), 1.0F"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:112",
-      "callee": "GameRegistry.addSmelting",
-      "reason": "missing enum DictFrame.fromOne(ModItems.arc_electrode_burnt, EnumElectrodeType.GRAPHITE)",
-      "expression": "DictFrame.fromOne(ModItems.arc_electrode_burnt, EnumElectrodeType.GRAPHITE), new ItemStack(ModItems.ingot_graphite), 3.0F"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:113",
-      "callee": "GameRegistry.addSmelting",
-      "reason": "missing enum DictFrame.fromOne(ModItems.arc_electrode_burnt, EnumElectrodeType.LANTHANIUM)",
-      "expression": "DictFrame.fromOne(ModItems.arc_electrode_burnt, EnumElectrodeType.LANTHANIUM), new ItemStack(ModItems.ingot_lanthanium), 3.0F"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:114",
-      "callee": "GameRegistry.addSmelting",
-      "reason": "missing enum DictFrame.fromOne(ModItems.arc_electrode_burnt, EnumElectrodeType.DESH)",
-      "expression": "DictFrame.fromOne(ModItems.arc_electrode_burnt, EnumElectrodeType.DESH), new ItemStack(ModItems.ingot_desh), 3.0F"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:115",
-      "callee": "GameRegistry.addSmelting",
-      "reason": "missing enum DictFrame.fromOne(ModItems.arc_electrode_burnt, EnumElectrodeType.SATURNITE)",
-      "expression": "DictFrame.fromOne(ModItems.arc_electrode_burnt, EnumElectrodeType.SATURNITE), new ItemStack(ModItems.ingot_saturnite), 3.0F"
     },
     {
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:118",

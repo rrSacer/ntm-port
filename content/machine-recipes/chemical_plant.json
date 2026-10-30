@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 47,
+    "emitted": 49,
     "scanned_source_calls": 77,
-    "skipped_source_calls": 30,
+    "skipped_source_calls": 28,
     "expanded_fluid_recipes": 0,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -839,6 +839,56 @@
       "label_en": "Solid Fuel"
     },
     {
+      "name": "chem.oilelectrodes",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:278",
+      "duration": 600,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [
+        [
+          "ntm:arc_electrode__graphite",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "heatingoil",
+          4000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [
+        "alt..electrodes"
+      ],
+      "label": "Eletrodo de Grafite",
+      "label_en": "Graphite Electrode"
+    },
+    {
+      "name": "chem.lubeelectrodes",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:282",
+      "duration": 600,
+      "power": 100,
+      "inputItems": [],
+      "outputItems": [
+        [
+          "ntm:arc_electrode__graphite",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "lubricant",
+          8000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [
+        "alt..electrodes"
+      ],
+      "label": "Eletrodo de Grafite",
+      "label_en": "Graphite Electrode"
+    },
+    {
       "name": "chem.peroxide",
       "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:287",
       "duration": 50,
@@ -1636,18 +1686,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:258",
       "reason": "unresolved ore dictionary KEY_GLYPHID_MEAT",
       "expression": "new GenericRecipe(\"chem.meatprocessing\").setupNamed(200, 200).setIcon(ModItems.glyphid_meat)\n\t\t\t\t.inputItems(new OreDictStack(KEY_GLYPHID_MEAT, 3))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.WATER, 1_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.sulfur, 4), new ItemStack(ModItems.niter, 3))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.SALIENT, 250))"
-    },
-    {
-      "name": "chem.oilelectrodes",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:278",
-      "reason": "unregistered/ambiguous source item arc_electrode",
-      "expression": "new GenericRecipe(\"chem.oilelectrodes\").setupNamed(600, 100)\n\t\t\t\t.inputFluids(new FluidStack(Fluids.HEATINGOIL, 4_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.arc_electrode, 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + \".electrodes\")"
-    },
-    {
-      "name": "chem.lubeelectrodes",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:282",
-      "reason": "unregistered/ambiguous source item arc_electrode",
-      "expression": "new GenericRecipe(\"chem.lubeelectrodes\").setupNamed(600, 100)\n\t\t\t\t.inputFluids(new FluidStack(Fluids.LUBRICANT, 8_000))\n\t\t\t\t.outputItems(new ItemStack(ModItems.arc_electrode, 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + \".electrodes\")"
     },
     {
       "name": "chem.cordite",

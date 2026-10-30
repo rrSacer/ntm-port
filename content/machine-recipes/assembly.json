@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 413,
+    "emitted": 415,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 218,
+    "skipped_source_calls": 216,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1820,6 +1820,111 @@
       "pools": [],
       "label": "Acidificador de Minério",
       "label_en": "Ore Acidizer"
+    },
+    {
+      "name": "ass.electrolyzer",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:292",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:plate_copper"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_firebrick"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:arc_electrode__graphite"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_electrolyser",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Máquina de Eletrólise",
+      "label_en": "Electrolysis Machine"
+    },
+    {
+      "name": "ass.pyrooven",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:338",
+      "duration": 300,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_welded__steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_pc",
+            "ntm:ingot_pvc"
+          ],
+          "count": 24
+        },
+        {
+          "ids": [
+            "ntm:pipe__copper"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:motor_desh"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:circuit__bismoid"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_pyrooven",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Forno de Pirólise",
+      "label_en": "Pyrolysis Oven"
     },
     {
       "name": "ass.epress",
@@ -14002,12 +14107,6 @@
       "expression": "new GenericRecipe(\"ass.arcfurnace\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_arc_furnace, 1))\n\t\t\t\t.inputItems(new OreDictStack(ANY_CONCRETE.any(), 12), new OreDictStack(ANY_PLASTIC.ingot(), 8), new ComparableStack(ModItems.ingot_firebrick, 16),new OreDictStack(STEEL.plateCast(), 8), new ComparableStack(ModBlocks.machine_transformer, 1), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.ANALOG.ordinal()))\n\t\t\t\t.inputItemsEx(new OreDictStack(ANY_CONCRETE.any(), 12), new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.HEAVY_FRAME), new ComparableStack(ModItems.ingot_firebrick, 16), new ComparableStack(ModBlocks.machine_transformer, 1), new ComparableStack(ModItems.circuit, 3, EnumCircuitType.ANALOG.ordinal()))"
     },
     {
-      "name": "ass.electrolyzer",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:292",
-      "reason": "unregistered/ambiguous source item arc_electrode",
-      "expression": "new GenericRecipe(\"ass.electrolyzer\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_electrolyser, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 8), new OreDictStack(CU.plate(), 16), new OreDictStack(RUBBER.ingot(), 8), new ComparableStack(ModItems.ingot_firebrick, 16), new ComparableStack(ModItems.arc_electrode, 1), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BASIC))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.HEAVY_FRAME), new OreDictStack(RUBBER.ingot(), 8), new ComparableStack(ModItems.ingot_firebrick, 16), new ComparableStack(ModItems.coil_copper, 16), new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.CIRCUIT))"
-    },
-    {
       "name": "ass.rtg",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:295",
       "reason": "unregistered/ambiguous source item machine_rtg",
@@ -14078,12 +14177,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:334",
       "reason": "unregistered/ambiguous source item machine_hydrotreater",
       "expression": "new GenericRecipe(\"ass.hydrotreater\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_hydrotreater, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateWelded(), 8), new OreDictStack(CU.plateCast(), 4), new OreDictStack(NB.ingot(), 8), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(STEEL.shell(), 2), new OreDictStack(STEEL.pipe(), 8), new ComparableStack(ModItems.motor_desh, 2), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.BISMOID))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.BRONZE_TUBES), new OreDictStack(NB.ingot(), 8), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(DURA.pipe(), 16), new ComparableStack(ModItems.motor_bismuth, 8), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.COMPUTER))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"hardplastic\")"
-    },
-    {
-      "name": "ass.pyrooven",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:338",
-      "reason": "unregistered/ambiguous source item machine_pyrooven",
-      "expression": "new GenericRecipe(\"ass.pyrooven\").setup(300, 100).outputItems(new ItemStack(ModBlocks.machine_pyrooven, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateWelded(), 16), new OreDictStack(ANY_HARDPLASTIC.ingot(), 24), new OreDictStack(CU.pipe(), 12), new ComparableStack(ModItems.motor_desh, 1), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.BISMOID))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 6, EnumExpensiveType.BRONZE_TUBES), new OreDictStack(ANY_HARDPLASTIC.ingot(), 32), new ComparableStack(ModItems.ingot_cft, 4), new ComparableStack(ModItems.motor_bismuth, 4), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.COMPUTER))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"hardplastic\")"
     },
     {
       "name": "ass.liquefactor",
@@ -14706,7 +14799,7 @@
     {
       "name": "ass.mpt10xenon",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:837",
-      "reason": "unregistered/ambiguous source item arc_electrode",
+      "reason": "unregistered/ambiguous source item mp_thruster_10_xenon",
       "expression": "new GenericRecipe(\"ass.mpt10xenon\").setup(100, 100).outputItems(new ItemStack(ModItems.mp_thruster_10_xenon, 1))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.seg_10, 1), new OreDictStack(DURA.plate(), 4), new ComparableStack(ModItems.arc_electrode, 1))"
     },
     {
