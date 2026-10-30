@@ -621,6 +621,52 @@ O resto do poço é aberto antes, para o teste não levar horas.
     pilha com mais de um item de um slot de máquina para o inventário perde o
     `custom_data`. O bruto perde as densidades. Itens isolados mantêm.
 
+## Cadeia do bedrock, etapa 2: o cristalizador (`crafter.rs`, `Station::Crystallizer`)
+
+É o `TileEntityMachineCrystallizer` com as receitas do
+`CrystallizerRecipes`: 404 receitas do agente de importação
+(`content/machine-recipes/crystallizer.json`, 5 puladas), cada uma com um só
+fluido. Tela, multibloco 3×3×6 e portas são do agente de visual.
+
+| | NTM | Port |
+| --- | --- | --- |
+| Receita | `getOutput(item, tipo do tanque)` | igual: o item da entrada e o fluido do tanque. O mesmo PRIMARY vai para a linha sulfúrica, de hidrogênio etc. conforme o tanque |
+| Tanque | 8.000 mB, tipado pelo identificador do slot 7 | 8.000 mB, tipado pelo primeiro fluido que chega com o tanque vazio (o port não tem identificador). Pelas portas, um tanque vazio desse tipo entra em todas as redes de fluido da dimensão (`FluidNode::accepts_any`), o que vale também para a escavadora |
+| Tempo e energia | `progress > duração`: duração + 1 ticks, 1.000 HE/t, máximo 1.000.000 | igual |
+| Saída | um slot; outro item nele para a máquina | igual |
+| Quantidade | `setReq` (por exemplo 4 subprodutos → 1 lavado) | igual |
+| Upgrades e produtividade | velocidade, eficiência e overdrive; a produtividade é a chance de não gastar a entrada, só com eficiência | sem upgrades no port: a produtividade fica guardada e não age |
+| Bateria criativa | no slot 1 | igual (o bridge lê o slot de bateria da estação; vale também para o PUREX) |
+
+**Nível 3 do bedrock:** a escavadora com broca desh tira de um depósito de
+nível 3 gastando 1.000 mB de ácido sulfúrico por extração, que chega por um
+barril na camada de portas.
+
+**Verificação:**
+- **Mundo falso** (`server/tests/crystallizer_tests.rs`, 3):
+  - lavar um BASE com 250 mB de água leva 101 ticks;
+  - o tanque vazio pega o primeiro fluido;
+  - o fluido escolhe a linha (sulfúrica ou hidrogênio);
+  - outro item na saída para a máquina;
+  - a bateria criativa no slot 1 alimenta.
+- **Em jogo** (`tools/test-game/bedrock.py`, etapas `escavar3`, `pilha`,
+  `lavar`, `acido` e `fim`; o mesmo mundo da etapa 1):
+  - **`escavar3`:** a segunda escavadora sobre o depósito de nível 3 em
+    (2920, −1848), com broca desh e ácido sulfúrico de um barril: 2 brutos
+    com actinídeos 2,2 (2,0 × 1,1), em 412 s.
+  - **`pilha`:** a pilha de 2 brutos sai pelo shift-clique com o
+    `custom_data` (a correção do motor para o criativo).
+  - **`lavar`:** com água de um barril pelas portas, os BASE lavados dão 2
+    PRIMARY cada na centrífuga, contra 1 dos não lavados (3 lavados → 6;
+    2 → 2).
+  - **`acido`:** 8 PRIMARY com ácido sulfúrico dão 8 sulfúricos → 16
+    sem-sulfúrico + 16 subprodutos.
+    - Os 16 sem-sulfúrico dão 64 fragmentos de urânio, 64 de tório e 16
+      migalhas.
+    - Os 16 subprodutos lavados 4 → 1 dão 4 lavados → 16 de rádio, 8 de
+      polônio e 4 migalhas. Todas as contas batem com as tabelas.
+  - 9 fragmentos de urânio dão 1 pó de urânio. Sem "took too long".
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
