@@ -576,6 +576,21 @@ depois de um crash no meio da identificação. Ele confere três coisas:
 
 Em jogo, o mesmo mundo com 8 sondas herdadas carrega e as máquinas rodam.
 
+**Fuel medido** (harness wasmtime de `spikes/m2-fuel`, `SERVER=1`: o save do
+fixture como mundo dedicado, com o alocador em pool do mod):
+
+| | antes (49e50fd) | agora (e42387d) |
+| --- | ---: | ---: |
+| `init` (tabelas de receita) | 0 | 78,7M (o init tem 2.000M) |
+| `Server::new` | 25,6M | 5,0M |
+| tick da carga | 11,9M | 5,5M |
+| 5 ticks seguintes | 0,7M cada | 0,7M cada |
+
+Ler todas as tabelas custa 78,7M, mais que o limite de 50M de um tick. No
+código antigo elas eram lidas no 1º uso; no jogo, com os slots cheios, o
+tick da carga lia muitas de uma vez. O harness não tem os slots do motor nem
+as sondas herdadas, então mede menos que o jogo nesse tick.
+
 **Limite que fica:** uma máquina posta enquanto o server mod está parado
 (crash, "took too long") não é registrada depois. O servidor só conhece as
 máquinas pelo evento de bloco posto, e não há como listar os blocos de
