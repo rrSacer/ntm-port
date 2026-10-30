@@ -555,14 +555,22 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
     - o conteúdo frio ou quente ([23]);
     - o botão de modo líquido ([28]);
     - a coluna de metal fundido na tela ([25..27]).
-- **Ainda não desenhado:**
-  - a tampa do forno a arco subindo ([24]) e a altura do conteúdo: pedem posar uma animação por valor;
-  - o vidro do liquefator e do solidificador, 15% translúcido no NTM, que aqui fica de fora.
+- **Posar por valor (terceiro recurso):**
+  - A tampa do forno a arco sobe 2 blocos com [24] (de 1000) e leva os anéis, os eletrodos e os cabos.
+  - O metal fundido sobe com [25] de [26].
+  - No NTM, a translação do conteúdo não é desfeita, então com metal fundido a tampa e os eletrodos descem junto. Aqui
+    as duas ficam independentes.
+  - As prensas (a lenha e elétrica) posam a cabeça em (1 − press/maxPress) × 0,875 bloco por [0] e [1], no lugar do
+    ciclo fixo de 1 s.
+  - Os valores sincronizados vão como dado do block entity, sem atualizar o bloco: a cabeça que se move a cada tick
+    custa um pacote pequeno.
+- **Ainda não desenhado:** o vidro do liquefator e do solidificador, 15% translúcido no NTM, que aqui fica de fora.
 - **Em jogo (os dois recursos):**
   - A alavanca troca as telas do eletrolisador nos dois sentidos: 57 slots na de fluidos, 46 na de metal.
   - Com os valores [20..23] = 1, 2, 3, 2, o forno a arco mostra os anéis e os eletrodos, e o eletrodo quente brilha.
   - Um `/data merge` não manda os valores aos clientes na hora: chegam com o chunk, ou quando o mod os muda
     (`set-data`).
+  - Com [0] = 100 de 200, a cabeça da prensa desce até a metade.
 - **Em jogo** (com uma cópia de teste que força as animações):
   - os cinco põem os dummies certos (o eletrolisador, 156);
   - as telas abrem;
@@ -572,7 +580,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 39 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 42 commits):
 
 | Commit | O quê |
 |---|---|
@@ -614,6 +622,9 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(client): switch a mod machine's screen with a button` | `screens` no arquivo da máquina, `screen` no botão, `slots` por tela (as duas telas do eletrolisador) |
 | `feat(render): show mod model parts by a machine's synced values` | `show` por `value` (os eletrodos do forno a arco) |
 | `docs(api): describe content mods' machine, screen and model files` | `docs/api/machine-files.md`, genérico, sem nada do NTM |
+| `feat(render): pose mod model animations by synced values` | `pose` (a tampa do forno a arco, a cabeça das prensas) |
+| `perf(lan): send a machine's shown values without its block` | Um valor sincronizado que muda vai só como dado do block entity, sem atualizar o bloco |
+| `docs(api): describe posing a model by synced values` | |
 | `fix(lan): send an item's custom data to clients` | O `custom_data` vai aos clientes. No criativo, o cliente devolve os slots que previu (`SetCreativeModeSlot`), e o shift-clique de uma máquina apagava as densidades do minério de bedrock |
 
 **No port:**
