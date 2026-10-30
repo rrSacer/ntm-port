@@ -53,7 +53,7 @@ index 75cf5ee85..1262f15cd 100644
  miniz_oxide = "0.8"
  naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
 diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
-index b415748c4..0f8852323 100644
+index b415748c4..4d4dcc835 100644
 --- a/crates/horizon-client-render/src/block_entity_render.rs
 +++ b/crates/horizon-client-render/src/block_entity_render.rs
 @@ -94,6 +94,11 @@ pub fn diffuse(normal: Vec3, lights: (Vec3, Vec3)) -> f32 {
@@ -84,13 +84,16 @@ index b415748c4..0f8852323 100644
      /// Sign text (`StandingSignRenderer` / `HangingSignRenderer`); the boards are block models.
      Sign {
          hanging: bool,
-@@ -784,7 +798,21 @@ pub struct BlockEntityRenderer {
+@@ -784,7 +798,24 @@ pub struct BlockEntityRenderer {
      /// `Block.shouldRenderFace` for End gateway faces (its occlusion pair cache needs a lock).
      visibility: Option<Mutex<FaceVisibility>>,
      sign_texts: Mutex<SignTexts>,
 +    /// Content mods' models, and their still bones' vertices by model,
 +    /// turn and dimension lighting (relative to the block; light is set per frame).
 +    mod_models: Vec<std::sync::Arc<crate::mod_models::Model>>,
++    /// Each model's `show` by neighbour: (bone, offset, the states that
++    /// match, shown while none does).
++    mod_neighbors: Vec<Vec<(usize, [i32; 3], std::collections::HashSet<u32>, bool)>>,
 +    mod_still: Mutex<ModStill>,
 +    /// Models go to the GPU as bone instances (`gfx::mod_models`) rather
 +    /// than vertices: off while a shader pack draws the entities.
@@ -106,7 +109,7 @@ index b415748c4..0f8852323 100644
  /// Laid-out sign text by position. `AbstractSignRenderer` lays the text out
  /// again each frame, glyph by glyph; its vertices only change with what is
  /// in the key, so they are kept relative to the block and moved to the camera.
-@@ -857,6 +885,7 @@ impl BlockEntityRenderer {
+@@ -857,6 +888,7 @@ impl BlockEntityRenderer {
              .collect();
          let mut renderer = Self::new(models, registry);
          renderer.visibility = Some(Mutex::new(crate::models::load_visibility(root, registry)?));
@@ -114,18 +117,19 @@ index b415748c4..0f8852323 100644
          // Sherd items: provides_pottery_pattern -> decorated_pot_pattern asset id.
          if let Ok(bytes) = std::fs::read(root.join("items.json")) {
              let items: Value = serde_json::from_slice(&bytes)?;
-@@ -937,6 +966,10 @@ impl BlockEntityRenderer {
+@@ -937,6 +969,11 @@ impl BlockEntityRenderer {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
 +            mod_models: Vec::new(),
++            mod_neighbors: Vec::new(),
 +            mod_still: Mutex::default(),
 +            model_instancing: std::sync::atomic::AtomicBool::new(false),
 +            model_draws: Mutex::default(),
          }
      }
      fn kind(&self, state: u32) -> &Kind {
-@@ -971,6 +1004,36 @@ impl BlockEntityRenderer {
+@@ -971,6 +1008,36 @@ impl BlockEntityRenderer {
              let origin = (DVec3::new(f64::from(pos[0]), f64::from(pos[1]), f64::from(pos[2]))
                  - scene.camera)
                  .as_vec3();
@@ -162,7 +166,7 @@ index b415748c4..0f8852323 100644
              let packed = scene.world.light(pos[0], pos[1], pos[2]);
              if matches!(kind, Kind::Sign { .. }) && scene.texts.is_none() {
                  self.sign_text(scene, *pos, *state, origin, packed, out);
-@@ -1089,6 +1152,241 @@ impl BlockEntityRenderer {
+@@ -1089,6 +1156,273 @@ impl BlockEntityRenderer {
      pub fn renders(&self, state: u32) -> bool {
          !matches!(self.kind(state), Kind::None)
      }
@@ -180,6 +184,26 @@ index b415748c4..0f8852323 100644
 +            .iter()
 +            .enumerate()
 +            .map(|(i, m)| (m.block.as_str(), i))
++            .collect();
++        // `show` by neighbour: the states each condition names.
++        self.mod_neighbors = self
++            .mod_models
++            .iter()
++            .map(|m| {
++                m.show_neighbors
++                    .iter()
++                    .map(|n| {
++                        let states = (0..registry.len() as u32)
++                            .filter(|&id| {
++                                registry.state(BlockStateId(id)).is_some_and(|s| {
++                                    n.names(&s.name, &|k: &str| s.properties.get(k).cloned())
++                                })
++                            })
++                            .collect();
++                        (n.bone, n.offset, states, n.unless)
++                    })
++                    .collect()
++            })
 +            .collect();
 +        for id in 0..registry.len() as u32 {
 +            let Some(s) = registry.state(BlockStateId(id)) else {
@@ -280,9 +304,21 @@ index b415748c4..0f8852323 100644
 +            _ => &[],
 +        };
 +        // Parts shown by the block entity's values (`show` by `value`), and
-+        // animations posed by them (`pose`).
-+        let hidden = hidden | m.hidden_by_values(values);
-+        let layers = m.posed_by(values);
++        // animations they play or pose (`play` by `values`, `pose`).
++        let mut hidden = hidden | m.hidden_by_values(values);
++        // Parts shown by the blocks around it (`show` by `neighbor`).
++        for (bone, d, states, unless) in self.mod_neighbors.get(model).into_iter().flatten() {
++            let next = scene
++                .world
++                .block(pos[0] + d[0], pos[1] + d[1], pos[2] + d[2])
++                .0;
++            if *bone < 64 && states.contains(&next) == *unless {
++                hidden |= 1 << bone;
++            }
++        }
++        let now = (scene.game_time as f32 + scene.partial) / 20.0;
++        let mut layers = m.played_by(values, now);
++        layers.extend(m.posed_by(values));
 +        // How open the block is (its screen on this client) poses `open`.
 +        let opened = m
 +            .open
@@ -404,7 +440,7 @@ index b415748c4..0f8852323 100644
      /// ChestRenderer and BannerRenderer submit their animated models for crumbling.
      pub fn render_breaking(
          &self,
-@@ -1239,7 +1537,8 @@ impl BlockEntityRenderer {
+@@ -1239,7 +1573,8 @@ impl BlockEntityRenderer {
          };
          let none = |_: &str, _: &mut [f32; 9]| {};
          match kind {
@@ -414,11 +450,12 @@ index b415748c4..0f8852323 100644
              Kind::Sign {
                  hanging,
                  wall,
-@@ -2278,6 +2577,10 @@ mod tests {
+@@ -2278,6 +2613,11 @@ mod tests {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
 +            mod_models: Vec::new(),
++            mod_neighbors: Vec::new(),
 +            mod_still: Mutex::default(),
 +            model_instancing: std::sync::atomic::AtomicBool::new(false),
 +            model_draws: Mutex::default(),
@@ -879,10 +916,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..de5fd31f1
+index 000000000..72098477c
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,1010 @@
+@@ -0,0 +1,1151 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -901,11 +938,18 @@ index 000000000..de5fd31f1
 +//!   "hide": ["Ring2"],         objects not drawn
 +//!   "bones": {"ArmLower1": {"pivot": [0, 1.625, 0.9375], "parent": "Ring"}},
 +//!   "animations": "ntm:animations/assembly_machine.animation.json",
-+//!   "play": [{"animation": "animation.assembler.work", "property": "honey_level", "not": "0"}],
++//!   "play": [{"animation": "animation.assembler.work", "property": "honey_level", "not": "0"},
++//!            {"animation": "animation.crush", "values": [{"value": 8, "min": 1}, {"value": 6, "min": 1}]}],
++//!                                       the first entry whose property matches plays; each entry
++//!                                       whose synced `values` all hold (min..=max) plays too, over it
 +//!   "show": {"InnerBurning": {"property": "honey_level", "not": "0"}},   objects drawn only so
 +//!           {"Electrode1": {"value": 20, "min": 1, "max": 1}},   or while a synced value of the
 +//!                                       block entity is in min..=max (max: none; the file's
 +//!                                       `synced` must hold it)
++//!           {"ArmNorth": {"neighbor": [0, 0, -1], "blocks": ["ntm:channel", "ntm:outlet[facing=north]"]}},
++//!                                       or while the block at that offset (world axes) is one of
++//!                                       these (a state's properties after its name); with
++//!                                       "not_blocks", while it is none of them
 +//!   "glow": ["InnerBurning"],   drawn at full light (HBM's lightmap 240, 240)
 +//!   "open": "animation.firebox.open"   posed by how open its screen is (a non-looping
 +//!   animation: its last frame is fully open)
@@ -1012,6 +1056,40 @@ index 000000000..de5fd31f1
 +    }
 +}
 +
++/// A bone shown while the block at `offset` from this one (world axes) is
++/// one of `blocks` (or, `unless`, none of them).
++#[derive(Clone, Debug, PartialEq)]
++pub struct NeighborShow {
++    pub bone: usize,
++    pub offset: [i32; 3],
++    /// `<namespace>:<name>` and the properties its state must have.
++    pub blocks: Vec<(String, Vec<(String, String)>)>,
++    pub unless: bool,
++}
++
++impl NeighborShow {
++    /// Whether a block named `name`, with properties `prop`, is one of `blocks`.
++    pub fn names(&self, name: &str, prop: &dyn Fn(&str) -> Option<String>) -> bool {
++        self.blocks.iter().any(|(n, props)| {
++            n == name && props.iter().all(|(k, v)| prop(k).is_some_and(|p| p == *v))
++        })
++    }
++}
++
++/// `ns:name[k=v,k2=v2]`: the name and the properties asked for.
++fn block_spec(spec: &str) -> (String, Vec<(String, String)>) {
++    let Some((name, rest)) = spec.split_once('[') else {
++        return (spec.to_owned(), Vec::new());
++    };
++    let props = rest
++        .trim_end_matches(']')
++        .split(',')
++        .filter_map(|kv| kv.split_once('='))
++        .map(|(k, v)| (k.trim().to_owned(), v.trim().to_owned()))
++        .collect();
++    (name.to_owned(), props)
++}
++
 +/// An animation posed by a synced value: at `value / max` of its length.
 +#[derive(Clone, Debug, PartialEq)]
 +pub struct PoseBy {
@@ -1035,6 +1113,9 @@ index 000000000..de5fd31f1
 +    pub radius: f32,
 +    pub animations: Vec<Animation>,
 +    pub play: Vec<Play>,
++    /// Animations played while synced values hold: (animation, [(index,
++    /// min, max)]), each over the one `play` picked.
++    pub play_values: Vec<(usize, Vec<(usize, i32, i32)>)>,
 +    /// The animation posed by how open the block is (`Scene::lid`: its
 +    /// screen open on this client), its length for fully open: HBM's
 +    /// firebox swings its door while a player uses it (`playersUsing`).
@@ -1047,6 +1128,8 @@ index 000000000..de5fd31f1
 +    /// Bones shown only while a synced value is in a range: (bone, the
 +    /// value's index, min, max).
 +    pub show_values: Vec<(usize, usize, i32, i32)>,
++    /// Bones shown by a neighbouring block (`show` by `neighbor`).
++    pub show_neighbors: Vec<NeighborShow>,
 +    pub liquids: Vec<Liquid>,
 +    /// Bones no animation moves, nor their ancestors: drawn from a cache.
 +    pub still: Vec<bool>,
@@ -1286,6 +1369,30 @@ index 000000000..de5fd31f1
 +        }
 +        None => Vec::new(),
 +    };
++    let animation_at = |p: &Value| {
++        animations
++            .iter()
++            .position(|a| Some(a.name.as_str()) == p["animation"].as_str())
++    };
++    let play_values = doc["play"]
++        .as_array()
++        .into_iter()
++        .flatten()
++        .filter_map(|p| {
++            let values = p["values"].as_array()?;
++            let conditions = values
++                .iter()
++                .filter_map(|v| {
++                    Some((
++                        v["value"].as_u64()? as usize,
++                        v["min"].as_i64().unwrap_or(1) as i32,
++                        v["max"].as_i64().map_or(i32::MAX, |m| m as i32),
++                    ))
++                })
++                .collect();
++            Some((animation_at(p)?, conditions))
++        })
++        .collect();
 +    let play = doc["play"]
 +        .as_array()
 +        .into_iter()
@@ -1334,6 +1441,29 @@ index 000000000..de5fd31f1
 +                c["min"].as_i64().unwrap_or(1) as i32,
 +                c["max"].as_i64().map_or(i32::MAX, |m| m as i32),
 +            ))
++        })
++        .collect();
++    let show_neighbors = doc["show"]
++        .as_object()
++        .into_iter()
++        .flatten()
++        .filter_map(|(bone, c)| {
++            let offset = c["neighbor"].as_array().filter(|a| a.len() == 3)?;
++            let offset = [0, 1, 2].map(|i| offset[i].as_i64().unwrap_or(0) as i32);
++            let (list, unless) = match (c["blocks"].as_array(), c["not_blocks"].as_array()) {
++                (Some(l), _) => (l, false),
++                (None, Some(l)) => (l, true),
++                _ => return None,
++            };
++            Some(NeighborShow {
++                bone: bone_at(bone)?,
++                offset,
++                blocks: list
++                    .iter()
++                    .filter_map(|b| b.as_str().map(block_spec))
++                    .collect(),
++                unless,
++            })
 +        })
 +        .collect();
 +    let show = doc["show"]
@@ -1386,10 +1516,12 @@ index 000000000..de5fd31f1
 +        radius: doc["radius"].as_f64().unwrap_or(1.0) as f32,
 +        animations,
 +        play,
++        play_values,
 +        open,
 +        poses,
 +        show,
 +        show_values,
++        show_neighbors,
 +        liquids,
 +        still,
 +        triangles,
@@ -1469,6 +1601,20 @@ index 000000000..de5fd31f1
 +    /// seconds. At rest, the first animation's first frame: HBM's parts stay
 +    /// where their `anim` left them, which for a slide (`BobMathUtil.sps`) is
 +    /// not the OBJ's own place.
++    /// The animations whose `play` values all hold at the synced `values`,
++    /// at `t` seconds, for [`Model::pose`]'s `layers`.
++    pub fn played_by(&self, values: &[i32], t: f32) -> Vec<(usize, f32)> {
++        self.play_values
++            .iter()
++            .filter(|(_, when)| {
++                when.iter().all(|&(i, min, max)| {
++                    (min..=max).contains(&values.get(i).copied().unwrap_or(0))
++                })
++            })
++            .map(|&(a, _)| (a, t))
++            .collect()
++    }
++
 +    /// The animations `pose` asks for at the synced `values`: (animation,
 +    /// seconds), for [`Model::pose`]'s `layers`.
 +    pub fn posed_by(&self, values: &[i32]) -> Vec<(usize, f32)> {
@@ -1891,6 +2037,38 @@ index 000000000..de5fd31f1
 +        // Past the maximum it stays fully open; no value yet, closed.
 +        assert_eq!(m.posed_by(&[5000]), vec![(1, 2.0)]);
 +        assert_eq!(m.posed_by(&[]), vec![(1, 0.0)]);
++    }
++
++    #[test]
++    fn a_neighbour_names_a_block_and_its_state() {
++        let n = NeighborShow {
++            bone: 0,
++            offset: [0, 0, -1],
++            blocks: vec![
++                block_spec("a:channel"),
++                block_spec("a:outlet[facing=north]"),
++            ],
++            unless: false,
++        };
++        let facing = |f: &'static str| move |k: &str| (k == "facing").then(|| f.to_owned());
++        assert!(n.names("a:channel", &|_: &str| None));
++        assert!(n.names("a:outlet", &facing("north")));
++        assert!(!n.names("a:outlet", &facing("south")));
++        assert!(!n.names("a:tank", &|_: &str| None));
++    }
++
++    #[test]
++    fn values_play_an_animation_while_they_all_hold() {
++        let m = Model {
++            play_values: vec![(1, vec![(8, 1, i32::MAX), (6, 1, 1)])],
++            ..Default::default()
++        };
++        let mut v = vec![0; 9];
++        assert!(m.played_by(&v, 2.0).is_empty());
++        v[8] = 1;
++        assert!(m.played_by(&v, 2.0).is_empty(), "on, but not working");
++        v[6] = 1;
++        assert_eq!(m.played_by(&v, 2.0), vec![(1, 2.0)]);
 +    }
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
@@ -5481,10 +5659,10 @@ index 3127248a1..3283882f7 100644
  | Server settings | `server.toml` | its keys | stable | [server-reference.md](server-reference.md) |
 diff --git a/docs/api/machine-files.md b/docs/api/machine-files.md
 new file mode 100644
-index 000000000..0ba04f444
+index 000000000..8d24b357e
 --- /dev/null
 +++ b/docs/api/machine-files.md
-@@ -0,0 +1,164 @@
+@@ -0,0 +1,175 @@
 +# Machine files
 +
 +A content mod (manifest `api = "0.2"`) can give a block slots, a screen, a 3D model and a multiblock shape with data
@@ -5607,11 +5785,16 @@ index 000000000..0ba04f444
 +  "hide": ["Spare"],
 +  "bones": {"Arm": {"pivot": [0, 1.625, 0.9375], "parent": "Body"}},
 +  "animations": "mymod:animations/press.animation.json",
-+  "play": [{"animation": "animation.press.work", "property": "lit", "is": "true"}],
++  "play": [
++    {"animation": "animation.press.work", "property": "lit", "is": "true"},
++    {"animation": "animation.press.fan", "values": [{"value": 8, "min": 1}, {"value": 6, "min": 1, "max": 1}]}
++  ],
 +  "show": {
 +    "Flame": {"property": "lit", "is": "true"},
 +    "Electrode": {"value": 4, "min": 1, "max": 1},
-+    "ElectrodeWorn": {"value": 4, "min": 2}
++    "ElectrodeWorn": {"value": 4, "min": 2},
++    "ArmNorth": {"neighbor": [0, 0, -1], "blocks": ["mymod:pipe", "mymod:valve[facing=north]"]},
++    "WallNorth": {"neighbor": [0, 0, -1], "not_blocks": ["mymod:pipe", "mymod:valve[facing=north]"]}
 +  },
 +  "glow": ["Flame"],
 +  "open": "animation.press.door",
@@ -5629,6 +5812,8 @@ index 000000000..0ba04f444
 +- **Animations:**
 +  - `play`: the first entry whose block-state property matches plays its animation. With no animation playing, the
 +    model rests on the first animation's first frame.
++  - A `play` entry with `values` plays while every listed synced value is in its `min..=max`, over the entry a
++    property picked: a part of the machine that runs on its own switch.
 +  - `open`: posed by how open the machine's screen is in this window. Use a non-looping animation: its last frame is
 +    fully open.
 +  - `pose`: each entry poses an animation at a synced `value`'s share of `max` (an index) or `max_value` (a
@@ -5639,6 +5824,10 @@ index 000000000..0ba04f444
 +  - The condition is either a block-state `property` that `is` (or is `not`) a value, or a synced `value` in
 +    `min..=max`. `max` defaults to no limit.
 +  - A value the client hasn't received yet counts as 0. The machine file's `synced` must list it.
++  - A `neighbor` condition looks at the block at that offset (x, y, z on the world's axes, not turned with the
++    model): the part shows while it is one of `blocks`, or with `not_blocks` while it is none of them. An entry may
++    name properties its state must have (`mymod:valve[facing=north]`). A pipe draws an arm toward each pipe it
++    meets and a wall where there is none, with no server work.
 +- **Light:** `glow` bones are drawn at full light.
 +- **Liquids:** boxes filled to `value / max` of their height, in the colour of the value `color` (0 draws nothing).
 +  - `column: true` draws the four sides only, as a falling jet.
