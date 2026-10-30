@@ -125,3 +125,18 @@ O host do bundle lê o sinal com `native_redstone_many`, uma chamada por dimens�
 - **energia:** uma bateria em buffer, enchida pela bateria criativa de um funil, três `red_cable` e uma fornalha elétrica sem bateria, com minério de um funil e um baú embaixo. A fornalha ficou com a energia cheia e mandou os 4 lingotes ao baú só com a energia da rede.
 - **fluido:** dois barris ligados por três dutos. Os dutos ganharam o tipo `water` pelo identificador de fluido na mão; o balde de água entrou no barril A pela tela nativa (slot 302); o botão de modo, clicado por pixel (a origem é o slot 0 da barra menos a sua posição no `horizon_machine`), levou A a saída; os 1.000 mB foram ao barril B.
 - O botão só chegou à lógica depois do `7b56d7d7`: o servidor nativo conferia o alcance pela posição do jogador da sessão WASM, que no nativo não existe; o motor já valida o alcance do menu.
+
+## A lista de receitas (L2, 30/10, `ntm-next-fixes` `b9d905189`, API 31)
+
+Substitui a tela de seleção que era WASM. A montadora, a planta química, o PUREX, o misturador e as bigornas (as que `ntm_core::native::recipes` lista) abrem a lista pelo botão 0 da sua tela: a janela de 176×132 do `GUIScreenRecipeSelector` (`ntm:gui/processing/gui_recipe_selector`), grade 8×5 de células de 18 px a partir de (7, 17), rolagem de uma linha, busca de até 32 caracteres, e a escolha atual no quadro da direita.
+
+| Camada | O que faz |
+| --- | --- |
+| Motor (API 31) | `native_screen_event` (clique, tecla, texto e roda, com `claimed`), `native_screen_set_layout` (com `hide_inventory`) e `native_screen_send_button`. Não sabe o que é receita. |
+| `ntm_core::screens::list` | O estado puro: filtro (sem diferenciar maiúsculas, pelo nome), vistas que se sobrepõem, campo de busca com caret, as teclas do `keyTyped` do NTM (Enter alterna o foco; com o campo focado ele leva as letras, E inclusive; setas, Page, Home e End movem a vista; Escape e a tecla do inventário fecham), a roda, os botões subir, descer, limpar busca, fechar e a moldura da escolha. Só uma escolha **que mudou** vira botão. |
+| Bundle (`screens.rs`, `screen_event.rs`) | Desenha (textura, brilho dos botões sob o ponteiro, ícones, caret) e dá as dicas (nome, entradas e saídas); ao abrir, troca o layout (sem slots e sem o inventário); ao fechar, manda `10000 + índice` ou `9999` e devolve o layout da máquina. |
+
+O botão 0 da máquina só abre a lista quando a máquina tem `recipes()`; qualquer outro botão segue o caminho de antes. A busca, a página e a escolha provisória ficam no cliente; o servidor só ouve o botão. O estado da lista recomeça em cada abertura da tela (`native_screen`). Se a tela for fechada por outro caminho com a lista aberta (o jogador se afasta, morre), a escolha provisória se perde.
+
+Prova em jogo (`tools/test-game/native_recipes.py`, ver `docs/native-game-tests.md`).
+

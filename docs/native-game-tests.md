@@ -79,3 +79,19 @@ Nenhum `took too long` nos logs.
 Evidência da sequência exata: `.agent-tmp/c65d-native-tests/runs/game-wn3b0ua3/`;
 reabertura em `.agent-tmp/c65d-native-tests/runs/game-vknf39zk/`.
 Cada pasta contém `foundry-evidence.json`, `client.log` e capturas.
+
+## Lista de receitas (L2)
+
+`native_recipes.py` (fases `montadora` e `bigorna`) abre a lista pelo botão de receita da tela da máquina, busca, escolhe, fecha e confere que a máquina usa a receita. As teclas da montadora são eventos X11 reais (`xinput.py`, XTest; é o caminho do `WindowEvent::KeyboardInput` do jogo); a bigorna usa `horizon-ctl key` e `type` (o caminho do ctl), com texto acentuado.
+
+```sh
+python3 tools/test-game/native_recipes.py /caminho/do/jogo montadora bigorna
+```
+
+| Fase | Conta |
+| --- | --- |
+| montadora | Enter foca a busca; `ferro` filtra; o primeiro resultado é a Placa de Ferro; antes de fechar o servidor não tem a escolha (data 0); Escape volta à máquina e o data slot 30 vale 1 (receita 0 + 1); 4 lingotes de ferro e uma bateria alimentada pela rede fazem 4 chapas de ferro |
+| bigorna | bigorna de desh; `aço` filtra; o primeiro resultado é a Placa de Aço; o botão Fechar manda a escolha (data 1 = 5); 20 lingotes de aço, "Construir uma vez" faz 1 chapa e Shift faz as outras 19 |
+
+Prova de 30/10/2026: motor `b9d905189` (API 31), bundle NTM com a lista, Recipes oficial `ae217daa`, conteúdo do HEAD do port (`56d6cff4`, com a textura do seletor). Capturas e o JSON dos comandos ficam na pasta de cada jogo (`native-recipes*.png`, `native-recipes.json`).
+
