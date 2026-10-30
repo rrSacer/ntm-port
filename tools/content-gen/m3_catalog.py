@@ -137,12 +137,14 @@ def build(source=SOURCE, output=ROOT / 'content'):
                          'fluid': {'id': fluid['id'], 'amount_mb': amount, 'empty': 'ntm:' + empty},
                          'behavior_gap': 'Filled item only; server logic must consume/return container, never a temporary crafting bridge',
                          'source_container': 'src/main/java/com/hbm/inventory/FluidContainerRegistry.java:69-91'})
+    import bedrock_catalog
+    rows.extend(bedrock_catalog.build(source))
     import foundry_catalog
     rows.extend(foundry_catalog.build(source))
     import anvil_catalog
     rows.extend(anvil_catalog.build(source))
     for row in rows:
-        for texture in [row['source_texture'], *[x['source'] for x in row.get('overlay_textures', [])]]:
+        for texture in [*([row['source_texture']] if row.get('source_texture') else []), *[x['source'] for x in row.get('overlay_textures', [])]]:
             if not (source / texture).is_file(): raise ValueError('Missing texture: ' + texture)
     for var in ('blades_steel', 'blades_titanium', 'blades_desh'):
         name, texture = registration(items, var, 'item')

@@ -79,7 +79,7 @@ def catalog(src, manifest):
   if name in MACHINE_TEXTURES:
    row['textures']=MACHINE_TEXTURES[name]; texture=row['textures']['front']
   else: texture=('blocks/' if kind=='block' else 'items/')+str(texture)
-  row['source_texture']=preset_texture or 'src/main/resources/assets/hbm/textures/'+texture+'.png'
+  row['source_texture']=None if row.get('texture_reference') else preset_texture or 'src/main/resources/assets/hbm/textures/'+texture+'.png'
   for loc,translations in langs.items():
    key=('tile.' if kind=='block' else 'item.')+name+'.name'
    value=preset_names.get(loc,translations.get(key))
@@ -102,7 +102,7 @@ def catalog(src, manifest):
    elif loc in preset_names:row['name_sources'][loc]='catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)'
    else: row['name_sources'][loc]=f'assets/hbm/lang/{"en_US" if loc=="en_us" else "pt_BR"}.lang:{key}'
    row['names'][loc]=value
-  if not (src/row['source_texture']).is_file():raise ValueError('Missing '+row['source_texture'])
+  if not row.get('texture_reference') and not (src/row['source_texture']).is_file():raise ValueError('Missing '+row['source_texture'])
   result.append(row)
  ids=[r['id'] for r in result]
  if len(set(ids))!=len(ids):raise ValueError('Duplicate ID')
@@ -191,7 +191,7 @@ def generate(src,out,rows,distributions,max_damage=False):
  languages={loc:{} for loc in ('en_us','pt_br')};blocks=[]
  for row in rows:
   name=row['id'].split(':')[1];kind=row['type']; machine=row['category']=='machine'
-  tex=texture(row['source_texture'],row.get('tint'),'__'+row.get('material',name) if 'tint' in row else '')
+  tex=row.get('texture_reference') or texture(row['source_texture'],row.get('tint'),'__'+row.get('material',name) if 'tint' in row else '')
   if row.get('texture_crop'):
    dest='assets/ntm/textures/item/'+name+'_frame.png'
    emit_bytes(dest,transform_png((src/row['source_texture']).read_bytes(),crop=row['texture_crop']));tex='ntm:item/'+name+'_frame'
