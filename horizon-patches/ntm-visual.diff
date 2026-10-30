@@ -53,7 +53,7 @@ index 75cf5ee85..1262f15cd 100644
  miniz_oxide = "0.8"
  naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
 diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
-index b415748c4..caddf98c6 100644
+index b415748c4..9e5666680 100644
 --- a/crates/horizon-client-render/src/block_entity_render.rs
 +++ b/crates/horizon-client-render/src/block_entity_render.rs
 @@ -94,6 +94,11 @@ pub fn diffuse(normal: Vec3, lights: (Vec3, Vec3)) -> f32 {
@@ -162,7 +162,7 @@ index b415748c4..caddf98c6 100644
              let packed = scene.world.light(pos[0], pos[1], pos[2]);
              if matches!(kind, Kind::Sign { .. }) && scene.texts.is_none() {
                  self.sign_text(scene, *pos, *state, origin, packed, out);
-@@ -1089,6 +1152,225 @@ impl BlockEntityRenderer {
+@@ -1089,6 +1152,236 @@ impl BlockEntityRenderer {
      pub fn renders(&self, state: u32) -> bool {
          !matches!(self.kind(state), Kind::None)
      }
@@ -275,6 +275,11 @@ index b415748c4..caddf98c6 100644
 +        let Some(m) = self.mod_models.get(model) else {
 +            return;
 +        };
++        // How open the block is (its screen on this client) poses `open`.
++        let opened = m
++            .open
++            .map(|a| (a, (scene.lid)(pos)))
++            .filter(|(_, o)| *o > 0.0);
 +        let (mut sky, mut block) = (0u8, 0u8);
 +        for d in [
 +            [0, 0, 0],
@@ -310,7 +315,10 @@ index b415748c4..caddf98c6 100644
 +        {
 +            // A matrix per bone: the GPU keeps the vertices.
 +            let t = (scene.game_time as f32 + scene.partial) / 20.0;
-+            let pose = m.pose(play, t);
++            let pose = match opened {
++                Some((a, o)) => m.pose(Some(a), m.animations[a].length * o),
++                None => m.pose(play, t),
++            };
 +            let place = Mat4::from_translation(origin) * base;
 +            if let Ok(mut draws) = self.model_draws.lock() {
 +                for (i, bone) in m.bones.iter().enumerate() {
@@ -376,7 +384,10 @@ index b415748c4..caddf98c6 100644
 +            return;
 +        }
 +        let t = (scene.game_time as f32 + scene.partial) / 20.0;
-+        let pose = m.pose(play, t);
++        let pose = match opened {
++            Some((a, o)) => m.pose(Some(a), m.animations[a].length * o),
++            None => m.pose(play, t),
++        };
 +        m.emit(
 +            |i| !m.still[i] && !shown_not(hidden, i),
 +            &pose,
@@ -388,7 +399,7 @@ index b415748c4..caddf98c6 100644
      /// ChestRenderer and BannerRenderer submit their animated models for crumbling.
      pub fn render_breaking(
          &self,
-@@ -1239,7 +1521,8 @@ impl BlockEntityRenderer {
+@@ -1239,7 +1532,8 @@ impl BlockEntityRenderer {
          };
          let none = |_: &str, _: &mut [f32; 9]| {};
          match kind {
@@ -398,7 +409,7 @@ index b415748c4..caddf98c6 100644
              Kind::Sign {
                  hanging,
                  wall,
-@@ -2278,6 +2561,10 @@ mod tests {
+@@ -2278,6 +2572,10 @@ mod tests {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
@@ -863,10 +874,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..6dc7f4fcf
+index 000000000..42c991486
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,849 @@
+@@ -0,0 +1,859 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -887,7 +898,9 @@ index 000000000..6dc7f4fcf
 +//!   "animations": "ntm:animations/assembly_machine.animation.json",
 +//!   "play": [{"animation": "animation.assembler.work", "property": "honey_level", "not": "0"}],
 +//!   "show": {"InnerBurning": {"property": "honey_level", "not": "0"}},   objects drawn only so
-+//!   "glow": ["InnerBurning"]   drawn at full light (HBM's lightmap 240, 240)
++//!   "glow": ["InnerBurning"],   drawn at full light (HBM's lightmap 240, 240)
++//!   "open": "animation.firebox.open"   posed by how open its screen is (a non-looping
++//!   animation: its last frame is fully open)
 +//! }
 +//! ```
 +//!
@@ -1003,6 +1016,10 @@ index 000000000..6dc7f4fcf
 +    pub radius: f32,
 +    pub animations: Vec<Animation>,
 +    pub play: Vec<Play>,
++    /// The animation posed by how open the block is (`Scene::lid`: its
++    /// screen open on this client), its length for fully open: HBM's
++    /// firebox swings its door while a player uses it (`playersUsing`).
++    pub open: Option<usize>,
 +    /// Bones shown only while a block state property matches (HBM's
 +    /// renderers draw `InnerBurning` or `InnerEmpty` by `wasOn`).
 +    pub show: Vec<(usize, Play)>,
@@ -1260,6 +1277,9 @@ index 000000000..6dc7f4fcf
 +            })
 +        })
 +        .collect();
++    let open = doc["open"]
++        .as_str()
++        .and_then(|n| animations.iter().position(|a| a.name == n));
 +    let show = doc["show"]
 +        .as_object()
 +        .into_iter()
@@ -1310,6 +1330,7 @@ index 000000000..6dc7f4fcf
 +        radius: doc["radius"].as_f64().unwrap_or(1.0) as f32,
 +        animations,
 +        play,
++        open,
 +        show,
 +        liquids,
 +        still,
@@ -2329,7 +2350,7 @@ index 000000000..e3f74175c
 +    }
 +}
 diff --git a/crates/horizon-client/src/game.rs b/crates/horizon-client/src/game.rs
-index ffa8a66eb..aa7dc24db 100644
+index ffa8a66eb..fd0537445 100644
 --- a/crates/horizon-client/src/game.rs
 +++ b/crates/horizon-client/src/game.rs
 @@ -111,6 +111,7 @@ mod mob_blocks;
@@ -2467,7 +2488,27 @@ index ffa8a66eb..aa7dc24db 100644
          if self.remote.is_some() {
              return self.remote_click(right);
          }
-@@ -8270,7 +8309,15 @@ impl Game<'_> {
+@@ -8222,7 +8261,18 @@ impl Game<'_> {
+         }
+         // Block entities (BlockEntityRenderers): chests, shulker boxes, banners, skulls...
+         if let Some(r) = &self.renderer {
+-            let lid = |p: [i32; 3]| self.chest_lid(p, alpha as f32);
++            // A content mod's machine is open while its screen is, on this
++            // client (HBM's firebox door, `playersUsing`).
++            let machine_open = self
++                .container
++                .filter(|_| matches!(self.container_kind(), Some(BlockEntity::ModContainer(_))));
++            let lid = |p: [i32; 3]| {
++                if machine_open == Some((p[0], p[1], p[2])) {
++                    1.0
++                } else {
++                    self.chest_lid(p, alpha as f32)
++                }
++            };
+             let anim = |p: [i32; 3]| self.block_anim(p, alpha as f32);
+             let scene = horizon_client::block_entity_render::Scene {
+                 camera,
+@@ -8270,7 +8320,15 @@ impl Game<'_> {
                              (glam::DVec3::new(f64::from(p[0]), f64::from(p[1]), f64::from(p[2]))
                                  - camera)
                                  .as_vec3();
@@ -2484,7 +2525,7 @@ index ffa8a66eb..aa7dc24db 100644
                      })
              });
              if self.entity_culler.is_some() || self.pack_ids.is_some() {
-@@ -11961,11 +12008,16 @@ impl Game<'_> {
+@@ -11961,11 +12019,16 @@ impl Game<'_> {
          entities.clear();
          self.see_through_vertices.clear();
          self.glowing_vertices.get_mut().clear();
@@ -2501,7 +2542,7 @@ index ffa8a66eb..aa7dc24db 100644
          let bolts = if title {
              Vec::new()
          } else {
-@@ -12029,6 +12081,16 @@ impl Game<'_> {
+@@ -12029,6 +12092,16 @@ impl Game<'_> {
          hud.patches.append(&mut self.map_patches);
          let entity_spans = std::mem::take(self.entity_spans.get_mut());
          let glowing = std::mem::take(self.glowing_vertices.get_mut());
@@ -2518,7 +2559,7 @@ index ffa8a66eb..aa7dc24db 100644
          let frame = Frame {
              weather: &weather,
              weather_time: horizon_client::weather::Time::new(self.world.game_time, alpha as f32),
-@@ -12111,6 +12173,11 @@ impl Game<'_> {
+@@ -12111,6 +12184,11 @@ impl Game<'_> {
              entity_spans: &entity_spans,
              glowing: &glowing,
              dynamic_lights: &self.dynamic_lights,
@@ -2530,7 +2571,7 @@ index ffa8a66eb..aa7dc24db 100644
              lightning: horizon_client::gfx::lightning::Input {
                  bolts: &bolts,
                  uv: [
-@@ -14804,6 +14871,15 @@ fn load_world_rest(
+@@ -14804,6 +14882,15 @@ fn load_world_rest(
      progress.set(6);
      let mob_data = horizon_client::mobs::MobData::load(root, facts);
      horizon_client::mobs::trial_spawner::load_registry(root);
@@ -2546,7 +2587,7 @@ index ffa8a66eb..aa7dc24db 100644
  
      let items = Items::load(root, assets.registry, facts)?;
      log::info!("load items: {:.2}s", started.elapsed().as_secs_f32());
-@@ -15025,6 +15101,7 @@ fn loading_frame(hud: &HudBatch) -> Frame<'_> {
+@@ -15025,6 +15112,7 @@ fn loading_frame(hud: &HudBatch) -> Frame<'_> {
          dynamic_lights: &[],
          clouds: None,
          lightning: Default::default(),
@@ -2715,10 +2756,10 @@ index 4a6fca181..ff6f945ae 100644
              .as_ref()
 diff --git a/crates/horizon-client/src/game/mod_machines.rs b/crates/horizon-client/src/game/mod_machines.rs
 new file mode 100644
-index 000000000..64e555ed0
+index 000000000..8fb7beb9b
 --- /dev/null
 +++ b/crates/horizon-client/src/game/mod_machines.rs
-@@ -0,0 +1,361 @@
+@@ -0,0 +1,366 @@
 +//! Content mods' machines in the game (`horizon_world::mod_machines`): a
 +//! multiblock breaks as one block, whichever of its cells the player mines.
 +use super::Game;
@@ -2969,6 +3010,17 @@ index 000000000..64e555ed0
 +            .and_then(|s| s.properties.get("facing").cloned())
 +    }
 +
++    /// The core of the multiblock that holds the dummy cell at `pos`.
++    pub(super) fn multiblock_core(&self, pos: [i32; 3]) -> Option<[i32; 3]> {
++        horizon_world::mod_machines::core_of(pos, |c| {
++            let state = self.world.block(c[0], c[1], c[2]);
++            (
++                self.res.facts().get(state).name.to_string(),
++                self.facing_at(c),
++            )
++        })
++    }
++
 +    /// A multiblock's cell outlines the whole volume, as HBM's
 +    /// `BlockDummyable` boxes do: the box relative to the cell at `pos`.
 +    pub(super) fn multiblock_outline(&self, pos: [i32; 3], name: &str) -> Option<[f64; 6]> {
@@ -2976,13 +3028,7 @@ index 000000000..64e555ed0
 +            return None;
 +        }
 +        let core = if horizon_world::mod_machines::is_dummy(name) {
-+            horizon_world::mod_machines::core_of(pos, |c| {
-+                let state = self.world.block(c[0], c[1], c[2]);
-+                (
-+                    self.res.facts().get(state).name.to_string(),
-+                    self.facing_at(c),
-+                )
-+            })?
++            self.multiblock_core(pos)?
 +        } else {
 +            pos
 +        };
@@ -3096,7 +3142,7 @@ index fb0c3b341..290b6d410 100644
                      continue;
                  }
 diff --git a/crates/horizon-client/src/game/remote.rs b/crates/horizon-client/src/game/remote.rs
-index 0e5f69fa0..a778a7448 100644
+index 0e5f69fa0..093d601f1 100644
 --- a/crates/horizon-client/src/game/remote.rs
 +++ b/crates/horizon-client/src/game/remote.rs
 @@ -1182,6 +1182,23 @@ impl Game<'_> {
@@ -3154,7 +3200,33 @@ index 0e5f69fa0..a778a7448 100644
                      // BrewingStandBlockEntity.dataAccess.
                      Some(BlockEntity::Brewing(b)) => match p.id {
                          0 => b.brew_time = v,
-@@ -5916,6 +5950,8 @@ impl Game<'_> {
+@@ -5855,11 +5889,20 @@ impl Game<'_> {
+                     .map(str::to_owned)
+             })
+             .unwrap_or_default();
+-        let target = self
+-            .remote
+-            .as_ref()
+-            .and_then(|r| r.use_target)
+-            .map(|t| (t[0], t[1], t[2]));
++        let target = self.remote.as_ref().and_then(|r| r.use_target).map(|t| {
++            // A multiblock's dummy cell opens its core's menu.
++            let name = &self
++                .res
++                .facts()
++                .get(self.world.block(t[0], t[1], t[2]))
++                .name;
++            let t = if horizon_world::mod_machines::is_dummy(name) {
++                self.multiblock_core(t).unwrap_or(t)
++            } else {
++                t
++            };
++            (t[0], t[1], t[2])
++        });
+         if menu == "minecraft:lectern" {
+             // LecternScreen: the book and page come in the menu's content and data.
+             if let Some(r) = self.remote.as_mut() {
+@@ -5916,6 +5959,8 @@ impl Game<'_> {
              "minecraft:generic_3x3" => Some(BlockEntity::Chest(vec![None; 9])),
              // CrafterMenu: the disabled slots and triggered come in ContainerSetData.
              "minecraft:crafter_3x3" => Some(BlockEntity::Crafter(Default::default())),
@@ -3495,6 +3567,47 @@ index 59f01552e..b09ec80ac 100644
              _ => return,
          }
          .into_iter()
+diff --git a/crates/horizon-client/src/lan/guest.rs b/crates/horizon-client/src/lan/guest.rs
+index 102afae59..927b34de0 100644
+--- a/crates/horizon-client/src/lan/guest.rs
++++ b/crates/horizon-client/src/lan/guest.rs
+@@ -765,6 +765,14 @@ fn network_stack(
+             horizon_protocol::item::Component::Text(name.clone()),
+         ));
+     }
++    // DataComponents.CUSTOM_DATA is synced: a client that sends the stack
++    // back (a creative slot) keeps it.
++    if let Some(data) = s.data().and_then(|d| d.other("minecraft:custom_data")) {
++        stack.added.push((
++            horizon_protocol::item::component::CUSTOM_DATA,
++            horizon_protocol::item::Component::Nbt(data.clone()),
++        ));
++    }
+     Some(stack)
+ }
+ 
+@@ -826,6 +834,21 @@ mod tests {
+         assert_eq!(stack.component(component::TRIM), None);
+     }
+ 
++    #[test]
++    fn custom_data_goes_with_the_stack() {
++        let tag = horizon_world::nbt::parse_snbt("{ntm_ore:{actinide:2.2d}}")
++            .unwrap()
++            .0;
++        let mut ore = ItemStack::new("ntm:bedrock_ore_base", 3);
++        ore.data_mut()
++            .set_other("minecraft:custom_data", Some(tag.clone()));
++        let stack = stack_to_network(|_| 7, |_, _| None, &Some(ore)).unwrap();
++        assert_eq!(
++            stack.component(component::CUSTOM_DATA),
++            Some(&Component::Nbt(tag))
++        );
++    }
++
+     fn guest_at(position: [f64; 3]) -> Guest {
+         let (tx, _rx) = std::sync::mpsc::channel();
+         Guest::new(
 diff --git a/crates/horizon-client/src/lib.rs b/crates/horizon-client/src/lib.rs
 index 4e6c902a5..8bcbef0bf 100644
 --- a/crates/horizon-client/src/lib.rs
