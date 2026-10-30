@@ -1969,7 +1969,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Bedrock stage-three/four content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_arc_furnace_large"
     },
     {
       "id": "machine_microwave",
@@ -5986,7 +5987,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Bedrock stage-three/four content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_pyrooven"
     },
     {
       "id": "machine_autosaw",
@@ -6814,7 +6816,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Bedrock stage-three/four content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_electrolyser"
     },
     {
       "id": "machine_autocrafter",

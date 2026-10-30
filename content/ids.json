@@ -36,6 +36,9 @@
     "ntm:machine_blast_furnace",
     "ntm:machine_excavator",
     "ntm:machine_ore_slopper",
+    "ntm:machine_pyrooven",
+    "ntm:machine_electrolyser",
+    "ntm:machine_arc_furnace_large",
     "ntm:machine_crucible",
     "ntm:heater_firebox",
     "ntm:foundry_channel",
@@ -82550,6 +82553,405 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:383"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:machine_pyrooven",
+      "source_variable": "machine_pyrooven",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Pyrolysis Oven",
+        "pt_br": "Forno de Pirólise"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Steel casing cube fallback; visual-gen owns OBJ, screen and multiblock",
+      "source_registry": "hbm:tile.machine_pyrooven",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:338"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_electrolyser",
+      "source_variable": "machine_electrolyser",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Electrolysis Machine",
+        "pt_br": "Máquina de Eletrólise"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel_machine.png",
+      "textures": {
+        "side": "blocks/block_steel_machine",
+        "top": "blocks/block_steel_machine",
+        "front": "blocks/block_steel_machine"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Steel casing cube fallback; visual-gen owns OBJ, screen and multiblock",
+      "source_registry": "hbm:tile.machine_electrolyser",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:292"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_arc_furnace_large",
+      "source_variable": "machine_arc_furnace",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Electric Arc Furnace",
+        "pt_br": "Forno Elétrico a Arco"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Steel casing cube fallback; visual-gen owns OBJ, screen and multiblock",
+      "source_registry": "hbm:tile.machine_arc_furnace",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:286"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:arc_electrode__graphite",
+      "source_variable": "arc_electrode",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.GRAPHITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode.graphite.png",
+      "names": {
+        "en_us": "Graphite Electrode",
+        "pt_br": "Eletrodo de Grafite"
+      },
+      "max_stack_size": 1,
+      "electrode": {
+        "max_uses": 10,
+        "spent": false,
+        "burnt_item": "ntm:arc_electrode_burnt__graphite",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption",
+      "source_registry": "hbm:item.arc_electrode",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "chemical_plant",
+          "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:284"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:arc_electrode__lanthanium",
+      "source_variable": "arc_electrode",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.LANTHANIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode.lanthanium.png",
+      "names": {
+        "en_us": "Lanthanium Electrode",
+        "pt_br": "Eletrodo de Lantânio"
+      },
+      "max_stack_size": 1,
+      "electrode": {
+        "max_uses": 100,
+        "spent": false,
+        "burnt_item": "ntm:arc_electrode_burnt__lanthanium",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption",
+      "source_registry": "hbm:item.arc_electrode",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:838"
+        },
+        {
+          "machine": "chemical_plant",
+          "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:284"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:396"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:arc_electrode__desh",
+      "source_variable": "arc_electrode",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.DESH",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode.desh.png",
+      "names": {
+        "en_us": "Desh Electrode",
+        "pt_br": "Eletrodo de Desh"
+      },
+      "max_stack_size": 1,
+      "electrode": {
+        "max_uses": 500,
+        "spent": false,
+        "burnt_item": "ntm:arc_electrode_burnt__desh",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption",
+      "source_registry": "hbm:item.arc_electrode",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:838"
+        },
+        {
+          "machine": "chemical_plant",
+          "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:284"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:396"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:arc_electrode__saturnite",
+      "source_variable": "arc_electrode",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.SATURNITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode.saturnite.png",
+      "names": {
+        "en_us": "Saturnite Electrode",
+        "pt_br": "Eletrodo de Saturnita"
+      },
+      "max_stack_size": 1,
+      "electrode": {
+        "max_uses": 1500,
+        "spent": false,
+        "burnt_item": "ntm:arc_electrode_burnt__saturnite",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption",
+      "source_registry": "hbm:item.arc_electrode",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:838"
+        },
+        {
+          "machine": "chemical_plant",
+          "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:284"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:396"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:arc_electrode_burnt__graphite",
+      "source_variable": "arc_electrode_burnt",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.GRAPHITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode_burnt.graphite.png",
+      "names": {
+        "en_us": "Molten Graphite Electrode",
+        "pt_br": "Eletrodo de Grafite Derretido"
+      },
+      "electrode": {
+        "max_uses": 10,
+        "spent": true,
+        "burnt_item": "ntm:arc_electrode_burnt__graphite",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption",
+      "source_registry": "hbm:item.arc_electrode_burnt",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:arc_electrode_burnt__lanthanium",
+      "source_variable": "arc_electrode_burnt",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.LANTHANIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode_burnt.lanthanium.png",
+      "names": {
+        "en_us": "Molten Lanthanium Electrode",
+        "pt_br": "Eletrodo de Lantânio Derretido"
+      },
+      "electrode": {
+        "max_uses": 100,
+        "spent": true,
+        "burnt_item": "ntm:arc_electrode_burnt__lanthanium",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption",
+      "source_registry": "hbm:item.arc_electrode_burnt",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:arc_electrode_burnt__desh",
+      "source_variable": "arc_electrode_burnt",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.DESH",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode_burnt.desh.png",
+      "names": {
+        "en_us": "Molten Desh Electrode",
+        "pt_br": "Eletrodo de Desh Derretido"
+      },
+      "electrode": {
+        "max_uses": 500,
+        "spent": true,
+        "burnt_item": "ntm:arc_electrode_burnt__desh",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption",
+      "source_registry": "hbm:item.arc_electrode_burnt",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:arc_electrode_burnt__saturnite",
+      "source_variable": "arc_electrode_burnt",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumElectrodeType.SATURNITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/arc_electrode_burnt.saturnite.png",
+      "names": {
+        "en_us": "Molten Saturnite Electrode",
+        "pt_br": "Eletrodo de Saturnita Derretido"
+      },
+      "electrode": {
+        "max_uses": 1500,
+        "spent": true,
+        "burnt_item": "ntm:arc_electrode_burnt__saturnite",
+        "source": "src/main/java/com/hbm/items/machine/ItemArcElectrode.java"
+      },
+      "behavior_gap": "Wear uses custom_data durability per processed batch; server logic owns consumption",
+      "source_registry": "hbm:item.arc_electrode_burnt",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
