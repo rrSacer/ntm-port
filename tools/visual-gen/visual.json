@@ -11424,6 +11424,22 @@
         "rotation": 180,
         "radius": 12.5
       }
+    },
+    "ntm:heater_oven": {
+      "source": "energy batch 1: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
+    },
+    "ntm:heater_oilburner": {
+      "source": "energy batch 1: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
+    },
+    "ntm:heater_electric": {
+      "source": "energy batch 1: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
+    },
+    "ntm:heater_heatex": {
+      "source": "energy batch 1: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
     }
   }
 }

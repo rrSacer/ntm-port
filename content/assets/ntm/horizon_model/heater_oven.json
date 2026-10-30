@@ -1,7 +1,0 @@
-{
-  "obj": "ntm:models/obj/heating_oven.obj",
-  "texture": "ntm:textures/models/machines/heating_oven.png",
-  "rotation": 180.0,
-  "radius": 2.7,
-  "hide": []
-}
