@@ -2225,6 +2225,3492 @@
 ],
 "fout": [],
 "pools": []
+},
+{
+"name": "bedrock.centrifuge.base_light",
+"label": "Minério de Rocha-Mãe de Metal Leve",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:269",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_light",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:269",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_heavy",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:269",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_rare",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:269",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_actinide",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:269",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nonmetal",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:269",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_crystal",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_roasted_light",
+"label": "Minério de Rocha-Mãe de Metal Leve Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:270",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_light",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_roasted_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:270",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_heavy",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_roasted_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:270",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_rare",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_roasted_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:270",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_actinide",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_roasted_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:270",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nonmetal",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_roasted_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:270",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_crystal",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_washed_light",
+"label": "Minério de Rocha-Mãe de Metal Leve Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:271",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_washed_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_light",
+1,
+1.0
+],
+[
+"ntm:bedrock_ore__primary_light",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_washed_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:271",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_washed_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_heavy",
+1,
+1.0
+],
+[
+"ntm:bedrock_ore__primary_heavy",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_washed_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:271",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_washed_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_rare",
+1,
+1.0
+],
+[
+"ntm:bedrock_ore__primary_rare",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_washed_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:271",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_washed_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_actinide",
+1,
+1.0
+],
+[
+"ntm:bedrock_ore__primary_actinide",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_washed_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:271",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_washed_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nonmetal",
+1,
+1.0
+],
+[
+"ntm:bedrock_ore__primary_nonmetal",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.base_washed_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:271",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_washed_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_crystal",
+1,
+1.0
+],
+[
+"ntm:bedrock_ore__primary_crystal",
+1,
+1.0
+],
+[
+"minecraft:gravel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_sulfuric_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:273",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosulfuric_light",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_light",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_sulfuric_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:273",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosulfuric_heavy",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_heavy",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_sulfuric_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:273",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosulfuric_rare",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_rare",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_sulfuric_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:273",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosulfuric_actinide",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_actinide",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_sulfuric_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:273",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosulfuric_nonmetal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_nonmetal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_sulfuric_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:273",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_sulfuric_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosulfuric_crystal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_crystal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_solvent_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:274",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosolvent_light",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_light",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_light",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_solvent_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:274",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosolvent_heavy",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_heavy",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_heavy",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_solvent_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:274",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosolvent_rare",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_rare",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_rare",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_solvent_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:274",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosolvent_actinide",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_actinide",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_actinide",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_solvent_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:274",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosolvent_nonmetal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_nonmetal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_nonmetal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_solvent_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:274",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_solvent_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_nosolvent_crystal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_crystal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_crystal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_rad_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:275",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_norad_light",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_light",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_light",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__rad_byproduct_light",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_rad_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:275",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_norad_heavy",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_heavy",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_heavy",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__rad_byproduct_heavy",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_rad_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:275",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_norad_rare",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_rare",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_rare",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__rad_byproduct_rare",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_rad_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:275",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_norad_actinide",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_actinide",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_actinide",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__rad_byproduct_actinide",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_rad_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:275",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_norad_nonmetal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_nonmetal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_nonmetal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__rad_byproduct_nonmetal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_rad_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:275",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rad_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_norad_crystal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__sulfuric_byproduct_crystal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__solvent_byproduct_crystal",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__rad_byproduct_crystal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:277",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__iron",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__copper",
+9,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:277",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__tungsten",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lead",
+9,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:277",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cobalt",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__rareearth",
+5,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:277",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__uranium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__thorium",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:277",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__coal",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+9,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:277",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__redstone",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_roasted_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:278",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Torrada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__iron",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__copper",
+9,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_roasted_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:278",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Torrada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__tungsten",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lead",
+9,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_roasted_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:278",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Torrada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cobalt",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__rareearth",
+5,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_roasted_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:278",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Torrada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__uranium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__thorium",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_roasted_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:278",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Torrada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__coal",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+9,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_roasted_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:278",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Torrada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__redstone",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosulfuric_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:279",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__iron",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__copper",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosulfuric_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:279",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__tungsten",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lead",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosulfuric_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:279",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cobalt",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__rareearth",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosulfuric_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:279",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__uranium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__thorium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosulfuric_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:279",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__coal",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosulfuric_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:279",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosulfuric_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Sulfúrica Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__redstone",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosolvent_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:280",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__iron",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__copper",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosolvent_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:280",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__tungsten",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lead",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosolvent_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:280",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cobalt",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__rareearth",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosolvent_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:280",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__uranium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__thorium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosolvent_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:280",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__coal",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_nosolvent_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:280",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nosolvent_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Dissolvida Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__redstone",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_norad_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:281",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Limpa Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__iron",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__copper",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_norad_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:281",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Limpa Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__tungsten",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lead",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_norad_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:281",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Limpa Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cobalt",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__rareearth",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_norad_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:281",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Limpa Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__uranium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__thorium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_norad_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:281",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Limpa Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__coal",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_norad_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa Separada",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:281",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_norad_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Limpa Separada"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__redstone",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_first_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:282",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__iron",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__iron",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__copper",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_first_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:282",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__tungsten",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__tungsten",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lead",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_first_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:282",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cobalt",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__cobalt",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__rareearth",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_first_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:282",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__uranium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__uranium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__thorium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_first_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:282",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__coal",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__coal",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_first_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:282",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__redstone",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__redstone",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_second_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:283",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__iron",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__copper",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__copper",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_second_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:283",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__tungsten",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lead",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lead",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_second_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:283",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cobalt",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__rareearth",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__rareearth",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_second_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:283",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__uranium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__thorium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__thorium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_second_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:283",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__coal",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.primary_second_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:283",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__redstone",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.sulfuric_washed_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:285",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_washed_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__ilmenite",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__bauxite",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__cryolite",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.sulfuric_washed_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:285",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_washed_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__gold",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__gold",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__beryllium",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.sulfuric_washed_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:285",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_washed_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__boron",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lanthanium",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__niobium",
+4,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.sulfuric_washed_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:285",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_washed_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__radium",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__radium",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__polonium",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.sulfuric_washed_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:285",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_washed_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__lignite",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__niter",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__fluorite",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.sulfuric_washed_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:285",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_washed_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__sodalite",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__asbestos",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__diamond",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.solvent_washed_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:286",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_washed_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__chlorocalcite",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lithium",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sodium",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.solvent_washed_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:286",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_washed_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__tungsten",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lead",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__gold",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.solvent_washed_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:286",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_washed_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__neodymium",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__strontium",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__zirconium",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.solvent_washed_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:286",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_washed_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__radium",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__radium",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__polonium",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.solvent_washed_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:286",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_washed_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__phosphorus",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__fluorite",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.solvent_washed_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:286",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_washed_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__asbestos",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__emerald",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.rad_washed_light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:287",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_washed_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__chlorocalcite",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__lithium",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sodium",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.rad_washed_heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:287",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_washed_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__bismuth",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__tantalium",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__gold",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.rad_washed_rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:287",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_washed_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__niobium",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__neodymium",
+5,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__strontium",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.rad_washed_actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:287",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_washed_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__technetium",
+1,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__technetium",
+1,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__u238",
+1,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.rad_washed_nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:287",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_washed_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__chlorocalcite",
+6,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__silicon",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__silicon",
+2,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "bedrock.centrifuge.rad_washed_crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Lavado",
+"source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:287",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_washed_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Lavado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore_fragment__borax",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__molysite",
+3,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sodalite",
+9,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
 }
 ],
 "skipped": 25
