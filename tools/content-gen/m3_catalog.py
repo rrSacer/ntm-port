@@ -171,9 +171,11 @@ def build(source=SOURCE, output=ROOT / 'content'):
     if backlog.is_file():
         data = json.loads(backlog.read_text())
         for entry in data['entries']:
-            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS):
+            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES):
                 entry['content_id'] = 'ntm:' + entry['id']
-                entry['status'] = ('Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents'
+                entry['status'] = ('Bedrock stage-one content contract declared; extraction/slopping and visuals tracked by their agents'
+                                   if entry['source_variable'] in bedrock_catalog.MACHINES else
+                                   'Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents'
                                    if entry['source_variable'] in foundry_catalog.BLOCKS else
                                    'PUREX content contract declared; processing/multiblock logic and visuals tracked separately'
                                    if entry['source_variable'] == 'machine_purex' else

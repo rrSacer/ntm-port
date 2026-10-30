@@ -6037,7 +6037,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Bedrock stage-one content contract declared; extraction/slopping and visuals tracked by their agents",
+      "content_id": "ntm:machine_excavator"
     },
     {
       "id": "machine_ore_slopper",
@@ -6055,7 +6056,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Bedrock stage-one content contract declared; extraction/slopping and visuals tracked by their agents",
+      "content_id": "ntm:machine_ore_slopper"
     },
     {
       "id": "machine_annihilator",
