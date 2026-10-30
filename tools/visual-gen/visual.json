@@ -16442,5 +16442,8 @@
       "auto": false,
       "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
     }
+  },
+  "textures": {
+    "assets/ntm/textures/gui/processing/gui_recipe_selector.png": "textures/gui/processing/gui_recipe_selector.png"
   }
 }

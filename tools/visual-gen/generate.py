@@ -579,6 +579,10 @@ def main():
             lang = json.loads(path.read_text())
             lang[f'block.ntm.{d}'] = text
             write_json(path, lang)
+    # Textures no block entry names, as (content path, ntm-src path): the
+    # screens a native mod draws on its own (the recipe selector).
+    for target, source in spec.get('textures', {}).items():
+        copy(source, target)
     previous = out / '.visual-files.json'
     if previous.exists():
         for rel in json.loads(previous.read_text()):

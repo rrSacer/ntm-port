@@ -448,5 +448,6 @@
   "assets/ntm/horizon_screen/machine_electric_furnace_off.json",
   "data/ntm/horizon/block/dummy_machine.json",
   "assets/ntm/blockstates/dummy_machine.json",
-  "assets/ntm/models/block/dummy_machine.json"
+  "assets/ntm/models/block/dummy_machine.json",
+  "assets/ntm/textures/gui/processing/gui_recipe_selector.png"
 ]
