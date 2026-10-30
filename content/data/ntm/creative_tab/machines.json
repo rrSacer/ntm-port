@@ -37,6 +37,8 @@
     "ntm:watz_element",
     "ntm:watz_cooler",
     "ntm:seal_frame",
+    "ntm:machine_excavator",
+    "ntm:machine_ore_slopper",
     "ntm:machine_assembly_machine",
     "ntm:machine_chemical_plant",
     "ntm:machine_purex",
