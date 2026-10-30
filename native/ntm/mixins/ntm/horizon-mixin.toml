@@ -230,6 +230,38 @@ bindings = [
   { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
 ]
 
+# What the client shows of the radiation (L4): the Geiger box and the items'
+# tooltip, from the player's values and the hazard table.
+[[module]]
+id = "client"
+file = "crates/horizon-client/src/game.rs"
+name = "ntm_client"
+source = "client.rs"
+
+[[injection]]
+id = "hud"
+hook = "hud"
+hook_version = 1
+kind = "HEAD"
+helper = "hud.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "&mut *batch" },
+  { name = "corners", ty = "&mut horizon_client::extras_hud::Corners", value = "&mut *corners" },
+]
+
+[[injection]]
+id = "tooltip"
+hook = "tooltip"
+hook_version = 1
+kind = "HEAD"
+helper = "tooltip.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
+  { name = "lines", ty = "&mut Vec<(horizon_client::text::Text, u32)>", value = "&mut *lines" },
+]
+
 # A right click on a machine's cell (API 24): the turbines' levers.
 [[injection]]
 id = "use-block"

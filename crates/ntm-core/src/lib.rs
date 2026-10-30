@@ -13,6 +13,7 @@ pub mod blastfurnace;
 pub mod blockstate;
 pub mod boiler;
 pub mod bomb;
+pub mod client_rad;
 pub mod coker;
 pub mod crafter;
 pub mod electrolyser;
