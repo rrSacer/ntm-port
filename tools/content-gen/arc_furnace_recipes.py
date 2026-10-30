@@ -111,8 +111,11 @@ def export(source, output, rows):
     conf = config(source, 'tileentity/machine/TileEntityMachineArcFurnaceLarge.java', {
         'energy_capacity_he':r'long maxPower = ([\d_]+)', 'power':r'int consumption = \(int\) \(([\d_]+) \* Math.pow',
         'duration':r'int duration = ([\d_]+) /'})
-    conf['molten_capacity_quanta'] = ctx.shapes['BLOCK']['amount'] * 128
-    conf['sources']['molten_capacity_quanta'] = BASE + 'tileentity/machine/TileEntityMachineArcFurnaceLarge.java:84'
+    tile_path = BASE + 'tileentity/machine/TileEntityMachineArcFurnaceLarge.java'
+    tile = clean((source / tile_path).read_text())
+    capacity = re.search(r'maxLiquid = MaterialShapes.(\w+).q\((\d+)\)', tile)
+    conf['molten_capacity_quanta'] = ctx.shapes[capacity[1]]['amount'] * int(capacity[2])
+    conf['sources']['molten_capacity_quanta'] = tile_path + ':' + str(tile[:capacity.start()].count('\n') + 1)
     for section in sections.values(): section['selection'] = 'input identity/OreDict; first registered matching recipe in selected solid or liquid machine mode'
     return write(output, 'arc_furnace', {**sections, 'machine_config':conf, 'scrap_default_materials':scrap_defaults,
         'empty_source_recipes':empty, 'collisions':collisions,
@@ -121,4 +124,4 @@ def export(source, output, rows):
                  'Source register rejects a whole candidate if any input collides in any claimed mode. Material/shape auto precedes custom smeltables, which precede furnace recipes.',
                  'Custom-smeltable source HashMaps have no declared iteration order; this snapshot sorts keys and reports collisions. External mods/config/IMC excluded.',
                  'Dynamic scraps use stored MaterialStack quantity, not the 72-quanta default table, and require server logic.',
-                 'Base 400 ticks and 1000 HE/t apply to a BATCH of inputs; up to three input slots and molten capacity bound the batch. Electrode wear is once per batch.']})
+                 'Base 400 ticks and 1000 HE/t apply to a BATCH of inputs; twenty processing slots (one item each without upgrades) and molten capacity bound the batch. Electrode wear is once per batch.']})

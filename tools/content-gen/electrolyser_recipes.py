@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Electrolyser fluid and metal defaults, with exact molten quanta."""
 import re
-from bulk_recipes import Unsupported, calls, split
+from bulk_recipes import Unsupported, calls, clean, split
 from machine_recipes import integer
-from bedrock_processing_common import Context, body, config, events, skip, write
+from bedrock_processing_common import Context, BASE, body, config, events, skip, write
 
 
 def export(source, output, rows):
@@ -63,6 +63,11 @@ def export(source, output, rows):
         'power_metal': r'int usageOreBase = ([\d_]+)', 'power_fluid': r'int usageFluidBase = ([\d_]+)',
         'energy_capacity_he': r'long maxPower = ([\d_]+)', 'tank_capacity_mb': r'tanks\[0\] = new FluidTank\(Fluids.WATER, ([\d_]+)',
         'nitric_acid_per_metal_mb': r'this.tanks\[3\].getFill\(\) - ([\d_]+)'} )
+    tile_path = BASE + 'tileentity/machine/TileEntityElectrolyser.java'
+    tile = clean((source / tile_path).read_text())
+    capacity = re.search(r'maxMaterial = MaterialShapes.(\w+).q\((\d+)\)', tile)
+    machine['molten_capacity_per_output_quanta'] = ctx.shapes[capacity[1]]['amount'] * int(capacity[2])
+    machine['sources']['molten_capacity_per_output_quanta'] = tile_path + ':' + str(tile[:capacity.start()].count('\n') + 1)
     return write(output, 'electrolyser', {**sections, 'machine_config': machine,
         'coverage': {k: v['coverage'] for k, v in sections.items()},
         'notes': ['outputMaterials uses foundry material names and quanta (72 per ingot), not fluid mB.',
