@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/heatex.obj",
+  "texture": "ntm:textures/models/machines/heater_heatex.png",
+  "rotation": 90.0,
+  "radius": 2.5
+}

@@ -11097,12 +11097,333 @@
       "auto": false
     },
     "ntm:machine_hephaestus": {
-      "source": "no extracted model until the block gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "MachineHephaestus {11,0,1,1,1,1} offset 1, RenderHephaestus (no turn; Rotor drawn three times 120 degrees apart, turning 0.5 a tick while it holds heat, value 0; the Core lava while hot, cobblestone else: here a lava column (its four sides and its top) shown by value 0, without the texture's scroll and with no cobblestone while cold); no screen in HBM",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 4,
+        "synced": [
+          0
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            11,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/hephaestus.obj",
+        "texture": "ntm:textures/models/machines/hephaestus.png",
+        "texture_from": "textures/models/machines/hephaestus.png",
+        "rotation": 0,
+        "radius": 12.5,
+        "variants": {
+          "from": "models/machines/hephaestus.obj",
+          "keep": [
+            "Main"
+          ],
+          "bones": {
+            "Rotor0": {
+              "part": "Rotor",
+              "rot": 0
+            },
+            "Rotor1": {
+              "part": "Rotor",
+              "rot": 120
+            },
+            "Rotor2": {
+              "part": "Rotor",
+              "rot": 240
+            }
+          }
+        },
+        "loop_animation": {
+          "name": "animation.hephaestus.turn",
+          "length": 36.0,
+          "bones": {
+            "Rotor0": {
+              "turn": [
+                0,
+                360,
+                0
+              ]
+            },
+            "Rotor1": {
+              "turn": [
+                0,
+                360,
+                0
+              ]
+            },
+            "Rotor2": {
+              "turn": [
+                0,
+                360,
+                0
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.hephaestus.turn",
+            "values": [
+              {
+                "value": 0,
+                "min": 1
+              }
+            ]
+          }
+        ],
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/lava.png",
+            "texture_from": "textures/models/machines/lava.png",
+            "box": [
+              -0.188,
+              2.5,
+              -0.188,
+              1.188,
+              9.5,
+              1.188
+            ],
+            "value": 0,
+            "color": 0,
+            "tint": false
+          },
+          {
+            "texture": "ntm:textures/models/machines/lava.png",
+            "texture_from": "textures/models/machines/lava.png",
+            "box": [
+              -0.188,
+              2.5,
+              -0.188,
+              1.188,
+              9.5,
+              1.188
+            ],
+            "value": 0,
+            "color": 0,
+            "tint": false,
+            "column": true
+          }
+        ]
+      }
     },
     "ntm:machine_flare": {
-      "source": "no extracted model until the block gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "ContainerMachineGasFlare, GUIMachineGasFlare (gui_flare_stack.png 176x203, no title), MachineGasFlare {11,0,1,1,1,1} offset 1, RenderGasFlare (always turned 180, tilted by value 8)",
+      "machine": {
+        "slots": [
+          {
+            "x": 143,
+            "y": 71,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 17,
+            "y": 17,
+            "accept": []
+          },
+          {
+            "x": 17,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 35,
+            "y": 71,
+            "accept": []
+          },
+          {
+            "x": 80,
+            "y": 71,
+            "accept": []
+          },
+          {
+            "x": 98,
+            "y": 71,
+            "accept": []
+          }
+        ],
+        "inventory": [
+          8,
+          121
+        ],
+        "data": 12,
+        "synced": [
+          4,
+          8
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            11,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/generators/gui_flare_stack.png",
+        "texture_from": "textures/gui/generators/gui_flare_stack.png",
+        "size": [
+          176,
+          203
+        ],
+        "title": false,
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              143,
+              17,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              42
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              35,
+              17,
+              16,
+              52
+            ],
+            "color": 7,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "rect": [
+              79,
+              15,
+              35,
+              10
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 3,
+            "min": 1,
+            "rect": [
+              79,
+              49,
+              35,
+              14
+            ],
+            "uv": [
+              176,
+              10
+            ]
+          },
+          {
+            "value": 4,
+            "min": 1,
+            "rect": [
+              88,
+              29,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              24
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              89,
+              16,
+              16,
+              10
+            ],
+            "lines": [
+              "Válvula"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              89,
+              50,
+              16,
+              14
+            ],
+            "lines": [
+              "Ignição"
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              143,
+              17,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              35,
+              17,
+              16,
+              52
+            ],
+            "lines": [
+              "{5} / {6} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/flare_stack.obj",
+        "obj_from": "models/machines/flare_stack.obj",
+        "texture": "ntm:textures/models/machines/flare_stack.png",
+        "texture_from": "textures/models/machines/flare_stack.png",
+        "rotation": 180,
+        "radius": 12.5
+      }
     }
   }
 }

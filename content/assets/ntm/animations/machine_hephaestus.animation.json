@@ -1,0 +1,53 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.hephaestus.turn": {
+      "loop": true,
+      "animation_length": 36.0,
+      "bones": {
+        "Rotor0": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "36.00": [
+              0,
+              360,
+              0
+            ]
+          }
+        },
+        "Rotor1": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "36.00": [
+              0,
+              360,
+              0
+            ]
+          }
+        },
+        "Rotor2": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "36.00": [
+              0,
+              360,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

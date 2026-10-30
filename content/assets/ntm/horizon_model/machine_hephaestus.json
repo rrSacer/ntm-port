@@ -1,0 +1,49 @@
+{
+  "obj": "ntm:models/obj/hephaestus.obj",
+  "texture": "ntm:textures/models/machines/hephaestus.png",
+  "rotation": 0,
+  "radius": 12.5,
+  "play": [
+    {
+      "animation": "animation.hephaestus.turn",
+      "values": [
+        {
+          "value": 0,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "liquids": [
+    {
+      "texture": "ntm:textures/models/machines/lava.png",
+      "box": [
+        -0.188,
+        2.5,
+        -0.188,
+        1.188,
+        9.5,
+        1.188
+      ],
+      "value": 0,
+      "color": 0,
+      "tint": false
+    },
+    {
+      "texture": "ntm:textures/models/machines/lava.png",
+      "box": [
+        -0.188,
+        2.5,
+        -0.188,
+        1.188,
+        9.5,
+        1.188
+      ],
+      "value": 0,
+      "color": 0,
+      "tint": false,
+      "column": true
+    }
+  ],
+  "animations": "ntm:animations/machine_hephaestus.animation.json"
+}

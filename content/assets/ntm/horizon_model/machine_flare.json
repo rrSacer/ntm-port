@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/flare_stack.obj",
+  "texture": "ntm:textures/models/machines/flare_stack.png",
+  "rotation": 180,
+  "radius": 12.5
+}
