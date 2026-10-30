@@ -3410,6 +3410,221 @@
 "pools": []
 },
 {
+"name": "ass.iturbine",
+"label": "Turbina a Vapor Industrial",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:434",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 16,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 4,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:turbine_titanium"
+],
+"n": 2,
+"label": "Turbina a Vapor de Titânio"
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"n": 4,
+"label": "Fio de Ouro Denso"
+},
+{
+"ids": [
+"ntm:pipe__dura_steel"
+],
+"n": 4,
+"label": "Tubo de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 2,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_industrial_turbine",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.leviturbine",
+"label": "Turbina de Vapor Leviatã",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:437",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 6,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 16,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 12,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 16,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:turbine_tungsten"
+],
+"n": 5,
+"label": "Pás de Turbofan Reforçadas"
+},
+{
+"ids": [
+"ntm:turbine_titanium"
+],
+"n": 3,
+"label": "Turbina a Vapor de Titânio"
+},
+{
+"ids": [
+"ntm:flywheel_beryllium"
+],
+"n": 1,
+"label": "Volante de Berílio"
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"n": 48,
+"label": "Fio de Ouro Denso"
+},
+{
+"ids": [
+"ntm:pipe__dura_steel"
+],
+"n": 16,
+"label": "Tubo de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 16,
+"label": "Tubo de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_chungus",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.hpcondenser",
+"label": "Condensador de Vapor de Alta Potência",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:445",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 8,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:plate_welded__cdalloy",
+"ntm:plate_welded__tcalloy"
+],
+"n": 4,
+"label": "Placa Soldada de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 16,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:motor_desh"
+],
+"n": 3,
+"label": "Motor de Desh"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 24,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:canister_full__lubricant",
+"ntm:fluid_tank_full__lubricant",
+"ntm:fluid_tank_lead_full__lubricant"
+],
+"n": 4,
+"label": "Galão de Lubrificante de Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_condenser_powered",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.tank",
 "label": "Tanque de Fluidos",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:472",
@@ -15141,5 +15356,5 @@
 "pools": []
 }
 ],
-"skipped": 201
+"skipped": 198
 }

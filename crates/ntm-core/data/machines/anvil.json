@@ -2733,6 +2733,229 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.62",
+"label": "Forno de Aquecimento",
+"in": [
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:heater_oven",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.64",
+"label": "Queimador de Fluidos",
+"in": [
+{
+"ids": [
+"ntm:tank_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"count": 3,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_titanium"
+],
+"count": 12,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:heater_oilburner",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.65",
+"label": "Aquecedor Elétrico",
+"in": [
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_tungsten"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:heater_electric",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.66",
+"label": "Aquecedor de Troca de Calor",
+"in": [
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:heater_heatex",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.72",
+"label": "Motor a Vapor",
+"in": [
+{
+"ids": [
+"ntm:reinforced_stone"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 12,
+"exact": false
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:gear_large__iron"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_steam_engine",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.74",
 "label": "Crisol",
 "in": [
@@ -4063,6 +4286,87 @@
 [
 "ntm:ingot_copper",
 6,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.215",
+"label": "Tijolo Refratário ×16 (+1)",
+"in": [
+{
+"ids": [
+"ntm:heater_oven"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_firebrick",
+16,
+1.0
+],
+[
+"ntm:ingot_copper",
+8,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.219",
+"label": "Placa de Aço ×8 (+1)",
+"in": [
+{
+"ids": [
+"ntm:gear_large__steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+8,
+1.0
+],
+[
+"ntm:ingot_titanium",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.220",
+"label": "Placa de Ferro ×8 (+1)",
+"in": [
+{
+"ids": [
+"ntm:gear_large__iron"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_iron",
+8,
+1.0
+],
+[
+"ntm:ingot_copper",
+1,
 1.0
 ]
 ],
@@ -6832,6 +7136,229 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.62",
+"label": "Forno de Aquecimento",
+"in": [
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:heater_oven",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.64",
+"label": "Queimador de Fluidos",
+"in": [
+{
+"ids": [
+"ntm:tank_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"count": 3,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_titanium"
+],
+"count": 12,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:heater_oilburner",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.65",
+"label": "Aquecedor Elétrico",
+"in": [
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_tungsten"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:heater_electric",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.66",
+"label": "Aquecedor de Troca de Calor",
+"in": [
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"count": 3,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:heater_heatex",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.72",
+"label": "Motor a Vapor",
+"in": [
+{
+"ids": [
+"ntm:reinforced_stone"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 12,
+"exact": false
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:gear_large__iron"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_steam_engine",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.74",
 "label": "Crisol",
 "in": [
@@ -8169,6 +8696,87 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.215",
+"label": "Tijolo Refratário ×16 (+1)",
+"in": [
+{
+"ids": [
+"ntm:heater_oven"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:ingot_firebrick",
+16,
+1.0
+],
+[
+"ntm:ingot_copper",
+8,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.219",
+"label": "Placa de Aço ×8 (+1)",
+"in": [
+{
+"ids": [
+"ntm:gear_large__steel"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+8,
+1.0
+],
+[
+"ntm:ingot_titanium",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.220",
+"label": "Placa de Ferro ×8 (+1)",
+"in": [
+{
+"ids": [
+"ntm:gear_large__iron"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_iron",
+8,
+1.0
+],
+[
+"ntm:ingot_copper",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.255",
 "label": "Tubo de Aço ×4 (+2)",
 "in": [
@@ -8201,5 +8809,5 @@
 "tier_upper": -1
 }
 ],
-"skipped": 174
+"skipped": 166
 }
