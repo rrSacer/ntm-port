@@ -319,6 +319,15 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::AllRound,
     },
+    // The crystallizer: the bedrock chain's stage 2, not approved yet. The
+    // content has the block (34732d5); tracked, its screen says so.
+    BlockSpec {
+        id: "ntm:machine_crystallizer",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
     // The shredder (`crate::shredder`): `TilePortShapes.around`, energy only.
     BlockSpec {
         id: "ntm:machine_shredder",
