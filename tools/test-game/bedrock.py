@@ -71,6 +71,14 @@ Petróleo, lote C, num chão novo a leste:
               o reformador (bateria e catalisador) com óleo leve dá
               aromáticos e reformgas; o hidrotratador com óleo e hidrogênio;
               o destilador a vácuo com óleo.
+Etapa 5 do bedrock (solvente e radiossolvente):
+  etapa5      aromáticos e reformgas recolhidos do reformador e nafta da
+              refinaria em barris tipados; levados em tanques a dois
+              misturadores (solvente; radiossolvente, com cloro): os dois
+              solventes; cada um num cristalizador faz PRIMARY de actinídeos
+              virar PRIMARY dissolvido / limpo; a centrífuga os separa;
+  nivel4      uma escavadora sobre um depósito de nível 4 (chunk 164,−117),
+              com 2.000 mB de solvente por extração: um bruto.
 Grava <pasta>/bedrock-evidence.json e capturas bedrock-*.png.
 """
 import json, subprocess, sys, time
@@ -599,13 +607,13 @@ def old_screen(x, y, z, stand):
     time.sleep(2.5)
 
 
-def carry(src, dst, n, mode_out):
+def carry(src, dst, n, mode_out, src_stand=None, dst_stand=None):
     """`n` × 1 000 mB from the barrel `src` to the barrel `dst` in fluid
     tanks (fill on one, pour on the other); `dst` then gives (output)."""
     for _ in range(n):
         give('ntm:fluid_tank_empty', 1)
         ctl('select', 'ntm:fluid_tank_empty')
-        old_screen(*src, (src[0], src[1], src[2] + 2))
+        old_screen(*src, src_stand or (src[0], src[1], src[2] + 2))
         click_label('Encher')
         close()
         full = [k for k in ctl('inventory').get('counts', {}) if k.startswith('ntm:fluid_tank_full__')]
@@ -1174,6 +1182,162 @@ def petroleo_c():
         ev[name] = {'nucleo': core, 'energia': m.get('power'), 'entradas': [tank(t) for t in m.get('inputs', [])], 'saidas': [tank(t) for t in m.get('outputs', [])]}
     evidence['petroleo_c'] = ev
     print('petroleo_c', json.dumps(ev, ensure_ascii=False))
+
+
+def typed_barrel(pos, tank_item, stand=None):
+    """An empty barrel at `pos` typed by a full tank in the hand (input)."""
+    stand = stand or (pos[0], pos[1], pos[2] + 2)
+    if not ctl('block', *pos).get('state', '').startswith('ntm:barrel_steel'):
+        place(*pos, 'ntm:barrel_steel', stand)
+    ctl('command', 'clear @s', check=False)
+    give(tank_item, 1)
+    ctl('select', tank_item)
+    old_screen(*pos, stand)
+    click_label('Tipo pelo recipiente')
+    close()
+    ctl('command', 'clear @s', check=False)
+
+
+def mixer_pick(core, row):
+    """The mixer's recipe: its list scrolled `row` rows, the top one."""
+    open_at(*core, (core[0], core[1], core[2] + 3))
+    if not any(sl[0] == 300 for sl in machine_slots()):
+        put('ntm:battery_creative', 1, 300)
+    ctl('click-button', 'Receita')
+    time.sleep(2)
+    ctl('scroll-at', 150, 80, -row)
+    time.sleep(1)
+    ctl('click-at', 150, 50)
+    time.sleep(1)
+    close()
+
+
+def etapa5():
+    y = oil_floor_c()
+    ctl('command', 'clear @s', check=False)
+    # Its chunks loaded (the step may start far away).
+    tp(X7 + 34.5, y, Z7 + 4.5)
+    time.sleep(4)
+    tank = lambda t: (t.get('fluid', ''), t.get('mb', 0))
+    # Aromatics and reformgas from the reformer (south of it), naphtha from
+    # the refinery (its south-east corner port).
+    ref = find('ntm:machine_catalytic_reformer', X7 + 31, y, Z7 - 4, X7 + 37, y, Z7 + 2)
+    aro, rgas = (ref[0] - 1, y, ref[2] + 2), (ref[0] + 1, y, ref[2] + 2)
+    typed_barrel(aro, 'ntm:fluid_tank_full__aromatics')
+    typed_barrel(rgas, 'ntm:fluid_tank_full__reformgas')
+    # Typed only once in place: what came first went when it was typed. The
+    # reformer runs again on more light oil (its west barrel) to fill them.
+    fluid_barrel(ref[0] - 3, y, ref[2], 'ntm:fluid_barrel_full__lightoil', (ref[0] - 5, y, ref[2]))
+    time.sleep(12)
+    rfy = find('ntm:machine_refinery', X5 + 12, y, Z5 + 3, X5 + 18, y, Z5 + 9)
+    nap = (rfy[0] + 2, y, rfy[2] + 1)
+    typed_barrel(nap, 'ntm:fluid_tank_full__naphtha')
+    time.sleep(8)
+    got = {'aromaticos': barrel_state(*aro), 'reformgas': barrel_state(*rgas), 'nafta': barrel_state(*nap)}
+    # Two mixers: solvent (row 15) and radiosolvent (row 21, with chlorine).
+    mixers = {}
+    for name, x, row, west, east, out in (
+            ('solvente', X7 + 30, 15, nap, aro, 'solvent'),
+            ('radiossolvente', X7 + 36, 21, rgas, None, 'radiosolvent')):
+        if not ctl('block', x, y, Z7 + 8).get('state', '').startswith('ntm:machine_mixer'):
+            place(x, y, Z7 + 8, 'ntm:machine_mixer', (x, y, Z7 + 11))
+        m = find('ntm:machine_mixer', x - 1, y, Z7 + 6, x + 1, y, Z7 + 9)
+        mixer_pick(m, row)
+        w, e, o = (m[0] - 1, y, m[2]), (m[0] + 1, y, m[2]), (m[0], y, m[2] - 1)
+        typed_barrel(o, f'ntm:fluid_tank_full__{out}', (m[0] + 2, y, m[2] - 2))
+        for pos in (w, e):
+            if not ctl('block', *pos).get('state', '').startswith('ntm:barrel_steel'):
+                place(*pos, 'ntm:barrel_steel', (pos[0], y, pos[2] + 2))
+        carry(west, w, 1, True)
+        if east:
+            carry(east, e, 1, True)
+        else:
+            give('ntm:fluid_tank_full__chlorine', 1)
+            ctl('select', 'ntm:fluid_tank_full__chlorine')
+            old_screen(*e, (e[0], y, e[2] + 2))
+            click_label('Despejar')
+            while 'Saída' not in ''.join(w2.get('label') or '' for w2 in ctl('ui').get('widgets', [])):
+                click_label('Modo:', 1.0)
+            close()
+        mixers[name] = (m, o)
+    time.sleep(10)
+    made = {n: barrel_state(*o) for n, (m, o) in mixers.items()}
+    # Each solvent into a crystallizer of its own: PRIMARY → its PRIMARY.
+    results = {}
+    for (name, (m, o)), x, out_item in zip(mixers.items(), (X7 + 40, X7 + 46),
+                                          ('ntm:bedrock_ore__primary_solvent_actinide', 'ntm:bedrock_ore__primary_rad_actinide')):
+        if not any('crystallizer' in b[3] for b in ctl('blocks', x - 2, y, Z7 - 11, x + 2, y, Z7 - 7).get('blocks', [])):
+            place(x, y, Z7 - 8, 'ntm:machine_crystallizer', (x, y, Z7 - 5))
+        k = find('ntm:machine_crystallizer', x - 2, y, Z7 - 11, x + 2, y, Z7 - 7)
+        kb = (k[0] + 2, y, k[2])
+        if not ctl('block', *kb).get('state', '').startswith('ntm:barrel_steel'):
+            place(*kb, 'ntm:barrel_steel', (kb[0] + 2, y, kb[2]))
+        # The mixer stands south of its output barrel: open it from the east.
+        carry(o, kb, 1, True, src_stand=(o[0] + 2, y, o[2]))
+        # The stage 1 centrifuge: its battery full, its slots empty.
+        cx, cz = X + 4, Z + 10
+        recharge(cx + 1, y, cz)
+        open_at(cx, y, cz, (cx, y, cz + 3))
+        for sl in machine_slots():
+            if sl[0] >= 300:
+                ctl('click-slot', sl[0], 'shift')
+                time.sleep(0.3)
+        close()
+        ctl('command', 'clear @s', check=False)
+        give('ntm:bedrock_ore__primary_actinide', 2)
+        crystallize(k, 'ntm:bedrock_ore__primary_actinide', 2, out_item)
+        results[name] = count(out_item)
+        # The centrifuge splits it (the stage 1 one).
+        if results[name]:
+            centrifuge_run(X + 4, y, Z + 10, out_item)
+        results[name + '_centrifuga'] = {k2: v for k2, v in ctl('inventory').get('counts', {}).items() if 'bedrock' in k2}
+        ctl('command', 'clear @s', check=False)
+    evidence['etapa5'] = {'recolhido': got, 'feito': made, 'cristalizador': results}
+    print('etapa5', json.dumps(evidence['etapa5'], ensure_ascii=False))
+
+
+def nivel4():
+    """A level 4 deposit (average density over 1,5: chunk (164, −117)):
+    2 000 mB of solvent an extraction."""
+    y = floor_y()
+    x4, z4 = 2632, -1861  # the core lands 3 north: (2632, −1864)
+    if not (game / 'bedrock-chao4').exists():
+        tp(x4 + 0.5, y + 2, z4 + 6.5)
+        time.sleep(4)
+        ctl('fill', x4 - 8, y, z4 - 10, x4 + 8, y + 8, z4 + 8, 'minecraft:air')
+        ctl('fill', x4 - 8, y - 1, z4 - 10, x4 + 8, y - 1, z4 + 8, 'minecraft:stone')
+        (game / 'bedrock-chao4').write_text('1')
+    ctl('command', 'clear @s', check=False)
+    if not any('excavator' in b[3] for b in ctl('blocks', x4 - 4, y, z4 - 7, x4 + 4, y + 6, z4).get('blocks', [])):
+        place(x4, y, z4, 'ntm:machine_excavator', (x4, y, z4 + 3))
+    (cx, cy, cz) = find('ntm:machine_excavator', x4 - 4, y, z4 - 7, x4 + 4, y + 6, z4)
+    ctl('fill', cx - 1, -63, cz - 1, cx + 1, cy - 9, cz + 1, 'minecraft:air')
+    ctl('fill', cx, -64, cz, cx, -64, cz, 'ntm:ore_bedrock')
+    ctl('fill', cx + 4, y, cz, cx + 4, cy, cz, 'minecraft:stone')
+    ctl('fill', cx + 6, y, cz, cx + 6, cy, cz, 'minecraft:stone')
+    fluid_barrel(cx + 4, cy + 1, cz, 'ntm:fluid_barrel_full__solvent', (cx + 6, cy + 1, cz))
+    stand = (cx, y, cz + 6)
+    open_at(cx, cy, cz + 3, stand)
+    have = {sl[0] for sl in machine_slots()}
+    if 300 not in have:
+        put('ntm:battery_creative', 1, 300)
+    if 304 not in have:
+        put('ntm:drillbit__ferro', 1, 304)
+    ctl('click-button', 'Broca')
+    time.sleep(2)
+    t0, raw = time.time(), []
+    while time.time() - t0 < 900:
+        time.sleep(15)
+        open_at(cx, cy, cz + 3, stand)
+        raw = [sl for sl in machine_slots() if sl[1] == 'ntm:bedrock_ore_base']
+        if raw:
+            break
+    ctl('click-button', 'Broca')
+    close()
+    ex = machine_state(cx, cy, cz) or {}
+    evidence['nivel4'] = {'nucleo': [cx, cy, cz], 'brutos': sum(sl[2] for sl in raw), 'segundos': round(time.time() - t0, 1),
+                          'tanque': ex.get('tank')}
+    print('nivel4', evidence['nivel4'])
 
 
 def oil_machine(x, z, block):
