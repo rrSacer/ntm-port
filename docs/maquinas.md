@@ -555,9 +555,11 @@ importação; telas e multiblocos são do agente de visual.
 `{ntm_ore:{light:1.5d,...}}`. O motor `ntm-visual` passa isso pelos slots
 (`Stack.custom`, api 10). Brutos com densidades diferentes não se empilham.
 
-**Escavadora** (7×7×4; slot 4 a broca, 5–13 o buffer; botão 0 liga e
-desliga):
-- 10.000 HE por tick; abre um poço de 3×3 a partir de 4 blocos sob o núcleo.
+**Escavadora** (7×7×4; slots 2–3 upgrades, 4 a broca, 5–13 o buffer;
+botão 0 liga e desliga, 1–4 os interruptores; detalhes em "Escavadora:
+anéis, upgrades e interruptores", abaixo):
+- 10.000 HE por tick; abre um poço de 3×3 a partir de 4 blocos sob o núcleo
+  (mais largo com o upgrade de efeito).
 - Cada camada leva a dureza somada ÷ a velocidade da broca. Os blocos vão
   para o buffer, e um buffer cheio pausa a broca sem perder nada.
 - Sobre um depósito, extrai um bruto a cada 6.000 ÷ velocidade ticks, se o
@@ -578,15 +580,13 @@ desliga):
 1 pó, receita de bancada).
 
 **Desvios:**
-- sem a rocha de profundidade (`BlockDepth`), que no NTM bloqueia a
-  escavadora;
-- só o poço de 3×3; ficam para depois os anéis maiores, o britador, as
-  muralhas, o veio e o toque de seda;
+- a rocha de profundidade (`BlockDepth`) desliga a escavadora, como no NTM,
+  mas a geração dela ainda não existe no mundo;
 - o servidor não tem a tabela de dureza nem as loot tables. A dureza vem de
   uma tabela vanilla resumida (1,5 no resto), e os blocos dão a si mesmos,
   com pedra virando pedregulho e grama virando terra;
 - sem a saída para um baú ou esteira na frente da escavadora;
-- sem upgrades.
+- o upgrade de sorte não existe na escavadora (no NTM também não).
 
 **Verificação** (`bedrock::tests`, 5; `excavator::tests`, 2;
 `server/tests/bedrock_tests.rs`, 3):
@@ -770,6 +770,104 @@ tanque de ácido nítrico.
     2 PRIMARY FIRST na fila, dá 4 lingotes de urânio no molde sob a bica.
     Os eletrodos saem com dano 1.
   - Sem "took too long".
+
+## Escavadora: anéis, upgrades e interruptores (`excavator.rs`)
+
+Completa o `TileEntityMachineExcavator` (aprovado pelo coordenador depois da
+etapa 4 do bedrock).
+
+**Anéis** (`tryDrill`): cada camada é cavada anel por anel, do eixo para fora.
+- O anel 1 é o 3×3; os outros são a borda do quadrado.
+- Um anel leva a dureza somada ÷ a velocidade da broca; depois é quebrado.
+  O mais externo também ganha muralha (com o interruptor) e minera os
+  minérios logo além dele.
+- Quando todos os anéis estão vazios, a broca desce uma camada.
+- O raio é 1 + 2 × o nível do upgrade de efeito: 3×3, 7×7, 11×11 ou 15×15.
+  A primeira camada e a do fundo do mundo são sempre 3×3.
+- Desligada, sem broca ou sem energia, a broca volta para cima
+  (`targetDepth = 0`), como no NTM.
+
+**Upgrades** (slots 2–3; os níveis do mesmo tipo somam, até 3):
+- velocidade: a broca ×(1 + nível ÷ 2), o consumo ×(1 + nível);
+- energia: o consumo ÷ (1 + nível);
+- efeito: os anéis.
+
+**Interruptores** (botões 1–4):
+
+| Botão | Interruptor | Efeito |
+| --- | --- | --- |
+| 1 | britador | o que sai passa pelo triturador; o que vira sucata ou pó (`dust`) fica como era. Desliga sozinho sobre um depósito de bedrock |
+| 2 | paredes | barricadas (`ntm:barricade`) na borda de cada camada onde há ar ou fluido; sem ele, só onde há fluido. O fluido de dentro some sempre |
+| 3 | veio | um minério leva o veio inteiro, a até 10 passos pelos 6 lados; com paredes, o buraco do veio vira barricada |
+| 4 | toque de seda | o bloco sai como ele mesmo (pedra como pedra) |
+
+O veio e a seda dependem da broca (`EnumDrillType`): aço não faz nenhum, aço
+diamantado só seda, HSS só veio, as outras fazem os dois. Na tela, a lâmpada
+fica verde quando pode e âmbar quando está ligada e a broca não deixa.
+
+**Tela** (contrato com o agente de visual, data 20):
+- [0..7] como antes;
+- [8] britador, [9] paredes, [10]/[11] veio e seda (0 desligado, 1 verde, 2 âmbar), [12] a lâmpada âmbar da broca;
+- [13..19] o save: ligado, profundidade, ticks, os 4 interruptores.
+
+Um minério é reconhecido pelo nome (`*_ore` e `ntm:ore_*`): o servidor não
+tem o OreDict. Sem loot tables, um minério sai como ele mesmo, então a sorte
+da broca só vale no depósito de bedrock.
+
+**Verificação:**
+- **Mundo falso** (`server/tests/excavator_tests.rs`, 5):
+  - com efeito 1 o poço é 7×7 a partir da 2ª camada, e volta a 0 quando
+    desligada;
+  - paredes no fluido sempre e no ar só com o interruptor; a lava de dentro
+    some;
+  - sem veio a broca tira o minério do poço e o vizinho de fora; com veio,
+    o veio inteiro, cheio de barricadas com paredes;
+  - britador e seda nas saídas, as lâmpadas pela broca;
+  - os interruptores no save; os upgrades no consumo, na velocidade e no
+    raio.
+- **Em jogo** (`tools/test-game/bedrock.py`):
+  - **`aneis`:** broca ferro, efeito 1, britador e veio. O canto do 7×7 some
+    e o que está fora fica; a primeira camada é 3×3. Uma veia de 3 minérios
+    de ferro que sai do poço some inteira, como 6 pós de ferro (britador). A
+    pedra sai como cascalho.
+  - **`seda`:** broca de aço diamantado com seda: a pedra sai como pedra
+    (mais diorito e minérios inteiros).
+  - **`paredes`:** com o interruptor, água e um bolsão de ar na borda da 3ª
+    camada viram barricada; a pedra da borda fica e o poço fica vazio.
+
+## Petróleo, lote A: liquefator e solidificador (`crafter.rs`)
+
+São o `TileEntityMachineLiquefactor` (31 receitas do `LiquefactionRecipes`, 3
+puladas na extração) e o `TileEntityMachineSolidifier` (45 do
+`SolidificationRecipes`, 2 puladas), como estações do crafter. Conteúdo e
+tabelas são do fc8e1d8f; telas e modelos do fbef4942.
+
+| | Liquefator | Solidificador |
+| --- | --- | --- |
+| Receita | pelo item da entrada (slot 0) | pelo fluido do tanque |
+| Tanque | saída de 24.000 mB; toma o fluido da receita só vazio; com outro fluido, a máquina para | entrada de 24.000 mB, tipada pelo primeiro fluido que chega (o NTM usa o identificador do slot 4) |
+| Saída | o fluido, pelas portas | o item no slot 0; outro item ali para a máquina |
+| Energia | 250 HE por tick, 60 ticks, até 100.000 | igual |
+| Progresso | volta a 0 quando não pode (também sem energia) | igual |
+
+Slots: 1 a bateria, 2–3 os upgrades. A tela usa o layout do crafter ([4..6]
+o tanque de entrada, [7..9] o de saída).
+
+**Desvios:** os upgrades ainda não têm efeito nos dois; o identificador do
+solidificador também não; a regra do NTM que liquefaz qualquer comida
+(`ItemFood`) fica de fora, porque falta a tabela de nutrição de 1.7.10.
+
+**Verificação:**
+- **Mundo falso** (`server/tests/oil_tests.rs`, 3):
+  - 2 carvões → 500 mB de óleo de carvão;
+  - gelo não entra num tanque com óleo de carvão; vazio, vira água;
+  - o solidificador faz 2 alcatrões de carvão de 500 mB;
+  - outro item na saída o para;
+  - um liquefator salvo inerte carrega como crafter.
+- **Em jogo** (`tools/test-game/bedrock.py`, etapa `petroleo`): um liquefator
+  e um solidificador lado a lado, as portas dos lados se tocando. 4 carvões
+  viram 1.000 mB de óleo de carvão, que passa ao solidificador e volta como 5
+  alcatrões de carvão.
 
 ## Pontes `m1_temp__`
 
