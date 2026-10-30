@@ -443,6 +443,36 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
+    // The oil chain's batch D (795e8b7): extraction and the transformer.
+    // Inert until their stage is approved.
+    BlockSpec {
+        id: "ntm:machine_well",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_pumpjack",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_fracking_tower",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_transformer",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
     // The shredder (`crate::shredder`): `TilePortShapes.around`, energy only.
     BlockSpec {
         id: "ntm:machine_shredder",
