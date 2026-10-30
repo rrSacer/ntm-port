@@ -9105,6 +9105,34 @@
     "ntm:steel_beam": {
       "source": "oil batch B: the extracted model is not this block's (steel_beam got a boxcar, the refinery its exploded form); its own entry comes with the batch's visuals",
       "auto": false
+    },
+    "ntm:machine_boiler": {
+      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
+      "auto": false
+    },
+    "ntm:machine_industrial_boiler": {
+      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
+      "auto": false
+    },
+    "ntm:machine_catalytic_cracker": {
+      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
+      "auto": false
+    },
+    "ntm:machine_catalytic_reformer": {
+      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
+      "auto": false
+    },
+    "ntm:machine_hydrotreater": {
+      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
+      "auto": false
+    },
+    "ntm:machine_vacuum_distill": {
+      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
+      "auto": false
+    },
+    "ntm:machine_coker": {
+      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
+      "auto": false
     }
   }
 }
