@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/chemical_dye",
+    "layer1": "ntm:item/chemical_dye_overlay__chemical_dye__cyan"
+  }
+}
