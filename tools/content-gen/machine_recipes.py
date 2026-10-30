@@ -117,7 +117,7 @@ class MachineResolver(Resolver):
         return super().ingredient(expr, emit)
 
     def metadata(self, expr, var):
-        expr = expr.strip().removeprefix('ItemEnums.')
+        expr = expr.strip().removeprefix('ItemEnums.').removeprefix('BlockEnums.')
         match = re.fullmatch(r'Fluids\.(\w+)\.getID\(\)', expr)
         if match and match[1] in self.fluids: return self.fluids[match[1]]['metadata']
         if re.fullmatch(r'\w+\.\w+', expr) and (var, expr) in self.byenum:
@@ -310,8 +310,9 @@ def export(source, output, rows):
     import pyrooven_recipes, electrolyser_recipes, arc_furnace_recipes
     for module, name in [(pyrooven_recipes, 'pyrooven'), (electrolyser_recipes, 'electrolyser'), (arc_furnace_recipes, 'arc_furnace')]:
         counts[name] = module.export(source, output, rows)['coverage']
-    import petroleum_recipes
-    counts.update({name: data['coverage'] for name,data in petroleum_recipes.export(source,output,rows).items()})
+    import petroleum_recipes, petroleum_refining
+    for module in [petroleum_recipes, petroleum_refining]:
+        counts.update({name: data['coverage'] for name,data in module.export(source,output,rows).items()})
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 

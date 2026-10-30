@@ -159,8 +159,9 @@ class Resolver:
         m=re.fullmatch(r'(?:OreDictManager\.)?(\w+)\.(\w+)\(\)',expr)
         if m:
             names=self.frames.get(m[1],[])
-            values=set().union(*(self.ore.get(m[2]+n,set()) for n in names))
-            ore=m[2]+(names[0] if names else m[1])
+            shape={'plateCast':'plateTriple','plateWelded':'plateSextuple'}.get(m[2],m[2])
+            values=set().union(*(self.ore.get(shape+n,set()) for n in names))
+            ore=shape+(names[0] if names else m[1])
         elif ore:values=self.ore.get(ore,set())
         else:return self.item(expr)[0]
         if not values:raise Unsupported('unresolved ore dictionary '+expr)
