@@ -20394,7 +20394,7 @@
         "hardness": 0,
         "explosion_resistance": 0,
         "requires_tool": false,
-        "sounds": "minecraft:grass"
+        "sounds": "minecraft:short_grass"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.foxglove.png",
       "names": {
@@ -20418,7 +20418,7 @@
         "hardness": 0,
         "explosion_resistance": 0,
         "requires_tool": false,
-        "sounds": "minecraft:grass"
+        "sounds": "minecraft:short_grass"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.tobacco.png",
       "names": {
@@ -20442,7 +20442,7 @@
         "hardness": 0,
         "explosion_resistance": 0,
         "requires_tool": false,
-        "sounds": "minecraft:grass"
+        "sounds": "minecraft:short_grass"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.nightshade.png",
       "names": {
@@ -20466,7 +20466,7 @@
         "hardness": 0,
         "explosion_resistance": 0,
         "requires_tool": false,
-        "sounds": "minecraft:grass"
+        "sounds": "minecraft:short_grass"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.weed.png",
       "names": {
@@ -20490,7 +20490,7 @@
         "hardness": 0,
         "explosion_resistance": 0,
         "requires_tool": false,
-        "sounds": "minecraft:grass"
+        "sounds": "minecraft:short_grass"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.cd0.png",
       "names": {
@@ -20514,7 +20514,7 @@
         "hardness": 0,
         "explosion_resistance": 0,
         "requires_tool": false,
-        "sounds": "minecraft:grass"
+        "sounds": "minecraft:short_grass"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/plant_flower.cd1.png",
       "names": {

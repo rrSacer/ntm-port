@@ -5,8 +5,10 @@ import re
 from collections import Counter
 from functools import cache
 from pathlib import Path
+from vanilla_references import VanillaReferences
 ROOT=Path(__file__).resolve().parents[2];CONTENT=ROOT/'content'
-vanilla=Path('/home/sacer/Games/horizon/.local/horizon-client/26.3')
+references=VanillaReferences();vanilla=references.resources
+references.validate_content(CONTENT)
 catalog=json.loads((CONTENT/'ids.json').read_text());rows=catalog['entries'];ids={e['id'] for e in rows}
 assert len(ids)==len(rows)
 
@@ -18,8 +20,7 @@ def item(identity):
     if identity.startswith('#'):
         assert exists('tags/item',identity[1:]),identity
     elif identity.startswith('ntm:'):assert identity in ids,identity
-    else:
-        ns,name=identity.split(':',1);assert (vanilla/'assets'/ns/'items'/(name+'.json')).exists(),identity
+    else:references.require('item',identity,'recipe/loot/tag/icon')
 
 @cache
 def model(identity):
@@ -73,6 +74,6 @@ for path in tabs:
     for loc in ('en_us','pt_br'):assert tab['title'] in read(CONTENT/f'assets/ntm/lang/{loc}.json')
 visible={r['id'] for r in rows if not r.get('creative_hidden')}
 if tabs:assert set(tab_items)==visible and len(tab_items)==len(visible),'creative tabs cover visible catalog once'
-report={'status':'pass','ids':len(ids),'categories':dict(Counter(r['category'] for r in rows)),'blocks':sum(r['type']=='block' for r in rows),'items':sum(r['type']=='item' for r in rows),'recipes':len(list((CONTENT/'data/ntm/recipe').glob('*.json'))),'radiation_rates':len(buckets['buckets']),'radiation_bits':len(buckets['bits']),'creative_tabs':len(tabs),'checks':'ids, source-localized names, model parents/textures, loot item graph, recipe/item/tag graph, exact hazard identity/rate/bit agreement'}
+report={'status':'pass','ids':len(ids),'categories':dict(Counter(r['category'] for r in rows)),'blocks':sum(r['type']=='block' for r in rows),'items':sum(r['type']=='item' for r in rows),'recipes':len(list((CONTENT/'data/ntm/recipe').glob('*.json'))),'radiation_rates':len(buckets['buckets']),'radiation_bits':len(buckets['bits']),'creative_tabs':len(tabs),'vanilla_references':references.checked,'checks':'vanilla block/item registry, templates, sound source blocks, ids, source-localized names, model parents/textures, loot item graph, recipe/item/tag graph, exact hazard identity/rate/bit agreement'}
 path=ROOT/'content-gen-evidence/bulk/static-validation.json';path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps(report,ensure_ascii=False))

@@ -28,7 +28,7 @@ def build(source):
         rows.append({'id':'plant_flower__'+suffix,'source_variable':'plant_flower','type':'block',
             'category':'plant','template':'minecraft:poppy','metadata':meta,'subtype_kind':'palette',
             'source_enum':'EnumFlowerType.'+m[1],'needs_oil':m[2]=='true','cross_model':True,
-            'block_properties':{'hardness':0,'explosion_resistance':0,'requires_tool':False,'sounds':'minecraft:grass'},
+            'block_properties':{'hardness':0,'explosion_resistance':0,'requires_tool':False,'sounds':'minecraft:short_grass'},
             'source_texture':f'src/main/resources/assets/hbm/textures/blocks/plant_flower.{suffix}.png',
             'names':{loc:tr['tile.plant_flower.'+suffix+'.name'] for loc,tr in translations.items()},
             **({'drop':'ntm:plant_flower__cd0'} if suffix=='cd1' else {}),

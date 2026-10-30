@@ -11,6 +11,7 @@ import zlib
 from pathlib import Path
 import worldgen
 import bulk_recipes
+from vanilla_references import sound_block, VanillaReferences
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -216,7 +217,9 @@ def generate(src,out,rows,distributions,max_damage=False):
   else:
    blocks.append(row['id'])
    template=row.get('template','minecraft:beehive' if machine else 'minecraft:iron_block' if row['category'] in ('storage','resource_block') else 'minecraft:stone')
-   emit(f'data/ntm/horizon/block/{name}.json',{'template':template,'properties':{'hardness':5.0,'explosion_resistance':10.0,'requires_tool':True,'sounds':'minecraft:iron_block' if machine or row['category']=='storage' else 'minecraft:stone','light':0,**row.get('block_properties',{})},'item':True})
+   properties={'hardness':5.0,'explosion_resistance':10.0,'requires_tool':True,'sounds':'minecraft:iron_block' if machine or row['category']=='storage' else 'minecraft:stone','light':0,**row.get('block_properties',{})}
+   properties['sounds']=sound_block(properties['sounds'])
+   emit(f'data/ntm/horizon/block/{name}.json',{'template':template,'properties':properties,'item':True})
    if machine:
     textures={face:texture('src/main/resources/assets/hbm/textures/'+path+'.png') for face,path in row['textures'].items()}
     if row.get('opaque_machine_textures'):
@@ -334,6 +337,8 @@ def main():
  bulk_recipes.annotate(args.source,rows)
 
  for row in rows:
+  if 'sounds' in row.get('block_properties', {}):
+   row['block_properties']['sounds']=sound_block(row['block_properties']['sounds'])
   if row['category']=='machine':row['logic']={'kind':'machine','facing':'facing','active':None,'level':{'prop':'honey_level','max':5}}
   elif row['category']=='cable':row['logic']={'kind':'cable'}
   elif row['category']=='duct':row['logic']={'kind':'duct'}
@@ -366,6 +371,7 @@ def main():
     for rel in json.loads(previous.read_text()):
      if rel not in owned:(args.output/rel).unlink(missing_ok=True)
    write_json(previous,owned)
+ if not args.ids_only:VanillaReferences().validate_content(args.output)
  print(json.dumps({'entries':len(rows),'blocks':sum(r['type']=='block' for r in rows),'items':sum(r['type']=='item' for r in rows),'generated_files':count,'ids':str(args.output/'ids.json')},ensure_ascii=False))
 
 if __name__=='__main__':main()
