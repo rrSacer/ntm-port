@@ -1127,6 +1127,10 @@ devolve a água.
   - firebox → caldeira → motor → forno elétrico, com o vapor gasto num condensador e a água de volta à caldeira por duto. O forno funde, e a água se conserva na volta;
   - as portas de energia das turbinas no fim das cadeias;
   - saves inertes carregam como máquinas de vapor.
+- **Em jogo** (`tools/test-game/bedrock.py`, etapa `energia_2`, sem "took too long"), ainda com o casing provisório (bloco único, sem multibloco; o visual vem depois da V0 da migração): um barril com 16.000 mB de vapor a oeste de um motor a vapor, uma bateria ao norte, um condensador a leste e um barril vazio depois dele.
+  - A bateria recebeu 27.200 HE: 8 ticks a 3.400 HE/t, o teto do motor, até o barril esvaziar.
+  - O barril do fim recebeu 160 mB de água: os 16.000 mB de vapor viraram 160 de vapor gasto, condensados.
+  - A caldeira ligada ao motor por duto, a turbina e o condensador a energia ficam para o visual dos multiblocos.
 
 ## Pontes `m1_temp__`
 
