@@ -15,7 +15,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--package',type=Path,required=True)
     parser.add_argument('--horizon-client',type=Path,required=True)
-    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters'],default='bedrock')
+    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam'],default='bedrock')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
     evidence=root/'content-gen-evidence'/({'bedrock':'bedrock-stages34'}.get(args.profile,args.profile));evidence.mkdir(parents=True,exist_ok=True)
@@ -57,9 +57,10 @@ def main():
                 time.sleep(.5)
             else:raise TimeoutError('client did not reach playing')
             cmd('time set noon');cmd('weather clear')
-            cmd('fill -9 100 -10 9 100 4 minecraft:stone')
+            cmd('fill -9 100 -16 16 100 4 minecraft:stone')
             machines=['machine_hephaestus','machine_flare'] if args.profile=='petroleum-e' else ['machine_pyrooven','machine_electrolyser','machine_arc_furnace_large']
             if args.profile=='energy-heaters':machines=['heater_oven','heater_oilburner','heater_electric','heater_heatex']
+            if args.profile=='energy-steam':machines=['machine_steam_engine','machine_industrial_turbine','machine_chungus','machine_condenser','machine_condenser_powered']
             for i,name in enumerate(machines):
                 x=-4+i*4
                 for y,level in [(101,0),(103,5)]:
@@ -73,7 +74,7 @@ def main():
                         if time.monotonic()>deadline:raise AssertionError((state,reply))
                         ctl('wait 2')
             decor=['plant_flower__'+n for n in ['foxglove','tobacco','nightshade','weed','cd0','cd1']] if args.profile=='petroleum-e' else ['block_graphite','rebar','concrete_rebar']
-            if args.profile=='energy-heaters':decor=[]
+            if args.profile.startswith('energy-'):decor=[]
             for i,name in enumerate(decor):
                 x=-5+i*2 if args.profile=='petroleum-e' else -4+i*4
                 if args.profile=='petroleum-e':cmd(f'setblock {x} 100 3 minecraft:grass_block')
@@ -84,11 +85,12 @@ def main():
                     if reply['block']=='ntm:'+name:break
                     if time.monotonic()>deadline:raise AssertionError((name,reply))
                     ctl('wait 2')
-            cmd('tp @s 0.5 101 -7.5')
+            camera_x,camera_z=(4.5,-13.5) if args.profile=='energy-steam' else (0.5,-7.5)
+            cmd(f'tp @s {camera_x} 101 {camera_z}')
             deadline=time.monotonic()+15
             while True:
                 player=ctl('state').get('player')
-                if player and abs(player['position'][2]+7.5)<0.2 and abs(player['position'][1]-101)<0.2:break
+                if player and abs(player['position'][2]-camera_z)<0.2 and abs(player['position'][1]-101)<0.2:break
                 if time.monotonic()>deadline:raise AssertionError(player)
                 ctl('wait 2')
             ctl('look 0 -7');ctl('wait 10');ctl('key f1 tap')
@@ -98,6 +100,7 @@ def main():
                 'powder_cement','ingot_semtex','ingot_schraranium','meteorite_sword_treated','meteorite_sword_etched']
             if args.profile=='petroleum-e':samples=['bio_wafer','pill_herbal']+decor
             if args.profile=='energy-heaters':samples=machines
+            if args.profile=='energy-steam':samples=machines+['gear_large__iron','gear_large__steel']
             cmd('clear @s')
             for name in samples:cmd('give @s ntm:'+name+' 1')
             deadline=time.monotonic()+15
