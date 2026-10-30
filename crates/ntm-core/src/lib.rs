@@ -30,6 +30,7 @@ pub mod hash;
 pub mod heater;
 pub mod kv;
 pub mod machine;
+pub mod native;
 pub mod oil_drill;
 pub mod persist;
 pub mod processing;
