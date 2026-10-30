@@ -57,6 +57,8 @@ class MachineResolver(Resolver):
     def __init__(self, source, rows):
         super().__init__(source, rows)
         self.fluids = {f['source_variable']: f for f in fluids(source)}
+        containers = (source / 'src/main/java/com/hbm/inventory/FluidContainerRegistry.java').read_text()
+        self.registered_fluid_containers = set(re.findall(r'new ItemStack\(ModItems\.(\w+),\s*1,\s*(?:id|i)\)', containers))
         # Translate DictFrame method names into MaterialShapes registration keys.
         self.shapes = {'plateCast': 'plateTriple', 'plateWelded': 'plateSextuple',
                        'heavyComp': 'plateSextuple', 'pipe': 'ntmpipe',
@@ -162,6 +164,16 @@ class MachineResolver(Resolver):
             ident, count = self.item(expr)
             return [ident, count], [ident]
         args = split(match[1]); count = integer(args[1]) if len(args) > 1 else 1
+        container = re.fullmatch(r'Fluids\.(\w+)\.getDict\(([^)]+)\)', args[0])
+        if container:
+            if container[1] not in self.fluids: raise Unsupported('unknown container fluid: ' + args[0])
+            fluid = self.fluids[container[1]]['id']; amount = integer(container[2])
+            options = sorted(row['id'] for row in self.rows
+                             if row.get('source_variable') in self.registered_fluid_containers
+                             and row.get('fluid', {}).get('id') == fluid
+                             and row['fluid']['amount_mb'] == amount)
+            if not options: raise Unsupported('no registered catalog container: ' + args[0])
+            return [options[0], count], options
         local = {}
         ident = self.ingredient(args[0], lambda path, body: local.__setitem__(path, body))
         options = self.expand_tag(ident, local)
@@ -319,6 +331,8 @@ def export(source, output, rows):
     counts.update({name: data['coverage'] for name,data in petroleum_auxiliary.export(source,output,rows).items()})
     import heaters
     counts['heaters'] = heaters.export(source,output,rows)['coverage']
+    import steam
+    counts['steam'] = steam.export(source,output,rows)['coverage']
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 
