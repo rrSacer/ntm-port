@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:particle_empty",
+    "count": 2
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "STS",
+    "G G",
+    "STS"
+  ],
+  "key": {
+    "S": "#ntm:bulk/platetriplelead",
+    "T": "ntm:coil_gold",
+    "G": "#ntm:bulk/paneglass"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:seg_10",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "P",
+    "S",
+    "B"
+  ],
+  "key": {
+    "P": "#ntm:bulk/platealuminum",
+    "S": "ntm:steel_scaffold",
+    "B": "ntm:steel_beam"
+  }
+}

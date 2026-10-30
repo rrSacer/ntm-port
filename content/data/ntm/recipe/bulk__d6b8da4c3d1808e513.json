@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:seg_15",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PP",
+    "SS",
+    "BB"
+  ],
+  "key": {
+    "P": "#ntm:bulk/platetitanium",
+    "S": "ntm:steel_scaffold",
+    "B": "ntm:steel_beam"
+  }
+}

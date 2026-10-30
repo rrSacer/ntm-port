@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:battery_trixite",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " W ",
+    "DSD",
+    "DTD"
+  ],
+  "key": {
+    "W": "#ntm:bulk/wiredensemagnetizedtungsten",
+    "D": "#ntm:bulk/platetriplesaturnite",
+    "S": "ntm:powder_power",
+    "T": "ntm:crystal_trixite"
+  }
+}

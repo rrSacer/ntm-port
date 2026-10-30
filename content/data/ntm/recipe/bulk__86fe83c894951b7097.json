@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:motor_bismuth",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BCB",
+    "SDS",
+    "BCB"
+  ],
+  "key": {
+    "B": "#ntm:bulk/nuggetbismuth",
+    "C": "#ntm:bulk/wiredenseneodymium",
+    "S": "#ntm:bulk/platetriplesteel",
+    "D": "#ntm:bulk/ingotdurasteel"
+  }
+}
