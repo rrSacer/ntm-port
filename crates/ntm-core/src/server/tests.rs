@@ -1851,3 +1851,5 @@ mod stage3_tests;
 mod stage4_tests;
 
 mod excavator_tests;
+
+mod oil_tests;
