@@ -48,6 +48,9 @@ pub trait ServerHost: Kv {
     fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
         Vec::new()
     }
+    /// The machine's whole state (JSON), kept with its block entity (the
+    /// native bundle: `native_server.rs`).
+    fn save_machine(&mut self, _dim: &str, _p: Pos, _json: &str) {}
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -153,6 +156,8 @@ struct Ready {
     /// those whose check waits for the save before it leaves.
     verify: BTreeSet<u64>,
     verify_publish: BTreeSet<u64>,
+    /// The state each machine last kept with its block entity (native).
+    native_saved: BTreeMap<Key, String>,
 }
 
 #[derive(Debug)]
@@ -605,6 +610,7 @@ impl Server {
             cursor: 0,
             verify,
             verify_publish: BTreeSet::new(),
+            native_saved: BTreeMap::new(),
         }));
     }
 
@@ -1950,6 +1956,7 @@ pub mod container_bridge;
 mod fluid_server;
 mod foundry_server;
 mod radiation_server;
+mod native_server;
 
 #[cfg(test)]
 mod tests;
