@@ -90,8 +90,10 @@ def machine_slots(machine):
     for slot in machine.get('slots', []):
         if 'accept_recipes' in slot:
             slot = dict(slot)
-            recipes = json.loads((ROOT / 'content/machine-recipes' / f"{slot.pop('accept_recipes')}.json").read_text())
-            slot['accept'] = sorted({i for r in recipes['recipes'] for it in r['inputItems'] for i in it['ids']})
+            doc = json.loads((ROOT / 'content/machine-recipes' / f"{slot.pop('accept_recipes')}.json").read_text())
+            # The arc furnace's file holds a list per mode (solid, fluid).
+            lists = [doc['recipes']] if 'recipes' in doc else [v['recipes'] for v in doc.values() if isinstance(v, dict) and 'recipes' in v]
+            slot['accept'] = sorted({i for rs in lists for r in rs for it in r['inputItems'] for i in it['ids']})
         slots.append(slot)
     return {**machine, 'slots': slots} if 'slots' in machine else machine
 
