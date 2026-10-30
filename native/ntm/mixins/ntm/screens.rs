@@ -3,6 +3,8 @@
 // files say and how it is worked out is ntm_core::screens (tested there);
 // this is the drawing, the clicks and the tooltips.
 use horizon_client::hud::HudBatch;
+use ntm_core::native::{self as machines, RecipeRow};
+use ntm_core::screens::list::{self, Config, Entry, Outcome, selector};
 use ntm_core::screens::{self as model, Layout, ScreenDef};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -51,19 +53,28 @@ fn current(game: &crate::game::Game<'_>, block: &str) -> Option<Arc<ScreenDef>> 
     screen(game, &name)
 }
 
-/// A machine's screen opens: its size, where the slots sit on it, the player inventory.
-pub(super) fn open(game: &crate::game::Game<'_>, block: &str, out: &mut Option<crate::game::native_hooks::NativeScreen>) {
-    let Some(layout) = layout(block) else { return };
-    let Some(def) = screen(game, &layout.screen) else { return };
-    *lock(&OPEN) = Some((block.to_string(), layout.screen.clone()));
-    *out = Some(crate::game::native_hooks::NativeScreen {
+/// A machine's screen as the engine lays it out.
+fn machine_screen(game: &crate::game::Game<'_>, block: &str, name: &str) -> Option<crate::game::native_hooks::NativeScreen> {
+    let layout = layout(block)?;
+    let def = screen(game, name)?;
+    Some(crate::game::native_hooks::NativeScreen {
         width: def.size[0],
         height: def.size[1],
         slots: layout.slots.iter().enumerate().map(|(i, at)| def.slot_at(i, *at)).collect(),
         inventory_x: layout.inventory[0],
         inventory_y: layout.inventory[1],
         own_labels: true,
-    });
+        hide_inventory: false,
+    })
+}
+
+/// A machine's screen opens: its size, where the slots sit on it, the player inventory.
+pub(super) fn open(game: &crate::game::Game<'_>, block: &str, out: &mut Option<crate::game::native_hooks::NativeScreen>) {
+    *lock(&LIST) = None;
+    let Some(layout) = layout(block) else { return };
+    let Some(shown) = machine_screen(game, block, &layout.screen) else { return };
+    *lock(&OPEN) = Some((block.to_string(), layout.screen.clone()));
+    *out = Some(shown);
 }
 
 fn argb(rgb: u32) -> u32 {
@@ -73,6 +84,10 @@ fn argb(rgb: u32) -> u32 {
 /// The background, then bars, needles, overlays and texts, then the title and
 /// the inventory's label.
 pub(super) fn draw(game: &crate::game::Game<'_>, block: &str, data: &[i32], batch: &mut HudBatch, origin: [f32; 2]) {
+    if let Some(open) = lock(&LIST).as_ref().filter(|open| open.block == block) {
+        draw_selector(game, open, batch, origin);
+        return;
+    }
     let Some(def) = current(game, block) else { return };
     let [ox, oy] = origin;
     let [w, h] = def.size;
@@ -144,7 +159,208 @@ pub(super) fn click(game: &crate::game::Game<'_>, block: &str, at: [f32; 2], but
 
 /// The tooltip of a bar, an icon or a button under the pointer.
 pub(super) fn tooltip(game: &crate::game::Game<'_>, block: &str, data: &[i32], at: [f32; 2], lines: &mut Vec<String>) {
+    if let Some(open) = lock(&LIST).as_ref().filter(|open| open.block == block) {
+        selector_tooltip(game, open, at, lines);
+        return;
+    }
     if let Some(found) = current(game, block).and_then(|def| def.tooltip(at[0], at[1], data)) {
         lines.extend(found);
+    }
+}
+
+/// The recipe selector open over a machine's screen (NTM's
+/// GUIScreenRecipeSelector): the grid, the search and the choice live here;
+/// only the choice, once it changed, leaves as a menu button on closing.
+struct Selector {
+    block: String,
+    state: list::State,
+    rows: Vec<RecipeRow>,
+    /// The machine's own layout, laid out again when the selector closes.
+    restore: crate::game::native_hooks::NativeScreen,
+}
+
+static LIST: Mutex<Option<Selector>> = Mutex::new(None);
+
+/// A press, key, text or wheel on a machine's screen (API 31): the selector's
+/// when it is open, else the press on the button that opens it (button 0 of
+/// a machine with a recipe list). True when this took the event.
+pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, data: &[i32], event: &crate::game::native_hooks::NativeScreenEvent) -> bool {
+    use crate::game::native_hooks::NativeScreenEvent as E;
+    let mut guard = lock(&LIST);
+    let Some(open) = guard.as_mut().filter(|open| open.block == block) else {
+        drop(guard);
+        let E::Press { at, .. } = event else { return false };
+        return open_selector(game, block, data, *at);
+    };
+    let before = (open.state.offset, open.state.selected);
+    let outcome = match event {
+        E::Press { at, .. } => open.state.press(at[0], at[1]),
+        E::Key { key, text, .. } => {
+            let inventory = game.settings.keys.get("key.inventory").to_string();
+            open.state.key(key, text, &inventory)
+        }
+        E::Text(text) => open.state.text(text),
+        E::Wheel { steps, .. } => open.state.wheel(*steps),
+    };
+    let moved = before != (open.state.offset, open.state.selected);
+    if outcome == Outcome::Close {
+        let closed = guard.take();
+        drop(guard);
+        if let Some(closed) = closed {
+            if let Some(button) = closed.state.commit().and_then(|b| i32::try_from(b).ok()) {
+                game.native_screen_send_button(button);
+            }
+            game.native_screen_set_layout(closed.restore);
+        }
+        game.audio.play_button_click();
+    } else if moved {
+        game.audio.play_button_click();
+    }
+    true
+}
+
+/// A press at `at` on the button that opens the machine's recipe list.
+fn open_selector(game: &mut crate::game::Game<'_>, block: &str, data: &[i32], at: [f32; 2]) -> bool {
+    let Some(rows) = machines::recipes(block) else { return false };
+    let Some(slot) = machines::recipe_slot(block) else { return false };
+    let Some(def) = current(game, block) else { return false };
+    let shift = false;
+    if def.button_at(at[0], at[1], shift) != Some(0) {
+        return false;
+    }
+    let Some(layout) = layout(block) else { return false };
+    let Some(restore) = machine_screen(game, block, &current_name(block, &layout)) else { return false };
+    // The data slot holds the recipe + 1; zero is none.
+    let selected = data.get(slot).copied().filter(|v| *v > 0).map(|v| (v - 1) as u32);
+    let entries = rows
+        .iter()
+        .map(|r| Entry { index: r.index, label: r.label.clone(), icon: r.icon.clone(), inputs: r.inputs.clone(), outputs: r.outputs.clone() })
+        .collect();
+    let shown = crate::game::native_hooks::NativeScreen {
+        width: selector::SIZE[0],
+        height: selector::SIZE[1],
+        slots: vec![None; layout.slots.len()],
+        inventory_x: 8.0,
+        inventory_y: 84.0,
+        own_labels: true,
+        hide_inventory: true,
+    };
+    if !game.native_screen_set_layout(shown) {
+        return false;
+    }
+    *lock(&LIST) = Some(Selector {
+        block: block.to_string(),
+        state: list::State::new(Config::selector(), entries, selected),
+        rows,
+        restore,
+    });
+    game.audio.play_button_click();
+    true
+}
+
+/// The name of the screen a machine shows now.
+fn current_name(block: &str, layout: &Layout) -> String {
+    match &*lock(&OPEN) {
+        Some((b, name)) if b == block => name.clone(),
+        _ => layout.screen.clone(),
+    }
+}
+
+/// An item's name for a recipe line.
+fn item_name(game: &crate::game::Game<'_>, id: &str) -> String {
+    let (ns, path) = id.split_once(':').unwrap_or(("minecraft", id));
+    for kind in ["item", "block"] {
+        let named = game.translate(&format!("{kind}.{ns}.{path}"), "\u{0}");
+        if named != "\u{0}" {
+            return named;
+        }
+    }
+    path.replace('_', " ")
+}
+
+fn rect_hit(rect: [f32; 4], at: [f32; 2]) -> bool {
+    selector::hits(rect, at[0], at[1])
+}
+
+fn draw_selector(game: &crate::game::Game<'_>, open: &Selector, batch: &mut HudBatch, origin: [f32; 2]) {
+    let [ox, oy] = origin;
+    let [w, h] = selector::SIZE;
+    let cursor = game.native_cursor();
+    let at = [cursor[0] - ox, cursor[1] - oy];
+    let state = &open.state;
+    game.native_sprite(batch, selector::SPRITE, [0.0, 0.0, w, h], [ox, oy, w, h]);
+    if state.search.focused {
+        let [x, y, sw, sh] = selector::SEARCH_FOCUS;
+        let [u, v] = selector::SEARCH_FOCUS_UV;
+        game.native_sprite(batch, selector::SPRITE, [u, v, sw, sh], [ox + x, oy + y, sw, sh]);
+    }
+    for b in [&selector::UP, &selector::DOWN, &selector::CLOSE, &selector::CLEAR_SEARCH, &selector::FOCUS_HINT] {
+        if rect_hit(b.rect, at) {
+            let [x, y, bw, bh] = b.rect;
+            game.native_sprite(batch, selector::SPRITE, [b.uv[0], b.uv[1], bw, bh], [ox + x, oy + y, bw, bh]);
+        }
+    }
+    let shown: Vec<&Entry> = state.visible().collect();
+    for (i, entry) in shown.iter().enumerate() {
+        if state.selected == Some(entry.index) {
+            let [x, y, cw, ch] = state.config.cell(i);
+            let [u, v] = selector::SELECTED_CELL_UV;
+            game.native_sprite(batch, selector::SPRITE, [u, v, 18.0, 18.0], [ox + x, oy + y, cw, ch]);
+        }
+    }
+    for (i, entry) in shown.iter().enumerate() {
+        let [x, y, ..] = state.config.cell(i);
+        game.native_item(batch, &entry.icon, [ox + x + 1.0, oy + y + 1.0], 16.0);
+    }
+    if let Some(entry) = state.selected.and_then(|s| state.entries.iter().find(|e| e.index == s)) {
+        let [x, y] = selector::SELECTED_ICON;
+        game.native_item(batch, &entry.icon, [ox + x, oy + y], 16.0);
+    }
+    let [x, y, field, _] = selector::SEARCH_TEXT;
+    let width = |c: char| game.native_text_width(&c.to_string());
+    let (first, text) = state.search.visible(field, width);
+    game.native_text(batch, &text, [ox + x, oy + y], 0xFFFFFF, false);
+    if state.search.focused && (std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_millis()) / 500) % 2 == 0 {
+        let before: String = text.chars().take(state.search.caret().saturating_sub(first)).collect();
+        let cx = ox + x + game.native_text_width(&before);
+        game.native_fill(batch, [cx, oy + y - 1.0, 1.0, 10.0], 0xFFFF_FFFF);
+    }
+}
+
+/// A recipe as the selector lists it on hover: its name, then what it
+/// takes and gives.
+fn recipe_lines(game: &crate::game::Game<'_>, open: &Selector, index: u32, lines: &mut Vec<String>) {
+    let Some(row) = open.rows.iter().find(|r| r.index == index) else { return };
+    lines.push(format!("\u{a7}e{}", row.label));
+    let stacks = |label: &str, items: &[(String, u32)], fluids: &[(String, u32)], lines: &mut Vec<String>| {
+        if items.is_empty() && fluids.is_empty() {
+            return;
+        }
+        lines.push(format!("\u{a7}l{label}:"));
+        for (id, n) in items {
+            lines.push(format!("  {n}x {}", item_name(game, id)));
+        }
+        for (id, mb) in fluids {
+            lines.push(format!("  {mb} mB {}", id.rsplit(':').next().unwrap_or(id).replace('_', " ")));
+        }
+    };
+    stacks("Input", &row.inputs, &row.fluids_in, lines);
+    stacks("Output", &row.outputs, &row.fluids_out, lines);
+}
+
+fn selector_tooltip(game: &crate::game::Game<'_>, open: &Selector, at: [f32; 2], lines: &mut Vec<String>) {
+    let state = &open.state;
+    if let Some(entry) = state.entry_at(at[0], at[1]) {
+        recipe_lines(game, open, entry.index, lines);
+    } else if rect_hit(selector::SELECTED_FRAME, at) {
+        if let Some(selected) = state.selected {
+            recipe_lines(game, open, selected, lines);
+        }
+    } else if rect_hit(selector::CLOSE.rect, at) {
+        lines.push("\u{a7}eClose".to_string());
+    } else if rect_hit(selector::CLEAR_SEARCH.rect, at) {
+        lines.push("\u{a7}eClear search".to_string());
+    } else if rect_hit(selector::FOCUS_HINT.rect, at) {
+        lines.push("\u{a7}oPress ENTER to toggle focus".to_string());
     }
 }

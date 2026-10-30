@@ -1,6 +1,6 @@
 {
   "game": "26.3",
-  "hooks": 25,
+  "hooks": 31,
   "horizon_repository": "https://github.com/horizon-rust/horizon",
   "horizon_revision": "15d31b261028dbf336d3f7294512c5a4a7eb19cc",
   "horizon_branch": "ntm-next",

@@ -214,6 +214,22 @@ bindings = [
   { name = "lines", ty = "&mut Vec<String>", value = "&mut *lines" },
 ]
 
+# The recipe list over a machine's screen (API 31): its presses, keys, text
+# and wheel.
+[[injection]]
+id = "screen-event"
+hook = "screen_event"
+hook_version = 1
+kind = "HEAD"
+helper = "screen_event.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "block", ty = "&str", value = "block" },
+  { name = "data", ty = "&[i32]", value = "data" },
+  { name = "event", ty = "&crate::game::native_hooks::NativeScreenEvent", value = "event" },
+  { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
+]
+
 # A right click on a machine's cell (API 24): the turbines' levers.
 [[injection]]
 id = "use-block"
