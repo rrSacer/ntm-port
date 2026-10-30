@@ -44,6 +44,20 @@ Etapa 4 (forno a arco grande e linha de metal do eletrolisador):
               urânio à esquerda, tório à direita, lingotes nos moldes;
   arco        o forno a arco em modo fluido com 3 eletrodos de grafite e um
               molde sob a bica: 2 PRIMARY FIRST → urânio fundido → lingotes.
+A escavadora comum (anéis e interruptores), num chão de pedra novo:
+  aneis       broca ferro, upgrade de efeito 1, britador e veio ligados: do
+              2º nível em diante o poço é 7×7; uma veia de 3 minérios de
+              ferro que sai do poço some inteira; a pedra vem como cascalho e
+              o ferro como pó (o britador);
+  seda        broca de aço diamantado com toque de seda: a pedra vem como
+              pedra, não pedregulho;
+  paredes     paredes ligadas, com água e um bolsão de ar na borda do poço
+              na 3ª camada: os dois viram barricada.
+Petróleo, lote A, no mesmo chão:
+  petroleo    um liquefator e um solidificador lado a lado (as portas dos
+              lados se tocam): 4 carvões viram 1.000 mB de óleo de carvão,
+              que passa ao solidificador e volta sólido, 5 alcatrões de
+              carvão.
 Grava <pasta>/bedrock-evidence.json e capturas bedrock-*.png.
 """
 import json, subprocess, sys, time
@@ -844,6 +858,153 @@ def arco():
     close()
     evidence['arco'] = {'nucleo': core, 'molde': m, 'botoes': labels, 'antes': before, 'lingotes': got, 'depois': after}
     print('arco', evidence['arco'])
+
+
+# --------------------------------------------- escavadora: anéis e chaves
+
+X5, Z5 = 2960, -1820
+
+
+def stone_floor():
+    """Stone down to 14 below the floor round X5 (once)."""
+    y = floor_y()
+    if not (game / 'bedrock-chao5').exists():
+        tp(X5 + 0.5, y + 2, Z5 + 0.5)
+        time.sleep(3)
+        ctl('fill', X5 - 10, y, Z5 - 10, X5 + 34, y + 8, Z5 + 10, 'minecraft:air')
+        for top in (y - 1, y - 8):
+            ctl('fill', X5 - 10, top - 6, Z5 - 10, X5 + 34, top, Z5 + 10, 'minecraft:stone')
+        (game / 'bedrock-chao5').write_text('1')
+    return y
+
+
+def excavator_at(x, z, drill, extra, buttons):
+    """An excavator clicked at (x, z): its core, the cell and stand to open
+    it, with the battery, `drill`, `extra` (slot, item) and `buttons`."""
+    y = floor_y()
+    if not any('excavator' in b[3] for b in ctl('blocks', x - 4, y, z - 6, x + 4, y + 6, z + 1).get('blocks', [])):
+        place(x, y, z, 'ntm:machine_excavator', (x, y, z + 3))
+    core = find('ntm:machine_excavator', x - 4, y, z - 4, x + 4, y + 6, z + 4)
+    cell, stand = (core[0], core[1], core[2] + 3), (core[0], y, core[2] + 6)
+    open_at(*cell, stand)
+    have = {sl[0] for sl in machine_slots()}
+    for slot, item in [(300, 'ntm:battery_creative'), (304, drill)] + extra:
+        if slot not in have:
+            put(item, 1, slot)
+    for b in buttons:
+        ctl('click-button', b)
+        time.sleep(0.8)
+    close()
+    return core, cell, stand
+
+
+def dig(core, cell, stand, seconds):
+    """Lets it dig, then turns it off: its buffer."""
+    time.sleep(seconds)
+    open_at(*cell, stand)
+    buf = machine_slots()
+    ctl('screenshot', game / 'bedrock-escavadora-chaves.png')
+    ctl('click-button', 'Broca')
+    time.sleep(1)
+    close()
+    return buf
+
+
+def aneis():
+    y = stone_floor()
+    ctl('command', 'clear @s', check=False)
+    # The vein, 4–6 east of the axis on the 3rd layer (radius 3: the drill
+    # mines the ore just past the ring; the vein miner the rest).
+    x, z = X5, Z5
+    core, cell, stand = excavator_at(x, z, 'ntm:drillbit__ferro', [(302, 'ntm:upgrade_effect_1')], [])
+    (cx, cy, cz) = core
+    vy = cy - 6
+    for dx in (4, 5, 6):
+        ctl('fill', cx + dx, vy, cz, cx + dx, vy, cz, 'minecraft:iron_ore')
+    open_at(*cell, stand)
+    for b in ('Britador', 'Veio', 'Broca'):
+        ctl('click-button', b)
+        time.sleep(0.8)
+    close()
+    buf = dig(core, cell, stand, 25)
+    blocks = {k: ctl('block', *p).get('state', '') for k, p in {
+        'canto_7x7': (cx + 3, vy, cz + 3), 'fora_7x7': (cx + 4, vy, cz + 1),
+        'primeira_camada_fora_3x3': (cx + 2, cy - 4, cz), 'veia': (cx + 6, vy, cz)}.items()}
+    evidence['aneis'] = {'nucleo': core, 'blocos': blocks, 'buffer': buf}
+    print('aneis', evidence['aneis'])
+
+
+def seda():
+    y = stone_floor()
+    ctl('command', 'clear @s', check=False)
+    core, cell, stand = excavator_at(X5 + 22, Z5, 'ntm:drillbit__steel_diamond', [], ['Toque de seda', 'Broca'])
+    buf = dig(core, cell, stand, 20)
+    evidence['seda'] = {'nucleo': core, 'buffer': buf}
+    print('seda', evidence['seda'])
+
+
+def paredes():
+    y = stone_floor()
+    ctl('command', 'clear @s', check=False)
+    x, z = X5 + 11, Z5 - 1
+    core, cell, stand = excavator_at(x, z, 'ntm:drillbit__ferro', [], [])
+    (cx, cy, cz) = core
+    vy = cy - 6
+    ctl('fill', cx + 2, vy, cz, cx + 2, vy, cz, 'minecraft:water')
+    ctl('fill', cx - 2, vy, cz + 1, cx - 2, vy, cz + 1, 'minecraft:air')
+    open_at(*cell, stand)
+    for b in ('Paredes', 'Broca'):
+        ctl('click-button', b)
+        time.sleep(0.8)
+    close()
+    buf = dig(core, cell, stand, 15)
+    blocks = {k: ctl('block', *p).get('state', '') for k, p in {
+        'agua_na_borda': (cx + 2, vy, cz), 'ar_na_borda': (cx - 2, vy, cz + 1),
+        'borda_de_pedra': (cx + 2, vy, cz + 2), 'dentro': (cx + 1, vy, cz)}.items()}
+    evidence['paredes'] = {'nucleo': core, 'blocos': blocks, 'buffer': buf}
+    print('paredes', evidence['paredes'])
+
+
+def oil_machine(x, z, block):
+    y = floor_y()
+    if not any(block in b[3] for b in ctl('blocks', x - 2, y, z - 2, x + 2, y + 3, z + 2).get('blocks', [])):
+        place(x, y, z, block, (x, y, z + 3))
+    return find(block, x - 2, y, z - 2, x + 2, y + 3, z + 2)
+
+
+def petroleo():
+    y = stone_floor()
+    ctl('command', 'clear @s', check=False)
+    lq = oil_machine(X5 + 8, Z5 + 7, 'ntm:machine_liquefactor')
+    if lq[2] != Z5 + 6:
+        raise SystemExit(f'liquefator fora do lugar: {lq}')
+    # The core lands a block off the click, toward the placer's back: the
+    # same click offset puts the two side by side, their side ports touching.
+    so = oil_machine(lq[0] - 3, lq[2] + 1, 'ntm:machine_solidifier')
+    at = lambda c: (c[0], y, c[2] + 1, (c[0], y, c[2] + 3))
+    open_at(*at(so))
+    put('ntm:battery_creative', 1, 301)
+    close()
+    open_at(*at(lq))
+    put('ntm:battery_creative', 1, 301)
+    put('minecraft:coal', 4, 300)
+    ctl('screenshot', game / 'petroleo-liquefator.png')
+    close()
+    t0, tar = time.time(), 0
+    while time.time() - t0 < 90:
+        time.sleep(6)
+        open_at(*at(so))
+        tar = sum(s[2] for s in machine_slots() if s[1] == 'ntm:oil_tar__coal')
+        if tar >= 5:
+            break
+    ctl('screenshot', game / 'petroleo-solidificador.png')
+    out = machine_slots()
+    close()
+    open_at(*at(lq))
+    left = machine_slots()
+    close()
+    evidence['petroleo'] = {'liquefator': lq, 'solidificador': so, 'alcatrao': tar, 'solidificador_slots': out, 'liquefator_slots': left}
+    print('petroleo', evidence['petroleo'])
 
 
 for s in steps:
