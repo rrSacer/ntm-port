@@ -58,6 +58,12 @@ Petróleo, lote A, no mesmo chão:
               lados se tocam): 4 carvões viram 1.000 mB de óleo de carvão,
               que passa ao solidificador e volta sólido, 5 alcatrões de
               carvão.
+Petróleo, lote B, no mesmo chão:
+  petroleo_b  uma refinaria com óleo quente de um barril: as 4 frações e
+              enxofre no slot 11; duas torres de fração empilhadas com óleo
+              pesado: betume e smear descem à de baixo; um misturador com a
+              receita do refrigerante (escolhida na lista), água de um
+              barril e nitro: refrigerante.
 Grava <pasta>/bedrock-evidence.json e capturas bedrock-*.png.
 """
 import json, subprocess, sys, time
@@ -964,6 +970,84 @@ def paredes():
         'borda_de_pedra': (cx + 2, vy, cz + 2), 'dentro': (cx + 1, vy, cz)}.items()}
     evidence['paredes'] = {'nucleo': core, 'blocos': blocks, 'buffer': buf}
     print('paredes', evidence['paredes'])
+
+
+def machine_state(x, y, z):
+    """The mod's save of the machine at (x, y, z)."""
+    ctl('save', check=False)
+    time.sleep(12)
+    d = game / 'dist/.horizon-mod-data/ntmlogic'
+    f = max(d.glob('w.*'), key=lambda p: p.stat().st_mtime)
+    t = f.read_text()
+    w = json.loads(t[t.index('{'):])
+    for m in w['machines']:
+        if m['p'] == [x, y, z]:
+            return m['m']['data']
+    return None
+
+
+def petroleo_b():
+    y = stone_floor()
+    ctl('command', 'clear @s', check=False)
+    # The refinery, a hot oil barrel against its north-west corner port.
+    rx, rz = X5 + 15, Z5 + 6
+    if not any('refinery' in b[3] for b in ctl('blocks', rx - 3, y, rz - 3, rx + 3, y + 2, rz + 3).get('blocks', [])):
+        place(rx, y, rz, 'ntm:machine_refinery', (rx, y, rz + 3))
+    ref = find('ntm:machine_refinery', rx - 3, y, rz - 3, rx + 3, y + 2, rz + 3)
+    fluid_barrel(ref[0] - 2, y, ref[2] - 1, 'ntm:fluid_barrel_full__hotoil', (ref[0] - 4, y, ref[2] - 1))
+    open_at(ref[0], y, ref[2] + 1, (ref[0], y, ref[2] + 3))
+    if not any(sl[0] == 300 for sl in machine_slots()):
+        put('ntm:battery_creative', 1, 300)
+    close()
+    # Two fraction towers, one on the other; heavy oil into the bottom one.
+    tx, tz = X5 + 21, Z5 + 6
+    if not any('fraction_tower' in b[3] for b in ctl('blocks', tx - 2, y, tz - 2, tx + 2, y + 2, tz + 2).get('blocks', [])):
+        place(tx, y, tz, 'ntm:machine_fraction_tower', (tx, y, tz + 3))
+    low = find('ntm:machine_fraction_tower', tx - 2, y, tz - 2, tx + 2, y + 2, tz + 2)
+    if not ctl('block', low[0], y + 3, low[2]).get('state', '').startswith('ntm:machine_fraction_tower'):
+        # On top of the lower one, from the ground: the core lands a block
+        # off the click, as the lower one's did.
+        # The lower one's top is seen from above: a pillar to stand on.
+        pillar = (low[0], y, low[2] + 4, low[0], y + 2, low[2] + 4)
+        ctl('fill', *pillar, 'minecraft:stone')
+        place(low[0], y + 3, low[2] + 1, 'ntm:machine_fraction_tower', (low[0], y + 3, low[2] + 4))
+        ctl('fill', *pillar, 'minecraft:air')
+    if not ctl('block', low[0], y + 3, low[2]).get('state', '').startswith('ntm:machine_fraction_tower'):
+        raise SystemExit(f'a torre de cima não ficou sobre a de baixo: {ctl("blocks", low[0] - 1, y + 3, low[2] - 2, low[0] + 1, y + 3, low[2] + 2)}')
+    fluid_barrel(low[0] + 2, y, low[2], 'ntm:fluid_barrel_full__heavyoil', (low[0] + 4, y, low[2]))
+    # The mixer: coolant picked from the list, water from a barrel, niter.
+    mx, mz = X5 + 27, Z5 + 6
+    if not ctl('block', mx, y, mz).get('state', '').startswith('ntm:machine_mixer'):
+        place(mx, y, mz, 'ntm:machine_mixer', (mx, y, mz + 3))
+    mix = find('ntm:machine_mixer', mx - 1, y, mz - 1, mx + 1, y, mz + 1)
+    open_at(*mix, (mix[0], y, mix[2] + 3))
+    if not any(sl[0] == 300 for sl in machine_slots()):
+        put('ntm:battery_creative', 1, 300)
+    ctl('click-button', 'Receita')
+    time.sleep(2)
+    # The list's rows aren't widgets: coolant is its first row (anvil.py).
+    ctl('click-at', 150, 50)
+    time.sleep(1)
+    close()
+    fluid_barrel(mix[0] + 1, y, mix[2], 'ntm:fluid_barrel_full__water', (mix[0] + 3, y, mix[2]))
+    open_at(*mix, (mix[0], y, mix[2] + 3))
+    put('ntm:niter', 4, 301)
+    close()
+    time.sleep(30)
+    open_at(ref[0], y, ref[2] + 1, (ref[0], y, ref[2] + 3))
+    solid = [sl for sl in machine_slots() if sl[0] == 311]
+    ctl('screenshot', game / 'petroleo-refinaria.png')
+    close()
+    tank = lambda t: (t.get('fluid', ''), t.get('mb', 0))
+    r = machine_state(*ref) or {}
+    lo, hi = machine_state(*low) or {}, machine_state(low[0], y + 3, low[2]) or {}
+    m = machine_state(*mix) or {}
+    evidence['petroleo_b'] = {
+        'refinaria': {'nucleo': ref, 'entrada': tank(r.get('input', {})), 'saidas': [tank(t) for t in r.get('outputs', [])], 'enxofre': solid},
+        'torres': {'baixo': [tank(t) for t in lo.get('tanks', [])], 'cima': [tank(t) for t in hi.get('tanks', [])]},
+        'misturador': {'receita': m.get('recipe'), 'entradas': [tank(t) for t in m.get('tin', [])], 'saida': [tank(t) for t in m.get('tout', [])]},
+    }
+    print('petroleo_b', evidence['petroleo_b'])
 
 
 def oil_machine(x, z, block):
