@@ -3,7 +3,10 @@
     {
       "x": 152,
       "y": 81,
-      "accept": []
+      "accept": [
+        "ntm:battery_creative"
+      ],
+      "max": 1
     },
     {
       "x": -10000,

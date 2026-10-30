@@ -45,8 +45,10 @@
       "y": 108,
       "accept": [
         "ntm:battery_spark",
-        "ntm:battery_trixite"
-      ]
+        "ntm:battery_trixite",
+        "ntm:battery_creative"
+      ],
+      "max": 1
     }
   ],
   "inventory": [

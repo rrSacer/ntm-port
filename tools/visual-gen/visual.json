@@ -641,8 +641,10 @@
             "y": 108,
             "accept": [
               "ntm:battery_spark",
-              "ntm:battery_trixite"
-            ]
+              "ntm:battery_trixite",
+              "ntm:battery_creative"
+            ],
+            "max": 1
           }
         ],
         "inventory": [
@@ -4623,7 +4625,10 @@
           {
             "x": 152,
             "y": 54,
-            "accept": []
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
           },
           {
             "x": 19,
@@ -4869,7 +4874,10 @@
           {
             "x": 182,
             "y": 71,
-            "accept": []
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
           },
           {
             "x": 91,
@@ -5103,7 +5111,10 @@
           {
             "x": 152,
             "y": 81,
-            "accept": []
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
           },
           {
             "x": -10000,
@@ -5463,7 +5474,10 @@
           {
             "x": 220,
             "y": 72,
-            "accept": []
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
           },
           {
             "x": 202,
@@ -5817,7 +5831,10 @@
           {
             "x": 8,
             "y": 72,
-            "accept": []
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
           },
           {
             "x": 26,

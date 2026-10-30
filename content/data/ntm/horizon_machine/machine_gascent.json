@@ -23,7 +23,10 @@
     {
       "x": 182,
       "y": 71,
-      "accept": []
+      "accept": [
+        "ntm:battery_creative"
+      ],
+      "max": 1
     },
     {
       "x": 91,
