@@ -99,13 +99,15 @@ def main():
 
     files = mod_files(a.mod)
     variables = source_tabs(a.ntm_src)
-    sources = {}
+    sources = {}; hidden = set()
     if a.ids and a.ids.exists():
         for e in json.loads(a.ids.read_text()).get('entries', []):
+            if e.get('creative_hidden'): hidden.add(e['id'])
             if e.get('source_variable'):
                 sources[e['id'].split(':', 1)[1]] = e['source_variable']
     tabs = {t[1]: [] for t in TABS}
     for item in mod_items(files):
+        if item in hidden: continue
         path = item.split(':', 1)[1]
         tab, order = tab_of(path, variables, sources)
         tabs[tab].append((order is None, order or 0, path, item))

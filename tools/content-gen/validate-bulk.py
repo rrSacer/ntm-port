@@ -71,7 +71,8 @@ for path in tabs:
     tab=read(path);item(tab['icon']);tab_items.extend(tab['items'])
     for identity in tab['items']:item(identity)
     for loc in ('en_us','pt_br'):assert tab['title'] in read(CONTENT/f'assets/ntm/lang/{loc}.json')
-if tabs:assert set(tab_items)==ids and len(tab_items)==len(ids),'creative tabs cover catalog once'
+visible={r['id'] for r in rows if not r.get('creative_hidden')}
+if tabs:assert set(tab_items)==visible and len(tab_items)==len(visible),'creative tabs cover visible catalog once'
 report={'status':'pass','ids':len(ids),'categories':dict(Counter(r['category'] for r in rows)),'blocks':sum(r['type']=='block' for r in rows),'items':sum(r['type']=='item' for r in rows),'recipes':len(list((CONTENT/'data/ntm/recipe').glob('*.json'))),'radiation_rates':len(buckets['buckets']),'radiation_bits':len(buckets['bits']),'creative_tabs':len(tabs),'checks':'ids, source-localized names, model parents/textures, loot item graph, recipe/item/tag graph, exact hazard identity/rate/bit agreement'}
 path=ROOT/'content-gen-evidence/bulk/static-validation.json';path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps(report,ensure_ascii=False))
