@@ -578,9 +578,29 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
   - o ventilador do forno pirolítico e os cabos do forno a arco se movem.
   - O líquido do liquefator e do solidificador ainda não foi visto cheio: depende dos valores da lógica.
 
+## 3j. Interruptores da escavadora e canais da fundição
+
+- **Interruptores da escavadora (contrato com o agente das bombas):**
+  - botões 1–4: britador, paredes, veio, toque de seda;
+  - alavancas e lâmpadas por [8..11], e [12] a lâmpada âmbar da broca;
+  - veio e seda: 1 verde, 2 âmbar (a broca não permite);
+  - data 20 (13 da tela + 7 salvos);
+  - slots 2–3 com os upgrades de velocidade, energia e efeito.
+  - Os britadores giram com [8] ≥ 1 E [6] = 1, por `play` com `values` (o `crusherRotation` só anda com a broca
+    trabalhando).
+  - Em jogo: com [8..12] = 1, 1, 1, 2, 1, as alavancas e as lâmpadas aparecem certas.
+- **Canais da fundição:**
+  - O NTM desenha um braço (piso e duas paredes) para cada vizinho que o `canConnectTo` aceita (canal, molde, saída
+    ou slag tap com facing para fora) e uma parede onde não há vizinho.
+  - O canal virou um modelo OBJ gerado das caixas do `RenderFoundryChannel` (`boxes` no visual-gen), com
+    `show` por `neighbor`: o cliente olha os vizinhos, sem lógica nem tráfego.
+  - O metal fica só no centro. O NTM também enche os braços: um líquido não segue vizinho.
+  - O tanque e a saída não têm braços no NTM.
+  - Em jogo: um T de canais liga os três lados, e um canal sozinho fica fechado.
+
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 42 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 46 commits):
 
 | Commit | O quê |
 |---|---|
@@ -625,6 +645,10 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(render): pose mod model animations by synced values` | `pose` (a tampa do forno a arco, a cabeça das prensas) |
 | `perf(lan): send a machine's shown values without its block` | Um valor sincronizado que muda vai só como dado do block entity, sem atualizar o bloco |
 | `docs(api): describe posing a model by synced values` | |
+| `feat(render): play a mod model animation while synced values hold` | `play` por `values` (os britadores da escavadora) |
+| `docs(api): describe animations played by synced values` | |
+| `feat(render): show mod model parts by their neighbouring blocks` | `show` por `neighbor` (os braços do canal da fundição) |
+| `docs(api): describe parts shown by neighbouring blocks` | |
 | `fix(lan): send an item's custom data to clients` | O `custom_data` vai aos clientes. No criativo, o cliente devolve os slots que previu (`SetCreativeModeSlot`), e o shift-clique de uma máquina apagava as densidades do minério de bedrock |
 
 **No port:**
