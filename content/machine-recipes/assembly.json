@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 419,
+    "emitted": 424,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 212,
+    "skipped_source_calls": 207,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1930,6 +1930,296 @@
       "pools": [],
       "label": "Refinaria de Petróleo",
       "label_en": "Oil Refinery"
+    },
+    {
+      "name": "ass.crackingtower",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:316",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:steel_scaffold"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 6
+        },
+        {
+          "ids": [
+            "ntm:ingot_desh"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:ingot_niobium"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_catalytic_cracker",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Torre de Craqueamento Catalítico",
+      "label_en": "Catalytic Cracking Tower"
+    },
+    {
+      "name": "ass.coker",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:323",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_welded__steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:plate_copper"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:ingot_niobium"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_coker",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Unidade de Coqueificação",
+      "label_en": "Coker Unit"
+    },
+    {
+      "name": "ass.vaccumrefinery",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:327",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:plate_copper"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_cdalloy",
+            "ntm:ingot_tcalloy"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:sphere_steel"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:pipe__steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:motor_desh"
+          ],
+          "count": 3
+        },
+        {
+          "ids": [
+            "ntm:circuit__chip_bismoid"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_vacuum_distill",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Refinaria a Vácuo",
+      "label_en": "Vacuum Refinery"
+    },
+    {
+      "name": "ass.reformer",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:330",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:plate_copper"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_niobium"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_cdalloy",
+            "ntm:ingot_tcalloy"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 3
+        },
+        {
+          "ids": [
+            "ntm:pipe__steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:circuit__bismoid"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_catalytic_reformer",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reformador Catalítico",
+      "label_en": "Catalytic Reformer"
+    },
+    {
+      "name": "ass.hydrotreater",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:334",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_welded__steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:plate_cast__copper"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:ingot_niobium"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_cdalloy",
+            "ntm:ingot_tcalloy"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:pipe__steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor_desh"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:circuit__bismoid"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_hydrotreater",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Hidrotratador",
+      "label_en": "Hydrotreater"
     },
     {
       "name": "ass.pyrooven",
@@ -14343,40 +14633,10 @@
       "expression": "new GenericRecipe(\"ass.flarestack\").setup(100, 100).outputItems(new ItemStack(ModBlocks.machine_flare, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 12), new OreDictStack(CU.plate(), 4), new OreDictStack(STEEL.shell(), 4), new ComparableStack(ModItems.thermo_element, 3))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.STEEL_PLATING), new OreDictStack(CU.plate(), 4), new ComparableStack(ModItems.thermo_element, 3))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"plastic\")"
     },
     {
-      "name": "ass.crackingtower",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:316",
-      "reason": "unregistered/ambiguous source item machine_catalytic_cracker",
-      "expression": "new GenericRecipe(\"ass.crackingtower\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_catalytic_cracker, 1))\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.steel_scaffold, 16), new OreDictStack(STEEL.shell(), 6), new OreDictStack(DESH.ingot(), 12), new OreDictStack(NB.ingot(), 4))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.HEAVY_FRAME), new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.STEEL_PLATING), new OreDictStack(ANY_PLASTIC.ingot(), 16), new OreDictStack(NB.ingot(), 4))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"plastic\")"
-    },
-    {
       "name": "ass.radiolysis",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:320",
       "reason": "unregistered/ambiguous source item machine_radiolysis",
       "expression": "new GenericRecipe(\"ass.radiolysis\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_radiolysis, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.shell(), 4), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(PB.plate(), 12), new OreDictStack(CU.plateCast(), 4), new OreDictStack(RUBBER.ingot(), 8), new ComparableStack(ModItems.thermo_element, 8))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.HEAVY_FRAME), new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.LEAD_PLATING), new OreDictStack(CU.plateCast(), 4), new OreDictStack(RUBBER.ingot(), 16), new ComparableStack(ModItems.thermo_element, 8))"
-    },
-    {
-      "name": "ass.coker",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:323",
-      "reason": "unregistered/ambiguous source item machine_coker",
-      "expression": "new GenericRecipe(\"ass.coker\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_coker, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateWelded(), 8), new OreDictStack(STEEL.shell(), 4), new OreDictStack(CU.plate(), 8), new OreDictStack(RUBBER.ingot(), 4), new OreDictStack(NB.ingot(), 4))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.HEAVY_FRAME), new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.STEEL_PLATING), new OreDictStack(RUBBER.ingot(), 16), new OreDictStack(NB.ingot(), 4))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"rubber\")"
-    },
-    {
-      "name": "ass.vaccumrefinery",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:327",
-      "reason": "unregistered/ambiguous source item machine_vacuum_distill",
-      "expression": "new GenericRecipe(\"ass.vaccumrefinery\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_vacuum_distill, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 16), new OreDictStack(CU.plate(), 16), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new ComparableStack(ModItems.sphere_steel, 1), new OreDictStack(STEEL.pipe(), 12), new ComparableStack(ModItems.motor_desh, 3), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP_BISMOID))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.BRONZE_TUBES), new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.FERRO_PLATING), new OreDictStack(DURA.pipe(), 16), new ComparableStack(ModItems.motor_bismuth, 3), new ComparableStack(ModItems.circuit, 16, EnumCircuitType.CHIP_BISMOID), new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.COMPUTER))"
-    },
-    {
-      "name": "ass.reformer",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:330",
-      "reason": "unregistered/ambiguous source item machine_catalytic_reformer",
-      "expression": "new GenericRecipe(\"ass.reformer\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_catalytic_reformer, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 12), new OreDictStack(CU.plate(), 8), new OreDictStack(NB.ingot(), 8), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(STEEL.shell(), 3), new OreDictStack(STEEL.pipe(), 8), new ComparableStack(ModItems.motor, 1), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.BISMOID))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.BRONZE_TUBES), new OreDictStack(NB.ingot(), 8), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(DURA.pipe(), 16), new ComparableStack(ModItems.motor_bismuth, 8), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.COMPUTER))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"hardplastic\")"
-    },
-    {
-      "name": "ass.hydrotreater",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:334",
-      "reason": "unregistered/ambiguous source item machine_hydrotreater",
-      "expression": "new GenericRecipe(\"ass.hydrotreater\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_hydrotreater, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateWelded(), 8), new OreDictStack(CU.plateCast(), 4), new OreDictStack(NB.ingot(), 8), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(STEEL.shell(), 2), new OreDictStack(STEEL.pipe(), 8), new ComparableStack(ModItems.motor_desh, 2), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.BISMOID))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.BRONZE_TUBES), new OreDictStack(NB.ingot(), 8), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(DURA.pipe(), 16), new ComparableStack(ModItems.motor_bismuth, 8), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.COMPUTER))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"hardplastic\")"
     },
     {
       "name": "ass.compressor",
