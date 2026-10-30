@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Source block identities for the petroleum content batches."""
+import copy
 from generate import lang, registration
 
 BASE = 'src/main/java/com/hbm/'
@@ -32,4 +33,17 @@ def build(source):
                                            'requires_tool':not barricade},
                        **({'loot_none':True,'creative_hidden':True} if barricade else
                           {'model_gap':'Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented'})})
+    scaffold=next(r for r in result if r['source_variable']=='steel_scaffold')
+    scaffold.update(template='minecraft:quartz_pillar',metadata=0,subtype_kind='palette',
+                    surface_textures={face:scaffold['source_texture'] for face in ('side','top','bottom')},
+                    model_gap='Vanilla axis x/y/z placement; source fourth vertical-yaw orientation and custom scaffold collision/interaction remain gaps')
+    for meta,color,en,pt in [(1,'red','Red','Vermelho'),(2,'white','White','Branco'),(3,'yellow','Yellow','Amarelo')]:
+        row=copy.deepcopy(scaffold);row['id']='steel_scaffold__'+color;row['metadata']=meta
+        row['source_texture']=f'src/main/resources/assets/hbm/textures/blocks/scaffold_{color}.png'
+        row['surface_textures']={face:row['source_texture'] for face in ('side','top','bottom')}
+        row['names']={loc:title+' ('+(en if loc=='en_us' else pt)+')' for loc,title in scaffold['names'].items()}
+        result.append(row)
+    grate=next(r for r in result if r['source_variable']=='steel_grate')
+    grate['template']='minecraft:stone_slab'
+    grate['model_gap']='Vanilla bottom/top/double slab states; source ten click-selected 2px heights and fine collision remain gaps. visual-gen owns source geometry.'
     return result

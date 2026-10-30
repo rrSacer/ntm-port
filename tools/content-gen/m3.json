@@ -19986,7 +19986,7 @@
       "source_variable": "steel_scaffold",
       "type": "block",
       "category": "decorative",
-      "template": "minecraft:iron_block",
+      "template": "minecraft:quartz_pillar",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/scaffold_steel.png",
       "names": {
         "en_us": "Steel Scaffold",
@@ -19997,7 +19997,14 @@
         "explosion_resistance": 15,
         "requires_tool": true
       },
-      "model_gap": "Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented"
+      "model_gap": "Vanilla axis x/y/z placement; source fourth vertical-yaw orientation and custom scaffold collision/interaction remain gaps",
+      "metadata": 0,
+      "subtype_kind": "palette",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/scaffold_steel.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/scaffold_steel.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/scaffold_steel.png"
+      }
     },
     {
       "id": "steel_beam",
@@ -20022,7 +20029,7 @@
       "source_variable": "steel_grate",
       "type": "block",
       "category": "decorative",
-      "template": "minecraft:iron_block",
+      "template": "minecraft:stone_slab",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/grate_top.png",
       "names": {
         "en_us": "Steel Grate",
@@ -20033,7 +20040,7 @@
         "explosion_resistance": 5,
         "requires_tool": true
       },
-      "model_gap": "Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented"
+      "model_gap": "Vanilla bottom/top/double slab states; source ten click-selected 2px heights and fine collision remain gaps. visual-gen owns source geometry."
     },
     {
       "id": "barricade",
@@ -20053,6 +20060,81 @@
       },
       "loot_none": true,
       "creative_hidden": true
+    },
+    {
+      "id": "steel_scaffold__red",
+      "source_variable": "steel_scaffold",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:quartz_pillar",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/scaffold_red.png",
+      "names": {
+        "en_us": "Steel Scaffold (Red)",
+        "pt_br": "Andaime de Aço (Vermelho)"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 15,
+        "requires_tool": true
+      },
+      "model_gap": "Vanilla axis x/y/z placement; source fourth vertical-yaw orientation and custom scaffold collision/interaction remain gaps",
+      "metadata": 1,
+      "subtype_kind": "palette",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/scaffold_red.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/scaffold_red.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/scaffold_red.png"
+      }
+    },
+    {
+      "id": "steel_scaffold__white",
+      "source_variable": "steel_scaffold",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:quartz_pillar",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/scaffold_white.png",
+      "names": {
+        "en_us": "Steel Scaffold (White)",
+        "pt_br": "Andaime de Aço (Branco)"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 15,
+        "requires_tool": true
+      },
+      "model_gap": "Vanilla axis x/y/z placement; source fourth vertical-yaw orientation and custom scaffold collision/interaction remain gaps",
+      "metadata": 2,
+      "subtype_kind": "palette",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/scaffold_white.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/scaffold_white.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/scaffold_white.png"
+      }
+    },
+    {
+      "id": "steel_scaffold__yellow",
+      "source_variable": "steel_scaffold",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:quartz_pillar",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/scaffold_yellow.png",
+      "names": {
+        "en_us": "Steel Scaffold (Yellow)",
+        "pt_br": "Andaime de Aço (Amarelo)"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 15,
+        "requires_tool": true
+      },
+      "model_gap": "Vanilla axis x/y/z placement; source fourth vertical-yaw orientation and custom scaffold collision/interaction remain gaps",
+      "metadata": 3,
+      "subtype_kind": "palette",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/scaffold_yellow.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/scaffold_yellow.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/scaffold_yellow.png"
+      }
     },
     {
       "id": "machine_crucible",
