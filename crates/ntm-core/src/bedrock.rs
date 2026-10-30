@@ -207,8 +207,11 @@ pub fn read_ore_data(snbt: Option<&str>) -> [f64; 6] {
 /// as in the NTM: the machine doesn't check its outputs to work).
 pub mod slopper {
     use super::TYPES;
-    use crate::fluid::Tank;
-    use crate::server::container_bridge::{Slots, Stack};
+    use crate::energy::{EnergyNode, Role};
+    use crate::fluid::{FluidNode, Tank};
+    use crate::machine::{Logic, fill_level};
+    use crate::server::container_bridge::{Slots, Slotted, Stack};
+    use crate::view::{self, ViewModel};
     use serde::{Deserialize, Serialize};
 
     pub const SLOTS: usize = 11;
@@ -242,6 +245,96 @@ pub mod slopper {
     impl Default for OreSlopper {
         fn default() -> Self {
             Self { slots: vec![None; SLOTS], power: 0, progress: 0, water: Tank::typed("water", TANK), slop: Tank::typed("slop", TANK), ores: [0.0; 6] }
+        }
+    }
+
+    impl EnergyNode for OreSlopper {
+        fn role(&self) -> Role {
+            Role::Consumer
+        }
+        fn offer(&self) -> u64 {
+            0
+        }
+        fn demand(&self) -> u64 {
+            MAX_POWER.saturating_sub(self.power)
+        }
+        fn give(&mut self, he: u64) {
+            self.power += he;
+        }
+        fn take(&mut self, _he: u64) {}
+    }
+
+    /// Water in, slop out.
+    impl FluidNode for OreSlopper {
+        fn fluid_offer(&self, f: &str) -> u64 {
+            if f == "slop" { u64::from(self.slop.mb) } else { 0 }
+        }
+        fn fluid_demand(&self, f: &str) -> u64 {
+            if f == "water" { u64::from(self.water.free()) } else { 0 }
+        }
+        fn fluid_types(&self) -> Vec<String> {
+            vec!["water".into(), "slop".into()]
+        }
+        fn fluid_give(&mut self, f: &str, mb: u64) {
+            self.water.fill(f, mb.min(u64::from(u32::MAX)) as u32);
+        }
+        fn fluid_take(&mut self, _f: &str, mb: u64) {
+            self.slop.drain(mb.min(u64::from(u32::MAX)) as u32);
+        }
+    }
+
+    impl Logic for OreSlopper {
+        fn tick(&mut self) -> bool {
+            self.step(|s| super::read_ore_data(s.custom.as_deref()))
+        }
+        fn energy(&mut self) -> Option<&mut dyn EnergyNode> {
+            Some(self)
+        }
+        fn fluid(&mut self) -> Option<&mut dyn FluidNode> {
+            Some(self)
+        }
+        fn level(&self, max: u8) -> u8 {
+            if self.progress == 0 { 0 } else { fill_level(u64::from(self.progress), u64::from(TICKS), max) }
+        }
+        fn view(&self) -> ViewModel {
+            ViewModel::new("Ore slopper")
+                .bar("Energia", self.power, MAX_POWER, "HE")
+                .bar("Progresso", u64::from(self.progress), u64::from(TICKS), "ticks")
+                .text(format!("Água {} mB, slop {} mB", self.water.mb, self.slop.mb), view::GREY)
+                .text("Os itens ficam na tela com slots (motor com o patch ntm-visual).", view::GREY)
+        }
+    }
+
+    impl Slotted for OreSlopper {
+        fn slots_mut(&mut self) -> &mut Slots {
+            &mut self.slots
+        }
+        /// Energy, its maximum, progress, its end, water and slop (mB, cap).
+        fn screen_data(&self) -> Vec<i32> {
+            vec![
+                self.power.min(MAX_POWER) as i32,
+                MAX_POWER as i32,
+                self.progress as i32,
+                TICKS as i32,
+                self.water.mb as i32,
+                self.water.cap as i32,
+                self.slop.mb as i32,
+                self.slop.cap as i32,
+            ]
+        }
+        /// Progress and what each type has piled up, in millionths.
+        fn save_state(&self) -> Vec<i32> {
+            let mut v = vec![self.progress as i32];
+            v.extend(self.ores.iter().map(|o| (o * 1e6) as i32));
+            v
+        }
+        fn load_state(&mut self, v: &[i32]) {
+            if let [progress, ores @ ..] = v {
+                self.progress = (*progress).clamp(0, TICKS as i32) as u32;
+                for (o, s) in self.ores.iter_mut().zip(ores) {
+                    *o = f64::from((*s).max(0)) / 1e6;
+                }
+            }
         }
     }
 

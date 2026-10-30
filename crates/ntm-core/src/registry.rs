@@ -304,6 +304,21 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
+    // The bedrock chain, stage 1 (`crate::excavator`, `crate::bedrock`).
+    BlockSpec {
+        id: "ntm:machine_excavator",
+        kind: Kind::Excavator,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::AllRound,
+    },
+    BlockSpec {
+        id: "ntm:machine_ore_slopper",
+        kind: Kind::OreSlopper,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::AllRound,
+    },
     // The shredder (`crate::shredder`): `TilePortShapes.around`, energy only.
     BlockSpec {
         id: "ntm:machine_shredder",
@@ -370,7 +385,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, _facing: Option<&str>) -> Vec<crate::energy::Port> {
     match spec.kind {
-        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace => vec![crate::energy::DIRS.to_vec()],
+        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace | Kind::Excavator | Kind::OreSlopper => vec![crate::energy::DIRS.to_vec()],
         _ => Vec::new(),
     }
 }

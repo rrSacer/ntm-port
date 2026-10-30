@@ -114,6 +114,8 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::BurnerPress(p) => Some(p),
         Data::ElectricPress(p) => Some(p),
         Data::GasCent(g) => Some(g),
+        Data::Excavator(e) => Some(e),
+        Data::OreSlopper(o) => Some(o),
         _ => None,
     }
 }
@@ -133,6 +135,8 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_press", Layout::Native),
     ("ntm:machine_epress", Layout::Native),
     ("ntm:machine_gascent", Layout::Native),
+    ("ntm:machine_excavator", Layout::Native),
+    ("ntm:machine_ore_slopper", Layout::Native),
     ("ntm:anvil_iron", Layout::Native),
     ("ntm:anvil_lead", Layout::Native),
     ("ntm:anvil_steel", Layout::Native),
