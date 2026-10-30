@@ -15,9 +15,10 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--package',type=Path,required=True)
     parser.add_argument('--horizon-client',type=Path,required=True)
+    parser.add_argument('--profile',choices=['bedrock','petroleum-e'],default='bedrock')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
-    evidence=root/'content-gen-evidence/bedrock-stages34';evidence.mkdir(parents=True,exist_ok=True)
+    evidence=root/('content-gen-evidence/petroleum-e' if args.profile=='petroleum-e' else 'content-gen-evidence/bedrock-stages34');evidence.mkdir(parents=True,exist_ok=True)
     temporary=root.parent/'.agent-tmp';temporary.mkdir(exist_ok=True)
     scratch=Path(tempfile.mkdtemp(prefix='content-processing-probe-',dir=temporary))
     for d in ['game','home','launcher','data','config']:(scratch/d).mkdir()
@@ -56,7 +57,7 @@ def main():
             else:raise TimeoutError('client did not reach playing')
             cmd('time set noon');cmd('weather clear')
             cmd('fill -9 100 -10 9 100 4 minecraft:stone')
-            machines=['machine_pyrooven','machine_electrolyser','machine_arc_furnace_large']
+            machines=['machine_hephaestus','machine_flare'] if args.profile=='petroleum-e' else ['machine_pyrooven','machine_electrolyser','machine_arc_furnace_large']
             for i,name in enumerate(machines):
                 x=-4+i*4
                 for y,level in [(101,0),(103,5)]:
@@ -69,11 +70,14 @@ def main():
                         if actual.split('[',1)[0]=='ntm:'+name and set(actual.split('[',1)[-1].rstrip(']').split(','))=={'facing=north','honey_level='+str(level)}:break
                         if time.monotonic()>deadline:raise AssertionError((state,reply))
                         ctl('wait 2')
-            for i,name in enumerate(['block_graphite','rebar','concrete_rebar']):
-                cmd(f'setblock {-4+i*4} 101 3 ntm:{name}')
+            decor=['plant_flower__'+n for n in ['foxglove','tobacco','nightshade','weed','cd0','cd1']] if args.profile=='petroleum-e' else ['block_graphite','rebar','concrete_rebar']
+            for i,name in enumerate(decor):
+                x=-5+i*2 if args.profile=='petroleum-e' else -4+i*4
+                if args.profile=='petroleum-e':cmd(f'setblock {x} 100 3 minecraft:grass_block')
+                cmd(f'setblock {x} 101 3 ntm:{name}')
                 deadline=time.monotonic()+15
                 while True:
-                    reply=ctl(f'block {-4+i*4} 101 3')
+                    reply=ctl(f'block {x} 101 3')
                     if reply['block']=='ntm:'+name:break
                     if time.monotonic()>deadline:raise AssertionError((name,reply))
                     ctl('wait 2')
@@ -89,6 +93,7 @@ def main():
             samples=['arc_electrode__graphite','arc_electrode_burnt__saturnite','scrap_plastic__board_blank',
                 'scrap_plastic__card_processor','chemical_dye__black','chemical_dye__white','chemical_dye__lightblue',
                 'powder_cement','ingot_semtex','ingot_schraranium','meteorite_sword_treated','meteorite_sword_etched']
+            if args.profile=='petroleum-e':samples=['bio_wafer','pill_herbal']+decor
             cmd('clear @s')
             for name in samples:cmd('give @s ntm:'+name+' 1')
             deadline=time.monotonic()+15

@@ -64,10 +64,10 @@ class PetroleumB(unittest.TestCase):
     def test_mixer_preserves_fifty_source_alternatives(self):
         data=self.tables['mixer'];c=data['coverage']
         self.assertEqual(c['source_calls'],40);self.assertEqual(c['expanded'],50)
-        self.assertEqual((c['emitted'],c['skipped']),(49,1))
+        self.assertEqual((c['emitted'],c['skipped']),(50,0))
         self.assertEqual(len({(r['source_index'],r['alternative_index']) for r in data['recipes']+data['skipped']}),50)
         self.assertTrue(all(r['power']==50 for r in data['recipes']))
-        self.assertTrue(any('pill_herbal' in r['reason'] for r in data['skipped']))
+        self.assertEqual(data['skipped'],[])
         solvent=[r for r in data['recipes'] if r['outputFluids'][0][0]=='solvent']
         self.assertEqual(len(solvent),4)
         self.assertEqual([r['alternative_index'] for r in solvent],[0,1,2,3])
