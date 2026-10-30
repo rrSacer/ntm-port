@@ -152,8 +152,9 @@ interface machines {
 - **Escrita:** é aplicada logo depois do hook, antes de os jogadores agirem de novo. Um slot que já tem o item mantém
   os componentes e troca a contagem e o dano.
 - **Dano:** o `damage` é o `minecraft:damage`, o desgaste de uma ferramenta (as lâminas do triturador). Um item de
-  content mod ganha a barra com `"max_damage": N` no seu `data/<ns>/horizon/item/*.json` (só no motor com o patch;
-  um Horizon sem ele recusa o campo, por isso o content-gen o põe só com `--max-damage`).
+  content mod ganha a barra com `"components": {"minecraft:max_damage": N}` no seu
+  `data/<ns>/horizon/item/*.json`, a forma do upstream (#3739). O fork aceita essa forma e a antiga, o
+  `"max_damage"` solto (70d5b95aa); o content-gen escreve a do upstream (etapa C1 da migração).
 
 ### 2.4 A ponte no port (`container_bridge.rs`)
 
