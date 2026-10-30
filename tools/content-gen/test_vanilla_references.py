@@ -34,6 +34,8 @@ class VanillaReferenceTests(unittest.TestCase):
         checker = self.checker()
         invalid = [
             {'result': {'id': 'minecraft:missing'}},
+            {'oven_fuels': {'minecraft:missing': {'burn_ticks': 10}}},
+            {'firebox_fuels': {'minecraft:missing': {'ticks': 10}}},
             {'key': {'A': 'minecraft:missing'}},
             {'inputItems': [{'ids': ['minecraft:missing'], 'count': 1}]},
             {'outputItems': [['minecraft:missing', 1]]},

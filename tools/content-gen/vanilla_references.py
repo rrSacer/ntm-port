@@ -42,7 +42,10 @@ class VanillaReferences:
             if node.get('type') == 'minecraft:item':
                 self.require('item', node.get('name'), location + '.name')
             for key, value in node.items():
-                if key in ('inputItems', 'outputItems', 'periodicOutputItems', 'catalysts', 'icon', 'item', 'items', 'ingredient', 'ingredients', 'key', 'result'):
+                if key in ('oven_fuels', 'firebox_fuels', 'fuels') and isinstance(value, dict):
+                    for identity in value: self.require('item', identity, location + '.' + key)
+                    self.walk(value, location + '.' + key)
+                elif key in ('inputItems', 'outputItems', 'periodicOutputItems', 'catalysts', 'icon', 'item', 'items', 'ingredient', 'ingredients', 'key', 'result'):
                     self.walk(value, location + '.' + key, 'item')
                 elif key in ('blocks', 'matching_blocks', 'sounds'):
                     self.walk(value, location + '.' + key, 'block')
