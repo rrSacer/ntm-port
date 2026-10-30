@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:starmetal_hoe",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IS",
+    " B",
+    " I"
+  ],
+  "key": {
+    "I": "#ntm:bulk/ingotstarmetal",
+    "S": "ntm:ring_starmetal",
+    "B": "ntm:cobalt_decorated_hoe"
+  }
+}

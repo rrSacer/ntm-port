@@ -1,0 +1,16 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:starmetal_boots",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "E E",
+    "ECE"
+  ],
+  "key": {
+    "E": "#ntm:bulk/ingotstarmetal",
+    "C": "ntm:cobalt_boots"
+  }
+}

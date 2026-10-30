@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rune_blank",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PSP",
+    "SDS",
+    "PSP"
+  ],
+  "key": {
+    "P": "ntm:powder_magic",
+    "S": "#ntm:bulk/ingotstarmetal",
+    "D": "ntm:circuit__bismoid"
+  }
+}

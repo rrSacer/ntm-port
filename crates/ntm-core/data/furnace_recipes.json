@@ -1016,6 +1016,18 @@
       "experience": 2.0
     },
     {
+      "id": "ntm:crystal_starmetal",
+      "input": {
+        "item": "ntm:crystal_starmetal",
+        "count": 1
+      },
+      "output": {
+        "item": "ntm:ingot_starmetal",
+        "count": 2
+      },
+      "experience": 2.0
+    },
+    {
       "id": "ntm:crystal_trixite",
       "input": {
         "item": "ntm:crystal_trixite",

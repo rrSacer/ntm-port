@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 54,
+    "emitted": 55,
     "scanned_source_calls": 79,
-    "skipped_source_calls": 25,
+    "skipped_source_calls": 24,
     "expanded_fluid_recipes": 0,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -725,6 +725,36 @@
       ],
       "label": "Pó de Lápis-Lazúli ×6",
       "label_en": "Lapis Lazuli Powder ×6"
+    },
+    {
+      "name": "source_line_186",
+      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:186",
+      "input": {
+        "ids": [
+          "ntm:block_euphemium_cluster"
+        ],
+        "count": 1
+      },
+      "outputs": [
+        [
+          "ntm:nugget_euphemium",
+          7
+        ],
+        [
+          "ntm:powder_schrabidium",
+          4
+        ],
+        [
+          "ntm:ingot_starmetal",
+          2
+        ],
+        [
+          "ntm:nugget_solinium",
+          2
+        ]
+      ],
+      "label": "Pepita de Eufêmio ×7",
+      "label_en": "Euphemium Nugget ×7"
     },
     {
       "name": "source_line_192",
@@ -1655,12 +1685,6 @@
     }
   ],
   "skipped": [
-    {
-      "name": "source_line_186",
-      "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:186",
-      "reason": "unregistered/ambiguous source item ingot_starmetal",
-      "expression": "new ComparableStack(ModBlocks.block_euphemium_cluster), new ItemStack[] {\n\t\t\t\tnew ItemStack(ModItems.nugget_euphemium, 7),\n\t\t\t\tnew ItemStack(ModItems.powder_schrabidium, 4),\n\t\t\t\tnew ItemStack(ModItems.ingot_starmetal, 2),\n\t\t\t\tnew ItemStack(ModItems.nugget_solinium, 2) }"
-    },
     {
       "name": "source_line_210",
       "source": "src/main/java/com/hbm/inventory/recipes/CentrifugeRecipes.java:210",

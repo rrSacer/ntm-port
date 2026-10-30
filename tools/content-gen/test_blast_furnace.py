@@ -29,7 +29,7 @@ class BlastFurnaceContracts(unittest.TestCase):
         for row in self.data['recipes'] + self.data['skipped']:
             self.assertEqual(self.data['source_recipe_order'][row['source_index']], row['name'])
         expected = [['ModItems.meteorite_sword_hardened', 'ModItems.meteorite_sword_alloyed'],
-                    ['ModItems.ingot_meteorite'], ['ModItems.ingot_meteorite', 'ModItems.ingot_starmetal']]
+                    ['ModItems.ingot_meteorite'], ['ModItems.ingot_meteorite']]
         self.assertEqual([r['missing_items'] for r in self.data['skipped']], expected)
 
     def test_steel_slag_sand_and_ore_alternatives(self):
