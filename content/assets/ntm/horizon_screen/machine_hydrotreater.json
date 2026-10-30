@@ -1,0 +1,135 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_hydrotreater.png",
+  "size": [
+    176,
+    238
+  ],
+  "title": [
+    88,
+    5,
+    "center"
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        17,
+        18,
+        16,
+        52
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 4,
+      "max": 5,
+      "rect": [
+        35,
+        18,
+        16,
+        52
+      ],
+      "color": 6,
+      "dir": "up"
+    },
+    {
+      "value": 7,
+      "max": 8,
+      "rect": [
+        53,
+        18,
+        16,
+        52
+      ],
+      "color": 9,
+      "dir": "up"
+    },
+    {
+      "value": 10,
+      "max": 11,
+      "rect": [
+        125,
+        18,
+        16,
+        52
+      ],
+      "color": 12,
+      "dir": "up"
+    },
+    {
+      "value": 13,
+      "max": 14,
+      "rect": [
+        143,
+        18,
+        16,
+        52
+      ],
+      "color": 15,
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        17,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{0:si} / {1:si} HE"
+      ]
+    },
+    {
+      "rect": [
+        35,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{4} / {5} mB"
+      ]
+    },
+    {
+      "rect": [
+        53,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{7} / {8} mB"
+      ]
+    },
+    {
+      "rect": [
+        125,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{10} / {11} mB"
+      ]
+    },
+    {
+      "rect": [
+        143,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{13} / {14} mB"
+      ]
+    }
+  ],
+  "title_color": "#ffffff"
+}

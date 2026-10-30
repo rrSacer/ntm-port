@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/industrial_boiler.obj",
+  "texture": "ntm:textures/models/machines/industrial_boiler.png",
+  "rotation": 0,
+  "radius": 3.5
+}

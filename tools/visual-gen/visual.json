@@ -9838,32 +9838,1025 @@
       }
     },
     "ntm:machine_boiler": {
-      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "MachineHeatBoiler {3,0,1,1,1,1} offset 1, RenderBoiler (case 2: 180; the burst model after an explosion follows logic values, not drawn yet); no screen here",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            3,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/boiler.obj",
+        "obj_from": "models/machines/boiler.obj",
+        "texture": "ntm:textures/models/machines/boiler.png",
+        "texture_from": "textures/models/machines/boiler.png",
+        "rotation": 180,
+        "radius": 3.0
+      }
     },
     "ntm:machine_industrial_boiler": {
-      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "MachineHeatBoilerIndustrial {4,0,1,1,1,1} offset 1, RenderIndustrialBoiler (no turn); no screen here",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            4,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/industrial_boiler.obj",
+        "obj_from": "models/machines/industrial_boiler.obj",
+        "texture": "ntm:textures/models/machines/industrial_boiler.png",
+        "texture_from": "textures/models/machines/industrial_boiler.png",
+        "rotation": 0,
+        "radius": 3.5
+      }
     },
     "ntm:machine_catalytic_cracker": {
-      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "MachineCatalyticCracker {0,0,3,3,2,3} offset 3 and fillSpace's four boxes, RenderCatalyticCracker (case 2: 90); no screen in HBM",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -3
+          ],
+          "max": [
+            3,
+            0,
+            3
+          ],
+          "offset": 3,
+          "dummy": "ntm:dummy_machine",
+          "extra": [
+            {
+              "min": [
+                -2,
+                1,
+                1
+              ],
+              "max": [
+                0,
+                8,
+                3
+              ]
+            },
+            {
+              "min": [
+                -2,
+                0,
+                -3
+              ],
+              "max": [
+                1,
+                13,
+                0
+              ]
+            },
+            {
+              "min": [
+                -1,
+                13,
+                -2
+              ],
+              "max": [
+                0,
+                14,
+                -1
+              ]
+            },
+            {
+              "min": [
+                1,
+                1,
+                -3
+              ],
+              "max": [
+                3,
+                3,
+                2
+              ]
+            }
+          ]
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/catalytic_cracker.obj",
+        "obj_from": "models/machines/catalytic_cracker.obj",
+        "texture": "ntm:textures/models/machines/catalytic_cracker.png",
+        "texture_from": "textures/models/machines/catalytic_cracker.png",
+        "rotation": 90,
+        "radius": 16.5
+      }
     },
     "ntm:machine_catalytic_reformer": {
-      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "ContainerMachineCatalyticReformer, GUIMachineCatalyticReformer (176x238), MachineCatalyticReformer {2,0,1,1,2,2} offset 1, RenderCatalyticReformer (case 2: 90)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 90,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 35,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 35,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 107,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 107,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 125,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 125,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 143,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 143,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 17,
+            "y": 108,
+            "accept": []
+          },
+          {
+            "x": 71,
+            "y": 36,
+            "accept": [
+              "ntm:catalytic_converter"
+            ]
+          }
+        ],
+        "inventory": [
+          8,
+          156
+        ],
+        "data": 16,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -1
+          ],
+          "max": [
+            2,
+            2,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_catalytic_reformer.png",
+        "texture_from": "textures/gui/processing/gui_catalytic_reformer.png",
+        "size": [
+          176,
+          238
+        ],
+        "title": [
+          88,
+          5,
+          "center"
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              35,
+              18,
+              16,
+              52
+            ],
+            "color": 6,
+            "dir": "up"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "rect": [
+              107,
+              18,
+              16,
+              52
+            ],
+            "color": 9,
+            "dir": "up"
+          },
+          {
+            "value": 10,
+            "max": 11,
+            "rect": [
+              125,
+              18,
+              16,
+              52
+            ],
+            "color": 12,
+            "dir": "up"
+          },
+          {
+            "value": 13,
+            "max": 14,
+            "rect": [
+              143,
+              18,
+              16,
+              52
+            ],
+            "color": 15,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              35,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              107,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{7} / {8} mB"
+            ]
+          },
+          {
+            "rect": [
+              125,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{10} / {11} mB"
+            ]
+          },
+          {
+            "rect": [
+              143,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{13} / {14} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/catalytic_reformer.obj",
+        "obj_from": "models/machines/catalytic_reformer.obj",
+        "texture": "ntm:textures/models/machines/catalytic_reformer.png",
+        "texture_from": "textures/models/machines/catalytic_reformer.png",
+        "rotation": 90,
+        "radius": 3.0
+      }
     },
     "ntm:machine_hydrotreater": {
-      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "ContainerMachineHydrotreater, GUIMachineHydrotreater (176x238), MachineHydrotreater {6,0,1,1,1,1} offset 1, RenderHydrotreater (no turn)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 90,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 35,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 35,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 53,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 53,
+            "y": 108,
+            "accept": []
+          },
+          {
+            "x": 125,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 125,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 143,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 143,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 17,
+            "y": 108,
+            "accept": []
+          },
+          {
+            "x": 89,
+            "y": 36,
+            "accept": [
+              "ntm:catalytic_converter"
+            ]
+          }
+        ],
+        "inventory": [
+          8,
+          156
+        ],
+        "data": 16,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            6,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_hydrotreater.png",
+        "texture_from": "textures/gui/processing/gui_hydrotreater.png",
+        "size": [
+          176,
+          238
+        ],
+        "title": [
+          88,
+          5,
+          "center"
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              35,
+              18,
+              16,
+              52
+            ],
+            "color": 6,
+            "dir": "up"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "rect": [
+              53,
+              18,
+              16,
+              52
+            ],
+            "color": 9,
+            "dir": "up"
+          },
+          {
+            "value": 10,
+            "max": 11,
+            "rect": [
+              125,
+              18,
+              16,
+              52
+            ],
+            "color": 12,
+            "dir": "up"
+          },
+          {
+            "value": 13,
+            "max": 14,
+            "rect": [
+              143,
+              18,
+              16,
+              52
+            ],
+            "color": 15,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              35,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              53,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{7} / {8} mB"
+            ]
+          },
+          {
+            "rect": [
+              125,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{10} / {11} mB"
+            ]
+          },
+          {
+            "rect": [
+              143,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{13} / {14} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/hydrotreater.obj",
+        "obj_from": "models/machines/hydrotreater.obj",
+        "texture": "ntm:textures/models/machines/hydrotreater.png",
+        "texture_from": "textures/models/machines/hydrotreater.png",
+        "rotation": 0,
+        "radius": 7.5
+      }
     },
     "ntm:machine_vacuum_distill": {
-      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "ContainerMachineVacuumDistill, GUIMachineVacuumDistill (176x238), MachineVacuumDistill {8,0,1,1,1,1} offset 1, RenderVacuumDistill (no turn)",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 90,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 44,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 44,
+            "y": 108,
+            "accept": []
+          },
+          {
+            "x": 80,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 80,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 98,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 98,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 116,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 116,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 134,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 134,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 26,
+            "y": 108,
+            "accept": []
+          }
+        ],
+        "inventory": [
+          8,
+          156
+        ],
+        "data": 19,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            8,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_vacuum_distill.png",
+        "texture_from": "textures/gui/processing/gui_vacuum_distill.png",
+        "size": [
+          176,
+          238
+        ],
+        "title": [
+          88,
+          5,
+          "center"
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              26,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              44,
+              18,
+              16,
+              52
+            ],
+            "color": 6,
+            "dir": "up"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "rect": [
+              80,
+              18,
+              16,
+              52
+            ],
+            "color": 9,
+            "dir": "up"
+          },
+          {
+            "value": 10,
+            "max": 11,
+            "rect": [
+              98,
+              18,
+              16,
+              52
+            ],
+            "color": 12,
+            "dir": "up"
+          },
+          {
+            "value": 13,
+            "max": 14,
+            "rect": [
+              116,
+              18,
+              16,
+              52
+            ],
+            "color": 15,
+            "dir": "up"
+          },
+          {
+            "value": 16,
+            "max": 17,
+            "rect": [
+              134,
+              18,
+              16,
+              52
+            ],
+            "color": 18,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              26,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              44,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              80,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{7} / {8} mB"
+            ]
+          },
+          {
+            "rect": [
+              98,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{10} / {11} mB"
+            ]
+          },
+          {
+            "rect": [
+              116,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{13} / {14} mB"
+            ]
+          },
+          {
+            "rect": [
+              134,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{16} / {17} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/vacuum_distill.obj",
+        "obj_from": "models/machines/vacuum_distill.obj",
+        "texture": "ntm:textures/models/machines/vacuum_distill.png",
+        "texture_from": "textures/models/machines/vacuum_distill.png",
+        "rotation": 0,
+        "radius": 9.5
+      }
     },
     "ntm:machine_coker": {
-      "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
-      "auto": false
+      "source": "ContainerMachineCoker, GUIMachineCoker (176x204), MachineCoker {22,0,1,1,1,1} offset 1 (23 high), RenderCoker (no turn); heat from the block under the core",
+      "machine": {
+        "slots": [
+          {
+            "x": 35,
+            "y": 72,
+            "accept": []
+          },
+          {
+            "x": 97,
+            "y": 27,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 12,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            22,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_coker.png",
+        "texture_from": "textures/gui/processing/gui_coker.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "bars": [
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              61,
+              46,
+              53,
+              5
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              61,
+              55,
+              52,
+              5
+            ],
+            "uv": [
+              176,
+              5
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              35,
+              18,
+              16,
+              52
+            ],
+            "color": 7,
+            "dir": "up"
+          },
+          {
+            "value": 8,
+            "max": 9,
+            "rect": [
+              125,
+              18,
+              16,
+              52
+            ],
+            "color": 10,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              60,
+              45,
+              54,
+              7
+            ],
+            "lines": [
+              "{2} / {3} TU"
+            ]
+          },
+          {
+            "rect": [
+              60,
+              54,
+              54,
+              7
+            ],
+            "lines": [
+              "{0} / {1} TU"
+            ]
+          },
+          {
+            "rect": [
+              35,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{5} / {6} mB"
+            ]
+          },
+          {
+            "rect": [
+              125,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{8} / {9} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/coker.obj",
+        "obj_from": "models/machines/coker.obj",
+        "texture": "ntm:textures/models/machines/coker.png",
+        "texture_from": "textures/models/machines/coker.png",
+        "rotation": 0,
+        "radius": 23.5
+      }
     },
     "ntm:steel_scaffold": {
       "source": "BlockScaffold (steel), RenderScaffoldBlock: the scaffold OBJ with the scaffold_steel icon, turned by its orientation (here the pillar's axis; HBM's second vertical turn, by the placer's yaw, is left out)",

@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/vacuum_distill.obj",
+  "texture": "ntm:textures/models/machines/vacuum_distill.png",
+  "rotation": 0,
+  "radius": 9.5
+}

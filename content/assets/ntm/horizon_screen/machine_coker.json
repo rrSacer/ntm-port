@@ -1,0 +1,115 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_coker.png",
+  "size": [
+    176,
+    204
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "bars": [
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        61,
+        46,
+        53,
+        5
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        61,
+        55,
+        52,
+        5
+      ],
+      "uv": [
+        176,
+        5
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 5,
+      "max": 6,
+      "rect": [
+        35,
+        18,
+        16,
+        52
+      ],
+      "color": 7,
+      "dir": "up"
+    },
+    {
+      "value": 8,
+      "max": 9,
+      "rect": [
+        125,
+        18,
+        16,
+        52
+      ],
+      "color": 10,
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        60,
+        45,
+        54,
+        7
+      ],
+      "lines": [
+        "{2} / {3} TU"
+      ]
+    },
+    {
+      "rect": [
+        60,
+        54,
+        54,
+        7
+      ],
+      "lines": [
+        "{0} / {1} TU"
+      ]
+    },
+    {
+      "rect": [
+        35,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{5} / {6} mB"
+      ]
+    },
+    {
+      "rect": [
+        125,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{8} / {9} mB"
+      ]
+    }
+  ],
+  "title_color": "#c7c1a3"
+}

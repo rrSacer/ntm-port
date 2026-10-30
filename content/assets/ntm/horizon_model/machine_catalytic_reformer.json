@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/catalytic_reformer.obj",
+  "texture": "ntm:textures/models/machines/catalytic_reformer.png",
+  "rotation": 90,
+  "radius": 3.0
+}
