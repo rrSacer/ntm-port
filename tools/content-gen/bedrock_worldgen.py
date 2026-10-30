@@ -9,7 +9,7 @@ def generate(emit):
         put('structure_set', {'structures': [{'structure': feature, 'weight': 1}],
                               'placement': {'type': 'minecraft:random_spread', 'spacing': 1, 'separation': 0, 'salt': salt, 'spread_type': 'linear'}})
         put('structure', {'type': 'minecraft:jigsaw', 'biomes': '#minecraft:is_' + dimension, 'step': 'underground_ores',
-                          'terrain_adaptation': 'none', 'start_pool': feature, 'size': 1, 'start_height': {'absolute': y},
+                          'terrain_adaptation': 'none', 'start_pool': feature, 'size': 1, 'start_height': {'absolute': 32},
                           'use_expansion_hack': False, 'max_distance_from_center': 16})
         put('template_pool', {'fallback': 'minecraft:empty', 'elements': [{'weight': 1, 'element': {'element_type': 'minecraft:feature_pool_element', 'projection': 'rigid', 'feature': feature}}]})
         put('placed_feature', {'feature': feature, 'placement': [{'type': 'minecraft:rarity_filter', 'chance': 10},

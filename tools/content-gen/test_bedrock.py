@@ -120,6 +120,7 @@ class BedrockContracts(unittest.TestCase):
             self.assertEqual(placed[-1]['height']['value']['absolute'], y)
             structure = data[f'data/ntm/worldgen/structure/{name}.json']
             self.assertEqual(structure['biomes'], '#minecraft:is_' + dimension)
+            self.assertEqual(structure['start_height'], {'absolute': 32})
         for path, value in data.items(): self.assertEqual(json.loads((ROOT / 'content' / path).read_text()), value)
 
     def test_regeneration_is_deterministic(self):
