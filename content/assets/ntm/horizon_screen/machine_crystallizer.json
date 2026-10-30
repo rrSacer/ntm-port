@@ -1,0 +1,94 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_crystallizer_alt.png",
+  "size": [
+    176,
+    204
+  ],
+  "title": [
+    70,
+    6,
+    "center"
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        152,
+        18,
+        16,
+        52
+      ],
+      "uv": [
+        176,
+        12
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        80,
+        47,
+        28,
+        12
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 4,
+      "max": 5,
+      "rect": [
+        35,
+        18,
+        16,
+        52
+      ],
+      "color": 6,
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        152,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{0:si} / {1:si} HE"
+      ]
+    },
+    {
+      "rect": [
+        35,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{4} / {5} mB"
+      ]
+    },
+    {
+      "rect": [
+        117,
+        22,
+        8,
+        8
+      ],
+      "lines": [
+        "§lMelhorias Aceitáveis:§r",
+        "* §4Velocidade§r: Acumula até o nível 3",
+        "* §aEficiência§r: Acumula até o nível 3",
+        "* §7Sobrecarga§r: Acumula até o nível 3"
+      ]
+    }
+  ]
+}

@@ -1,7 +1,26 @@
 {
   "obj": "ntm:models/obj/acidizer.obj",
   "texture": "ntm:textures/models/machines/acidizer.png",
-  "rotation": 90.0,
-  "radius": 7.1,
-  "hide": []
+  "rotation": 90,
+  "radius": 7.6,
+  "hide": [
+    "Windows"
+  ],
+  "bones": {
+    "Spinner": {
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.crystallizer.spin",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_crystallizer.animation.json"
 }
