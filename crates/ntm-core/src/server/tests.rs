@@ -1845,3 +1845,5 @@ mod purex_tests;
 mod bedrock_tests;
 
 mod crystallizer_tests;
+
+mod stage3_tests;
