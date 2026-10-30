@@ -41,7 +41,7 @@ def main():
         process = subprocess.Popen(command, cwd=root, env=env, stdout=log, stderr=subprocess.STDOUT)
         mute = subprocess.Popen(['python3', str(ROOT / 'tools/test-game/mute.py'), str(root)], cwd=root, env=env, stdout=log, stderr=subprocess.STDOUT)
         try:
-            for _ in range(240):
+            for _ in range(1200):
                 if process.poll() is not None: raise RuntimeError('Server exited during startup')
                 if (root / 'ctl.sock').exists():
                     try: request('server-status'); break
