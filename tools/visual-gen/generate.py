@@ -24,6 +24,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
+CONTENT = ROOT / 'content'
 SRC_ASSETS = 'src/main/resources/assets/hbm'
 
 
@@ -90,7 +91,7 @@ def machine_slots(machine):
     for slot in machine.get('slots', []):
         if 'accept_recipes' in slot:
             slot = dict(slot)
-            doc = json.loads((ROOT / 'content/machine-recipes' / f"{slot.pop('accept_recipes')}.json").read_text())
+            doc = json.loads((CONTENT / 'machine-recipes' / f"{slot.pop('accept_recipes')}.json").read_text())
             # The arc furnace's file holds a list per mode (solid, fluid).
             lists = [doc['recipes']] if 'recipes' in doc else [v['recipes'] for v in doc.values() if isinstance(v, dict) and 'recipes' in v]
             slot['accept'] = sorted({i for rs in lists for r in rs for it in r['inputItems'] for i in it['ids']})
@@ -330,6 +331,9 @@ def main():
     spec = json.loads(args.spec.read_text())
     src = args.ntm_src / SRC_ASSETS
     out = args.out
+    # The recipes `accept_recipes` reads: those of the content written.
+    global CONTENT
+    CONTENT = out
     owned = []
 
     def own(rel):
