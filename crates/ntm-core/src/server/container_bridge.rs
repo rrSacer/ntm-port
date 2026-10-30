@@ -291,6 +291,10 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
     ("ntm:machine_arc_furnace_large", [-2, 0, -2], [2, 0, 2]),
     // MachineRefinery: its bottom layer (the makeExtra corners).
     ("ntm:machine_refinery", [-1, 0, -1], [1, 0, 1]),
+    // Oil batch C's electric machines: their bottom layer.
+    ("ntm:machine_catalytic_reformer", [-2, 0, -1], [2, 0, 1]),
+    ("ntm:machine_hydrotreater", [-1, 0, -1], [1, 0, 1]),
+    ("ntm:machine_vacuum_distill", [-1, 0, -1], [1, 0, 1]),
 ];
 
 /// The cells of the multiblock of `block` at `core` that pass energy to
@@ -503,6 +507,76 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     ),
     // MachineFractionTower.getAllPorts: the middle of each side, next to the core.
     ("ntm:machine_fraction_tower", &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]),
+    // Oil batch C. MachineCatalyticCracker.getAllPorts, at (-x, 0, -z) here,
+    // are eight cells on the edge of its bottom layer; that layer carries them
+    // to the core.
+    (
+        "ntm:machine_catalytic_cracker",
+        &[
+            [-2, 0, -3],
+            [-1, 0, -3],
+            [0, 0, -3],
+            [1, 0, -3],
+            [2, 0, -3],
+            [3, 0, -3],
+            [-2, 0, -2],
+            [-1, 0, -2],
+            [0, 0, -2],
+            [1, 0, -2],
+            [2, 0, -2],
+            [3, 0, -2],
+            [-2, 0, -1],
+            [-1, 0, -1],
+            [0, 0, -1],
+            [1, 0, -1],
+            [2, 0, -1],
+            [3, 0, -1],
+            [-2, 0, 0],
+            [-1, 0, 0],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [-2, 0, 1],
+            [-1, 0, 1],
+            [0, 0, 1],
+            [1, 0, 1],
+            [2, 0, 1],
+            [3, 0, 1],
+            [-2, 0, 2],
+            [-1, 0, 2],
+            [0, 0, 2],
+            [1, 0, 2],
+            [2, 0, 2],
+            [3, 0, 2],
+            [-2, 0, 3],
+            [-1, 0, 3],
+            [0, 0, 3],
+            [1, 0, 3],
+            [2, 0, 3],
+            [3, 0, 3],
+        ],
+    ),
+    // MachineCatalyticReformer.getAllPorts: on its bottom layer, which
+    // carries them to the core.
+    (
+        "ntm:machine_catalytic_reformer",
+        &[[-2, 0, -1], [-1, 0, -1], [0, 0, -1], [1, 0, -1], [2, 0, -1], [-2, 0, 0], [-1, 0, 0], [1, 0, 0], [2, 0, 0], [-2, 0, 1], [-1, 0, 1], [0, 0, 1], [1, 0, 1], [2, 0, 1]],
+    ),
+    // The hydrotreater's, vacuum distiller's and coker's makeExtra corners,
+    // chained to the core by their bottom ring.
+    ("ntm:machine_hydrotreater", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1]]),
+    ("ntm:machine_vacuum_distill", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1]]),
+    ("ntm:machine_coker", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1]]),
+    // MachineHeatBoiler.getAllPorts: its two sides, and the top down the
+    // centre column; the industrial boiler's four sides and its top.
+    (
+        "ntm:machine_boiler",
+        &[[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0]],
+    ),
+    (
+        "ntm:machine_industrial_boiler",
+        &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1], [0, 1, 0], [0, 2, 0], [0, 3, 0], [0, 4, 0]],
+    ),
     // MachineChemicalPlant.getAllPorts: its bottom ring.
     (
         "ntm:machine_chemical_plant",
