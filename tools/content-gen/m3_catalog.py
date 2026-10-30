@@ -153,6 +153,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
     rows.extend(catalog_completion.build(source))
     import petroleum_catalog
     rows.extend(petroleum_catalog.build(source))
+    import petroleum_auxiliary_catalog
+    rows.extend(petroleum_auxiliary_catalog.build(source))
     import foundry_catalog
     rows.extend(foundry_catalog.build(source))
     import anvil_catalog

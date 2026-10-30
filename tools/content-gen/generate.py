@@ -245,6 +245,8 @@ def generate(src,out,rows,distributions,max_damage=False):
    else:
     emit(f'assets/ntm/models/block/{name}.json',{'parent':'minecraft:block/cube_all','textures':{'all':tex}})
     model='ntm:block/'+name; variants={'':{'model':model}}
+    if row.get('cross_model'):
+     emit(f'assets/ntm/models/block/{name}.json',{'parent':'minecraft:block/cross','textures':{'cross':tex}})
     if row.get('surface_textures'):
      faces={k:texture(v) for k,v in row['surface_textures'].items()}
      emit(f'assets/ntm/models/block/{name}.json',{'parent':'minecraft:block/cube_bottom_top','textures':faces})

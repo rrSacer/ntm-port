@@ -315,6 +315,8 @@ def export(source, output, rows):
         counts.update({name: data['coverage'] for name,data in module.export(source,output,rows).items()})
     import oil_extraction
     counts['oil_extraction'] = oil_extraction.export(source,output,rows)['coverage']
+    import petroleum_auxiliary
+    counts.update({name: data['coverage'] for name,data in petroleum_auxiliary.export(source,output,rows).items()})
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 

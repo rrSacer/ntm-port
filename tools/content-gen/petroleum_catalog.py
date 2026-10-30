@@ -4,7 +4,7 @@ import copy
 from generate import lang, registration
 
 BASE = 'src/main/java/com/hbm/'
-MACHINES = ('machine_liquefactor', 'machine_solidifier', 'machine_refinery', 'machine_fraction_tower', 'machine_mixer', 'machine_boiler', 'machine_industrial_boiler', 'machine_catalytic_cracker', 'machine_catalytic_reformer', 'machine_hydrotreater', 'machine_vacuum_distill', 'machine_coker', 'machine_well', 'machine_pumpjack', 'machine_fracking_tower', 'machine_transformer')
+MACHINES = ('machine_liquefactor', 'machine_solidifier', 'machine_refinery', 'machine_fraction_tower', 'machine_mixer', 'machine_boiler', 'machine_industrial_boiler', 'machine_catalytic_cracker', 'machine_catalytic_reformer', 'machine_hydrotreater', 'machine_vacuum_distill', 'machine_coker', 'machine_well', 'machine_pumpjack', 'machine_fracking_tower', 'machine_transformer', 'machine_hephaestus', 'machine_flare')
 
 
 def build(source):
