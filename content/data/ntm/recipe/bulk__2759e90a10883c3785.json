@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:arc_electrode__lanthanium",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "T",
+    "C"
+  ],
+  "key": {
+    "C": "#ntm:bulk/ingotlanthanum",
+    "T": "#ntm:bulk/ingotbrick"
+  }
+}

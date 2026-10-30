@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:arc_electrode__desh",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "T",
+    "C"
+  ],
+  "key": {
+    "C": "#ntm:bulk/ingotworkersalloy",
+    "T": "#ntm:bulk/ingottitanium"
+  }
+}
