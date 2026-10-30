@@ -79,7 +79,7 @@ class ShredderContracts(unittest.TestCase):
         states = json.loads((ROOT / 'content/assets/ntm/blockstates/machine_shredder.json').read_text())
         self.assertEqual(len(states['variants']), 24)
 
-    def test_damage_components_are_explicit_and_desh_never_gets_them(self):
+    def test_damage_components_are_default_and_desh_never_gets_them(self):
         entries = [{'id': 'blades_' + material, 'source_variable': 'blades_' + material, 'type': 'item',
                     'category': 'component', 'max_stack_size': 1, **({'max_damage': damage} if damage else {})}
                    for material, damage in [('steel', 400), ('titanium', 500), ('desh', 0)]]
@@ -97,7 +97,7 @@ class ShredderContracts(unittest.TestCase):
                     declaration = json.loads((out / f'data/ntm/horizon/item/{row["id"]}.json').read_text())
                     self.assertEqual(declaration['max_stack_size'], 1)
                     self.assertNotIn('max_damage', declaration)
-                    self.assertEqual(declaration.get('components', {}).get('minecraft:max_damage'), row.get('max_damage') if enabled else None)
+                    self.assertEqual(declaration.get('components', {}).get('minecraft:max_damage'), row.get('max_damage'))
                     self.assertEqual(declaration['template'], 'minecraft:iron_ingot')
 
 

@@ -90,6 +90,7 @@ class PressContracts(unittest.TestCase):
             item_decl = json.loads((ROOT / f"content/data/ntm/horizon/item/{ident.split(':', 1)[1]}.json").read_text())
             self.assertEqual(item_decl['max_stack_size'], 1, ident)
             self.assertNotIn('max_damage', item_decl, ident)
+            self.assertEqual(item_decl.get('components', {}).get('minecraft:max_damage'), row.get('max_damage'), ident)
             self.assertEqual(stamp['unbreakable'], durability == 0)
             self.assertIn('ModItems.java:', stamp['source'])
         self.assertEqual(len(self.data['skipped_stamps']), 1)

@@ -162,7 +162,7 @@ def transform_png(raw, light=None, dark=None, background=None, crop=None, multip
  return b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(bytes(output),9))+chunk(b'IEND',b'')
 
 
-def generate(src,out,rows,distributions,max_damage=False):
+def generate(src,out,rows,distributions,max_damage=True):
  """Generate fallbacks, yielding claimed paths to visual-gen, including during cleanup."""
  ownership=out/'.visual-files.json'
  visual_owned=set(json.loads(ownership.read_text())) if ownership.exists() else set()
@@ -314,7 +314,7 @@ def main():
  parser.add_argument('--output',type=Path,default=ROOT/'content')
  parser.add_argument('--catalog',type=Path,default=HERE/'m1.json')
  parser.add_argument('--ids-only',action='store_true')
- parser.add_argument('--max-damage',action='store_true',help='Emit minecraft:max_damage components for durable items')
+ parser.add_argument('--max-damage',action='store_true',default=True,help='Compatibility flag: durable items emit minecraft:max_damage components by default')
  args=parser.parse_args()
  if args.catalog.resolve()==(HERE/'m1.json').resolve():
   import m3_catalog
