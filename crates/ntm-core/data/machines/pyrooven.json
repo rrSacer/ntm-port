@@ -1,0 +1,1981 @@
+{
+"station": "pyrooven",
+"source": "content/machine-recipes/pyrooven.json",
+"recipes": [
+{
+"name": "pyrooven.0",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:41",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"smear",
+8700
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.1",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:42",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"heatingoil",
+1800
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.2",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:43",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"heatingoil_vacuum",
+540
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.3",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:44",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"reclaimed",
+6300
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.4",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:45",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"petroil",
+5500
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.5",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:46",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"naphtha",
+6500
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.6",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:47",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"naphtha_crack",
+8300
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.7",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:48",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"diesel",
+1300
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.8",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:49",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"diesel_reform",
+520
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.9",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:50",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"diesel_crack",
+1300
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.10",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:51",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"diesel_crack_reform",
+560
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.11",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:52",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"lightoil",
+490
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.12",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:53",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"lightoil_crack",
+780
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.13",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:54",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"lightoil_vacuum",
+240
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.14",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:55",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"kerosene",
+280
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.15",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:56",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"kerosene_reform",
+110
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.16",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:57",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"sourgas",
+2800
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.17",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:58",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"reformgas",
+68
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.18",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:59",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"syngas",
+430
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.19",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:60",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"petroleum",
+430
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.20",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:61",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"lpg",
+390
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.21",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:62",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"biofuel",
+1400
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.22",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:63",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"aromatics",
+1500
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.23",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:64",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"unsaturateds",
+190
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.24",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:65",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"reformate",
+300
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.25",
+"label": "Combustível Sólido",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:66",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"xylene",
+220
+]
+],
+"out": [
+[
+"ntm:solid_fuel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.26",
+"label": "Combustível Sólido (Balefire)",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:67",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"balefire",
+46
+]
+],
+"out": [
+[
+"ntm:solid_fuel_bf",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "pyrooven.27.light",
+"label": "Minério de Rocha-Mãe de Metal Leve Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:72",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__base_roasted_light",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.28.light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:73",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_roasted_light",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.29.light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:74",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_roasted_light",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.30.light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:75",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_roasted_light",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.31.light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:76",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_roasted_light",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.27.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:72",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__base_roasted_heavy",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.28.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:73",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_roasted_heavy",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.29.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:74",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_roasted_heavy",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.30.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:75",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_roasted_heavy",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.31.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:76",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_roasted_heavy",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.27.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:72",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__base_roasted_rare",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.28.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:73",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_roasted_rare",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.29.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:74",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_roasted_rare",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.30.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:75",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_roasted_rare",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.31.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:76",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_roasted_rare",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.27.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:72",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__base_roasted_actinide",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.28.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:73",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_roasted_actinide",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.29.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:74",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_roasted_actinide",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.30.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:75",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_roasted_actinide",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.31.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:76",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_roasted_actinide",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.27.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:72",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__base_roasted_nonmetal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.28.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:73",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_roasted_nonmetal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.29.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:74",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_roasted_nonmetal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.30.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:75",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_roasted_nonmetal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.31.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:76",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_roasted_nonmetal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.27.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:72",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__base_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__base_roasted_crystal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.28.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Torrada",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:73",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__primary_roasted_crystal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.29.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:74",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_roasted_crystal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.30.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:75",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_roasted_crystal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.31.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Torrado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:76",
+"duration": 10,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_roasted_crystal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"vitriol",
+50
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.32",
+"label": "Lingote de Carbeto de Tungstênio",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:80",
+"duration": 300,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:powder_tungsten"
+],
+"n": 1,
+"label": "Pó de Tungstênio"
+}
+],
+"fin": [
+[
+"syngas",
+2000
+]
+],
+"out": [
+[
+"ntm:ingot_tungsten_carbide",
+1,
+1.0
+]
+],
+"fout": [
+[
+"spentsteam",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.33",
+"label": "Gás de Síntese",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:83",
+"duration": 100,
+"power": 10000,
+"in": [
+{
+"ids": [
+"minecraft:coal"
+],
+"n": 1,
+"label": "coal"
+}
+],
+"fin": [
+[
+"steam",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"syngas",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.34",
+"label": "Gás de Síntese",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:86",
+"duration": 100,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"n": 1,
+"label": "Pó de Carvão"
+}
+],
+"fin": [
+[
+"steam",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"syngas",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.35",
+"label": "Gás de Síntese",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:89",
+"duration": 100,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum"
+],
+"n": 1,
+"label": "Coque de Carvão"
+}
+],
+"fin": [
+[
+"steam",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"syngas",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.36",
+"label": "Carvão Vegetal",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:93",
+"duration": 100,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:biomass"
+],
+"n": 4,
+"label": "Biomassa"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:charcoal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"syngas",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.37",
+"label": "Fuligem Fina",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:97",
+"duration": 40,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:oil_tar__coal",
+"ntm:oil_tar__crack",
+"ntm:oil_tar__crude",
+"ntm:oil_tar__wood"
+],
+"n": 4,
+"label": "Alcatrão de Carvão"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_ash__soot",
+1,
+1.0
+]
+],
+"fout": [
+[
+"carbondioxide",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.38",
+"label": "Óleo Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:101",
+"duration": 100,
+"power": 10000,
+"in": [
+{
+"ids": [
+"minecraft:coal"
+],
+"n": 1,
+"label": "coal"
+}
+],
+"fin": [
+[
+"hydrogen",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"heavyoil",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.39",
+"label": "Óleo Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:104",
+"duration": 100,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"n": 1,
+"label": "Pó de Carvão"
+}
+],
+"fin": [
+[
+"hydrogen",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"heavyoil",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.40",
+"label": "Gasolina de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:108",
+"duration": 50,
+"power": 10000,
+"in": [
+{
+"ids": [
+"minecraft:coal"
+],
+"n": 1,
+"label": "coal"
+}
+],
+"fin": [
+[
+"heavyoil",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"coalgas",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.41",
+"label": "Gasolina de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:111",
+"duration": 50,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:powder_coal"
+],
+"n": 1,
+"label": "Pó de Carvão"
+}
+],
+"fin": [
+[
+"heavyoil",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"coalgas",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.42",
+"label": "Gasolina de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:114",
+"duration": 50,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum"
+],
+"n": 1,
+"label": "Coque de Carvão"
+}
+],
+"fin": [
+[
+"heavyoil",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"coalgas",
+1000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.43",
+"label": "Gás de Reformado",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:118",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"gas_coker",
+4000
+]
+],
+"out": [],
+"fout": [
+[
+"reformgas",
+100
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.44",
+"label": "Lingote de Grafite",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:122",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"gas",
+12000
+]
+],
+"out": [
+[
+"ntm:ingot_graphite",
+1,
+1.0
+]
+],
+"fout": [
+[
+"hydrogen",
+8000
+]
+],
+"pools": []
+},
+{
+"name": "pyrooven.45",
+"label": "Lingote de Titânio ×5",
+"source": "src/main/java/com/hbm/inventory/recipes/PyroOvenRecipes.java:126",
+"duration": 60,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"titanium_tetrachloride",
+1000
+]
+],
+"out": [
+[
+"ntm:ingot_titanium",
+5,
+1.0
+]
+],
+"fout": [
+[
+"chlorine",
+125
+]
+],
+"pools": []
+}
+],
+"skipped": 0
+}

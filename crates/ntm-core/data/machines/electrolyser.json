@@ -1,0 +1,263 @@
+{
+"station": "electrolyser",
+"source": "content/machine-recipes/electrolyser.json",
+"recipes": [
+{
+"name": "electrolyser.fluid.0",
+"label": "Hidrogênio Líquido",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserFluidRecipes.java:27",
+"duration": 10,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"water",
+2000
+]
+],
+"out": [],
+"fout": [
+[
+"hydrogen",
+200
+],
+[
+"oxygen",
+200
+]
+],
+"pools": []
+},
+{
+"name": "electrolyser.fluid.1",
+"label": "Deutério",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserFluidRecipes.java:28",
+"duration": 10,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"heavywater",
+2000
+]
+],
+"out": [],
+"fout": [
+[
+"deuterium",
+200
+],
+[
+"oxygen",
+200
+]
+],
+"pools": []
+},
+{
+"name": "electrolyser.fluid.2",
+"label": "Pó de Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserFluidRecipes.java:29",
+"duration": 20,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"vitriol",
+1000
+]
+],
+"out": [
+[
+"ntm:powder_iron",
+1,
+1.0
+],
+[
+"ntm:nugget_mercury",
+1,
+1.0
+]
+],
+"fout": [
+[
+"sulfuric_acid",
+500
+],
+[
+"chlorine",
+500
+]
+],
+"pools": []
+},
+{
+"name": "electrolyser.fluid.3",
+"label": "Nitre ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserFluidRecipes.java:30",
+"duration": 20,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"slop",
+1000
+]
+],
+"out": [
+[
+"ntm:niter",
+2,
+1.0
+],
+[
+"ntm:powder_limestone",
+2,
+1.0
+],
+[
+"ntm:sulfur",
+1,
+1.0
+]
+],
+"fout": [
+[
+"mercury",
+250
+]
+],
+"pools": []
+},
+{
+"name": "electrolyser.fluid.4",
+"label": "Pó de Titânio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserFluidRecipes.java:31",
+"duration": 20,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"redmud",
+450
+]
+],
+"out": [
+[
+"ntm:powder_titanium",
+3,
+1.0
+],
+[
+"ntm:powder_iron",
+3,
+1.0
+],
+[
+"ntm:powder_aluminium",
+2,
+1.0
+]
+],
+"fout": [
+[
+"mercury",
+150
+],
+[
+"lye",
+50
+]
+],
+"pools": []
+},
+{
+"name": "electrolyser.fluid.5",
+"label": "Pó de Alumínio ×7",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserFluidRecipes.java:32",
+"duration": 40,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"alumina",
+200
+]
+],
+"out": [
+[
+"ntm:powder_aluminium",
+7,
+1.0
+],
+[
+"ntm:fluorite",
+2,
+1.0
+]
+],
+"fout": [
+[
+"carbondioxide",
+100
+]
+],
+"pools": []
+},
+{
+"name": "electrolyser.fluid.6",
+"label": "Poeira",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserFluidRecipes.java:34",
+"duration": 20,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"potassium_chloride",
+250
+]
+],
+"out": [
+[
+"ntm:dust",
+1,
+1.0
+]
+],
+"fout": [
+[
+"chlorine",
+125
+]
+],
+"pools": []
+},
+{
+"name": "electrolyser.fluid.7",
+"label": "Gás Cloro",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserFluidRecipes.java:35",
+"duration": 20,
+"power": 10000,
+"in": [],
+"fin": [
+[
+"calcium_chloride",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"chlorine",
+125
+],
+[
+"calcium_solution",
+125
+]
+],
+"pools": []
+}
+],
+"skipped": 0
+}

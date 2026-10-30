@@ -41,8 +41,10 @@ def ingredient(x, alt=None):
     return {'ids': choices, 'n': n, 'label': name(choices[0])}
 
 
-def generic(st):
+def generic(st, section=None):
     src = json.loads((root / f'content/machine-recipes/{st}.json').read_text())
+    if section:
+        src = src[section]
     out = []
     for r in src['recipes']:
         alts = r.get('inputItemAlternatives') or [None] * len(r['inputItems'])
@@ -183,6 +185,15 @@ if (root / 'content/machine-recipes/crystallizer.json').exists():
     p = root / 'crates/ntm-core/data/machines/crystallizer.json'
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"crystallizer: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
+
+# Etapa 3 da cadeia do bedrock: o forno pirolítico e a linha de fluidos do
+# eletrolisador (a de metal é da etapa 4).
+for st, section in (('pyrooven', None), ('electrolyser', 'fluid')):
+    if (root / f'content/machine-recipes/{st}.json').exists():
+        data = generic(st, section)
+        p = root / f'crates/ntm-core/data/machines/{st}.json'
+        p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
+        print(f"{st}: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
 
 # A prensa fica fora de machines/: as duas prensas do M1 a leem de data/.
 if (root / 'content/machine-recipes/press.json').exists():
