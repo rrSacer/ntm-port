@@ -268,6 +268,8 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
     // MachineElectrolyser and MachineArcFurnaceLarge: their bottom layer.
     ("ntm:machine_electrolyser", [-1, 0, -5], [3, 0, 5]),
     ("ntm:machine_arc_furnace_large", [-2, 0, -2], [2, 0, 2]),
+    // MachineRefinery: its bottom layer (the makeExtra corners).
+    ("ntm:machine_refinery", [-1, 0, -1], [1, 0, 1]),
 ];
 
 /// The cells of the multiblock of `block` at `core` that pass energy to
@@ -472,6 +474,14 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
             [1, 0, 0],
         ],
     ),
+    // MachineRefinery.getAllPorts: the four corners of its bottom layer,
+    // which reach the core through the cells between them.
+    (
+        "ntm:machine_refinery",
+        &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1]],
+    ),
+    // MachineFractionTower.getAllPorts: the middle of each side, next to the core.
+    ("ntm:machine_fraction_tower", &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]),
     // MachineChemicalPlant.getAllPorts: its bottom ring.
     (
         "ntm:machine_chemical_plant",
