@@ -1,0 +1,1514 @@
+{
+"station": "electrolyser",
+"source": "content/machine-recipes/electrolyser.json",
+"recipes": [
+{
+"name": "electrolyser.metal.0",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:39",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_iron"
+],
+"n": 1,
+"label": "Cristais de Ferro"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"iron",
+432
+],
+[
+"titanium",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.1",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:44",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_gold"
+],
+"n": 1,
+"label": "Cristais de Ouro"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+],
+[
+"ntm:nugget_mercury",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"gold",
+432
+],
+[
+"lead",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.2",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:50",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_uranium"
+],
+"n": 1,
+"label": "Cristais de Urânio"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"uranium",
+432
+],
+[
+"radium",
+32
+]
+]
+},
+{
+"name": "electrolyser.metal.3",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:55",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_thorium"
+],
+"n": 1,
+"label": "Cristais de Tório"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"thorium",
+432
+],
+[
+"uranium",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.4",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:60",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_plutonium"
+],
+"n": 1,
+"label": "Cristais de Plutônio"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"plutonium",
+432
+],
+[
+"polonium",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.5",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:65",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_titanium"
+],
+"n": 1,
+"label": "Cristais de Titânio"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"titanium",
+432
+],
+[
+"iron",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.6",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:70",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_copper"
+],
+"n": 1,
+"label": "Cristais de Cobre"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+],
+[
+"ntm:sulfur",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"copper",
+432
+],
+[
+"lead",
+32
+]
+]
+},
+{
+"name": "electrolyser.metal.7",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:76",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_tungsten"
+],
+"n": 1,
+"label": "Cristais de Tungstênio"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"tungsten",
+432
+],
+[
+"iron",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.8",
+"label": "Fragmento de Criolita ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:81",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_aluminium"
+],
+"n": 1,
+"label": "Cristais de Alumínio"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:chunk_ore__cryolite",
+4,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"aluminium",
+144
+],
+[
+"iron",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.9",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:88",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_beryllium"
+],
+"n": 1,
+"label": "Cristais de Berílio"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+],
+[
+"ntm:powder_quartz",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"beryllium",
+432
+],
+[
+"lead",
+32
+]
+]
+},
+{
+"name": "electrolyser.metal.10",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:94",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_lead"
+],
+"n": 1,
+"label": "Cristais de Chumbo"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"lead",
+432
+],
+[
+"gold",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.11",
+"label": "Pepita de Neptúnio ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:99",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_schraranium"
+],
+"n": 1,
+"label": "Cristais de Schraranium"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:nugget_neptunium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"schrabidium",
+40
+],
+[
+"uranium",
+16
+]
+]
+},
+{
+"name": "electrolyser.metal.12",
+"label": "Pequena Porção de Pó de Lítio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:104",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_schrabidium"
+],
+"n": 1,
+"label": "Cristais de Schrabídio"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"schrabidium",
+432
+],
+[
+"plutonium",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.13",
+"label": "Mistura de Desh ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:109",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_rare"
+],
+"n": 1,
+"label": "Cristais de Terras Raras"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_desh_mix",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"zirconium",
+48
+],
+[
+"boron",
+16
+]
+]
+},
+{
+"name": "electrolyser.metal.14",
+"label": "Pó de Nióbio ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:114",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_trixite"
+],
+"n": 1,
+"label": "Cristais de Trixita"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_niobium",
+4,
+1.0
+],
+[
+"ntm:powder_nitan_mix",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"plutonium",
+216
+],
+[
+"cobalt",
+288
+]
+]
+},
+{
+"name": "electrolyser.metal.15",
+"label": "Pó de Quartzo ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:120",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_lithium"
+],
+"n": 1,
+"label": "Cristais de Lítio"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_quartz",
+2,
+1.0
+],
+[
+"ntm:fluorite",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"lithium",
+432
+],
+[
+"boron",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.16",
+"label": "Pó de Astato ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:126",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_starmetal"
+],
+"n": 1,
+"label": "Cristais de Metal Estelar"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_astatine",
+3,
+1.0
+],
+[
+"ntm:nugget_mercury",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"dura",
+288
+],
+[
+"cobalt",
+288
+]
+]
+},
+{
+"name": "electrolyser.metal.17",
+"label": "Pó de Cobre ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:132",
+"duration": 600,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:crystal_cobalt"
+],
+"n": 1,
+"label": "Cristais de Cobalto"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:powder_copper",
+4,
+1.0
+],
+[
+"ntm:powder_lithium_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"cobalt",
+216
+],
+[
+"iron",
+288
+]
+]
+},
+{
+"name": "electrolyser.metal.18.light",
+"label": "Fragmentos de Minério de Rocha-Mãe de Metal Leve",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:143",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Maior Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__crumbs_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"iron",
+576
+],
+[
+"copper",
+288
+]
+]
+},
+{
+"name": "electrolyser.metal.19.light",
+"label": "Fragmentos de Minério de Rocha-Mãe de Metal Leve",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:150",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária, Menor Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__crumbs_light",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"iron",
+288
+],
+[
+"copper",
+576
+]
+]
+},
+{
+"name": "electrolyser.metal.20.light",
+"label": "Metal: Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:156",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_light"
+],
+"n": 1,
+"label": "Fragmentos de Minério de Rocha-Mãe de Metal Leve"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"iron",
+144
+],
+[
+"copper",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.18.heavy",
+"label": "Fragmentos de Minério de Rocha-Mãe de Metal Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:143",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Maior Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__crumbs_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"tungsten",
+576
+],
+[
+"lead",
+288
+]
+]
+},
+{
+"name": "electrolyser.metal.19.heavy",
+"label": "Fragmentos de Minério de Rocha-Mãe de Metal Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:150",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária, Menor Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__crumbs_heavy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"tungsten",
+288
+],
+[
+"lead",
+576
+]
+]
+},
+{
+"name": "electrolyser.metal.20.heavy",
+"label": "Metal: Tungstênio",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:156",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_heavy"
+],
+"n": 1,
+"label": "Fragmentos de Minério de Rocha-Mãe de Metal Pesado"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"tungsten",
+144
+],
+[
+"lead",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.18.rare",
+"label": "Fragmento de Minério de Rocha-Mãe de Terras Raras ×20",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:143",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Maior Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore_fragment__rareearth",
+20,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"cobalt",
+320
+]
+]
+},
+{
+"name": "electrolyser.metal.19.rare",
+"label": "Fragmento de Minério de Rocha-Mãe de Terras Raras ×40",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:150",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária, Menor Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore_fragment__rareearth",
+40,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_rare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"cobalt",
+160
+]
+]
+},
+{
+"name": "electrolyser.metal.20.rare",
+"label": "Fragmento de Minério de Rocha-Mãe de Terras Raras ×10",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:156",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_rare"
+],
+"n": 1,
+"label": "Fragmentos de Minério de Rocha-Mãe de Terra Rara"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore_fragment__rareearth",
+10,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"cobalt",
+80
+]
+]
+},
+{
+"name": "electrolyser.metal.18.actinide",
+"label": "Fragmentos de Minério de Rocha-Mãe de Actinídeo",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:143",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Maior Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__crumbs_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"uranium",
+256
+],
+[
+"thorium",
+128
+]
+]
+},
+{
+"name": "electrolyser.metal.19.actinide",
+"label": "Fragmentos de Minério de Rocha-Mãe de Actinídeo",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:150",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária, Menor Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore__crumbs_actinide",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"uranium",
+128
+],
+[
+"thorium",
+256
+]
+]
+},
+{
+"name": "electrolyser.metal.20.actinide",
+"label": "Metal: Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:156",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_actinide"
+],
+"n": 1,
+"label": "Fragmentos de Minério de Rocha-Mãe de Actinídeo"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"uranium",
+64
+],
+[
+"thorium",
+64
+]
+]
+},
+{
+"name": "electrolyser.metal.18.nonmetal",
+"label": "Fragmento de Minério de Rocha-Mãe de Carvão ×64",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:143",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Maior Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore_fragment__coal",
+64,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+36,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"slag",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.19.nonmetal",
+"label": "Fragmento de Minério de Rocha-Mãe de Carvão ×36",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:150",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária, Menor Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore_fragment__coal",
+36,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+64,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_nonmetal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"slag",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.20.nonmetal",
+"label": "Fragmento de Minério de Rocha-Mãe de Carvão ×18",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:156",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_nonmetal"
+],
+"n": 1,
+"label": "Fragmentos de Minério de Rocha-Mãe de Não Metal"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore_fragment__coal",
+18,
+1.0
+],
+[
+"ntm:bedrock_ore_fragment__sulfur",
+18,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"slag",
+144
+]
+]
+},
+{
+"name": "electrolyser.metal.18.crystal",
+"label": "Fragmento de Minério de Rocha-Mãe de Cinábrio ×16",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:143",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_first_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Maior Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+16,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"redstone",
+576
+]
+]
+},
+{
+"name": "electrolyser.metal.19.crystal",
+"label": "Fragmento de Minério de Rocha-Mãe de Cinábrio ×32",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:150",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__primary_second_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária, Menor Peso"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+32,
+1.0
+],
+[
+"ntm:bedrock_ore__crumbs_crystal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"redstone",
+288
+]
+]
+},
+{
+"name": "electrolyser.metal.20.crystal",
+"label": "Fragmento de Minério de Rocha-Mãe de Cinábrio ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/ElectrolyserMetalRecipes.java:156",
+"duration": 20,
+"power": 10000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__crumbs_crystal"
+],
+"n": 1,
+"label": "Fragmentos de Minério de Rocha-Mãe de Cristalino"
+}
+],
+"fin": [
+[
+"nitric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:bedrock_ore_fragment__cinnabar",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"mout": [
+[
+"redstone",
+144
+]
+]
+}
+],
+"skipped": 0
+}

@@ -1,0 +1,3726 @@
+{
+"station": "arc_furnace",
+"source": "content/machine-recipes/arc_furnace.json",
+"recipes": [
+{
+"name": "arc.0",
+"label": "Pepita de Silício",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:53",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:red_sand",
+"minecraft:sand"
+],
+"n": 1,
+"label": "red sand"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_silicon",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.1",
+"label": "Pepita de Silício ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:54",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:flint"
+],
+"n": 1,
+"label": "flint"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_silicon",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.2",
+"label": "Pepita de Silício ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:55",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:quartz"
+],
+"n": 1,
+"label": "quartz"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_silicon",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.3",
+"label": "Pepita de Silício ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:56",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_quartz"
+],
+"n": 1,
+"label": "Pó de Quartzo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_silicon",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.4",
+"label": "Pepita de Silício ×12",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:57",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"minecraft:quartz_block"
+],
+"n": 1,
+"label": "quartz block"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_silicon",
+12,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.5",
+"label": "Pepita de Silício ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:58",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_fiberglass"
+],
+"n": 1,
+"label": "Barra de Fibra de Vidro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_silicon",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.6",
+"label": "Pepita de Silício ×40",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:59",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:block_fiberglass"
+],
+"n": 1,
+"label": "Rolo de Fibra de Vidro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_silicon",
+40,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.7",
+"label": "Pepita de Silício ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:60",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_asbestos"
+],
+"n": 1,
+"label": "Placa de Amianto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_silicon",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.8",
+"label": "Pepita de Silício ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:61",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_asbestos"
+],
+"n": 1,
+"label": "Pó de Amianto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_silicon",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.9",
+"label": "Pepita de Silício ×40",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:62",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:block_asbestos"
+],
+"n": 1,
+"label": "Bloco de Amianto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_silicon",
+40,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.10",
+"label": "Lingote de Titânio ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:63",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:chunk_ore__ilmenite"
+],
+"n": 1,
+"label": "Chunk Ore Ilmenite"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_titanium",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.12",
+"label": "Pequena Porção de Pó de Boro ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:66",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_borax"
+],
+"n": 1,
+"label": "Bórax"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:powder_boron_tiny",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.13.light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:69",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_light",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.14.light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:70",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_light",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.15.light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:71",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_light",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.16.light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:72",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_light",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.17.light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:73",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_light",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.18.light",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:74",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_light"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_light",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.13.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:69",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_heavy",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.14.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:70",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_heavy",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.15.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:71",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_heavy",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.16.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:72",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_heavy",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.17.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:73",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_heavy",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.18.heavy",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:74",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_heavy"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_heavy",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.13.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:69",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_rare",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.14.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:70",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_rare",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.15.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:71",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_rare",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.16.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:72",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_rare",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.17.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:73",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_rare",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.18.rare",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:74",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_rare"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_rare",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.13.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:69",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_actinide",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.14.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:70",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_actinide",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.15.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:71",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_actinide",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.16.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:72",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_actinide",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.17.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:73",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_actinide",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.18.actinide",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:74",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_actinide"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_actinide",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.13.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:69",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_nonmetal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.14.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:70",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_nonmetal",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.15.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:71",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_nonmetal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.16.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:72",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_nonmetal",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.17.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:73",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_nonmetal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.18.nonmetal",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:74",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_nonmetal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_nonmetal",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.13.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:69",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_crystal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.14.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:70",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__sulfuric_arc_crystal",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.15.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:71",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_crystal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.16.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:72",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__solvent_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__solvent_arc_crystal",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.17.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Fundido por Arco ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:73",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_crystal",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.18.crystal",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Fundido por Arco ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:74",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore__rad_roasted_crystal"
+],
+"n": 1,
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Torrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:bedrock_ore__rad_arc_crystal",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__00e15957418f333a12",
+"label": "Lingote de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_uranium_scorched"
+],
+"n": 1,
+"label": "Minério de Urânio Chamuscado do Nether"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__0387b3f90f7716a92f",
+"label": "Lingote de Rádio-226",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_ra226"
+],
+"n": 1,
+"label": "Pó de Rádio-226"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_ra226",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__077f5bb27b2a0fe5da",
+"label": "Lingote de Berílio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_beryllium"
+],
+"n": 1,
+"label": "Pó de Berílio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_beryllium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__09453acd394d77a167",
+"label": "Cobre de Grau Industrial ×16",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_meteor__copper"
+],
+"n": 1,
+"label": "Minério de Cobre de Meteorito"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_copper",
+16,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__1065cfda2fc6b1f72c",
+"label": "Lingote de Plutônio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_plutonium"
+],
+"n": 1,
+"label": "Pó de Plutônio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_plutonium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__1222ae8a88532d2db6",
+"label": "Lingote de Schrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_schrabidium"
+],
+"n": 1,
+"label": "Pó de Schrabídio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_schrabidium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__12e940616e10201d53",
+"label": "Lingote de Cádmio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_cadmium"
+],
+"n": 1,
+"label": "Pó de Cádmio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_cadmium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__13b01887ab1ae20e2b",
+"label": "Lingote de Schrabídio ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_schrabidium"
+],
+"n": 1,
+"label": "Cristais de Schrabídio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_schrabidium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__1965500a1b6fa5aca6",
+"label": "Lingote de Osmirídio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_osmiridium"
+],
+"n": 1,
+"label": "Cristais de Osmirídio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_osmiridium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__19cd7b5c5fe03027cf",
+"label": "Lingote de Schrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_schrabidium"
+],
+"n": 1,
+"label": "Minério de Schrabídio em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_schrabidium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__1cc541f002b5d27f9c",
+"label": "Lingote de Aço Tecnécio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_tcalloy"
+],
+"n": 1,
+"label": "Pó de Aço de Tecnécio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_tcalloy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__1f81f9db85afc55691",
+"label": "Lingote de Titânio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_titanium"
+],
+"n": 1,
+"label": "Pó de Titânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_titanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__2255c5108c3bcc7799",
+"label": "Lingote de Ferro ×16",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_meteor__iron"
+],
+"n": 1,
+"label": "Minério de Ferro de Meteorito"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:iron_ingot",
+16,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__2b354396e817ac2e0a",
+"label": "Lingote de Cobalto",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_cobalt"
+],
+"n": 1,
+"label": "Minério de Cobalto do Nether"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_cobalt",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__2dec6bf62ba6d297f1",
+"label": "Lingote de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_uranium_scorched"
+],
+"n": 1,
+"label": "Minério de Urânio em Xisto Chamuscado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__312fd7a1005e4a91f2",
+"label": "Lingote de Boro",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_boron"
+],
+"n": 1,
+"label": "Pó de Boro"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_boron",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__3191e393fb4e0f76f0",
+"label": "Lingote de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_uranium"
+],
+"n": 1,
+"label": "Minério de Urânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__362c6a8b0deee7587c",
+"label": "Lingote de Bismuto",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_bismuth"
+],
+"n": 1,
+"label": "Pó de Bismuto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_bismuth",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__36d26555dcf515caac",
+"label": "Cobre Vermelho",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_red_copper"
+],
+"n": 1,
+"label": "Pó de Cobre Vermelho"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_red_copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__38dc3941012acbfd06",
+"label": "Lingote de Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_lead"
+],
+"n": 1,
+"label": "Pó de Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_lead",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__3e1c7e0a65b2dcc02c",
+"label": "Barra de Látex",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ball_resin"
+],
+"n": 1,
+"label": "Látex"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_biorubber",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__3fddaa5224e0d1cd90",
+"label": "Lingote de Polônio-210",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_polonium"
+],
+"n": 1,
+"label": "Pó de Polônio-210"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_polonium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__4839a5f2dbdf9f31f8",
+"label": "Lingote de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_uranium"
+],
+"n": 1,
+"label": "Minério de Urânio do Nether"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__483bc680e560dc5a29",
+"label": "Pepita de Austrálio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_australium"
+],
+"n": 1,
+"label": "Minério de Austrálio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_australium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__4c337a772b566e8912",
+"label": "Lingote de Plutônio ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_trixite"
+],
+"n": 1,
+"label": "Cristais de Trixita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_plutonium",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__4c58433ce2cc226ed5",
+"label": "Lingote de Aço",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_steel"
+],
+"n": 1,
+"label": "Pó de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_steel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__4c93e64e6c3d6fc6cb",
+"label": "Lingote de Ouro ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_gold"
+],
+"n": 1,
+"label": "Cristais de Ouro"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:gold_ingot",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__4d07f2b448d60b33ea",
+"label": "Lingote de Neptúnio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_neptunium"
+],
+"n": 1,
+"label": "Pó de Netúnio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_neptunium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__4e985ee238a9885bed",
+"label": "Cobre de Grau Industrial",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_copper"
+],
+"n": 1,
+"label": "Minério de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__51072043fe1624d64d",
+"label": "Cubo de Lítio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_lithium"
+],
+"n": 1,
+"label": "Minério de Lítio em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:lithium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__51dd099c532ecabf8d",
+"label": "Lingote de Aço de Alta Velocidade",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_dura_steel"
+],
+"n": 1,
+"label": "Pó de Aço Rápido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_dura_steel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__53761e877ea73975cf",
+"label": "Lingote de Ouro",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_gold"
+],
+"n": 1,
+"label": "Pó de Ouro"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:gold_ingot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__5899568c7b6c2531b9",
+"label": "Lingote de Tungstênio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_tungsten"
+],
+"n": 1,
+"label": "Minério de Tungstênio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_tungsten",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__5a5971214296bd447b",
+"label": "Lingote de Cálcio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_calcium"
+],
+"n": 1,
+"label": "Pó de Cálcio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_calcium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__5f41d5710ddfb0855b",
+"label": "Lingote de Tório-232",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_thorium"
+],
+"n": 1,
+"label": "Minério de Tório"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_th232",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__603eeb24752600a081",
+"label": "Lingote de Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_iron"
+],
+"n": 1,
+"label": "Pó de Ferro"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:iron_ingot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__61adcc31176fe2a3c2",
+"label": "Lingote de Titânio ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_titanium"
+],
+"n": 1,
+"label": "Cristais de Titânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_titanium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__62e15912bae3fcfeb7",
+"label": "Lingote de Berílio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_beryllium"
+],
+"n": 1,
+"label": "Minério de Berílio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_beryllium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__6def5b8b4c15ff0227",
+"label": "Fragmento de Criolita",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_aluminium"
+],
+"n": 1,
+"label": "Minério Rico em Alumínio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:chunk_ore__cryolite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__71ffc7b6f3bca959c7",
+"label": "Lingote de Desh",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_desh"
+],
+"n": 1,
+"label": "Pó de Desh"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_desh",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__72935a282bab2a1276",
+"label": "Lingote de Schrabidato Férrico",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_schrabidate"
+],
+"n": 1,
+"label": "Pó de Schrabidato Férrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_schrabidate",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__73c49c68ee6629783b",
+"label": "Lingote de Tungstênio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_tungsten"
+],
+"n": 1,
+"label": "Pó de Tungstênio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_tungsten",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__7474fd8fb0ce6255c9",
+"label": "Lingote de Tório-232 ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_thorium"
+],
+"n": 1,
+"label": "Cristais de Tório"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_th232",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__762d78883149b7be09",
+"label": "Lingote de Lantânio Semiestável",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:arc_electrode_burnt__lanthanium"
+],
+"n": 1,
+"label": "Eletrodo de Lantânio Derretido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_lanthanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__77ec532e1db5c3c9d4",
+"label": "Lingote de Lantânio Semiestável",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_lanthanium"
+],
+"n": 1,
+"label": "Pó de Lantânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_lanthanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__7abde21b8f40b8a98f",
+"label": "Lingote de Eufêmio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_euphemium"
+],
+"n": 1,
+"label": "Pó de Eufêmio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_euphemium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__7b73728a478a548988",
+"label": "Lingote de Urânio ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_uranium"
+],
+"n": 1,
+"label": "Cristais de Urânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_uranium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__7b96becf5c35ba89e2",
+"label": "Lingote de Schrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_schrabidium"
+],
+"n": 1,
+"label": "Minério de Schrabídio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_schrabidium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__7c403bd10d071a6ee1",
+"label": "Vidro de Trinitita",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:waste_trinitite"
+],
+"n": 1,
+"label": "Minério de Trinitita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:glass_trinitite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__7cd8d0b8dae272822e",
+"label": "Lingote de Cobalto ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_meteor__cobalt"
+],
+"n": 1,
+"label": "Minério de Cobalto de Meteorito"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_cobalt",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__7f312fba121c1d45e6",
+"label": "Lingote de Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_iron"
+],
+"n": 1,
+"label": "Minério de Ferro em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:iron_ingot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__80053f76f716806844",
+"label": "Lingote de Cobalto",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_cobalt"
+],
+"n": 1,
+"label": "Minério de Cobalto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_cobalt",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__8098f971bcca973b28",
+"label": "Lingote de Ouro-198",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_au198"
+],
+"n": 1,
+"label": "Pó de Ouro-198"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_au198",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__81189d2dcef871bd41",
+"label": "Lingote de Ferro ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_iron"
+],
+"n": 1,
+"label": "Cristais de Ferro"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:iron_ingot",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__8243ca66be19464257",
+"label": "Lingote de Tântalo",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_tantalium"
+],
+"n": 1,
+"label": "Pó de Tântalo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_tantalium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__826e201576354544dd",
+"label": "Cobre de Grau Industrial",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_copper"
+],
+"n": 1,
+"label": "Pó de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__8791766f73f5e8788c",
+"label": "Barra de Polímero",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_polymer"
+],
+"n": 1,
+"label": "Pó de Polímero"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_polymer",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__8a5e339a34ab254cc9",
+"label": "Lingote de Schrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_schrabidium"
+],
+"n": 1,
+"label": "Minério de Schrabídio do Nether"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_schrabidium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__8c84182d61b35b2270",
+"label": "Diamante",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:gravel_diamond"
+],
+"n": 1,
+"label": "Cascalho de Diamante"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:diamond",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__8cede3dd085fcc3a1a",
+"label": "Lingote de Alumínio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_aluminium"
+],
+"n": 1,
+"label": "Pó de Alumínio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_aluminium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__8d6eb142fb2aa9547b",
+"label": "Lingote de Estrôncio-90",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_sr90"
+],
+"n": 1,
+"label": "Pó de Estrôncio-90"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_sr90",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__8ef9b3cecd0800cfc8",
+"label": "Lingote de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_uranium"
+],
+"n": 1,
+"label": "Minério de Urânio em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__8f6a67931b8dfe0d18",
+"label": "Fragmento de Minério de Terra Rara ×16",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_meteor__rareearth"
+],
+"n": 1,
+"label": "Minério de Terras Raras de Meteorito"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:chunk_ore__rare",
+16,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__9070a33ab713054074",
+"label": "Cobre de Grau Industrial ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_copper"
+],
+"n": 1,
+"label": "Cristais de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_copper",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__90e99428709a642dab",
+"label": "Pepita de Schrabídio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_schraranium"
+],
+"n": 1,
+"label": "Lingote de Schrarânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:nugget_schrabidium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__924c10b16d5d4f4f67",
+"label": "Lingote de Tório-232",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_thorium"
+],
+"n": 1,
+"label": "Pó de Tório"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_th232",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__951ac39ca8bdd71456",
+"label": "Cobre de Grau Industrial",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_copper"
+],
+"n": 1,
+"label": "Minério de Cobre em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_copper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__9848fdef5e23d710b8",
+"label": "Lingote de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_uranium"
+],
+"n": 1,
+"label": "Pó de Urânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__9c82e3759d7afab12d",
+"label": "Lingote de Austrálio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_australium"
+],
+"n": 1,
+"label": "Pó de Austrálio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_australium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__9dfbfd550c03769ca5",
+"label": "Lingote de Aço CMB",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:combine_scrap"
+],
+"n": 1,
+"label": "Sucata de Aço CMB"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_combine_steel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__9f1d89af6803afcc40",
+"label": "Lingote de Berílio ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_beryllium"
+],
+"n": 1,
+"label": "Cristais de Berílio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_beryllium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__a088350e25e3f08409",
+"label": "Lingote de Alumínio ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_aluminium"
+],
+"n": 1,
+"label": "Cristais de Alumínio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_aluminium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__a420888d09f9618406",
+"label": "Lingote de Dineutrônio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_dineutronium"
+],
+"n": 1,
+"label": "Pó de Dineutronium"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_dineutronium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__a62be529c53e7eb384",
+"label": "Lingote de Cobalto",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_cobalt"
+],
+"n": 1,
+"label": "Pó de Cobalto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_cobalt",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__aa3c5087a36bcd99e4",
+"label": "Lingote de Nióbio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_niobium"
+],
+"n": 1,
+"label": "Pó de Nióbio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_niobium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__b0a17c8d68615cac80",
+"label": "Lingote de Chumbo ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_lead"
+],
+"n": 1,
+"label": "Cristais de Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_lead",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__bc17e74c89540ff5fb",
+"label": "Cubo de Lítio ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_lithium"
+],
+"n": 1,
+"label": "Cristais de Lítio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:lithium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__c383388ad492221ce7",
+"label": "Cubo de Lítio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_lithium"
+],
+"n": 1,
+"label": "Pó de Lítio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:lithium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__c5643ffbac650909fb",
+"label": "Lingote de Grafite",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:arc_electrode_burnt__graphite"
+],
+"n": 1,
+"label": "Eletrodo de Grafite Derretido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_graphite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__c564d4dda9279e3195",
+"label": "Lingote de Aço CMB",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_combine_steel"
+],
+"n": 1,
+"label": "Pó de Aço CMB"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_combine_steel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__c6a053c68b976da6eb",
+"label": "Lingote de Urânio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_uranium_scorched"
+],
+"n": 1,
+"label": "Minério de Urânio Chamuscado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__c91e108417d2d4861f",
+"label": "Barra de Baquelita",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_bakelite"
+],
+"n": 1,
+"label": "Pó de Baquelita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_bakelite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__d012d6f842d98833ca",
+"label": "Lingote de Titânio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_titanium"
+],
+"n": 1,
+"label": "Minério de Titânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_titanium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__d5dcaa8f91f48d2c46",
+"label": "Lingote de Saturnite",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:arc_electrode_burnt__saturnite"
+],
+"n": 1,
+"label": "Eletrodo de Saturnita Derretido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_saturnite",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__d9f9a1c36e886d2bfe",
+"label": "Lingote de Tungstênio Magnetizado",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_magnetized_tungsten"
+],
+"n": 1,
+"label": "Pó de Tungstênio Magnetizado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_magnetized_tungsten",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__dac4841f33d7181a9e",
+"label": "Lingote de Actínio-227",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_actinium"
+],
+"n": 1,
+"label": "Pó de Actínio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_actinium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__e291f8db7421af94fd",
+"label": "Lingote de Ouro",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_gneiss_gold"
+],
+"n": 1,
+"label": "Minério de Ouro em Xisto"
+}
+],
+"fin": [],
+"out": [
+[
+"minecraft:gold_ingot",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__e2d82ecd3787e4c8b6",
+"label": "Lingote de Chumbo",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_lead"
+],
+"n": 1,
+"label": "Minério de Chumbo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_lead",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__ec1031c7272955535e",
+"label": "Lingote de Tungstênio ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_tungsten"
+],
+"n": 1,
+"label": "Cristais de Tungstênio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_tungsten",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__f4430fc8eb028a670d",
+"label": "Lingote de Plutônio ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_plutonium"
+],
+"n": 1,
+"label": "Cristais de Plutônio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_plutonium",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__f7698ba4ceb6061e45",
+"label": "Lingote de Tungstênio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_tungsten"
+],
+"n": 1,
+"label": "Minério de Tungstênio do Nether"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_tungsten",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__f9c379f52447c61855",
+"label": "Lingote de Desh",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:arc_electrode_burnt__desh"
+],
+"n": 1,
+"label": "Eletrodo de Desh Derretido"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_desh",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__fc19928a5d80802e28",
+"label": "Lingote de Plutônio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ore_nether_plutonium"
+],
+"n": 1,
+"label": "Minério de Plutônio do Nether"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_plutonium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__fe55c93137c91ab7e6",
+"label": "Cubo de Zircônio",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:powder_zirconium"
+],
+"n": 1,
+"label": "Pó de Zircônio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_zirconium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "arc.furnace.bulk__ff412fbc73875de019",
+"label": "Lingote de Cobalto ×2",
+"source": "src/main/java/com/hbm/inventory/recipes/ArcFurnaceRecipes.java:116",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:crystal_cobalt"
+],
+"n": 1,
+"label": "Cristais de Cobalto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:ingot_cobalt",
+2,
+1.0
+]
+],
+"fout": [],
+"pools": []
+}
+],
+"skipped": 2
+}

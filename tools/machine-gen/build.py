@@ -57,6 +57,7 @@ def generic(st, section=None):
             'pools': r.get('pools', []),
             **({'group': r['autoSwitchGroup']} if r.get('autoSwitchGroup') else {}),
             **({'productivity': r['productivity']} if r.get('productivity') else {}),
+            **({'mout': r['outputMaterials']} if r.get('outputMaterials') else {}),
         })
     return {'station': st, 'source': f'content/machine-recipes/{st}.json', 'recipes': out, 'skipped': len(src['skipped'])}
 
@@ -186,11 +187,15 @@ if (root / 'content/machine-recipes/crystallizer.json').exists():
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"crystallizer: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
 
-# Etapa 3 da cadeia do bedrock: o forno pirolítico e a linha de fluidos do
-# eletrolisador (a de metal é da etapa 4).
-for st, section in (('pyrooven', None), ('electrolyser', 'fluid')):
-    if (root / f'content/machine-recipes/{st}.json').exists():
-        data = generic(st, section)
+# Etapas 3 e 4 da cadeia do bedrock: o forno pirolítico, as duas linhas do
+# eletrolisador e os dois modos do forno a arco grande.
+for st, section in (('pyrooven', None), ('electrolyser', 'fluid'), ('electrolyser_metal', 'metal'), ('arc_furnace_solid', 'solid'), ('arc_furnace_fluid', 'fluid')):
+    src = st.split('_metal')[0].replace('_solid', '').replace('_fluid', '')
+    if (root / f'content/machine-recipes/{src}.json').exists():
+        data = generic(src, section)
+        if st == 'arc_furnace_fluid':
+            # Scraps melt into their own material (ArcFurnaceRecipes:170-176).
+            data['scraps'] = json.loads((root / 'content/machine-recipes/arc_furnace.json').read_text()).get('scrap_default_materials', {})
         p = root / f'crates/ntm-core/data/machines/{st}.json'
         p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
         print(f"{st}: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
