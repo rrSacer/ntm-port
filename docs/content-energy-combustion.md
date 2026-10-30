@@ -43,3 +43,20 @@ Reaproveitado em vez de criado: `energy_catalog`, `fluid_traits`, `fuel_heat` (e
 ## Prova em jogo
 
 A prova obrigatória usou o executável do horizon-patched, Xvfb, HORIZON_NO_AUDIO, options em zero, mute.py e perfil temporário em disco (`.agent-tmp`): **62 conferências** (repetida com o pacote final, sem as duas receitas duplicadas), /setblock dos quatro IDs com facing=north e honey_level=0 e 5, e /give de nove itens (as quatro máquinas, os quatro pistões e o ingot_starmetal) conferidos no inventário. O detector de rejeição não encontrou `content mod rejected`, `content mods not loaded`, `refused` nem `panicked`. A prova valida carregamento, IDs/estados e itens; não valida lógica funcional nem a fidelidade visual. Nenhum worldgen mudou neste lote. Evidências em `content-gen-evidence/energy-combustion/` (game.json, game-checks.json, game-client.log, machines.png, items.png); a geração e o build estão em `content-gen-evidence/energy-combustion-*.log`.
+
+## Lógica nativa (30/10)
+
+`crates/ntm-core/src/combustion.rs` (testes dele e `server/tests/combustion_tests.rs`), com as tabelas em `data/machines/combustion.json` (geradas por `tools/machine-gen/build.py` a partir de `fluid_traits.json` e de `machine-recipes/combustion.json`). As quatro máquinas oferecem o buffer à rede (`Role::Provider`), recebem só o seu combustível (o tipo do tanque; o identificador muda o tipo) e entregam o vapor denso (turbina) e o sangue (turbofan, que nada enche).
+
+| Máquina | Como roda no port |
+|---|---|
+| Diesel | `step`: recipiente cheio do slot 0 no tanque, identificador do slot 3; ligada, sem sinal de redstone no bloco, com combustível aceito e `fill>0`, queima 1 mB e soma `trunc(floor(HE/balde ÷ 1000) × eficiência)` até 50.000. Botão 0 liga e desliga. |
+| Motor a combustão | Dados 0..8 como a tela do NTM (potência, teto, tanque, teto, cor, ligado, `setting`, pistão 1..4, HE/t). Botão 0 liga; botões 100..130 põem o `setting` 0..30. Queima `min(fill10, setting×2)` décimos de mB com `power = (long)(power + toBurn × (HE/10.000) × eficiência)`; o pistão do slot 2, a matriz por grau, sem checar redstone. |
+| Turbofan | Só combustível AERO, `1 + pós-combustão` mB por tick (`upgrade_afterburn_1..3` no slot 2 ou `flame_pony` = 100), `output = (int)(floor(HE/balde ÷ 1000) × mB × (1 + min(pós/3, 4)))`; sem redstone nos quatro conectores. Os efeitos no mundo (vento, fogo, gibs) e o tanque de sangue não são reproduzidos. |
+| Turbina a gás | Estado 0, -1 (partida) e 1, como `TileEntityMachineTurbineGas`: partida de 580 ticks, parada em 225, o rotor e o trocador com inércia, consumo `consMax × 0,05 + consMax × aceleração` com resto fracionário, 1 mB de lubrificante a cada 10 ticks, água em vapor denso 10×. Botões 0 (partida e parada), 1 (automático) e 100..160 (o controle). |
+
+**Redstone:** o servidor lê o sinal no bloco do diesel e nos quatro conectores do turbofan (`native_redstone`, uma chamada por dimensão), e a máquina para com qualquer um deles.
+
+**Portas** (em `container_bridge.rs`, no referencial de quem pôs): motor a combustão e turbofan, os quatro conectores de energia e de fluido; turbina a gás, a energia em quatro células na camada de cima e os fluidos nos lados e no fim.
+
+**Lacunas:** a poluição (a fumaça), os sons, a porta do motor, os itens carregados pelo buffer (o port não tem carga em itens), o efeito do turbofan nas entidades, o tanque de sangue, e a rampa aleatória da potência instantânea da turbina a gás, que usa o meio do passo sorteado do NTM (o resultado muda por poucos HE por tick).

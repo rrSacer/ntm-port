@@ -126,3 +126,16 @@ Evidência: `.agent-tmp/sonnet-l2/runs/` (cada pasta tem `native-stations.json`,
 | eletrolisador | A tela de fluidos mostra os slots 3 a 13 e deixa 14 a 20 fora; o botão de eletrólise de metal mostra 14 a 20 e esconde 3 a 13 na hora; o botão de volta restaura a primeira |
 
 Prova de 30/10: motor `b9d905189`. A fase `hud` só passa num jogo cujo servidor grave `ntm_rad_dose` e `ntm_rad_rate` por jogador; a prova abaixo usou, **só no build de teste**, uma sobreposição que grava 321,5 RAD e 1,819 RAD/s no hook de tick do servidor (nunca commitada), por o servidor ainda não publicar esses valores. As capturas mostram `NTM Geiger | 1.819 RAD/s`, `Dose: 321.50 RAD` em amarelo (200 a 400 RAD) e a dica do tarugo de urânio.
+
+## Energia, lote 3 (L3)
+
+`native_combustion.py` (fases `diesel`, `motor`, `turbofan`, `turbina`) liga cada gerador como um jogador, com o combustível em recipientes cheios (ou em barris por dutos tipados) e lê a energia de uma bateria em buffer ligada a uma das portas.
+
+| Fase | Conta | Resultado em 30/10 |
+|---|---|---|
+| diesel | 2 recipientes de diesel (mais 2 que sobram na pilha), botão de ignição, cabo, bateria: 8 s | passou: a bateria vai de 0 a mais de 20 mil HE e o tanque desce |
+| motor | pistão de aço, ajuste 30, diesel, bateria junto de uma porta | passou: 55.485 → 398.670 HE em 8 s |
+| turbofan | querosene, sem ignição; um bloco de redstone junto de um conector para e retirar o bloco volta | passou: 53.900 → 388.850; parado em 415.800; depois 442.750 → 777.700 |
+| turbina | gás natural, lubrificante e água de 3 barris por dutos; partida de 29 s e controle no topo | passou: 5.895 → 369.071 HE em 25 s e vapor denso no tanque |
+
+Motor `ntm-next` `29b4726b4` (API 31), bundle NTM e Recipes oficial; evidência em `.agent-tmp/sonnet-l2/runs/`.
