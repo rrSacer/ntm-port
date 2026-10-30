@@ -20,6 +20,40 @@
           }
         }
       }
+    },
+    "animation.excavator.crush": {
+      "loop": true,
+      "animation_length": 1.2,
+      "bones": {
+        "Crusher1": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.20": [
+              -360,
+              0,
+              0
+            ]
+          }
+        },
+        "Crusher2": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.20": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
     }
   }
 }

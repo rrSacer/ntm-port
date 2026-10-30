@@ -5492,7 +5492,7 @@
       }
     },
     "ntm:machine_excavator": {
-      "source": "ContainerMachineExcavator, GUIMachineExcavator, MachineExcavator (getAllDimensions: the body on two legs and a wall; getHeightOffset 3). Only the drill's switch has logic in the port (stage 1)",
+      "source": "ContainerMachineExcavator, GUIMachineExcavator, MachineExcavator (getAllDimensions: the body on two legs and a wall; getHeightOffset 3). Only the drill's switch has logic in the port (stage 1); the crusher, walling, vein miner and silk touch switches (buttons 1 to 4, values 8 to 11, the drill's red lamp 12); the crushers turn while the crusher is on and the drill runs",
       "machine": {
         "slots": [
           {
@@ -5585,7 +5585,7 @@
           41,
           122
         ],
-        "data": 11,
+        "data": 15,
         "multiblock": {
           "min": [
             -3,
@@ -5638,7 +5638,11 @@
             }
           ],
           "dummy": "ntm:dummy_machine"
-        }
+        },
+        "synced": [
+          6,
+          8
+        ]
       },
       "screen": {
         "texture": "ntm:textures/gui/machine/gui_mining_drill.png",
@@ -5746,6 +5750,162 @@
               239,
               412
             ]
+          },
+          {
+            "value": 8,
+            "min": 1,
+            "rect": [
+              30,
+              42,
+              20,
+              40
+            ],
+            "uv": [
+              209,
+              370
+            ]
+          },
+          {
+            "value": 8,
+            "min": 1,
+            "rect": [
+              35,
+              5,
+              10,
+              10
+            ],
+            "uv": [
+              209,
+              360
+            ]
+          },
+          {
+            "value": 9,
+            "min": 1,
+            "rect": [
+              54,
+              42,
+              20,
+              40
+            ],
+            "uv": [
+              209,
+              370
+            ]
+          },
+          {
+            "value": 9,
+            "min": 1,
+            "rect": [
+              59,
+              5,
+              10,
+              10
+            ],
+            "uv": [
+              209,
+              360
+            ]
+          },
+          {
+            "value": 10,
+            "min": 1,
+            "rect": [
+              78,
+              42,
+              20,
+              40
+            ],
+            "uv": [
+              209,
+              370
+            ]
+          },
+          {
+            "value": 10,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              83,
+              5,
+              10,
+              10
+            ],
+            "uv": [
+              209,
+              360
+            ]
+          },
+          {
+            "value": 10,
+            "min": 2,
+            "rect": [
+              83,
+              5,
+              10,
+              10
+            ],
+            "uv": [
+              219,
+              360
+            ]
+          },
+          {
+            "value": 11,
+            "min": 1,
+            "rect": [
+              102,
+              42,
+              20,
+              40
+            ],
+            "uv": [
+              209,
+              370
+            ]
+          },
+          {
+            "value": 11,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              107,
+              5,
+              10,
+              10
+            ],
+            "uv": [
+              209,
+              360
+            ]
+          },
+          {
+            "value": 11,
+            "min": 2,
+            "rect": [
+              107,
+              5,
+              10,
+              10
+            ],
+            "uv": [
+              219,
+              360
+            ]
+          },
+          {
+            "value": 12,
+            "min": 1,
+            "rect": [
+              11,
+              5,
+              10,
+              10
+            ],
+            "uv": [
+              219,
+              360
+            ]
           }
         ],
         "tooltips": [
@@ -5784,6 +5944,54 @@
             "lines": [
               "Broca",
               "Profundidade: {7}"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              30,
+              42,
+              20,
+              40
+            ],
+            "lines": [
+              "Britador"
+            ]
+          },
+          {
+            "id": 2,
+            "rect": [
+              54,
+              42,
+              20,
+              40
+            ],
+            "lines": [
+              "Paredes"
+            ]
+          },
+          {
+            "id": 3,
+            "rect": [
+              78,
+              42,
+              20,
+              40
+            ],
+            "lines": [
+              "Veio"
+            ]
+          },
+          {
+            "id": 4,
+            "rect": [
+              102,
+              42,
+              20,
+              40
+            ],
+            "lines": [
+              "Toque de seda"
             ]
           }
         ]
@@ -5826,24 +6034,60 @@
             ]
           }
         },
-        "loop_animation": {
-          "name": "animation.excavator.work",
-          "length": 1.2,
-          "bones": {
-            "Drillbit": {
-              "turn": [
-                0,
-                -360,
-                0
-              ]
+        "loop_animation": [
+          {
+            "name": "animation.excavator.work",
+            "length": 1.2,
+            "bones": {
+              "Drillbit": {
+                "turn": [
+                  0,
+                  -360,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.excavator.crush",
+            "length": 1.2,
+            "bones": {
+              "Crusher1": {
+                "turn": [
+                  -360,
+                  0,
+                  0
+                ]
+              },
+              "Crusher2": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
             }
           }
-        },
+        ],
         "play": [
           {
             "animation": "animation.excavator.work",
             "property": "honey_level",
             "not": "0"
+          },
+          {
+            "animation": "animation.excavator.crush",
+            "values": [
+              {
+                "value": 8,
+                "min": 1
+              },
+              {
+                "value": 6,
+                "min": 1,
+                "max": 1
+              }
+            ]
           }
         ]
       }

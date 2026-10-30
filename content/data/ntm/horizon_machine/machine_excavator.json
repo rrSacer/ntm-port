@@ -90,7 +90,7 @@
     41,
     122
   ],
-  "data": 11,
+  "data": 15,
   "multiblock": {
     "min": [
       -3,
@@ -143,5 +143,9 @@
       }
     ],
     "dummy": "ntm:dummy_machine"
-  }
+  },
+  "synced": [
+    6,
+    8
+  ]
 }
