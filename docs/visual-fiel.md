@@ -545,16 +545,24 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
   - Por isso, no bridge, a porta (x, y, z) do NTM fica em (−x, y, −z).
   - As máquinas anteriores tinham portas simétricas, então nada muda nelas.
   - O eletrolisador confirma o sentido: as portas em x −3 do NTM caem no lado de 3 blocos do multibloco.
-- **O que o motor ainda não desenha:**
-  - **A tela de metal do eletrolisador** (`GUIElectrolyserMetal`) e a alavanca que troca de tela. O motor tem uma tela por máquina, então os slots 14–20 existem, mas fora da tela.
-  - **No forno a arco, o que segue os valores da máquina:**
-    - a tampa;
-    - o conteúdo quente ou frio;
-    - o estado de cada eletrodo;
-    - o botão de modo líquido;
-    - a coluna de metal fundido.
-  - Isso pede `show` por valor sincronizado, e não só por estado do bloco.
-  - **O vidro do liquefator e do solidificador:** 15% translúcido no NTM. Aqui fica de fora.
+- **Duas telas e partes por valor (recursos do motor, genéricos):**
+  - **A tela de metal do eletrolisador** (`GUIElectrolyserMetal`): a alavanca troca de tela só nesta janela.
+    - A tela de metal esconde os slots 3–13 e põe os 14–20 onde o `ContainerElectrolyserMetal` põe.
+    - Um só `data` serve as duas telas: ácido nítrico em [15..17], pilhas em [30..34], progresso do minério em
+      [35]/[36] e lâmpada em [37] (combinado com o agente das bombas).
+  - **O forno a arco segue os valores da etapa 4:**
+    - cada eletrodo, com seu anel e seu cabo, pelo estado ([20..22]: novo, quente, gasto);
+    - o conteúdo frio ou quente ([23]);
+    - o botão de modo líquido ([28]);
+    - a coluna de metal fundido na tela ([25..27]).
+- **Ainda não desenhado:**
+  - a tampa do forno a arco subindo ([24]) e a altura do conteúdo: pedem posar uma animação por valor;
+  - o vidro do liquefator e do solidificador, 15% translúcido no NTM, que aqui fica de fora.
+- **Em jogo (os dois recursos):**
+  - A alavanca troca as telas do eletrolisador nos dois sentidos: 57 slots na de fluidos, 46 na de metal.
+  - Com os valores [20..23] = 1, 2, 3, 2, o forno a arco mostra os anéis e os eletrodos, e o eletrodo quente brilha.
+  - Um `/data merge` não manda os valores aos clientes na hora: chegam com o chunk, ou quando o mod os muda
+    (`set-data`).
 - **Em jogo** (com uma cópia de teste que força as animações):
   - os cinco põem os dummies certos (o eletrolisador, 156);
   - as telas abrem;
@@ -564,7 +572,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 36 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 39 commits):
 
 | Commit | O quê |
 |---|---|
@@ -603,6 +611,9 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(world): let a multiblock rise above its cell and stand on legs` | `height` e `extra` (a escavadora) |
 | `fix(client): keep a multiblock dummy's menu under its core` | O cliente de um servidor guarda o menu aberto por um dummy no núcleo |
 | `feat(render): pose a mod model open while its screen is open` | `open` (a porta da fornalha) |
+| `feat(client): switch a mod machine's screen with a button` | `screens` no arquivo da máquina, `screen` no botão, `slots` por tela (as duas telas do eletrolisador) |
+| `feat(render): show mod model parts by a machine's synced values` | `show` por `value` (os eletrodos do forno a arco) |
+| `docs(api): describe content mods' machine, screen and model files` | `docs/api/machine-files.md`, genérico, sem nada do NTM |
 | `fix(lan): send an item's custom data to clients` | O `custom_data` vai aos clientes. No criativo, o cliente devolve os slots que previu (`SetCreativeModeSlot`), e o shift-clique de uma máquina apagava as densidades do minério de bedrock |
 
 **No port:**
