@@ -789,6 +789,29 @@ o agente das bombas.
   - os modelos de multibloco cobrem exatamente as suas células (conferido numericamente);
   - as 6 telas batem com os GUIs do NTM.
 
+## 3q. Reatores, R1: ZIRNOX e a pilha de grafite
+
+| Bloco | Multibloco | Tela | Modelo |
+|---|---|---|---|
+| ZIRNOX | base 5×2×5, coluna 3×3×3 e duas células laterais (83), offset 2 | `gui_zirnox.png` 203×256, 28 slots | `rotation 90`, uma parte |
+| ZIRNOX destruído | base 5×2×5 | sem GUI | o modelo destruído |
+| Carregador da pilha | bloco único | sem GUI | alavanca e corrediça por [0] (0..100), a barra com [1] |
+| Barra de controle da pilha | bloco único | sem GUI | a barra sobe 0,75 por [0] (0..100) |
+| Ventilação da pilha | bloco único | sem GUI | a ventoinha gira com [0] |
+| `pile_block__*`, `pile_brick` | — | — | sem modelo: no NTM são textura conectada (CT), ficam com o bloco do conteúdo |
+
+- **Tela do ZIRNOX** (índices combinados com o agente das bombas):
+  - os ponteiros de calor [0] e pressão [1], até 100000;
+  - a grade acesa com [2];
+  - vapor, CO2 e água em barras na cor do fluido ([3..11]), onde o NTM tem ponteiros lineares;
+  - botões 0 barras de controle e 1 ventilar.
+- **Desvio:** os dispositivos da pilha giram pelo facing. O NTM os gira pelo lado em que foram postos, com leste e oeste
+  espelhados, e aqui leste e oeste ficam 180° trocados.
+- **Em jogo** (motor antigo, com valores por `data merge`):
+  - o ZIRNOX com 82 dummies;
+  - a tela com a grade, os ponteiros e os tanques;
+  - os 5 modelos aparecem.
+
 ## 4. Motor (patch) e port
 
 **Patch no motor** (`horizon-visual`, branch `ntm-visual`, 56 commits):
