@@ -564,6 +564,11 @@ impl Server {
             let last = r.bridge.last.get(&key).cloned().unwrap_or_else(|| now.clone());
             match (&mut m.data, layout) {
                 (Data::Crafter(c), Layout::Crafter { inputs, outputs }) => {
+                    // Its battery slot isn't one of the machine's: the
+                    // creative battery there keeps it full.
+                    if let Some(i) = c.station.battery_slot() {
+                        c.power = crate::machine::charge_from_slot(&now, i, c.power, c.max_power());
+                    }
                     if first && !empty {
                         // A new session: the slots, saved with the world, are
                         // the truth; a machine whose slots are empty keeps what

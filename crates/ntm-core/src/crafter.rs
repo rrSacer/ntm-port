@@ -126,6 +126,16 @@ impl Station {
         }
     }
 
+    /// Its battery slot in the engine's slots (`Container*`), where the
+    /// creative battery keeps it full; `None` where the port doesn't know it.
+    pub fn battery_slot(self) -> Option<usize> {
+        match self {
+            Station::Crystallizer => Some(1),
+            Station::Purex => Some(0),
+            _ => None,
+        }
+    }
+
     /// The recipe is picked from the input (the centrifuge), not a list.
     fn picks_by_input(self) -> bool {
         matches!(self, Station::Centrifuge | Station::Crystallizer)
