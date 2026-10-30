@@ -530,6 +530,38 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
   - O cristalizador foi posto com os dummies 3×3×6. A tela abre, e a bateria vai para o slot 1 no shift-clique.
   - O `custom_data` passa pelo shift-clique no criativo. Antes da correção, 3 brutos chegavam crus ao inventário.
 
+## 3i. Etapas 3 e 4 do bedrock e o lote A do petróleo
+
+| Máquina | Multibloco | Tela | Modelo |
+|---|---|---|---|
+| Forno pirolítico (`MachinePyroOven`) | 5×7×3, offset 3 | `gui_pyrooven.png`: energia, progresso, os dois tanques na cor do fluido e a estrela dos upgrades | `rotation 180`; o `Slider` desliza (`sps(anim·0.125)/2 − 0.5`) e o `Fan` gira 45°/tick enquanto trabalha |
+| Eletrolisador (`MachineElectrolyser`) | base 5×11, mais as caixas do `fillSpace` como `extra` (seção elevada, espinha, 5 arcos): 157 células | `gui_electrolyser_fluid.png` 210×204: os três tanques (entrada [4..6], saídas [7..9] e [24..26]), energia, lâmpada e progresso para baixo | `rotation 180` (o `case 2` mais o `glRotated(180)`); sem partes móveis |
+| Forno a arco grande (`MachineArcFurnaceLarge`) | 5×5×5, offset 2 | `gui_arc_furnace.png` 176×256: os 3 eletrodos, a grade 5×4 de entrada (os itens das receitas dos dois modos), a linha de saída, energia, progresso, lâmpada | `rotation 90`; eletrodos novos, tampa baixa e os cabos balançando (`swing`, 30°·sin) enquanto trabalha |
+| Liquefator (`MachineLiquefactor`) | 3×3×4, offset 1 | `gui_liquefactor.png`: tanque de saída [7..9] | o `Fluid` vira um líquido tingido pela cor do tanque, na altura do enchimento (`synced`) |
+| Solidificador (`MachineSolidifier`) | 3×3×4, offset 1 | `gui_solidifier.png`: tanque de entrada [4..6] | o mesmo, com `rotation 90` |
+
+- **Portas:**
+  - O `rotatePorts` do NTM leva o x da porta para a esquerda de quem coloca, e o z para quem coloca.
+  - Por isso, no bridge, a porta (x, y, z) do NTM fica em (−x, y, −z).
+  - As máquinas anteriores tinham portas simétricas, então nada muda nelas.
+  - O eletrolisador confirma o sentido: as portas em x −3 do NTM caem no lado de 3 blocos do multibloco.
+- **O que o motor ainda não desenha:**
+  - **A tela de metal do eletrolisador** (`GUIElectrolyserMetal`) e a alavanca que troca de tela. O motor tem uma tela por máquina, então os slots 14–20 existem, mas fora da tela.
+  - **No forno a arco, o que segue os valores da máquina:**
+    - a tampa;
+    - o conteúdo quente ou frio;
+    - o estado de cada eletrodo;
+    - o botão de modo líquido;
+    - a coluna de metal fundido.
+  - Isso pede `show` por valor sincronizado, e não só por estado do bloco.
+  - **O vidro do liquefator e do solidificador:** 15% translúcido no NTM. Aqui fica de fora.
+- **Em jogo** (com uma cópia de teste que força as animações):
+  - os cinco põem os dummies certos (o eletrolisador, 156);
+  - as telas abrem;
+  - a bateria (e o eletrodo, no forno a arco) vai para o slot dela no shift-clique;
+  - o ventilador do forno pirolítico e os cabos do forno a arco se movem.
+  - O líquido do liquefator e do solidificador ainda não foi visto cheio: depende dos valores da lógica.
+
 ## 4. Motor (patch) e port
 
 **Patch no motor** (`horizon-visual`, branch `ntm-visual`, 36 commits):
