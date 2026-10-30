@@ -54,3 +54,28 @@ elétrica está também em `.agent-tmp/c65d-native-tests/epress-data.json`.
 Fundição, bigorna, triturador, centrífuga, bedrock, petróleo A–D, purex e m3
 continuam em adaptação. Falhas de lógica são encaminhadas ao responsável por
 `ntm-core`; os roteiros não corrigem `crates/` nem injetam estado para passar.
+
+## Fundição nativa
+
+`foundry.py` aceita `HORIZON_CTL` (o ctl do build), prepara chunks e chão antes
+do teleporte e preserva as fases `fundir`, `canais`, `reter`, `voltar`.
+O setup limpa do inventário somente o item de entrada antes de dar o lote:
+sem isso o shift-click realimentava a máquina com lingotes recuperados na
+fase anterior, invalidando a conta de entrada.
+
+Prova em Xvfb mudo, server-thread, com o mesmo fast/V5 e bundle fixados acima:
+
+| Fase | Resultado |
+| --- | --- |
+| fundir | 3 lingotes no cadinho → 3 retirados; inventário 3; ~65 s |
+| canais | 2 lingotes novos → 2 retirados após canais/tanque/saída; ~25 s |
+| reter | Molde retirado, 3 lingotes novos, tanque com metal e inventário 0; salvo |
+| voltar | Mundo copiado para outra pasta descartável e reaberto; molde recolocado → 3 lingotes recuperados, inventário 3; ~43 s |
+
+As contas de saída são assertivas: qualquer quantidade diferente da esperada
+encerra o roteiro com erro. `py_compile` e `git diff --check` também passaram.
+Nenhum `took too long` nos logs.
+
+Evidência da sequência exata: `.agent-tmp/c65d-native-tests/runs/game-wn3b0ua3/`;
+reabertura em `.agent-tmp/c65d-native-tests/runs/game-vknf39zk/`.
+Cada pasta contém `foundry-evidence.json`, `client.log` e capturas.

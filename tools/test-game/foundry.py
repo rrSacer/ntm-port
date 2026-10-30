@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Aceitação da fundição no motor ntm-visual (docs/maquinas.md, "Fundição").
+"""Aceitação da fundição no jogo nativo de tools/build-native.sh (docs/maquinas.md, "Fundição").
 
 Uso: python3 tools/test-game/foundry.py <pasta do jogo> [etapa...]
-O jogo aberto num mundo criativo pelo tools/test-game/run-visual.sh (Xvfb :15,
-mudo), com os mods de tools/build-visual.sh. Etapas:
+O jogo nativo aberto num mundo criativo em Xvfb mudo, com ntm.hmod e
+control.sock na pasta do jogo. HORIZON_CTL aponta para o horizon-ctl do build. Etapas:
   fundir   (etapas 1 e 3) uma firebox com carvão, o cadinho em cima (posto
            agachado), um molde de lingote onde cai o resto; 3 lingotes de
            ferro no cadinho derretem, caem no molde e saem lingotes, que o
@@ -15,15 +15,14 @@ mudo), com os mods de tools/build-visual.sh. Etapas:
   voltar   depois de reabrir o mundo: o molde de volta, os 3 lingotes saem.
 Grava <pasta>/foundry-evidence.json e capturas foundry-*.png.
 """
-import json, subprocess, sys, time
+import json, os, subprocess, sys, time
 from pathlib import Path
 
 game = Path(sys.argv[1])
 steps = sys.argv[2:] or ['fundir']
-CTL = ['/home/sacer/Workspace/horizon-visual/target/release/horizon-ctl', '--socket', str(game / 'control.sock')]
+CTL = [os.environ.get('HORIZON_CTL', 'horizon-ctl'), '--socket', str(game / 'control.sock')]
 ev_path = game / 'foundry-evidence.json'
 evidence = json.loads(ev_path.read_text()) if ev_path.exists() else {}
-import os
 X, Z = int(os.environ.get('FOUNDRY_X', 3560)), -1398
 DIRS = {'north': (0, -1), 'south': (0, 1), 'east': (1, 0), 'west': (-1, 0)}
 
@@ -76,10 +75,14 @@ def floor_y():
     p = game / f'foundry-y-{X}'
     if p.exists():
         return int(p.read_text())
-    ctl('tp', X + 0.5, 120, Z + 6.5)
-    time.sleep(4)
-    ctl('wait-ready', 120, check=False)
-    y = int(ctl('state')['player']['position'][1])
+    # Load and build the floor before teleporting: the server thread must
+    # have the target chunks, and the player must not fall during setup.
+    y = int(os.environ.get('FOUNDRY_Y', 100))
+    ctl('command', f'forceload add {X-12} {Z-5} {X+8} {Z+10}')
+    time.sleep(2)
+    ctl('command', f'fill {X-12} {y-2} {Z-5} {X+8} {y-1} {Z+10} minecraft:stone')
+    ctl('tp', X + 0.5, y, Z + 6.5)
+    ctl('wait-ready', 120)
     p.write_text(str(y))
     return y
 
@@ -105,6 +108,9 @@ def shift_in(x, y, z, items, stand=None):
     if stand:
         ctl('tp', stand[0] + 0.5, stand[1], stand[2] + 0.5)
     for item, n in items:
+        # Earlier phases return the same ingots to the inventory. Do not
+        # feed those back with the fresh input when shift-clicking a stack.
+        ctl('command', f'clear @s {item}')
         ctl('give', item, n)
     time.sleep(1)
     ctl('interact', x, y, z)
@@ -305,7 +311,17 @@ def voltar():
 
 
 for s in steps:
+    if s not in {'fundir', 'canais', 'reter', 'voltar'}:
+        raise SystemExit(f'etapa desconhecida: {s}')
     globals()[s]()
+    # Preserve evidence before a failed assertion, so a missing native
+    # mechanism is reported with its observations instead of a false pass.
+    ev_path.write_text(json.dumps(evidence, indent=1, ensure_ascii=False))
+    expected = {'fundir': 3, 'canais': 2, 'voltar': int(os.environ.get('FOUNDRY_EXPECT', 3))}
+    if s in expected:
+        got = evidence[s]['lingotes_retirados']
+        if got != expected[s]:
+            raise SystemExit(f'{s}: esperados {expected[s]} lingotes, recebidos {got}')
 evidence['took_too_long'] = 'took too long' in (game / 'client.log').read_text(errors='replace')
 ev_path.write_text(json.dumps(evidence, indent=1, ensure_ascii=False))
 print(json.dumps(evidence, ensure_ascii=False))
