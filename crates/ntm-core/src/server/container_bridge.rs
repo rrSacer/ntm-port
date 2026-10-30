@@ -210,6 +210,10 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
     ("ntm:machine_assembly_machine", [-1, 0, -1], [1, 0, 1]),
     ("ntm:machine_chemical_plant", [-1, 0, -1], [1, 0, 1]),
     ("ntm:machine_purex", [-2, 0, -2], [2, 0, 2]),
+    // MachineExcavator.getAllPorts: on the layer above its core.
+    ("ntm:machine_excavator", [-3, 1, -3], [3, 1, 3]),
+    // TileEntityMachineOreSlopper.getPorts: on its bottom layer.
+    ("ntm:machine_ore_slopper", [-1, 0, -3], [1, 0, 3]),
 ];
 
 /// The cells of the multiblock of `block` at `core` that pass energy to
@@ -238,6 +242,90 @@ pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
 /// that join the core's fluid networks as ducts. A chain of them reaches the
 /// core: the blast furnace's ports up its front reach it down its column.
 pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
+    // MachineExcavator.getAllPorts: (±1, 1, 3) and (±3, 1, 0). The whole
+    // layer above the core holds them and reaches the core through the cell
+    // over it.
+    (
+        "ntm:machine_excavator",
+        &[
+            [-3, 1, -3],
+            [-2, 1, -3],
+            [-1, 1, -3],
+            [0, 1, -3],
+            [1, 1, -3],
+            [2, 1, -3],
+            [3, 1, -3],
+            [-3, 1, -2],
+            [-2, 1, -2],
+            [-1, 1, -2],
+            [0, 1, -2],
+            [1, 1, -2],
+            [2, 1, -2],
+            [3, 1, -2],
+            [-3, 1, -1],
+            [-2, 1, -1],
+            [-1, 1, -1],
+            [0, 1, -1],
+            [1, 1, -1],
+            [2, 1, -1],
+            [3, 1, -1],
+            [-3, 1, 0],
+            [-2, 1, 0],
+            [-1, 1, 0],
+            [0, 1, 0],
+            [1, 1, 0],
+            [2, 1, 0],
+            [3, 1, 0],
+            [-3, 1, 1],
+            [-2, 1, 1],
+            [-1, 1, 1],
+            [0, 1, 1],
+            [1, 1, 1],
+            [2, 1, 1],
+            [3, 1, 1],
+            [-3, 1, 2],
+            [-2, 1, 2],
+            [-1, 1, 2],
+            [0, 1, 2],
+            [1, 1, 2],
+            [2, 1, 2],
+            [3, 1, 2],
+            [-3, 1, 3],
+            [-2, 1, 3],
+            [-1, 1, 3],
+            [0, 1, 3],
+            [1, 1, 3],
+            [2, 1, 3],
+            [3, 1, 3],
+        ],
+    ),
+    // TileEntityMachineOreSlopper.getPorts: eight cells of its bottom layer,
+    // which reaches the core.
+    (
+        "ntm:machine_ore_slopper",
+        &[
+            [-1, 0, -3],
+            [0, 0, -3],
+            [1, 0, -3],
+            [-1, 0, -2],
+            [0, 0, -2],
+            [1, 0, -2],
+            [-1, 0, -1],
+            [0, 0, -1],
+            [1, 0, -1],
+            [-1, 0, 0],
+            [1, 0, 0],
+            [-1, 0, 1],
+            [0, 0, 1],
+            [1, 0, 1],
+            [-1, 0, 2],
+            [0, 0, 2],
+            [1, 0, 2],
+            [-1, 0, 3],
+            [0, 0, 3],
+            [1, 0, 3],
+        ],
+    ),
     // TilePortShapes.purex: the edge of its bottom layer.
     (
         "ntm:machine_purex",
