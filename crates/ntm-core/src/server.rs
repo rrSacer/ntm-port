@@ -71,6 +71,12 @@ pub const TX_RESEND: u64 = 60;
 pub const TX_RESEND_MAX: u64 = 2400;
 /// Answer cells a transaction keeps (the newest replace the oldest).
 pub const TX_CELLS: usize = 4;
+/// Answer cells looked for in a tick (each may read a chunk's 256 bottom
+/// cells): after a world loads, all its kept transactions want one.
+pub const ANSWER_CELLS_PER_TICK: u32 = 4;
+/// Cells of probes from an earlier session read in a tick: a crash leaves
+/// them, and none of them may weigh on the tick a world loads in.
+pub const LEFT_PROBE_READS_PER_TICK: u32 = 40;
 /// Ticks of play a transaction that went through is kept (and checked at
 /// each world entry): longer than vanilla's autosave, so a crash that rolls
 /// the world back past it is noticed and undone.
@@ -178,6 +184,14 @@ pub struct Server {
     probe_store: probes::Store,
     /// The last store of the probes succeeded: their lines may leave.
     probes_durable: bool,
+    /// What this tick may still spend on answer cells and on the probes an
+    /// earlier session left ([`ANSWER_CELLS_PER_TICK`],
+    /// [`LEFT_PROBE_READS_PER_TICK`]).
+    answers_left: u32,
+    left_reads: u32,
+    /// Ids of the world-id columns left by an earlier session already read
+    /// against the world in play (`recover_columns`).
+    columns_checked: BTreeSet<u32>,
     next_id: u32,
     warned_no_client: bool,
     warned_full: bool,
@@ -243,6 +257,9 @@ impl Server {
             probes: left,
             probe_store,
             probes_durable: true,
+            answers_left: 0,
+            left_reads: 0,
+            columns_checked: BTreeSet::new(),
             next_id,
             warned_no_client: false,
             warned_full: false,
@@ -328,6 +345,8 @@ impl Server {
         } else if matches!(self.session, Session::Idle) {
             self.session = Session::Identifying;
         }
+        self.answers_left = ANSWER_CELLS_PER_TICK;
+        self.left_reads = LEFT_PROBE_READS_PER_TICK;
         for m in polled.msgs {
             self.message(host, m);
         }
@@ -335,8 +354,15 @@ impl Server {
         if matches!(self.session, Session::Identifying) {
             self.identify(host);
         }
+        // The tick a world loads in does only that: its machines start on
+        // the next one, so the load and their first tick never share one
+        // tick's fuel.
+        let was_ready = self.ready().is_some();
         self.run_probes(host);
-        if self.ready().is_some() {
+        if was_ready && self.ready().is_some() {
+            if let Some(wid) = self.wid().map(str::to_string) {
+                self.recover_columns(host, &wid);
+            }
             for e in std::mem::take(&mut self.queued) {
                 self.block_event(host, e);
             }
@@ -533,7 +559,9 @@ impl Server {
         if let Err(e) = self.worlds.store(host) {
             host.log(&format!("worlds: {e}"));
         }
-        self.recover_columns(host, &wid);
+        // The columns an earlier session left: read a few a tick from the
+        // next one on (`recover_columns`).
+        self.columns_checked.clear();
         self.mail.send(S2C::World { wid: wid.clone() });
         self.radiation.next_sample = self.tick + crate::radiation::SAMPLE_TICKS;
         let pending = !world.txs.is_empty();
@@ -568,9 +596,15 @@ impl Server {
     fn recover_columns(&mut self, host: &mut impl ServerHost, wid: &str) {
         let mut done = Vec::new();
         for (i, p) in self.probes.iter().enumerate() {
-            if p.purpose != Purpose::WorldId || p.sent_to.is_some() {
+            if p.purpose != Purpose::WorldId || p.sent_to.is_some() || self.columns_checked.contains(&p.id) {
                 continue;
             }
+            let n = p.cells.len() as u32;
+            if self.left_reads < n {
+                break;
+            }
+            self.left_reads -= n;
+            self.columns_checked.insert(p.id);
             let levels: Vec<Option<u8>> = p
                 .cells
                 .iter()
@@ -641,7 +675,17 @@ impl Server {
                 p.acked = true;
                 p.deadline = p.deadline.min(tick + PROBE_TICKS);
             }
+            // A probe an earlier session left reads within the tick's
+            // budget; the rest of its cells wait for the next tick.
+            let budget = if p.late { Some(&mut self.left_reads) } else { None };
+            let mut budget = budget;
             for c in p.cells.iter_mut().filter(|c| c.seen.is_none()) {
+                if let Some(b) = budget.as_deref_mut() {
+                    if *b == 0 {
+                        break;
+                    }
+                    *b -= 1;
+                }
                 if let Some(level) = host.get_block(&p.dim, c.pos).and_then(|s| token::token_level(&s)) {
                     c.seen = Some(level);
                 }
@@ -826,6 +870,10 @@ impl Server {
     /// its chunk holds that can be borrowed and given back exactly, not in
     /// use by any probe or transaction.
     fn answer_cell(&mut self, host: &mut impl ServerHost) -> Option<tx::Cell> {
+        if self.answers_left == 0 {
+            return None;
+        }
+        self.answers_left -= 1;
         let p = self.client_player()?.clone();
         let busy = self.busy_cells();
         let y = worldid::min_y(&p.dim);
@@ -974,6 +1022,9 @@ impl Server {
                 host.get_block(&c.dim, c.pos)
                     .is_some_and(|s| s == c.orig || token::token_level(&s).is_some())
             });
+            if !usable && self.answers_left == 0 {
+                break; // the rest next tick
+            }
             let cell = if usable { None } else { self.answer_cell(host) };
             let Some(r) = self.ready() else { return };
             let Some(t) = r.world.txs.iter_mut().find(|t| t.id == id) else {
@@ -1079,6 +1130,9 @@ impl Server {
                 host.get_block(&c.dim, c.pos)
                     .is_some_and(|s| s == c.orig || token::token_level(&s).is_some())
             });
+            if !usable && self.answers_left == 0 {
+                break; // the rest next tick
+            }
             let cell = if usable { None } else { self.answer_cell(host) };
             let Some(r) = self.ready() else { return };
             let Some(a) = r.world.applied.iter_mut().find(|a| a.tx.id == id) else {
