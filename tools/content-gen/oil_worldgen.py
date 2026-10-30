@@ -56,7 +56,7 @@ def bridge(emit,name,config,chance,low,high,salt,biomes='#minecraft:is_overworld
     put('configured_feature',config)
 
 
-def generate(emit,rows,registry_path=None):
+def protect_geode(emit,rows,registry_path=None):
     import json
     import os
     from pathlib import Path
@@ -73,12 +73,15 @@ def generate(emit,rows,registry_path=None):
         tag='oil_protected_'+str(index);tags.append('#ntm:'+tag)
         emit('data/ntm/tags/block/'+tag+'.json',{'replace':False,'values':protected[start:start+400]})
     emit('data/ntm/tags/block/oil_protected.json',{'replace':False,'values':tags})
+
+
+def generate(emit,rows):
     emit('data/ntm/tags/worldgen/biome/oil_hot_dry.json',{'replace':False,'values':HOT_DRY})
     # Baseline 1/100 plus an independent 1/49 in dry-hot biomes gives
     # 1/100 + 1/49 - 1/4900 = 0.030204 versus source floor(100/3)=33.
     for name,chance,biome,salt in [('oil_bubble',100,'#minecraft:is_overworld',884021),
                                   ('oil_bubble_hot_dry',49,'#ntm:oil_hot_dry',884023)]:
-        bridge(emit,name,geode(),chance,12,36,salt,biome,offset=(5,0,5))
+        bridge(emit,name,ore_patch(3),chance,15,39,salt,biome)
     bridge(emit,'oil_bedrock',disk('ntm:ore_bedrock_oil',
            ['minecraft:bedrock','minecraft:stone','minecraft:deepslate'],4,2),200,-62,-62,884029)
     # Oil sand is limited to sand substrates, as the Java source; the vanilla

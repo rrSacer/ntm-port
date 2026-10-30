@@ -4,7 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from oil_worldgen import generate,HOT_DRY
+from oil_worldgen import generate,protect_geode,geode,HOT_DRY
 
 
 class OilWorldgen(unittest.TestCase):
@@ -13,7 +13,9 @@ class OilWorldgen(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             p=Path(directory)/'registries.json'
             p.write_text(json.dumps({'minecraft:block':{'entries':{k:{} for k in ['minecraft:stone','minecraft:air','minecraft:bedrock','minecraft:diamond_ore','minecraft:water']}}}))
-            generate(self.output.__setitem__,[{'id':'ntm:ore_oil','type':'block'},{'id':'ntm:ingot_steel','type':'item'}],p)
+            rows=[{'id':'ntm:ore_oil','type':'block'},{'id':'ntm:ingot_steel','type':'item'}]
+            generate(self.output.__setitem__,rows)
+            protect_geode(self.output.__setitem__,rows,p)
 
     def get(self,kind,name):return self.output[f'data/ntm/worldgen/{kind}/{name}.json']
 
@@ -46,8 +48,18 @@ class OilWorldgen(unittest.TestCase):
         self.assertEqual(height['min_inclusive']['absolute']-cfg['half_height'],56)
         self.assertEqual(height['max_inclusive']['absolute']+cfg['half_height'],71)
 
-    def test_geode_cannot_make_air_or_replace_other_ores(self):
+    def test_chosen_shape_uses_three_overlapping_ore_lobes(self):
         cfg=self.get('configured_feature','oil_bubble')
+        self.assertEqual(cfg['type'],'minecraft:random_selector')
+        placed=cfg['default'];self.assertEqual(placed['feature']['size'],64)
+        self.assertEqual(placed['feature']['targets'][0]['target']['block'],'minecraft:stone')
+        self.assertEqual(placed['placement'][0],{'type':'minecraft:count','count':3})
+        jitter=placed['placement'][1];self.assertEqual(jitter['y'],0)
+        self.assertEqual(jitter['x'],{'type':'minecraft:uniform','min_inclusive':-2,'max_inclusive':2})
+        self.assertEqual(jitter['x'],jitter['z'])
+
+    def test_geode_cannot_make_air_or_replace_other_ores(self):
+        cfg=geode()
         self.assertEqual(cfg['blocks']['filling_provider']['state']['id'],'ntm:ore_oil')
         for key in ['inner_layer_provider','alternate_inner_layer_provider','middle_layer_provider','outer_layer_provider']:
             self.assertEqual(cfg['blocks'][key]['state']['id'],'minecraft:stone')

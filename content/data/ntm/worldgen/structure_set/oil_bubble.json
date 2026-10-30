@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "ntm:oil_bubble",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 1,
+    "separation": 0,
+    "salt": 884021,
+    "spread_type": "linear"
+  }
+}

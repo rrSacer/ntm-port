@@ -16,3 +16,7 @@ def generate(emit, rows, distributions):
  if "ntm:ore_bedrock" in ids:
   import bedrock_worldgen
   bedrock_worldgen.generate(emit)
+
+ if "ntm:ore_oil" in ids:
+  import oil_worldgen
+  oil_worldgen.generate(emit,rows)

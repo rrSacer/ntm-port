@@ -6,7 +6,7 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
-from oil_worldgen import geode,ore,ore_patch,generate
+from oil_worldgen import geode,ore,ore_patch,generate,protect_geode
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -23,7 +23,8 @@ def main():
     def emit(path,value):
         p=out/path;p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(value,indent=2)+'\n')
     rows=json.loads((args.content/'ids.json').read_text())['entries']
-    generate(emit,rows,args.resources/'registries.json')
+    generate(emit,rows)
+    protect_geode(emit,rows,args.resources/'registries.json')
     for value in [2,3,4]:emit(f'data/ntm/worldgen/configured_feature/oil_test_geode{value}.json',geode(value))
     emit('data/ntm/worldgen/configured_feature/oil_test_ore64.json',ore())
     emit('data/ntm/worldgen/configured_feature/oil_test_geode35.json',geode(3.5))
