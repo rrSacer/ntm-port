@@ -1,0 +1,45 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.chungus.spin": {
+      "loop": true,
+      "animation_length": 1.0,
+      "bones": {
+        "Blades": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.00": [
+              0,
+              0,
+              -360
+            ]
+          }
+        }
+      }
+    },
+    "animation.chungus.lever": {
+      "loop": false,
+      "animation_length": 1.0,
+      "bones": {
+        "Lever": {
+          "rotation": {
+            "0.0": [
+              15,
+              0,
+              0
+            ],
+            "1.0": [
+              -15,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "obj": "ntm:models/obj/chungus.obj",
+  "texture": "ntm:textures/models/machines/chungus.png",
+  "rotation": 180,
+  "radius": 8.5,
+  "translate": [
+    0,
+    0,
+    -3
+  ],
+  "bones": {
+    "Lever": {
+      "pivot": [
+        0,
+        0,
+        4.5
+      ]
+    },
+    "Blades": {
+      "pivot": [
+        0,
+        2.5,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.chungus.spin",
+      "values": [
+        {
+          "value": 0,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "pose": [
+    {
+      "animation": "animation.chungus.lever",
+      "value": 1,
+      "max_value": 3
+    }
+  ],
+  "animations": "ntm:animations/machine_chungus.animation.json"
+}

@@ -1,0 +1,41 @@
+{
+  "obj": "ntm:models/obj/industrial_turbine.obj",
+  "texture": "ntm:textures/models/machines/industrial_turbine.png",
+  "rotation": 180,
+  "radius": 4.0,
+  "bones": {
+    "Flywheel": {
+      "pivot": [
+        0,
+        1.5,
+        0
+      ]
+    },
+    "Gauge": {
+      "pivot": [
+        0,
+        1.5,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.industrial_turbine.spin",
+      "values": [
+        {
+          "value": 0,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "pose": [
+    {
+      "animation": "animation.industrial_turbine.gauge",
+      "value": 1,
+      "max_value": 3
+    }
+  ],
+  "animations": "ntm:animations/machine_industrial_turbine.animation.json"
+}

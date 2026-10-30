@@ -1,0 +1,46 @@
+{
+  "obj": "ntm:models/obj/steam_engine.obj",
+  "texture": "ntm:textures/models/machines/steam_engine.png",
+  "rotation": 270,
+  "radius": 4.5,
+  "translate": [
+    2,
+    0,
+    0
+  ],
+  "bones": {
+    "Flywheel": {
+      "pivot": [
+        2,
+        1.375,
+        0
+      ]
+    },
+    "Shaft": {
+      "pivot": [
+        0,
+        1.375,
+        -0.5
+      ]
+    },
+    "Transmission": {
+      "pivot": [
+        2.25,
+        1.375,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.steam_engine.run",
+      "values": [
+        {
+          "value": 0,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "animations": "ntm:animations/machine_steam_engine.animation.json"
+}

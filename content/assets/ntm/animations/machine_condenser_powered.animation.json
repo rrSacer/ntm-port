@@ -1,0 +1,39 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.condenser.fans": {
+      "loop": true,
+      "animation_length": 0.6,
+      "bones": {
+        "Fan1": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "0.60": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Fan2": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "0.60": [
+              -360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}
