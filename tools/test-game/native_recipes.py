@@ -52,12 +52,12 @@ def count(slots, item):
     return sum(s.get('count', 0) for s in slots if s.get('item') == item)
 
 
-def core_of(game, name, x, y, z):
+def core_of(game, name, x, y, z, reach=(2, 2)):
     """Where a player-placed multiblock's core is: placing at (x, y, z) leaves a
     dummy there, the block entity is in the core cell near it."""
     for dy in range(0, 4):
-        for dx in range(-2, 3):
-            for dz in range(-2, 3):
+        for dx in range(-reach[0], reach[0] + 1):
+            for dz in range(-reach[1], reach[1] + 1):
                 found = game.ctl(f'block {x + dx} {y + dy} {z + dz}').get('state', '')
                 if found.startswith(name + '[') or found == name:
                     return x + dx, y + dy, z + dz
