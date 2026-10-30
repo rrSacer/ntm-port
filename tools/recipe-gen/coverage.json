@@ -1,9 +1,9 @@
 {
-  "catalog_items": 2630,
-  "vanilla_recipe_count": 235,
+  "catalog_items": 2637,
+  "vanilla_recipe_count": 237,
   "temporary_count": 10,
   "press_count": 47,
-  "furnace_count": 250,
+  "furnace_count": 251,
   "recipes": [
     {
       "id": "ntm:block_aluminium_from_ingot_aluminium",
@@ -906,6 +906,16 @@
       "temporary": false
     },
     {
+      "id": "ntm:nugget_schrabidium_from_smelting_ingot_schraranium",
+      "source": "crafting/SmeltingRecipes.java:137",
+      "temporary": false
+    },
+    {
+      "id": "ntm:nugget_schrabidium_from_blasting_ingot_schraranium",
+      "source": "crafting/SmeltingRecipes.java:137; blasting is 26.3 port extension",
+      "temporary": false
+    },
+    {
       "id": "ntm:ingot_uranium_from_smelting_crystal_uranium",
       "source": "crafting/SmeltingRecipes.java:144",
       "temporary": false
@@ -1537,6 +1547,7 @@
     "ntm:block_euphemium_cluster",
     "ntm:block_fiberglass",
     "ntm:block_foam",
+    "ntm:block_graphite",
     "ntm:block_insulator",
     "ntm:block_lanthanium",
     "ntm:block_magnetized_tungsten",
@@ -2646,6 +2657,8 @@
     "ntm:ingot_rubber",
     "ntm:ingot_saturnite",
     "ntm:ingot_schrabidium_fuel",
+    "ntm:ingot_schraranium",
+    "ntm:ingot_semtex",
     "ntm:ingot_silicon",
     "ntm:ingot_solinium",
     "ntm:ingot_technetium",
@@ -2695,6 +2708,8 @@
     "ntm:meteor_brick_mossy",
     "ntm:meteor_pillar",
     "ntm:meteor_polished",
+    "ntm:meteorite_sword_etched",
+    "ntm:meteorite_sword_treated",
     "ntm:mike_cooling_unit",
     "ntm:mike_core",
     "ntm:mike_deut",
@@ -3277,6 +3292,7 @@
     "ntm:powder_cadmium",
     "ntm:powder_caesium",
     "ntm:powder_calcium",
+    "ntm:powder_cement",
     "ntm:powder_cerium",
     "ntm:powder_cerium_tiny",
     "ntm:powder_chlorocalcite",
@@ -3401,6 +3417,7 @@
     "ntm:rbmk_fuel_empty",
     "ntm:reacher",
     "ntm:reactor_core",
+    "ntm:rebar",
     "ntm:reinforced_brick",
     "ntm:reinforced_brick_stairs",
     "ntm:reinforced_ducrete",

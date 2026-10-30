@@ -1757,6 +1757,24 @@
       }
     },
     {
+      "id": "ntm:bulk__0e3f8d28addecee650",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:40",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_graphite",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3133bc7180111bb507",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:40",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:ingot_graphite",
+        "count": 9
+      }
+    },
+    {
       "id": "ntm:bulk__c36a8738e7c1a42272",
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:41",
       "type": "minecraft:crafting_shaped",
@@ -1771,6 +1789,24 @@
       "type": "minecraft:crafting_shapeless",
       "result": {
         "id": "ntm:ingot_boron",
+        "count": 9
+      }
+    },
+    {
+      "id": "ntm:bulk__26169c2e50549afd90",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:42",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_schraranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c3f7f32fd5dddcaf50",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:42",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:ingot_schraranium",
         "count": 9
       }
     },
@@ -4466,6 +4502,15 @@
       }
     },
     {
+      "id": "ntm:bulk__ec088760fde12ceba7",
+      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:36",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:powder_cement",
+        "count": 4
+      }
+    },
+    {
       "id": "ntm:bulk__1bd3684ffff8dd596c",
       "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:44",
       "type": "minecraft:crafting_shapeless",
@@ -5438,7 +5483,7 @@
       }
     }
   ],
-  "generated_count": 604,
+  "generated_count": 609,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -6619,7 +6664,7 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:468",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rebar",
+      "reason": "unresolved ore dictionary STEEL.bolt()",
       "expression": "new ItemStack(ModBlocks.rebar, 8), new Object[] { \"BB\", \"BB\", 'B', STEEL.bolt() }"
     },
     {
@@ -10313,18 +10358,6 @@
       "expression": "new ItemStack(ModItems.gas_mask_filter_piss, 1), new Object[] { \"I\", \"F\", 'F', ModItems.rag_piss, 'I', IRON.ingot() }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:40",
-      "callee": "add1To9Pair",
-      "reason": "unregistered/ambiguous source item block_graphite",
-      "expression": "ModBlocks.block_graphite, ModItems.ingot_graphite"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:42",
-      "callee": "add1To9Pair",
-      "reason": "unregistered/ambiguous source item ingot_schraranium",
-      "expression": "ModBlocks.block_schraranium, ModItems.ingot_schraranium"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:48",
       "callee": "add1To9Pair",
       "reason": "unregistered/ambiguous source item ingot_smore",
@@ -10725,12 +10758,6 @@
       "callee": "addShapelessAuto",
       "reason": "unsupported expression Fluids.WATER.getDict(1_000)",
       "expression": "new ItemStack(Items.clay_ball, 4), new Object[] { KEY_SAND, ModItems.dust, ModItems.dust, Fluids.WATER.getDict(1_000) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:36",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item powder_cement",
-      "expression": "new ItemStack(ModItems.powder_cement, 4), new Object[] { LIMESTONE.dust(), Items.clay_ball, Items.clay_ball, Items.clay_ball }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:39",
@@ -11373,12 +11400,6 @@
       "callee": "GameRegistry.addSmelting",
       "reason": "unregistered/ambiguous source item ash_digamma",
       "expression": "new ItemStack(ModBlocks.ash_digamma), new ItemStack(ModBlocks.glass_ash), 10F"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:137",
-      "callee": "GameRegistry.addSmelting",
-      "reason": "unregistered/ambiguous source item ingot_schraranium",
-      "expression": "ModItems.ingot_schraranium, new ItemStack(ModItems.nugget_schrabidium, 1), 2.0F"
     },
     {
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:139",
