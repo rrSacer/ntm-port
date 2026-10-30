@@ -3,16 +3,6 @@
   "texture": "ntm:textures/models/machines/arc_furnace.png",
   "rotation": 90,
   "radius": 6.0,
-  "hide": [
-    "ContentsHot",
-    "ContentsCold",
-    "Electrode1Hot",
-    "Electrode2Hot",
-    "Electrode3Hot",
-    "Electrode1Short",
-    "Electrode2Short",
-    "Electrode3Short"
-  ],
   "bones": {
     "Cable1": {
       "pivot": [
@@ -42,6 +32,96 @@
       "property": "honey_level",
       "not": "0"
     }
+  ],
+  "show": {
+    "Ring1": {
+      "value": 20,
+      "min": 1
+    },
+    "Cable1": {
+      "value": 20,
+      "min": 1
+    },
+    "Electrode1": {
+      "value": 20,
+      "min": 1,
+      "max": 1
+    },
+    "Electrode1Hot": {
+      "value": 20,
+      "min": 2,
+      "max": 2
+    },
+    "Electrode1Short": {
+      "value": 20,
+      "min": 3,
+      "max": 3
+    },
+    "Ring2": {
+      "value": 21,
+      "min": 1
+    },
+    "Cable2": {
+      "value": 21,
+      "min": 1
+    },
+    "Electrode2": {
+      "value": 21,
+      "min": 1,
+      "max": 1
+    },
+    "Electrode2Hot": {
+      "value": 21,
+      "min": 2,
+      "max": 2
+    },
+    "Electrode2Short": {
+      "value": 21,
+      "min": 3,
+      "max": 3
+    },
+    "Ring3": {
+      "value": 22,
+      "min": 1
+    },
+    "Cable3": {
+      "value": 22,
+      "min": 1
+    },
+    "Electrode3": {
+      "value": 22,
+      "min": 1,
+      "max": 1
+    },
+    "Electrode3Hot": {
+      "value": 22,
+      "min": 2,
+      "max": 2
+    },
+    "Electrode3Short": {
+      "value": 22,
+      "min": 3,
+      "max": 3
+    },
+    "ContentsCold": {
+      "value": 23,
+      "min": 1,
+      "max": 1
+    },
+    "ContentsHot": {
+      "value": 23,
+      "min": 2,
+      "max": 2
+    }
+  },
+  "glow": [
+    "ContentsHot",
+    "Electrode1Hot",
+    "Electrode2Hot",
+    "Electrode3Hot",
+    "Electrode1Short",
+    "Electrode2Short",
+    "Electrode3Short"
   ],
   "animations": "ntm:animations/machine_arc_furnace_large.animation.json"
 }

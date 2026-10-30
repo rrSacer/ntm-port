@@ -7925,7 +7925,7 @@
       }
     },
     "ntm:machine_arc_furnace_large": {
-      "source": "ContainerMachineArcFurnaceLarge, GUIMachineArcFurnaceLarge (gui_arc_furnace.png 176x256), MachineArcFurnaceLarge {4,0,2,2,2,2} offset 2, RenderArcFurnace (case 2: 90; the lid, the contents and each electrode's state follow the machine's values: drawn here with fresh electrodes and the lid down; the cables swing while it works)",
+      "source": "ContainerMachineArcFurnaceLarge, GUIMachineArcFurnaceLarge (gui_arc_furnace.png 176x256), MachineArcFurnaceLarge {4,0,2,2,2,2} offset 2, RenderArcFurnace (case 2: 90; the lid, the contents and each electrode's state follow the machine's values: the electrodes, rings, cables and contents shown by values 20-23; the lid and the contents' height, posed by values, are not drawn yet; the cables swing while it works)",
       "machine": {
         "slots": [
           {
@@ -7935,11 +7935,7 @@
               "ntm:arc_electrode__graphite",
               "ntm:arc_electrode__lanthanium",
               "ntm:arc_electrode__desh",
-              "ntm:arc_electrode__saturnite",
-              "ntm:arc_electrode_burnt__graphite",
-              "ntm:arc_electrode_burnt__lanthanium",
-              "ntm:arc_electrode_burnt__desh",
-              "ntm:arc_electrode_burnt__saturnite"
+              "ntm:arc_electrode__saturnite"
             ],
             "max": 1
           },
@@ -7950,11 +7946,7 @@
               "ntm:arc_electrode__graphite",
               "ntm:arc_electrode__lanthanium",
               "ntm:arc_electrode__desh",
-              "ntm:arc_electrode__saturnite",
-              "ntm:arc_electrode_burnt__graphite",
-              "ntm:arc_electrode_burnt__lanthanium",
-              "ntm:arc_electrode_burnt__desh",
-              "ntm:arc_electrode_burnt__saturnite"
+              "ntm:arc_electrode__saturnite"
             ],
             "max": 1
           },
@@ -7965,11 +7957,7 @@
               "ntm:arc_electrode__graphite",
               "ntm:arc_electrode__lanthanium",
               "ntm:arc_electrode__desh",
-              "ntm:arc_electrode__saturnite",
-              "ntm:arc_electrode_burnt__graphite",
-              "ntm:arc_electrode_burnt__lanthanium",
-              "ntm:arc_electrode_burnt__desh",
-              "ntm:arc_electrode_burnt__saturnite"
+              "ntm:arc_electrode__saturnite"
             ],
             "max": 1
           },
@@ -8001,15 +7989,14 @@
               129,
               5,
               1
-            ],
-            "output": true
+            ]
           }
         ],
         "inventory": [
           8,
           174
         ],
-        "data": 30,
+        "data": 40,
         "multiblock": {
           "min": [
             -2,
@@ -8023,7 +8010,18 @@
           ],
           "offset": 2,
           "dummy": "ntm:dummy_machine"
-        }
+        },
+        "synced": [
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28
+        ]
       },
       "screen": {
         "texture": "ntm:textures/gui/processing/gui_arc_furnace.png",
@@ -8067,6 +8065,18 @@
               0
             ],
             "dir": "up"
+          },
+          {
+            "value": 25,
+            "max": 26,
+            "rect": [
+              152,
+              36,
+              16,
+              70
+            ],
+            "color": 27,
+            "dir": "up"
           }
         ],
         "overlays": [
@@ -8083,6 +8093,20 @@
               190,
               0
             ]
+          },
+          {
+            "value": 28,
+            "min": 1,
+            "rect": [
+              151,
+              17,
+              18,
+              18
+            ],
+            "uv": [
+              190,
+              18
+            ]
           }
         ],
         "tooltips": [
@@ -8096,6 +8120,31 @@
             "lines": [
               "{0:si} / {1:si} HE"
             ]
+          },
+          {
+            "rect": [
+              152,
+              36,
+              16,
+              70
+            ],
+            "lines": [
+              "{25} / {26}"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              151,
+              17,
+              18,
+              18
+            ],
+            "lines": [
+              "Modo líquido"
+            ]
           }
         ]
       },
@@ -8106,16 +8155,6 @@
         "texture_from": "textures/models/machines/arc_furnace.png",
         "rotation": 90,
         "radius": 6.0,
-        "hide": [
-          "ContentsHot",
-          "ContentsCold",
-          "Electrode1Hot",
-          "Electrode2Hot",
-          "Electrode3Hot",
-          "Electrode1Short",
-          "Electrode2Short",
-          "Electrode3Short"
-        ],
         "bones": {
           "Cable1": {
             "pivot": [
@@ -8169,6 +8208,96 @@
             "property": "honey_level",
             "not": "0"
           }
+        ],
+        "show": {
+          "Ring1": {
+            "value": 20,
+            "min": 1
+          },
+          "Cable1": {
+            "value": 20,
+            "min": 1
+          },
+          "Electrode1": {
+            "value": 20,
+            "min": 1,
+            "max": 1
+          },
+          "Electrode1Hot": {
+            "value": 20,
+            "min": 2,
+            "max": 2
+          },
+          "Electrode1Short": {
+            "value": 20,
+            "min": 3,
+            "max": 3
+          },
+          "Ring2": {
+            "value": 21,
+            "min": 1
+          },
+          "Cable2": {
+            "value": 21,
+            "min": 1
+          },
+          "Electrode2": {
+            "value": 21,
+            "min": 1,
+            "max": 1
+          },
+          "Electrode2Hot": {
+            "value": 21,
+            "min": 2,
+            "max": 2
+          },
+          "Electrode2Short": {
+            "value": 21,
+            "min": 3,
+            "max": 3
+          },
+          "Ring3": {
+            "value": 22,
+            "min": 1
+          },
+          "Cable3": {
+            "value": 22,
+            "min": 1
+          },
+          "Electrode3": {
+            "value": 22,
+            "min": 1,
+            "max": 1
+          },
+          "Electrode3Hot": {
+            "value": 22,
+            "min": 2,
+            "max": 2
+          },
+          "Electrode3Short": {
+            "value": 22,
+            "min": 3,
+            "max": 3
+          },
+          "ContentsCold": {
+            "value": 23,
+            "min": 1,
+            "max": 1
+          },
+          "ContentsHot": {
+            "value": 23,
+            "min": 2,
+            "max": 2
+          }
+        },
+        "glow": [
+          "ContentsHot",
+          "Electrode1Hot",
+          "Electrode2Hot",
+          "Electrode3Hot",
+          "Electrode1Short",
+          "Electrode2Short",
+          "Electrode3Short"
         ]
       }
     }
