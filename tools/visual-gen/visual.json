@@ -1622,7 +1622,31 @@
         },
         "glow": [
           "InnerBurning"
-        ]
+        ],
+        "bones": {
+          "Door": {
+            "pivot": [
+              1.375,
+              0,
+              0.375
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.firebox.open",
+          "length": 1.0,
+          "loop": false,
+          "bones": {
+            "Door": {
+              "turn": [
+                0,
+                -135,
+                0
+              ]
+            }
+          }
+        },
+        "open": "animation.firebox.open"
       }
     },
     "ntm:foundry_mold": {

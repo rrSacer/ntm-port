@@ -36,6 +36,7 @@
   "assets/ntm/horizon_screen/heater_firebox.json",
   "assets/ntm/models/obj/firebox.obj",
   "assets/ntm/textures/models/machines/firebox.png",
+  "assets/ntm/animations/heater_firebox.animation.json",
   "assets/ntm/horizon_model/heater_firebox.json",
   "data/ntm/horizon_machine/foundry_mold.json",
   "assets/ntm/textures/models/machines/lava_gray.png",
