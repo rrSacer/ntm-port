@@ -414,8 +414,13 @@ def main():
                 copy(m.pop('texture_from'), 'assets/ntm/' + m['texture'].split(':', 1)[1])
             loop = m.pop('loop_animation', None)
             if loop:
+                # A list: several animations in the one file (a working loop
+                # and the ones a value poses).
+                doc = {'format_version': '1.8.0', 'animations': {}}
+                for one in loop if isinstance(loop, list) else [loop]:
+                    doc['animations'].update(loop_animation(one)['animations'])
                 rel = f'animations/{name}.animation.json'
-                write_json(own('assets/ntm/' + rel), loop_animation(loop))
+                write_json(own('assets/ntm/' + rel), doc)
                 m['animations'] = 'ntm:' + rel
             anim = m.pop('arm_animation', None)
             if anim:
