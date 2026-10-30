@@ -1,0 +1,145 @@
+{
+"station": "boiler",
+"source": "content/machine-recipes/boiler.json",
+"recipes": [
+{
+"name": "boiler.air",
+"label": "Sopro de Ar Quente",
+"source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:624",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"air",
+1
+]
+],
+"out": [],
+"fout": [
+[
+"airblast",
+1
+]
+],
+"pools": [],
+"heat": 5
+},
+{
+"name": "boiler.water",
+"label": "Vapor",
+"source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:630",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"water",
+1
+]
+],
+"out": [],
+"fout": [
+[
+"steam",
+100
+]
+],
+"pools": [],
+"heat": 200
+},
+{
+"name": "boiler.oil",
+"label": "Petróleo Bruto Quente",
+"source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:642",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"oil",
+1
+]
+],
+"out": [],
+"fout": [
+[
+"hotoil",
+1
+]
+],
+"pools": [],
+"heat": 10
+},
+{
+"name": "boiler.oil_ds",
+"label": "Petróleo Bruto Quente Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:643",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"oil_ds",
+1
+]
+],
+"out": [],
+"fout": [
+[
+"hotoil_ds",
+1
+]
+],
+"pools": [],
+"heat": 10
+},
+{
+"name": "boiler.crackoil",
+"label": "Óleo Craqueado Quente",
+"source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:644",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"crackoil",
+1
+]
+],
+"out": [],
+"fout": [
+[
+"hotcrackoil",
+1
+]
+],
+"pools": [],
+"heat": 10
+},
+{
+"name": "boiler.crackoil_ds",
+"label": "Óleo Craqueado Quente Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:645",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"crackoil_ds",
+1
+]
+],
+"out": [],
+"fout": [
+[
+"hotcrackoil_ds",
+1
+]
+],
+"pools": [],
+"heat": 10
+}
+],
+"skipped": 0
+}

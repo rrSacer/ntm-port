@@ -1,0 +1,205 @@
+{
+"station": "hydrotreating",
+"source": "content/machine-recipes/hydrotreating.json",
+"recipes": [
+{
+"name": "hydrotreating.0",
+"label": "Petróleo Bruto Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/HydrotreatingRecipes.java:26",
+"duration": 2,
+"power": 0,
+"in": [],
+"fin": [
+[
+"oil",
+100
+],
+[
+"hydrogen",
+5
+]
+],
+"out": [],
+"fout": [
+[
+"oil_ds",
+90
+],
+[
+"sourgas",
+15
+]
+],
+"pools": [],
+"every": 2,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "hydrotreating.1",
+"label": "Óleo Craqueado Dessulfurizado",
+"source": "src/main/java/com/hbm/inventory/recipes/HydrotreatingRecipes.java:32",
+"duration": 2,
+"power": 0,
+"in": [],
+"fin": [
+[
+"crackoil",
+100
+],
+[
+"hydrogen",
+5
+]
+],
+"out": [],
+"fout": [
+[
+"crackoil_ds",
+90
+],
+[
+"sourgas",
+15
+]
+],
+"pools": [],
+"every": 2,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "hydrotreating.2",
+"label": "Gás de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/HydrotreatingRecipes.java:38",
+"duration": 2,
+"power": 0,
+"in": [],
+"fin": [
+[
+"gas",
+100
+],
+[
+"hydrogen",
+5
+]
+],
+"out": [],
+"fout": [
+[
+"petroleum",
+80
+],
+[
+"sourgas",
+15
+]
+],
+"pools": [],
+"every": 2,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "hydrotreating.3",
+"label": "Diesel",
+"source": "src/main/java/com/hbm/inventory/recipes/HydrotreatingRecipes.java:44",
+"duration": 2,
+"power": 0,
+"in": [],
+"fin": [
+[
+"diesel_crack",
+100
+],
+[
+"hydrogen",
+10
+]
+],
+"out": [],
+"fout": [
+[
+"diesel",
+80
+],
+[
+"sourgas",
+30
+]
+],
+"pools": [],
+"every": 2,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "hydrotreating.4",
+"label": "Diesel de Alto Cetano",
+"source": "src/main/java/com/hbm/inventory/recipes/HydrotreatingRecipes.java:50",
+"duration": 2,
+"power": 0,
+"in": [],
+"fin": [
+[
+"diesel_crack_reform",
+100
+],
+[
+"hydrogen",
+10
+]
+],
+"out": [],
+"fout": [
+[
+"diesel_reform",
+80
+],
+[
+"sourgas",
+30
+]
+],
+"pools": [],
+"every": 2,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "hydrotreating.5",
+"label": "Gasolina de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/HydrotreatingRecipes.java:56",
+"duration": 2,
+"power": 0,
+"in": [],
+"fin": [
+[
+"coaloil",
+100
+],
+[
+"hydrogen",
+10
+]
+],
+"out": [],
+"fout": [
+[
+"coalgas",
+80
+],
+[
+"sourgas",
+15
+]
+],
+"pools": [],
+"every": 2,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+}
+],
+"skipped": 0
+}

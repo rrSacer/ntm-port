@@ -1,0 +1,959 @@
+{
+"station": "coker",
+"source": "content/machine-recipes/coker.json",
+"recipes": [
+{
+"name": "coker.0",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:33",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"heavyoil",
+11000
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oil_coker",
+1100
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.1",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:34",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"heavyoil_vacuum",
+3500
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"reformate",
+350
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.2",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:35",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"coalcreosote",
+3200
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha_coker",
+320
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.3",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:36",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"smear",
+7900
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oil_coker",
+790
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.4",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:37",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"heatingoil",
+1600
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oil_coker",
+160
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.5",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:38",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"heatingoil_vacuum",
+500
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oil_coker",
+50
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.6",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:39",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"reclaimed",
+5800
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha_coker",
+580
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.7",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:40",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"naphtha",
+4900
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha_coker",
+490
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.8",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:41",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"naphtha_ds",
+2400
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha_coker",
+240
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.9",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:42",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"naphtha_crack",
+6400
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha_coker",
+640
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.10",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:43",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"diesel",
+590
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha_coker",
+59
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.11",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:44",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"diesel_reform",
+230
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"naphtha_coker",
+23
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.12",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:45",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"diesel_crack",
+640
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+64
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.13",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:46",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"diesel_crack_reform",
+250
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+25
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.14",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:47",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lightoil",
+370
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+37
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.15",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:48",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lightoil_ds",
+180
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+18
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.16",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:49",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lightoil_crack",
+590
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+59
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.17",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:50",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lightoil_vacuum",
+180
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+18
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.18",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:51",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"biofuel",
+650
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+65
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.19",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:52",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"aromatics",
+1700
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+170
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.20",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:53",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"reformate",
+130
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+13
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.21",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:54",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"xylene",
+100
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+10
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.22",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:55",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"fishoil",
+10000
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"mercury",
+1000
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.23",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:56",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"sunfloweroil",
+16000
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+1600
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.24",
+"label": "Carvão Vegetal",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:58",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"woodoil",
+3000
+]
+],
+"out": [
+[
+"minecraft:charcoal",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+300
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.25",
+"label": "Tijolo de Lama Sólida ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:60",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"watz",
+4000
+]
+],
+"out": [
+[
+"ntm:ingot_mud",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.26",
+"label": "Lingote de Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:61",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"redmud",
+450
+]
+],
+"out": [
+[
+"minecraft:iron_ingot",
+1,
+1.0
+]
+],
+"fout": [
+[
+"mercury",
+50
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.27",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:62",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"bitumen",
+16000
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oil_coker",
+1600
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.28",
+"label": "Coque de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:63",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lubricant",
+12000
+]
+],
+"out": [
+[
+"ntm:coke__petroleum",
+1,
+1.0
+]
+],
+"fout": [
+[
+"oil_coker",
+1200
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.29",
+"label": "Pó de Cálcio",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:64",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"calcium_solution",
+125
+]
+],
+"out": [
+[
+"ntm:powder_calcium",
+1,
+1.0
+]
+],
+"fout": [
+[
+"spentsteam",
+100
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.30",
+"label": "Enxofre",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:66",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"sourgas",
+1000
+]
+],
+"out": [
+[
+"ntm:sulfur",
+1,
+1.0
+]
+],
+"fout": [
+[
+"gas_coker",
+150
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.31",
+"label": "Pó de Calcário",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:67",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"slop",
+1000
+]
+],
+"out": [
+[
+"ntm:powder_limestone",
+1,
+1.0
+]
+],
+"fout": [
+[
+"colloid",
+250
+]
+],
+"pools": [],
+"heat": 20000
+},
+{
+"name": "coker.32",
+"label": "Pó de Ferro",
+"source": "src/main/java/com/hbm/inventory/recipes/CokerRecipes.java:68",
+"duration": 0,
+"power": 0,
+"in": [],
+"fin": [
+[
+"vitriol",
+4000
+]
+],
+"out": [
+[
+"ntm:powder_iron",
+1,
+1.0
+]
+],
+"fout": [
+[
+"sulfuric_acid",
+500
+]
+],
+"pools": [],
+"heat": 20000
+}
+],
+"skipped": 0
+}

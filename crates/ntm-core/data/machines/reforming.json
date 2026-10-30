@@ -1,0 +1,304 @@
+{
+"station": "reforming",
+"source": "content/machine-recipes/reforming.json",
+"recipes": [
+{
+"name": "reforming.0",
+"label": "Nafta",
+"source": "src/main/java/com/hbm/inventory/recipes/ReformingRecipes.java:25",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"heatingoil",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"naphtha",
+50
+],
+[
+"petroleum",
+15
+],
+[
+"hydrogen",
+10
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "reforming.1",
+"label": "Reformado",
+"source": "src/main/java/com/hbm/inventory/recipes/ReformingRecipes.java:30",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"naphtha",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"reformate",
+50
+],
+[
+"petroleum",
+15
+],
+[
+"hydrogen",
+10
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "reforming.2",
+"label": "Reformado",
+"source": "src/main/java/com/hbm/inventory/recipes/ReformingRecipes.java:35",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"naphtha_crack",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"reformate",
+50
+],
+[
+"aromatics",
+10
+],
+[
+"hydrogen",
+5
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "reforming.3",
+"label": "Reformado",
+"source": "src/main/java/com/hbm/inventory/recipes/ReformingRecipes.java:40",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"naphtha_coker",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"reformate",
+50
+],
+[
+"reformgas",
+10
+],
+[
+"hydrogen",
+5
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "reforming.4",
+"label": "Hidrocarbonetos Aromáticos",
+"source": "src/main/java/com/hbm/inventory/recipes/ReformingRecipes.java:45",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lightoil",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"aromatics",
+50
+],
+[
+"reformgas",
+10
+],
+[
+"hydrogen",
+15
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "reforming.5",
+"label": "Hidrocarbonetos Aromáticos",
+"source": "src/main/java/com/hbm/inventory/recipes/ReformingRecipes.java:50",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lightoil_crack",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"aromatics",
+50
+],
+[
+"reformgas",
+5
+],
+[
+"hydrogen",
+20
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "reforming.6",
+"label": "Hidrocarbonetos Insaturados",
+"source": "src/main/java/com/hbm/inventory/recipes/ReformingRecipes.java:55",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"petroleum",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"unsaturateds",
+85
+],
+[
+"reformgas",
+10
+],
+[
+"hydrogen",
+5
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "reforming.7",
+"label": "Ácido Sulfúrico",
+"source": "src/main/java/com/hbm/inventory/recipes/ReformingRecipes.java:60",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"sourgas",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"sulfuric_acid",
+75
+],
+[
+"petroleum",
+10
+],
+[
+"hydrogen",
+15
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+},
+{
+"name": "reforming.8",
+"label": "Solução de Estradiol",
+"source": "src/main/java/com/hbm/inventory/recipes/ReformingRecipes.java:65",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"cholesterol",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"estradiol",
+50
+],
+[
+"reformgas",
+35
+],
+[
+"hydrogen",
+15
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 20000,
+"catalyst": "ntm:catalytic_converter"
+}
+],
+"skipped": 0
+}

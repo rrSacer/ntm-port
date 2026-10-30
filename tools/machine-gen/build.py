@@ -52,13 +52,20 @@ def generic(st, section=None):
         outs = [[o[0], o[1], o[2] if len(o) > 2 else 1.0] for o in r['outputItems']]
         out.append({
             'name': r['name'], 'label': r.get('label') or label(r, outs, r['outputFluids']), 'source': r['source'],
-            'duration': r['duration'], 'power': r['power'],
+            'duration': r.get('duration', 0), 'power': r['power'],
             'in': ins, 'fin': r['inputFluids'], 'out': outs, 'fout': r['outputFluids'],
             'pools': r.get('pools', []),
             **({'group': r['autoSwitchGroup']} if r.get('autoSwitchGroup') else {}),
             **({'productivity': r['productivity']} if r.get('productivity') else {}),
             **({'mout': r['outputMaterials']} if r.get('outputMaterials') else {}),
             **({'periodic': [[p['item'][0], p['item'][1], p['every']] for p in r['periodicOutputItems']]} if r.get('periodicOutputItems') else {}),
+            # Lote C do petróleo: intervalo, operações por intervalo, HE por
+            # operação (debitado ao operar), catalisador não gasto, calor.
+            **({'every': r['interval_ticks']} if r.get('interval_ticks') else {}),
+            **({'ops': r['max_operations_per_interval']} if r.get('max_operations_per_interval') else {}),
+            **({'he_op': r['energy_per_operation_he']} if r.get('energy_per_operation_he') else {}),
+            **({'catalyst': r['catalysts'][0]['item']} if r.get('catalysts') else {}),
+            **({'heat': r['heat_required_tu']} if r.get('heat_required_tu') else {}),
         })
     return {'station': st, 'source': f'content/machine-recipes/{st}.json', 'recipes': out, 'skipped': len(src['skipped'])}
 
@@ -193,7 +200,9 @@ if (root / 'content/machine-recipes/crystallizer.json').exists():
 # petróleo: liquefator, solidificador, refinaria, torre de fração, misturador.
 for st, section in (('pyrooven', None), ('electrolyser', 'fluid'), ('electrolyser_metal', 'metal'), ('arc_furnace_solid', 'solid'), ('arc_furnace_fluid', 'fluid'),
                     ('liquefaction', None), ('solidification', None),
-                    ('refinery', None), ('fraction', None), ('mixer', None)):
+                    ('refinery', None), ('fraction', None), ('mixer', None),
+                    ('cracking', None), ('reforming', None), ('hydrotreating', None),
+                    ('vacuum_refinery', None), ('coker', None), ('boiler', None)):
     src = st.split('_metal')[0].replace('_solid', '').replace('_fluid', '')
     if (root / f'content/machine-recipes/{src}.json').exists():
         data = generic(src, section)

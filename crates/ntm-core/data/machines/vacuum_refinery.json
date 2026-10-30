@@ -1,0 +1,79 @@
+{
+"station": "vacuum_refinery",
+"source": "content/machine-recipes/vacuum_refinery.json",
+"recipes": [
+{
+"name": "vacuum_refinery.0",
+"label": "Óleo Pesado a Vácuo",
+"source": "src/main/java/com/hbm/inventory/recipes/VacuumRefineryRecipes.java:30",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"oil",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"heavyoil_vacuum",
+40
+],
+[
+"reformate",
+25
+],
+[
+"lightoil_vacuum",
+20
+],
+[
+"sourgas",
+15
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 10000
+},
+{
+"name": "vacuum_refinery.1",
+"label": "Óleo Pesado a Vácuo",
+"source": "src/main/java/com/hbm/inventory/recipes/VacuumRefineryRecipes.java:36",
+"duration": 1,
+"power": 0,
+"in": [],
+"fin": [
+[
+"oil_ds",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"heavyoil_vacuum",
+40
+],
+[
+"reformate",
+25
+],
+[
+"lightoil_vacuum",
+20
+],
+[
+"reformgas",
+15
+]
+],
+"pools": [],
+"every": 1,
+"he_op": 10000
+}
+],
+"skipped": 0
+}

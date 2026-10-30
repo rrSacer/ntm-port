@@ -1,0 +1,435 @@
+{
+"station": "cracking",
+"source": "content/machine-recipes/cracking.json",
+"recipes": [
+{
+"name": "cracking.0",
+"label": "Óleo Craqueado",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:43",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"oil",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"crackoil",
+80
+],
+[
+"petroleum",
+20
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.1",
+"label": "Petróleo Bruto",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:44",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"bitumen",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"oil",
+80
+],
+[
+"aromatics",
+20
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.2",
+"label": "Nafta",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:45",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"smear",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"naphtha",
+60
+],
+[
+"petroleum",
+40
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.3",
+"label": "Gás de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:46",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"gas",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"petroleum",
+30
+],
+[
+"unsaturateds",
+20
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.4",
+"label": "Querosene",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:47",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"diesel",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"kerosene",
+40
+],
+[
+"petroleum",
+30
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.5",
+"label": "Querosene",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:48",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"diesel_crack",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"kerosene",
+40
+],
+[
+"petroleum",
+30
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.6",
+"label": "Gás de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:49",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"kerosene",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"petroleum",
+60
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.7",
+"label": "Óleo de Aquecimento",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:50",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"woodoil",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"heatingoil",
+40
+],
+[
+"aromatics",
+10
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.8",
+"label": "Hidrocarbonetos Aromáticos",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:51",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"xylene",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"aromatics",
+80
+],
+[
+"petroleum",
+20
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.9",
+"label": "Óleo de Aquecimento",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:52",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"heatingoil_vacuum",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"heatingoil",
+80
+],
+[
+"reformgas",
+20
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.10",
+"label": "Hidrocarbonetos Insaturados",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:53",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"reformate",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"unsaturateds",
+40
+],
+[
+"reformgas",
+60
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+},
+{
+"name": "cracking.11",
+"label": "Gás de Petróleo",
+"source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:54",
+"duration": 5,
+"power": 0,
+"in": [],
+"fin": [
+[
+"biogas",
+100
+],
+[
+"steam",
+200
+]
+],
+"out": [],
+"fout": [
+[
+"petroleum",
+20
+],
+[
+"aromatics",
+20
+],
+[
+"spentsteam",
+2
+]
+],
+"pools": [],
+"every": 5,
+"ops": 2
+}
+],
+"skipped": 0
+}
