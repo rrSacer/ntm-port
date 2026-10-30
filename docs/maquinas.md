@@ -667,6 +667,53 @@ barril na camada de portas.
       polônio e 4 migalhas. Todas as contas batem com as tabelas.
   - 9 fragmentos de urânio dão 1 pó de urânio. Sem "took too long".
 
+## Cadeia do bedrock, etapa 3: forno pirolítico e eletrólise de fluidos (`crafter.rs`)
+
+São o `TileEntityMachinePyroOven` (71 receitas do `PyroOvenRecipes`, entre
+elas a torrefação do minério de bedrock, que dá vitríolo) e a linha de
+fluidos do `TileEntityElectrolyser` (8 receitas do
+`ElectrolyserFluidRecipes`). A linha de metal do eletrolisador é da etapa 4.
+Os dois são estações do crafter; telas, multiblocos e portas são do agente de
+visual.
+
+| | Forno pirolítico | Eletrolisador (fluidos) |
+| --- | --- | --- |
+| Receita | o item da entrada e o fluido do tanque de entrada; uma receita sem item pede a entrada vazia (`doesRecipeMatch`) | o fluido do tanque de entrada |
+| Tanques | entrada e saída de 24.000 mB; a de saída toma o fluido da receita ao terminar e é esvaziada se tinha outro (`setTankType`) | entrada e duas saídas de 16.000 mB; as saídas tomam os fluidos da receita quando ela é escolhida |
+| Energia | 10.000 HE por tick, até 10.000.000 | 10.000 HE por tick, até 20.000.000 |
+| Itens | 1 entrada, 1 saída | subprodutos nos slots 11–13 |
+| Progresso | reinicia sem receita | fica parado sem receita, como no NTM |
+
+Os tanques de entrada são tipados pelo primeiro fluido que chega
+(`accepts_any`), como o do cristalizador.
+
+**Defeito achado em jogo, corrigido com teste:** o vitríolo de saída do forno
+voltava, pela rede, para o próprio tanque de entrada vazio. Um tanque desses
+agora recusa o que a própria máquina põe para fora.
+
+**Verificação:**
+- **Mundo falso** (`server/tests/stage3_tests.rs`, 3):
+  - torrar 2 BASE dá 2 torrados e 100 mB de vitríolo, e o tanque de entrada
+    não aceita o próprio vitríolo;
+  - uma receita só de fluido;
+  - um minério na entrada escolhe a receita dele;
+  - o tanque de saída troca de fluido;
+  - o eletrolisador faz 2 × (1.000 mB de vitríolo → 500 de ácido sulfúrico +
+    500 de cloro + pó de ferro + pepita de mercúrio).
+- **Em jogo** (`tools/test-game/bedrock.py`, etapas `torrar`, `eletrolisar` e
+  `ciclo`):
+  - **`torrar`:** 40 BASE de actinídeos dão 40 torrados e 2.000 mB de
+    vitríolo, num barril na porta do forno. Os torrados na centrífuga dão
+    PRIMARY, um por torrado, como os BASE.
+  - **`eletrolisar`:** o vitríolo, levado em tanques de 1.000 mB a um barril
+    na porta do eletrolisador, dá 1.000 mB de ácido sulfúrico num barril de
+    saída, mais 2 pós de ferro e 2 pepitas de mercúrio nos slots de
+    subproduto.
+  - **`ciclo`:** esse ácido, num cristalizador novo sem outro ácido, faz 2
+    PRIMARY → 2 PRIMARY sulfúricos. O ciclo fecha: torrefação → vitríolo →
+    eletrólise → ácido sulfúrico → cristalizador.
+  - Sem "took too long".
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
