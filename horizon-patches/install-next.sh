@@ -66,6 +66,11 @@ for f in "$old/options.txt" "$old"/horizon-*.txt; do
   [ -f "$f" ] && run cp --reflink=auto -p "$f" "$new/"
 done
 run install_mod "$ntm_hmod" "$new/horizon-mods/ntm.hmod"
+# A mod in horizon-mods/ loads only when Options > Mods has it on
+# (horizon-mods.txt); the copied list may lack it, or there is none.
+if ! grep -qx 'mod.ntm:true' "$new/horizon-mods.txt" 2>/dev/null; then
+  run sh -c "sed -i '/^mod\.ntm:/d' '$new/horizon-mods.txt' 2>/dev/null; echo mod.ntm:true >> '$new/horizon-mods.txt'"
+fi
 
 echo "== launcher $launcher"
 launcher_text="#!/bin/sh

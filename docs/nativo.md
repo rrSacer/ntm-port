@@ -129,10 +129,34 @@ O host do bundle lê os jogadores vivos (`native_players`) a cada tick; o UUID �
 - **Dano das bombas:** a carga fere pelo que a explosão vê do jogador (exposição vanilla), e as nukes por pulsos enquanto cavam a cratera, bloqueados por obstáculos (`native_hurt`, `minecraft:explosion`).
 - **Detonador** (`ntm:detonator`): usado numa bomba, liga (hook `use_item_on`); usado em outro bloco ou no ar (hook `use_item`), detona a bomba ligada ou acende o pavio de uma carga. No NTM a ligação é com o jogador agachado; o hook com item na mão não diz se ele agacha. O texto do detonador vai ao log: o servidor não tem helper para o chat do jogador.
 
+**O que o upstream tem para as lacunas** (conferido em 30/10):
+
+| Lacuna | Upstream | Estado |
+| --- | --- | --- |
+| Partículas das bombas | `GameLevel::native_send_particles` (#4390, contraparte de `ServerLevel.sendParticles`) | Integrado; já está na `ntm-next` `29b4726b4`. Partículas de bloco sim, de item não. Falta usar nas explosões e no pavio. |
+| Sons das bombas | `GameLevel::native_play_sound` (#4574, issue #4400) | PR aberto. Usar quando entrar. |
+| Texto ao próprio jogador (detonador) | Nada. `native_tell` só alcança convidados LAN; `native_chat` é do cliente. | Lacuna; pedir ao upstream. |
+| Agachar com item na mão (ligar o detonador) | Nada. `use_block` traz `sneaking` só de mãos vazias. | Lacuna; pedir ao upstream. |
+
 Prova em jogo (`tools/test-game/native_l4.py`, mundo novo):
 
 - **radiacao:** em sobrevivência com 64 lingotes de urânio (22,4 RAD/s), a dose ficou em 0 na carência e chegou a 470,4 RAD depois de ~21 s, guardada em `<mundo>/data/ntm/world`. O jogador ficou com náusea, fraqueza II e lentidão, a faixa de 400 RAD.
 - **detonador:** uma carga `ntm:tnt_ntm` posta por `/setblock`: o detonador nela a ligou, o clique seguinte acendeu o pavio, e a carga explodiu (força 10, 63 blocos), deixando a cratera.
+
+## Candidato de instalação lado a lado (I1, 30/10)
+
+O binário vem do `tools/build-native.sh` na `ntm-next` `29b4726b4`, com o bundle do HEAD. O `ntm.hmod` sai do `tools/build-content.sh` com o `cargo-horizon-mod` do mesmo motor (o crate está no stage do build: `cargo build --release -p cargo-horizon-mod`). Os dois vão para `horizon-patches/install-next.sh` e `update-horizon-ntm-next.sh` (`HORIZON_NEXT_BUILD`, `NTM_HMOD`).
+
+- **Conteúdo ligado:** um mod em `horizon-mods/` só carrega com `mod.<id>:true` no `horizon-mods.txt` (Options > Mods); o `--dev-mod` dos roteiros sempre liga. Os dois scripts agora garantem `mod.ntm:true`; sem isso, uma instalação a partir de uma antiga sem esse arquivo abria sem os blocos do NTM.
+- **Prova** (HOME temporária, a antiga instalação falsa sem `horizon-mods.txt`): simulação e `--apply` dos dois scripts. Depois, o jogo aberto pelo próprio lançador instalado, num mundo novo. Passaram:
+  - a prensa (8 chapas, matriz com desgaste 8);
+  - a rede de energia (4 lingotes no baú);
+  - a de fluido (1000 mB no barril B, dutos tipados pelo identificador);
+  - a lista de receitas (escolha mandada ao fechar, 4 chapas);
+  - a radiação (627 RAD, os efeitos da faixa de 600 e o dano);
+  - o detonador (ligou, acendeu o pavio, cratera).
+
+  Zero pânicos; jogo fechado.
 
 ## A alavanca das turbinas (30/10, `ntm-next` `c6ad4a73e`, API 24)
 

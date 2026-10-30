@@ -68,6 +68,10 @@ echo "== new native build"
 run cp "$build/horizon-client" "$build/horizon-ctl" "$game/bin/"
 run mkdir -p "$game/horizon-mods"
 run install_mod "$ntm_hmod" "$game/horizon-mods/ntm.hmod"
+# The content mod on in Options > Mods (horizon-mods.txt).
+if ! grep -qx 'mod.ntm:true' "$game/horizon-mods.txt" 2>/dev/null; then
+  run sh -c "sed -i '/^mod\.ntm:/d' '$game/horizon-mods.txt' 2>/dev/null; echo mod.ntm:true >> '$game/horizon-mods.txt'"
+fi
 for f in "${obsolete[@]}"; do
   [ -f "$f" ] && run rm -f "$f"
 done
