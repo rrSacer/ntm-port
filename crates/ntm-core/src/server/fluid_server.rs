@@ -11,7 +11,24 @@ pub struct FluidNet {
     sig: u64,
     /// (dimension, fluid, machines of each network).
     nets: Vec<(String, String, Vec<Vec<Pos>>)>,
+    /// A rebuild under way: its shape, the fluids left to build (their
+    /// ducts and machines) and those built. The old networks run meanwhile.
+    pending: Option<Rebuild>,
 }
+
+type Members = BTreeMap<Pos, Vec<crate::energy::Port>>;
+
+struct Rebuild {
+    sig: u64,
+    todo: Vec<((String, String), BTreeSet<Pos>, Members)>,
+    done: Vec<(String, String, Vec<Vec<Pos>>)>,
+}
+
+/// Cells and machines a tick's share of a rebuild walks (at least one
+/// fluid a tick): a world with many machines that take any fluid has a few
+/// hundred per fluid, and building every fluid at once took 30M of the
+/// tick's 50M of fuel.
+pub const REBUILD_CELLS_PER_TICK: usize = 600;
 
 impl FluidNet {
     pub fn networks(&self) -> usize {
@@ -25,9 +42,10 @@ impl Server {
         // The networks are checked for changes every 10 ticks (a duct put
         // down or retyped joins within half a second); between checks the
         // cached ones move fluid.
-        if self.tick.is_multiple_of(10) || self.fluidnet.sig == 0 {
+        if self.tick.is_multiple_of(10) || self.fluidnet.sig == 0 && self.fluidnet.pending.is_none() {
             self.fluid_shape();
         }
+        self.fluid_rebuild_step();
         let Session::Ready(r) = &mut self.session else { return };
         let mut moved = 0;
         for (dim, f, nets) in &self.fluidnet.nets {
@@ -59,6 +77,11 @@ impl Server {
         let mut h: u64 = 0x6e74_6d66;
         let mut feed = |v: u64| h = crate::hash::mix(h ^ v);
         let mut ducts: BTreeMap<(String, String), BTreeSet<Pos>> = BTreeMap::new();
+        // A fluid's networks join only the machines that hold it, take any
+        // fluid or would take it now (an empty barrel): one with nothing to
+        // do with it never passes it on (machines only touch, ducts carry).
+        // Built with every machine of the dimension, each fluid's networks
+        // walked them all: 32M of fuel in a world of 28 machines.
         let mut users: BTreeMap<String, BTreeMap<Pos, Vec<crate::energy::Port>>> = BTreeMap::new();
         let mut kinds: BTreeSet<(String, String)> = BTreeSet::new();
         let mut any: BTreeMap<String, BTreeSet<Pos>> = BTreeMap::new();
@@ -104,18 +127,51 @@ impl Server {
                 ducts.entry((dim.clone(), f.clone())).or_default().extend(cells.iter().copied());
             }
         }
+        // Who is in each fluid's networks, read at every check (cheap) and
+        // part of the shape: an empty barrel set to take joins at the next.
+        let mut members: Vec<((String, String), Members)> = Vec::new();
+        for (dim, f) in &kinds {
+            let mut m: BTreeMap<Pos, Vec<crate::energy::Port>> = BTreeMap::new();
+            for (p, ports) in users.get(dim).into_iter().flatten() {
+                let Some(node) = r.world.machines.get_mut(&(dim.clone(), *p)).and_then(|m| m.logic_mut().fluid()) else { continue };
+                if node.accepts_any() || node.fluid_demand(f) > 0 || node.fluid_offer(f) > 0 || node.fluid_types().contains(f) {
+                    feed(((p[0] as u64) ^ ((p[1] as u64) << 21) ^ ((p[2] as u64) << 42)).rotate_left(13) ^ crate::hash::fnv64(f.as_bytes()));
+                    m.insert(*p, ports.clone());
+                }
+            }
+            members.push(((dim.clone(), f.clone()), m));
+        }
         let sig = h | 1;
-        if sig != self.fluidnet.sig {
-            self.fluidnet.sig = sig;
-            self.fluidnet.nets = kinds
+        let target = self.fluidnet.pending.as_ref().map_or(self.fluidnet.sig, |p| p.sig);
+        if sig != target {
+            let todo = members
                 .into_iter()
-                .map(|(dim, f)| {
-                    let cables = ducts.get(&(dim.clone(), f.clone())).cloned().unwrap_or_default();
-                    let machines = users.get(&dim).cloned().unwrap_or_default();
-                    let nets = Topology::build(&cables, &machines).networks;
-                    (dim, f, nets)
+                .map(|((dim, f), machines)| {
+                    let cables = ducts.remove(&(dim.clone(), f.clone())).unwrap_or_default();
+                    ((dim, f), cables, machines)
                 })
                 .collect();
+            self.fluidnet.pending = Some(Rebuild { sig, todo, done: Vec::new() });
+        }
+    }
+
+    /// Builds the networks of a few fluids of the pending rebuild; when all
+    /// are built, they replace the old ones.
+    fn fluid_rebuild_step(&mut self) {
+        let Some(p) = &mut self.fluidnet.pending else { return };
+        let mut walked = 0;
+        while let Some(((dim, f), cables, machines)) = p.todo.pop() {
+            walked += cables.len() + machines.len();
+            let nets = Topology::build(&cables, &machines).networks;
+            p.done.push((dim, f, nets));
+            if walked >= REBUILD_CELLS_PER_TICK {
+                break;
+            }
+        }
+        if p.todo.is_empty() {
+            let p = self.fluidnet.pending.take().expect("pending");
+            self.fluidnet.sig = p.sig;
+            self.fluidnet.nets = p.done;
         }
     }
 
