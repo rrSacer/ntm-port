@@ -69,7 +69,20 @@ def centrifuge():
         # a entrada (a receita é escolhida por ela).
         out.append({'name': r['name'], 'label': ing['label'], 'source': r['source'], 'duration': 200, 'power': 200,
                     'in': [ing], 'fin': [], 'out': outs, 'fout': [], 'pools': []})
-    return {'station': 'centrifuge', 'source': 'content/machine-recipes/centrifuge.json', 'recipes': out, 'skipped': len(src['skipped'])}
+    skipped = len(src['skipped'])
+    # As linhas de minério de bedrock (CentrifugeRecipes.java:267-288), da
+    # etapa 1 da cadeia do bedrock, quando o agente de conteúdo já as extraiu.
+    b = root / 'content/machine-recipes/bedrock.json'
+    if b.exists():
+        bsrc = json.loads(b.read_text())
+        for r in bsrc.get('centrifuge', []):
+            inp = r.get('input') or r['inputItems'][0]
+            ing = ingredient(inp, r.get('inputAlternatives'))
+            outs = [[o[0], o[1], o[2] if len(o) > 2 else 1.0] for o in (r.get('outputs') or r['outputItems'])]
+            out.append({'name': r['name'], 'label': ing['label'], 'source': r['source'], 'duration': 200, 'power': 200,
+                        'in': [ing], 'fin': [], 'out': outs, 'fout': [], 'pools': []})
+        skipped += len([x for x in bsrc.get('skipped', []) if 'entrifuge' in json.dumps(x)])
+    return {'station': 'centrifuge', 'source': 'content/machine-recipes/centrifuge.json', 'recipes': out, 'skipped': skipped}
 
 
 def shredder():
