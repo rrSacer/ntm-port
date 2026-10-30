@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""Disposable, silent content-only client probe for late bedrock/catalog assets."""
+import argparse
+import json
+import os
+import shutil
+import socket
+import subprocess
+import tempfile
+import time
+from pathlib import Path
+
+
+def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--package',type=Path,required=True)
+    parser.add_argument('--horizon-client',type=Path,required=True)
+    args=parser.parse_args()
+    root=Path(__file__).resolve().parents[2]
+    evidence=root/'content-gen-evidence/bedrock-stages34';evidence.mkdir(parents=True,exist_ok=True)
+    scratch=Path(tempfile.mkdtemp(prefix='ntm-processing-probe-'))
+    for d in ['game','home','launcher','data','config']:(scratch/d).mkdir()
+    (scratch/'game/options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nrenderDistance:2\nsimulationDistance:2\nmaxFps:15\nenableVsync:false\n')
+    env={**os.environ,'HOME':str(scratch/'home'),'HORIZON_HOME':str(scratch/'game'),
+         'HORIZON_LAUNCHER_HOME':str(scratch/'launcher'),'XDG_DATA_HOME':str(scratch/'data'),
+         'XDG_CONFIG_HOME':str(scratch/'config'),'HORIZON_LAUNCHER_NO_SELF_UPDATE':'1',
+         'HORIZON_NO_UPDATE_CHECK':'1','HORIZON_NO_AUDIO':'1','XDG_RUNTIME_DIR':'/run/user/1000',
+         'WAYLAND_DISPLAY':'','SDL_VIDEODRIVER':'x11'}
+    checks=[];process=None;mute=None
+    def ctl(command):
+        with socket.socket(socket.AF_UNIX) as client:
+            client.settimeout(45);client.connect(str(scratch/'control.sock'))
+            client.sendall((command+'\n').encode());reply=json.loads(client.makefile().readline())
+        checks.append({'command':command,'reply':reply})
+        if 'error' in reply or reply.get('ok') is False:raise AssertionError((command,reply))
+        return reply
+    def cmd(command):
+        reply=ctl('command '+command)
+        if any(s in str(reply.get('chat',[])).lower() for s in ['unknown','incorrect','error']):raise AssertionError((command,reply))
+        return reply
+    try:
+        mute=subprocess.Popen(['python3',str(root/'tools/test-game/mute.py'),str(scratch/'game')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        with (scratch/'client.log').open('w') as log:
+            process=subprocess.Popen([str(args.horizon_client),'--resources','/home/sacer/Games/horizon/.local/horizon-client/26.3',
+                '--dev-mod',str(args.package.resolve()),'--control-socket',str(scratch/'control.sock'),'--offscreen','--test-terrain',
+                '--creative','--world','NTMProcessingProbe','--render-distance','2','--width','1280','--height','720','--name','ProcessingProbe'],
+                cwd=scratch/'game',env=env,stdout=log,stderr=subprocess.STDOUT)
+            deadline=time.monotonic()+600
+            while time.monotonic()<deadline:
+                if process.poll() is not None:raise RuntimeError('client exited during startup')
+                if (scratch/'control.sock').exists():
+                    state=ctl('state')
+                    if state.get('screen')=='playing':break
+                time.sleep(.5)
+            else:raise TimeoutError('client did not reach playing')
+            cmd('time set noon');cmd('weather clear')
+            cmd('fill -9 100 -3 9 100 3 minecraft:stone')
+            machines=['machine_pyrooven','machine_electrolyser','machine_arc_furnace_large']
+            for i,name in enumerate(machines):
+                x=-4+i*4
+                for y,level in [(101,0),(103,5)]:
+                    state=f'ntm:{name}[facing=north,honey_level={level}]'
+                    cmd(f'setblock {x} {y} 0 {state}')
+                    assert ctl(f'block {x} {y} 0')['state']==state
+            for i,name in enumerate(['block_graphite','rebar','concrete_rebar']):
+                cmd(f'setblock {-4+i*4} 101 3 ntm:{name}')
+                assert ctl(f'block {-4+i*4} 101 3')['block']=='ntm:'+name
+            cmd('tp @s 0.5 101 -7.5');ctl('look 0 -7');ctl('wait 10')
+            ctl('screenshot '+str(evidence/'machines.png'))
+            samples=['arc_electrode__graphite','arc_electrode_burnt__saturnite','scrap_plastic__board_blank',
+                'scrap_plastic__card_processor','chemical_dye__black','chemical_dye__white','chemical_dye__lightblue',
+                'powder_cement','ingot_semtex','ingot_schraranium','meteorite_sword_treated','meteorite_sword_etched']
+            cmd('clear @s')
+            for name in samples:cmd('give @s ntm:'+name+' 1')
+            counts=ctl('inventory')['counts']
+            assert all(counts.get('ntm:'+name,0)==1 for name in samples)
+            ctl('open-inventory');ctl('wait 5');ctl('screenshot '+str(evidence/'items.png'));ctl('close')
+            ctl('quit');process.wait(timeout=60)
+        text=(scratch/'client.log').read_text()
+        refused=[line for line in text.splitlines() if any(s in line.lower() for s in ['content mod rejected','refused','panicked at'])]
+        assert not refused,refused
+        (evidence/'game.json').write_text(json.dumps({'home':str(scratch),'machines':machines,'item_samples':samples,
+            'checks':checks,'refused':refused,'status':'pass'},ensure_ascii=False,indent=2)+'\n')
+        print(json.dumps({'status':'pass','home':str(scratch),'checks':len(checks),'items':len(samples)}),flush=True)
+    finally:
+        if process and process.poll() is None:
+            process.terminate()
+            try:process.wait(timeout=20)
+            except subprocess.TimeoutExpired:process.kill();process.wait()
+        if mute and mute.poll() is None:mute.terminate();mute.wait(timeout=10)
+        shutil.copy2(scratch/'client.log',evidence/'game-client.log') if (scratch/'client.log').exists() else None
+
+
+if __name__=='__main__':main()
