@@ -22,7 +22,8 @@ Mais capturas:
 - `img/visual-fallback-hidden.png`: com os blockstates originais, o cubo de fallback sai da malha e só o OBJ aparece.
 
 Para rodar: `tools/build-visual.sh [test]` e `tools/test-game/run-visual.sh <nome> --world W --creative` (Xvfb :15,
-mudo, pasta em `/tmp/ntm-visual-game`).
+mudo, pasta em `$NTM_GAME_DIR/<nome>`, por padrão `~/Workspace/.agent-tmp/ntm-visual-game`, com uma cópia própria
+dos mods e do armazenamento do mod do servidor; o `/tmp` desta máquina é RAM).
 
 ## 1. Pesquisa antes de construir
 

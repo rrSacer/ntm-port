@@ -2,21 +2,29 @@
 # The ntm-visual prototype on Xvfb :15, muted, in a throwaway folder
 # (never ~/Games/horizon or ~/Games/horizon-ntm; their prepared resources
 # are read only). usage: run-visual.sh <name> [game args]
+#
+# Each game is NTM_GAME_DIR/<name> (default on disk, not in /tmp: /tmp is
+# RAM on this PC) with its own copy of the mods in <name>/dist, so the
+# server mod's storage beside them (.horizon-mod-data: boxes, journal,
+# saves) is that game's alone. agent-run queues one test game at a time
+# (/run/ntm-agent-game.lock).
 set -euo pipefail
 
+P="$(cd "$(dirname "$0")/../.." && pwd)"
 H=${HORIZON_VISUAL:-/home/sacer/Workspace/horizon-visual}
+root=${NTM_GAME_DIR:-/home/sacer/Workspace/.agent-tmp/ntm-visual-game}
 name="${1:?name}"; shift
-game="/tmp/ntm-visual-game/$name"
-# The mods into the shared dist (their storage, .horizon-mod-data, stays
-# beside them), whole: a .hmod copied while tools/build-visual.sh writes it
-# is truncated, the content mod doesn't load and the engine turns every
-# ntm: block of the world into air. So each one is checked as a zip
-# (waiting out a build), copied to a temporary name and renamed, under a
-# lock against another agent's game doing the same.
-src=${BUILD_DIR:-/home/sacer/Workspace/ntm-port/target/visual-build}/dist
-mkdir -p /tmp/ntm-visual-game/dist
-(
-  flock 9
+game="$root/$name"
+# The mods, whole: a .hmod copied while tools/build-visual.sh writes it is
+# truncated, the content mod doesn't load and the engine turns every ntm:
+# block of the world into air. So each one is checked as a zip (waiting out
+# a build), copied to a temporary name and renamed. DIST names a folder
+# that already holds them (then nothing is copied).
+src=${BUILD_DIR:-$P/target/visual-build}/dist
+dist="${DIST:-$game/dist}"
+mkdir -p "$game" "$dist"
+if [ -z "${DIST:-}" ]; then
+  ok=0
   for try in $(seq 1 60); do
     ok=1
     for f in "$src"/*.hmod; do
@@ -28,19 +36,17 @@ mkdir -p /tmp/ntm-visual-game/dist
   done
   [ $ok = 1 ] || { echo "run-visual: mods inválidos em $src" >&2; exit 1; }
   for f in "$src"/*.hmod; do
-    cp "$f" "/tmp/ntm-visual-game/dist/.$(basename "$f").tmp"
-    mv -f "/tmp/ntm-visual-game/dist/.$(basename "$f").tmp" "/tmp/ntm-visual-game/dist/$(basename "$f")"
+    cp "$f" "$dist/.$(basename "$f").tmp"
+    mv -f "$dist/.$(basename "$f").tmp" "$dist/$(basename "$f")"
   done
-) 9>/tmp/ntm-visual-game/dist.lock
-dist="${DIST:-/tmp/ntm-visual-game/dist}"
-mkdir -p "$game"
+fi
 [ -f "$game/options.txt" ] || printf 'soundCategory_master:0.0\nsoundCategory_music:0.0\n' > "$game/options.txt"
-chown -R sacer:sacer /tmp/ntm-visual-game
+chown -R sacer:sacer "$root"
 if [ ! -e /tmp/.X11-unix/X15 ]; then
-  /usr/local/bin/agent-run --user sacer Xvfb :15 -screen 0 1280x720x24 -nolisten tcp > /tmp/ntm-visual-game/xvfb.log 2>&1 &
+  /usr/local/bin/agent-run --user sacer Xvfb :15 -screen 0 1280x720x24 -nolisten tcp > "$root/xvfb.log" 2>&1 &
   sleep 2
 fi
-python3 /home/sacer/Workspace/ntm-port/tools/test-game/mute.py "$game" &
+python3 "$P/tools/test-game/mute.py" "$game" &
 cd "$game"
 exec /usr/local/bin/agent-run --user sacer nice -n 10 env HORIZON_HOME="$game" HORIZON_LAUNCHER_HOME="$game/launcher" \
   XDG_DATA_HOME="$game/xdg-data" XDG_CONFIG_HOME="$game/xdg-config" \
