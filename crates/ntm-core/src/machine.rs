@@ -783,12 +783,59 @@ impl EnergyNode for WoodBurner {
 
 /// `TileEntityMachineElectricFurnace` without upgrades: 50 HE a tick, 100
 /// ticks an item (`furnace_recipes.json`).
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ElectricFurnace {
     pub power: u64,
     pub progress: u32,
     pub input: Option<(String, u32)>,
     pub output: Option<(String, u32)>,
+    /// The vanilla furnace menu's slots ([`furnace_slot`]).
+    #[serde(skip, default = "furnace_slots")]
+    pub slots: crate::server::container_bridge::Slots,
+}
+
+fn furnace_slots() -> crate::server::container_bridge::Slots {
+    vec![None; furnace_slot::SLOTS]
+}
+
+impl Default for ElectricFurnace {
+    fn default() -> Self {
+        Self { power: 0, progress: 0, input: None, output: None, slots: furnace_slots() }
+    }
+}
+
+/// The electric furnace's slots (`ContainerElectricFurnace`): what it
+/// smelts, its battery, what it made.
+pub mod furnace_slot {
+    pub const INPUT: usize = 0;
+    pub const BATTERY: usize = 1;
+    pub const OUTPUT: usize = 2;
+    pub const SLOTS: usize = 3;
+}
+
+/// The native screen (the vanilla furnace menu): the slots in and out, the
+/// battery charging it (`chargeTEFromItems`); data power, max, progress,
+/// total.
+impl crate::server::container_bridge::Slotted for ElectricFurnace {
+    fn slots_mut(&mut self) -> &mut crate::server::container_bridge::Slots {
+        &mut self.slots
+    }
+    fn sync_in(&mut self) {
+        use furnace_slot::*;
+        let pile = |s: &Option<crate::server::container_bridge::Stack>| s.as_ref().filter(|s| s.count > 0).map(|s| (s.id.clone(), s.count));
+        self.input = pile(&self.slots[INPUT]);
+        self.output = pile(&self.slots[OUTPUT]);
+        self.power = charge_from_slot(&self.slots, BATTERY, self.power, Self::MAX);
+    }
+    fn sync_out(&mut self) {
+        use furnace_slot::*;
+        let stack = |p: &Option<(String, u32)>| p.as_ref().map(|(i, n)| crate::server::container_bridge::Stack::new(i, *n));
+        self.slots[INPUT] = stack(&self.input);
+        self.slots[OUTPUT] = stack(&self.output);
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        crate::native::furnace_data(self)
+    }
 }
 
 impl ElectricFurnace {

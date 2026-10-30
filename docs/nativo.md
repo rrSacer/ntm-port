@@ -58,6 +58,8 @@ A cola fica no módulo `ntm_glue` (`glue.rs`), que converte `ModBlockEntity` e `
 
 ## A L1: a fornalha elétrica
 
+(Desde a L3 a fornalha passa pelo servidor como as outras: `ElectricFurnace` é `Slotted`, e o `ntm_core::native` só dá o container, as regras e os dados dela. O que segue descreve a prova da L1.)
+
 `ntm_core::native` roda a fornalha elétrica (`machine_electric_furnace_off`) no menu vanilla de fornalha: entrada (slot 0, por cima), bateria (slot 1, pelos lados) e resultado (slot 2, por baixo). Os 4 data slots são energia, máximo, progresso e total, desenhados como a chama e a seta. A energia vem da bateria criativa no slot (`charge_from_slot`); as redes de energia entram na L3.
 
 Com a V2 na `ntm-next` (`88b45bdb2`), o menu abre pelo jogador, independente do template `beehive` das máquinas.
@@ -103,3 +105,5 @@ Os slots, as regras e o `synced` de cada máquina vêm dos `horizon_machine/*.js
 
 - **Nether e End:** o block entity de uma máquina só é alcançado na dimensão em tick (`native_with_mod_block_entity` usa `game.dim`); as máquinas das outras dimensões ainda não passam pelo servidor.
 - **Máquinas só com a tela antiga:** 12 máquinas registradas não têm `horizon_machine` (bateria, queimador a lenha, duto, barril, tanque, `ntm:teste` e as 5 do lote de vapor; a fornalha elétrica usa o menu de fornalha). Os controles delas eram botões da tela antiga (o modo da bateria, o tipo do duto, despejar no barril), que sai com a camada WASM. Precisam de arquivo de máquina e tela nativa (`horizon_screen` e o intérprete da L2).
+
+**A fornalha no caminho comum** (`native_l1.py` e `native_l3.py montar` no mesmo build): a fornalha fundiu pelos funis como na L1 (5 lingotes em 25 s), e a firebox e a prensa seguiram iguais.

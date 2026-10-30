@@ -45,7 +45,7 @@ fn file(_game: &crate::game::Game<'_>, block: &str) -> (Vec<SlotFilter>, Vec<usi
 }
 
 fn is_machine(block: &str) -> bool {
-    ntm_core::native::handles(block) || ntm_core::native::machine_block(block)
+    ntm_core::native::machine_block(block)
 }
 
 // ------------------------------------------------------------ the world
@@ -63,7 +63,7 @@ pub(super) fn world(open: bool) {
 /// A block changed on the server: kept when a machine or cable is in it.
 pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: [i32; 3], old: horizon_world::registry::BlockStateId, new: horizon_world::registry::BlockStateId) {
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
-    let ours = |b: &str| b.starts_with("ntm:") && !ntm_core::native::handles(b);
+    let ours = |b: &str| b.starts_with("ntm:");
     if ours(&old) || ours(&new) {
         lock(&CHANGES).push((dim.to_string(), pos, old, new));
     }
@@ -185,17 +185,12 @@ pub(super) fn types(types: &mut Vec<String>) {
     types.extend(ntm_core::registry::machine_ids().filter(|b| is_machine(b)).map(str::to_string));
 }
 
-/// A new machine block's block entity: the L1 furnace with its new state,
-/// the others empty (the server keeps their state in it).
+/// A new machine block's block entity, empty: the server keeps the
+/// machine's state in it.
 pub(super) fn entity(block: &str, entity: &mut Option<(String, Compound)>) {
-    if entity.is_some() || !is_machine(block) {
-        return;
+    if entity.is_none() && is_machine(block) {
+        *entity = Some((block.to_string(), Compound::new()));
     }
-    let mut nbt = Compound::new();
-    if let Some(state) = ntm_core::native::new_state(block, None) {
-        nbt.insert(JavaString::from(STATE), Tag::String(JavaString::from(state.as_str())));
-    }
-    *entity = Some((block.to_string(), nbt));
 }
 
 pub(super) fn ticks(block: &str, ticks: &mut bool) {
@@ -204,18 +199,8 @@ pub(super) fn ticks(block: &str, ticks: &mut bool) {
     }
 }
 
-pub(super) fn container(game: &crate::game::Game<'_>, block: &str, container: &mut Option<ModContainer>) {
-    let c = match ntm_core::native::container(block) {
-        Some(c) => c,
-        None if ntm_core::native::machine_block(block) => {
-            let (slots, _) = file(game, block);
-            if slots.is_empty() {
-                return;
-            }
-            ntm_core::native::file_container(&slots)
-        }
-        None => return,
-    };
+pub(super) fn container(_game: &crate::game::Game<'_>, block: &str, container: &mut Option<ModContainer>) {
+    let Some(c) = ntm_core::native::container(block) else { return };
     *container = Some(ModContainer {
         slots: c.slots,
         faces: c.faces,
@@ -227,14 +212,8 @@ pub(super) fn container(game: &crate::game::Game<'_>, block: &str, container: &m
 
 /// The rules of a machine's slots: what each takes, its limit, the output
 /// ones (the same for the menu, clicks and hoppers).
-pub(super) fn slot_filters(game: &crate::game::Game<'_>, block: &str, filters: &mut Vec<ModSlotFilter>) {
-    let rules = if ntm_core::native::handles(block) {
-        ntm_core::native::slot_filters(block)
-    } else if ntm_core::native::machine_block(block) {
-        file(game, block).0
-    } else {
-        return;
-    };
+pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: &mut Vec<ModSlotFilter>) {
+    let rules = ntm_core::native::slot_filters(block);
     filters.extend(rules.into_iter().map(|f| ModSlotFilter { accept: f.accept, reject: f.reject, max: f.max, output: f.output }));
 }
 
@@ -279,52 +258,18 @@ fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
     }
 }
 
-/// A block entity's server tick. The L1 furnace runs here (state, slots and
-/// data through `ntm_core::native::tick`); any other machine is only
-/// adopted by the server from its saved state (the world was opened again)
-/// — the server's phases run it at the tick's end.
+/// A block entity's server tick: the machine is only adopted by the server
+/// from its saved state when the server doesn't know it (the world was
+/// opened again); the server's phases run it at the tick's end.
 pub(super) fn tick(game: &mut crate::game::Game<'_>, pos: [i32; 3], entity: &mut ModBlockEntity) {
-    let block = entity.id.clone();
-    let state = match entity.nbt.get(&JavaString::from(STATE)) {
-        Some(Tag::String(s)) => s.to_string_lossy(),
-        _ => String::new(),
-    };
-    if ntm_core::native::machine_block(&block) {
-        if !state.is_empty() {
-            let dim = game.dim.id().to_string();
-            if let Some((server, _)) = lock(&SERVER).as_mut()
-                && !server.native_has(&dim, pos)
-            {
-                server.native_adopt(&dim, pos, &state);
-            }
-        }
+    if !is_machine(&entity.id) {
         return;
     }
-    let Some(c) = ntm_core::native::container(&block) else { return };
-    if entity.items.len() < c.slots {
-        return;
-    }
-    let mut state = state;
-    let before: Vec<Option<Stack>> = entity.items.iter().map(stack).collect();
-    let mut items = before.clone();
-    if !ntm_core::native::tick(&block, &mut state, &mut items, &mut entity.data) {
-        return;
-    }
-    entity.nbt.insert(JavaString::from(STATE), Tag::String(JavaString::from(state.as_str())));
-    let sent = match entity.nbt.get(&JavaString::from(DATA)) {
-        Some(Tag::IntArray(v)) => Some(v.clone()),
-        _ => None,
-    };
-    if sent.as_deref() != Some(&entity.data[..]) {
-        let (_, synced) = file(game, &block);
-        if ntm_core::native::sync_changed(sent.as_deref(), &entity.data, &synced) {
-            game.native_block_entity_changed(pos);
-        }
-        entity.nbt.insert(JavaString::from(DATA), Tag::IntArray(entity.data.clone()));
-    }
-    for (i, (new, old)) in items.iter().zip(&before).enumerate() {
-        if new != old {
-            entity.items[i] = item(new.as_ref(), entity.items[i].take());
-        }
+    let Some(Tag::String(state)) = entity.nbt.get(&JavaString::from(STATE)) else { return };
+    let dim = game.dim.id().to_string();
+    if let Some((server, _)) = lock(&SERVER).as_mut()
+        && !server.native_has(&dim, pos)
+    {
+        server.native_adopt(&dim, pos, &state.to_string_lossy());
     }
 }
