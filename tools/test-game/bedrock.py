@@ -85,6 +85,13 @@ Petróleo, lote D, no chão do C:
               petróleo e o gás enchem os tanques; o poço entrega o óleo a um
               barril; a torre tira petróleo do bedrock com a solução de um
               barril.
+Energia, lote 1, num chão novo a leste do C:
+  energia_1   um queimador de óleo (tanques de óleo de aquecimento no slot de
+              entrada, ligado, a taxa no máximo do controle), um aquecedor
+              elétrico (bateria no plugue, potência 4 pela tela antiga) e um
+              trocador de calor (líquido de arrefecimento quente de um
+              barril), cada um com uma caldeira em cima e água de um barril:
+              vapor nas três.
 Grava <pasta>/bedrock-evidence.json e capturas bedrock-*.png.
 """
 import json, subprocess, sys, time
@@ -1443,6 +1450,118 @@ def petroleo():
     close()
     evidence['petroleo'] = {'liquefator': lq, 'solidificador': so, 'alcatrao': tar, 'solidificador_slots': out, 'liquefator_slots': left}
     print('petroleo', evidence['petroleo'])
+
+
+XE, ZE = X7 + 80, Z7
+
+
+def energy_floor():
+    """A stone floor cleared 12 high east of the C floor (once)."""
+    y = floor_y()
+    if not (game / 'bedrock-chaoE').exists():
+        tp(XE + 15.5, y + 2, ZE + 0.5)
+        time.sleep(4)
+        for x0 in range(XE - 6, XE + 40, 10):
+            ctl('fill', x0, y, ZE - 12, x0 + 9, y + 12, ZE + 12, 'minecraft:air')
+            ctl('fill', x0, y - 3, ZE - 12, x0 + 9, y - 1, ZE + 12, 'minecraft:stone')
+        (game / 'bedrock-chaoE').write_text('1')
+    return y
+
+
+def click_nth(n):
+    """The `n`th button of the open native screen (in its file's order;
+    `screen` gives their rectangles, not their ids)."""
+    bs = screen().get('buttons', [])
+    if n >= len(bs):
+        return False
+    b = bs[n]
+    ctl('click-at', b['x'] + b['w'] / 2, b['y'] + b['h'] / 2)
+    time.sleep(0.8)
+    return True
+
+
+def heater_at(x, z, heater):
+    """`heater` clicked at (x, z) on the floor: its core."""
+    y = floor_y()
+    if not any(heater in b[3] for b in ctl('blocks', x - 2, y, z - 4, x + 2, y + 1, z + 1).get('blocks', [])):
+        place(x, y, z, heater, (x, y, z + 3))
+    return find(heater, x - 2, y, z - 4, x + 2, y, z + 1)
+
+
+def heater_with(x, z, heater, height, before=None):
+    """`heater` clicked at (x, z) on the floor and a boiler on it, its core
+    `height` above the heater's (placed from a pillar, sneaking): both
+    cores. The boiler's offset is 1: its click column is the heater's core
+    one toward the placer. `before(core)` runs before the boiler covers it."""
+    y = floor_y()
+    core = heater_at(x, z, heater)
+    boil = (core[0], y + height, core[2])
+    if before and not ctl('block', *boil).get('state', '').startswith('ntm:machine_boiler'):
+        before(core)
+    if not ctl('block', *boil).get('state', '').startswith('ntm:machine_boiler'):
+        cx, cz = core[0], core[2] + 1
+        pillar = (cx, y, cz + 2, cx, y + height + 1, cz + 2)
+        ctl('fill', *pillar, 'minecraft:stone')
+        close()
+        tp(cx + 0.5, y + height + 2, cz + 2.5)
+        give('ntm:machine_boiler', 1)
+        ctl('key', 'shift', 'down')
+        ctl('place', cx, y + height, cz, '--item', 'ntm:machine_boiler', check=False)
+        ctl('key', 'shift', 'up')
+        time.sleep(2)
+        close()
+        ctl('fill', *pillar, 'minecraft:air')
+    if not ctl('block', *boil).get('state', '').startswith('ntm:machine_boiler'):
+        raise SystemExit(f'a caldeira não ficou sobre {heater} {core}')
+    # Its water from a barrel at its west side.
+    barrel_up(boil[0] - 2, boil[1], boil[2], 'ntm:fluid_barrel_full__water')
+    return core, boil
+
+
+def energia_1():
+    y = energy_floor()
+    ctl('command', 'clear @s', check=False)
+    tank = lambda t: (t.get('fluid', ''), t.get('mb', 0))
+    ev = {}
+    # The oil burner (2 high): heating oil in tanks in its input slot.
+    ob, ob_boil = heater_with(XE, ZE, 'ntm:heater_oilburner', 2)
+    ctl('command', 'clear @s', check=False)
+    open_at(ob[0], y, ob[2] + 1, (ob[0], y, ob[2] + 3))
+    # Only on the first run: a second click would put it out.
+    slider = None
+    if not any(sl[0] == 300 for sl in machine_slots()):
+        put('ntm:fluid_tank_full__heatingoil', 16, 300)
+        ctl('click-button', 'Ignition')
+        time.sleep(0.8)
+        # The slider's pixels 0..35 (ids 100..135) follow Ignition: pixel 32.
+        slider = click_nth(1 + 32)
+    ctl('screenshot', game / 'energia-queimador.png')
+    close()
+    # The electric heater: setting 4 on the old screen, which opens on the
+    # core only (its top, seen from the plug, before the boiler covers it);
+    # a battery at its plug (the clicked cell).
+    def setting(el):
+        old_screen(el[0], y, el[2], (el[0], y + 1, el[2] + 2))
+        for _ in range(4):
+            click_label('Trocar potência', 1.0)
+        ev['eletrico_tela'] = [w.get('label') for w in ctl('ui').get('widgets', [])]
+        ctl('screenshot', game / 'energia-eletrico.png')
+        close()
+    el, el_boil = heater_with(XE + 10, ZE, 'ntm:heater_electric', 1, setting)
+    plug = (el[0], y, el[2] + 2)
+    if not ctl('block', plug[0], y, plug[2] + 1).get('state', '').startswith('ntm:machine_battery'):
+        battery(plug[0], y, plug[2] + 1, (plug[0], y, plug[2] + 4))
+    # The heat exchanger: hot coolant from a barrel at its east corner.
+    hx, hx_boil = heater_with(XE + 20, ZE, 'ntm:heater_heatex', 1)
+    fluid_barrel(hx[0] + 2, y, hx[2] + 1, 'ntm:fluid_barrel_full__coolant_hot', (hx[0] + 4, y, hx[2] + 1))
+    time.sleep(40)
+    for name, core, boil in (('queimador', ob, ob_boil), ('eletrico', el, el_boil), ('trocador', hx, hx_boil)):
+        h = machine_state(*core) or {}
+        b = machine_state(*boil) or {}
+        ev[name] = {'nucleo': core, 'aquecedor': h, 'caldeira': {'nucleo': boil, 'calor': b.get('heat'), 'entrada': tank(b.get('input', {})), 'saida': tank(b.get('output', {}))}}
+    ev['controle_deslizante'] = slider
+    evidence['energia_1'] = ev
+    print('energia_1', json.dumps(ev, ensure_ascii=False))
 
 
 for s in steps:
