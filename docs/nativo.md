@@ -111,3 +111,7 @@ Os slots, as regras e o `synced` de cada máquina vêm dos `horizon_machine/*.js
 ## A alavanca das turbinas (30/10, `ntm-next` `c6ad4a73e`, API 24)
 
 O hook `use_block` leva o clique direito numa célula de máquina ao `Server::native_use` (célula clicada e núcleo, da V4). Nas células de alavanca do NTM, ele troca o vapor com a turbina parada e consome o clique, então nenhum menu abre. Em jogo, uma turbina industrial posta pelo jogador (63 células): o clique na célula `(0, 1, −3)` do referencial de quem pôs passou o vapor de `steam` a `hotsteam` e o tanque de 750.000 a 75.000. Foi uma troca só por clique; um clique em outra célula não mudou nada.
+
+## O duto pelo identificador de fluido (30/10)
+
+No NTM, o duto não tem tela: o tipo vem do identificador de fluido na mão (`FluidDuctBase.handleActivation`). O conteúdo tem o `ntm:fluid_identifier_multi`, com o tipo em `custom_data` `{ntm_fluid:"<fluido>"}` (`bec9b460`). O hook `use_item` lê esse tipo e o `Server::native_use_item` o põe no duto. Em jogo, um duto posto por `/setblock` passou de sem tipo a `water` com um clique do identificador. Ainda faltam: o clique agachado que muda os dutos ligados (`changeTypeRecursively`), o ALT que copia o tipo do duto para o identificador, a GUI de escolha do identificador e o slot dele no barril.

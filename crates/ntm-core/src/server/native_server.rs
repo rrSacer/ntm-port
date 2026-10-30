@@ -5,6 +5,10 @@
 //! phases are [`Server::tick`]'s, on the same [`ServerHost`].
 use super::*;
 
+/// The fluid identifier (`ItemFluidIDMulti`; its type in `custom_data`
+/// `ntm_fluid`).
+pub const IDENTIFIER: &str = "ntm:fluid_identifier_multi";
+
 /// Blocks read a tick to find the cables next to adopted machines.
 pub const CABLE_READS_PER_TICK: usize = 256;
 
@@ -124,6 +128,25 @@ impl Server {
         } else {
             t.lever();
             r.dirty = true;
+        }
+        true
+    }
+
+    /// A player used `item` on the block at `pos` (its `custom_data`'s
+    /// `ntm_fluid`: the fluid identifier's type). The multi fluid
+    /// identifier on a duct sets the duct's fluid
+    /// (`FluidDuctBase.handleActivation`, a plain click). True when taken.
+    pub fn native_use_item(&mut self, dim: &str, pos: Pos, item: &str, fluid: Option<&str>) -> bool {
+        if item != IDENTIFIER {
+            return false;
+        }
+        let Some(fluid) = fluid.filter(|f| crate::fluid::get(f).is_some_and(|t| t.id != 0)) else { return false };
+        let Some(r) = self.ready() else { return false };
+        let Some(m) = r.world.machines.get_mut(&(dim.to_string(), pos)) else { return false };
+        let crate::machine::Data::Duct(d) = &mut m.data else { return false };
+        if d.fluid != fluid {
+            d.fluid = fluid.to_string();
+            r.urgent = true;
         }
         true
     }
@@ -278,6 +301,18 @@ mod tests {
         let Data::Steam(s) = &again.ready().unwrap().world.machines[&(OW.to_string(), lev)].data else { panic!() };
         let crate::steam::Steam::Turbine(t) = &**s else { panic!() };
         assert_eq!(t.input.fluid, "hotsteam", "a alavanca trocou o vapor");
+
+        // A duct typed by the fluid identifier: its fluid set; other items
+        // and blocks aren't taken.
+        let duct = [40, 64, 0];
+        let m = Machine::new(crate::machine::Kind::Duct, "ntm:fluid_duct_neo", None);
+        assert!(again.native_adopt(OW, duct, &serde_json::to_string(&m).unwrap()));
+        assert!(!again.native_use_item(OW, duct, "minecraft:stick", Some("water")));
+        assert!(!again.native_use_item(OW, duct, IDENTIFIER, Some("nada")));
+        assert!(again.native_use_item(OW, duct, IDENTIFIER, Some("water")));
+        let Data::Duct(d) = &again.ready().unwrap().world.machines[&(OW.to_string(), duct)].data else { panic!() };
+        assert_eq!(d.fluid, "water");
+        assert!(!again.native_use_item(OW, lev, IDENTIFIER, Some("water")), "a turbina não é duto");
 
         // Broken: gone from the server.
         w.blocks.insert(AT, "minecraft:air".into());

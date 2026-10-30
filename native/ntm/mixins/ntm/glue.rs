@@ -88,6 +88,21 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
     server.native_use(&mut host, &dim, core, pos, &player)
 }
 
+/// A player used `stack` on the block at `pos`: the fluid identifier on a
+/// duct sets its fluid (`custom_data` `ntm_fluid`). True when taken.
+pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
+    let fluid = stack.data().and_then(|d| {
+        let (_, data) = d.other.iter().find(|(k, _)| k == "minecraft:custom_data")?;
+        match data.get("ntm_fluid")? {
+            Tag::String(s) => Some(s.to_string_lossy()),
+            _ => None,
+        }
+    });
+    let mut guard = lock(&SERVER);
+    let Some((server, _)) = guard.as_mut() else { return false };
+    server.native_use_item(game.dim.id(), pos, &stack.item, fluid.as_deref())
+}
+
 /// The end of a server tick: the server's phases.
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
     let mut guard = lock(&SERVER);
