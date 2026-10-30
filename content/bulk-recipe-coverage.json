@@ -1685,6 +1685,15 @@
       }
     },
     {
+      "id": "ntm:bulk__700cb7f80e7d8a7d11",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:844",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_condenser",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__32d233638970bc89bd",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:862",
       "type": "minecraft:crafting_shaped",
@@ -1709,6 +1718,24 @@
       "result": {
         "id": "ntm:parts_legendary__tier2",
         "count": 3
+      }
+    },
+    {
+      "id": "ntm:bulk__6f90699d580d0abdbd",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:918",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:gear_large__iron",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7e286dd70e35c557ee",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:919",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:gear_large__steel",
+        "count": 1
       }
     },
     {
@@ -5726,7 +5753,7 @@
       }
     }
   ],
-  "generated_count": 636,
+  "generated_count": 639,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -8207,12 +8234,6 @@
       "expression": "new ItemStack(ModItems.canister_full, 2, Fluids.LUBRICANT.getID()), new Object[] { Fluids.HEATINGOIL.getDict(1000), Fluids.UNSATURATEDS.getDict(1000), ModItems.canister_empty, ModItems.canister_empty, KEY_TOOL_CHEMISTRYSET }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:844",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_condenser",
-      "expression": "new ItemStack(ModBlocks.machine_condenser), new Object[] { \"SIS\", \"ICI\", \"SIS\", 'S', STEEL.ingot(), 'I', IRON.plate(), 'C', CU.plateCast() }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:846",
       "callee": "addShapelessAuto",
       "reason": "dynamic/unsupported metadata BookType.RBMK.ordinal()",
@@ -8493,18 +8514,6 @@
       "callee": "addShapelessAuto",
       "reason": "unregistered/ambiguous source item ingot_chainsteel",
       "expression": "DictFrame.fromOne(ModItems.parts_legendary, EnumLegendaryType.TIER3), new Object[] { ModItems.ingot_chainsteel, ModItems.ingot_smore, ModItems.gem_alexandrite, ModItems.gem_alexandrite, ModItems.gem_alexandrite }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:918",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype gear_large:0",
-      "expression": "new ItemStack(ModItems.gear_large, 1, 0), new Object[] { \"III\", \"ICI\", \"III\", 'I', IRON.plate(), 'C', CU.ingot()}"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:919",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype gear_large:1",
-      "expression": "new ItemStack(ModItems.gear_large, 1, 1), new Object[] { \"III\", \"ICI\", \"III\", 'I', STEEL.plate(), 'C', TI.ingot()}"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:932",
