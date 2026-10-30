@@ -53,7 +53,7 @@ index 75cf5ee85..1262f15cd 100644
  miniz_oxide = "0.8"
  naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
 diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
-index b415748c4..4d4dcc835 100644
+index b415748c4..1c08b3586 100644
 --- a/crates/horizon-client-render/src/block_entity_render.rs
 +++ b/crates/horizon-client-render/src/block_entity_render.rs
 @@ -94,6 +94,11 @@ pub fn diffuse(normal: Vec3, lights: (Vec3, Vec3)) -> f32 {
@@ -166,7 +166,7 @@ index b415748c4..4d4dcc835 100644
              let packed = scene.world.light(pos[0], pos[1], pos[2]);
              if matches!(kind, Kind::Sign { .. }) && scene.texts.is_none() {
                  self.sign_text(scene, *pos, *state, origin, packed, out);
-@@ -1089,6 +1156,273 @@ impl BlockEntityRenderer {
+@@ -1089,6 +1156,287 @@ impl BlockEntityRenderer {
      pub fn renders(&self, state: u32) -> bool {
          !matches!(self.kind(state), Kind::None)
      }
@@ -350,9 +350,15 @@ index b415748c4..4d4dcc835 100644
 +            return;
 +        };
 +        let base = m.base(yaw);
-+        if self
-+            .model_instancing
-+            .load(std::sync::atomic::Ordering::Relaxed)
++        // A model with translucent parts (`tint`) goes out as vertices, the
++        // translucent ones last: an instance has no colour, and the glass
++        // must come after what it shows.
++        let tinted = |i: usize| m.bones[i].tint.is_some();
++        let translucent = m.bones.iter().any(|b| b.tint.is_some());
++        if !translucent
++            && self
++                .model_instancing
++                .load(std::sync::atomic::Ordering::Relaxed)
 +        {
 +            // A matrix per bone: the GPU keeps the vertices.
 +            let t = (scene.game_time as f32 + scene.partial) / 20.0;
@@ -395,7 +401,7 @@ index b415748c4..4d4dcc835 100644
 +                    let rest = m.pose(None, 0.0, &[]);
 +                    let mut v = Vec::new();
 +                    m.emit(
-+                        |i| m.still[i] && !shown_not(hidden, i),
++                        |i| m.still[i] && !tinted(i) && !shown_not(hidden, i),
 +                        &rest,
 +                        base,
 +                        paint,
@@ -421,7 +427,7 @@ index b415748c4..4d4dcc835 100644
 +                v
 +            }));
 +        }
-+        if m.still.iter().all(|&s| s) {
++        if m.still.iter().all(|&s| s) && !translucent {
 +            return;
 +        }
 +        let t = (scene.game_time as f32 + scene.partial) / 20.0;
@@ -429,10 +435,18 @@ index b415748c4..4d4dcc835 100644
 +            Some((a, o)) => m.pose(Some(a), m.animations[a].length * o, &layers),
 +            None => m.pose(play, t, &layers),
 +        };
++        let place = Mat4::from_translation(origin) * base;
 +        m.emit(
-+            |i| !m.still[i] && !shown_not(hidden, i),
++            |i| !m.still[i] && !tinted(i) && !shown_not(hidden, i),
 +            &pose,
-+            Mat4::from_translation(origin) * base,
++            place,
++            paint,
++            out,
++        );
++        m.emit(
++            |i| tinted(i) && !shown_not(hidden, i),
++            &pose,
++            place,
 +            paint,
 +            out,
 +        );
@@ -440,7 +454,7 @@ index b415748c4..4d4dcc835 100644
      /// ChestRenderer and BannerRenderer submit their animated models for crumbling.
      pub fn render_breaking(
          &self,
-@@ -1239,7 +1573,8 @@ impl BlockEntityRenderer {
+@@ -1239,7 +1587,8 @@ impl BlockEntityRenderer {
          };
          let none = |_: &str, _: &mut [f32; 9]| {};
          match kind {
@@ -450,7 +464,7 @@ index b415748c4..4d4dcc835 100644
              Kind::Sign {
                  hanging,
                  wall,
-@@ -2278,6 +2613,11 @@ mod tests {
+@@ -2278,6 +2627,11 @@ mod tests {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
@@ -916,10 +930,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..72098477c
+index 000000000..607c8454a
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,1151 @@
+@@ -0,0 +1,1161 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -951,6 +965,8 @@ index 000000000..72098477c
 +//!                                       these (a state's properties after its name); with
 +//!                                       "not_blocks", while it is none of them
 +//!   "glow": ["InnerBurning"],   drawn at full light (HBM's lightmap 240, 240)
++//!   "tint": {"Glass": "#26bfffff"},   0xAARRGGBB the part's texture is multiplied by: a
++//!                                       translucent part, drawn after the liquids
 +//!   "open": "animation.firebox.open"   posed by how open its screen is (a non-looping
 +//!   animation: its last frame is fully open)
 +//!   "pose": [{"animation": "animation.lid", "value": 24, "max_value": 1000}]   posed at a synced
@@ -1002,6 +1018,8 @@ index 000000000..72098477c
 +    pub hidden: bool,
 +    /// Drawn at full light, whatever the block's.
 +    pub glow: bool,
++    /// 0xAARRGGBB the texture is multiplied by: a translucent part (`tint`).
++    pub tint: Option<u32>,
 +    pub triangles: Vec<[(Vec3, [f32; 2], Vec3); 3]>,
 +}
 +
@@ -1334,6 +1352,9 @@ index 000000000..72098477c
 +            glow: doc["glow"]
 +                .as_array()
 +                .is_some_and(|g| g.iter().any(|v| v.as_str() == Some(name.as_str()))),
++            tint: doc["tint"][name.as_str()]
++                .as_str()
++                .and_then(|c| u32::from_str_radix(c.strip_prefix('#')?, 16).ok()),
 +            name,
 +            parent: None,
 +            pivot: Vec3::ZERO,
@@ -1800,18 +1821,21 @@ index 000000000..72098477c
 +                continue;
 +            }
 +            let light = if bone.glow { FULL_LIGHT } else { paint.light };
++            let (tint, alpha) = bone
++                .tint
++                .map_or((paint.tint, 255), |t| (t & 0xFF_FFFF, t >> 24));
 +            let m = base * pose[i];
 +            for tri in &bone.triangles {
 +                let corners = [tri[0], tri[1], tri[2], tri[2]];
 +                for (p, uv, n) in corners {
 +                    let normal = m.transform_vector3(n).normalize_or(Vec3::Y);
 +                    let shade = diffuse(normal, paint.lights);
-+                    let c = |shift: u32| (((paint.tint >> shift) & 255) as f32 * shade) as u32;
++                    let c = |shift: u32| (((tint >> shift) & 255) as f32 * shade) as u32;
 +                    out.push(Vertex {
 +                        pos: m.transform_point3(p).to_array(),
 +                        uv: [r.u0 + (r.u1 - r.u0) * uv[0], r.v0 + (r.v1 - r.v0) * uv[1]],
 +                        layer: 0,
-+                        color: 255 << 24 | c(0) << 16 | c(8) << 8 | c(16),
++                        color: alpha << 24 | c(0) << 16 | c(8) << 8 | c(16),
 +                        light,
 +                        normal: [0; 4],
 +                        glint_uv: [0.0, 0.0],
@@ -5659,10 +5683,10 @@ index 3127248a1..3283882f7 100644
  | Server settings | `server.toml` | its keys | stable | [server-reference.md](server-reference.md) |
 diff --git a/docs/api/machine-files.md b/docs/api/machine-files.md
 new file mode 100644
-index 000000000..8d24b357e
+index 000000000..1f60c3265
 --- /dev/null
 +++ b/docs/api/machine-files.md
-@@ -0,0 +1,175 @@
+@@ -0,0 +1,179 @@
 +# Machine files
 +
 +A content mod (manifest `api = "0.2"`) can give a block slots, a screen, a 3D model and a multiblock shape with data
@@ -5797,6 +5821,7 @@ index 000000000..8d24b357e
 +    "WallNorth": {"neighbor": [0, 0, -1], "not_blocks": ["mymod:pipe", "mymod:valve[facing=north]"]}
 +  },
 +  "glow": ["Flame"],
++  "tint": {"Window": "#26bfffff"},
 +  "open": "animation.press.door",
 +  "pose": [{"animation": "animation.press.head", "value": 0, "max": 1}],
 +  "liquids": [{"texture": "mymod:textures/models/white.png", "box": [-1, 1, -1, 1, 2, 1], "value": 5, "max": 6, "color": 7}]
@@ -5829,6 +5854,9 @@ index 000000000..8d24b357e
 +    name properties its state must have (`mymod:valve[facing=north]`). A pipe draws an arm toward each pipe it
 +    meets and a wall where there is none, with no server work.
 +- **Light:** `glow` bones are drawn at full light.
++- **Translucency:** `tint` multiplies a bone's texture by 0xAARRGGBB: a glass pane at a low alpha. A model with a
++  tinted bone is drawn from vertices, its tinted bones after the rest and after its liquids, so they show what is
++  behind them.
 +- **Liquids:** boxes filled to `value / max` of their height, in the colour of the value `color` (0 draws nothing).
 +  - `column: true` draws the four sides only, as a falling jet.
 +  - `tint: false` draws the texture as it is, while the colour value is set.
