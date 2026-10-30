@@ -351,13 +351,14 @@ impl Server {
             self.message(host, m);
         }
 
+        // The tick a world loads in does only that: its machines start on
+        // the next one, so the load and their first tick never share one
+        // tick's fuel (it loads in `identify` without a client, in
+        // `run_probes` with one).
+        let was_ready = self.ready().is_some();
         if matches!(self.session, Session::Identifying) {
             self.identify(host);
         }
-        // The tick a world loads in does only that: its machines start on
-        // the next one, so the load and their first tick never share one
-        // tick's fuel.
-        let was_ready = self.ready().is_some();
         self.run_probes(host);
         if was_ready && self.ready().is_some() {
             if let Some(wid) = self.wid().map(str::to_string) {
