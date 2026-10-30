@@ -68,6 +68,20 @@ Arquivos e parâmetros estão em `tools/content-gen/bedrock_worldgen.py`; os dez
 
 Os **56 testes Python** passaram em cada seed (oito novos para bedrock), além dos validadores de grafo e determinismo. Os testes cobrem metadados/ordem, slots duplicados, arredondamento/teto, omissão quando um fragmento é retirado, todos os IDs, parâmetros das brocas, crafting, identidade do fluido e datapack. A validação integral cobre 2.578 IDs, 861 receitas vanilla no datapack, 97 faixas/27 bits de radiação e oito abas criativas. Os dados de hazards foram regenerados e commitados pelo agente de máquinas, conforme o acordo de propriedade.
 
-Build/check API 0.2 do pacote passou em uma cópia temporária de content, sem empacotar em uma instalação real: `/tmp/ntm-bedrock-content-wmf7o5ae/target/horizon-mod/ntm.hmod`, 4.907.293 bytes, SHA-256 `6f07dacd5b1a1df4c53d8bf2a2a5dc91220072674b2e2b8fb1d5f3a1f7d2792e`. Esse pacote é um snapshot de conteúdo; o agente visual acrescenta seus modelos no pacote final do mod.
+O build/check API 0.2 foi repetido após a correção do worldgen, numa cópia temporária de content: `/tmp/ntm-bedrock-content-fbr_iya6/target/horizon-mod/ntm.hmod`, **4.964.680 bytes**, SHA-256 `2fda6bae5b3b3384ac56a12c4fa19ad6cc58cafe8726ee44437e151f2bd8ecb6`. Este snapshot já inclui as entregas posteriores de bateria e cristalizador (2.580 IDs); substitui o pacote inicial anterior às correções. Nenhum pacote foi instalado no jogo real.
 
 Evidências locais ficam em `content-gen-evidence/bedrock/`. `verify-bedrock-worldgen.py` cria um servidor dedicado temporário, silencioso e com seed fixa, pregera as duas dimensões e lê os MCA para conferir presença e altura dos depósitos. Execute sob `agent-run --user sacer`, com `xvfb-run`, `--horizon-client <binário>` e `--package <hmod temporário>`. HOME, opções e diretórios de dados ficam em `/tmp`; não é usado nenhum mundo do jogador. A aceitação funcional da escavadora/slopper pertence ao agente de máquinas.
+
+
+### Medição concluída nos dois pisos
+
+Em 30/10/2026, o servidor dedicado temporário completou a pregeneração com seed **1768123**. A leitura dos MCA de `/tmp/ntm-bedrock-worldgen-hklrd2b0` encontrou:
+
+| Dimensão | Chunks examinados | Blocos `ntm:ore_bedrock` | Alturas observadas |
+|---|---:|---:|---|
+| Overworld | 81 | 56 | somente −64 |
+| Nether | 81 | 40 | somente 0 |
+
+Esses números contam **blocos**, não depósitos independentes. A amostra confirma presença e altura; não é uma estimativa precisa de frequência por chunk. As posições completas estão no JSON local `content-gen-evidence/bedrock/worldgen.json`, com logs de pregeneração e salvamento. Não houve erro ou conteúdo recusado no log. O processo terminou normalmente; HOME, opções, mundo e pacote ficaram em `/tmp`, sob Xvfb e sem áudio.
+
+A primeira medição revelou zero blocos, apesar de as estruturas existirem: a âncora do jigsaw estava abaixo dos limites do mundo antes da execução da feature. O `start_height` da ponte S6 foi corrigido para 32, dentro do mundo, enquanto `height_range` da placed_feature continua fixando o piso −64/0. O provider do estado também usa o nome normalizado exigido pelo Horizon, `minecraft:simple`. Os testes verificam ambos os parâmetros. Essas correções não alteram o desvio de forma aprovado nem o contrato de rendimento por chunk.
