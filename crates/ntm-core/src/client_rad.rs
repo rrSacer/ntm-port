@@ -7,11 +7,7 @@ use crate::radiation::{self, Reading};
 use std::collections::HashMap;
 use std::sync::OnceLock;
 
-/// A player's accumulated dose, in milliRAD.
-pub const KEY_DOSE: &str = "ntm_rad_dose";
-/// What the Geiger counter reads for the player, in milliRAD/s: the inventory's
-/// rate plus the zone's, as the server worked it out.
-pub const KEY_RATE: &str = "ntm_rad_rate";
+pub use crate::radiation::{KEY_DOSE, KEY_RATE};
 
 /// A radioactive item's rate, in milliRAD/s per item.
 pub fn item_rate(id: &str) -> Option<u32> {
