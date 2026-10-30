@@ -190,7 +190,7 @@ pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, data: &[i32],
     let Some(open) = guard.as_mut().filter(|open| open.block == block) else {
         drop(guard);
         let E::Press { at, .. } = event else { return false };
-        return open_selector(game, block, data, *at);
+        return switch_screen(game, block, *at) || open_selector(game, block, data, *at);
     };
     let before = (open.state.offset, open.state.selected);
     let outcome = match event {
@@ -216,6 +216,19 @@ pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, data: &[i32],
     } else if moved {
         game.audio.play_button_click();
     }
+    true
+}
+
+/// A press at `at` on a button that shows the machine's other screen (the
+/// electrolyser's): the screen changes and the slots are laid out again at
+/// once, since each screen puts them where its texture has them.
+fn switch_screen(game: &mut crate::game::Game<'_>, block: &str, at: [f32; 2]) -> bool {
+    let Some(def) = current(game, block) else { return false };
+    let Some(next) = def.switch_at(at[0], at[1]).map(str::to_owned) else { return false };
+    let Some(shown) = machine_screen(game, block, &next) else { return false };
+    *lock(&OPEN) = Some((block.to_string(), next));
+    game.native_screen_set_layout(shown);
+    game.audio.play_button_click();
     true
 }
 
