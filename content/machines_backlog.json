@@ -1023,7 +1023,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:heater_oven"
     },
     {
       "id": "heater_oilburner",
@@ -1041,7 +1042,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:heater_oilburner"
     },
     {
       "id": "heater_electric",
@@ -1059,7 +1061,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:heater_electric"
     },
     {
       "id": "heater_heatex",
@@ -1077,7 +1080,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:heater_heatex"
     },
     {
       "id": "machine_ashpit",

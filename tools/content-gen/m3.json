@@ -20352,6 +20352,82 @@
       "behavior_gap": "Oil extraction/depletion belongs to server logic; no independent tile entity. Sand keeps vanilla falling behavior."
     },
     {
+      "id": "heater_oven",
+      "source_variable": "heater_oven",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Heating Oven",
+        "pt_br": "Forno de Aquecimento"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/brick_fire.png",
+      "textures": {
+        "side": "blocks/brick_fire",
+        "top": "blocks/brick_fire",
+        "front": "blocks/brick_fire"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "heater_oilburner",
+      "source_variable": "heater_oilburner",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Fluid Burner",
+        "pt_br": "Queimador de Fluidos"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "heater_electric",
+      "source_variable": "heater_electric",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Electric Heater",
+        "pt_br": "Aquecedor Elétrico"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "heater_heatex",
+      "source_variable": "heater_heatex",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Heat Exchanging Heater",
+        "pt_br": "Aquecedor de Troca de Calor"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
       "id": "bio_wafer",
       "source_variable": "bio_wafer",
       "type": "item",

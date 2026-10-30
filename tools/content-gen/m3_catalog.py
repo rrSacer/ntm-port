@@ -153,6 +153,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
     rows.extend(catalog_completion.build(source))
     import petroleum_catalog
     rows.extend(petroleum_catalog.build(source))
+    import energy_catalog
+    rows.extend(energy_catalog.build(source))
     import petroleum_auxiliary_catalog
     rows.extend(petroleum_auxiliary_catalog.build(source))
     import foundry_catalog
@@ -187,9 +189,11 @@ def build(source=SOURCE, output=ROOT / 'content'):
     if backlog.is_file():
         data = json.loads(backlog.read_text())
         for entry in data['entries']:
-            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES) | set(bedrock_processing_catalog.MACHINES) | set(petroleum_catalog.MACHINES):
+            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES) | set(bedrock_processing_catalog.MACHINES) | set(petroleum_catalog.MACHINES) | set(energy_catalog.MACHINES):
                 entry['content_id'] = 'ntm:' + entry['id'] + ('_large' if entry['source_variable'] == 'machine_arc_furnace' else '')
-                entry['status'] = ('Crystallizer content declared; stage-two processing/upgrades tracked separately'
+                entry['status'] = ('Energy content declared; heat/processing and visuals tracked separately'
+                                   if entry['source_variable'] in energy_catalog.MACHINES else
+                                   'Crystallizer content declared; stage-two processing/upgrades tracked separately'
                                    if entry['source_variable'] == 'machine_crystallizer' else
                                    'Petroleum content declared; processing and visuals tracked separately'
                                    if entry['source_variable'] in petroleum_catalog.MACHINES else
