@@ -66,6 +66,10 @@
     "ntm:machine_chungus",
     "ntm:machine_condenser",
     "ntm:machine_condenser_powered",
+    "ntm:machine_diesel",
+    "ntm:machine_combustion_engine",
+    "ntm:machine_turbofan",
+    "ntm:machine_turbinegas",
     "ntm:machine_crucible",
     "ntm:heater_firebox",
     "ntm:foundry_channel",
@@ -86017,6 +86021,166 @@
       }
     },
     {
+      "id": "ntm:machine_diesel",
+      "source_variable": "machine_diesel",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Diesel Generator",
+        "pt_br": "Gerador a Diesel"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_diesel",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:411"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_combustion_engine",
+      "source_variable": "machine_combustion_engine",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Industrial Combustion Engine",
+        "pt_br": "Motor de Combustão Industrial"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_combustion_engine",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:414"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_turbofan",
+      "source_variable": "machine_turbofan",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Turbofan",
+        "pt_br": "Turbofan"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_turbofan",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:425"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_turbinegas",
+      "source_variable": "machine_turbinegas",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Combined Cycle Gas Turbine",
+        "pt_br": "Turbina a Gás de Ciclo Combinado"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_turbinegas",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:428"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
       "id": "ntm:gear_large__iron",
       "source_variable": "gear_large",
       "type": "item",
@@ -86070,6 +86234,146 @@
         {
           "machine": "anvil",
           "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:719"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:piston_set__steel",
+      "source_variable": "piston_set",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPistonType.STEEL",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/piston_set_steel.png",
+      "names": {
+        "en_us": "Steel Piston Set",
+        "pt_br": "Conjunto de Pistões de Aço"
+      },
+      "behavior_gap": "Efficiency matrix lives in machine-recipes/combustion.json; the combustion engine slot logic belongs to machine logic.",
+      "source_registry": "hbm:item.piston_set",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:417"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:piston_set__dura",
+      "source_variable": "piston_set",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPistonType.DURA",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/piston_set_dura.png",
+      "names": {
+        "en_us": "High-Speed Steel Piston Set",
+        "pt_br": "Conjunto de Pistões de Aço Rápido"
+      },
+      "behavior_gap": "Efficiency matrix lives in machine-recipes/combustion.json; the combustion engine slot logic belongs to machine logic.",
+      "source_registry": "hbm:item.piston_set",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:419"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:piston_set__desh",
+      "source_variable": "piston_set",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPistonType.DESH",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/piston_set_desh.png",
+      "names": {
+        "en_us": "Desh Piston Set",
+        "pt_br": "Conjunto de Pistões de Desh"
+      },
+      "behavior_gap": "Efficiency matrix lives in machine-recipes/combustion.json; the combustion engine slot logic belongs to machine logic.",
+      "source_registry": "hbm:item.piston_set",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:421"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:piston_set__starmetal",
+      "source_variable": "piston_set",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPistonType.STARMETAL",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/piston_set_starmetal.png",
+      "names": {
+        "en_us": "Starmetal Piston Set",
+        "pt_br": "Conjunto de Pistões de Metal Estelar"
+      },
+      "behavior_gap": "Efficiency matrix lives in machine-recipes/combustion.json; the combustion engine slot logic belongs to machine logic.",
+      "source_registry": "hbm:item.piston_set",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:423"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ingot_starmetal",
+      "source_variable": "ingot_starmetal",
+      "type": "item",
+      "category": "ingot",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_starmetal.png",
+      "names": {
+        "en_us": "§9Starmetal Ingot§r",
+        "pt_br": "§9Lingote de Metal Estelar§r"
+      },
+      "behavior_gap": "Astra/ursa/orion icon variants (metadata 1-3) are hidden cosmetic subtypes with no recipe or localization; only the base ingot is declared.",
+      "source_registry": "hbm:item.ingot_starmetal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "blast_furnace",
+          "source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:71"
         }
       ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"

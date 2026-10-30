@@ -2114,7 +2114,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_diesel"
     },
     {
       "id": "machine_combustion_engine",
@@ -2132,7 +2133,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_combustion_engine"
     },
     {
       "id": "machine_shredder",
@@ -6408,7 +6410,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_turbofan"
     },
     {
       "id": "machine_turbinegas",
@@ -6426,7 +6429,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_turbinegas"
     },
     {
       "id": "machine_lpw2",
