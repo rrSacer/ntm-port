@@ -812,6 +812,42 @@ o agente das bombas.
   - a tela com a grade, os ponteiros e os tanques;
   - os 5 modelos aparecem.
 
+## 3r. Reatores, R2: as colunas do RBMK, o console, o guindaste e o autoloader
+
+As colunas do NTM são `RBMKBase`, ou seja, 1×4 com offset 0 (`dialColumnHeight` 4) e núcleo embaixo. Os modelos são
+montados pelo `sheet` do visual-gen célula a célula, como os ISBRH do NTM (`RenderRBMKRod`, `RenderRBMKReflector` e
+`RenderRBMKControl`): caixas com as texturas de bloco e partes dos OBJs do NTM com o ícone do bloco.
+
+| Bloco | Multibloco | Tela | Modelo |
+|---|---|---|---|
+| Canais de combustível (4) | coluna 1×4 | `gui_rbmk_element.png`, 1 slot; depleção [3] e xenônio [4] | lados, `Cap` e `Inner` por célula; hastes na cor da barra [1] (um bone por tint do NTM, 16); Cherenkov translúcido com [2]; tampa [0] |
+| Controle manual (3) | coluna 1×4 | `gui_rbmk_control.png`, 5 botões de nível e 5 de grupo, inserção [5] | cubos e quatro canos; a haste (`Lid` de `rbmk_rods`) sobe com o nível [1] e tem a textura do grupo [2] |
+| Controle automático (2) | coluna 1×4 | `gui_rbmk_control_auto.png`; funções e os 4 campos como botões −/+ (shift ±10), valores em texto | como o manual, textura `rbmk_control_auto` |
+| Caldeira, aquecedor | coluna 1×4 | `gui_rbmk_boiler.png` (compressão, tipo de vapor) e `gui_rbmk_heater.png` (1 slot, tanques na cor do fluido) | cubos; canos sem tampa, ou a tampa [0] |
+| Irradiação, armazenamento | coluna 1×4 | `gui_rbmk_outgasser.png` (2 slots) e `gui_rbmk_storage.png` (12 slots) | cubos e tampa [0] |
+| Estrutural, refletor, absorvedor, moderador, resfriador | coluna 1×4 | sem GUI | cubos e tampa [0] |
+| Console | 5×4 e a base 5×2, offset 1 (25 células) | ainda não (`GUIRBMKConsole`) | `rotation 90`, translate (0,5, 0, 0) |
+| Console do guindaste | 3×2 e a base 3×2, offset 1 (9 células) | sem GUI | os ponteiros por [2] e [3]; as lâmpadas acesas por [4] e [5] |
+| Autoloader | coluna 1×9 | `gui_autoloader.png` 176×182, 18 slots, ciclo em texto [1], −/+ | o pistão desce com [0] |
+
+- **Índices:** combinados com o agente das bombas. A lógica do RBMK ainda é inerte (desde o conteúdo do R2), então
+  as telas e os modelos ficam neutros até ela ligar os valores.
+- **Desvios:**
+  - os campos de texto do controle automático viram botões;
+  - a barra de inserção do controle usa um valor próprio, porque o screen não inverte valores;
+  - o Cherenkov é translúcido comum, não aditivo;
+  - os painéis de aviso de calor do canal (fora da tela, à esquerda) ficam de fora.
+- **Para a segunda passada:**
+  - a grade 15×15 e os 6 textos do console, e a tela dele;
+  - o guindaste sobre o reator (`crane.obj`: posição, vão, altura e elevação);
+  - as inclinações do joystick e o tremor dos ponteiros.
+- **No motor antigo do fork:** uma máquina sem slots não abre tela, e o clique coloca o item da mão. Isso afeta o controle,
+  o controle automático e a caldeira. As telas delas são para a tela nativa da ntm-next.
+- **Em jogo** (motor antigo, com valores por `data merge`):
+  - as 18 colunas, o console, o guindaste e o autoloader colocados pelo item, com as contagens de células do NTM;
+  - tampas de concreto e de vidro, hastes coloridas, as barras de controle na altura e na cor e os canos aparecem;
+  - as telas do canal, da irradiação, do armazenamento, do aquecedor e do autoloader batem com os GUIs do NTM.
+
 ## 4. Motor (patch) e port
 
 **Patch no motor** (`horizon-visual`, branch `ntm-visual`, 56 commits):
