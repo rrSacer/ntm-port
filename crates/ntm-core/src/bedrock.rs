@@ -215,6 +215,7 @@ pub mod slopper {
     use serde::{Deserialize, Serialize};
 
     pub const SLOTS: usize = 11;
+    pub const BATTERY: usize = 0;
     pub const INPUT: usize = 2;
     pub const OUTPUTS: std::ops::RangeInclusive<usize> = 3..=8;
     pub const RAW: &str = "ntm:bedrock_ore_base";
@@ -350,6 +351,7 @@ pub mod slopper {
         /// One tick; `densities` reads the raw ore's (its item data).
         /// True when something changed.
         pub fn step(&mut self, densities: impl Fn(&Stack) -> [f64; 6]) -> bool {
+            self.power = crate::machine::charge_from_slot(&self.slots, BATTERY, self.power, MAX_POWER);
             let before = (self.progress, self.power);
             if self.can() {
                 self.power -= HE_PER_TICK;
@@ -474,6 +476,12 @@ mod tests {
         assert_eq!(m.slots[INPUT], None);
         // Nothing left to slop: it stops, the fractions wait.
         m.power = MAX_POWER;
+        assert!(!m.can());
+        // The creative battery keeps it full.
+        m.power = 0;
+        m.slots[BATTERY] = Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1));
+        m.step(dens);
+        assert_eq!(m.power, MAX_POWER);
         assert!(!m.can());
         assert!((m.ores[1] - 0.5).abs() < 1e-9);
     }

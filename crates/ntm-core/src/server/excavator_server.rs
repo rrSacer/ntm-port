@@ -59,6 +59,7 @@ fn scan(host: &mut impl ServerHost, key: &Key, y: i32) -> Option<Layer> {
 fn step(e: &mut Excavator, host: &mut impl ServerHost, key: &Key) -> bool {
     let was = e.operational;
     e.operational = false;
+    e.power = crate::machine::charge_from_slot(&e.slots, excavator::slot::BATTERY, e.power, excavator::MAX_POWER);
     let Some(d) = e.drill() else { return was };
     if !e.enabled || e.power < HE_PER_TICK {
         return was;

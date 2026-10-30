@@ -454,6 +454,17 @@ impl WoodBurner {
 
 /// Burn ticks of a solid fuel (vanilla's furnace values; NTM's wood burner
 /// reads the same table for these).
+/// The creative battery (`ModItems.battery_creative`), in a machine's
+/// battery slot: always full (`Library.chargeTEFromItems`). The port has no
+/// other charge in items.
+pub const CREATIVE_BATTERY: &str = "ntm:battery_creative";
+
+/// `chargeTEFromItems` on slot `i` of `slots`: the power the machine has
+/// after it.
+pub fn charge_from_slot(slots: &[Option<crate::server::container_bridge::Stack>], i: usize, power: u64, max: u64) -> u64 {
+    if slots.get(i).and_then(|s| s.as_ref()).is_some_and(|s| s.id == CREATIVE_BATTERY) { max } else { power }
+}
+
 pub fn burn_ticks(item: &str) -> u32 {
     let path = item.split(':').nth(1).unwrap_or(item);
     match path {
