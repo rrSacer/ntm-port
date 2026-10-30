@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:disk",
+  "radius": 4,
+  "half_height": 2,
+  "target": {
+    "type": "minecraft:matching_blocks",
+    "blocks": [
+      "minecraft:bedrock",
+      "minecraft:stone",
+      "minecraft:deepslate"
+    ]
+  },
+  "state_provider": {
+    "type": "minecraft:simple",
+    "state": {
+      "id": "ntm:ore_bedrock_oil"
+    }
+  }
+}
