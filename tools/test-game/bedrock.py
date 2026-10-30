@@ -92,6 +92,10 @@ Energia, lote 1, num chão novo a leste do C:
               trocador de calor (líquido de arrefecimento quente de um
               barril), cada um com uma caldeira em cima e água de um barril:
               vapor nas três.
+Energia, lote 2, no mesmo chão (casing provisório, sem multibloco):
+  energia_2   um barril de vapor a oeste de um motor a vapor, uma bateria ao
+              norte dele, um condensador a leste e um barril vazio depois:
+              o motor carrega a bateria, e a água volta ao barril.
 Grava <pasta>/bedrock-evidence.json e capturas bedrock-*.png.
 """
 import json, subprocess, sys, time
@@ -1562,6 +1566,28 @@ def energia_1():
     ev['controle_deslizante'] = slider
     evidence['energia_1'] = ev
     print('energia_1', json.dumps(ev, ensure_ascii=False))
+
+
+def energia_2():
+    y = energy_floor()
+    ctl('command', 'clear @s', check=False)
+    x, z = XE + 32, ZE
+    for block, at, stand in (('ntm:machine_steam_engine', (x, y, z), (x, y, z + 3)),
+                             ('ntm:machine_condenser', (x + 1, y, z), (x + 1, y, z + 3)),
+                             ('ntm:machine_battery', (x, y, z - 1), (x, y, z - 3))):
+        if not ctl('block', *at).get('state', '').startswith(block):
+            place(*at, block, stand)
+    barrel_up(x + 2, y, z, None)
+    fluid_barrel(x - 1, y, z, 'ntm:fluid_barrel_full__steam', (x - 1, y, z + 2))
+    time.sleep(20)
+    tank = lambda t: (t.get('fluid', ''), t.get('mb', 0))
+    eng = machine_state(x, y, z) or {}
+    con = machine_state(x + 1, y, z) or {}
+    bat = machine_state(x, y, z - 1) or {}
+    ev = {'motor': eng, 'condensador': con, 'bateria': {'energia': bat.get('power'), 'modo': bat.get('mode')},
+          'barril_vapor': barrel_state(x - 1, y, z), 'barril_agua': barrel_state(x + 2, y, z)}
+    evidence['energia_2'] = ev
+    print('energia_2', json.dumps(ev, ensure_ascii=False))
 
 
 for s in steps:
