@@ -16,6 +16,17 @@ mudo), com os mods de tools/build-visual.sh. Etapas:
               → PRIMARY → fragmentos de urânio e tório;
   craftar     9 fragmentos de urânio numa bancada: 1 pó de urânio.
 O depósito não guarda nada (tudo vem da posição): o teste o põe com fill.
+Etapa 2 (cristalizador), no mesmo mundo:
+  escavar3    uma segunda escavadora sobre um depósito de nível 3 em
+              (2920, −1848) (actinídeos e cristalinos 2,0), com broca desh e
+              ácido sulfúrico de um barril na camada de portas: 2 brutos;
+  pilha       a pilha de brutos sai pelo shift-clique com o custom_data
+              (a correção do motor para o criativo);
+  lavar       2 BASE de actinídeos lavados num cristalizador com água; na
+              centrífuga, 2 lavados dão 4 PRIMARY, contra 2 BASE → 2 PRIMARY;
+  acido       PRIMARY + ácido sulfúrico num segundo cristalizador → PRIMARY
+              sulfúrico → centrífuga (sem-sulfúrico + subproduto) → os
+              fragmentos; 4 subprodutos lavados → os fragmentos dele.
 Grava <pasta>/bedrock-evidence.json e capturas bedrock-*.png.
 """
 import json, subprocess, sys, time
@@ -40,6 +51,13 @@ def ctl(*args, check=True):
     if check and isinstance(j, dict) and j.get('error'):
         raise SystemExit(f'{args}: {j["error"]}')
     return j
+
+
+def tp(x, y, z):
+    """The vanilla command: horizon-ctl's tp answers ok here and doesn't
+    always move the player."""
+    ctl('command', f'tp @s {x} {y} {z}', check=False)
+    time.sleep(0.3)
 
 
 def screen():
@@ -92,7 +110,7 @@ def floor_y():
     p = game / 'bedrock-y'
     if p.exists():
         return int(p.read_text())
-    ctl('tp', X + 0.5, 150, Z + 10.5)
+    tp(X + 0.5, 150, Z + 10.5)
     time.sleep(4)
     ctl('wait-ready', 120, check=False)
     y = int(ctl('state')['player']['position'][1])
@@ -109,7 +127,7 @@ def find(block, x0, y0, z0, x1, y1, z1):
 
 def place(x, y, z, item, stand):
     close()
-    ctl('tp', stand[0] + 0.5, stand[1], stand[2] + 0.5)
+    tp(stand[0] + 0.5, stand[1], stand[2] + 0.5)
     give(item, 1)
     # A multiblock fills the clicked cell with its own blocks: ctl may call
     # that "did not change"; the caller finds the core.
@@ -120,7 +138,7 @@ def place(x, y, z, item, stand):
 
 def open_at(x, y, z, stand):
     close()
-    ctl('tp', stand[0] + 0.5, stand[1], stand[2] + 0.5)
+    tp(stand[0] + 0.5, stand[1], stand[2] + 0.5)
     ctl('interact', x, y, z)
     time.sleep(1.5)
 
@@ -194,7 +212,7 @@ def slop():
     give('ntm:fluid_barrel_full__water', 1)
     ctl('select', 'ntm:fluid_barrel_full__water')
     close()
-    ctl('tp', bx + 2.5, y, oz + 0.5)
+    tp(bx + 2.5, y, oz + 0.5)
     ctl('look-at-block', bx, y, oz)
     ctl('key', 'r', 'down')
     time.sleep(0.3)
@@ -294,6 +312,204 @@ def craftar():
     close()
     evidence['craftar'] = {'po_de_uranio': ctl('inventory').get('counts', {}).get('ntm:powder_uranium', 0)}
     print('craftar', evidence['craftar'])
+
+
+# --------------------------------------------------------- etapa 2
+
+X3, Z3 = 2920, -1845  # the click: the core lands 3 cells north, at −1848
+
+
+def count(item):
+    return ctl('inventory').get('counts', {}).get(item, 0)
+
+
+def fluid_barrel(bx, by, bz, barrel, stand):
+    """A steel barrel at (bx, by, bz) with `barrel` poured in, in output
+    mode."""
+    if not ctl('block', bx, by, bz).get('state', '').startswith('ntm:barrel_steel'):
+        place(bx, by, bz, 'ntm:barrel_steel', stand)
+    give(barrel, 1)
+    ctl('select', barrel)
+    close()
+    tp(stand[0] + 0.5, stand[1], stand[2] + 0.5)
+    ctl('look-at-block', bx, by, bz)
+    ctl('key', 'r', 'down')
+    time.sleep(0.3)
+    ctl('key', 'r', 'up')
+    time.sleep(2.5)
+    click_label('Despejar')
+    while 'Saída' not in ''.join(w.get('label') or '' for w in ctl('ui').get('widgets', [])):
+        click_label('Modo:', 1.0)
+    close()
+
+
+def escavar3():
+    y = floor_y()
+    ctl('fill', X3 - 6, y, Z3 - 12, X3 + 16, y + 9, Z3 + 6, 'minecraft:air')
+    ctl('fill', X3 - 6, y - 1, Z3 - 12, X3 + 16, y - 1, Z3 + 6, 'minecraft:stone')
+    ctl('command', 'clear @s', check=False)
+    if not any('excavator' in b[3] for b in ctl('blocks', X3 - 4, y, Z3 - 7, X3 + 4, y + 6, Z3).get('blocks', [])):
+        place(X3, y, Z3, 'ntm:machine_excavator', (X3, y, Z3 + 3))
+    (cx, cy, cz) = find('ntm:machine_excavator', X3 - 4, y, Z3 - 7, X3 + 4, y + 6, Z3)
+    ctl('fill', cx - 1, -63, cz - 1, cx + 1, cy - 9, cz + 1, 'minecraft:air')
+    ctl('fill', cx, -64, cz, cx, -64, cz, 'ntm:ore_bedrock')
+    # Sulfuric acid: a barrel on a pillar against the port layer (above the
+    # core), the player on a second pillar.
+    ctl('fill', cx + 4, y, cz, cx + 4, cy, cz, 'minecraft:stone')
+    ctl('fill', cx + 6, y, cz, cx + 6, cy, cz, 'minecraft:stone')
+    fluid_barrel(cx + 4, cy + 1, cz, 'ntm:fluid_barrel_full__sulfuric_acid', (cx + 6, cy + 1, cz))
+    stand = (cx, y, cz + 6)
+    open_at(cx, cy, cz + 3, stand)
+    put('ntm:battery_creative', 1, 300)
+    put('ntm:drillbit__desh', 1, 304)
+    ctl('click-button', 'Broca')
+    time.sleep(2)
+    t0, raw = time.time(), []
+    while time.time() - t0 < 900:
+        time.sleep(15)
+        open_at(cx, cy, cz + 3, stand)
+        raw = [s for s in machine_slots() if s[1] == 'ntm:bedrock_ore_base']
+        if sum(s[2] for s in raw) >= 2:
+            break
+    data = ctl('command', f'data get block {cx} {cy} {cz} Items').get('chat', [''])[0]
+    ctl('click-button', 'Broca')
+    close()
+    evidence['escavar3'] = {'nucleo': [cx, cy, cz], 'brutos': sum(s[2] for s in raw), 'segundos': round(time.time() - t0, 1),
+                            'custom_data_no_bloco': 'ntm_ore' in data and 'actinide: 2.2d' in data}
+    print('escavar3', evidence['escavar3'])
+
+
+def pilha():
+    """The raw ores out by shift-click: the stack keeps its data."""
+    y = floor_y()
+    (cx, cy, cz) = find('ntm:machine_excavator', X3 - 4, y, Z3 - 7, X3 + 4, y + 6, Z3)
+    ctl('command', 'clear @s', check=False)
+    open_at(cx, cy, cz + 3, (cx, y, cz + 6))
+    for s in machine_slots():
+        if s[1] == 'ntm:bedrock_ore_base':
+            ctl('click-slot', s[0], 'shift')
+            time.sleep(0.5)
+    close()
+    inv = ctl('command', 'data get entity @s Inventory').get('chat', [''])[0]
+    stacks = [(m.group(1) is not None, int(m.group(2))) for m in __import__('re').finditer(
+        r'\{(components: \{[^}]*\{[^}]*\}\}\}, )?count: (\d+), Slot: \d+b, id: "ntm:bedrock_ore_base"\}', inv)]
+    evidence['pilha'] = {'pilhas': stacks, 'ok': bool(stacks) and all(c for c, _ in stacks)}
+    print('pilha', evidence['pilha'])
+
+
+def crystallizer(px, pz, barrel):
+    """A crystallizer clicked at (px, pz), fed by a barrel of `barrel` against
+    its bottom ring; its core and the cell to open it through."""
+    y = floor_y()
+    if not any('crystallizer' in b[3] for b in ctl('blocks', px - 3, y, pz - 3, px + 3, y, pz + 3).get('blocks', [])):
+        place(px, y, pz, 'ntm:machine_crystallizer', (px, y, pz + 4))
+    (kx, ky, kz) = find('ntm:machine_crystallizer', px - 3, y, pz - 3, px + 3, y, pz + 3)
+    fluid_barrel(kx + 2, y, kz, barrel, (kx + 4, y, kz))
+    return (kx, ky, kz)
+
+
+def crystallize(core, item, n, out_item):
+    """`n` of `item` through the crystallizer at `core`; what comes out to the
+    inventory."""
+    (kx, y, kz) = core
+    stand, cell = (kx, y, kz + 3), (kx, y, kz + 1)
+    open_at(*cell, stand)
+    put('ntm:battery_creative', 1, 301) if not any(s[0] == 301 for s in machine_slots()) else None
+    ctl('click-slot', hot(item)[0])
+    time.sleep(0.3)
+    ctl('click-slot', 300)
+    time.sleep(0.5)
+    t0 = time.time()
+    while time.time() - t0 < 30 + 15 * n:
+        time.sleep(4)
+        open_at(*cell, stand)
+        if sum(s[2] for s in machine_slots() if s[1] == out_item) >= n // max(1, 1):
+            break
+    for s in machine_slots():
+        if s[0] == 302:
+            ctl('click-slot', 302, 'shift')
+            time.sleep(0.4)
+    close()
+
+
+def lavar():
+    y = floor_y()
+    ctl('command', 'clear @s', check=False)
+    # 2 BASE ores of actinides washed, 2 not.
+    water = crystallizer(X3 + 10, Z3 - 8, 'ntm:fluid_barrel_full__water')
+    give('ntm:bedrock_ore__base_actinide', 2)
+    crystallize(water, 'ntm:bedrock_ore__base_actinide', 2, 'ntm:bedrock_ore__base_washed_actinide')
+    washed = count('ntm:bedrock_ore__base_washed_actinide')
+    give('ntm:bedrock_ore__base_actinide', 2)
+    cx, cz = X + 4, Z + 10
+    centrifuge_run(cx, y, cz, 'ntm:bedrock_ore__base_washed_actinide')
+    from_washed = count('ntm:bedrock_ore__primary_actinide')
+    centrifuge_run(cx, y, cz, 'ntm:bedrock_ore__base_actinide')
+    from_base = count('ntm:bedrock_ore__primary_actinide') - from_washed
+    evidence['lavar'] = {'lavados': washed, 'primary_de_2_lavados': from_washed, 'primary_de_2_base': from_base}
+    print('lavar', evidence['lavar'])
+
+
+def acido():
+    y = floor_y()
+    acid = crystallizer(X3 + 10, Z3, 'ntm:fluid_barrel_full__sulfuric_acid')
+    n = count('ntm:bedrock_ore__primary_actinide')
+    crystallize(acid, 'ntm:bedrock_ore__primary_actinide', n, 'ntm:bedrock_ore__primary_sulfuric_actinide')
+    cx, cz = X + 4, Z + 10
+    centrifuge_run(cx, y, cz, 'ntm:bedrock_ore__primary_sulfuric_actinide')
+    centrifuge_run(cx, y, cz, 'ntm:bedrock_ore__primary_nosulfuric_actinide')
+    water = find('ntm:machine_crystallizer', X3 + 7, y, Z3 - 11, X3 + 13, y, Z3 - 5)
+    crystallize(water, 'ntm:bedrock_ore__sulfuric_byproduct_actinide', count('ntm:bedrock_ore__sulfuric_byproduct_actinide'),
+                'ntm:bedrock_ore__sulfuric_washed_actinide')
+    centrifuge_run(cx, y, cz, 'ntm:bedrock_ore__sulfuric_washed_actinide')
+    evidence['acido'] = {k: v for k, v in ctl('inventory').get('counts', {}).items() if 'bedrock' in k}
+    print('acido', evidence['acido'])
+
+
+def recharge(bx, by, bz):
+    """The machine battery of the centrifuge back to full (+10% ×12)."""
+    close()
+    tp(bx + 0.5, by, bz + 3.5)
+    ctl('look-at-block', bx, by, bz)
+    ctl('key', 'r', 'down')
+    time.sleep(0.3)
+    ctl('key', 'r', 'up')
+    time.sleep(2.5)
+    for _ in range(12):
+        click_label('Teste: +10%', 1.0)
+    close()
+
+
+def fim():
+    """What the acid line left: the no-sulfuric ores (in the centrifuge, its
+    battery recharged) and the washed byproducts, to fragments; the dust."""
+    y = floor_y()
+    cx, cz = X + 4, Z + 10
+    recharge(cx + 1, y, cz)
+    # The no-sulfuric ores still in the centrifuge: let it run, take all.
+    stand = (cx, y, cz + 3)
+    t0 = time.time()
+    while time.time() - t0 < 600:
+        time.sleep(10)
+        open_at(cx, y, cz, stand)
+        left = [s for s in machine_slots() if s[0] == 300]
+        for s in machine_slots():
+            if s[0] >= 301:
+                ctl('click-slot', s[0], 'shift')
+                time.sleep(0.3)
+        close()
+        if not left:
+            break
+    water = find('ntm:machine_crystallizer', X3 + 7, y, Z3 - 11, X3 + 13, y, Z3 - 5)
+    (kx, _, kz) = water
+    open_at(kx, y, kz + 1, (kx, y, kz + 3))
+    ctl('click-slot', 302, 'shift')
+    time.sleep(0.5)
+    close()
+    recharge(cx + 1, y, cz)
+    centrifuge_run(cx, y, cz, 'ntm:bedrock_ore__sulfuric_washed_actinide')
+    evidence['fim'] = {k: v for k, v in ctl('inventory').get('counts', {}).items() if 'bedrock' in k}
+    print('fim', evidence['fim'])
 
 
 for s in steps:
