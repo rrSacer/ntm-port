@@ -545,6 +545,44 @@ caso de terreno (nenhuma coluna aproveitável) o `.hmod` antigo **para** no tick
 cliente travando 1,5 s e correndo, mais o `SetTime`, o cliente antigo abriu 61
 sessões em 3 min; o novo, 1.
 
+## Carga de mundo depois de crashes (2026-10-30)
+
+Sintoma em jogo (mundo da cadeia do bedrock, 25 a 27 máquinas, 24
+transações guardadas para conferência): depois de um panic do server mod, o
+mundo não carregava mais. A cada entrada, "it took too long"; o mod parava e
+deixava mais sondas, e o mundo continuava preso. Tirar `probes.0`/`probes.1`
+de `.horizon-mod-data/ntmlogic` destravava. Mais tarde o mesmo save, com as
+mesmas sondas, carregou; o gatilho exato não se reproduziu.
+
+O que pesava no tick da carga, todo junto: a identificação, a leitura do
+save, o 1º tick de todas as máquinas (primeira vista dos slots, topologia,
+tabelas de receita) e a conferência de cada transação guardada. Cada uma
+procura uma célula de resposta, e a busca pode ler os 256 blocos do fundo de
+um chunk. Correções:
+
+| Correção | Onde |
+| --- | --- |
+| o tick em que o mundo carrega faz só isso; as máquinas começam no seguinte | `Server::tick` |
+| no máximo 4 células de resposta procuradas por tick (`ANSWER_CELLS_PER_TICK`); a conferência segue nos ticks seguintes | `answer_cell`, `run_applied`, `run_txs` |
+| sondas de uma sessão anterior leem no máximo 40 células por tick (`LEFT_PROBE_READS_PER_TICK`), as colunas órfãs também, a partir do tick seguinte à carga | `run_probes`, `recover_columns` |
+| as tabelas de receita são lidas no `init` do mod (fuel 2.000M), não no 1º tick (50M) | `warm_tables` (68800e7) |
+
+Teste: `server::tests::a_world_loaded_after_crashes_spreads_its_first_work`
+carrega o save real do fim da etapa 4 (`server/tests/fixtures/bedrock_stage4.save`)
+depois de um crash no meio da identificação. Ele confere três coisas:
+- o tick da carga não roda máquina nenhuma;
+- nenhum tick lê mais que 4 × 256 + 40 + 640 blocos;
+- no máximo 4 conferências saem por tick.
+
+Em jogo, o mesmo mundo com 8 sondas herdadas carrega e as máquinas rodam.
+
+**Limite que fica:** uma máquina posta enquanto o server mod está parado
+(crash, "took too long") não é registrada depois. O servidor só conhece as
+máquinas pelo evento de bloco posto, e não há como listar os blocos de
+máquina de um chunk. Varrer os chunks perto do jogador custa ~98.000 leituras
+por chunk, fora de qualquer orçamento de tick. Para registrá-la, quebre a
+máquina e ponha de novo.
+
 ## Verificação
 
 `cargo test -p ntm-core`: 82 testes, incluindo os da radiação. Clippy limpo.
