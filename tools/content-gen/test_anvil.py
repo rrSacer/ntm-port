@@ -96,7 +96,7 @@ class AnvilContracts(unittest.TestCase):
         })
         self.assertEqual(self.data['coverage'], {
             'smithing': {'source_calls': 41, 'expanded': 58, 'emitted': 36, 'skipped': 22},
-            'construction': {'source_calls': 177, 'expanded': 257, 'emitted': 114, 'skipped': 143},
+            'construction': {'source_calls': 177, 'expanded': 257, 'emitted': 118, 'skipped': 139},
         })
         for section, total in [('smithing', 58), ('construction', 257)]:
             emitted = self.data[section]

@@ -1171,7 +1171,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_stirling"
     },
     {
       "id": "machine_stirling_steel",
@@ -1189,7 +1190,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_stirling_steel"
     },
     {
       "id": "machine_stirling_creative",
@@ -1207,7 +1209,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_stirling_creative"
     },
     {
       "id": "machine_sawmill",
@@ -3534,7 +3537,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_solar_boiler"
     },
     {
       "id": "solar_mirror",
@@ -3551,7 +3555,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:solar_mirror"
     },
     {
       "id": "struct_launcher_core",

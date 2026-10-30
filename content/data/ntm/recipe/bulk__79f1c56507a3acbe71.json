@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:assembly_nuke",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " WP",
+    "SEP",
+    " WP"
+  ],
+  "key": {
+    "W": "#ntm:bulk/wirefinegold",
+    "P": "#ntm:bulk/plateweaponsteel",
+    "S": "#ntm:bulk/shellweaponsteel",
+    "E": "ntm:ball_tatb"
+  }
+}

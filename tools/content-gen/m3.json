@@ -20599,6 +20599,101 @@
       "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
     },
     {
+      "id": "machine_solar_boiler",
+      "source_variable": "machine_solar_boiler",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Solar Tower Boiler",
+        "pt_br": "Caldeira da Torre Solar"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/machine_solar_boiler.png",
+      "textures": {
+        "side": "blocks/machine_solar_boiler",
+        "top": "blocks/machine_solar_boiler",
+        "front": "blocks/machine_solar_boiler"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "solar_mirror",
+      "source_variable": "solar_mirror",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Heliostat Mirror",
+        "pt_br": "Espelho Heliostato"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/solar_mirror.png",
+      "textures": {
+        "side": "blocks/solar_mirror",
+        "top": "blocks/solar_mirror",
+        "front": "blocks/solar_mirror"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "machine_stirling",
+      "source_variable": "machine_stirling",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Stirling Engine",
+        "pt_br": "Motor Stirling"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "machine_stirling_steel",
+      "source_variable": "machine_stirling_steel",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Heavy Stirling Engine",
+        "pt_br": "Motor Stirling Pesado"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "machine_stirling_creative",
+      "source_variable": "machine_stirling_creative",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Creative Stirling Engine",
+        "pt_br": "Motor Stirling Criativo"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
       "id": "gear_large__iron",
       "source_variable": "gear_large",
       "type": "item",

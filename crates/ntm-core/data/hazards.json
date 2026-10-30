@@ -24450,6 +24450,51 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:machine_solar_boiler",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:solar_mirror",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:machine_stirling",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:machine_stirling_steel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:machine_stirling_creative",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:gear_large__iron",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,

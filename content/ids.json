@@ -70,6 +70,11 @@
     "ntm:machine_combustion_engine",
     "ntm:machine_turbofan",
     "ntm:machine_turbinegas",
+    "ntm:machine_solar_boiler",
+    "ntm:solar_mirror",
+    "ntm:machine_stirling",
+    "ntm:machine_stirling_steel",
+    "ntm:machine_stirling_creative",
     "ntm:machine_crucible",
     "ntm:heater_firebox",
     "ntm:foundry_channel",
@@ -86169,6 +86174,196 @@
           "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:428"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_solar_boiler",
+      "source_variable": "machine_solar_boiler",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Solar Tower Boiler",
+        "pt_br": "Caldeira da Torre Solar"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/machine_solar_boiler.png",
+      "textures": {
+        "side": "blocks/machine_solar_boiler",
+        "top": "blocks/machine_solar_boiler",
+        "front": "blocks/machine_solar_boiler"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_solar_boiler",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:solar_mirror",
+      "source_variable": "solar_mirror",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Heliostat Mirror",
+        "pt_br": "Espelho Heliostato"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/solar_mirror.png",
+      "textures": {
+        "side": "blocks/solar_mirror",
+        "top": "blocks/solar_mirror",
+        "front": "blocks/solar_mirror"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.solar_mirror",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_stirling",
+      "source_variable": "machine_stirling",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Stirling Engine",
+        "pt_br": "Motor Stirling"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_stirling",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:691"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_stirling_steel",
+      "source_variable": "machine_stirling_steel",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Heavy Stirling Engine",
+        "pt_br": "Motor Stirling Pesado"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_stirling_steel",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:727"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_stirling_creative",
+      "source_variable": "machine_stirling_creative",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Creative Stirling Engine",
+        "pt_br": "Motor Stirling Criativo"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_stirling_creative",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
       "logic": {
         "kind": "machine",

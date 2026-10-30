@@ -14362,6 +14362,26 @@
     "ntm:machine_turbofan": {
       "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
       "auto": false
+    },
+    "ntm:machine_solar_boiler": {
+      "source": "Energy batch 4: source casing fallback until visual integration is requested",
+      "auto": false
+    },
+    "ntm:solar_mirror": {
+      "source": "Energy batch 4: source casing fallback until visual integration is requested",
+      "auto": false
+    },
+    "ntm:machine_stirling": {
+      "source": "Energy batch 4: source casing fallback until visual integration is requested",
+      "auto": false
+    },
+    "ntm:machine_stirling_steel": {
+      "source": "Energy batch 4: source casing fallback until visual integration is requested",
+      "auto": false
+    },
+    "ntm:machine_stirling_creative": {
+      "source": "Energy batch 4: source casing fallback until visual integration is requested",
+      "auto": false
     }
   }
 }

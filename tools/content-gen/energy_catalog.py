@@ -7,7 +7,8 @@ BASE = 'src/main/java/com/hbm/'
 MACHINES = ('heater_oven', 'heater_oilburner', 'heater_electric', 'heater_heatex',
             'machine_steam_engine', 'machine_industrial_turbine', 'machine_chungus',
             'machine_condenser', 'machine_condenser_powered',
-            'machine_diesel', 'machine_combustion_engine', 'machine_turbofan', 'machine_turbinegas')
+            'machine_diesel', 'machine_combustion_engine', 'machine_turbofan', 'machine_turbinegas',
+            'machine_solar_boiler', 'solar_mirror', 'machine_stirling', 'machine_stirling_steel', 'machine_stirling_creative')
 
 
 def build(source):

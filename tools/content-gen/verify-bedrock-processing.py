@@ -15,7 +15,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--package',type=Path,required=True)
     parser.add_argument('--horizon-client',type=Path,required=True)
-    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion'],default='bedrock')
+    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling'],default='bedrock')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
     evidence=root/'content-gen-evidence'/({'bedrock':'bedrock-stages34'}.get(args.profile,args.profile));evidence.mkdir(parents=True,exist_ok=True)
@@ -62,6 +62,7 @@ def main():
             if args.profile=='energy-heaters':machines=['heater_oven','heater_oilburner','heater_electric','heater_heatex']
             if args.profile=='energy-steam':machines=['machine_steam_engine','machine_industrial_turbine','machine_chungus','machine_condenser','machine_condenser_powered']
             if args.profile=='energy-combustion':machines=['machine_diesel','machine_combustion_engine','machine_turbofan','machine_turbinegas']
+            if args.profile=='energy-solar-stirling':machines=['machine_solar_boiler','solar_mirror','machine_stirling','machine_stirling_steel','machine_stirling_creative']
             for i,name in enumerate(machines):
                 x=-4+i*4
                 for y,level in [(101,0),(103,5)]:
@@ -86,7 +87,7 @@ def main():
                     if reply['block']=='ntm:'+name:break
                     if time.monotonic()>deadline:raise AssertionError((name,reply))
                     ctl('wait 2')
-            camera_x,camera_z={'energy-steam':(4.5,-13.5),'energy-combustion':(2.5,-11.5)}.get(args.profile,(0.5,-7.5))
+            camera_x,camera_z={'energy-solar-stirling':(4.5,-13.5),'energy-steam':(4.5,-13.5),'energy-combustion':(2.5,-11.5)}.get(args.profile,(0.5,-7.5))
             cmd(f'tp @s {camera_x} 101 {camera_z}')
             deadline=time.monotonic()+15
             while True:
@@ -103,6 +104,7 @@ def main():
             if args.profile=='energy-heaters':samples=machines
             if args.profile=='energy-steam':samples=machines+['gear_large__iron','gear_large__steel']
             if args.profile=='energy-combustion':samples=machines+['piston_set__'+n for n in ['steel','dura','desh','starmetal']]+['ingot_starmetal']
+            if args.profile=='energy-solar-stirling':samples=machines
             cmd('clear @s')
             for name in samples:cmd('give @s ntm:'+name+' 1')
             deadline=time.monotonic()+15

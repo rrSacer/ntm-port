@@ -1,0 +1,51 @@
+{
+  "textures": {
+    "particle": "ntm:block/solar_mirror_side_opaque",
+    "down": "ntm:block/solar_mirror_top_opaque",
+    "up": "ntm:block/solar_mirror_top_opaque",
+    "north": "ntm:block/solar_mirror_front_opaque",
+    "south": "ntm:block/solar_mirror_side_opaque",
+    "east": "ntm:block/solar_mirror_side_opaque",
+    "west": "ntm:block/solar_mirror_side_opaque"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        }
+      }
+    }
+  ]
+}

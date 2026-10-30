@@ -77,7 +77,7 @@ class Resolver:
                     for name in self.frames[match[1]]:self.ore[shape+name].add(item)
         # MaterialShapes generated entries register their own dictionary key.
         mats=clean((src/'src/main/java/com/hbm/inventory/material/Mats.java').read_text())
-        shapes={'ingot_raw':'ingot','nugget_raw':'nugget','wire_fine':'wireFine','wire_dense':'wireDense','plate_cast':'plateTriple','plate_welded':'plateSextuple','bedrock_ore_fragment':'bedrockorefragment','part_barrel_light':'barrelLight','part_barrel_heavy':'barrelHeavy','part_receiver_light':'receiverLight','part_receiver_heavy':'receiverHeavy','part_mechanism':'gunMechanism','part_stock':'stock','part_grip':'grip'}
+        shapes={'shell':'shell','ingot_raw':'ingot','nugget_raw':'nugget','wire_fine':'wireFine','wire_dense':'wireDense','plate_cast':'plateTriple','plate_welded':'plateSextuple','bedrock_ore_fragment':'bedrockorefragment','part_barrel_light':'barrelLight','part_barrel_heavy':'barrelHeavy','part_receiver_light':'receiverLight','part_receiver_heavy':'receiverHeavy','part_mechanism':'gunMechanism','part_stock':'stock','part_grip':'grip'}
         for r in rows:
             if 'source_material' not in r or r['source_variable'] not in shapes:continue
             m=re.search(r'\b'+r['source_material']+r'\s*=\s*make\w*\(\s*[^,]+,\s*(\w+)',mats)

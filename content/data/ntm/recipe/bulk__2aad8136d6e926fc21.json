@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:solar_mirror",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    " B ",
+    "SSS"
+  ],
+  "key": {
+    "A": "#ntm:bulk/platealuminum",
+    "B": "ntm:steel_beam",
+    "S": "#ntm:bulk/ingotsteel"
+  }
+}

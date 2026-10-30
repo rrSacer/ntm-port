@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:machine_solar_boiler",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SHS",
+    "DHD",
+    "SHS"
+  ],
+  "key": {
+    "S": "#ntm:bulk/ingotsteel",
+    "H": "#ntm:bulk/shellsteel",
+    "D": "#ntm:bulk/dyeblack"
+  }
+}

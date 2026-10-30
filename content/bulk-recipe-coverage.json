@@ -686,6 +686,24 @@
       }
     },
     {
+      "id": "ntm:bulk__4c690748a40e64873b",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:292",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_solar_boiler",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2aad8136d6e926fc21",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:293",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:solar_mirror",
+        "count": 3
+      }
+    },
+    {
       "id": "ntm:bulk__e7c945685991f85c9a",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:294",
       "type": "minecraft:crafting_shaped",
@@ -5744,6 +5762,15 @@
       }
     },
     {
+      "id": "ntm:bulk__79f1c56507a3acbe71",
+      "source": "src/main/java/com/hbm/crafting/WeaponRecipes.java:221",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:assembly_nuke",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__533c64ebfd51b0a9b5",
       "source": "src/main/java/com/hbm/crafting/WeaponRecipes.java:291",
       "type": "minecraft:crafting_shaped",
@@ -5843,7 +5870,7 @@
       }
     }
   ],
-  "generated_count": 649,
+  "generated_count": 652,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -6444,18 +6471,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item machine_microwave",
       "expression": "new ItemStack(ModBlocks.machine_microwave, 1), new Object[] { \"III\", \"SGM\", \"IDI\", 'I', ModItems.plate_polymer, 'S', STEEL.plate(), 'G', KEY_ANYPANE, 'M', ModItems.magnetron, 'D', ModItems.motor }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:292",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_solar_boiler",
-      "expression": "new ItemStack(ModBlocks.machine_solar_boiler), new Object[] { \"SHS\", \"DHD\", \"SHS\", 'S', STEEL.ingot(), 'H', STEEL.shell(), 'D', KEY_BLACK }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:293",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item solar_mirror",
-      "expression": "new ItemStack(ModBlocks.solar_mirror, 3), new Object[] { \"AAA\", \" B \", \"SSS\", 'A', AL.plate(), 'B', ModBlocks.steel_beam, 'S', STEEL.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:298",
@@ -12918,12 +12933,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item gun_fireext",
       "expression": "new ItemStack(ModItems.gun_fireext, 1), new Object[] { \"HB\", \" T\", 'H', STEEL.pipe(), 'B', STEEL.bolt(), 'T', ModItems.tank_steel }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/WeaponRecipes.java:221",
-      "callee": "addRecipeAuto",
-      "reason": "unresolved ore dictionary WEAPONSTEEL.shell()",
-      "expression": "new ItemStack(ModItems.assembly_nuke, 1), new Object[] { \" WP\", \"SEP\", \" WP\", 'W', GOLD.wireFine(), 'P', WEAPONSTEEL.plate(), 'S', WEAPONSTEEL.shell(), 'E', ModItems.ball_tatb }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/WeaponRecipes.java:224",
