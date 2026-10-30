@@ -527,7 +527,7 @@ importação; telas e multiblocos são do agente de visual.
 2. cristalizador;
 3. forno pirolítico e eletrólise de fluidos;
 4. saídas fundidas (forno a arco, eletrolisador);
-5. as linhas que dependem do petróleo.
+5. as linhas que dependem do petróleo (solvente e radiossolvente; aceita em jogo).
 
 **O depósito** (`ntm:ore_bedrock`) não guarda nada. Tudo é função da posição:
 - **Densidades:** as 6 densidades (metais leves, pesados, terras raras,
@@ -967,6 +967,40 @@ do núcleo (`server/oil_server.rs`, `heat_tick`).
   - **reformador** (bateria e catalisador), com óleo leve: aromáticos, reformgas e hidrogênio;
   - **hidrotratador**, com óleo e hidrogênio: óleo dessulfurizado e gás ácido;
   - **destilador a vácuo**, com óleo: as 4 frações.
+
+## Cadeia do bedrock, etapa 5: solvente e radiossolvente
+
+Fecha a cadeia do bedrock com as linhas que dependiam do petróleo. Quase nada
+é lógica nova: as tabelas já tinham tudo.
+- **Cristalizador:** as 42 receitas de solvente e radiossolvente.
+- **Centrífuga:** as do minério dissolvido, do limpo e dos subprodutos.
+- **Depósito de nível 4:** pede 2.000 mB de solvente por extração (`bedrock::deposit`).
+- **Origem dos fluidos:**
+  - o misturador (lote B) faz o solvente de nafta + aromáticos e o radiossolvente de reformgas + cloro;
+  - o reformador (lote C), o craqueador e a torre de fração dão os aromáticos e o reformgas;
+  - a refinaria dá a nafta;
+  - o eletrolisador dá o cloro.
+
+**Verificação em jogo** (`tools/test-game/bedrock.py`, etapas `etapa5` e
+`nivel4`, sem "took too long"):
+- **Recolha:** barris tipados recolhem os aromáticos e o reformgas do
+  reformador e a nafta da refinaria. O cloro vem de um tanque.
+- **Misturadores:** tanques de 1.000 mB levam os fluidos a dois
+  misturadores, com a receita escolhida na lista (rolada até a linha). Eles
+  fazem o solvente e o radiossolvente em barris de saída tipados.
+- **Cristalizadores:** cada solvente vai a um cristalizador; 2 PRIMARY de
+  actinídeos viram 2 PRIMARY dissolvidos e 2 PRIMARY limpos.
+- **Centrífuga:**
+  - os dissolvidos dão 4 sem-solvente + 4 subprodutos de solvente + 4 de ácido sulfúrico;
+  - os limpos dão 4 sem-rad + 4 subprodutos rad + 4 de solvente + 4 de ácido sulfúrico.
+- **`nivel4`:** uma escavadora com broca ferro sobre um depósito de nível 4
+  (média de densidade acima de 1,5, chunk (164, −117)) tira um bruto e gasta
+  2.000 mB de solvente (o tanque foi de 16.000 a 14.000). O solvente veio de
+  um barril cheio do criativo; a produção dele está provada em `etapa5`.
+
+**A saber:** um barril vazio encostado numa máquina toma o primeiro fluido que
+ela oferece. Tipado depois, perde o que tinha. O script tipa os barris de
+recolha e só então põe o reformador para rodar.
 
 ## Pontes `m1_temp__`
 
