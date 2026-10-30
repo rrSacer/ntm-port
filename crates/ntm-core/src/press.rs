@@ -678,6 +678,35 @@ mod tests {
         assert_eq!(cold.level(5), 0);
     }
 
+    /// fbef4942's stalled burner press in game: a flat stamp has no recipe
+    /// for an iron ingot (the plate stamp has), so `canProcess` is false and
+    /// the speed never climbs however hot it is, as in the NTM
+    /// (`TileEntityMachinePress`:70-81).
+    #[test]
+    fn a_burner_press_without_a_recipe_stays_still_however_hot() {
+        let with = |stamp: &str| BurnerPress {
+            core: PressCore {
+                stamp: Some(Stamp { item: stamp.into(), used: 0 }),
+                input: Some(("minecraft:iron_ingot".into(), 16)),
+                ..Default::default()
+            },
+            fuel: Some(("minecraft:coal".into(), 15)),
+            ..Default::default()
+        };
+        let mut flat = with("ntm:stamp_iron_flat");
+        for _ in 0..400 {
+            flat.tick();
+        }
+        assert_eq!((flat.speed, flat.core.press, flat.core.output.clone()), (0, 0, None));
+        assert_eq!(flat.burn, 1_600, "o carvão queimou uma vez e o calor ficou");
+        let mut plate = with("ntm:stamp_iron_plate");
+        for _ in 0..400 {
+            plate.tick();
+        }
+        assert!(plate.speed > 0);
+        assert!(plate.core.output.as_ref().is_some_and(|o| o.0 == "ntm:plate_iron" && o.1 > 0), "{:?}", plate.core.output);
+    }
+
     #[test]
     fn epress_presses_on_power_and_wears_the_stamp_out() {
         let mut p = ElectricPress {
