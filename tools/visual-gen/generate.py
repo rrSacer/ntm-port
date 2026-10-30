@@ -152,8 +152,18 @@ def variants_obj(src, spec):
     v = [tuple(map(float, l.split()[1:4])) for l in lines if l.startswith('v ')]
     vt = [l for l in lines if l.startswith('vt ')]
     vn = [tuple(map(float, l.split()[1:4])) for l in lines if l.startswith('vn ')]
-    faces = [l.split()[1:] for l in lines if l.startswith('f ')]
+    # Faces by object: a bone's `part` copies one object, `keep` names the
+    # objects written once as they are.
+    by_part, part = {}, None
+    for l in lines:
+        if l.startswith(('o ', 'g ')):
+            part = l.split()[1]
+        elif l.startswith('f '):
+            by_part.setdefault(part, []).append(l.split()[1:])
+    faces = [f for fs in by_part.values() for f in fs]
     out = vt[:]
+    bones = [(name, {'part': name}) for name in spec.get('keep', [])]
+    bones += list(spec['bones'].items())
     def turn(p, rot, pitch):
         x, y, z = p
         c, s = math.cos(pitch), math.sin(pitch)
@@ -161,7 +171,7 @@ def variants_obj(src, spec):
         c, s = math.cos(rot), math.sin(rot)
         x, z = x * c + z * s, z * c - x * s
         return x, y, z
-    for n, (bone, b) in enumerate(spec['bones'].items()):
+    for n, (bone, b) in enumerate(bones):
         rot, pitch = math.radians(b.get('rot', 0)), math.radians(b.get('pitch', 0))
         ox, oy, oz = b.get('origin', [0.5, 0, 0.5])
         out.append(f'o {bone}')
@@ -170,7 +180,7 @@ def variants_obj(src, spec):
             out.append(f'v {x + ox - 0.5:.6f} {y + oy:.6f} {z + oz - 0.5:.6f}')
         for p in vn:
             out.append('vn %.6f %.6f %.6f' % turn(p, rot, pitch))
-        for f in faces:
+        for f in (by_part.get(b['part'], []) if 'part' in b else faces):
             corners = []
             for c in f:
                 parts = c.split('/')
