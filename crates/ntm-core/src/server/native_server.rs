@@ -29,6 +29,7 @@ impl Server {
             self.block_event(host, e);
         }
         self.native_find_cables(host);
+        self.native_redstone(host);
         self.slots_in(host);
         self.heat_tick();
         self.simulate(host);
@@ -151,6 +152,35 @@ impl Server {
         true
     }
 
+    /// The redstone the loaded batteries and bombs receive, one read per
+    /// dimension: a battery runs in its signal's mode (`redHigh`), a bomb
+    /// goes off on its rising edge.
+    fn native_redstone(&mut self, host: &mut impl ServerHost) {
+        let Some(r) = self.ready() else { return };
+        let mut by_dim: BTreeMap<String, Vec<Pos>> = BTreeMap::new();
+        for (k, m) in &r.world.machines {
+            if r.loaded.get(k) == Some(&true) && matches!(m.data, crate::machine::Data::Battery(_) | crate::machine::Data::Bomb(_)) {
+                by_dim.entry(k.0.clone()).or_default().push(k.1);
+            }
+        }
+        r.native_signal.clear();
+        for (dim, cells) in by_dim {
+            for (p, s) in cells.iter().zip(host.redstone_many(&dim, &cells)) {
+                let key = (dim.clone(), *p);
+                let Some(s) = s else { continue };
+                r.native_signal.insert(key.clone(), s);
+                if let Some(crate::machine::Data::Battery(b)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) {
+                    b.powered = s > 0;
+                }
+            }
+        }
+    }
+
+    /// The signal the native host read for the bomb or battery at `key`.
+    pub(super) fn native_signal(&mut self, key: &Key) -> Option<u8> {
+        self.ready().and_then(|r| r.native_signal.get(key).copied())
+    }
+
     /// Whether the machine at (`dim`, `pos`) is known.
     pub fn native_has(&mut self, dim: &str, pos: Pos) -> bool {
         self.ready().is_some_and(|r| r.world.machines.contains_key(&(dim.to_string(), pos)))
@@ -188,6 +218,7 @@ mod tests {
         slots: BTreeMap<Pos, Slots>,
         data: BTreeMap<Pos, Vec<i32>>,
         saved: BTreeMap<Pos, String>,
+        signal: BTreeMap<Pos, u8>,
         kv: crate::kv::MemKv,
     }
 
@@ -229,6 +260,9 @@ mod tests {
         }
         fn save_machine(&mut self, _dim: &str, p: Pos, json: &str) {
             self.saved.insert(p, json.into());
+        }
+        fn redstone_many(&mut self, _dim: &str, cells: &[Pos]) -> Vec<Option<u8>> {
+            cells.iter().map(|p| Some(self.signal.get(p).copied().unwrap_or(0))).collect()
         }
     }
 
@@ -280,6 +314,12 @@ mod tests {
         for t in 110..130 {
             again.native_tick(&mut w, t);
         }
+        // A redstone signal on the battery: its redHigh mode (output, by
+        // default) is in force; without, redLow (here output too).
+        w.signal.insert(bat, 15);
+        again.native_tick(&mut w, 130);
+        let Data::Battery(b) = &again.ready().unwrap().world.machines[&(OW.to_string(), bat)].data else { panic!() };
+        assert!(b.powered && b.effective() == b.mode_high);
         let r = again.ready().unwrap();
         assert_eq!(r.world.cables.len(), 3, "os três cabos achados nos blocos");
         let Data::ElectricFurnace(f) = &r.world.machines[&(OW.to_string(), fur)].data else { panic!() };

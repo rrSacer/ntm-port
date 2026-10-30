@@ -51,6 +51,11 @@ pub trait ServerHost: Kv {
     /// The machine's whole state (JSON), kept with its block entity (the
     /// native bundle: `native_server.rs`).
     fn save_machine(&mut self, _dim: &str, _p: Pos, _json: &str) {}
+    /// The redstone signal each of `cells` of `dim` receives (0..=15; none
+    /// unloaded, or a host that can't read it: then a bomb reads its `lit`).
+    fn redstone_many(&mut self, _dim: &str, cells: &[Pos]) -> Vec<Option<u8>> {
+        vec![None; cells.len()]
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -163,6 +168,8 @@ struct Ready {
     /// few reads a tick (native).
     native_scan: std::collections::VecDeque<Key>,
     native_scanned: BTreeSet<Key>,
+    /// The redstone signal batteries and bombs received this tick (native).
+    native_signal: BTreeMap<Key, u8>,
 }
 
 #[derive(Debug)]
@@ -618,6 +625,7 @@ impl Server {
             native_saved: BTreeMap::new(),
             native_scan: Default::default(),
             native_scanned: BTreeSet::new(),
+            native_signal: BTreeMap::new(),
         }));
     }
 

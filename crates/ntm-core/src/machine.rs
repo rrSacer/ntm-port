@@ -453,10 +453,13 @@ pub struct Battery {
     pub power: u64,
     pub max: u64,
     pub mode: BatteryMode,
-    /// The mode with a redstone signal (`redHigh`): kept and shown; the
-    /// port reads no signal yet, so `mode` (`redLow`) is the one in force.
+    /// The mode with a redstone signal (`redHigh`); `mode` is `redLow`.
     #[serde(default = "high_mode")]
     pub mode_high: BatteryMode,
+    /// It receives a redstone signal (the native host reads it): `mode_high`
+    /// is in force.
+    #[serde(skip)]
+    pub powered: bool,
     /// `ContainerMachineBattery`: the item it discharges into itself (the
     /// creative battery fills it), the item it charges.
     #[serde(skip, default = "battery_slots")]
@@ -488,6 +491,7 @@ impl Battery {
             max,
             mode: BatteryMode::Buffer,
             mode_high: high_mode(),
+            powered: false,
             slots: battery_slots(),
         }
     }
@@ -552,18 +556,25 @@ impl crate::server::container_bridge::Slotted for Battery {
     }
 }
 
+impl Battery {
+    /// The mode in force: `redHigh` with a signal, `redLow` without.
+    pub fn effective(&self) -> BatteryMode {
+        if self.powered { self.mode_high } else { self.mode }
+    }
+}
+
 impl EnergyNode for Battery {
     fn role(&self) -> Role {
         Role::Storage
     }
     fn offer(&self) -> u64 {
-        match self.mode {
+        match self.effective() {
             BatteryMode::Output | BatteryMode::Buffer => self.power.min(self.max / 600),
             _ => 0,
         }
     }
     fn demand(&self) -> u64 {
-        match self.mode {
+        match self.effective() {
             BatteryMode::Input | BatteryMode::Buffer => (self.max - self.power).min(self.max / 200),
             _ => 0,
         }

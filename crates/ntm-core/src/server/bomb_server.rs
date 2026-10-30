@@ -205,8 +205,13 @@ impl Server {
                 // yet. Its `lit` waits too, so the edge isn't lost.
                 continue;
             }
-            // A substring, not a parse: this runs for every loaded bomb, every tick.
-            let lit = state.ends_with(BOMB_LIT) || (!state.ends_with("]") && state.contains(BOMB_LIT));
+            // The native host's signal when it reads one (the nukes on beehive
+            // have no `lit`); else the lamp's `lit`, a substring, not a parse:
+            // this runs for every loaded bomb, every tick.
+            let lit = match self.native_signal(&key) {
+                Some(s) => s > 0,
+                None => state.ends_with(BOMB_LIT) || (!state.ends_with("]") && state.contains(BOMB_LIT)),
+            };
             let before = self.blasts.lit.insert(key.clone(), lit);
             let rising = lit && before == Some(false);
             if fuse_out {
