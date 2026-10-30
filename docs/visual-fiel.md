@@ -765,6 +765,30 @@ o agente das bombas.
   - os 4 modelos de vapor cobrem exatamente os seus multiblocos;
   - o motor a vapor anima.
 
+## 3p. Energia, lotes 3 a 5
+
+| Máquina | Multibloco | Tela | Modelo |
+|---|---|---|---|
+| Diesel | bloco único | `gui_diesel.png` 176×203, sem título | `rotation 90`; o tremor do motor (0,005) fica de fora |
+| Motor a combustão | 6×2×2, offset 0 | `gui_combustion.png`, sem título | `rotation 90`, translate (−0,5, 0, 3); galão com um tipo de fluido ([4]); tampa abre 135° com a tela (`open`) |
+| Turbofan | 7×3×3, offset 1 | `gui_turbofan.png`, título em x 43 | `rotation 90`; pás giram com [6]; tampa fechada com [5] = 0 |
+| Turbina a gás | 10×3×3, offset 1 | `gui_turbinegas.png` 176×223 | `rotation 90`, uma parte |
+| RTG | bloco único | `gui_rtg.png`, título na cor 0xA6B5AE | `rotation 180` fixo; um conector para cada lado com cabo do NTM (`show` por vizinho) |
+| Radgen | 3×3×6, offset 2 | `gui_radgen.png`, 12 entradas e 12 saídas | `rotation 90`; rotor e luz com [26]; vidro translúcido |
+| Caldeira solar | 3×3×3, offset 1 | sem GUI | `rotation 90`; os raios dos espelhos ficam de fora |
+| Espelho solar | bloco único | sem GUI | parado, nivelado (o NTM o vira para a caldeira) |
+| Stirling (3) | 3×2×3, offset 1 | sem GUI | `rotation 180`; a engrenagem com [0]; engrenagens e pistão giram com [1] |
+
+- **Índices:** combinados com o agente das bombas. A lógica desses lotes ainda é inerte, então as telas ficam neutras.
+- **Desvios da turbina a gás:**
+  - o anel de rpm vira ponteiro;
+  - os 7 dígitos de LED viram texto;
+  - os dois controles deslizantes (motor a combustão e turbina) são clicados por pixel, não arrastados.
+- **Em jogo** (motor antigo do fork, com valores por `data merge`):
+  - os 11 colocados pelo item;
+  - os modelos de multibloco cobrem exatamente as suas células (conferido numericamente);
+  - as 6 telas batem com os GUIs do NTM.
+
 ## 4. Motor (patch) e port
 
 **Patch no motor** (`horizon-visual`, branch `ntm-visual`, 56 commits):
