@@ -1,11 +1,11 @@
 //! The excavator's world (docs/maquinas.md, "Bedrock"; `crate::excavator`):
-//! the 3×3 shaft under it and the deposit at its bottom
+//! the shaft under it, ring by ring, and the deposit at its bottom
 //! (`TileEntityMachineExcavator.tryDrill`, `collectBedrock`). A layer is
 //! read once when the drill reaches it (and again before it breaks it), not
 //! every tick: a block read costs.
 use super::*;
 use crate::bedrock;
-use crate::excavator::{self, BEDROCK_WORK, Drill, Excavator, HE_PER_TICK, Layer};
+use crate::excavator::{self, BEDROCK_WORK, Drill, Excavator, Layer};
 use crate::machine::Data;
 use crate::server::container_bridge::Stack;
 
@@ -38,92 +38,209 @@ impl Server {
     }
 }
 
-/// The 3×3 at `y` under the core: its blocks' work, or the deposit in it
-/// (`None`: a chunk not there).
-fn scan(host: &mut impl ServerHost, key: &Key, y: i32) -> Option<Layer> {
-    let mut work = 0.0;
-    for dx in -1..=1 {
-        for dz in -1..=1 {
-            let p = [key.1[0] + dx, y, key.1[2] + dz];
-            let b = host.get_block(&key.0, p)?;
-            let id = blockstate::id_of(&b);
-            if id == DEPOSIT {
-                return Some(Layer { y, work: BEDROCK_WORK, deposit: Some(p) });
-            }
-            work += excavator::hardness(id).unwrap_or(0.0);
+/// The cells of ring `ring` round the shaft's axis at `y`: the whole 3×3
+/// for the first, the square's edge for the others.
+fn ring_cells(key: &Key, y: i32, ring: i32) -> impl Iterator<Item = Pos> {
+    let [cx, _, cz] = key.1;
+    (-ring..=ring).flat_map(move |dx| (-ring..=ring).map(move |dz| (dx, dz))).filter(move |&(dx, dz)| ring == 1 || dx.abs() == ring || dz.abs() == ring).map(move |(dx, dz)| [cx + dx, y, cz + dz])
+}
+
+/// A ring's blocks: their work, or the deposit in it (`None`: a chunk not
+/// there). Depth rock turns the drill off.
+fn scan(e: &mut Excavator, host: &mut impl ServerHost, key: &Key, y: i32, ring: i32) -> Option<Layer> {
+    let mut l = Layer { y, ring, work: 0.0, empty: true, deposit: None };
+    for p in ring_cells(key, y, ring) {
+        let b = host.get_block(&key.0, p)?;
+        let id = blockstate::id_of(&b);
+        if id == DEPOSIT {
+            return Some(Layer { work: BEDROCK_WORK, empty: false, deposit: Some(p), ..l });
+        }
+        if excavator::is_depth_rock(id) {
+            e.enabled = false;
+            continue;
+        }
+        if let Some(h) = excavator::hardness(id) {
+            l.work += h;
+            l.empty = false;
         }
     }
-    Some(Layer { y, work, deposit: None })
+    Some(l)
 }
 
 fn step(e: &mut Excavator, host: &mut impl ServerHost, key: &Key) -> bool {
-    let was = e.operational;
+    let was = (e.operational, e.depth, e.enabled);
     e.operational = false;
     e.power = crate::machine::charge_from_slot(&e.slots, excavator::slot::BATTERY, e.power, excavator::MAX_POWER);
-    let Some(d) = e.drill() else { return was };
-    if !e.enabled || e.power < HE_PER_TICK {
-        return was;
-    }
+    let need = e.consumption();
+    let d = match e.drill() {
+        Some(d) if e.enabled && e.power >= need => d,
+        _ => {
+            // Off, the drill draws back up (`targetDepth = 0`).
+            e.depth = 0;
+            e.layer = None;
+            return was != (e.operational, e.depth, e.enabled);
+        }
+    };
     let y = key.1[1] - 4 - e.depth as i32;
     if y < floor(&key.0) {
         e.enabled = false;
         return true;
     }
-    if e.layer.as_ref().is_none_or(|l| l.y != y) {
-        let Some(l) = scan(host, key, y) else { return was };
-        e.layer = Some(l);
-    }
-    let Some(l) = e.layer.clone() else { return was };
-    e.power -= HE_PER_TICK;
+    e.power -= need;
     e.operational = true;
-    if l.deposit.is_none() && l.work == 0.0 {
-        // Nothing to dig here: down a layer.
+    let radius = if e.depth == 0 || y == floor(&key.0) { 1 } else { e.radius() };
+    if try_drill(e, host, key, y, radius, d) == Some(true) {
         e.depth += 1;
         e.layer = None;
-        e.worked = 0;
-        return true;
-    }
-    e.worked += 1;
-    if f64::from(e.worked) < (l.work / d.speed).ceil() {
-        return true;
-    }
-    e.worked = 0;
-    match l.deposit {
-        Some(p) => collect(e, &key.0, p, d),
-        None => {
-            dig(e, host, key, y);
-            e.layer = None;
+        if y - 1 < floor(&key.0) {
+            e.enabled = false;
         }
     }
     true
 }
 
-/// The layer's blocks into the buffer, as many as fit (a full buffer
-/// stops the drill at the block that doesn't).
-fn dig(e: &mut Excavator, host: &mut impl ServerHost, key: &Key, y: i32) {
-    let mut air = Vec::new();
-    for dx in -1..=1 {
-        for dz in -1..=1 {
-            let p = [key.1[0] + dx, y, key.1[2] + dz];
-            let Some(b) = host.get_block(&key.0, p) else { continue };
-            let id = blockstate::id_of(&b);
-            if id == DEPOSIT || excavator::hardness(id).is_none() {
-                continue;
-            }
-            if let Some(item) = excavator::drop_of(&b) {
-                let s = Stack::new(&item, 1);
-                if !e.fits(&s) {
-                    break;
+/// `tryDrill`: the first ring with something in it is worked; once worked
+/// out it is broken and walled (the outermost with the walls on, and the
+/// ores just past it mined). True when every ring is empty: down a layer.
+/// The ring found empty is kept, so a tick doesn't read the inner ones
+/// again.
+fn try_drill(e: &mut Excavator, host: &mut impl ServerHost, key: &Key, y: i32, radius: i32, d: Drill) -> Option<bool> {
+    let first = e.layer.as_ref().filter(|l| l.y == y).map_or(1, |l| l.ring);
+    for ring in first..=radius {
+        if e.layer.as_ref().is_none_or(|l| l.y != y || l.ring != ring) {
+            e.layer = Some(scan(e, host, key, y, ring)?);
+        }
+        let l = e.layer.clone()?;
+        if l.empty {
+            continue;
+        }
+        if l.deposit.is_some() {
+            e.crusher = false;
+        }
+        e.worked += 1;
+        if f64::from(e.worked) >= (l.work / e.speed(d)).ceil() {
+            e.worked = 0;
+            match l.deposit {
+                Some(p) => collect(e, &key.0, p, d),
+                None => {
+                    let mut w = Writes::default();
+                    for p in ring_cells(key, y, ring) {
+                        mine_at(e, host, &key.0, p, &mut w, false);
+                    }
+                    build_wall(host, key, y, ring + 1, ring == radius && e.walling, &mut w);
+                    if ring == radius {
+                        for p in ring_cells(key, y, ring + 1) {
+                            mine_at(e, host, &key.0, p, &mut w, true);
+                        }
+                    }
+                    w.flush(host, &key.0);
+                    e.layer = None;
                 }
-                e.put(s);
             }
-            air.push((p, "minecraft:air".to_string()));
+        }
+        return Some(false);
+    }
+    let mut w = Writes::default();
+    build_wall(host, key, y, radius + 1, e.walling, &mut w);
+    w.flush(host, &key.0);
+    e.worked = 0;
+    Some(true)
+}
+
+/// The blocks a step sets, in one call at the end; read back by the vein
+/// miner meanwhile.
+#[derive(Default)]
+struct Writes(std::collections::BTreeMap<Pos, String>);
+
+impl Writes {
+    fn get(&self, host: &mut impl ServerHost, dim: &str, p: Pos) -> Option<String> {
+        match self.0.get(&p) {
+            Some(b) => Some(b.clone()),
+            None => host.get_block(dim, p),
         }
     }
-    if !air.is_empty()
-        && let Err(err) = host.set_blocks(&key.0, &air)
-    {
-        host.log(&format!("excavator: {err}"));
+    fn flush(self, host: &mut impl ServerHost, dim: &str) {
+        if self.0.is_empty() {
+            return;
+        }
+        let v: Vec<(Pos, String)> = self.0.into_iter().collect();
+        if let Err(err) = host.set_blocks(dim, &v) {
+            host.log(&format!("excavator: {err}"));
+        }
+    }
+}
+
+const AIR: &str = "minecraft:air";
+
+/// `tryMineAtLocation` (`ores_only`: `mineOuterOres`): an ore with the vein
+/// miner takes its whole vein, anything else breaks alone.
+fn mine_at(e: &mut Excavator, host: &mut impl ServerHost, dim: &str, p: Pos, w: &mut Writes, ores_only: bool) {
+    let Some(b) = w.get(host, dim, p) else { return };
+    let id = blockstate::id_of(&b).to_string();
+    if id == DEPOSIT || excavator::hardness(&id).is_none() || excavator::is_depth_rock(&id) {
+        return;
+    }
+    let ore = excavator::is_ore(&id);
+    if ores_only && !ore {
+        return;
+    }
+    if ore && e.can_vein_mine() {
+        let mut seen = std::collections::BTreeSet::new();
+        vein(e, host, dim, p, &id, 10, &mut seen, w);
+        return;
+    }
+    break_one(e, &b, p, w);
+}
+
+/// `breakRecursively`: the same block on the six sides, 10 deep; a vein
+/// broken with the walls on is filled with sandbags.
+#[allow(clippy::too_many_arguments)]
+fn vein(e: &mut Excavator, host: &mut impl ServerHost, dim: &str, p: Pos, id: &str, depth: i32, seen: &mut std::collections::BTreeSet<Pos>, w: &mut Writes) {
+    if depth < 0 || !seen.insert(p) {
+        return;
+    }
+    for d in crate::energy::DIRS {
+        let n = [p[0] + d[0], p[1] + d[1], p[2] + d[2]];
+        if w.get(host, dim, n).is_some_and(|b| blockstate::id_of(&b) == id) {
+            vein(e, host, dim, n, id, depth - 1, seen, w);
+        }
+    }
+    if break_one(e, id, p, w) && e.walling {
+        w.0.insert(p, excavator::BARRICADE.into());
+    }
+}
+
+/// `breakSingleBlock`: its drops into the buffer and the block gone; a
+/// full buffer leaves it there.
+fn break_one(e: &mut Excavator, block: &str, p: Pos, w: &mut Writes) -> bool {
+    let drops = e.drops(block);
+    if !e.fits_all(&drops) {
+        return false;
+    }
+    for s in drops {
+        e.put(s);
+    }
+    w.0.insert(p, AIR.into());
+    true
+}
+
+/// `buildWall`: sandbags on ring `ring`'s edge where fluid is (where
+/// anything replaceable is, with `all`), and the fluid inside it gone.
+fn build_wall(host: &mut impl ServerHost, key: &Key, y: i32, ring: i32, all: bool, w: &mut Writes) {
+    let [cx, _, cz] = key.1;
+    for dx in -ring..=ring {
+        for dz in -ring..=ring {
+            let p = [cx + dx, y, cz + dz];
+            let Some(b) = w.get(host, &key.0, p) else { continue };
+            let edge = dx.abs() == ring || dz.abs() == ring;
+            if edge {
+                if excavator::replaceable(&b) && (all || excavator::is_liquid(&b)) {
+                    w.0.insert(p, excavator::BARRICADE.into());
+                }
+            } else if excavator::is_liquid(&b) {
+                w.0.insert(p, AIR.into());
+            }
+        }
     }
 }
 
