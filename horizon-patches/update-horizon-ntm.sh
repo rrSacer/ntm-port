@@ -40,6 +40,11 @@ for f in "$mods/ntm.hmod" "$mods/ntmlogic-client.hmod" "$mods/ntmlogic-server.hm
 done
 grep -qa "content mod machines" "$build/horizon-client" ||
   { echo "$build/horizon-client has no ntm-visual" >&2; exit 1; }
+# Without --features horizon-client/mods the game loads the content mod but
+# starts no server mod ("this build has no mod runtime"): no NTM logic runs.
+if grep -qa "this build has no mod runtime" "$build/horizon-client" || ! grep -qa wasmtime "$build/horizon-client"; then
+  echo "$build/horizon-client has no mod runtime: build it with --features horizon-client/mods" >&2; exit 1
+fi
 unzip -p "$mods/ntmlogic-server.hmod" horizon-mod.toml 2>/dev/null | grep -q '"machines"' ||
   { echo "$mods/ntmlogic-server.hmod lacks capability machines (tools/build-visual.sh)" >&2; exit 1; }
 pgrep -u "$(id -u)" -x horizon-client >/dev/null && { echo "close the game first" >&2; exit 1; }
