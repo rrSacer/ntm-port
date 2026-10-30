@@ -56,6 +56,9 @@ pub enum Kind {
     /// `crate::electrolyser`).
     ArcFurnace,
     Electrolyser,
+    /// The oil chain's batch B (`crate::refinery`, `crate::fraction`).
+    Refinery,
+    FractionTower,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -142,6 +145,8 @@ pub enum Data {
     ArcFurnace(crate::arc_furnace::ArcFurnace),
     /// Boxed: the fluid line's crafter and the metal line's stacks.
     Electrolyser(Box<crate::electrolyser::Electrolyser>),
+    Refinery(Box<crate::refinery::Refinery>),
+    FractionTower(crate::fraction::FractionTower),
     Inert { name: String },
 }
 
@@ -185,6 +190,8 @@ impl Machine {
             Kind::OreSlopper => Data::OreSlopper(Default::default()),
             Kind::ArcFurnace => Data::ArcFurnace(Default::default()),
             Kind::Electrolyser => Data::Electrolyser(Default::default()),
+            Kind::Refinery => Data::Refinery(Default::default()),
+            Kind::FractionTower => Data::FractionTower(Default::default()),
             Kind::Crafter => match crate::crafter::Station::of(block_id) {
                 Some(st) => Data::Crafter(crate::crafter::Crafter::new(st)),
                 None => Data::Inert { name: block_id.into() },
@@ -250,6 +257,8 @@ impl Machine {
             Data::OreSlopper(_) => Kind::OreSlopper,
             Data::ArcFurnace(_) => Kind::ArcFurnace,
             Data::Electrolyser(_) => Kind::Electrolyser,
+            Data::Refinery(_) => Kind::Refinery,
+            Data::FractionTower(_) => Kind::FractionTower,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -280,6 +289,8 @@ impl Machine {
             Data::OreSlopper(m) => m,
             Data::ArcFurnace(m) => m,
             Data::Electrolyser(m) => &**m,
+            Data::Refinery(m) => &**m,
+            Data::FractionTower(m) => m,
             Data::Inert { name } => name,
         }
     }
@@ -310,6 +321,8 @@ impl Machine {
             Data::OreSlopper(m) => m,
             Data::ArcFurnace(m) => m,
             Data::Electrolyser(m) => &mut **m,
+            Data::Refinery(m) => &mut **m,
+            Data::FractionTower(m) => m,
             Data::Inert { name } => name,
         }
     }

@@ -370,6 +370,7 @@ impl Server {
             self.slots_in(host);
             self.simulate(host);
             self.fluids_tick();
+            self.fraction_tick();
             self.foundry_tick(host);
             self.excavator_tick(host);
             self.bombs_tick(host);
@@ -1928,6 +1929,7 @@ fn same_look(actual: &str, want: &str) -> bool {
 
 mod bomb_server;
 mod excavator_server;
+mod oil_server;
 pub mod container_bridge;
 mod fluid_server;
 mod foundry_server;

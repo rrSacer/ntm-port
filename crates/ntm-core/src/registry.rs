@@ -369,27 +369,28 @@ pub const BLOCKS: &[BlockSpec] = &[
         ports: Ports::AllRound,
     },
     // The oil chain's batch B (6ce8965): the refinery, the fractioning
-    // tower, the mixer. Inert until their stage is approved.
+    // tower (`crate::refinery`, `crate::fraction`), the mixer (a crafter
+    // station).
     BlockSpec {
         id: "ntm:machine_refinery",
-        kind: Kind::Inert,
+        kind: Kind::Refinery,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_fraction_tower",
-        kind: Kind::Inert,
+        kind: Kind::FractionTower,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_mixer",
-        kind: Kind::Inert,
+        kind: Kind::Crafter,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     // The oil chain's batch C (0f061ca): boilers, cracking, reforming,
     // hydrotreating, vacuum distillation, the coker. Inert until their stage
@@ -539,7 +540,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, _facing: Option<&str>) -> Vec<crate::energy::Port> {
     match spec.kind {
-        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace | Kind::Excavator | Kind::OreSlopper | Kind::Electrolyser => vec![crate::energy::DIRS.to_vec()],
+        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace | Kind::Excavator | Kind::OreSlopper | Kind::Electrolyser | Kind::Refinery | Kind::FractionTower => vec![crate::energy::DIRS.to_vec()],
         _ => Vec::new(),
     }
 }

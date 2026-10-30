@@ -118,6 +118,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::OreSlopper(o) => Some(o),
         Data::ArcFurnace(f) => Some(f),
         Data::Electrolyser(e) => Some(&mut **e),
+        Data::Refinery(r) => Some(&mut **r),
         _ => None,
     }
 }
@@ -207,6 +208,17 @@ pub const SLOTTED: &[(&str, Layout)] = &[
         Layout::Crafter {
             inputs: 0..0,
             outputs: 0..1,
+        },
+    ),
+    // ContainerMachineRefinery: 13 slots (`crate::refinery`).
+    ("ntm:machine_refinery", Layout::Native),
+    // ContainerMachineMixer: 0 the battery, 1 the item in, 2 the identifier
+    // (no effect: the recipe is picked), 3–4 upgrades.
+    (
+        "ntm:machine_mixer",
+        Layout::Crafter {
+            inputs: 1..2,
+            outputs: 2..2,
         },
     ),
     // ContainerElectrolyser: both lines on its 21 slots (`crate::electrolyser`).

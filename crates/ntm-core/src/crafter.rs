@@ -45,6 +45,10 @@ pub enum Station {
     Liquefactor,
     /// `TileEntityMachineSolidifier`: its tank's fluid into an item.
     Solidifier,
+    /// `TileEntityMachineMixer`: two fluids (and an item) into one; the
+    /// recipe picked from the list (the NTM: the identifier's output fluid
+    /// and its button through the alternatives).
+    Mixer,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -90,7 +94,7 @@ fn table(json: &str) -> Vec<Recipe> {
 }
 
 impl Station {
-    pub const ALL: [Station; 9] = [
+    pub const ALL: [Station; 10] = [
         Station::Assembly,
         Station::ChemicalPlant,
         Station::Centrifuge,
@@ -100,6 +104,7 @@ impl Station {
         Station::Electrolyser,
         Station::Liquefactor,
         Station::Solidifier,
+        Station::Mixer,
     ];
 
     pub fn of(block: &str) -> Option<Self> {
@@ -113,6 +118,7 @@ impl Station {
             "ntm:machine_electrolyser" => Some(Station::Electrolyser),
             "ntm:machine_liquefactor" => Some(Station::Liquefactor),
             "ntm:machine_solidifier" => Some(Station::Solidifier),
+            "ntm:machine_mixer" => Some(Station::Mixer),
             _ => None,
         }
     }
@@ -127,6 +133,7 @@ impl Station {
         static E: OnceLock<Vec<Recipe>> = OnceLock::new();
         static L: OnceLock<Vec<Recipe>> = OnceLock::new();
         static S: OnceLock<Vec<Recipe>> = OnceLock::new();
+        static M: OnceLock<Vec<Recipe>> = OnceLock::new();
         match self {
             Station::Assembly => A.get_or_init(|| table(include_str!("../data/machines/assembly.json"))),
             Station::ChemicalPlant => C.get_or_init(|| table(include_str!("../data/machines/chemical_plant.json"))),
@@ -137,6 +144,7 @@ impl Station {
             Station::Electrolyser => E.get_or_init(|| table(include_str!("../data/machines/electrolyser.json"))),
             Station::Liquefactor => L.get_or_init(|| table(include_str!("../data/machines/liquefaction.json"))),
             Station::Solidifier => S.get_or_init(|| table(include_str!("../data/machines/solidification.json"))),
+            Station::Mixer => M.get_or_init(|| table(include_str!("../data/machines/mixer.json"))),
         }
     }
 
@@ -151,6 +159,7 @@ impl Station {
             Station::Electrolyser => "Eletrolisador",
             Station::Liquefactor => "Liquefator",
             Station::Solidifier => "Solidificador",
+            Station::Mixer => "Misturador",
         }
     }
 
@@ -172,6 +181,8 @@ impl Station {
             // One tank of 24 000 mB each, typed by what it makes or holds.
             Station::Liquefactor => (0, 1, 24_000),
             Station::Solidifier => (1, 0, 24_000),
+            // Two inputs of 16 000 mB; the output's 24 000 (set in `new`).
+            Station::Mixer => (2, 1, 16_000),
         }
     }
 
@@ -180,7 +191,7 @@ impl Station {
     pub fn battery_slot(self) -> Option<usize> {
         match self {
             Station::Crystallizer | Station::Liquefactor | Station::Solidifier => Some(1),
-            Station::Purex | Station::PyroOven | Station::Electrolyser => Some(0),
+            Station::Purex | Station::PyroOven | Station::Electrolyser | Station::Mixer => Some(0),
             _ => None,
         }
     }
@@ -199,7 +210,7 @@ impl Station {
     /// `canProcess` checks the power too: short of it, the progress
     /// restarts.
     fn resets_without_power(self) -> bool {
-        matches!(self, Station::Liquefactor | Station::Solidifier)
+        matches!(self, Station::Liquefactor | Station::Solidifier | Station::Mixer)
     }
 }
 
@@ -297,6 +308,9 @@ impl Crafter {
         if station == Station::Electrolyser {
             c.tin[1].set_type("nitric_acid");
         }
+        if station == Station::Mixer {
+            c.tout[0].cap = 24_000;
+        }
         c
     }
 
@@ -314,6 +328,7 @@ impl Crafter {
             Station::PyroOven => 10_000_000,
             Station::Electrolyser => 20_000_000,
             Station::Liquefactor | Station::Solidifier => 100_000,
+            Station::Mixer => 10_000,
             _ => self.current().map_or(100_000, |r| (r.power * 100).max(100_000)),
         }
     }

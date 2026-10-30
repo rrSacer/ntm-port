@@ -21,6 +21,7 @@ pub mod excavator;
 pub mod fluid;
 pub mod fluidbox;
 pub mod foundry;
+pub mod fraction;
 pub mod gascent;
 pub mod hash;
 pub mod kv;
@@ -30,6 +31,7 @@ pub mod press;
 pub mod probes;
 pub mod proto;
 pub mod recipes;
+pub mod refinery;
 pub mod shredder;
 pub mod radiation;
 pub mod registry;
@@ -72,6 +74,8 @@ pub fn warm_tables() {
         s.recipes();
     }
     arc_furnace::warm();
+    refinery::recipes();
+    fraction::recipes();
     electrolyser::metal_recipes();
     foundry::Tables::ntm();
     shredder::Recipes::ntm();
