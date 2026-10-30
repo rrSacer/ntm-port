@@ -7353,7 +7353,7 @@
       }
     },
     "ntm:machine_liquefactor": {
-      "source": "ContainerLiquefactor, GUILiquefactor (gui_liquefactor.png 176x204), MachineLiquefactor {3,0,1,1,1,1} offset 1, RenderLiquefactor (no facing turn: Main is the same under a 90 degree turn; Fluid untextured in the tank's colour, scaled from y 1 by the fill; Glass 15% translucent, left out)",
+      "source": "ContainerLiquefactor, GUILiquefactor (gui_liquefactor.png 176x204), MachineLiquefactor {3,0,1,1,1,1} offset 1, RenderLiquefactor (no facing turn: Main is the same under a 90 degree turn; Fluid untextured in the tank's colour, scaled from y 1 by the fill; Glass 15% translucent, tinted 0.75, 1, 1 (textured here; HBM draws it untextured))",
       "machine": {
         "slots": [
           {
@@ -7510,8 +7510,7 @@
         "rotation": 0,
         "radius": 4.5,
         "hide": [
-          "Fluid",
-          "Glass"
+          "Fluid"
         ],
         "liquids": [
           {
@@ -7535,11 +7534,14 @@
             "max": 8,
             "color": 9
           }
-        ]
+        ],
+        "tint": {
+          "Glass": "#26bfffff"
+        }
       }
     },
     "ntm:machine_solidifier": {
-      "source": "ContainerSolidifier, GUISolidifier (gui_solidifier.png 176x204), MachineSolidifier {3,0,1,1,1,1} offset 1, RenderSolidifier (case 2: 90; Fluid untextured in the tank's colour, scaled from y 1.25 by the fill; Glass 15% translucent, left out)",
+      "source": "ContainerSolidifier, GUISolidifier (gui_solidifier.png 176x204), MachineSolidifier {3,0,1,1,1,1} offset 1, RenderSolidifier (case 2: 90; Fluid untextured in the tank's colour, scaled from y 1.25 by the fill; Glass 15% translucent, tinted 0.75, 1, 1 (textured here; HBM draws it untextured))",
       "machine": {
         "slots": [
           {
@@ -7701,8 +7703,7 @@
         "rotation": 90,
         "radius": 4.5,
         "hide": [
-          "Fluid",
-          "Glass"
+          "Fluid"
         ],
         "liquids": [
           {
@@ -7726,7 +7727,10 @@
             "max": 5,
             "color": 6
           }
-        ]
+        ],
+        "tint": {
+          "Glass": "#26bfffff"
+        }
       }
     },
     "ntm:machine_pyrooven": {

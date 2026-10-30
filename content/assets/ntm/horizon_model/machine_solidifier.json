@@ -4,8 +4,7 @@
   "rotation": 90,
   "radius": 4.5,
   "hide": [
-    "Fluid",
-    "Glass"
+    "Fluid"
   ],
   "liquids": [
     {
@@ -22,5 +21,8 @@
       "max": 5,
       "color": 6
     }
-  ]
+  ],
+  "tint": {
+    "Glass": "#26bfffff"
+  }
 }
