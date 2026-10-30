@@ -1926,6 +1926,475 @@
 "pools": []
 },
 {
+"name": "ass.excavator",
+"label": "Broca de Mineração Grande",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:363",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"n": 8,
+"label": "stone bricks"
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"n": 8,
+"label": "Lingote de Aço"
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"n": 8,
+"label": "iron ingot"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:circuit__analog"
+],
+"n": 1,
+"label": "Placa de Circuito Analógico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_excavator",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.drillsteel",
+"label": "Broca de Aço",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:365",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"n": 12,
+"label": "Lingote de Aço"
+},
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"n": 4,
+"label": "Lingote de Tungstênio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drillbit__steel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.drillsteeldiamond",
+"label": "Broca de Aço (Ponta de Diamante)",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:367",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:drillbit__steel"
+],
+"n": 1,
+"label": "Broca de Aço"
+},
+{
+"ids": [
+"ntm:powder_diamond"
+],
+"n": 16,
+"label": "Pó de Diamante"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drillbit__steel_diamond",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.drilldura",
+"label": "Broca de Aço Rápido",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:369",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 12,
+"label": "Lingote de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 12,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:ingot_titanium"
+],
+"n": 8,
+"label": "Lingote de Titânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drillbit__hss",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.drillduradiamond",
+"label": "Broca de Aço Rápido (Ponta de Diamante)",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:371",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:drillbit__hss"
+],
+"n": 1,
+"label": "Broca de Aço Rápido"
+},
+{
+"ids": [
+"ntm:powder_diamond"
+],
+"n": 24,
+"label": "Pó de Diamante"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drillbit__hss_diamond",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.drilldesh",
+"label": "Broca de Desh",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:373",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"n": 16,
+"label": "Lingote de Desh"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 12,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:ingot_niobium"
+],
+"n": 4,
+"label": "Lingote de Nióbio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drillbit__desh",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.drilldeshdiamond",
+"label": "Broca de Desh (Ponta de Diamante)",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:375",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:drillbit__desh"
+],
+"n": 1,
+"label": "Broca de Desh"
+},
+{
+"ids": [
+"ntm:powder_diamond"
+],
+"n": 32,
+"label": "Pó de Diamante"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drillbit__desh_diamond",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.drilltc",
+"label": "Broca de Aço Tecnécio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:377",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 20,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"n": 12,
+"label": "Lingote de Desh"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 8,
+"label": "Barra de Borracha"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drillbit__tcalloy",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.drilltcdiamond",
+"label": "Broca de Aço Tecnécio (Ponta de Diamante)",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:379",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:drillbit__tcalloy"
+],
+"n": 1,
+"label": "Broca de Aço Tecnécio"
+},
+{
+"ids": [
+"ntm:powder_diamond"
+],
+"n": 48,
+"label": "Pó de Diamante"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drillbit__tcalloy_diamond",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.drillferro",
+"label": "Broca de Ferrourânio",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:381",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_ferrouranium"
+],
+"n": 24,
+"label": "Lingote de Ferrourânio"
+},
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 12,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:ingot_bismuth"
+],
+"n": 4,
+"label": "Lingote de Bismuto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drillbit__ferro",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.drillferrodiamond",
+"label": "Broca de Ferrourânio (Ponta de Diamante)",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:383",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:drillbit__ferro"
+],
+"n": 1,
+"label": "Broca de Ferrourânio"
+},
+{
+"ids": [
+"ntm:powder_diamond"
+],
+"n": 56,
+"label": "Pó de Diamante"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:drillbit__ferro_diamond",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.slopper",
+"label": "Processador de Minério de Rocha Matriz",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:385",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 6,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 8,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:pipe__copper"
+],
+"n": 3,
+"label": "Tubo de Cobre"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 3,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:circuit__analog"
+],
+"n": 1,
+"label": "Placa de Circuito Analógico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_ore_slopper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.tank",
 "label": "Tanque de Fluidos",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:472",
@@ -13603,5 +14072,5 @@
 "pools": []
 }
 ],
-"skipped": 231
+"skipped": 219
 }
