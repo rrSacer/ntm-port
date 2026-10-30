@@ -115,7 +115,9 @@ def loop_animation(spec):
     """A loop played while the machine works, as HBM's renderers move parts
     by their `anim` tick counter: `turn` is degrees per loop about the bone's
     pivot (two keyframes, linear), `sway` a slide along an axis by
-    BobMathUtil.sps, `cycles` times per loop, sampled 24 times a cycle;
+    BobMathUtil.sps, `cycles` times per loop, sampled 24 times a cycle,
+    around `offset` pixels;
+    `swing` a turn about an axis by `amp` * sin, `cycles` times per loop;
     `position` keyframes as they are (a press head's stroke). `loop: false`
     holds the last frame (a door posed open by its screen)."""
     import math
@@ -136,9 +138,20 @@ def loop_animation(spec):
                 t = length * k / n
                 v = w['amp'] * math.sin(math.pi / 2 * math.cos(2 * math.pi * w.get('cycles', 1) * t / length))
                 pos = [0.0, 0.0, 0.0]
-                pos[axis] = round(v, 4)
+                pos[axis] = round(v + w.get('offset', 0), 4)
                 keys[f'{t:.4f}'] = pos
             out['position'] = keys
+        if 'swing' in b:
+            w = b['swing']
+            axis = 'xyz'.index(w['axis'])
+            keys = {}
+            n = 24 * w.get('cycles', 1)
+            for k in range(n + 1):
+                t = length * k / n
+                rot = [0.0, 0.0, 0.0]
+                rot[axis] = round(w['amp'] * math.sin(2 * math.pi * w.get('cycles', 1) * t / length), 4)
+                keys[f'{t:.4f}'] = rot
+            out['rotation'] = keys
         bones[bone] = out
     return {'format_version': '1.8.0', 'animations': {spec['name']: {'loop': spec.get('loop', True), 'animation_length': length, 'bones': bones}}}
 
