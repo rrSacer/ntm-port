@@ -514,6 +514,90 @@ Quase todas as entradas vêm de reatores que o port ainda não tem.
   - **`trocar`:** uma haste MEN posta troca a receita sozinha. Em 8 s saem
     4 Pu-239, 3 U-238, 2 tecnécio e 3 rejeitos.
 
+## Cadeia do bedrock, etapa 1 (`bedrock.rs`, `excavator.rs`), no motor com slots
+
+É o sistema novo do NTM: `ItemBedrockOreBase`, `ItemBedrockOreNew`,
+`BedrockOre` (geração), `TileEntityMachineExcavator` e
+`TileEntityMachineOreSlopper`. O `ItemBedrockOre` antigo está morto no NTM
+(nada o gera) e fica de fora. O conteúdo e a geração são do agente de
+importação; telas e multiblocos são do agente de visual.
+
+**Etapas** (aprovadas pelo coordenador):
+1. depósito → escavadora → ore slopper → centrífuga → fragmentos → pó;
+2. cristalizador;
+3. forno pirolítico e eletrólise de fluidos;
+4. saídas fundidas (forno a arco, eletrolisador);
+5. as linhas que dependem do petróleo.
+
+**O depósito** (`ntm:ore_bedrock`) não guarda nada. Tudo é função da posição:
+- **Densidades:** as 6 densidades (metais leves, pesados, terras raras,
+  actinídeos, não metais, cristalinos) vêm de `getOreLevel`: o produto de dois
+  ruídos Perlin de 4 oitavas, com sementes fixas (não as do mundo), no centro
+  do chunk, × 0,05, limitado a 0..2.
+- **Nível e fluido:** saem da média das densidades.
+
+  | Média | Nível | Fluido por extração |
+  | --- | ---: | --- |
+  | ≤ 0,75 | 1 | nenhum |
+  | > 0,75 | 2 | 1.000 mB de água |
+  | > 1 | 3 | 1.000 mB de ácido sulfúrico |
+  | > 1,5 | 4 | 2.000 mB de solvente |
+
+- **Nether:** 4 glowstone, pó de fogo ou quartzo (pesos 100/50/100),
+  escolhido pelo chunk.
+- **Parity com o NTM:** o `java.util.Random` confere com o JDK. O simplex de
+  1.7.10 é uma reconstrução, porque o código vanilla não está no repositório:
+  concorda com o `SimplexNoise` do Horizon, menos os offsets por oitava. A
+  paridade das densidades com o NTM não está verificada.
+
+**O minério bruto** (`ntm:bedrock_ore_base`) leva as densidades do chunk ×
+(1 + 0,1 × a sorte da broca) no `minecraft:custom_data`, como
+`{ntm_ore:{light:1.5d,...}}`. O motor `ntm-visual` passa isso pelos slots
+(`Stack.custom`, api 10). Brutos com densidades diferentes não se empilham.
+
+**Escavadora** (7×7×4; slot 4 a broca, 5–13 o buffer; botão 0 liga e
+desliga):
+- 10.000 HE por tick; abre um poço de 3×3 a partir de 4 blocos sob o núcleo.
+- Cada camada leva a dureza somada ÷ a velocidade da broca. Os blocos vão
+  para o buffer, e um buffer cheio pausa a broca sem perder nada.
+- Sobre um depósito, extrai um bruto a cada 6.000 ÷ velocidade ticks, se o
+  nível da broca alcança o do depósito e o tanque tem o fluido pedido, que é
+  gasto. O depósito é infinito.
+- As 10 brocas têm velocidade de 1 a 2,5, nível de 1 a 5 e sorte de 0 a 4.
+- Uma camada é lida uma vez (e de novo antes de quebrar), não a cada tick,
+  porque ler um bloco custa fuel.
+
+**Ore slopper** (7×3×4; slot 2 o bruto, 3–8 as saídas):
+- 200 HE por tick, 600 ticks: um bruto e 1.000 mB de água viram 1.000 mB de
+  slop.
+- As densidades do bruto se acumulam por tipo; cada unidade inteira vira um
+  minério BASE daquele tipo. O que não cabe espera no acumulador.
+
+**Centrífuga:** as linhas de bedrock do `CentrifugeRecipes`. BASE → PRIMARY
++ cascalho; PRIMARY → os fragmentos dos 2 primários do tipo (9 fragmentos =
+1 pó, receita de bancada).
+
+**Desvios:**
+- sem a rocha de profundidade (`BlockDepth`), que no NTM bloqueia a
+  escavadora;
+- só o poço de 3×3; ficam para depois os anéis maiores, o britador, as
+  muralhas, o veio e o toque de seda;
+- o servidor não tem a tabela de dureza nem as loot tables. A dureza vem de
+  uma tabela vanilla resumida (1,5 no resto), e os blocos dão a si mesmos,
+  com pedra virando pedregulho e grama virando terra;
+- sem a saída para um baú ou esteira na frente da escavadora;
+- sem upgrades.
+
+**Verificação** (`bedrock::tests`, 5; `excavator::tests`, 2;
+`server/tests/bedrock_tests.rs`, 3):
+- o `Random` contra o JDK, as densidades por chunk e os vários níveis, o
+  `custom_data` de ida e volta (no formato que o motor devolve);
+- a escavadora com broca de ferro desce 10 camadas de deepslate (90
+  pedregulhos de deepslate), chega ao depósito e tira um bruto com as
+  densidades do chunk × 1,1;
+- uma broca abaixo do nível do depósito não tira nada;
+- o slopper transforma as densidades nos minérios BASE certos.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
