@@ -139,5 +139,19 @@
       ]
     }
   ],
+  "buttons": [
+    {
+      "screen": "ntm:machine_electrolyser_metal",
+      "rect": [
+        8,
+        82,
+        54,
+        12
+      ],
+      "lines": [
+        "Eletrólise de metal"
+      ]
+    }
+  ],
   "title_color": "#ffffff"
 }

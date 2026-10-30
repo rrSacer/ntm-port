@@ -76,7 +76,44 @@
     {
       "x": -10000,
       "y": -10000,
-      "accept": []
+      "accept": [
+        "ntm:bedrock_ore__crumbs_actinide",
+        "ntm:bedrock_ore__crumbs_crystal",
+        "ntm:bedrock_ore__crumbs_heavy",
+        "ntm:bedrock_ore__crumbs_light",
+        "ntm:bedrock_ore__crumbs_nonmetal",
+        "ntm:bedrock_ore__crumbs_rare",
+        "ntm:bedrock_ore__primary_first_actinide",
+        "ntm:bedrock_ore__primary_first_crystal",
+        "ntm:bedrock_ore__primary_first_heavy",
+        "ntm:bedrock_ore__primary_first_light",
+        "ntm:bedrock_ore__primary_first_nonmetal",
+        "ntm:bedrock_ore__primary_first_rare",
+        "ntm:bedrock_ore__primary_second_actinide",
+        "ntm:bedrock_ore__primary_second_crystal",
+        "ntm:bedrock_ore__primary_second_heavy",
+        "ntm:bedrock_ore__primary_second_light",
+        "ntm:bedrock_ore__primary_second_nonmetal",
+        "ntm:bedrock_ore__primary_second_rare",
+        "ntm:crystal_aluminium",
+        "ntm:crystal_beryllium",
+        "ntm:crystal_cobalt",
+        "ntm:crystal_copper",
+        "ntm:crystal_gold",
+        "ntm:crystal_iron",
+        "ntm:crystal_lead",
+        "ntm:crystal_lithium",
+        "ntm:crystal_plutonium",
+        "ntm:crystal_rare",
+        "ntm:crystal_schrabidium",
+        "ntm:crystal_schraranium",
+        "ntm:crystal_starmetal",
+        "ntm:crystal_thorium",
+        "ntm:crystal_titanium",
+        "ntm:crystal_trixite",
+        "ntm:crystal_tungsten",
+        "ntm:crystal_uranium"
+      ]
     },
     {
       "x": -10000,
@@ -113,7 +150,7 @@
     8,
     122
   ],
-  "data": 30,
+  "data": 38,
   "multiblock": {
     "min": [
       -1,
@@ -273,5 +310,8 @@
       }
     ],
     "dummy": "ntm:dummy_machine"
-  }
+  },
+  "screens": [
+    "ntm:machine_electrolyser_metal"
+  ]
 }

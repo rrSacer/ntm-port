@@ -260,6 +260,8 @@
   "data/ntm/horizon_machine/machine_electrolyser.json",
   "assets/ntm/textures/gui/processing/gui_electrolyser_fluid.png",
   "assets/ntm/horizon_screen/machine_electrolyser.json",
+  "assets/ntm/textures/gui/processing/gui_electrolyser_metal.png",
+  "assets/ntm/horizon_screen/machine_electrolyser_metal.json",
   "assets/ntm/models/obj/electrolyser.obj",
   "assets/ntm/textures/models/machines/electrolyser.png",
   "assets/ntm/horizon_model/machine_electrolyser.json",

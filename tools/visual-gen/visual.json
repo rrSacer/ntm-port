@@ -7356,7 +7356,7 @@
           {
             "x": -10000,
             "y": -10000,
-            "accept": []
+            "accept_recipes": "electrolyser"
           },
           {
             "x": -10000,
@@ -7393,7 +7393,7 @@
           8,
           122
         ],
-        "data": 30,
+        "data": 38,
         "multiblock": {
           "min": [
             -1,
@@ -7553,7 +7553,10 @@
             }
           ],
           "dummy": "ntm:dummy_machine"
-        }
+        },
+        "screens": [
+          "ntm:machine_electrolyser_metal"
+        ]
       },
       "screen": {
         "texture": "ntm:textures/gui/processing/gui_electrolyser_fluid.png",
@@ -7696,6 +7699,20 @@
               "{24} / {25} mB"
             ]
           }
+        ],
+        "buttons": [
+          {
+            "screen": "ntm:machine_electrolyser_metal",
+            "rect": [
+              8,
+              82,
+              54,
+              12
+            ],
+            "lines": [
+              "Eletrólise de metal"
+            ]
+          }
         ]
       },
       "model": {
@@ -7705,6 +7722,206 @@
         "texture_from": "textures/models/machines/electrolyser.png",
         "rotation": 180,
         "radius": 6.8
+      },
+      "more_screens": {
+        "machine_electrolyser_metal": {
+          "texture": "ntm:textures/gui/processing/gui_electrolyser_metal.png",
+          "texture_from": "textures/gui/processing/gui_electrolyser_metal.png",
+          "size": [
+            210,
+            204
+          ],
+          "title": [
+            89,
+            7,
+            "center"
+          ],
+          "bars": [
+            {
+              "value": 0,
+              "max": 1,
+              "rect": [
+                186,
+                18,
+                16,
+                89
+              ],
+              "uv": [
+                210,
+                0
+              ],
+              "dir": "up"
+            },
+            {
+              "value": 35,
+              "max": 36,
+              "rect": [
+                7,
+                46,
+                22,
+                25
+              ],
+              "uv": [
+                226,
+                0
+              ],
+              "dir": "up"
+            },
+            {
+              "value": 15,
+              "max": 16,
+              "rect": [
+                36,
+                18,
+                16,
+                52
+              ],
+              "color": 17,
+              "dir": "up"
+            },
+            {
+              "value": 30,
+              "max": 34,
+              "rect": [
+                58,
+                18,
+                34,
+                42
+              ],
+              "color": 31,
+              "dir": "up"
+            },
+            {
+              "value": 32,
+              "max": 34,
+              "rect": [
+                96,
+                18,
+                34,
+                42
+              ],
+              "color": 33,
+              "dir": "up"
+            }
+          ],
+          "overlays": [
+            {
+              "value": 37,
+              "min": 1,
+              "rect": [
+                190,
+                4,
+                9,
+                12
+              ],
+              "uv": [
+                226,
+                25
+              ]
+            }
+          ],
+          "tooltips": [
+            {
+              "rect": [
+                186,
+                18,
+                16,
+                89
+              ],
+              "lines": [
+                "{0:si} / {1:si} HE"
+              ]
+            },
+            {
+              "rect": [
+                36,
+                18,
+                16,
+                52
+              ],
+              "lines": [
+                "{15} / {16} mB"
+              ]
+            },
+            {
+              "rect": [
+                58,
+                18,
+                34,
+                42
+              ],
+              "lines": [
+                "{30} / {34}"
+              ]
+            },
+            {
+              "rect": [
+                96,
+                18,
+                34,
+                42
+              ],
+              "lines": [
+                "{32} / {34}"
+              ]
+            }
+          ],
+          "buttons": [
+            {
+              "screen": "ntm:machine_electrolyser",
+              "rect": [
+                8,
+                82,
+                54,
+                12
+              ],
+              "lines": [
+                "Eletrólise de fluidos"
+              ]
+            }
+          ],
+          "slots": {
+            "3": null,
+            "4": null,
+            "5": null,
+            "6": null,
+            "7": null,
+            "8": null,
+            "9": null,
+            "10": null,
+            "11": null,
+            "12": null,
+            "13": null,
+            "14": [
+              10,
+              22
+            ],
+            "15": [
+              136,
+              18
+            ],
+            "16": [
+              154,
+              18
+            ],
+            "17": [
+              136,
+              36
+            ],
+            "18": [
+              154,
+              36
+            ],
+            "19": [
+              136,
+              54
+            ],
+            "20": [
+              154,
+              54
+            ]
+          }
+        }
       }
     },
     "ntm:machine_arc_furnace_large": {
