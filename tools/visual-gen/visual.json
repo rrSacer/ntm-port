@@ -5750,6 +5750,305 @@
           }
         ]
       }
+    },
+    "ntm:machine_ore_slopper": {
+      "source": "ContainerOreSlopper, GUIOreSlopper, MachineOreSlopper {3,0,3,3,1,1} offset 3; ports: getPorts, the bottom layer",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 72,
+            "accept": []
+          },
+          {
+            "x": 26,
+            "y": 72,
+            "accept": []
+          },
+          {
+            "x": 71,
+            "y": 27,
+            "accept": [
+              "ntm:bedrock_ore_base"
+            ]
+          },
+          {
+            "x": 134,
+            "y": 18,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 18,
+            "output": true
+          },
+          {
+            "x": 134,
+            "y": 36,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 36,
+            "output": true
+          },
+          {
+            "x": 134,
+            "y": 54,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 54,
+            "output": true
+          },
+          {
+            "x": 62,
+            "y": 72,
+            "accept": []
+          },
+          {
+            "x": 80,
+            "y": 72,
+            "accept": []
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 15,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -3
+          ],
+          "max": [
+            1,
+            3,
+            3
+          ],
+          "offset": 3,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_ore_slopper.png",
+        "texture_from": "textures/gui/processing/gui_ore_slopper.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          79,
+          6,
+          "center"
+        ],
+        "compose": [
+          {
+            "from": "textures/gui/fluids/water.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              224,
+              100
+            ]
+          },
+          {
+            "from": "textures/gui/fluids/water.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              224,
+              116
+            ]
+          },
+          {
+            "from": "textures/gui/fluids/water.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              224,
+              132
+            ]
+          },
+          {
+            "from": "textures/gui/fluids/water.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              224,
+              148
+            ]
+          },
+          {
+            "from": "textures/gui/fluids/slop.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              240,
+              100
+            ]
+          },
+          {
+            "from": "textures/gui/fluids/slop.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              240,
+              116
+            ]
+          },
+          {
+            "from": "textures/gui/fluids/slop.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              240,
+              132
+            ]
+          },
+          {
+            "from": "textures/gui/fluids/slop.png",
+            "src": [
+              0,
+              0,
+              16,
+              16
+            ],
+            "at": [
+              240,
+              148
+            ]
+          }
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              8,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              34
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              62,
+              18,
+              34,
+              34
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              26,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              224,
+              100
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              116,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              240,
+              100
+            ],
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              8,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              26,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "Água: {4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              116,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "Slop: {6} / {7} mB"
+            ]
+          }
+        ]
+      }
     }
   }
 }
