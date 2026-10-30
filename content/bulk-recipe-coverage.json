@@ -4583,6 +4583,42 @@
       }
     },
     {
+      "id": "ntm:bulk__84958373229fbd14ad",
+      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:88",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:chemical_dye__gray",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__c15c3b89e808492bac",
+      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:89",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:chemical_dye__silver",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__d3f096c17fe6ea00bd",
+      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:90",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:chemical_dye__orange",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__3777347b2516588bea",
+      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:91",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:chemical_dye__lime",
+        "count": 2
+      }
+    },
+    {
       "id": "ntm:bulk__c8539518a605e28242",
       "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:92",
       "type": "minecraft:crafting_shapeless",
@@ -4597,6 +4633,51 @@
       "type": "minecraft:crafting_shapeless",
       "result": {
         "id": "ntm:chemical_dye__purple",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__e9d6685f74a016a2af",
+      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:94",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:chemical_dye__brown",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__7f0f1a1489773ed836",
+      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:95",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:chemical_dye__magenta",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__f4301b914127a0df5c",
+      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:96",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:chemical_dye__lightblue",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__88ca6e62b058850448",
+      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:97",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:chemical_dye__pink",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__88adb3573f09c86cc5",
+      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:98",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:chemical_dye__green",
         "count": 2
       }
     },
@@ -5357,7 +5438,7 @@
       }
     }
   ],
-  "generated_count": 595,
+  "generated_count": 604,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -10776,60 +10857,6 @@
       "callee": "addRecipeAuto",
       "reason": "conditional/loop source recipe not translated",
       "expression": "new ItemStack(ModItems.ingot_firebrick, 4), new Object[] { \"BN\", \"NB\", 'B', Items.brick, 'N', Items.netherbrick }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:88",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.GRAY, 2)",
-      "expression": "DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.GRAY, 2),\t\t\tnew Object[] { DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.BLACK),\t\tDictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.WHITE) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:89",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.GRAY)",
-      "expression": "DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.SILVER, 2),\t\tnew Object[] { DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.GRAY),\t\tDictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.WHITE) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:90",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.ORANGE, 2)",
-      "expression": "DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.ORANGE, 2),\t\tnew Object[] { DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.RED),\t\tDictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.YELLOW) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:91",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.LIME, 2)",
-      "expression": "DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.LIME, 2),\t\t\tnew Object[] { DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.GREEN),\t\tDictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.WHITE) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:94",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.ORANGE)",
-      "expression": "DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.BROWN, 2),\t\tnew Object[] { DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.ORANGE),\tDictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.BLACK) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:95",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.MAGENTA, 2)",
-      "expression": "DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.MAGENTA, 2),\t\tnew Object[] { DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.PINK),\t\tDictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.PURPLE) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:96",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.LIGHTBLUE, 2)",
-      "expression": "DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.LIGHTBLUE, 2),\tnew Object[] { DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.BLUE),\t\tDictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.WHITE) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:97",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.PINK, 2)",
-      "expression": "DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.PINK, 2),\t\t\tnew Object[] { DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.RED),\t\tDictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.WHITE) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:98",
-      "callee": "addShapelessAuto",
-      "reason": "missing enum DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.YELLOW)",
-      "expression": "DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.GREEN, 2),\t\tnew Object[] { DictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.BLUE),\t\tDictFrame.fromOne(ModItems.chemical_dye, EnumChemDye.YELLOW) }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:100",
