@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:quartz_pillar",
+  "properties": {
+    "hardness": 5,
+    "explosion_resistance": 15,
+    "requires_tool": true,
+    "sounds": "minecraft:stone",
+    "light": 0
+  },
+  "item": true
+}
