@@ -41,6 +41,8 @@
         "ntm:oil_tar__crack",
         "ntm:oil_tar__crude",
         "ntm:ore_oil_sand",
+        "ntm:plant_flower__cd0",
+        "ntm:plant_flower__weed",
         "ntm:powder_coal",
         "ntm:powder_lead",
         "ntm:powder_lignite",
