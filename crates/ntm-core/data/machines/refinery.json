@@ -1,0 +1,171 @@
+{
+"station": "refinery",
+"source": "content/machine-recipes/refinery.json",
+"recipes": [
+{
+"name": "refinery.0",
+"label": "Óleo Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/RefineryRecipes.java:48",
+"duration": 1,
+"power": 5,
+"in": [],
+"fin": [
+[
+"hotoil",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"heavyoil",
+50
+],
+[
+"naphtha",
+25
+],
+[
+"lightoil",
+15
+],
+[
+"petroleum",
+10
+]
+],
+"pools": [],
+"periodic": [
+[
+"ntm:sulfur",
+1,
+10
+]
+]
+},
+{
+"name": "refinery.1",
+"label": "Nafta Craqueada",
+"source": "src/main/java/com/hbm/inventory/recipes/RefineryRecipes.java:55",
+"duration": 1,
+"power": 5,
+"in": [],
+"fin": [
+[
+"hotcrackoil",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"naphtha_crack",
+40
+],
+[
+"lightoil_crack",
+30
+],
+[
+"aromatics",
+15
+],
+[
+"unsaturateds",
+15
+]
+],
+"pools": [],
+"periodic": [
+[
+"ntm:oil_tar__crack",
+1,
+10
+]
+]
+},
+{
+"name": "refinery.2",
+"label": "Óleo Pesado",
+"source": "src/main/java/com/hbm/inventory/recipes/RefineryRecipes.java:62",
+"duration": 1,
+"power": 5,
+"in": [],
+"fin": [
+[
+"hotoil_ds",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"heavyoil",
+30
+],
+[
+"naphtha_ds",
+35
+],
+[
+"lightoil_ds",
+20
+],
+[
+"unsaturateds",
+15
+]
+],
+"pools": [],
+"periodic": [
+[
+"ntm:oil_tar__paraffin",
+1,
+10
+]
+]
+},
+{
+"name": "refinery.3",
+"label": "Nafta Dessulfurizada",
+"source": "src/main/java/com/hbm/inventory/recipes/RefineryRecipes.java:69",
+"duration": 1,
+"power": 5,
+"in": [],
+"fin": [
+[
+"hotcrackoil_ds",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"naphtha_ds",
+35
+],
+[
+"lightoil_ds",
+35
+],
+[
+"aromatics",
+15
+],
+[
+"unsaturateds",
+15
+]
+],
+"pools": [],
+"periodic": [
+[
+"ntm:oil_tar__paraffin",
+1,
+10
+]
+]
+}
+],
+"skipped": 0
+}

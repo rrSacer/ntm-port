@@ -1,0 +1,501 @@
+{
+"station": "fraction",
+"source": "content/machine-recipes/fraction.json",
+"recipes": [
+{
+"name": "fraction.0",
+"label": "Betume",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:26",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"heavyoil",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"bitumen",
+30
+],
+[
+"smear",
+70
+]
+],
+"pools": []
+},
+{
+"name": "fraction.1",
+"label": "Óleo Industrial",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:27",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"heavyoil_vacuum",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"smear",
+40
+],
+[
+"heatingoil_vacuum",
+60
+]
+],
+"pools": []
+},
+{
+"name": "fraction.2",
+"label": "Óleo de Aquecimento",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:28",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"smear",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"heatingoil",
+60
+],
+[
+"lubricant",
+40
+]
+],
+"pools": []
+},
+{
+"name": "fraction.3",
+"label": "Óleo de Aquecimento",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:29",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"naphtha",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"heatingoil",
+40
+],
+[
+"diesel",
+60
+]
+],
+"pools": []
+},
+{
+"name": "fraction.4",
+"label": "Xileno (BTX)",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:30",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"naphtha_ds",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"xylene",
+60
+],
+[
+"diesel_reform",
+40
+]
+],
+"pools": []
+},
+{
+"name": "fraction.5",
+"label": "Óleo de Aquecimento",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:31",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"naphtha_crack",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"heatingoil",
+30
+],
+[
+"diesel_crack",
+70
+]
+],
+"pools": []
+},
+{
+"name": "fraction.6",
+"label": "Diesel",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:32",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lightoil",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"diesel",
+40
+],
+[
+"kerosene",
+60
+]
+],
+"pools": []
+},
+{
+"name": "fraction.7",
+"label": "Diesel de Alto Cetano",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:33",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lightoil_ds",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"diesel_reform",
+60
+],
+[
+"kerosene_reform",
+40
+]
+],
+"pools": []
+},
+{
+"name": "fraction.8",
+"label": "Querosene",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:34",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lightoil_crack",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"kerosene",
+70
+],
+[
+"petroleum",
+30
+]
+],
+"pools": []
+},
+{
+"name": "fraction.9",
+"label": "Gasolina de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:35",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"coaloil",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"coalgas",
+30
+],
+[
+"oil",
+70
+]
+],
+"pools": []
+},
+{
+"name": "fraction.10",
+"label": "Óleo de Carvão",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:36",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"coalcreosote",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"coaloil",
+10
+],
+[
+"bitumen",
+90
+]
+],
+"pools": []
+},
+{
+"name": "fraction.11",
+"label": "Hidrocarbonetos Aromáticos",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:37",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"reformate",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"aromatics",
+40
+],
+[
+"xylene",
+60
+]
+],
+"pools": []
+},
+{
+"name": "fraction.12",
+"label": "Querosene",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:38",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"lightoil_vacuum",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"kerosene",
+70
+],
+[
+"reformgas",
+30
+]
+],
+"pools": []
+},
+{
+"name": "fraction.13",
+"label": "Solução de Colesterol",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:39",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"egg",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"cholesterol",
+50
+],
+[
+"radiosolvent",
+50
+]
+],
+"pools": []
+},
+{
+"name": "fraction.14",
+"label": "Óleo Craqueado",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:40",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"oil_coker",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"crackoil",
+30
+],
+[
+"heatingoil",
+70
+]
+],
+"pools": []
+},
+{
+"name": "fraction.15",
+"label": "Nafta Craqueada",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:41",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"naphtha_coker",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"naphtha_crack",
+75
+],
+[
+"lightoil_crack",
+25
+]
+],
+"pools": []
+},
+{
+"name": "fraction.16",
+"label": "Hidrocarbonetos Aromáticos",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:42",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"gas_coker",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"aromatics",
+25
+],
+[
+"carbondioxide",
+75
+]
+],
+"pools": []
+},
+{
+"name": "fraction.17",
+"label": "Solução de Clorocalcita Purificada",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:43",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"chlorocalcite_mix",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"chlorocalcite_cleaned",
+50
+],
+[
+"colloid",
+50
+]
+],
+"pools": []
+},
+{
+"name": "fraction.18",
+"label": "Lama Vermelha",
+"source": "src/main/java/com/hbm/inventory/recipes/FractionRecipes.java:44",
+"duration": 10,
+"power": 0,
+"in": [],
+"fin": [
+[
+"bauxite_solution",
+100
+]
+],
+"out": [],
+"fout": [
+[
+"redmud",
+50
+],
+[
+"sodium_aluminate",
+50
+]
+],
+"pools": []
+}
+],
+"skipped": 0
+}
