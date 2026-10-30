@@ -460,9 +460,25 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 - **Em jogo:** as 5 colocadas com os dummies certos (26, 3, 3, 2, 2) e as 5 telas abertas
   (`img/visual-machines-d2.png`). A planta química pede escala de GUI ≤ 2 em 720p, como a montadora.
 
+## 3g. Cadeia do bedrock, etapa 1: escavadora e ore slopper
+
+| Máquina | Slots (lógica do agente das bombas) | Tela | Multibloco e portas |
+|---|---|---|---|
+| Escavadora (`MachineExcavator`) | 4 broca (as 10 `drillbit__*`, `max` 1), 5–13 o buffer; 0–3 sem lógica | `gui_mining_drill.png`: os 5 interruptores (só o da broca tem lógica na etapa 1: botão 0, com a profundidade no tooltip), lâmpadas, energia, tanque | corpo 7×7×4 com o núcleo 3 blocos acima da célula usada (`getHeightOffset`), sobre duas pernas 2×2 e uma parede 7×2 (`getAllDimensions`); as portas na camada acima do núcleo |
+| Ore slopper (`MachineOreSlopper`) | 2 entrada (só `bedrock_ore_base`), 3–8 saídas; 0, 1, 9, 10 sem lógica | `gui_ore_slopper.png`: energia, progresso, os tanques de água e slop com a textura desses fluidos | 3×7×4; as 8 portas na camada de baixo (`getPorts`) |
+
+- **Motor:** `height` e `extra` no multibloco. O dummy acha o núcleo pelas caixas de verdade, não pela caixa em volta
+  delas.
+- **Visual-gen:** `keep` na tela. A GUI da escavadora desenha a textura em dois pedaços, e os sprites ficam no meio;
+  o resto da área da tela é limpo, e os sprites vêm de uma cópia composta abaixo (v + 256).
+- **Em jogo:** a escavadora foi posta com 261 dummies (corpo 196, pernas 24, parede 42), com as pernas no lado das
+  pernas do modelo. A tela abre, e o interruptor da broca liga (valor 5 = 1). O slopper foi posto 3×7 ao longo do
+  modelo, e a tela abriu (`img/visual-bedrock.png`).
+- **Falta:** as animações (broca, britadores, pás do slopper) e os outros 4 interruptores, que dependem de lógica.
+
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 31 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 33 commits):
 
 | Commit | O quê |
 |---|---|
@@ -497,6 +513,8 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(render): hold a mod model at rest on its first frame` | O repouso das animações |
 | `feat(mods)!: machine slots carry an item's custom data` | `custom` no `item-stack` (SNBT do `minecraft:custom_data`), api level 10: o minério de bedrock leva as densidades |
 | `feat(render): show mod model parts by block state, some at full light` | `show` e `glow` (a fornalha acesa) |
+| `feat(render): draw an untinted liquid as an icon` | `tint: false` (o filtro da saída da fundição) |
+| `feat(world): let a multiblock rise above its cell and stand on legs` | `height` e `extra` (a escavadora) |
 
 **No port:**
 
