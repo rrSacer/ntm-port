@@ -18,6 +18,7 @@ use crate::{
     heater::{Coolable, tables},
     machine::{Effect, Logic, fill_level},
     proto::Held,
+    server::container_bridge::{Slots, Slotted},
     view::{self, ViewModel},
 };
 use serde::{Deserialize, Serialize};
@@ -42,6 +43,9 @@ pub const ENGINE_EFFICIENCY: f64 = 0.85;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SteamEngine {
+    /// None: its machine file only carries the model's values.
+    #[serde(skip)]
+    pub slots: Slots,
     pub input: Tank,
     pub output: Tank,
     #[serde(skip)]
@@ -50,7 +54,7 @@ pub struct SteamEngine {
 
 impl Default for SteamEngine {
     fn default() -> Self {
-        Self { input: Tank::typed("steam", 2_000), output: Tank::typed("spentsteam", 20), buffer: 0 }
+        Self { slots: Slots::new(), input: Tank::typed("steam", 2_000), output: Tank::typed("spentsteam", 20), buffer: 0 }
     }
 }
 
@@ -108,6 +112,8 @@ pub const FLYWHEEL: f64 = 0.5e8;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Turbine {
+    #[serde(skip)]
+    pub slots: Slots,
     pub shape: Shape,
     pub input: Tank,
     pub output: Tank,
@@ -122,7 +128,7 @@ pub struct Turbine {
 impl Turbine {
     pub fn new(shape: Shape) -> Self {
         let (i, o) = shape.caps();
-        Self { shape, input: Tank::typed("steam", i), output: Tank::typed("spentsteam", o), flywheel: 0, max_power: 0, buffer: 0, on: false }
+        Self { slots: Slots::new(), shape, input: Tank::typed("steam", i), output: Tank::typed("spentsteam", o), flywheel: 0, max_power: 0, buffer: 0, on: false }
     }
 
     /// `updateEntity`: the operations a fifth (or all) of the input and the
@@ -210,6 +216,8 @@ pub const CONDENSER_HE: u64 = 10;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Condenser {
+    #[serde(skip)]
+    pub slots: Slots,
     pub powered: bool,
     pub input: Tank,
     pub output: Tank,
@@ -221,7 +229,7 @@ pub struct Condenser {
 impl Condenser {
     pub fn new(powered: bool) -> Self {
         let cap = if powered { 1_000_000 } else { 100 };
-        Self { powered, input: Tank::typed("spentsteam", cap), output: Tank::typed("water", cap), power: 0, on: false }
+        Self { slots: Slots::new(), powered, input: Tank::typed("spentsteam", cap), output: Tank::typed("water", cap), power: 0, on: false }
     }
 
     /// As much spent steam as there is room for into water; the powered one
@@ -240,6 +248,44 @@ impl Condenser {
             self.on = convert > 0;
         }
         self.on || was
+    }
+}
+
+// ------------------------------------------------------- model values
+
+/// The steam's step for the models (0 steam .. 3 ultrahot).
+fn steam_index(fluid: &str) -> i32 {
+    ["steam", "hotsteam", "superhotsteam", "ultrahotsteam"].iter().position(|f| *f == fluid).unwrap_or(0) as i32
+}
+
+/// No slots: their machine files carry the values the models animate by.
+/// Engine [0] turning; turbines [0] turning, [1] the steam (0..=3);
+/// powered condenser [0] working.
+impl Slotted for SteamEngine {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        vec![i32::from(self.buffer > 0)]
+    }
+}
+
+impl Slotted for Turbine {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        let turning = self.on || (self.shape == Shape::Industrial && self.flywheel > 0);
+        vec![i32::from(turning), steam_index(&self.input.fluid)]
+    }
+}
+
+impl Slotted for Condenser {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        vec![i32::from(self.on)]
     }
 }
 
@@ -275,6 +321,16 @@ impl Steam {
             Self::Engine(m) => [&mut m.input, &mut m.output],
             Self::Turbine(m) => [&mut m.input, &mut m.output],
             Self::Condenser(m) => [&mut m.input, &mut m.output],
+        }
+    }
+
+    /// The ones with a machine file (the plain condenser has none).
+    pub fn slotted(&mut self) -> Option<&mut dyn Slotted> {
+        match self {
+            Self::Engine(m) => Some(m),
+            Self::Turbine(m) => Some(m),
+            Self::Condenser(m) if m.powered => Some(m),
+            Self::Condenser(_) => None,
         }
     }
 
@@ -457,6 +513,7 @@ mod tests {
         let mut c = Turbine::new(Shape::Chungus);
         c.lever();
         assert_eq!((c.input.fluid.as_str(), c.input.cap), ("hotsteam", 1_000_000_000));
+        assert_eq!(c.screen_data(), vec![0, 1], "o modelo: parada, vapor quente");
     }
 
     /// The passive condenser turns all it can; the powered one only with
