@@ -9133,6 +9133,18 @@
     "ntm:machine_coker": {
       "source": "oil batch C: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
       "auto": false
+    },
+    "ntm:machine_fracking_tower": {
+      "source": "oil batch D: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
+      "auto": false
+    },
+    "ntm:machine_pumpjack": {
+      "source": "oil batch D: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
+      "auto": false
+    },
+    "ntm:machine_well": {
+      "source": "oil batch D: no extracted model until the batch gets its own entry (the extracted ones are not checked)",
+      "auto": false
     }
   }
 }
