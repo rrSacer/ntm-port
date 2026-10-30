@@ -2217,7 +2217,10 @@
       "source": "TileEntityFoundryOutlet: no metal kept, its filter in the old screen",
       "machine": {
         "slots": [],
-        "data": 4
+        "data": 4,
+        "synced": [
+          0
+        ]
       },
       "block_model": {
         "source": "RenderFoundryOutlet, metadata 2 (north); no filter or lock drawn",
@@ -2291,7 +2294,30 @@
         ]
       },
       "liquid": {
-        "liquids": []
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/foundry/outlet_filter.png",
+            "texture_from": "textures/blocks/foundry_outlet_filter.png",
+            "box": [
+              0.375,
+              0.0625,
+              0.9625,
+              0.625,
+              0.5,
+              0.975
+            ],
+            "value": 0,
+            "color": 0,
+            "column": true,
+            "tint": false,
+            "crop": [
+              6,
+              8,
+              4,
+              7
+            ]
+          }
+        ]
       }
     },
     "ntm:nuke_gadget": {
