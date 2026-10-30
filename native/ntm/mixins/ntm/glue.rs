@@ -150,10 +150,12 @@ impl Kv for Host<'_, '_> {
 }
 
 impl Host<'_, '_> {
-    /// The file of storage key `key` (letters, digits, `.`, `_`, `-`).
+    /// The file of storage key `key` (letters, digits, `.`, `_`, `-`); none
+    /// without a world.
     fn store(&self, key: &str) -> Option<std::path::PathBuf> {
         let plain = !key.starts_with('.') && key.bytes().all(|b| b.is_ascii_alphanumeric() || b".-_".contains(&b));
-        (plain && !key.is_empty()).then(|| self.game.native_world_dir().join("data").join("ntm").join(key))
+        let world = self.game.native_world_dir().filter(|_| plain && !key.is_empty())?;
+        Some(world.join("data").join("ntm").join(key))
     }
 
     /// The machine block entity at `pos` of `dim`, when it is in the

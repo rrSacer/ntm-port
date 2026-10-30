@@ -2,7 +2,7 @@
   "game": "26.3",
   "hooks": 31,
   "horizon_repository": "https://github.com/horizon-rust/horizon",
-  "horizon_revision": "15d31b261028dbf336d3f7294512c5a4a7eb19cc",
+  "horizon_revision": "29b4726b4cdc33e346043b03d1c96f04bc73e941",
   "horizon_branch": "ntm-next",
   "horizon_mixins_repository": "https://github.com/horizon-rust/horizon-mixins",
   "horizon_mixins_revision": "5140cdf81915c25f10a7745eb532e1c09f275068",
