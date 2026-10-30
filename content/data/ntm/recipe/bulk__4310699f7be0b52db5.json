@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:machine_keyforge",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PCP",
+    "WSW",
+    "WSW"
+  ],
+  "key": {
+    "P": "#ntm:bulk/platesteel",
+    "S": "#ntm:bulk/ingottungsten",
+    "C": "ntm:padlock",
+    "W": "#ntm:bulk/plankwood"
+  }
+}

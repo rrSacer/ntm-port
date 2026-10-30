@@ -99,7 +99,9 @@ class EnergyCombustion(unittest.TestCase):
         self.assertEqual(self.data['coverage'], {'machines': 4, 'pistons': 4, 'combustible_fluids': 43, 'skipped': 0})
         for config in self.cfg.values():
             self.assertNotIn('duration', config); self.assertRegex(config['source'], r'TileEntity\w+\.java$')
-        self.assertNotIn('ntm:machine_industrial_generator', self.rows)
+        # K3 declares the casing as Inert; it must not acquire combustion logic.
+        self.assertNotIn('ntm:machine_industrial_generator', self.cfg)
+        self.assertIn('Inert', self.rows['ntm:machine_industrial_generator']['behavior_gap'].title())
 
     def test_independent_regeneration(self):
         with tempfile.TemporaryDirectory() as directory:

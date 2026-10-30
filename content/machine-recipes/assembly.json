@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 469,
+    "emitted": 500,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 162,
+    "skipped_source_calls": 131,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1596,6 +1596,789 @@
       "label_en": "Silo Hatch Frame"
     },
     {
+      "name": "ass.sealcontroller",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:204",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_dura_steel"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:ingot_bakelite",
+            "ntm:ingot_polymer"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:wire_dense__red_copper"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:seal_controller",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Abridor de Escotilha de Silo",
+      "label_en": "Silo Hatch Opener"
+    },
+    {
+      "name": "ass.vaultdoor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:214",
+      "duration": 600,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_steel"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:ingot_dura_steel"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:plate_cast__lead"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_biorubber",
+            "ntm:ingot_rubber"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 3
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:vault_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta Blindada Vault-Tec",
+      "label_en": "Vault-Tec Blast Door"
+    },
+    {
+      "name": "ass.blastdoor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:216",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:plate_lead"
+          ],
+          "count": 6
+        },
+        {
+          "ids": [
+            "ntm:ingot_biorubber",
+            "ntm:ingot_rubber"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:blast_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta Blindada Deslizante",
+      "label_en": "Sliding Blast Door"
+    },
+    {
+      "name": "ass.firedoor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:218",
+      "duration": 300,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:fire_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta Corta-Fogo",
+      "label_en": "Fire Door"
+    },
+    {
+      "name": "ass.seal",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:220",
+      "duration": 1200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:cmb_brick_reinforced"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:plate_steel"
+          ],
+          "count": 64
+        },
+        {
+          "ids": [
+            "ntm:ingot_biorubber",
+            "ntm:ingot_rubber"
+          ],
+          "count": 36
+        },
+        {
+          "ids": [
+            "ntm:block_steel"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:motor_desh"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "minecraft:yellow_dye"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:transition_seal",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Vedação de Transição",
+      "label_en": "Transition Seal"
+    },
+    {
+      "name": "ass.slidingdoor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:222",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_tungsten"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:reinforced_glass"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:ingot_biorubber",
+            "ntm:ingot_rubber"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:sliding_blast_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta Blindada Deslizante",
+      "label_en": "Sliding Blast Door"
+    },
+    {
+      "name": "ass.vehicledoor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:224",
+      "duration": 400,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:plate_polymer"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "minecraft:green_dye"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:large_vehicle_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Portão Grande para Veículos",
+      "label_en": "Large Vehicle Door"
+    },
+    {
+      "name": "ass.waterdoor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:226",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "minecraft:red_dye"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:water_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta Estanque",
+      "label_en": "Water Door"
+    },
+    {
+      "name": "ass.qedoor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:228",
+      "duration": 400,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 6
+        },
+        {
+          "ids": [
+            "ntm:plate_polymer"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "minecraft:black_dye"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:qe_containment",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta de Contenção QE",
+      "label_en": "QE Containment Door"
+    },
+    {
+      "name": "ass.queslidingdoor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:230",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:plate_polymer"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "minecraft:white_dye"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "minecraft:glass"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:qe_sliding_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta Deslizante QE",
+      "label_en": "QE Sliding Door"
+    },
+    {
+      "name": "ass.roundairlock",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:232",
+      "duration": 400,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:plate_polymer"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "minecraft:green_dye"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:round_airlock_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta Circular de Câmara de Descompressão",
+      "label_en": "Round Airlock Door"
+    },
+    {
+      "name": "ass.secureaccess",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:234",
+      "duration": 400,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:plate_polymer"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "minecraft:red_dye"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:secure_access_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta de Acesso Seguro",
+      "label_en": "Secure Access Door"
+    },
+    {
+      "name": "ass.slidingseal",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:236",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:plate_polymer"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "minecraft:white_dye"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:sliding_seal_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta Deslizante de Vedação",
+      "label_en": "Sliding Seal Door"
+    },
+    {
+      "name": "ass.silohatch",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:238",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_welded__steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:plate_polymer"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:bolt__steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "minecraft:green_dye"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:silo_hatch",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Escotilha de Silo",
+      "label_en": "Silo Hatch"
+    },
+    {
+      "name": "ass.silohatchlarge",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:240",
+      "duration": 300,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_welded__steel"
+          ],
+          "count": 6
+        },
+        {
+          "ids": [
+            "ntm:plate_polymer"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:bolt__steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "minecraft:green_dye"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:silo_hatch_large",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Escotilha de Silo Grande",
+      "label_en": "Large Silo Hatch"
+    },
+    {
+      "name": "ass.cargodoor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:242",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:steel_beam"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:plate_steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:bolt__dura_steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "minecraft:gray_dye"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:cargo_door",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Porta de Carga",
+      "label_en": "Cargo Door"
+    },
+    {
       "name": "ass.capnuka",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:245",
       "duration": 10,
@@ -2007,6 +2790,106 @@
       "pools": [],
       "label": "PUREX",
       "label_en": "PUREX"
+    },
+    {
+      "name": "ass.precass",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:273",
+      "duration": 1200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_zirconium"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:circuit__capacitor_board"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_precass",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Máquina de Montagem de Precisão",
+      "label_en": "Precision Assembly Machine"
+    },
+    {
+      "name": "ass.sal9000",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:276",
+      "duration": 400,
+      "power": 1000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_cdalloy",
+            "ntm:ingot_tcalloy"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_bakelite",
+            "ntm:ingot_polymer"
+          ],
+          "count": 64
+        },
+        {
+          "ids": [
+            "ntm:wire_dense__gold"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:pipe__copper"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:circuit__bismoid"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_supercomputer",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Machine Supercomputer",
+      "label_en": "Supercomputer"
     },
     {
       "name": "ass.centrifuge",
@@ -2617,6 +3500,62 @@
       "label_en": "Catalytic Cracking Tower"
     },
     {
+      "name": "ass.radiolysis",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:320",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:ingot_cdalloy",
+            "ntm:ingot_tcalloy"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:plate_lead"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:plate_cast__copper"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:thermo_element"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_radiolysis",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Gerador Termoelétrico de Radioisótopos e Câmara de Radiólise",
+      "label_en": "Radioisotope Thermoelectric Generator and Radiolysis Chamber"
+    },
+    {
       "name": "ass.coker",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:323",
       "duration": 200,
@@ -3016,6 +3955,104 @@
       "label_en": "Industrial Solidification Machine"
     },
     {
+      "name": "ass.compressor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:348",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:plate_copper"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 3
+        },
+        {
+          "ids": [
+            "ntm:circuit__analog"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_compressor",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Compressor",
+      "label_en": "Compressor"
+    },
+    {
+      "name": "ass.compactcompressor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:351",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:shell__titanium"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:pipe__copper"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_compressor_compact",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Compressor Compacto",
+      "label_en": "Compact Compressor"
+    },
+    {
       "name": "ass.epress",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:354",
       "duration": 100,
@@ -3058,6 +4095,117 @@
       "pools": [],
       "label": "Prensa Elétrica",
       "label_en": "Electric Press"
+    },
+    {
+      "name": "ass.fel",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:357",
+      "duration": 400,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:battery_pack__battery_lithium"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:wire_dense__gold"
+          ],
+          "count": 64
+        },
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:ingot_bakelite",
+            "ntm:ingot_polymer"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:part_generic__glass_polarized"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:circuit__capacitor"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_fel",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "FEL",
+      "label_en": "FEL"
+    },
+    {
+      "name": "ass.silex",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:360",
+      "duration": 400,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:glass_quartz"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_desh"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:pipe__steel"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_silex",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Câmara de Separação de Isótopos a Laser (SILEX)",
+      "label_en": "Laser Isotope Separation Chamber (SILEX)"
     },
     {
       "name": "ass.excavator",
@@ -3493,6 +4641,373 @@
       "pools": [],
       "label": "Processador de Minério de Rocha Matriz",
       "label_en": "Bedrock Ore Processor"
+    },
+    {
+      "name": "ass.mininglaser",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:387",
+      "duration": 400,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:shell__titanium"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:plate_dura_steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:crystal_redstone"
+          ],
+          "count": 3
+        },
+        {
+          "ids": [
+            "minecraft:diamond"
+          ],
+          "count": 3
+        },
+        {
+          "ids": [
+            "ntm:ingot_bakelite",
+            "ntm:ingot_polymer"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 3
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_mining_laser",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Laser de Mineração",
+      "label_en": "Mining Laser"
+    },
+    {
+      "name": "ass.teleporter",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:390",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_titanium"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:plate_dura_steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:wire_fine__gold"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:entanglement_kit"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:battery_pack__battery_lithium"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_teleporter",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Teletransportador",
+      "label_en": "Teleporter"
+    },
+    {
+      "name": "ass.forcefield",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:398",
+      "duration": 600,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_dura_steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:plate_desh"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:coil_gold_torus"
+          ],
+          "count": 6
+        },
+        {
+          "ids": [
+            "ntm:coil_magnetized_tungsten"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:upgrade_radius"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:upgrade_health"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:circuit__advanced"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:machine_transformer"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_forcefield",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Emissor de Campo de Força",
+      "label_en": "Forcefield Emitter"
+    },
+    {
+      "name": "ass.strandcaster",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:400",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_firebrick"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 6
+        },
+        {
+          "ids": [
+            "ntm:plate_welded__copper"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:concrete",
+            "ntm:concrete_asbestos",
+            "ntm:concrete_smooth",
+            "ntm:ducrete",
+            "ntm:ducrete_smooth"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_strand_caster",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Fundidor Contínuo",
+      "label_en": "Strand Caster"
+    },
+    {
+      "name": "ass.assemfac",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:403",
+      "duration": 400,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_dura_steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_cdalloy",
+            "ntm:ingot_tcalloy"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_boron"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 16
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_assembly_factory",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Fábrica de Montagem",
+      "label_en": "Assembly Factory"
+    },
+    {
+      "name": "ass.chemfac",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:406",
+      "duration": 400,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ingot_dura_steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_cdalloy",
+            "ntm:ingot_tcalloy"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:pipe__copper"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:motor_desh"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:coil_tungsten"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 16
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_chemical_factory",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Fábrica Química",
+      "label_en": "Chemical Factory"
     },
     {
       "name": "ass.dieselgen",
@@ -4416,6 +5931,131 @@
       "pools": [],
       "label": "Tanque de Fluidos",
       "label_en": "Fluid Tank"
+    },
+    {
+      "name": "ass.cyclotron",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:483",
+      "duration": 600,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:battery_pack__battery_lithium"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:wire_dense__neodymium"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:plate_cast__steel"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_bakelite",
+            "ntm:ingot_polymer"
+          ],
+          "count": 24
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 24
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 16
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_cyclotron",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Ciclotron",
+      "label_en": "Cyclotron"
+    },
+    {
+      "name": "ass.exposurechamber",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:514",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_cast__aluminium"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:ingot_cdalloy",
+            "ntm:ingot_tcalloy"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:ingot_pc",
+            "ntm:ingot_pvc"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:wire_dense__gold"
+          ],
+          "count": 32
+        },
+        {
+          "ids": [
+            "ntm:motor_desh"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:circuit__bismoid"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:battery_pack__capacitor_tantalum"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:glass_quartz"
+          ],
+          "count": 16
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_exposure_chamber",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Câmara de Exposição",
+      "label_en": "Exposure Chamber"
     },
     {
       "name": "ass.pileblock",
@@ -16314,12 +17954,6 @@
       "expression": "new GenericRecipe(\"ass.diskdrive\").setup(200, 250).outputItems(DictFrame.fromOne(ModItems.drive, EnumDriveType.DISK_EMPTY))\n\t\t\t\t.inputItems(new OreDictStack(ANY_PLASTIC.ingot(), 8), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.BASIC), new OreDictStack(ND.wireDense()))"
     },
     {
-      "name": "ass.sealcontroller",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:204",
-      "reason": "unregistered/ambiguous source item seal_controller",
-      "expression": "new GenericRecipe(\"ass.sealcontroller\").setup(100, 100).outputItems(new ItemStack(ModBlocks.seal_controller, 1))\n\t\t\t\t.inputItems(new OreDictStack(DURA.ingot(), 1), new OreDictStack(STEEL.plateCast(), 1), new OreDictStack(ANY_PLASTIC.ingot(), 4), new OreDictStack(MINGRADE.wireDense(), 4))"
-    },
-    {
       "name": "ass.yellowbarrel",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:208",
       "reason": "unregistered/ambiguous source item yellow_barrel",
@@ -16330,150 +17964,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:210",
       "reason": "unregistered/ambiguous source item vitrified_barrel",
       "expression": "new GenericRecipe(\"ass.vitrifiedbarrel\").setup(400, 400).outputItems(new ItemStack(ModBlocks.vitrified_barrel, 1))\n\t\t\t.inputItems(new ComparableStack(ModItems.tank_steel, 1), new OreDictStack(PB.plate(), 2), new ComparableStack(ModItems.nuclear_waste_vitrified, 10))"
-    },
-    {
-      "name": "ass.vaultdoor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:214",
-      "reason": "unregistered/ambiguous source item vault_door",
-      "expression": "new GenericRecipe(\"ass.vaultdoor\").setup(600, 100).outputItems(new ItemStack(ModBlocks.vault_door, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.ingot(), 32), new OreDictStack(DURA.ingot(), 32), new OreDictStack(PB.plateCast(), 8), new OreDictStack(ANY_RUBBER.ingot(), 12), new OreDictStack(DURA.bolt(), 32), new ComparableStack(ModItems.motor, 3))"
-    },
-    {
-      "name": "ass.blastdoor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:216",
-      "reason": "unregistered/ambiguous source item blast_door",
-      "expression": "new GenericRecipe(\"ass.blastdoor\").setup(200, 100).outputItems(new ItemStack(ModBlocks.blast_door, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.ingot(), 12), new OreDictStack(PB.plate(), 6), new OreDictStack(ANY_RUBBER.ingot(), 2), new OreDictStack(DURA.bolt(), 8), new ComparableStack(ModItems.motor, 1))"
-    },
-    {
-      "name": "ass.firedoor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:218",
-      "reason": "unregistered/ambiguous source item fire_door",
-      "expression": "new GenericRecipe(\"ass.firedoor\").setup(300, 100).outputItems(new ItemStack(ModBlocks.fire_door, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 16), new OreDictStack(DURA.bolt(), 8), new ComparableStack(ModItems.motor, 2))"
-    },
-    {
-      "name": "ass.seal",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:220",
-      "reason": "unregistered/ambiguous source item transition_seal",
-      "expression": "new GenericRecipe(\"ass.seal\").setup(1_200, 100).outputItems(new ItemStack(ModBlocks.transition_seal, 1))\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.cmb_brick_reinforced, 16), new OreDictStack(STEEL.plate(), 64), new OreDictStack(ANY_RUBBER.ingot(), 36), new OreDictStack(STEEL.block(), 32), new ComparableStack(ModItems.motor_desh, 16), new OreDictStack(KEY_YELLOW, 4))"
-    },
-    {
-      "name": "ass.slidingdoor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:222",
-      "reason": "unregistered/ambiguous source item sliding_blast_door",
-      "expression": "new GenericRecipe(\"ass.slidingdoor\").setup(200, 100).outputItems(new ItemStack(ModBlocks.sliding_blast_door, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 16), new OreDictStack(W.ingot(), 8), new ComparableStack(ModBlocks.reinforced_glass, 4), new OreDictStack(ANY_RUBBER.ingot(), 4), new OreDictStack(DURA.bolt(), 16), new ComparableStack(ModItems.motor, 2))"
-    },
-    {
-      "name": "ass.vehicledoor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:224",
-      "reason": "unregistered/ambiguous source item large_vehicle_door",
-      "expression": "new GenericRecipe(\"ass.vehicledoor\").setup(400, 100).outputItems(new ItemStack(ModBlocks.large_vehicle_door, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 16), new ComparableStack(ModItems.plate_polymer, 4), new ComparableStack(ModItems.motor, 4), new OreDictStack(DURA.bolt(), 16), new OreDictStack(KEY_GREEN, 4))"
-    },
-    {
-      "name": "ass.waterdoor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:226",
-      "reason": "unregistered/ambiguous source item water_door",
-      "expression": "new GenericRecipe(\"ass.waterdoor\").setup(200, 100).outputItems(new ItemStack(ModBlocks.water_door, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 16), new OreDictStack(DURA.bolt(), 4), new OreDictStack(KEY_RED, 1))"
-    },
-    {
-      "name": "ass.qedoor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:228",
-      "reason": "unregistered/ambiguous source item qe_containment",
-      "expression": "new GenericRecipe(\"ass.qedoor\").setup(400, 100).outputItems(new ItemStack(ModBlocks.qe_containment, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 6), new ComparableStack(ModItems.plate_polymer, 8), new ComparableStack(ModItems.motor, 2), new OreDictStack(DURA.bolt(), 32), new OreDictStack(KEY_BLACK, 4))"
-    },
-    {
-      "name": "ass.queslidingdoor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:230",
-      "reason": "unregistered/ambiguous source item qe_sliding_door",
-      "expression": "new GenericRecipe(\"ass.queslidingdoor\").setup(200, 100).outputItems(new ItemStack(ModBlocks.qe_sliding_door, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 4), new ComparableStack(ModItems.plate_polymer, 4), new ComparableStack(ModItems.motor, 2), new OreDictStack(DURA.bolt(), 4), new OreDictStack(KEY_WHITE, 4), new ComparableStack(Blocks.glass, 4))"
-    },
-    {
-      "name": "ass.roundairlock",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:232",
-      "reason": "unregistered/ambiguous source item round_airlock_door",
-      "expression": "new GenericRecipe(\"ass.roundairlock\").setup(400, 100).outputItems(new ItemStack(ModBlocks.round_airlock_door, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 12), new ComparableStack(ModItems.plate_polymer, 16), new ComparableStack(ModItems.motor, 4), new OreDictStack(DURA.bolt(), 16), new OreDictStack(KEY_GREEN, 4))"
-    },
-    {
-      "name": "ass.secureaccess",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:234",
-      "reason": "unregistered/ambiguous source item secure_access_door",
-      "expression": "new GenericRecipe(\"ass.secureaccess\").setup(400, 100).outputItems(new ItemStack(ModBlocks.secure_access_door, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 12), new ComparableStack(ModItems.plate_polymer, 8), new ComparableStack(ModItems.motor, 4), new OreDictStack(DURA.bolt(), 32), new OreDictStack(KEY_RED, 8))"
-    },
-    {
-      "name": "ass.slidingseal",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:236",
-      "reason": "unregistered/ambiguous source item sliding_seal_door",
-      "expression": "new GenericRecipe(\"ass.slidingseal\").setup(200, 100).outputItems(new ItemStack(ModBlocks.sliding_seal_door, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 12), new ComparableStack(ModItems.plate_polymer, 4), new ComparableStack(ModItems.motor, 2), new OreDictStack(DURA.bolt(), 4), new OreDictStack(KEY_WHITE, 2))"
-    },
-    {
-      "name": "ass.silohatch",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:238",
-      "reason": "unregistered/ambiguous source item silo_hatch",
-      "expression": "new GenericRecipe(\"ass.silohatch\").setup(200, 100).outputItems(new ItemStack(ModBlocks.silo_hatch, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateWelded(), 4), new ComparableStack(ModItems.plate_polymer, 4), new ComparableStack(ModItems.motor, 2), new OreDictStack(STEEL.bolt(), 16), new OreDictStack(KEY_GREEN, 4))"
-    },
-    {
-      "name": "ass.silohatchlarge",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:240",
-      "reason": "unregistered/ambiguous source item silo_hatch_large",
-      "expression": "new GenericRecipe(\"ass.silohatchlarge\").setup(300, 100).outputItems(new ItemStack(ModBlocks.silo_hatch_large, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateWelded(), 6), new ComparableStack(ModItems.plate_polymer, 8), new ComparableStack(ModItems.motor, 2), new OreDictStack(STEEL.bolt(), 16), new OreDictStack(KEY_GREEN, 8))"
-    },
-    {
-      "name": "ass.cargodoor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:242",
-      "reason": "unregistered/ambiguous source item cargo_door",
-      "expression": "new GenericRecipe(\"ass.cargodoor\").setup(200, 100).outputItems(new ItemStack(ModBlocks.cargo_door, 1))\n\t\t\t.inputItems(new ComparableStack(ModBlocks.steel_beam, 32), new OreDictStack(STEEL.plate(), 4), new OreDictStack(DURA.bolt(), 4), new ComparableStack(ModItems.motor, 2), new OreDictStack(KEY_GRAY, 1))"
-    },
-    {
-      "name": "ass.precass",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:273",
-      "reason": "unregistered/ambiguous source item machine_precass",
-      "expression": "new GenericRecipe(\"ass.precass\").setup(1_200, 100).outputItems(new ItemStack(ModBlocks.machine_precass, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 8), new OreDictStack(ZR.ingot(), 8), new ComparableStack(ModItems.motor, 4), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CAPACITOR_BOARD))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.STEEL_PLATING), new OreDictStack(ZR.ingot(), 8), new ComparableStack(ModItems.motor, 4), new ComparableStack(ModItems.circuit, 8, EnumCircuitType.CAPACITOR_BOARD))"
-    },
-    {
-      "name": "ass.sal9000",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:276",
-      "reason": "unregistered/ambiguous source item machine_supercomputer",
-      "expression": "new GenericRecipe(\"ass.sal9000\").setup(400, 1000).outputItems(new ItemStack(ModBlocks.machine_supercomputer, 1))\n\t\t\t\t.inputItems(new OreDictStack(ANY_RESISTANTALLOY.ingot(), 16), new OreDictStack(ANY_PLASTIC.ingot(), 64), new OreDictStack(GOLD.wireDense(), 32), new OreDictStack(CU.pipe(), 8), new ComparableStack(ModItems.circuit, 32, EnumCircuitType.BASIC), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.BISMOID))\n\t\t\t\t.inputItemsEx(new OreDictStack(ANY_RESISTANTALLOY.ingot(), 16), new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.PLASTIC), new OreDictStack(GOLD.wireDense(), 64), new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.COMPUTER), new ComparableStack(ModItems.circuit, 8, EnumCircuitType.BISMOID))"
-    },
-    {
-      "name": "ass.radiolysis",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:320",
-      "reason": "unregistered/ambiguous source item machine_radiolysis",
-      "expression": "new GenericRecipe(\"ass.radiolysis\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_radiolysis, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.shell(), 4), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(PB.plate(), 12), new OreDictStack(CU.plateCast(), 4), new OreDictStack(RUBBER.ingot(), 8), new ComparableStack(ModItems.thermo_element, 8))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.HEAVY_FRAME), new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.LEAD_PLATING), new OreDictStack(CU.plateCast(), 4), new OreDictStack(RUBBER.ingot(), 16), new ComparableStack(ModItems.thermo_element, 8))"
-    },
-    {
-      "name": "ass.compressor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:348",
-      "reason": "unregistered/ambiguous source item machine_compressor",
-      "expression": "new GenericRecipe(\"ass.compressor\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_compressor, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 8), new OreDictStack(CU.plate(), 4), new OreDictStack(STEEL.shell(), 2), new ComparableStack(ModItems.motor, 3), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.ANALOG))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 3, EnumExpensiveType.STEEL_PLATING), new OreDictStack(STEEL.shell(), 4), new ComparableStack(ModItems.motor, 3), new ComparableStack(ModItems.circuit, 3, EnumCircuitType.ANALOG))"
-    },
-    {
-      "name": "ass.compactcompressor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:351",
-      "reason": "unregistered/ambiguous source item machine_compressor_compact",
-      "expression": "new GenericRecipe(\"ass.compactcompressor\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_compressor_compact, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateCast(), 8), new OreDictStack(TI.shell(), 4), new OreDictStack(CU.pipe(), 4), new ComparableStack(ModItems.motor, 2), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BASIC))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.STEEL_PLATING), new OreDictStack(CU.pipe(), 16), new ComparableStack(ModItems.motor, 3), new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.CIRCUIT))"
-    },
-    {
-      "name": "ass.fel",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:357",
-      "reason": "unregistered/ambiguous source item machine_fel",
-      "expression": "new GenericRecipe(\"ass.fel\").setup(400, 100).outputItems(new ItemStack(ModBlocks.machine_fel, 1))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_LITHIUM), new OreDictStack(GOLD.wireDense(), 64), new OreDictStack(STEEL.plateCast(), 12), new OreDictStack(ANY_PLASTIC.ingot(), 16), new ComparableStack(ModItems.part_generic, 4, EnumPartType.GLASS_POLARIZED), new ComparableStack(ModItems.circuit, 16, EnumCircuitType.CAPACITOR), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BASIC))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 3, EnumExpensiveType.FERRO_PLATING), new OreDictStack(GOLD.wireDense(), 64), new OreDictStack(ANY_PLASTIC.ingot(), 16), new ComparableStack(ModItems.part_generic, 4, EnumPartType.GLASS_POLARIZED), new ComparableStack(ModItems.item_expensive, 3, EnumExpensiveType.CIRCUIT))"
-    },
-    {
-      "name": "ass.silex",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:360",
-      "reason": "unregistered/ambiguous source item machine_silex",
-      "expression": "new GenericRecipe(\"ass.silex\").setup(400, 100).outputItems(new ItemStack(ModBlocks.machine_silex, 1))\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.glass_quartz, 16), new OreDictStack(STEEL.plateCast(), 8), new OreDictStack(DESH.ingot(), 4), new OreDictStack(RUBBER.ingot(), 8), new OreDictStack(STEEL.pipe(), 8))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.FERRO_PLATING), new ComparableStack(ModBlocks.glass_quartz, 16), new OreDictStack(RUBBER.ingot(), 16))"
-    },
-    {
-      "name": "ass.mininglaser",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:387",
-      "reason": "unregistered/ambiguous source item machine_mining_laser",
-      "expression": "new GenericRecipe(\"ass.mininglaser\").setup(400, 100).outputItems(new ItemStack(ModBlocks.machine_mining_laser, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plate(), 16), new OreDictStack(TI.shell(), 4), new OreDictStack(DURA.plate(), 4), new ComparableStack(ModItems.crystal_redstone, 3), new ComparableStack(Items.diamond, 3), new OreDictStack(ANY_PLASTIC.ingot(), 8), new ComparableStack(ModItems.motor, 3))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.HEAVY_FRAME), new OreDictStack(DURA.plate(), 4), new ComparableStack(ModItems.crystal_redstone, 12), new OreDictStack(ANY_PLASTIC.ingot(), 16), new ComparableStack(ModItems.motor_desh, 3))"
-    },
-    {
-      "name": "ass.teleporter",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:390",
-      "reason": "unregistered/ambiguous source item machine_teleporter",
-      "expression": "new GenericRecipe(\"ass.teleporter\").setup(100, 100).outputItems(new ItemStack(ModBlocks.machine_teleporter, 1))\n\t\t\t\t.inputItems(new OreDictStack(TI.plate(), 12), new OreDictStack(DURA.plate(), 12), new OreDictStack(GOLD.wireFine(), 32), new ComparableStack(ModItems.entanglement_kit, 1), new ComparableStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_LITHIUM))"
     },
     {
       "name": "ass.radar",
@@ -16488,30 +17978,6 @@
       "expression": "new GenericRecipe(\"ass.radarlarge\").setup(400, 100).outputItems(new ItemStack(ModBlocks.machine_radar_large, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateWelded(), 6), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(ANY_RUBBER.ingot(), 24), new ComparableStack(ModItems.magnetron, 16), new ComparableStack(ModItems.motor_desh, 1), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.ADVANCED), new ComparableStack(ModItems.crt_display, 4))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.HEAVY_FRAME), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 8), new OreDictStack(ANY_RUBBER.ingot(), 24), new ComparableStack(ModItems.magnetron, 16), new ComparableStack(ModItems.motor_desh, 3), new ComparableStack(ModItems.item_expensive, 6, EnumExpensiveType.CIRCUIT), new ComparableStack(ModItems.crt_display, 4))"
     },
     {
-      "name": "ass.forcefield",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:398",
-      "reason": "unregistered/ambiguous source item machine_forcefield",
-      "expression": "new GenericRecipe(\"ass.forcefield\").setup(600, 100).outputItems(new ItemStack(ModBlocks.machine_forcefield, 1))\n\t\t\t\t.inputItems(new OreDictStack(DURA.plate(), 8), new ComparableStack(ModItems.plate_desh, 4), new ComparableStack(ModItems.coil_gold_torus, 6), new ComparableStack(ModItems.coil_magnetized_tungsten, 12), new ComparableStack(ModItems.motor, 1), new ComparableStack(ModItems.upgrade_radius, 1), new ComparableStack(ModItems.upgrade_health, 1), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.ADVANCED), new ComparableStack(ModBlocks.machine_transformer, 1))"
-    },
-    {
-      "name": "ass.strandcaster",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:400",
-      "reason": "unregistered/ambiguous source item machine_strand_caster",
-      "expression": "new GenericRecipe(\"ass.strandcaster\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_strand_caster, 1))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.ingot_firebrick, 16), new OreDictStack(STEEL.plateCast(), 6), new OreDictStack(CU.plateWelded(), 2), new OreDictStack(STEEL.shell(), 2), new OreDictStack(ANY_CONCRETE.any(), 8))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.STEEL_PLATING), new ComparableStack(ModItems.ingot_firebrick, 16), new OreDictStack(STEEL.shell(), 4), new OreDictStack(ANY_CONCRETE.any(), 8))"
-    },
-    {
-      "name": "ass.assemfac",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:403",
-      "reason": "unregistered/ambiguous source item machine_assembly_factory",
-      "expression": "new GenericRecipe(\"ass.assemfac\").setup(400, 100).outputItems(new ItemStack(ModBlocks.machine_assembly_factory, 1))\n\t\t\t\t.inputItems(new OreDictStack(DURA.ingot(), 16), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 8), new OreDictStack(RUBBER.ingot(), 16), new OreDictStack(B.ingot(), 8), new OreDictStack(STEEL.shell(), 4), new ComparableStack(ModItems.motor, 12), new ComparableStack(ModItems.circuit, 16, EnumCircuitType.BASIC))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.HEAVY_FRAME), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 16), new OreDictStack(RUBBER.ingot(), 16), new OreDictStack(B.ingot(), 8), new OreDictStack(STEEL.shell(), 4), new ComparableStack(ModItems.motor, 24), new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.CIRCUIT))"
-    },
-    {
-      "name": "ass.chemfac",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:406",
-      "reason": "unregistered/ambiguous source item machine_chemical_factory",
-      "expression": "new GenericRecipe(\"ass.chemfac\").setup(400, 100).outputItems(new ItemStack(ModBlocks.machine_chemical_factory, 1))\n\t\t\t\t.inputItems(new OreDictStack(DURA.ingot(), 16), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 8), new OreDictStack(RUBBER.ingot(), 16), new OreDictStack(STEEL.shell(), 12), new OreDictStack(CU.pipe(), 8), new ComparableStack(ModItems.motor_desh, 4), new ComparableStack(ModItems.coil_tungsten, 16), new ComparableStack(ModItems.circuit, 16, EnumCircuitType.BASIC))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.HEAVY_FRAME), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 16), new OreDictStack(RUBBER.ingot(), 16), new OreDictStack(STEEL.shell(), 12), new OreDictStack(CU.pipe(), 16), new ComparableStack(ModItems.motor_desh, 16), new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.CIRCUIT))"
-    },
-    {
       "name": "ass.bigasstank",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:475",
       "reason": "unregistered/ambiguous source item machine_bigasstank",
@@ -16522,12 +17988,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:478",
       "reason": "dynamic/unsupported metadata EnumBatterySC.PO210",
       "expression": "new GenericRecipe(\"ass.orbus\").setup(300, 100).outputItems(new ItemStack(ModBlocks.machine_orbus, 1))\n\t\t\t\t.inputItems(new OreDictStack(ANY_RESISTANTALLOY.plateWelded(), 8), new OreDictStack(BIGMT.plateCast(), 4), new OreDictStack(BSCCO.wireDense(), 8), new ComparableStack(ModItems.battery_sc, 1, EnumBatterySC.PO210))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.FERRO_PLATING), new OreDictStack(BIGMT.plateCast(), 16), new OreDictStack(BSCCO.wireDense(), 16), new ComparableStack(ModItems.battery_sc, 1, EnumBatterySC.PO210))"
-    },
-    {
-      "name": "ass.cyclotron",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:483",
-      "reason": "unregistered/ambiguous source item machine_cyclotron",
-      "expression": "new GenericRecipe(\"ass.cyclotron\").setup(600, 100).outputItems(new ItemStack(ModBlocks.machine_cyclotron, 1))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_LITHIUM), new OreDictStack(ND.wireDense(), 32), new OreDictStack(STEEL.plateCast(), 16), new OreDictStack(ANY_PLASTIC.ingot(), 24), new OreDictStack(RUBBER.ingot(), 24), new ComparableStack(ModItems.circuit, 16, EnumCircuitType.BASIC))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.FERRO_PLATING), new OreDictStack(ND.wireDense(), 32), new OreDictStack(AL.plateWelded(), 16), new OreDictStack(RUBBER.ingot(), 32), new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.CIRCUIT))"
     },
     {
       "name": "ass.beamline",
@@ -16588,12 +18048,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:513",
       "reason": "dynamic/unsupported metadata EnumCoilType.CHLOROPHYTE.ordinal()",
       "expression": "new GenericRecipe(\"ass.pachlorophyte\").setup(400, 100).outputItems(new ItemStack(ModItems.pa_coil, 1, EnumCoilType.CHLOROPHYTE.ordinal())).inputItems(new OreDictStack(CU.wireDense(), 64), new OreDictStack(CU.wireDense(), 64), new ComparableStack(ModItems.powder_chlorophyte, 16))"
-    },
-    {
-      "name": "ass.exposurechamber",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:514",
-      "reason": "unregistered/ambiguous source item machine_exposure_chamber",
-      "expression": "new GenericRecipe(\"ass.exposurechamber\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_exposure_chamber, 1))\n\t\t\t\t.inputItems(new OreDictStack(AL.plateCast(), 12), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(ANY_HARDPLASTIC.ingot(), 12), new OreDictStack(GOLD.wireDense(), 32), new ComparableStack(ModItems.motor_desh, 2), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.battery_pack, 1, EnumBatteryPack.CAPACITOR_TANTALUM), new ComparableStack(ModBlocks.glass_quartz, 16))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.LEAD_PLATING), new OreDictStack(ANY_HARDPLASTIC.ingot(), 24), new OreDictStack(GOLD.wireDense(), 32), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.COMPUTER))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"chip_quantum\")"
     },
     {
       "name": "ass.fusioncore",
@@ -16670,7 +18124,7 @@
     {
       "name": "ass.ballsotron",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:642",
-      "reason": "unregistered/ambiguous source item mech_key",
+      "reason": "unregistered/ambiguous source item spawn_worm",
       "expression": "new GenericRecipe(\"ass.ballsotron\").setup(1_200, 100).outputItems(new ItemStack(ModItems.spawn_worm, 1))\n\t\t\t\t.inputItems(new OreDictStack(TI.plateWelded(), 32), new OreDictStack(RUBBER.ingot(), 64), new ComparableStack(ModItems.motor, 64), new OreDictStack(GOLD.wireDense(), 64), new OreDictStack(U238.block(), 10), new ComparableStack(ModItems.mech_key, 1))"
     },
     {

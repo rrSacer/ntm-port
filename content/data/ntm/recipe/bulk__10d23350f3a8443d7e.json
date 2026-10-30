@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:field_disturber",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ICI",
+    "CAC",
+    "ICI"
+  ],
+  "key": {
+    "I": "#ntm:bulk/ingotstarmetal",
+    "C": "ntm:circuit__bismoid",
+    "A": "ntm:gem_alexandrite"
+  }
+}

@@ -17,7 +17,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:event_tester",
+      "content_ids": [
+        "ntm:event_tester"
+      ]
     },
     {
       "id": "obj_tester",
@@ -34,7 +38,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:obj_tester",
+      "content_ids": [
+        "ntm:obj_tester"
+      ]
     },
     {
       "id": "ore_bedrock",
@@ -170,7 +178,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:deco_emitter",
+      "content_ids": [
+        "ntm:deco_emitter"
+      ]
     },
     {
       "id": "part_emitter",
@@ -187,7 +199,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:part_emitter",
+      "content_ids": [
+        "ntm:part_emitter"
+      ]
     },
     {
       "id": "deco_loot",
@@ -491,7 +507,11 @@
       "energy": null,
       "fluid": null,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:filing_cabinet",
+      "content_ids": [
+        "ntm:filing_cabinet"
+      ]
     },
     {
       "id": "tape_recorder",
@@ -1099,7 +1119,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_ashpit",
+      "content_ids": [
+        "ntm:machine_ashpit"
+      ]
     },
     {
       "id": "furnace_iron",
@@ -1117,7 +1141,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:furnace_iron",
+      "content_ids": [
+        "ntm:furnace_iron"
+      ]
     },
     {
       "id": "furnace_steel",
@@ -1135,7 +1163,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:furnace_steel",
+      "content_ids": [
+        "ntm:furnace_steel"
+      ]
     },
     {
       "id": "furnace_combination",
@@ -1153,7 +1185,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:furnace_combination",
+      "content_ids": [
+        "ntm:furnace_combination"
+      ]
     },
     {
       "id": "machine_stirling",
@@ -1228,7 +1264,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_sawmill",
+      "content_ids": [
+        "ntm:machine_sawmill"
+      ]
     },
     {
       "id": "machine_strand_caster",
@@ -1246,7 +1286,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_strand_caster",
+      "content_ids": [
+        "ntm:machine_strand_caster"
+      ]
     },
     {
       "id": "machine_crucible",
@@ -1446,7 +1490,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_difurnace_off",
+      "content_ids": [
+        "ntm:machine_difurnace_off"
+      ]
     },
     {
       "id": "machine_difurnace_on",
@@ -1463,7 +1511,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_difurnace_on",
+      "content_ids": [
+        "ntm:machine_difurnace_on"
+      ]
     },
     {
       "id": "machine_difurnace_extension",
@@ -1480,7 +1532,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_difurnace_extension",
+      "content_ids": [
+        "ntm:machine_difurnace_extension"
+      ]
     },
     {
       "id": "machine_difurnace_rtg_off",
@@ -1497,7 +1553,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_difurnace_rtg_off",
+      "content_ids": [
+        "ntm:machine_difurnace_rtg_off"
+      ]
     },
     {
       "id": "machine_difurnace_rtg_on",
@@ -1514,7 +1574,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_difurnace_rtg_on",
+      "content_ids": [
+        "ntm:machine_difurnace_rtg_on"
+      ]
     },
     {
       "id": "machine_blast_furnace",
@@ -1589,7 +1653,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_fel",
+      "content_ids": [
+        "ntm:machine_fel"
+      ]
     },
     {
       "id": "machine_silex",
@@ -1607,7 +1675,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_silex",
+      "content_ids": [
+        "ntm:machine_silex"
+      ]
     },
     {
       "id": "machine_rotary_furnace",
@@ -1625,7 +1697,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_rotary_furnace",
+      "content_ids": [
+        "ntm:machine_rotary_furnace"
+      ]
     },
     {
       "id": "machine_crystallizer",
@@ -1713,7 +1789,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_furnace_brick_off",
+      "content_ids": [
+        "ntm:machine_furnace_brick_off"
+      ]
     },
     {
       "id": "machine_furnace_brick_on",
@@ -1730,7 +1810,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_furnace_brick_on",
+      "content_ids": [
+        "ntm:machine_furnace_brick_on"
+      ]
     },
     {
       "id": "machine_rtg_furnace_off",
@@ -1747,7 +1831,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_rtg_furnace_off",
+      "content_ids": [
+        "ntm:machine_rtg_furnace_off"
+      ]
     },
     {
       "id": "machine_rtg_furnace_on",
@@ -1764,7 +1852,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_rtg_furnace_on",
+      "content_ids": [
+        "ntm:machine_rtg_furnace_on"
+      ]
     },
     {
       "id": "machine_industrial_generator",
@@ -1782,7 +1874,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_industrial_generator",
+      "content_ids": [
+        "ntm:machine_industrial_generator"
+      ]
     },
     {
       "id": "machine_cyclotron",
@@ -1800,7 +1896,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_cyclotron",
+      "content_ids": [
+        "ntm:machine_cyclotron"
+      ]
     },
     {
       "id": "machine_exposure_chamber",
@@ -1818,7 +1918,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_exposure_chamber",
+      "content_ids": [
+        "ntm:machine_exposure_chamber"
+      ]
     },
     {
       "id": "machine_radgen",
@@ -1961,7 +2065,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_electric_furnace_on",
+      "content_ids": [
+        "ntm:machine_electric_furnace_on"
+      ]
     },
     {
       "id": "machine_arc_furnace",
@@ -1997,7 +2105,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_microwave",
+      "content_ids": [
+        "ntm:machine_microwave"
+      ]
     },
     {
       "id": "machine_battery_socket",
@@ -2175,7 +2287,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_teleporter",
+      "content_ids": [
+        "ntm:machine_teleporter"
+      ]
     },
     {
       "id": "machine_rtg_grey",
@@ -2211,7 +2327,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_radiolysis",
+      "content_ids": [
+        "ntm:machine_radiolysis"
+      ]
     },
     {
       "id": "machine_hephaestus",
@@ -2835,7 +2955,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_drain",
+      "content_ids": [
+        "ntm:machine_drain"
+      ]
     },
     {
       "id": "radio_torch_sender",
@@ -3124,7 +3248,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:fan",
+      "content_ids": [
+        "ntm:fan"
+      ]
     },
     {
       "id": "piston_inserter",
@@ -3523,7 +3651,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_keyforge",
+      "content_ids": [
+        "ntm:machine_keyforge"
+      ]
     },
     {
       "id": "machine_solar_boiler",
@@ -4191,7 +4323,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:seal_hatch",
+      "content_ids": [
+        "ntm:seal_hatch"
+      ]
     },
     {
       "id": "cargo_elevator",
@@ -4225,7 +4361,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:vault_door",
+      "content_ids": [
+        "ntm:vault_door"
+      ]
     },
     {
       "id": "blast_door",
@@ -4242,7 +4382,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:blast_door",
+      "content_ids": [
+        "ntm:blast_door"
+      ]
     },
     {
       "id": "sliding_blast_door",
@@ -4259,7 +4403,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:sliding_blast_door",
+      "content_ids": [
+        "ntm:sliding_blast_door"
+      ]
     },
     {
       "id": "fire_door",
@@ -4276,7 +4424,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:fire_door",
+      "content_ids": [
+        "ntm:fire_door"
+      ]
     },
     {
       "id": "transition_seal",
@@ -4293,7 +4445,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:transition_seal",
+      "content_ids": [
+        "ntm:transition_seal"
+      ]
     },
     {
       "id": "silo_hatch",
@@ -4310,7 +4466,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:silo_hatch",
+      "content_ids": [
+        "ntm:silo_hatch"
+      ]
     },
     {
       "id": "silo_hatch_large",
@@ -4327,7 +4487,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:silo_hatch_large",
+      "content_ids": [
+        "ntm:silo_hatch_large"
+      ]
     },
     {
       "id": "secure_access_door",
@@ -4344,7 +4508,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:secure_access_door",
+      "content_ids": [
+        "ntm:secure_access_door"
+      ]
     },
     {
       "id": "large_vehicle_door",
@@ -4361,7 +4529,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:large_vehicle_door",
+      "content_ids": [
+        "ntm:large_vehicle_door"
+      ]
     },
     {
       "id": "qe_containment",
@@ -4378,7 +4550,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:qe_containment",
+      "content_ids": [
+        "ntm:qe_containment"
+      ]
     },
     {
       "id": "qe_sliding_door",
@@ -4395,7 +4571,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:qe_sliding_door",
+      "content_ids": [
+        "ntm:qe_sliding_door"
+      ]
     },
     {
       "id": "round_airlock_door",
@@ -4412,7 +4592,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:round_airlock_door",
+      "content_ids": [
+        "ntm:round_airlock_door"
+      ]
     },
     {
       "id": "sliding_seal_door",
@@ -4429,7 +4613,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:sliding_seal_door",
+      "content_ids": [
+        "ntm:sliding_seal_door"
+      ]
     },
     {
       "id": "water_door",
@@ -4446,7 +4634,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:water_door",
+      "content_ids": [
+        "ntm:water_door"
+      ]
     },
     {
       "id": "cargo_door",
@@ -4463,7 +4655,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:cargo_door",
+      "content_ids": [
+        "ntm:cargo_door"
+      ]
     },
     {
       "id": "charger",
@@ -4514,7 +4710,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:tesla",
+      "content_ids": [
+        "ntm:tesla"
+      ]
     },
     {
       "id": "launch_pad",
@@ -5892,7 +6092,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:chimney_brick",
+      "content_ids": [
+        "ntm:chimney_brick"
+      ]
     },
     {
       "id": "chimney_industrial",
@@ -5910,7 +6114,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:chimney_industrial",
+      "content_ids": [
+        "ntm:chimney_industrial"
+      ]
     },
     {
       "id": "machine_refinery",
@@ -6096,7 +6304,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_autosaw",
+      "content_ids": [
+        "ntm:machine_autosaw"
+      ]
     },
     {
       "id": "machine_thresher",
@@ -6113,7 +6325,11 @@
       "energy": false,
       "fluid": true,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_thresher",
+      "content_ids": [
+        "ntm:machine_thresher"
+      ]
     },
     {
       "id": "machine_excavator",
@@ -6169,7 +6385,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_annihilator",
+      "content_ids": [
+        "ntm:machine_annihilator"
+      ]
     },
     {
       "id": "machine_rockmill",
@@ -6187,7 +6407,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_rockmill",
+      "content_ids": [
+        "ntm:machine_rockmill"
+      ]
     },
     {
       "id": "machine_mining_laser",
@@ -6206,7 +6430,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_mining_laser",
+      "content_ids": [
+        "ntm:machine_mining_laser"
+      ]
     },
     {
       "id": "machine_assembly_machine",
@@ -6243,7 +6471,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_assembly_factory",
+      "content_ids": [
+        "ntm:machine_assembly_factory"
+      ]
     },
     {
       "id": "machine_precass",
@@ -6262,7 +6494,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_precass",
+      "content_ids": [
+        "ntm:machine_precass"
+      ]
     },
     {
       "id": "machine_arc_welder",
@@ -6280,7 +6516,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_arc_welder",
+      "content_ids": [
+        "ntm:machine_arc_welder"
+      ]
     },
     {
       "id": "machine_soldering_station",
@@ -6298,7 +6538,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_soldering_station",
+      "content_ids": [
+        "ntm:machine_soldering_station"
+      ]
     },
     {
       "id": "machine_chemical_plant",
@@ -6335,7 +6579,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_chemical_factory",
+      "content_ids": [
+        "ntm:machine_chemical_factory"
+      ]
     },
     {
       "id": "machine_purex",
@@ -6390,7 +6638,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_supercomputer",
+      "content_ids": [
+        "ntm:machine_supercomputer"
+      ]
     },
     {
       "id": "machine_fluidtank",
@@ -6463,7 +6715,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_orbus",
+      "content_ids": [
+        "ntm:machine_orbus"
+      ]
     },
     {
       "id": "machine_turbofan",
@@ -6518,7 +6774,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_lpw2",
+      "content_ids": [
+        "ntm:machine_lpw2"
+      ]
     },
     {
       "id": "machine_conveyor_press",
@@ -6553,7 +6813,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_ammo_press",
+      "content_ids": [
+        "ntm:machine_ammo_press"
+      ]
     },
     {
       "id": "machine_reactor_small",
@@ -6669,7 +6933,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_large_turbine",
+      "content_ids": [
+        "ntm:machine_large_turbine"
+      ]
     },
     {
       "id": "machine_industrial_turbine",
@@ -6743,7 +7011,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_tower_small",
+      "content_ids": [
+        "ntm:machine_tower_small"
+      ]
     },
     {
       "id": "machine_tower_large",
@@ -6761,7 +7033,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_tower_large",
+      "content_ids": [
+        "ntm:machine_tower_large"
+      ]
     },
     {
       "id": "machine_condenser_powered",
@@ -6797,7 +7073,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_deuterium_extractor",
+      "content_ids": [
+        "ntm:machine_deuterium_extractor"
+      ]
     },
     {
       "id": "machine_deuterium_tower",
@@ -6871,7 +7151,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_intake",
+      "content_ids": [
+        "ntm:machine_intake"
+      ]
     },
     {
       "id": "machine_compressor",
@@ -6889,7 +7173,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_compressor",
+      "content_ids": [
+        "ntm:machine_compressor"
+      ]
     },
     {
       "id": "machine_compressor_compact",
@@ -6907,7 +7195,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_compressor_compact",
+      "content_ids": [
+        "ntm:machine_compressor_compact"
+      ]
     },
     {
       "id": "machine_electrolyser",
@@ -6943,7 +7235,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_autocrafter",
+      "content_ids": [
+        "ntm:machine_autocrafter"
+      ]
     },
     {
       "id": "machine_funnel",
@@ -6960,7 +7256,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_funnel",
+      "content_ids": [
+        "ntm:machine_funnel"
+      ]
     },
     {
       "id": "machine_waste_drum",
@@ -7011,7 +7311,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_siren",
+      "content_ids": [
+        "ntm:machine_siren"
+      ]
     },
     {
       "id": "radiobox",
@@ -7062,7 +7366,11 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:machine_forcefield",
+      "content_ids": [
+        "ntm:machine_forcefield"
+      ]
     },
     {
       "id": "vent_chlorine",
@@ -7147,7 +7455,11 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "K3 content declared; native registration/behavior and faithful model deferred",
+      "content_id": "ntm:decon",
+      "content_ids": [
+        "ntm:decon"
+      ]
     },
     {
       "id": "oc_cable_paintable",

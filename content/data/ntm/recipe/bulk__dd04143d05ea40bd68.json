@@ -1,0 +1,20 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:machine_microwave",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "SGM",
+    "IDI"
+  ],
+  "key": {
+    "I": "ntm:plate_polymer",
+    "S": "#ntm:bulk/platesteel",
+    "G": "#ntm:bulk/paneglass",
+    "M": "ntm:magnetron",
+    "D": "ntm:motor"
+  }
+}

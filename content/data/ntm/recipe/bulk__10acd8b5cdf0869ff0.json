@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:machine_weapon_table",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "TCT",
+    "TST"
+  ],
+  "key": {
+    "P": "#ntm:bulk/plategunmetal",
+    "T": "#ntm:bulk/ingotsteel",
+    "C": "minecraft:crafting_table",
+    "S": "#ntm:bulk/blocksteel"
+  }
+}

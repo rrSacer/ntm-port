@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_right",
+  "textures": {
+    "bottom": "ntm:block/door_office_lower",
+    "top": "ntm:block/door_office_upper"
+  }
+}

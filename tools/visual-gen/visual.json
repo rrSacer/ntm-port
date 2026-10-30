@@ -35623,6 +35623,286 @@
           }
         }
       }
+    },
+    "ntm:seal_hatch": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:vault_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:blast_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:sliding_blast_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:fire_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:transition_seal": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:silo_hatch": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:silo_hatch_large": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:secure_access_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:large_vehicle_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:qe_containment": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:qe_sliding_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:round_airlock_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:sliding_seal_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:water_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:cargo_door": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:event_tester": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:obj_tester": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:deco_emitter": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:part_emitter": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:filing_cabinet": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_ashpit": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:furnace_iron": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:furnace_steel": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:furnace_combination": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_sawmill": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_strand_caster": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_fel": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_silex": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_rotary_furnace": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_furnace_brick_off": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_furnace_brick_on": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_industrial_generator": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_cyclotron": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_exposure_chamber": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_electric_furnace_on": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_microwave": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_teleporter": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_radiolysis": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_drain": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:fan": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_keyforge": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:tesla": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:chimney_brick": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:chimney_industrial": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_autosaw": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_thresher": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_annihilator": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_rockmill": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_mining_laser": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_assembly_factory": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_precass": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_arc_welder": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_soldering_station": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_chemical_factory": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_supercomputer": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_orbus": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_lpw2": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_ammo_press": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_tower_small": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_tower_large": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_deuterium_extractor": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_intake": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_compressor": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_compressor_compact": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_autocrafter": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_funnel": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_siren": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:machine_forcefield": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:decon": {
+      "auto": false,
+      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     }
   },
   "textures": {

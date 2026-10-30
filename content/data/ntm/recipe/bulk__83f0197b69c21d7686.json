@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:machine_intake",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "PMP",
+    "PTP"
+  ],
+  "key": {
+    "G": "ntm:steel_grate",
+    "P": "#ntm:bulk/platesteel",
+    "M": "ntm:motor",
+    "T": "ntm:tank_steel"
+  }
+}

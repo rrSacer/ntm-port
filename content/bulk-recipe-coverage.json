@@ -794,6 +794,24 @@
       }
     },
     {
+      "id": "ntm:bulk__d2bb099a4db51ca8eb",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:283",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_autocrafter",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d687d6e0b95f475712",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:284",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_funnel",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__fb215fe8f037e80498",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:285",
       "type": "minecraft:crafting_shaped",
@@ -817,6 +835,24 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:machine_press",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__97ea6ee34939c1cbb8",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:289",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_ammo_press",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__dd04143d05ea40bd68",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:291",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_microwave",
         "count": 1
       }
     },
@@ -871,6 +907,24 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:machine_fraction_tower",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__35b7f000f6f951c00b",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:299",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_furnace_brick_off",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__48165c903f7397bed8",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:300",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:furnace_iron",
         "count": 1
       }
     },
@@ -1874,6 +1928,15 @@
       }
     },
     {
+      "id": "ntm:bulk__4310699f7be0b52db5",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:608",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_keyforge",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__36bc85e91262b337e9",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:611",
       "type": "minecraft:crafting_shaped",
@@ -1898,6 +1961,33 @@
       "result": {
         "id": "ntm:pink_stairs",
         "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__d7091158f3b56e3221",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:638",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:door_metal",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ef2f4eaecc03be3e2e",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:639",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:door_office",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__baf8b6e74bb88da2ea",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:640",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:door_bunker",
+        "count": 1
       }
     },
     {
@@ -2396,6 +2486,15 @@
       }
     },
     {
+      "id": "ntm:bulk__76b60e8878eeb68560",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:834",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_emitter",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__7afd9412caeb2dc3e2",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:836",
       "type": "minecraft:crafting_shaped",
@@ -2437,6 +2536,24 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:fluid_identifier_multi",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2d96fdc51d79b1bd6c",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:856",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:teleanchor",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__10d23350f3a8443d7e",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:857",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:field_disturber",
         "count": 1
       }
     },
@@ -2576,6 +2693,24 @@
       }
     },
     {
+      "id": "ntm:bulk__cec36297b89c9f3687",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:932",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_drain",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__83f0197b69c21d7686",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:933",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_intake",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__e5a300e31d04371fa3",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:937",
       "type": "minecraft:crafting_shaped",
@@ -2662,6 +2797,15 @@
       "type": "minecraft:crafting_shapeless",
       "result": {
         "id": "ntm:launch_code",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3b12245fe53992c714",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:27",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_armor_table",
         "count": 1
       }
     },
@@ -7661,6 +7805,15 @@
       }
     },
     {
+      "id": "ntm:bulk__10acd8b5cdf0869ff0",
+      "source": "src/main/java/com/hbm/crafting/WeaponRecipes.java:41",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:machine_weapon_table",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__9b7d3bbf6d0bc96e29",
       "source": "src/main/java/com/hbm/crafting/WeaponRecipes.java:44",
       "type": "minecraft:crafting_shaped",
@@ -7895,7 +8048,7 @@
       }
     }
   ],
-  "generated_count": 877,
+  "generated_count": 894,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -8372,40 +8525,16 @@
       "expression": "new ItemStack(ModBlocks.mass_storage, 1, 3), new Object[] { \"PPP\", \"PIP\", \"PPP\", 'P', KEY_PLANKS, 'I', IRON.plate() }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:283",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_autocrafter",
-      "expression": "new ItemStack(ModBlocks.machine_autocrafter, 1), new Object[] { \"SCS\", \"MWM\", \"SCS\", 'S', STEEL.plate(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.VACUUM_TUBE), 'M', ModItems.motor, 'W', Blocks.crafting_table }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:284",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_funnel",
-      "expression": "new ItemStack(ModBlocks.machine_funnel, 1), new Object[] { \"S S\", \"SRS\", \" S \", 'S', STEEL.ingot(), 'R', REDSTONE.dust() }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:287",
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item machine_waste_drum",
       "expression": "new ItemStack(ModBlocks.machine_waste_drum, 1), new Object[] { \"LRL\", \"BRB\", \"LRL\", 'L', PB.ingot(), 'B', Blocks.iron_bars, 'R', ModItems.rod_quad_empty }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:289",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_ammo_press",
-      "expression": "new ItemStack(ModBlocks.machine_ammo_press, 1), new Object[] { \"IPI\", \"C C\", \"SSS\", 'I', IRON.ingot(), 'P', Blocks.piston, 'C', CU.ingot(), 'S', Blocks.stone }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:290",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_siren",
+      "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
       "expression": "new ItemStack(ModBlocks.machine_siren, 1), new Object[] { \"SIS\", \"ICI\", \"SRS\", 'S', STEEL.plate(), 'I', ANY_RUBBER.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.VACUUM_TUBE), 'R', REDSTONE.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:291",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_microwave",
-      "expression": "new ItemStack(ModBlocks.machine_microwave, 1), new Object[] { \"III\", \"SGM\", \"IDI\", 'I', ModItems.plate_polymer, 'S', STEEL.plate(), 'G', KEY_ANYPANE, 'M', ModItems.magnetron, 'D', ModItems.motor }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:298",
@@ -8414,21 +8543,9 @@
       "expression": "new ItemStack(ModBlocks.fraction_spacer), new Object[] { \"BHB\", 'H', STEEL.shell(), 'B', Blocks.iron_bars }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:299",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_furnace_brick_off",
-      "expression": "new ItemStack(ModBlocks.machine_furnace_brick_off), new Object[] { \"III\", \"I I\", \"BBB\", 'I', Items.brick, 'B', Blocks.stone }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:300",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item furnace_iron",
-      "expression": "new ItemStack(ModBlocks.furnace_iron), new Object[] { \"III\", \"IFI\", \"BBB\", 'I', IRON.ingot(), 'F', Blocks.furnace, 'B', Blocks.stonebrick }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:302",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item fan",
+      "reason": "unresolved ore dictionary STEEL.bolt()",
       "expression": "new ItemStack(ModBlocks.fan), new Object[] { \"BPB\", \"PRP\", \"BPB\", 'B', STEEL.bolt(), 'P', IRON.plate(), 'R', REDSTONE.dust() }"
     },
     {
@@ -8926,43 +9043,43 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:548",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item key",
+      "reason": "unresolved ore dictionary STEEL.bolt()",
       "expression": "new ItemStack(ModItems.key, 1), new Object[] { \"  B\", \" B \", \"P  \", 'P', STEEL.plate(), 'B', STEEL.bolt() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:549",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item key",
+      "reason": "unresolved ore dictionary KEY_TOOL_SCREWDRIVER",
       "expression": "new ItemStack(ModItems.key_kit, 1), new Object[] { \"PKP\", \"DTD\", \"PKP\", 'P', GOLD.plate(), 'K', ModItems.key, 'D', DESH.dust(), 'T', KEY_TOOL_SCREWDRIVER }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:550",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item key_red",
+      "reason": "unregistered/ambiguous source item ingot_chainsteel",
       "expression": "new ItemStack(ModItems.key_red, 1), new Object[] { \"RCA\", \"CIC\", \"KCR\", 'R', KEY_RED, 'C', STAR.wireDense(), 'A', ModItems.gem_alexandrite, 'I', ModItems.ingot_chainsteel, 'K', ModItems.key }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:552",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item padlock_rusty",
+      "reason": "unresolved ore dictionary STEEL.bolt()",
       "expression": "new ItemStack(ModItems.padlock_rusty, 1), new Object[] { \"I\", \"B\", \"I\", 'I', IRON.ingot(), 'B', STEEL.bolt() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:553",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item padlock",
+      "reason": "unresolved ore dictionary STEEL.bolt()",
       "expression": "new ItemStack(ModItems.padlock, 1), new Object[] { \" P \", \"PBP\", \"PPP\", 'P', STEEL.plate(), 'B', STEEL.bolt() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:554",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item padlock_reinforced",
+      "reason": "unresolved ore dictionary DURA.bolt()",
       "expression": "new ItemStack(ModItems.padlock_reinforced, 1), new Object[] { \" P \", \"PBP\", \"PDP\", 'P', DURA.plate(), 'D', ModItems.plate_desh, 'B', DURA.bolt() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:555",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item padlock_unbreakable",
+      "reason": "unresolved ore dictionary DURA.bolt()",
       "expression": "new ItemStack(ModItems.padlock_unbreakable, 1), new Object[] { \" P \", \"PBP\", \"PDP\", 'P', BIGMT.plate(), 'D', DIAMOND.gem(), 'B', DURA.bolt() }"
     },
     {
@@ -9146,12 +9263,6 @@
       "expression": "new ItemStack(ModBlocks.machine_tape_drive), new Object[] { \"PPP\", \"CCC\", \"PPP\", 'P', ANY_PLASTIC.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.PCB) }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:608",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_keyforge",
-      "expression": "new ItemStack(ModBlocks.machine_keyforge), new Object[] { \"PCP\", \"WSW\", \"WSW\", 'P', STEEL.plate(), 'S', W.ingot(), 'C', ModItems.padlock, 'W', KEY_PLANKS }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:609",
       "callee": "addShapelessAuto",
       "reason": "unregistered/ambiguous source item geiger_counter",
@@ -9262,7 +9373,7 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:630",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item decon",
+      "reason": "dynamic/unsupported metadata EnumAbsorberTier.BASE.ordinal()",
       "expression": "new ItemStack(ModBlocks.decon, 1), new Object[] { \"BGB\", \"SAS\", \"BSB\", 'B', BE.ingot(), 'G', Blocks.iron_bars, 'S', STEEL.ingot(), 'A', new ItemStack(ModBlocks.rad_absorber, 1, EnumAbsorberTier.BASE.ordinal()) }"
     },
     {
@@ -9282,24 +9393,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item cargo_elevator",
       "expression": "new ItemStack(ModBlocks.cargo_elevator, 3), new Object[] { \"GGG\", \"SPS\", 'G', ModBlocks.steel_grate, 'S', STEEL.ingot(), 'P', new ItemStack(ModItems.part_generic, 1, EnumPartType.PISTON_HYDRAULIC.ordinal()) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:638",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item door_metal",
-      "expression": "new ItemStack(ModItems.door_metal, 1), new Object[] { \"II\", \"SS\", \"II\", 'I', IRON.plate(), 'S', STEEL.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:639",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item door_office",
-      "expression": "new ItemStack(ModItems.door_office, 1), new Object[] { \"II\", \"SS\", \"II\", 'I', KEY_PLANKS, 'S', IRON.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:640",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item door_bunker",
-      "expression": "new ItemStack(ModItems.door_bunker, 1), new Object[] { \"II\", \"SS\", \"II\", 'I', STEEL.plate(), 'S', PB.plate() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:642",
@@ -9364,7 +9457,7 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:677",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item obj_tester",
+      "reason": "unregistered/ambiguous source item polaroid",
       "expression": "new ItemStack(ModBlocks.obj_tester, 1), new Object[] { \"P\", \"I\", \"S\", 'P', ModItems.polaroid, 'I', ModItems.flame_pony, 'S', STEEL.plate() }"
     },
     {
@@ -9442,7 +9535,7 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:718",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item tesla",
+      "reason": "unresolved ore dictionary ANY_PLASTIC.ingot()",
       "expression": "new ItemStack(ModBlocks.tesla, 1), new Object[] { \"CCC\", \"PIP\", \"WTW\", 'C', ModItems.coil_copper, 'I', IRON.ingot(), 'P', ANY_PLASTIC.ingot(), 'T', ModBlocks.machine_transformer, 'W', KEY_PLANKS }"
     },
     {
@@ -9508,7 +9601,7 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:737",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item mech_key",
+      "reason": "unregistered/ambiguous source item ingot_meteorite_forged",
       "expression": "new ItemStack(ModItems.mech_key, 1), new Object[] { \"MCM\", \"MKM\", \"MMM\", 'M', ModItems.ingot_meteorite_forged, 'C', ModItems.coin_maskman, 'K', ModItems.key }"
     },
     {
@@ -9682,7 +9775,7 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:799",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item trapdoor_steel",
+      "reason": "missing vanilla 26.3 item trapdoor",
       "expression": "new ItemStack(ModBlocks.trapdoor_steel, 1), new Object[] { Blocks.trapdoor, STEEL.ingot() }"
     },
     {
@@ -9860,12 +9953,6 @@
       "expression": "new ItemStack(ModBlocks.deco_pipe_framed_marked, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed_green, 'C', KEY_GREEN }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:834",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_emitter",
-      "expression": "new ItemStack(ModBlocks.deco_emitter), new Object[] { \"IDI\", \"DRD\", \"IDI\", 'I', IRON.ingot(), 'D', DIAMOND.gem(), 'R', REDSTONE.block() }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:837",
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary ANY_TAR.any()",
@@ -9916,7 +10003,7 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:852",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item press_preheater",
+      "reason": "unsupported expression Fluids.LAVA.getDict(1000)",
       "expression": "new ItemStack(ModBlocks.press_preheater), new Object[] { \"CCC\", \"SLS\", \"TST\", 'C', CU.plate(), 'S', Blocks.stone, 'L', Fluids.LAVA.getDict(1000), 'T', W.ingot() }"
     },
     {
@@ -9924,18 +10011,6 @@
       "callee": "addShapelessAuto",
       "reason": "unsupported expression ItemBattery.getEmptyBattery(ModItems.anchor_remote)",
       "expression": "ItemBattery.getEmptyBattery(ModItems.anchor_remote), new Object[] { DIAMOND.gem(), ModItems.ducttape, DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BASIC) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:856",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item teleanchor",
-      "expression": "new ItemStack(ModBlocks.teleanchor), new Object[] { \"ODO\", \"EAE\", \"ODO\", 'O', Blocks.obsidian, 'D', DIAMOND.gem(), 'E', ModItems.powder_magic, 'A', ModItems.gem_alexandrite }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:857",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item field_disturber",
-      "expression": "new ItemStack(ModBlocks.field_disturber), new Object[] { \"ICI\", \"CAC\", \"ICI\", 'I', STAR.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BISMOID), 'A', ModItems.gem_alexandrite }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:859",
@@ -10158,18 +10233,6 @@
       "callee": "addShapelessAuto",
       "reason": "unregistered/ambiguous source item ingot_chainsteel",
       "expression": "DictFrame.fromOne(ModItems.parts_legendary, EnumLegendaryType.TIER3), new Object[] { ModItems.ingot_chainsteel, ModItems.ingot_smore, ModItems.gem_alexandrite, ModItems.gem_alexandrite, ModItems.gem_alexandrite }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:932",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_drain",
-      "expression": "new ItemStack(ModBlocks.machine_drain), new Object[] { \"PPP\", \"T  \", \"PPP\", 'P', STEEL.plateCast(), 'T', ModItems.tank_steel }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:933",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_intake",
-      "expression": "new ItemStack(ModBlocks.machine_intake), new Object[] { \"GGG\", \"PMP\", \"PTP\", 'G', ModBlocks.steel_grate, 'P', STEEL.plate(), 'M', ModItems.motor, 'T', ModItems.tank_steel }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:935",
@@ -10560,12 +10623,6 @@
       "callee": "addShapelessAuto",
       "reason": "unsupported expression result",
       "expression": "result, ins"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:27",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_armor_table",
-      "expression": "new ItemStack(ModBlocks.machine_armor_table, 1), new Object[] { \"PPP\", \"TCT\", \"TST\", 'P', STEEL.plate(), 'T', W.ingot(), 'C', Blocks.crafting_table, 'S', STEEL.block() }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:45",
@@ -13164,12 +13221,6 @@
       "callee": "addRecipeAuto",
       "reason": "unsupported expression tool",
       "expression": "new ItemStack(tool), new Object[] { pattern, 'X', ingot, '#', KEY_STICK }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/WeaponRecipes.java:41",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item machine_weapon_table",
-      "expression": "new ItemStack(ModBlocks.machine_weapon_table, 1), new Object[] { \"PPP\", \"TCT\", \"TST\", 'P', GUNMETAL.plate(), 'T', STEEL.ingot(), 'C', Blocks.crafting_table, 'S', STEEL.block() }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/WeaponRecipes.java:58",

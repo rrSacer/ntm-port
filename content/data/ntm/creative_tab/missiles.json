@@ -37,6 +37,7 @@
     "ntm:loot_15",
     "ntm:loot_misc",
     "ntm:struct_launcher",
-    "ntm:struct_scaffold"
+    "ntm:struct_scaffold",
+    "ntm:machine_forcefield"
   ]
 }

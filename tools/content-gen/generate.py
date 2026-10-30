@@ -124,6 +124,7 @@ def transform_png(raw, light=None, dark=None, background=None, crop=None, multip
   size=struct.unpack('>I',raw[pos:pos+4])[0]; kind=raw[pos+4:pos+8]; data=raw[pos+8:pos+8+size];pos+=size+12
   if kind==b'IDAT':compressed+=data
   else:chunks[kind]=data
+  if kind==b'IEND':break  # Source PNGs may have trailing bytes after the image.
  width,height,depth,ctype,_,_,interlace=struct.unpack('>IIBBBBB',chunks[b'IHDR'])
  if depth!=8 or interlace:raise ValueError('Transform needs 8-bit noninterlaced PNG')
  bpp={0:1,2:3,3:1,4:2,6:4}[ctype]; stride=width*bpp; decoded=zlib.decompress(compressed)
@@ -278,6 +279,19 @@ def generate(src,out,rows,distributions,max_damage=True):
      for suffix,parent in [('', 'slab'),('_top','slab_top'),('_double','cube_all')]:
       emit(f'assets/ntm/models/block/{name}{suffix}.json',{'parent':'minecraft:block/'+parent,'textures':{'side':tex,'top':tex,'bottom':tex,'all':tex}})
      variants={f'type={kind}':{'model':'ntm:block/'+name+suffix} for kind,suffix in [('bottom',''),('top','_top'),('double','_double')]}
+    if row.get('door_textures'):
+     # Preserve vanilla door geometry/state mapping; only replace its texture
+     # pair. Powered has no model distinction, as in the vanilla blockstate.
+     door_tex={face:texture(path) for face,path in row['door_textures'].items()}
+     resources=VanillaReferences().resources/'assets/minecraft'
+     variants=json.loads((resources/'blockstates/oak_door.json').read_text())['variants']
+     for variant in variants.values():
+      suffix=variant['model'].split('oak_door',1)[1]
+      original=json.loads((resources/('models/block/oak_door'+suffix+'.json')).read_text())
+      original['textures']=door_tex
+      emit(f'assets/ntm/models/block/{name}{suffix}.json',original)
+      variant['model']='ntm:block/'+name+suffix
+     model='ntm:block/'+name+'_bottom_left'
     if template=='minecraft:snow':
      variants={}
      for layers in range(1,9):
@@ -293,7 +307,11 @@ def generate(src,out,rows,distributions,max_damage=True):
     low,high=ranges[name];entry['modifier']=[{'type':'minecraft:set_count','count':{'type':'minecraft:uniform','min':low,'max':high}}]
    if name=='ore_nether_fire':entry={'type':'minecraft:alternatives','children':[{'type':'minecraft:item','name':'ntm:ingot_phosphorus','conditions':[{'condition':'minecraft:random_chance','chance':0.1}]},{'type':'minecraft:item','name':'ntm:powder_fire'}]}
    if template=='minecraft:stone_slab':entry['modifier']=[{'type':'minecraft:set_count','count':2,'conditions':[{'condition':'minecraft:block_state_property','block':row['id'],'properties':{'type':'double'}}]}]
+   if row.get('door_textures'):entry['conditions']=[{'condition':'minecraft:block_state_property','block':row['id'],'properties':{'half':'lower'}}]
    emit(f'data/ntm/loot_table/blocks/{name}.json',{'type':'minecraft:block','pools':[] if row.get('loot_none') else [{'rolls':1,'entries':[entry]}]})
+  if row.get('item_texture'):
+   emit(f'assets/ntm/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':texture(row['item_texture'])}})
+   model='ntm:item/'+name
   emit(f'assets/ntm/items/{name}.json',{'model':{'type':'minecraft:model','model':model}})
   for loc in languages:languages[loc][('block.' if kind=='block' else 'item.')+'ntm.'+name]=row['names'][loc]
  for loc,value in languages.items():

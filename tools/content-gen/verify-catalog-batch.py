@@ -85,6 +85,21 @@ def main():
                     if all(counts.get('ntm:'+name,0)==1 for name in batch):break
                     if time.monotonic()>deadline:raise AssertionError(counts)
                     ctl('wait 2')
+            # Optional vanilla-door acceptance: the batch must prove item
+            # placement creates both halves and a real interaction opens it.
+            for i,name in enumerate(data.get('doors',[])):
+                x,z=-6+i*4,28
+                cmd(f'fill {x-1} 101 {z-1} {x+1} 104 {z+1} minecraft:air')
+                cmd(f'tp @s {x+.5} 101 {z-3.5}')
+                cmd('clear @s');cmd(f'give @s ntm:{name} 1');ctl('wait 5')
+                ctl(f'place {x} 101 {z} --item ntm:{name}')
+                ctl('wait 5')
+                for y,half in [(101,'lower'),(102,'upper')]:
+                    placed=ctl(f'block {x} {y} {z}')
+                    assert placed['block']=='ntm:'+name and 'half='+half in placed['state'],placed
+                ctl(f'interact {x} 101 {z} north');ctl('wait 5')
+                opened=ctl(f'block {x} 101 {z}')
+                assert 'open=true' in opened['state'],opened
             ctl('key f1 tap');ctl('open-inventory');ctl('wait 5');ctl('screenshot '+str(evidence/'items.png'));ctl('close')
             ctl('quit');process.wait(timeout=60)
         text=(scratch/'client.log').read_text()

@@ -1,0 +1,51 @@
+{
+  "textures": {
+    "particle": "ntm:block/round_airlock_door_side_opaque",
+    "down": "ntm:block/round_airlock_door_top_opaque",
+    "up": "ntm:block/round_airlock_door_top_opaque",
+    "north": "ntm:block/round_airlock_door_front_opaque",
+    "south": "ntm:block/round_airlock_door_side_opaque",
+    "east": "ntm:block/round_airlock_door_side_opaque",
+    "west": "ntm:block/round_airlock_door_side_opaque"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        }
+      }
+    }
+  ]
+}

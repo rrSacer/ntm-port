@@ -100,7 +100,7 @@ class Resolver:
                 except Unsupported:pass
         for ore,tag in [('logWood','logs'),('plankWood','planks'),('slabWood','wooden_slabs'),('treeLeaves','leaves'),('treeSapling','saplings')]:self.ore[ore].add('#minecraft:'+tag)
     def row(self,var,meta=None,kind=None):
-        candidates=[r for r in self.byvar.get(var,[]) if kind is None or r['type']==kind]
+        candidates=[r for r in self.byvar.get(var,[]) if kind is None or r['type']==kind or (kind=='item' and r.get('source_item_variable')==var)]
         if meta is not None:
             for r in candidates:
                 if r.get('metadata')==meta:return r['id']

@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:machine_ammo_press",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPI",
+    "C C",
+    "SSS"
+  ],
+  "key": {
+    "I": "#ntm:bulk/ingotiron",
+    "P": "minecraft:piston",
+    "C": "#ntm:bulk/ingotcopper",
+    "S": "minecraft:stone"
+  }
+}

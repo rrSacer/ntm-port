@@ -161,6 +161,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
     rows.extend(pwr_catalog.build(source))
     import watz_catalog
     rows.extend(watz_catalog.build(source))
+    import catalog_k3
+    rows.extend(catalog_k3.build(source))
     import energy_catalog
     rows.extend(energy_catalog.build(source))
     import petroleum_auxiliary_catalog
@@ -197,6 +199,10 @@ def build(source=SOURCE, output=ROOT / 'content'):
     if backlog.is_file():
         data = json.loads(backlog.read_text())
         for entry in data['entries']:
+            k3_ids=['ntm:'+r['id'] for r in rows if r['type']=='block' and r.get('source_class_file') and r['source_variable']==entry['source_variable']]
+            if k3_ids:
+                entry.update(content_id=k3_ids[0],content_ids=k3_ids,status='K3 content declared; native registration/behavior and faithful model deferred')
+                continue
             if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES) | set(bedrock_processing_catalog.MACHINES) | set(petroleum_catalog.MACHINES) | set(energy_catalog.MACHINES) | set(reactor_catalog.MACHINES) | set(rbmk_catalog.MACHINES) | set(pwr_catalog.MACHINES) | set(watz_catalog.MACHINES):
                 entry['content_id'] = 'ntm:' + entry['id'] + ('_large' if entry['source_variable'] == 'machine_arc_furnace' else '')
                 if entry['source_variable'] in set(reactor_catalog.MACHINES) | set(pwr_catalog.MACHINES):

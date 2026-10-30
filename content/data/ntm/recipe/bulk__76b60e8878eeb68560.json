@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:deco_emitter",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IDI",
+    "DRD",
+    "IDI"
+  ],
+  "key": {
+    "I": "#ntm:bulk/ingotiron",
+    "D": "#ntm:bulk/gemdiamond",
+    "R": "#ntm:bulk/blockredstone"
+  }
+}
