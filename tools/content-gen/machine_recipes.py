@@ -301,6 +301,9 @@ def export(source, output, rows):
     counts['bedrock'] = bedrock_recipes.export(source, output, rows)['coverage']
     import crystallizer_recipes
     counts['crystallizer'] = crystallizer_recipes.export(source, output, rows)['coverage']
+    import pyrooven_recipes, electrolyser_recipes, arc_furnace_recipes
+    for module, name in [(pyrooven_recipes, 'pyrooven'), (electrolyser_recipes, 'electrolyser'), (arc_furnace_recipes, 'arc_furnace')]:
+        counts[name] = module.export(source, output, rows)['coverage']
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 
