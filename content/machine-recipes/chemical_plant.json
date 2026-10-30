@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 53,
+    "emitted": 54,
     "scanned_source_calls": 77,
-    "skipped_source_calls": 24,
+    "skipped_source_calls": 23,
     "expanded_fluid_recipes": 0,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -487,6 +487,45 @@
       ],
       "label": "Lubrificante de Motor · 1000 mB",
       "label_en": "Engine Lubricant · 1000 mB"
+    },
+    {
+      "name": "chem.tarsand",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:118",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:ore_oil_sand"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:oil_tar__coal",
+            "ntm:oil_tar__crack",
+            "ntm:oil_tar__crude",
+            "ntm:oil_tar__wood"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "minecraft:sand",
+          16
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [
+        [
+          "bitumen",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Areia ×16",
+      "label_en": "Sand ×16"
     },
     {
       "name": "chem.tel",
@@ -1724,12 +1763,6 @@
     }
   ],
   "skipped": [
-    {
-      "name": "chem.tarsand",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:118",
-      "reason": "unregistered/ambiguous source item ore_oil_sand",
-      "expression": "new GenericRecipe(\"chem.tarsand\").setupNamed(200, 100).setIcon(ModBlocks.ore_oil_sand)\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.ore_oil_sand, 16), new OreDictStack(ANY_TAR.any(), 1))\n\t\t\t\t.outputItems(new ItemStack(Blocks.sand, 16))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.BITUMEN, 1_000))"
-    },
     {
       "name": "chem.concreteasbestos",
       "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:150",
