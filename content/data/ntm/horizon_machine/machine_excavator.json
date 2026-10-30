@@ -1,0 +1,144 @@
+{
+  "slots": [
+    {
+      "x": 220,
+      "y": 72,
+      "accept": []
+    },
+    {
+      "x": 202,
+      "y": 72,
+      "accept": []
+    },
+    {
+      "x": 136,
+      "y": 75,
+      "accept": []
+    },
+    {
+      "x": 154,
+      "y": 75,
+      "accept": []
+    },
+    {
+      "x": 172,
+      "y": 75,
+      "accept": [
+        "ntm:drillbit__desh",
+        "ntm:drillbit__desh_diamond",
+        "ntm:drillbit__ferro",
+        "ntm:drillbit__ferro_diamond",
+        "ntm:drillbit__hss",
+        "ntm:drillbit__hss_diamond",
+        "ntm:drillbit__steel",
+        "ntm:drillbit__steel_diamond",
+        "ntm:drillbit__tcalloy",
+        "ntm:drillbit__tcalloy_diamond"
+      ],
+      "max": 1
+    },
+    {
+      "x": 136,
+      "y": 5,
+      "output": true
+    },
+    {
+      "x": 154,
+      "y": 5,
+      "output": true
+    },
+    {
+      "x": 172,
+      "y": 5,
+      "output": true
+    },
+    {
+      "x": 136,
+      "y": 23,
+      "output": true
+    },
+    {
+      "x": 154,
+      "y": 23,
+      "output": true
+    },
+    {
+      "x": 172,
+      "y": 23,
+      "output": true
+    },
+    {
+      "x": 136,
+      "y": 41,
+      "output": true
+    },
+    {
+      "x": 154,
+      "y": 41,
+      "output": true
+    },
+    {
+      "x": 172,
+      "y": 41,
+      "output": true
+    }
+  ],
+  "inventory": [
+    41,
+    122
+  ],
+  "data": 11,
+  "multiblock": {
+    "min": [
+      -3,
+      0,
+      -3
+    ],
+    "max": [
+      3,
+      3,
+      3
+    ],
+    "offset": 3,
+    "height": 3,
+    "extra": [
+      {
+        "min": [
+          -3,
+          -3,
+          -3
+        ],
+        "max": [
+          -2,
+          -1,
+          -2
+        ]
+      },
+      {
+        "min": [
+          2,
+          -3,
+          -3
+        ],
+        "max": [
+          3,
+          -1,
+          -2
+        ]
+      },
+      {
+        "min": [
+          -3,
+          -3,
+          2
+        ],
+        "max": [
+          3,
+          -1,
+          3
+        ]
+      }
+    ],
+    "dummy": "ntm:dummy_machine"
+  }
+}

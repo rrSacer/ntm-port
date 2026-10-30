@@ -1,0 +1,124 @@
+{
+  "texture": "ntm:textures/gui/machine/gui_mining_drill.png",
+  "size": [
+    242,
+    204
+  ],
+  "title": false,
+  "inventory_label": [
+    41,
+    110
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        220,
+        18,
+        16,
+        52
+      ],
+      "uv": [
+        229,
+        360
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        202,
+        18,
+        16,
+        52
+      ],
+      "color": 4,
+      "dir": "up"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 5,
+      "min": 1,
+      "rect": [
+        6,
+        42,
+        20,
+        40
+      ],
+      "uv": [
+        209,
+        370
+      ]
+    },
+    {
+      "value": 6,
+      "min": 1,
+      "rect": [
+        11,
+        5,
+        10,
+        10
+      ],
+      "uv": [
+        209,
+        360
+      ]
+    },
+    {
+      "value": 6,
+      "min": 1,
+      "rect": [
+        224,
+        4,
+        9,
+        12
+      ],
+      "uv": [
+        239,
+        412
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        220,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{0:si} / {1:si} HE"
+      ]
+    },
+    {
+      "rect": [
+        202,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{2} / {3} mB"
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "rect": [
+        6,
+        42,
+        20,
+        40
+      ],
+      "lines": [
+        "Broca",
+        "Profundidade: {7}"
+      ]
+    }
+  ]
+}

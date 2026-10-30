@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/mining_drill.obj",
+  "texture": "ntm:textures/models/machines/mining_drill.png",
+  "rotation": 180.0,
+  "radius": 8.2
+}
