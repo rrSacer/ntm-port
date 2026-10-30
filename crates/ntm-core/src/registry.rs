@@ -551,42 +551,43 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
-    // Energy batch 2 (3e13ddb): steam engines, turbines and condensers.
-    // Inert until their stage is approved.
+    // Energy batch 2 (`crate::steam`): steam engines, turbines and
+    // condensers. Their power and fluid come through their proxies
+    // (container_bridge).
     BlockSpec {
         id: "ntm:machine_steam_engine",
-        kind: Kind::Inert,
+        kind: Kind::Steam,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_industrial_turbine",
-        kind: Kind::Inert,
+        kind: Kind::Steam,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_chungus",
-        kind: Kind::Inert,
+        kind: Kind::Steam,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_condenser",
-        kind: Kind::Inert,
+        kind: Kind::Steam,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_condenser_powered",
-        kind: Kind::Inert,
+        kind: Kind::Steam,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     // The shredder (`crate::shredder`): `TilePortShapes.around`, energy only.
     BlockSpec {
@@ -654,7 +655,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, _facing: Option<&str>) -> Vec<crate::energy::Port> {
     match spec.kind {
-        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace | Kind::Excavator | Kind::OreSlopper | Kind::Electrolyser | Kind::Refinery | Kind::FractionTower | Kind::Boiler | Kind::Coker | Kind::Processor | Kind::Drill => vec![crate::energy::DIRS.to_vec()],
+        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace | Kind::Excavator | Kind::OreSlopper | Kind::Electrolyser | Kind::Refinery | Kind::FractionTower | Kind::Boiler | Kind::Coker | Kind::Processor | Kind::Drill | Kind::Steam => vec![crate::energy::DIRS.to_vec()],
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.
         Kind::Heater => vec![crate::energy::DIRS.iter().filter(|d| d[1] == 0).copied().collect()],

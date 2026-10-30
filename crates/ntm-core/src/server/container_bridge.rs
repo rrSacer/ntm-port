@@ -316,10 +316,13 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
 /// The cells of the multiblock of `block` at `core` that pass energy to
 /// it (HBM's `makeExtra` proxies): its bottom layer but the core.
 pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
-    let Some((_, min, max)) = MULTIBLOCKS.iter().find(|(b, ..)| *b == block) else {
+    let Some(f) = facing.and_then(crate::registry::facing_dir) else {
         return Vec::new();
     };
-    let Some(f) = facing.and_then(crate::registry::facing_dir) else {
+    if let Some((_, cells)) = ENERGY_CHAINS.iter().find(|(b, _)| *b == block) {
+        return cells.iter().map(|&l| world_cell(core, f, l)).collect();
+    }
+    let Some((_, min, max)) = MULTIBLOCKS.iter().find(|(b, ..)| *b == block) else {
         return Vec::new();
     };
     // The placer looked against the facing: z runs that way, x to their right.
@@ -649,6 +652,36 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // TileEntityHeaterHeatex.getPorts: its four corners (the NTM's connect
     // front and back only).
     ("ntm:heater_heatex", &[[1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1]]),
+    // Energy batch 2's ports (HBM's `dir` is towards the placer, -z here;
+    // `rot`, its turn up, is -x). TileEntitySteamEngine: three on its left,
+    // a layer up.
+    ("ntm:machine_steam_engine", &[[-1, 1, -1], [-1, 1, 0], [-1, 1, 1]]),
+    // TileEntityMachineIndustrialTurbine.getFluidPorts.
+    ("ntm:machine_industrial_turbine", &[[-1, 0, -3], [1, 0, -3], [-1, 0, 1], [1, 0, 1], [0, 2, -3], [0, 2, 1]]),
+    // TileEntityChungus.getFluidPorts.
+    ("ntm:machine_chungus", &[[0, 2, -4], [-2, 0, 0], [2, 0, 0]]),
+    // TilePortShapes.condenser: six a layer up.
+    ("ntm:machine_condenser_powered", &[[-3, 1, 0], [3, 1, 0], [1, 1, -1], [-1, 1, -1], [1, 1, 1], [-1, 1, 1]]),
+];
+
+/// Multiblocks' power ports that MULTIBLOCKS' one-layer box can't hold:
+/// each a chain of cells from the one next to the core to the port, in the
+/// placer's frame, as energy proxies.
+pub const ENERGY_CHAINS: &[(&str, &[[i32; 3]])] = &[
+    // TileEntitySteamEngine.getPorts: power and fluid at the same three.
+    ("ntm:machine_steam_engine", &[[0, 1, 0], [-1, 1, 0], [-1, 1, -1], [-1, 1, 1]]),
+    // getPowerPorts: at the back, a layer up.
+    ("ntm:machine_industrial_turbine", &[[0, 1, 0], [0, 1, 1], [0, 1, 2], [0, 1, 3]]),
+    // getPowerPorts: ten back, on its bottom layer.
+    (
+        "ntm:machine_chungus",
+        &[[0, 0, 1], [0, 0, 2], [0, 0, 3], [0, 0, 4], [0, 0, 5], [0, 0, 6], [0, 0, 7], [0, 0, 8], [0, 0, 9], [0, 0, 10]],
+    ),
+    // TilePortShapes.condenser: the same six as its fluid.
+    (
+        "ntm:machine_condenser_powered",
+        &[[0, 1, 0], [-1, 1, 0], [-2, 1, 0], [-3, 1, 0], [1, 1, 0], [2, 1, 0], [3, 1, 0], [1, 1, -1], [-1, 1, -1], [1, 1, 1], [-1, 1, 1]],
+    ),
 ];
 
 /// Cell `l` (placer's frame) of the multiblock with its core at `core`.
