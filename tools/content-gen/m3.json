@@ -19490,6 +19490,182 @@
       }
     },
     {
+      "id": "chemical_dye__gray",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.GRAY",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "434343"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Gray)",
+        "pt_br": "Corante Químico (Cinza)"
+      }
+    },
+    {
+      "id": "chemical_dye__pink",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 9,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.PINK",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "D88198"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Pink)",
+        "pt_br": "Corante Químico (Rosa)"
+      }
+    },
+    {
+      "id": "chemical_dye__lime",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 10,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.LIME",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "41CD34"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Lime)",
+        "pt_br": "Corante Químico (Verde Limão)"
+      }
+    },
+    {
+      "id": "chemical_dye__yellow",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 11,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.YELLOW",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "DECF2A"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Yellow)",
+        "pt_br": "Corante Químico (Amarelo)"
+      }
+    },
+    {
+      "id": "chemical_dye__lightblue",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 12,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.LIGHTBLUE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "6689D3"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Light Blue)",
+        "pt_br": "Corante Químico (Azul Claro)"
+      }
+    },
+    {
+      "id": "chemical_dye__magenta",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 13,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.MAGENTA",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "C354CD"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Magenta)",
+        "pt_br": "Corante Químico (Magenta)"
+      }
+    },
+    {
+      "id": "chemical_dye__orange",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 14,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.ORANGE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "EB8844"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (Orange)",
+        "pt_br": "Corante Químico (Laranja)"
+      }
+    },
+    {
+      "id": "chemical_dye__white",
+      "type": "item",
+      "category": "component",
+      "source_variable": "chemical_dye",
+      "metadata": 15,
+      "subtype_kind": "enum",
+      "source_enum": "EnumChemDye.WHITE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chemical_dye.png",
+      "overlay_textures": [
+        {
+          "source": "src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png",
+          "tint": {
+            "multiply": "F0F0F0"
+          }
+        }
+      ],
+      "names": {
+        "en_us": "Chemical Dye (White)",
+        "pt_br": "Corante Químico (Branco)"
+      }
+    },
+    {
       "id": "machine_crucible",
       "source_variable": "machine_crucible",
       "type": "block",

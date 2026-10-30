@@ -27,7 +27,7 @@ def build(source):
     colors = re.findall(r'(\w+)\((\d+),\s*"[^"\n]+"\)',body)
     if len(colors) != 16: raise ValueError('Chemical dye enum drift')
     name, texture = registration(items,'chemical_dye','item')
-    for meta,(member,color) in enumerate(colors[:8]):
+    for meta,(member,color) in enumerate(colors):
         suffix = member.lower()
         rows.append({'id':name+'__'+suffix,'type':'item','category':'component','source_variable':'chemical_dye',
                      'metadata':meta,'subtype_kind':'enum','source_enum':'EnumChemDye.'+member,
