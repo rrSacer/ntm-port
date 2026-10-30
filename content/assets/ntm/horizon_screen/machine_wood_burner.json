@@ -1,0 +1,166 @@
+{
+  "texture": "ntm:textures/gui/generators/gui_wood_burner_alt.png",
+  "size": [
+    176,
+    186
+  ],
+  "title": [
+    70,
+    6,
+    "center"
+  ],
+  "title_color": "#ffffff",
+  "inventory_label": [
+    8,
+    92
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        143,
+        18,
+        16,
+        34
+      ],
+      "uv": [
+        176,
+        18
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        17,
+        18,
+        4,
+        52
+      ],
+      "uv": [
+        192,
+        0
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 6,
+      "max": 7,
+      "rect": [
+        80,
+        18,
+        16,
+        52
+      ],
+      "color": 8,
+      "dir": "up"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 5,
+      "min": 1,
+      "rect": [
+        16,
+        17,
+        60,
+        54
+      ],
+      "uv": [
+        176,
+        52
+      ]
+    },
+    {
+      "value": 5,
+      "min": 1,
+      "rect": [
+        79,
+        17,
+        36,
+        54
+      ],
+      "uv": [
+        176,
+        106
+      ]
+    },
+    {
+      "value": 4,
+      "min": 1,
+      "rect": [
+        53,
+        17,
+        16,
+        15
+      ],
+      "uv": [
+        196,
+        0
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        143,
+        18,
+        16,
+        34
+      ],
+      "lines": [
+        "{0:si} / {1:si} HE"
+      ]
+    },
+    {
+      "rect": [
+        16,
+        18,
+        8,
+        54
+      ],
+      "lines": [
+        "{2} / {3} ticks"
+      ]
+    },
+    {
+      "rect": [
+        80,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{6} / {7} mB"
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "rect": [
+        53,
+        17,
+        16,
+        15
+      ],
+      "lines": [
+        "On / off"
+      ]
+    },
+    {
+      "id": 1,
+      "rect": [
+        46,
+        37,
+        30,
+        14
+      ],
+      "lines": [
+        "Solid fuel / fluid"
+      ]
+    }
+  ]
+}

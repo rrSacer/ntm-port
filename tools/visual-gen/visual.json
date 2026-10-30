@@ -15454,6 +15454,805 @@
         "data": 0
       },
       "auto": false
+    },
+    "ntm:machine_battery": {
+      "source": "ContainerMachineBattery, GUIMachineBattery 176x166 (storage/gui_battery.png): energy column, the redstone modes without (redLow) and with a signal (redHigh) and the priority; HBM writes the energy after the title, here in the tooltip",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 17
+          },
+          {
+            "x": 26,
+            "y": 53
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 5
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/storage/gui_battery.png",
+        "texture_from": "textures/gui/storage/gui_battery.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              62,
+              17,
+              52,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 2,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              70
+            ]
+          },
+          {
+            "value": 2,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 2,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 3,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 3,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              70
+            ]
+          },
+          {
+            "value": 3,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 3,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 4,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              52
+            ]
+          },
+          {
+            "value": 4,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              68
+            ]
+          },
+          {
+            "value": 4,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              84
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              62,
+              17,
+              52,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode without redstone"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode with redstone"
+            ]
+          },
+          {
+            "id": 2,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "lines": [
+              "Priority"
+            ]
+          }
+        ]
+      }
+    },
+    "ntm:teste": {
+      "like": "ntm:machine_battery",
+      "source": "the test battery: machine_battery's container and screen"
+    },
+    "ntm:barrel_steel": {
+      "source": "ContainerBarrel, GUIBarrel 176x166 (storage/gui_barrel.png): the tank in its fluid's colour, the mode (input, buffer, output, off)",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 17
+          },
+          {
+            "x": 8,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 35,
+            "y": 17
+          },
+          {
+            "x": 35,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 125,
+            "y": 17
+          },
+          {
+            "x": 125,
+            "y": 53,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 4
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/storage/gui_barrel.png",
+        "texture_from": "textures/gui/storage/gui_barrel.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              71,
+              17,
+              34,
+              52
+            ],
+            "color": 2,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 3,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 3,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              18
+            ]
+          },
+          {
+            "value": 3,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              36
+            ]
+          },
+          {
+            "value": 3,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              54
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              71,
+              17,
+              34,
+              52
+            ],
+            "lines": [
+              "{0} / {1} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              151,
+              35,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode"
+            ]
+          }
+        ]
+      }
+    },
+    "ntm:machine_fluidtank": {
+      "source": "ContainerMachineFluidTank, GUIMachineFluidTank 176x166 (storage/gui_tank.png): as the barrel's",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 17
+          },
+          {
+            "x": 8,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 35,
+            "y": 17
+          },
+          {
+            "x": 35,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 125,
+            "y": 17
+          },
+          {
+            "x": 125,
+            "y": 53,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 4
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/storage/gui_tank.png",
+        "texture_from": "textures/gui/storage/gui_tank.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              71,
+              17,
+              34,
+              52
+            ],
+            "color": 2,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 3,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 3,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              18
+            ]
+          },
+          {
+            "value": 3,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              36
+            ]
+          },
+          {
+            "value": 3,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              54
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              71,
+              17,
+              34,
+              52
+            ],
+            "lines": [
+              "{0} / {1} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              151,
+              35,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode"
+            ]
+          }
+        ]
+      }
+    },
+    "ntm:machine_wood_burner": {
+      "source": "ContainerMachineWoodBurner, GUIMachineWoodBurner 176x186 (generators/gui_wood_burner_alt.png): energy, burn time, the switch, and the fluid panel and tank while it burns fluid (value 5); burn time in ticks, where HBM shows seconds",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 18
+          },
+          {
+            "x": 26,
+            "y": 54,
+            "output": true
+          },
+          {
+            "x": 98,
+            "y": 54
+          },
+          {
+            "x": 98,
+            "y": 18
+          },
+          {
+            "x": 98,
+            "y": 36,
+            "output": true
+          },
+          {
+            "x": 143,
+            "y": 54
+          }
+        ],
+        "inventory": [
+          8,
+          104
+        ],
+        "data": 9
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/generators/gui_wood_burner_alt.png",
+        "texture_from": "textures/gui/generators/gui_wood_burner_alt.png",
+        "size": [
+          176,
+          186
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "title_color": "#ffffff",
+        "inventory_label": [
+          8,
+          92
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              143,
+              18,
+              16,
+              34
+            ],
+            "uv": [
+              176,
+              18
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              17,
+              18,
+              4,
+              52
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              80,
+              18,
+              16,
+              52
+            ],
+            "color": 8,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 5,
+            "min": 1,
+            "rect": [
+              16,
+              17,
+              60,
+              54
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 5,
+            "min": 1,
+            "rect": [
+              79,
+              17,
+              36,
+              54
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 4,
+            "min": 1,
+            "rect": [
+              53,
+              17,
+              16,
+              15
+            ],
+            "uv": [
+              196,
+              0
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              143,
+              18,
+              16,
+              34
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              16,
+              18,
+              8,
+              54
+            ],
+            "lines": [
+              "{2} / {3} ticks"
+            ]
+          },
+          {
+            "rect": [
+              80,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{6} / {7} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              53,
+              17,
+              16,
+              15
+            ],
+            "lines": [
+              "On / off"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              46,
+              37,
+              30,
+              14
+            ],
+            "lines": [
+              "Solid fuel / fluid"
+            ]
+          }
+        ]
+      }
     }
   }
 }
