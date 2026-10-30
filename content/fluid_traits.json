@@ -3,8 +3,16 @@
   "profile": "NTM source defaults; external fluid trait JSON/config overrides excluded",
   "units": {
     "flammable": "TU/bucket (1000 mB)",
-    "coolable": "TU/operation"
+    "coolable": "TU/operation",
+    "combustible": "HE/bucket (1000 mB), separate from flammable TU"
   },
+  "fuel_grades": [
+    "LOW",
+    "MEDIUM",
+    "HIGH",
+    "AERO",
+    "GAS"
+  ],
   "flammable": [
     {
       "fluid": "deuterium",
@@ -533,11 +541,313 @@
       "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:677"
     }
   ],
-  "deferred_traits": [
-    "FT_Combustible/FuelGrade: energy batch 3"
+  "combustible": [
+    {
+      "fluid": "deuterium",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 10000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:269"
+    },
+    {
+      "fluid": "tritium",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 10000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:270"
+    },
+    {
+      "fluid": "heavyoil",
+      "grade": "LOW",
+      "grade_ordinal": 0,
+      "he_per_bucket": 68700,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:712"
+    },
+    {
+      "fluid": "smear",
+      "grade": "LOW",
+      "grade_ordinal": 0,
+      "he_per_bucket": 103000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:713"
+    },
+    {
+      "fluid": "heatingoil",
+      "grade": "LOW",
+      "grade_ordinal": 0,
+      "he_per_bucket": 489000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:717"
+    },
+    {
+      "fluid": "reclaimed",
+      "grade": "LOW",
+      "grade_ordinal": 0,
+      "he_per_bucket": 141000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:714"
+    },
+    {
+      "fluid": "petroil",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 195000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:715"
+    },
+    {
+      "fluid": "naphtha",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 165000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:718"
+    },
+    {
+      "fluid": "diesel",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 1370000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:724"
+    },
+    {
+      "fluid": "lightoil",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 2200000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:726"
+    },
+    {
+      "fluid": "kerosene",
+      "grade": "AERO",
+      "grade_ordinal": 3,
+      "he_per_bucket": 3850000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:729"
+    },
+    {
+      "fluid": "gas",
+      "grade": "GAS",
+      "grade_ordinal": 4,
+      "he_per_bucket": 75000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:710"
+    },
+    {
+      "fluid": "petroleum",
+      "grade": "GAS",
+      "grade_ordinal": 4,
+      "he_per_bucket": 2470000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:730"
+    },
+    {
+      "fluid": "lpg",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 4530000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:733"
+    },
+    {
+      "fluid": "biogas",
+      "grade": "GAS",
+      "grade_ordinal": 4,
+      "he_per_bucket": 78100,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:759"
+    },
+    {
+      "fluid": "biofuel",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 1250000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:760"
+    },
+    {
+      "fluid": "nitan",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 160000000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:734"
+    },
+    {
+      "fluid": "hydrogen",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 10000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:299"
+    },
+    {
+      "fluid": "balefire",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 640000000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:735"
+    },
+    {
+      "fluid": "gasoline",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 1510000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:722"
+    },
+    {
+      "fluid": "coalgas",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 9520000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:754"
+    },
+    {
+      "fluid": "ethanol",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 687000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:757"
+    },
+    {
+      "fluid": "naphtha_crack",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 128000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:720"
+    },
+    {
+      "fluid": "lightoil_crack",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 1370000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:728"
+    },
+    {
+      "fluid": "diesel_crack",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 1280000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:725"
+    },
+    {
+      "fluid": "petroil_leaded",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 293000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:716"
+    },
+    {
+      "fluid": "gasoline_leaded",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 2260000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:723"
+    },
+    {
+      "fluid": "coalgas_leaded",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 14200000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:755"
+    },
+    {
+      "fluid": "syngas",
+      "grade": "GAS",
+      "grade_ordinal": 4,
+      "he_per_bucket": 2060000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:770"
+    },
+    {
+      "fluid": "oxyhydrogen",
+      "grade": "GAS",
+      "grade_ordinal": 4,
+      "he_per_bucket": 15000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:771"
+    },
+    {
+      "fluid": "heavyoil_vacuum",
+      "grade": "LOW",
+      "grade_ordinal": 0,
+      "he_per_bucket": 234000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:736"
+    },
+    {
+      "fluid": "reformate",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 6000000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:737"
+    },
+    {
+      "fluid": "lightoil_vacuum",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 4500000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:738"
+    },
+    {
+      "fluid": "xylene",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 7870000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:740"
+    },
+    {
+      "fluid": "heatingoil_vacuum",
+      "grade": "LOW",
+      "grade_ordinal": 0,
+      "he_per_bucket": 1640000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:741"
+    },
+    {
+      "fluid": "diesel_reform",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 3430000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:742"
+    },
+    {
+      "fluid": "diesel_crack_reform",
+      "grade": "HIGH",
+      "grade_ordinal": 2,
+      "he_per_bucket": 3210000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:743"
+    },
+    {
+      "fluid": "kerosene_reform",
+      "grade": "AERO",
+      "grade_ordinal": 3,
+      "he_per_bucket": 9600000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:744"
+    },
+    {
+      "fluid": "reformgas",
+      "grade": "GAS",
+      "grade_ordinal": 4,
+      "he_per_bucket": 15700000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:745"
+    },
+    {
+      "fluid": "naphtha_coker",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 187000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:721"
+    },
+    {
+      "fluid": "gas_coker",
+      "grade": "GAS",
+      "grade_ordinal": 4,
+      "he_per_bucket": 93700,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:711"
+    },
+    {
+      "fluid": "naphtha_ds",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 330000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:719"
+    },
+    {
+      "fluid": "lightoil_ds",
+      "grade": "MEDIUM",
+      "grade_ordinal": 1,
+      "he_per_bucket": 4400000,
+      "source": "src/main/java/com/hbm/inventory/fluid/Fluids.java:727"
+    }
   ],
+  "deferred_traits": [],
   "coverage": {
     "flammable": 60,
-    "coolable": 16
+    "coolable": 16,
+    "combustible": 43
   }
 }

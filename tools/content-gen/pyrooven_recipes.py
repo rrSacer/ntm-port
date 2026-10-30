@@ -7,14 +7,17 @@ from machine_recipes import integer
 from bedrock_processing_common import Context, body, config, events, skip, write
 
 
-def fuel_heat(source, include_combustion=False):
+def fuel_heat(source, include_combustion=False, grades=None):
+    # When a dict is passed as grades, it receives the final FuelGrade name for each combustible fluid.
     text = clean((source / 'src/main/java/com/hbm/inventory/fluid/Fluids.java').read_text())
     heat = {}; combustion = {}
     for match in re.finditer(r'\b([A-Z][A-Z0-9_]*)\s*=\s*new FluidType\((.*?);', text, re.S):
         trait = re.search(r'new FT_Flammable\(([^)]+)\)', match[2])
         if trait: heat[match[1]] = integer(trait[1])
-        trait = re.search(r'new FT_Combustible\(FuelGrade.\w+,\s*([^)]+)\)', match[2])
-        if trait: combustion[match[1]] = integer(trait[1])
+        trait = re.search(r'new FT_Combustible\(FuelGrade.(\w+),\s*([^)]+)\)', match[2])
+        if trait:
+            combustion[match[1]] = integer(trait[2])
+            if grades is not None: grades[match[1]] = trait[1]
     values = {}
     def number(expr):
         expr = re.sub(r'(\w+)\.getTrait\(FT_Flammable.class\)\.getHeatEnergy\(\)', lambda m: str(heat[m[1]]), expr)
@@ -45,7 +48,9 @@ def fuel_heat(source, include_combustion=False):
                     if combustible > limit:
                         combustible -= combustible % quantum
                         break
-                if combustible > 0: combustion[args[0]] = combustible
+                if combustible > 0:
+                    combustion[args[0]] = combustible
+                    if grades is not None: grades[args[0]] = args[3].split('.')[-1]
             for limit, quantum in [(10000000,100000),(1000000,10000),(100000,1000),(10000,100),(1000,10)]:
                 if amount > limit:
                     amount -= amount % quantum
