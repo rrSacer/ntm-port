@@ -9,21 +9,60 @@
         0,
         5.5,
         0.5
-      ]
+      ],
+      "parent": "Lid"
     },
     "Cable2": {
       "pivot": [
         0,
         5.5,
         0
-      ]
+      ],
+      "parent": "Lid"
     },
     "Cable3": {
       "pivot": [
         0,
         5.5,
         -0.5
-      ]
+      ],
+      "parent": "Lid"
+    },
+    "Ring1": {
+      "parent": "Lid"
+    },
+    "Electrode1": {
+      "parent": "Lid"
+    },
+    "Electrode1Hot": {
+      "parent": "Lid"
+    },
+    "Electrode1Short": {
+      "parent": "Lid"
+    },
+    "Ring2": {
+      "parent": "Lid"
+    },
+    "Electrode2": {
+      "parent": "Lid"
+    },
+    "Electrode2Hot": {
+      "parent": "Lid"
+    },
+    "Electrode2Short": {
+      "parent": "Lid"
+    },
+    "Ring3": {
+      "parent": "Lid"
+    },
+    "Electrode3": {
+      "parent": "Lid"
+    },
+    "Electrode3Hot": {
+      "parent": "Lid"
+    },
+    "Electrode3Short": {
+      "parent": "Lid"
     }
   },
   "play": [
@@ -122,6 +161,18 @@
     "Electrode1Short",
     "Electrode2Short",
     "Electrode3Short"
+  ],
+  "pose": [
+    {
+      "animation": "animation.arc_furnace.lid",
+      "value": 24,
+      "max_value": 1000
+    },
+    {
+      "animation": "animation.arc_furnace.contents",
+      "value": 25,
+      "max": 26
+    }
   ],
   "animations": "ntm:animations/machine_arc_furnace_large.animation.json"
 }

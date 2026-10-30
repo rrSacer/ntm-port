@@ -7925,7 +7925,7 @@
       }
     },
     "ntm:machine_arc_furnace_large": {
-      "source": "ContainerMachineArcFurnaceLarge, GUIMachineArcFurnaceLarge (gui_arc_furnace.png 176x256), MachineArcFurnaceLarge {4,0,2,2,2,2} offset 2, RenderArcFurnace (case 2: 90; the lid, the contents and each electrode's state follow the machine's values: the electrodes, rings, cables and contents shown by values 20-23; the lid and the contents' height, posed by values, are not drawn yet; the cables swing while it works)",
+      "source": "ContainerMachineArcFurnaceLarge, GUIMachineArcFurnaceLarge (gui_arc_furnace.png 176x256), MachineArcFurnaceLarge {4,0,2,2,2,2} offset 2, RenderArcFurnace (case 2: 90; the lid, the contents and each electrode's state follow the machine's values: the electrodes, rings, cables and contents shown by values 20-23; the lid (value 24, 2 blocks up at 1000, carrying the rings, electrodes and cables) and the molten contents' height (25 of 26) posed by values; the cables swing while it works)",
       "machine": {
         "slots": [
           {
@@ -8161,47 +8161,130 @@
               0,
               5.5,
               0.5
-            ]
+            ],
+            "parent": "Lid"
           },
           "Cable2": {
             "pivot": [
               0,
               5.5,
               0
-            ]
+            ],
+            "parent": "Lid"
           },
           "Cable3": {
             "pivot": [
               0,
               5.5,
               -0.5
-            ]
+            ],
+            "parent": "Lid"
+          },
+          "Ring1": {
+            "parent": "Lid"
+          },
+          "Electrode1": {
+            "parent": "Lid"
+          },
+          "Electrode1Hot": {
+            "parent": "Lid"
+          },
+          "Electrode1Short": {
+            "parent": "Lid"
+          },
+          "Ring2": {
+            "parent": "Lid"
+          },
+          "Electrode2": {
+            "parent": "Lid"
+          },
+          "Electrode2Hot": {
+            "parent": "Lid"
+          },
+          "Electrode2Short": {
+            "parent": "Lid"
+          },
+          "Ring3": {
+            "parent": "Lid"
+          },
+          "Electrode3": {
+            "parent": "Lid"
+          },
+          "Electrode3Hot": {
+            "parent": "Lid"
+          },
+          "Electrode3Short": {
+            "parent": "Lid"
           }
         },
-        "loop_animation": {
-          "name": "animation.arc_furnace.work",
-          "length": 0.6283,
-          "bones": {
-            "Cable1": {
-              "swing": {
-                "axis": "x",
-                "amp": 30
+        "loop_animation": [
+          {
+            "name": "animation.arc_furnace.work",
+            "length": 0.6283,
+            "bones": {
+              "Cable1": {
+                "swing": {
+                  "axis": "x",
+                  "amp": 30
+                }
+              },
+              "Cable2": {
+                "swing": {
+                  "axis": "x",
+                  "amp": 30
+                }
+              },
+              "Cable3": {
+                "swing": {
+                  "axis": "x",
+                  "amp": 30
+                }
               }
-            },
-            "Cable2": {
-              "swing": {
-                "axis": "x",
-                "amp": 30
+            }
+          },
+          {
+            "name": "animation.arc_furnace.lid",
+            "length": 1.0,
+            "loop": false,
+            "bones": {
+              "Lid": {
+                "position": {
+                  "0.0": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "1.0": [
+                    0,
+                    32,
+                    0
+                  ]
+                }
               }
-            },
-            "Cable3": {
-              "swing": {
-                "axis": "x",
-                "amp": 30
+            }
+          },
+          {
+            "name": "animation.arc_furnace.contents",
+            "length": 1.0,
+            "loop": false,
+            "bones": {
+              "ContentsHot": {
+                "position": {
+                  "0.0": [
+                    0,
+                    -28,
+                    0
+                  ],
+                  "1.0": [
+                    0,
+                    0,
+                    0
+                  ]
+                }
               }
             }
           }
-        },
+        ],
         "play": [
           {
             "animation": "animation.arc_furnace.work",
@@ -8298,6 +8381,18 @@
           "Electrode1Short",
           "Electrode2Short",
           "Electrode3Short"
+        ],
+        "pose": [
+          {
+            "animation": "animation.arc_furnace.lid",
+            "value": 24,
+            "max_value": 1000
+          },
+          {
+            "animation": "animation.arc_furnace.contents",
+            "value": 25,
+            "max": 26
+          }
         ]
       }
     }

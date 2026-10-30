@@ -393,6 +393,46 @@
           }
         }
       }
+    },
+    "animation.arc_furnace.lid": {
+      "loop": false,
+      "animation_length": 1.0,
+      "bones": {
+        "Lid": {
+          "position": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.0": [
+              0,
+              32,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.arc_furnace.contents": {
+      "loop": false,
+      "animation_length": 1.0,
+      "bones": {
+        "ContentsHot": {
+          "position": {
+            "0.0": [
+              0,
+              -28,
+              0
+            ],
+            "1.0": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
     }
   }
 }
