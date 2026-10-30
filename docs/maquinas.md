@@ -598,6 +598,29 @@ desliga):
 - uma broca abaixo do nível do depósito não tira nada;
 - o slopper transforma as densidades nos minérios BASE certos.
 
+**Em jogo** (motor `ntm-visual` api 10, Xvfb `:15`, mudo,
+`tools/test-game/bedrock.py`; mundo criativo, seed 1768123; sem "took too
+long"). O depósito de nível 1 fica em (2920, −1886): actinídeos 2,0 e
+cristalinos 1,0, sem fluido. Ele é posto por `fill`, porque não guarda nada.
+O resto do poço é aberto antes, para o teste não levar horas.
+- **`escavar`:** a escavadora sobre o depósito, com a bateria criativa e a
+  broca ferro.
+  - Cava as 5 camadas naturais (grama, terra e pedregulho no buffer).
+  - Tira um bruto a cada ~2 min, com as densidades do chunk × 1,1 no
+    `custom_data` (`/data`: actinídeos 2,2).
+  - Os brutos do mesmo depósito se empilham.
+- **`slop`:** 3 brutos e a água de um barril em modo saída na borda dão 6
+  minérios BASE de actinídeos e 3 de cristalinos, em 85 s.
+- **`centrifugar`:** 6 BASE → 6 PRIMARY + 6 cascalhos → 24 fragmentos de
+  urânio e 24 de tório.
+- **`craftar`:** 9 fragmentos de urânio na bancada dão 1 pó de urânio.
+- **Achados:**
+  - O motor devolve o `custom_data` em outra ordem e outro formato, e brutos
+    iguais não se empilhavam. O port passou a comparar a forma canônica.
+  - **Bug do motor, em aberto (agente de visual):** o shift-clique de uma
+    pilha com mais de um item de um slot de máquina para o inventário perde o
+    `custom_data`. O bruto perde as densidades. Itens isolados mantêm.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
