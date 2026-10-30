@@ -16,7 +16,7 @@ def build(source):
     members = [s.strip() for s in split(text.split('enum ScrapType {',1)[1].split('}',1)[0])]
     if len(members) != 23: raise ValueError('Plastic scrap enum drift')
     name, texture = registration(items, 'scrap_plastic', 'item')
-    for meta, member in enumerate(members[:12]):
+    for meta, member in enumerate(members):
         rows.append({'id':name+'__'+member.lower(),'type':'item','category':'scrap','source_variable':'scrap_plastic',
                      'metadata':meta,'subtype_kind':'enum','source_enum':'ScrapType.'+member,
                      'source_texture':f'src/main/resources/assets/hbm/textures/items/{texture}.png',

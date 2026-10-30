@@ -19149,6 +19149,171 @@
       "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
     },
     {
+      "id": "scrap_plastic__cpu_logic",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 12,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.CPU_LOGIC",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__cpu_cache",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 13,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.CPU_CACHE",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__cpu_ext",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 14,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.CPU_EXT",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__cpu_socket",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 15,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.CPU_SOCKET",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__mem_socket",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 16,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.MEM_SOCKET",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__mem_16k_a",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 17,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.MEM_16K_A",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__mem_16k_b",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 18,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.MEM_16K_B",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__mem_16k_c",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 19,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.MEM_16K_C",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__mem_16k_d",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 20,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.MEM_16K_D",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__card_board",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 21,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.CARD_BOARD",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
+      "id": "scrap_plastic__card_processor",
+      "type": "item",
+      "category": "scrap",
+      "source_variable": "scrap_plastic",
+      "metadata": 22,
+      "subtype_kind": "enum",
+      "source_enum": "ScrapType.CARD_PROCESSOR",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/scrap_plastic.png",
+      "names": {
+        "en_us": "Plastic Scraps",
+        "pt_br": "Sucata Plástica"
+      },
+      "behavior_gap": "Original hidden intermediate; enum retained, no item logic"
+    },
+    {
       "id": "machine_crucible",
       "source_variable": "machine_crucible",
       "type": "block",
