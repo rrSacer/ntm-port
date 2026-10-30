@@ -151,6 +151,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
     rows.extend(bedrock_processing_catalog.build(source))
     import catalog_completion
     rows.extend(catalog_completion.build(source))
+    import petroleum_catalog
+    rows.extend(petroleum_catalog.build(source))
     import foundry_catalog
     rows.extend(foundry_catalog.build(source))
     import anvil_catalog
@@ -183,10 +185,12 @@ def build(source=SOURCE, output=ROOT / 'content'):
     if backlog.is_file():
         data = json.loads(backlog.read_text())
         for entry in data['entries']:
-            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES) | set(bedrock_processing_catalog.MACHINES):
+            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES) | set(bedrock_processing_catalog.MACHINES) | set(petroleum_catalog.MACHINES):
                 entry['content_id'] = 'ntm:' + entry['id'] + ('_large' if entry['source_variable'] == 'machine_arc_furnace' else '')
                 entry['status'] = ('Crystallizer content declared; stage-two processing/upgrades tracked separately'
                                    if entry['source_variable'] == 'machine_crystallizer' else
+                                   'Petroleum content declared; processing and visuals tracked separately'
+                                   if entry['source_variable'] in petroleum_catalog.MACHINES else
                                    'Bedrock stage-three/four content declared; processing and visuals tracked separately'
                                    if entry['source_variable'] in bedrock_processing_catalog.MACHINES else
                                    'Bedrock stage-one content contract declared; extraction/slopping and visuals tracked by their agents'

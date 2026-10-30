@@ -19754,6 +19754,44 @@
       "behavior_gap": "Original block texture with cube JSON fallback; graphite fire/heat and rebar custom geometry are not reproduced"
     },
     {
+      "id": "machine_liquefactor",
+      "source_variable": "machine_liquefactor",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Industrial Liquefaction Machine",
+        "pt_br": "Máquina Industrial de Liquefação"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel_machine.png",
+      "textures": {
+        "side": "blocks/block_steel_machine",
+        "top": "blocks/block_steel_machine",
+        "front": "blocks/block_steel_machine"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock"
+    },
+    {
+      "id": "machine_solidifier",
+      "source_variable": "machine_solidifier",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Industrial Solidification Machine",
+        "pt_br": "Máquina Industrial de Solidificação"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel_machine.png",
+      "textures": {
+        "side": "blocks/block_steel_machine",
+        "top": "blocks/block_steel_machine",
+        "front": "blocks/block_steel_machine"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock"
+    },
+    {
       "id": "machine_crucible",
       "source_variable": "machine_crucible",
       "type": "block",
