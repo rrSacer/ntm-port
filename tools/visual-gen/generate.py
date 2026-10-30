@@ -173,6 +173,8 @@ def loop_animation(spec):
             out['rotation'] = {'0.0': [0, 0, 0], f'{length:.2f}': b['turn']}
         if 'position' in b:
             out['position'] = b['position']
+        if 'rotation' in b:
+            out['rotation'] = b['rotation']
         if 'sway' in b:
             w = b['sway']
             axis = 'xyz'.index(w['axis'])
