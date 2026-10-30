@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:disk",
+  "radius": 8,
+  "half_height": 4,
+  "target": {
+    "type": "minecraft:matching_blocks",
+    "blocks": [
+      "minecraft:sand",
+      "minecraft:red_sand"
+    ]
+  },
+  "state_provider": {
+    "type": "minecraft:simple",
+    "state": {
+      "id": "ntm:ore_oil_sand"
+    }
+  }
+}

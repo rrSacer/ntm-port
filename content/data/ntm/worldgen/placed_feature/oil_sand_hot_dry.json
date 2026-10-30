@@ -1,0 +1,30 @@
+{
+  "feature": "ntm:oil_sand_hot_dry",
+  "placement": [
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 98
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:offset",
+      "x": 8,
+      "y": 0,
+      "z": 8
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "absolute": 60
+        },
+        "max_inclusive": {
+          "absolute": 67
+        }
+      }
+    }
+  ]
+}
