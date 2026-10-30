@@ -698,7 +698,7 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 
 ## 4. Motor (patch) e port
 
-**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 51 commits):
+**Patch no motor** (`horizon-visual`, branch `ntm-visual`, 56 commits):
 
 | Commit | O quê |
 |---|---|
@@ -753,6 +753,11 @@ A tela fica com a textura do NTM e põe os slots do port nos lugares dele:
 | `feat(client): keep a machine's screen open within its use range` | `use_range` (o `getUseRange` do NTM, 12 a partir do núcleo) |
 | `docs(api): describe taller multiblocks and a machine's use range` | |
 | `fix(lan): send an item's custom data to clients` | O `custom_data` vai aos clientes. No criativo, o cliente devolve os slots que previu (`SetCreativeModeSlot`), e o shift-clique de uma máquina apagava as densidades do minério de bedrock |
+| `test(render): write a liquid's expected colour as one constant` | clippy |
+| `feat(render): show a model's liquid by synced values` | `values` no líquido, e sem `color` a textura como é (o pedregulho do hefesto frio) |
+| `feat(render): write values on a machine screen` | `texts` (os campos de número do trocador de calor) |
+| `docs(api): describe screen texts and liquids shown by values` | |
+| `fix(server): use a multiblock from any of its cells` | O contorno de uma célula é a máquina inteira, então o ponto do clique cai onde o raio entra no volume. O servidor (`handleUseItemOn`) recusava pontos a mais de 1 bloco da célula, e só a face de perto abria a tela. Agora vale qualquer ponto dentro do volume |
 
 **No port:**
 

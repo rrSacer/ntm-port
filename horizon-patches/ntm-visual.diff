@@ -53,7 +53,7 @@ index 75cf5ee85..1262f15cd 100644
  miniz_oxide = "0.8"
  naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
 diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
-index b415748c4..1c08b3586 100644
+index b415748c4..5c92c9dac 100644
 --- a/crates/horizon-client-render/src/block_entity_render.rs
 +++ b/crates/horizon-client-render/src/block_entity_render.rs
 @@ -94,6 +94,11 @@ pub fn diffuse(normal: Vec3, lights: (Vec3, Vec3)) -> f32 {
@@ -342,7 +342,7 @@ index b415748c4..1c08b3586 100644
 +        }
 +        let light = vertex_light(sky << 4 | block);
 +        // Liquids by the block entity's values (`synced`), drawn as vertices.
-+        if !m.liquids.is_empty() && !values.is_empty() {
++        if !m.liquids.is_empty() {
 +            let place = Mat4::from_translation(origin);
 +            m.emit_liquids(values, yaw, place, light, scene.sprites, out);
 +        }
@@ -930,10 +930,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..607c8454a
+index 000000000..ec68afb1c
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,1161 @@
+@@ -0,0 +1,1222 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -990,7 +990,10 @@ index 000000000..607c8454a
 +//! {"texture": "ntm:textures/models/machines/lava_gray.png",
 +//!  "box": [0.125, 0.125, 0.125, 0.875, 0.875, 0.875],   blocks, turned with the model
 +//!  "value": 0, "max": 1,     its top face at value / max of the height (indices; no max: full)
-+//!  "color": 2,               the value holding 0xRRGGBB; 0 draws nothing
++//!  "color": 2,               the value holding 0xRRGGBB; 0 draws nothing (none: the
++//!                            texture as it is, always)
++//!  "values": [{"value": 0, "max": 0}],   shown only while each value is in min..=max
++//!                            (min: 1, max: none), as `play`'s
 +//!  "column": false,         a jet: the box's four sides, while its colour is set
 +//!  "tint": true}             false: the texture as it is (an icon shown while the value is set)
 +//! ```
@@ -1041,13 +1044,16 @@ index 000000000..607c8454a
 +/// the top of `bounds` (block coordinates, 0 to 1 on a block, turned with
 +/// the facing) at `value / max` of its height, the texture tinted by the
 +/// 0xRRGGBB in `color` (none while 0); a `column` (a pour) shows its sides,
-+/// whole, while its colour is set.
++/// whole, while its colour is set. Without `color` it is the texture as it
++/// is, shown while `when` holds.
 +#[derive(Clone, Debug, Default, PartialEq)]
 +pub struct Liquid {
 +    pub bounds: [f32; 6],
 +    pub value: usize,
 +    pub max: Option<usize>,
-+    pub color: usize,
++    pub color: Option<usize>,
++    /// Synced values (index, min, max) that must all be in range.
++    pub when: Vec<(usize, i32, i32)>,
 +    pub sprite: String,
 +    pub column: bool,
 +    /// Tinted by the colour value (molten metal); false draws the texture
@@ -1299,6 +1305,22 @@ index 000000000..607c8454a
 +    Ok(out)
 +}
 +
++/// `[{"value": i, "min": a, "max": b}]` as (index, min, max): min 1 and no
++/// max unless given.
++fn value_conditions(v: &Value) -> Vec<(usize, i32, i32)> {
++    v.as_array()
++        .into_iter()
++        .flatten()
++        .filter_map(|v| {
++            Some((
++                v["value"].as_u64()? as usize,
++                v["min"].as_i64().unwrap_or(1) as i32,
++                v["max"].as_i64().map_or(i32::MAX, |m| m as i32),
++            ))
++        })
++        .collect()
++}
++
 +/// Reads one model file.
 +pub fn parse(root: &Path, block: &str, doc: &Value) -> Result<Model, String> {
 +    let mut liquids = Vec::new();
@@ -1318,7 +1340,8 @@ index 000000000..607c8454a
 +            bounds,
 +            value: l["value"].as_u64().unwrap_or(0) as usize,
 +            max: l["max"].as_u64().map(|m| m as usize),
-+            color: l["color"].as_u64().ok_or("a liquid without color")? as usize,
++            color: l["color"].as_u64().map(|c| c as usize),
++            when: value_conditions(&l["values"]),
 +            sprite,
 +            column: l["column"].as_bool().unwrap_or(false),
 +            tint: l["tint"].as_bool().unwrap_or(true),
@@ -1400,18 +1423,8 @@ index 000000000..607c8454a
 +        .into_iter()
 +        .flatten()
 +        .filter_map(|p| {
-+            let values = p["values"].as_array()?;
-+            let conditions = values
-+                .iter()
-+                .filter_map(|v| {
-+                    Some((
-+                        v["value"].as_u64()? as usize,
-+                        v["min"].as_i64().unwrap_or(1) as i32,
-+                        v["max"].as_i64().map_or(i32::MAX, |m| m as i32),
-+                    ))
-+                })
-+                .collect();
-+            Some((animation_at(p)?, conditions))
++            p["values"].as_array()?;
++            Some((animation_at(p)?, value_conditions(&p["values"])))
 +        })
 +        .collect();
 +    let play = doc["play"]
@@ -1727,7 +1740,14 @@ index 000000000..607c8454a
 +            * Mat4::from_rotation_y(yaw.to_radians())
 +            * Mat4::from_translation(Vec3::new(-0.5, 0.0, -0.5));
 +        for l in &self.liquids {
-+            let rgb = value(l.color) as u32 & 0xFF_FFFF;
++            if !l
++                .when
++                .iter()
++                .all(|&(i, min, max)| (min..=max).contains(&value(i)))
++            {
++                continue;
++            }
++            let rgb = l.color.map_or(0xFF_FFFF, |c| value(c) as u32 & 0xFF_FFFF);
 +            if rgb == 0 {
 +                continue;
 +            }
@@ -1735,7 +1755,7 @@ index 000000000..607c8454a
 +                continue;
 +            };
 +            let [x0, y0, z0, x1, y1, z1] = l.bounds;
-+            let color = if l.tint {
++            let color = if l.tint && l.color.is_some() {
 +                255 << 24 | (rgb & 255) << 16 | (rgb >> 8 & 255) << 8 | rgb >> 16
 +            } else {
 +                u32::MAX
@@ -1870,7 +1890,8 @@ index 000000000..607c8454a
 +                    bounds: [0.125, 0.125, 0.125, 0.875, 0.375, 0.875],
 +                    value: 0,
 +                    max: Some(1),
-+                    color: 2,
++                    color: Some(2),
++                    when: Vec::new(),
 +                    sprite: "s".into(),
 +                    column: false,
 +                    tint: true,
@@ -1879,7 +1900,8 @@ index 000000000..607c8454a
 +                    bounds: [0.4, -1.0, 0.4, 0.6, 0.5, 0.6],
 +                    value: 0,
 +                    max: None,
-+                    color: 3,
++                    color: Some(3),
++                    when: Vec::new(),
 +                    sprite: "s".into(),
 +                    column: true,
 +                    // An icon: the texture as it is.
@@ -1911,7 +1933,8 @@ index 000000000..607c8454a
 +        );
 +        assert_eq!(out.len(), 4, "half full, its pour stopped");
 +        assert!((out[0].pos[1] - 0.25).abs() < 1e-5);
-+        assert_eq!(out[0].color, 255 << 24 | 0x00 << 16 | 0x80 << 8 | 0xFF);
++        // 0xFF8000 as the vertex takes it: alpha, blue, green, red.
++        assert_eq!(out[0].color, 0xFF00_80FF);
 +        out.clear();
 +        m.emit_liquids(
 +            &[72, 144, 0, 0x00FF00],
@@ -1923,6 +1946,44 @@ index 000000000..607c8454a
 +        );
 +        assert_eq!(out.len(), 16, "no colour, no level; the pour's four sides");
 +        assert!(out.iter().all(|v| v.color == u32::MAX), "untinted");
++    }
++
++    #[test]
++    fn a_liquid_without_colour_shows_while_its_values_hold() {
++        // A cold core's cobblestone: shown while value 0 is 0.
++        let m = Model {
++            liquids: vec![Liquid {
++                bounds: [0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
++                color: None,
++                when: vec![(0, 0, 0)],
++                sprite: "s".into(),
++                tint: true,
++                ..Default::default()
++            }],
++            ..Default::default()
++        };
++        let sprites: std::collections::HashMap<String, Rect> = [(
++            "s".to_string(),
++            Rect {
++                u0: 0.0,
++                v0: 0.0,
++                u1: 1.0,
++                v1: 1.0,
++                w: 16,
++                h: 16,
++            },
++        )]
++        .into();
++        let mut out = Vec::new();
++        m.emit_liquids(&[], 0.0, Mat4::IDENTITY, 0, &sprites, &mut out);
++        assert_eq!(out.len(), 4, "a value not received yet counts as 0");
++        assert!(
++            out.iter().all(|v| v.color == u32::MAX),
++            "the texture as it is"
++        );
++        out.clear();
++        m.emit_liquids(&[5], 0.0, Mat4::IDENTITY, 0, &sprites, &mut out);
++        assert!(out.is_empty(), "hot: hidden");
 +    }
 +
 +    #[test]
@@ -2097,10 +2158,10 @@ index 000000000..607c8454a
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
 new file mode 100644
-index 000000000..f326d6dbc
+index 000000000..10d0dc7e9
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_screens.rs
-@@ -0,0 +1,652 @@
+@@ -0,0 +1,731 @@
 +//! Screens of content mods' machines (`horizon_world::mod_machines`): the
 +//! machine's own background texture, with bars, lights and tooltips drawn
 +//! from the values the mod sets. Each `assets/<namespace>/horizon_screen/<name>.json`
@@ -2129,6 +2190,10 @@ index 000000000..f326d6dbc
 +//!     {"value": 2, "max": 3, "at": [34, 25], "tip": 5, "back": 2, "side": 1, "color": "#7f0000"}
 +//!   ],                                       round 270 degrees to the value's share of `max`
 +//!   "tooltips": [{"rect": [152, 18, 16, 61], "lines": ["{0:si} / {1:si} HE"]}],
++//!   "texts": [                               a line written on the screen, values filled in as
++//!     {"at": [73, 31], "text": "{6}", "color": "#00ff00", "align": "left", "shadow": true}
++//!   ],                                       a tooltip's (HBM's number fields); align: "left",
++//!                                            "center" or "right" of `at`; colour: grey
 +//!   "buttons": [{"id": 0, "rect": [7, 125, 18, 18], "lines": ["Choose a recipe"]}],
 +//!                                            a button's "shift": the id sent while shift is held
 +//!                                            (HBM's shift-click: the anvil crafts all it can);
@@ -2221,6 +2286,25 @@ index 000000000..f326d6dbc
 +    pub lines: Vec<String>,
 +}
 +
++/// Where a line of `texts` sits against its `at`.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum Align {
++    Left,
++    Center,
++    Right,
++}
++
++/// A line written on the screen, with values filled in (`format`).
++#[derive(Clone, Debug, PartialEq)]
++pub struct Label {
++    pub at: [f32; 2],
++    pub text: String,
++    /// 0xRRGGBB.
++    pub color: u32,
++    pub align: Align,
++    pub shadow: bool,
++}
++
 +#[derive(Clone, Debug, PartialEq)]
 +pub struct Button {
 +    pub id: u32,
@@ -2247,6 +2331,7 @@ index 000000000..f326d6dbc
 +    pub gauges: Vec<Gauge>,
 +    pub overlays: Vec<Overlay>,
 +    pub tips: Vec<Tip>,
++    pub texts: Vec<Label>,
 +    pub buttons: Vec<Button>,
 +    /// The machine's slots this screen moves (`Some`) or leaves out (`None`).
 +    pub slots: HashMap<usize, Option<[f32; 2]>>,
@@ -2410,6 +2495,27 @@ index 000000000..f326d6dbc
 +            })
 +        })
 +        .collect();
++    let texts = doc["texts"]
++        .as_array()
++        .into_iter()
++        .flatten()
++        .filter_map(|t| {
++            Some(Label {
++                at: floats::<2>(&t["at"])?,
++                text: t["text"].as_str()?.to_owned(),
++                color: t["color"]
++                    .as_str()
++                    .and_then(|c| u32::from_str_radix(c.strip_prefix('#')?, 16).ok())
++                    .unwrap_or(0x404040),
++                align: match t["align"].as_str() {
++                    Some("center") => Align::Center,
++                    Some("right") => Align::Right,
++                    _ => Align::Left,
++                },
++                shadow: t["shadow"].as_bool().unwrap_or(false),
++            })
++        })
++        .collect();
 +    let buttons = doc["buttons"]
 +        .as_array()
 +        .into_iter()
@@ -2442,6 +2548,7 @@ index 000000000..f326d6dbc
 +        gauges,
 +        overlays,
 +        tips,
++        texts,
 +        buttons,
 +        slots,
 +    })
@@ -2561,7 +2668,7 @@ index 000000000..f326d6dbc
 +        atlas.sprites.contains_key(&self.sprite)
 +    }
 +
-+    /// The background, then the bars and overlays, at `(ox, oy)`.
++    /// The background, then the bars, overlays and texts, at `(ox, oy)`.
 +    pub fn draw(
 +        &self,
 +        batch: &mut HudBatch,
@@ -2634,6 +2741,18 @@ index 000000000..f326d6dbc
 +                let [x, y, w, h] = o.rect;
 +                self.blit(batch, atlas, [o.uv[0], o.uv[1], w, h], ox + x, oy + y);
 +            }
++        }
++        for t in &self.texts {
++            let line = format(&t.text, values);
++            let w = atlas.font.width(&line);
++            let x = match t.align {
++                Align::Left => t.at[0],
++                Align::Center => t.at[0] - w / 2.0,
++                Align::Right => t.at[0] - w,
++            };
++            let [_, r, g, b] = t.color.to_be_bytes();
++            let color = crate::hud::rgba(r, g, b, 255);
++            batch.text(atlas, &line, ox + x, oy + t.at[1], color, t.shadow);
 +        }
 +    }
 +
@@ -2724,13 +2843,15 @@ index 000000000..f326d6dbc
 +    #[test]
 +    fn a_screen_reads() {
 +        let doc: Value = serde_json::from_str(
-+            r#"{"texture":"ntm:textures/gui/a.png","size":[176,256],"title":[70,6,"center"],
++            r##"{"texture":"ntm:textures/gui/a.png","size":[176,256],"title":[70,6,"center"],
 +                "bars":[{"value":0,"max":1,"rect":[1,2,3,4],"uv":[176,0],"dir":"up"}],
 +                "overlays":[{"slot":0,"rect":[1,1,2,2],"uv":[3,3]}],
 +                "tooltips":[{"rect":[0,0,10,10],"lines":["{0}"]}],
++                "texts":[{"at":[73,31],"text":"{0}","color":"#00ff00","shadow":true},
++                         {"at":[88,6],"text":"x","align":"center"}],
 +                "buttons":[{"id":2,"rect":[20,20,5,5]},{"id":3,"shift":4,"rect":[30,30,5,5]},
 +                           {"screen":"ntm:b","rect":[40,40,5,5]}],
-+                "slots":{"1":[9,9],"2":null}}"#,
++                "slots":{"1":[9,9],"2":null}}"##,
 +        )
 +        .unwrap();
 +        let def = parse(Path::new("/r"), &doc).unwrap();
@@ -2751,6 +2872,25 @@ index 000000000..f326d6dbc
 +        assert_eq!(def.slot_at(0, [1.0, 1.0]), Some([1.0, 1.0]));
 +        assert_eq!(def.slot_at(1, [1.0, 1.0]), Some([9.0, 9.0]));
 +        assert_eq!(def.slot_at(2, [1.0, 1.0]), None);
++        assert_eq!(
++            def.texts,
++            vec![
++                Label {
++                    at: [73.0, 31.0],
++                    text: "{0}".into(),
++                    color: 0x00ff00,
++                    align: Align::Left,
++                    shadow: true,
++                },
++                Label {
++                    at: [88.0, 6.0],
++                    text: "x".into(),
++                    color: 0x404040,
++                    align: Align::Center,
++                    shadow: false,
++                },
++            ]
++        );
 +    }
 +}
 diff --git a/crates/horizon-client-render/src/world.rs b/crates/horizon-client-render/src/world.rs
@@ -3045,7 +3185,7 @@ index ffa8a66eb..88e54afa8 100644
          see_through: &[],
          celestial: &[],
 diff --git a/crates/horizon-client/src/game/lan_actions.rs b/crates/horizon-client/src/game/lan_actions.rs
-index d71923ad0..e35f8dfdd 100644
+index d71923ad0..7bf84ecf8 100644
 --- a/crates/horizon-client/src/game/lan_actions.rs
 +++ b/crates/horizon-client/src/game/lan_actions.rs
 @@ -833,6 +833,31 @@ impl Game<'_> {
@@ -3080,7 +3220,38 @@ index d71923ad0..e35f8dfdd 100644
          let (menu, title, slots) = if &**name == "minecraft:ender_chest" {
              // EnderChestBlock.useWithoutItem: the player's own inventory.
              (
-@@ -1358,6 +1383,8 @@ impl Game<'_> {
+@@ -1190,10 +1215,29 @@ impl Game<'_> {
+                     return;
+                 }
+                 // handleUseItemOn: within reach, and the hit point within the block.
+-                let inside = p
++                let mut inside = p
+                     .cursor
+                     .iter()
+                     .all(|&c| (f64::from(c) - 0.5).abs() < 1.0000001);
++                // A content mod multiblock's cell outlines the whole machine
++                // (`multiblock_outline`), so a click lands where the ray meets
++                // that volume, maybe blocks from the cell: within it is on
++                // the machine, as anywhere on HBM's dummies.
++                if !inside && host.hub.guests[gi].may_reach_block(p.pos) {
++                    let outline = self
++                        .as_guest(host, conn, |g| {
++                            let state = g.world.block(p.pos[0], p.pos[1], p.pos[2]);
++                            let name = g.res.facts().get(state).name.to_string();
++                            g.multiblock_outline(p.pos, &name)
++                        })
++                        .flatten();
++                    inside = outline.is_some_and(|b| {
++                        (0..3).all(|i| {
++                            let c = f64::from(p.cursor[i]);
++                            c > b[i] - 1e-7 && c < b[i + 3] + 1e-7
++                        })
++                    });
++                }
+                 if !(inside && host.hub.guests[gi].may_reach_block(p.pos)) {
+                     return;
+                 }
+@@ -1358,6 +1402,8 @@ impl Game<'_> {
                  });
              }
              S::PlayerCommand(p) if p.action == 6 => self.lan_start_gliding(host, conn),
@@ -5797,10 +5968,10 @@ index 3127248a1..3283882f7 100644
  | Server settings | `server.toml` | its keys | stable | [server-reference.md](server-reference.md) |
 diff --git a/docs/api/machine-files.md b/docs/api/machine-files.md
 new file mode 100644
-index 000000000..a9f7b27df
+index 000000000..657916293
 --- /dev/null
 +++ b/docs/api/machine-files.md
-@@ -0,0 +1,183 @@
+@@ -0,0 +1,193 @@
 +# Machine files
 +
 +A content mod (manifest `api = "0.2"`) can give a block slots, a screen, a 3D model and a multiblock shape with data
@@ -5887,6 +6058,7 @@ index 000000000..a9f7b27df
 +  ],
 +  "gauges": [{"value": 2, "max": 3, "at": [34, 25], "tip": 5, "back": 2, "side": 1, "color": "#7f0000"}],
 +  "tooltips": [{"rect": [152, 18, 16, 52], "lines": ["{0:si} / {1:si} HE"]}],
++  "texts": [{"at": [73, 31], "text": "{6} ticks", "color": "#00ff00", "align": "left", "shadow": true}],
 +  "buttons": [
 +    {"id": 0, "rect": [7, 125, 18, 18], "lines": ["Start"]},
 +    {"id": 1, "shift": 2, "rect": [27, 125, 18, 18], "lines": ["Make one", "Shift: make all"]},
@@ -5904,6 +6076,8 @@ index 000000000..a9f7b27df
 +- **Overlays:** a part of the texture drawn while a slot holds something, or while a value is in `min..=max`.
 +- **Gauges:** a needle that turns 270° from the lower left as `value` goes from 0 to `max`.
 +- **Tooltips:** lines shown over a rectangle. `{i}` is value `i`; `{i:si}` writes it with k, M, G, T.
++- **Texts:** lines written on the screen, values filled in as a tooltip's: a number a machine shows in a field.
++  - `align` is `left`, `center` or `right` of `at`; `color` defaults to the title's grey; `shadow` defaults to false.
 +- **Buttons:**
 +  - **Sending an id:** a click sends `id` to the server mods (`poll-buttons`), or `shift` while shift is held.
 +  - **Switching screens:** a button with `screen` shows that screen instead and sends nothing. It must be one of the
@@ -5942,7 +6116,10 @@ index 000000000..a9f7b27df
 +  "tint": {"Window": "#26bfffff"},
 +  "open": "animation.press.door",
 +  "pose": [{"animation": "animation.press.head", "value": 0, "max": 1}],
-+  "liquids": [{"texture": "mymod:textures/models/white.png", "box": [-1, 1, -1, 1, 2, 1], "value": 5, "max": 6, "color": 7}]
++  "liquids": [
++    {"texture": "mymod:textures/models/white.png", "box": [-1, 1, -1, 1, 2, 1], "value": 5, "max": 6, "color": 7},
++    {"texture": "mymod:textures/models/coal.png", "box": [-1, 0, -1, 1, 1, 1], "values": [{"value": 4, "max": 0}]}
++  ]
 +}
 +```
 +
@@ -5976,8 +6153,12 @@ index 000000000..a9f7b27df
 +  tinted bone is drawn from vertices, its tinted bones after the rest and after its liquids, so they show what is
 +  behind them.
 +- **Liquids:** boxes filled to `value / max` of their height, in the colour of the value `color` (0 draws nothing).
++  - Without `max`, the box is full; a box shows its top face only, as a pool's surface.
 +  - `column: true` draws the four sides only, as a falling jet.
 +  - `tint: false` draws the texture as it is, while the colour value is set.
++  - Without `color`, the texture is drawn as it is, always.
++  - `values` shows the box only while every listed synced value is in `min..=max`, as `play`'s: a cold furnace's
++    coal at `{"value": 4, "max": 0}` (`min` defaults to 1).
 +
 +An animation file is `{"animations": {"<name>": {"loop": true, "animation_length": 4.0, "bones": {"<bone>":
 +{"rotation": {"0.0": [x, y, z], ...}, "position": {...}}}}}}`:
