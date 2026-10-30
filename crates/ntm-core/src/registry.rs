@@ -368,6 +368,29 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::AllRound,
     },
+    // The oil chain's batch B (6ce8965): the refinery, the fractioning
+    // tower, the mixer. Inert until their stage is approved.
+    BlockSpec {
+        id: "ntm:machine_refinery",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_fraction_tower",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:machine_mixer",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
     // The shredder (`crate::shredder`): `TilePortShapes.around`, energy only.
     BlockSpec {
         id: "ntm:machine_shredder",
