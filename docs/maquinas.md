@@ -1002,6 +1002,50 @@ Fecha a cadeia do bedrock com as linhas que dependiam do petróleo. Quase nada
 ela oferece. Tipado depois, perde o que tinha. O script tipa os barris de
 recolha e só então põe o reformador para rodar.
 
+## Petróleo, lote D: poço, pumpjack e torre de fraturamento (`oil_drill.rs`)
+
+São o `TileEntityMachineOilWell`, o `TileEntityMachinePumpjack` e o
+`TileEntityMachineFrackingTower` (base `TileEntityOilDrillBase`): um furador
+em três formas. A parte do mundo fica em `server/oil_server.rs`, `drill_tick`.
+
+| | Poço | Pumpjack | Torre de fraturamento |
+| --- | --- | --- | --- |
+| Energia | 100 HE/t, até 100.000 | 200 HE/t, até 250.000 | 5.000 HE/t, até 5.000.000 |
+| Intervalo | 50 ticks | 25 | 20 |
+| Por sucção | 500 mB de óleo + 100–500 de gás | 750 + 50–250 | 1.000 + 100–500; bedrock oil: 100 + 10–50, sem esgotar |
+| Esgota | 5% | 2,5% | 2% |
+| Profundidade | até y 5 | até y 5 | até −64 (o piso do 26.3; o NTM ia a 0) |
+
+**Como trabalha:**
+- A cada tick, com energia e espaço nos dois tanques, gasta o HE.
+- A cada intervalo, desce o cano (`ntm:oil_pipe`) do núcleo até o primeiro outro bloco:
+  - um depósito (`ntm:ore_oil`; para a torre também `ntm:ore_bedrock_oil`) é sugado, seguindo depósitos vazios até 64 passos;
+  - um depósito vazio sem petróleo além vira cano;
+  - qualquer outro bloco vira cano, menos os à prova de explosão (bedrock, obsidiana...), que param o furador.
+- A torre gasta 10 mB de solução de fraturamento por sucção e estraga o chão em 10 pontos a ~75 blocos: terra morta ou oleosa, areia suja, pedra rachada, plantas e folhas soltas tiradas.
+- Upgrades nos slots 5–7: velocidade, energia, overdrive e afterburn (queima o gás em energia), como no NTM.
+- Indicador: 0 trabalhando, 1 no fundo, 2 parado, 3 sem solução.
+- Toda leitura é limitada: a sucção lê até 512 células; cada ponto de estrago, 40 (o NTM lê o heightmap).
+
+**Desvios:**
+- as bolsas de radônio e amianto que o poço e o pumpjack soltam ao furar urânio e amianto (o conteúdo não tem esses blocos de gás);
+- a planta morta do estrago (`plant_dead` não existe): as plantas somem;
+- os slots de recipientes.
+
+**Verificação:**
+- **Unidade:** 2 testes. Os upgrades no consumo e no intervalo; a sucção dá óleo e gás, e a torre gasta a solução.
+- **Mundo falso** (`server/tests/oil_d_tests.rs`, 4):
+  - o pumpjack desce o cano pelo ar até o depósito e bombeia;
+  - um depósito vazio leva ao petróleo ao lado;
+  - a torre espera sem solução e depois tira bedrock oil sem esgotá-lo;
+  - saves inertes carregam como furadores.
+- **Em jogo** (`tools/test-game/bedrock.py`, etapa `petroleo_d`, sem "took too long"). Os depósitos foram postos com fill:
+  - o poço desceu o cano, bombeou e entregou 16.000 mB de óleo a um barril; o depósito esgotou e virou cano, e ele seguiu até o fundo;
+  - o pumpjack bombeou 33.750 mB até o depósito esgotar;
+  - a torre tirou 23.600 mB de petróleo do bedrock, gastando exatamente 10 mB de solução por 100 de óleo, até encher o tanque de 64.000 (indicador 2).
+  - A geração natural do petróleo é do fc8e1d8f e foi medida por ele.
+- **Telas:** abrem por uma célula de perna ou extra; os núcleos ficam cercados. No pumpjack, o extra sul, a +3 e +1 do núcleo.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
