@@ -5647,6 +5647,394 @@
 0
 ]
 },
+"ntm:rbmk_absorber": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+0
+]
+},
+"ntm:rbmk_autoloader": {
+"inventory": [
+8,
+100
+],
+"slots": [
+{
+"x": 17,
+"y": 18
+},
+{
+"x": 35,
+"y": 18
+},
+{
+"x": 53,
+"y": 18
+},
+{
+"x": 17,
+"y": 36
+},
+{
+"x": 35,
+"y": 36
+},
+{
+"x": 53,
+"y": 36
+},
+{
+"x": 17,
+"y": 54
+},
+{
+"x": 35,
+"y": 54
+},
+{
+"x": 53,
+"y": 54
+},
+{
+"output": true,
+"x": 107,
+"y": 18
+},
+{
+"output": true,
+"x": 125,
+"y": 18
+},
+{
+"output": true,
+"x": 143,
+"y": 18
+},
+{
+"output": true,
+"x": 107,
+"y": 36
+},
+{
+"output": true,
+"x": 125,
+"y": 36
+},
+{
+"output": true,
+"x": 143,
+"y": 36
+},
+{
+"output": true,
+"x": 107,
+"y": 54
+},
+{
+"output": true,
+"x": 125,
+"y": 54
+},
+{
+"output": true,
+"x": 143,
+"y": 54
+}
+],
+"synced": [
+0
+]
+},
+"ntm:rbmk_blank": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+0
+]
+},
+"ntm:rbmk_boiler": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+0
+]
+},
+"ntm:rbmk_console": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": []
+},
+"ntm:rbmk_control": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+1,
+2
+]
+},
+"ntm:rbmk_control_auto": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+1
+]
+},
+"ntm:rbmk_control_mod": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+1,
+2
+]
+},
+"ntm:rbmk_control_reasim": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+1,
+2
+]
+},
+"ntm:rbmk_control_reasim_auto": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+1
+]
+},
+"ntm:rbmk_cooler": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+0
+]
+},
+"ntm:rbmk_crane_console": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+2,
+3,
+4,
+5
+]
+},
+"ntm:rbmk_heater": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 41,
+"y": 45
+}
+],
+"synced": [
+0
+]
+},
+"ntm:rbmk_moderator": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+0
+]
+},
+"ntm:rbmk_outgasser": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 48,
+"y": 45
+},
+{
+"output": true,
+"x": 112,
+"y": 69
+}
+],
+"synced": [
+0
+]
+},
+"ntm:rbmk_reflector": {
+"inventory": [
+8,
+104
+],
+"slots": [],
+"synced": [
+0
+]
+},
+"ntm:rbmk_rod": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 80,
+"y": 45
+}
+],
+"synced": [
+0,
+1,
+2
+]
+},
+"ntm:rbmk_rod_mod": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 80,
+"y": 45
+}
+],
+"synced": [
+0,
+1,
+2
+]
+},
+"ntm:rbmk_rod_reasim": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 80,
+"y": 45
+}
+],
+"synced": [
+0,
+1,
+2
+]
+},
+"ntm:rbmk_rod_reasim_mod": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 80,
+"y": 45
+}
+],
+"synced": [
+0,
+1,
+2
+]
+},
+"ntm:rbmk_storage": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 32,
+"y": 29
+},
+{
+"x": 32,
+"y": 45
+},
+{
+"x": 32,
+"y": 61
+},
+{
+"x": 64,
+"y": 29
+},
+{
+"x": 64,
+"y": 45
+},
+{
+"x": 64,
+"y": 61
+},
+{
+"x": 96,
+"y": 29
+},
+{
+"x": 96,
+"y": 45
+},
+{
+"x": 96,
+"y": 61
+},
+{
+"x": 128,
+"y": 29
+},
+{
+"x": 128,
+"y": 45
+},
+{
+"x": 128,
+"y": 61
+}
+],
+"synced": [
+0
+]
+},
 "ntm:solar_mirror": {
 "inventory": [
 8,

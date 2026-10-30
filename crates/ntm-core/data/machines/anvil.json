@@ -682,6 +682,7 @@
 "ntm:ingot_bismuth_bronze",
 "ntm:ingot_boron",
 "ntm:ingot_bscco",
+"ntm:ingot_c4",
 "ntm:ingot_cadmium",
 "ntm:ingot_calcium",
 "ntm:ingot_cdalloy",
@@ -1129,6 +1130,7 @@
 "ntm:ingot_bismuth_bronze",
 "ntm:ingot_boron",
 "ntm:ingot_bscco",
+"ntm:ingot_c4",
 "ntm:ingot_cadmium",
 "ntm:ingot_calcium",
 "ntm:ingot_cdalloy",
@@ -5274,6 +5276,43 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.254",
+"label": "Carne de Glyphid ×2 (+3)",
+"in": [
+{
+"ids": [
+"ntm:egg_glyphid"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:glyphid_meat",
+2,
+1.0
+],
+[
+"ntm:glyphid_meat",
+1,
+0.5
+],
+[
+"minecraft:bone",
+1,
+0.75
+],
+[
+"minecraft:experience_bottle",
+1,
+0.5
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.255",
 "label": "Tubo de Aço ×4 (+2)",
 "in": [
@@ -5987,6 +6026,7 @@
 "ntm:ingot_bismuth_bronze",
 "ntm:ingot_boron",
 "ntm:ingot_bscco",
+"ntm:ingot_c4",
 "ntm:ingot_cadmium",
 "ntm:ingot_calcium",
 "ntm:ingot_cdalloy",
@@ -6434,6 +6474,7 @@
 "ntm:ingot_bismuth_bronze",
 "ntm:ingot_boron",
 "ntm:ingot_bscco",
+"ntm:ingot_c4",
 "ntm:ingot_cadmium",
 "ntm:ingot_calcium",
 "ntm:ingot_cdalloy",
@@ -10577,6 +10618,43 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.254",
+"label": "Carne de Glyphid ×2 (+3)",
+"in": [
+{
+"ids": [
+"ntm:egg_glyphid"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:glyphid_meat",
+2,
+1.0
+],
+[
+"ntm:glyphid_meat",
+1,
+0.5
+],
+[
+"minecraft:bone",
+1,
+0.75
+],
+[
+"minecraft:experience_bottle",
+1,
+0.5
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.255",
 "label": "Tubo de Aço ×4 (+2)",
 "in": [
@@ -10609,5 +10687,5 @@
 "tier_upper": -1
 }
 ],
-"skipped": 137
+"skipped": 136
 }

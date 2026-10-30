@@ -1168,6 +1168,48 @@
 "pools": []
 },
 {
+"name": "chem.meth",
+"label": "Chocolate de Rádio da Marca Ithis ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:248",
+"duration": 60,
+"power": 300,
+"in": [
+{
+"ids": [
+"minecraft:wheat"
+],
+"n": 1,
+"label": "wheat"
+},
+{
+"ids": [
+"minecraft:cocoa_beans"
+],
+"n": 2,
+"label": "cocoa beans"
+}
+],
+"fin": [
+[
+"lubricant",
+400
+],
+[
+"peroxide",
+500
+]
+],
+"out": [
+[
+"ntm:chocolate",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "chem.epearl",
 "label": "Suco de Ender · 100 mB",
 "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:253",
@@ -1193,6 +1235,48 @@
 [
 "enderjuice",
 100
+]
+],
+"pools": []
+},
+{
+"name": "chem.meatprocessing",
+"label": "Enxofre ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:258",
+"duration": 200,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:glyphid_meat",
+"ntm:glyphid_meat_grilled"
+],
+"n": 3,
+"label": "Carne de Glyphid"
+}
+],
+"fin": [
+[
+"water",
+1000
+]
+],
+"out": [
+[
+"ntm:sulfur",
+4,
+1.0
+],
+[
+"ntm:niter",
+3,
+1.0
+]
+],
+"fout": [
+[
+"salient",
+250
 ]
 ],
 "pools": []
@@ -2023,5 +2107,5 @@
 "pools": []
 }
 ],
-"skipped": 17
+"skipped": 15
 }

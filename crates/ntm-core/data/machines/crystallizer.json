@@ -12525,6 +12525,37 @@
 "pools": []
 },
 {
+"name": "crystallizer.110",
+"label": "Pílula Vermelha",
+"source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:216",
+"duration": 200,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:oil_tar__paraffin"
+],
+"n": 1,
+"label": "Cera de Parafina"
+}
+],
+"fin": [
+[
+"estradiol",
+250
+]
+],
+"out": [
+[
+"ntm:pill_red",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "crystallizer.111",
 "label": "Argila",
 "source": "src/main/java/com/hbm/inventory/recipes/CrystallizerRecipes.java:218",
@@ -12619,5 +12650,5 @@
 "pools": []
 }
 ],
-"skipped": 5
+"skipped": 4
 }

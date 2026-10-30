@@ -6127,10 +6127,11 @@
 },
 {
 "ids": [
+"ntm:ingot_c4",
 "ntm:ingot_semtex"
 ],
 "n": 4,
-"label": "Barra de Semtex"
+"label": "Barra de Composição C-4"
 },
 {
 "ids": [
