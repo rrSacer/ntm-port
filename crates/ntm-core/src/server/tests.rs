@@ -1921,3 +1921,5 @@ fn a_world_loaded_after_crashes_spreads_its_first_work() {
     assert!(r.verify.is_empty() || r.verify_publish.len() >= applied.min(24), "checks sent: {} of {}", r.verify_publish.len(), r.verify.len());
     assert!(column_untouched(&w.borrow()), "the old columns were put back");
 }
+
+mod oil_b_tests;
