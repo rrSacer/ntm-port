@@ -223,6 +223,8 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
     ("ntm:machine_excavator", [-3, 1, -3], [3, 1, 3]),
     // TileEntityMachineOreSlopper.getPorts: on its bottom layer.
     ("ntm:machine_ore_slopper", [-1, 0, -3], [1, 0, 3]),
+    // MachineCrystallizer.fillSpace: the makeExtra ports on its bottom layer.
+    ("ntm:machine_crystallizer", [-1, 0, -1], [1, 0, 1]),
 ];
 
 /// The cells of the multiblock of `block` at `core` that pass energy to
@@ -356,6 +358,12 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
             [0, 0, 2],
             [1, 0, 2],
         ],
+    ),
+    // MachineCrystallizer.getAllPorts: the four corners of its bottom layer,
+    // which reach the core through the cells between them.
+    (
+        "ntm:machine_crystallizer",
+        &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1]],
     ),
     // MachineChemicalPlant.getAllPorts: its bottom ring.
     (
@@ -745,6 +753,11 @@ mod tests {
         assert_eq!(cells.len(), 14);
         assert!(cells.contains(&[0, 70, 0]));
         assert!(proxy_cells("ntm:machine_assembly_machine", [0, 64, 0], Some("north")).len() == 8);
+        // The crystallizer's corners chain to its core through the ring.
+        let ring = fluid_proxy_cells("ntm:machine_crystallizer", [0, 64, 0], Some("west"));
+        assert_eq!(ring.len(), 8);
+        assert!(ring.contains(&[1, 64, 1]) && ring.contains(&[0, 64, 1]));
+        assert_eq!(proxy_cells("ntm:machine_crystallizer", [0, 64, 0], Some("west")).len(), 8);
     }
 
     #[test]
