@@ -121,13 +121,13 @@ class PurexContracts(unittest.TestCase):
         self.assertEqual(self.purex['machine'], 'purex')
         cov = self.purex['coverage']
         self.assertEqual(cov['scanned_source_calls'], 59)
-        self.assertEqual(cov['emitted'], 23)
-        self.assertEqual(cov['skipped_source_calls'], 36)
+        self.assertEqual(cov['emitted'], 27)
+        self.assertEqual(cov['skipped_source_calls'], 32)
         self.assertEqual(
             cov['by_family'],
             {
                 'synthesis': {'emitted': 3, 'skipped': 0},
-                'pile': {'emitted': 0, 'skipped': 4},
+                'pile': {'emitted': 4, 'skipped': 0},
                 'zirnox': {'emitted': 0, 'skipped': 9},
                 'plate': {'emitted': 0, 'skipped': 7},
                 'pwr': {'emitted': 15, 'skipped': 0},

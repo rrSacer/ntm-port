@@ -1272,6 +1272,136 @@
 "pools": []
 },
 {
+"name": "ass.pilepabe",
+"label": "Fonte de Nêutrons Ra226Be do Chicago Pile",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:173",
+"duration": 40,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:billet_ra226be"
+],
+"n": 3,
+"label": "Tarugo Ra226Be"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pile_rod__ra226be",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pilepobe",
+"label": "Fonte de Nêutrons Po210Be do Chicago Pile",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:175",
+"duration": 40,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:billet_po210be"
+],
+"n": 3,
+"label": "Tarugo Po210Be"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pile_rod__po210be",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pilezr",
+"label": "Haste de Zircônio do Chicago Pile ×3",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:177",
+"duration": 40,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:billet_zirconium"
+],
+"n": 1,
+"label": "Tarugo de Zircônio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pile_rod__zr",
+3,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pilenu",
+"label": "Haste de Urânio Natural do Chicago Pile",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:179",
+"duration": 40,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:billet_uranium"
+],
+"n": 3,
+"label": "Tarugo de Urânio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pile_rod__nu",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pilethorium",
+"label": "Haste de Tório Natural do Chicago Pile",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:181",
+"duration": 40,
+"power": 200,
+"in": [
+{
+"ids": [
+"ntm:billet_th232"
+],
+"n": 3,
+"label": "Tarugo de Tório-232"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pile_rod__thorium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.partlith",
 "label": "Caixa de Pó de Lítio ×8",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:186",
@@ -4402,6 +4532,130 @@
 "out": [
 [
 "ntm:machine_fluidtank",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pileblock",
+"label": "Tijolos de Grafite do Chicago Pile",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:520",
+"duration": 20,
+"power": 250,
+"in": [
+{
+"ids": [
+"minecraft:acacia_planks",
+"minecraft:bamboo_planks",
+"minecraft:birch_planks",
+"minecraft:cherry_planks",
+"minecraft:crimson_planks",
+"minecraft:dark_oak_planks",
+"minecraft:jungle_planks",
+"minecraft:mangrove_planks",
+"minecraft:oak_planks",
+"minecraft:pale_oak_planks",
+"minecraft:poplar_planks",
+"minecraft:spruce_planks",
+"minecraft:warped_planks"
+],
+"n": 1,
+"label": "acacia planks"
+},
+{
+"ids": [
+"ntm:ingot_graphite"
+],
+"n": 2,
+"label": "Lingote de Grafite"
+},
+{
+"ids": [
+"ntm:bolt__steel"
+],
+"n": 2,
+"label": "Parafuso de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pile_brick",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.cirnox",
+"label": "Reator Nuclear ZIRNOX",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:525",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 8,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:ingot_boron"
+],
+"n": 8,
+"label": "Lingote de Boro"
+},
+{
+"ids": [
+"ntm:ingot_graphite"
+],
+"n": 16,
+"label": "Lingote de Grafite"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 16,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:concrete",
+"ntm:concrete_asbestos",
+"ntm:concrete_smooth",
+"ntm:ducrete",
+"ntm:ducrete_smooth"
+],
+"n": 16,
+"label": "Azulejo de Concreto"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 4,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_zirnox",
 1,
 1.0
 ]
@@ -16108,5 +16362,5 @@
 "pools": []
 }
 ],
-"skipped": 183
+"skipped": 176
 }

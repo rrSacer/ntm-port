@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:nugget_neptunium_fuel"
+    "ntm:nugget_neptunium_fuel",
+    "ntm:pile_rod__thorium"
   ]
 }

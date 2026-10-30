@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:pile_device__loader",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "CBS"
+  ],
+  "key": {
+    "A": "#ntm:bulk/platealuminum",
+    "C": "#ntm:bulk/platetriplesteel",
+    "B": "#ntm:bulk/ingotboron",
+    "S": "#ntm:bulk/shellsteel"
+  }
+}

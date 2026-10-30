@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "ntm:pellet_rtg_strontium",
+    "ntm:pile_rod__waste",
     "ntm:powder_plutonium",
     "ntm:powder_ra226"
   ]

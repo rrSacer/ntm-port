@@ -22,17 +22,17 @@
   },
   "ingredient_policy": "conservative Forge 1.7.10 OreDict snapshot; first ntm id, then lexical vanilla",
   "coverage": {
-    "emitted": 23,
+    "emitted": 27,
     "scanned_source_calls": 59,
-    "skipped_source_calls": 36,
+    "skipped_source_calls": 32,
     "by_family": {
       "synthesis": {
         "emitted": 3,
         "skipped": 0
       },
       "pile": {
-        "emitted": 0,
-        "skipped": 4
+        "emitted": 4,
+        "skipped": 0
       },
       "zirnox": {
         "emitted": 0,
@@ -251,6 +251,158 @@
       "label": "Tarugo de Chumbo Reluzente",
       "label_en": "Flashlead Billet",
       "autoSwitchGroup": null
+    },
+    {
+      "name": "purex.pilepu239",
+      "source_index": 3,
+      "source": "PUREXRecipes.java:64",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pile_rod__pu239"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:billet_pu239",
+          2,
+          1.0
+        ],
+        [
+          "ntm:billet_uranium",
+          1,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "sulfuric_acid",
+          100
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Plutônio-239 do Chicago Pile",
+      "label_en": "Reprocessing of Chicago Pile Plutonium-239 Rod",
+      "autoSwitchGroup": "autoswitch.pile"
+    },
+    {
+      "name": "purex.pilergp",
+      "source_index": 4,
+      "source": "PUREXRecipes.java:70",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pile_rod__rgp"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:billet_pu_mix",
+          2,
+          1.0
+        ],
+        [
+          "ntm:billet_nuclear_waste",
+          1,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "sulfuric_acid",
+          100
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de RGP do Chicago Pile",
+      "label_en": "Reprocessing of Chicago Pile RGP Rod",
+      "autoSwitchGroup": "autoswitch.pile"
+    },
+    {
+      "name": "purex.pilethorium",
+      "source_index": 5,
+      "source": "PUREXRecipes.java:76",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pile_rod__thorium_fuel"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:billet_thorium_fuel",
+          2,
+          1.0
+        ],
+        [
+          "ntm:billet_nuclear_waste",
+          1,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "sulfuric_acid",
+          100
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Combustível de Tório do Chicago Pile",
+      "label_en": "Reprocessing of Chicago Pile Thorium Fuel Rod",
+      "autoSwitchGroup": "autoswitch.pile"
+    },
+    {
+      "name": "purex.pilewaste",
+      "source_index": 6,
+      "source": "PUREXRecipes.java:82",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:pile_rod__waste"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:billet_nuclear_waste",
+          2,
+          1.0
+        ],
+        [
+          "ntm:billet_polonium",
+          1,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "sulfuric_acid",
+          100
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reprocessamento de Haste de Resíduo Nuclear do Chicago Pile",
+      "label_en": "Reprocessing of Chicago Pile Nuclear Waste Rod",
+      "autoSwitchGroup": "autoswitch.pile"
     },
     {
       "name": "purex.pwrmeu",
@@ -1261,54 +1413,6 @@
     }
   ],
   "skipped": [
-    {
-      "name": "purex.pilepu239",
-      "source_index": 3,
-      "source": "PUREXRecipes.java:64",
-      "family": "pile",
-      "autoSwitchGroup": "autoswitch.pile",
-      "reason": "missing catalog identities: ModItems.pile_rod",
-      "missing_items": [
-        "ModItems.pile_rod"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.pilepu239\").setup(40, pilePower).setNameWrapper(\"purex.recycle\").setGroup(autoPile, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.pile_rod, 1, EnumPileRod.PU239))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SULFURIC_ACID, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.billet_pu239, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.billet_uranium, 1))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.pilergp",
-      "source_index": 4,
-      "source": "PUREXRecipes.java:70",
-      "family": "pile",
-      "autoSwitchGroup": "autoswitch.pile",
-      "reason": "missing catalog identities: ModItems.pile_rod",
-      "missing_items": [
-        "ModItems.pile_rod"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.pilergp\").setup(40, pilePower).setNameWrapper(\"purex.recycle\").setGroup(autoPile, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.pile_rod, 1, EnumPileRod.RGP))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SULFURIC_ACID, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.billet_pu_mix, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.billet_nuclear_waste, 1))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.pilethorium",
-      "source_index": 5,
-      "source": "PUREXRecipes.java:76",
-      "family": "pile",
-      "autoSwitchGroup": "autoswitch.pile",
-      "reason": "missing catalog identities: ModItems.pile_rod",
-      "missing_items": [
-        "ModItems.pile_rod"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.pilethorium\").setup(40, pilePower).setNameWrapper(\"purex.recycle\").setGroup(autoPile, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.pile_rod, 1, EnumPileRod.THORIUM_FUEL))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SULFURIC_ACID, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.billet_thorium_fuel, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.billet_nuclear_waste, 1))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.pilewaste",
-      "source_index": 6,
-      "source": "PUREXRecipes.java:82",
-      "family": "pile",
-      "autoSwitchGroup": "autoswitch.pile",
-      "reason": "missing catalog identities: ModItems.pile_rod",
-      "missing_items": [
-        "ModItems.pile_rod"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.pilewaste\").setup(40, pilePower).setNameWrapper(\"purex.recycle\").setGroup(autoPile, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.pile_rod, 1, EnumPileRod.WASTE))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.SULFURIC_ACID, 100))\n\t\t\t\t.outputItems(new ItemStack(ModItems.billet_nuclear_waste, 2),\n\t\t\t\t\t\tnew ItemStack(ModItems.billet_polonium, 1))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
     {
       "name": "purex.zirnoxnu",
       "source_index": 7,

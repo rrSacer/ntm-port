@@ -3698,7 +3698,13 @@
       "energy": true,
       "fluid": true,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R1 content declared; native structure/fuel logic and visuals deferred",
+      "content_id": "ntm:pile_device__loader",
+      "content_ids": [
+        "ntm:pile_device__loader",
+        "ntm:pile_device__vent",
+        "ntm:pile_device__control"
+      ]
     },
     {
       "id": "pile_block",
@@ -3716,7 +3722,19 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R1 content declared; native structure/fuel logic and visuals deferred",
+      "content_id": "ntm:pile_block__dummy",
+      "content_ids": [
+        "ntm:pile_block__dummy",
+        "ntm:pile_block__core",
+        "ntm:pile_block__channel",
+        "ntm:pile_block__fuel_in",
+        "ntm:pile_block__fuel_out",
+        "ntm:pile_block__air_in",
+        "ntm:pile_block__air_out",
+        "ntm:pile_block__control",
+        "ntm:pile_block__edge"
+      ]
     },
     {
       "id": "pwr_controller",
@@ -6527,7 +6545,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R1 content declared; native structure/fuel logic and visuals deferred",
+      "content_id": "ntm:machine_zirnox",
+      "content_ids": [
+        "ntm:machine_zirnox"
+      ]
     },
     {
       "id": "zirnox_destroyed",
@@ -6545,7 +6567,11 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R1 content declared; native structure/fuel logic and visuals deferred",
+      "content_id": "ntm:zirnox_destroyed",
+      "content_ids": [
+        "ntm:zirnox_destroyed"
+      ]
     },
     {
       "id": "machine_controller",

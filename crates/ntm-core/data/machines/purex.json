@@ -121,6 +121,154 @@
 "pools": []
 },
 {
+"name": "purex.pilepu239",
+"label": "Reprocessamento de Haste de Plutônio-239 do Chicago Pile",
+"source": "PUREXRecipes.java:64",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:pile_rod__pu239"
+],
+"n": 1,
+"label": "Haste de Plutônio-239 do Chicago Pile"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:billet_pu239",
+2,
+1.0
+],
+[
+"ntm:billet_uranium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pile"
+},
+{
+"name": "purex.pilergp",
+"label": "Reprocessamento de Haste de RGP do Chicago Pile",
+"source": "PUREXRecipes.java:70",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:pile_rod__rgp"
+],
+"n": 1,
+"label": "Haste de RGP do Chicago Pile"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:billet_pu_mix",
+2,
+1.0
+],
+[
+"ntm:billet_nuclear_waste",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pile"
+},
+{
+"name": "purex.pilethorium",
+"label": "Reprocessamento de Haste de Combustível de Tório do Chicago Pile",
+"source": "PUREXRecipes.java:76",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:pile_rod__thorium_fuel"
+],
+"n": 1,
+"label": "Haste de Combustível de Tório do Chicago Pile"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:billet_thorium_fuel",
+2,
+1.0
+],
+[
+"ntm:billet_nuclear_waste",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pile"
+},
+{
+"name": "purex.pilewaste",
+"label": "Reprocessamento de Haste de Resíduo Nuclear do Chicago Pile",
+"source": "PUREXRecipes.java:82",
+"duration": 40,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:pile_rod__waste"
+],
+"n": 1,
+"label": "Haste de Resíduo Nuclear do Chicago Pile"
+}
+],
+"fin": [
+[
+"sulfuric_acid",
+100
+]
+],
+"out": [
+[
+"ntm:billet_nuclear_waste",
+2,
+1.0
+],
+[
+"ntm:billet_polonium",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [],
+"group": "autoswitch.pile"
+},
+{
 "name": "purex.pwrmeu",
 "label": "Reprocessamento de Haste de Combustível PWR MEU Esgotado",
 "source": "PUREXRecipes.java:238",
@@ -1105,5 +1253,5 @@
 "group": "autoswitch.schrab"
 }
 ],
-"skipped": 36
+"skipped": 32
 }

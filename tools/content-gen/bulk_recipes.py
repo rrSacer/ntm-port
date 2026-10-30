@@ -253,10 +253,23 @@ def generate(src,out,rows,emit):
                 last=i+1
             elif c==';':last=i+1
         def supported(pos):return not any(lo<pos<hi for lo,hi in guarded)
-        for pos,args,callee in calls(text,r'\b(?:addRecipeAuto|addShapelessAuto|add1To9Pair|addMineralSet|GameRegistry\.addSmelting|GameRegistry\.addRecipe|GameRegistry\.addShapelessRecipe)'):
+        for pos,args,callee in calls(text,r'\b(?:addRecipeAuto|addShapelessAuto|addZIRNOXRod|add1To9Pair|addMineralSet|GameRegistry\.addSmelting|GameRegistry\.addRecipe|GameRegistry\.addShapelessRecipe)'):
             location=str(file.relative_to(src))+':'+str(text[:pos].count('\n')+1)
             try:
                 parts=split(args)
+                if callee=='addZIRNOXRod':
+                    if file.name!='RodRecipes.java' or len(parts)!=2 or not parts[1].startswith('EnumZirnoxType.'):
+                        raise Unsupported('unsupported ZIRNOX helper call')
+                    # Both original overloads fill an empty casing with two
+                    # billets. Keep this source helper separate from a generic
+                    # invented recipe; fail if either overload changes.
+                    for ingredient in ['billet', 'mat.billet()']:
+                        expected='new Object[] { ModItems.rod_zirnox_empty, '+ingredient+', '+ingredient+' }'
+                        if expected not in text:raise Unsupported('ZIRNOX helper body drift')
+                    ingredient=parts[0]+'.billet()' if parts[0] in resolver.frames else parts[0]
+                    parts=['new ItemStack(ModItems.rod_zirnox, 1, '+parts[1]+'.ordinal())',
+                           'new Object[] { ModItems.rod_zirnox_empty, '+ingredient+', '+ingredient+' }']
+                    callee='addShapelessAuto'
                 if callee in ('GameRegistry.addRecipe','GameRegistry.addShapelessRecipe'):
                     wrapper=re.fullmatch(r'new (ShapedOreRecipe|ShapelessOreRecipe)\((.*)\)',parts[0],re.S)
                     if wrapper:

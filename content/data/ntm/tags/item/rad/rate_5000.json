@@ -14,6 +14,7 @@
     "ntm:nuclear_waste_long__schrabidium",
     "ntm:nuclear_waste_long__thorium",
     "ntm:nuclear_waste_long__uranium233",
-    "ntm:nuclear_waste_long__uranium235"
+    "ntm:nuclear_waste_long__uranium235",
+    "ntm:rod_zirnox__u233_fuel"
   ]
 }

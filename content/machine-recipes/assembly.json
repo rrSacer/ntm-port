@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 448,
+    "emitted": 455,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 183,
+    "skipped_source_calls": 176,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1210,6 +1210,131 @@
       "pools": [],
       "label": "Reator Nuclear Defeituoso",
       "label_en": "Dysfunctional Nuclear Reactor"
+    },
+    {
+      "name": "ass.pilepabe",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:173",
+      "duration": 40,
+      "power": 200,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:billet_ra226be"
+          ],
+          "count": 3
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:pile_rod__ra226be",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Fonte de Nêutrons Ra226Be do Chicago Pile",
+      "label_en": "Chicago Pile Ra226Be Neutron source"
+    },
+    {
+      "name": "ass.pilepobe",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:175",
+      "duration": 40,
+      "power": 200,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:billet_po210be"
+          ],
+          "count": 3
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:pile_rod__po210be",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Fonte de Nêutrons Po210Be do Chicago Pile",
+      "label_en": "Chicago Pile Po210Be Neutron source"
+    },
+    {
+      "name": "ass.pilezr",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:177",
+      "duration": 40,
+      "power": 200,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:billet_zirconium"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:pile_rod__zr",
+          3
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Haste de Zircônio do Chicago Pile ×3",
+      "label_en": "Chicago Pile Zirconium Rod ×3"
+    },
+    {
+      "name": "ass.pilenu",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:179",
+      "duration": 40,
+      "power": 200,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:billet_uranium"
+          ],
+          "count": 3
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:pile_rod__nu",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Haste de Urânio Natural do Chicago Pile",
+      "label_en": "Chicago Pile Natural Uranium Rod"
+    },
+    {
+      "name": "ass.pilethorium",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:181",
+      "duration": 40,
+      "power": 200,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:billet_th232"
+          ],
+          "count": 3
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:pile_rod__thorium",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Haste de Tório Natural do Chicago Pile",
+      "label_en": "Chicago Pile Natural Thorium Rod"
     },
     {
       "name": "ass.partlith",
@@ -4080,6 +4205,120 @@
       "pools": [],
       "label": "Tanque de Fluidos",
       "label_en": "Fluid Tank"
+    },
+    {
+      "name": "ass.pileblock",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:520",
+      "duration": 20,
+      "power": 250,
+      "inputItems": [
+        {
+          "ids": [
+            "minecraft:acacia_planks",
+            "minecraft:bamboo_planks",
+            "minecraft:birch_planks",
+            "minecraft:cherry_planks",
+            "minecraft:crimson_planks",
+            "minecraft:dark_oak_planks",
+            "minecraft:jungle_planks",
+            "minecraft:mangrove_planks",
+            "minecraft:oak_planks",
+            "minecraft:pale_oak_planks",
+            "minecraft:poplar_planks",
+            "minecraft:spruce_planks",
+            "minecraft:warped_planks"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:ingot_graphite"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:bolt__steel"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:pile_brick",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Tijolos de Grafite do Chicago Pile",
+      "label_en": "Chicago Pile Graphite Bricks"
+    },
+    {
+      "name": "ass.cirnox",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:525",
+      "duration": 600,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:pipe__steel"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_boron"
+          ],
+          "count": 8
+        },
+        {
+          "ids": [
+            "ntm:ingot_graphite"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:ingot_rubber"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:concrete",
+            "ntm:concrete_asbestos",
+            "ntm:concrete_smooth",
+            "ntm:ducrete",
+            "ntm:ducrete_smooth"
+          ],
+          "count": 16
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_zirnox",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Reator Nuclear ZIRNOX",
+      "label_en": "ZIRNOX Nuclear Reactor"
     },
     {
       "name": "ass.pwrheatex",
@@ -15609,36 +15848,6 @@
       "expression": "new GenericRecipe(\"ass.diskdrive\").setup(200, 250).outputItems(DictFrame.fromOne(ModItems.drive, EnumDriveType.DISK_EMPTY))\n\t\t\t\t.inputItems(new OreDictStack(ANY_PLASTIC.ingot(), 8), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.BASIC), new OreDictStack(ND.wireDense()))"
     },
     {
-      "name": "ass.pilepabe",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:173",
-      "reason": "dynamic/unsupported metadata EnumPileRod.RA226BE.ordinal()",
-      "expression": "new GenericRecipe(\"ass.pilepabe\").setup(40, 200).outputItems(new ItemStack(ModItems.pile_rod, 1, EnumPileRod.RA226BE.ordinal()))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.billet_ra226be, 3)).setGroup(autoPileRod, INSTANCE)"
-    },
-    {
-      "name": "ass.pilepobe",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:175",
-      "reason": "dynamic/unsupported metadata EnumPileRod.PO210BE.ordinal()",
-      "expression": "new GenericRecipe(\"ass.pilepobe\").setup(40, 200).outputItems(new ItemStack(ModItems.pile_rod, 1, EnumPileRod.PO210BE.ordinal()))\n\t\t\t\t.inputItems(new ComparableStack(ModItems.billet_po210be, 3)).setGroup(autoPileRod, INSTANCE)"
-    },
-    {
-      "name": "ass.pilezr",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:177",
-      "reason": "dynamic/unsupported metadata EnumPileRod.ZR.ordinal()",
-      "expression": "new GenericRecipe(\"ass.pilezr\").setup(40, 200).outputItems(new ItemStack(ModItems.pile_rod, 3, EnumPileRod.ZR.ordinal()))\n\t\t\t\t.inputItems(new OreDictStack(ZR.billet(), 1)).setGroup(autoPileRod, INSTANCE)"
-    },
-    {
-      "name": "ass.pilenu",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:179",
-      "reason": "dynamic/unsupported metadata EnumPileRod.NU.ordinal()",
-      "expression": "new GenericRecipe(\"ass.pilenu\").setup(40, 200).outputItems(new ItemStack(ModItems.pile_rod, 1, EnumPileRod.NU.ordinal()))\n\t\t\t\t.inputItems(new OreDictStack(U.billet(), 3)).setGroup(autoPileRod, INSTANCE)"
-    },
-    {
-      "name": "ass.pilethorium",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:181",
-      "reason": "dynamic/unsupported metadata EnumPileRod.THORIUM.ordinal()",
-      "expression": "new GenericRecipe(\"ass.pilethorium\").setup(40, 200).outputItems(new ItemStack(ModItems.pile_rod, 1, EnumPileRod.THORIUM.ordinal()))\n\t\t\t\t.inputItems(new OreDictStack(TH232.billet(), 3)).setGroup(autoPileRod, INSTANCE)"
-    },
-    {
       "name": "ass.sealcontroller",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:204",
       "reason": "unregistered/ambiguous source item seal_controller",
@@ -15955,18 +16164,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:514",
       "reason": "unregistered/ambiguous source item machine_exposure_chamber",
       "expression": "new GenericRecipe(\"ass.exposurechamber\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_exposure_chamber, 1))\n\t\t\t\t.inputItems(new OreDictStack(AL.plateCast(), 12), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(ANY_HARDPLASTIC.ingot(), 12), new OreDictStack(GOLD.wireDense(), 32), new ComparableStack(ModItems.motor_desh, 2), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.battery_pack, 1, EnumBatteryPack.CAPACITOR_TANTALUM), new ComparableStack(ModBlocks.glass_quartz, 16))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 8, EnumExpensiveType.LEAD_PLATING), new OreDictStack(ANY_HARDPLASTIC.ingot(), 24), new OreDictStack(GOLD.wireDense(), 32), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.COMPUTER))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"chip_quantum\")"
-    },
-    {
-      "name": "ass.pileblock",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:520",
-      "reason": "unregistered/ambiguous source item pile_brick",
-      "expression": "new GenericRecipe(\"ass.pileblock\").setup(20, 250).outputItems(new ItemStack(ModBlocks.pile_brick, 1))\n\t\t\t\t.inputItems(new OreDictStack(KEY_PLANKS, 1), new OreDictStack(GRAPHITE.ingot(), 2), new OreDictStack(STEEL.bolt(), 2))\n\t\t\t\t.inputItemsEx(new OreDictStack(KEY_PLANKS, 1), new OreDictStack(GRAPHITE.ingot(), 8), new OreDictStack(STEEL.plate(), 1))"
-    },
-    {
-      "name": "ass.cirnox",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:525",
-      "reason": "unregistered/ambiguous source item reactor_zirnox",
-      "expression": "new GenericRecipe(\"ass.cirnox\").setup(600, 100).outputItems(new ItemStack(ModBlocks.reactor_zirnox, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.shell(), 4), new OreDictStack(STEEL.pipe(), 8), new OreDictStack(B.ingot(), 8), new OreDictStack(GRAPHITE.ingot(), 16), new OreDictStack(RUBBER.ingot(), 16), new OreDictStack(ANY_CONCRETE.any(), 16), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BASIC))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.LEAD_PLATING), new OreDictStack(GRAPHITE.ingot(), 16), new OreDictStack(RUBBER.ingot(), 16), new OreDictStack(ANY_CONCRETE.any(), 16), new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.CIRCUIT))"
     },
     {
       "name": "ass.rbmk",

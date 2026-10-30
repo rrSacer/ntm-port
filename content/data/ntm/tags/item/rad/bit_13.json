@@ -66,6 +66,8 @@
     "ntm:pellet_rtg_lead",
     "ntm:pellet_rtg_polonium",
     "ntm:pellet_rtg_radium",
+    "ntm:pile_rod__po210be",
+    "ntm:pile_rod__rgp",
     "ntm:plate_cast__schrabidium",
     "ntm:plate_schrabidium",
     "ntm:powder_actinium_tiny",

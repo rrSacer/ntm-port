@@ -22,6 +22,9 @@
     "ntm:nugget_thorium_fuel",
     "ntm:nugget_u238",
     "ntm:nugget_uranium",
+    "ntm:pile_rod__nu",
+    "ntm:pile_rod__rgp",
+    "ntm:pile_rod__thorium_fuel",
     "ntm:rod_zirnox_tritium"
   ]
 }

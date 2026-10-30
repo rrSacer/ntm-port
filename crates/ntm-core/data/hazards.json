@@ -24342,6 +24342,359 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:pile_rod__ra226be",
+      "radiation_rad_s": 33.75,
+      "radiation_millirad_s": 33750,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:350"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pile_rod__po210be",
+      "radiation_rad_s": 337.5,
+      "radiation_millirad_s": 337500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:351"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pile_rod__zr",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_rod__nu",
+      "radiation_rad_s": 0.525,
+      "radiation_millirad_s": 525,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:352"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pile_rod__pu239",
+      "radiation_rad_s": 7.5,
+      "radiation_millirad_s": 7500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:353"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pile_rod__rgp",
+      "radiation_rad_s": 9.375,
+      "radiation_millirad_s": 9375,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:354"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pile_rod__waste",
+      "radiation_rad_s": 22.5,
+      "radiation_millirad_s": 22500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:355"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pile_rod__thorium",
+      "radiation_rad_s": 0.15,
+      "radiation_millirad_s": 150,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:356"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pile_rod__thorium_fuel",
+      "radiation_rad_s": 2.625,
+      "radiation_millirad_s": 2625,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:357"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__natural_uranium_fuel",
+      "radiation_rad_s": 0.35,
+      "radiation_millirad_s": 350,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:232"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__uranium_fuel",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:233"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__th232",
+      "radiation_rad_s": 0.1,
+      "radiation_millirad_s": 100,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:234"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__thorium_fuel",
+      "radiation_rad_s": 1.75,
+      "radiation_millirad_s": 1750,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:235"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__mox_fuel",
+      "radiation_rad_s": 2.5,
+      "radiation_millirad_s": 2500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:236"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__plutonium_fuel",
+      "radiation_rad_s": 4.25,
+      "radiation_millirad_s": 4250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:237"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__u233_fuel",
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:238"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__u235_fuel",
+      "radiation_rad_s": 1.0,
+      "radiation_millirad_s": 1000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:239"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__les_fuel",
+      "radiation_rad_s": 5.85,
+      "radiation_millirad_s": 5850,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:240"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__lithium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:241"
+      ],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rod_zirnox__zfb_mox",
+      "radiation_rad_s": 2.5,
+      "radiation_millirad_s": 2500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:242"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pile_brick",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:machine_zirnox",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:zirnox_destroyed",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_device__loader",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_device__vent",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_device__control",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_block__dummy",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_block__core",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_block__channel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_block__fuel_in",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_block__fuel_out",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_block__air_in",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_block__air_out",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_block__control",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pile_block__edge",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:heater_oven",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -26161,6 +26514,61 @@
       "id": "ntm:pellet_rtg_americium",
       "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:346",
       "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__natural_uranium_fuel",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:232",
+      "expression": "HazardModifierFuelRadiation(target=172.5): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__uranium_fuel",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:233",
+      "expression": "HazardModifierFuelRadiation(target=150.0): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__th232",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:234",
+      "expression": "HazardModifierFuelRadiation(target=1.75): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__thorium_fuel",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:235",
+      "expression": "HazardModifierFuelRadiation(target=112.5): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__mox_fuel",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:236",
+      "expression": "HazardModifierFuelRadiation(target=150.0): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__plutonium_fuel",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:237",
+      "expression": "HazardModifierFuelRadiation(target=187.5): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__u233_fuel",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:238",
+      "expression": "HazardModifierFuelRadiation(target=150.0): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__u235_fuel",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:239",
+      "expression": "HazardModifierFuelRadiation(target=165.0): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__les_fuel",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:240",
+      "expression": "HazardModifierFuelRadiation(target=225.0): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__lithium",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:241",
+      "expression": "HazardModifierFuelRadiation(target=0.001): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rod_zirnox__zfb_mox",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:242",
+      "expression": "HazardModifierFuelRadiation(target=75.0): fresh base exported; life-dependent interpolation requires native item data."
     }
   ]
 }

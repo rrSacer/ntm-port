@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "ntm:ingot_thorium_fuel",
-    "ntm:nugget_solinium"
+    "ntm:nugget_solinium",
+    "ntm:rod_zirnox__thorium_fuel"
   ]
 }

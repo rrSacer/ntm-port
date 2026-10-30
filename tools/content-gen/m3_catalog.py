@@ -153,6 +153,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
     rows.extend(catalog_completion.build(source))
     import petroleum_catalog
     rows.extend(petroleum_catalog.build(source))
+    import reactor_catalog
+    rows.extend(reactor_catalog.build(source))
     import energy_catalog
     rows.extend(energy_catalog.build(source))
     import petroleum_auxiliary_catalog
@@ -189,9 +191,14 @@ def build(source=SOURCE, output=ROOT / 'content'):
     if backlog.is_file():
         data = json.loads(backlog.read_text())
         for entry in data['entries']:
-            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES) | set(bedrock_processing_catalog.MACHINES) | set(petroleum_catalog.MACHINES) | set(energy_catalog.MACHINES):
+            if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES) | set(bedrock_processing_catalog.MACHINES) | set(petroleum_catalog.MACHINES) | set(energy_catalog.MACHINES) | set(reactor_catalog.MACHINES):
                 entry['content_id'] = 'ntm:' + entry['id'] + ('_large' if entry['source_variable'] == 'machine_arc_furnace' else '')
-                entry['status'] = ('Energy content declared; heat/processing and visuals tracked separately'
+                if entry['source_variable'] in reactor_catalog.MACHINES:
+                    entry['content_ids']=['ntm:'+r['id'] for r in rows if r['type']=='block' and r['source_variable']==entry['source_variable']]
+                    entry['content_id']=entry['content_ids'][0]
+                entry['status'] = ('Reactor R1 content declared; native structure/fuel logic and visuals deferred'
+                                   if entry['source_variable'] in reactor_catalog.MACHINES else
+                                   'Energy content declared; heat/processing and visuals tracked separately'
                                    if entry['source_variable'] in energy_catalog.MACHINES else
                                    'Crystallizer content declared; stage-two processing/upgrades tracked separately'
                                    if entry['source_variable'] == 'machine_crystallizer' else

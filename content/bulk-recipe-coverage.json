@@ -902,6 +902,33 @@
       }
     },
     {
+      "id": "ntm:bulk__3b7ea3acaeb218f77e",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:315",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pile_device__loader",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__21c51714be4aef8f2e",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:316",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pile_device__vent",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__032844d328b7cb471d",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:317",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pile_device__control",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__ce065a3eba5a5dd448",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:319",
       "type": "minecraft:crafting_shaped",
@@ -5285,6 +5312,105 @@
       }
     },
     {
+      "id": "ntm:bulk__03face25fb6844fb6c",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:27",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__natural_uranium_fuel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__9214eaf9c9e90791f6",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:28",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__uranium_fuel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ee8a81a719dac204ac",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:29",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__th232",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__cf04f7f964d8f7dbcf",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:30",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__thorium_fuel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__720dd0465f26f7d1b3",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:31",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__mox_fuel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d1e2bab991ef63662a",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:32",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__plutonium_fuel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__126e61a1679038f6aa",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:33",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__u233_fuel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d2bb212f1b1582eaf7",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:34",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__u235_fuel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1def39f17adbe0f62f",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:35",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__les_fuel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5b21d428ed28ebb468",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:36",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__lithium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2708ffb54e0d1c3561",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:37",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rod_zirnox__zfb_mox",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__7946f8edcb2c7ea540",
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:50",
       "type": "minecraft:crafting_shaped",
@@ -6086,7 +6212,7 @@
       }
     }
   ],
-  "generated_count": 676,
+  "generated_count": 690,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -6663,24 +6789,6 @@
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary ANY_TAR.any()",
       "expression": "DictFrame.fromOne(ModItems.arc_electrode, EnumElectrodeType.GRAPHITE), new Object[] { \"C\", \"T\", \"C\", 'C', PETCOKE.gem(), 'T', ANY_TAR.any() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:315",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype pile_device:0",
-      "expression": "new ItemStack(ModBlocks.pile_device, 1, 0), new Object[] { \" A \", \"CBS\", 'A', AL.plate(), 'C', STEEL.plateCast(), 'B', B.ingot(), 'S', STEEL.shell() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:316",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype pile_device:1",
-      "expression": "new ItemStack(ModBlocks.pile_device, 1, 1), new Object[] { \" M \", \"ACA\", \" S \", 'M', ModItems.motor, 'A', AL.plate(), 'C', CU.shell(), 'S', STEEL.plateCast() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:317",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype pile_device:2",
-      "expression": "new ItemStack(ModBlocks.pile_device, 1, 2), new Object[] { \" B \", \"SBS\", \"SBS\", 'B', B.ingot(), 'S', STEEL.plate() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:320",
@@ -11129,18 +11237,6 @@
       "expression": "new ItemStack(ModItems.crayon, 4, i), new Object[] { new ItemStack(ModItems.chemical_dye, 1, i), ANY_TAR.any(), Items.paper }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:36",
-      "callee": "addShapelessAuto",
-      "reason": "dynamic/unsupported metadata EnumZirnoxType.LITHIUM.ordinal()",
-      "expression": "new ItemStack(ModItems.rod_zirnox, 1, EnumZirnoxType.LITHIUM.ordinal()), new Object[] { ModItems.rod_zirnox_empty, LI.ingot(), LI.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:37",
-      "callee": "addShapelessAuto",
-      "reason": "dynamic/unsupported metadata EnumZirnoxType.ZFB_MOX.ordinal()",
-      "expression": "new ItemStack(ModItems.rod_zirnox, 1, EnumZirnoxType.ZFB_MOX.ordinal()), new Object[] { ModItems.rod_zirnox_empty, ModItems.billet_mox_fuel, ZR.billet() }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:39",
       "callee": "addShapelessAuto",
       "reason": "missing subtype waste_natural_uranium:1",
@@ -11555,10 +11651,22 @@
       "expression": "new ItemStack(out), new Object[] { ModItems.rbmk_fuel_empty, billet, billet, billet, billet, billet, billet, billet, billet }"
     },
     {
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:250",
+      "callee": "addZIRNOXRod",
+      "reason": "unsupported ZIRNOX helper call",
+      "expression": "Item billet, EnumZirnoxType num"
+    },
+    {
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:251",
       "callee": "addShapelessAuto",
       "reason": "dynamic/unsupported metadata num.ordinal()",
       "expression": "new ItemStack(ModItems.rod_zirnox, 1, num.ordinal()), new Object[] { ModItems.rod_zirnox_empty, billet, billet }"
+    },
+    {
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:255",
+      "callee": "addZIRNOXRod",
+      "reason": "unsupported ZIRNOX helper call",
+      "expression": "DictFrame mat, EnumZirnoxType num"
     },
     {
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:256",

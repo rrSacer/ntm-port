@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rod_zirnox__plutonium_fuel",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:rod_zirnox_empty",
+    "ntm:billet_plutonium_fuel",
+    "ntm:billet_plutonium_fuel"
+  ]
+}

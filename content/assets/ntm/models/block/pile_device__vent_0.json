@@ -1,0 +1,51 @@
+{
+  "textures": {
+    "particle": "ntm:block/models/pile/pile_vent",
+    "down": "ntm:block/models/pile/pile_vent",
+    "up": "ntm:block/models/pile/pile_vent",
+    "north": "ntm:block/models/pile/pile_vent",
+    "south": "ntm:block/models/pile/pile_vent",
+    "east": "ntm:block/models/pile/pile_vent",
+    "west": "ntm:block/models/pile/pile_vent"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        }
+      }
+    }
+  ]
+}

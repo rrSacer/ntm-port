@@ -8,6 +8,8 @@
     "ntm:debris_shrapnel",
     "ntm:ingot_mox_fuel",
     "ntm:ingot_neptunium",
-    "ntm:nugget_pu241"
+    "ntm:nugget_pu241",
+    "ntm:rod_zirnox__mox_fuel",
+    "ntm:rod_zirnox__zfb_mox"
   ]
 }

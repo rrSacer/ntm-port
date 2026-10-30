@@ -57,6 +57,20 @@
     "ntm:machine_transformer",
     "ntm:machine_hephaestus",
     "ntm:machine_flare",
+    "ntm:machine_zirnox",
+    "ntm:zirnox_destroyed",
+    "ntm:pile_device__loader",
+    "ntm:pile_device__vent",
+    "ntm:pile_device__control",
+    "ntm:pile_block__dummy",
+    "ntm:pile_block__core",
+    "ntm:pile_block__channel",
+    "ntm:pile_block__fuel_in",
+    "ntm:pile_block__fuel_out",
+    "ntm:pile_block__air_in",
+    "ntm:pile_block__air_out",
+    "ntm:pile_block__control",
+    "ntm:pile_block__edge",
     "ntm:heater_oven",
     "ntm:heater_oilburner",
     "ntm:heater_electric",
@@ -85744,6 +85758,1129 @@
       "source_recipe_machine": [],
       "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pile_rod__ra226be",
+      "source_variable": "pile_rod",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPileRod.RA226BE",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pile_rod.ra226be.png",
+      "names": {
+        "en_us": "Chicago Pile Ra226Be Neutron source",
+        "pt_br": "Fonte de Nêutrons Ra226Be do Chicago Pile"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.pile_rod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:173"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pile_rod__po210be",
+      "source_variable": "pile_rod",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPileRod.PO210BE",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pile_rod.po210be.png",
+      "names": {
+        "en_us": "Chicago Pile Po210Be Neutron source",
+        "pt_br": "Fonte de Nêutrons Po210Be do Chicago Pile"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.pile_rod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:175"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pile_rod__zr",
+      "source_variable": "pile_rod",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPileRod.ZR",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pile_rod.zr.png",
+      "names": {
+        "en_us": "Chicago Pile Zirconium Rod",
+        "pt_br": "Haste de Zircônio do Chicago Pile"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.pile_rod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:177"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pile_rod__nu",
+      "source_variable": "pile_rod",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPileRod.NU",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pile_rod.nu.png",
+      "names": {
+        "en_us": "Chicago Pile Natural Uranium Rod",
+        "pt_br": "Haste de Urânio Natural do Chicago Pile"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.pile_rod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:179"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pile_rod__pu239",
+      "source_variable": "pile_rod",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPileRod.PU239",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pile_rod.pu239.png",
+      "names": {
+        "en_us": "Chicago Pile Plutonium-239 Rod",
+        "pt_br": "Haste de Plutônio-239 do Chicago Pile"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.pile_rod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:181"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:83"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:865"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pile_rod__rgp",
+      "source_variable": "pile_rod",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPileRod.RGP",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pile_rod.rgp.png",
+      "names": {
+        "en_us": "Chicago Pile RGP Rod",
+        "pt_br": "Haste de RGP do Chicago Pile"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.pile_rod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:181"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:83"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:865"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pile_rod__waste",
+      "source_variable": "pile_rod",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPileRod.WASTE",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pile_rod.waste.png",
+      "names": {
+        "en_us": "Chicago Pile Nuclear Waste Rod",
+        "pt_br": "Haste de Resíduo Nuclear do Chicago Pile"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.pile_rod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:181"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:83"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:865"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pile_rod__thorium",
+      "source_variable": "pile_rod",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPileRod.THORIUM",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pile_rod.thorium.png",
+      "names": {
+        "en_us": "Chicago Pile Natural Thorium Rod",
+        "pt_br": "Haste de Tório Natural do Chicago Pile"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.pile_rod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:181"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pile_rod__thorium_fuel",
+      "source_variable": "pile_rod",
+      "type": "item",
+      "category": "component",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "EnumPileRod.THORIUM_FUEL",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pile_rod.thorium_fuel.png",
+      "names": {
+        "en_us": "Chicago Pile Thorium Fuel Rod",
+        "pt_br": "Haste de Combustível de Tório do Chicago Pile"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.pile_rod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:181"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:83"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:865"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__natural_uranium_fuel",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.NATURAL_URANIUM_FUEL",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_natural_uranium_fuel.png",
+      "names": {
+        "en_us": "ZIRNOX Natural Uranium Fuel Rod",
+        "pt_br": "Haste de Combustível de Urânio Natural ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__uranium_fuel",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.URANIUM_FUEL",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_uranium_fuel.png",
+      "names": {
+        "en_us": "ZIRNOX Uranium Fuel Rod",
+        "pt_br": "Haste de Combustível de Urânio ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__th232",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.TH232",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_th232.png",
+      "names": {
+        "en_us": "ZIRNOX Thorium-232 Rod",
+        "pt_br": "Haste de Tório-232 ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__thorium_fuel",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.THORIUM_FUEL",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_thorium_fuel.png",
+      "names": {
+        "en_us": "ZIRNOX Thorium Fuel Rod",
+        "pt_br": "Haste de Combustível de Tório ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__mox_fuel",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.MOX_FUEL",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_mox_fuel.png",
+      "names": {
+        "en_us": "ZIRNOX MOX Fuel Rod",
+        "pt_br": "Haste de Combustível MOX ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__plutonium_fuel",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.PLUTONIUM_FUEL",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_plutonium_fuel.png",
+      "names": {
+        "en_us": "ZIRNOX Plutonium Fuel Rod",
+        "pt_br": "Haste de Combustível de Plutônio ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__u233_fuel",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.U233_FUEL",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_u233_fuel.png",
+      "names": {
+        "en_us": "ZIRNOX Uranium-233 Fuel Rod",
+        "pt_br": "Haste de Combustível de Urânio-233 ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__u235_fuel",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.U235_FUEL",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_u235_fuel.png",
+      "names": {
+        "en_us": "ZIRNOX Uranium-235 Fuel Rod",
+        "pt_br": "Haste de Combustível de Urânio-235 ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__les_fuel",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.LES_FUEL",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_les_fuel.png",
+      "names": {
+        "en_us": "ZIRNOX LES Fuel Rod",
+        "pt_br": "Haste de Combustível LES ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__lithium",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 9,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.LITHIUM",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_lithium.png",
+      "names": {
+        "en_us": "ZIRNOX Lithium Rod",
+        "pt_br": "Haste de Lítio ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rod_zirnox__zfb_mox",
+      "source_variable": "rod_zirnox",
+      "type": "item",
+      "category": "component",
+      "metadata": 10,
+      "subtype_kind": "enum",
+      "source_enum": "EnumZirnoxType.ZFB_MOX",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rod_zirnox_zfb_mox.png",
+      "names": {
+        "en_us": "ZIRNOX ZFB MOX Fuel Rod",
+        "pt_br": "Haste de Combustível MOX ZFB ZIRNOX"
+      },
+      "behavior_gap": "Source fuel/transmutation table in reactors_simple.json; per-stack life/depletion NBT, dynamic radiation and reactor interaction require native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rod_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pile_brick",
+      "source_variable": "pile_brick",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pile_brick.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/pile_brick_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/pile_brick_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/pile_brick_top.png"
+      },
+      "names": {
+        "en_us": "Chicago Pile Graphite Bricks",
+        "pt_br": "Tijolos de Grafite do Chicago Pile"
+      },
+      "behavior_gap": "Source has distinct north/south brick faces vs east/west; cube_bottom_top uses side on all four. Hand drill formation/flammability require native logic.",
+      "source_registry": "hbm:tile.pile_brick",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:520"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:machine_zirnox",
+      "source_variable": "reactor_zirnox",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "names": {
+        "en_us": "ZIRNOX Nuclear Reactor",
+        "pt_br": "Reator Nuclear ZIRNOX"
+      },
+      "behavior_gap": "Source multiblock/model, core/proxy conversion, interaction, fluids, failure and destroyed-reactor random salvage deferred to native logic; source casing fallback only.",
+      "source_registry": "hbm:tile.machine_zirnox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:525"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:zirnox_destroyed",
+      "source_variable": "zirnox_destroyed",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "names": {
+        "en_us": "Destroyed ZIRNOX",
+        "pt_br": "ZIRNOX Destruído"
+      },
+      "creative_hidden": true,
+      "loot_none": true,
+      "behavior_gap": "Source multiblock/model, core/proxy conversion, interaction, fluids, failure and destroyed-reactor random salvage deferred to native logic; source casing fallback only.",
+      "source_registry": "hbm:tile.zirnox_destroyed",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_device__loader",
+      "source_variable": "pile_device",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_block_metadata_base": 0,
+      "source_texture": "src/main/resources/assets/hbm/textures/models/pile/pile_loader.png",
+      "textures": {
+        "side": "models/pile/pile_loader",
+        "top": "models/pile/pile_loader",
+        "front": "models/pile/pile_loader"
+      },
+      "names": {
+        "en_us": "Chicago Pile Fuel Loader",
+        "pt_br": "Carregador de Combustível do Chicago Pile"
+      },
+      "behavior_gap": "Original TESR atlas projected on fallback cube; model and loader/vent/control interactions require native implementation. Source item meta differs from block meta (role*4+orientation).",
+      "source_registry": "hbm:tile.pile_device",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_device__vent",
+      "source_variable": "pile_device",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_block_metadata_base": 4,
+      "source_texture": "src/main/resources/assets/hbm/textures/models/pile/pile_vent.png",
+      "textures": {
+        "side": "models/pile/pile_vent",
+        "top": "models/pile/pile_vent",
+        "front": "models/pile/pile_vent"
+      },
+      "names": {
+        "en_us": "Chicago Pile Vent",
+        "pt_br": "Sistema de Ventilação do Chicago Pile"
+      },
+      "behavior_gap": "Original TESR atlas projected on fallback cube; model and loader/vent/control interactions require native implementation. Source item meta differs from block meta (role*4+orientation).",
+      "source_registry": "hbm:tile.pile_device",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_device__control",
+      "source_variable": "pile_device",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_block_metadata_base": 8,
+      "source_texture": "src/main/resources/assets/hbm/textures/models/pile/pile_control.png",
+      "textures": {
+        "side": "models/pile/pile_control",
+        "top": "models/pile/pile_control",
+        "front": "models/pile/pile_control"
+      },
+      "names": {
+        "en_us": "Chicago Pile Control Rod",
+        "pt_br": "Barra de Controle do Chicago Pile"
+      },
+      "behavior_gap": "Original TESR atlas projected on fallback cube; model and loader/vent/control interactions require native implementation. Source item meta differs from block meta (role*4+orientation).",
+      "source_registry": "hbm:tile.pile_device",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_block__dummy",
+      "source_variable": "pile_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pile_block.png",
+      "textures": {
+        "side": "blocks/pile_block",
+        "top": "blocks/pile_block_top",
+        "front": "blocks/pile_block"
+      },
+      "names": {
+        "en_us": "Chicago Pile (Dummy)",
+        "pt_br": "Chicago Pile (Estrutura)"
+      },
+      "behavior_gap": "Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot.",
+      "source_registry": "hbm:tile.pile_block",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_block__core",
+      "source_variable": "pile_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pile_block.png",
+      "textures": {
+        "side": "blocks/pile_block",
+        "top": "blocks/pile_block_top",
+        "front": "blocks/pile_block"
+      },
+      "names": {
+        "en_us": "Chicago Pile (Core)",
+        "pt_br": "Chicago Pile (Núcleo)"
+      },
+      "behavior_gap": "Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot.",
+      "source_registry": "hbm:tile.pile_block",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_block__channel",
+      "source_variable": "pile_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pile_block.png",
+      "textures": {
+        "side": "blocks/pile_block",
+        "top": "blocks/pile_block_top",
+        "front": "blocks/pile_block"
+      },
+      "names": {
+        "en_us": "Chicago Pile (Channel)",
+        "pt_br": "Chicago Pile (Canal)"
+      },
+      "behavior_gap": "Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot.",
+      "source_registry": "hbm:tile.pile_block",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_block__fuel_in",
+      "source_variable": "pile_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pile_block.png",
+      "textures": {
+        "side": "blocks/pile_block",
+        "top": "blocks/pile_block_top",
+        "front": "blocks/pile_block"
+      },
+      "names": {
+        "en_us": "Chicago Pile (Fuel In)",
+        "pt_br": "Chicago Pile (Entrada de Combustível)"
+      },
+      "behavior_gap": "Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot.",
+      "source_registry": "hbm:tile.pile_block",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_block__fuel_out",
+      "source_variable": "pile_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pile_block.png",
+      "textures": {
+        "side": "blocks/pile_block",
+        "top": "blocks/pile_block_top",
+        "front": "blocks/pile_block"
+      },
+      "names": {
+        "en_us": "Chicago Pile (Fuel Out)",
+        "pt_br": "Chicago Pile (Saída de Combustível)"
+      },
+      "behavior_gap": "Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot.",
+      "source_registry": "hbm:tile.pile_block",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_block__air_in",
+      "source_variable": "pile_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pile_block.png",
+      "textures": {
+        "side": "blocks/pile_block",
+        "top": "blocks/pile_block_top",
+        "front": "blocks/pile_block"
+      },
+      "names": {
+        "en_us": "Chicago Pile (Air In)",
+        "pt_br": "Chicago Pile (Entrada de Ar)"
+      },
+      "behavior_gap": "Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot.",
+      "source_registry": "hbm:tile.pile_block",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_block__air_out",
+      "source_variable": "pile_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pile_block.png",
+      "textures": {
+        "side": "blocks/pile_block",
+        "top": "blocks/pile_block_top",
+        "front": "blocks/pile_block"
+      },
+      "names": {
+        "en_us": "Chicago Pile (Air Out)",
+        "pt_br": "Chicago Pile (Saída de Ar)"
+      },
+      "behavior_gap": "Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot.",
+      "source_registry": "hbm:tile.pile_block",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_block__control",
+      "source_variable": "pile_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pile_block.png",
+      "textures": {
+        "side": "blocks/pile_block",
+        "top": "blocks/pile_block_top",
+        "front": "blocks/pile_block"
+      },
+      "names": {
+        "en_us": "Chicago Pile (Control)",
+        "pt_br": "Chicago Pile (Controle)"
+      },
+      "behavior_gap": "Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot.",
+      "source_registry": "hbm:tile.pile_block",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pile_block__edge",
+      "source_variable": "pile_block",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "creative_hidden": true,
+      "loot_none": true,
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/pile_block.png",
+      "textures": {
+        "side": "blocks/pile_block",
+        "top": "blocks/pile_block_top",
+        "front": "blocks/pile_block"
+      },
+      "names": {
+        "en_us": "Chicago Pile (Edge)",
+        "pt_br": "Chicago Pile (Borda)"
+      },
+      "behavior_gap": "Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot.",
+      "source_registry": "hbm:tile.pile_block",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
     },
     {
       "id": "ntm:heater_oven",

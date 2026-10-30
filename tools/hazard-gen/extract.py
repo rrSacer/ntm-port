@@ -109,6 +109,19 @@ for pos,args,_ in calls(registry,r'\bregisterRTGPellet'):
         value=number(expression)
         if value>0:put(item,kind,value,source)
     gaps.append({'id':item,'source':source,'expression':'HazardModifierRTGRadiation(target='+parts[2]+'): fresh base exported; lifetime-dependent interpolation requires native item data.'})
+# The metadata overload supplies its base at argument 2. Restrict to
+# ZIRNOX: the item lifetime modifier must remain a visible data gap.
+for pos,args,_ in calls(registry,r'\bregisterOtherFuel'):
+    parts=split(args)
+    if len(parts)!=5 or parts[0]!='rod_zirnox':continue
+    try:
+        meta=r.metadata(parts[1],parts[0]);item=r.row(parts[0],meta,'item')
+        base=number(parts[2]);target=number(parts[3])
+    except (Unsupported,ValueError,SyntaxError):continue
+    source='src/main/java/com/hbm/hazard/HazardRegistry.java:'+str(registry[:pos].count('\n')+1)
+    put(item,'radiation',base,source)
+    if parts[4]=='true':put(item,'blinding',20,source)
+    gaps.append({'id':item,'source':source,'expression':'HazardModifierFuelRadiation(target='+str(target)+'): fresh base exported; life-dependent interpolation requires native item data.'})
 # Other fuel helper's first rate is the fresh item's radiation; depletion is NBT.
 for pos,args,method in calls(registry,r'\b(?:registerOtherFuel|registerOtherWaste|registerRadSourceWaste)'):
     parts=split(args)

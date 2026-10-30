@@ -61,7 +61,14 @@
     "ntm:pellet_rtg_depleted__neptunium",
     "ntm:pellet_rtg_radium",
     "ntm:pellet_rtg_weak",
+    "ntm:pile_rod__ra226be",
+    "ntm:pile_rod__rgp",
+    "ntm:pile_rod__thorium",
     "ntm:powder_uranium",
-    "ntm:powder_yellowcake"
+    "ntm:powder_yellowcake",
+    "ntm:rod_zirnox__les_fuel",
+    "ntm:rod_zirnox__natural_uranium_fuel",
+    "ntm:rod_zirnox__plutonium_fuel",
+    "ntm:rod_zirnox__thorium_fuel"
   ]
 }

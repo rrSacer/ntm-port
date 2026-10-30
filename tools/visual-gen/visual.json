@@ -16441,6 +16441,62 @@
     "ntm:cable_detector": {
       "auto": false,
       "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+    },
+    "ntm:machine_zirnox": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:zirnox_destroyed": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_device__loader": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_device__vent": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_device__control": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_block__dummy": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_block__core": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_block__channel": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_block__fuel_in": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_block__fuel_out": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_block__air_in": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_block__air_out": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_block__control": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:pile_block__edge": {
+      "auto": false,
+      "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
     }
   },
   "textures": {
