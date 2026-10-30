@@ -5844,7 +5844,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_refinery"
     },
     {
       "id": "machine_vacuum_distill",
@@ -5880,7 +5881,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_fraction_tower"
     },
     {
       "id": "fraction_spacer",
@@ -6280,7 +6282,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_mixer"
     },
     {
       "id": "machine_supercomputer",

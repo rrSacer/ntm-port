@@ -41,6 +41,9 @@
     "ntm:machine_arc_furnace_large",
     "ntm:machine_liquefactor",
     "ntm:machine_solidifier",
+    "ntm:machine_refinery",
+    "ntm:machine_fraction_tower",
+    "ntm:machine_mixer",
     "ntm:machine_crucible",
     "ntm:heater_firebox",
     "ntm:foundry_channel",
@@ -84529,6 +84532,258 @@
           "max": 5
         }
       }
+    },
+    {
+      "id": "ntm:machine_refinery",
+      "source_variable": "machine_refinery",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Oil Refinery",
+        "pt_br": "Refinaria de Petróleo"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/machine_refinery.png",
+      "textures": {
+        "side": "blocks/machine_refinery",
+        "top": "blocks/machine_refinery",
+        "front": "blocks/machine_refinery"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_refinery",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:313"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_fraction_tower",
+      "source_variable": "machine_fraction_tower",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Fractioning Tower",
+        "pt_br": "Torre de Fracionamento"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_fraction_tower",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_mixer",
+      "source_variable": "machine_mixer",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Industrial Mixer",
+        "pt_br": "Misturador Industrial"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_mixer",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:steel_scaffold",
+      "source_variable": "steel_scaffold",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:iron_block",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/scaffold_steel.png",
+      "names": {
+        "en_us": "Steel Scaffold",
+        "pt_br": "Andaime de Aço"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 15,
+        "requires_tool": true
+      },
+      "model_gap": "Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented",
+      "source_registry": "hbm:tile.steel_scaffold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "arc_welder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:90"
+        },
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1089"
+        },
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:276"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:478"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:steel_beam",
+      "source_variable": "steel_beam",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:iron_block",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/steel_beam.png",
+      "names": {
+        "en_us": "Steel Beam",
+        "pt_br": "Viga de Aço"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 15,
+        "requires_tool": true
+      },
+      "model_gap": "Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented",
+      "source_registry": "hbm:tile.steel_beam",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:243"
+        },
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:275"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:steel_grate",
+      "source_variable": "steel_grate",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:iron_block",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/grate_top.png",
+      "names": {
+        "en_us": "Steel Grate",
+        "pt_br": "Grade de Aço"
+      },
+      "block_properties": {
+        "hardness": 2,
+        "explosion_resistance": 5,
+        "requires_tool": true
+      },
+      "model_gap": "Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented",
+      "source_registry": "hbm:tile.steel_grate",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:288"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:949"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:barricade",
+      "source_variable": "barricade",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/barricade.png",
+      "names": {
+        "en_us": "Sand Bags",
+        "pt_br": "Sacos de Areia"
+      },
+      "block_properties": {
+        "hardness": 1,
+        "explosion_resistance": 2.5,
+        "requires_tool": false
+      },
+      "loot_none": true,
+      "creative_hidden": true,
+      "source_registry": "hbm:tile.barricade",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:machine_crucible",
