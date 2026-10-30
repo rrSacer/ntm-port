@@ -1276,7 +1276,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_boiler"
     },
     {
       "id": "machine_industrial_boiler",
@@ -1294,7 +1295,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_industrial_boiler"
     },
     {
       "id": "foundry_mold",
@@ -5863,7 +5865,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_vacuum_distill"
     },
     {
       "id": "machine_fraction_tower",
@@ -5917,7 +5920,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_catalytic_cracker"
     },
     {
       "id": "machine_catalytic_reformer",
@@ -5935,7 +5939,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_catalytic_reformer"
     },
     {
       "id": "machine_hydrotreater",
@@ -5953,7 +5958,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_hydrotreater"
     },
     {
       "id": "machine_coker",
@@ -5971,7 +5977,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_coker"
     },
     {
       "id": "machine_pyrooven",

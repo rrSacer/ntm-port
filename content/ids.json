@@ -44,6 +44,13 @@
     "ntm:machine_refinery",
     "ntm:machine_fraction_tower",
     "ntm:machine_mixer",
+    "ntm:machine_boiler",
+    "ntm:machine_industrial_boiler",
+    "ntm:machine_catalytic_cracker",
+    "ntm:machine_catalytic_reformer",
+    "ntm:machine_hydrotreater",
+    "ntm:machine_vacuum_distill",
+    "ntm:machine_coker",
     "ntm:machine_crucible",
     "ntm:heater_firebox",
     "ntm:foundry_channel",
@@ -84634,6 +84641,288 @@
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_boiler",
+      "source_variable": "machine_boiler",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Boiler",
+        "pt_br": "Caldeira"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_copper.png",
+      "textures": {
+        "side": "blocks/block_copper",
+        "top": "blocks/block_copper",
+        "front": "blocks/block_copper"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_boiler",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:381"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_industrial_boiler",
+      "source_variable": "machine_industrial_boiler",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Industrial Boiler",
+        "pt_br": "Caldeira Industrial"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_industrial_boiler",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:404"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_catalytic_cracker",
+      "source_variable": "machine_catalytic_cracker",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Catalytic Cracking Tower",
+        "pt_br": "Torre de Craqueamento Catalítico"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_catalytic_cracker",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:316"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_catalytic_reformer",
+      "source_variable": "machine_catalytic_reformer",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Catalytic Reformer",
+        "pt_br": "Reformador Catalítico"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_catalytic_reformer",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:330"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_hydrotreater",
+      "source_variable": "machine_hydrotreater",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Hydrotreater",
+        "pt_br": "Hidrotratador"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_hydrotreater",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:334"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_vacuum_distill",
+      "source_variable": "machine_vacuum_distill",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Vacuum Refinery",
+        "pt_br": "Refinaria a Vácuo"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_vacuum_distill",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:327"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_coker",
+      "source_variable": "machine_coker",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Coker Unit",
+        "pt_br": "Unidade de Coqueificação"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_coker",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:323"
+        }
+      ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
       "logic": {
         "kind": "machine",
