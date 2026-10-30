@@ -15,6 +15,7 @@ pub mod bomb;
 pub mod client;
 pub mod crafter;
 pub mod energy;
+pub mod excavator;
 pub mod fluid;
 pub mod fluidbox;
 pub mod foundry;
