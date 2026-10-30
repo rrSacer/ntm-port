@@ -2216,7 +2216,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_hephaestus"
     },
     {
       "id": "red_wire_coated",
@@ -5795,7 +5796,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_flare"
     },
     {
       "id": "chimney_brick",
