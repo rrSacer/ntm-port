@@ -73,6 +73,18 @@ const fn bomb(id: &'static str) -> BlockSpec {
     }
 }
 
+/// A nuke (`nuke_*`): a block entity's template (beehive, C2 of the
+/// migration), so a facing and the honey level like the machines; no `lit`.
+const fn nuke(id: &'static str) -> BlockSpec {
+    BlockSpec {
+        id,
+        kind: Kind::Bomb,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    }
+}
+
 pub fn is_bomb(id: &str) -> bool {
     spec(id).is_some_and(|s| s.kind == Kind::Bomb)
 }
@@ -657,19 +669,21 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
-    // Bombs (`crate::bomb`, docs/bombas.md): redstone-lamp template, so
-    // vanilla redstone sets `lit` (`BOMB_POWERED`) and the server reads it.
+    // Bombs (`crate::bomb`, docs/bombas.md). The charges: redstone-lamp
+    // template, so vanilla redstone sets `lit` (`BOMB_POWERED`) and the
+    // server reads it. The nukes: beehive (a block entity), facing and
+    // honey level; their redstone is read through the native host.
     bomb("ntm:tnt_ntm"),
     bomb("ntm:dynamite"),
     bomb("ntm:semtex"),
     bomb("ntm:c4"),
-    bomb("ntm:nuke_boy"),
-    bomb("ntm:nuke_gadget"),
-    bomb("ntm:nuke_man"),
-    bomb("ntm:nuke_mike"),
-    bomb("ntm:nuke_tsar"),
-    bomb("ntm:nuke_n2"),
-    bomb("ntm:nuke_fstbmb"),
+    nuke("ntm:nuke_boy"),
+    nuke("ntm:nuke_gadget"),
+    nuke("ntm:nuke_man"),
+    nuke("ntm:nuke_mike"),
+    nuke("ntm:nuke_tsar"),
+    nuke("ntm:nuke_n2"),
+    nuke("ntm:nuke_fstbmb"),
     // The spikes' state block (composter template): a test battery while the
     // content pack isn't installed.
     BlockSpec {
@@ -766,8 +780,9 @@ mod tests {
         for b in BLOCKS.iter().filter(|b| b.id != "ntm:teste" && !matches!(b.kind, Kind::Bomb | Kind::Duct)) {
             assert!(machines.contains(&b.id), "{} not in ids.json machines", b.id);
         }
-        // Bombs: `bombs`, each a redstone lamp whose `lit` the logic reads,
-        // with every component its screen asks for.
+        // Bombs: `bombs`, the charges redstone lamps whose `lit` the logic
+        // reads, the nukes beehives with no `lit`; every component their
+        // screens ask for.
         let bombs: Vec<&str> = ids["bombs"].as_array().unwrap().iter().filter_map(Value::as_str).collect();
         let entry = |id: &str| {
             ids["entries"].as_array().unwrap().iter().find(|e| e["id"] == id).cloned().unwrap_or_else(|| panic!("{id} has no entry"))
@@ -775,8 +790,13 @@ mod tests {
         for b in BLOCKS.iter().filter(|b| b.kind == Kind::Bomb) {
             assert!(bombs.contains(&b.id), "{} not in ids.json bombs", b.id);
             let e = entry(b.id);
-            assert_eq!(e["template"], "minecraft:redstone_lamp", "{}", b.id);
-            assert_eq!(e["logic"]["powered"], BOMB_POWERED, "{}", b.id);
+            if b.id.starts_with("ntm:nuke_") {
+                assert_eq!(e["template"], "minecraft:beehive", "{}", b.id);
+                assert!(e["logic"]["powered"].is_null(), "{}", b.id);
+            } else {
+                assert_eq!(e["template"], "minecraft:redstone_lamp", "{}", b.id);
+                assert_eq!(e["logic"]["powered"], BOMB_POWERED, "{}", b.id);
+            }
             for s in crate::bomb::bomb_type(b.id).unwrap().slots {
                 assert_eq!(entry(s.item)["type"], "item", "{}", s.item);
             }
