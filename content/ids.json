@@ -51,6 +51,10 @@
     "ntm:machine_hydrotreater",
     "ntm:machine_vacuum_distill",
     "ntm:machine_coker",
+    "ntm:machine_well",
+    "ntm:machine_pumpjack",
+    "ntm:machine_fracking_tower",
+    "ntm:machine_transformer",
     "ntm:machine_crucible",
     "ntm:heater_firebox",
     "ntm:foundry_channel",
@@ -84935,6 +84939,171 @@
       }
     },
     {
+      "id": "ntm:machine_well",
+      "source_variable": "machine_well",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Oil Derrick",
+        "pt_br": "Torre de Extração de Petróleo"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_well",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:297"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_pumpjack",
+      "source_variable": "machine_pumpjack",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Pumpjack",
+        "pt_br": "Bomba de Extração de Petróleo"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_pumpjack",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:301"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_fracking_tower",
+      "source_variable": "machine_fracking_tower",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Hydraulic Fracking Tower",
+        "pt_br": "Torre de Fraturamento Hidráulico"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_fracking_tower",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:305"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_transformer",
+      "source_variable": "machine_transformer",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "10k-20Hz Transformer",
+        "pt_br": "Transformador 10k-20Hz"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/machine_transformer_iron.png",
+      "textures": {
+        "side": "blocks/machine_transformer_iron",
+        "top": "blocks/machine_transformer_iron",
+        "front": "blocks/machine_transformer_iron"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_transformer",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:399"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:395"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
       "id": "ntm:steel_scaffold",
       "source_variable": "steel_scaffold",
       "type": "block",
@@ -85229,6 +85398,157 @@
           "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:478"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ore_oil",
+      "source_variable": "ore_oil",
+      "type": "block",
+      "category": "oil_deposit",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ore_oil.png",
+      "names": {
+        "en_us": "Oil Deposit",
+        "pt_br": "Depósito de Petróleo"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 10,
+        "requires_tool": true
+      },
+      "behavior_gap": "Oil extraction/depletion belongs to server logic; no independent tile entity. Sand keeps vanilla falling behavior.",
+      "source_registry": "hbm:tile.ore_oil",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ore_oil_empty",
+      "source_variable": "ore_oil_empty",
+      "type": "block",
+      "category": "oil_deposit",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ore_oil_empty.png",
+      "names": {
+        "en_us": "Empty Oil Deposit",
+        "pt_br": "Depósito de Petróleo Esgotado"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 10,
+        "requires_tool": true
+      },
+      "behavior_gap": "Oil extraction/depletion belongs to server logic; no independent tile entity. Sand keeps vanilla falling behavior.",
+      "source_registry": "hbm:tile.ore_oil_empty",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:162"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ore_bedrock_oil",
+      "source_variable": "ore_bedrock_oil",
+      "type": "block",
+      "category": "oil_deposit",
+      "template": "minecraft:bedrock",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ore_bedrock_oil.png",
+      "names": {
+        "en_us": "Bedrock Oil Deposit",
+        "pt_br": "Depósito de Petróleo da Rocha-Matriz"
+      },
+      "block_properties": {
+        "hardness": -1,
+        "explosion_resistance": 1000000,
+        "requires_tool": true
+      },
+      "behavior_gap": "Oil extraction/depletion belongs to server logic; no independent tile entity. Sand keeps vanilla falling behavior.",
+      "source_registry": "hbm:tile.ore_bedrock_oil",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ore_oil_sand",
+      "source_variable": "ore_oil_sand",
+      "type": "block",
+      "category": "oil_deposit",
+      "template": "minecraft:sand",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ore_oil_sand_alt.png",
+      "names": {
+        "en_us": "Tar Sand",
+        "pt_br": "Areia Betuminosa"
+      },
+      "block_properties": {
+        "hardness": 0.5,
+        "explosion_resistance": 1,
+        "requires_tool": false,
+        "sounds": "minecraft:sand"
+      },
+      "behavior_gap": "Oil extraction/depletion belongs to server logic; no independent tile entity. Sand keeps vanilla falling behavior.",
+      "source_registry": "hbm:tile.ore_oil_sand",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "chemical_plant",
+          "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:119"
+        },
+        {
+          "machine": "liquefaction",
+          "source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:61"
+        },
+        {
+          "machine": "solidification",
+          "source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:74"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:oil_pipe",
+      "source_variable": "oil_pipe",
+      "type": "block",
+      "category": "oil_pipe",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/oil_pipe.png",
+      "names": {
+        "en_us": "Crude Oil Extraction Pipe",
+        "pt_br": "Tubo de Extração de Petróleo Bruto"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 10,
+        "requires_tool": true
+      },
+      "creative_hidden": true,
+      "loot_none": true,
+      "behavior_gap": "Oil extraction/depletion belongs to server logic; no independent tile entity. Sand keeps vanilla falling behavior.",
+      "source_registry": "hbm:tile.oil_pipe",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
