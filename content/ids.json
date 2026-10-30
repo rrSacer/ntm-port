@@ -56657,10 +56657,15 @@
       "source_variable": "nuke_boy",
       "type": "block",
       "category": "bomb",
-      "template": "minecraft:redstone_lamp",
+      "template": "minecraft:beehive",
       "logic": {
         "kind": "bomb",
-        "powered": "lit"
+        "powered": null,
+        "facing": "facing",
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/lilBoy.png",
       "icon_cube": true,
@@ -56687,10 +56692,15 @@
       "source_variable": "nuke_gadget",
       "type": "block",
       "category": "bomb",
-      "template": "minecraft:redstone_lamp",
+      "template": "minecraft:beehive",
       "logic": {
         "kind": "bomb",
-        "powered": "lit"
+        "powered": null,
+        "facing": "facing",
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/theGadget.png",
       "icon_cube": true,
@@ -56717,10 +56727,15 @@
       "source_variable": "nuke_man",
       "type": "block",
       "category": "bomb",
-      "template": "minecraft:redstone_lamp",
+      "template": "minecraft:beehive",
       "logic": {
         "kind": "bomb",
-        "powered": "lit"
+        "powered": null,
+        "facing": "facing",
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/fatMan.png",
       "icon_cube": true,
@@ -56747,10 +56762,15 @@
       "source_variable": "nuke_mike",
       "type": "block",
       "category": "bomb",
-      "template": "minecraft:redstone_lamp",
+      "template": "minecraft:beehive",
       "logic": {
         "kind": "bomb",
-        "powered": "lit"
+        "powered": null,
+        "facing": "facing",
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/ivyMike.png",
       "icon_cube": true,
@@ -56777,10 +56797,15 @@
       "source_variable": "nuke_tsar",
       "type": "block",
       "category": "bomb",
-      "template": "minecraft:redstone_lamp",
+      "template": "minecraft:beehive",
       "logic": {
         "kind": "bomb",
-        "powered": "lit"
+        "powered": null,
+        "facing": "facing",
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/tsarBomba.png",
       "icon_cube": true,
@@ -56807,10 +56832,15 @@
       "source_variable": "nuke_n2",
       "type": "block",
       "category": "bomb",
-      "template": "minecraft:redstone_lamp",
+      "template": "minecraft:beehive",
       "logic": {
         "kind": "bomb",
-        "powered": "lit"
+        "powered": null,
+        "facing": "facing",
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/nuke_n2.png",
       "icon_cube": true,
@@ -56837,10 +56867,15 @@
       "source_variable": "nuke_fstbmb",
       "type": "block",
       "category": "bomb",
-      "template": "minecraft:redstone_lamp",
+      "template": "minecraft:beehive",
       "logic": {
         "kind": "bomb",
-        "powered": "lit"
+        "powered": null,
+        "facing": "facing",
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
       },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/nuke_fstbmb.png",
       "icon_cube": true,

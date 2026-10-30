@@ -12,6 +12,9 @@ for var in ['tnt','dynamite','semtex','c4','nuke_boy','nuke_gadget','nuke_man','
     bomb=var not in ('sellafield_slaked','waste_trinitite','waste_log','waste_planks','waste_leaves','fallout')
     row={'id':name,'source_variable':var,'type':'block','category':'bomb' if bomb else 'fallout','template':'minecraft:redstone_lamp' if bomb else 'minecraft:snow' if var=='fallout' else 'minecraft:oak_log' if var=='waste_log' else 'minecraft:oak_leaves' if var=='waste_leaves' else 'minecraft:stone'}
     if bomb:row['logic']={'kind':'bomb','powered':'lit'}
+    if var.startswith('nuke_'):
+        row['template']='minecraft:beehive'
+        row['logic']={'kind':'bomb','powered':None,'facing':'facing','level':{'prop':'honey_level','max':5}}
     if var in ('tnt','dynamite','semtex','c4'):
         row['source_texture']='src/main/resources/assets/hbm/textures/blocks/'+tex+'_side.png'
         row['surface_textures']={k:'src/main/resources/assets/hbm/textures/blocks/'+tex+'_'+v+'.png' for k,v in [('side','side'),('top','top'),('bottom','bottom')]}

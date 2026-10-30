@@ -253,7 +253,10 @@ def generate(src,out,rows,distributions,max_damage=True):
     if row.get('surface_textures'):
      faces={k:texture(v) for k,v in row['surface_textures'].items()}
      emit(f'assets/ntm/models/block/{name}.json',{'parent':'minecraft:block/cube_bottom_top','textures':faces})
-    if row['category']=='bomb':variants={f'lit={lit}':{'model':model} for lit in ('false','true')}
+    if row['category']=='bomb':
+     variants=({f'facing={facing},honey_level={level}':{'model':model,'y':rotation}
+                for facing,rotation in [('north',0),('east',90),('south',180),('west',270)] for level in range(6)}
+               if template=='minecraft:beehive' else {f'lit={lit}':{'model':model} for lit in ('false','true')})
     if template in ('minecraft:oak_log','minecraft:quartz_pillar'):
      faces={k:texture(v) for k,v in row['surface_textures'].items()}
      emit(f'assets/ntm/models/block/{name}.json',{'parent':'minecraft:block/cube_column','textures':{'side':faces['side'],'end':faces['top']}})

@@ -15,7 +15,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--package',type=Path,required=True)
     parser.add_argument('--horizon-client',type=Path,required=True)
-    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling','fluid-identifier'],default='bedrock')
+    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling','fluid-identifier','migration-c2'],default='bedrock')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
     evidence=root/'content-gen-evidence'/({'bedrock':'bedrock-stages34'}.get(args.profile,args.profile));evidence.mkdir(parents=True,exist_ok=True)
@@ -58,14 +58,16 @@ def main():
             else:raise TimeoutError('client did not reach playing')
             cmd('time set noon');cmd('weather clear')
             cmd('fill -9 100 -16 16 100 4 minecraft:stone')
+            if args.profile=='migration-c2':cmd('fill -9 100 -16 58 100 4 minecraft:stone')
             machines=['machine_hephaestus','machine_flare'] if args.profile=='petroleum-e' else ['machine_pyrooven','machine_electrolyser','machine_arc_furnace_large']
             if args.profile=='energy-heaters':machines=['heater_oven','heater_oilburner','heater_electric','heater_heatex']
             if args.profile=='energy-steam':machines=['machine_steam_engine','machine_industrial_turbine','machine_chungus','machine_condenser','machine_condenser_powered']
             if args.profile=='energy-combustion':machines=['machine_diesel','machine_combustion_engine','machine_turbofan','machine_turbinegas']
             if args.profile=='energy-solar-stirling':machines=['machine_solar_boiler','solar_mirror','machine_stirling','machine_stirling_steel','machine_stirling_creative']
             if args.profile=='fluid-identifier':machines=[]
+            if args.profile=='migration-c2':machines=['nuke_'+name for name in ['boy','gadget','man','mike','tsar','n2','fstbmb']]
             for i,name in enumerate(machines):
-                x=-4+i*4
+                x=-4+i*(8 if args.profile=='migration-c2' else 4)
                 for y,level in [(101,0),(103,5)]:
                     state=f'ntm:{name}[facing=north,honey_level={level}]'
                     cmd(f'setblock {x} {y} 0 {state}')
@@ -76,9 +78,27 @@ def main():
                         if actual.split('[',1)[0]=='ntm:'+name and set(actual.split('[',1)[-1].rstrip(']').split(','))=={'facing=north','honey_level='+str(level)}:break
                         if time.monotonic()>deadline:raise AssertionError((state,reply))
                         ctl('wait 2')
+                    if args.profile=='migration-c2':
+                        reply=cmd(f'data get block {x} {y} 0')
+                        assert 'ntm:'+name in str(reply.get('chat',[])),reply
+                if args.profile=='migration-c2':
+                    cmd(f'tp @s {x+.5} 101 -3.5')
+                    ctl('wait 5')
+                    ctl(f'break {x} 101 0 --timeout 15')
+                    assert ctl(f'block {x} 101 0')['block']=='minecraft:air'
+                    cmd(f'setblock {x} 103 0 minecraft:air')
+                    cmd('clear @s')
+                    cmd(f'give @s ntm:{name} 1')
+                    ctl('wait 2')
+                    ctl(f'place {x} 101 0 --item ntm:{name}')
+                    ctl('wait 2')
+                    assert ctl(f'block {x} 101 0')['block']=='ntm:'+name
+                    reply=cmd(f'data get block {x} 101 0')
+                    assert 'ntm:'+name in str(reply.get('chat',[])),reply
             decor=['plant_flower__'+n for n in ['foxglove','tobacco','nightshade','weed','cd0','cd1']] if args.profile=='petroleum-e' else ['block_graphite','rebar','concrete_rebar']
             if args.profile.startswith('energy-'):decor=[]
             if args.profile=='fluid-identifier':decor=[]
+            if args.profile=='migration-c2':decor=[]
             for i,name in enumerate(decor):
                 x=-5+i*2 if args.profile=='petroleum-e' else -4+i*4
                 if args.profile=='petroleum-e':cmd(f'setblock {x} 100 3 minecraft:grass_block')
@@ -108,6 +128,7 @@ def main():
             if args.profile=='energy-combustion':samples=machines+['piston_set__'+n for n in ['steel','dura','desh','starmetal']]+['ingot_starmetal']
             if args.profile=='energy-solar-stirling':samples=machines
             if args.profile=='fluid-identifier':samples=['fluid_identifier_multi']
+            if args.profile=='migration-c2':samples=machines
             cmd('clear @s')
             for name in samples:
                 components='[minecraft:custom_data={ntm_fluid:"water"}]' if args.profile=='fluid-identifier' else ''
