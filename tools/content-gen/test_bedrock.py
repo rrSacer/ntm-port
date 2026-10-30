@@ -114,6 +114,7 @@ class BedrockContracts(unittest.TestCase):
             self.assertEqual(feature['type'], 'minecraft:disk')
             self.assertEqual((feature['radius'], feature['half_height']), (1, 0))
             self.assertEqual(feature['target']['blocks'], ['minecraft:bedrock'])
+            self.assertEqual(feature['state_provider']['type'], 'minecraft:simple')
             placed = data[f'data/ntm/worldgen/placed_feature/{name}.json']['placement']
             self.assertEqual(placed[0], {'type': 'minecraft:rarity_filter', 'chance': 10})
             self.assertEqual(placed[-1]['height']['value']['absolute'], y)

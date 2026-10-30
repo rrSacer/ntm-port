@@ -19,4 +19,4 @@ def generate(emit):
         # Java uses center + eight independent Bernoulli(.5) neighbors (mean five).
         put('configured_feature', {'type': 'minecraft:disk', 'radius': 1, 'half_height': 0,
                                    'target': {'type': 'minecraft:matching_blocks', 'blocks': ['minecraft:bedrock']},
-                                   'state_provider': {'type': 'minecraft:simple_state_provider', 'state': {'id': 'ntm:ore_bedrock'}}})
+                                   'state_provider': {'type': 'minecraft:simple', 'state': {'id': 'ntm:ore_bedrock'}}})
