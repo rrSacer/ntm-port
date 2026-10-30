@@ -364,7 +364,8 @@ def main():
             e.update({key: v for key, v in b.items() if key not in ('like', 'model')})
             blocks[k] = e
     # A hand entry without a model takes the extracted one.
-    auto = auto_models(args, src, {k for k, b in blocks.items() if 'model' in b})
+    # `auto: false`: no extracted model yet (one that needs its own entry).
+    auto = auto_models(args, src, {k for k, b in blocks.items() if 'model' in b or b.get('auto') is False})
     ex_file = HERE / 'extracted.json'
     extracted = json.loads(ex_file.read_text()) if ex_file.exists() else {}
     for k, a in auto.items():

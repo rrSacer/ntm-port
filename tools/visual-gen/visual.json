@@ -9085,6 +9085,22 @@
           }
         ]
       }
+    },
+    "ntm:machine_refinery": {
+      "source": "oil batch B: the extracted model is not this block's (steel_beam got a boxcar, the refinery its exploded form); its own entry comes with the batch's visuals",
+      "auto": false
+    },
+    "ntm:machine_fraction_tower": {
+      "source": "oil batch B: the extracted model is not this block's (steel_beam got a boxcar, the refinery its exploded form); its own entry comes with the batch's visuals",
+      "auto": false
+    },
+    "ntm:machine_mixer": {
+      "source": "oil batch B: the extracted model is not this block's (steel_beam got a boxcar, the refinery its exploded form); its own entry comes with the batch's visuals",
+      "auto": false
+    },
+    "ntm:steel_beam": {
+      "source": "oil batch B: the extracted model is not this block's (steel_beam got a boxcar, the refinery its exploded form); its own entry comes with the batch's visuals",
+      "auto": false
     }
   }
 }
