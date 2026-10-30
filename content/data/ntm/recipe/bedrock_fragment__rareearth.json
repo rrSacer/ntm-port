@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:bedrock_ore_fragment__rareearth"
+  },
+  "result": {
+    "id": "ntm:chunk_ore__rare",
+    "count": 1
+  }
+}
