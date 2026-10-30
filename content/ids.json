@@ -84939,7 +84939,7 @@
       "source_variable": "steel_scaffold",
       "type": "block",
       "category": "decorative",
-      "template": "minecraft:iron_block",
+      "template": "minecraft:quartz_pillar",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/scaffold_steel.png",
       "names": {
         "en_us": "Steel Scaffold",
@@ -84950,7 +84950,14 @@
         "explosion_resistance": 15,
         "requires_tool": true
       },
-      "model_gap": "Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented",
+      "model_gap": "Vanilla axis x/y/z placement; source fourth vertical-yaw orientation and custom scaffold collision/interaction remain gaps",
+      "metadata": 0,
+      "subtype_kind": "palette",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/scaffold_steel.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/scaffold_steel.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/scaffold_steel.png"
+      },
       "source_registry": "hbm:tile.steel_scaffold",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -85017,7 +85024,7 @@
       "source_variable": "steel_grate",
       "type": "block",
       "category": "decorative",
-      "template": "minecraft:iron_block",
+      "template": "minecraft:stone_slab",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/grate_top.png",
       "names": {
         "en_us": "Steel Grate",
@@ -85028,7 +85035,7 @@
         "explosion_resistance": 5,
         "requires_tool": true
       },
-      "model_gap": "Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented",
+      "model_gap": "Vanilla bottom/top/double slab states; source ten click-selected 2px heights and fine collision remain gaps. visual-gen owns source geometry.",
       "source_registry": "hbm:tile.steel_grate",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -85072,6 +85079,156 @@
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:steel_scaffold__red",
+      "source_variable": "steel_scaffold",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:quartz_pillar",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/scaffold_red.png",
+      "names": {
+        "en_us": "Steel Scaffold (Red)",
+        "pt_br": "Andaime de Aço (Vermelho)"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 15,
+        "requires_tool": true
+      },
+      "model_gap": "Vanilla axis x/y/z placement; source fourth vertical-yaw orientation and custom scaffold collision/interaction remain gaps",
+      "metadata": 1,
+      "subtype_kind": "palette",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/scaffold_red.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/scaffold_red.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/scaffold_red.png"
+      },
+      "source_registry": "hbm:tile.steel_scaffold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "arc_welder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:90"
+        },
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1089"
+        },
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:276"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:478"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:steel_scaffold__white",
+      "source_variable": "steel_scaffold",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:quartz_pillar",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/scaffold_white.png",
+      "names": {
+        "en_us": "Steel Scaffold (White)",
+        "pt_br": "Andaime de Aço (Branco)"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 15,
+        "requires_tool": true
+      },
+      "model_gap": "Vanilla axis x/y/z placement; source fourth vertical-yaw orientation and custom scaffold collision/interaction remain gaps",
+      "metadata": 2,
+      "subtype_kind": "palette",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/scaffold_white.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/scaffold_white.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/scaffold_white.png"
+      },
+      "source_registry": "hbm:tile.steel_scaffold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "arc_welder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:90"
+        },
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1089"
+        },
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:276"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:478"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:steel_scaffold__yellow",
+      "source_variable": "steel_scaffold",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:quartz_pillar",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/scaffold_yellow.png",
+      "names": {
+        "en_us": "Steel Scaffold (Yellow)",
+        "pt_br": "Andaime de Aço (Amarelo)"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 15,
+        "requires_tool": true
+      },
+      "model_gap": "Vanilla axis x/y/z placement; source fourth vertical-yaw orientation and custom scaffold collision/interaction remain gaps",
+      "metadata": 3,
+      "subtype_kind": "palette",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/scaffold_yellow.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/scaffold_yellow.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/scaffold_yellow.png"
+      },
+      "source_registry": "hbm:tile.steel_scaffold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "arc_welder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:90"
+        },
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1089"
+        },
+        {
+          "machine": "shredder",
+          "source": "src/main/java/com/hbm/inventory/recipes/ShredderRecipes.java:276"
+        },
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:478"
+        }
+      ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {

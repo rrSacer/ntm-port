@@ -1,5 +1,5 @@
 {
-  "catalog_items": 2653,
+  "catalog_items": 2656,
   "vanilla_recipe_count": 237,
   "temporary_count": 10,
   "press_count": 47,
@@ -3646,6 +3646,9 @@
     "ntm:steel_legs",
     "ntm:steel_plate",
     "ntm:steel_scaffold",
+    "ntm:steel_scaffold__red",
+    "ntm:steel_scaffold__white",
+    "ntm:steel_scaffold__yellow",
     "ntm:stick_c4",
     "ntm:stick_semtex",
     "ntm:stick_tnt",
