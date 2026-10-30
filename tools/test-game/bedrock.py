@@ -79,13 +79,19 @@ Etapa 5 do bedrock (solvente e radiossolvente):
               virar PRIMARY dissolvido / limpo; a centrífuga os separa;
   nivel4      uma escavadora sobre um depósito de nível 4 (chunk 164,−117),
               com 2.000 mB de solvente por extração: um bruto.
+Petróleo, lote D, no chão do C:
+  petroleo_d  um poço, um pumpjack e uma torre de fraturamento (bateria,
+              overdrive 3) sobre depósitos postos com fill: o cano desce, o
+              petróleo e o gás enchem os tanques; o poço entrega o óleo a um
+              barril; a torre tira petróleo do bedrock com a solução de um
+              barril.
 Grava <pasta>/bedrock-evidence.json e capturas bedrock-*.png.
 """
 import json, subprocess, sys, time
 from pathlib import Path
 
 game = Path(sys.argv[1])
-steps = sys.argv[2:] or ['escavar', 'slop', 'centrifugar', 'craftar']
+steps = [a for a in sys.argv[2:] if not a.startswith('sem-')] or ['escavar', 'slop', 'centrifugar', 'craftar']
 CTL = ['/home/sacer/Workspace/horizon-visual/target/release/horizon-ctl', '--socket', str(game / 'control.sock')]
 ev_path = game / 'bedrock-evidence.json'
 evidence = json.loads(ev_path.read_text()) if ev_path.exists() else {}
@@ -1338,6 +1344,63 @@ def nivel4():
     evidence['nivel4'] = {'nucleo': [cx, cy, cz], 'brutos': sum(sl[2] for sl in raw), 'segundos': round(time.time() - t0, 1),
                           'tanque': ex.get('tank')}
     print('nivel4', evidence['nivel4'])
+
+
+def petroleo_d():
+    y = oil_floor_c()
+    ctl('command', 'clear @s', check=False)
+    tp(X7 + 12.5, y, Z7 - 4.5)
+    time.sleep(4)
+    tank = lambda t: (t.get('fluid', ''), t.get('mb', 0))
+    ev = {}
+    # The fracking tower's legs reach 3 out: a patch north of the floor.
+    if not (game / 'bedrock-chao7d').exists():
+        ctl('fill', X7 + 8, y, Z7 - 24, X7 + 22, y + 12, Z7 - 12, 'minecraft:air')
+        ctl('fill', X7 + 8, y - 1, Z7 - 24, X7 + 22, y - 1, Z7 - 12, 'minecraft:stone')
+        (game / 'bedrock-chao7d').write_text('1')
+    # (name, block, x, z, deposit, its y, the cell its screen opens from:
+    # the cores are walled in, a leg or a side cell is clicked).
+    for name, block, x, z, deposit, dy, cell in (
+            ('poco', 'ntm:machine_well', X7 + 2, Z7 - 8, 'ntm:ore_oil', None, (-1, 1)),
+            *([('pumpjack', 'ntm:machine_pumpjack', X7 + 8, Z7 - 8, 'ntm:ore_oil', None, (3, 1))] if 'sem-pumpjack' not in sys.argv else []),
+            ('fraturamento', 'ntm:machine_fracking_tower', X7 + 15, Z7 - 18, 'ntm:ore_bedrock_oil', -63, (-3, 3))):
+        if not any(block in b[3] for b in ctl('blocks', x - 2, y, z - 3, x + 2, y, z + 2).get('blocks', [])):
+            place(x, y, z, block, (x, y, z + 3))
+        core = find(block, x - 2, y, z - 3, x + 2, y, z + 2)
+        # A second one a click left beside it (an earlier run).
+        if ctl('block', core[0], y, core[2] + 1).get('state', '').startswith(block):
+            ctl('fill', core[0], y, core[2] + 1, core[0], y, core[2] + 1, 'minecraft:air')
+        dep = (core[0], dy if dy is not None else y - 12, core[2])
+        if dy is not None:
+            # Natural bedrock reaches −60: the pipe's way down cleared to it.
+            ctl('fill', dep[0], dep[1] + 1, dep[2], dep[0], -58, dep[2], 'minecraft:stone')
+        ctl('fill', *dep, *dep, deposit)
+        # Empty-handed: a click with a block in the hand places it.
+        ctl('command', 'clear @s', check=False)
+        oc = (core[0] + cell[0], y, core[2] + cell[1])
+        open_at(*oc, (oc[0], y, oc[2] + 2))
+        have = {sl[0] for sl in machine_slots()}
+        if 300 not in have:
+            put('ntm:battery_creative', 1, 300)
+        if 305 not in have:
+            put('ntm:upgrade_overdrive_3', 1, 305)
+        close()
+        if name == 'poco':
+            typed_barrel((core[0] + 1, y, core[2]), 'ntm:fluid_tank_full__oil', (core[0] + 3, y, core[2]))
+        if name == 'fraturamento':
+            fluid_barrel(core[0] - 1, y, core[2], 'ntm:fluid_barrel_full__fracksol', (core[0] - 3, y, core[2]))
+        ev[name] = {'nucleo': core, 'deposito': dep}
+    time.sleep(60)
+    for name, e in ev.items():
+        core, dep = e['nucleo'], e['deposito']
+        m = machine_state(*core) or {}
+        e['tanques'] = [tank(t) for t in m.get('tanks', [])]
+        e['indicador'] = m.get('indicator')
+        e['cano_acima_do_deposito'] = ctl('block', dep[0], dep[1] + 1, dep[2]).get('state', '')
+        e['deposito_agora'] = ctl('block', *dep).get('state', '')
+    ev['poco']['barril'] = barrel_state(ev['poco']['nucleo'][0] + 1, y, ev['poco']['nucleo'][2])
+    evidence['petroleo_d'] = ev
+    print('petroleo_d', json.dumps(ev, ensure_ascii=False))
 
 
 def oil_machine(x, z, block):
