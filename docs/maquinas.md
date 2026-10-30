@@ -869,6 +869,46 @@ solidificador também não; a regra do NTM que liquefaz qualquer comida
   viram 1.000 mB de óleo de carvão, que passa ao solidificador e volta como 5
   alcatrões de carvão.
 
+## Petróleo, lote B: refinaria, torre de fração, misturador (`refinery.rs`, `fraction.rs`, `crafter.rs`)
+
+São o `TileEntityMachineRefinery` (4 receitas do `RefineryRecipes`), o
+`TileEntityMachineFractionTower` (19 do `FractionRecipes`) e o
+`TileEntityMachineMixer` (49 do `MixerRecipes`, 1 pulada na extração).
+Conteúdo e tabelas são do fc8e1d8f; telas, modelos e portas do fbef4942.
+
+| | Refinaria | Torre de fração | Misturador |
+| --- | --- | --- | --- |
+| Receita | pelo fluido de entrada | pelo fluido de entrada | escolhida na lista (fluido de saída × alternativa) |
+| Ritmo | a cada tick: 100 mB → as 4 frações | a cada 10 ticks: 100 mB → 2 frações | o tempo da receita; o progresso volta a 0 quando não pode |
+| Energia | 5 HE por tick, até 1.000 | nenhuma | 50 HE por tick, até 10.000 |
+| Tanques | entrada de 64.000 mB, tipada pelo primeiro fluido com receita; 4 saídas de 24.000 tipadas pela receita | entrada e 2 saídas de 4.000 | 2 entradas de 16.000 e a saída de 24.000, tipadas pela receita |
+| Itens | a cada 10 refinos, o sólido da receita (enxofre, alcatrão) no slot 11; outro item ali o perde, como no NTM | — | o item da receita no slot 1 |
+
+**Torres empilhadas:** uma torre 3 blocos acima de outra recebe dela o
+fluido de entrada e devolve as frações a cada tick. A de baixo é a saída da
+pilha (`server/oil_server.rs`).
+
+**Telas** (contrato com o agente de visual):
+- **refinaria:** [0]/[1] energia, [2] lâmpada, [4..6] entrada, [7..18] as 4 saídas, [19]/[20] explodida/inclinada (sempre 0);
+- **misturador:** o layout do crafter; o botão 0 abre a lista de receitas.
+
+**Desvios:**
+- a explosão e o fogo da refinaria ainda não existem (nada no port faz sobrepressão), nem os slots de recipientes 1–10;
+- o identificador do misturador e o da refinaria não têm efeito: a receita do misturador é escolhida na lista, e a entrada da refinaria toma o primeiro fluido com receita;
+- os upgrades do misturador ainda não têm efeito.
+
+**Verificação:**
+- **Unidade:** 4 testes. A refinaria faz as 4 frações e 2 enxofres de 2.000 mB, e para com saída cheia ou sem energia. A torre faz betume e smear; empilhada, o óleo sobe e as frações descem.
+- **Mundo falso** (`server/tests/oil_b_tests.rs`, 4):
+  - a refinaria com óleo quente;
+  - as torres empilhadas, com a conta do fluido fechando;
+  - o misturador com refrigerante escolhido;
+  - saves inertes carregando como as máquinas novas.
+- **Em jogo** (`tools/test-game/bedrock.py`, etapa `petroleo_b`):
+  - **refinaria:** um barril de óleo quente dá as 4 frações e 48 enxofres, até as saídas encherem;
+  - **torres:** duas torres empilhadas com óleo pesado. A de cima recebe 4.000 mB e trabalha; o betume desce à de baixo;
+  - **misturador:** com o refrigerante escolhido na lista, água de um barril e 4 nitros dão 8.000 mB de refrigerante (16.000 depois da 2ª rodada).
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas

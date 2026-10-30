@@ -591,6 +591,25 @@ código antigo elas eram lidas no 1º uso; no jogo, com os slots cheios, o
 tick da carga lia muitas de uma vez. O harness não tem os slots do motor nem
 as sondas herdadas, então mede menos que o jogo nesse tick.
 
+**O que mais pesava: a reconstrução das redes de fluido.** Medido no mundo
+do bedrock (32 máquinas, ~20 tipos de fluido):
+- O 1º tick depois da carga gastava 41M, 37M deles na reconstrução das redes
+  de fluido.
+- Uma reconstrução no meio da sessão (um barril de um fluido novo) chegava ao
+  mesmo custo. Foi o que parou o mod em jogo ao montar a refinaria e as torres.
+- Cada fluido percorria todas as máquinas da dimensão e todas as células das
+  que aceitam qualquer fluido.
+
+Correção (4482adb):
+- as redes de um fluido juntam só as máquinas que o têm, o aceitam ou o
+  pediriam agora;
+- a reconstrução se espalha por ticks (600 células por tick), com as redes
+  antigas funcionando até a troca.
+
+Depois disso: 1º tick 17M, reconstrução ~8,8M por tick durante 4 ticks,
+tick comum 1,9M. As marcas por fase (`trace` em `Server::tick`) só existem no
+build do harness.
+
 **Limite que fica:** uma máquina posta enquanto o server mod está parado
 (crash, "took too long") não é registrada depois. O servidor só conhece as
 máquinas pelo evento de bloco posto, e não há como listar os blocos de
