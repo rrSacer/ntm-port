@@ -309,3 +309,56 @@ mod tests {
         assert!(accepts(F, 0, "minecraft:iron_ore") && !accepts(F, 0, "minecraft:dirt") && accepts(F, 1, CREATIVE_BATTERY) && !accepts(F, 2, "minecraft:iron_ore"));
     }
 }
+
+/// The machines of the old screen only, through their native screens.
+#[cfg(test)]
+mod screens {
+    use crate::fluidbox::FluidStore;
+    use crate::machine::{Battery, BatteryMode, CREATIVE_BATTERY, Logic, WoodBurner};
+    use crate::server::container_bridge::{Slotted, Stack};
+
+    /// The battery: the creative battery in slot 0 fills it; buttons 0 and
+    /// 1 turn the two modes.
+    #[test]
+    fn the_battery_fills_from_its_slot_and_turns_its_modes() {
+        let mut b = Battery::new(1_000_000);
+        b.slots[0] = Some(Stack::new(CREATIVE_BATTERY, 1));
+        b.sync_in();
+        assert_eq!(b.screen_data(), vec![1_000_000, 1_000_000, 1, 2, 1]);
+        b.button(0);
+        b.button(1);
+        assert_eq!((b.mode, b.mode_high), (BatteryMode::Output, BatteryMode::None));
+    }
+
+    /// The wood burner burns what its fuel slot holds; button 0 stops it.
+    #[test]
+    fn the_wood_burner_burns_its_slot() {
+        let mut w = WoodBurner::default();
+        w.slots[0] = Some(Stack::new("minecraft:coal", 2));
+        w.sync_in();
+        w.tick();
+        w.sync_out();
+        assert_eq!(w.slots[0], Some(Stack::new("minecraft:coal", 1)));
+        assert_eq!(w.screen_data()[..5], [100, 100_000, 1599, 1600, 1]);
+        w.button(0);
+        assert!(!w.on);
+    }
+
+    /// The barrel: a full tank in slot 2 pours, its empty one out at 3; an
+    /// empty one in slot 4 fills, out at 5.
+    #[test]
+    fn the_barrel_pours_and_fills_containers_in_its_slots() {
+        let mut f = FluidStore::new(16_000, 0);
+        f.slots[2] = Some(Stack::new("ntm:fluid_tank_full__water", 2));
+        f.sync_in();
+        assert_eq!((f.tank.fluid.as_str(), f.tank.mb), ("water", 1_000));
+        assert_eq!(f.slots[3], Some(Stack::new("ntm:fluid_tank_empty", 1)));
+        f.slots[4] = Some(Stack::new("ntm:fluid_tank_empty", 1));
+        f.sync_in();
+        assert_eq!(f.slots[5], Some(Stack::new("ntm:fluid_tank_full__water", 1)));
+        assert_eq!(f.tank.mb, 1_000, "um entrou e um saiu");
+        assert_eq!(f.screen_data()[3], 0);
+        f.button(0);
+        assert_eq!(f.screen_data()[3], 1);
+    }
+}

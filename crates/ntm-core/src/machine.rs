@@ -453,6 +453,22 @@ pub struct Battery {
     pub power: u64,
     pub max: u64,
     pub mode: BatteryMode,
+    /// The mode with a redstone signal (`redHigh`): kept and shown; the
+    /// port reads no signal yet, so `mode` (`redLow`) is the one in force.
+    #[serde(default = "high_mode")]
+    pub mode_high: BatteryMode,
+    /// `ContainerMachineBattery`: the item it discharges into itself (the
+    /// creative battery fills it), the item it charges.
+    #[serde(skip, default = "battery_slots")]
+    pub slots: crate::server::container_bridge::Slots,
+}
+
+fn high_mode() -> BatteryMode {
+    BatteryMode::Output
+}
+
+fn battery_slots() -> crate::server::container_bridge::Slots {
+    vec![None; 2]
 }
 
 pub mod actions {
@@ -471,6 +487,8 @@ impl Battery {
             power: 0,
             max,
             mode: BatteryMode::Buffer,
+            mode_high: high_mode(),
+            slots: battery_slots(),
         }
     }
 }
@@ -495,6 +513,42 @@ impl Logic for Battery {
             actions::BATTERY_DEBUG_FILL => self.power = (self.power + self.max / 10).min(self.max),
             _ => {}
         }
+    }
+}
+
+impl BatteryMode {
+    /// Its number on the screen: input, buffer, output, off.
+    fn index(self) -> i32 {
+        match self {
+            Self::Input => 0,
+            Self::Buffer => 1,
+            Self::Output => 2,
+            Self::None => 3,
+        }
+    }
+}
+
+/// The native screen (`horizon_machine/machine_battery.json`,
+/// `GUIMachineBattery`): slot 0 discharges into it (`chargeTEFromItems`),
+/// slot 1 is charged; data [power, max, redLow, redHigh, priority]; buttons
+/// 0 and 1 change the two modes. The network has no priorities: 1, normal.
+impl crate::server::container_bridge::Slotted for Battery {
+    fn slots_mut(&mut self) -> &mut crate::server::container_bridge::Slots {
+        &mut self.slots
+    }
+    fn sync_in(&mut self) {
+        self.power = charge_from_slot(&self.slots, 0, self.power, self.max);
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        vec![self.power.min(i32::MAX as u64) as i32, self.max.min(i32::MAX as u64) as i32, self.mode.index(), self.mode_high.index(), 1]
+    }
+    fn button(&mut self, id: u32) -> bool {
+        match id {
+            0 => self.mode = self.mode.next(),
+            1 => self.mode_high = self.mode_high.next(),
+            _ => {}
+        }
+        false
     }
 }
 
@@ -534,6 +588,14 @@ pub struct WoodBurner {
     pub on: bool,
     /// Fuel items waiting (the NTM's fuel slot).
     pub fuel: Option<(String, u32)>,
+    /// `ContainerMachineWoodBurner`: fuel, ash, the fluid containers (2, 3
+    /// and 4), the battery it charges.
+    #[serde(skip, default = "burner_slots")]
+    pub slots: crate::server::container_bridge::Slots,
+}
+
+fn burner_slots() -> crate::server::container_bridge::Slots {
+    vec![None; 6]
 }
 
 impl Default for WoodBurner {
@@ -544,7 +606,35 @@ impl Default for WoodBurner {
             max_burn: 0,
             on: true,
             fuel: None,
+            slots: burner_slots(),
         }
+    }
+}
+
+/// The native screen (`horizon_machine/machine_wood_burner.json`,
+/// `GUIMachineWoodBurner`): slot 0 is its fuel; data [power, max, burn,
+/// max burn, on, fluid mode, tank, capacity, colour] (no fluid burning
+/// here: the last four 0); button 0 turns it on and off.
+impl crate::server::container_bridge::Slotted for WoodBurner {
+    fn slots_mut(&mut self) -> &mut crate::server::container_bridge::Slots {
+        &mut self.slots
+    }
+    fn sync_in(&mut self) {
+        self.fuel = self.slots[0].as_ref().filter(|s| s.count > 0 && burn_ticks(&s.id) > 0).map(|s| (s.id.clone(), s.count));
+    }
+    fn sync_out(&mut self) {
+        if self.slots[0].as_ref().is_none_or(|s| burn_ticks(&s.id) > 0) {
+            self.slots[0] = self.fuel.as_ref().map(|(i, n)| crate::server::container_bridge::Stack::new(i, *n));
+        }
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        vec![self.power as i32, Self::MAX as i32, self.burn as i32, self.max_burn as i32, i32::from(self.on), 0, 0, 0, 0]
+    }
+    fn button(&mut self, id: u32) -> bool {
+        if id == 0 {
+            self.on = !self.on;
+        }
+        false
     }
 }
 

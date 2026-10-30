@@ -120,11 +120,46 @@ pub struct FluidStore {
     /// `max(500, fill/100)` (`TileEntityMachineFluidTank.java:49-50`).
     #[serde(default)]
     pub rate_floor: u32,
+    /// `ContainerBarrel` / `ContainerMachineFluidTank`: the identifier and
+    /// its output, a full container in and its empty out, an empty in and
+    /// its full out.
+    #[serde(skip, default = "store_slots")]
+    pub slots: crate::server::container_bridge::Slots,
+}
+
+fn store_slots() -> crate::server::container_bridge::Slots {
+    vec![None; 6]
 }
 
 impl FluidStore {
     pub fn new(cap: u32, rate_floor: u32) -> Self {
-        Self { tank: Tank::new(cap), mode: Mode::Input, rate_floor }
+        Self { tank: Tank::new(cap), mode: Mode::Input, rate_floor, slots: store_slots() }
+    }
+
+    /// One container from slot `from` to slot `to` (`loadTank` and
+    /// `unloadTank`): `turn` gives what it becomes, when it can.
+    fn swap(&mut self, from: usize, to: usize, turn: impl Fn(&mut Tank, &str) -> Option<String>) -> bool {
+        use crate::server::container_bridge::Stack;
+        let Some(id) = self.slots[from].as_ref().map(|s| s.id.clone()) else { return false };
+        let room = |out: &Option<Stack>, item: &str| out.as_ref().is_none_or(|o| o.id == item && o.count < 64);
+        // Tried on a copy: the tank changes only when the result fits.
+        let mut tank = self.tank.clone();
+        let Some(result) = turn(&mut tank, &id) else { return false };
+        if !room(&self.slots[to], &result) {
+            return false;
+        }
+        self.tank = tank;
+        if let Some(s) = &mut self.slots[from] {
+            s.count -= 1;
+            if s.count == 0 {
+                self.slots[from] = None;
+            }
+        }
+        match &mut self.slots[to] {
+            Some(o) => o.count += 1,
+            None => self.slots[to] = Some(Stack::new(&result, 1)),
+        }
+        true
     }
 
     fn rate(&self) -> u64 {
@@ -150,6 +185,42 @@ impl FluidNode for FluidStore {
     }
     fn fluid_take(&mut self, _f: &str, mb: u64) {
         self.tank.drain(mb as u32);
+    }
+}
+
+/// The native screen (`horizon_machine/barrel_steel.json`, `GUIBarrel`):
+/// containers poured in from slot 2 (empty out at 3), filled from slot 4
+/// (full out at 5); data [mB, capacity, colour, mode]; button 0 the mode.
+impl crate::server::container_bridge::Slotted for FluidStore {
+    fn slots_mut(&mut self) -> &mut crate::server::container_bridge::Slots {
+        &mut self.slots
+    }
+    fn sync_in(&mut self) {
+        self.swap(2, 3, |t, item| {
+            let c = fluid::contents(item).filter(|c| t.accepts(&c.fluid) && t.free() >= c.mb)?;
+            t.fill(&c.fluid, c.mb);
+            Some(c.empty)
+        });
+        self.swap(4, 5, |t, item| {
+            let (full, mb) = fluid::fill_container(item, &t.fluid).filter(|(_, mb)| t.mb >= *mb)?;
+            t.drain(mb);
+            Some(full)
+        });
+    }
+    fn screen_data(&self) -> Vec<i32> {
+        let mode = match self.mode {
+            Mode::Input => 0,
+            Mode::Buffer => 1,
+            Mode::Output => 2,
+            Mode::Off => 3,
+        };
+        vec![self.tank.mb as i32, self.tank.cap as i32, fluid::get(&self.tank.fluid).map_or(0, |f| f.color as i32), mode]
+    }
+    fn button(&mut self, id: u32) -> bool {
+        if id == 0 {
+            self.mode = self.mode.next();
+        }
+        false
     }
 }
 

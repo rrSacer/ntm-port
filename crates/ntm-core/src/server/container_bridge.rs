@@ -123,6 +123,9 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Processor(p) => Some(&mut **p),
         Data::Drill(d) => Some(&mut **d),
         Data::Heater(h) => h.slotted(),
+        Data::Battery(b) => Some(b),
+        Data::WoodBurner(w) => Some(w),
+        Data::FluidStore(f) => Some(f),
         Data::Steam(s) => s.slotted(),
         _ => None,
     }
@@ -135,6 +138,12 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_blast_furnace", Layout::Native),
     ("ntm:heater_firebox", Layout::Native),
     ("ntm:heater_oven", Layout::Native),
+    // The machines of the old screen only, with native screens now.
+    ("ntm:machine_battery", Layout::Native),
+    ("ntm:teste", Layout::Native),
+    ("ntm:machine_wood_burner", Layout::Native),
+    ("ntm:barrel_steel", Layout::Native),
+    ("ntm:machine_fluidtank", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),
     // Energy batch 2: no slots, the models' values.
