@@ -141,6 +141,47 @@ def box_obj(src, model):
     return '\n'.join(lines) + '\n', sheet
 
 
+def variants_obj(src, spec):
+    """`variants`: {"from": OBJ, "bones": {name: {"rot": deg, "pitch": deg,
+    "origin": [x, y, z]}}}: one copy of the OBJ per bone, each turned as
+    HBM's ObjUtil.renderWithIcon turns it (about z by pitch, then about y by
+    rot, both as Vec3.rotateAround) and moved to `origin` in the block (its
+    corner at 0), in the model's frame (centred on the block)."""
+    import math
+    lines = (src / spec['from']).read_text().splitlines()
+    v = [tuple(map(float, l.split()[1:4])) for l in lines if l.startswith('v ')]
+    vt = [l for l in lines if l.startswith('vt ')]
+    vn = [tuple(map(float, l.split()[1:4])) for l in lines if l.startswith('vn ')]
+    faces = [l.split()[1:] for l in lines if l.startswith('f ')]
+    out = vt[:]
+    def turn(p, rot, pitch):
+        x, y, z = p
+        c, s = math.cos(pitch), math.sin(pitch)
+        x, y = x * c + y * s, y * c - x * s
+        c, s = math.cos(rot), math.sin(rot)
+        x, z = x * c + z * s, z * c - x * s
+        return x, y, z
+    for n, (bone, b) in enumerate(spec['bones'].items()):
+        rot, pitch = math.radians(b.get('rot', 0)), math.radians(b.get('pitch', 0))
+        ox, oy, oz = b.get('origin', [0.5, 0, 0.5])
+        out.append(f'o {bone}')
+        for p in v:
+            x, y, z = turn(p, rot, pitch)
+            out.append(f'v {x + ox - 0.5:.6f} {y + oy:.6f} {z + oz - 0.5:.6f}')
+        for p in vn:
+            out.append('vn %.6f %.6f %.6f' % turn(p, rot, pitch))
+        for f in faces:
+            corners = []
+            for c in f:
+                parts = c.split('/')
+                parts[0] = str(int(parts[0]) + n * len(v))
+                if len(parts) > 2 and parts[2]:
+                    parts[2] = str(int(parts[2]) + n * len(vn))
+                corners.append('/'.join(parts))
+            out.append('f ' + ' '.join(corners))
+    return '\n'.join(out) + '\n'
+
+
 def obj_info(path):
     """The OBJ's object names and how far it reaches from the block's centre."""
     names, reach = [], 1.0
@@ -461,7 +502,12 @@ def main():
                 liquid_texture(x)
             if not m['liquids']:
                 del m['liquids']
-            if 'boxes' in m:
+            if 'variants' in m:
+                obj_out = own('assets/ntm/' + m['obj'].split(':', 1)[1])
+                obj_out.parent.mkdir(parents=True, exist_ok=True)
+                obj_out.write_text(variants_obj(src, m.pop('variants')))
+                copy(m.pop('texture_from'), 'assets/ntm/' + m['texture'].split(':', 1)[1])
+            elif 'boxes' in m:
                 text, sheet = box_obj(src, m)
                 m.pop('boxes')
                 obj_out = own('assets/ntm/' + m['obj'].split(':', 1)[1])
@@ -481,7 +527,9 @@ def main():
                 tex_out.parent.mkdir(parents=True, exist_ok=True)
                 sheet.save(tex_out)
             else:
-                copy(m.pop('obj_from'), 'assets/ntm/' + m['obj'].split(':', 1)[1])
+                # No `obj_from`: an OBJ another entry writes (the scaffold's colours).
+                if 'obj_from' in m:
+                    copy(m.pop('obj_from'), 'assets/ntm/' + m['obj'].split(':', 1)[1])
                 copy(m.pop('texture_from'), 'assets/ntm/' + m['texture'].split(':', 1)[1])
             loop = m.pop('loop_animation', None)
             if loop:
