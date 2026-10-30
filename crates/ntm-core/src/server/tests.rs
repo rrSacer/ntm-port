@@ -361,6 +361,7 @@ fn radiation_from_what_a_player_carries() {
 }
 
 mod bomb_tests;
+mod combustion_tests;
 mod fluid_tests;
 mod crafter_tests;
 mod review_m2_tests;

@@ -122,6 +122,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::FluidStore(f) => Some(f),
         Data::ElectricFurnace(f) => Some(f),
         Data::Steam(s) => s.slotted(),
+        Data::Combustion(c) => Some(c.slotted()),
         _ => None,
     }
 }
@@ -142,6 +143,12 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_fluidtank", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),
+    // Energy batch 3 (`crate::combustion`): the generators' slots are their
+    // containers, upgrades, pistons and identifiers.
+    ("ntm:machine_diesel", Layout::Native),
+    ("ntm:machine_combustion_engine", Layout::Native),
+    ("ntm:machine_turbofan", Layout::Native),
+    ("ntm:machine_turbinegas", Layout::Native),
     // Energy batch 2: no slots, the models' values.
     ("ntm:machine_steam_engine", Layout::Native),
     ("ntm:machine_industrial_turbine", Layout::Native),
@@ -673,6 +680,19 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     ("ntm:machine_chungus", &[[0, 2, -4], [-2, 0, 0], [2, 0, 0]]),
     // TilePortShapes.condenser: six a layer up.
     ("ntm:machine_condenser_powered", &[[-3, 1, 0], [3, 1, 0], [1, 1, -1], [-1, 1, -1], [1, 1, 1], [-1, 1, 1]]),
+    // Energy batch 3. TileEntityMachineCombustionEngine.getPorts: both sides
+    // of its core and of the row behind it.
+    ("ntm:machine_combustion_engine", &[[-1, 0, 0], [1, 0, 0], [-1, 0, 1], [1, 0, 1]]),
+    // TileEntityMachineTurbofan.getPorts: a connector on each side, and the
+    // one next to it towards the intake.
+    ("ntm:machine_turbofan", &[[0, 0, -1], [1, 0, -1], [0, 0, 1], [1, 0, 1]]),
+    // TileEntityMachineTurbineGas.getPorts: two each side of its middle
+    // (the corners of the row before and after the core, and four out),
+    // and the end port on the layer above.
+    (
+        "ntm:machine_turbinegas",
+        &[[-1, 0, 0], [-1, 0, -1], [-1, 0, 1], [1, 0, 0], [2, 0, 0], [3, 0, 0], [4, 0, 0], [4, 0, -1], [4, 0, 1], [5, 0, 0], [5, 1, 0]],
+    ),
 ];
 
 /// Multiblocks' power ports that MULTIBLOCKS' one-layer box can't hold:
@@ -688,6 +708,11 @@ pub const ENERGY_CHAINS: &[(&str, &[[i32; 3]])] = &[
         "ntm:machine_chungus",
         &[[0, 0, 1], [0, 0, 2], [0, 0, 3], [0, 0, 4], [0, 0, 5], [0, 0, 6], [0, 0, 7], [0, 0, 8], [0, 0, 9], [0, 0, 10]],
     ),
+    // The combustion engine's and the turbofan's power ports are their fluid
+    // ports; the gas turbine's (`getPowerPorts`) is four out on the layer above.
+    ("ntm:machine_combustion_engine", &[[-1, 0, 0], [1, 0, 0], [-1, 0, 1], [1, 0, 1]]),
+    ("ntm:machine_turbofan", &[[0, 0, -1], [1, 0, -1], [0, 0, 1], [1, 0, 1]]),
+    ("ntm:machine_turbinegas", &[[0, 1, 0], [-1, 1, 0], [-2, 1, 0], [-3, 1, 0], [-4, 1, 0]]),
     // TilePortShapes.condenser: the same six as its fluid.
     (
         "ntm:machine_condenser_powered",
@@ -696,7 +721,7 @@ pub const ENERGY_CHAINS: &[(&str, &[[i32; 3]])] = &[
 ];
 
 /// Cell `l` (placer's frame) of the multiblock with its core at `core`.
-fn world_cell(core: Pos, facing: [i32; 3], l: [i32; 3]) -> Pos {
+pub fn world_cell(core: Pos, facing: [i32; 3], l: [i32; 3]) -> Pos {
     let fwd = [-facing[0], -facing[2]];
     let right = [-fwd[1], fwd[0]];
     [

@@ -1059,35 +1059,36 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
-    // Energy batch 3 (3c93924): the combustion generators. Inert until
-    // their stage is approved.
+    // Energy batch 3 (3c93924): the combustion generators
+    // (`crate::combustion`); the multiblocks' power and fluid come through
+    // their proxies (container_bridge).
     BlockSpec {
         id: "ntm:machine_diesel",
-        kind: Kind::Inert,
+        kind: Kind::Combustion,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_combustion_engine",
-        kind: Kind::Inert,
+        kind: Kind::Combustion,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_turbofan",
-        kind: Kind::Inert,
+        kind: Kind::Combustion,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_turbinegas",
-        kind: Kind::Inert,
+        kind: Kind::Combustion,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     // Energy batch 2 (`crate::steam`): steam engines, turbines and
     // condensers. Their power and fluid come through their proxies
@@ -1198,7 +1199,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, _facing: Option<&str>) -> Vec<crate::energy::Port> {
     match spec.kind {
-        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace | Kind::Excavator | Kind::OreSlopper | Kind::Electrolyser | Kind::Refinery | Kind::FractionTower | Kind::Boiler | Kind::Coker | Kind::Processor | Kind::Drill | Kind::Steam => vec![crate::energy::DIRS.to_vec()],
+        Kind::FluidStore | Kind::Crafter | Kind::GasCent | Kind::BlastFurnace | Kind::Excavator | Kind::OreSlopper | Kind::Electrolyser | Kind::Refinery | Kind::FractionTower | Kind::Boiler | Kind::Coker | Kind::Processor | Kind::Drill | Kind::Steam | Kind::Combustion => vec![crate::energy::DIRS.to_vec()],
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.
         Kind::Heater => vec![crate::energy::DIRS.iter().filter(|d| d[1] == 0).copied().collect()],

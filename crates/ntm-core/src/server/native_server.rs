@@ -186,24 +186,49 @@ impl Server {
 
     /// The redstone the loaded batteries and bombs receive, one read per
     /// dimension: a battery runs in its signal's mode (`redHigh`), a bomb
-    /// goes off on its rising edge.
+    /// goes off on its rising edge. The diesel generator reads its block's
+    /// signal and the turbofan its four connectors' (any of them stops it).
     fn native_redstone(&mut self, host: &mut impl ServerHost) {
         let Some(r) = self.ready() else { return };
         let mut by_dim: BTreeMap<String, Vec<Pos>> = BTreeMap::new();
+        let mut cells_of: BTreeMap<Key, Vec<Pos>> = BTreeMap::new();
         for (k, m) in &r.world.machines {
-            if r.loaded.get(k) == Some(&true) && matches!(m.data, crate::machine::Data::Battery(_) | crate::machine::Data::Bomb(_)) {
+            if r.loaded.get(k) != Some(&true) {
+                continue;
+            }
+            if matches!(m.data, crate::machine::Data::Battery(_) | crate::machine::Data::Bomb(_)) {
                 by_dim.entry(k.0.clone()).or_default().push(k.1);
+            } else if let crate::machine::Data::Combustion(_) = m.data {
+                let local = crate::combustion::Combustion::redstone_cells(&m.block);
+                let facing = m.facing.as_deref().and_then(registry::facing_dir);
+                let cells: Vec<Pos> = match (local.is_empty(), facing) {
+                    (true, _) => Vec::new(),
+                    (false, Some(f)) => local.iter().map(|&l| container_bridge::world_cell(k.1, f, l)).collect(),
+                    (false, None) => vec![k.1],
+                };
+                by_dim.entry(k.0.clone()).or_default().extend(cells.iter().copied());
+                cells_of.insert(k.clone(), cells);
             }
         }
         r.native_signal.clear();
+        let mut seen: BTreeMap<Key, u8> = BTreeMap::new();
         for (dim, cells) in by_dim {
             for (p, s) in cells.iter().zip(host.redstone_many(&dim, &cells)) {
                 let key = (dim.clone(), *p);
                 let Some(s) = s else { continue };
-                r.native_signal.insert(key.clone(), s);
+                seen.insert(key.clone(), s);
+                if matches!(r.world.machines.get(&key).map(|m| &m.data), Some(crate::machine::Data::Battery(_) | crate::machine::Data::Bomb(_))) {
+                    r.native_signal.insert(key.clone(), s);
+                }
                 if let Some(crate::machine::Data::Battery(b)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) {
                     b.powered = s > 0;
                 }
+            }
+        }
+        for (key, cells) in cells_of {
+            let powered = cells.iter().any(|p| seen.get(&(key.0.clone(), *p)).is_some_and(|s| *s > 0));
+            if let Some(crate::machine::Data::Combustion(c)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) {
+                c.set_powered(powered);
             }
         }
     }
