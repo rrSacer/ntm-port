@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:rbmk_fuel_heu235"
+    "ntm:rbmk_fuel_heu235",
+    "ntm:watz_pellet__nqd"
   ]
 }

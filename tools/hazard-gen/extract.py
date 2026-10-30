@@ -77,6 +77,8 @@ def isotope_targets(expression):
     # HazardSystem's Item overload applies to every metadata; ItemStack is
     # exact. Keep this extension scoped to the imported isotope families.
     if expression in isotope_vars:return [row['id'] for row in r.byvar[expression]]
+    watz=re.fullmatch(r'DictFrame\.fromOne\(ModItems\.watz_pellet,\s*EnumWatzType\.(\w+)\)',expression)
+    if watz:return ['ntm:watz_pellet__'+watz[1].lower()]
     stack=re.match(r'new ItemStack\((\w+),',expression)
     if stack and stack[1] in isotope_vars:
         qualified=expression.replace('new ItemStack('+stack[1]+',','new ItemStack(ModItems.'+stack[1]+',',1)

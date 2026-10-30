@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:watz_pellet__les",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "IGI",
+    " I "
+  ],
+  "key": {
+    "I": "ntm:ingot_les",
+    "G": "#ntm:bulk/ingotgraphite"
+  }
+}

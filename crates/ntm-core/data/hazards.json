@@ -26090,6 +26090,287 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:watz",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pump",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:struct_watz_core",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_end",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_end__bolted",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__schrabidium",
+      "radiation_rad_s": 60.0,
+      "radiation_millirad_s": 60000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:446"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__hes",
+      "radiation_rad_s": 23.4,
+      "radiation_millirad_s": 23400,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:447"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__mes",
+      "radiation_rad_s": 23.4,
+      "radiation_millirad_s": 23400,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:448"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__les",
+      "radiation_rad_s": 23.4,
+      "radiation_millirad_s": 23400,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:449"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__hen",
+      "radiation_rad_s": 10.0,
+      "radiation_millirad_s": 10000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:450"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__meu",
+      "radiation_rad_s": 2.0,
+      "radiation_millirad_s": 2000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:451"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__mep",
+      "radiation_rad_s": 25.0,
+      "radiation_millirad_s": 25000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:452"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__lead",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__boron",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__du",
+      "radiation_rad_s": 1.0,
+      "radiation_millirad_s": 1000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:453"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__nqd",
+      "radiation_rad_s": 4.0,
+      "radiation_millirad_s": 4000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:454"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:watz_pellet__nqr",
+      "radiation_rad_s": 20.0,
+      "radiation_millirad_s": 20000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:455"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__schrabidium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__hes",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__mes",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__les",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__hen",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__meu",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__mep",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__lead",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__boron",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__du",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__nqd",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:watz_pellet_depleted__nqr",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:heater_oven",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,

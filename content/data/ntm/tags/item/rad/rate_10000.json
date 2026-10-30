@@ -9,6 +9,7 @@
     "ntm:rbmk_fuel_hen",
     "ntm:rbmk_fuel_mox",
     "ntm:rbmk_fuel_zfb_am_mix",
-    "ntm:rbmk_fuel_zfb_bismuth"
+    "ntm:rbmk_fuel_zfb_bismuth",
+    "ntm:watz_pellet__hen"
   ]
 }

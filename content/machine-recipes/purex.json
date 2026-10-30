@@ -22,9 +22,9 @@
   },
   "ingredient_policy": "conservative Forge 1.7.10 OreDict snapshot; first ntm id, then lexical vanilla",
   "coverage": {
-    "emitted": 27,
+    "emitted": 37,
     "scanned_source_calls": 59,
-    "skipped_source_calls": 32,
+    "skipped_source_calls": 22,
     "by_family": {
       "synthesis": {
         "emitted": 3,
@@ -51,8 +51,8 @@
         "skipped": 0
       },
       "watz": {
-        "emitted": 0,
-        "skipped": 12
+        "emitted": 10,
+        "skipped": 2
       },
       "icf": {
         "emitted": 1,
@@ -1228,6 +1228,526 @@
       "autoSwitchGroup": null
     },
     {
+      "name": "purex.watzschrab",
+      "source_index": 39,
+      "source": "PUREXRecipes.java:384",
+      "duration": 60,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:watz_pellet_depleted__schrabidium"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_solinium",
+          15,
+          1.0
+        ],
+        [
+          "ntm:nugget_euphemium",
+          3,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "watz",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha Watz de Schrabídio (Esgotada)",
+      "label_en": "Reprocessing of Schrabidium Watz Pellet (Depleted)",
+      "autoSwitchGroup": "autoswitch.watz"
+    },
+    {
+      "name": "purex.watzhes",
+      "source_index": 40,
+      "source": "PUREXRecipes.java:393",
+      "duration": 60,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:watz_pellet_depleted__hes"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_solinium",
+          17,
+          1.0
+        ],
+        [
+          "ntm:nugget_euphemium",
+          1,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "watz",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha Watz HES (Esgotada)",
+      "label_en": "Reprocessing of HES Watz Pellet (Depleted)",
+      "autoSwitchGroup": "autoswitch.watz"
+    },
+    {
+      "name": "purex.watzmes",
+      "source_index": 41,
+      "source": "PUREXRecipes.java:402",
+      "duration": 60,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:watz_pellet_depleted__mes"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_solinium",
+          12,
+          1.0
+        ],
+        [
+          "ntm:nugget_tantalium",
+          6,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "watz",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha Watz MES (Esgotada)",
+      "label_en": "Reprocessing of MES Watz Pellet (Depleted)",
+      "autoSwitchGroup": "autoswitch.watz"
+    },
+    {
+      "name": "purex.watzles",
+      "source_index": 42,
+      "source": "PUREXRecipes.java:411",
+      "duration": 60,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:watz_pellet_depleted__les"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_solinium",
+          9,
+          1.0
+        ],
+        [
+          "ntm:nugget_tantalium",
+          9,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "watz",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha Watz LES (Esgotada)",
+      "label_en": "Reprocessing of LES Watz Pellet (Depleted)",
+      "autoSwitchGroup": "autoswitch.watz"
+    },
+    {
+      "name": "purex.watzhen",
+      "source_index": 43,
+      "source": "PUREXRecipes.java:420",
+      "duration": 60,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:watz_pellet_depleted__hen"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_pu239",
+          12,
+          1.0
+        ],
+        [
+          "ntm:nugget_technetium",
+          6,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "watz",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha Watz HEN (Esgotada)",
+      "label_en": "Reprocessing of HEN Watz Pellet (Depleted)",
+      "autoSwitchGroup": "autoswitch.watz"
+    },
+    {
+      "name": "purex.watzmeu",
+      "source_index": 44,
+      "source": "PUREXRecipes.java:429",
+      "duration": 60,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:watz_pellet_depleted__meu"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_pu239",
+          12,
+          1.0
+        ],
+        [
+          "ntm:nugget_bismuth",
+          6,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "watz",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha Watz MEU (Esgotada)",
+      "label_en": "Reprocessing of MEU Watz Pellet (Depleted)",
+      "autoSwitchGroup": "autoswitch.watz"
+    },
+    {
+      "name": "purex.watzmep",
+      "source_index": 45,
+      "source": "PUREXRecipes.java:438",
+      "duration": 60,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:watz_pellet_depleted__mep"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_pu241",
+          12,
+          1.0
+        ],
+        [
+          "ntm:nugget_bismuth",
+          6,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "watz",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha Watz MEP (Esgotada)",
+      "label_en": "Reprocessing of MEP Watz Pellet (Depleted)",
+      "autoSwitchGroup": "autoswitch.watz"
+    },
+    {
+      "name": "purex.watzlead",
+      "source_index": 46,
+      "source": "PUREXRecipes.java:447",
+      "duration": 60,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:watz_pellet_depleted__lead"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_lead",
+          6,
+          1.0
+        ],
+        [
+          "ntm:nugget_bismuth",
+          12,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "watz",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha Absorvedora de Chumbo (Esgotada)",
+      "label_en": "Reprocessing of Lead Absorber Pellet (Depleted)",
+      "autoSwitchGroup": "autoswitch.watz"
+    },
+    {
+      "name": "purex.watzboron",
+      "source_index": 47,
+      "source": "PUREXRecipes.java:456",
+      "duration": 60,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:watz_pellet_depleted__boron"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:powder_coal_tiny",
+          12,
+          1.0
+        ],
+        [
+          "ntm:nugget_co60",
+          6,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "watz",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha Absorvedora de Boro (Esgotada)",
+      "label_en": "Reprocessing of Boron Absorber Pellet (Depleted)",
+      "autoSwitchGroup": "autoswitch.watz"
+    },
+    {
+      "name": "purex.watzdu",
+      "source_index": 48,
+      "source": "PUREXRecipes.java:465",
+      "duration": 60,
+      "power": 10000,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:watz_pellet_depleted__du"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:nugget_polonium",
+          12,
+          1.0
+        ],
+        [
+          "ntm:nugget_pu238",
+          6,
+          1.0
+        ],
+        [
+          "ntm:nuclear_waste",
+          2,
+          1.0
+        ]
+      ],
+      "inputFluids": [
+        [
+          "kerosene",
+          500
+        ],
+        [
+          "nitric_acid",
+          250
+        ]
+      ],
+      "outputFluids": [
+        [
+          "watz",
+          1000
+        ]
+      ],
+      "pools": [],
+      "label": "Reprocessamento de Pastilha Absorvedora de Urânio Empobrecido (Esgotada)",
+      "label_en": "Reprocessing of Depleted Uranium Absorber Pellet (Depleted)",
+      "autoSwitchGroup": "autoswitch.watz"
+    },
+    {
       "name": "purex.icf",
       "source_index": 51,
       "source": "PUREXRecipes.java:500",
@@ -1606,135 +2126,12 @@
       "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.plateu235\").setup(100, platePower).setNameWrapper(\"purex.recycle\").setGroup(autoPlate, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.waste_plate_u235))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_neptunium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_pu238, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste_tiny, 6))\n\t\t\t\t.setIconToFirstIngredient()"
     },
     {
-      "name": "purex.watzschrab",
-      "source_index": 39,
-      "source": "PUREXRecipes.java:384",
-      "family": "watz",
-      "autoSwitchGroup": "autoswitch.watz",
-      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzschrab\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.SCHRABIDIUM))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_solinium, 15),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_euphemium, 3),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.watzhes",
-      "source_index": 40,
-      "source": "PUREXRecipes.java:393",
-      "family": "watz",
-      "autoSwitchGroup": "autoswitch.watz",
-      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzhes\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.HES))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_solinium, 17),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_euphemium, 1),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.watzmes",
-      "source_index": 41,
-      "source": "PUREXRecipes.java:402",
-      "family": "watz",
-      "autoSwitchGroup": "autoswitch.watz",
-      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzmes\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.MES))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_solinium, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_tantalium, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.watzles",
-      "source_index": 42,
-      "source": "PUREXRecipes.java:411",
-      "family": "watz",
-      "autoSwitchGroup": "autoswitch.watz",
-      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzles\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.LES))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_solinium, 9),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_tantalium, 9),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.watzhen",
-      "source_index": 43,
-      "source": "PUREXRecipes.java:420",
-      "family": "watz",
-      "autoSwitchGroup": "autoswitch.watz",
-      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzhen\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.HEN))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu239, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_technetium, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.watzmeu",
-      "source_index": 44,
-      "source": "PUREXRecipes.java:429",
-      "family": "watz",
-      "autoSwitchGroup": "autoswitch.watz",
-      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzmeu\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.MEU))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu239, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_bismuth, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.watzmep",
-      "source_index": 45,
-      "source": "PUREXRecipes.java:438",
-      "family": "watz",
-      "autoSwitchGroup": "autoswitch.watz",
-      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzmep\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.MEP))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_pu241, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_bismuth, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.watzlead",
-      "source_index": 46,
-      "source": "PUREXRecipes.java:447",
-      "family": "watz",
-      "autoSwitchGroup": "autoswitch.watz",
-      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzlead\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.LEAD))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_lead, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_bismuth, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.watzboron",
-      "source_index": 47,
-      "source": "PUREXRecipes.java:456",
-      "family": "watz",
-      "autoSwitchGroup": "autoswitch.watz",
-      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzboron\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.BORON))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.powder_coal_tiny, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_co60, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
-      "name": "purex.watzdu",
-      "source_index": 48,
-      "source": "PUREXRecipes.java:465",
-      "family": "watz",
-      "autoSwitchGroup": "autoswitch.watz",
-      "reason": "missing catalog identities: ModItems.watz_pellet_depleted",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
-      "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watzdu\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.DU))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_polonium, 12),\n\t\t\t\t\t\tnew ItemStack(ModItems.nugget_pu238, 6),\n\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t.setIconToFirstIngredient()"
-    },
-    {
       "name": "purex.watznaqadah",
       "source_index": 49,
       "source": "PUREXRecipes.java:480",
       "family": "watz",
       "autoSwitchGroup": "autoswitch.watz",
       "reason": "conditional OreDict guard if(naquadriaNuggets.size() != 0): nuggetNaquadria absent from catalog",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
       "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watznaqadah\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.NQD))\n\t\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t\t.outputItems(copy,\n\t\t\t\t\t\t\tnew ItemStack(ModItems.nugget_euphemium, 6),\n\t\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t\t.setIconToFirstIngredient()"
     },
     {
@@ -1744,9 +2141,6 @@
       "family": "watz",
       "autoSwitchGroup": "autoswitch.watz",
       "reason": "conditional OreDict guard if(naquadriaNuggets.size() != 0): nuggetNaquadria absent from catalog",
-      "missing_items": [
-        "ModItems.watz_pellet_depleted"
-      ],
       "expression": "(PUREXRecipe) new PUREXRecipe(\"purex.watznaqadria\").setup(60, watzPower).setNameWrapper(\"purex.recycle\").setGroup(autoWatz, this)\n\t\t\t\t\t.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.NQR))\n\t\t\t\t\t.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))\n\t\t\t\t\t.outputItems(new ItemStack(ModItems.nugget_co60, 12),\n\t\t\t\t\t\t\tnew ItemStack(ModItems.nugget_euphemium, 6),\n\t\t\t\t\t\t\tnew ItemStack(ModItems.nuclear_waste, 2))\n\t\t\t\t\t.outputFluids(new FluidStack(Fluids.WATZ, 1_000))\n\t\t\t\t\t.setIconToFirstIngredient()"
     },
     {

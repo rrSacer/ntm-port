@@ -193,6 +193,15 @@
     "ntm:rod_zirnox_thorium_fuel_depleted",
     "ntm:scrap_nuclear",
     "ntm:solid_fuel_bf",
-    "ntm:solinium_core"
+    "ntm:solinium_core",
+    "ntm:watz_pellet__du",
+    "ntm:watz_pellet__hen",
+    "ntm:watz_pellet__hes",
+    "ntm:watz_pellet__les",
+    "ntm:watz_pellet__mes",
+    "ntm:watz_pellet__meu",
+    "ntm:watz_pellet__nqd",
+    "ntm:watz_pellet__nqr",
+    "ntm:watz_pellet__schrabidium"
   ]
 }

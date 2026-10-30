@@ -218,6 +218,11 @@
     "ntm:rod_zirnox_u235_fuel_depleted",
     "ntm:rod_zirnox_zfb_mox_depleted",
     "ntm:scrap_nuclear",
-    "ntm:tsar_core"
+    "ntm:tsar_core",
+    "ntm:watz_pellet__du",
+    "ntm:watz_pellet__hes",
+    "ntm:watz_pellet__les",
+    "ntm:watz_pellet__mep",
+    "ntm:watz_pellet__mes"
   ]
 }

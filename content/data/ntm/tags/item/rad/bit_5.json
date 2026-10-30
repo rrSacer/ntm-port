@@ -207,6 +207,14 @@
     "ntm:rod_zirnox_zfb_mox_depleted",
     "ntm:scrap_nuclear",
     "ntm:solinium_core",
-    "ntm:trinitite"
+    "ntm:trinitite",
+    "ntm:watz_pellet__du",
+    "ntm:watz_pellet__hes",
+    "ntm:watz_pellet__les",
+    "ntm:watz_pellet__mep",
+    "ntm:watz_pellet__mes",
+    "ntm:watz_pellet__nqd",
+    "ntm:watz_pellet__nqr",
+    "ntm:watz_pellet__schrabidium"
   ]
 }

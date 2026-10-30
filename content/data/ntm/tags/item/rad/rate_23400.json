@@ -3,6 +3,9 @@
   "values": [
     "ntm:rbmk_fuel_hes",
     "ntm:rbmk_fuel_les",
-    "ntm:rbmk_fuel_mes"
+    "ntm:rbmk_fuel_mes",
+    "ntm:watz_pellet__hes",
+    "ntm:watz_pellet__les",
+    "ntm:watz_pellet__mes"
   ]
 }

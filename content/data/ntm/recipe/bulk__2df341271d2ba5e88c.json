@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:watz_pellet__boron",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "IGI",
+    " I "
+  ],
+  "key": {
+    "I": "#ntm:bulk/ingotboron",
+    "G": "#ntm:bulk/ingotgraphite"
+  }
+}

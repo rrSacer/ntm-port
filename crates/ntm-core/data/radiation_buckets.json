@@ -130,7 +130,7 @@
     {
       "tag": "ntm:rad/rate_1000",
       "radiation_millirad_s": 1000,
-      "item_count": 10
+      "item_count": 11
     },
     {
       "tag": "ntm:rad/rate_1050",
@@ -165,7 +165,7 @@
     {
       "tag": "ntm:rad/rate_2000",
       "radiation_millirad_s": 2000,
-      "item_count": 3
+      "item_count": 4
     },
     {
       "tag": "ntm:rad/rate_2125",
@@ -220,7 +220,7 @@
     {
       "tag": "ntm:rad/rate_4000",
       "radiation_millirad_s": 4000,
-      "item_count": 1
+      "item_count": 2
     },
     {
       "tag": "ntm:rad/rate_4250",
@@ -300,7 +300,7 @@
     {
       "tag": "ntm:rad/rate_10000",
       "radiation_millirad_s": 10000,
-      "item_count": 9
+      "item_count": 10
     },
     {
       "tag": "ntm:rad/rate_11250",
@@ -345,7 +345,7 @@
     {
       "tag": "ntm:rad/rate_20000",
       "radiation_millirad_s": 20000,
-      "item_count": 2
+      "item_count": 3
     },
     {
       "tag": "ntm:rad/rate_22500",
@@ -355,12 +355,12 @@
     {
       "tag": "ntm:rad/rate_23400",
       "radiation_millirad_s": 23400,
-      "item_count": 3
+      "item_count": 6
     },
     {
       "tag": "ntm:rad/rate_25000",
       "radiation_millirad_s": 25000,
-      "item_count": 12
+      "item_count": 13
     },
     {
       "tag": "ntm:rad/rate_30000",
@@ -415,7 +415,7 @@
     {
       "tag": "ntm:rad/rate_60000",
       "radiation_millirad_s": 60000,
-      "item_count": 2
+      "item_count": 3
     },
     {
       "tag": "ntm:rad/rate_62500",
@@ -632,67 +632,67 @@
     {
       "tag": "ntm:rad/bit_3",
       "bit": 3,
-      "item_count": 218
+      "item_count": 223
     },
     {
       "tag": "ntm:rad/bit_4",
       "bit": 4,
-      "item_count": 219
+      "item_count": 221
     },
     {
       "tag": "ntm:rad/bit_5",
       "bit": 5,
-      "item_count": 207
+      "item_count": 215
     },
     {
       "tag": "ntm:rad/bit_6",
       "bit": 6,
-      "item_count": 208
+      "item_count": 214
     },
     {
       "tag": "ntm:rad/bit_7",
       "bit": 7,
-      "item_count": 255
+      "item_count": 259
     },
     {
       "tag": "ntm:rad/bit_8",
       "bit": 8,
-      "item_count": 257
+      "item_count": 265
     },
     {
       "tag": "ntm:rad/bit_9",
       "bit": 9,
-      "item_count": 193
+      "item_count": 202
     },
     {
       "tag": "ntm:rad/bit_10",
       "bit": 10,
-      "item_count": 134
+      "item_count": 138
     },
     {
       "tag": "ntm:rad/bit_11",
       "bit": 11,
-      "item_count": 139
+      "item_count": 145
     },
     {
       "tag": "ntm:rad/bit_12",
       "bit": 12,
-      "item_count": 136
+      "item_count": 139
     },
     {
       "tag": "ntm:rad/bit_13",
       "bit": 13,
-      "item_count": 118
+      "item_count": 121
     },
     {
       "tag": "ntm:rad/bit_14",
       "bit": 14,
-      "item_count": 95
+      "item_count": 101
     },
     {
       "tag": "ntm:rad/bit_15",
       "bit": 15,
-      "item_count": 71
+      "item_count": 72
     },
     {
       "tag": "ntm:rad/bit_16",

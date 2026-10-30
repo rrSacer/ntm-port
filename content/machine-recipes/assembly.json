@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 461,
+    "emitted": 462,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 170,
+    "skipped_source_calls": 169,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -4853,6 +4853,44 @@
       "pools": [],
       "label": "Super-Resfriador do Reator Watz ×3",
       "label_en": "Watz Reactor Supercooler ×3"
+    },
+    {
+      "name": "ass.watzcasing",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:624",
+      "duration": 100,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_welded__cdalloy",
+            "ntm:plate_welded__tcalloy"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:ingot_boron"
+          ],
+          "count": 3
+        },
+        {
+          "ids": [
+            "ntm:plate_welded__steel"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:watz_end",
+          3
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Elemento de Estabilidade do Reator Watz ×3",
+      "label_en": "Watz Reactor Stability Element ×3"
     },
     {
       "name": "ass.overdrive1",
@@ -16452,12 +16490,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:610",
       "reason": "unregistered/ambiguous source item fusion_plasma_forge",
       "expression": "new GenericRecipe(\"ass.fusionplasmaforge\").setup(1_200, 100).outputItems(new ItemStack(ModBlocks.fusion_plasma_forge, 1))\n\t\t\t\t.inputItems(new OreDictStack(ANY_RESISTANTALLOY.plateWelded(), 8), new OreDictStack(BSCCO.wireDense(), 32), new OreDictStack(ANY_BISMOIDBRONZE.plateCast(), 16), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 16, EnumExpensiveType.FERRO_PLATING), new ComparableStack(ModItems.item_expensive, 16, EnumExpensiveType.PLASTIC), new OreDictStack(BSCCO.wireDense(), 32), new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.COMPUTER))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"chlorophyte\")"
-    },
-    {
-      "name": "ass.watzcasing",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:624",
-      "reason": "unregistered/ambiguous source item watz_end",
-      "expression": "new GenericRecipe(\"ass.watzcasing\").setup(100, 100).outputItems(new ItemStack(ModBlocks.watz_end, 3))\n\t\t\t\t.inputItems(new OreDictStack(ANY_RESISTANTALLOY.plateWelded()), new OreDictStack(B.ingot(), 3), new OreDictStack(STEEL.plateWelded(), 2))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 6, EnumExpensiveType.FERRO_PLATING), new OreDictStack(ANY_RESISTANTALLOY.plateWelded()), new OreDictStack(STEEL.plateWelded(), 2))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"tcalloy\")"
     },
     {
       "name": "ass.chopper",

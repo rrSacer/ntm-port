@@ -134,6 +134,10 @@
     "ntm:solid_fuel_presto_bf",
     "ntm:solid_fuel_presto_triplet_bf",
     "ntm:solinium_core",
-    "ntm:tsar_core"
+    "ntm:tsar_core",
+    "ntm:watz_pellet__hen",
+    "ntm:watz_pellet__meu",
+    "ntm:watz_pellet__nqd",
+    "ntm:watz_pellet__nqr"
   ]
 }

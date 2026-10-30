@@ -12,6 +12,7 @@
     "ntm:pwr_fuel_depleted__mox",
     "ntm:pwr_fuel_hot__hen237",
     "ntm:pwr_fuel_hot__mox",
-    "ntm:rbmk_fuel_mep"
+    "ntm:rbmk_fuel_mep",
+    "ntm:watz_pellet__mep"
   ]
 }

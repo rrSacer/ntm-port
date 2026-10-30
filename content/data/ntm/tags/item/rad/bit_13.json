@@ -118,6 +118,9 @@
     "ntm:rod_zirnox_natural_uranium_fuel_depleted",
     "ntm:rod_zirnox_thorium_fuel_depleted",
     "ntm:rod_zirnox_zfb_mox_depleted",
-    "ntm:solinium_core"
+    "ntm:solinium_core",
+    "ntm:watz_pellet__hen",
+    "ntm:watz_pellet__mep",
+    "ntm:watz_pellet__schrabidium"
   ]
 }

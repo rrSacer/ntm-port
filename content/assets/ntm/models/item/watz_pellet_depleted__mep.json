@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ntm:item/watz_pellet__watz_pellet_depleted__mep"
+  }
+}

@@ -259,7 +259,7 @@ def generate(src,out,rows,emit):
                 last=i+1
             elif c==';':last=i+1
         def supported(pos):return not any(lo<pos<hi for lo,hi in guarded)
-        for pos,args,callee in calls(text,r'\b(?:addRecipeAuto|addShapelessAuto|addZIRNOXRod|addRBMKRod|add1To9Pair|addMineralSet|GameRegistry\.addSmelting|GameRegistry\.addRecipe|GameRegistry\.addShapelessRecipe)'):
+        for pos,args,callee in calls(text,r'\b(?:addRecipeAuto|addShapelessAuto|addZIRNOXRod|addRBMKRod|addPellet|add1To9Pair|addMineralSet|GameRegistry\.addSmelting|GameRegistry\.addRecipe|GameRegistry\.addShapelessRecipe)'):
             location=str(file.relative_to(src))+':'+str(text[:pos].count('\n')+1)
             try:
                 parts=split(args)
@@ -276,6 +276,17 @@ def generate(src,out,rows,emit):
                     parts=['new ItemStack(ModItems.rod_zirnox, 1, '+parts[1]+'.ordinal())',
                            'new Object[] { ModItems.rod_zirnox_empty, '+ingredient+', '+ingredient+' }']
                     callee='addShapelessAuto'
+                if callee=='addPellet':
+                    if file.name!='RodRecipes.java' or len(parts)!=2 or not parts[1].startswith('EnumWatzType.'):
+                        raise Unsupported('unsupported Watz pellet helper call')
+                    # Both original overloads are the same ring: four ingots around a graphite ingot.
+                    for ingredient in ['mat.ingot()','item']:
+                        expected='new Object[] { " I ", "IGI", " I ", \'I\', '+ingredient+', \'G\', GRAPHITE.ingot() }'
+                        if expected not in text:raise Unsupported('Watz pellet helper body drift')
+                    ingredient=parts[0]+'.ingot()' if parts[0] in resolver.frames else parts[0]
+                    parts=['new ItemStack(ModItems.watz_pellet, 1, '+parts[1]+'.ordinal())',
+                           'new Object[] { " I ", "IGI", " I ", \'I\', '+ingredient+', \'G\', GRAPHITE.ingot() }']
+                    callee='addRecipeAuto'
                 if callee=='addRBMKRod':
                     if file.name!='RodRecipes.java' or len(parts)!=2 or not parts[1].startswith('ModItems.rbmk_fuel_'):
                         raise Unsupported('unsupported RBMK helper call')

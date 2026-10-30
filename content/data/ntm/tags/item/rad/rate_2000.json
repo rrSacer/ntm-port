@@ -3,6 +3,7 @@
   "values": [
     "ntm:boy_target",
     "ntm:rbmk_fuel_meu",
-    "ntm:rbmk_fuel_zfb_pu241"
+    "ntm:rbmk_fuel_zfb_pu241",
+    "ntm:watz_pellet__meu"
   ]
 }

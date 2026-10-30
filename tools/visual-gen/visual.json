@@ -22990,6 +22990,18 @@
     "ntm:pwr_block__port": {
       "auto": false,
       "source": "Reactor R3 (PWR) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:watz": {
+      "auto": false,
+      "source": "Reactor R4 (Watz) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:watz_pump": {
+      "auto": false,
+      "source": "Reactor R4 (Watz) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:struct_watz_core": {
+      "auto": false,
+      "source": "Reactor R4 (Watz) content fallback only; faithful models/multiblocks and native logic deferred."
     }
   },
   "textures": {

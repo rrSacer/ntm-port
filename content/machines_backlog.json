@@ -3645,7 +3645,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R4 (Watz) content declared; native structure/fuel logic and visuals deferred",
+      "content_id": "ntm:struct_watz_core"
     },
     {
       "id": "struct_icf_core",
@@ -4023,7 +4024,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R4 (Watz) content declared; native structure/fuel logic and visuals deferred",
+      "content_id": "ntm:watz"
     },
     {
       "id": "watz_pump",
@@ -4040,7 +4042,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R4 (Watz) content declared; native structure/fuel logic and visuals deferred",
+      "content_id": "ntm:watz_pump"
     },
     {
       "id": "machine_converter_he_rf",

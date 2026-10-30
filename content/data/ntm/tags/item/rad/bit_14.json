@@ -95,6 +95,12 @@
     "ntm:rod_zirnox_plutonium_fuel_depleted",
     "ntm:rod_zirnox_u233_fuel_depleted",
     "ntm:rod_zirnox_uranium_fuel_depleted",
-    "ntm:solid_fuel_bf"
+    "ntm:solid_fuel_bf",
+    "ntm:watz_pellet__hes",
+    "ntm:watz_pellet__les",
+    "ntm:watz_pellet__mep",
+    "ntm:watz_pellet__mes",
+    "ntm:watz_pellet__nqr",
+    "ntm:watz_pellet__schrabidium"
   ]
 }

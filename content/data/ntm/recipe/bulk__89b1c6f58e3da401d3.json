@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:watz_pellet__hen",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "IGI",
+    " I "
+  ],
+  "key": {
+    "I": "#ntm:bulk/ingotneptunium237",
+    "G": "#ntm:bulk/ingotgraphite"
+  }
+}

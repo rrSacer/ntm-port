@@ -219,6 +219,8 @@
     "ntm:rod_zirnox_u233_fuel_depleted",
     "ntm:rod_zirnox_uranium_fuel_depleted",
     "ntm:rod_zirnox_zfb_mox_depleted",
-    "ntm:solinium_core"
+    "ntm:solinium_core",
+    "ntm:watz_pellet__hen",
+    "ntm:watz_pellet__meu"
   ]
 }

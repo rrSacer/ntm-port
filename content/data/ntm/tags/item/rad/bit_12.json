@@ -136,6 +136,9 @@
     "ntm:rod_zirnox_plutonium_fuel_depleted",
     "ntm:rod_zirnox_thorium_fuel_depleted",
     "ntm:solinium_core",
-    "ntm:tsar_core"
+    "ntm:tsar_core",
+    "ntm:watz_pellet__hes",
+    "ntm:watz_pellet__les",
+    "ntm:watz_pellet__mes"
   ]
 }

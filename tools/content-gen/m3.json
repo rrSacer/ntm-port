@@ -22897,6 +22897,573 @@
       "behavior_gap": "Source ItemPWRPrinter opens a slice-printer GUI over a selected cuboid; native item/GUI logic."
     },
     {
+      "id": "watz",
+      "source_variable": "watz",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "names": {
+        "en_us": "Watz Powerplant",
+        "pt_br": "Usina Watz"
+      },
+      "behavior_gap": "Source multiblock reactor body with four side volumes, tanks, reaction and GUI; native/visual work, steel or source cube fallback only."
+    },
+    {
+      "id": "watz_pump",
+      "source_variable": "watz_pump",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "names": {
+        "en_us": "Watz Pressure Pump",
+        "pt_br": "Bomba de Pressão Watz"
+      },
+      "behavior_gap": "Source vertical multiblock pump; native/visual work, steel or source cube fallback only."
+    },
+    {
+      "id": "struct_watz_core",
+      "source_variable": "struct_watz_core",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/struct_watz_core.png",
+      "textures": {
+        "side": "blocks/struct_watz_core",
+        "top": "blocks/struct_watz_core",
+        "front": "blocks/struct_watz_core"
+      },
+      "opaque_machine_textures": true,
+      "names": {
+        "en_us": "Watz Powerplant Core Component",
+        "pt_br": "Componente Central da Usina Watz"
+      },
+      "behavior_gap": "Source core component that the Watz drops when broken and that is crafted by hand; native/visual work, steel or source cube fallback only."
+    },
+    {
+      "id": "watz_end",
+      "source_variable": "watz_end",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:stone",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/watz_casing.png",
+      "names": {
+        "en_us": "Watz Reactor Stability Element",
+        "pt_br": "Elemento de Estabilidade do Reator Watz"
+      },
+      "behavior_gap": "Source BlockToolConversion: the screwdriver/bolt-driver conversions between the plain and riveted casing are native logic; both are plain cubes here."
+    },
+    {
+      "id": "watz_end__bolted",
+      "source_variable": "watz_end",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:stone",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/watz_casing_bolted.png",
+      "names": {
+        "en_us": "Watz Reactor Stability Element (Riveted)",
+        "pt_br": "Elemento de Estabilidade do Reator Watz (Rebitado)"
+      },
+      "behavior_gap": "Source BlockToolConversion: the screwdriver/bolt-driver conversions between the plain and riveted casing are native logic; both are plain cubes here."
+    },
+    {
+      "id": "watz_pellet__schrabidium",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.SCHRABIDIUM",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "32FFFF",
+        "dark": "005C5C"
+      },
+      "names": {
+        "en_us": "Schrabidium Watz Pellet",
+        "pt_br": "Pastilha Watz de Schrabídio"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__hes",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.HES",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "66DCD6",
+        "dark": "023933"
+      },
+      "names": {
+        "en_us": "HES Watz Pellet",
+        "pt_br": "Pastilha Watz HES"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__mes",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.MES",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "CBEADF",
+        "dark": "28473C"
+      },
+      "names": {
+        "en_us": "MES Watz Pellet",
+        "pt_br": "Pastilha Watz MES"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__les",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.LES",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "ABB4A8",
+        "dark": "0C1105"
+      },
+      "names": {
+        "en_us": "LES Watz Pellet",
+        "pt_br": "Pastilha Watz LES"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__hen",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.HEN",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "A6B2A6",
+        "dark": "030F03"
+      },
+      "names": {
+        "en_us": "HEN Watz Pellet",
+        "pt_br": "Pastilha Watz HEN"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__meu",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.MEU",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "C1C7BD",
+        "dark": "2B3227"
+      },
+      "names": {
+        "en_us": "MEU Watz Pellet",
+        "pt_br": "Pastilha Watz MEU"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__mep",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.MEP",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "9AA3A0",
+        "dark": "111A17"
+      },
+      "names": {
+        "en_us": "MEP Watz Pellet",
+        "pt_br": "Pastilha Watz MEP"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__lead",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.LEAD",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "A6A6B2",
+        "dark": "03030F"
+      },
+      "names": {
+        "en_us": "Lead Absorber Pellet",
+        "pt_br": "Pastilha Absorvedora de Chumbo"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__boron",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.BORON",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "BDC8D2",
+        "dark": "29343E"
+      },
+      "names": {
+        "en_us": "Boron Absorber Pellet",
+        "pt_br": "Pastilha Absorvedora de Boro"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__du",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 9,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.DU",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "C1C7BD",
+        "dark": "2B3227"
+      },
+      "names": {
+        "en_us": "Depleted Uranium Absorber Pellet",
+        "pt_br": "Pastilha Absorvedora de Urânio Empobrecido"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__nqd",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 10,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.NQD",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "4B4B4B",
+        "dark": "121212"
+      },
+      "names": {
+        "en_us": "Enriched Naquadah Watz Pellet",
+        "pt_br": "Pastilha Watz de Naquadah Enriquecido"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet__nqr",
+      "source_variable": "watz_pellet",
+      "type": "item",
+      "category": "component",
+      "metadata": 11,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.NQR",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "2D2D2D",
+        "dark": "0B0B0B"
+      },
+      "names": {
+        "en_us": "Naquadria Watz Pellet",
+        "pt_br": "Pastilha Watz de Naquadria"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__schrabidium",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.SCHRABIDIUM",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "819090",
+        "dark": "283030"
+      },
+      "names": {
+        "en_us": "Schrabidium Watz Pellet (Depleted)",
+        "pt_br": "Pastilha Watz de Schrabídio (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__hes",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.HES",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "7F8887",
+        "dark": "181C1B"
+      },
+      "names": {
+        "en_us": "HES Watz Pellet (Depleted)",
+        "pt_br": "Pastilha Watz HES (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__mes",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.MES",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "A3A5A5",
+        "dark": "292B2A"
+      },
+      "names": {
+        "en_us": "MES Watz Pellet (Depleted)",
+        "pt_br": "Pastilha Watz MES (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__les",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.LES",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "818181",
+        "dark": "080807"
+      },
+      "names": {
+        "en_us": "LES Watz Pellet (Depleted)",
+        "pt_br": "Pastilha Watz LES (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__hen",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.HEN",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "7E7F7E",
+        "dark": "040504"
+      },
+      "names": {
+        "en_us": "HEN Watz Pellet (Depleted)",
+        "pt_br": "Pastilha Watz HEN (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__meu",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.MEU",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "909090",
+        "dark": "202120"
+      },
+      "names": {
+        "en_us": "MEU Watz Pellet (Depleted)",
+        "pt_br": "Pastilha Watz MEU (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__mep",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.MEP",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "767777",
+        "dark": "0F1010"
+      },
+      "names": {
+        "en_us": "MEP Watz Pellet (Depleted)",
+        "pt_br": "Pastilha Watz MEP (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__lead",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.LEAD",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "7E7E7F",
+        "dark": "040405"
+      },
+      "names": {
+        "en_us": "Lead Absorber Pellet (Depleted)",
+        "pt_br": "Pastilha Absorvedora de Chumbo (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__boron",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 8,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.BORON",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "949596",
+        "dark": "252627"
+      },
+      "names": {
+        "en_us": "Boron Absorber Pellet (Depleted)",
+        "pt_br": "Pastilha Absorvedora de Boro (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__du",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 9,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.DU",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "909090",
+        "dark": "202120"
+      },
+      "names": {
+        "en_us": "Depleted Uranium Absorber Pellet (Depleted)",
+        "pt_br": "Pastilha Absorvedora de Urânio Empobrecido (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__nqd",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 10,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.NQD",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "383838",
+        "dark": "0D0D0D"
+      },
+      "names": {
+        "en_us": "Enriched Naquadah Watz Pellet (Depleted)",
+        "pt_br": "Pastilha Watz de Naquadah Enriquecido (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
+      "id": "watz_pellet_depleted__nqr",
+      "source_variable": "watz_pellet_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 11,
+      "subtype_kind": "enum",
+      "source_enum": "EnumWatzType.NQR",
+      "max_stack_size": 16,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/watz_pellet.png",
+      "tint": {
+        "light": "212121",
+        "dark": "080808"
+      },
+      "names": {
+        "en_us": "Naquadria Watz Pellet (Depleted)",
+        "pt_br": "Pastilha Watz de Naquadria (Esgotada)"
+      },
+      "behavior_gap": "Fuel table in machine-recipes/reactors_watz.json; per-stack depletion is NBT and the durability bar needs native logic. Icon recoloured from the source RGB remap (depleted = ItemWatzPellet.desaturate)."
+    },
+    {
       "id": "heater_oven",
       "source_variable": "heater_oven",
       "type": "block",

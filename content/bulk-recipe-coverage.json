@@ -5969,6 +5969,96 @@
       }
     },
     {
+      "id": "ntm:bulk__650a6dd5fecc225814",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:123",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:watz_pellet__schrabidium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__6ada00e40d3b1546b6",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:124",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:watz_pellet__hes",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__312dd9f849dd48c71b",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:125",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:watz_pellet__mes",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ca2402ad43b2f0332d",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:126",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:watz_pellet__les",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__89b1c6f58e3da401d3",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:127",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:watz_pellet__hen",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__79ae31df6aa8aa722c",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:128",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:watz_pellet__meu",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__10df2874040aa0d254",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:129",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:watz_pellet__mep",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__34efe7785f15d9efea",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:130",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:watz_pellet__lead",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2df341271d2ba5e88c",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:131",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:watz_pellet__boron",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__634f507a04c37c86a5",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:132",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:watz_pellet__du",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__da86fbc98bb1f327ed",
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:135",
       "type": "minecraft:crafting_shaped",
@@ -6851,7 +6941,7 @@
       }
     }
   ],
-  "generated_count": 761,
+  "generated_count": 771,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -7546,7 +7636,7 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:357",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item watz_pump",
+      "reason": "unresolved ore dictionary ANY_RESISTANTALLOY.plateCast()",
       "expression": "new ItemStack(ModBlocks.watz_pump, 1), new Object[] { \"MPM\", \"PCP\", \"PSP\", 'M', ModItems.motor_desh, 'P', ANY_RESISTANTALLOY.plateCast(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BISMOID), 'S', DURA.pipe() }"
     },
     {
@@ -8650,7 +8740,7 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:719",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item struct_watz_core",
+      "reason": "unresolved ore dictionary ANY_RESISTANTALLOY.plateCast()",
       "expression": "new ItemStack(ModBlocks.struct_watz_core, 1), new Object[] { \"CBC\", \"BHB\", \"CBC\", 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ADVANCED), 'B', ANY_RESISTANTALLOY.plateCast(), 'H', ModBlocks.watz_cooler }"
     },
     {
@@ -11882,6 +11972,18 @@
       "expression": "new ItemStack(ModItems.rbmk_fuel_drx, 1), new Object[] { ModItems.rbmk_fuel_balefire, ModItems.particle_digamma }"
     },
     {
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:156",
+      "callee": "addRecipeAuto",
+      "reason": "unsupported expression new DictFrame(\"NaquadahEnriched\")",
+      "expression": "new DictFrame(\"NaquadahEnriched\"),\tEnumWatzType.NQD"
+    },
+    {
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:157",
+      "callee": "addRecipeAuto",
+      "reason": "unsupported expression new DictFrame(\"Naquadria\")",
+      "expression": "new DictFrame(\"Naquadria\"),\t\t\tEnumWatzType.NQR"
+    },
+    {
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:162",
       "callee": "addShapelessAuto",
       "reason": "unsupported expression out",
@@ -12092,10 +12194,22 @@
       "expression": "new ItemStack(ModItems.rod_zirnox, 1, num.ordinal()), new Object[] { ModItems.rod_zirnox_empty, mat.billet(), mat.billet() }"
     },
     {
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:260",
+      "callee": "addPellet",
+      "reason": "unsupported Watz pellet helper call",
+      "expression": "DictFrame mat, EnumWatzType num"
+    },
+    {
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:261",
       "callee": "addRecipeAuto",
       "reason": "dynamic/unsupported metadata num.ordinal()",
       "expression": "new ItemStack(ModItems.watz_pellet, 1, num.ordinal()), new Object[] { \" I \", \"IGI\", \" I \", 'I', mat.ingot(), 'G', GRAPHITE.ingot() }"
+    },
+    {
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:263",
+      "callee": "addPellet",
+      "reason": "unsupported Watz pellet helper call",
+      "expression": "Item item, EnumWatzType num"
     },
     {
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:264",
