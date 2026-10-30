@@ -72,5 +72,30 @@ hook_version = 1
 kind = "HEAD"
 helper = "tick.rs"
 bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
   { name = "entity", ty = "&mut horizon_client::containers::ModBlockEntity", value = "&mut *entity" },
+]
+
+# The clients' models (V3): the types, and what each update carries.
+[[injection]]
+id = "block-entity-types"
+hook = "block_entity_types"
+hook_version = 1
+kind = "HEAD"
+helper = "types.rs"
+bindings = [
+  { name = "types", ty = "&mut Vec<String>", value = "&mut *types" },
+]
+
+[[injection]]
+id = "block-entity-update-tag"
+hook = "block_entity_update_tag"
+hook_version = 1
+kind = "HEAD"
+helper = "update_tag.rs"
+bindings = [
+  { name = "id", ty = "&str", value = "id" },
+  { name = "nbt", ty = "&horizon_world::nbt::Compound", value = "nbt" },
+  { name = "tag", ty = "&mut Option<horizon_world::nbt::Compound>", value = "&mut *tag" },
 ]

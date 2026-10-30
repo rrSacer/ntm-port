@@ -1,4 +1,4 @@
 // A machine's server tick.
-fn ntm_block_entity_tick(entity: &mut horizon_client::containers::ModBlockEntity) {
-    crate::game::ntm_glue::tick(entity);
+fn ntm_block_entity_tick(game: &mut crate::game::Game<'_>, pos: [i32; 3], entity: &mut horizon_client::containers::ModBlockEntity) {
+    crate::game::ntm_glue::tick(game, pos, entity);
 }

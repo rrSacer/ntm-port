@@ -114,6 +114,59 @@ pub fn accepts(block: &str, slot: usize, item: &str) -> bool {
         }
 }
 
+/// A slot's rule, as the game's `ModSlotFilter` takes it: the items it
+/// takes (none: any), those it refuses, its limit, and whether players
+/// only take from it.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct SlotFilter {
+    pub accept: Option<Vec<String>>,
+    pub reject: Vec<String>,
+    pub max: Option<u32>,
+    pub output: bool,
+}
+
+/// The rules of block `block`'s slots, in order (menu, clicks and hoppers
+/// alike): the furnace takes what it smelts, one creative battery, and
+/// gives its result.
+pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
+    if !handles(block) {
+        return Vec::new();
+    }
+    let mut smeltable: Vec<String> = crate::recipes::furnace().inputs().map(str::to_string).collect();
+    smeltable.sort();
+    vec![
+        SlotFilter { accept: Some(smeltable), ..Default::default() },
+        SlotFilter { accept: Some(vec![CREATIVE_BATTERY.into()]), max: Some(1), ..Default::default() },
+        SlotFilter { output: true, ..Default::default() },
+    ]
+}
+
+// ------------------------------------------------------- client sync
+
+/// Where block `block`'s machine file is among the content's data
+/// (`data/ntm/horizon_machine/machine_press.json`).
+pub fn machine_file(block: &str) -> Option<String> {
+    let (ns, path) = block.split_once(':')?;
+    Some(format!("data/{ns}/horizon_machine/{path}.json"))
+}
+
+/// The data indices a machine file's `synced` names: those whose change the
+/// clients' models must see (the rest only matter to the open screen).
+pub fn synced(machine_file: &[u8]) -> Vec<usize> {
+    serde_json::from_slice::<serde_json::Value>(machine_file)
+        .ok()
+        .and_then(|v| v.get("synced")?.as_array().cloned())
+        .map(|a| a.iter().filter_map(|i| i.as_u64()).map(|i| i as usize).collect())
+        .unwrap_or_default()
+}
+
+/// Whether the clients need the machine's data again: a synced index that
+/// changed (or data never sent).
+pub fn sync_changed(sent: Option<&[i32]>, now: &[i32], synced: &[usize]) -> bool {
+    let Some(sent) = sent else { return !synced.is_empty() };
+    synced.iter().any(|&i| sent.get(i) != now.get(i))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -139,6 +192,29 @@ mod tests {
         tick(F, &mut again, &mut items, &mut data);
         assert_eq!(data[2], 1);
         assert!(again.contains("\"progress\":1"));
+    }
+
+    /// Only a synced index's change asks for an update; never sent, any
+    /// synced machine does.
+    #[test]
+    fn the_clients_hear_of_synced_values_only() {
+        let file = br#"{"data": 4, "synced": [0, 2]}"#;
+        let s = synced(file);
+        assert_eq!(s, vec![0, 2]);
+        assert!(!sync_changed(Some(&[1, 5, 3]), &[1, 9, 3], &s), "o índice 1 não é sincronizado");
+        assert!(sync_changed(Some(&[1, 5, 3]), &[1, 5, 4], &s));
+        assert!(sync_changed(None, &[0], &s) && !sync_changed(None, &[0], &[]));
+        assert_eq!(machine_file("ntm:machine_press").as_deref(), Some("data/ntm/horizon_machine/machine_press.json"));
+        assert!(synced(b"{").is_empty());
+    }
+
+    /// The furnace's slots: smeltables, one battery, a result to take.
+    #[test]
+    fn the_furnace_slots_take_what_they_should() {
+        let f = slot_filters(F);
+        assert!(f[0].accept.as_ref().is_some_and(|a| a.iter().any(|i| i == "minecraft:iron_ore")));
+        assert_eq!((f[1].max, f[2].output), (Some(1), true));
+        assert!(slot_filters("minecraft:stone").is_empty());
     }
 
     /// Without the battery nothing smelts; a state that doesn't read starts

@@ -49,6 +49,10 @@ O binário sai em `$BUILD_DIR/target/release/horizon-client`.
 | `block_entity_ticks` | 1 | `ticks.rs` | Os block entities das máquinas fazem tick. |
 | `block_entity_container` | 1 | `container.rs` | Os slots, as faces e o menu vanilla de cada máquina. |
 | `block_entity_tick` | 1 | `tick.rs` | O tick do servidor: estado, slots e data do menu passam pelo `ntm_core::native`. |
+| `block_entity_types` | 1 | `types.rs` | Registra os ids de block entity das máquinas (o próprio id do bloco), iguais em todos os pares. |
+| `block_entity_update_tag` | 1 | `update_tag.rs` | Manda aos clientes `data` (IntArray, o vetor do menu) e `facing` (só nos blocos sem a propriedade, as bombas), o contrato com os modelos da V3. |
+
+O tick grava o `data` no compound, porque o `update_tag` só enxerga o compound, e chama `native_block_entity_changed` só quando muda um índice listado em `synced` no `horizon_machine/<bloco>.json` (lido uma vez por bloco com `native_data`). Os outros valores só importam à tela aberta. `ntm_core::native::slot_filters` já dá as regras dos slots para o hook `slot_filters` da V2 (API 20), que entra quando a V2 for integrada à `ntm-next`.
 
 A cola fica no módulo `ntm_glue` (`glue.rs`), que converte `ModBlockEntity` e `ItemStack` para os tipos simples do `ntm_core::native` e de volta. Um slot que a lógica não mudou mantém a pilha do jogo, com todos os componentes.
 

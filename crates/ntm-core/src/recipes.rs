@@ -50,6 +50,10 @@ impl Furnace {
     pub fn smelt(&self, item: &str) -> Option<&Smelt> {
         self.by_input.get(item)
     }
+    /// Every item it smelts.
+    pub fn inputs(&self) -> impl Iterator<Item = &str> {
+        self.by_input.keys().map(String::as_str)
+    }
     pub fn len(&self) -> usize {
         self.by_input.len()
     }
