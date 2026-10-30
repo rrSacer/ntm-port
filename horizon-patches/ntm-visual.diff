@@ -53,7 +53,7 @@ index 75cf5ee85..1262f15cd 100644
  miniz_oxide = "0.8"
  naga = { version = "30.0.1", features = ["wgsl-in", "hlsl-out"] }
 diff --git a/crates/horizon-client-render/src/block_entity_render.rs b/crates/horizon-client-render/src/block_entity_render.rs
-index b415748c4..6229d172f 100644
+index b415748c4..0f8852323 100644
 --- a/crates/horizon-client-render/src/block_entity_render.rs
 +++ b/crates/horizon-client-render/src/block_entity_render.rs
 @@ -94,6 +94,11 @@ pub fn diffuse(normal: Vec3, lights: (Vec3, Vec3)) -> f32 {
@@ -162,7 +162,7 @@ index b415748c4..6229d172f 100644
              let packed = scene.world.light(pos[0], pos[1], pos[2]);
              if matches!(kind, Kind::Sign { .. }) && scene.texts.is_none() {
                  self.sign_text(scene, *pos, *state, origin, packed, out);
-@@ -1089,6 +1152,239 @@ impl BlockEntityRenderer {
+@@ -1089,6 +1152,241 @@ impl BlockEntityRenderer {
      pub fn renders(&self, state: u32) -> bool {
          !matches!(self.kind(state), Kind::None)
      }
@@ -279,8 +279,10 @@ index b415748c4..6229d172f 100644
 +            Some(crate::containers::BlockEntity::ModContainer(c)) => c.data.as_slice(),
 +            _ => &[],
 +        };
-+        // Parts shown by the block entity's values (`show` by `value`).
++        // Parts shown by the block entity's values (`show` by `value`), and
++        // animations posed by them (`pose`).
 +        let hidden = hidden | m.hidden_by_values(values);
++        let layers = m.posed_by(values);
 +        // How open the block is (its screen on this client) poses `open`.
 +        let opened = m
 +            .open
@@ -319,8 +321,8 @@ index b415748c4..6229d172f 100644
 +            // A matrix per bone: the GPU keeps the vertices.
 +            let t = (scene.game_time as f32 + scene.partial) / 20.0;
 +            let pose = match opened {
-+                Some((a, o)) => m.pose(Some(a), m.animations[a].length * o),
-+                None => m.pose(play, t),
++                Some((a, o)) => m.pose(Some(a), m.animations[a].length * o, &layers),
++                None => m.pose(play, t, &layers),
 +            };
 +            let place = Mat4::from_translation(origin) * base;
 +            if let Ok(mut draws) = self.model_draws.lock() {
@@ -354,7 +356,7 @@ index b415748c4..6229d172f 100644
 +            cache
 +                .entry(key)
 +                .or_insert_with(|| {
-+                    let rest = m.pose(None, 0.0);
++                    let rest = m.pose(None, 0.0, &[]);
 +                    let mut v = Vec::new();
 +                    m.emit(
 +                        |i| m.still[i] && !shown_not(hidden, i),
@@ -388,8 +390,8 @@ index b415748c4..6229d172f 100644
 +        }
 +        let t = (scene.game_time as f32 + scene.partial) / 20.0;
 +        let pose = match opened {
-+            Some((a, o)) => m.pose(Some(a), m.animations[a].length * o),
-+            None => m.pose(play, t),
++            Some((a, o)) => m.pose(Some(a), m.animations[a].length * o, &layers),
++            None => m.pose(play, t, &layers),
 +        };
 +        m.emit(
 +            |i| !m.still[i] && !shown_not(hidden, i),
@@ -402,7 +404,7 @@ index b415748c4..6229d172f 100644
      /// ChestRenderer and BannerRenderer submit their animated models for crumbling.
      pub fn render_breaking(
          &self,
-@@ -1239,7 +1535,8 @@ impl BlockEntityRenderer {
+@@ -1239,7 +1537,8 @@ impl BlockEntityRenderer {
          };
          let none = |_: &str, _: &mut [f32; 9]| {};
          match kind {
@@ -412,7 +414,7 @@ index b415748c4..6229d172f 100644
              Kind::Sign {
                  hanging,
                  wall,
-@@ -2278,6 +2575,10 @@ mod tests {
+@@ -2278,6 +2577,10 @@ mod tests {
              pot_patterns: HashMap::new(),
              visibility: None,
              sign_texts: Mutex::default(),
@@ -877,10 +879,10 @@ index c9cc303ec..9391f5611 100644
  pub mod options_file;
 diff --git a/crates/horizon-client-render/src/mod_models.rs b/crates/horizon-client-render/src/mod_models.rs
 new file mode 100644
-index 000000000..f93166537
+index 000000000..de5fd31f1
 --- /dev/null
 +++ b/crates/horizon-client-render/src/mod_models.rs
-@@ -0,0 +1,909 @@
+@@ -0,0 +1,1010 @@
 +//! Models of content mods' blocks drawn by the block-entity renderer: a
 +//! Wavefront OBJ with its own texture, turned by the block's `facing`, whose
 +//! objects are bones that animations move (GeckoLib's Bedrock animation
@@ -907,6 +909,9 @@ index 000000000..f93166537
 +//!   "glow": ["InnerBurning"],   drawn at full light (HBM's lightmap 240, 240)
 +//!   "open": "animation.firebox.open"   posed by how open its screen is (a non-looping
 +//!   animation: its last frame is fully open)
++//!   "pose": [{"animation": "animation.lid", "value": 24, "max_value": 1000}]   posed at a synced
++//!                                       value's share of `max` (an index) or `max_value`, over
++//!                                       `play` and `open` for the bones it moves
 +//! }
 +//! ```
 +//!
@@ -1007,6 +1012,14 @@ index 000000000..f93166537
 +    }
 +}
 +
++/// An animation posed by a synced value: at `value / max` of its length.
++#[derive(Clone, Debug, PartialEq)]
++pub struct PoseBy {
++    pub animation: usize,
++    pub value: usize,
++    pub max: crate::mod_screens::Max,
++}
++
 +/// Sky and block light 15, packed as a vertex's (`block_entity_render::vertex_light`).
 +pub const FULL_LIGHT: u32 = 240 | 240 << 8;
 +
@@ -1026,6 +1039,8 @@ index 000000000..f93166537
 +    /// screen open on this client), its length for fully open: HBM's
 +    /// firebox swings its door while a player uses it (`playersUsing`).
 +    pub open: Option<usize>,
++    /// Animations posed by a synced value's share of a maximum (`pose`).
++    pub poses: Vec<PoseBy>,
 +    /// Bones shown only while a block state property matches (HBM's
 +    /// renderers draw `InnerBurning` or `InnerEmpty` by `wasOn`).
 +    pub show: Vec<(usize, Play)>,
@@ -1289,6 +1304,24 @@ index 000000000..f93166537
 +    let open = doc["open"]
 +        .as_str()
 +        .and_then(|n| animations.iter().position(|a| a.name == n));
++    let poses = doc["pose"]
++        .as_array()
++        .into_iter()
++        .flatten()
++        .filter_map(|p| {
++            let name = p["animation"].as_str()?;
++            let max = match (p["max"].as_u64(), p["max_value"].as_i64()) {
++                (Some(i), _) => crate::mod_screens::Max::Value(i as usize),
++                (None, Some(v)) => crate::mod_screens::Max::Fixed(v as i32),
++                _ => return None,
++            };
++            Some(PoseBy {
++                animation: animations.iter().position(|a| a.name == name)?,
++                value: p["value"].as_u64()? as usize,
++                max,
++            })
++        })
++        .collect();
 +    let bone_at = |name: &str| bones.iter().position(|b| b.name == name);
 +    let show_values = doc["show"]
 +        .as_object()
@@ -1354,6 +1387,7 @@ index 000000000..f93166537
 +        animations,
 +        play,
 +        open,
++        poses,
 +        show,
 +        show_values,
 +        liquids,
@@ -1435,13 +1469,43 @@ index 000000000..f93166537
 +    /// seconds. At rest, the first animation's first frame: HBM's parts stay
 +    /// where their `anim` left them, which for a slide (`BobMathUtil.sps`) is
 +    /// not the OBJ's own place.
-+    pub fn pose(&self, animation: Option<usize>, t: f32) -> Vec<Mat4> {
++    /// The animations `pose` asks for at the synced `values`: (animation,
++    /// seconds), for [`Model::pose`]'s `layers`.
++    pub fn posed_by(&self, values: &[i32]) -> Vec<(usize, f32)> {
++        self.poses
++            .iter()
++            .filter_map(|p| {
++                let a = self.animations.get(p.animation)?;
++                let v = values.get(p.value).copied().unwrap_or(0);
++                let max = match p.max {
++                    crate::mod_screens::Max::Value(i) => values.get(i).copied().unwrap_or(0),
++                    crate::mod_screens::Max::Fixed(m) => m,
++                };
++                let share = if max > 0 {
++                    (v as f32 / max as f32).clamp(0.0, 1.0)
++                } else {
++                    0.0
++                };
++                Some((p.animation, a.length * share))
++            })
++            .collect()
++    }
++
++    pub fn pose(&self, animation: Option<usize>, t: f32, layers: &[(usize, f32)]) -> Vec<Mat4> {
 +        let (animation, t) = match animation {
 +            Some(a) => (Some(a), t),
 +            None => ((!self.animations.is_empty()).then_some(0), 0.0),
 +        };
 +        let mut local = vec![Mat4::IDENTITY; self.bones.len()];
-+        if let Some(a) = animation.and_then(|a| self.animations.get(a)) {
++        // The animation playing, then those posed by values over it.
++        let layers = animation
++            .map(|a| (a, t))
++            .into_iter()
++            .chain(layers.iter().copied());
++        for (a, t) in layers {
++            let Some(a) = self.animations.get(a) else {
++                continue;
++            };
 +            let t = if a.looping && a.length > 0.0 {
 +                t.rem_euclid(a.length)
 +            } else {
@@ -1715,7 +1779,7 @@ index 000000000..f93166537
 +                },
 +            )],
 +        });
-+        let pose = m.pose(Some(0), 1.0);
++        let pose = m.pose(Some(0), 1.0, &[]);
 +        let p = pose[1].transform_point3(Vec3::X);
 +        assert!((p - Vec3::new(0.0, 0.0, -1.0)).length() < 1e-4, "{p}");
 +    }
@@ -1769,7 +1833,7 @@ index 000000000..f93166537
 +            scale: 1.0,
 +            ..Default::default()
 +        };
-+        assert_eq!(m.pose(None, 3.0), vec![Mat4::IDENTITY]);
++        assert_eq!(m.pose(None, 3.0, &[]), vec![Mat4::IDENTITY]);
 +        m.animations.push(Animation {
 +            name: "pump".into(),
 +            length: 1.0,
@@ -1786,8 +1850,47 @@ index 000000000..f93166537
 +            )],
 +        });
 +        // Half a block out, as sps(0) leaves HBM's pump.
-+        let p = m.pose(None, 3.0)[0].transform_point3(Vec3::ZERO);
++        let p = m.pose(None, 3.0, &[])[0].transform_point3(Vec3::ZERO);
 +        assert!((p - Vec3::new(0.5, 0.0, 0.0)).length() < 1e-4, "{p}");
++    }
++
++    #[test]
++    fn a_synced_value_poses_an_animation() {
++        let slide = || Channel {
++            rotation: Vec::new(),
++            position: vec![(0.0, Vec3::ZERO), (2.0, Vec3::new(0.0, 32.0, 0.0))],
++        };
++        let mut m = Model {
++            bones: vec![Bone::default(), Bone::default()],
++            scale: 1.0,
++            ..Default::default()
++        };
++        m.animations.push(Animation {
++            name: "work".into(),
++            length: 2.0,
++            looping: true,
++            channels: vec![(0, slide())],
++        });
++        m.animations.push(Animation {
++            name: "lid".into(),
++            length: 2.0,
++            looping: false,
++            channels: vec![(1, slide())],
++        });
++        m.poses.push(PoseBy {
++            animation: 1,
++            value: 0,
++            max: crate::mod_screens::Max::Fixed(1000),
++        });
++        let y = |pose: &[Mat4], b: usize| pose[b].transform_point3(Vec3::ZERO).y;
++        // Half open: the lid is a block up, whatever plays on the other bone.
++        let layers = m.posed_by(&[500]);
++        assert_eq!(layers, vec![(1, 1.0)]);
++        let pose = m.pose(Some(0), 1.0, &layers);
++        assert!((y(&pose, 1) - 1.0).abs() < 1e-4 && (y(&pose, 0) - 1.0).abs() < 1e-4);
++        // Past the maximum it stays fully open; no value yet, closed.
++        assert_eq!(m.posed_by(&[5000]), vec![(1, 2.0)]);
++        assert_eq!(m.posed_by(&[]), vec![(1, 0.0)]);
 +    }
 +}
 diff --git a/crates/horizon-client-render/src/mod_screens.rs b/crates/horizon-client-render/src/mod_screens.rs
@@ -2448,6 +2551,29 @@ index 000000000..f326d6dbc
 +        assert_eq!(def.slot_at(2, [1.0, 1.0]), None);
 +    }
 +}
+diff --git a/crates/horizon-client-render/src/world.rs b/crates/horizon-client-render/src/world.rs
+index 9b3876288..793d052eb 100644
+--- a/crates/horizon-client-render/src/world.rs
++++ b/crates/horizon-client-render/src/world.rs
+@@ -91,6 +91,10 @@ pub struct World {
+     /// a bit per section of each column, kept while `block_log` is
+     /// (`ChunkHolder.sectionLightChanged`).
+     pub light_log: Option<crate::fast_hash::FxHashMap<(i32, i32), u32>>,
++    /// Block entities whose data clients draw changed while their block did
++    /// not, logged while `block_log` is kept: they go out alone
++    /// (`ClientboundBlockEntityDataPacket`), with no block update.
++    pub entity_log: Vec<(i32, i32, i32)>,
+     /// The villager POIs of each section (`PoiManager`'s sections).
+     pub pois: crate::poi_sections::PoiSections<crate::poi_sections::Poi>,
+     /// Moving-piston states removed during the last tick; retained until the
+@@ -189,6 +193,7 @@ impl World {
+             weather: Weather::default(),
+             block_log: None,
+             light_log: None,
++            entity_log: Vec::new(),
+             moving_piston_fallback: Vec::new(),
+             moving_pistons: Vec::new(),
+             pois: Default::default(),
 diff --git a/crates/horizon-client/src/game.rs b/crates/horizon-client/src/game.rs
 index ffa8a66eb..88e54afa8 100644
 --- a/crates/horizon-client/src/game.rs
@@ -3374,7 +3500,7 @@ index 0e5f69fa0..093d601f1 100644
                  let rows = m
                      .strip_prefix("minecraft:generic_9x")
 diff --git a/crates/horizon-client/src/game/server_mods.rs b/crates/horizon-client/src/game/server_mods.rs
-index a5a4b0f3f..cc0b0bfa0 100644
+index a5a4b0f3f..9ca7dd4ed 100644
 --- a/crates/horizon-client/src/game/server_mods.rs
 +++ b/crates/horizon-client/src/game/server_mods.rs
 @@ -48,19 +48,46 @@ impl Game<'_> {
@@ -3601,7 +3727,7 @@ index a5a4b0f3f..cc0b0bfa0 100644
          /// A player broke (or placed) `state` at `pos`: the player acting now.
          pub(in crate::game) fn mod_block_event(
              &mut self,
-@@ -554,6 +711,38 @@ mod run {
+@@ -554,6 +711,35 @@ mod run {
                          self.tell_server_player(host.as_deref_mut(), &p.id, line);
                      }
                  }
@@ -3626,14 +3752,11 @@ index a5a4b0f3f..cc0b0bfa0 100644
 +                        for (d, v) in m.data.iter_mut().zip(values) {
 +                            *d = v;
 +                        }
-+                        // What clients draw changed: the block goes to them again,
-+                        // with its block entity's tag (`lan::chunks::entity_tag`).
++                        // What clients draw changed: its block entity's tag goes to
++                        // them again (`lan::chunks::entity_tag`), the block not.
 +                        let changed = synced.iter().zip(&before).any(|(&i, b)| m.data[i] != *b);
-+                        if changed
-+                            && in_place
-+                            && let Some(log) = self.world.block_log.as_mut()
-+                        {
-+                            log.push((pos[0], pos[1], pos[2]));
++                        if changed && in_place && self.world.block_log.is_some() {
++                            self.world.entity_log.push((pos[0], pos[1], pos[2]));
 +                        }
 +                    }
 +                }
@@ -3746,6 +3869,109 @@ index 102afae59..927b34de0 100644
      fn guest_at(position: [f64; 3]) -> Guest {
          let (tx, _rx) = std::sync::mpsc::channel();
          Guest::new(
+diff --git a/crates/horizon-client/src/lan/hub.rs b/crates/horizon-client/src/lan/hub.rs
+index 84d690dab..8e797648e 100644
+--- a/crates/horizon-client/src/lan/hub.rs
++++ b/crates/horizon-client/src/lan/hub.rs
+@@ -1512,15 +1512,35 @@ impl Hub {
+     }
+ 
+     fn broadcast_block_changes(&mut self, world: &mut World) {
++        let mut entities = std::mem::take(&mut world.entity_log);
+         let Some(log) = world.block_log.as_mut() else {
+             return;
+         };
+-        if log.is_empty() {
+-            return;
+-        }
+         let mut changes = std::mem::take(log);
+         changes.sort_unstable();
+         changes.dedup();
++        // A block entity whose block changed too goes out with it, below.
++        entities.sort_unstable();
++        entities.dedup();
++        entities.retain(|p| changes.binary_search(p).is_err());
++        for p in entities {
++            let viewers: Vec<usize> = (0..self.guests.len())
++                .filter(|&i| {
++                    self.here(&self.guests[i])
++                        && self.guests[i].sent_chunks.contains(&(p.0 >> 4, p.2 >> 4))
++                })
++                .collect();
++            if let Some(body) = self.block_entity_data(world, p)
++                && !viewers.is_empty()
++            {
++                for &i in &viewers {
++                    self.guests[i].sender.send(body.clone());
++                }
++            }
++        }
++        if changes.is_empty() {
++            return;
++        }
+         // Group by section.
+         let mut sections: std::collections::BTreeMap<(i32, i32, i32), Vec<(i32, i32, i32)>> =
+             Default::default();
+@@ -1565,28 +1585,10 @@ impl Hub {
+                 self.guests[i].sender.send(body.clone());
+             }
+             // Block entities with data the client shows.
+-            for &(x, y, z) in &positions {
+-                // A decorated pot is no block entity: its tag is the chunk's saved one.
+-                let tag = match world.block_entities.get(&(x, y, z)) {
+-                    Some(entity) => super::chunks::entity_tag(entity),
+-                    None => world
+-                        .chunks
+-                        .get(&(x >> 4, z >> 4))
+-                        .and_then(|c| super::chunks::pot_tag(c, (x, y, z))),
+-                };
+-                let Some(tag) = tag else {
+-                    continue;
+-                };
+-                let state = world.block(x, y, z).0;
+-                let Some(kind) = self.encoder.entity_type(state) else {
++            for &p in &positions {
++                let Some(body) = self.block_entity_data(world, p) else {
+                     continue;
+                 };
+-                let body = C::BlockEntityData(play::BlockEntityData {
+-                    pos: [x, y, z],
+-                    kind,
+-                    tag,
+-                })
+-                .encode();
+                 for &i in &viewers {
+                     self.guests[i].sender.send(body.clone());
+                 }
+@@ -1594,6 +1596,28 @@ impl Hub {
+         }
+     }
+ 
++    /// `ClientboundBlockEntityDataPacket` of the block entity at `(x, y, z)`,
++    /// encoded; None for a block with no data the client shows.
++    fn block_entity_data(&self, world: &World, (x, y, z): (i32, i32, i32)) -> Option<Vec<u8>> {
++        // A decorated pot is no block entity: its tag is the chunk's saved one.
++        let tag = match world.block_entities.get(&(x, y, z)) {
++            Some(entity) => super::chunks::entity_tag(entity),
++            None => world
++                .chunks
++                .get(&(x >> 4, z >> 4))
++                .and_then(|c| super::chunks::pot_tag(c, (x, y, z))),
++        }?;
++        let kind = self.encoder.entity_type(world.block(x, y, z).0)?;
++        Some(
++            C::BlockEntityData(play::BlockEntityData {
++                pos: [x, y, z],
++                kind,
++                tag,
++            })
++            .encode(),
++        )
++    }
++
+     // ---- entities ------------------------------------------------------
+ 
+     /// `LivingEntity.updateSynchronizedMobEffectParticles`: DATA_EFFECT_PARTICLES
 diff --git a/crates/horizon-client/src/lib.rs b/crates/horizon-client/src/lib.rs
 index 4e6c902a5..8bcbef0bf 100644
 --- a/crates/horizon-client/src/lib.rs
@@ -5255,10 +5481,10 @@ index 3127248a1..3283882f7 100644
  | Server settings | `server.toml` | its keys | stable | [server-reference.md](server-reference.md) |
 diff --git a/docs/api/machine-files.md b/docs/api/machine-files.md
 new file mode 100644
-index 000000000..775745e55
+index 000000000..0ba04f444
 --- /dev/null
 +++ b/docs/api/machine-files.md
-@@ -0,0 +1,159 @@
+@@ -0,0 +1,164 @@
 +# Machine files
 +
 +A content mod (manifest `api = "0.2"`) can give a block slots, a screen, a 3D model and a multiblock shape with data
@@ -5313,7 +5539,8 @@ index 000000000..775745e55
 +  - `inventory`: where the player's inventory sits. The hotbar is 58 pixels below.
 +- **Values:**
 +  - `data`: how many values (`s32`) the server mod sets (`set-data`).
-+  - `synced`: the values every nearby client gets with the block, for models (parts, liquids). The open screen
++  - `synced`: the values every nearby client gets with the block, for models (parts, poses, liquids). When the
++    mod changes one, nearby clients get the block entity's data again, without a block update. The open screen
 +    gets all of them.
 +- **Multiblock:** it is laid out in the placer's frame: x to their right, y up, z away from them.
 +  - **Core:** `offset` is how far away from the clicked cell the core sits; `height` is how far above it.
@@ -5388,6 +5615,7 @@ index 000000000..775745e55
 +  },
 +  "glow": ["Flame"],
 +  "open": "animation.press.door",
++  "pose": [{"animation": "animation.press.head", "value": 0, "max": 1}],
 +  "liquids": [{"texture": "mymod:textures/models/white.png", "box": [-1, 1, -1, 1, 2, 1], "value": 5, "max": 6, "color": 7}]
 +}
 +```
@@ -5403,6 +5631,9 @@ index 000000000..775745e55
 +    model rests on the first animation's first frame.
 +  - `open`: posed by how open the machine's screen is in this window. Use a non-looping animation: its last frame is
 +    fully open.
++  - `pose`: each entry poses an animation at a synced `value`'s share of `max` (an index) or `max_value` (a
++    number), over `play` and `open` for the bones it moves: a press head at its stroke, a lid at how open it is.
++    Use non-looping animations; a value not received yet counts as 0.
 +- **Showing parts:**
 +  - `show`: a bone is drawn only while its condition holds.
 +  - The condition is either a block-state `property` that `is` (or is `not`) a value, or a synced `value` in
