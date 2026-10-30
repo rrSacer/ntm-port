@@ -185,6 +185,17 @@ impl Turbine {
         self.buffer = target;
     }
 
+    /// Whether cell `rel` of the multiblock (the placer's frame: x right,
+    /// y up, z away) is the lever (`MachineIndustrialTurbine` and
+    /// `MachineChungus.onBlockActivated`): the industrial turbine's three
+    /// towards the placer a layer up, the Leviathan's two on its right.
+    pub fn lever_cell(&self, rel: [i32; 3]) -> bool {
+        match self.shape {
+            Shape::Industrial => rel == [0, 1, -3],
+            Shape::Chungus => rel[0] == 2 && (rel[2] == -1 || rel[2] == -2) && (0..2).contains(&rel[1]),
+        }
+    }
+
     /// `onLeverPull`: steam → hot → superhot → ultrahot → steam, the
     /// industrial turbine's tanks a tenth each step and a thousand times
     /// back (the content past a smaller tank is lost; a new type empties it).

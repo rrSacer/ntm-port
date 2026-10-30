@@ -101,6 +101,33 @@ impl Server {
         }
     }
 
+    /// A player used cell `cell` of the machine whose core is `core` (a
+    /// right click, not sneaking): true when the machine took the use. The
+    /// turbines' levers (`onLeverPull`), only while they don't run.
+    pub fn native_use(&mut self, host: &mut impl ServerHost, dim: &str, core: Pos, cell: Pos, player: &str) -> bool {
+        let Some(r) = self.ready() else { return false };
+        let Some(m) = r.world.machines.get_mut(&(dim.to_string(), core)) else { return false };
+        let Some(f) = m.facing.as_deref().and_then(registry::facing_dir) else { return false };
+        // The cell in the placer's frame (container_bridge::world_cell's
+        // inverse): x to their right, z away from them.
+        let fwd = [-f[0], -f[2]];
+        let right = [-fwd[1], fwd[0]];
+        let d = [cell[0] - core[0], cell[2] - core[2]];
+        let rel = [d[0] * right[0] + d[1] * right[1], cell[1] - core[1], d[0] * fwd[0] + d[1] * fwd[1]];
+        let crate::machine::Data::Steam(s) = &mut m.data else { return false };
+        let crate::steam::Steam::Turbine(t) = &mut **s else { return false };
+        if !t.lever_cell(rel) {
+            return false;
+        }
+        if t.on {
+            host.tell(player, "Cannot change compressor setting while operational!");
+        } else {
+            t.lever();
+            r.dirty = true;
+        }
+        true
+    }
+
     /// Whether the machine at (`dim`, `pos`) is known.
     pub fn native_has(&mut self, dim: &str, pos: Pos) -> bool {
         self.ready().is_some_and(|r| r.world.machines.contains_key(&(dim.to_string(), pos)))
@@ -234,6 +261,23 @@ mod tests {
         assert_eq!(r.world.cables.len(), 3, "os três cabos achados nos blocos");
         let Data::ElectricFurnace(f) = &r.world.machines[&(OW.to_string(), fur)].data else { panic!() };
         assert!(f.power > 0, "a energia chegou pelos cabos");
+
+        // A Leviathan facing east (the placer east of it, looking west): its
+        // lever, two to the placer's right (-z) and one or two towards them
+        // (+x), is at (core.x + 1 or 2, core.z - 2).
+        let lev = [30, 64, 0];
+        let mut c = Machine::new(crate::machine::Kind::Steam, "ntm:machine_chungus", Some("east".into()));
+        if let Data::Steam(s) = &mut c.data
+            && let crate::steam::Steam::Turbine(t) = &mut **s
+        {
+            t.on = false;
+        }
+        assert!(again.native_adopt(OW, lev, &serde_json::to_string(&c).unwrap()));
+        assert!(!again.native_use(&mut w, OW, lev, [31, 64, 0], "p"), "uma célula sem alavanca");
+        assert!(again.native_use(&mut w, OW, lev, [31, 65, -2], "p"));
+        let Data::Steam(s) = &again.ready().unwrap().world.machines[&(OW.to_string(), lev)].data else { panic!() };
+        let crate::steam::Steam::Turbine(t) = &**s else { panic!() };
+        assert_eq!(t.input.fluid, "hotsteam", "a alavanca trocou o vapor");
 
         // Broken: gone from the server.
         w.blocks.insert(AT, "minecraft:air".into());
