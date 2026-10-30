@@ -58,5 +58,6 @@ def build(source):
                                            'requires_tool':not sand,
                                            **({'sounds':'minecraft:sand'} if sand else {})},
                        **({'creative_hidden':True,'loot_none':True} if pipe else {}),
+                       **({'drop':'ntm:oil_tar__crude','drop_modifiers':[{'type':'minecraft:apply_bonus','enchantment':'minecraft:fortune','formula':'minecraft:ore_drops'}]} if var=='ore_oil' else {}),
                        'behavior_gap':'Oil extraction/depletion belongs to server logic; no independent tile entity. Sand keeps vanilla falling behavior.'})
     return result

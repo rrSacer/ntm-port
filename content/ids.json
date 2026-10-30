@@ -85416,6 +85416,14 @@
         "explosion_resistance": 10,
         "requires_tool": true
       },
+      "drop": "ntm:oil_tar__crude",
+      "drop_modifiers": [
+        {
+          "type": "minecraft:apply_bonus",
+          "enchantment": "minecraft:fortune",
+          "formula": "minecraft:ore_drops"
+        }
+      ],
       "behavior_gap": "Oil extraction/depletion belongs to server logic; no independent tile entity. Sand keeps vanilla falling behavior.",
       "source_registry": "hbm:tile.ore_oil",
       "name_sources": {

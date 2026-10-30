@@ -60,6 +60,13 @@ class OilExtraction(unittest.TestCase):
         loot=json.loads((ROOT/'content/data/ntm/loot_table/blocks/oil_pipe.json').read_text())
         self.assertEqual(loot['pools'],[])
 
+    def test_oil_drops_crude_tar_with_fortune_and_no_silk_alternative(self):
+        data=json.loads((ROOT/'content/data/ntm/loot_table/blocks/ore_oil.json').read_text())
+        entry=data['pools'][0]['entries'][0]
+        self.assertEqual(entry['name'],'ntm:oil_tar__crude')
+        self.assertEqual(entry['type'],'minecraft:item')
+        self.assertEqual(entry['modifier'],[{'type':'minecraft:apply_bonus','enchantment':'minecraft:fortune','formula':'minecraft:ore_drops'}])
+
     def test_constructions_and_arc_furnace_are_available(self):
         assembly=json.loads((ROOT/'content/machine-recipes/assembly.json').read_text())['recipes']
         outputs={o[0] for r in assembly for o in r['outputItems']}

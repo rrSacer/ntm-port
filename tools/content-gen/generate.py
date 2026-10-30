@@ -272,6 +272,7 @@ def generate(src,out,rows,distributions,max_damage=False):
    drop={'cluster_iron':'ntm:crystal_iron','cluster_copper':'ntm:crystal_copper','cluster_titanium':'ntm:crystal_titanium','cluster_aluminium':'ntm:crystal_aluminium','ore_depth_cinnebar':'ntm:cinnebar','ore_depth_zirconium':'ntm:nugget_zirconium','ore_depth_borax':'ntm:powder_borax','ore_depth_nether_neodymium':'ntm:fragment_neodymium','ore_alexandrite':'ntm:gem_alexandrite','ore_nether_coal':'ntm:coal_infernal','ore_nether_sulfur':'ntm:sulfur','ore_gneiss_asbestos':'ntm:ingot_asbestos','ore_cobalt':'ntm:fragment_cobalt','ore_nether_cobalt':'ntm:fragment_cobalt','ore_cinnebar':'ntm:cinnebar','ore_coltan':'ntm:fragment_coltan','ore_lignite':'ntm:lignite','ore_rare':'ntm:chunk_ore__rare','ore_gneiss_rare':'ntm:chunk_ore__rare','ore_fluorite':'ntm:fluorite','ore_niter':'ntm:niter','ore_sulfur':'ntm:sulfur','ore_asbestos':'ntm:ingot_asbestos'}.get(name,row['id'])
    drop=row.get('drop',drop)
    entry={'type':'minecraft:item','name':drop}
+   if row.get('drop_modifiers'):entry['modifier']=row['drop_modifiers']
    ranges={'ore_depth_cinnebar':(2,4),'ore_depth_zirconium':(2,3),'ore_depth_nether_neodymium':(2,3),'ore_fluorite':(2,4),'ore_niter':(2,4),'ore_sulfur':(2,4),'ore_nether_sulfur':(2,4),'ore_cobalt':(4,9),'ore_nether_cobalt':(5,12)}
    if name in ranges:
     low,high=ranges[name];entry['modifier']=[{'type':'minecraft:set_count','count':{'type':'minecraft:uniform','min':low,'max':high}}]
