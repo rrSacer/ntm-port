@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "ntm:boy_target"
+    "ntm:boy_target",
+    "ntm:rbmk_fuel_meu",
+    "ntm:rbmk_fuel_zfb_pu241"
   ]
 }

@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "ntm:block_pu238",
-    "ntm:debris_element"
+    "ntm:debris_element",
+    "ntm:rbmk_fuel_hep241"
   ]
 }

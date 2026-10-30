@@ -122,6 +122,25 @@ for pos,args,_ in calls(registry,r'\bregisterOtherFuel'):
     put(item,'radiation',base,source)
     if parts[4]=='true':put(item,'blinding',20,source)
     gaps.append({'id':item,'source':source,'expression':'HazardModifierFuelRadiation(target='+str(target)+'): fresh base exported; life-dependent interpolation requires native item data.'})
+# RBMK rods and pellets: fresh radiation is exported; the depletion
+# interpolation (HazardModifierRBMKRadiation) and rod heat (RBMKHot) are NBT.
+for pos,args,method in calls(registry,r'\bregisterRBMK(?:Rod|Pellet)?\b'):
+    parts=split(args)
+    if len(parts)<3:continue
+    try:
+        item,_=r.item(parts[0],unqualified=True)
+        base=number(parts[1]);dep=number(parts[2])
+        rest=parts[3:]
+        if method=='registerRBMK':hot=rest[0]=='true';blinding=number(rest[2]);digamma=number(rest[3])
+        elif method=='registerRBMKPellet':blinding=number(rest[1]) if len(rest)>1 else 0;digamma=number(rest[2]) if len(rest)>2 else 0;hot=False
+        else:hot=True;blinding=number(rest[0]) if rest and rest[0] not in ('true','false') else 0;digamma=0
+    except (Unsupported,ValueError,SyntaxError,IndexError):continue
+    source='src/main/java/com/hbm/hazard/HazardRegistry.java:'+str(registry[:pos].count('\n')+1)
+    put(item,'radiation',base,source)
+    if blinding>0:put(item,'blinding',blinding,source)
+    if digamma>0:put(item,'digamma',digamma,source)
+    gaps.append({'id':item,'source':source,'expression':'HazardModifierRBMKRadiation(target='+str(dep)+'): fresh base exported; depletion interpolation requires native item data.'
+                 +(' HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven.' if hot else '')})
 # Other fuel helper's first rate is the fresh item's radiation; depletion is NBT.
 for pos,args,method in calls(registry,r'\b(?:registerOtherFuel|registerOtherWaste|registerRadSourceWaste)'):
     parts=split(args)

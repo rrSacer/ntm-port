@@ -24695,6 +24695,1083 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:rbmk_rod",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_rod_mod",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_rod_reasim",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_rod_reasim_mod",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_control",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_control_mod",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_control_auto",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_control_reasim",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_control_reasim_auto",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_blank",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_boiler",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_reflector",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_absorber",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_moderator",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_outgasser",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_storage",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_cooler",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_heater",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_console",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_crane_console",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_display_blank",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_display",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_key_pad",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_gauge",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_numitron",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_graph",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_lever",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_indicator",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_terminal",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_autoloader",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_loader",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_steam_inlet",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_steam_outlet",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pribris",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pribris_burning",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pribris_radiating",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pribris_digamma",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_lid",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_lid_glass",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_tool",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_ueu",
+      "radiation_rad_s": 0.175,
+      "radiation_millirad_s": 175,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:413"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_meu",
+      "radiation_rad_s": 0.25,
+      "radiation_millirad_s": 250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:414"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_heu233",
+      "radiation_rad_s": 2.5,
+      "radiation_millirad_s": 2500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:415"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_heu235",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:416"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_uzh",
+      "radiation_rad_s": 0.0625,
+      "radiation_millirad_s": 62,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:417"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_thmeu",
+      "radiation_rad_s": 0.875,
+      "radiation_millirad_s": 875,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:418"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_lep",
+      "radiation_rad_s": 2.125,
+      "radiation_millirad_s": 2125,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:419"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_mep",
+      "radiation_rad_s": 3.125,
+      "radiation_millirad_s": 3125,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:420"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hep239",
+      "radiation_rad_s": 2.5,
+      "radiation_millirad_s": 2500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:421"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hep241",
+      "radiation_rad_s": 12.5,
+      "radiation_millirad_s": 12500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:422"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_lea",
+      "radiation_rad_s": 2.375,
+      "radiation_millirad_s": 2375,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:423"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_mea",
+      "radiation_rad_s": 4.5,
+      "radiation_millirad_s": 4500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:424"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hea241",
+      "radiation_rad_s": 4.25,
+      "radiation_millirad_s": 4250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:425"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hea242",
+      "radiation_rad_s": 4.75,
+      "radiation_millirad_s": 4750,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:426"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_men",
+      "radiation_rad_s": 0.75,
+      "radiation_millirad_s": 750,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:427"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hen",
+      "radiation_rad_s": 1.25,
+      "radiation_millirad_s": 1250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:428"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_mox",
+      "radiation_rad_s": 1.25,
+      "radiation_millirad_s": 1250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:429"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_les",
+      "radiation_rad_s": 2.925,
+      "radiation_millirad_s": 2925,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:430"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_mes",
+      "radiation_rad_s": 2.925,
+      "radiation_millirad_s": 2925,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:431"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hes",
+      "radiation_rad_s": 2.925,
+      "radiation_millirad_s": 2925,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:432"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_leaus",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:433"
+      ],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_heaus",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:434"
+      ],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_po210be",
+      "radiation_rad_s": 112.5,
+      "radiation_millirad_s": 112500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:435"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_ra226be",
+      "radiation_rad_s": 11.25,
+      "radiation_millirad_s": 11250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:436"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_pu238be",
+      "radiation_rad_s": 15.0,
+      "radiation_millirad_s": 15000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:437"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_balefire_gold",
+      "radiation_rad_s": 250.0,
+      "radiation_millirad_s": 250000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:438"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_flashlead",
+      "radiation_rad_s": 6250.0,
+      "radiation_millirad_s": 6250000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:439"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_balefire",
+      "radiation_rad_s": 150000.0,
+      "radiation_millirad_s": 150000000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:440"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_zfb_bismuth",
+      "radiation_rad_s": 1.25,
+      "radiation_millirad_s": 1250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:441"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_zfb_pu241",
+      "radiation_rad_s": 0.25,
+      "radiation_millirad_s": 250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:442"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_zfb_am_mix",
+      "radiation_rad_s": 1.25,
+      "radiation_millirad_s": 1250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:443"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_pellet_drx",
+      "radiation_rad_s": 150000.0,
+      "radiation_millirad_s": 150000000,
+      "other_hazards": {
+        "digamma": 0.041666666666666664
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:444"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_ueu",
+      "radiation_rad_s": 1.4,
+      "radiation_millirad_s": 1400,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:379"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_meu",
+      "radiation_rad_s": 2.0,
+      "radiation_millirad_s": 2000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:380"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_heu233",
+      "radiation_rad_s": 20.0,
+      "radiation_millirad_s": 20000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:381"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_heu235",
+      "radiation_rad_s": 4.0,
+      "radiation_millirad_s": 4000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:382"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_uzh",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:383"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_thmeu",
+      "radiation_rad_s": 7.0,
+      "radiation_millirad_s": 7000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:384"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_lep",
+      "radiation_rad_s": 17.0,
+      "radiation_millirad_s": 17000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:385"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_mep",
+      "radiation_rad_s": 25.0,
+      "radiation_millirad_s": 25000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:386"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hep",
+      "radiation_rad_s": 20.0,
+      "radiation_millirad_s": 20000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:387"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hep241",
+      "radiation_rad_s": 100.0,
+      "radiation_millirad_s": 100000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:388"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_lea",
+      "radiation_rad_s": 19.0,
+      "radiation_millirad_s": 19000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:389"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_mea",
+      "radiation_rad_s": 36.0,
+      "radiation_millirad_s": 36000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:390"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hea241",
+      "radiation_rad_s": 34.0,
+      "radiation_millirad_s": 34000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:391"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hea242",
+      "radiation_rad_s": 38.0,
+      "radiation_millirad_s": 38000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:392"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_men",
+      "radiation_rad_s": 6.0,
+      "radiation_millirad_s": 6000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:393"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hen",
+      "radiation_rad_s": 10.0,
+      "radiation_millirad_s": 10000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:394"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_mox",
+      "radiation_rad_s": 10.0,
+      "radiation_millirad_s": 10000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:395"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_les",
+      "radiation_rad_s": 23.4,
+      "radiation_millirad_s": 23400,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:396"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_mes",
+      "radiation_rad_s": 23.4,
+      "radiation_millirad_s": 23400,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:397"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hes",
+      "radiation_rad_s": 23.4,
+      "radiation_millirad_s": 23400,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:398"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_leaus",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:399"
+      ],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_heaus",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:400"
+      ],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_po210be",
+      "radiation_rad_s": 900.0,
+      "radiation_millirad_s": 900000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:401"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_ra226be",
+      "radiation_rad_s": 90.0,
+      "radiation_millirad_s": 90000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:402"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_pu238be",
+      "radiation_rad_s": 120.0,
+      "radiation_millirad_s": 120000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:403"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_balefire_gold",
+      "radiation_rad_s": 2000.0,
+      "radiation_millirad_s": 2000000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:404"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_flashlead",
+      "radiation_rad_s": 50000.0,
+      "radiation_millirad_s": 50000000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:405"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_balefire",
+      "radiation_rad_s": 1200000.0,
+      "radiation_millirad_s": 1200000000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:406"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_zfb_bismuth",
+      "radiation_rad_s": 10.0,
+      "radiation_millirad_s": 10000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:407"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_zfb_pu241",
+      "radiation_rad_s": 2.0,
+      "radiation_millirad_s": 2000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:408"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_zfb_am_mix",
+      "radiation_rad_s": 10.0,
+      "radiation_millirad_s": 10000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:409"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_drx",
+      "radiation_rad_s": 1200000.0,
+      "radiation_millirad_s": 1200000000,
+      "other_hazards": {
+        "digamma": 0.3333333333333333
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:410"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:rbmk_fuel_test",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:heater_oven",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -26569,6 +27646,326 @@
       "id": "ntm:rod_zirnox__zfb_mox",
       "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:242",
       "expression": "HazardModifierFuelRadiation(target=75.0): fresh base exported; life-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_fuel_ueu",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:379",
+      "expression": "HazardModifierRBMKRadiation(target=1200.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_meu",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:380",
+      "expression": "HazardModifierRBMKRadiation(target=1290.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_heu233",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:381",
+      "expression": "HazardModifierRBMKRadiation(target=1860.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_heu235",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:382",
+      "expression": "HazardModifierRBMKRadiation(target=1800.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_uzh",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:383",
+      "expression": "HazardModifierRBMKRadiation(target=1200.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_thmeu",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:384",
+      "expression": "HazardModifierRBMKRadiation(target=1050.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_lep",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:385",
+      "expression": "HazardModifierRBMKRadiation(target=1500.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_mep",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:386",
+      "expression": "HazardModifierRBMKRadiation(target=1800.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_hep",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:387",
+      "expression": "HazardModifierRBMKRadiation(target=1950.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_hep241",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:388",
+      "expression": "HazardModifierRBMKRadiation(target=2100.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_lea",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:389",
+      "expression": "HazardModifierRBMKRadiation(target=1560.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_mea",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:390",
+      "expression": "HazardModifierRBMKRadiation(target=1830.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_hea241",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:391",
+      "expression": "HazardModifierRBMKRadiation(target=2010.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_hea242",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:392",
+      "expression": "HazardModifierRBMKRadiation(target=2040.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_men",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:393",
+      "expression": "HazardModifierRBMKRadiation(target=1350.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_hen",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:394",
+      "expression": "HazardModifierRBMKRadiation(target=1800.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_mox",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:395",
+      "expression": "HazardModifierRBMKRadiation(target=1530.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_les",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:396",
+      "expression": "HazardModifierRBMKRadiation(target=1470.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_mes",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:397",
+      "expression": "HazardModifierRBMKRadiation(target=1800.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_hes",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:398",
+      "expression": "HazardModifierRBMKRadiation(target=3000.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_leaus",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:399",
+      "expression": "HazardModifierRBMKRadiation(target=2250.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_heaus",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:400",
+      "expression": "HazardModifierRBMKRadiation(target=1950.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_po210be",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:401",
+      "expression": "HazardModifierRBMKRadiation(target=90.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_ra226be",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:402",
+      "expression": "HazardModifierRBMKRadiation(target=36.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_pu238be",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:403",
+      "expression": "HazardModifierRBMKRadiation(target=150.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_balefire_gold",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:404",
+      "expression": "HazardModifierRBMKRadiation(target=600000.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_flashlead",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:405",
+      "expression": "HazardModifierRBMKRadiation(target=200.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_balefire",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:406",
+      "expression": "HazardModifierRBMKRadiation(target=120000000.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_zfb_bismuth",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:407",
+      "expression": "HazardModifierRBMKRadiation(target=300.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_zfb_pu241",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:408",
+      "expression": "HazardModifierRBMKRadiation(target=450.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_zfb_am_mix",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:409",
+      "expression": "HazardModifierRBMKRadiation(target=600.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_fuel_drx",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:410",
+      "expression": "HazardModifierRBMKRadiation(target=120000000.0): fresh base exported; depletion interpolation requires native item data. HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven."
+    },
+    {
+      "id": "ntm:rbmk_pellet_ueu",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:413",
+      "expression": "HazardModifierRBMKRadiation(target=150.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_meu",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:414",
+      "expression": "HazardModifierRBMKRadiation(target=161.25): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_heu233",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:415",
+      "expression": "HazardModifierRBMKRadiation(target=232.5): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_heu235",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:416",
+      "expression": "HazardModifierRBMKRadiation(target=225.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_uzh",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:417",
+      "expression": "HazardModifierRBMKRadiation(target=150.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_thmeu",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:418",
+      "expression": "HazardModifierRBMKRadiation(target=131.25): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_lep",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:419",
+      "expression": "HazardModifierRBMKRadiation(target=187.5): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_mep",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:420",
+      "expression": "HazardModifierRBMKRadiation(target=225.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_hep239",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:421",
+      "expression": "HazardModifierRBMKRadiation(target=243.75): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_hep241",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:422",
+      "expression": "HazardModifierRBMKRadiation(target=262.5): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_lea",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:423",
+      "expression": "HazardModifierRBMKRadiation(target=195.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_mea",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:424",
+      "expression": "HazardModifierRBMKRadiation(target=228.75): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_hea241",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:425",
+      "expression": "HazardModifierRBMKRadiation(target=251.25): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_hea242",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:426",
+      "expression": "HazardModifierRBMKRadiation(target=255.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_men",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:427",
+      "expression": "HazardModifierRBMKRadiation(target=168.75): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_hen",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:428",
+      "expression": "HazardModifierRBMKRadiation(target=225.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_mox",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:429",
+      "expression": "HazardModifierRBMKRadiation(target=191.25): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_les",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:430",
+      "expression": "HazardModifierRBMKRadiation(target=183.75): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_mes",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:431",
+      "expression": "HazardModifierRBMKRadiation(target=225.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_hes",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:432",
+      "expression": "HazardModifierRBMKRadiation(target=375.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_leaus",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:433",
+      "expression": "HazardModifierRBMKRadiation(target=281.25): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_heaus",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:434",
+      "expression": "HazardModifierRBMKRadiation(target=243.75): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_po210be",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:435",
+      "expression": "HazardModifierRBMKRadiation(target=11.25): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_ra226be",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:436",
+      "expression": "HazardModifierRBMKRadiation(target=4.5): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_pu238be",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:437",
+      "expression": "HazardModifierRBMKRadiation(target=22.5): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_balefire_gold",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:438",
+      "expression": "HazardModifierRBMKRadiation(target=75000.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_flashlead",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:439",
+      "expression": "HazardModifierRBMKRadiation(target=50.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_balefire",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:440",
+      "expression": "HazardModifierRBMKRadiation(target=15000000.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_zfb_bismuth",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:441",
+      "expression": "HazardModifierRBMKRadiation(target=37.5): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_zfb_pu241",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:442",
+      "expression": "HazardModifierRBMKRadiation(target=56.25): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_zfb_am_mix",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:443",
+      "expression": "HazardModifierRBMKRadiation(target=75.0): fresh base exported; depletion interpolation requires native item data."
+    },
+    {
+      "id": "ntm:rbmk_pellet_drx",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:444",
+      "expression": "HazardModifierRBMKRadiation(target=15000000.0): fresh base exported; depletion interpolation requires native item data."
     }
   ]
 }

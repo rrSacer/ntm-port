@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_cooler",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IGI",
+    "GCG",
+    "IGI"
+  ],
+  "key": {
+    "C": "ntm:rbmk_blank",
+    "I": "ntm:plate_polymer",
+    "G": "ntm:steel_grate"
+  }
+}

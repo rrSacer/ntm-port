@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_fuel_mep",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:rbmk_fuel_empty",
+    "#ntm:bulk/billetplutoniumrg",
+    "#ntm:bulk/billetplutoniumrg",
+    "#ntm:bulk/billetplutoniumrg",
+    "#ntm:bulk/billetplutoniumrg",
+    "#ntm:bulk/billetplutoniumrg",
+    "#ntm:bulk/billetplutoniumrg",
+    "#ntm:bulk/billetplutoniumrg",
+    "#ntm:bulk/billetplutoniumrg"
+  ]
+}

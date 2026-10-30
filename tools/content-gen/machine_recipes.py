@@ -341,6 +341,8 @@ def export(source, output, rows):
     counts['radioisotopes'] = radioisotopes.export(source,output,rows)['coverage']
     import reactors_simple
     counts['reactors_simple'] = reactors_simple.export(source,output,rows)['coverage']
+    import reactors_rbmk
+    counts['reactors_rbmk'] = reactors_rbmk.export(source,output,rows)['coverage']
     import energy_storage
     counts['energy_storage'] = energy_storage.export(source,output,rows)['coverage']
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))

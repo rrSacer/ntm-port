@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:billet_flashlead"
+    "ntm:billet_flashlead",
+    "ntm:rbmk_pellet_flashlead"
   ]
 }

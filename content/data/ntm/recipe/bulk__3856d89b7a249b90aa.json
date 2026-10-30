@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_lid_glass",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LLL",
+    "BBB",
+    "P P"
+  ],
+  "key": {
+    "P": "#ntm:bulk/platesteel",
+    "L": "ntm:glass_lead",
+    "B": "ntm:glass_boron"
+  }
+}

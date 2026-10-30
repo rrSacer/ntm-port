@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_lid",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "CCC",
+    "PPP"
+  ],
+  "key": {
+    "P": "#ntm:bulk/platesteel",
+    "C": "ntm:concrete_asbestos"
+  }
+}

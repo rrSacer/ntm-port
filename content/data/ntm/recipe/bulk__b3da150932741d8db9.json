@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_loader",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SCS",
+    "CBC",
+    "SCS"
+  ],
+  "key": {
+    "S": "#ntm:bulk/platesteel",
+    "C": "#ntm:bulk/ingotcopper",
+    "B": "ntm:tank_steel"
+  }
+}

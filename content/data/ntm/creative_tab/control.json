@@ -265,6 +265,8 @@
     "ntm:pwr_fuel_depleted__mep",
     "ntm:pwr_fuel_depleted__meu",
     "ntm:pwr_fuel_depleted__mox",
+    "ntm:rbmk_lid",
+    "ntm:rbmk_lid_glass",
     "ntm:rbmk_fuel_empty",
     "ntm:icf_pellet_empty",
     "ntm:icf_pellet_depleted",

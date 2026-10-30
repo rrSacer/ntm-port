@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:billet_plutonium_fuel"
+    "ntm:billet_plutonium_fuel",
+    "ntm:rbmk_pellet_lep"
   ]
 }

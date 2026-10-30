@@ -235,7 +235,7 @@ def generate(src,out,rows,emit):
     # Only known vanilla recipe entrypoints; nested condition/loop recipes are skipped.
     files=[java/'main/CraftingManager.java']+sorted((java/'crafting').glob('*.java'))
     for file in files:
-        text=clean(file.read_text());scope=[];guarded=[];last=0;quote=None;escaped=False
+        text=clean(file.read_text());scope=[];guarded=[];last=0;quote=None;escaped=False;pending_else=False
         for i,c in enumerate(text):
             if quote:
                 if escaped:escaped=False
@@ -245,15 +245,21 @@ def generate(src,out,rows,emit):
             if c in '\"\'':quote=c;continue
             if c=='{':
                 header=text[last:i]
-                scope.append((i,bool(re.search(r'\b(?:if|for|while|switch)\s*\(',header)) or bool(scope and scope[-1][1])));last=i+1
+                # enable528 defaults to false: `if(!enable528)` always runs and its
+                # `else` (ReaSim/528 variants) never does. Any other guard stays unsupported.
+                default_on=bool(re.fullmatch(r'\s*if\s*\(\s*!\s*GeneralConfig\.enable528\s*\)\s*',header))
+                default_off=pending_else and bool(re.fullmatch(r'\s*else\s*',header))
+                pending_else=False
+                scope.append((i,default_off or (not default_on and (bool(re.search(r'\b(?:if|for|while|switch)\s*\(',header)) or bool(scope and scope[-1][1]))),default_on));last=i+1
             elif c=='}':
                 if scope:
-                    start,guard=scope.pop()
+                    start,guard,default_on=scope.pop()
+                    pending_else=default_on
                     if guard:guarded.append((start,i))
                 last=i+1
             elif c==';':last=i+1
         def supported(pos):return not any(lo<pos<hi for lo,hi in guarded)
-        for pos,args,callee in calls(text,r'\b(?:addRecipeAuto|addShapelessAuto|addZIRNOXRod|add1To9Pair|addMineralSet|GameRegistry\.addSmelting|GameRegistry\.addRecipe|GameRegistry\.addShapelessRecipe)'):
+        for pos,args,callee in calls(text,r'\b(?:addRecipeAuto|addShapelessAuto|addZIRNOXRod|addRBMKRod|add1To9Pair|addMineralSet|GameRegistry\.addSmelting|GameRegistry\.addRecipe|GameRegistry\.addShapelessRecipe)'):
             location=str(file.relative_to(src))+':'+str(text[:pos].count('\n')+1)
             try:
                 parts=split(args)
@@ -269,6 +275,16 @@ def generate(src,out,rows,emit):
                     ingredient=parts[0]+'.billet()' if parts[0] in resolver.frames else parts[0]
                     parts=['new ItemStack(ModItems.rod_zirnox, 1, '+parts[1]+'.ordinal())',
                            'new Object[] { ModItems.rod_zirnox_empty, '+ingredient+', '+ingredient+' }']
+                    callee='addShapelessAuto'
+                if callee=='addRBMKRod':
+                    if file.name!='RodRecipes.java' or len(parts)!=2 or not parts[1].startswith('ModItems.rbmk_fuel_'):
+                        raise Unsupported('unsupported RBMK helper call')
+                    # Both original overloads are shapeless: empty rod plus eight billets.
+                    for ingredient in ['mat.billet()','billet']:
+                        expected='new Object[] { ModItems.rbmk_fuel_empty, '+', '.join([ingredient]*8)+' }'
+                        if expected not in text:raise Unsupported('RBMK helper body drift')
+                    ingredient=parts[0]+'.billet()' if parts[0] in resolver.frames else parts[0]
+                    parts=['new ItemStack('+parts[1]+', 1)','new Object[] { ModItems.rbmk_fuel_empty, '+', '.join([ingredient]*8)+' }']
                     callee='addShapelessAuto'
                 if callee in ('GameRegistry.addRecipe','GameRegistry.addShapelessRecipe'):
                     wrapper=re.fullmatch(r'new (ShapedOreRecipe|ShapelessOreRecipe)\((.*)\)',parts[0],re.S)

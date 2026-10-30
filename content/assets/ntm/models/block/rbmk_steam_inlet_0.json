@@ -1,0 +1,51 @@
+{
+  "textures": {
+    "particle": "ntm:block/rbmk_steam_inlet",
+    "down": "ntm:block/rbmk_steam_inlet",
+    "up": "ntm:block/rbmk_steam_inlet",
+    "north": "ntm:block/rbmk_steam_inlet",
+    "south": "ntm:block/rbmk_steam_inlet",
+    "east": "ntm:block/rbmk_steam_inlet",
+    "west": "ntm:block/rbmk_steam_inlet"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        }
+      }
+    }
+  ]
+}

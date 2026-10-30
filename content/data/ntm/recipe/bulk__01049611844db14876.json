@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_console",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "DGD",
+    "DCD"
+  ],
+  "key": {
+    "B": "#ntm:bulk/ingotboron",
+    "D": "ntm:deco_rbmk",
+    "G": "#ntm:bulk/paneglass",
+    "C": "ntm:circuit__analog"
+  }
+}

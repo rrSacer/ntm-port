@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_fuel_uzh",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:rbmk_fuel_empty",
+    "ntm:billet_uzh",
+    "ntm:billet_uzh",
+    "ntm:billet_uzh",
+    "ntm:billet_uzh",
+    "ntm:billet_uzh",
+    "ntm:billet_uzh",
+    "ntm:billet_uzh",
+    "ntm:billet_uzh"
+  ]
+}

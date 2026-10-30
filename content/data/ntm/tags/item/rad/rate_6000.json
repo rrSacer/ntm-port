@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:powder_cs137_tiny"
+    "ntm:powder_cs137_tiny",
+    "ntm:rbmk_fuel_men"
   ]
 }

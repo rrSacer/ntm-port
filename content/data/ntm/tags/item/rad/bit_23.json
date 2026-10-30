@@ -5,6 +5,11 @@
     "ntm:egg_balefire",
     "ntm:egg_balefire_shard",
     "ntm:ingot_pb209",
-    "ntm:pellet_rtg_lead"
+    "ntm:pellet_rtg_lead",
+    "ntm:rbmk_fuel_balefire",
+    "ntm:rbmk_fuel_drx",
+    "ntm:rbmk_fuel_flashlead",
+    "ntm:rbmk_pellet_balefire",
+    "ntm:rbmk_pellet_drx"
   ]
 }

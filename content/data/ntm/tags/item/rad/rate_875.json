@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:billet_thorium_fuel"
+    "ntm:billet_thorium_fuel",
+    "ntm:rbmk_pellet_thmeu"
   ]
 }

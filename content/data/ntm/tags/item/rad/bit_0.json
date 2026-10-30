@@ -25,6 +25,14 @@
     "ntm:pile_rod__nu",
     "ntm:pile_rod__rgp",
     "ntm:pile_rod__thorium_fuel",
+    "ntm:rbmk_pellet_hes",
+    "ntm:rbmk_pellet_lea",
+    "ntm:rbmk_pellet_lep",
+    "ntm:rbmk_pellet_les",
+    "ntm:rbmk_pellet_mep",
+    "ntm:rbmk_pellet_mes",
+    "ntm:rbmk_pellet_thmeu",
+    "ntm:rbmk_pellet_ueu",
     "ntm:rod_zirnox_tritium"
   ]
 }

@@ -5013,7 +5013,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_rod"
     },
     {
       "id": "rbmk_rod_mod",
@@ -5031,7 +5032,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_rod_mod"
     },
     {
       "id": "rbmk_rod_reasim",
@@ -5050,7 +5052,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_rod_reasim"
     },
     {
       "id": "rbmk_rod_reasim_mod",
@@ -5069,7 +5072,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_rod_reasim_mod"
     },
     {
       "id": "rbmk_control",
@@ -5087,7 +5091,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_control"
     },
     {
       "id": "rbmk_control_mod",
@@ -5105,7 +5110,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_control_mod"
     },
     {
       "id": "rbmk_control_auto",
@@ -5122,7 +5128,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_control_auto"
     },
     {
       "id": "rbmk_control_reasim",
@@ -5140,7 +5147,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_control_reasim"
     },
     {
       "id": "rbmk_control_reasim_auto",
@@ -5157,7 +5165,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_control_reasim_auto"
     },
     {
       "id": "rbmk_blank",
@@ -5174,7 +5183,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_blank"
     },
     {
       "id": "rbmk_boiler",
@@ -5192,7 +5202,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_boiler"
     },
     {
       "id": "rbmk_reflector",
@@ -5209,7 +5220,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_reflector"
     },
     {
       "id": "rbmk_absorber",
@@ -5226,7 +5238,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_absorber"
     },
     {
       "id": "rbmk_moderator",
@@ -5243,7 +5256,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_moderator"
     },
     {
       "id": "rbmk_outgasser",
@@ -5261,7 +5275,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_outgasser"
     },
     {
       "id": "rbmk_storage",
@@ -5279,7 +5294,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_storage"
     },
     {
       "id": "rbmk_cooler",
@@ -5297,7 +5313,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_cooler"
     },
     {
       "id": "rbmk_heater",
@@ -5315,7 +5332,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_heater"
     },
     {
       "id": "rbmk_console",
@@ -5332,7 +5350,8 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_console"
     },
     {
       "id": "rbmk_crane_console",
@@ -5349,7 +5368,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_crane_console"
     },
     {
       "id": "rbmk_display_blank",
@@ -5364,7 +5384,8 @@
       "energy": null,
       "fluid": null,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_display_blank"
     },
     {
       "id": "rbmk_display",
@@ -5381,7 +5402,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_display"
     },
     {
       "id": "rbmk_key_pad",
@@ -5398,7 +5420,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_key_pad"
     },
     {
       "id": "rbmk_gauge",
@@ -5415,7 +5438,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_gauge"
     },
     {
       "id": "rbmk_numitron",
@@ -5432,7 +5456,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_numitron"
     },
     {
       "id": "rbmk_graph",
@@ -5449,7 +5474,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_graph"
     },
     {
       "id": "rbmk_lever",
@@ -5466,7 +5492,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_lever"
     },
     {
       "id": "rbmk_indicator",
@@ -5483,7 +5510,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_indicator"
     },
     {
       "id": "rbmk_terminal",
@@ -5500,7 +5528,8 @@
       "energy": false,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_terminal"
     },
     {
       "id": "rbmk_autoloader",
@@ -5518,7 +5547,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_autoloader"
     },
     {
       "id": "rbmk_steam_inlet",
@@ -5535,7 +5565,8 @@
       "energy": false,
       "fluid": true,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_steam_inlet"
     },
     {
       "id": "rbmk_steam_outlet",
@@ -5552,7 +5583,8 @@
       "energy": false,
       "fluid": true,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Reactor R2 (RBMK) content declared; native column/console/fuel logic and visuals deferred",
+      "content_id": "ntm:rbmk_steam_outlet"
     },
     {
       "id": "rail_narrow_straight",

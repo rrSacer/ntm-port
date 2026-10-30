@@ -5,6 +5,8 @@
     "ntm:ingot_u238",
     "ntm:mike_core",
     "ntm:nugget_mox_fuel",
-    "ntm:nugget_neptunium"
+    "ntm:nugget_neptunium",
+    "ntm:rbmk_pellet_meu",
+    "ntm:rbmk_pellet_zfb_pu241"
   ]
 }

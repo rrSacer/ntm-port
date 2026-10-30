@@ -3,6 +3,7 @@
   "values": [
     "ntm:billet_am241",
     "ntm:ingot_plutonium_fuel",
+    "ntm:rbmk_pellet_hea241",
     "ntm:rod_zirnox__plutonium_fuel"
   ]
 }

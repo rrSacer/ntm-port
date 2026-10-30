@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "ntm:demon_core_closed"
+    "ntm:demon_core_closed",
+    "ntm:rbmk_fuel_balefire",
+    "ntm:rbmk_fuel_drx"
   ]
 }

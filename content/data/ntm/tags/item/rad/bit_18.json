@@ -15,6 +15,11 @@
     "ntm:powder_balefire",
     "ntm:powder_i131",
     "ntm:powder_xe135_tiny",
+    "ntm:rbmk_fuel_balefire",
+    "ntm:rbmk_fuel_balefire_gold",
+    "ntm:rbmk_fuel_drx",
+    "ntm:rbmk_fuel_po210be",
+    "ntm:rbmk_pellet_flashlead",
     "ntm:solid_fuel_bf",
     "ntm:solid_fuel_presto_bf"
   ]

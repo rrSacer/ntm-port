@@ -71,6 +71,39 @@
     "ntm:pile_block__air_out",
     "ntm:pile_block__control",
     "ntm:pile_block__edge",
+    "ntm:rbmk_rod",
+    "ntm:rbmk_rod_mod",
+    "ntm:rbmk_rod_reasim",
+    "ntm:rbmk_rod_reasim_mod",
+    "ntm:rbmk_control",
+    "ntm:rbmk_control_mod",
+    "ntm:rbmk_control_auto",
+    "ntm:rbmk_control_reasim",
+    "ntm:rbmk_control_reasim_auto",
+    "ntm:rbmk_blank",
+    "ntm:rbmk_boiler",
+    "ntm:rbmk_reflector",
+    "ntm:rbmk_absorber",
+    "ntm:rbmk_moderator",
+    "ntm:rbmk_outgasser",
+    "ntm:rbmk_storage",
+    "ntm:rbmk_cooler",
+    "ntm:rbmk_heater",
+    "ntm:rbmk_console",
+    "ntm:rbmk_crane_console",
+    "ntm:rbmk_display_blank",
+    "ntm:rbmk_display",
+    "ntm:rbmk_key_pad",
+    "ntm:rbmk_gauge",
+    "ntm:rbmk_numitron",
+    "ntm:rbmk_graph",
+    "ntm:rbmk_lever",
+    "ntm:rbmk_indicator",
+    "ntm:rbmk_terminal",
+    "ntm:rbmk_autoloader",
+    "ntm:rbmk_loader",
+    "ntm:rbmk_steam_inlet",
+    "ntm:rbmk_steam_outlet",
     "ntm:heater_oven",
     "ntm:heater_oilburner",
     "ntm:heater_electric",
@@ -86881,6 +86914,2891 @@
           "max": 5
         }
       }
+    },
+    {
+      "id": "ntm:rbmk_rod",
+      "source_variable": "rbmk_rod",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_element_side.png",
+      "names": {
+        "en_us": "RBMK Fuel Channel",
+        "pt_br": "Canal de Combustível RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_element_side",
+        "top": "blocks/rbmk/rbmk_element_top",
+        "front": "blocks/rbmk/rbmk_element_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_rod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:936"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_rod_mod",
+      "source_variable": "rbmk_rod_mod",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_element_mod_side.png",
+      "names": {
+        "en_us": "RBMK Moderated Fuel Channel",
+        "pt_br": "Canal de Combustível Moderado RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_element_mod_side",
+        "top": "blocks/rbmk/rbmk_element_mod_top",
+        "front": "blocks/rbmk/rbmk_element_mod_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_rod_mod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:935"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_rod_reasim",
+      "source_variable": "rbmk_rod_reasim",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_element_reasim_side.png",
+      "names": {
+        "en_us": "RBMK Fuel Channel (ReaSim)",
+        "pt_br": "Canal de Combustível RBMK (ReaSim)"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_element_reasim_side",
+        "top": "blocks/rbmk/rbmk_element_reasim_top",
+        "front": "blocks/rbmk/rbmk_element_reasim_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_rod_reasim",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:910"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_rod_reasim_mod",
+      "source_variable": "rbmk_rod_reasim_mod",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_element_reasim_mod_side.png",
+      "names": {
+        "en_us": "RBMK Moderated Fuel Channel (ReaSim)",
+        "pt_br": "Canal de Combustível Moderado RBMK (ReaSim)"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_element_reasim_mod_side",
+        "top": "blocks/rbmk/rbmk_element_reasim_mod_top",
+        "front": "blocks/rbmk/rbmk_element_reasim_mod_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_rod_reasim_mod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:909"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_control",
+      "source_variable": "rbmk_control",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_control_side.png",
+      "names": {
+        "en_us": "RBMK Control Rods",
+        "pt_br": "Hastes de Controle RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_control_side",
+        "top": "blocks/rbmk/rbmk_control_top",
+        "front": "blocks/rbmk/rbmk_control_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_control",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:898"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_control_mod",
+      "source_variable": "rbmk_control_mod",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_control_mod_side.png",
+      "names": {
+        "en_us": "RBMK Moderated Control Rods",
+        "pt_br": "Hastes de Controle Moderadas RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_control_mod_side",
+        "top": "blocks/rbmk/rbmk_control_mod_top",
+        "front": "blocks/rbmk/rbmk_control_mod_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_control_mod",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:891"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_control_auto",
+      "source_variable": "rbmk_control_auto",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_control_auto_side.png",
+      "names": {
+        "en_us": "RBMK Automatic Control Rods",
+        "pt_br": "Hastes de Controle Automáticas RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_control_auto_side",
+        "top": "blocks/rbmk/rbmk_control_auto_top",
+        "front": "blocks/rbmk/rbmk_control_auto_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_control_auto",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:897"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_control_reasim",
+      "source_variable": "rbmk_control_reasim",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_control_reasim_side.png",
+      "names": {
+        "en_us": "RBMK Control Rods (ReaSim)",
+        "pt_br": "Hastes de Controle RBMK (ReaSim)"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_control_reasim_side",
+        "top": "blocks/rbmk/rbmk_control_reasim_top",
+        "front": "blocks/rbmk/rbmk_control_reasim_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_control_reasim",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_control_reasim_auto",
+      "source_variable": "rbmk_control_reasim_auto",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_control_reasim_auto_side.png",
+      "names": {
+        "en_us": "RBMK Automatic Control Rods (ReaSim)",
+        "pt_br": "Hastes de Controle Automáticas RBMK (ReaSim)"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_control_reasim_auto_side",
+        "top": "blocks/rbmk/rbmk_control_reasim_auto_top",
+        "front": "blocks/rbmk/rbmk_control_reasim_auto_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_control_reasim_auto",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_blank",
+      "source_variable": "rbmk_blank",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_blank_side.png",
+      "names": {
+        "en_us": "RBMK Structural Column",
+        "pt_br": "Coluna Estrutural RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_blank_side",
+        "top": "blocks/rbmk/rbmk_blank_top",
+        "front": "blocks/rbmk/rbmk_blank_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_blank",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:528"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_boiler",
+      "source_variable": "rbmk_boiler",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_boiler_side.png",
+      "names": {
+        "en_us": "RBMK Steam Channel",
+        "pt_br": "Canal de Vapor RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_boiler_side",
+        "top": "blocks/rbmk/rbmk_boiler_top",
+        "front": "blocks/rbmk/rbmk_boiler_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_boiler",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:941"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_reflector",
+      "source_variable": "rbmk_reflector",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_reflector_side.png",
+      "names": {
+        "en_us": "RBMK Tungsten Carbide Neutron Reflector",
+        "pt_br": "Refletor de Nêutrons de Carboneto de Tungstênio RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_reflector_side",
+        "top": "blocks/rbmk/rbmk_reflector_top",
+        "front": "blocks/rbmk/rbmk_reflector_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_reflector",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:880"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_absorber",
+      "source_variable": "rbmk_absorber",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_absorber_side.png",
+      "names": {
+        "en_us": "RBMK Boron Neutron Absorber",
+        "pt_br": "Absorvedor de Nêutrons de Boro RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_absorber_side",
+        "top": "blocks/rbmk/rbmk_absorber_top",
+        "front": "blocks/rbmk/rbmk_absorber_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_absorber",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:886"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_moderator",
+      "source_variable": "rbmk_moderator",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_moderator_side.png",
+      "names": {
+        "en_us": "RBMK Graphite Moderator",
+        "pt_br": "Moderador de Grafite RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_moderator_side",
+        "top": "blocks/rbmk/rbmk_moderator_top",
+        "front": "blocks/rbmk/rbmk_moderator_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_moderator",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:870"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_outgasser",
+      "source_variable": "rbmk_outgasser",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_outgasser_side.png",
+      "names": {
+        "en_us": "RBMK Irradiation Channel",
+        "pt_br": "Canal de Irradiação RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_outgasser_side",
+        "top": "blocks/rbmk/rbmk_outgasser_top",
+        "front": "blocks/rbmk/rbmk_outgasser_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_outgasser",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:915"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_storage",
+      "source_variable": "rbmk_storage",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_storage_side.png",
+      "names": {
+        "en_us": "RBMK Storage Column",
+        "pt_br": "Coluna de Armazenamento RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_storage_side",
+        "top": "blocks/rbmk/rbmk_storage_top",
+        "front": "blocks/rbmk/rbmk_storage_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_storage",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:922"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_cooler",
+      "source_variable": "rbmk_cooler",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_cooler_side.png",
+      "names": {
+        "en_us": "RBMK Cooler",
+        "pt_br": "Resfriador RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_cooler_side",
+        "top": "blocks/rbmk/rbmk_cooler_top",
+        "front": "blocks/rbmk/rbmk_cooler_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_cooler",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:947"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_heater",
+      "source_variable": "rbmk_heater",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_heater_side.png",
+      "names": {
+        "en_us": "RBMK Fluid Heater",
+        "pt_br": "Aquecedor de Fluido RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_heater_side",
+        "top": "blocks/rbmk/rbmk_heater_top",
+        "front": "blocks/rbmk/rbmk_heater_side"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_heater",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_console",
+      "source_variable": "rbmk_console",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_console.png",
+      "names": {
+        "en_us": "RBMK Console",
+        "pt_br": "Console RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_console",
+        "top": "blocks/rbmk/rbmk_console",
+        "front": "blocks/rbmk/rbmk_console"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_console",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_crane_console",
+      "source_variable": "rbmk_crane_console",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_crane_console.png",
+      "names": {
+        "en_us": "RBMK Crane Console",
+        "pt_br": "Console do Guindaste RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_crane_console",
+        "top": "blocks/rbmk/rbmk_crane_console",
+        "front": "blocks/rbmk/rbmk_crane_console"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_crane_console",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_display_blank",
+      "source_variable": "rbmk_display_blank",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_display.png",
+      "names": {
+        "en_us": "Blank Redstone-over-Radio Panel",
+        "pt_br": "Painel em Branco de Redstone por Rádio"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_display",
+        "top": "blocks/rbmk/rbmk_display",
+        "front": "blocks/rbmk/rbmk_display"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_display_blank",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_display",
+      "source_variable": "rbmk_display",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_display.png",
+      "names": {
+        "en_us": "RBMK Display Panel",
+        "pt_br": "Painel de Exibição RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_display",
+        "top": "blocks/rbmk/rbmk_display",
+        "front": "blocks/rbmk/rbmk_display"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_display",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_key_pad",
+      "source_variable": "rbmk_key_pad",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_display.png",
+      "names": {
+        "en_us": "Redstone-over-Radio Keypad",
+        "pt_br": "Teclado de Redstone por Rádio"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_display",
+        "top": "blocks/rbmk/rbmk_display",
+        "front": "blocks/rbmk/rbmk_display"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_key_pad",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_gauge",
+      "source_variable": "rbmk_gauge",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_display.png",
+      "names": {
+        "en_us": "Redstone-over-Radio Gauge",
+        "pt_br": "Medidor de Redstone por Rádio"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_display",
+        "top": "blocks/rbmk/rbmk_display",
+        "front": "blocks/rbmk/rbmk_display"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_gauge",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_numitron",
+      "source_variable": "rbmk_numitron",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_display.png",
+      "names": {
+        "en_us": "Redstone-over-Radio Numeric Display",
+        "pt_br": "Visor Numérico de Redstone por Rádio"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_display",
+        "top": "blocks/rbmk/rbmk_display",
+        "front": "blocks/rbmk/rbmk_display"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_numitron",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_graph",
+      "source_variable": "rbmk_graph",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_display.png",
+      "names": {
+        "en_us": "Redstone-over-Radio Graph",
+        "pt_br": "Gráfico de Redstone por Rádio"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_display",
+        "top": "blocks/rbmk/rbmk_display",
+        "front": "blocks/rbmk/rbmk_display"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_graph",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_lever",
+      "source_variable": "rbmk_lever",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_display.png",
+      "names": {
+        "en_us": "Redstone-over-Radio Lever",
+        "pt_br": "Alavanca de Redstone por Rádio"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_display",
+        "top": "blocks/rbmk/rbmk_display",
+        "front": "blocks/rbmk/rbmk_display"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_lever",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_indicator",
+      "source_variable": "rbmk_indicator",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_display.png",
+      "names": {
+        "en_us": "Redstone-over-Radio Indicator Lights",
+        "pt_br": "Luzes Indicadoras de Redstone por Rádio"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_display",
+        "top": "blocks/rbmk/rbmk_display",
+        "front": "blocks/rbmk/rbmk_display"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_indicator",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_terminal",
+      "source_variable": "rbmk_terminal",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_display.png",
+      "names": {
+        "en_us": "Redstone-over-Radio Terminal",
+        "pt_br": "Terminal Redstone-sobre-Rádio"
+      },
+      "textures": {
+        "side": "blocks/rbmk/rbmk_display",
+        "top": "blocks/rbmk/rbmk_display",
+        "front": "blocks/rbmk/rbmk_display"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_terminal",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_autoloader",
+      "source_variable": "rbmk_autoloader",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk_autoloader.png",
+      "names": {
+        "en_us": "RBMK Autoloader",
+        "pt_br": "Carregador Automático RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk_autoloader",
+        "top": "blocks/rbmk_autoloader",
+        "front": "blocks/rbmk_autoloader"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_autoloader",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:532"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_loader",
+      "source_variable": "rbmk_loader",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk_loader.png",
+      "names": {
+        "en_us": "RBMK Steam Connector",
+        "pt_br": "Conector de Vapor RBMK"
+      },
+      "textures": {
+        "side": "blocks/rbmk_loader",
+        "top": "blocks/rbmk_loader",
+        "front": "blocks/rbmk_loader"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_loader",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_steam_inlet",
+      "source_variable": "rbmk_steam_inlet",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk_steam_inlet.png",
+      "names": {
+        "en_us": "RBMK ReaSim Water Inlet",
+        "pt_br": "Entrada de Água RBMK ReaSim"
+      },
+      "textures": {
+        "side": "blocks/rbmk_steam_inlet",
+        "top": "blocks/rbmk_steam_inlet",
+        "front": "blocks/rbmk_steam_inlet"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_steam_inlet",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:rbmk_steam_outlet",
+      "source_variable": "rbmk_steam_outlet",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk_steam_outlet.png",
+      "names": {
+        "en_us": "RBMK ReaSim Steam Outlet",
+        "pt_br": "Saída de Vapor RBMK ReaSim"
+      },
+      "textures": {
+        "side": "blocks/rbmk_steam_outlet",
+        "top": "blocks/rbmk_steam_outlet",
+        "front": "blocks/rbmk_steam_outlet"
+      },
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "source_registry": "hbm:tile.rbmk_steam_outlet",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:pribris",
+      "source_variable": "pribris",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_debris.png",
+      "names": {
+        "en_us": "RBMK Debris",
+        "pt_br": "Destroços de RBMK"
+      },
+      "behavior_gap": "Source debris: burning/radiating/digamma ticking, spread and radiation are native logic; plain cube here.",
+      "source_registry": "hbm:tile.pribris",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pribris_burning",
+      "source_variable": "pribris_burning",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_debris_burning.png",
+      "names": {
+        "en_us": "Flaming RBMK Debris",
+        "pt_br": "Destroços de RBMK em Chamas"
+      },
+      "behavior_gap": "Source debris: burning/radiating/digamma ticking, spread and radiation are native logic; plain cube here.",
+      "source_registry": "hbm:tile.pribris_burning",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pribris_radiating",
+      "source_variable": "pribris_radiating",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_debris_radiating.png",
+      "names": {
+        "en_us": "Smoldering RBMK Debris",
+        "pt_br": "Destroços de RBMK Fumegantes"
+      },
+      "behavior_gap": "Source debris: burning/radiating/digamma ticking, spread and radiation are native logic; plain cube here.",
+      "source_registry": "hbm:tile.pribris_radiating",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pribris_digamma",
+      "source_variable": "pribris_digamma",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rbmk/rbmk_debris_digamma.png",
+      "names": {
+        "en_us": "Blackened RBMK Debris",
+        "pt_br": "Destroços de RBMK Enegrecidos"
+      },
+      "behavior_gap": "Source debris: burning/radiating/digamma ticking, spread and radiation are native logic; plain cube here.",
+      "source_registry": "hbm:tile.pribris_digamma",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_lid",
+      "source_variable": "rbmk_lid",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_lid.png",
+      "names": {
+        "en_us": "RBMK Cover Panel",
+        "pt_br": "Painel de Cobertura RBMK"
+      },
+      "behavior_gap": "Console linking positions are native item data.",
+      "source_registry": "hbm:item.rbmk_lid",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_lid_glass",
+      "source_variable": "rbmk_lid_glass",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_lid_glass.png",
+      "names": {
+        "en_us": "RBMK Glass Cover Panel",
+        "pt_br": "Painel de Cobertura de Vidro RBMK"
+      },
+      "behavior_gap": "Console linking positions are native item data.",
+      "source_registry": "hbm:item.rbmk_lid_glass",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_tool",
+      "source_variable": "rbmk_tool",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_tool.png",
+      "names": {
+        "en_us": "RBMK Console Linking Device",
+        "pt_br": "Dispositivo de Vinculação ao Console RBMK"
+      },
+      "behavior_gap": "Console linking positions are native item data.",
+      "source_registry": "hbm:item.rbmk_tool",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_ueu",
+      "source_variable": "rbmk_pellet_ueu",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_ueu.png",
+      "names": {
+        "en_us": "NU Fuel Pellet",
+        "pt_br": "Pastilha de Combustível NU"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_ueu",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:129"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_meu",
+      "source_variable": "rbmk_pellet_meu",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_meu.png",
+      "names": {
+        "en_us": "MEU Fuel Pellet",
+        "pt_br": "Pastilha de Combível MEU"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_meu",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:143"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_heu233",
+      "source_variable": "rbmk_pellet_heu233",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_heu233.png",
+      "names": {
+        "en_us": "HEU-233 Fuel Pellet",
+        "pt_br": "Pastilha de Combustível HEU-233"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_heu233",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:156"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_heu235",
+      "source_variable": "rbmk_pellet_heu235",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_heu235.png",
+      "names": {
+        "en_us": "HEU-235 Fuel Pellet",
+        "pt_br": "Pastilha de Combustível HEU-235"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_heu235",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:168"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_uzh",
+      "source_variable": "rbmk_pellet_uzh",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_uzh.png",
+      "names": {
+        "en_us": "UZrH Fuel Pellet",
+        "pt_br": "Pastilha de Combustível UZrH"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_uzh",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:182"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_thmeu",
+      "source_variable": "rbmk_pellet_thmeu",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_thmeu.png",
+      "names": {
+        "en_us": "ThMEU Fuel Pellet",
+        "pt_br": "Pastilha de Combustível ThMEU"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_thmeu",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:196"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_lep",
+      "source_variable": "rbmk_pellet_lep",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_lep.png",
+      "names": {
+        "en_us": "LEP Fuel Pellet",
+        "pt_br": "Pastilha de Combustível LEP"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_lep",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:209"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_mep",
+      "source_variable": "rbmk_pellet_mep",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_mep.png",
+      "names": {
+        "en_us": "MEP Fuel Pellet",
+        "pt_br": "Pastilha de Combustível MEP"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_mep",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:222"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hep239",
+      "source_variable": "rbmk_pellet_hep239",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_hep239.png",
+      "names": {
+        "en_us": "HEP-239 Fuel Pellet",
+        "pt_br": "Pastilha de Combustível HEP-239"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_hep239",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:233"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hep241",
+      "source_variable": "rbmk_pellet_hep241",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_hep241.png",
+      "names": {
+        "en_us": "HEP-241 Fuel Pellet",
+        "pt_br": "Pastilha de Combustível HEP-241"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_hep241",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:243"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_lea",
+      "source_variable": "rbmk_pellet_lea",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_lea.png",
+      "names": {
+        "en_us": "LEA Fuel Pellet",
+        "pt_br": "Pastilha de Combustível LEA"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_lea",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_mea",
+      "source_variable": "rbmk_pellet_mea",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_mea.png",
+      "names": {
+        "en_us": "MEA Fuel Pellet",
+        "pt_br": "Pastilha de Combustível MEA"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_mea",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hea241",
+      "source_variable": "rbmk_pellet_hea241",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_hea241.png",
+      "names": {
+        "en_us": "HEA-241 Fuel Pellet",
+        "pt_br": "Pastilha de Combustível HEA-241"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_hea241",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hea242",
+      "source_variable": "rbmk_pellet_hea242",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_hea242.png",
+      "names": {
+        "en_us": "HEA-242 Fuel Pellet",
+        "pt_br": "Pastilha de Combustível HEA-242"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_hea242",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_men",
+      "source_variable": "rbmk_pellet_men",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_men.png",
+      "names": {
+        "en_us": "MEN Fuel Pellet",
+        "pt_br": "Pastilha de Combustível MEN"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_men",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:255"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hen",
+      "source_variable": "rbmk_pellet_hen",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_hen.png",
+      "names": {
+        "en_us": "HEN Fuel Pellet",
+        "pt_br": "Pastilha de Combustível HEN"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_hen",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:268"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_mox",
+      "source_variable": "rbmk_pellet_mox",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_mox.png",
+      "names": {
+        "en_us": "MOX Fuel Pellet",
+        "pt_br": "Pastilha de Combustível MOX"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_mox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:282"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_les",
+      "source_variable": "rbmk_pellet_les",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_les.png",
+      "names": {
+        "en_us": "LES Fuel Pellet",
+        "pt_br": "Pastilha de Combustível LES"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_les",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:326"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_mes",
+      "source_variable": "rbmk_pellet_mes",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_mes.png",
+      "names": {
+        "en_us": "MES Fuel Pellet",
+        "pt_br": "Pastilha de Combustível MES"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_mes",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:344"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_hes",
+      "source_variable": "rbmk_pellet_hes",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_hes.png",
+      "names": {
+        "en_us": "HES Fuel Pellet",
+        "pt_br": "Pastilha de Combustível HES"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_hes",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:362"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_leaus",
+      "source_variable": "rbmk_pellet_leaus",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_leaus.png",
+      "names": {
+        "en_us": "LEAus Fuel Pellet",
+        "pt_br": "Pastilha de Combustível LEAus"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_leaus",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:296"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_heaus",
+      "source_variable": "rbmk_pellet_heaus",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_heaus.png",
+      "names": {
+        "en_us": "HEAus Fuel Pellet",
+        "pt_br": "Pastilha de Combustível HEAus"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_heaus",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:309"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_po210be",
+      "source_variable": "rbmk_pellet_po210be",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_po210be.png",
+      "names": {
+        "en_us": "Po210Be Neutron Source Pellet",
+        "pt_br": "Pastilha Fonte de Nêutrons Po210Be"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_po210be",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:389"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_ra226be",
+      "source_variable": "rbmk_pellet_ra226be",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_ra226be.png",
+      "names": {
+        "en_us": "Ra226Be Neutron Source Pellet",
+        "pt_br": "Pastilha Fonte de Nêutrons Ra226Be"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_ra226be",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:412"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_pu238be",
+      "source_variable": "rbmk_pellet_pu238be",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_pu238be.png",
+      "names": {
+        "en_us": "Pu238Be Neutron Source Pellet",
+        "pt_br": "Pastilha Fonte de Nêutrons Pu238Be"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_pu238be",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:403"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_balefire_gold",
+      "source_variable": "rbmk_pellet_balefire_gold",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_balefire_gold.png",
+      "names": {
+        "en_us": "Flashgold Fuel Pellet",
+        "pt_br": "Pastilha de Combustível de Ouro Relâmpago"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_balefire_gold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:376"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_flashlead",
+      "source_variable": "rbmk_pellet_flashlead",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_flashlead.png",
+      "names": {
+        "en_us": "Flashlead Fuel Pellet",
+        "pt_br": "Pastilha de Combustível de Chumbo Relâmpago"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_flashlead",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:381"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_balefire",
+      "source_variable": "rbmk_pellet_balefire",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_balefire.png",
+      "names": {
+        "en_us": "Balefire Fuel Pellet",
+        "pt_br": "Pastilha de Combustível de Balefire"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_balefire",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:371"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_zfb_bismuth",
+      "source_variable": "rbmk_pellet_zfb_bismuth",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_zfb_bismuth.png",
+      "names": {
+        "en_us": "Bismuth ZFB Pellet",
+        "pt_br": "Pastilha ZFB de Bismuto"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_zfb_bismuth",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:443"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_zfb_pu241",
+      "source_variable": "rbmk_pellet_zfb_pu241",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_zfb_pu241.png",
+      "names": {
+        "en_us": "Pu-241 ZFB Pellet",
+        "pt_br": "Pastilha ZFB de Pu-241"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_zfb_pu241",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:457"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_zfb_am_mix",
+      "source_variable": "rbmk_pellet_zfb_am_mix",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_zfb_am_mix.png",
+      "names": {
+        "en_us": "Fuel Grade Americium ZFB Pellet",
+        "pt_br": "Pastilha ZFB de Amerício de Grau Combustível"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_zfb_am_mix",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:470"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_pellet_drx",
+      "source_variable": "rbmk_pellet_drx",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 64,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_pellet_drx.png",
+      "names": {
+        "en_us": "§cDigamma Fuel Pellet§r",
+        "pt_br": "§cPastilha de Combustível de Digamma§r"
+      },
+      "behavior_gap": "Pellet is a crafting/disassembly ingredient; enrichment and poison NBT belong to the fuel rod state.",
+      "source_registry": "hbm:item.rbmk_pellet_drx",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "s_i_l_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/SILEXRecipes.java:428"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_ueu",
+      "source_variable": "rbmk_fuel_ueu",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_ueu.png",
+      "names": {
+        "en_us": "NU RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK NU"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_ueu",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_meu",
+      "source_variable": "rbmk_fuel_meu",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_meu.png",
+      "names": {
+        "en_us": "MEU RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK MEU"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_meu",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_heu233",
+      "source_variable": "rbmk_fuel_heu233",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_heu233.png",
+      "names": {
+        "en_us": "HEU-233 RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK HEU-233"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_heu233",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_heu235",
+      "source_variable": "rbmk_fuel_heu235",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_heu235.png",
+      "names": {
+        "en_us": "HEU-235 RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK HEU-235"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_heu235",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_uzh",
+      "source_variable": "rbmk_fuel_uzh",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_uzh.png",
+      "names": {
+        "en_us": "UZrH RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK UZrH"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_uzh",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_thmeu",
+      "source_variable": "rbmk_fuel_thmeu",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_thmeu.png",
+      "names": {
+        "en_us": "ThMEU RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK ThMEU"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_thmeu",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_lep",
+      "source_variable": "rbmk_fuel_lep",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_lep.png",
+      "names": {
+        "en_us": "LEP-239 RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK LEP-239"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_lep",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_mep",
+      "source_variable": "rbmk_fuel_mep",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_mep.png",
+      "names": {
+        "en_us": "MEP-239 RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK MEP-239"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_mep",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hep",
+      "source_variable": "rbmk_fuel_hep239",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_hep.png",
+      "names": {
+        "en_us": "HEP-239 RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK HEP-239"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_hep",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hep241",
+      "source_variable": "rbmk_fuel_hep241",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_hep241.png",
+      "names": {
+        "en_us": "HEP-241 RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK HEP-241"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_hep241",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_lea",
+      "source_variable": "rbmk_fuel_lea",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_lea.png",
+      "names": {
+        "en_us": "LEA RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK LEA"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_lea",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_mea",
+      "source_variable": "rbmk_fuel_mea",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_mea.png",
+      "names": {
+        "en_us": "MEA RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK MEA"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_mea",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hea241",
+      "source_variable": "rbmk_fuel_hea241",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_hea241.png",
+      "names": {
+        "en_us": "HEA-241 RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK HEA-241"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_hea241",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hea242",
+      "source_variable": "rbmk_fuel_hea242",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_hea242.png",
+      "names": {
+        "en_us": "HEA-242 RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK HEA-242"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_hea242",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_men",
+      "source_variable": "rbmk_fuel_men",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_men.png",
+      "names": {
+        "en_us": "MEN RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK MEN"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_men",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hen",
+      "source_variable": "rbmk_fuel_hen",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_hen.png",
+      "names": {
+        "en_us": "HEN RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK HEN"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_hen",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_mox",
+      "source_variable": "rbmk_fuel_mox",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_mox.png",
+      "names": {
+        "en_us": "MOX RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK MOX"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_mox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_les",
+      "source_variable": "rbmk_fuel_les",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_les.png",
+      "names": {
+        "en_us": "LES RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK LES"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_les",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_mes",
+      "source_variable": "rbmk_fuel_mes",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_mes.png",
+      "names": {
+        "en_us": "MES RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK MES"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_mes",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_hes",
+      "source_variable": "rbmk_fuel_hes",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_hes.png",
+      "names": {
+        "en_us": "HES RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK HES"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_hes",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_leaus",
+      "source_variable": "rbmk_fuel_leaus",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_leaus.png",
+      "names": {
+        "en_us": "LEAus RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK LEAus"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_leaus",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_heaus",
+      "source_variable": "rbmk_fuel_heaus",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_heaus.png",
+      "names": {
+        "en_us": "HEAus RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK HЕAus"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_heaus",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_po210be",
+      "source_variable": "rbmk_fuel_po210be",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_po210be.png",
+      "names": {
+        "en_us": "Po210Be RBMK Neutron Source",
+        "pt_br": "Fonte de Nêutrons RBMK Po210Be"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_po210be",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_ra226be",
+      "source_variable": "rbmk_fuel_ra226be",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_ra226be.png",
+      "names": {
+        "en_us": "Ra226Be RBMK Neutron Source",
+        "pt_br": "Fonte de Nêutrons RBMK Ra226Be"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_ra226be",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_pu238be",
+      "source_variable": "rbmk_fuel_pu238be",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_pu238be.png",
+      "names": {
+        "en_us": "Pu238Be RBMK Neutron Source",
+        "pt_br": "Fonte de Nêutrons RBMK Pu238Be"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_pu238be",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_balefire_gold",
+      "source_variable": "rbmk_fuel_balefire_gold",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_balefire_gold.png",
+      "names": {
+        "en_us": "Flashgold RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK de Ouro Relâmpago"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_balefire_gold",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_flashlead",
+      "source_variable": "rbmk_fuel_flashlead",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_flashlead.png",
+      "names": {
+        "en_us": "Flashlead RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK de Chumbo Relâmpago"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_flashlead",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_balefire",
+      "source_variable": "rbmk_fuel_balefire",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_balefire.png",
+      "names": {
+        "en_us": "Balefire RBMK Fuel Rod",
+        "pt_br": "Haste de Combustível RBMK de Balefire"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_balefire",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_zfb_bismuth",
+      "source_variable": "rbmk_fuel_zfb_bismuth",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_zfb_bismuth.png",
+      "names": {
+        "en_us": "Bismuth RBMK ZFB Rod",
+        "pt_br": "Haste ZFB RBMK de Bismuto"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_zfb_bismuth",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_zfb_pu241",
+      "source_variable": "rbmk_fuel_zfb_pu241",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_zfb_pu241.png",
+      "names": {
+        "en_us": "Pu-241 RBMK ZFB Rod",
+        "pt_br": "Haste ZFB RBMK de Pu-241"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_zfb_pu241",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_zfb_am_mix",
+      "source_variable": "rbmk_fuel_zfb_am_mix",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_zfb_am_mix.png",
+      "names": {
+        "en_us": "Fuel Grade Americium RBMK ZFB Rod",
+        "pt_br": "Haste ZFB RBMK de Amerício de Grau Combustível"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_zfb_am_mix",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_drx",
+      "source_variable": "rbmk_fuel_drx",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_drx.png",
+      "names": {
+        "en_us": "§cDigamma RBMK Fuel Rod§r",
+        "pt_br": "§cHaste de Combustível RBMK de Digamma§r"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_drx",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:rbmk_fuel_test",
+      "source_variable": "rbmk_fuel_test",
+      "type": "item",
+      "category": "component",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/rbmk_fuel_test.png",
+      "names": {
+        "en_us": "RBMK Fuel Rod (THE VOICES)",
+        "pt_br": "Combustível RBMK de Teste (DEBUG)"
+      },
+      "behavior_gap": "Source ItemRBMKRod table in reactors_rbmk.json; yield, xenon and heat are per-stack NBT, so dynamic radiation and the durability bar need native logic. No vanilla max_damage substitution.",
+      "source_registry": "hbm:item.rbmk_fuel_test",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:heater_oven",

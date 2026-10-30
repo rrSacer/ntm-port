@@ -16497,6 +16497,138 @@
     "ntm:pile_block__edge": {
       "auto": false,
       "source": "Reactor R1 content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_rod": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_rod_mod": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_rod_reasim": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_rod_reasim_mod": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_control": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_control_mod": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_control_auto": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_control_reasim": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_control_reasim_auto": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_blank": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_boiler": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_reflector": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_absorber": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_moderator": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_outgasser": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_storage": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_cooler": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_heater": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_console": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_crane_console": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_display_blank": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_display": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_key_pad": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_gauge": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_numitron": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_graph": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_lever": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_indicator": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_terminal": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_autoloader": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_loader": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_steam_inlet": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+    },
+    "ntm:rbmk_steam_outlet": {
+      "auto": false,
+      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
     }
   },
   "textures": {

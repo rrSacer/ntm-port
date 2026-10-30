@@ -3,6 +3,9 @@
   "values": [
     "ntm:billet_hes",
     "ntm:billet_les",
-    "ntm:billet_schrabidium_fuel"
+    "ntm:billet_schrabidium_fuel",
+    "ntm:rbmk_pellet_hes",
+    "ntm:rbmk_pellet_les",
+    "ntm:rbmk_pellet_mes"
   ]
 }

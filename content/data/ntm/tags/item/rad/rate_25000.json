@@ -6,6 +6,7 @@
     "ntm:debris_exchanger",
     "ntm:gem_rad",
     "ntm:ingot_pu241",
-    "ntm:ore_sellafield_radgem"
+    "ntm:ore_sellafield_radgem",
+    "ntm:rbmk_fuel_mep"
   ]
 }

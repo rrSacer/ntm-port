@@ -2,6 +2,10 @@
   "replace": false,
   "values": [
     "ntm:billet_mox_fuel",
-    "ntm:billet_neptunium"
+    "ntm:billet_neptunium",
+    "ntm:rbmk_pellet_hen",
+    "ntm:rbmk_pellet_mox",
+    "ntm:rbmk_pellet_zfb_am_mix",
+    "ntm:rbmk_pellet_zfb_bismuth"
   ]
 }

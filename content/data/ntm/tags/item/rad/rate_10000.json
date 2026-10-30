@@ -3,6 +3,10 @@
   "values": [
     "ntm:block_u235",
     "ntm:fleija_core",
-    "ntm:ingot_pu238"
+    "ntm:ingot_pu238",
+    "ntm:rbmk_fuel_hen",
+    "ntm:rbmk_fuel_mox",
+    "ntm:rbmk_fuel_zfb_am_mix",
+    "ntm:rbmk_fuel_zfb_bismuth"
   ]
 }

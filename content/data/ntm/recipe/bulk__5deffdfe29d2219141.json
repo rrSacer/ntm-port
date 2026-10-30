@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_control",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " B ",
+    "GRG",
+    " B "
+  ],
+  "key": {
+    "G": "#ntm:bulk/ingotgraphite",
+    "B": "ntm:motor",
+    "R": "ntm:rbmk_absorber"
+  }
+}

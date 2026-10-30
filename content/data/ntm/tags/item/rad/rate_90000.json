@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "ntm:powder_actinium",
-    "ntm:powder_co60"
+    "ntm:powder_co60",
+    "ntm:rbmk_fuel_ra226be"
   ]
 }

@@ -4,6 +4,9 @@
     "ntm:demon_core_closed",
     "ntm:egg_balefire",
     "ntm:pellet_rtg_lead",
-    "ntm:powder_xe135"
+    "ntm:powder_xe135",
+    "ntm:rbmk_fuel_flashlead",
+    "ntm:rbmk_pellet_balefire",
+    "ntm:rbmk_pellet_drx"
   ]
 }

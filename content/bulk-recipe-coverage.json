@@ -1838,11 +1838,182 @@
       }
     },
     {
+      "id": "ntm:bulk__29c4d253dc9a193305",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:752",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_lid",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__3856d89b7a249b90aa",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:753",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_lid_glass",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__bf26eb1f700b3362b2",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:754",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_lid_glass",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__4036abe199b7409c4e",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:756",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_moderator",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0154da08aca33d02ed",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:757",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_absorber",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__fb5f2808d68fb7125f",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:758",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_reflector",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5deffdfe29d2219141",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:760",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_control",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3e21a2a5c6ec4099f1",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:761",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_control_mod",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d5ba6b100074d28aa5",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:762",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_control_auto",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__e7a9323be783eefdb0",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:767",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_rod_reasim",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__cb352a31fd60802719",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:769",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_outgasser",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__b3da150932741d8db9",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:771",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_loader",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7d723f446f45273d72",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:772",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_steam_inlet",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__33142b803eeb967e9b",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:773",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_steam_outlet",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__555d965dd73567a5a4",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:775",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_display_blank",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__ed689e591ec306873b",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:776",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_display",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__dc9ca4e7c824eb677a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:788",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_rbmk",
+        "count": 8
+      }
+    },
+    {
       "id": "ntm:bulk__c06573714f623308dd",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:789",
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:deco_rbmk_smooth",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__670a0e2a8eae9d3b7a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:790",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_blank",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__be9d0712b21e1c151d",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:791",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_blank",
         "count": 1
       }
     },
@@ -2023,6 +2194,51 @@
       "type": "minecraft:crafting_shapeless",
       "result": {
         "id": "ntm:upgrade_5g",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__01049611844db14876",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:989",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_console",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__6352e2a667cf866395",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:990",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_crane_console",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8682dbf67d4f8286d3",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:991",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_rod",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__eb937099f0a3e75c8c",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:992",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_rod_mod",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8863e45747ea744e07",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:995",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_cooler",
         "count": 1
       }
     },
@@ -5474,6 +5690,285 @@
       }
     },
     {
+      "id": "ntm:bulk__79c6f9a4af09e51cf2",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:90",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_ueu",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c897f94c77fb65f9cb",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:91",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_meu",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5146dcebd3cc9d5d19",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:92",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_heu233",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__dcb6eeaf58ab877d6a",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:93",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_heu235",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4508f94ba0d207bd56",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:94",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_uzh",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__160a1d05c4fa1f6d20",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:95",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_thmeu",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__b14605aa768b614711",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:96",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_mox",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__77dcf82e4835dc3a46",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:97",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_lep",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d7a35d069a8c2f1f09",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:98",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_mep",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0e780a07923a99df35",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:99",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_hep",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ff50023b155bff257f",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:100",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_hep241",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a966bdc83c23a53d9f",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:101",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_lea",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__9aa8aefd0e743a8d4d",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:102",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_mea",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__87df78d8435d798306",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:103",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_hea241",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__beb54c4ff3bc609a38",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:104",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_hea242",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__624db4dd0778a37248",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:105",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_men",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__e395e95dc66d30cea6",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:106",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_hen",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3b4442e18c79cdac10",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:107",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_po210be",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8456be264442b62fd8",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:108",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_ra226be",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f1659bd31126209a2f",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:109",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_pu238be",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7f7dcdf13b520fe0aa",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:110",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_leaus",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8cf0da546fb7121d44",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:111",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_heaus",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ca071c239d94cbcaaf",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:112",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_balefire",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ffd4dba0117090ac58",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:113",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_les",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ea1c522a442644ab11",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:114",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_mes",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a6e8d670710352faa2",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:115",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_hes",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__b6f2f2aba99428aa40",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:116",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_balefire_gold",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d5221ae0240d9b55e3",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:117",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_flashlead",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c8bf9e787fcb2ed187",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:118",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_zfb_bismuth",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__67155001b409529a3b",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:119",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_zfb_pu241",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a6daa97e395c2109f2",
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:120",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:rbmk_fuel_zfb_am_mix",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__18e6453d9eddb8ed7e",
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:151",
       "type": "minecraft:crafting_shaped",
@@ -5978,6 +6473,15 @@
       }
     },
     {
+      "id": "ntm:bulk__3219967bb8a4466b6d",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:133",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rbmk_tool",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__0d4ac9f51b36798ee1",
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:193",
       "type": "minecraft:crafting_shaped",
@@ -6212,7 +6716,7 @@
       }
     }
   ],
-  "generated_count": 690,
+  "generated_count": 746,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -7597,13 +8101,13 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:592",
       "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
+      "reason": "unregistered/ambiguous source item inf_water",
       "expression": "new ItemStack(ModItems.inf_water, 1), new Object[] { \"222\", \"131\", \"222\", '1', Fluids.WATER.getDict(1_000), '2', AL.plate(), '3', DIAMOND.gem() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:593",
       "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
+      "reason": "unregistered/ambiguous source item inf_water_mk2",
       "expression": "new ItemStack(ModItems.inf_water_mk2, 1), new Object[] { \"BPB\", \"PTP\", \"BPB\", 'B', ModItems.inf_water, 'P', STEEL.pipe(), 'T', STEEL.shell() }"
     },
     {
@@ -8141,165 +8645,69 @@
       "expression": "new ItemStack(ModBlocks.fireworks, 1), new Object[] { \"PPP\", \"PPP\", \"WIW\", 'P', Items.paper, 'W', KEY_PLANKS, 'I', IRON.ingot() }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:752",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_lid",
-      "expression": "new ItemStack(ModItems.rbmk_lid, 4), new Object[] { \"PPP\", \"CCC\", \"PPP\", 'P', STEEL.plate(), 'C', ModBlocks.concrete_asbestos }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:753",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_lid_glass",
-      "expression": "new ItemStack(ModItems.rbmk_lid_glass, 4), new Object[] { \"LLL\", \"BBB\", \"P P\", 'P', STEEL.plate(), 'L', ModBlocks.glass_lead, 'B', ModBlocks.glass_boron }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:754",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_lid_glass",
-      "expression": "new ItemStack(ModItems.rbmk_lid_glass, 4), new Object[] { \"BBB\", \"LLL\", \"P P\", 'P', STEEL.plate(), 'L', ModBlocks.glass_lead, 'B', ModBlocks.glass_boron }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:756",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_moderator",
-      "expression": "new ItemStack(ModBlocks.rbmk_moderator, 1), new Object[] { \" G \", \"GRG\", \" G \", 'G', GRAPHITE.block(), 'R', ModBlocks.rbmk_blank }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:757",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_absorber",
-      "expression": "new ItemStack(ModBlocks.rbmk_absorber, 1), new Object[] { \"GGG\", \"GRG\", \"GGG\", 'G', B.ingot(), 'R', ModBlocks.rbmk_blank }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:758",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_reflector",
-      "expression": "new ItemStack(ModBlocks.rbmk_reflector, 1), new Object[] { \"GGG\", \"GRG\", \"GGG\", 'G', ModItems.neutron_reflector, 'R', ModBlocks.rbmk_blank }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:760",
-      "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
-      "expression": "new ItemStack(ModBlocks.rbmk_control, 1), new Object[] { \" B \", \"GRG\", \" B \", 'G', GRAPHITE.ingot(), 'B', ModItems.motor, 'R', ModBlocks.rbmk_absorber }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:761",
-      "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
-      "expression": "new ItemStack(ModBlocks.rbmk_control_mod, 1), new Object[] { \"BGB\", \"GRG\", \"BGB\", 'G', GRAPHITE.block(), 'R', ModBlocks.rbmk_control, 'B', ModItems.nugget_bismuth }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:762",
-      "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
-      "expression": "new ItemStack(ModBlocks.rbmk_control_auto, 1), new Object[] { \"C\", \"R\", \"D\", 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ADVANCED), 'R', ModBlocks.rbmk_control, 'D', ModItems.crt_display }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:764",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_control_reasim",
+      "reason": "conditional/loop source recipe not translated",
       "expression": "new ItemStack(ModBlocks.rbmk_control_reasim, 1), new Object[] { \" B \", \"GRG\", \" B \", 'G', GRAPHITE.ingot(), 'B', ModItems.motor, 'R', ModBlocks.rbmk_absorber }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:765",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_control_reasim_auto",
+      "reason": "conditional/loop source recipe not translated",
       "expression": "new ItemStack(ModBlocks.rbmk_control_reasim_auto, 1), new Object[] { \"C\", \"R\", \"D\", 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ADVANCED), 'R', ModBlocks.rbmk_control_reasim, 'D', ModItems.crt_display }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:767",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_rod_reasim",
-      "expression": "new ItemStack(ModBlocks.rbmk_rod_reasim, 1), new Object[] { \"ZCZ\", \"ZRZ\", \"ZCZ\", 'C', STEEL.shell(), 'R', ModBlocks.rbmk_blank, 'Z', ZR.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:768",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_rod_reasim_mod",
+      "reason": "unresolved ore dictionary ANY_RESISTANTALLOY.ingot()",
       "expression": "new ItemStack(ModBlocks.rbmk_rod_reasim_mod, 1), new Object[] { \"BGB\", \"GRG\", \"BGB\", 'G', GRAPHITE.block(), 'R', ModBlocks.rbmk_rod_reasim, 'B', ANY_RESISTANTALLOY.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:769",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_outgasser",
-      "expression": "new ItemStack(ModBlocks.rbmk_outgasser, 1), new Object[] { \"GHG\", \"GRG\", \"GTG\", 'G', ModBlocks.steel_grate, 'H', Blocks.hopper, 'T', ModItems.tank_steel, 'R', ModBlocks.rbmk_blank }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:770",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_storage",
+      "reason": "unregistered/ambiguous source item crate_steel",
       "expression": "new ItemStack(ModBlocks.rbmk_storage, 1), new Object[] { \"C\", \"R\", \"C\", 'C', ModBlocks.crate_steel, 'R', ModBlocks.rbmk_blank }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:771",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_loader",
-      "expression": "new ItemStack(ModBlocks.rbmk_loader, 1), new Object[] { \"SCS\", \"CBC\", \"SCS\", 'S', STEEL.plate(), 'C', CU.ingot(), 'B', ModItems.tank_steel }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:772",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_steam_inlet",
-      "expression": "new ItemStack(ModBlocks.rbmk_steam_inlet, 1), new Object[] { \"SCS\", \"CBC\", \"SCS\", 'S', STEEL.ingot(), 'C', IRON.plate(), 'B', ModItems.tank_steel }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:773",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_steam_outlet",
-      "expression": "new ItemStack(ModBlocks.rbmk_steam_outlet, 1), new Object[] { \"SCS\", \"CBC\", \"SCS\", 'S', STEEL.ingot(), 'C', CU.plate(), 'B', ModItems.tank_steel }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:775",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_display_blank",
-      "expression": "new ItemStack(ModBlocks.rbmk_display_blank, 8), new Object[] { \"B\", \"D\", 'B', B.ingot(), 'D', ModBlocks.concrete_asbestos }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:776",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_display",
-      "expression": "new ItemStack(ModBlocks.rbmk_display, 1), new Object[] { \"C\", \"B\", 'C', ModItems.crt_display, 'B', ModBlocks.rbmk_display_blank }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:777",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_key_pad",
+      "reason": "unregistered/ambiguous source item radio_torch_sender",
       "expression": "new ItemStack(ModBlocks.rbmk_key_pad, 1), new Object[] { \"R\", \"C\", \"B\", 'R', ModBlocks.radio_torch_sender, 'B', ModBlocks.rbmk_display_blank, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.VACUUM_TUBE) }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:778",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_gauge",
+      "reason": "unregistered/ambiguous source item radio_torch_receiver",
       "expression": "new ItemStack(ModBlocks.rbmk_gauge, 1), new Object[] { \"R\", \"C\", \"B\", 'R', ModBlocks.radio_torch_receiver, 'B', ModBlocks.rbmk_display_blank, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.VACUUM_TUBE) }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:779",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_numitron",
+      "reason": "unregistered/ambiguous source item radio_torch_receiver",
       "expression": "new ItemStack(ModBlocks.rbmk_numitron, 1), new Object[] { \" R \", \"CCC\", \" B \", 'R', ModBlocks.radio_torch_receiver, 'B', ModBlocks.rbmk_display_blank, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.NUMITRON) }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:780",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_graph",
+      "reason": "unregistered/ambiguous source item radio_torch_receiver",
       "expression": "new ItemStack(ModBlocks.rbmk_graph, 1), new Object[] { \"R\", \"C\", \"B\", 'R', ModBlocks.radio_torch_receiver, 'B', ModBlocks.rbmk_display_blank, 'C', ModItems.crt_display }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:781",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_lever",
+      "reason": "unregistered/ambiguous source item radio_torch_sender",
       "expression": "new ItemStack(ModBlocks.rbmk_lever, 1), new Object[] { \"R\", \"C\", \"B\", 'R', ModBlocks.radio_torch_sender, 'B', ModBlocks.rbmk_display_blank, 'C', CU.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:782",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_indicator",
+      "reason": "unregistered/ambiguous source item radio_torch_receiver",
       "expression": "new ItemStack(ModBlocks.rbmk_indicator, 1), new Object[] { \"R\", \"C\", \"B\", 'R', ModBlocks.radio_torch_receiver, 'B', ModBlocks.rbmk_display_blank, 'C', ModItems.coil_tungsten }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:783",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_terminal",
+      "reason": "unregistered/ambiguous source item radio_torch_sender",
       "expression": "new ItemStack(ModBlocks.rbmk_terminal, 1), new Object[] { \"R \", \"CD\", \"B \", 'R', ModBlocks.radio_torch_sender, 'B', ModBlocks.rbmk_display_blank, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ANALOG), 'D', ModItems.crt_display }"
     },
     {
@@ -8313,24 +8721,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item rtty_designator",
       "expression": "new ItemStack(ModItems.rtty_designator, 1), new Object[] {\"R\", \"C\", \"T\", 'R', ModBlocks.radio_torch_reader, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ANALOG), 'T', ModItems.rangefinder}"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:788",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_blank",
-      "expression": "new ItemStack(ModBlocks.deco_rbmk, 8), new Object[] { \"R\", 'R', ModBlocks.rbmk_blank }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:790",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_blank",
-      "expression": "new ItemStack(ModBlocks.rbmk_blank, 1), new Object[] { \"RRR\", \"R R\", \"RRR\", 'R', ModBlocks.deco_rbmk }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:791",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_blank",
-      "expression": "new ItemStack(ModBlocks.rbmk_blank, 1), new Object[] { \"RRR\", \"R R\", \"RRR\", 'R', ModBlocks.deco_rbmk_smooth }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:793",
@@ -9061,50 +9451,20 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:988",
       "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
+      "reason": "unregistered/ambiguous source item reactor_sensor",
       "expression": "new ItemStack(ModItems.reactor_sensor, 1), new Object[] { \"WPW\", \"CMC\", \"PPP\", 'W', W.wireFine(), 'P', PB.plate(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BASIC), 'M', ModItems.magnetron }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:989",
-      "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
-      "expression": "new ItemStack(ModBlocks.rbmk_console, 1), new Object[] { \"BBB\", \"DGD\", \"DCD\", 'B', B.ingot(), 'D', ModBlocks.deco_rbmk, 'G', KEY_ANYPANE, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ANALOG) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:990",
-      "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
-      "expression": "new ItemStack(ModBlocks.rbmk_crane_console, 1), new Object[] { \"BCD\", \"DDD\", 'B', B.ingot(), 'D', ModBlocks.deco_rbmk, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ANALOG) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:991",
-      "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
-      "expression": "new ItemStack(ModBlocks.rbmk_rod, 1), new Object[] { \"C\", \"R\", \"C\", 'C', STEEL.shell(), 'R', ModBlocks.rbmk_blank }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:992",
-      "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
-      "expression": "new ItemStack(ModBlocks.rbmk_rod_mod, 1), new Object[] { \"BGB\", \"GRG\", \"BGB\", 'G', GRAPHITE.block(), 'R', ModBlocks.rbmk_rod, 'B', ModItems.nugget_bismuth }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:993",
       "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
+      "reason": "unresolved ore dictionary CU.pipe()",
       "expression": "new ItemStack(ModBlocks.rbmk_boiler, 1), new Object[] { \"CPC\", \"CRC\", \"CPC\", 'C', CU.pipe(), 'P', CU.shell(), 'R', ModBlocks.rbmk_blank }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:994",
       "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
+      "reason": "unresolved ore dictionary CU.pipe()",
       "expression": "new ItemStack(ModBlocks.rbmk_heater, 1), new Object[] { \"CIC\", \"PRP\", \"CIC\", 'C', CU.pipe(), 'P', STEEL.shell(), 'R', ModBlocks.rbmk_blank, 'I', ANY_PLASTIC.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:995",
-      "callee": "addRecipeAuto",
-      "reason": "conditional/loop source recipe not translated",
-      "expression": "new ItemStack(ModBlocks.rbmk_cooler, 1), new Object[] { \"IGI\", \"GCG\", \"IGI\", 'C', ModBlocks.rbmk_blank, 'I', ModItems.plate_polymer, 'G', ModBlocks.steel_grate }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:1006",
@@ -11383,7 +11743,7 @@
     {
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:121",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item rbmk_fuel_drx",
+      "reason": "unregistered/ambiguous source item particle_digamma",
       "expression": "new ItemStack(ModItems.rbmk_fuel_drx, 1), new Object[] { ModItems.rbmk_fuel_balefire, ModItems.particle_digamma }"
     },
     {
@@ -11639,10 +11999,22 @@
       "expression": "new ItemStack(billet, 4), new Object[] { new ItemStack(ModItems.rod_quad, 1, type.ordinal()) }"
     },
     {
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:242",
+      "callee": "addRBMKRod",
+      "reason": "unsupported RBMK helper call",
+      "expression": "DictFrame mat, Item out"
+    },
+    {
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:243",
       "callee": "addShapelessAuto",
       "reason": "unsupported expression out",
       "expression": "new ItemStack(out), new Object[] { ModItems.rbmk_fuel_empty, mat.billet(), mat.billet(), mat.billet(), mat.billet(), mat.billet(), mat.billet(), mat.billet(), mat.billet() }"
+    },
+    {
+      "source": "src/main/java/com/hbm/crafting/RodRecipes.java:245",
+      "callee": "addRBMKRod",
+      "reason": "unsupported RBMK helper call",
+      "expression": "Item billet, Item out"
     },
     {
       "source": "src/main/java/com/hbm/crafting/RodRecipes.java:246",
@@ -12105,12 +12477,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item mirror_tool",
       "expression": "new ItemStack(ModItems.mirror_tool), new Object[] { \" A \", \" IA\", \"I  \", 'A', AL.ingot(), 'I', IRON.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:133",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item rbmk_tool",
-      "expression": "new ItemStack(ModItems.rbmk_tool), new Object[] { \" A \", \" IA\", \"I  \", 'A', PB.ingot(), 'I', IRON.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:134",

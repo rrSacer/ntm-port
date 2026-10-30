@@ -15,7 +15,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--package',type=Path,required=True)
     parser.add_argument('--horizon-client',type=Path,required=True)
-    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling','energy-radioisotopes','energy-storage-network','reactors-r1','fluid-identifier','migration-c2'],default='bedrock')
+    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling','energy-radioisotopes','energy-storage-network','reactors-r1','reactors-r2','fluid-identifier','migration-c2'],default='bedrock')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
     evidence=root/'content-gen-evidence'/({'bedrock':'bedrock-stages34'}.get(args.profile,args.profile));evidence.mkdir(parents=True,exist_ok=True)
@@ -60,6 +60,7 @@ def main():
             cmd('fill -9 100 -16 16 100 4 minecraft:stone')
             if args.profile=='migration-c2':cmd('fill -9 100 -16 58 100 4 minecraft:stone')
             if args.profile in ('energy-storage-network','reactors-r1'):cmd('fill -9 100 -16 16 100 16 minecraft:stone')
+            if args.profile=='reactors-r2':cmd('fill -9 100 -16 16 100 36 minecraft:stone')
             machines=['machine_hephaestus','machine_flare'] if args.profile=='petroleum-e' else ['machine_pyrooven','machine_electrolyser','machine_arc_furnace_large']
             if args.profile=='energy-heaters':machines=['heater_oven','heater_oilburner','heater_electric','heater_heatex']
             if args.profile=='energy-steam':machines=['machine_steam_engine','machine_industrial_turbine','machine_chungus','machine_condenser','machine_condenser_powered']
@@ -71,13 +72,17 @@ def main():
             if args.profile=='energy-storage-network':
                 from energy_storage_catalog import CONNECTORS, CONTROLS
                 machines=['machine_battery_socket','machine_battery_redd',*CONNECTORS,*CONTROLS]
+            if args.profile=='reactors-r2':
+                from rbmk_catalog import build
+                reactor_rows=build(root.parent/'ntm-src')
+                machines=[r['id'] for r in reactor_rows if r['category']=='machine']
             if args.profile=='reactors-r1':
                 from reactor_catalog import build
                 reactor_rows=build(root.parent/'ntm-src')
                 machines=[r['id'] for r in reactor_rows if r['category']=='machine']
             for i,name in enumerate(machines):
-                x=-4+(i%5 if args.profile in ('energy-storage-network','reactors-r1') else i)*(8 if args.profile=='migration-c2' else 4)
-                z=(i//5)*5 if args.profile in ('energy-storage-network','reactors-r1') else 0
+                x=-4+(i%5 if args.profile in ('energy-storage-network','reactors-r1','reactors-r2') else i)*(8 if args.profile=='migration-c2' else 4)
+                z=(i//5)*5 if args.profile in ('energy-storage-network','reactors-r1','reactors-r2') else 0
                 for y,level in [(101,0),(103,5)]:
                     state=f'ntm:{name}[facing=north,honey_level={level}]'
                     cmd(f'setblock {x} {y} {z} {state}')
@@ -108,6 +113,7 @@ def main():
             decor=['plant_flower__'+n for n in ['foxglove','tobacco','nightshade','weed','cd0','cd1']] if args.profile=='petroleum-e' else ['block_graphite','rebar','concrete_rebar']
             if args.profile.startswith('energy-'):decor=[]
             if args.profile=='reactors-r1':decor=['pile_brick']
+            if args.profile=='reactors-r2':decor=['pribris','pribris_burning','pribris_radiating','pribris_digamma']
             if args.profile=='fluid-identifier':decor=[]
             if args.profile=='migration-c2':decor=[]
             if args.profile=='energy-storage-network':
@@ -149,7 +155,7 @@ def main():
             if args.profile=='energy-storage-network':
                 from energy_storage_catalog import packs
                 samples=machines+decor+[p['id'].split(':',1)[1] for p in packs(root.parent/'ntm-src')]
-            if args.profile=='reactors-r1':samples=[r['id'] for r in reactor_rows]
+            if args.profile in ('reactors-r1','reactors-r2'):samples=[r['id'] for r in reactor_rows]
             cmd('clear @s')
             for start in range(0,len(samples),30):
                 if start:cmd('clear @s')

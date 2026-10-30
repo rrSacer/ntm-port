@@ -45,9 +45,16 @@ def registration(source, variable, kind):
  # Registrations may use the local register(Block) helper or the Forge API.
  call = rf'(?:GameRegistry\.register{kind.title()}\(\s*{variable}\s*,|\bregister\(\s*{variable}\s*\))'
  if not re.search(call,source): raise ValueError(f'No {kind} registration for {variable}')
- assignment = re.search(rf'^\s*{variable}\s*=\s*(?:\([A-Za-z0-9_$.]+\)\s*)?new\s+.*?;', source, re.M|re.S)
+ assignment = re.search(rf'^\s*{variable}\s*=\s*(?:\([A-Za-z0-9_$.]+\)\s*)?new\b', source, re.M)
  if not assignment: raise ValueError(f'No assignment for {variable}')
- text=assignment[0]
+ # A builder chain may carry `;` inside a trailing `//` comment: end the
+ # statement at the first `;` that survives comment stripping.
+ lines=[]
+ for line in source[assignment.start():].split('\n'):
+  code=re.sub(r'\s//.*$','',line)
+  lines.append(code)
+  if code.rstrip().endswith(';'):break
+ text='\n'.join(lines)
  name=re.search(r'\.(?:setBlockName|setUnlocalizedName)\("([^"]+)"\)',text)
  if not name: raise ValueError(f'No unlocalized name for {variable}')
  tex=re.search(r'\.(?:setBlockTextureName|setTextureName)\(RefStrings.MODID\s*\+\s*":([^"]+)"\)',text)

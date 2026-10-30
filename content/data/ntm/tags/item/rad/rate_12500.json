@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:billet_pu241"
+    "ntm:billet_pu241",
+    "ntm:rbmk_pellet_hep241"
   ]
 }

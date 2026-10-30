@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:billet_pu_mix"
+    "ntm:billet_pu_mix",
+    "ntm:rbmk_pellet_mep"
   ]
 }

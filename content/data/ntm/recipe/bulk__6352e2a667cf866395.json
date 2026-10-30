@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_crane_console",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BCD",
+    "DDD"
+  ],
+  "key": {
+    "B": "#ntm:bulk/ingotboron",
+    "D": "ntm:deco_rbmk",
+    "C": "ntm:circuit__analog"
+  }
+}

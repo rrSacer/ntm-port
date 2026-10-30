@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:billet_uzh"
+    "ntm:billet_uzh",
+    "ntm:rbmk_pellet_uzh"
   ]
 }

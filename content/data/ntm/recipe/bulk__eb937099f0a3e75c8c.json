@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_rod_mod",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BGB",
+    "GRG",
+    "BGB"
+  ],
+  "key": {
+    "G": "#ntm:bulk/blockgraphite",
+    "R": "ntm:rbmk_rod",
+    "B": "ntm:nugget_bismuth"
+  }
+}

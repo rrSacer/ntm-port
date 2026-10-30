@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "ntm:rbmk_fuel_hes",
+    "ntm:rbmk_fuel_les",
+    "ntm:rbmk_fuel_mes"
+  ]
+}

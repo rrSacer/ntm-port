@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:rbmk_fuel_zfb_bismuth",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:rbmk_fuel_empty",
+    "ntm:billet_zfb_bismuth",
+    "ntm:billet_zfb_bismuth",
+    "ntm:billet_zfb_bismuth",
+    "ntm:billet_zfb_bismuth",
+    "ntm:billet_zfb_bismuth",
+    "ntm:billet_zfb_bismuth",
+    "ntm:billet_zfb_bismuth",
+    "ntm:billet_zfb_bismuth"
+  ]
+}
