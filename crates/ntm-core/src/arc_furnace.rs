@@ -66,6 +66,12 @@ fn fluid() -> &'static Table {
     T.get_or_init(|| serde_json::from_str(include_str!("../data/machines/arc_furnace_fluid.json")).expect("arc_furnace_fluid.json"))
 }
 
+/// Both modes' tables read now ([`crate::warm_tables`]).
+pub fn warm() {
+    solid();
+    fluid();
+}
+
 /// What an item becomes in solid mode: (item, count).
 pub fn solid_output(item: &str) -> Option<(String, u32)> {
     solid().recipes.iter().find(|r| r.items_in.first().is_some_and(|i| i.ids.iter().any(|x| x == item))).and_then(|r| r.items_out.first().map(|o| (o.0.clone(), o.1)))

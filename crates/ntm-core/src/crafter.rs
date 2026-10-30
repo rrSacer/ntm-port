@@ -90,6 +90,18 @@ fn table(json: &str) -> Vec<Recipe> {
 }
 
 impl Station {
+    pub const ALL: [Station; 9] = [
+        Station::Assembly,
+        Station::ChemicalPlant,
+        Station::Centrifuge,
+        Station::Purex,
+        Station::Crystallizer,
+        Station::PyroOven,
+        Station::Electrolyser,
+        Station::Liquefactor,
+        Station::Solidifier,
+    ];
+
     pub fn of(block: &str) -> Option<Self> {
         match block {
             "ntm:machine_assembly_machine" => Some(Station::Assembly),

@@ -115,6 +115,8 @@ struct Logic {
 
 impl ServerMod for Logic {
     fn init() -> Result<(Self, Registration), String> {
+        // The tables now, on init's fuel, not on a tick's.
+        ntm_core::warm_tables();
         let engine = Server::new(&mut Host, 0);
         Ok((
             Self { engine },

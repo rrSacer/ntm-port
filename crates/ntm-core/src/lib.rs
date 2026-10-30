@@ -62,3 +62,25 @@ pub fn neighbours(p: Pos) -> [Pos; 6] {
         [x, y, z - 1],
     ]
 }
+
+/// Reads every recipe table now. They are read lazily, on first use: in
+/// the game the first tick after a world loads would read most of them at
+/// once and run out of the tick's fuel (50M), so the server mod reads them
+/// in its init, which has 2 000M.
+pub fn warm_tables() {
+    for s in crafter::Station::ALL {
+        s.recipes();
+    }
+    arc_furnace::warm();
+    electrolyser::metal_recipes();
+    foundry::Tables::ntm();
+    shredder::Recipes::ntm();
+    anvil::Tables::ntm();
+    blastfurnace::Tables::ntm();
+    recipes::furnace();
+    recipes::press();
+    radiation::hazards();
+    radiation::bits();
+    fluid::types();
+    bedrock::deposit(0, 0);
+}
