@@ -1,0 +1,29 @@
+{
+  "obj": "ntm:models/obj/pile_loader.obj",
+  "texture": "ntm:textures/models/pile/pile_loader.png",
+  "rotation": 180,
+  "radius": 1.0,
+  "bones": {
+    "Lever": {
+      "pivot": [
+        -0.1875,
+        0.5,
+        0
+      ]
+    }
+  },
+  "show": {
+    "Rod": {
+      "value": 1,
+      "min": 1
+    }
+  },
+  "pose": [
+    {
+      "animation": "animation.pile_loader.push",
+      "value": 0,
+      "max_value": 100
+    }
+  ],
+  "animations": "ntm:animations/pile_device__loader.animation.json"
+}

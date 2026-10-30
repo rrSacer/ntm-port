@@ -1,0 +1,39 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.pile_loader.push": {
+      "loop": false,
+      "animation_length": 1.0,
+      "bones": {
+        "Lever": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.0": [
+              0,
+              0,
+              90
+            ]
+          }
+        },
+        "Slider": {
+          "position": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.0": [
+              -8,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

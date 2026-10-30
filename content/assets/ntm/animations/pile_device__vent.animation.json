@@ -1,0 +1,25 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.pile_vent.fan": {
+      "loop": true,
+      "animation_length": 0.5,
+      "bones": {
+        "Fan": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "0.50": [
+              0,
+              360,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

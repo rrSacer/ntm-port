@@ -1,0 +1,25 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.pile_control.rod": {
+      "loop": false,
+      "animation_length": 1.0,
+      "bones": {
+        "Rod": {
+          "position": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.0": [
+              0,
+              12,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

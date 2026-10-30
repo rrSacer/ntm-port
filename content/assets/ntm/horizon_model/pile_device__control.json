@@ -1,0 +1,14 @@
+{
+  "obj": "ntm:models/obj/pile_control.obj",
+  "texture": "ntm:textures/models/pile/pile_control.png",
+  "rotation": 180,
+  "radius": 1.0,
+  "pose": [
+    {
+      "animation": "animation.pile_control.rod",
+      "value": 0,
+      "max_value": 100
+    }
+  ],
+  "animations": "ntm:animations/pile_device__control.animation.json"
+}

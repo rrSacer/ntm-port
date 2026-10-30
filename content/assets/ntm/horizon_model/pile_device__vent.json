@@ -1,0 +1,27 @@
+{
+  "obj": "ntm:models/obj/pile_vent.obj",
+  "texture": "ntm:textures/models/pile/pile_vent.png",
+  "rotation": 180,
+  "radius": 1.0,
+  "bones": {
+    "Fan": {
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.pile_vent.fan",
+      "values": [
+        {
+          "value": 0,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "animations": "ntm:animations/pile_device__vent.animation.json"
+}
