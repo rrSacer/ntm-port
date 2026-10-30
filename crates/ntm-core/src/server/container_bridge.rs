@@ -180,6 +180,24 @@ pub const SLOTTED: &[(&str, Layout)] = &[
             outputs: 7..13,
         },
     ),
+    // ContainerPyroOven: 1 the input, 2 the output (0 battery, 3 the
+    // identifier, 4–5 upgrades).
+    (
+        "ntm:machine_pyrooven",
+        Layout::Crafter {
+            inputs: 1..2,
+            outputs: 2..3,
+        },
+    ),
+    // ContainerElectrolyser's fluid line: no item in, its byproducts in
+    // 11–13 (the metal line, 14 and 15–20, is stage 4).
+    (
+        "ntm:machine_electrolyser",
+        Layout::Crafter {
+            inputs: 0..0,
+            outputs: 11..14,
+        },
+    ),
     // ContainerCrystallizer: 0 the input, 2 the output (1 battery, 3–4 fluid
     // containers, 5–6 upgrades, 7 the identifier: no logic in the port).
     (
