@@ -354,6 +354,8 @@
     "ntm:machine_arc_furnace_large",
     "ntm:block_graphite",
     "ntm:rebar",
+    "ntm:machine_liquefactor",
+    "ntm:machine_solidifier",
     "ntm:machine_crucible",
     "ntm:heater_firebox",
     "ntm:foundry_channel",

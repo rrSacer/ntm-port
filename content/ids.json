@@ -39,6 +39,8 @@
     "ntm:machine_pyrooven",
     "ntm:machine_electrolyser",
     "ntm:machine_arc_furnace_large",
+    "ntm:machine_liquefactor",
+    "ntm:machine_solidifier",
     "ntm:machine_crucible",
     "ntm:heater_firebox",
     "ntm:foundry_channel",
@@ -84447,6 +84449,86 @@
         }
       ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:machine_liquefactor",
+      "source_variable": "machine_liquefactor",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Industrial Liquefaction Machine",
+        "pt_br": "Máquina Industrial de Liquefação"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel_machine.png",
+      "textures": {
+        "side": "blocks/block_steel_machine",
+        "top": "blocks/block_steel_machine",
+        "front": "blocks/block_steel_machine"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_liquefactor",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:342"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:machine_solidifier",
+      "source_variable": "machine_solidifier",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Industrial Solidification Machine",
+        "pt_br": "Máquina Industrial de Solidificação"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel_machine.png",
+      "textures": {
+        "side": "blocks/block_steel_machine",
+        "top": "blocks/block_steel_machine",
+        "front": "blocks/block_steel_machine"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock",
+      "source_registry": "hbm:tile.machine_solidifier",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [
+        {
+          "machine": "assembly_machine",
+          "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:345"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
     },
     {
       "id": "ntm:machine_crucible",

@@ -48,6 +48,8 @@
     "ntm:machine_fluidtank",
     "ntm:machine_press",
     "ntm:machine_epress",
+    "ntm:machine_liquefactor",
+    "ntm:machine_solidifier",
     "ntm:machine_electrolyser",
     "ntm:anvil_iron",
     "ntm:anvil_lead",

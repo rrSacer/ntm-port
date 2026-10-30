@@ -2590,6 +2590,8 @@
   "item.ntm.meteorite_sword_etched": "Espada de Meteorito (Gravada)",
   "block.ntm.block_graphite": "Bloco de Grafite",
   "block.ntm.rebar": "Vergalhão",
+  "block.ntm.machine_liquefactor": "Máquina Industrial de Liquefação",
+  "block.ntm.machine_solidifier": "Máquina Industrial de Solidificação",
   "block.ntm.machine_crucible": "Crisol",
   "block.ntm.heater_firebox": "Fornalha",
   "block.ntm.foundry_channel": "Canal de Fundição",

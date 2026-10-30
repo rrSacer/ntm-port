@@ -2590,6 +2590,8 @@
   "item.ntm.meteorite_sword_etched": "Meteorite Sword (Etched)",
   "block.ntm.block_graphite": "Block of Graphite",
   "block.ntm.rebar": "Rebar",
+  "block.ntm.machine_liquefactor": "Industrial Liquefaction Machine",
+  "block.ntm.machine_solidifier": "Industrial Solidification Machine",
   "block.ntm.machine_crucible": "Crucible",
   "block.ntm.heater_firebox": "Firebox",
   "block.ntm.foundry_channel": "Foundry Channel",

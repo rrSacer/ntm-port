@@ -6726,7 +6726,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_liquefactor"
     },
     {
       "id": "machine_solidifier",
@@ -6744,7 +6745,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_solidifier"
     },
     {
       "id": "machine_intake",
