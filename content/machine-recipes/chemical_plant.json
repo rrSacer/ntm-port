@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 52,
+    "emitted": 53,
     "scanned_source_calls": 77,
-    "skipped_source_calls": 25,
+    "skipped_source_calls": 24,
     "expanded_fluid_recipes": 0,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -487,6 +487,49 @@
       ],
       "label": "Lubrificante de Motor · 1000 mB",
       "label_en": "Engine Lubricant · 1000 mB"
+    },
+    {
+      "name": "chem.tel",
+      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:123",
+      "duration": 40,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:oil_tar__coal",
+            "ntm:oil_tar__crack",
+            "ntm:oil_tar__crude",
+            "ntm:oil_tar__wood"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:powder_lead"
+          ],
+          "count": 1
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:fuel_additive__antiknock",
+          1
+        ]
+      ],
+      "inputFluids": [
+        [
+          "petroleum",
+          100
+        ],
+        [
+          "steam",
+          1000
+        ]
+      ],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Agente Antidetonante de Chumbo Tetraetila",
+      "label_en": "Tetraethyllead Antiknock Agent"
     },
     {
       "name": "chem.deicer",
@@ -1686,12 +1729,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:118",
       "reason": "unregistered/ambiguous source item ore_oil_sand",
       "expression": "new GenericRecipe(\"chem.tarsand\").setupNamed(200, 100).setIcon(ModBlocks.ore_oil_sand)\n\t\t\t\t.inputItems(new ComparableStack(ModBlocks.ore_oil_sand, 16), new OreDictStack(ANY_TAR.any(), 1))\n\t\t\t\t.outputItems(new ItemStack(Blocks.sand, 16))\n\t\t\t\t.outputFluids(new FluidStack(Fluids.BITUMEN, 1_000))"
-    },
-    {
-      "name": "chem.tel",
-      "source": "src/main/java/com/hbm/inventory/recipes/ChemicalPlantRecipes.java:123",
-      "reason": "unresolved ore dictionary ANY_TAR.any()",
-      "expression": "new GenericRecipe(\"chem.tel\").setup(40, 100)\n\t\t\t\t.inputItems(new OreDictStack(ANY_TAR.any()), new OreDictStack(PB.dust()))\n\t\t\t\t.inputFluids(new FluidStack(Fluids.PETROLEUM, 100), new FluidStack(Fluids.STEAM, 1000))\n\t\t\t\t.outputItems(DictFrame.fromOne(ModItems.fuel_additive, EnumFuelAdditive.ANTIKNOCK))"
     },
     {
       "name": "chem.concreteasbestos",

@@ -102,6 +102,12 @@ class MachineResolver(Resolver):
             if not key: continue
             try: self.ore[key].add(self.item(parts[1], True)[0])
             except Unsupported: pass
+        # Groups with literal KEY_* members are registered after these ores in
+        # Java. Rebuild those aliases now, including the four ANY_TAR variants.
+        for group in re.finditer(r'\b(\w+)\s*=\s*new DictGroup\("([^"]+)",([^;]+)\);', self.odtext):
+            for member in split(group[3]):
+                if member in self.constants:
+                    self.ore['any' + group[2]].update(self.ore.get(self.constants[member], []))
         for key, value in {'oreCoal': 'coal_ore', 'oreRedstone': 'redstone_ore', 'oreLapis': 'lapis_ore', 'oreNetherQuartz': 'nether_quartz_ore'}.items():
             self.ore[key].add('minecraft:' + value)
 
@@ -304,6 +310,8 @@ def export(source, output, rows):
     import pyrooven_recipes, electrolyser_recipes, arc_furnace_recipes
     for module, name in [(pyrooven_recipes, 'pyrooven'), (electrolyser_recipes, 'electrolyser'), (arc_furnace_recipes, 'arc_furnace')]:
         counts[name] = module.export(source, output, rows)['coverage']
+    import petroleum_recipes
+    counts.update({name: data['coverage'] for name,data in petroleum_recipes.export(source,output,rows).items()})
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 

@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 416,
+    "emitted": 418,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 215,
+    "skipped_source_calls": 213,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1925,6 +1925,108 @@
       "pools": [],
       "label": "Forno de Pirólise",
       "label_en": "Pyrolysis Oven"
+    },
+    {
+      "name": "ass.liquefactor",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:342",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:plate_copper"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:oil_tar__coal",
+            "ntm:oil_tar__crack",
+            "ntm:oil_tar__crude",
+            "ntm:oil_tar__wood"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:circuit__capacitor"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:coil_tungsten"
+          ],
+          "count": 8
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_liquefactor",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Máquina Industrial de Liquefação",
+      "label_en": "Industrial Liquefaction Machine"
+    },
+    {
+      "name": "ass.solidifier",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:345",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:shell__steel"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:plate_aluminium"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:ingot_bakelite",
+            "ntm:ingot_polymer"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:circuit__capacitor"
+          ],
+          "count": 12
+        },
+        {
+          "ids": [
+            "ntm:coil_copper"
+          ],
+          "count": 4
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_solidifier",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Máquina Industrial de Solidificação",
+      "label_en": "Industrial Solidification Machine"
     },
     {
       "name": "ass.epress",
@@ -14226,18 +14328,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:334",
       "reason": "unregistered/ambiguous source item machine_hydrotreater",
       "expression": "new GenericRecipe(\"ass.hydrotreater\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_hydrotreater, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateWelded(), 8), new OreDictStack(CU.plateCast(), 4), new OreDictStack(NB.ingot(), 8), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(STEEL.shell(), 2), new OreDictStack(STEEL.pipe(), 8), new ComparableStack(ModItems.motor_desh, 2), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.BISMOID))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.BRONZE_TUBES), new OreDictStack(NB.ingot(), 8), new OreDictStack(ANY_RESISTANTALLOY.ingot(), 4), new OreDictStack(DURA.pipe(), 16), new ComparableStack(ModItems.motor_bismuth, 8), new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID), new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.COMPUTER))\n\t\t\t\t.setPools528(GenericRecipes.POOL_PREFIX_528 + \"hardplastic\")"
-    },
-    {
-      "name": "ass.liquefactor",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:342",
-      "reason": "unresolved ore dictionary ANY_TAR.any()",
-      "expression": "new GenericRecipe(\"ass.liquefactor\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_liquefactor, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.shell(), 4), new OreDictStack(CU.plate(), 12), new OreDictStack(ANY_TAR.any(), 4), new ComparableStack(ModItems.circuit, 12, EnumCircuitType.CAPACITOR), new ComparableStack(ModItems.coil_tungsten, 8))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.HEAVY_FRAME), new OreDictStack(ANY_TAR.any(), 16), new ComparableStack(ModItems.circuit, 16, EnumCircuitType.CAPACITOR))"
-    },
-    {
-      "name": "ass.solidifier",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:345",
-      "reason": "unregistered/ambiguous source item machine_solidifier",
-      "expression": "new GenericRecipe(\"ass.solidifier\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_solidifier, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.shell(), 4), new OreDictStack(AL.plate(), 12), new OreDictStack(ANY_PLASTIC.ingot(), 4), new ComparableStack(ModItems.circuit, 12, EnumCircuitType.CAPACITOR), new ComparableStack(ModItems.coil_copper, 4))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.HEAVY_FRAME), new OreDictStack(ANY_PLASTIC.ingot(), 16), new ComparableStack(ModItems.circuit, 16, EnumCircuitType.CAPACITOR))"
     },
     {
       "name": "ass.compressor",
