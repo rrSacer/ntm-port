@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "ntm:billet_po210be",
+    "ntm:pellet_rtg_polonium",
     "ntm:rod_zirnox_thorium_fuel_depleted"
   ]
 }

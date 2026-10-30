@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:billet_ra226be"
+    "ntm:billet_ra226be",
+    "ntm:pellet_rtg_radium"
   ]
 }

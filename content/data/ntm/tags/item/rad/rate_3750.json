@@ -3,6 +3,7 @@
   "values": [
     "ntm:billet_plutonium",
     "ntm:billet_pu240",
-    "ntm:billet_ra226"
+    "ntm:billet_ra226",
+    "ntm:pellet_rtg_depleted__neptunium"
   ]
 }

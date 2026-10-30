@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:pellet_rtg_radium",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:billet_ra226",
+    "ntm:billet_ra226",
+    "ntm:billet_ra226",
+    "#ntm:bulk/plateiron"
+  ]
+}

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:block_polonium"
+    "ntm:block_polonium",
+    "ntm:pellet_rtg_gold"
   ]
 }

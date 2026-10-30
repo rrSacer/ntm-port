@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:pellet_rtg_gold",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:billet_au198",
+    "ntm:billet_au198",
+    "ntm:billet_au198",
+    "#ntm:bulk/plateiron"
+  ]
+}

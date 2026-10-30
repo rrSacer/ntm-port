@@ -3251,6 +3251,96 @@
       }
     },
     {
+      "id": "ntm:bulk__c5a1251e9bfbbcd278",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:205",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:pellet_rtg",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f6c18eca3288c77523",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:206",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:pellet_rtg_radium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__38a60e3d61fd5dd707",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:207",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:pellet_rtg_weak",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__89954680c75f1fd4a2",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:208",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:pellet_rtg_strontium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1d34b5c3173ac4b702",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:209",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:pellet_rtg_cobalt",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__082fdc43842b806c26",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:210",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:pellet_rtg_actinium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3bafd29883c9213e67",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:211",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:pellet_rtg_polonium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1cba6b0f54078cbf6f",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:212",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:pellet_rtg_lead",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c89cd845795d6981db",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:213",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:pellet_rtg_gold",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0e7e6f503e01f2d425",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:214",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:pellet_rtg_americium",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__2deb5ea9fad1f0d8c5",
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:227",
       "type": "minecraft:crafting_shaped",
@@ -5888,7 +5978,7 @@
       }
     }
   ],
-  "generated_count": 654,
+  "generated_count": 664,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -10643,93 +10733,33 @@
       "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.billet_uranium, 2), new Object[] { ModItems.billet_u238, \"tinyU238\", \"tinyU238\", \"tinyU238\", \"tinyU238\", \"tinyU238\", \"tinyU235\" })"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:205",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pellet_rtg",
-      "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg), new Object[] { ModItems.billet_pu238, ModItems.billet_pu238, ModItems.billet_pu238, IRON.plate() })"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:206",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pellet_rtg_radium",
-      "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_radium), new Object[] { ModItems.billet_ra226, ModItems.billet_ra226, ModItems.billet_ra226, IRON.plate() })"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:207",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pellet_rtg_weak",
-      "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_weak), new Object[] { ModItems.billet_u238, ModItems.billet_u238, ModItems.billet_pu238, IRON.plate() })"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:208",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pellet_rtg_strontium",
-      "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_strontium), new Object[] { ModItems.billet_sr90, ModItems.billet_sr90, ModItems.billet_sr90, IRON.plate() })"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:209",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pellet_rtg_cobalt",
-      "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_cobalt), new Object[] { ModItems.billet_co60, ModItems.billet_co60, ModItems.billet_co60, IRON.plate() })"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:210",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pellet_rtg_actinium",
-      "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_actinium), new Object[] { ModItems.billet_actinium, ModItems.billet_actinium, ModItems.billet_actinium, IRON.plate() })"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:211",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pellet_rtg_polonium",
-      "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_polonium), new Object[] { ModItems.billet_polonium, ModItems.billet_polonium, ModItems.billet_polonium, IRON.plate() })"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:212",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pellet_rtg_lead",
-      "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_lead), new Object[] { ModItems.billet_pb209, ModItems.billet_pb209, ModItems.billet_pb209, IRON.plate() })"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:213",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pellet_rtg_gold",
-      "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_gold), new Object[] { ModItems.billet_au198, ModItems.billet_au198, ModItems.billet_au198, IRON.plate() })"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:214",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item pellet_rtg_americium",
-      "expression": "new ShapelessOreRecipe(new ItemStack(ModItems.pellet_rtg_americium), new Object[] { ModItems.billet_am241, ModItems.billet_am241, ModItems.billet_am241, IRON.plate() })"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:217",
       "callee": "addShapelessAuto",
-      "reason": "dynamic/unsupported metadata DepletedRTGMaterial.BISMUTH.ordinal()",
+      "reason": "native crafting remainder required: ntm:pellet_rtg_depleted__bismuth returns ntm:plate_iron",
       "expression": "new ItemStack(ModItems.billet_bismuth, 3), new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.BISMUTH.ordinal()) }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:218",
       "callee": "addShapelessAuto",
-      "reason": "dynamic/unsupported metadata DepletedRTGMaterial.LEAD.ordinal()",
+      "reason": "native crafting remainder required: ntm:pellet_rtg_depleted__lead returns ntm:plate_iron",
       "expression": "new ItemStack(ModItems.ingot_lead, 2), new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.LEAD.ordinal()) }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:219",
       "callee": "addShapelessAuto",
-      "reason": "dynamic/unsupported metadata DepletedRTGMaterial.MERCURY.ordinal()",
+      "reason": "native crafting remainder required: ntm:pellet_rtg_depleted__mercury returns ntm:plate_iron",
       "expression": "new ItemStack(ModItems.ingot_mercury, 2), new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.MERCURY.ordinal()) }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:220",
       "callee": "addShapelessAuto",
-      "reason": "dynamic/unsupported metadata DepletedRTGMaterial.NEPTUNIUM.ordinal()",
+      "reason": "native crafting remainder required: ntm:pellet_rtg_depleted__neptunium returns ntm:plate_iron",
       "expression": "new ItemStack(ModItems.billet_neptunium, 3), new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.NEPTUNIUM.ordinal()) }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:221",
       "callee": "addShapelessAuto",
-      "reason": "dynamic/unsupported metadata DepletedRTGMaterial.ZIRCONIUM.ordinal()",
+      "reason": "native crafting remainder required: ntm:pellet_rtg_depleted__zirconium returns ntm:plate_iron",
       "expression": "new ItemStack(ModItems.billet_zirconium, 3), new Object[] { new ItemStack(ModItems.pellet_rtg_depleted, 1, DepletedRTGMaterial.ZIRCONIUM.ordinal()) }"
     },
     {

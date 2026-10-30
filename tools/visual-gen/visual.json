@@ -16381,6 +16381,14 @@
           }
         ]
       }
+    },
+    "ntm:machine_rtg_grey": {
+      "auto": false,
+      "source": "Energy batch 5; content fallback and source algorithm contract only; visual/model/multiblock deferred."
+    },
+    "ntm:machine_radgen": {
+      "auto": false,
+      "source": "Energy batch 5; content fallback and source algorithm contract only; visual/model/multiblock deferred."
     }
   }
 }

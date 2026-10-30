@@ -24504,6 +24504,24 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:machine_rtg_grey",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:machine_radgen",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:gear_large__iron",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -24565,6 +24583,785 @@
       "sources": [],
       "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
       "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_radium",
+      "radiation_rad_s": 11.25,
+      "radiation_millirad_s": 11250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:338"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_weak",
+      "radiation_rad_s": 5.25,
+      "radiation_millirad_s": 5250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:339"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg",
+      "radiation_rad_s": 15.0,
+      "radiation_millirad_s": 15000,
+      "other_hazards": {
+        "hot": 3.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:337"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_strontium",
+      "radiation_rad_s": 22.5,
+      "radiation_millirad_s": 22500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:340"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_cobalt",
+      "radiation_rad_s": 45.0,
+      "radiation_millirad_s": 45000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:341"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_actinium",
+      "radiation_rad_s": 45.0,
+      "radiation_millirad_s": 45000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:342"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_americium",
+      "radiation_rad_s": 12.75,
+      "radiation_millirad_s": 12750,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:346"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_polonium",
+      "radiation_rad_s": 112.5,
+      "radiation_millirad_s": 112500,
+      "other_hazards": {
+        "hot": 3.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:343"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_gold",
+      "radiation_rad_s": 750.0,
+      "radiation_millirad_s": 750000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:345"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_lead",
+      "radiation_rad_s": 15000.0,
+      "radiation_millirad_s": 15000000,
+      "other_hazards": {
+        "hot": 7.0,
+        "blinding": 50.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:344"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_depleted__bismuth",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_depleted__mercury",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_depleted__neptunium",
+      "radiation_rad_s": 3.75,
+      "radiation_millirad_s": 3750,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:347"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_depleted__lead",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_depleted__zirconium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pellet_rtg_depleted__nickel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short__uranium235",
+      "radiation_rad_s": 30.0,
+      "radiation_millirad_s": 30000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:199"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short__uranium233",
+      "radiation_rad_s": 30.0,
+      "radiation_millirad_s": 30000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:199"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short__neptunium",
+      "radiation_rad_s": 30.0,
+      "radiation_millirad_s": 30000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:199"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short__plutonium239",
+      "radiation_rad_s": 30.0,
+      "radiation_millirad_s": 30000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:199"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short__plutonium240",
+      "radiation_rad_s": 30.0,
+      "radiation_millirad_s": 30000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:199"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short__plutonium241",
+      "radiation_rad_s": 30.0,
+      "radiation_millirad_s": 30000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:199"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short__americium242",
+      "radiation_rad_s": 30.0,
+      "radiation_millirad_s": 30000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:199"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short__schrabidium",
+      "radiation_rad_s": 30.0,
+      "radiation_millirad_s": 30000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:199"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_tiny__uranium235",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:200"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_tiny__uranium233",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:200"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_tiny__neptunium",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:200"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_tiny__plutonium239",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:200"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_tiny__plutonium240",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:200"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_tiny__plutonium241",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:200"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_tiny__americium242",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:200"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_tiny__schrabidium",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {
+        "hot": 5.0
+      },
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:200"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted__uranium235",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:203"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted__uranium233",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:203"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted__neptunium",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:203"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted__plutonium239",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:203"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted__plutonium240",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:203"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted__plutonium241",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:203"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted__americium242",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:203"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted__schrabidium",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:203"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted_tiny__uranium235",
+      "radiation_rad_s": 0.3,
+      "radiation_millirad_s": 300,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:204"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted_tiny__uranium233",
+      "radiation_rad_s": 0.3,
+      "radiation_millirad_s": 300,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:204"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted_tiny__neptunium",
+      "radiation_rad_s": 0.3,
+      "radiation_millirad_s": 300,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:204"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted_tiny__plutonium239",
+      "radiation_rad_s": 0.3,
+      "radiation_millirad_s": 300,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:204"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted_tiny__plutonium240",
+      "radiation_rad_s": 0.3,
+      "radiation_millirad_s": 300,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:204"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted_tiny__plutonium241",
+      "radiation_rad_s": 0.3,
+      "radiation_millirad_s": 300,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:204"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted_tiny__americium242",
+      "radiation_rad_s": 0.3,
+      "radiation_millirad_s": 300,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:204"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_short_depleted_tiny__schrabidium",
+      "radiation_rad_s": 0.3,
+      "radiation_millirad_s": 300,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:204"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long__uranium235",
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:197"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long__uranium233",
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:197"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long__neptunium",
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:197"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long__thorium",
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:197"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long__schrabidium",
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:197"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_tiny__uranium235",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:198"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_tiny__uranium233",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:198"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_tiny__neptunium",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:198"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_tiny__thorium",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:198"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_tiny__schrabidium",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:198"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_depleted__uranium235",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:201"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_depleted__uranium233",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:201"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_depleted__neptunium",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:201"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_depleted__thorium",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:201"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_depleted__schrabidium",
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:201"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_depleted_tiny__uranium235",
+      "radiation_rad_s": 0.05,
+      "radiation_millirad_s": 50,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:202"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_depleted_tiny__uranium233",
+      "radiation_rad_s": 0.05,
+      "radiation_millirad_s": 50,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:202"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_depleted_tiny__neptunium",
+      "radiation_rad_s": 0.05,
+      "radiation_millirad_s": 50,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:202"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_depleted_tiny__thorium",
+      "radiation_rad_s": 0.05,
+      "radiation_millirad_s": 50,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:202"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:nuclear_waste_long_depleted_tiny__schrabidium",
+      "radiation_rad_s": 0.05,
+      "radiation_millirad_s": 50,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:202"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:bio_wafer",
@@ -25053,5 +25850,56 @@
       "resolution": "no matched source registration"
     }
   ],
-  "extraction_gaps": []
+  "extraction_gaps": [
+    {
+      "id": "ntm:pellet_rtg",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:337",
+      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:pellet_rtg_radium",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:338",
+      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:pellet_rtg_weak",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:339",
+      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:pellet_rtg_strontium",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:340",
+      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:pellet_rtg_cobalt",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:341",
+      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:pellet_rtg_actinium",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:342",
+      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:pellet_rtg_polonium",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:343",
+      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:pellet_rtg_lead",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:344",
+      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:pellet_rtg_gold",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:345",
+      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    },
+    {
+      "id": "ntm:pellet_rtg_americium",
+      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:346",
+      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
+    }
+  ]
 }

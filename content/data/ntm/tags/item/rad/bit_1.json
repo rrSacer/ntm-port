@@ -29,6 +29,11 @@
     "ntm:ingot_u238",
     "ntm:ingot_uranium",
     "ntm:mike_core",
+    "ntm:nuclear_waste_long_depleted_tiny__neptunium",
+    "ntm:nuclear_waste_long_depleted_tiny__schrabidium",
+    "ntm:nuclear_waste_long_depleted_tiny__thorium",
+    "ntm:nuclear_waste_long_depleted_tiny__uranium233",
+    "ntm:nuclear_waste_long_depleted_tiny__uranium235",
     "ntm:nuclear_waste_vitrified_tiny",
     "ntm:nugget_am241",
     "ntm:nugget_am242",
@@ -52,6 +57,10 @@
     "ntm:ore_sellafield_uranium_scorched",
     "ntm:ore_uranium",
     "ntm:ore_uranium_scorched",
+    "ntm:pellet_rtg_americium",
+    "ntm:pellet_rtg_depleted__neptunium",
+    "ntm:pellet_rtg_radium",
+    "ntm:pellet_rtg_weak",
     "ntm:powder_uranium",
     "ntm:powder_yellowcake"
   ]

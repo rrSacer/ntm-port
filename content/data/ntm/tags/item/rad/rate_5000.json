@@ -9,6 +9,11 @@
     "ntm:ingot_gh336",
     "ntm:ingot_pu239",
     "ntm:ingot_u233",
-    "ntm:man_core"
+    "ntm:man_core",
+    "ntm:nuclear_waste_long__neptunium",
+    "ntm:nuclear_waste_long__schrabidium",
+    "ntm:nuclear_waste_long__thorium",
+    "ntm:nuclear_waste_long__uranium233",
+    "ntm:nuclear_waste_long__uranium235"
   ]
 }

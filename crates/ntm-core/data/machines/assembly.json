@@ -2059,6 +2059,54 @@
 "pools": []
 },
 {
+"name": "ass.rtg",
+"label": "Gerador RT",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:295",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:rtg_unit"
+],
+"n": 3,
+"label": "Unidade RTG"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 4,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:wire_fine__red_copper"
+],
+"n": 16,
+"label": "Fio de Cobre Vermelho"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4,
+"label": "Barra de Baquelita"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_rtg_grey",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.derrick",
 "label": "Torre de Extração de Petróleo",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:297",
@@ -3987,6 +4035,83 @@
 ],
 "fout": [],
 "pools": []
+},
+{
+"name": "ass.radgen",
+"label": "Motor Alimentado por Radiação",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:440",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"n": 8,
+"label": "Lingote de Aço"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 32,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:coil_magnetized_tungsten"
+],
+"n": 6,
+"label": "Bobina Supercondutora de Alta Temperatura 4000 K"
+},
+{
+"ids": [
+"ntm:wire_fine__magnetized_tungsten"
+],
+"n": 24,
+"label": "Fio de Tungstênio Magnetizado"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 16,
+"label": "Placa de Circuito Integrado"
+},
+{
+"ids": [
+"ntm:reactor_core"
+],
+"n": 3,
+"label": "Núcleo de Reator de Conversão"
+},
+{
+"ids": [
+"ntm:ingot_starmetal"
+],
+"n": 1,
+"label": "§9Lingote de Metal Estelar§r"
+},
+{
+"ids": [
+"minecraft:red_dye"
+],
+"n": 1,
+"label": "red dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_radgen",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": [
+"discover.radgen"
+]
 },
 {
 "name": "ass.hpcondenser",
@@ -15784,5 +15909,5 @@
 "pools": []
 }
 ],
-"skipped": 190
+"skipped": 188
 }

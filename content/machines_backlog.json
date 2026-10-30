@@ -1836,7 +1836,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_radgen"
     },
     {
       "id": "pa_source",
@@ -2189,7 +2190,8 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Energy content declared; heat/processing and visuals tracked separately",
+      "content_id": "ntm:machine_rtg_grey"
     },
     {
       "id": "machine_radiolysis",

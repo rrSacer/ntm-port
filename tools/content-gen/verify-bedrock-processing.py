@@ -15,7 +15,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--package',type=Path,required=True)
     parser.add_argument('--horizon-client',type=Path,required=True)
-    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling','fluid-identifier','migration-c2'],default='bedrock')
+    parser.add_argument('--profile',choices=['bedrock','petroleum-e','energy-heaters','energy-steam','energy-combustion','energy-solar-stirling','energy-radioisotopes','fluid-identifier','migration-c2'],default='bedrock')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
     evidence=root/'content-gen-evidence'/({'bedrock':'bedrock-stages34'}.get(args.profile,args.profile));evidence.mkdir(parents=True,exist_ok=True)
@@ -66,6 +66,7 @@ def main():
             if args.profile=='energy-solar-stirling':machines=['machine_solar_boiler','solar_mirror','machine_stirling','machine_stirling_steel','machine_stirling_creative']
             if args.profile=='fluid-identifier':machines=[]
             if args.profile=='migration-c2':machines=['nuke_'+name for name in ['boy','gadget','man','mike','tsar','n2','fstbmb']]
+            if args.profile=='energy-radioisotopes':machines=['machine_rtg_grey','machine_radgen']
             for i,name in enumerate(machines):
                 x=-4+i*(8 if args.profile=='migration-c2' else 4)
                 for y,level in [(101,0),(103,5)]:
@@ -129,16 +130,22 @@ def main():
             if args.profile=='energy-solar-stirling':samples=machines
             if args.profile=='fluid-identifier':samples=['fluid_identifier_multi']
             if args.profile=='migration-c2':samples=machines
+            if args.profile=='energy-radioisotopes':
+                catalog=json.loads((root/'content/ids.json').read_text())['entries']
+                samples=machines+[r['id'].split(':',1)[1] for r in catalog if r['source_variable'].startswith(('pellet_rtg','nuclear_waste_short','nuclear_waste_long'))]
             cmd('clear @s')
-            for name in samples:
-                components='[minecraft:custom_data={ntm_fluid:"water"}]' if args.profile=='fluid-identifier' else ''
-                cmd('give @s ntm:'+name+components+' 1')
-            deadline=time.monotonic()+15
-            while True:
-                counts=ctl('inventory')['counts']
-                if all(counts.get('ntm:'+name,0)==1 for name in samples):break
-                if time.monotonic()>deadline:raise AssertionError(counts)
-                ctl('wait 2')
+            for start in range(0,len(samples),30):
+                if start:cmd('clear @s')
+                batch=samples[start:start+30]
+                for name in batch:
+                    components='[minecraft:custom_data={ntm_fluid:"water"}]' if args.profile=='fluid-identifier' else ''
+                    cmd('give @s ntm:'+name+components+' 1')
+                deadline=time.monotonic()+15
+                while True:
+                    counts=ctl('inventory')['counts']
+                    if all(counts.get('ntm:'+name,0)==1 for name in batch):break
+                    if time.monotonic()>deadline:raise AssertionError(counts)
+                    ctl('wait 2')
             if args.profile=='fluid-identifier':
                 inventory=json.dumps(ctl('inventory'))
                 assert 'ntm_fluid' in inventory and 'water' in inventory,inventory

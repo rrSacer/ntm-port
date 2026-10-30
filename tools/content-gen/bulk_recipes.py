@@ -214,11 +214,17 @@ def annotate(src,rows):
 
 def generate(src,out,rows,emit):
     resolver=Resolver(src,rows);provenance=[];gaps=[];existing=set()
+    remainders={r['id']:r['crafting_remainder'] for r in rows if r.get('crafting_remainder')}
     # M1 retains ownership of its recipes. Avoid duplicate shapes/results.
     for f in (out/'data/ntm/recipe').glob('*.json'):
         if not f.name.startswith('bulk__'):
             recipe=json.loads(f.read_text());existing.add(json.dumps(recipe,sort_keys=True))
     def add(recipe,location):
+        # Content declarations cannot yet attach the NTM crafting remainder
+        # to these items. Do not publish a recipe that loses its iron casing.
+        inputs=json.dumps({k:v for k,v in recipe.items() if k!='result'})
+        for ident,remainder in remainders.items():
+            if ident in inputs:raise Unsupported('native crafting remainder required: '+ident+' returns '+remainder)
         signature=json.dumps(recipe,sort_keys=True)
         if signature in existing:return
         existing.add(signature); name='bulk__'+hashlib.sha256((location+signature).encode()).hexdigest()[:18]

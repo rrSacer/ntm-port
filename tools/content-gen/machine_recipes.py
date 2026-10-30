@@ -337,6 +337,8 @@ def export(source, output, rows):
     counts['combustion'] = combustion.export(source,output,rows)['coverage']
     import solar_stirling
     counts['solar_stirling'] = solar_stirling.export(source,output,rows)['coverage']
+    import radioisotopes
+    counts['radioisotopes'] = radioisotopes.export(source,output,rows)['coverage']
     print(json.dumps({'machine_recipes': counts}, ensure_ascii=False))
     return counts
 

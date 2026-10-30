@@ -4,6 +4,14 @@
     "ntm:debris_concrete",
     "ntm:fallout__item",
     "ntm:ingot_actinium",
-    "ntm:ingot_co60"
+    "ntm:ingot_co60",
+    "ntm:nuclear_waste_short__americium242",
+    "ntm:nuclear_waste_short__neptunium",
+    "ntm:nuclear_waste_short__plutonium239",
+    "ntm:nuclear_waste_short__plutonium240",
+    "ntm:nuclear_waste_short__plutonium241",
+    "ntm:nuclear_waste_short__schrabidium",
+    "ntm:nuclear_waste_short__uranium233",
+    "ntm:nuclear_waste_short__uranium235"
   ]
 }

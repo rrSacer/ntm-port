@@ -3,6 +3,16 @@
   "values": [
     "ntm:billet_u235",
     "ntm:ingot_uranium_fuel",
+    "ntm:nuclear_waste_long_depleted__neptunium",
+    "ntm:nuclear_waste_long_depleted__schrabidium",
+    "ntm:nuclear_waste_long_depleted__thorium",
+    "ntm:nuclear_waste_long_depleted__uranium233",
+    "ntm:nuclear_waste_long_depleted__uranium235",
+    "ntm:nuclear_waste_long_tiny__neptunium",
+    "ntm:nuclear_waste_long_tiny__schrabidium",
+    "ntm:nuclear_waste_long_tiny__thorium",
+    "ntm:nuclear_waste_long_tiny__uranium233",
+    "ntm:nuclear_waste_long_tiny__uranium235",
     "ntm:nugget_gh336",
     "ntm:nugget_pu239",
     "ntm:nugget_u233"

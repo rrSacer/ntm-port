@@ -72,10 +72,21 @@ for match in re.finditer(r'^\s*(\w+)\s*((?:\.[^;]*)?);',od,re.M):
             for item in r.ore.get(form+key,[]):
                 for kind,value in hazards.items():put(item,kind,value*mult,source)
 # Literal HazardSystem.register(... makeData()/addEntry(...)) registrations.
+isotope_vars={row['source_variable'] for row in rows if row['source_variable'].startswith(('pellet_rtg','nuclear_waste_short','nuclear_waste_long'))}
+def isotope_targets(expression):
+    # HazardSystem's Item overload applies to every metadata; ItemStack is
+    # exact. Keep this extension scoped to the imported isotope families.
+    if expression in isotope_vars:return [row['id'] for row in r.byvar[expression]]
+    stack=re.match(r'new ItemStack\((\w+),',expression)
+    if stack and stack[1] in isotope_vars:
+        qualified=expression.replace('new ItemStack('+stack[1]+',','new ItemStack(ModItems.'+stack[1]+',',1)
+        return [r.item(qualified)[0]]
+    return [r.item(expression,unqualified=True)[0]]
+
 for pos,args,_ in calls(registry,r'HazardSystem\.register'):
     parts=split(args)
     if len(parts)<2:continue
-    try:item,_=r.item(parts[0],unqualified=True)
+    try:targets=isotope_targets(parts[0])
     except Unsupported:continue
     source='src/main/java/com/hbm/hazard/HazardRegistry.java:'+str(registry[:pos].count('\n')+1)
     for _,args,_ in calls(parts[1],r'(?:makeData|\.addEntry)'):
@@ -83,8 +94,21 @@ for pos,args,_ in calls(registry,r'HazardSystem\.register'):
         if len(parts2)<2:continue
         hazard=parts2[0].strip().lower()
         try:value=number(parts2[1])
-        except (ValueError,SyntaxError):gaps.append({'id':item,'source':source,'expression':args});continue
-        put(item,{'hydroactive':'hydroactive'}.get(hazard,hazard),value,source)
+        except (ValueError,SyntaxError):
+            gaps.extend({'id':item,'source':source,'expression':args} for item in targets);continue
+        for item in targets:put(item,{'hydroactive':'hydroactive'}.get(hazard,hazard),value,source)
+# The RTG helper registers fresh radiation, optional HOT and BLINDING, and
+# a per-stack depletion modifier. Export the base, never silently zero it.
+for pos,args,_ in calls(registry,r'\bregisterRTGPellet'):
+    parts=split(args)
+    if len(parts)<3 or parts[0] not in isotope_vars:continue
+    item=r.item(parts[0],unqualified=True)[0]
+    source='src/main/java/com/hbm/hazard/HazardRegistry.java:'+str(registry[:pos].count('\n')+1)
+    put(item,'radiation',number(parts[1]),source)
+    for kind,expression in zip(['hot','blinding'],parts[3:]):
+        value=number(expression)
+        if value>0:put(item,kind,value,source)
+    gaps.append({'id':item,'source':source,'expression':'HazardModifierRTGRadiation(target='+parts[2]+'): fresh base exported; lifetime-dependent interpolation requires native item data.'})
 # Other fuel helper's first rate is the fresh item's radiation; depletion is NBT.
 for pos,args,method in calls(registry,r'\b(?:registerOtherFuel|registerOtherWaste|registerRadSourceWaste)'):
     parts=split(args)

@@ -20722,6 +20722,44 @@
       "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
     },
     {
+      "id": "machine_rtg_grey",
+      "source_variable": "machine_rtg",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "RT Generator",
+        "pt_br": "Gerador RT"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rtg.png",
+      "textures": {
+        "side": "blocks/rtg",
+        "top": "blocks/rtg",
+        "front": "blocks/rtg"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
+      "id": "machine_radgen",
+      "source_variable": "machine_radgen",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Radiation-Powered Engine",
+        "pt_br": "Motor Alimentado por Radiação"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/machine_radgen.png",
+      "textures": {
+        "side": "blocks/machine_radgen",
+        "top": "blocks/machine_radgen",
+        "front": "blocks/machine_radgen"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns source model, screen and multiblock"
+    },
+    {
       "id": "gear_large__iron",
       "source_variable": "gear_large",
       "type": "item",
@@ -20832,6 +20870,1012 @@
         "pt_br": "§9Lingote de Metal Estelar§r"
       },
       "behavior_gap": "Astra/ursa/orion icon variants (metadata 1-3) are hidden cosmetic subtypes with no recipe or localization; only the base ingot is declared."
+    },
+    {
+      "id": "pellet_rtg_radium",
+      "source_variable": "pellet_rtg_radium",
+      "type": "item",
+      "category": "pellet",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_radium.png",
+      "names": {
+        "en_us": "Radium-226 RTG Pellet",
+        "pt_br": "Pastilha RTG de Rádio-226"
+      },
+      "behavior_gap": "RTG heat, decay/config and per-stack lifespan are exported in radioisotopes.json; native machine logic owns them. Source flavor chat is not implemented."
+    },
+    {
+      "id": "pellet_rtg_weak",
+      "source_variable": "pellet_rtg_weak",
+      "type": "item",
+      "category": "pellet",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_weak.png",
+      "names": {
+        "en_us": "Weak Uranium RTG Pellet",
+        "pt_br": "Pastilha RTG Fraca de Urânio"
+      },
+      "behavior_gap": "RTG heat, decay/config and per-stack lifespan are exported in radioisotopes.json; native machine logic owns them. Source flavor chat is not implemented."
+    },
+    {
+      "id": "pellet_rtg",
+      "source_variable": "pellet_rtg",
+      "type": "item",
+      "category": "pellet",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg.png",
+      "names": {
+        "en_us": "Plutonium-238 RTG Pellet",
+        "pt_br": "Pastilha RTG de Plutônio-238"
+      },
+      "behavior_gap": "RTG heat, decay/config and per-stack lifespan are exported in radioisotopes.json; native machine logic owns them. Source flavor chat is not implemented."
+    },
+    {
+      "id": "pellet_rtg_strontium",
+      "source_variable": "pellet_rtg_strontium",
+      "type": "item",
+      "category": "pellet",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_strontium.png",
+      "names": {
+        "en_us": "Strontium-90 RTG Pellet",
+        "pt_br": "Pastilha RTG de Estrôncio-90"
+      },
+      "behavior_gap": "RTG heat, decay/config and per-stack lifespan are exported in radioisotopes.json; native machine logic owns them. Source flavor chat is not implemented."
+    },
+    {
+      "id": "pellet_rtg_cobalt",
+      "source_variable": "pellet_rtg_cobalt",
+      "type": "item",
+      "category": "pellet",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_cobalt.png",
+      "names": {
+        "en_us": "Cobalt-60 RTG Pellet",
+        "pt_br": "Pastilha RTG de Cobalto-60"
+      },
+      "behavior_gap": "RTG heat, decay/config and per-stack lifespan are exported in radioisotopes.json; native machine logic owns them. Source flavor chat is not implemented."
+    },
+    {
+      "id": "pellet_rtg_actinium",
+      "source_variable": "pellet_rtg_actinium",
+      "type": "item",
+      "category": "pellet",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_actinium.png",
+      "names": {
+        "en_us": "Actinium-227 RTG Pellet",
+        "pt_br": "Pastilha RTG de Actínio-227"
+      },
+      "behavior_gap": "RTG heat, decay/config and per-stack lifespan are exported in radioisotopes.json; native machine logic owns them. Source flavor chat is not implemented."
+    },
+    {
+      "id": "pellet_rtg_americium",
+      "source_variable": "pellet_rtg_americium",
+      "type": "item",
+      "category": "pellet",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_americium.png",
+      "names": {
+        "en_us": "Americium-241 RTG Pellet",
+        "pt_br": "Pastilha RTG de Amerício-241"
+      },
+      "behavior_gap": "RTG heat, decay/config and per-stack lifespan are exported in radioisotopes.json; native machine logic owns them. Source flavor chat is not implemented."
+    },
+    {
+      "id": "pellet_rtg_polonium",
+      "source_variable": "pellet_rtg_polonium",
+      "type": "item",
+      "category": "pellet",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_polonium.png",
+      "names": {
+        "en_us": "Polonium-210 RTG Pellet",
+        "pt_br": "Pastilha RTG de Polônio-210"
+      },
+      "behavior_gap": "RTG heat, decay/config and per-stack lifespan are exported in radioisotopes.json; native machine logic owns them. Source flavor chat is not implemented."
+    },
+    {
+      "id": "pellet_rtg_gold",
+      "source_variable": "pellet_rtg_gold",
+      "type": "item",
+      "category": "pellet",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_gold.png",
+      "names": {
+        "en_us": "Gold-198 RTG Pellet",
+        "pt_br": "Pastilha RTG de Ouro-198"
+      },
+      "behavior_gap": "RTG heat, decay/config and per-stack lifespan are exported in radioisotopes.json; native machine logic owns them. Source flavor chat is not implemented."
+    },
+    {
+      "id": "pellet_rtg_lead",
+      "source_variable": "pellet_rtg_lead",
+      "type": "item",
+      "category": "pellet",
+      "max_stack_size": 1,
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_lead.png",
+      "names": {
+        "en_us": "Lead-209 RTG Pellet",
+        "pt_br": "Pastilha RTG de Chumbo-209"
+      },
+      "behavior_gap": "RTG heat, decay/config and per-stack lifespan are exported in radioisotopes.json; native machine logic owns them. Source flavor chat is not implemented."
+    },
+    {
+      "id": "pellet_rtg_depleted__bismuth",
+      "source_variable": "pellet_rtg_depleted",
+      "type": "item",
+      "category": "pellet",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "DepletedRTGMaterial.BISMUTH",
+      "crafting_remainder": "ntm:plate_iron",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_depleted.bismuth.png",
+      "names": {
+        "en_us": "Decayed Bismuth RTG Pellet",
+        "pt_br": "Pastilha RTG de Bismuto Decaída"
+      },
+      "behavior_gap": "Original crafting container item returns plate_iron; native crafting must preserve that return."
+    },
+    {
+      "id": "pellet_rtg_depleted__mercury",
+      "source_variable": "pellet_rtg_depleted",
+      "type": "item",
+      "category": "pellet",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "DepletedRTGMaterial.MERCURY",
+      "crafting_remainder": "ntm:plate_iron",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_depleted.mercury.png",
+      "names": {
+        "en_us": "Decayed Mercury RTG Pellet",
+        "pt_br": "Pastilha RTG de Mercúrio Decaída"
+      },
+      "behavior_gap": "Original crafting container item returns plate_iron; native crafting must preserve that return."
+    },
+    {
+      "id": "pellet_rtg_depleted__neptunium",
+      "source_variable": "pellet_rtg_depleted",
+      "type": "item",
+      "category": "pellet",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "DepletedRTGMaterial.NEPTUNIUM",
+      "crafting_remainder": "ntm:plate_iron",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_depleted.neptunium.png",
+      "names": {
+        "en_us": "Decayed Neptunium RTG Pellet",
+        "pt_br": "Pastilha RTG de Neptúnio Decaída"
+      },
+      "behavior_gap": "Original crafting container item returns plate_iron; native crafting must preserve that return."
+    },
+    {
+      "id": "pellet_rtg_depleted__lead",
+      "source_variable": "pellet_rtg_depleted",
+      "type": "item",
+      "category": "pellet",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "DepletedRTGMaterial.LEAD",
+      "crafting_remainder": "ntm:plate_iron",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_depleted.lead.png",
+      "names": {
+        "en_us": "Decayed Lead RTG Pellet",
+        "pt_br": "Pastilha RTG de Chumbo Decaída"
+      },
+      "behavior_gap": "Original crafting container item returns plate_iron; native crafting must preserve that return."
+    },
+    {
+      "id": "pellet_rtg_depleted__zirconium",
+      "source_variable": "pellet_rtg_depleted",
+      "type": "item",
+      "category": "pellet",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "DepletedRTGMaterial.ZIRCONIUM",
+      "crafting_remainder": "ntm:plate_iron",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_depleted.zirconium.png",
+      "names": {
+        "en_us": "Decayed Zirconium RTG Pellet",
+        "pt_br": "Pastilha RTG de Zircônio Decaída"
+      },
+      "behavior_gap": "Original crafting container item returns plate_iron; native crafting must preserve that return."
+    },
+    {
+      "id": "pellet_rtg_depleted__nickel",
+      "source_variable": "pellet_rtg_depleted",
+      "type": "item",
+      "category": "pellet",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "DepletedRTGMaterial.NICKEL",
+      "crafting_remainder": "ntm:plate_iron",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pellet_rtg_depleted.nickel.png",
+      "names": {
+        "en_us": "Decayed Nickel RTG Pellet",
+        "pt_br": "Pastilha RTG de Níquel Decaída"
+      },
+      "behavior_gap": "Original crafting container item returns plate_iron; native crafting must preserve that return."
+    },
+    {
+      "id": "nuclear_waste_short__uranium235",
+      "source_variable": "nuclear_waste_short",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.URANIUM235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short.png",
+      "names": {
+        "en_us": "Short-Lived Nuclear Waste (Uranium-235)",
+        "pt_br": "Resíduo Nuclear de Curta Duração (Urânio-235)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short__uranium233",
+      "source_variable": "nuclear_waste_short",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.URANIUM233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short.png",
+      "names": {
+        "en_us": "Short-Lived Nuclear Waste (Uranium-233)",
+        "pt_br": "Resíduo Nuclear de Curta Duração (Urânio-233)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short__neptunium",
+      "source_variable": "nuclear_waste_short",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.NEPTUNIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short.png",
+      "names": {
+        "en_us": "Short-Lived Nuclear Waste (Neptunium-237)",
+        "pt_br": "Resíduo Nuclear de Curta Duração (Neptúnio-237)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short__plutonium239",
+      "source_variable": "nuclear_waste_short",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM239",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short.png",
+      "names": {
+        "en_us": "Short-Lived Nuclear Waste (Plutonium-239)",
+        "pt_br": "Resíduo Nuclear de Curta Duração (Plutônio-239)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short__plutonium240",
+      "source_variable": "nuclear_waste_short",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM240",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short.png",
+      "names": {
+        "en_us": "Short-Lived Nuclear Waste (Plutonium-240)",
+        "pt_br": "Resíduo Nuclear de Curta Duração (Plutônio-240)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short__plutonium241",
+      "source_variable": "nuclear_waste_short",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM241",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short.png",
+      "names": {
+        "en_us": "Short-Lived Nuclear Waste (Plutonium-241)",
+        "pt_br": "Resíduo Nuclear de Curta Duração (Plutônio-241)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short__americium242",
+      "source_variable": "nuclear_waste_short",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.AMERICIUM242",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short.png",
+      "names": {
+        "en_us": "Short-Lived Nuclear Waste (Americium-242)",
+        "pt_br": "Resíduo Nuclear de Curta Duração (Amerício-242)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short__schrabidium",
+      "source_variable": "nuclear_waste_short",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.SCHRABIDIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short.png",
+      "names": {
+        "en_us": "Short-Lived Nuclear Waste (Schrabidium-326)",
+        "pt_br": "Resíduo Nuclear de Curta Duração (Schrabídio-326)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_tiny__uranium235",
+      "source_variable": "nuclear_waste_short_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.URANIUM235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Short-Lived Nuclear Waste (Uranium-235)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração (Urânio-235)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_tiny__uranium233",
+      "source_variable": "nuclear_waste_short_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.URANIUM233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Short-Lived Nuclear Waste (Uranium-233)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração (Urânio-233)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_tiny__neptunium",
+      "source_variable": "nuclear_waste_short_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.NEPTUNIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Short-Lived Nuclear Waste (Neptunium-237)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração (Neptúnio-237)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_tiny__plutonium239",
+      "source_variable": "nuclear_waste_short_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM239",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Short-Lived Nuclear Waste (Plutonium-239)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração (Plutônio-239)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_tiny__plutonium240",
+      "source_variable": "nuclear_waste_short_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM240",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Short-Lived Nuclear Waste (Plutonium-240)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração (Plutônio-240)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_tiny__plutonium241",
+      "source_variable": "nuclear_waste_short_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM241",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Short-Lived Nuclear Waste (Plutonium-241)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração (Plutônio-241)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_tiny__americium242",
+      "source_variable": "nuclear_waste_short_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.AMERICIUM242",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Short-Lived Nuclear Waste (Americium-242)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração (Amerício-242)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_tiny__schrabidium",
+      "source_variable": "nuclear_waste_short_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.SCHRABIDIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Short-Lived Nuclear Waste (Schrabidium-326)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração (Schrabídio-326)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted__uranium235",
+      "source_variable": "nuclear_waste_short_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.URANIUM235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted.png",
+      "names": {
+        "en_us": "Decayed Short-Lived Nuclear Waste (Uranium-235)",
+        "pt_br": "Resíduo Nuclear de Curta Duração Decaído (Urânio-235)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted__uranium233",
+      "source_variable": "nuclear_waste_short_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.URANIUM233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted.png",
+      "names": {
+        "en_us": "Decayed Short-Lived Nuclear Waste (Uranium-233)",
+        "pt_br": "Resíduo Nuclear de Curta Duração Decaído (Urânio-233)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted__neptunium",
+      "source_variable": "nuclear_waste_short_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.NEPTUNIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted.png",
+      "names": {
+        "en_us": "Decayed Short-Lived Nuclear Waste (Neptunium-237)",
+        "pt_br": "Resíduo Nuclear de Curta Duração Decaído (Neptúnio-237)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted__plutonium239",
+      "source_variable": "nuclear_waste_short_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM239",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted.png",
+      "names": {
+        "en_us": "Decayed Short-Lived Nuclear Waste (Plutonium-239)",
+        "pt_br": "Resíduo Nuclear de Curta Duração Decaído (Plutônio-239)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted__plutonium240",
+      "source_variable": "nuclear_waste_short_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM240",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted.png",
+      "names": {
+        "en_us": "Decayed Short-Lived Nuclear Waste (Plutonium-240)",
+        "pt_br": "Resíduo Nuclear de Curta Duração Decaído (Plutônio-240)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted__plutonium241",
+      "source_variable": "nuclear_waste_short_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM241",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted.png",
+      "names": {
+        "en_us": "Decayed Short-Lived Nuclear Waste (Plutonium-241)",
+        "pt_br": "Resíduo Nuclear de Curta Duração Decaído (Plutônio-241)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted__americium242",
+      "source_variable": "nuclear_waste_short_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.AMERICIUM242",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted.png",
+      "names": {
+        "en_us": "Decayed Short-Lived Nuclear Waste (Americium-242)",
+        "pt_br": "Resíduo Nuclear de Curta Duração Decaído (Amerício-242)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted__schrabidium",
+      "source_variable": "nuclear_waste_short_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.SCHRABIDIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted.png",
+      "names": {
+        "en_us": "Decayed Short-Lived Nuclear Waste (Schrabidium-326)",
+        "pt_br": "Resíduo Nuclear de Curta Duração Decaído (Schrabídio-326)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted_tiny__uranium235",
+      "source_variable": "nuclear_waste_short_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.URANIUM235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Short-Lived Nuclear Waste (Uranium-235)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração Decaído (Urânio-235)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted_tiny__uranium233",
+      "source_variable": "nuclear_waste_short_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.URANIUM233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Short-Lived Nuclear Waste (Uranium-233)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração Decaído (Urânio-233)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted_tiny__neptunium",
+      "source_variable": "nuclear_waste_short_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.NEPTUNIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Short-Lived Nuclear Waste (Neptunium-237)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração Decaído (Neptúnio-237)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted_tiny__plutonium239",
+      "source_variable": "nuclear_waste_short_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM239",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Short-Lived Nuclear Waste (Plutonium-239)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração Decaído (Plutônio-239)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted_tiny__plutonium240",
+      "source_variable": "nuclear_waste_short_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM240",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Short-Lived Nuclear Waste (Plutonium-240)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração Decaído (Plutônio-240)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted_tiny__plutonium241",
+      "source_variable": "nuclear_waste_short_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 5,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.PLUTONIUM241",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Short-Lived Nuclear Waste (Plutonium-241)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração Decaído (Plutônio-241)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted_tiny__americium242",
+      "source_variable": "nuclear_waste_short_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 6,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.AMERICIUM242",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Short-Lived Nuclear Waste (Americium-242)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração Decaído (Amerício-242)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_short_depleted_tiny__schrabidium",
+      "source_variable": "nuclear_waste_short_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 7,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteShort.WasteClass.SCHRABIDIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_short_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Short-Lived Nuclear Waste (Schrabidium-326)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Curta Duração Decaído (Schrabídio-326)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long__uranium235",
+      "source_variable": "nuclear_waste_long",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.URANIUM235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long.png",
+      "names": {
+        "en_us": "Long-Lived Nuclear Waste (Uranium-235)",
+        "pt_br": "Resíduo Nuclear de Longa Duração (Urânio-235)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long__uranium233",
+      "source_variable": "nuclear_waste_long",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.URANIUM233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long.png",
+      "names": {
+        "en_us": "Long-Lived Nuclear Waste (Uranium-233)",
+        "pt_br": "Resíduo Nuclear de Longa Duração (Urânio-233)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long__neptunium",
+      "source_variable": "nuclear_waste_long",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.NEPTUNIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long.png",
+      "names": {
+        "en_us": "Long-Lived Nuclear Waste (Neptunium-237)",
+        "pt_br": "Resíduo Nuclear de Longa Duração (Neptúnio-237)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long__thorium",
+      "source_variable": "nuclear_waste_long",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.THORIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long.png",
+      "names": {
+        "en_us": "Long-Lived Nuclear Waste (Thorium-232)",
+        "pt_br": "Resíduo Nuclear de Longa Duração (Tório-232)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long__schrabidium",
+      "source_variable": "nuclear_waste_long",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.SCHRABIDIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long.png",
+      "names": {
+        "en_us": "Long-Lived Nuclear Waste (Schrabidium-326)",
+        "pt_br": "Resíduo Nuclear de Longa Duração (Schrabídio-326)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_tiny__uranium235",
+      "source_variable": "nuclear_waste_long_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.URANIUM235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Long-Lived Nuclear Waste (Uranium-235)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração (Urânio-235)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_tiny__uranium233",
+      "source_variable": "nuclear_waste_long_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.URANIUM233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Long-Lived Nuclear Waste (Uranium-233)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração (Urânio-233)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_tiny__neptunium",
+      "source_variable": "nuclear_waste_long_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.NEPTUNIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Long-Lived Nuclear Waste (Neptunium-237)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração (Neptúnio-237)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_tiny__thorium",
+      "source_variable": "nuclear_waste_long_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.THORIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Long-Lived Nuclear Waste (Thorium-232)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração (Tório-232)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_tiny__schrabidium",
+      "source_variable": "nuclear_waste_long_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.SCHRABIDIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Long-Lived Nuclear Waste (Schrabidium-326)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração (Schrabídio-326)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_depleted__uranium235",
+      "source_variable": "nuclear_waste_long_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.URANIUM235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_depleted.png",
+      "names": {
+        "en_us": "Decayed Long-Lived Nuclear Waste (Uranium-235)",
+        "pt_br": "Resíduo Nuclear de Longa Duração Decaído (Urânio-235)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_depleted__uranium233",
+      "source_variable": "nuclear_waste_long_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.URANIUM233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_depleted.png",
+      "names": {
+        "en_us": "Decayed Long-Lived Nuclear Waste (Uranium-233)",
+        "pt_br": "Resíduo Nuclear de Longa Duração Decaído (Urânio-233)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_depleted__neptunium",
+      "source_variable": "nuclear_waste_long_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.NEPTUNIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_depleted.png",
+      "names": {
+        "en_us": "Decayed Long-Lived Nuclear Waste (Neptunium-237)",
+        "pt_br": "Resíduo Nuclear de Longa Duração Decaído (Neptúnio-237)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_depleted__thorium",
+      "source_variable": "nuclear_waste_long_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.THORIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_depleted.png",
+      "names": {
+        "en_us": "Decayed Long-Lived Nuclear Waste (Thorium-232)",
+        "pt_br": "Resíduo Nuclear de Longa Duração Decaído (Tório-232)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_depleted__schrabidium",
+      "source_variable": "nuclear_waste_long_depleted",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.SCHRABIDIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_depleted.png",
+      "names": {
+        "en_us": "Decayed Long-Lived Nuclear Waste (Schrabidium-326)",
+        "pt_br": "Resíduo Nuclear de Longa Duração Decaído (Schrabídio-326)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_depleted_tiny__uranium235",
+      "source_variable": "nuclear_waste_long_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 0,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.URANIUM235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Long-Lived Nuclear Waste (Uranium-235)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração Decaído (Urânio-235)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_depleted_tiny__uranium233",
+      "source_variable": "nuclear_waste_long_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 1,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.URANIUM233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Long-Lived Nuclear Waste (Uranium-233)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração Decaído (Urânio-233)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_depleted_tiny__neptunium",
+      "source_variable": "nuclear_waste_long_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 2,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.NEPTUNIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Long-Lived Nuclear Waste (Neptunium-237)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração Decaído (Neptúnio-237)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_depleted_tiny__thorium",
+      "source_variable": "nuclear_waste_long_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 3,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.THORIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Long-Lived Nuclear Waste (Thorium-232)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração Decaído (Tório-232)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
+    },
+    {
+      "id": "nuclear_waste_long_depleted_tiny__schrabidium",
+      "source_variable": "nuclear_waste_long_depleted_tiny",
+      "type": "item",
+      "category": "component",
+      "metadata": 4,
+      "subtype_kind": "enum",
+      "source_enum": "ItemWasteLong.WasteClass.SCHRABIDIUM",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/nuclear_waste_long_depleted_tiny.png",
+      "names": {
+        "en_us": "Tiny Pile of Decayed Long-Lived Nuclear Waste (Schrabidium-326)",
+        "pt_br": "Pequena Pilha de Resíduo Nuclear de Longa Duração Decaído (Schrabídio-326)"
+      },
+      "behavior_gap": "Source isotope tooltip is included in the subtype display name; item radiation and processing are separate runtime behavior."
     },
     {
       "id": "bio_wafer",

@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:pellet_rtg_strontium",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:billet_sr90",
+    "ntm:billet_sr90",
+    "ntm:billet_sr90",
+    "#ntm:bulk/plateiron"
+  ]
+}

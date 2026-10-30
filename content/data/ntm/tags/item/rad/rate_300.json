@@ -1,6 +1,14 @@
 {
   "replace": false,
   "values": [
+    "ntm:nuclear_waste_short_depleted_tiny__americium242",
+    "ntm:nuclear_waste_short_depleted_tiny__neptunium",
+    "ntm:nuclear_waste_short_depleted_tiny__plutonium239",
+    "ntm:nuclear_waste_short_depleted_tiny__plutonium240",
+    "ntm:nuclear_waste_short_depleted_tiny__plutonium241",
+    "ntm:nuclear_waste_short_depleted_tiny__schrabidium",
+    "ntm:nuclear_waste_short_depleted_tiny__uranium233",
+    "ntm:nuclear_waste_short_depleted_tiny__uranium235",
     "ntm:powder_thorium"
   ]
 }
