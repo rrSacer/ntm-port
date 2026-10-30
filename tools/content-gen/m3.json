@@ -19792,6 +19792,136 @@
       "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock"
     },
     {
+      "id": "machine_refinery",
+      "source_variable": "machine_refinery",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Oil Refinery",
+        "pt_br": "Refinaria de Petróleo"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/machine_refinery.png",
+      "textures": {
+        "side": "blocks/machine_refinery",
+        "top": "blocks/machine_refinery",
+        "front": "blocks/machine_refinery"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock"
+    },
+    {
+      "id": "machine_fraction_tower",
+      "source_variable": "machine_fraction_tower",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Fractioning Tower",
+        "pt_br": "Torre de Fracionamento"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock"
+    },
+    {
+      "id": "machine_mixer",
+      "source_variable": "machine_mixer",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Industrial Mixer",
+        "pt_br": "Misturador Industrial"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
+      "textures": {
+        "side": "blocks/block_steel",
+        "top": "blocks/block_steel",
+        "front": "blocks/block_steel"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "Source casing cube fallback; visual-gen owns original model, screen and multiblock"
+    },
+    {
+      "id": "steel_scaffold",
+      "source_variable": "steel_scaffold",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:iron_block",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/scaffold_steel.png",
+      "names": {
+        "en_us": "Steel Scaffold",
+        "pt_br": "Andaime de Aço"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 15,
+        "requires_tool": true
+      },
+      "model_gap": "Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented"
+    },
+    {
+      "id": "steel_beam",
+      "source_variable": "steel_beam",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:iron_block",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/steel_beam.png",
+      "names": {
+        "en_us": "Steel Beam",
+        "pt_br": "Viga de Aço"
+      },
+      "block_properties": {
+        "hardness": 5,
+        "explosion_resistance": 15,
+        "requires_tool": true
+      },
+      "model_gap": "Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented"
+    },
+    {
+      "id": "steel_grate",
+      "source_variable": "steel_grate",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:iron_block",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/grate_top.png",
+      "names": {
+        "en_us": "Steel Grate",
+        "pt_br": "Grade de Aço"
+      },
+      "block_properties": {
+        "hardness": 2,
+        "explosion_resistance": 5,
+        "requires_tool": true
+      },
+      "model_gap": "Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented"
+    },
+    {
+      "id": "barricade",
+      "source_variable": "barricade",
+      "type": "block",
+      "category": "decorative",
+      "template": "minecraft:stone",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/barricade.png",
+      "names": {
+        "en_us": "Sand Bags",
+        "pt_br": "Sacos de Areia"
+      },
+      "block_properties": {
+        "hardness": 1,
+        "explosion_resistance": 2.5,
+        "requires_tool": false
+      },
+      "loot_none": true,
+      "creative_hidden": true
+    },
+    {
       "id": "machine_crucible",
       "source_variable": "machine_crucible",
       "type": "block",

@@ -3,7 +3,7 @@
 from generate import lang, registration
 
 BASE = 'src/main/java/com/hbm/'
-MACHINES = ('machine_liquefactor', 'machine_solidifier')
+MACHINES = ('machine_liquefactor', 'machine_solidifier', 'machine_refinery', 'machine_fraction_tower', 'machine_mixer')
 
 
 def build(source):
@@ -20,4 +20,16 @@ def build(source):
                        'textures':{face:'blocks/'+texture for face in ('side','top','front')},
                        'opaque_machine_textures':True,
                        'model_gap':'Source casing cube fallback; visual-gen owns original model, screen and multiblock'})
+    for var,texture in [('steel_scaffold','scaffold_steel'),('steel_beam','steel_beam'),('steel_grate','grate_top'),('barricade','barricade')]:
+        name,_=registration(blocks,var,'block')
+        barricade=var=='barricade'
+        result.append({'id':name,'source_variable':var,'type':'block','category':'decorative',
+                       'template':'minecraft:stone' if barricade else 'minecraft:iron_block',
+                       'source_texture':f'src/main/resources/assets/hbm/textures/blocks/{texture}.png',
+                       'names':{loc:tr['tile.'+name+'.name'] for loc,tr in translations.items()},
+                       'block_properties':{'hardness':1 if barricade else 2 if var=='steel_grate' else 5,
+                                           'explosion_resistance':2.5 if barricade else 5 if var=='steel_grate' else 15,
+                                           'requires_tool':not barricade},
+                       **({'loot_none':True,'creative_hidden':True} if barricade else
+                          {'model_gap':'Structural cube fallback; source scaffold/beam/grate shapes, placement and scaffold colors not represented'})})
     return result
