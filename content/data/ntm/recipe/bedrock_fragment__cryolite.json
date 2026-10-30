@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:bedrock_ore_fragment__cryolite"
+  },
+  "result": {
+    "id": "ntm:chunk_ore__cryolite",
+    "count": 1
+  }
+}

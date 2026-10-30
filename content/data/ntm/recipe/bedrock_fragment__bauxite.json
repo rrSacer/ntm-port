@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "ntm:bedrock_ore_fragment__bauxite"
+  },
+  "result": {
+    "id": "ntm:stone_resource__bauxite",
+    "count": 1
+  }
+}
