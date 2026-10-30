@@ -302,7 +302,7 @@ def main():
             # Ivy Mike's), pasted below or beside it into one file; with `src`,
             # one rectangle of it (a slot frame where the port has a slot HBM's
             # screen has not).
-            if 'compose' in s:
+            if 'compose' in s or 'keep' in s:
                 from PIL import Image
                 base = Image.open(out / target).convert('RGBA')
                 def part(c):
@@ -311,11 +311,25 @@ def main():
                         x, y, w, h = c['src']
                         im = im.crop((x, y, x + w, y + h))
                     return im, c['at']
-                parts = [part(c) for c in s.pop('compose')]
+                parts = [part(c) for c in s.pop('compose', [])]
                 w = max([base.width] + [im.width + at[0] for im, at in parts])
                 h = max([base.height] + [im.height + at[1] for im, at in parts])
                 sheet = Image.new('RGBA', (w, h))
                 sheet.paste(base, (0, 0))
+                # `keep`: HBM draws the background in pieces (the excavator's
+                # top and its inventory); the rest of the screen's area, where
+                # the overlays' sprites lie, is cleared (they are read from a
+                # copy composed elsewhere).
+                if 'keep' in s:
+                    sw, sh = s['size']
+                    mask = Image.new('L', (w, h), 255)
+                    from PIL import ImageDraw
+                    draw = ImageDraw.Draw(mask)
+                    draw.rectangle((0, 0, sw - 1, sh - 1), fill=0)
+                    for kx, ky, kw, kh in s.pop('keep'):
+                        draw.rectangle((kx, ky, kx + kw - 1, ky + kh - 1), fill=255)
+                    clear = Image.new('RGBA', (w, h))
+                    sheet = Image.composite(sheet, clear, mask)
                 for im, at in parts:
                     sheet.paste(im, tuple(at))
                 sheet.save(out / target)
