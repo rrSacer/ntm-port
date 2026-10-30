@@ -5738,7 +5738,8 @@
       "energy": true,
       "fluid": false,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_well"
     },
     {
       "id": "machine_pumpjack",
@@ -5756,7 +5757,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_pumpjack"
     },
     {
       "id": "machine_fracking_tower",
@@ -5774,7 +5776,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Petroleum content declared; processing and visuals tracked separately",
+      "content_id": "ntm:machine_fracking_tower"
     },
     {
       "id": "machine_flare",
