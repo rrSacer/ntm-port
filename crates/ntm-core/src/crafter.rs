@@ -32,6 +32,9 @@ pub enum Station {
     ChemicalPlant,
     Centrifuge,
     Purex,
+    /// `TileEntityMachineCrystallizer`: the recipe by its input and the
+    /// tank's fluid.
+    Crystallizer,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -79,6 +82,7 @@ impl Station {
             "ntm:machine_chemical_plant" => Some(Station::ChemicalPlant),
             "ntm:machine_centrifuge" => Some(Station::Centrifuge),
             "ntm:machine_purex" => Some(Station::Purex),
+            "ntm:machine_crystallizer" => Some(Station::Crystallizer),
             _ => None,
         }
     }
@@ -88,11 +92,13 @@ impl Station {
         static C: OnceLock<Vec<Recipe>> = OnceLock::new();
         static F: OnceLock<Vec<Recipe>> = OnceLock::new();
         static P: OnceLock<Vec<Recipe>> = OnceLock::new();
+        static X: OnceLock<Vec<Recipe>> = OnceLock::new();
         match self {
             Station::Assembly => A.get_or_init(|| table(include_str!("../data/machines/assembly.json"))),
             Station::ChemicalPlant => C.get_or_init(|| table(include_str!("../data/machines/chemical_plant.json"))),
             Station::Centrifuge => F.get_or_init(|| table(include_str!("../data/machines/centrifuge.json"))),
             Station::Purex => P.get_or_init(|| table(include_str!("../data/machines/purex.json"))),
+            Station::Crystallizer => X.get_or_init(|| table(include_str!("../data/machines/crystallizer.json"))),
         }
     }
 
@@ -102,6 +108,7 @@ impl Station {
             Station::ChemicalPlant => "Planta química",
             Station::Centrifuge => "Centrífuga",
             Station::Purex => "PUREX",
+            Station::Crystallizer => "Cristalizador",
         }
     }
 
@@ -113,12 +120,15 @@ impl Station {
             Station::Centrifuge => (0, 0, 0),
             // `TileEntityMachinePUREX`: 3 input tanks and 1 output.
             Station::Purex => (3, 1, 24_000),
+            // One tank of 8 000 mB, typed apart from the recipe (the NTM's
+            // identifier; here the first fluid in).
+            Station::Crystallizer => (1, 0, 8_000),
         }
     }
 
     /// The recipe is picked from the input (the centrifuge), not a list.
     fn picks_by_input(self) -> bool {
-        self == Station::Centrifuge
+        matches!(self, Station::Centrifuge | Station::Crystallizer)
     }
 }
 
@@ -225,6 +235,7 @@ impl Crafter {
             Station::Centrifuge => 100_000,
             // `max(power, recipe.power * 100, 1 000 000)`.
             Station::Purex => self.current().map_or(1_000_000, |r| (r.power * 100).max(1_000_000)),
+            Station::Crystallizer => 1_000_000,
             _ => self.current().map_or(100_000, |r| (r.power * 100).max(100_000)),
         }
     }
@@ -237,6 +248,9 @@ impl Crafter {
         }
         self.recipe = Some(r.name.clone());
         self.progress = 0;
+        if self.station == Station::Crystallizer {
+            return;
+        }
         for (t, f) in self.tin.iter_mut().zip(r.fluids_in.iter().map(|f| f.0.as_str()).chain(std::iter::repeat(""))) {
             t.set_type(f);
             // The assembly machine sizes its tanks to the recipe.
@@ -276,6 +290,8 @@ impl Crafter {
             && r.items_out.iter().all(|(i, n, _)| self.out.iter().find(|o| o.0 == *i).map_or(0, |o| o.1) + n <= STACK)
             && r.fluids_out.iter().all(|(f, mb)| self.tout.iter().any(|t| t.fluid == *f && t.free() >= *mb))
             && (self.out.len() < 6 || r.items_out.iter().all(|(i, ..)| self.out.iter().any(|o| o.0 == *i)))
+            // One output slot: another item in it stops the crystallizer.
+            && (self.station != Station::Crystallizer || self.out.iter().all(|o| r.items_out.iter().any(|x| x.0 == o.0)))
     }
 
     fn finish(&mut self, r: &Recipe) {
@@ -312,11 +328,17 @@ impl Crafter {
             return;
         }
         let Some(first) = self.items.first().map(|i| i.0.clone()) else { return };
-        let takes = |r: &Recipe| r.items_in.iter().any(|i| i.ids.contains(&first));
+        // The crystallizer's recipe is also its tank's fluid's
+        // (`CrystallizerRecipes.getOutput(item, tank type)`).
+        let fluid = (self.station == Station::Crystallizer).then(|| self.tin.first().map(|t| t.fluid.clone()).unwrap_or_default());
+        let takes = |r: &Recipe| {
+            r.items_in.iter().any(|i| i.ids.contains(&first)) && fluid.as_ref().is_none_or(|f| f.is_empty() || r.fluids_in.first().is_some_and(|x| x.0 == *f))
+        };
         if self.current().is_some_and(takes) {
             return;
         }
-        if let Some(r) = self.recipe_for(&first) {
+        let pick = self.station.recipes().iter().find(|r| takes(r)).or_else(|| self.recipe_for(&first));
+        if let Some(r) = pick {
             self.set_recipe(r);
         }
     }
@@ -381,13 +403,25 @@ impl FluidNode for Crafter {
         self.tout.iter().filter(|t| t.fluid == f).map(|t| u64::from(t.mb)).sum()
     }
     fn fluid_demand(&self, f: &str) -> u64 {
+        // The crystallizer's empty tank takes any fluid (its type follows).
+        if self.accepts_any() {
+            return u64::from(self.tin[0].cap);
+        }
         // Only the fluids the recipe takes (each input tank is typed by it).
         self.tin.iter().filter(|t| !t.fluid.is_empty() && t.fluid == f).map(|t| u64::from(t.free())).sum()
+    }
+    fn accepts_any(&self) -> bool {
+        self.station == Station::Crystallizer && self.tin.first().is_some_and(|t| t.mb == 0)
     }
     fn fluid_types(&self) -> Vec<String> {
         self.tin.iter().chain(&self.tout).filter(|t| !t.fluid.is_empty()).map(|t| t.fluid.clone()).collect()
     }
     fn fluid_give(&mut self, f: &str, mut mb: u64) {
+        if self.accepts_any()
+            && let Some(t) = self.tin.first_mut()
+        {
+            t.set_type(f);
+        }
         for t in self.tin.iter_mut().filter(|t| t.fluid == f) {
             mb -= u64::from(t.fill(f, mb.min(u64::from(u32::MAX)) as u32));
         }
@@ -406,6 +440,9 @@ impl Logic for Crafter {
             self.set_recipe(o);
             return true;
         }
+        if self.station == Station::Crystallizer {
+            self.pick_by_items();
+        }
         let Some(r) = self.current() else {
             return false;
         };
@@ -418,7 +455,10 @@ impl Logic for Crafter {
         }
         self.power -= r.power;
         self.progress += 1;
-        if self.progress >= r.duration.max(1) {
+        // The crystallizer finishes past its duration (`progress >
+        // getDuration()`).
+        let ticks = r.duration.max(1) + u32::from(self.station == Station::Crystallizer);
+        if self.progress >= ticks {
             self.progress = 0;
             self.finish(r);
         }
@@ -544,7 +584,9 @@ impl Logic for Crafter {
                 self.progress = 0;
             }
             actions::POUR => match held.and_then(|h| fluid::contents(&h.item).map(|c| (h, c))) {
-                Some((h, c)) if self.tin.iter().any(|t| t.fluid == c.fluid && t.free() >= c.mb) => fx.push(Effect::TakeHeld { item: h.item.clone() }),
+                Some((h, c)) if self.tin.iter().any(|t| t.fluid == c.fluid && t.free() >= c.mb) || (self.accepts_any() && self.tin[0].cap >= c.mb) => {
+                    fx.push(Effect::TakeHeld { item: h.item.clone() })
+                }
                 Some(_) => toast(fx, "A receita não usa esse fluido, ou o tanque está cheio."),
                 None => toast(fx, "Segure um recipiente cheio de fluido."),
             },
@@ -564,6 +606,12 @@ impl Logic for Crafter {
     }
 
     fn consumed(&mut self, item: &str, fx: &mut Vec<Effect>) {
+        // The crystallizer's empty tank takes the poured fluid's type.
+        if let Some(c) = fluid::contents(item)
+            && self.accepts_any()
+        {
+            self.tin[0].set_type(&c.fluid);
+        }
         if let Some(c) = fluid::contents(item).filter(|c| self.tin.iter().any(|t| t.fluid == c.fluid)) {
             match self.tin.iter_mut().find(|t| t.fluid == c.fluid && t.free() >= c.mb) {
                 Some(t) => {

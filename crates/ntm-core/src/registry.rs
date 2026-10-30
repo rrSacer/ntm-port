@@ -130,6 +130,15 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     // The PUREX (`crate::crafter::Station::Purex`): ports on its whole
     // bottom ring, as the proxies of its multiblock.
+    // The crystallizer (`crate::crafter::Station::Crystallizer`), the
+    // bedrock chain's stage 2.
+    BlockSpec {
+        id: "ntm:machine_crystallizer",
+        kind: Kind::Crafter,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::AllRound,
+    },
     BlockSpec {
         id: "ntm:machine_purex",
         kind: Kind::Crafter,
@@ -320,15 +329,8 @@ pub const BLOCKS: &[BlockSpec] = &[
         ports: Ports::AllRound,
     },
     // The bedrock chain's later stages, not approved yet: the content has
-    // their blocks (crystallizer 34732d5; pyrolysis oven, electrolyser, arc
-    // furnace 16e6771); tracked, their screens say so.
-    BlockSpec {
-        id: "ntm:machine_crystallizer",
-        kind: Kind::Inert,
-        facing: Some("facing"),
-        level: HONEY,
-        ports: Ports::None,
-    },
+    // their blocks (pyrolysis oven, electrolyser, arc furnace 16e6771);
+    // tracked, their screens say so.
     BlockSpec {
         id: "ntm:machine_pyrooven",
         kind: Kind::Inert,

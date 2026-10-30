@@ -180,6 +180,15 @@ pub const SLOTTED: &[(&str, Layout)] = &[
             outputs: 7..13,
         },
     ),
+    // ContainerCrystallizer: 0 the input, 2 the output (1 battery, 3–4 fluid
+    // containers, 5–6 upgrades, 7 the identifier: no logic in the port).
+    (
+        "ntm:machine_crystallizer",
+        Layout::Crafter {
+            inputs: 0..1,
+            outputs: 2..3,
+        },
+    ),
     ("ntm:nuke_boy", Layout::Bomb),
     ("ntm:nuke_gadget", Layout::Bomb),
     ("ntm:nuke_man", Layout::Bomb),
