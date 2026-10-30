@@ -95,6 +95,29 @@
 "pools": []
 },
 {
+"name": "solidification.4",
+"label": "Pastilha de Alga ×8",
+"source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:68",
+"duration": 60,
+"power": 250,
+"in": [],
+"fin": [
+[
+"salient",
+1280
+]
+],
+"out": [
+[
+"ntm:bio_wafer",
+8,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "solidification.5",
 "label": "Pérola de Ender",
 "source": "src/main/java/com/hbm/inventory/recipes/SolidificationRecipes.java:69",
@@ -1061,5 +1084,5 @@
 "pools": []
 }
 ],
-"skipped": 1
+"skipped": 0
 }

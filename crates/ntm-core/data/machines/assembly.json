@@ -2235,6 +2235,53 @@
 "pools": []
 },
 {
+"name": "ass.flarestack",
+"label": "Chaminé de Queima",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:309",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 12,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:thermo_element"
+],
+"n": 3,
+"label": "Elemento Termoelétrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_flare",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.refinery",
 "label": "Refinaria de Petróleo",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:313",
@@ -3294,6 +3341,67 @@
 "out": [
 [
 "ntm:machine_ore_slopper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.hephaestus",
+"label": "Trocador de Calor Geotérmico",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:431",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 12,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"n": 24,
+"label": "Lingote de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 24,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_niobium"
+],
+"n": 4,
+"label": "Lingote de Nióbio"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 12,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:glass_quartz"
+],
+"n": 16,
+"label": "Vidro de Quartzo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_hephaestus",
 1,
 1.0
 ]
@@ -15033,5 +15141,5 @@
 "pools": []
 }
 ],
-"skipped": 203
+"skipped": 201
 }

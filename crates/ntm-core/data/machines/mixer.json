@@ -1226,6 +1226,40 @@
 "pools": []
 },
 {
+"name": "mixer.34.0",
+"label": "Feromônio Potencializador Modificado",
+"source": "src/main/java/com/hbm/inventory/recipes/MixerRecipes.java:95",
+"duration": 10,
+"power": 50,
+"in": [
+{
+"ids": [
+"ntm:pill_herbal"
+],
+"n": 1,
+"label": "Pasta de Ervas"
+}
+],
+"fin": [
+[
+"pheromone",
+1500
+],
+[
+"blood",
+500
+]
+],
+"out": [],
+"fout": [
+[
+"pheromone_m",
+2000
+]
+],
+"pools": []
+},
+{
 "name": "mixer.35.0",
 "label": "Solução de Bauxita",
 "source": "src/main/java/com/hbm/inventory/recipes/MixerRecipes.java:97",
@@ -1408,5 +1442,5 @@
 "pools": []
 }
 ],
-"skipped": 1
+"skipped": 0
 }

@@ -608,6 +608,56 @@
 "pools": []
 },
 {
+"name": "liquefaction.24",
+"label": "Etanol",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:66",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:plant_flower__weed"
+],
+"n": 1,
+"label": "Cânhamo"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"ethanol",
+100
+]
+],
+"pools": []
+},
+{
+"name": "liquefaction.25",
+"label": "Etanol",
+"source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:67",
+"duration": 60,
+"power": 250,
+"in": [
+{
+"ids": [
+"ntm:plant_flower__cd0"
+],
+"n": 1,
+"label": "Salgueiro-Mostarda"
+}
+],
+"fin": [],
+"out": [],
+"fout": [
+[
+"ethanol",
+50
+]
+],
+"pools": []
+},
+{
 "name": "liquefaction.26",
 "label": "Biogás",
 "source": "src/main/java/com/hbm/inventory/recipes/LiquefactionRecipes.java:68",
@@ -811,5 +861,5 @@
 "pools": []
 }
 ],
-"skipped": 2
+"skipped": 0
 }
