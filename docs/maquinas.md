@@ -909,6 +909,65 @@ pilha (`server/oil_server.rs`).
   - **torres:** duas torres empilhadas com óleo pesado. A de cima recebe 4.000 mB e trabalha; o betume desce à de baixo;
   - **misturador:** com o refrigerante escolhido na lista, água de um barril e 4 nitros dão 8.000 mB de refrigerante (16.000 depois da 2ª rodada).
 
+## Petróleo, lote C: caldeiras, coqueificadora e processadores (`boiler.rs`, `coker.rs`, `processing.rs`)
+
+São:
+- o `TileEntityHeatBoiler` e o `TileEntityHeatBoilerIndustrial` (o primeiro
+  passo `FT_Heatable` de cada fluido: água → vapor, os óleos → as versões
+  quentes, ar → sopro);
+- o `TileEntityMachineCoker` (33 receitas);
+- os quatro processadores, uma máquina em quatro formas:
+  `TileEntityMachineCatalyticCracker` (12), `CatalyticReformer` (9),
+  `Hydrotreater` (6) e `VacuumDistill` (2).
+
+Conteúdo e tabelas são do fc8e1d8f; telas, modelos e portas do fbef4942.
+
+**Calor:** as caldeiras e a coqueificadora puxam calor do firebox logo abaixo
+do núcleo (`server/oil_server.rs`, `heat_tick`).
+- Puxam a cada tick: 1/10 (caldeiras) ou 1/4 (coqueificadora) da diferença,
+  arredondado para cima.
+- Sem fonte, perdem 1/1000 por tick.
+
+| | Caldeira (pequena / industrial) | Coqueificadora | Processadores |
+| --- | --- | --- | --- |
+| Receita | o fluido de entrada (o primeiro que ela aquece) | o fluido de entrada | o fluido da 1ª entrada; a 2ª é fixa (vapor no craqueador, hidrogênio no hidrotratador) |
+| Ritmo | por tick, tantas conversões quanto entrada, espaço e calor deixam (água: 1 mB + 200 TU → 100 mB de vapor) | 1/100 do calor vira progresso; 20.000 = uma operação | a cada `every` ticks, até `ops` operações de 100 mB (craqueador: 2 a cada 5; hidrotratador: 1 a cada 2) |
+| Energia | — (calor até 3,2M / 12,8M TU) | — (até 100.000 TU) | HE por operação, debitado na hora: reformador e hidrotratador 20.000, destilador 10.000; buffer 1.000.000 |
+| Itens | — | o coque no slot 1 | o catalisador (`catalytic_converter`) no slot 10 do reformador e do hidrotratador, sem gasto |
+
+**Telas** (contrato com o fbef4942):
+- **processadores:** [0]/[1] energia, [2] lâmpada, [3] catalisador presente, depois cada tanque (entradas, depois saídas);
+- **coqueificadora:** [0]/[1] calor, [2]/[3] progresso, [4] trabalhando, [5..7] entrada, [8..10] subproduto;
+- o craqueador e as caldeiras não têm tela no NTM.
+
+**Correção das redes de fluido encontrada aqui (6d52e14):**
+- **O defeito:** as células proxy de um multibloco eram dutos. Uma máquina encostada em qualquer porta dividia a rede com as outras encostadas, e o óleo de um barril numa porta do craqueador enchia o barril vazio na outra porta.
+- **Agora:** dutos fazem barramentos; máquinas que se tocam (núcleo ou proxy) fazem pares; nada passa através de uma máquina, como no NTM.
+
+**Desvios:**
+- a explosão da caldeira pequena com a saída cheia (ela só para);
+- a pressão que o hidrogênio do hidrotratador (1) e o óleo do destilador (2) pedem (nada no port comprime fluido ainda);
+- o calor ambiente do inverno nuclear;
+- os slots de recipientes dos processadores.
+
+**Verificação:**
+- **Unidade:** 6 testes.
+  - O craqueador roda 2 vezes a cada 5 ticks com vapor.
+  - O reformador pede o catalisador e paga por operação.
+  - O hidrotratador e o destilador fazem as suas saídas.
+  - A caldeira ferve pela energia que tem.
+  - O calor vem 1/10 por vez e vai embora sem fonte.
+  - A coqueificadora faz coque de óleo pesado.
+- **Redes de fluido:** 2 testes. Dois barris num só multibloco nunca se alcançam; um duto junta o que toca.
+- **Mundo falso** (`server/tests/oil_c_tests.rs`, 3): a caldeira sobre um firebox ferve água; a coqueificadora sobre um firebox faz coque; saves inertes carregam como as máquinas novas.
+- **Em jogo** (`tools/test-game/bedrock.py`, etapa `petroleo_c`, mundo com 52 máquinas, sem "took too long"):
+  - **caldeira** sobre firebox com carvão: a água de um barril vira vapor; um barril vazio ao lado enche com 16.000 mB;
+  - **coqueificadora** sobre firebox: óleo pesado → coque de petróleo e óleo de coque;
+  - **craqueador**, com óleo e vapor de barris nas duas pontas: 4.000 mB de óleo craqueado, 1.000 de gás de petróleo, 100 de vapor gasto;
+  - **reformador** (bateria e catalisador), com óleo leve: aromáticos, reformgas e hidrogênio;
+  - **hidrotratador**, com óleo e hidrogênio: óleo dessulfurizado e gás ácido;
+  - **destilador a vácuo**, com óleo: as 4 frações.
+
 ## Pontes `m1_temp__`
 
 Nenhuma sai neste marco: nenhuma das 10 ficou produzível com as máquinas
