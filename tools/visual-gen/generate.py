@@ -282,6 +282,17 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(src / from_rel, target)
 
+    def liquid_texture(x):
+        target = 'assets/ntm/' + x['texture'].split(':', 1)[1]
+        copy(x.pop('texture_from'), target)
+        # `crop`: the part of the texture HBM's face shows (RenderBlocks takes
+        # its UVs from the face's bounds), or a plain patch to tint as HBM's
+        # untextured fluids, as the whole sprite.
+        if 'crop' in x:
+            from PIL import Image
+            cx, cy, cw, ch = x.pop('crop')
+            Image.open(out / target).crop((cx, cy, cx + cw, cy + ch)).save(out / target)
+
     dummy = spec['dummy']
     blocks = dict(spec['blocks'])
     # An entry `like` another (the twelve anvils) takes its machine, on that
@@ -353,14 +364,7 @@ def main():
             # A liquid file: drawn over the block's own model (horizon_liquid).
             l = {'liquids': [dict(x) for x in b['liquid']['liquids']]}
             for x in l['liquids']:
-                target = 'assets/ntm/' + x['texture'].split(':', 1)[1]
-                copy(x.pop('texture_from'), target)
-                # `crop`: the part of the texture HBM's face shows (RenderBlocks
-                # takes its UVs from the face's bounds), as the whole sprite.
-                if 'crop' in x:
-                    from PIL import Image
-                    cx, cy, cw, ch = x.pop('crop')
-                    Image.open(out / target).crop((cx, cy, cx + cw, cy + ch)).save(out / target)
+                liquid_texture(x)
             write_json(own(f'assets/ntm/horizon_liquid/{name}.json'), l)
         if 'block_model' in b:
             bm = b['block_model']
@@ -374,7 +378,7 @@ def main():
             m = dict(b['model'])
             m['liquids'] = [dict(x) for x in m.get('liquids', [])]
             for x in m['liquids']:
-                copy(x.pop('texture_from'), 'assets/ntm/' + x['texture'].split(':', 1)[1])
+                liquid_texture(x)
             if not m['liquids']:
                 del m['liquids']
             if 'merge' in m:
