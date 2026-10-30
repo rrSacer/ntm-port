@@ -12679,6 +12679,38 @@
     "ntm:heater_heatex": {
       "source": "energy batch 1: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
       "auto": false
+    },
+    "ntm:machine_steam_engine": {
+      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
+    },
+    "ntm:machine_industrial_turbine": {
+      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
+    },
+    "ntm:machine_chungus": {
+      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
+    },
+    "ntm:machine_condenser_powered": {
+      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
+    },
+    "ntm:machine_combustion_engine": {
+      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
+    },
+    "ntm:machine_diesel": {
+      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
+    },
+    "ntm:machine_turbinegas": {
+      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
+    },
+    "ntm:machine_turbofan": {
+      "source": "energy batches 2 and 3: no extracted model until the block gets its own entry (the content mod's fallback casing until then)",
+      "auto": false
     }
   }
 }
