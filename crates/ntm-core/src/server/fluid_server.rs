@@ -1,9 +1,9 @@
 //! Fluid networks on the server (docs/fluidos.md): per dimension and fluid
-//! type, the machines that ducts of that type (or their own touching ports)
-//! join, rebuilt when ducts, machines or tank types change; then, each tick,
-//! `fluid::distribute` in each network.
+//! type, the machines that ducts of that type join (a bus), and the pairs
+//! of machines that touch (a port on a port), rebuilt when ducts, machines
+//! or tank types change; then, each tick, `fluid::distribute` in each.
 use super::*;
-use crate::{energy::Topology, fluid, machine::Data};
+use crate::{energy::Port, fluid, machine::Data};
 
 /// The fluid networks of the world in play, and what they were built from.
 #[derive(Default)]
@@ -16,11 +16,16 @@ pub struct FluidNet {
     pending: Option<Rebuild>,
 }
 
-type Members = BTreeMap<Pos, Vec<crate::energy::Port>>;
+type Members = BTreeMap<Pos, Vec<Port>>;
+/// Each machine's proxy cells, by its core.
+type Proxies = BTreeMap<Pos, Vec<Pos>>;
+/// A fluid to build: (dimension, fluid), its ducts, machines and proxies.
+type Job = ((String, String), BTreeSet<Pos>, Members, Proxies);
 
 struct Rebuild {
     sig: u64,
-    todo: Vec<((String, String), BTreeSet<Pos>, Members)>,
+    /// (fluid, its ducts, its machines, their proxy cells).
+    todo: Vec<Job>,
     done: Vec<(String, String, Vec<Vec<Pos>>)>,
 }
 
@@ -82,9 +87,9 @@ impl Server {
         // do with it never passes it on (machines only touch, ducts carry).
         // Built with every machine of the dimension, each fluid's networks
         // walked them all: 32M of fuel in a world of 28 machines.
-        let mut users: BTreeMap<String, BTreeMap<Pos, Vec<crate::energy::Port>>> = BTreeMap::new();
+        let mut users: BTreeMap<String, BTreeMap<Pos, Vec<Port>>> = BTreeMap::new();
+        let mut proxies_of: BTreeMap<String, BTreeMap<Pos, Vec<Pos>>> = BTreeMap::new();
         let mut kinds: BTreeSet<(String, String)> = BTreeSet::new();
-        let mut any: BTreeMap<String, BTreeSet<Pos>> = BTreeMap::new();
         for ((dim, pos), m) in r.world.machines.iter_mut() {
             if r.loaded.get(&(dim.clone(), *pos)) != Some(&true) {
                 continue;
@@ -103,35 +108,28 @@ impl Server {
             if ports.is_empty() {
                 continue;
             }
-            // A multiblock's proxy cells carry its fluids as ducts (container_bridge).
+            // A multiblock's proxy cells are more of its ports
+            // (container_bridge): a duct or a machine touching one reaches it.
             let proxies = super::container_bridge::fluid_proxy_cells(&m.block, *pos, m.facing.as_deref());
             let Some(node) = m.logic_mut().fluid() else { continue };
             feed(at.rotate_left(7) ^ crate::hash::fnv64(dim.as_bytes()));
-            if node.accepts_any() && !proxies.is_empty() {
+            if node.accepts_any() {
                 feed(0x5a5a_a5a5);
-                any.entry(dim.clone()).or_default().extend(proxies.iter().copied());
             }
             for t in node.fluid_types() {
                 feed(crate::hash::fnv64(t.as_bytes()));
-                if !proxies.is_empty() {
-                    ducts.entry((dim.clone(), t.clone())).or_default().extend(proxies.iter().copied());
-                }
                 kinds.insert((dim.clone(), t));
             }
             users.entry(dim.clone()).or_default().insert(*pos, ports);
-        }
-        // Machines that take any fluid: their proxies in every network of
-        // their dimension.
-        for (dim, f) in &kinds {
-            if let Some(cells) = any.get(dim) {
-                ducts.entry((dim.clone(), f.clone())).or_default().extend(cells.iter().copied());
+            if !proxies.is_empty() {
+                proxies_of.entry(dim.clone()).or_default().insert(*pos, proxies);
             }
         }
         // Who is in each fluid's networks, read at every check (cheap) and
         // part of the shape: an empty barrel set to take joins at the next.
         let mut members: Vec<((String, String), Members)> = Vec::new();
         for (dim, f) in &kinds {
-            let mut m: BTreeMap<Pos, Vec<crate::energy::Port>> = BTreeMap::new();
+            let mut m: BTreeMap<Pos, Vec<Port>> = BTreeMap::new();
             for (p, ports) in users.get(dim).into_iter().flatten() {
                 let Some(node) = r.world.machines.get_mut(&(dim.clone(), *p)).and_then(|m| m.logic_mut().fluid()) else { continue };
                 if node.accepts_any() || node.fluid_demand(f) > 0 || node.fluid_offer(f) > 0 || node.fluid_types().contains(f) {
@@ -149,7 +147,9 @@ impl Server {
                 .into_iter()
                 .map(|((dim, f), machines)| {
                     let cables = ducts.remove(&(dim.clone(), f.clone())).unwrap_or_default();
-                    ((dim, f), cables, machines)
+                    let all = proxies_of.get(&dim);
+                    let proxies = machines.keys().filter_map(|p| all.and_then(|a| a.get(p)).map(|c| (*p, c.clone()))).collect();
+                    ((dim, f), cables, machines, proxies)
                 })
                 .collect();
             self.fluidnet.pending = Some(Rebuild { sig, todo, done: Vec::new() });
@@ -161,9 +161,9 @@ impl Server {
     fn fluid_rebuild_step(&mut self) {
         let Some(p) = &mut self.fluidnet.pending else { return };
         let mut walked = 0;
-        while let Some(((dim, f), cables, machines)) = p.todo.pop() {
-            walked += cables.len() + machines.len();
-            let nets = Topology::build(&cables, &machines).networks;
+        while let Some(((dim, f), cables, machines, proxies)) = p.todo.pop() {
+            walked += cables.len() + machines.len() + proxies.values().map(Vec::len).sum::<usize>();
+            let nets = fluid_networks(&cables, &machines, &proxies);
             p.done.push((dim, f, nets));
             if walked >= REBUILD_CELLS_PER_TICK {
                 break;
@@ -210,5 +210,109 @@ impl Server {
                 r.dirty = true;
             }
         }
+    }
+}
+
+/// One fluid's networks: each bus of ducts with every machine touching it
+/// (by a port at its core or by one of its proxy cells), and each pair of
+/// machines touching each other. A machine passes nothing on between two
+/// others that touch it, as in the NTM, where machines only touch and ducts
+/// carry: built as one graph, a barrel on one port of the cracker filled
+/// another barrel on its other port.
+pub fn fluid_networks(ducts: &BTreeSet<Pos>, machines: &Members, proxies: &Proxies) -> Vec<Vec<Pos>> {
+    use crate::energy::DIRS;
+    let add = |p: Pos, d: Pos| [p[0] + d[0], p[1] + d[1], p[2] + d[2]];
+    // Every cell a machine answers at, and the machine.
+    let mut owner: BTreeMap<Pos, Pos> = BTreeMap::new();
+    for &core in machines.keys() {
+        owner.insert(core, core);
+        for &c in proxies.get(&core).into_iter().flatten() {
+            owner.entry(c).or_insert(core);
+        }
+    }
+    // A machine's core is open where its ports are; its proxies all round.
+    let open = |cell: Pos, d: Pos| match machines.get(&cell) {
+        Some(ports) => ports.iter().any(|port| port.contains(&d)),
+        None => true,
+    };
+    let mut nets: Vec<Vec<Pos>> = Vec::new();
+    // Buses.
+    let mut seen: BTreeSet<Pos> = BTreeSet::new();
+    for &start in ducts {
+        if !seen.insert(start) {
+            continue;
+        }
+        let mut members: BTreeSet<Pos> = BTreeSet::new();
+        let mut queue = std::collections::VecDeque::from([start]);
+        while let Some(q) = queue.pop_front() {
+            for d in DIRS {
+                let n = add(q, d);
+                if ducts.contains(&n) {
+                    if seen.insert(n) {
+                        queue.push_back(n);
+                    }
+                } else if let Some(&m) = owner.get(&n)
+                    && open(n, [-d[0], -d[1], -d[2]])
+                {
+                    members.insert(m);
+                }
+            }
+        }
+        if members.len() > 1 {
+            nets.push(members.into_iter().collect());
+        }
+    }
+    // Machines touching.
+    let mut pairs: BTreeSet<(Pos, Pos)> = BTreeSet::new();
+    for (&cell, &a) in &owner {
+        for d in DIRS {
+            let n = add(cell, d);
+            if let Some(&b) = owner.get(&n)
+                && a != b
+                && open(cell, d)
+                && open(n, [-d[0], -d[1], -d[2]])
+            {
+                pairs.insert((a.min(b), a.max(b)));
+            }
+        }
+    }
+    nets.extend(pairs.into_iter().map(|(a, b)| vec![a, b]));
+    nets
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::energy::DIRS;
+
+    fn all_round() -> Vec<Port> {
+        vec![DIRS.to_vec()]
+    }
+
+    /// A barrel on each of two ports of a machine: each reaches the machine,
+    /// never the other barrel (in game the oil of one filled the other).
+    #[test]
+    fn two_barrels_on_one_machine_never_reach_each_other() {
+        let core = [0, 0, 0];
+        let proxies = BTreeMap::from([(core, vec![[-1, 0, 0], [1, 0, 0]])]);
+        let (a, b) = ([-2, 0, 0], [2, 0, 0]);
+        let machines: Members = [(core, all_round()), (a, all_round()), (b, all_round())].into_iter().collect();
+        let nets = fluid_networks(&BTreeSet::new(), &machines, &proxies);
+        assert!(nets.contains(&vec![a, core]) && nets.contains(&vec![core, b]), "{nets:?}");
+        assert!(!nets.iter().any(|n| n.contains(&a) && n.contains(&b)), "{nets:?}");
+    }
+
+    /// A duct carries: every machine on it shares one network, the machine
+    /// by its proxy cell; a closed side of a core takes no duct.
+    #[test]
+    fn a_duct_joins_what_touches_it() {
+        let core = [0, 0, 0];
+        let proxies = BTreeMap::from([(core, vec![[1, 0, 0]])]);
+        let (a, shut) = ([4, 0, 0], [0, 0, 2]);
+        let ducts: BTreeSet<Pos> = [[2, 0, 0], [3, 0, 0], [0, 0, 1]].into_iter().collect();
+        let machines: Members = [(core, vec![vec![[0, -1, 0]]]), (a, all_round()), (shut, vec![vec![[1, 0, 0]]])].into_iter().collect();
+        let nets = fluid_networks(&ducts, &machines, &proxies);
+        assert!(nets.contains(&vec![core, a]), "{nets:?}");
+        assert!(!nets.iter().any(|n| n.contains(&shut)), "{nets:?}");
     }
 }
