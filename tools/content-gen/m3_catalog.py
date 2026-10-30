@@ -50,6 +50,7 @@ def build(source=SOURCE, output=ROOT / 'content'):
         'machine_assembly_machine': ('Assembly Machine', 'Montadora'),
         'machine_chemical_plant': ('Chemical Plant', 'Planta Química'),
         'machine_purex': ('PUREX', 'PUREX'),
+        'machine_crystallizer': ('Ore Acidizer', 'Acidificador de Minério'),
         'machine_centrifuge': ('Centrifuge', 'Centrífuga'),
         'machine_gascent': ('Gas Centrifuge', 'Centrífuga de Gás'),
         'barrel_steel': ('Steel Barrel', 'Barril de Aço'),
@@ -73,6 +74,7 @@ def build(source=SOURCE, output=ROOT / 'content'):
                      'textures': surfaces,
                      'opaque_machine_textures': True,
                      'model_gap': 'NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage',
+                     **({'fluid_capacity_mb': 8000} if var == 'machine_crystallizer' else {}),
                      **({'fluid_capacity_mb': 16000 if var == 'barrel_steel' else 256000} if var in ('barrel_steel', 'machine_fluidtank') else {})})
     name, texture = registration(blocks, 'fluid_duct_neo', 'block')
     rows.append({'id': name, 'source_variable': 'fluid_duct_neo', 'type': 'block', 'category': 'duct',
@@ -179,7 +181,9 @@ def build(source=SOURCE, output=ROOT / 'content'):
         for entry in data['entries']:
             if entry['source_variable'] in set(names) | set(foundry_catalog.BLOCKS) | set(bedrock_catalog.MACHINES):
                 entry['content_id'] = 'ntm:' + entry['id']
-                entry['status'] = ('Bedrock stage-one content contract declared; extraction/slopping and visuals tracked by their agents'
+                entry['status'] = ('Crystallizer content declared; stage-two processing/upgrades tracked separately'
+                                   if entry['source_variable'] == 'machine_crystallizer' else
+                                   'Bedrock stage-one content contract declared; extraction/slopping and visuals tracked by their agents'
                                    if entry['source_variable'] in bedrock_catalog.MACHINES else
                                    'Foundry content contract declared; heat/processing/flow/casting tracked by the machine and visual agents'
                                    if entry['source_variable'] in foundry_catalog.BLOCKS else

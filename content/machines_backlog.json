@@ -1634,7 +1634,8 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "not ported; heuristic flags require machine agent verification"
+      "status": "Crystallizer content declared; stage-two processing/upgrades tracked separately",
+      "content_id": "ntm:machine_crystallizer"
     },
     {
       "id": "machine_uf6_tank",

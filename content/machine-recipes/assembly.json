@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 412,
+    "emitted": 413,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 219,
+    "skipped_source_calls": 218,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1771,6 +1771,55 @@
       "pools": [],
       "label": "Centrífuga de Gás",
       "label_en": "Gas Centrifuge"
+    },
+    {
+      "name": "ass.acidizer",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:289",
+      "duration": 200,
+      "power": 100,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:plate_welded__steel"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:shell__titanium"
+          ],
+          "count": 3
+        },
+        {
+          "ids": [
+            "ntm:ingot_desh"
+          ],
+          "count": 4
+        },
+        {
+          "ids": [
+            "ntm:motor"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:circuit__basic"
+          ],
+          "count": 2
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:machine_crystallizer",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Acidificador de Minério",
+      "label_en": "Ore Acidizer"
     },
     {
       "name": "ass.epress",
@@ -13951,12 +14000,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:286",
       "reason": "unregistered/ambiguous source item machine_transformer",
       "expression": "new GenericRecipe(\"ass.arcfurnace\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_arc_furnace, 1))\n\t\t\t\t.inputItems(new OreDictStack(ANY_CONCRETE.any(), 12), new OreDictStack(ANY_PLASTIC.ingot(), 8), new ComparableStack(ModItems.ingot_firebrick, 16),new OreDictStack(STEEL.plateCast(), 8), new ComparableStack(ModBlocks.machine_transformer, 1), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.ANALOG.ordinal()))\n\t\t\t\t.inputItemsEx(new OreDictStack(ANY_CONCRETE.any(), 12), new ComparableStack(ModItems.item_expensive, 4, EnumExpensiveType.HEAVY_FRAME), new ComparableStack(ModItems.ingot_firebrick, 16), new ComparableStack(ModBlocks.machine_transformer, 1), new ComparableStack(ModItems.circuit, 3, EnumCircuitType.ANALOG.ordinal()))"
-    },
-    {
-      "name": "ass.acidizer",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:289",
-      "reason": "unregistered/ambiguous source item machine_crystallizer",
-      "expression": "new GenericRecipe(\"ass.acidizer\").setup(200, 100).outputItems(new ItemStack(ModBlocks.machine_crystallizer, 1))\n\t\t\t\t.inputItems(new OreDictStack(STEEL.plateWelded(), 2), new OreDictStack(TI.shell(), 3), new OreDictStack(DESH.ingot(), 4), new ComparableStack(ModItems.motor, 1), new ComparableStack(ModItems.circuit, 2, EnumCircuitType.BASIC))\n\t\t\t\t.inputItemsEx(new ComparableStack(ModItems.item_expensive, 2, EnumExpensiveType.HEAVY_FRAME), new OreDictStack(TI.shell(), 3), new ComparableStack(ModItems.motor, 1), new ComparableStack(ModItems.item_expensive, 1, EnumExpensiveType.CIRCUIT))"
     },
     {
       "name": "ass.electrolyzer",

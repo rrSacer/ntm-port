@@ -59,6 +59,26 @@
       "model_gap": "NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage"
     },
     {
+      "id": "machine_crystallizer",
+      "source_variable": "machine_crystallizer",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:beehive",
+      "names": {
+        "en_us": "Ore Acidizer",
+        "pt_br": "Acidificador de Minério"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/machine_crystallizer.png",
+      "textures": {
+        "side": "blocks/machine_crystallizer",
+        "top": "blocks/machine_crystallizer",
+        "front": "blocks/machine_crystallizer"
+      },
+      "opaque_machine_textures": true,
+      "model_gap": "NTM TESR/multiblock represented by one oriented cube using original texture; Rust owns processing/storage",
+      "fluid_capacity_mb": 8000
+    },
+    {
       "id": "machine_centrifuge",
       "source_variable": "machine_centrifuge",
       "type": "block",

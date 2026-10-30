@@ -338,6 +338,7 @@
     "ntm:machine_assembly_machine",
     "ntm:machine_chemical_plant",
     "ntm:machine_purex",
+    "ntm:machine_crystallizer",
     "ntm:machine_centrifuge",
     "ntm:machine_gascent",
     "ntm:barrel_steel",
