@@ -12,8 +12,10 @@ pub mod bedrock;
 pub mod blast;
 pub mod blastfurnace;
 pub mod blockstate;
+pub mod boiler;
 pub mod bomb;
 pub mod client;
+pub mod coker;
 pub mod crafter;
 pub mod electrolyser;
 pub mod energy;
@@ -27,6 +29,7 @@ pub mod hash;
 pub mod kv;
 pub mod machine;
 pub mod persist;
+pub mod processing;
 pub mod press;
 pub mod probes;
 pub mod proto;
@@ -76,6 +79,11 @@ pub fn warm_tables() {
     arc_furnace::warm();
     refinery::recipes();
     fraction::recipes();
+    boiler::steps();
+    coker::recipes();
+    for s in [processing::Shape::Cracker, processing::Shape::Reformer, processing::Shape::Hydrotreater, processing::Shape::Vacuum] {
+        s.recipes();
+    }
     electrolyser::metal_recipes();
     foundry::Tables::ntm();
     shredder::Recipes::ntm();

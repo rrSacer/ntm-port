@@ -373,6 +373,7 @@ impl Server {
             trace(3);
             self.slots_in(host);
             trace(4);
+            self.heat_tick();
             self.simulate(host);
             trace(5);
             self.fluids_tick();

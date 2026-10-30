@@ -119,6 +119,8 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::ArcFurnace(f) => Some(f),
         Data::Electrolyser(e) => Some(&mut **e),
         Data::Refinery(r) => Some(&mut **r),
+        Data::Coker(c) => Some(&mut **c),
+        Data::Processor(p) => Some(&mut **p),
         _ => None,
     }
 }
@@ -210,6 +212,13 @@ pub const SLOTTED: &[(&str, Layout)] = &[
             outputs: 0..1,
         },
     ),
+    // The oil chain's batch C with screens: GUIMachineCoker (0 the
+    // identifier, 1 the coke), the reformer and hydrotreater (11: 0 the
+    // battery, 10 the catalyst), the vacuum distiller (12: 0 the battery).
+    ("ntm:machine_coker", Layout::Native),
+    ("ntm:machine_catalytic_reformer", Layout::Native),
+    ("ntm:machine_hydrotreater", Layout::Native),
+    ("ntm:machine_vacuum_distill", Layout::Native),
     // ContainerMachineRefinery: 13 slots (`crate::refinery`).
     ("ntm:machine_refinery", Layout::Native),
     // ContainerMachineMixer: 0 the battery, 1 the item in, 2 the identifier

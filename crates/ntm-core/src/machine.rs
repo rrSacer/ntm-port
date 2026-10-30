@@ -59,6 +59,11 @@ pub enum Kind {
     /// The oil chain's batch B (`crate::refinery`, `crate::fraction`).
     Refinery,
     FractionTower,
+    /// The oil chain's batch C (`crate::boiler`, `crate::coker`,
+    /// `crate::processing`).
+    Boiler,
+    Coker,
+    Processor,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -147,6 +152,9 @@ pub enum Data {
     Electrolyser(Box<crate::electrolyser::Electrolyser>),
     Refinery(Box<crate::refinery::Refinery>),
     FractionTower(crate::fraction::FractionTower),
+    Boiler(crate::boiler::Boiler),
+    Coker(Box<crate::coker::Coker>),
+    Processor(Box<crate::processing::Processor>),
     Inert { name: String },
 }
 
@@ -192,6 +200,12 @@ impl Machine {
             Kind::Electrolyser => Data::Electrolyser(Default::default()),
             Kind::Refinery => Data::Refinery(Default::default()),
             Kind::FractionTower => Data::FractionTower(Default::default()),
+            Kind::Boiler => Data::Boiler(crate::boiler::Boiler::new(block_id == "ntm:machine_industrial_boiler")),
+            Kind::Coker => Data::Coker(Default::default()),
+            Kind::Processor => match crate::processing::Shape::of(block_id) {
+                Some(s) => Data::Processor(Box::new(crate::processing::Processor::new(s))),
+                None => Data::Inert { name: block_id.into() },
+            },
             Kind::Crafter => match crate::crafter::Station::of(block_id) {
                 Some(st) => Data::Crafter(crate::crafter::Crafter::new(st)),
                 None => Data::Inert { name: block_id.into() },
@@ -259,6 +273,9 @@ impl Machine {
             Data::Electrolyser(_) => Kind::Electrolyser,
             Data::Refinery(_) => Kind::Refinery,
             Data::FractionTower(_) => Kind::FractionTower,
+            Data::Boiler(_) => Kind::Boiler,
+            Data::Coker(_) => Kind::Coker,
+            Data::Processor(_) => Kind::Processor,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -291,6 +308,9 @@ impl Machine {
             Data::Electrolyser(m) => &**m,
             Data::Refinery(m) => &**m,
             Data::FractionTower(m) => m,
+            Data::Boiler(m) => m,
+            Data::Coker(m) => &**m,
+            Data::Processor(m) => &**m,
             Data::Inert { name } => name,
         }
     }
@@ -323,6 +343,9 @@ impl Machine {
             Data::Electrolyser(m) => &mut **m,
             Data::Refinery(m) => &mut **m,
             Data::FractionTower(m) => m,
+            Data::Boiler(m) => m,
+            Data::Coker(m) => &mut **m,
+            Data::Processor(m) => &mut **m,
             Data::Inert { name } => name,
         }
     }
