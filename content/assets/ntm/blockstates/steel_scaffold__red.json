@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "ntm:block/steel_scaffold__red"
+    },
+    "axis=x": {
+      "model": "ntm:block/steel_scaffold__red",
+      "x": 90,
+      "y": 90
+    },
+    "axis=z": {
+      "model": "ntm:block/steel_scaffold__red",
+      "x": 90
+    }
+  }
+}
