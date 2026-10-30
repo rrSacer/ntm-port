@@ -17,6 +17,7 @@ impl Server {
     pub fn native(host: &mut impl ServerHost, tick: u64) -> Self {
         let mut s = Server::new(&mut crate::kv::MemKv::default(), tick);
         s.tick = tick;
+        s.native = true;
         s.enter_world(host, "native".into());
         s
     }
@@ -219,6 +220,7 @@ mod tests {
         data: BTreeMap<Pos, Vec<i32>>,
         saved: BTreeMap<Pos, String>,
         signal: BTreeMap<Pos, u8>,
+        buttons: Vec<(String, String, Pos, u32)>,
         kv: crate::kv::MemKv,
     }
 
@@ -260,6 +262,9 @@ mod tests {
         }
         fn save_machine(&mut self, _dim: &str, p: Pos, json: &str) {
             self.saved.insert(p, json.into());
+        }
+        fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
+            std::mem::take(&mut self.buttons)
         }
         fn redstone_many(&mut self, _dim: &str, cells: &[Pos]) -> Vec<Option<u8>> {
             cells.iter().map(|p| Some(self.signal.get(p).copied().unwrap_or(0))).collect()
@@ -320,6 +325,12 @@ mod tests {
         again.native_tick(&mut w, 130);
         let Data::Battery(b) = &again.ready().unwrap().world.machines[&(OW.to_string(), bat)].data else { panic!() };
         assert!(b.powered && b.effective() == b.mode_high);
+        // A menu button reaches it with no player of the old session (the
+        // game checked the menu's reach): redLow output → none.
+        w.buttons.push(("p".into(), OW.into(), bat, 0));
+        again.native_tick(&mut w, 131);
+        let Data::Battery(b) = &again.ready().unwrap().world.machines[&(OW.to_string(), bat)].data else { panic!() };
+        assert_eq!(b.mode, crate::machine::BatteryMode::None, "o botão 0 avançou o redLow");
         let r = again.ready().unwrap();
         assert_eq!(r.world.cables.len(), 3, "os três cabos achados nos blocos");
         let Data::ElectricFurnace(f) = &r.world.machines[&(OW.to_string(), fur)].data else { panic!() };

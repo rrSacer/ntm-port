@@ -222,6 +222,9 @@ pub struct Server {
     /// The machine an action or a break starts from: the snapshot the
     /// transactions it makes keep.
     snapshot: Option<(Key, Machine)>,
+    /// Run by the native bundle (`native_server.rs`): the game checks a
+    /// menu's reach itself before a button comes.
+    native: bool,
 }
 
 impl Server {
@@ -286,6 +289,7 @@ impl Server {
             client_at: None,
             notes,
             snapshot: None,
+            native: false,
         }
     }
 
@@ -1416,6 +1420,9 @@ impl Server {
 
     /// Whether the client's player may use the machine at `key`.
     fn within_reach(&self, key: &Key) -> bool {
+        if self.native {
+            return true;
+        }
         let Some(p) = self.client_player() else {
             return false;
         };
