@@ -136,6 +136,8 @@
   "content/data/ntm/recipe/ingot_schrabidium_from_smelting_powder_schrabidium.json",
   "content/data/ntm/recipe/ingot_sr90_from_blasting_powder_sr90.json",
   "content/data/ntm/recipe/ingot_sr90_from_smelting_powder_sr90.json",
+  "content/data/ntm/recipe/ingot_starmetal_from_blasting_crystal_starmetal.json",
+  "content/data/ntm/recipe/ingot_starmetal_from_smelting_crystal_starmetal.json",
   "content/data/ntm/recipe/ingot_steel_from_blasting_powder_steel.json",
   "content/data/ntm/recipe/ingot_steel_from_smelting_powder_steel.json",
   "content/data/ntm/recipe/ingot_tantalium_from_blasting_powder_tantalium.json",

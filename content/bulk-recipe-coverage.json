@@ -569,6 +569,15 @@
       }
     },
     {
+      "id": "ntm:bulk__9407b3c2d2ef2d4f03",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:196",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ring_starmetal",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__137e02c565892a4333",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:199",
       "type": "minecraft:crafting_shapeless",
@@ -1469,6 +1478,15 @@
       }
     },
     {
+      "id": "ntm:bulk__830d523fd96c22a26a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:691",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:rune_blank",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__104702eade10340e48",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:699",
       "type": "minecraft:crafting_shapeless",
@@ -1879,6 +1897,42 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:cobalt_boots",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4572a44692380345a7",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:174",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:starmetal_helmet",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__be8e7b109440f6900f",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:175",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:starmetal_plate",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1da3213f7a2b9c6227",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:176",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:starmetal_legs",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__b261b278c181377038",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:177",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:starmetal_boots",
         "count": 1
       }
     },
@@ -3305,6 +3359,15 @@
       }
     },
     {
+      "id": "ntm:bulk__d2c0cd3441ccde903b",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:244",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_schrabidium_cluster",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__73dc0c1f39d971de54",
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:245",
       "type": "minecraft:crafting_shaped",
@@ -3355,6 +3418,15 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:block_dura_steel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ff85237ab8d6c6d085",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:254",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:block_starmetal",
         "count": 1
       }
     },
@@ -3724,6 +3796,15 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:ingot_dura_steel",
+        "count": 9
+      }
+    },
+    {
+      "id": "ntm:bulk__447c2f8adcb92da912",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:301",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ingot_starmetal",
         "count": 9
       }
     },
@@ -5528,11 +5609,38 @@
       }
     },
     {
+      "id": "ntm:bulk__741b07ffc92cf98ca5",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:162",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_starmetal",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__30b37b47aa4cfb7919",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:162; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_starmetal",
+        "count": 2
+      }
+    },
+    {
       "id": "ntm:bulk__c0c2a3993277e6c7e4",
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:89",
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "minecraft:saddle",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0d4ac9f51b36798ee1",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:193",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:starmetal_hoe",
         "count": 1
       }
     },
@@ -5753,7 +5861,7 @@
       }
     }
   ],
-  "generated_count": 639,
+  "generated_count": 651,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -5934,12 +6042,6 @@
       "callee": "addShapelessAuto",
       "reason": "unregistered/ambiguous source item definitelyfood",
       "expression": "new ItemStack(ModItems.definitelyfood, 4), new Object[] { ANY_RUBBER.ingot(), Items.wheat, Items.rotten_flesh, Items.wheat_seeds, Items.wheat_seeds, Items.wheat_seeds }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:196",
-      "callee": "addRecipeAuto",
-      "reason": "unresolved ore dictionary STAR.ingot()",
-      "expression": "new ItemStack(ModItems.ring_starmetal, 1), new Object[] { \" S \", \"S S\", \" S \", 'S', STAR.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:197",
@@ -7596,12 +7698,6 @@
       "callee": "addShapelessAuto",
       "reason": "dynamic/unsupported metadata EnumSandType.QUARTZ.ordinal()",
       "expression": "new ItemStack(ModBlocks.sand_mix, 1, EnumSandType.QUARTZ.ordinal()), new Object[] { \"sand\", \"sand\", NETHERQUARTZ.dust(), NETHERQUARTZ.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:691",
-      "callee": "addRecipeAuto",
-      "reason": "unresolved ore dictionary STAR.ingot()",
-      "expression": "new ItemStack(ModItems.rune_blank, 1), new Object[] { \"PSP\", \"SDS\", \"PSP\", 'P', ModItems.powder_magic, 'S', STAR.ingot(), 'D', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BISMOID) }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:692",
@@ -9566,30 +9662,6 @@
       "expression": "new ItemStack(ModItems.mask_piss, 1), new Object[] { \"RRR\", 'R', ModItems.rag_piss }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:174",
-      "callee": "addRecipeAuto",
-      "reason": "unresolved ore dictionary STAR.ingot()",
-      "expression": "new ItemStack(ModItems.starmetal_helmet, 1), new Object[] { \"EEE\", \"ECE\", 'E', STAR.ingot(), 'C', ModItems.cobalt_helmet }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:175",
-      "callee": "addRecipeAuto",
-      "reason": "unresolved ore dictionary STAR.ingot()",
-      "expression": "new ItemStack(ModItems.starmetal_plate, 1), new Object[] { \"ECE\", \"EEE\", \"EEE\", 'E', STAR.ingot(), 'C', ModItems.cobalt_plate }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:176",
-      "callee": "addRecipeAuto",
-      "reason": "unresolved ore dictionary STAR.ingot()",
-      "expression": "new ItemStack(ModItems.starmetal_legs, 1), new Object[] { \"EEE\", \"ECE\", \"E E\", 'E', STAR.ingot(), 'C', ModItems.cobalt_legs }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:177",
-      "callee": "addRecipeAuto",
-      "reason": "unresolved ore dictionary STAR.ingot()",
-      "expression": "new ItemStack(ModItems.starmetal_boots, 1), new Object[] { \"E E\", \"ECE\", 'E', STAR.ingot(), 'C', ModItems.cobalt_boots }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:178",
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item schrabidium_helmet",
@@ -10670,12 +10742,6 @@
       "expression": "new ItemStack(Item.getItemFromBlock(ModBlocks.block_waste), 1), new Object[] { \"###\", \"###\", \"###\", '#', ModItems.nuclear_waste }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:244",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ingot_starmetal",
-      "expression": "new ItemStack(ModBlocks.block_schrabidium_cluster, 1), new Object[] { \"#S#\", \"SXS\", \"#S#\", '#', ModItems.ingot_schrabidium, 'S', ModItems.ingot_starmetal, 'X', ModItems.ingot_schrabidate }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:251",
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item block_meteor_cobble",
@@ -10692,12 +10758,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item block_yellowcake",
       "expression": "new ItemStack(Item.getItemFromBlock(ModBlocks.block_yellowcake), 1), new Object[] { \"###\", \"###\", \"###\", '#', ModItems.powder_yellowcake }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:254",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ingot_starmetal",
-      "expression": "new ItemStack(ModBlocks.block_starmetal, 1), new Object[] { \"###\", \"###\", \"###\", '#', ModItems.ingot_starmetal }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:272",
@@ -10722,12 +10782,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item block_yellowcake",
       "expression": "new ItemStack(ModItems.powder_yellowcake, 9), new Object[] { \"#\", '#', Item.getItemFromBlock(ModBlocks.block_yellowcake) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:301",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ingot_starmetal",
-      "expression": "new ItemStack(ModItems.ingot_starmetal, 9), new Object[] { \"#\", '#', ModBlocks.block_starmetal }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:319",
@@ -11516,12 +11570,6 @@
       "expression": "ModItems.lodestone, new ItemStack(ModItems.crystal_iron, 1), 5.0F"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:162",
-      "callee": "GameRegistry.addSmelting",
-      "reason": "unregistered/ambiguous source item ingot_starmetal",
-      "expression": "ModItems.crystal_starmetal, new ItemStack(ModItems.ingot_starmetal, 2), 2.0F"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:167",
       "callee": "GameRegistry.addSmelting",
       "reason": "unregistered/ambiguous source item ingot_chainsteel",
@@ -12036,12 +12084,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item starmetal_shovel",
       "expression": "new ItemStack(ModItems.starmetal_shovel, 1), new Object[] { \"I\", \"B\", \"I\", 'I', STAR.ingot(), 'B', ModItems.cobalt_decorated_shovel }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:193",
-      "callee": "addRecipeAuto",
-      "reason": "unresolved ore dictionary STAR.ingot()",
-      "expression": "new ItemStack(ModItems.starmetal_hoe, 1), new Object[] { \"IS\", \" B\", \" I\", 'I', STAR.ingot(), 'S', ModItems.ring_starmetal, 'B', ModItems.cobalt_decorated_hoe }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:194",
@@ -12832,7 +12874,7 @@
     {
       "source": "src/main/java/com/hbm/crafting/WeaponRecipes.java:201",
       "callee": "addRecipeAuto",
-      "reason": "unresolved ore dictionary STAR.ingot()",
+      "reason": "unregistered/ambiguous source item det_nuke",
       "expression": "new ItemStack(ModItems.mp_warhead_15_boxcar, 1), new Object[] { \"SNS\", \"CBC\", \"SFS\", 'S', STAR.ingot(), 'N', ModBlocks.det_nuke, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ADVANCED), 'B', ModBlocks.boxcar, 'F', Fluids.TRITIUM.getDict(16_000) }"
     },
     {

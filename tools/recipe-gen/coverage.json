@@ -1,9 +1,9 @@
 {
-  "catalog_items": 2686,
-  "vanilla_recipe_count": 237,
+  "catalog_items": 2695,
+  "vanilla_recipe_count": 239,
   "temporary_count": 10,
   "press_count": 47,
-  "furnace_count": 251,
+  "furnace_count": 252,
   "recipes": [
     {
       "id": "ntm:block_aluminium_from_ingot_aluminium",
@@ -1093,6 +1093,16 @@
     {
       "id": "ntm:ingot_cobalt_from_blasting_crystal_cobalt",
       "source": "crafting/SmeltingRecipes.java:161; blasting is 26.3 port extension",
+      "temporary": false
+    },
+    {
+      "id": "ntm:ingot_starmetal_from_smelting_crystal_starmetal",
+      "source": "crafting/SmeltingRecipes.java:162",
+      "temporary": false
+    },
+    {
+      "id": "ntm:ingot_starmetal_from_blasting_crystal_starmetal",
+      "source": "crafting/SmeltingRecipes.java:162; blasting is 26.3 port extension",
       "temporary": false
     },
     {
@@ -2701,10 +2711,12 @@
     "ntm:machine_chemical_plant",
     "ntm:machine_chungus",
     "ntm:machine_coker",
+    "ntm:machine_combustion_engine",
     "ntm:machine_condenser",
     "ntm:machine_condenser_powered",
     "ntm:machine_crucible",
     "ntm:machine_crystallizer",
+    "ntm:machine_diesel",
     "ntm:machine_electrolyser",
     "ntm:machine_excavator",
     "ntm:machine_flare",
@@ -2727,6 +2739,8 @@
     "ntm:machine_solidifier",
     "ntm:machine_steam_engine",
     "ntm:machine_transformer",
+    "ntm:machine_turbinegas",
+    "ntm:machine_turbofan",
     "ntm:machine_vacuum_distill",
     "ntm:machine_well",
     "ntm:magnetron",
@@ -3239,6 +3253,10 @@
     "ntm:pipe__steel",
     "ntm:pipes_steel",
     "ntm:piston_selenium",
+    "ntm:piston_set__desh",
+    "ntm:piston_set__dura",
+    "ntm:piston_set__starmetal",
+    "ntm:piston_set__steel",
     "ntm:plant_flower__cd0",
     "ntm:plant_flower__cd1",
     "ntm:plant_flower__foxglove",

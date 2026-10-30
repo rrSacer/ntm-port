@@ -5,6 +5,10 @@
   "order": 1,
   "items": [
     "ntm:piston_selenium",
+    "ntm:piston_set__desh",
+    "ntm:piston_set__dura",
+    "ntm:piston_set__starmetal",
+    "ntm:piston_set__steel",
     "ntm:drillbit__desh",
     "ntm:drillbit__desh_diamond",
     "ntm:drillbit__ferro",
