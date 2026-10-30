@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:steel_scaffold__white",
+    "count": 8
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SDS",
+    "SSS"
+  ],
+  "key": {
+    "S": "ntm:steel_scaffold",
+    "D": "#ntm:bulk/dyewhite"
+  }
+}

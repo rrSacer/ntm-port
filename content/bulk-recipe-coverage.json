@@ -1172,6 +1172,42 @@
       }
     },
     {
+      "id": "ntm:bulk__37b3e25f71a884f89c",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:470",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:steel_scaffold",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__df984e900dd6a872de",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:471",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:steel_scaffold__red",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__a09001c449fafad346",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:472",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:steel_scaffold__white",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__7b04bbb6c7d65b02f8",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:473",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:steel_scaffold__yellow",
+        "count": 8
+      }
+    },
+    {
       "id": "ntm:bulk__30104e992abe9bf3a6",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:505",
       "type": "minecraft:crafting_shapeless",
@@ -5609,7 +5645,7 @@
       }
     }
   ],
-  "generated_count": 623,
+  "generated_count": 627,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -6738,30 +6774,6 @@
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary STEEL.bolt()",
       "expression": "new ItemStack(ModBlocks.rebar, 8), new Object[] { \"BB\", \"BB\", 'B', STEEL.bolt() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:470",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype steel_scaffold:0",
-      "expression": "new ItemStack(ModBlocks.steel_scaffold, 8, 0), new Object[] { \"SSS\", \"SDS\", \"SSS\", 'S', ModBlocks.steel_scaffold, 'D', \"dyeGray\" }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:471",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype steel_scaffold:1",
-      "expression": "new ItemStack(ModBlocks.steel_scaffold, 8, 1), new Object[] { \"SSS\", \"SDS\", \"SSS\", 'S', ModBlocks.steel_scaffold, 'D', \"dyeRed\" }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:472",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype steel_scaffold:2",
-      "expression": "new ItemStack(ModBlocks.steel_scaffold, 8, 2), new Object[] { \"SSS\", \"SDS\", \"SSS\", 'S', ModBlocks.steel_scaffold, 'D', \"dyeWhite\" }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:473",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype steel_scaffold:3",
-      "expression": "new ItemStack(ModBlocks.steel_scaffold, 8, 3), new Object[] { \"SSS\", \"SDS\", \"SSS\", 'S', ModBlocks.steel_scaffold, 'D', \"dyeYellow\" }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:475",
