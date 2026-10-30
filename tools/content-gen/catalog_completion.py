@@ -34,4 +34,22 @@ def build(source):
                      'source_texture':f'src/main/resources/assets/hbm/textures/items/{texture}.png',
                      'overlay_textures':[{'source':'src/main/resources/assets/hbm/textures/items/chemical_dye_overlay.png','tint':{'multiply':f'{int(color):06X}'}}],
                      'names':{loc:loc_tr[f'item.chemical_dye.{suffix}.name'] for loc,loc_tr in tr.items()}})
+    blocks = (source / (BASE + 'blocks/ModBlocks.java')).read_text()
+    for var in ['powder_cement','ingot_semtex','ingot_schraranium','meteorite_sword_treated','meteorite_sword_etched']:
+        name,texture = registration(items,var,'item')
+        sword = var.startswith('meteorite_sword_')
+        rows.append({'id':name,'type':'item','category':'component' if sword else 'ingot' if var.startswith('ingot_') else 'powder',
+                     'source_variable':var,'source_texture':f'src/main/resources/assets/hbm/textures/items/{texture}.png',
+                     'names':{loc:loc_tr[f'item.{name}.name'] for loc,loc_tr in tr.items()},
+                     **({'max_stack_size':1} if sword else {}),
+                     'behavior_gap':'Processing identity only; special sword abilities and indestructibility remain in equipment backlog' if sword else
+                                    'Original edible/special item use is not reproduced; processing identity and hazard data only'})
+    for var in ['block_graphite','rebar']:
+        name,texture = registration(blocks,var,'block')
+        texture = texture or name  # BlockBase.setBlockName sets its own texture.
+        rows.append({'id':name,'type':'block','category':'decorative','source_variable':var,
+                     'template':'minecraft:iron_bars' if var=='rebar' else 'minecraft:iron_block' if var=='block_graphite' else 'minecraft:stone',
+                     'source_texture':f'src/main/resources/assets/hbm/textures/blocks/{texture}.png',
+                     'names':{loc:loc_tr[f'tile.{name}.name'] for loc,loc_tr in tr.items()},
+                     'behavior_gap':'Original block texture with cube JSON fallback; graphite fire/heat and rebar custom geometry are not reproduced'})
     return rows

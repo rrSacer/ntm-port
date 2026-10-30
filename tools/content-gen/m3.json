@@ -19666,6 +19666,94 @@
       }
     },
     {
+      "id": "powder_cement",
+      "type": "item",
+      "category": "powder",
+      "source_variable": "powder_cement",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/powder_cement.png",
+      "names": {
+        "en_us": "Cement",
+        "pt_br": "Cimento"
+      },
+      "behavior_gap": "Original edible/special item use is not reproduced; processing identity and hazard data only"
+    },
+    {
+      "id": "ingot_semtex",
+      "type": "item",
+      "category": "ingot",
+      "source_variable": "ingot_semtex",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_semtex.png",
+      "names": {
+        "en_us": "Bar of Semtex",
+        "pt_br": "Barra de Semtex"
+      },
+      "behavior_gap": "Original edible/special item use is not reproduced; processing identity and hazard data only"
+    },
+    {
+      "id": "ingot_schraranium",
+      "type": "item",
+      "category": "ingot",
+      "source_variable": "ingot_schraranium",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_schraranium.png",
+      "names": {
+        "en_us": "Schraranium Ingot",
+        "pt_br": "Lingote de Schrarânio"
+      },
+      "behavior_gap": "Original edible/special item use is not reproduced; processing identity and hazard data only"
+    },
+    {
+      "id": "meteorite_sword_treated",
+      "type": "item",
+      "category": "component",
+      "source_variable": "meteorite_sword_treated",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/meteorite_sword.png",
+      "names": {
+        "en_us": "Meteorite Sword (Treated)",
+        "pt_br": "Espada de Meteorito (Tratada)"
+      },
+      "max_stack_size": 1,
+      "behavior_gap": "Processing identity only; special sword abilities and indestructibility remain in equipment backlog"
+    },
+    {
+      "id": "meteorite_sword_etched",
+      "type": "item",
+      "category": "component",
+      "source_variable": "meteorite_sword_etched",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/meteorite_sword.png",
+      "names": {
+        "en_us": "Meteorite Sword (Etched)",
+        "pt_br": "Espada de Meteorito (Gravada)"
+      },
+      "max_stack_size": 1,
+      "behavior_gap": "Processing identity only; special sword abilities and indestructibility remain in equipment backlog"
+    },
+    {
+      "id": "block_graphite",
+      "type": "block",
+      "category": "decorative",
+      "source_variable": "block_graphite",
+      "template": "minecraft:iron_block",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_graphite.png",
+      "names": {
+        "en_us": "Block of Graphite",
+        "pt_br": "Bloco de Grafite"
+      },
+      "behavior_gap": "Original block texture with cube JSON fallback; graphite fire/heat and rebar custom geometry are not reproduced"
+    },
+    {
+      "id": "rebar",
+      "type": "block",
+      "category": "decorative",
+      "source_variable": "rebar",
+      "template": "minecraft:iron_bars",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/rebar.png",
+      "names": {
+        "en_us": "Rebar",
+        "pt_br": "Vergalhão"
+      },
+      "behavior_gap": "Original block texture with cube JSON fallback; graphite fire/heat and rebar custom geometry are not reproduced"
+    },
+    {
       "id": "machine_crucible",
       "source_variable": "machine_crucible",
       "type": "block",
