@@ -4758,6 +4758,112 @@
 "pools": []
 },
 {
+"name": "ass.pwrfuel",
+"label": "Barra de Combustível do PWR ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:538",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__lead"
+],
+"n": 4,
+"label": "Placa Fundida de Chumbo"
+},
+{
+"ids": [
+"ntm:plate_welded__zirconium"
+],
+"n": 2,
+"label": "Placa Soldada de Zircônio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_fuel",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pwrcontrol",
+"label": "Barra de Controle do PWR ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:541",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 2,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:ingot_boron"
+],
+"n": 4,
+"label": "Lingote de Boro"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 1,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_control",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pwrchannel",
+"label": "Canal de Refrigeração do PWR ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:544",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 4,
+"label": "Tubo de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4,
+"label": "Placa de Cobre"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_channel",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.pwrheatex",
 "label": "Trocador de Calor do PWR ×4",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:547",
@@ -4920,6 +5026,46 @@
 [
 "ntm:pwr_casing",
 4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.pwrcontroller",
+"label": "Controlador do PWR",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:563",
+"duration": 200,
+"power": 500,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__lead"
+],
+"n": 4,
+"label": "Placa Fundida de Chumbo"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 4,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 4,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:pwr_controller",
+1,
 1.0
 ]
 ],
@@ -16456,5 +16602,5 @@
 "pools": []
 }
 ],
-"skipped": 174
+"skipped": 170
 }

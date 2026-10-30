@@ -627,6 +627,29 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
+    // Reactors R3 (6fb2e04f): the PWR's controller and its casing.
+    // Inert until their stage is approved.
+    BlockSpec {
+        id: "ntm:pwr_controller",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:pwr_block__internal",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    BlockSpec {
+        id: "ntm:pwr_block__port",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
     // Reactors R2 (2b74fe22): the RBMK's columns, consoles and panels.
     // Inert until their stage is approved.
     BlockSpec {
