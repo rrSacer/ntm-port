@@ -131,9 +131,11 @@ def setup(g):
     c=pile(g);a=fuel(c,1)['heat'];time.sleep(4);b=fuel(pile(g),1)['heat']
     g.command('setblock 36 101 10 ntm:fluid_duct_neo')
     type_duct(g,'air',[(36,101,10)],(34,100,7))
-    time.sleep(4)
-    cooled=pile(g);d=fuel(cooled,1)['heat']
-    g.check('vent_cools_heated_channel',d < b and b>a,{'no_air_before':a,'no_air_after':b,'air_after':d})
+    # Wait for the air to arrive again (it travels through the ducts), then compare.
+    deadline=time.monotonic()+60
+    while time.monotonic()<deadline and next(x for x in pile(g)['channels'] if x['kind']=='Ventilation')['air']<500:time.sleep(1)
+    h1=fuel(pile(g),1)['heat'];time.sleep(8);d=fuel(pile(g),1)['heat']
+    g.check('vent_cools_heated_channel',d < h1 and b>a,{'no_air_before':a,'no_air_after':b,'air_back':h1,'air_later':d})
     # A lever against the second loader starts the stroke (rising edge on its own cell).
     g.command('clear @s');g.command('give @s ntm:pile_rod__nu 1');g.ctl('select ntm:pile_rod__nu')
     interact(g,LOADERS[1],'north',(LOADERS[1][0]+.5,101,LOADERS[1][2]-2.5))
@@ -207,7 +209,11 @@ def form_b(g):
     g.command('fill 38 100 20 42 104 24 ntm:pile_brick')
     tool(g)
     interact(g,CORE_B,'north',(40.5,101,17.5))
-    g.check('b_formed',machine(g,CORE_B)['data']['Core']['shape']['depth']==5,machine(g,CORE_B)['data'])
+    for _ in range(40):
+        try:
+            data=machine(g,CORE_B)['data'];break
+        except ValueError:time.sleep(.5)
+    g.check('b_formed',data['Core']['shape']['depth']==5,data)
 
 
 def destroy(g):
@@ -251,6 +257,45 @@ def destroy(g):
     g.check('meltdown_logged',('pile meltdown' in log),log[-400:])
     items=g.ctl('entities')
     g.evidence['entities_after_meltdown']=items
+    nether_player(g)
+
+
+def overworld_is(g,p,name):
+    """Whether the Overworld block at p is `name`, wherever the player is."""
+    text=' '.join(g.command(f'execute in minecraft:overworld if block {p[0]} {p[1]} {p[2]} {name}').get('chat',[]))
+    return 'passed' in text.lower()
+
+
+def nether_player(g):
+    """A pile keeps simulating, and melts down, in the Overworld while the player is in the Nether."""
+    form_b(g)
+    for p in [(39,102,20),(41,102,20)]:interact(g,p,'north',(p[0]+.5,101,17.5))
+    for p in LOADERS_B:
+        g.command('clear @s');g.command('give @s ntm:pile_device__loader 1')
+        g.command(f'tp @s {p[0]+.5} 101 {p[2]-2.5}')
+        g.ctl(f'place {p[0]} {p[1]} {p[2]} --item ntm:pile_device__loader')
+    # Without controls or air this melts about half a minute after it is fully loaded.
+    for _ in range(5):load(g,LOADERS_B[0],'ra226be')
+    for _ in range(5):load(g,LOADERS_B[1],'nu')
+    # A forced Nether level ticks after the Overworld, so it is the level in place at
+    # the end of every server tick (the host cannot save Overworld block entities then,
+    # which is why every machine read happened above).
+    g.command('execute in minecraft:the_nether run forceload add 0 0')
+    time.sleep(3)
+    g.command('execute in minecraft:the_nether run fill -3 100 -3 3 104 3 minecraft:air')
+    g.command('execute in minecraft:the_nether run fill -3 99 -3 3 99 3 minecraft:netherrack')
+    g.command('execute in minecraft:the_nether run tp @s 0.5 100 0.5')
+    time.sleep(3)
+    here=g.ctl('block 0 99 0')['block']
+    g.check('player_in_nether',here=='minecraft:netherrack',here)
+    g.check('overworld_pile_still_loaded_when_leaving',overworld_is(g,CORE_B,'ntm:pile_block__core'),'core present')
+    deadline=time.monotonic()+150
+    while time.monotonic()<deadline and overworld_is(g,CORE_B,'ntm:pile_block__core'):time.sleep(2)
+    g.check('overworld_pile_melts_while_player_in_nether',not overworld_is(g,CORE_B,'ntm:pile_block__core'),'core gone')
+    g.check('player_level_restored_after_hook',g.ctl('block 0 99 0')['block']=='minecraft:netherrack',g.ctl('block 0 99 0'))
+    log=(g.folder/'client-reopen.log').read_text(errors='replace')
+    g.check('nether_meltdown_logged',log.count('pile meltdown')>=2,log.count('pile meltdown'))
+    g.command('execute in minecraft:overworld run tp @s 35.5 101 22.5')
 
 
 if __name__=='__main__':

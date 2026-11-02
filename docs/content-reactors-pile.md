@@ -14,7 +14,7 @@ O vent recebe AIR na face externa, em tanque de 4.000 mB, e enche o canal de ar 
 
 Quebrar um membro ou o núcleo desmonta a pile, devolvendo os membros ainda presentes a tijolos e ejetando as barras uma vez. A própria célula quebrada também volta a tijolo; o jogador quebra o tijolo em uma segunda ação. O hook de mudança disponível não distingue jogador, explosão e comando, portanto `/setblock` e `/fill` sobre um membro também são sobrescritos pela reversão, como no Java. Células descarregadas suspendem a simulação, sem serem tratadas como falha estrutural. O núcleo e cada membro usam os block entities/persistência existentes; membros órfãos voltam a tijolos quando a ausência do núcleo pode ser confirmada.
 
-**Dimensões e chunks.** O host só consegue ejetar itens e explodir na dimensão ativa (`native_explode` devolve `false` fora dela). Em vez de transformar a pile em tijolos e perder as barras, uma pile fora da dimensão ativa **congela** (simulação, dispositivos, varredura de órfãos e desmontagem), como as células descarregadas, e continua do ponto em que parou quando a dimensão volta a ser a ativa. Quebrar um membro com parte da pile em chunk descarregado desmonta a pile na hora, como o `breakBlock` do Java; as células descarregadas ficam para a varredura de órfãos.
+**Dimensões e chunks.** O host só consegue ejetar itens e explodir na dimensão que está em lugar (`native_explode` devolve `false` fora dela), e no fim do tick do servidor essa é a *última* dimensão que ticou (Overworld, Nether, End), não necessariamente a da pile ou a do jogador. Por isso cada dimensão com piles é colocada em lugar (`enter_level`) para o seu passo, e a dimensão original do host é restaurada ao final (`pile_enter`/`pile_restore`). Uma dimensão que o host não consiga colocar em lugar (fechada) **congela** a simulação, os dispositivos, a varredura de órfãos e a desmontagem, sem perder barras: a quebra do núcleo nesse estado mantém o núcleo até a dimensão poder ser alcançada. Quebrar um membro com parte da pile em chunk descarregado desmonta a pile na hora, como o `breakBlock` do Java; as células descarregadas ficam para a varredura de órfãos. Limitação preexistente do host, não da pile: com outro nível ticando depois do Overworld, os block entities do Overworld deixam de ser salvos (afeta todas as máquinas NTM).
 
 ## Reação e calor
 
@@ -57,10 +57,10 @@ O modelo tem testes de todas as barras, limiar de vida, formação em quatro ori
 
 ### Resultados (base rebaseada em `main` @ `01f0e8e3`, upstream `2f35078b3`, motor `2ca67d71e`)
 
-- `cargo test --workspace`: 298 testes unitários + 26 de integração, todos verdes; `cargo clippy --workspace -- -D warnings` limpo. Testes novos da revisão: loader lê só a própria célula, pile em dimensão inativa congela sem perder barras, quebra de membro com chunk descarregado desmonta na hora, meltdown reverte só o núcleo e a varredura reverte o resto, `air` salvo é limitado a 1000, enchimento do vent sem estouro.
+- `cargo test --workspace`: 300 testes unitários + 26 de integração, todos verdes; `cargo clippy --workspace -- -D warnings` limpo. Testes novos da revisão: loader lê só a própria célula, pile em dimensão inativa congela sem perder barras, quebra de membro com chunk descarregado desmonta na hora, meltdown reverte só o núcleo e a varredura reverte o resto, `air` salvo é limitado a 1000, enchimento do vent sem estouro.
 - 216 testes Python do `tools/content-gen` (seed 42, com `HORIZON_RESOURCES` apontando para os recursos do cliente 26.3); validadores de conteúdo e receitas passaram.
 - Build nativo release no pin atual com `SKIP_UPSTREAM_CHECK=1` (o upstream já tinha avançado para `8ee72368`; a prova foi feita no SHA congelado `2f35078b3`).
-- **Prova em jogo descartável** (`tools/test-game/native_pile.py`, mundo novo, Xvfb mudo, sem injetar estado): 23 verificações na montagem, 25 na reabertura do processo e 16 na fase de destruição, todas verdes.
+- **Prova em jogo descartável** (`tools/test-game/native_pile.py`, mundo novo, Xvfb mudo, sem injetar estado): 23 verificações na montagem, 25 na reabertura do processo e 31 na fase de destruição, todas verdes.
   - A broca desh forma a pile 5×5×5 (`formed_shape`) e perfura 5 canais: 2 de combustível, 1 de ventilação, 2 de controle. Loaders e controles são colocados como itens/blocos reais pelo gancho de face clicada.
   - Ar comprimido real: um barril de aço recebe `fluid_barrel_full__air` pela interface, o ar segue por dutos tipados AIR e enche o vent (4.000 mB) e o canal de ventilação (995 mB). Os pacotes `fluid_pack_full__*` não são despejáveis no motor, então o roteiro usa o barril.
   - **Alavancas reais**: os dois controles são alimentados por uma alavanca encostada na própria célula. Abertos: fluxo cruzado 7,24; fechados (alavancas desligadas): 0,19. No loader, com a barra de NU esperando, a alavanca desligada não carrega; ligada, carrega (`lever_loads_rod`).
@@ -69,6 +69,7 @@ O modelo tem testes de todas as barras, limiar de vida, formação em quatro ori
   - A broca no loader desfaz o canal e ejeta as barras.
   - Reabertura: identidade, geometria, canais, barras, depleção, calor, fluxo, nível de controle, ar e conteúdo de loader/vent/controle/barril continuam coerentes.
   - **Quebra por jogador** (`break` com o cliente, segunda pile 5×5×5): todas as 125 células viram `pile_brick`, inclusive a quebrada.
+  - **Jogador no Nether** (Nether com chunk forçado, pile no Overworld): o Overworld deixa de ser o nível em lugar no fim do tick, mas a pile continua simulando e derrete com explosão e ejeção, e o nível do jogador é restaurado depois do gancho (`overworld_pile_melts_while_player_in_nether`).
   - **Falha térmica** (pile sem controles nem ar, Ra226Be + Pu239 carregados por cliques): o núcleo e todos os membros terminam como tijolo/ar/fogo, sem sobrar `pile_block`, com explosão e o registro `pile meltdown` no log.
 
 ### Pendências registradas
@@ -76,4 +77,4 @@ O modelo tem testes de todas as barras, limiar de vida, formação em quatro ori
 - Leitura de redstone por direção (`Level::signal`) exigiria um hook novo no motor; as 5 faces extras contam (desvio documentado acima).
 - Índice dos núcleos: `pile_core_at` ainda varre as máquinas do mundo por chamada (custo medido irrelevante pelo revisor).
 - Casos especiais em código compartilhado (`block_slots`, `fluid_ports`, filtro de `block_event`) devem virar entradas de tabela do tipo se surgir um terceiro caso.
-- A prova de chunk partido e de outra dimensão em jogo não foi feita; ambas têm teste de servidor.
+- Chunk partido não foi provado em jogo (tem teste de servidor). Uma pile em dimensão fechada (nenhum nível aberto para ela) congela e só tem teste de servidor.
