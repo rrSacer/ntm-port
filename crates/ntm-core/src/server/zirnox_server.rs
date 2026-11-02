@@ -479,13 +479,26 @@ fn waste_block(block: &str, r: u64) -> Option<String> {
         "ntm:ore_uranium" => "ntm:ore_uranium_scorched",
         "ntm:ore_nether_uranium" => "ntm:ore_nether_uranium_scorched",
         "ntm:ore_gneiss_uranium" => "ntm:ore_gneiss_uranium_scorched",
-        _ => match crate::explosion::crater::classify(block).kind {
-            crate::explosion::crater::Kind::Wood => "ntm:waste_log",
-            crate::explosion::crater::Kind::Planks => "ntm:waste_planks",
-            _ => return None,
-        },
+        _ => waste_wood(b)?,
     };
     Some(out.into())
+}
+
+/// wasteDest's opaque wooden blocks, not the bomb crater's broader burnable
+/// category (which also contains fences, gates and inventory-bearing chests).
+fn waste_wood(block: &str) -> Option<&'static str> {
+    let name = block.strip_prefix("minecraft:")?;
+    let plain = name.strip_prefix("stripped_").unwrap_or(name);
+    let species = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "crimson", "warped", "bamboo"];
+    for wood in species {
+        if ["_log", "_wood", "_stem", "_hyphae"].iter().any(|suffix| plain.strip_suffix(suffix) == Some(wood)) {
+            return Some("ntm:waste_log");
+        }
+        if name.strip_suffix("_planks") == Some(wood) {
+            return Some("ntm:waste_planks");
+        }
+    }
+    matches!(name, "bamboo_block" | "stripped_bamboo_block" | "bamboo_mosaic" | "bookshelf" | "chiseled_bookshelf" | "crafting_table" | "note_block" | "jukebox" | "loom" | "cartography_table" | "fletching_table" | "smithing_table" | "barrel" | "beehive" | "bee_nest").then_some("ntm:waste_planks")
 }
 
 #[cfg(test)]
@@ -925,5 +938,18 @@ mod tests {
         assert_eq!(c.inputs, (0..24).collect::<Vec<_>>());
         assert!(c.outputs.is_empty());
         assert!(c.faces.iter().all(|v| v.len() == 24));
+    }
+    #[test]
+    fn waste_preserves_nonopaque_wood_and_transforms_logs_planks_and_mushrooms() {
+        let (mut h, mut s) = prepare();
+        let cases = [("oak_fence", "minecraft:oak_fence"), ("oak_fence_gate", "minecraft:oak_fence_gate"), ("chest", "minecraft:chest"), ("oak_log", "ntm:waste_log"), ("oak_planks", "ntm:waste_planks"), ("mushroom_stem", "ntm:waste_log"), ("brown_mushroom_block", "minecraft:air")];
+        for (i, (before, _)) in cases.iter().enumerate() {
+            h.blocks.insert((DIM.into(), [15, 64, i as i32]), format!("minecraft:{before}"));
+        }
+        s.ready.world.zirnox.waste.push(Waste { dim: DIM.into(), center: AT, cursor: 0, seed: 42 });
+        for t in 2..90 { s.native_tick(&mut h, t); }
+        for (i, (_, after)) in cases.iter().enumerate() {
+            assert_eq!(&h.blocks[&(DIM.into(), [15, 64, i as i32])], after);
+        }
     }
 }
