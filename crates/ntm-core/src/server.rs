@@ -27,6 +27,9 @@ pub trait ServerHost: Kv {
     fn zirnox_explode(&mut self, _dim: &str, _at: [f64;3]) -> bool { false }
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String>;
     fn set_blocks(&mut self, dim: &str, blocks: &[(Pos, String)]) -> Result<(), String>;
+    /// Role changes already represented by the confirmed model. Hosts may
+    /// suppress their synchronous notifications for these owner cells only.
+    fn set_machine_blocks(&mut self,dim:&str,blocks:&[(Pos,String)],_owners:&[(String,Pos)])->Result<(),String>{self.set_blocks(dim,blocks)}
     fn tell(&mut self, player: &str, text: &str);
     fn log(&mut self, text: &str);
     /// Saved sky light, weather/time subtraction, and visibility at y+1.
@@ -131,6 +134,7 @@ struct Ready {
     loaded: BTreeMap<Key, bool>,
     frozen: BTreeSet<Key>,
     broken:BTreeMap<Key,String>,
+    pending_buttons:Vec<(String,String,Pos,u32)>,
     /// The state last written or seen, per machine.
     shown: BTreeMap<Key, String>,
     /// Machines and cables whose block was missing at the last check.

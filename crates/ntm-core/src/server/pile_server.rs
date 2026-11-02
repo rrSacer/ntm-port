@@ -497,6 +497,7 @@ mod tests {
         inactive: BTreeSet<String>,
         refuse_commit:bool,
         refuse_items:bool,
+        drop_budget:Option<usize>,
     }
     impl Kv for Host {
         fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -541,6 +542,7 @@ mod tests {
         }
         fn drop_items(&mut self,_:&str,p:Pos,items:&[(String,u32)])->bool{
             if self.refuse_items{return false;}
+            if let Some(budget)=&mut self.drop_budget {if *budget==0{return false;}*budget-=1;}
             for (id,n) in items {for _ in 0..*n{self.drops.push((p,id.clone()));}}true
         }
         fn pile_explode(&mut self, _: &str, at: [f64; 3]) -> bool {
@@ -855,6 +857,23 @@ mod tests {
         h.refuse_commit=false;
         assert_eq!(s.native_pile_use(&mut h,DIM,[-1,64,0],[0,0,-1],Some(&tool),0.,"p"),Some(PileUse::WearDrill));
         assert_eq!(h.drops.len(),1);assert!(core(&mut s).channels.is_empty());
+    }
+    #[test]
+    fn a_partial_ejection_retry_and_clean_reopen_never_reemit_the_first_rod() {
+        let (mut s,mut h)=formed();drill(&mut s,&mut h,[-1,64,0],[0,0,-1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__nu",0.).unwrap());
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__zr",0.).unwrap());
+        h.blocks.insert(AT,"minecraft:air".into());s.native_block_changed(DIM,AT,pile::CORE,"minecraft:air");
+        h.drop_budget=Some(1);s.native_tick(&mut h,5);
+        assert_eq!(h.drops,vec![([-1,64,5],"ntm:pile_rod__zr".into())]);
+        let pending:usize=s.ready.world.machine_effects.iter().flat_map(|b|&b.effects).map(|e|match e{WorldEffect::Items{items,..}=>items.iter().map(|i|i.1 as usize).sum(),_=>0}).sum();
+        assert_eq!(pending+h.drops.len(),2,"remaining intents plus world items conserve both rods");
+        s.native_world_saved(&mut h,true);
+        let mut reopened=Server::native(&mut h,5);reopened.native_tick(&mut h,6);
+        assert_eq!(h.drops.len(),1);
+        h.drop_budget=None;for t in 7..11{reopened.native_tick(&mut h,t);}
+        assert_eq!(h.drops,vec![([-1,64,5],"ntm:pile_rod__zr".into()),([-1,64,5],"ntm:pile_rod__nu".into())]);
+        assert!(reopened.ready.world.machine_effects.is_empty());
     }
     #[test]
     fn effect_receipts_clear_only_after_a_flushed_world_save() {

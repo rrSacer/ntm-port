@@ -776,6 +776,7 @@ mod tests {
         assert!(!z(&s).on, "refused button step rolls back");
         h.refuse_data = false;
         h.refuse_save = false;
+        h.buttons.push(("p".into(), DIM.into(), AT, 0));
         for t in 3..20 { s.native_tick(&mut h, t); }
         assert!(!z(&s).on);
 
@@ -783,6 +784,15 @@ mod tests {
         let back: crate::machine::Machine = serde_json::from_str(&h.saved[&key()]).unwrap();
         let Data::Zirnox(z) = back.data else { panic!() };
         assert!(!z.on);
+    }
+    #[test]
+    fn a_refused_button_is_retried_once_with_the_machine_step() {
+        let mut h=Host::default();let mut s=Server::native(&mut h,0);
+        install(&mut h,&mut s,DIM,AT);s.native_tick(&mut h,1);
+        h.buttons.push(("p".into(),DIM.into(),AT,0));h.refuse_data=true;
+        s.native_tick(&mut h,2);assert!(!z(&s).on);
+        h.refuse_data=false;s.native_tick(&mut h,3);assert!(z(&s).on);
+        for t in 4..10{s.native_tick(&mut h,t);assert!(z(&s).on,"confirmed button must not toggle twice");}
     }
     #[test]
     fn life_conversion_breeding_and_real_outward_steam_network_work() {

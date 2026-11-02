@@ -13,6 +13,13 @@ pub const DETONATOR: &str = "ntm:detonator";
 /// Blocks read a tick to find the cables next to adopted machines.
 pub const CABLE_READS_PER_TICK: usize = 256;
 
+/// Keep each recorded change's identity. Only enrich it with the current
+/// block's properties when that block is still the event's new block type.
+/// Coalescing A→air→A into A→A would lose the old BE's confirmed removal.
+pub fn native_change_state(new:&str,current:Option<String>)->String {
+    current.filter(|s|blockstate::id_of(s)==blockstate::id_of(new)).unwrap_or_else(||new.into())
+}
+
 impl Server {
     /// A server for the native bundle, in its world.
     pub fn native(host: &mut impl ServerHost, tick: u64) -> Self {
@@ -506,8 +513,8 @@ mod tests {
         let mut s=Server::native(&mut w,0);s.native_block_changed(OW,AT,"minecraft:air",crate::zirnox::BLOCK);s.native_tick(&mut w,1);
         // The old BE is gone; this inventory belongs to a newly placed BE.
         w.slots.get_mut(&AT).unwrap()[25]=Some(Stack::new("minecraft:water_bucket",1));
-        s.native_block_changed(OW,AT,crate::zirnox::BLOCK,"minecraft:air");
-        s.native_block_changed(OW,AT,"minecraft:air",crate::zirnox::BLOCK);
+        s.native_block_changed(OW,AT,crate::zirnox::BLOCK,&native_change_state("minecraft:air",Some(crate::zirnox::BLOCK.into())));
+        s.native_block_changed(OW,AT,"minecraft:air",&native_change_state(crate::zirnox::BLOCK,Some(crate::zirnox::BLOCK.into())));
         s.native_tick(&mut w,2);
         assert_eq!(w.slots[&AT][25].as_ref().unwrap().id,"minecraft:water_bucket");
         s.native_tick(&mut w,3);

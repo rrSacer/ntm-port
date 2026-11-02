@@ -30,6 +30,17 @@ static CHANGES: Mutex<Vec<(String, [i32; 3], String, String)>> = Mutex::new(Vec:
 /// Menu buttons pressed: (player, dimension, position, button).
 static BUTTONS: Mutex<Vec<(String, String, [i32; 3], u32)>> = Mutex::new(Vec::new());
 
+/// Confirmed role writes already installed the model synchronously. Tag only
+/// their owner cells, so external breaks (including A→air→A) keep their identity.
+static OWNED_BLOCKS:Mutex<Vec<(String,[i32;3],String)>>=Mutex::new(Vec::new());
+struct OwnedBlockScope(Vec<(String,[i32;3],String)>);
+impl OwnedBlockScope {
+    fn new(cells:Vec<(String,[i32;3],String)>)->Self{Self(std::mem::replace(&mut *lock(&OWNED_BLOCKS),cells))}
+}
+impl Drop for OwnedBlockScope {
+    fn drop(&mut self){*lock(&OWNED_BLOCKS)=std::mem::take(&mut self.0);}
+}
+
 fn lock<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
     m.lock().unwrap_or_else(|e| e.into_inner())
 }
@@ -72,6 +83,9 @@ pub(super) fn world_saved(game:&mut crate::game::Game<'_>,wait:bool){
 /// A block changed on the server: kept when a machine or cable is in it.
 pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: [i32; 3], old: horizon_world::registry::BlockStateId, new: horizon_world::registry::BlockStateId) {
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
+    let mut owned=lock(&OWNED_BLOCKS);
+    if let Some(i)=owned.iter().position(|(d,p,n)|d==dim&&*p==pos&&n==ntm_core::blockstate::id_of(&new)) {owned.remove(i);return;}
+    drop(owned);
     let ours = |b: &str| b.starts_with("ntm:");
     if ours(&old) || ours(&new) {
         lock(&CHANGES).push((dim.to_string(), pos, old, new));
@@ -181,8 +195,10 @@ pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
     let (server, tick) = guard.get_or_insert_with(|| (Server::native(&mut host, 0), 0));
     *tick += 1;
     for (dim, pos, old, new) in changes {
-        // The whole state of what is there now (its facing).
-        let now = host.game.native_loaded_block(&dim, pos).unwrap_or(new);
+        // Preserve each break; enrich placement properties only while the
+        // recorded new block is still there. Owned role writes were tagged at
+        // their synchronous callback, so they cannot masquerade as removals.
+        let now = ntm_core::server::native_server::native_change_state(&new,host.game.native_loaded_block(&dim,pos));
         server.native_block_changed(&dim, pos, &old, &now);
     }
     server.native_tick(&mut host, *tick);
@@ -333,6 +349,11 @@ impl ServerHost for Host<'_, '_> {
     }
     fn set_blocks(&mut self, dim: &str, blocks: &[([i32; 3], String)]) -> Result<(), String> {
         self.game.native_set_blocks(dim, blocks)
+    }
+    fn set_machine_blocks(&mut self,dim:&str,blocks:&[([i32;3],String)],owners:&[(String,[i32;3])])->Result<(),String>{
+        let cells=blocks.iter().filter(|(p,_)|owners.iter().any(|(d,q)|d==dim&&q==p)).map(|(p,b)|(dim.to_string(),*p,ntm_core::blockstate::id_of(b).to_string())).collect();
+        let _scope=OwnedBlockScope::new(cells);
+        self.game.native_set_blocks(dim,blocks)
     }
     /// Send through the native player-specific chat and retain a log trace.
     fn tell(&mut self, player: &str, text: &str) {

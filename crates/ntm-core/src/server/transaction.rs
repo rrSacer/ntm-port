@@ -159,7 +159,13 @@ impl Server {
                     .front()
                     .unwrap();
                 let done = match effect {
-                    WorldEffect::Blocks { dim, blocks } => host.set_blocks(dim, blocks).is_ok(),
+                    WorldEffect::Blocks { dim, blocks } => host
+                        .set_machine_blocks(
+                            dim,
+                            blocks,
+                            &self.ready.world.machine_effects.front().unwrap().owners,
+                        )
+                        .is_ok(),
                     WorldEffect::Items { dim, pos, items } => host.drop_items(dim, *pos, items),
                     WorldEffect::PileExplosion { dim, pos } => host.pile_explode(dim, *pos),
                 };
@@ -329,7 +335,8 @@ impl Server {
     }
 
     pub(super) fn local_steps(&mut self, host: &mut impl ServerHost) {
-        let mut buttons = host.machine_buttons();
+        let mut buttons = std::mem::take(&mut self.ready.pending_buttons);
+        buttons.extend(host.machine_buttons());
         let mut groups: Vec<Vec<Key>> = Vec::new();
         let mut piles: BTreeMap<Key, Vec<Key>> = BTreeMap::new();
         for (k, m) in &self.ready.world.machines {
@@ -431,14 +438,11 @@ impl Server {
                     );
                 }
                 self.slots_in(&mut staged);
-                buttons.retain(|(_, d, p, b)| {
+                for (_, d, p, b) in &buttons {
                     if keys.contains(&(d.clone(), *p)) {
                         self.machine_button(&(d.clone(), *p), *b);
-                        false
-                    } else {
-                        true
                     }
-                });
+                }
                 self.pile_tick(&mut staged);
                 self.zirnox_tick(&mut staged);
                 for m in self.ready.world.machines.values_mut() {
@@ -517,6 +521,7 @@ impl Server {
                 }
                 accepted = staged.host.commit_machines(&commits);
                 if accepted {
+                    buttons.retain(|(_, d, p, _)| !keys.contains(&(d.clone(), *p)));
                     for k in &keys {
                         self.ready.broken.remove(k);
                         self.ready.world.removals.retain(|(key, _)| key != k);
@@ -566,5 +571,7 @@ impl Server {
             }
             self.ready.world.machines.append(&mut outside);
         }
+        buttons.retain(|(_, d, p, _)| self.ready.world.machines.contains_key(&(d.clone(), *p)));
+        self.ready.pending_buttons = buttons;
     }
 }
