@@ -335,7 +335,7 @@ fn draw_selector(game: &crate::game::Game<'_>, open: &Selector, batch: &mut HudB
     let width = |c: char| game.native_text_width(&c.to_string());
     let (first, text) = state.search.visible(field, width);
     game.native_text(batch, &text, [ox + x, oy + y], 0xFFFFFF, false);
-    if state.search.focused && (std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_millis()) / 500) % 2 == 0 {
+    if state.search.focused && (std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_millis()) / 500).is_multiple_of(2) {
         let before: String = text.chars().take(state.search.caret().saturating_sub(first)).collect();
         let cx = ox + x + game.native_text_width(&before);
         game.native_fill(batch, [cx, oy + y - 1.0, 1.0, 10.0], 0xFFFF_FFFF);

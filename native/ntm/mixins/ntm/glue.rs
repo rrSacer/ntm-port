@@ -414,7 +414,7 @@ fn stack(s: &Option<ItemStack>) -> Option<Stack> {
 fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
     let new = new?;
     match old {
-        Some(mut o) if &*o.item == new.id && o.damage == new.damage => {
+        Some(mut o) if *o.item == new.id && o.damage == new.damage => {
             o.count = new.count;
             Some(o)
         }
