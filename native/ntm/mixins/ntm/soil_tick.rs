@@ -1,0 +1,26 @@
+// WasteEarth uses the authoritative random-tick level already in place.
+fn ntm_soil_tick(
+    level: &mut crate::game::GameLevel<'_>,
+    ticks: &mut horizon_world::level::Ticks,
+    pos: horizon_core::position::BlockPos,
+    state: horizon_world::registry::BlockStateId,
+    handled: &mut bool,
+) {
+    if !level.native_authoritative { return; }
+    let name = &*level.facts.get(state).name;
+    if !matches!(name, "ntm:waste_earth" | "ntm:waste_mycelium") { return; }
+    *handled = true;
+    let above = [pos.x, pos.y + 1, pos.z];
+    // Same loaded-world light source as native_light; this hook holds a
+    // GameLevel, and its darken value belongs to this dimension, not Game.dim.
+    if !level.world.loaded(above[0], above[2]) { return; }
+    let raw = level.world.light(above[0], above[1], above[2]);
+    let light = (raw & 15).max((raw >> 4).saturating_sub(level.darken.clamp(0,15) as u8));
+    let opacity = level.facts.get(level.world.block(above[0], above[1], above[2])).dampening;
+    if ntm_core::zirnox::soil_decays(name, light, opacity)
+        && let Some(dirt) = level.registry.default_state("minecraft:dirt")
+    {
+        let behaviours = level.behaviours;
+        behaviours.set_block(level, ticks, pos, dirt, 3);
+    }
+}

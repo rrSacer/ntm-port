@@ -91399,14 +91399,15 @@
         "explosion_resistance": 0.6,
         "requires_tool": false,
         "sounds": "minecraft:grass_block",
-        "light": 0
+        "light": 0,
+        "random_ticks": true
       },
       "drop": "minecraft:dirt",
       "names": {
         "en_us": "Dead Grass",
         "pt_br": "Grama Morta"
       },
-      "behavior_gap": "Source mycelium spread is disabled by default; native ZIRNOX applies its radiation-on-walk rule. Vanilla dirt plant support differs from Cave-only source.",
+      "behavior_gap": "Native random ticks decay covered dark soil; cleanupDeadDirt and mycelium spread keep Java defaults false. Native ZIRNOX applies radiation on walking. Mushroom-to-mush conversion awaits the future mush catalog (K4); vanilla dirt plant support differs from Cave-only source.",
       "source_registry": "hbm:tile.waste_earth",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -91433,14 +91434,15 @@
         "explosion_resistance": 0.6,
         "requires_tool": false,
         "sounds": "minecraft:grass_block",
-        "light": 15
+        "light": 15,
+        "random_ticks": true
       },
       "drop": "minecraft:dirt",
       "names": {
         "en_us": "Glowing Mycelium",
         "pt_br": "Micélio Brilhante"
       },
-      "behavior_gap": "Source mycelium spread is disabled by default; native ZIRNOX applies its radiation-on-walk rule. Vanilla dirt plant support differs from Cave-only source.",
+      "behavior_gap": "Native random ticks decay covered dark soil; cleanupDeadDirt and mycelium spread keep Java defaults false. Native ZIRNOX applies radiation on walking. Mushroom-to-mush conversion awaits the future mush catalog (K4); vanilla dirt plant support differs from Cave-only source.",
       "source_registry": "hbm:tile.waste_mycelium",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",

@@ -72,9 +72,9 @@ def build(source):
         rows.append({'id':name,'source_variable':var,'type':'block','category':'fallout','template':'minecraft:dirt',
                      'source_texture':root+'blocks/'+side+'.png',
                      'surface_textures':{'side':root+'blocks/'+side+'.png','top':root+'blocks/'+top+'.png','bottom':root+'blocks/waste_earth_bottom.png'},
-                     'block_properties':{'hardness':0.6,'explosion_resistance':0.6,'requires_tool':False,'sounds':'minecraft:grass_block','light':15 if var=='waste_mycelium' else 0},
+                     'block_properties':{'hardness':0.6,'explosion_resistance':0.6,'requires_tool':False,'sounds':'minecraft:grass_block','light':15 if var=='waste_mycelium' else 0,'random_ticks':True},
                      'drop':'minecraft:dirt','names':{loc:tr['tile.'+name+'.name'] for loc,tr in translations.items()},
-                     'behavior_gap':'Source mycelium spread is disabled by default; native ZIRNOX applies its radiation-on-walk rule. Vanilla dirt plant support differs from Cave-only source.'})
+                     'behavior_gap':'Native random ticks decay covered dark soil; cleanupDeadDirt and mycelium spread keep Java defaults false. Native ZIRNOX applies radiation on walking. Mushroom-to-mush conversion awaits the future mush catalog (K4); vanilla dirt plant support differs from Cave-only source.'})
     for var in ['reactor_zirnox','zirnox_destroyed']:
         name,texture=registration(blocks,var,'block')
         rows.append({'id':name,'source_variable':var,'type':'block','category':'machine','template':'minecraft:beehive',

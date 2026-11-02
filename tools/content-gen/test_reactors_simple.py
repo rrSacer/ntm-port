@@ -41,6 +41,9 @@ class SimpleReactors(unittest.TestCase):
         for name in ['waste_earth','waste_mycelium']:
             row=rows[name]
             self.assertEqual(row['drop'],'minecraft:dirt')
+            self.assertTrue(row['block_properties']['random_ticks'])
+            declared=json.loads((ROOT/f'content/data/ntm/horizon/block/{name}.json').read_text())
+            self.assertTrue(declared['properties']['random_ticks'])
             for texture in row['surface_textures'].values():self.assertTrue((SOURCE/texture).is_file())
 
     def test_zirnox_hazard_targets_are_machine_readable(self):

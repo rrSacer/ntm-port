@@ -5,7 +5,8 @@
     "explosion_resistance": 0.6,
     "requires_tool": false,
     "sounds": "minecraft:grass_block",
-    "light": 15
+    "light": 15,
+    "random_ticks": true
   },
   "item": true
 }

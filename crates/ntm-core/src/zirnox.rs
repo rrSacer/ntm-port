@@ -14,6 +14,12 @@ pub const BLOCK: &str = "ntm:machine_zirnox";
 pub const DESTROYED: &str = "ntm:zirnox_destroyed";
 pub const MAX: i32 = 100_000;
 
+/// WasteEarth.updateTick with Java's default cleanupDeadDirt=false.
+pub fn soil_decays(block: &str, light_above: u8, opacity_above: u8) -> bool {
+    matches!(block, "ntm:waste_earth" | "ntm:waste_mycelium")
+        && light_above < 4 && opacity_above > 2
+}
+
 /// World-owned remnants outlive the reactor block, like Java entities.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
@@ -654,6 +660,15 @@ mod tests {
         assert_eq!(radiation_rate(&rod(1, 6250)), Some(37875));
         assert_eq!(radiation_rate(&rod(9, 20000)), Some(1));
         assert_eq!(radiation_rate(&rod(1, i32::MAX)), Some(150000));
+    }
+    #[test]
+    fn contaminated_soil_random_ticks_obey_light_and_opacity_with_default_cleanup_off() {
+        for block in ["ntm:waste_earth", "ntm:waste_mycelium"] {
+            assert!(soil_decays(block, 3, 3));
+            assert!(!soil_decays(block, 4, 15));
+            assert!(!soil_decays(block, 0, 2));
+        }
+        assert!(!soil_decays("minecraft:dirt", 0, 15));
     }
     #[test]
     fn debris_has_exact_counts_lifetimes_and_gaussian_launch_velocity() {
