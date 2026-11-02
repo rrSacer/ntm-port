@@ -259,70 +259,12 @@ fn dim_of(id: &str) -> Option<crate::game::Dim> {
     }
 }
 
-/// Puts the level that was in place back, whichever way the work ends.
-struct Back<'a, 'g> {
-    game: &'a mut crate::game::Game<'g>,
-    home: crate::game::Dim,
-}
-
-impl Drop for Back<'_, '_> {
-    fn drop(&mut self) {
-        if self.game.dim != self.home && self.game.enter_level(None, self.home).is_err() {
-            eprintln!("ntm: could not put {} back in place", self.home.id());
-        }
-    }
-}
-
-/// Puts the world that was in place back in its slot, whichever way the read ends.
-struct WorldBack<'a, 'g> {
-    game: &'a mut crate::game::Game<'g>,
-    dim: crate::game::Dim,
-}
-
-impl Drop for WorldBack<'_, '_> {
-    fn drop(&mut self) {
-        if let Some(parked) = self.game.levels.parked_world_mut(self.dim) {
-            std::mem::swap(&mut self.game.world, parked);
-        }
-    }
-}
-
-/// `native_redstone_many` for a level that is not in place, without switching levels:
-/// only its world takes the world slot for the read (the signals depend on blocks).
-fn parked_redstone(game: &mut crate::game::Game<'_>, dim: crate::game::Dim, cells: &[[i32; 3]]) -> Vec<Option<u8>> {
-    use horizon_core::position::BlockPos;
-    let none = vec![None; cells.len()];
-    let Some(parked) = game.levels.parked_world(dim) else { return none };
-    let loaded: Vec<bool> = cells.iter().map(|p| crate::game::native_world_read::loaded_state(parked, *p).is_ok()).collect();
-    if !loaded.contains(&true) {
-        return none;
-    }
-    let Some(parked) = game.levels.parked_world_mut(dim) else { return none };
-    std::mem::swap(&mut game.world, parked);
-    let back = WorldBack { game, dim };
-    back.game.with_level(|b, level, ticks| {
-        cells
-            .iter()
-            .zip(&loaded)
-            .map(|(p, loaded)| loaded.then(|| b.best_neighbor_signal(level, ticks, BlockPos::new(p[0], p[1], p[2])).clamp(0, 15) as u8))
-            .collect()
-    })
-}
-
-/// Run `f` with `dim`'s level in place, for what only the level in place can
-/// do (spawn an item, explode, tell its players). Lazily: it switches only
-/// when `dim` is not already in place, never opens a level, and the level in
-/// place is put back by a guard, also when `f` panics. None: `dim` is not open.
+/// Run `f` with `dim`'s level in place, for what only the level in place can do
+/// (spawn an item, explode, tell its players): the engine's passing visit
+/// (`visit_level`), which opens nothing, puts the level back also when `f`
+/// panics and leaves no trace (particles, idleness). None: `dim` is not open.
 fn in_place<R>(game: &mut crate::game::Game<'_>, dim: &str, f: impl FnOnce(&mut crate::game::Game<'_>) -> R) -> Option<R> {
-    let target = dim_of(dim)?;
-    if target == game.dim {
-        return Some(f(game));
-    }
-    game.levels.parked_world(target)?;
-    let home = game.dim;
-    game.enter_level(None, target).ok()?;
-    let back = Back { game, home };
-    Some(f(&mut *back.game))
+    game.visit_level(dim_of(dim)?, f)
 }
 
 impl ServerHost for Host<'_, '_> {
@@ -424,13 +366,9 @@ impl ServerHost for Host<'_, '_> {
         std::mem::take(&mut self.buttons)
     }
     fn redstone_many(&mut self, dim: &str, cells: &[[i32; 3]]) -> Vec<Option<u8>> {
-        match dim_of(dim) {
-            // The engine's own read puts the level in place and back every call, which
-            // zeroes its idleness (an unattended level with a reader never closed) and
-            // clears the particles of the level in place.
-            Some(target) if target != self.game.dim => parked_redstone(self.game, target, cells),
-            _ => self.game.native_redstone_many(dim, cells),
-        }
+        // A level that is not in place is visited whole by the engine's read, with no
+        // trace in the level in place and its idleness kept (`visit_level`).
+        self.game.native_redstone_many(dim, cells)
     }
     /// The living players, by UUID (API 28).
     fn players(&mut self) -> Option<Vec<PlayerInfo>> {

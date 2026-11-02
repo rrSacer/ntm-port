@@ -9,7 +9,7 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
 - Upstream incorporado: `2f35078b3aee63ae7a6c6d9357aa2e8925fa756d` (snapshot congelado de 02/11/2026).
-- Motor de integração (pin): `2ca67d71e4873963e0feadae123b212ec4c4f712`.
+- Motor de integração (pin): `840fef9a0346cf16c58be3ea5146342a5f2dc17d`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
   `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
