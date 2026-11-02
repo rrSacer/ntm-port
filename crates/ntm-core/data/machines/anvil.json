@@ -2082,6 +2082,49 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.29",
+"label": "Aniquilador",
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_annihilator",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.30",
 "label": "Bloco de Chapa Metálica ×4",
 "in": [
@@ -2733,6 +2776,49 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.57",
+"label": "Machine Rockmill",
+"in": [
+{
+"ids": [
+"minecraft:stone"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:pipe__copper"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:motor"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_rockmill",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.58",
 "label": "Montadora",
 "in": [
@@ -2840,6 +2926,42 @@
 "out": [
 [
 "ntm:heater_oven",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.63",
+"label": "Poço de Cinzas",
+"in": [
+{
+"ids": [
+"minecraft:stone"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_ashpit",
 1,
 1.0
 ]
@@ -2982,6 +3104,147 @@
 ]
 ],
 "tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.67",
+"label": "Forno de Aço",
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:steel_grate"
+],
+"count": 16,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:furnace_steel",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.68",
+"label": "Forno Combinado",
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"minecraft:acacia_log",
+"minecraft:birch_log",
+"minecraft:dark_oak_log",
+"minecraft:jungle_log",
+"minecraft:oak_log",
+"minecraft:spruce_log"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"minecraft:brick"
+],
+"count": 16,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:furnace_combination",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.69",
+"label": "Forno Rotativo",
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_rotary_furnace",
+1,
+1.0
+]
+],
+"tier_lower": 2,
 "tier_upper": -1
 },
 {
@@ -3141,6 +3404,62 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.73",
+"label": "Serra Stirling",
+"in": [
+{
+"ids": [
+"ntm:pink_planks",
+"minecraft:acacia_planks",
+"minecraft:birch_planks",
+"minecraft:dark_oak_planks",
+"minecraft:jungle_planks",
+"minecraft:oak_planks",
+"minecraft:spruce_planks"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 6,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:sawblade"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_sawmill",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.74",
 "label": "Crisol",
 "in": [
@@ -3213,6 +3532,92 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.76",
+"label": "Estação de Soldagem",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:bolt__tungsten"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_soldering_station",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.77",
+"label": "Soldador a Arco",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:machine_transformer"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:arc_electrode__graphite"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_arc_welder",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.78",
 "label": "Caldeira Industrial",
 "in": [
@@ -3247,6 +3652,221 @@
 ]
 ],
 "tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.79",
+"label": "Serra Circular Automática",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 12,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:sawblade"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_autosaw",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.80",
+"label": "Debulhadora Automática",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 12,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_thresher",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.81",
+"label": "Torre de Resfriamento Auxiliar",
+"in": [
+{
+"ids": [
+"ntm:brick_concrete"
+],
+"count": 64,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_bars"
+],
+"count": 128,
+"exact": false
+},
+{
+"ids": [
+"ntm:machine_condenser"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_tower_small",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.82",
+"label": "Torre de Resfriamento",
+"in": [
+{
+"ids": [
+"ntm:concrete_smooth"
+],
+"count": 128,
+"exact": false
+},
+{
+"ids": [
+"ntm:steel_scaffold"
+],
+"count": 32,
+"exact": false
+},
+{
+"ids": [
+"ntm:machine_condenser"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_tower_large",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.84",
+"label": "Extrator de Deutério",
+"in": [
+{
+"ids": [
+"ntm:sulfur"
+],
+"count": 12,
+"exact": false
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"count": 6,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_deuterium_extractor",
+1,
+1.0
+]
+],
+"tier_lower": 2,
 "tier_upper": -1
 },
 {
@@ -3294,6 +3914,89 @@
 ]
 ],
 "tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.88",
+"label": "Chaminé Industrial",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"minecraft:bricks"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:steel_grate"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:chimney_brick",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.89",
+"label": "Chaminé Industrial Grande",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:concrete",
+"ntm:concrete_asbestos",
+"ntm:concrete_smooth",
+"ntm:ducrete",
+"ntm:ducrete_smooth"
+],
+"count": 64,
+"exact": false
+},
+{
+"ids": [
+"ntm:steel_grate"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:filter_coal"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:chimney_industrial",
+1,
+1.0
+]
+],
+"tier_lower": 3,
 "tier_upper": -1
 },
 {
@@ -4784,6 +5487,43 @@
 ]
 ],
 "tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.232",
+"label": "Placa de Aço ×2 (+3)",
+"in": [
+{
+"ids": [
+"ntm:filing_cabinet"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+2,
+1.0
+],
+[
+"ntm:plate_steel",
+2,
+0.5
+],
+[
+"ntm:plate_polymer",
+2,
+0.25
+],
+[
+"ntm:scrap",
+1,
+1.0
+]
+],
+"tier_lower": 1,
 "tier_upper": -1
 },
 {
@@ -7424,6 +8164,49 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.29",
+"label": "Aniquilador",
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_annihilator",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.30",
 "label": "Bloco de Chapa Metálica ×4",
 "in": [
@@ -8075,6 +8858,49 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.57",
+"label": "Machine Rockmill",
+"in": [
+{
+"ids": [
+"minecraft:stone"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:pipe__copper"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:motor"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_rockmill",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.58",
 "label": "Montadora",
 "in": [
@@ -8182,6 +9008,42 @@
 "out": [
 [
 "ntm:heater_oven",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.63",
+"label": "Poço de Cinzas",
+"in": [
+{
+"ids": [
+"minecraft:stone"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_ashpit",
 1,
 1.0
 ]
@@ -8324,6 +9186,147 @@
 ]
 ],
 "tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.67",
+"label": "Forno de Aço",
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:steel_grate"
+],
+"count": 16,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:furnace_steel",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.68",
+"label": "Forno Combinado",
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"minecraft:acacia_log",
+"minecraft:birch_log",
+"minecraft:dark_oak_log",
+"minecraft:jungle_log",
+"minecraft:oak_log",
+"minecraft:spruce_log"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"minecraft:brick"
+],
+"count": 16,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:furnace_combination",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.69",
+"label": "Forno Rotativo",
+"in": [
+{
+"ids": [
+"minecraft:stone_bricks"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_rotary_furnace",
+1,
+1.0
+]
+],
+"tier_lower": 2,
 "tier_upper": -1
 },
 {
@@ -8483,6 +9486,62 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.73",
+"label": "Serra Stirling",
+"in": [
+{
+"ids": [
+"ntm:pink_planks",
+"minecraft:acacia_planks",
+"minecraft:birch_planks",
+"minecraft:dark_oak_planks",
+"minecraft:jungle_planks",
+"minecraft:oak_planks",
+"minecraft:spruce_planks"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 6,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:sawblade"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_sawmill",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.74",
 "label": "Crisol",
 "in": [
@@ -8555,6 +9614,92 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.76",
+"label": "Estação de Soldagem",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:coil_copper"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:bolt__tungsten"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_soldering_station",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.77",
+"label": "Soldador a Arco",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"ntm:machine_transformer"
+],
+"count": 1,
+"exact": false
+},
+{
+"ids": [
+"ntm:arc_electrode__graphite"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_arc_welder",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.78",
 "label": "Caldeira Industrial",
 "in": [
@@ -8589,6 +9734,221 @@
 ]
 ],
 "tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.79",
+"label": "Serra Circular Automática",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 12,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:sawblade"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_autosaw",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.80",
+"label": "Debulhadora Automática",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 8,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"count": 12,
+"exact": false
+},
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"count": 2,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_thresher",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.81",
+"label": "Torre de Resfriamento Auxiliar",
+"in": [
+{
+"ids": [
+"ntm:brick_concrete"
+],
+"count": 64,
+"exact": false
+},
+{
+"ids": [
+"minecraft:iron_bars"
+],
+"count": 128,
+"exact": false
+},
+{
+"ids": [
+"ntm:machine_condenser"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_tower_small",
+1,
+1.0
+]
+],
+"tier_lower": 3,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.82",
+"label": "Torre de Resfriamento",
+"in": [
+{
+"ids": [
+"ntm:concrete_smooth"
+],
+"count": 128,
+"exact": false
+},
+{
+"ids": [
+"ntm:steel_scaffold"
+],
+"count": 32,
+"exact": false
+},
+{
+"ids": [
+"ntm:machine_condenser"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"count": 8,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_tower_large",
+1,
+1.0
+]
+],
+"tier_lower": 4,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.84",
+"label": "Extrator de Deutério",
+"in": [
+{
+"ids": [
+"ntm:sulfur"
+],
+"count": 12,
+"exact": false
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"count": 6,
+"exact": false
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:machine_deuterium_extractor",
+1,
+1.0
+]
+],
+"tier_lower": 2,
 "tier_upper": -1
 },
 {
@@ -8636,6 +9996,89 @@
 ]
 ],
 "tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.88",
+"label": "Chaminé Industrial",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"minecraft:bricks"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:steel_grate"
+],
+"count": 2,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:chimney_brick",
+1,
+1.0
+]
+],
+"tier_lower": 2,
+"tier_upper": -1
+},
+{
+"name": "anvil.construction.89",
+"label": "Chaminé Industrial Grande",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"count": 16,
+"exact": false
+},
+{
+"ids": [
+"ntm:concrete",
+"ntm:concrete_asbestos",
+"ntm:concrete_smooth",
+"ntm:ducrete",
+"ntm:ducrete_smooth"
+],
+"count": 64,
+"exact": false
+},
+{
+"ids": [
+"ntm:steel_grate"
+],
+"count": 4,
+"exact": false
+},
+{
+"ids": [
+"ntm:filter_coal"
+],
+"count": 4,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:chimney_industrial",
+1,
+1.0
+]
+],
+"tier_lower": 3,
 "tier_upper": -1
 },
 {
@@ -10129,6 +11572,43 @@
 "tier_upper": -1
 },
 {
+"name": "anvil.construction.232",
+"label": "Placa de Aço ×2 (+3)",
+"in": [
+{
+"ids": [
+"ntm:filing_cabinet"
+],
+"count": 1,
+"exact": false
+}
+],
+"out": [
+[
+"ntm:plate_steel",
+2,
+1.0
+],
+[
+"ntm:plate_steel",
+2,
+0.5
+],
+[
+"ntm:plate_polymer",
+2,
+0.25
+],
+[
+"ntm:scrap",
+1,
+1.0
+]
+],
+"tier_lower": 1,
+"tier_upper": -1
+},
+{
 "name": "anvil.construction.233",
 "label": "Fonte de Nêutrons Ra226Be do Chicago Pile",
 "in": [
@@ -10687,5 +12167,5 @@
 "tier_upper": -1
 }
 ],
-"skipped": 136
+"skipped": 119
 }

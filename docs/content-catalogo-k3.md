@@ -1,8 +1,8 @@
 # Catálogo K3: portas, chaves e máquinas restantes
 
-Em andamento, base `a27f03d8`. O levantamento anterior era heurístico: "Lock" capturava também "Block", portanto seus 68/13/75 não são quantidades de aceitação. A triagem por classe/registro entrega a lista abaixo. Colecionáveis com enums próprios, baterias/tanques/conversores (K4), rádio/radar/satélites (K5), reatores legados, mísseis e fusão/ICF não entram neste lote.
+Integração retomada em 02/11/2026, sobre a base atualizada `6e3f3f1e`. O levantamento anterior era heurístico: "Lock" capturava também "Block", portanto seus 68/13/75 não são quantidades de aceitação. A triagem por classe/registro entrega a lista abaixo. Colecionáveis com enums próprios, baterias/tanques/conversores (K4), rádio/radar/satélites (K5), reatores legados, mísseis e fusão/ICF não entram neste lote.
 
-O gerador usa `bulk.declarations` e o catálogo m3, com fronteira explícita em `catalog-k3.json`. Nada de processamento, inventário, energia, lógica de chaves ou multiblocos é inferido de uma classe. Máquinas com tile usam beehive/facing/honey0..5 e auto:false; o registro Inert e o machine-gen ficam com a frente nativa no push conjunto. Blocos sem tile não recebem registro.
+O gerador usa `bulk.declarations` e o catálogo m3, com fronteira explícita em `catalog-k3.json`. Nada de processamento, inventário, energia, lógica de chaves ou multiblocos é inferido de uma classe. Máquinas com tile usam beehive/facing/honey0..5 e auto:false; os 70 blocos com tile agora têm registro Inert e tabelas regeneradas na mesma integração. Blocos sem tile não recebem registro.
 
 As quatro portas simples tentam oak_door, herdando estados/duas metades/abertura como adaptação autorizada, porque `BlockModDoor.onBlockActivated` permite clique manual. Prova mínima em jogo confirmou esse contrato nas quatro portas: 68 conferências, duas metades por item e open=true após clique, detector limpo. O nome original foi preservado. Itens ModItems.door_* resolvem para o item do mesmo bloco; o resolvedor mantém o tipo explícito nos demais casos. Receitas e texturas originais upper/lower são preservadas, com drop apenas na metade inferior. Sons, resistência e transformação de metadados do NTM não se tornam automaticamente iguais aos do vanilla.
 
@@ -15,86 +15,86 @@ Chaves/cadeados são itens inertes. `ItemKeyPin` usa int NBT `pins`; não há c�
 | `brick_forgotten_lock` | `BlockForgottenLock` | Bloco simples inerte |
 | `trapdoor_steel` | `BlockNTMTrapdoor` | Bloco simples inerte |
 | `seal_controller` | `BlockSeal` | Bloco simples inerte |
-| `seal_hatch` | `BlockHatch` | Inert após registro |
-| `vault_door` | `BlockDoorGeneric` | Inert após registro |
-| `blast_door` | `BlastDoor` | Inert após registro |
-| `sliding_blast_door` | `BlockDoorGeneric` | Inert após registro |
-| `fire_door` | `BlockDoorGeneric` | Inert após registro |
-| `transition_seal` | `BlockDoorGeneric` | Inert após registro |
-| `silo_hatch` | `BlockDoorGeneric` | Inert após registro |
-| `silo_hatch_large` | `BlockDoorGeneric` | Inert após registro |
-| `secure_access_door` | `BlockDoorGeneric` | Inert após registro |
-| `large_vehicle_door` | `BlockDoorGeneric` | Inert após registro |
-| `qe_containment` | `BlockDoorGeneric` | Inert após registro |
-| `qe_sliding_door` | `BlockDoorGeneric` | Inert após registro |
-| `round_airlock_door` | `BlockDoorGeneric` | Inert após registro |
-| `sliding_seal_door` | `BlockDoorGeneric` | Inert após registro |
-| `water_door` | `BlockDoorGeneric` | Inert após registro |
-| `cargo_door` | `BlockDoorGeneric` | Inert após registro |
+| `seal_hatch` | `BlockHatch` | Inert (registrado) |
+| `vault_door` | `BlockDoorGeneric` | Inert (registrado) |
+| `blast_door` | `BlastDoor` | Inert (registrado) |
+| `sliding_blast_door` | `BlockDoorGeneric` | Inert (registrado) |
+| `fire_door` | `BlockDoorGeneric` | Inert (registrado) |
+| `transition_seal` | `BlockDoorGeneric` | Inert (registrado) |
+| `silo_hatch` | `BlockDoorGeneric` | Inert (registrado) |
+| `silo_hatch_large` | `BlockDoorGeneric` | Inert (registrado) |
+| `secure_access_door` | `BlockDoorGeneric` | Inert (registrado) |
+| `large_vehicle_door` | `BlockDoorGeneric` | Inert (registrado) |
+| `qe_containment` | `BlockDoorGeneric` | Inert (registrado) |
+| `qe_sliding_door` | `BlockDoorGeneric` | Inert (registrado) |
+| `round_airlock_door` | `BlockDoorGeneric` | Inert (registrado) |
+| `sliding_seal_door` | `BlockDoorGeneric` | Inert (registrado) |
+| `water_door` | `BlockDoorGeneric` | Inert (registrado) |
+| `cargo_door` | `BlockDoorGeneric` | Inert (registrado) |
 | `door_metal` | `BlockModDoor` | Porta vanilla em prova |
 | `door_office` | `BlockModDoor` | Porta vanilla em prova |
 | `door_bunker` | `BlockModDoor` | Porta vanilla em prova |
 | `door_red` | `BlockModDoor` | Porta vanilla em prova |
-| `event_tester` | `TestEventTester` | Inert após registro |
-| `obj_tester` | `TestObjTester` | Inert após registro |
-| `deco_emitter` | `BlockEmitter` | Inert após registro |
-| `part_emitter` | `PartEmitter` | Inert após registro |
-| `filing_cabinet` | `BlockDecoContainer` | Inert após registro |
-| `machine_ashpit` | `MachineAshpit` | Inert após registro |
-| `furnace_iron` | `FurnaceIron` | Inert após registro |
-| `furnace_steel` | `FurnaceSteel` | Inert após registro |
-| `furnace_combination` | `FurnaceCombination` | Inert após registro |
-| `machine_sawmill` | `MachineSawmill` | Inert após registro |
-| `machine_strand_caster` | `MachineStrandCaster` | Inert após registro |
-| `machine_fel` | `MachineFEL` | Inert após registro |
-| `machine_silex` | `MachineSILEX` | Inert após registro |
-| `machine_rotary_furnace` | `MachineRotaryFurnace` | Inert após registro |
-| `machine_furnace_brick_off` | `MachineBrickFurnace` | Inert após registro |
-| `machine_furnace_brick_on` | `MachineBrickFurnace` | Inert após registro |
-| `machine_industrial_generator` | `MachineIGenerator` | Inert após registro |
-| `machine_cyclotron` | `MachineCyclotron` | Inert após registro |
-| `machine_exposure_chamber` | `MachineExposureChamber` | Inert após registro |
-| `machine_electric_furnace_on` | `MachineElectricFurnace` | Inert após registro |
-| `machine_microwave` | `MachineMicrowave` | Inert após registro |
-| `machine_teleporter` | `MachineTeleporter` | Inert após registro |
+| `event_tester` | `TestEventTester` | Inert (registrado) |
+| `obj_tester` | `TestObjTester` | Inert (registrado) |
+| `deco_emitter` | `BlockEmitter` | Inert (registrado) |
+| `part_emitter` | `PartEmitter` | Inert (registrado) |
+| `filing_cabinet` | `BlockDecoContainer` | Inert (registrado) |
+| `machine_ashpit` | `MachineAshpit` | Inert (registrado) |
+| `furnace_iron` | `FurnaceIron` | Inert (registrado) |
+| `furnace_steel` | `FurnaceSteel` | Inert (registrado) |
+| `furnace_combination` | `FurnaceCombination` | Inert (registrado) |
+| `machine_sawmill` | `MachineSawmill` | Inert (registrado) |
+| `machine_strand_caster` | `MachineStrandCaster` | Inert (registrado) |
+| `machine_fel` | `MachineFEL` | Inert (registrado) |
+| `machine_silex` | `MachineSILEX` | Inert (registrado) |
+| `machine_rotary_furnace` | `MachineRotaryFurnace` | Inert (registrado) |
+| `machine_furnace_brick_off` | `MachineBrickFurnace` | Inert (registrado) |
+| `machine_furnace_brick_on` | `MachineBrickFurnace` | Inert (registrado) |
+| `machine_industrial_generator` | `MachineIGenerator` | Inert (registrado) |
+| `machine_cyclotron` | `MachineCyclotron` | Inert (registrado) |
+| `machine_exposure_chamber` | `MachineExposureChamber` | Inert (registrado) |
+| `machine_electric_furnace_on` | `MachineElectricFurnace` | Inert (registrado) |
+| `machine_microwave` | `MachineMicrowave` | Inert (registrado) |
+| `machine_teleporter` | `MachineTeleporter` | Inert (registrado) |
 | `teleanchor` | `MachineTeleanchor` | Bloco simples inerte |
 | `field_disturber` | `MachineFieldDisturber` | Bloco simples inerte |
-| `machine_radiolysis` | `MachineRadiolysis` | Inert após registro |
-| `machine_drain` | `MachineDrain` | Inert após registro |
-| `fan` | `MachineFan` | Inert após registro |
-| `machine_keyforge` | `MachineKeyForge` | Inert após registro |
+| `machine_radiolysis` | `MachineRadiolysis` | Inert (registrado) |
+| `machine_drain` | `MachineDrain` | Inert (registrado) |
+| `fan` | `MachineFan` | Inert (registrado) |
+| `machine_keyforge` | `MachineKeyForge` | Inert (registrado) |
 | `machine_armor_table` | `BlockArmorTable` | Bloco simples inerte |
 | `machine_weapon_table` | `BlockWeaponTable` | Bloco simples inerte |
-| `tesla` | `MachineTesla` | Inert após registro |
-| `chimney_brick` | `MachineChimneyBrick` | Inert após registro |
-| `chimney_industrial` | `MachineChimneyIndustrial` | Inert após registro |
-| `machine_autosaw` | `MachineAutosaw` | Inert após registro |
-| `machine_thresher` | `MachineThresher` | Inert após registro |
-| `machine_annihilator` | `MachineAnnihilator` | Inert após registro |
-| `machine_rockmill` | `MachineRockMill` | Inert após registro |
-| `machine_mining_laser` | `MachineMiningLaser` | Inert após registro |
-| `machine_assembly_factory` | `MachineAssemblyFactory` | Inert após registro |
-| `machine_precass` | `MachinePrecAss` | Inert após registro |
-| `machine_arc_welder` | `MachineArcWelder` | Inert após registro |
-| `machine_soldering_station` | `MachineSolderingStation` | Inert após registro |
-| `machine_chemical_factory` | `MachineChemicalFactory` | Inert após registro |
-| `machine_supercomputer` | `MachineSuperComputer` | Inert após registro |
-| `machine_orbus` | `MachineOrbus` | Inert após registro |
-| `machine_lpw2` | `MachineLPW2` | Inert após registro |
+| `tesla` | `MachineTesla` | Inert (registrado) |
+| `chimney_brick` | `MachineChimneyBrick` | Inert (registrado) |
+| `chimney_industrial` | `MachineChimneyIndustrial` | Inert (registrado) |
+| `machine_autosaw` | `MachineAutosaw` | Inert (registrado) |
+| `machine_thresher` | `MachineThresher` | Inert (registrado) |
+| `machine_annihilator` | `MachineAnnihilator` | Inert (registrado) |
+| `machine_rockmill` | `MachineRockMill` | Inert (registrado) |
+| `machine_mining_laser` | `MachineMiningLaser` | Inert (registrado) |
+| `machine_assembly_factory` | `MachineAssemblyFactory` | Inert (registrado) |
+| `machine_precass` | `MachinePrecAss` | Inert (registrado) |
+| `machine_arc_welder` | `MachineArcWelder` | Inert (registrado) |
+| `machine_soldering_station` | `MachineSolderingStation` | Inert (registrado) |
+| `machine_chemical_factory` | `MachineChemicalFactory` | Inert (registrado) |
+| `machine_supercomputer` | `MachineSuperComputer` | Inert (registrado) |
+| `machine_orbus` | `MachineOrbus` | Inert (registrado) |
+| `machine_lpw2` | `MachineLPW2` | Inert (registrado) |
 | `press_preheater` | `BlockBase` | Bloco simples inerte |
-| `machine_ammo_press` | `MachineAmmoPress` | Inert após registro |
+| `machine_ammo_press` | `MachineAmmoPress` | Inert (registrado) |
 | `machine_boiler_off` | `MachineBoiler` | Bloco simples inerte |
-| `machine_tower_small` | `MachineTowerSmall` | Inert após registro |
-| `machine_tower_large` | `MachineTowerLarge` | Inert após registro |
-| `machine_deuterium_extractor` | `MachineDeuteriumExtractor` | Inert após registro |
-| `machine_intake` | `MachineIntake` | Inert após registro |
-| `machine_compressor` | `MachineCompressor` | Inert após registro |
-| `machine_compressor_compact` | `MachineCompressorCompact` | Inert após registro |
-| `machine_autocrafter` | `MachineAutocrafter` | Inert após registro |
-| `machine_funnel` | `MachineFunnel` | Inert após registro |
-| `machine_siren` | `MachineSiren` | Inert após registro |
-| `machine_forcefield` | `MachineForceField` | Inert após registro |
-| `decon` | `BlockDecon` | Inert após registro |
+| `machine_tower_small` | `MachineTowerSmall` | Inert (registrado) |
+| `machine_tower_large` | `MachineTowerLarge` | Inert (registrado) |
+| `machine_deuterium_extractor` | `MachineDeuteriumExtractor` | Inert (registrado) |
+| `machine_intake` | `MachineIntake` | Inert (registrado) |
+| `machine_compressor` | `MachineCompressor` | Inert (registrado) |
+| `machine_compressor_compact` | `MachineCompressorCompact` | Inert (registrado) |
+| `machine_autocrafter` | `MachineAutocrafter` | Inert (registrado) |
+| `machine_funnel` | `MachineFunnel` | Inert (registrado) |
+| `machine_siren` | `MachineSiren` | Inert (registrado) |
+| `machine_forcefield` | `MachineForceField` | Inert (registrado) |
+| `decon` | `BlockDecon` | Inert (registrado) |
 | `key` | `ItemKey` | Item inerte |
 | `key_red` | `ItemCustomLore` | Item inerte |
 | `key_red_cracked` | `ItemCustomLore` | Item inerte |

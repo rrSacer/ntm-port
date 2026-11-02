@@ -5,7 +5,7 @@ horizon-mixins** compilado junto com o jogo (`docs/native-mods.md` do Horizon).
 O plano completo está no artifact `horizon-migracao` do Traycer. Aqui fica o
 que o repositório tem dele.
 
-**Base ativa em 02/11/2026:** upstream `5d65d7b50`, integrado na branch
+**Base ativa em 02/11/2026:** upstream `d928d1cd61`, integrado na branch
 `ntm-current` com as extensões genéricas ainda necessárias ao port. O arquivo
 `native/ntm/compatibility.json` fixa a revisão completa. A série antiga `ntm-next`
 fica preservada no Git. As bombas seguem somente no modo otimizado.

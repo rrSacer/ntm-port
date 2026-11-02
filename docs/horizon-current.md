@@ -8,7 +8,7 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
-- Upstream incorporado: `5d65d7b50dbf1b98d43d201bd83e008edd55369e`.
+- Upstream incorporado: `d928d1cd6161e95f5704d05e14193f5714730d9f`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - A antiga branch `ntm-next` e os trabalhos pendentes de catálogo e energia
   continuam preservados. Não usar esses pins antigos para novos desenvolvimentos.

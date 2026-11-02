@@ -1675,6 +1675,868 @@
 "pools": []
 },
 {
+"name": "ass.sealcontroller",
+"label": "Abridor de Escotilha de Silo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:204",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 1,
+"label": "Lingote de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 1,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:wire_dense__red_copper"
+],
+"n": 4,
+"label": "Fio de Cobre Vermelho Denso"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:seal_controller",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.vaultdoor",
+"label": "Porta Blindada Vault-Tec",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:214",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"n": 32,
+"label": "Lingote de Aço"
+},
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 32,
+"label": "Lingote de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:plate_cast__lead"
+],
+"n": 8,
+"label": "Placa Fundida de Chumbo"
+},
+{
+"ids": [
+"ntm:ingot_biorubber",
+"ntm:ingot_rubber"
+],
+"n": 12,
+"label": "Barra de Látex"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 32,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 3,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:vault_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.blastdoor",
+"label": "Porta Blindada Deslizante",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:216",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"n": 12,
+"label": "Lingote de Aço"
+},
+{
+"ids": [
+"ntm:plate_lead"
+],
+"n": 6,
+"label": "Placa de Chumbo"
+},
+{
+"ids": [
+"ntm:ingot_biorubber",
+"ntm:ingot_rubber"
+],
+"n": 2,
+"label": "Barra de Látex"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 8,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 1,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:blast_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.firedoor",
+"label": "Porta Corta-Fogo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:218",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 16,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 8,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:fire_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.seal",
+"label": "Vedação de Transição",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:220",
+"duration": 1200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:cmb_brick_reinforced"
+],
+"n": 16,
+"label": "Tijolos CMB Reforçados"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 64,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ingot_biorubber",
+"ntm:ingot_rubber"
+],
+"n": 36,
+"label": "Barra de Látex"
+},
+{
+"ids": [
+"ntm:block_steel"
+],
+"n": 32,
+"label": "Bloco de Aço"
+},
+{
+"ids": [
+"ntm:motor_desh"
+],
+"n": 16,
+"label": "Motor de Desh"
+},
+{
+"ids": [
+"minecraft:yellow_dye"
+],
+"n": 4,
+"label": "yellow dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:transition_seal",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.slidingdoor",
+"label": "Porta Blindada Deslizante",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:222",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 16,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:ingot_tungsten"
+],
+"n": 8,
+"label": "Lingote de Tungstênio"
+},
+{
+"ids": [
+"ntm:reinforced_glass"
+],
+"n": 4,
+"label": "Vidro Reforçado"
+},
+{
+"ids": [
+"ntm:ingot_biorubber",
+"ntm:ingot_rubber"
+],
+"n": 4,
+"label": "Barra de Látex"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 16,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:sliding_blast_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.vehicledoor",
+"label": "Portão Grande para Veículos",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:224",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 16,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 4,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 4,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 16,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"minecraft:green_dye"
+],
+"n": 4,
+"label": "green dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:large_vehicle_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.waterdoor",
+"label": "Porta Estanque",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:226",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 16,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 4,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"minecraft:red_dye"
+],
+"n": 1,
+"label": "red dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:water_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.qedoor",
+"label": "Porta de Contenção QE",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:228",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 6,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 8,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 32,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"minecraft:black_dye"
+],
+"n": 4,
+"label": "black dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:qe_containment",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.queslidingdoor",
+"label": "Porta Deslizante QE",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:230",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 4,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 4,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 4,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"minecraft:white_dye"
+],
+"n": 4,
+"label": "white dye"
+},
+{
+"ids": [
+"minecraft:glass"
+],
+"n": 4,
+"label": "glass"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:qe_sliding_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.roundairlock",
+"label": "Porta Circular de Câmara de Descompressão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:232",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 12,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 16,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 4,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 16,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"minecraft:green_dye"
+],
+"n": 4,
+"label": "green dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:round_airlock_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.secureaccess",
+"label": "Porta de Acesso Seguro",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:234",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 12,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 8,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 4,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 32,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"minecraft:red_dye"
+],
+"n": 8,
+"label": "red dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:secure_access_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.slidingseal",
+"label": "Porta Deslizante de Vedação",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:236",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 12,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 4,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 4,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"minecraft:white_dye"
+],
+"n": 2,
+"label": "white dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:sliding_seal_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.silohatch",
+"label": "Escotilha de Silo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:238",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 4,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 4,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:bolt__steel"
+],
+"n": 16,
+"label": "Parafuso de Aço"
+},
+{
+"ids": [
+"minecraft:green_dye"
+],
+"n": 4,
+"label": "green dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:silo_hatch",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.silohatchlarge",
+"label": "Escotilha de Silo Grande",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:240",
+"duration": 300,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_welded__steel"
+],
+"n": 6,
+"label": "Placa Soldada de Aço"
+},
+{
+"ids": [
+"ntm:plate_polymer"
+],
+"n": 8,
+"label": "Isolante"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:bolt__steel"
+],
+"n": 16,
+"label": "Parafuso de Aço"
+},
+{
+"ids": [
+"minecraft:green_dye"
+],
+"n": 8,
+"label": "green dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:silo_hatch_large",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.cargodoor",
+"label": "Porta de Carga",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:242",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:steel_beam"
+],
+"n": 32,
+"label": "Viga de Aço"
+},
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 4,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:bolt__dura_steel"
+],
+"n": 4,
+"label": "Parafuso de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"minecraft:gray_dye"
+],
+"n": 1,
+"label": "gray dye"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:cargo_door",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.capnuka",
 "label": "Block Cap Nuka",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:245",
@@ -2114,6 +2976,116 @@
 "out": [
 [
 "ntm:machine_purex",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.precass",
+"label": "Máquina de Montagem de Precisão",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:273",
+"duration": 1200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 8,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:ingot_zirconium"
+],
+"n": 8,
+"label": "Cubo de Zircônio"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 4,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:circuit__capacitor_board"
+],
+"n": 4,
+"label": "Placa de Capacitores"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_precass",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.sal9000",
+"label": "Machine Supercomputer",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:276",
+"duration": 400,
+"power": 1000,
+"in": [
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 16,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 64,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"n": 32,
+"label": "Fio de Ouro Denso"
+},
+{
+"ids": [
+"ntm:pipe__copper"
+],
+"n": 8,
+"label": "Tubo de Cobre"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 32,
+"label": "Placa de Circuito Integrado"
+},
+{
+"ids": [
+"ntm:circuit__bismoid"
+],
+"n": 1,
+"label": "Placa de Circuito Versátil"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_supercomputer",
 1,
 1.0
 ]
@@ -2792,6 +3764,68 @@
 "pools": []
 },
 {
+"name": "ass.radiolysis",
+"label": "Gerador Termoelétrico de Radioisótopos e Câmara de Radiólise",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:320",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 4,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:plate_lead"
+],
+"n": 12,
+"label": "Placa de Chumbo"
+},
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"n": 4,
+"label": "Placa Fundida de Cobre"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 8,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:thermo_element"
+],
+"n": 8,
+"label": "Elemento Termoelétrico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_radiolysis",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.coker",
 "label": "Unidade de Coqueificação",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:323",
@@ -3234,6 +4268,114 @@
 "pools": []
 },
 {
+"name": "ass.compressor",
+"label": "Compressor",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:348",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 8,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4,
+"label": "Placa de Cobre"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 2,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 3,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:circuit__analog"
+],
+"n": 1,
+"label": "Placa de Circuito Analógico"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_compressor",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.compactcompressor",
+"label": "Compressor Compacto",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:351",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 8,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:shell__titanium"
+],
+"n": 4,
+"label": "Carcaça de Titânio"
+},
+{
+"ids": [
+"ntm:pipe__copper"
+],
+"n": 4,
+"label": "Tubo de Cobre"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 2,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 4,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_compressor_compact",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
 "name": "ass.epress",
 "label": "Prensa Elétrica",
 "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:354",
@@ -3274,6 +4416,129 @@
 "out": [
 [
 "ntm:machine_epress",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.fel",
+"label": "FEL",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:357",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:battery_pack__battery_lithium"
+],
+"n": 1,
+"label": "Bateria de Íon-Lítio"
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"n": 64,
+"label": "Fio de Ouro Denso"
+},
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 12,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 16,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:part_generic__glass_polarized"
+],
+"n": 4,
+"label": "Lente Polarizada"
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 16,
+"label": "Capacitor"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 4,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_fel",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.silex",
+"label": "Câmara de Separação de Isótopos a Laser (SILEX)",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:360",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:glass_quartz"
+],
+"n": 16,
+"label": "Vidro de Quartzo"
+},
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 8,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:ingot_desh"
+],
+"n": 4,
+"label": "Lingote de Desh"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 8,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:pipe__steel"
+],
+"n": 8,
+"label": "Tubo de Aço"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_silex",
 1,
 1.0
 ]
@@ -3743,6 +5008,414 @@
 "out": [
 [
 "ntm:machine_ore_slopper",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.mininglaser",
+"label": "Laser de Mineração",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:387",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 16,
+"label": "Placa de Aço"
+},
+{
+"ids": [
+"ntm:shell__titanium"
+],
+"n": 4,
+"label": "Carcaça de Titânio"
+},
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"n": 4,
+"label": "Placa de Aço Rápido"
+},
+{
+"ids": [
+"ntm:crystal_redstone"
+],
+"n": 3,
+"label": "Cristais de Redstone"
+},
+{
+"ids": [
+"minecraft:diamond"
+],
+"n": 3,
+"label": "diamond"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 8,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 3,
+"label": "Motor"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_mining_laser",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.teleporter",
+"label": "Teletransportador",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:390",
+"duration": 100,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 12,
+"label": "Placa de Titânio"
+},
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"n": 12,
+"label": "Placa de Aço Rápido"
+},
+{
+"ids": [
+"ntm:wire_fine__gold"
+],
+"n": 32,
+"label": "Fio de Ouro"
+},
+{
+"ids": [
+"ntm:entanglement_kit"
+],
+"n": 1,
+"label": "Kit de Entrelaçamento"
+},
+{
+"ids": [
+"ntm:battery_pack__battery_lithium"
+],
+"n": 1,
+"label": "Bateria de Íon-Lítio"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_teleporter",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.forcefield",
+"label": "Emissor de Campo de Força",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:398",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"n": 8,
+"label": "Placa de Aço Rápido"
+},
+{
+"ids": [
+"ntm:plate_desh"
+],
+"n": 4,
+"label": "Placa de Composto de Desh"
+},
+{
+"ids": [
+"ntm:coil_gold_torus"
+],
+"n": 6,
+"label": "Bobina Toroidal de Ouro"
+},
+{
+"ids": [
+"ntm:coil_magnetized_tungsten"
+],
+"n": 12,
+"label": "Bobina Supercondutora de Alta Temperatura 4000 K"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 1,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:upgrade_radius"
+],
+"n": 1,
+"label": "Melhoria de Alcance do Emissor"
+},
+{
+"ids": [
+"ntm:upgrade_health"
+],
+"n": 1,
+"label": "Melhoria de Integridade do Emissor"
+},
+{
+"ids": [
+"ntm:circuit__advanced"
+],
+"n": 4,
+"label": "Placa de Circuito de Grau Militar"
+},
+{
+"ids": [
+"ntm:machine_transformer"
+],
+"n": 1,
+"label": "Transformador 10k-20Hz"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_forcefield",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.strandcaster",
+"label": "Fundidor Contínuo",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:400",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_firebrick"
+],
+"n": 16,
+"label": "Tijolo Refratário"
+},
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 6,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:plate_welded__copper"
+],
+"n": 2,
+"label": "Placa Soldada de Cobre"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 2,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:concrete",
+"ntm:concrete_asbestos",
+"ntm:concrete_smooth",
+"ntm:ducrete",
+"ntm:ducrete_smooth"
+],
+"n": 8,
+"label": "Azulejo de Concreto"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_strand_caster",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.assemfac",
+"label": "Fábrica de Montagem",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:403",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 16,
+"label": "Lingote de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 8,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 16,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:ingot_boron"
+],
+"n": 8,
+"label": "Lingote de Boro"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 4,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 12,
+"label": "Motor"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 16,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_assembly_factory",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.chemfac",
+"label": "Fábrica Química",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:406",
+"duration": 400,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 16,
+"label": "Lingote de Aço de Alta Velocidade"
+},
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 8,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 16,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:shell__steel"
+],
+"n": 12,
+"label": "Carcaça de Aço"
+},
+{
+"ids": [
+"ntm:pipe__copper"
+],
+"n": 8,
+"label": "Tubo de Cobre"
+},
+{
+"ids": [
+"ntm:motor_desh"
+],
+"n": 4,
+"label": "Motor de Desh"
+},
+{
+"ids": [
+"ntm:coil_tungsten"
+],
+"n": 16,
+"label": "Bobina de Aquecimento"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 16,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_chemical_factory",
 1,
 1.0
 ]
@@ -4756,6 +6429,145 @@
 "out": [
 [
 "ntm:machine_fluidtank",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.cyclotron",
+"label": "Ciclotron",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:483",
+"duration": 600,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:battery_pack__battery_lithium"
+],
+"n": 1,
+"label": "Bateria de Íon-Lítio"
+},
+{
+"ids": [
+"ntm:wire_dense__neodymium"
+],
+"n": 32,
+"label": "Fio de Neodímio Denso"
+},
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 16,
+"label": "Placa Fundida de Aço"
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 24,
+"label": "Barra de Baquelita"
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 24,
+"label": "Barra de Borracha"
+},
+{
+"ids": [
+"ntm:circuit__basic"
+],
+"n": 16,
+"label": "Placa de Circuito Integrado"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_cyclotron",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "ass.exposurechamber",
+"label": "Câmara de Exposição",
+"source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:514",
+"duration": 200,
+"power": 100,
+"in": [
+{
+"ids": [
+"ntm:plate_cast__aluminium"
+],
+"n": 12,
+"label": "Placa Fundida de Alumínio"
+},
+{
+"ids": [
+"ntm:ingot_cdalloy",
+"ntm:ingot_tcalloy"
+],
+"n": 4,
+"label": "Lingote de Aço de Cádmio"
+},
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 12,
+"label": "Barra de Plástico Rígido"
+},
+{
+"ids": [
+"ntm:wire_dense__gold"
+],
+"n": 32,
+"label": "Fio de Ouro Denso"
+},
+{
+"ids": [
+"ntm:motor_desh"
+],
+"n": 2,
+"label": "Motor de Desh"
+},
+{
+"ids": [
+"ntm:circuit__bismoid"
+],
+"n": 4,
+"label": "Placa de Circuito Versátil"
+},
+{
+"ids": [
+"ntm:battery_pack__capacitor_tantalum"
+],
+"n": 1,
+"label": "Capacitor de Tântalo"
+},
+{
+"ids": [
+"ntm:glass_quartz"
+],
+"n": 16,
+"label": "Vidro de Quartzo"
+}
+],
+"fin": [],
+"out": [
+[
+"ntm:machine_exposure_chamber",
 1,
 1.0
 ]
@@ -16868,5 +18680,5 @@
 "pools": []
 }
 ],
-"skipped": 162
+"skipped": 131
 }
