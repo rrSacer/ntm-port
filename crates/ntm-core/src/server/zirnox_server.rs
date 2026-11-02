@@ -737,6 +737,20 @@ mod tests {
         assert!(zirnox::life(h.slots[&(other.into(), p)][0].as_ref().unwrap()) > 1);
     }
     #[test]
+    fn redstone_on_a_box_corner_outside_the_casing_starts_the_reactor() {
+        let (mut h, mut s) = prepare();
+        h.signal.clear();
+        s.native_tick(&mut h, 2);
+        assert!(!z(&s).on);
+        let corner = [AT[0]+2, AT[1]+3, AT[2]+2];
+        h.blocks.insert((DIM.into(), corner), "minecraft:stone".into());
+        h.signal.insert((DIM.into(), corner));
+        h.reads.clear();
+        s.native_tick(&mut h, 3);
+        assert!(h.reads.contains(&(DIM.into(), corner)));
+        assert!(z(&s).on && z(&s).powered);
+    }
+    #[test]
     fn failed_slot_data_and_state_writes_are_retried_without_resetting_life() {
         let (mut h, mut s) = prepare();
         let before = zirnox::life(h.slots[&key()][0].as_ref().unwrap());

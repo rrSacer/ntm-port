@@ -353,16 +353,14 @@ impl Zirnox {
             })
             .collect()
     }
-    /// Surface cells in Java's 5x5x5 redstone scan that belong to the reactor.
+    /// Entire surface of Java's 5x5x5 scan, including empty casing corners.
     pub fn redstone_cells(core: Pos, facing: Option<&str>) -> Vec<Pos> {
         let mut out = Vec::new();
         for y in 0..=4 {
             for x in -2_i32..=2 {
                 for z in -2_i32..=2 {
-                    let inside =
-                        y <= 1 || (x.abs() <= 1 && z.abs() <= 1) || (z == 0 && x.abs() == 2);
                     let surface = x.abs() == 2 || z.abs() == 2 || y == 0 || y == 4;
-                    if inside && surface {
+                    if surface {
                         out.push(crate::server::container_bridge::world_cell(
                             core,
                             facing
@@ -626,7 +624,7 @@ mod tests {
         );
     }
     #[test]
-    fn four_ports_rotate_and_surface_scan_uses_only_own_blocks() {
+    fn four_ports_rotate_and_redstone_scans_the_entire_box_surface() {
         for f in ["north", "east", "south", "west"] {
             let ports = Zirnox::port_cells([0, 64, 0], Some(f));
             assert_eq!(ports.len(), 4);
@@ -638,7 +636,9 @@ mod tests {
             let scan = Zirnox::redstone_cells([0, 64, 0], Some(f));
             assert!(scan.contains(&[0, 64, 0]));
             assert!(!scan.contains(&[3, 64, 0]));
-            assert!(!scan.contains(&[2, 68, 2]));
+            assert_eq!(scan.len(), 98);
+            assert!(scan.contains(&[2, 68, 2]));
+            assert!(scan.contains(&[2, 67, 2]));
         }
     }
     #[test]
