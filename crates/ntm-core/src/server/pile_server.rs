@@ -73,7 +73,7 @@ impl Server {
     }
     /// `core_only`: the meltdown reverts just the core block (Java `destroy`).
     fn pile_dismantle(&mut self, host: &mut impl ServerHost, dim: &str, c: &Core, core_only: bool) -> bool {
-        if !host.pile_enter(dim) {
+        if !host.pile_reachable(dim) {
             return false;
         }
         let cells: Vec<_> = c.cells().into_iter().filter(|(p, _)| !core_only || *p == c.shape.at).collect();
@@ -255,10 +255,9 @@ impl Server {
         (id != pile::BRICK && held.is_none()).then_some(PileUse::Handled)
     }
     pub(super) fn pile_tick(&mut self, host: &mut impl ServerHost) {
-        // Drops and explosions only exist in the dimension the host has in
-        // place, so each dimension with piles is brought in place in turn (and
-        // the host's own restored at the end). One the host cannot bring in
-        // place freezes, like unloaded cells, instead of losing rods.
+        // A dimension the host cannot reach (not open) freezes, like unloaded
+        // cells, instead of losing rods: drops and blasts go through the host,
+        // which switches levels itself only when one is really needed.
         let dims: BTreeSet<String> = self
             .ready
             .world
@@ -268,11 +267,10 @@ impl Server {
             .map(|(k, _)| k.0.clone())
             .collect();
         for dim in dims {
-            if host.pile_enter(&dim) {
+            if host.pile_reachable(&dim) {
                 self.pile_tick_dim(host, &dim);
             }
         }
-        host.pile_restore();
     }
     fn pile_tick_dim(&mut self, host: &mut impl ServerHost, dim: &str) {
         let live: BTreeSet<String> = BTreeSet::from([dim.to_string()]);
@@ -478,10 +476,6 @@ mod tests {
         blasts: Vec<[f64; 3]>,
         unloaded: BTreeSet<Pos>,
         inactive: BTreeSet<String>,
-        in_place: String,
-        home: Option<String>,
-        blast_dims: Vec<String>,
-        drop_dims: Vec<String>,
     }
     impl Kv for Host {
         fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -526,32 +520,19 @@ mod tests {
                 false
             }
         }
-        fn save_machine(&mut self, _: &str, p: Pos, json: &str) {
+        fn save_machine(&mut self, _: &str, p: Pos, json: &str) -> bool {
             self.saved.insert(p, json.into());
+            true
         }
         fn pile_drop(&mut self, _: &str, p: Pos, id: &str) {
-            self.drop_dims.push(self.in_place.clone());
             self.drops.push((p, id.into()));
         }
         fn pile_explode(&mut self, _: &str, at: [f64; 3]) -> bool {
-            self.blast_dims.push(self.in_place.clone());
             self.blasts.push(at);
             true
         }
-        fn pile_enter(&mut self, dim: &str) -> bool {
-            if self.inactive.contains(dim) {
-                return false;
-            }
-            if self.home.is_none() {
-                self.home = Some(self.in_place.clone());
-            }
-            self.in_place = dim.into();
-            true
-        }
-        fn pile_restore(&mut self) {
-            if let Some(home) = self.home.take() {
-                self.in_place = home;
-            }
+        fn pile_reachable(&mut self, dim: &str) -> bool {
+            !self.inactive.contains(dim)
         }
         fn redstone_many(&mut self, _: &str, cells: &[Pos]) -> Vec<Option<u8>> {
             cells
@@ -585,7 +566,6 @@ mod tests {
     }
     fn formed() -> (Server, Host) {
         let mut h = Host::default();
-        h.in_place = DIM.into();
         let mut s = Server::native(&mut h, 0);
         for x in -2..=2 {
             for y in 62..=66 {
@@ -841,22 +821,6 @@ mod tests {
         assert_eq!(h.drops.len(), 1);
         assert!(!s.ready.world.machines.contains_key(&(DIM.into(), AT)));
         assert_eq!(h.blocks[&[1, 64, 2]], pile::BRICK);
-    }
-    #[test]
-    fn native_pile_simulates_when_another_level_ticked_last() {
-        let (mut s, mut h) = formed();
-        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
-        let c = core(&mut s);
-        c.channels[0].load(Rod::of("ntm:pile_rod__waste", 0.).unwrap());
-        c.channels[0].heat = 802.;
-        // The Nether is the level in place at the end of the server tick.
-        h.in_place = "minecraft:the_nether".into();
-        s.native_tick(&mut h, 8);
-        // The Overworld pile still melted, with its level in place for the blast and drops...
-        assert_eq!(h.blast_dims, vec![DIM.to_string()]);
-        assert_eq!(h.drop_dims, vec![DIM.to_string()]);
-        // ...and the host's own level was put back afterwards.
-        assert_eq!(h.in_place, "minecraft:the_nether");
     }
     #[test]
     fn native_member_break_dismantles_at_once_with_part_of_the_pile_unloaded() {

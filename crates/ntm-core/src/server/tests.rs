@@ -153,8 +153,9 @@ impl ServerHost for SHost {
             None => false,
         }
     }
-    fn save_machine(&mut self, dim: &str, p: Pos, json: &str) {
+    fn save_machine(&mut self, dim: &str, p: Pos, json: &str) -> bool {
         self.world.borrow_mut().saved.insert((dim.to_string(), p), json.into());
+        true
     }
     fn redstone_many(&mut self, dim: &str, cells: &[Pos]) -> Vec<Option<u8>> {
         let w = self.world.borrow();

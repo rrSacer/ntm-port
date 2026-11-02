@@ -29,12 +29,10 @@ pub trait ServerHost: Kv {
     /// Native Level.explode(null, ..., 15, true, BLOCK).
     /// False when the explosion could not be applied (other dimension, unloaded chunk).
     fn pile_explode(&mut self, _dim: &str, _at: [f64;3]) -> bool { true }
-    /// Put `dim` in place, the one level where pile rods can be ejected and
-    /// exploded (the first call remembers the host's own). False: it cannot be
-    /// brought in place and its piles freeze rather than lose their rods.
-    fn pile_enter(&mut self, _dim: &str) -> bool { true }
-    /// Put back the dimension in place before the first `pile_enter`.
-    fn pile_restore(&mut self) {}
+    /// Whether the host can reach `dim` (it is open): its pile rods can be
+    /// ejected and exploded there, through whatever level switching the host
+    /// needs. False freezes its piles rather than lose their rods.
+    fn pile_reachable(&mut self, _dim: &str) -> bool { true }
     fn solar_sample(&mut self, _dim: &str, _p: Pos) -> Option<(i32, i32, bool)> { None }
     /// The slots of the machine's block entity at `p`.
     fn machine_slots(&mut self, _dim: &str, _p: Pos) -> Option<container_bridge::Slots> {
@@ -55,7 +53,9 @@ pub trait ServerHost: Kv {
         Vec::new()
     }
     /// The machine's whole state (JSON), kept with its block entity.
-    fn save_machine(&mut self, _dim: &str, _p: Pos, _json: &str) {}
+    /// Keep `json` with the block entity. False: the block entity could not be
+    /// reached now (its dimension is unavailable); the state is kept again later.
+    fn save_machine(&mut self, _dim: &str, _p: Pos, _json: &str) -> bool { false }
     /// The redstone signal each of `cells` of `dim` receives (0..=15; none
     /// unloaded, or a host that can't read it: then a bomb reads its `lit`).
     fn redstone_many(&mut self, _dim: &str, cells: &[Pos]) -> Vec<Option<u8>> {
@@ -190,7 +190,6 @@ impl Server {
         }
         if let Some(c)=dismantle {
             let done=self.pile_destroy(host,dim,&c);
-            host.pile_restore();
             // Out of reach (frozen dimension): keep the core, so the tick's
             // sweep ejects its rods once the dimension can be entered.
             if !done { return; }

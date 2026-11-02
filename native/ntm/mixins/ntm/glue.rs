@@ -28,8 +28,6 @@ static SERVER: Mutex<Option<(Server, u64)>> = Mutex::new(None);
 /// writes report here while it holds its own.
 static CHANGES: Mutex<Vec<(String, [i32; 3], String, String)>> = Mutex::new(Vec::new());
 /// Menu buttons pressed: (player, dimension, position, button).
-/// The level that was in place when the piles began to enter others.
-static PILE_HOME: Mutex<Option<crate::game::Dim>> = Mutex::new(None);
 static BUTTONS: Mutex<Vec<(String, String, [i32; 3], u32)>> = Mutex::new(Vec::new());
 
 fn lock<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
@@ -221,64 +219,97 @@ impl Host<'_, '_> {
         Some(world.join("data").join("ntm").join(key))
     }
 
-    /// The machine block entity at `pos` of `dim`, when it is in the
-    /// dimension being ticked.
+    /// The machine block entity at `pos` of `dim`, in whichever level it is.
+    /// ServerTickEnd runs with the last ticked level in place, which is not
+    /// every machine's: a parked level's block entities are reached in its
+    /// world directly, without switching levels (nothing is opened either:
+    /// a level that is not open has no machines to reach).
     fn entity<R>(&mut self, dim: &str, pos: [i32; 3], f: impl FnOnce(&mut ModBlockEntity) -> R) -> Option<R> {
-        if dim != self.game.dim.id() {
+        let target = dim_of(dim)?;
+        if target == self.game.dim {
+            return self.game.native_with_mod_block_entity(pos, f);
+        }
+        let world = self.game.levels.parked_world_mut(target)?;
+        let Some(horizon_client::containers::BlockEntity::Mod(m)) = world.block_entities.get_mut(&(pos[0], pos[1], pos[2])) else {
+            return None;
+        };
+        if m.id.is_empty() {
             return None;
         }
-        self.game.native_with_mod_block_entity(pos, f)
+        let out = f(m);
+        // Its chunk is saved next time, as `setChanged` would.
+        world.modified.insert((pos[0] >> 4, pos[2] >> 4));
+        Some(out)
     }
+
+    /// Whether a player is in `dim`'s level (a level with none has nobody to show or tell).
+    fn watched(&self, dim: &str) -> bool {
+        self.game.native_players().iter().any(|p| p.dimension == dim)
+    }
+}
+
+/// The dimension named by `id`.
+fn dim_of(id: &str) -> Option<crate::game::Dim> {
+    use crate::game::Dim;
+    match id {
+        "minecraft:overworld" => Some(Dim::Overworld),
+        "minecraft:the_nether" => Some(Dim::Nether),
+        "minecraft:the_end" => Some(Dim::End),
+        _ => None,
+    }
+}
+
+/// Puts the level that was in place back, whichever way the work ends.
+struct Back<'a, 'g> {
+    game: &'a mut crate::game::Game<'g>,
+    home: crate::game::Dim,
+}
+
+impl Drop for Back<'_, '_> {
+    fn drop(&mut self) {
+        if self.game.dim != self.home && self.game.enter_level(None, self.home).is_err() {
+            eprintln!("ntm: could not put {} back in place", self.home.id());
+        }
+    }
+}
+
+/// Run `f` with `dim`'s level in place, for what only the level in place can
+/// do (spawn an item, explode, tell its players). Lazily: it switches only
+/// when `dim` is not already in place, never opens a level, and the level in
+/// place is put back by a guard, also when `f` panics. None: `dim` is not open.
+fn in_place<R>(game: &mut crate::game::Game<'_>, dim: &str, f: impl FnOnce(&mut crate::game::Game<'_>) -> R) -> Option<R> {
+    let target = dim_of(dim)?;
+    if target == game.dim {
+        return Some(f(game));
+    }
+    game.levels.parked_world(target)?;
+    let home = game.dim;
+    game.enter_level(None, target).ok()?;
+    let back = Back { game, home };
+    Some(f(&mut *back.game))
 }
 
 impl ServerHost for Host<'_, '_> {
     fn pile_drop(&mut self, dim: &str, p: [i32;3], id: &str) {
-        if dim == self.game.dim.id() { self.game.spawn_item(ItemStack::new(id,1),p.map(|v|f64::from(v)+0.5),crate::game::dispenser::new_item_motion(),0); }
+        let at = p.map(|v| f64::from(v) + 0.5);
+        in_place(self.game, dim, |g| { g.spawn_item(ItemStack::new(id, 1), at, crate::game::dispenser::new_item_motion(), 0); });
     }
     fn pile_depletion(&mut self, stack: &Stack) -> f64 {
         stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
     }
     fn pile_explode(&mut self, dim: &str, at: [f64;3]) -> bool {
-        self.game.native_explode(dim, at, 15.0, true, crate::game::native_explosions::NativeBlast::Block)
+        in_place(self.game, dim, |g| g.native_explode(dim, at, 15.0, true, crate::game::native_explosions::NativeBlast::Block)).unwrap_or(false)
     }
-    /// ServerTickEnd runs with the last ticked level in place, which need not be
-    /// the pile's (or the player's). Bring `dim` in place for the drops and the
-    /// blast; the first call remembers the level to put back.
-    fn pile_enter(&mut self, dim: &str) -> bool {
-        use crate::game::Dim;
-        let target = match dim {
-            "minecraft:overworld" => Dim::Overworld,
-            "minecraft:the_nether" => Dim::Nether,
-            "minecraft:the_end" => Dim::End,
-            _ => return false,
-        };
-        if target == self.game.dim {
-            return true;
-        }
-        // A level that is not open holds no loaded piles; never open one here.
-        if self.game.levels.parked_world(target).is_none() {
-            return false;
-        }
-        lock(&PILE_HOME).get_or_insert(self.game.dim);
-        self.game.enter_level(None, target).is_ok()
-    }
-    fn pile_restore(&mut self) {
-        if let Some(home) = lock(&PILE_HOME).take()
-            && home != self.game.dim
-        {
-            let _ = self.game.enter_level(None, home);
-        }
+    /// Piles in a level that is open are reached (drops and blasts switch levels
+    /// themselves when they happen); in one that is not they freeze.
+    fn pile_reachable(&mut self, dim: &str) -> bool {
+        dim_of(dim).is_some_and(|d| d == self.game.dim || self.game.levels.parked_world(d).is_some())
     }
 
     fn solar_sample(&mut self, dim: &str, p: [i32;3]) -> Option<(i32,i32,bool)> {
         self.game.native_loaded_block(dim,p)?;
         use crate::game::Dim;
-        let dimension = match dim {
-            "minecraft:overworld" => Dim::Overworld,
-            "minecraft:the_nether" => Dim::Nether,
-            "minecraft:the_end" => Dim::End,
-            _ => return None,
-        };
+        let dimension = dim_of(dim)?;
         // ServerTickEnd runs after the last level. Read the requested
         // level, even when another dimension is currently in place.
         let world = if dimension == self.game.dim { &self.game.world }
@@ -343,7 +374,13 @@ impl ServerHost for Host<'_, '_> {
             ntm_core::native::sync_changed(sent.as_deref(), values, &synced)
         });
         if changed == Some(true) {
-            self.game.native_block_entity_changed(p);
+            // The clients' update tag is the level in place's to send; nobody to
+            // send it to (or no open level) in a level with no players.
+            if dim_of(dim) == Some(self.game.dim) {
+                self.game.native_block_entity_changed(p);
+            } else if self.watched(dim) {
+                in_place(self.game, dim, |g| g.native_block_entity_changed(p));
+            }
         }
         changed.is_some()
     }
@@ -378,37 +415,47 @@ impl ServerHost for Host<'_, '_> {
     /// Particles and sounds in the dimension in play (`native_send_particles`,
     /// API 11; `native_play_sound`, API 32).
     fn show(&mut self, dim: &str, show: &ntm_core::blast::visuals::Show) {
-        use horizon_client::particles::{ParticleOptions, ParticleType};
-        use ntm_core::blast::visuals::Show;
-        if dim != self.game.dim.id() {
+        if dim_of(dim) != Some(self.game.dim) {
+            // Particles and sounds reach only the players of the level in place.
+            if self.watched(dim) {
+                in_place(self.game, dim, |g| show_in_place(g, show));
+            }
             return;
         }
-        let (what, sent) = match show {
-            Show::Particles { id, color, at, spread, speed, count } => {
-                let Some(ty) = ParticleType::from_name(id) else { return };
-                let mut options = ParticleOptions::simple(ty);
-                options.color = *color;
-                (id, self.game.with_level(|_, level, _| level.native_send_particles(&options, None, *at, *spread, *speed, *count)))
-            }
-            Show::Sound { id, source, at, volume, pitch } => {
-                let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| s == source) else { return };
-                (id, self.game.with_level(|_, level, _| level.native_play_sound(id, *at, source, *volume, *pitch)))
-            }
-            Show::Effect { .. } => return,
-        };
-        if !sent {
-            eprintln!("ntm: {what} refused");
-        }
+        show_in_place(self.game, show);
     }
     fn set_player_value(&mut self, id: &str, key: &str, value: i64) {
         if let Err(e) = self.game.native_set_player_value(id, key, value) {
             eprintln!("ntm: value {key} of {id}: {e}");
         }
     }
-    fn save_machine(&mut self, dim: &str, p: [i32; 3], json: &str) {
+    fn save_machine(&mut self, dim: &str, p: [i32; 3], json: &str) -> bool {
         self.entity(dim, p, |e| {
             e.nbt.insert(JavaString::from(STATE), Tag::String(JavaString::from(json)));
-        });
+        })
+        .is_some()
+    }
+}
+
+/// `show` in the level in place.
+fn show_in_place(game: &mut crate::game::Game<'_>, show: &ntm_core::blast::visuals::Show) {
+    use horizon_client::particles::{ParticleOptions, ParticleType};
+    use ntm_core::blast::visuals::Show;
+    let (what, sent) = match show {
+        Show::Particles { id, color, at, spread, speed, count } => {
+            let Some(ty) = ParticleType::from_name(id) else { return };
+            let mut options = ParticleOptions::simple(ty);
+            options.color = *color;
+            (id, game.with_level(|_, level, _| level.native_send_particles(&options, None, *at, *spread, *speed, *count)))
+        }
+        Show::Sound { id, source, at, volume, pitch } => {
+            let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| s == source) else { return };
+            (id, game.with_level(|_, level, _| level.native_play_sound(id, *at, source, *volume, *pitch)))
+        }
+        Show::Effect { .. } => return,
+    };
+    if !sent {
+        eprintln!("ntm: {what} refused");
     }
 }
 

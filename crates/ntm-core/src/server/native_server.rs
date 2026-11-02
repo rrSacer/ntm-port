@@ -266,8 +266,11 @@ impl Server {
             }
             let Ok(json) = serde_json::to_string(m) else { continue };
             if r.native_saved.get(key) != Some(&json) {
-                host.save_machine(&key.0, key.1, &json);
-                r.native_saved.insert(key.clone(), json);
+                // Marked kept only once written: an unreachable block entity
+                // (its dimension not available now) is written again later.
+                if host.save_machine(&key.0, key.1, &json) {
+                    r.native_saved.insert(key.clone(), json);
+                }
             }
         }
         r.native_saved.retain(|k, _| r.world.machines.contains_key(k));
@@ -288,6 +291,8 @@ mod tests {
         slots: BTreeMap<Pos, Slots>,
         data: BTreeMap<Pos, Vec<i32>>,
         saved: BTreeMap<Pos, String>,
+        /// Its dimension cannot be reached: every block entity access fails.
+        unreachable: bool,
         signal: BTreeMap<Pos, u8>,
         buttons: Vec<(String, String, Pos, u32)>,
         kv: crate::kv::MemKv,
@@ -318,19 +323,32 @@ mod tests {
         fn tell(&mut self, _player: &str, _text: &str) {}
         fn log(&mut self, _text: &str) {}
         fn machine_slots(&mut self, _dim: &str, p: Pos) -> Option<Slots> {
+            if self.unreachable {
+                return None;
+            }
             self.slots.get(&p).cloned()
         }
         fn set_machine_slot(&mut self, _dim: &str, p: Pos, slot: u32, stack: Option<Stack>) -> bool {
+            if self.unreachable {
+                return false;
+            }
             let Some(s) = self.slots.get_mut(&p).and_then(|s| s.get_mut(slot as usize)) else { return false };
             *s = stack;
             true
         }
         fn set_machine_data(&mut self, _dim: &str, p: Pos, values: &[i32]) -> bool {
+            if self.unreachable {
+                return false;
+            }
             self.data.insert(p, values.to_vec());
             true
         }
-        fn save_machine(&mut self, _dim: &str, p: Pos, json: &str) {
+        fn save_machine(&mut self, _dim: &str, p: Pos, json: &str) -> bool {
+            if self.unreachable {
+                return false;
+            }
             self.saved.insert(p, json.into());
+            true
         }
         fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
             std::mem::take(&mut self.buttons)
@@ -343,6 +361,28 @@ mod tests {
     const OW: &str = "minecraft:overworld";
     const AT: Pos = [0, 64, 0];
     const FIREBOX: &str = "ntm:heater_firebox[facing=north,honey_level=0]";
+
+    /// A machine whose dimension cannot be reached keeps running in memory but
+    /// is not marked kept; its state (and a new machine's first state) is written
+    /// once the block entity can be reached again.
+    #[test]
+    fn an_unreachable_block_entity_is_written_again_later() {
+        let mut w = World::default();
+        let mut s = Server::native(&mut w, 0);
+        w.blocks.insert(AT, FIREBOX.into());
+        w.slots.insert(AT, vec![Some(Stack::new("minecraft:coal", 2)), None]);
+        w.unreachable = true;
+        s.native_block_changed(OW, AT, "minecraft:air", FIREBOX);
+        for t in 1..=40 {
+            s.native_tick(&mut w, t);
+        }
+        assert!(w.saved.is_empty(), "nothing could be written");
+        assert!(!s.ready().unwrap().native_saved.contains_key(&(OW.to_string(), AT)), "and nothing is marked kept");
+        w.unreachable = false;
+        s.native_tick(&mut w, 41);
+        assert!(w.saved[&AT].contains("\"heat\""), "{:?}", w.saved.get(&AT));
+        assert!(s.ready().unwrap().native_saved.contains_key(&(OW.to_string(), AT)));
+    }
 
     /// A firebox put in the world burns the coal in its block entity's slot,
     /// shows it, and keeps its state there; a server that opens the world
