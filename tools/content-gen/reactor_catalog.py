@@ -63,13 +63,26 @@ def build(source):
                  'surface_textures':{'side':root+'blocks/pile_brick_side.png','top':root+'blocks/pile_brick_top.png','bottom':root+'blocks/pile_brick_top.png'},
                  'names':{loc:tr['tile.pile_brick.name'] for loc,tr in translations.items()},
                  'behavior_gap':'Source has distinct north/south brick faces vs east/west; cube_bottom_top uses side on all four. Hand drill formation/flammability require native logic.'})
+    # ExplosionNukeGeneric.waste(35) transforms grass and mycelium into
+    # these source blocks; neither was in the original minimal fallout set.
+    for var in ['waste_earth','waste_mycelium']:
+        name,_=registration(blocks,var,'block')
+        side='waste_grass_side' if var=='waste_earth' else 'waste_mycelium_side'
+        top='waste_grass_top' if var=='waste_earth' else 'waste_mycelium_top'
+        rows.append({'id':name,'source_variable':var,'type':'block','category':'fallout','template':'minecraft:dirt',
+                     'source_texture':root+'blocks/'+side+'.png',
+                     'surface_textures':{'side':root+'blocks/'+side+'.png','top':root+'blocks/'+top+'.png','bottom':root+'blocks/waste_earth_bottom.png'},
+                     'block_properties':{'hardness':0.6,'explosion_resistance':0.6,'requires_tool':False,'sounds':'minecraft:grass_block','light':15 if var=='waste_mycelium' else 0},
+                     'drop':'minecraft:dirt','names':{loc:tr['tile.'+name+'.name'] for loc,tr in translations.items()},
+                     'behavior_gap':'Source mycelium spread is disabled by default; native ZIRNOX applies its radiation-on-walk rule. Vanilla dirt plant support differs from Cave-only source.'})
     for var in ['reactor_zirnox','zirnox_destroyed']:
         name,texture=registration(blocks,var,'block')
         rows.append({'id':name,'source_variable':var,'type':'block','category':'machine','template':'minecraft:beehive',
                      'source_texture':root+'blocks/'+texture+'.png',
                      'textures':{face:'blocks/'+texture for face in ['side','top','front']},
+                     'block_properties':{'hardness':100.0 if var=='zirnox_destroyed' else 5.0,'explosion_resistance':480.0 if var=='zirnox_destroyed' else 60.0},
                      'names':{loc:tr.get('tile.'+name+'.name','ZIRNOX Destruído' if loc=='pt_br' else 'Destroyed ZIRNOX') for loc,tr in translations.items()},
-                     **({'creative_hidden':True,'loot_none':True} if var=='zirnox_destroyed' else {}),
+                     **({'creative_hidden':True,'loot_pools':[{'rolls':1,'entries':[{'type':'minecraft:item','name':item,'modifier':[{'type':'minecraft:set_count','count':n}]}]} for item,n in [('ntm:concrete_smooth',6),('ntm:pipe__steel',4),('ntm:steel_grate',2),('ntm:debris_metal',6),('ntm:debris_graphite',2),('ntm:fallout',4)]]} if var=='zirnox_destroyed' else {}),
                      'behavior_gap':'Source multiblock/model, core/proxy conversion, interaction, fluids, failure and destroyed-reactor random salvage deferred to native logic; source casing fallback only.'})
     for meta,role in enumerate(DEVICE_ROLES):
         model='models/pile/pile_'+role

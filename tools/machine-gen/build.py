@@ -268,3 +268,6 @@ if hm.is_dir():
     p = root / 'crates/ntm-core/data/machine_files.json'
     p.write_text(json.dumps(files, ensure_ascii=False, indent=0, sort_keys=True) + '\n')
     print(f"machine_files: {len(files)} máquinas → {p.relative_to(root)}")
+
+# Stateful reactor data is exported once by recipe-gen.
+(root / 'crates/ntm-core/data/reactors_simple.json').write_text((root / 'content/machine-recipes/reactors_simple.json').read_text())

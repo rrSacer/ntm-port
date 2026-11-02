@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:dirt",
+  "properties": {
+    "hardness": 0.6,
+    "explosion_resistance": 0.6,
+    "requires_tool": false,
+    "sounds": "minecraft:grass_block",
+    "light": 15
+  },
+  "item": true
+}

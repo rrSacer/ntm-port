@@ -125,6 +125,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Combustion(c) => Some(c.slotted()),
         Data::Pile(p) if matches!(&**p, crate::pile::Pile::Loader(_)) => Some(&mut **p),
         Data::SolarStirling(s) => Some(&mut **s),
+        Data::Zirnox(z) if !z.destroyed => Some(&mut **z),
         _ => None,
     }
 }
@@ -132,6 +133,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
 /// The blocks whose machines use the engine's slots, and their layout:
 /// (block, first input slot, inputs, output slot).
 pub const SLOTTED: &[(&str, Layout)] = &[
+    ("ntm:machine_zirnox", Layout::Native),
     ("ntm:pile_device__loader", Layout::Native),
     ("ntm:machine_solar_boiler", Layout::Native),
     ("ntm:solar_mirror", Layout::Native),
@@ -750,6 +752,7 @@ pub fn world_cell(core: Pos, facing: [i32; 3], l: [i32; 3]) -> Pos {
 
 /// The cells that carry the fluids of the multiblock of `block` at `core`.
 pub fn fluid_proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
+    if block == crate::zirnox::BLOCK { return crate::zirnox::Zirnox::port_cells(core,facing).into_iter().map(|(p,_)|p).collect(); }
     let Some((_, cells)) = FLUID_PROXIES.iter().find(|(b, _)| *b == block) else {
         return Vec::new();
     };
@@ -766,8 +769,11 @@ pub fn layout(block: &str) -> Option<&'static Layout> {
 /// What the bridge last wrote to (or read from) each machine's slots.
 #[derive(Debug, Default)]
 pub struct Bridge {
-    last: BTreeMap<Key, Slots>,
+    pub(super) last: BTreeMap<Key, Slots>,
     data: BTreeMap<Key, Vec<i32>>,
+    /// A refused native write keeps the simulation's slots until retried.
+    pub(super) failed: std::collections::BTreeSet<Key>,
+    pub(super) failed_data: std::collections::BTreeSet<Key>,
 }
 
 fn totals<'a>(slots: impl Iterator<Item = &'a Option<Stack>>) -> BTreeMap<String, i64> {
@@ -898,6 +904,7 @@ impl Server {
             .map(|(k, _)| k.clone())
             .collect();
         for key in keys {
+            if r.bridge.failed.contains(&key) { continue; }
             let Some(mut now) = host.machine_slots(&key.0, key.1) else {
                 continue;
             };
@@ -1014,16 +1021,22 @@ impl Server {
                 }
                 _ => continue,
             };
+            let mut written=last.clone();
+            let mut failed=false;
             for (slot, (old, new)) in last.iter().zip(&want).enumerate() {
                 if old != new {
-                    host.set_machine_slot(&key.0, key.1, slot as u32, new.clone());
+                    if host.set_machine_slot(&key.0, key.1, slot as u32, new.clone()) { written[slot]=new.clone(); }
+                    else {failed=true;}
                 }
             }
             if r.bridge.data.get(&key) != Some(&data) {
-                host.set_machine_data(&key.0, key.1, &data);
-                r.bridge.data.insert(key.clone(), data);
+                if data.is_empty() || host.set_machine_data(&key.0, key.1, &data) {
+                    r.bridge.data.insert(key.clone(), data);
+                    r.bridge.failed_data.remove(&key);
+                } else {r.bridge.failed_data.insert(key.clone());}
             }
-            r.bridge.last.insert(key, want);
+            if failed {r.bridge.failed.insert(key.clone());} else {r.bridge.failed.remove(&key);}
+            r.bridge.last.insert(key, written);
         }
     }
 
@@ -1032,6 +1045,8 @@ impl Server {
     pub(super) fn slots_gone(&mut self, key: &Key) -> bool {
         let Some(r) = self.ready() else { return false };
         r.bridge.data.remove(key);
+        r.bridge.failed.remove(key);
+        r.bridge.failed_data.remove(key);
         r.bridge.last.remove(key).is_some()
     }
 

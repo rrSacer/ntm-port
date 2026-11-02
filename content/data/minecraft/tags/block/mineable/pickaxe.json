@@ -469,6 +469,8 @@
     "ntm:ore_oil_sand",
     "ntm:oil_pipe",
     "ntm:pile_brick",
+    "ntm:waste_earth",
+    "ntm:waste_mycelium",
     "ntm:machine_zirnox",
     "ntm:zirnox_destroyed",
     "ntm:pile_device__loader",

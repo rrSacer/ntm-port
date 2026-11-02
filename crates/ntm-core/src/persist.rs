@@ -22,6 +22,8 @@ pub struct Kept {
     #[serde(default)]
     pub bombs: crate::blast::BombWorld,
     #[serde(default)]
+    pub zirnox: crate::zirnox::Remnants,
+    #[serde(default)]
     pub ticks: u64,
 }
 
@@ -33,6 +35,7 @@ pub struct WorldState {
     pub machines: BTreeMap<(String, Pos), Machine>,
     pub cables: BTreeSet<(String, Pos)>,
     pub bombs: crate::blast::BombWorld,
+    pub zirnox: crate::zirnox::Remnants,
 }
 
 impl WorldState {
@@ -43,6 +46,7 @@ impl WorldState {
         WorldState {
             radiation: kept.radiation,
             bombs: kept.bombs,
+            zirnox: kept.zirnox,
             ticks: kept.ticks,
             ..WorldState::default()
         }
@@ -53,6 +57,7 @@ impl WorldState {
         let kept = Kept {
             radiation: self.radiation.clone(),
             bombs: self.bombs.clone(),
+            zirnox: self.zirnox.clone(),
             ticks,
         };
         serde_json::to_vec(&kept).unwrap_or_default()

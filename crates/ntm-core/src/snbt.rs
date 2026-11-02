@@ -191,3 +191,32 @@ mod tests {
         assert_eq!(canonical("{a:1"), None);
     }
 }
+
+/// Top-level compound fields, using the same parser as canonicalisation.
+/// Nested tags and quoted delimiters are preserved.
+pub fn fields(s: &str) -> Option<std::collections::BTreeMap<String, String>> {
+    let mut p = Parser { s: s.as_bytes(), i: 0 };
+    if !p.eat(b'{') { return None; }
+    let mut fields = std::collections::BTreeMap::new();
+    if !p.eat(b'}') {
+        loop {
+            let key = if matches!(p.peek()?, b'"' | b'\'') { p.quoted()? } else { p.word()? };
+            if !p.eat(b':') { return None; }
+            let mut value = String::new();
+            p.value(&mut value)?;
+            fields.insert(key, value);
+            if p.eat(b'}') { break; }
+            if !p.eat(b',') { return None; }
+        }
+    }
+    p.ws();
+    (p.i == p.s.len()).then_some(fields)
+}
+
+/// Replace one field, preserving the rest of a valid custom-data compound.
+pub fn with_field(s: Option<&str>, key: &str, value: &str) -> String {
+    let mut fields = s.and_then(fields).unwrap_or_default();
+    fields.insert(key.into(), value.into());
+    let body = fields.iter().map(|(k,v)| format!("{}:{v}",quote(k))).collect::<Vec<_>>().join(",");
+    canonical(&format!("{{{body}}}")).expect("valid compound field")
+}

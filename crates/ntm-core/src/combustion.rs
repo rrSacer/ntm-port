@@ -156,7 +156,7 @@ fn type_from_identifier(
 
 /// `FluidTank.loadTank(in, out, slots)`: one full container of the tank's
 /// type into it, the empty one into `out`, when both fit.
-fn load_tank(tank: &mut Tank, slots: &mut Slots, from: usize, to: usize) {
+pub(crate) fn load_tank(tank: &mut Tank, slots: &mut Slots, from: usize, to: usize) {
     ensure(slots, from.max(to) + 1);
     let Some(id) = slots[from].as_ref().map(|s| s.id.clone()) else {
         return;

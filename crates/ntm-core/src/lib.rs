@@ -102,3 +102,5 @@ pub fn warm_tables() {
 }
 
 pub mod pile;
+
+pub mod zirnox;

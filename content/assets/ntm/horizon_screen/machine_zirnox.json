@@ -485,7 +485,8 @@
         14
       ],
       "lines": [
-        "Heat: {0} / 100000"
+        "Temperatura: {13} °C",
+        "Calor: {0} / 100000"
       ]
     },
     {
@@ -496,7 +497,8 @@
         14
       ],
       "lines": [
-        "Pressure: {1} / 100000"
+        "Pressão: {14} bar",
+        "{1} / 100000"
       ]
     }
   ],
@@ -510,7 +512,8 @@
         14
       ],
       "lines": [
-        "Control rods"
+        "Controle do reator",
+        "Ligado: {2}; redstone: {12}"
       ]
     },
     {

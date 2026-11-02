@@ -2842,6 +2842,8 @@
   "item.ntm.rod_zirnox__lithium": "Haste de Lítio ZIRNOX",
   "item.ntm.rod_zirnox__zfb_mox": "Haste de Combustível MOX ZFB ZIRNOX",
   "block.ntm.pile_brick": "Tijolos de Grafite do Chicago Pile",
+  "block.ntm.waste_earth": "Grama Morta",
+  "block.ntm.waste_mycelium": "Micélio Brilhante",
   "block.ntm.machine_zirnox": "Reator Nuclear ZIRNOX",
   "block.ntm.zirnox_destroyed": "ZIRNOX Destruído",
   "block.ntm.pile_device__loader": "Carregador de Combustível do Chicago Pile",

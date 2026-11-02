@@ -35,6 +35,10 @@ pub fn machine_block(block: &str) -> bool {
 /// the others' come from their machine files.
 pub fn container(block: &str) -> Option<Container> {
     use crate::machine::furnace_slot::*;
+    if block == crate::zirnox::BLOCK {
+        let rods:Vec<_>=(0..24).collect();
+        return Some(Container {slots:28,faces:std::array::from_fn(|_|rods.clone()),inputs:rods,outputs:vec![],menu:Some("minecraft:generic_9x3")});
+    }
     if block == FURNACE {
         return Some(Container {
             slots: SLOTS,
@@ -92,6 +96,12 @@ fn machine_files() -> &'static std::collections::HashMap<String, serde_json::Val
 
 /// Block `block`'s slot rules, from its machine file (none without one).
 pub fn block_slots(block: &str) -> Vec<SlotFilter> {
+    if block == crate::zirnox::BLOCK {
+        let mut slots=vec![SlotFilter {accept:Some(crate::zirnox::table().fuels.iter().map(|f|f.item.clone()).collect()), max:Some(1), ..Default::default()};24];
+        for f in ["carbondioxide","water"] {slots.push(SlotFilter {accept:Some(crate::fluid::all_full_containers().into_iter().filter(|s|crate::fluid::contents(s).is_some_and(|c|c.fluid==f)).collect()),..Default::default()});}
+        slots.extend([SlotFilter {output:true,..Default::default()},SlotFilter {output:true,..Default::default()}]);
+        return slots;
+    }
     if block == "ntm:pile_device__loader" { return vec![SlotFilter { accept: Some(crate::pile::ROD_NAMES.iter().map(|n| format!("ntm:pile_rod__{n}")).collect()), max: Some(1), ..Default::default() }]; }
     machine_files().get(block).map(|v| file_slots(v.to_string().as_bytes())).unwrap_or_default()
 }

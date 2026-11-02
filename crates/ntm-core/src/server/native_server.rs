@@ -57,6 +57,7 @@ impl Server {
         self.native_redstone(host);
         self.slots_in(host);
         self.pile_tick(host);
+        self.zirnox_tick(host);
         self.heat_tick();
         self.solar_tick(host);
         self.simulate(host);
@@ -261,7 +262,7 @@ impl Server {
     fn native_save(&mut self, host: &mut impl ServerHost) {
         let Some(r) = self.ready() else { return };
         for (key, m) in &r.world.machines {
-            if r.loaded.get(key) != Some(&true) {
+            if r.loaded.get(key) != Some(&true) || r.bridge.failed.contains(key) || r.bridge.failed_data.contains(key) {
                 continue;
             }
             let Ok(json) = serde_json::to_string(m) else { continue };

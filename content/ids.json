@@ -91383,6 +91383,74 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:waste_earth",
+      "source_variable": "waste_earth",
+      "type": "block",
+      "category": "fallout",
+      "template": "minecraft:dirt",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/waste_grass_side.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/waste_grass_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/waste_grass_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/waste_earth_bottom.png"
+      },
+      "block_properties": {
+        "hardness": 0.6,
+        "explosion_resistance": 0.6,
+        "requires_tool": false,
+        "sounds": "minecraft:grass_block",
+        "light": 0
+      },
+      "drop": "minecraft:dirt",
+      "names": {
+        "en_us": "Dead Grass",
+        "pt_br": "Grama Morta"
+      },
+      "behavior_gap": "Source mycelium spread is disabled by default; native ZIRNOX applies its radiation-on-walk rule. Vanilla dirt plant support differs from Cave-only source.",
+      "source_registry": "hbm:tile.waste_earth",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_mycelium",
+      "source_variable": "waste_mycelium",
+      "type": "block",
+      "category": "fallout",
+      "template": "minecraft:dirt",
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/waste_mycelium_side.png",
+      "surface_textures": {
+        "side": "src/main/resources/assets/hbm/textures/blocks/waste_mycelium_side.png",
+        "top": "src/main/resources/assets/hbm/textures/blocks/waste_mycelium_top.png",
+        "bottom": "src/main/resources/assets/hbm/textures/blocks/waste_earth_bottom.png"
+      },
+      "block_properties": {
+        "hardness": 0.6,
+        "explosion_resistance": 0.6,
+        "requires_tool": false,
+        "sounds": "minecraft:grass_block",
+        "light": 15
+      },
+      "drop": "minecraft:dirt",
+      "names": {
+        "en_us": "Glowing Mycelium",
+        "pt_br": "Micélio Brilhante"
+      },
+      "behavior_gap": "Source mycelium spread is disabled by default; native ZIRNOX applies its radiation-on-walk rule. Vanilla dirt plant support differs from Cave-only source.",
+      "source_registry": "hbm:tile.waste_mycelium",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:machine_zirnox",
       "source_variable": "reactor_zirnox",
       "type": "block",
@@ -91393,6 +91461,10 @@
         "side": "blocks/block_steel",
         "top": "blocks/block_steel",
         "front": "blocks/block_steel"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 60.0
       },
       "names": {
         "en_us": "ZIRNOX Nuclear Reactor",
@@ -91433,12 +91505,107 @@
         "top": "blocks/block_steel",
         "front": "blocks/block_steel"
       },
+      "block_properties": {
+        "hardness": 100.0,
+        "explosion_resistance": 480.0
+      },
       "names": {
         "en_us": "Destroyed ZIRNOX",
         "pt_br": "ZIRNOX Destruído"
       },
       "creative_hidden": true,
-      "loot_none": true,
+      "loot_pools": [
+        {
+          "rolls": 1,
+          "entries": [
+            {
+              "type": "minecraft:item",
+              "name": "ntm:concrete_smooth",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": 6
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rolls": 1,
+          "entries": [
+            {
+              "type": "minecraft:item",
+              "name": "ntm:pipe__steel",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": 4
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rolls": 1,
+          "entries": [
+            {
+              "type": "minecraft:item",
+              "name": "ntm:steel_grate",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rolls": 1,
+          "entries": [
+            {
+              "type": "minecraft:item",
+              "name": "ntm:debris_metal",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": 6
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rolls": 1,
+          "entries": [
+            {
+              "type": "minecraft:item",
+              "name": "ntm:debris_graphite",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rolls": 1,
+          "entries": [
+            {
+              "type": "minecraft:item",
+              "name": "ntm:fallout",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": 4
+                }
+              ]
+            }
+          ]
+        }
+      ],
       "behavior_gap": "Source multiblock/model, core/proxy conversion, interaction, fluids, failure and destroyed-reactor random salvage deferred to native logic; source casing fallback only.",
       "source_registry": "hbm:tile.zirnox_destroyed",
       "name_sources": {

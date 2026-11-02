@@ -275,6 +275,15 @@ impl ServerHost for Host<'_, '_> {
     fn pile_depletion(&mut self, stack: &Stack) -> f64 {
         stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
     }
+    fn block_resistance(&mut self,dim:&str,p:[i32;3])->Option<f32> {
+        self.game.native_loaded_block(dim,p)?;
+        let target=dim_of(dim)?;
+        let world=if target==self.game.dim {&self.game.world} else {self.game.levels.parked_world(target)?};
+        Some(self.game.res.facts().get(world.block(p[0],p[1],p[2])).explosion_resistance)
+    }
+    fn zirnox_explode(&mut self, dim: &str, at: [f64;3]) -> bool {
+        in_place(self.game, dim, |g| g.native_explode(dim, at, 12.0, true, crate::game::native_explosions::NativeBlast::Block)).unwrap_or(false)
+    }
     fn pile_explode(&mut self, dim: &str, at: [f64;3]) -> bool {
         in_place(self.game, dim, |g| g.native_explode(dim, at, 15.0, true, crate::game::native_explosions::NativeBlast::Block)).unwrap_or(false)
     }
@@ -490,11 +499,11 @@ pub(super) fn update_tag(id: &str, nbt: &Compound, tag: &mut Option<Compound>) {
 
 /// A slot as ntm-core sees it: id, count and damage (an empty slot, or air,
 /// is none).
-fn stack(s: &Option<ItemStack>) -> Option<Stack> {
+pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
     let s = s.as_ref().filter(|s| s.count > 0 && &*s.item != "minecraft:air")?;
     let mut t = Stack::new(&s.item, s.count);
     t.damage = s.damage;
-    if ntm_core::pile::Rod::of(&s.item,0.0).is_some() {
+    if ntm_core::pile::Rod::of(&s.item,0.0).is_some() || ntm_core::zirnox::fuel(&s.item).is_some() {
         t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);
     }
     Some(t)
@@ -563,5 +572,24 @@ mod pile_tests {
         let product=Stack::new("ntm:pile_rod__pu239",1);
         let plain=item(Some(&product),Some(restored)).unwrap();
         assert_eq!(pile_depletion(plain.data().and_then(|d|d.other("minecraft:custom_data"))),0.0);
+    }
+}
+
+#[cfg(test)]
+mod zirnox_tests {
+    use super::*;
+    #[test]
+    fn native_zirnox_life_and_other_custom_fields_follow_the_rod() {
+        let mut rod=ItemStack::new("ntm:rod_zirnox__uranium_fuel",1);
+        let (tag,_)=horizon_world::nbt::parse_snbt("{life:1234,nested:{name:'unchanged'}}").unwrap();
+        rod.data_mut().set_other("minecraft:custom_data",Some(tag));
+        let s=stack(&Some(rod.clone())).unwrap();
+        assert_eq!(ntm_core::zirnox::life(&s),1234);
+        let moved=item(Some(&s),None).unwrap();
+        let moved=stack(&Some(moved)).unwrap();
+        assert_eq!(moved,s);
+        let product=Stack::new("ntm:rod_zirnox_uranium_fuel_depleted",1);
+        let spent=item(Some(&product),Some(rod)).unwrap();
+        assert!(spent.data().and_then(|d|d.other("minecraft:custom_data")).is_none());
     }
 }

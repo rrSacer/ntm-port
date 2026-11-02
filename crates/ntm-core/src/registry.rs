@@ -1405,14 +1405,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     // Inert until their stage is approved.
     BlockSpec {
         id: "ntm:machine_zirnox",
-        kind: Kind::Inert,
+        kind: Kind::Zirnox,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:zirnox_destroyed",
-        kind: Kind::Inert,
+        kind: Kind::Zirnox,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1699,6 +1699,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// A machine's fluid ports (the NTM's `TilePortShapes`, on one block): every
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
+    if spec.kind == Kind::Zirnox { return vec![vec![]]; }
     if spec.id == "ntm:pile_device__vent" { return facing.and_then(facing_dir).map(|d| vec![vec![d]]).unwrap_or_default(); }
     if spec.id == "ntm:machine_solar_boiler" { return vec![vec![[0,-1,0]]]; }
     match spec.kind {

@@ -32,6 +32,13 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
             if rod.depletion > 0.0 { lines.push((Text::legacy(&format!("Depletion: {:.0}%",rod.depletion/spec.life*100.0)),u32::MAX)); }
         }
     }
+    if let Some(fuel)=ntm_core::zirnox::fuel(&stack.item) {
+        let life=crate::game::ntm_glue::stack(&Some(stack.clone())).map_or(0,|s|ntm_core::zirnox::life(&s));
+        let percent=(f64::from(life)/f64::from(fuel.max_life)*100000.).floor()/1000.;
+        lines.push((Text::legacy(&format!("§eConsumido: {percent:.3}% ({life} / {})",fuel.max_life)),u32::MAX));
+        lines.push((Text::legacy(if fuel.breeding {"Breeding: exige barras ativas vizinhas"}else{"Reage com a própria barra e as vizinhas ativas"}),u32::MAX));
+        if !fuel.breeding {lines.push((Text::legacy(&format!("Calor por decaimento: {}",fuel.heat_per_decay)),u32::MAX));}
+    }
     for line in client_rad::tooltip_lines(&stack.item, stack.count) {
         lines.push((Text::legacy(&line), u32::MAX));
     }

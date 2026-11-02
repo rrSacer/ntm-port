@@ -17,6 +17,10 @@ use std::collections::{BTreeMap, BTreeSet};
 /// What the engine needs from the game. Its [`Kv`] keeps the world's state
 /// outside the machines ([`crate::persist`]).
 pub trait ServerHost: Kv {
+    fn block_resistance(&mut self,dim:&str,p:Pos)->Option<f32> {self.get_block(dim,p).map(|b|crate::blast::vanilla::resistance(&b).max(0.))}
+
+    /// Native explosion (power 12, fire and block destruction) in its own level.
+    fn zirnox_explode(&mut self, _dim: &str, _at: [f64;3]) -> bool { false }
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String>;
     fn set_blocks(&mut self, dim: &str, blocks: &[(Pos, String)]) -> Result<(), String>;
     fn tell(&mut self, player: &str, text: &str);
@@ -176,6 +180,7 @@ impl Server {
         // Pile writes install their runtime state synchronously. Their delayed
         // native notifications must not discard the newly assembled channels.
         let (dim,pos,state,placed)=match &e { BlockEvent::Placed(d,p,s)=>(d,p,s,true),BlockEvent::Broken(d,p,s)=>(d,p,s,false) };
+        if let Some(m)=self.ready.world.machines.get(&(dim.clone(),*pos)) && matches!(m.data,crate::machine::Data::Zirnox(_)) && (placed && m.block==blockstate::id_of(state) || !placed && m.block!=blockstate::id_of(state)) {return;}
         let mut dismantle=None;
         if let Some(m)=self.ready.world.machines.get(&(dim.clone(),*pos)) && let crate::machine::Data::Pile(p)=&m.data {
             if placed && m.block==blockstate::id_of(state) || !placed && m.block!=blockstate::id_of(state) {return;}
@@ -431,3 +436,5 @@ mod tests;
 
 mod pile_server;
 pub use pile_server::PileUse;
+
+mod zirnox_server;

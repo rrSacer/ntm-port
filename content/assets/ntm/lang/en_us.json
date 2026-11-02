@@ -2842,6 +2842,8 @@
   "item.ntm.rod_zirnox__lithium": "ZIRNOX Lithium Rod",
   "item.ntm.rod_zirnox__zfb_mox": "ZIRNOX ZFB MOX Fuel Rod",
   "block.ntm.pile_brick": "Chicago Pile Graphite Bricks",
+  "block.ntm.waste_earth": "Dead Grass",
+  "block.ntm.waste_mycelium": "Glowing Mycelium",
   "block.ntm.machine_zirnox": "ZIRNOX Nuclear Reactor",
   "block.ntm.zirnox_destroyed": "Destroyed ZIRNOX",
   "block.ntm.pile_device__loader": "Chicago Pile Fuel Loader",

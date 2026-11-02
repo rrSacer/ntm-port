@@ -28,6 +28,15 @@ class SimpleReactors(unittest.TestCase):
         self.assertEqual([r['source_block_metadata_base'] for r in devices],[0,4,8])
         self.assertEqual(len([r for r in rows if r['category']=='machine']),14)
 
+    def test_zirnox_casing_resistance_and_waste_soil_are_declared(self):
+        rows={r['id']:r for r in build(SOURCE)}
+        self.assertEqual(rows['zirnox_destroyed']['block_properties']['explosion_resistance'],480.0)
+        self.assertEqual(rows['reactor_zirnox' if 'reactor_zirnox' in rows else 'machine_zirnox']['block_properties']['explosion_resistance'],60.0)
+        for name in ['waste_earth','waste_mycelium']:
+            row=rows[name]
+            self.assertEqual(row['drop'],'minecraft:dirt')
+            for texture in row['surface_textures'].values():self.assertTrue((SOURCE/texture).is_file())
+
     def test_metadata_and_transmutation(self):
         fuels=pile_fuels(SOURCE)
         self.assertEqual([f['metadata'] for f in fuels],list(range(9)))

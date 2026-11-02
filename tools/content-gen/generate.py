@@ -308,7 +308,7 @@ def generate(src,out,rows,distributions,max_damage=True):
    if name=='ore_nether_fire':entry={'type':'minecraft:alternatives','children':[{'type':'minecraft:item','name':'ntm:ingot_phosphorus','conditions':[{'condition':'minecraft:random_chance','chance':0.1}]},{'type':'minecraft:item','name':'ntm:powder_fire'}]}
    if template=='minecraft:stone_slab':entry['modifier']=[{'type':'minecraft:set_count','count':2,'conditions':[{'condition':'minecraft:block_state_property','block':row['id'],'properties':{'type':'double'}}]}]
    if row.get('door_textures'):entry['conditions']=[{'condition':'minecraft:block_state_property','block':row['id'],'properties':{'half':'lower'}}]
-   emit(f'data/ntm/loot_table/blocks/{name}.json',{'type':'minecraft:block','pools':[] if row.get('loot_none') else [{'rolls':1,'entries':[entry]}]})
+   emit(f'data/ntm/loot_table/blocks/{name}.json',{'type':'minecraft:block','pools':row.get('loot_pools',[] if row.get('loot_none') else [{'rolls':1,'entries':[entry]}])})
   if row.get('item_texture'):
    emit(f'assets/ntm/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':texture(row['item_texture'])}})
    model='ntm:item/'+name

@@ -1,8 +1,8 @@
 {
   "template": "minecraft:beehive",
   "properties": {
-    "hardness": 5.0,
-    "explosion_resistance": 10.0,
+    "hardness": 100.0,
+    "explosion_resistance": 480.0,
     "requires_tool": true,
     "sounds": "minecraft:iron_block",
     "light": 0
