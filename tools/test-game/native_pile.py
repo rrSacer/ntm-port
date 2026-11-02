@@ -127,8 +127,20 @@ def setup(g):
     # Ventilation response: stop supply and wait for the residual channel air
     # to dissipate before comparing heating slopes, then reconnect.
     g.command('setblock 36 101 10 minecraft:air')
-    time.sleep(45)
-    c=pile(g);a=fuel(c,1)['heat'];time.sleep(4);b=fuel(pile(g),1)['heat']
+    # Cooling must start above the ventilated equilibrium (~129), rather
+    # than depending on the time spent typing the replacement duct. 200 is
+    # safely below Java's strict >800 failure threshold. Keep the original
+    # heating/cooling assertions and the eight-second cooled window below.
+    started=time.monotonic();deadline=started+120
+    while True:
+        c=pile(g)
+        air=next(x for x in c['channels'] if x['kind']=='Ventilation')['air']
+        heat=fuel(c,1)['heat']
+        if (air==0 and heat>=200) or time.monotonic()>=deadline:break
+        time.sleep(1)
+    g.check('unventilated_hot_precondition',air==0 and heat>=200,
+            {'air':air,'heat':heat,'required_heat':200,'failure_above':800,'waited':round(time.monotonic()-started,2),'timeout':120})
+    a=heat;time.sleep(4);b=fuel(pile(g),1)['heat']
     g.command('setblock 36 101 10 ntm:fluid_duct_neo')
     type_duct(g,'air',[(36,101,10)],(34,100,7))
     # Wait for the air to arrive again (it travels through the ducts), then compare.
