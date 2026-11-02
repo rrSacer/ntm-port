@@ -1,8 +1,16 @@
 # Energia, lote 4: caldeira solar, espelho e Stirling
 
+## Integração nativa retomada em 02/11/2026
+
+As cinco máquinas agora têm simulação nativa de calor, vapor e HE, com vínculo pela ferramenta `ntm:mirror_tool`. A variante creative continua exigindo calor. O estado de engrenagem, excesso de velocidade e alvos é persistido nos block entities. O K3 e esta frente foram rebaseados na base atualizada; testes e aceitação real desta integração estão em andamento. A falha da engrenagem é simulada; o efeito visual/projétil de overspeed ainda não é emitido.
+
+O trecho abaixo conserva o histórico e o contrato do conteúdo anterior.
+
 Entram **cinco máquinas**: `machine_solar_boiler`, `solar_mirror`, `machine_stirling`, `machine_stirling_steel` e `machine_stirling_creative`. O catálogo chega a **2.700 IDs** (427 blocos, 2.273 itens), **76 máquinas** e **936 receitas vanilla**. Os blocos têm nomes originais en_us/pt_br, loot próprio e o barramento beehive com facing e honey_level 0..5.
 
-O lote entrega conteúdo e o contrato algorítmico `content/machine-recipes/solar_stirling.json`. As cinco máquinas ficam registradas como **Inert** (`bc6b2727`), sem lógica nova de energia nesta fase da migração. Os cubos são fallback com texturas do NTM; `auto: false` impede importar modelos OBJ automaticamente. Multiblocos, portas, animações, luz solar e ferramenta de apontamento ainda dependem do runtime/visual. Existir no catálogo não significa funcionar como gerador.
+## Contrato inicial de conteúdo
+
+O lote inicial entregou conteúdo e o contrato algorítmico `content/machine-recipes/solar_stirling.json`. As cinco máquinas ficam registradas como **Inert** (`bc6b2727`), sem lógica nova de energia nesta fase da migração. Os cubos são fallback com texturas do NTM; `auto: false` impede importar modelos OBJ automaticamente. Multiblocos, portas, animações, luz solar e ferramenta de apontamento ainda dependem do runtime/visual. Existir no catálogo não significa funcionar como gerador.
 
 ## Construções originais
 

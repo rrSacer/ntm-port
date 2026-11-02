@@ -214,13 +214,33 @@ impl Host<'_, '_> {
 impl ServerHost for Host<'_, '_> {
     fn solar_sample(&mut self, dim: &str, p: [i32;3]) -> Option<(i32,i32,bool)> {
         self.game.native_loaded_block(dim,p)?;
-        if dim != self.game.dim.id() { return None; }
-        let world = &self.game.world;
+        use crate::game::Dim;
+        let dimension = match dim {
+            "minecraft:overworld" => Dim::Overworld,
+            "minecraft:the_nether" => Dim::Nether,
+            "minecraft:the_end" => Dim::End,
+            _ => return None,
+        };
+        // ServerTickEnd runs after the last level. Read the requested
+        // level, even when another dimension is currently in place.
+        let world = if dimension == self.game.dim { &self.game.world }
+            else { self.game.levels.parked_world(dimension)? };
         let sky = i32::from(world.light(p[0],p[1],p[2]) >> 4);
         // `canBlockSeeTheSky(y+1)`: light-blocking height, so glass lets
         // sunlight through, leaves and opaque roofs don't.
         let visible = (p[1]+1..world.top_y()).all(|y| self.game.res.facts().get(world.block(p[0],y,p[2])).dampening == 0);
-        Some((sky,self.game.sky_darken(),visible))
+        let darken = match dimension {
+            Dim::Nether => 11,
+            Dim::End => {
+                let sky = self.game.res.end_environment().sample(world.day_time,None,None);
+                (15.0 - 15.0 * sky.sky_light_level).round() as i32
+            }
+            Dim::Overworld => {
+                let (rain,thunder) = world.weather.levels(1.0);
+                horizon_client::environment::sky_darken(self.game.res.environment(),world.day_time,rain,thunder)
+            }
+        };
+        Some((sky,darken,visible))
     }
     fn get_block(&mut self, dim: &str, p: [i32; 3]) -> Option<String> {
         self.game.native_loaded_block(dim, p)
