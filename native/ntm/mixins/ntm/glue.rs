@@ -236,8 +236,11 @@ impl ServerHost for Host<'_, '_> {
     fn pile_depletion(&mut self, stack: &Stack) -> f64 {
         stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
     }
-    fn pile_explode(&mut self, dim: &str, at: [f64;3]) {
-        self.game.native_explode(dim, at, 15.0, true, crate::game::native_explosions::NativeBlast::Block);
+    fn pile_explode(&mut self, dim: &str, at: [f64;3]) -> bool {
+        self.game.native_explode(dim, at, 15.0, true, crate::game::native_explosions::NativeBlast::Block)
+    }
+    fn pile_active(&mut self, dim: &str) -> bool {
+        dim == self.game.dim.id()
     }
 
     fn solar_sample(&mut self, dim: &str, p: [i32;3]) -> Option<(i32,i32,bool)> {

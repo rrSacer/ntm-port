@@ -65,10 +65,20 @@ impl Server {
     }
     /// BlockPile.breakBlock restores even the removed/replaced cell to brick.
     /// The existing native change hook has no cause, so commands have the
-    /// same result. Rod drops lose depletion, as in Java.
-    pub(super) fn pile_destroy(&mut self, host: &mut impl ServerHost, dim: &str, c: &Core) {
+    /// same result. Rod drops lose depletion, as in Java. Nothing happens
+    /// (false) outside the host's active dimension, where drops and explosions
+    /// are unavailable: the pile stays intact until it can be handled.
+    pub(super) fn pile_destroy(&mut self, host: &mut impl ServerHost, dim: &str, c: &Core) -> bool {
+        self.pile_dismantle(host, dim, c, false)
+    }
+    /// `core_only`: the meltdown reverts just the core block (Java `destroy`).
+    fn pile_dismantle(&mut self, host: &mut impl ServerHost, dim: &str, c: &Core, core_only: bool) -> bool {
+        if !host.pile_active(dim) {
+            return false;
+        }
+        let cells: Vec<_> = c.cells().into_iter().filter(|(p, _)| !core_only || *p == c.shape.at).collect();
         let mut changes = Vec::new();
-        for (at, _) in c.cells() {
+        for (at, _) in cells {
             let key = (dim.to_string(), at);
             if host.get_block(dim, at).is_some() {
                 changes.push((at, pile::BRICK.to_string()));
@@ -90,6 +100,7 @@ impl Server {
             }
         }
         self.ready.topo_dirty = true;
+        true
     }
     /// None: unrelated block. Handled consumes the click only; a rod/tool
     /// action is returned only after the state/slot write succeeded.
@@ -244,7 +255,34 @@ impl Server {
         (id != pile::BRICK && held.is_none()).then_some(PileUse::Handled)
     }
     pub(super) fn pile_tick(&mut self, host: &mut impl ServerHost) {
-        let devices:Vec<_>=self.ready.world.machines.iter().filter(|(k,m)|self.ready.loaded.get(*k)==Some(&true) && matches!(&m.data,Data::Pile(p) if matches!(&**p,Pile::Loader(_)|Pile::Vent(_)|Pile::Control(_)))).map(|(k,_)|k.clone()).collect();
+        // The host can only drop items and explode in its active dimension, so
+        // piles elsewhere freeze (like unloaded cells) instead of losing rods.
+        let dims: BTreeSet<String> = self
+            .ready
+            .world
+            .machines
+            .iter()
+            .filter(|(_, m)| matches!(&m.data, Data::Pile(_)))
+            .map(|(k, _)| k.0.clone())
+            .collect();
+        let live: BTreeSet<String> = dims.into_iter().filter(|d| host.pile_active(d)).collect();
+        let devices:Vec<_>=self.ready.world.machines.iter().filter(|(k,m)|live.contains(&k.0) && self.ready.loaded.get(*k)==Some(&true) && matches!(&m.data,Data::Pile(p) if matches!(&**p,Pile::Loader(_)|Pile::Vent(_)|Pile::Control(_)))).map(|(k,_)|k.clone()).collect();
+        // Loader and control read the signal their own cell receives, one batch
+        // per dimension (the vent has no redstone input).
+        let mut wanted: BTreeMap<String, Vec<Pos>> = BTreeMap::new();
+        for key in &devices {
+            if matches!(&self.ready.world.machines[key].data, Data::Pile(p) if matches!(&**p, Pile::Loader(_) | Pile::Control(_))) {
+                wanted.entry(key.0.clone()).or_default().push(key.1);
+            }
+        }
+        let mut powered: BTreeSet<Key> = BTreeSet::new();
+        for (dim, cells) in wanted {
+            for (cell, level) in cells.iter().zip(host.redstone_many(&dim, &cells)) {
+                if level.unwrap_or(0) > 0 {
+                    powered.insert((dim.clone(), *cell));
+                }
+            }
+        }
         for key in devices {
             let Some(mut m) = self.ready.world.machines.remove(&key) else {
                 continue;
@@ -276,13 +314,7 @@ impl Server {
                         None
                     }
                 });
-            let red = host
-                .redstone_many(&key.0, &[pile::offset(key.1, outward, 1)])
-                .first()
-                .copied()
-                .flatten()
-                .unwrap_or(0)
-                > 0;
+            let red = powered.contains(&key);
             match &mut **p {
                 Pile::Loader(l) => {
                     if l.stroke(red)
@@ -299,7 +331,7 @@ impl Server {
                 }
                 Pile::Vent(t) => {
                     if let Some(c) = channel.filter(|c| c.kind == ChannelType::Ventilation) {
-                        let n = t.mb.min(1000 - c.air);
+                        let n = t.mb.min(1000u32.saturating_sub(c.air));
                         c.air += n;
                         t.drain(n);
                     }
@@ -325,11 +357,13 @@ impl Server {
             .machines
             .iter()
             .filter(|(k, m)| {
-                self.ready.loaded.get(*k) == Some(&true)
+                live.contains(&k.0)
+                    && self.ready.loaded.get(*k) == Some(&true)
                     && matches!(&m.data,Data::Pile(p) if matches!(&**p,Pile::Core(Some(_))))
             })
             .map(|(k, _)| k.clone())
             .collect();
+        let mut melted = false;
         for key in cores {
             let Data::Pile(p) = &self.ready.world.machines[&key].data else {
                 continue;
@@ -365,10 +399,16 @@ impl Server {
             if c.step() {
                 let c = c.clone();
                 let center = c.blast_center();
-                self.pile_destroy(host, &key.0, &c);
+                // As in Java only the core reverts; the explosion runs against
+                // the standing members and the orphan sweep reverts survivors
+                // on the next tick.
+                self.pile_dismantle(host, &key.0, &c, true);
+                melted = true;
                 // The engine supplies real fire, block destruction and entity
                 // damage; EntityBulletBaseMK4's 15 custom debris are unavailable.
-                host.pile_explode(&key.0, center);
+                if !host.pile_explode(&key.0, center) {
+                    host.log("pile meltdown: explosion not applied (chunk not loaded)");
+                }
                 host.log("pile meltdown: 15 EntityBulletBaseMK4 debris not emitted (custom NTM projectile unavailable)");
             }
         }
@@ -380,7 +420,9 @@ impl Server {
             .machines
             .iter()
             .filter_map(|(k, m)| {
-                if let Data::Pile(p) = &m.data
+                if !melted
+                    && live.contains(&k.0)
+                    && let Data::Pile(p) = &m.data
                     && let Pile::Member(Some(core)) = &**p
                     && !self
                         .ready
@@ -425,6 +467,7 @@ mod tests {
         kv: MemKv,
         blasts: Vec<[f64; 3]>,
         unloaded: BTreeSet<Pos>,
+        inactive: BTreeSet<String>,
     }
     impl Kv for Host {
         fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -475,8 +518,12 @@ mod tests {
         fn pile_drop(&mut self, _: &str, p: Pos, id: &str) {
             self.drops.push((p, id.into()));
         }
-        fn pile_explode(&mut self, _: &str, at: [f64; 3]) {
+        fn pile_explode(&mut self, _: &str, at: [f64; 3]) -> bool {
             self.blasts.push(at);
+            true
+        }
+        fn pile_active(&mut self, dim: &str) -> bool {
+            !self.inactive.contains(dim)
         }
         fn redstone_many(&mut self, _: &str, cells: &[Pos]) -> Vec<Option<u8>> {
             cells
@@ -638,7 +685,7 @@ mod tests {
         };
         let Pile::Vent(t) = &mut **p else { panic!() };
         t.fill("air", 4000);
-        h.signal.insert([0, 67, 1], 15);
+        h.signal.insert(ctrl, 15);
         for t in 10..75 {
             s.native_tick(&mut h, t);
         }
@@ -690,9 +737,94 @@ mod tests {
         s.native_tick(&mut h, 8);
         assert_eq!(h.blasts, vec![[-0.5, 66., 2.5]]);
         assert_eq!(h.drops.len(), 1);
+        // Java destroy(): only the core turns to brick before the blast; the
+        // surviving members revert on the following tick (orphan sweep).
+        assert_eq!(h.blocks[&AT], pile::BRICK);
+        assert!(h.blocks[&[1, 64, 2]].starts_with("ntm:pile_block__"));
         replay(&mut s, &mut h);
         s.native_tick(&mut h, 9);
+        assert_eq!(h.blocks[&[1, 64, 2]], pile::BRICK);
         assert_eq!(h.drops.len(), 1);
+        assert_eq!(h.blasts.len(), 1);
+    }
+    #[test]
+    fn native_loader_reads_the_signal_of_its_own_cell_only() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        let loader = [-1, 64, -1];
+        device(&mut s, &mut h, loader, "ntm:pile_device__loader", "north");
+        let rod = Stack::new("ntm:pile_rod__nu", 1);
+        assert_eq!(
+            s.native_pile_use(&mut h, DIM, loader, [0, 0, -1], Some(&rod), 0., "p"),
+            Some(PileUse::ConsumeRod)
+        );
+        // The outer neighbour used to be read; its signal no longer counts.
+        h.signal.insert([-1, 64, -2], 15);
+        for t in 10..40 {
+            s.native_tick(&mut h, t);
+        }
+        assert!(h.slots[&loader][0].is_some());
+        h.signal.insert(loader, 15);
+        for t in 40..70 {
+            s.native_tick(&mut h, t);
+        }
+        assert!(h.slots[&loader][0].is_none());
+        assert_eq!(core(&mut s).channels[0].rods.iter().flatten().count(), 1);
+    }
+    #[test]
+    fn native_pile_outside_the_active_dimension_freezes_without_losing_rods() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        let c = core(&mut s);
+        c.channels[0].load(Rod::of("ntm:pile_rod__waste", 0.).unwrap());
+        c.channels[0].heat = 802.;
+        h.inactive.insert(DIM.into());
+        s.native_tick(&mut h, 8);
+        // No explosion, no drop, no brick: everything waits for the dimension.
+        assert!(h.blasts.is_empty() && h.drops.is_empty());
+        assert!(h.blocks[&AT].starts_with("ntm:pile_block__"));
+        assert_eq!(core(&mut s).channels[0].heat, 802.);
+        // A broken member in that dimension does not dismantle it either.
+        let old = h.blocks[&[1, 64, 2]].clone();
+        h.blocks.insert([1, 64, 2], "minecraft:air".into());
+        s.native_block_changed(DIM, [1, 64, 2], &old, "minecraft:air");
+        s.native_tick(&mut h, 9);
+        assert!(h.drops.is_empty() && s.ready.world.machines.contains_key(&(DIM.into(), AT)));
+        h.inactive.clear();
+        s.native_tick(&mut h, 10);
+        assert_eq!(h.drops.len(), 1);
+        assert!(!s.ready.world.machines.contains_key(&(DIM.into(), AT)));
+        assert_eq!(h.blocks[&AT], pile::BRICK);
+    }
+    #[test]
+    fn native_member_break_dismantles_at_once_with_part_of_the_pile_unloaded() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__nu", 100.).unwrap());
+        h.unloaded.insert([2, 66, 4]);
+        let old = h.blocks[&[1, 64, 2]].clone();
+        h.blocks.insert([1, 64, 2], "minecraft:air".into());
+        s.native_block_changed(DIM, [1, 64, 2], &old, "minecraft:air");
+        s.native_tick(&mut h, 5);
+        assert_eq!(h.drops.len(), 1);
+        assert!(!s.ready.world.machines.contains_key(&(DIM.into(), AT)));
+        assert_eq!(h.blocks[&[1, 64, 2]], pile::BRICK);
+        assert_eq!(h.blocks[&AT], pile::BRICK);
+    }
+    #[test]
+    fn native_vent_with_a_full_channel_never_underflows() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-2, 63, 3], [-1, 0, 0]);
+        let vent = [-3, 63, 3];
+        device(&mut s, &mut h, vent, "ntm:pile_device__vent", "west");
+        let Data::Pile(p) = &mut s.ready.world.machines.get_mut(&(DIM.into(), vent)).unwrap().data else { panic!() };
+        let Pile::Vent(t) = &mut **p else { panic!() };
+        t.fill("air", 4000);
+        for t in 10..30 {
+            s.native_tick(&mut h, t);
+        }
+        let air = core(&mut s).channels[0].air;
+        assert!(air <= 1000, "{air}");
     }
     #[test]
     fn native_reopen_keeps_channel_reaction_and_depletion() {

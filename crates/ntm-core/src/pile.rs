@@ -271,8 +271,13 @@ pub struct Channel {
     pub incoming: f64,
     #[serde(skip)]
     pub outgoing: f64,
+    #[serde(deserialize_with = "saved_air")]
     pub air: u32,
     pub control: f64,
+}
+/// A saved channel never holds more than the vent can fill (1000 mB).
+fn saved_air<'de, D: serde::Deserializer<'de>>(d: D) -> Result<u32, D::Error> {
+    Ok(<u32 as serde::Deserialize>::deserialize(d)?.min(1000))
 }
 impl Channel {
     pub fn new(entry: Pos, inward: Pos, kind: ChannelType, length: usize) -> Self {
@@ -933,5 +938,12 @@ mod tests {
         let loaded: Core = serde_json::from_str(&text).unwrap();
         c.channels[0].outgoing = 0.;
         assert_eq!(c, loaded);
+    }
+    #[test]
+    fn a_corrupted_saved_air_level_is_capped_to_the_vent_capacity() {
+        let mut v = Channel::new([-2, 63, 2], [1, 0, 0], ChannelType::Ventilation, 5);
+        v.air = 4_000_000_000;
+        let loaded: Channel = serde_json::from_str(&serde_json::to_string(&v).unwrap()).unwrap();
+        assert_eq!(loaded.air, 1000);
     }
 }

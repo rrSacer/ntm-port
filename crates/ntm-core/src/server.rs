@@ -27,7 +27,11 @@ pub trait ServerHost: Kv {
     /// Read the original double `depletion` from an item's custom data.
     fn pile_depletion(&mut self, _stack: &container_bridge::Stack) -> f64 { 0. }
     /// Native Level.explode(null, ..., 15, true, BLOCK).
-    fn pile_explode(&mut self, _dim: &str, _at: [f64;3]) {}
+    /// False when the explosion could not be applied (other dimension, unloaded chunk).
+    fn pile_explode(&mut self, _dim: &str, _at: [f64;3]) -> bool { true }
+    /// Pile rods can only be ejected and exploded in the host's active
+    /// dimension: piles in any other one freeze rather than lose their rods.
+    fn pile_active(&mut self, _dim: &str) -> bool { true }
     fn solar_sample(&mut self, _dim: &str, _p: Pos) -> Option<(i32, i32, bool)> { None }
     /// The slots of the machine's block entity at `p`.
     fn machine_slots(&mut self, _dim: &str, _p: Pos) -> Option<container_bridge::Slots> {
@@ -169,10 +173,19 @@ impl Server {
         // Pile writes install their runtime state synchronously. Their delayed
         // native notifications must not discard the newly assembled channels.
         let (dim,pos,state,placed)=match &e { BlockEvent::Placed(d,p,s)=>(d,p,s,true),BlockEvent::Broken(d,p,s)=>(d,p,s,false) };
+        let mut dismantle=None;
         if let Some(m)=self.ready.world.machines.get(&(dim.clone(),*pos)) && let crate::machine::Data::Pile(p)=&m.data {
             if placed && m.block==blockstate::id_of(state) || !placed && m.block!=blockstate::id_of(state) {return;}
-            if !placed && let crate::pile::Pile::Core(Some(c))=&**p {let c=c.clone();self.pile_destroy(host,dim,&c);}
+            // Java breakBlock: breaking the core or any member dismantles the
+            // whole pile at once, even if part of it sits in an unloaded chunk.
+            if !placed {
+                let core=match &**p { crate::pile::Pile::Core(_)=>Some(*pos), crate::pile::Pile::Member(Some(c))=>Some(*c), _=>None };
+                dismantle=core.and_then(|c|self.ready.world.machines.get(&(dim.clone(),c))).and_then(|cm|match &cm.data {
+                    crate::machine::Data::Pile(cp)=>match &**cp { crate::pile::Pile::Core(Some(c))=>Some(c.clone()), _=>None },
+                    _=>None });
+            }
         }
+        if let Some(c)=dismantle { self.pile_destroy(host,dim,&c); }
 
         if let BlockEvent::Placed(dim, pos, state) = &e
             && registry::is_bomb(blockstate::id_of(state))
