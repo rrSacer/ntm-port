@@ -509,6 +509,7 @@ mod tests {
         frozen: BTreeSet<String>,
         refuse_slots: bool,
         refuse_save: bool,
+        save_attempts: usize,
         refuse_data: bool,
         refuse_blocks: bool,
         refuse_blast: bool,
@@ -589,6 +590,7 @@ mod tests {
             }
         }
         fn save_machine(&mut self, d: &str, p: Pos, j: &str) -> bool {
+            self.save_attempts += 1;
             if self.refuse_save {
                 false
             } else {
@@ -762,6 +764,28 @@ mod tests {
         assert!(h.slots[&key()][0].is_none());
         assert!(z(&s).slots[0].is_none());
         assert!(s.ready.bridge.pending.is_empty());
+    }
+    #[test]
+    fn refused_screen_b_returning_to_confirmed_a_unblocks_stable_saves() {
+        let mut h = Host { refuse_save: true, ..Default::default() };
+        let mut s = Server::native(&mut h, 0);
+        install(&mut h, &mut s, DIM, AT);
+        s.native_tick(&mut h, 1); // A: off, cold, no rods.
+        assert_eq!(h.save_attempts, 1);
+        h.refuse_data = true;
+        h.buttons.push(("p".into(), DIM.into(), AT, 0));
+        s.native_tick(&mut h, 2); // B: on; screen write refused.
+        assert!(s.ready.bridge.failed_data.contains(&key()));
+        h.refuse_data = false;
+        h.refuse_save = false;
+        h.buttons.push(("p".into(), DIM.into(), AT, 0));
+        for t in 3..20 { s.native_tick(&mut h, t); }
+        assert!(!z(&s).on);
+        assert!(s.ready.bridge.failed_data.is_empty());
+        assert_eq!(h.save_attempts, 2, "stable healthy ticks must accept the pending JSON save");
+        let back: crate::machine::Machine = serde_json::from_str(&h.saved[&key()]).unwrap();
+        let Data::Zirnox(z) = back.data else { panic!() };
+        assert!(!z.on);
     }
     #[test]
     fn life_conversion_breeding_and_real_outward_steam_network_work() {

@@ -1052,7 +1052,11 @@ impl Server {
                     else {pending.insert(slot,new.clone());}
                 }
             }
-            if r.bridge.data.get(&key) != Some(&data) {
+            if r.bridge.data.get(&key) == Some(&data) {
+                // A refused B may have returned to the confirmed A. Nothing
+                // remains to write; do not leave native_save blocked forever.
+                r.bridge.failed_data.remove(&key);
+            } else {
                 if data.is_empty() || host.set_machine_data(&key.0, key.1, &data) {
                     r.bridge.data.insert(key.clone(), data);
                     r.bridge.failed_data.remove(&key);
