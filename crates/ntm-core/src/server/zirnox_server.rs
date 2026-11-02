@@ -166,11 +166,13 @@ impl Server {
             },
         );
         let s = seed(&key.0, key.1, self.ready.world.ticks);
-        self.ready
-            .world
-            .zirnox
-            .debris
-            .extend(Debris::spawn(&key.0, key.1, s));
+        let debris = Debris::spawn(&key.0, key.1, s);
+        for d in &debris {
+            if let Some(n) = self.ready.world.zirnox.debris_created.get_mut(usize::from(d.kind)) {
+                *n = n.saturating_add(1);
+            }
+        }
+        self.ready.world.zirnox.debris.extend(debris);
         self.ready.world.zirnox.waste.push(Waste {
             dim: key.0.clone(),
             center: key.1,
@@ -866,6 +868,7 @@ mod tests {
         assert!(z(&s).destroyed);
         assert!(h.slots[&key()].iter().all(Option::is_none));
         assert_eq!(s.ready.world.zirnox.debris.len(), 72);
+        assert_eq!(s.ready.world.zirnox.debris_created, [20, 10, 10, 10, 20, 2]);
         assert_eq!(s.ready.world.zirnox.blasts.len(), 1);
         // Native notifications from our replacement arrive next tick.
         s.native_block_changed(DIM, AT, zirnox::BLOCK, zirnox::DESTROYED);
@@ -876,6 +879,7 @@ mod tests {
         assert!(s.ready.world.zirnox.blasts.is_empty());
         let back = WorldState::load(&mut h);
         assert_eq!(back.zirnox.debris.len(), 72);
+        assert_eq!(back.zirnox.debris_created, [20, 10, 10, 10, 20, 2]);
         assert!(!back.zirnox.waste.is_empty());
     }
     #[test]

@@ -25,6 +25,8 @@ pub fn soil_decays(block: &str, light_above: u8, opacity_above: u8) -> bool {
 #[serde(default)]
 pub struct Remnants {
     pub debris: Vec<Debris>,
+    /// Cumulative actual creations per type, independent of later collisions.
+    pub debris_created: [u64; 6],
     pub blasts: Vec<(String, [f64; 3])>,
     pub waste: Vec<Waste>,
     /// Expiring radiation potion from fuel/graphite debris, by player UUID.

@@ -9,6 +9,7 @@ import json
 import re
 import sys
 import time
+from collections import Counter
 from native_game import Game
 from native_combustion import machine_state
 from native_solar_stirling import place
@@ -148,6 +149,14 @@ def setup(g):
     lever(g,c,False);time.sleep(.5)
     before=life(g,core);time.sleep(.8);after=life(g,core)
     g.check('falling_edge_stops',not state(g,core)['on'] and before==after,[before,after])
+    # Java scans this bounding-box corner even though it is outside the casing.
+    corner=add(core,(2,3,2));upper_lever=add(core,(3,3,2))
+    g.command('setblock '+pos_text(corner)+' minecraft:stone')
+    g.command('setblock '+pos_text(upper_lever)+' minecraft:lever[face=wall,facing=east,powered=true]')
+    g.check('powered_box_corner_outside_casing',state(g,core)['on'] and state(g,core)['powered'],state(g,core))
+    g.command('setblock '+pos_text(upper_lever)+' minecraft:lever[face=wall,facing=east,powered=false]')
+    g.check('box_corner_falling_edge',not state(g,core)['on'],state(g,core))
+    for p in (upper_lever,corner):g.command('setblock '+pos_text(p)+' minecraft:air')
     open_reactor(g,core);g.button([151,51,36,36],[203,256]);time.sleep(.4)
     g.check('vent_releases_1000',state(g,core)['co2']['mb']==15000,state(g,core))
     g.button([144,35,14,14],[203,256]);time.sleep(.4)
@@ -234,6 +243,11 @@ def failure(g):
     open_reactor(g,core)
     for slot in range(24):g.put('ntm:rod_zirnox__les_fuel',1,slot)
     g.check('cold_uncooled_loaded',state(g,core)['heat']==0,state(g,core))
+    def remnants():
+        g.ctl('save')
+        path=next(g.folder.glob('saves/*/data/ntm/world'))
+        return json.loads(path.read_text())['zirnox']
+    baseline=remnants()
     g.button([144,35,14,14],[203,256]);g.close();time.sleep(2)
     b=block(g,core);a=state(g,core)
     g.check('destroyed_reactor_replaces_core',b.startswith('ntm:zirnox_destroyed') and a['destroyed'],{'block':b,'state':a})
@@ -241,15 +255,35 @@ def failure(g):
     g.check('native_explosion_breaks_surroundings',any(x=='minecraft:air' for x in remaining),remaining)
     sprint(g,120)
     g.check('waste_transforms_grass',block(g,grass)=='ntm:waste_earth',block(g,grass))
-    g.ctl('save')
-    worlds=list(g.folder.glob('saves/*/data/ntm/world'))
-    world=json.loads(worlds[0].read_text());debris=world['zirnox']['debris']
-    g.check('simulated_debris_alive',0<len(debris)<=72,{'count':len(debris),'kinds':sorted(set(d['kind'] for d in debris))})
+    after=remnants()
+    created=[a-b for a,b in zip(after['debris_created'],baseline.get('debris_created',[0]*6))]
+    expected=[20,10,10,10,20,2]
+    g.check('debris_created_exactly_by_type',created==expected,{'baseline':baseline.get('debris_created',[0]*6),'created_delta':created})
+    before_counts=Counter(d['kind'] for d in baseline['debris'])
+    after_counts=Counter(d['kind'] for d in after['debris'])
+    survivor_delta=[after_counts[k]-before_counts[k] for k in range(6)]
+    g.check('non_destructive_debris_survive_by_type',survivor_delta[:4]==expected[:4],{'survivor_delta':survivor_delta,'created_delta':created})
     g.command(f'tp @s {core[0]+18} {core[1]+8} {core[2]+18} 135 20')
     g.snapshot('zirnox-failure')
 
 
-PHASES={'setup':setup,'inactive':inactive,'convert':convert,'capture-state':capture,'check-state':check,'failure':failure}
+def soils(g):
+    g.close();g.command('clear @s')
+    g.ground(160,101,8,width=20,height=12)
+    for x,soil in [(160,'waste_earth'),(170,'waste_mycelium')]:
+        g.command(f'fill {x} 101 8 {x+7} 101 15 ntm:{soil}')
+        g.command(f'fill {x} 102 8 {x+7} 102 15 minecraft:stone')
+    g.command('gamerule randomTickSpeed 512')
+    g.command('tp @s 160.5 104 11.5')
+    sprint(g,120)
+    for x,soil in [(160,'waste_earth'),(170,'waste_mycelium')]:
+        samples=[block(g,(x+i,101,8)) for i in range(8)]
+        g.check('covered_dark_'+soil+'_decays',all(b=='minecraft:dirt' for b in samples),samples)
+    g.command('gamerule randomTickSpeed 3')
+    g.snapshot('zirnox-soils')
+
+
+PHASES={'setup':setup,'inactive':inactive,'convert':convert,'capture-state':capture,'check-state':check,'failure':failure,'soils':soils}
 if __name__=='__main__':
     g=Game(sys.argv[1],'zirnox-'+sys.argv[2]);g.ctl('wait-ready 120')
     g.evidence['phase']=sys.argv[2]

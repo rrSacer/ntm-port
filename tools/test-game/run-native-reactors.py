@@ -87,7 +87,7 @@ def run(args):
     with os.fdopen(reader) as pipe:
         env['DISPLAY'] = ':' + pipe.readline().strip()
     phases = {'zirnox': [('setup', 'inactive', 'convert', 'capture-state'),
-                         ('check-state', 'failure')],
+                         ('check-state', 'failure', 'soils')],
               'pile': [('setup', 'capture-state'), ('check-state', 'destroy')],
               'dims': [('setup', 'capture-state'), ('check-state',)],
               'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
