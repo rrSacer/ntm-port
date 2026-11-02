@@ -24,6 +24,8 @@ class XInput:
         x.XQueryTree.argtypes = [C.c_void_p, C.c_ulong, C.POINTER(C.c_ulong), C.POINTER(C.c_ulong),
                                  C.POINTER(C.POINTER(C.c_ulong)), C.POINTER(C.c_uint)]
         x.XSetInputFocus.argtypes = [C.c_void_p, C.c_ulong, C.c_int, C.c_ulong]
+        x.XFetchName.argtypes = [C.c_void_p, C.c_ulong, C.POINTER(C.c_char_p)]
+        x.XMapRaised.argtypes = [C.c_void_p, C.c_ulong]
         x.XFlush.argtypes = [C.c_void_p]
         x.XFree.argtypes = [C.c_void_p]
         x.XStringToKeysym.argtypes = [C.c_char_p]
@@ -37,15 +39,27 @@ class XInput:
         self.focus()
 
     def focus(self):
-        """Focus the newest top-level window (the game's)."""
+        """Focus Horizon, skipping transient clipboard/helper windows."""
         x = self.x
         root, parent = C.c_ulong(), C.c_ulong()
         children, count = C.POINTER(C.c_ulong)(), C.c_uint()
         x.XQueryTree(self.display, x.XDefaultRootWindow(self.display), C.byref(root),
                      C.byref(parent), C.byref(children), C.byref(count))
-        assert count.value, 'no window to focus'
-        x.XSetInputFocus(self.display, children[count.value - 1], 2, 0)
+        target = None
+        for i in reversed(range(count.value)):
+            name = C.c_char_p()
+            x.XFetchName(self.display, children[i], C.byref(name))
+            title = name.value or b''
+            x.XFree(name)
+            if title.startswith(b'Horizon'):
+                target = children[i]
+                break
         x.XFree(children)
+        assert target is not None, 'no Horizon window to focus'
+        # Current --offscreen runs hide their window. XTest still needs a
+        # mapped keyboard owner on the isolated Xvfb display.
+        x.XMapRaised(self.display, target)
+        x.XSetInputFocus(self.display, target, 2, 0)
         x.XFlush(self.display)
         time.sleep(.2)
 

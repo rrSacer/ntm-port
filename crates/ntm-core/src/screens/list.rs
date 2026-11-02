@@ -367,7 +367,10 @@ impl State {
             "key.keyboard.end" => self.navigate(Navigate::End),
             _ => {}
         }
-        if key == "key.keyboard.escape" || key == inventory_key {
+        // Current Horizon sends key presses before their characters. A
+        // focused search owns the inventory key even when its text will
+        // arrive in a later callback (E must not close before typing 'e').
+        if key == "key.keyboard.escape" || (key == inventory_key && !self.search.focused) {
             return Outcome::Close;
         }
         Outcome::Taken
@@ -637,6 +640,22 @@ mod tests {
         assert!(!s.search.focused);
         s.text("zzz");
         assert_eq!(s.search.text(), "");
+    }
+
+    #[test]
+    fn split_key_and_character_events_keep_the_inventory_letter_in_search() {
+        let e = "key.keyboard.e";
+        let mut s = selector_state(100, None);
+        s.key("key.keyboard.enter", "", e);
+        for c in "Recipe 9".chars() {
+            assert_eq!(s.key(e, "", e), Outcome::Taken);
+            assert_eq!(s.text(&c.to_string()), Outcome::Taken);
+        }
+        assert_eq!(s.search.text(), "Recipe 9");
+        assert_eq!(s.visible().next().unwrap().index, 9);
+        assert_eq!(s.key("key.keyboard.escape", "", e), Outcome::Close);
+        s.key("key.keyboard.enter", "", e);
+        assert_eq!(s.key(e, "", e), Outcome::Close);
     }
 
     #[test]
