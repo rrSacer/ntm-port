@@ -177,6 +177,13 @@ impl Server {
                     tombstones: Vec::new(),
                     effects: std::collections::VecDeque::from([effect]),
                 };
+                if matches!(receipt.effects.front(), Some(WorldEffect::Blocks { .. })) {
+                    // A block-role replacement can recreate its BE. The new
+                    // entity needs the confirmed JSON again in this same tick.
+                    for k in &receipt.owners {
+                        self.ready.native_saved.remove(k);
+                    }
+                }
                 self.ready.world.applied_machine_effects.push_back(receipt);
             }
         }
@@ -317,6 +324,7 @@ impl Server {
             effect(staged.host);
         }
         self.flush_machine_effects(staged.host);
+        self.native_save(staged.host);
         outcome
     }
 
@@ -376,7 +384,9 @@ impl Server {
                 let Some(actual) = host.get_block(&k.0, k.1) else {
                     return false;
                 };
-                if blockstate::id_of(&actual) != m.block {
+                // Broken identifies the old BE generation even if a player
+                // already placed the same machine id here again this tick.
+                if before.broken.contains_key(k) || blockstate::id_of(&actual) != m.block {
                     observed.insert(k.clone(), Vec::new());
                     return true;
                 }
@@ -465,9 +475,10 @@ impl Server {
                 let mut commits = Vec::new();
                 for k in &keys {
                     let last = &observed[k];
-                    if !staged
-                        .get_block(&k.0, k.1)
-                        .is_some_and(|b| blockstate::id_of(&b) == before.world.machines[k].block)
+                    if before.broken.contains_key(k)
+                        || !staged.get_block(&k.0, k.1).is_some_and(|b| {
+                            blockstate::id_of(&b) == before.world.machines[k].block
+                        })
                     {
                         continue;
                     }

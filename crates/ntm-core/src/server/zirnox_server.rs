@@ -551,7 +551,13 @@ mod tests {
                 return Err("refused".into());
             }
             for (p, b) in b {
-                self.blocks.insert((d.into(), *p), b.clone());
+                let key=(d.to_string(),*p);
+                if self.blocks.get(&key).is_some_and(|old|blockstate::id_of(old)!=blockstate::id_of(b)) && self.slots.contains_key(&key) {
+                    // The native engine recreates the BE on a role/id change.
+                    self.saved.remove(&key);self.data.remove(&key);
+                    self.slots.insert(key.clone(),vec![None;crate::native::block_slots(blockstate::id_of(b)).len()]);
+                }
+                self.blocks.insert(key, b.clone());
             }
             Ok(())
         }
@@ -829,6 +835,8 @@ mod tests {
         assert_eq!(s.ready.world.zirnox.debris.len(), 72);
         assert_eq!(s.ready.world.zirnox.debris_created, [20, 10, 10, 10, 20, 2]);
         assert_eq!(s.ready.world.zirnox.blasts.len(), 1);
+        let kept:Machine=serde_json::from_str(&h.saved[&key()]).unwrap();
+        assert_eq!(kept.block,zirnox::DESTROYED,"the recreated ruin BE receives confirmed state in the failure tick");
         // Native notifications from our replacement arrive next tick.
         s.native_block_changed(DIM, AT, zirnox::BLOCK, zirnox::DESTROYED);
         h.refuse_blast = false;

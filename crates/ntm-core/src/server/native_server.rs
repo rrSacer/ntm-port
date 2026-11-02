@@ -270,7 +270,7 @@ impl Server {
 
     /// The loaded machines whose state changed since it was last kept: kept
     /// with their block entities.
-    fn native_save(&mut self, host: &mut impl ServerHost) {
+    pub(super) fn native_save(&mut self, host: &mut impl ServerHost) {
         let Some(r) = self.ready() else { return };
         for (key, m) in &r.world.machines {
             if r.loaded.get(key) != Some(&true) {
@@ -498,6 +498,21 @@ mod tests {
         let Data::Firebox(f)=&s.ready.world.machines[&(OW.into(),AT)].data else{panic!()};
         assert_eq!((f.burn,f.heat),(0,0));assert_eq!(w.0.slots[&AT][0].as_ref().unwrap().count,1);
         assert!(w.0.saved.is_empty());
+    }
+
+    #[test]
+    fn a_confirmed_break_never_clears_a_replacement_be_of_the_same_machine() {
+        let mut w=World::default();w.blocks.insert(AT,crate::zirnox::BLOCK.into());w.slots.insert(AT,vec![None;28]);
+        let mut s=Server::native(&mut w,0);s.native_block_changed(OW,AT,"minecraft:air",crate::zirnox::BLOCK);s.native_tick(&mut w,1);
+        // The old BE is gone; this inventory belongs to a newly placed BE.
+        w.slots.get_mut(&AT).unwrap()[25]=Some(Stack::new("minecraft:water_bucket",1));
+        s.native_block_changed(OW,AT,crate::zirnox::BLOCK,"minecraft:air");
+        s.native_block_changed(OW,AT,"minecraft:air",crate::zirnox::BLOCK);
+        s.native_tick(&mut w,2);
+        assert_eq!(w.slots[&AT][25].as_ref().unwrap().id,"minecraft:water_bucket");
+        s.native_tick(&mut w,3);
+        let Data::Zirnox(z)=&s.ready.world.machines[&(OW.into(),AT)].data else{panic!()};
+        assert_eq!(z.water.mb,1000);assert_eq!(w.slots[&AT][27].as_ref().unwrap().id,"minecraft:bucket");
     }
 
     /// A machine whose dimension cannot be reached stays frozen in memory but
