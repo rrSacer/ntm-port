@@ -279,13 +279,15 @@ def soils(g):
     for x,soil in [(160,'waste_earth'),(170,'waste_mycelium')]:
         g.command(f'fill {x} 101 8 {x+7} 101 15 ntm:{soil}')
         g.command(f'fill {x} 102 8 {x+7} 102 15 minecraft:stone')
-    g.command('gamerule randomTickSpeed 512')
+    g.command('gamerule minecraft:random_tick_speed 512')
+    rule=' '.join(g.command('gamerule minecraft:random_tick_speed').get('chat',[]))
+    g.check('random_tick_speed_is_512',re.search(r'\b512\b',rule) is not None,rule)
     g.command('tp @s 160.5 104 11.5')
     sprint(g,120)
     for x,soil in [(160,'waste_earth'),(170,'waste_mycelium')]:
         samples=[block(g,(x+i,101,8)) for i in range(8)]
         g.check('covered_dark_'+soil+'_decays',all(b=='minecraft:dirt' for b in samples),samples)
-    g.command('gamerule randomTickSpeed 3')
+    g.command('gamerule minecraft:random_tick_speed 3')
     g.snapshot('zirnox-soils')
 
 
