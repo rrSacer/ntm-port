@@ -12,6 +12,9 @@ from native_game import Game
 
 OLD=(40,101,10)
 NEW=(44,101,10)
+CHEST=(46,101,16)
+COMPARATOR=(47,101,16)
+LOADER=(48,101,16)
 
 
 def state(g,p,dim='minecraft:overworld'):
@@ -24,6 +27,11 @@ def state(g,p,dim='minecraft:overworld'):
 def power(g,p,dim='minecraft:overworld'):
     found=re.search(r'"power":(\d+)',state(g,p,dim))
     return int(found.group(1)) if found else None
+
+
+def red(g):
+    """Whether the loader beside the comparator has seen the redstone signal."""
+    return '"was_redstone":true' in state(g,LOADER).replace(' ','')
 
 
 def feed(g,p):
@@ -43,6 +51,16 @@ def setup(g):
     g.command(f'setblock {OLD[0]} {OLD[1]} {OLD[2]} ntm:machine_battery[facing=south]')
     time.sleep(3)
     g.check('old_machine_has_state',power(g,OLD)==0,state(g,OLD))
+    # A comparator reading a chest feeds a loader (a redstone reader) in the Overworld. Its output
+    # lives in the Overworld's own block ticks: the read must find it also when another level is in place.
+    g.command(f'setblock {CHEST[0]} {CHEST[1]} {CHEST[2]} minecraft:chest')
+    g.command(f'item replace block {CHEST[0]} {CHEST[1]} {CHEST[2]} container.0 with minecraft:stone 64')
+    g.command(f'setblock {COMPARATOR[0]} {COMPARATOR[1]-1} {COMPARATOR[2]} minecraft:stone')
+    g.command(f'setblock {COMPARATOR[0]} {COMPARATOR[1]} {COMPARATOR[2]} minecraft:comparator[facing=west]')
+    g.command(f'setblock {LOADER[0]} {LOADER[1]} {LOADER[2]} ntm:pile_device__loader[facing=north]')
+    deadline=time.monotonic()+20
+    while time.monotonic()<deadline and not red(g):time.sleep(1)
+    g.check('comparator_feeds_the_loader_with_the_overworld_in_place',red(g),{'loader':state(g,LOADER),'comparator':g.ctl('block %d %d %d'%COMPARATOR)['state'],'chest':' '.join(g.command('data get block %d %d %d Items'%CHEST).get('chat',[]))})
     # The Nether, forced, ticks after the Overworld from now on, and the player is in it.
     g.command('execute in minecraft:the_nether run forceload add 0 0')
     time.sleep(3)
@@ -52,6 +70,9 @@ def setup(g):
     time.sleep(3)
     here=g.ctl('block 0 99 0')['block']
     g.check('player_in_nether',here=='minecraft:netherrack',here)
+    # The Overworld is parked: the comparator's output (kept in its own block ticks) still reaches the loader.
+    time.sleep(5)
+    g.check('comparator_still_feeds_the_loader_while_not_last',red(g),state(g,LOADER))
     # The old machine changes in the Overworld (a creative battery fills it), and a new one is placed.
     feed(g,OLD)
     g.command(f'execute in minecraft:overworld run setblock {NEW[0]} {NEW[1]} {NEW[2]} ntm:machine_battery[facing=south]')
@@ -119,6 +140,15 @@ def idle(g,reader_on=True):
     regions=g.folder/'saves'/'DimsTest'/'dimensions'/'minecraft'/'the_nether'/'region'
     g.command('execute in minecraft:overworld run tp @s 38.5 100 8.5')
     left=time.time()
+    # Long-lived particles of the level in place survive the redstone reads of the parked Nether.
+    g.command('particle minecraft:campfire_cosy_smoke 38.5 102 8.5 0.3 0.3 0.3 0 60 force')
+    time.sleep(1)
+    first=g.ctl('status')['particles']
+    time.sleep(4)
+    later=g.ctl('status')['particles']
+    g.evidence['particles']={'first':first,'later':later}
+    count=lambda v: v if isinstance(v,int) else (sum(v.values()) if isinstance(v,dict) else len(v))
+    g.check('particles_survive_the_parked_reader',count(first)>0 and count(later)>0,{'first':first,'later':later})
     deadline=left+90
     closed=False
     while time.time()<deadline and not closed:
