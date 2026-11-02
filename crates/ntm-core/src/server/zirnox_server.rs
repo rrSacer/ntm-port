@@ -750,6 +750,20 @@ mod tests {
         );
     }
     #[test]
+    fn removing_a_rod_during_a_refused_life_write_does_not_recreate_it() {
+        let (mut h, mut s) = prepare();
+        assert_eq!(zirnox::life(h.slots[&key()][0].as_ref().unwrap()), 1);
+        h.refuse_slots = true;
+        s.native_tick(&mut h, 2);
+        let removed = h.slots.get_mut(&key()).unwrap()[0].take().unwrap();
+        assert_eq!(zirnox::life(&removed), 1);
+        h.refuse_slots = false;
+        s.native_tick(&mut h, 3);
+        assert!(h.slots[&key()][0].is_none());
+        assert!(z(&s).slots[0].is_none());
+        assert!(s.ready.bridge.pending.is_empty());
+    }
+    #[test]
     fn life_conversion_breeding_and_real_outward_steam_network_work() {
         let (mut h, mut s) = prepare();
         let f = &zirnox::table().fuels[9];

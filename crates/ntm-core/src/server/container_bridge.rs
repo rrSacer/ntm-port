@@ -771,8 +771,9 @@ pub fn layout(block: &str) -> Option<&'static Layout> {
 pub struct Bridge {
     pub(super) last: BTreeMap<Key, Slots>,
     data: BTreeMap<Key, Vec<i32>>,
-    /// A refused native write keeps the simulation's slots until retried.
-    pub(super) failed: std::collections::BTreeSet<Key>,
+    /// Desired values whose writes failed, relative to `last` (host truth).
+    /// Each slot is reconciled independently before simulation resumes.
+    pub(super) pending: BTreeMap<Key, BTreeMap<usize, Option<Stack>>>,
     pub(super) failed_data: std::collections::BTreeSet<Key>,
 }
 
@@ -904,7 +905,6 @@ impl Server {
             .map(|(k, _)| k.clone())
             .collect();
         for key in keys {
-            if r.bridge.failed.contains(&key) { continue; }
             let Some(mut now) = host.machine_slots(&key.0, key.1) else {
                 continue;
             };
@@ -918,8 +918,29 @@ impl Server {
             let Some(m) = r.world.machines.get_mut(&key) else { continue };
             let Some(layout) = layout(&m.block) else { continue };
             let first = !r.bridge.last.contains_key(&key);
+            let observed = now.clone();
+            let mut last = r.bridge.last.get(&key).cloned().unwrap_or_else(|| now.clone());
+            if let Some(pending) = r.bridge.pending.get_mut(&key) {
+                pending.retain(|&slot, desired| {
+                    let (Some(current), Some(old)) = (now.get_mut(slot), last.get_mut(slot)) else {
+                        return false;
+                    };
+                    let unchanged = current == old;
+                    // The machine already contains the desired value. Use it
+                    // as the delta baseline for aggregate (crafter) inventories.
+                    *old = desired.clone();
+                    if unchanged {
+                        *current = desired.clone();
+                    }
+                    // A player/hopper changed this slot: observed value wins,
+                    // discarding the pending write for this slot alone.
+                    unchanged
+                });
+            }
+            if r.bridge.pending.get(&key).is_some_and(BTreeMap::is_empty) {
+                r.bridge.pending.remove(&key);
+            }
             let empty = now.iter().all(Option::is_none);
-            let last = r.bridge.last.get(&key).cloned().unwrap_or_else(|| now.clone());
             match (&mut m.data, layout) {
                 (Data::Crafter(c), Layout::Crafter { inputs, outputs }) => {
                     // Its battery slot isn't one of the machine's: the
@@ -972,7 +993,7 @@ impl Server {
                 }
                 _ => continue,
             }
-            r.bridge.last.insert(key, now);
+            r.bridge.last.insert(key, observed);
         }
         for (_, dim, pos, button) in presses {
             self.machine_button(&(dim, pos), button);
@@ -988,6 +1009,8 @@ impl Server {
             let Some(m) = r.world.machines.get_mut(&key) else {
                 r.bridge.last.remove(&key);
                 r.bridge.data.remove(&key);
+                r.bridge.pending.remove(&key);
+                r.bridge.failed_data.remove(&key);
                 continue;
             };
             let Some(layout) = layout(&m.block) else { continue };
@@ -1022,11 +1045,11 @@ impl Server {
                 _ => continue,
             };
             let mut written=last.clone();
-            let mut failed=false;
+            let mut pending=BTreeMap::new();
             for (slot, (old, new)) in last.iter().zip(&want).enumerate() {
                 if old != new {
                     if host.set_machine_slot(&key.0, key.1, slot as u32, new.clone()) { written[slot]=new.clone(); }
-                    else {failed=true;}
+                    else {pending.insert(slot,new.clone());}
                 }
             }
             if r.bridge.data.get(&key) != Some(&data) {
@@ -1035,7 +1058,7 @@ impl Server {
                     r.bridge.failed_data.remove(&key);
                 } else {r.bridge.failed_data.insert(key.clone());}
             }
-            if failed {r.bridge.failed.insert(key.clone());} else {r.bridge.failed.remove(&key);}
+            if pending.is_empty() {r.bridge.pending.remove(&key);} else {r.bridge.pending.insert(key.clone(),pending);}
             r.bridge.last.insert(key, written);
         }
     }
@@ -1045,7 +1068,7 @@ impl Server {
     pub(super) fn slots_gone(&mut self, key: &Key) -> bool {
         let Some(r) = self.ready() else { return false };
         r.bridge.data.remove(key);
-        r.bridge.failed.remove(key);
+        r.bridge.pending.remove(key);
         r.bridge.failed_data.remove(key);
         r.bridge.last.remove(key).is_some()
     }

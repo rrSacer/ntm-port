@@ -262,7 +262,7 @@ impl Server {
     fn native_save(&mut self, host: &mut impl ServerHost) {
         let Some(r) = self.ready() else { return };
         for (key, m) in &r.world.machines {
-            if r.loaded.get(key) != Some(&true) || r.bridge.failed.contains(key) || r.bridge.failed_data.contains(key) {
+            if r.loaded.get(key) != Some(&true) || r.bridge.pending.contains_key(key) || r.bridge.failed_data.contains(key) {
                 continue;
             }
             let Ok(json) = serde_json::to_string(m) else { continue };
@@ -294,6 +294,7 @@ mod tests {
         saved: BTreeMap<Pos, String>,
         /// Its dimension cannot be reached: every block entity access fails.
         unreachable: bool,
+        refused_slots: BTreeSet<(Pos, u32)>,
         signal: BTreeMap<Pos, u8>,
         buttons: Vec<(String, String, Pos, u32)>,
         kv: crate::kv::MemKv,
@@ -330,7 +331,7 @@ mod tests {
             self.slots.get(&p).cloned()
         }
         fn set_machine_slot(&mut self, _dim: &str, p: Pos, slot: u32, stack: Option<Stack>) -> bool {
-            if self.unreachable {
+            if self.unreachable || self.refused_slots.contains(&(p, slot)) {
                 return false;
             }
             let Some(s) = self.slots.get_mut(&p).and_then(|s| s.get_mut(slot as usize)) else { return false };
@@ -362,6 +363,68 @@ mod tests {
     const OW: &str = "minecraft:overworld";
     const AT: Pos = [0, 64, 0];
     const FIREBOX: &str = "ntm:heater_firebox[facing=north,honey_level=0]";
+
+    #[test]
+    fn partial_native_writes_reconcile_removal_and_replacement_per_slot() {
+        for replacement in [None, Some(Stack::new("minecraft:charcoal", 3))] {
+            let mut w = World::default();
+            let mut s = Server::native(&mut w, 0);
+            w.blocks.insert(AT, FIREBOX.into());
+            w.slots.insert(AT, vec![None; 2]);
+            s.native_block_changed(OW, AT, "minecraft:air", FIREBOX);
+            s.native_tick(&mut w, 1);
+            w.slots.get_mut(&AT).unwrap()[0] = Some(Stack::new("minecraft:coal", 2));
+            s.slots_in(&mut w);
+            let Data::Firebox(f) = &mut s.ready.world.machines.get_mut(&(OW.into(), AT)).unwrap().data else { panic!() };
+            f.slots = vec![Some(Stack::new("minecraft:coal", 1)), Some(Stack::new("ntm:ash", 1))];
+            w.refused_slots.insert((AT, 0));
+            s.slots_out(&mut w);
+            assert_eq!(w.slots[&AT][0].as_ref().unwrap().count, 2);
+            assert_eq!(w.slots[&AT][1], Some(Stack::new("ntm:ash", 1)));
+            // A player changes the pending slot and removes an acknowledged
+            // output while only slot 0 is blocked. Both observations must win.
+            w.slots.get_mut(&AT).unwrap()[0] = replacement.clone();
+            w.slots.get_mut(&AT).unwrap()[1] = None;
+            w.refused_slots.clear();
+            s.slots_in(&mut w);
+            s.slots_out(&mut w);
+            assert_eq!(w.slots[&AT], vec![replacement, None]);
+            assert!(s.ready.bridge.pending.is_empty());
+        }
+    }
+
+    #[test]
+    fn aggregate_crafter_pending_slots_keep_progress_but_accept_new_hopper_inputs() {
+        let block = "ntm:machine_assembly_machine[facing=north,honey_level=0]";
+        let key = (OW.into(), AT);
+        let mut w = World::default();
+        let mut s = Server::native(&mut w, 0);
+        w.blocks.insert(AT, block.into());
+        w.slots.insert(AT, vec![None; 17]);
+        s.native_block_changed(OW, AT, "minecraft:air", block);
+        s.native_tick(&mut w, 1);
+        w.slots.get_mut(&AT).unwrap()[4] = Some(Stack::new("a", 2));
+        s.slots_in(&mut w);
+        let Data::Crafter(c) = &mut s.ready.world.machines.get_mut(&key).unwrap().data else { panic!() };
+        c.items = vec![("a".into(), 1)];
+        c.out = vec![("b".into(), 1)];
+        w.refused_slots.insert((AT, 4));
+        s.slots_out(&mut w);
+        s.slots_in(&mut w);
+        s.slots_out(&mut w);
+        let Data::Crafter(c) = &s.ready.world.machines[&key].data else { panic!() };
+        assert_eq!(c.items, vec![("a".into(), 1)], "retry must not apply the simulation delta twice");
+        // A hopper replaces the refused input and fills another slot.
+        w.slots.get_mut(&AT).unwrap()[4] = Some(Stack::new("c", 3));
+        w.slots.get_mut(&AT).unwrap()[5] = Some(Stack::new("d", 4));
+        w.refused_slots.clear();
+        s.slots_in(&mut w);
+        s.slots_out(&mut w);
+        assert_eq!(w.slots[&AT][4], Some(Stack::new("c", 3)));
+        assert_eq!(w.slots[&AT][5], Some(Stack::new("d", 4)));
+        assert_eq!(w.slots[&AT][16], Some(Stack::new("b", 1)));
+        assert!(s.ready.bridge.pending.is_empty());
+    }
 
     /// A machine whose dimension cannot be reached keeps running in memory but
     /// is not marked kept; its state (and a new machine's first state) is written
