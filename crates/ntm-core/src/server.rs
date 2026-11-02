@@ -29,9 +29,12 @@ pub trait ServerHost: Kv {
     /// Native Level.explode(null, ..., 15, true, BLOCK).
     /// False when the explosion could not be applied (other dimension, unloaded chunk).
     fn pile_explode(&mut self, _dim: &str, _at: [f64;3]) -> bool { true }
-    /// Pile rods can only be ejected and exploded in the host's active
-    /// dimension: piles in any other one freeze rather than lose their rods.
-    fn pile_active(&mut self, _dim: &str) -> bool { true }
+    /// Put `dim` in place, the one level where pile rods can be ejected and
+    /// exploded (the first call remembers the host's own). False: it cannot be
+    /// brought in place and its piles freeze rather than lose their rods.
+    fn pile_enter(&mut self, _dim: &str) -> bool { true }
+    /// Put back the dimension in place before the first `pile_enter`.
+    fn pile_restore(&mut self) {}
     fn solar_sample(&mut self, _dim: &str, _p: Pos) -> Option<(i32, i32, bool)> { None }
     /// The slots of the machine's block entity at `p`.
     fn machine_slots(&mut self, _dim: &str, _p: Pos) -> Option<container_bridge::Slots> {
@@ -185,7 +188,13 @@ impl Server {
                     _=>None });
             }
         }
-        if let Some(c)=dismantle { self.pile_destroy(host,dim,&c); }
+        if let Some(c)=dismantle {
+            let done=self.pile_destroy(host,dim,&c);
+            host.pile_restore();
+            // Out of reach (frozen dimension): keep the core, so the tick's
+            // sweep ejects its rods once the dimension can be entered.
+            if !done { return; }
+        }
 
         if let BlockEvent::Placed(dim, pos, state) = &e
             && registry::is_bomb(blockstate::id_of(state))

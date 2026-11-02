@@ -28,6 +28,8 @@ static SERVER: Mutex<Option<(Server, u64)>> = Mutex::new(None);
 /// writes report here while it holds its own.
 static CHANGES: Mutex<Vec<(String, [i32; 3], String, String)>> = Mutex::new(Vec::new());
 /// Menu buttons pressed: (player, dimension, position, button).
+/// The level that was in place when the piles began to enter others.
+static PILE_HOME: Mutex<Option<crate::game::Dim>> = Mutex::new(None);
 static BUTTONS: Mutex<Vec<(String, String, [i32; 3], u32)>> = Mutex::new(Vec::new());
 
 fn lock<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
@@ -239,8 +241,33 @@ impl ServerHost for Host<'_, '_> {
     fn pile_explode(&mut self, dim: &str, at: [f64;3]) -> bool {
         self.game.native_explode(dim, at, 15.0, true, crate::game::native_explosions::NativeBlast::Block)
     }
-    fn pile_active(&mut self, dim: &str) -> bool {
-        dim == self.game.dim.id()
+    /// ServerTickEnd runs with the last ticked level in place, which need not be
+    /// the pile's (or the player's). Bring `dim` in place for the drops and the
+    /// blast; the first call remembers the level to put back.
+    fn pile_enter(&mut self, dim: &str) -> bool {
+        use crate::game::Dim;
+        let target = match dim {
+            "minecraft:overworld" => Dim::Overworld,
+            "minecraft:the_nether" => Dim::Nether,
+            "minecraft:the_end" => Dim::End,
+            _ => return false,
+        };
+        if target == self.game.dim {
+            return true;
+        }
+        // A level that is not open holds no loaded piles; never open one here.
+        if self.game.levels.parked_world(target).is_none() {
+            return false;
+        }
+        lock(&PILE_HOME).get_or_insert(self.game.dim);
+        self.game.enter_level(None, target).is_ok()
+    }
+    fn pile_restore(&mut self) {
+        if let Some(home) = lock(&PILE_HOME).take()
+            && home != self.game.dim
+        {
+            let _ = self.game.enter_level(None, home);
+        }
     }
 
     fn solar_sample(&mut self, dim: &str, p: [i32;3]) -> Option<(i32,i32,bool)> {
