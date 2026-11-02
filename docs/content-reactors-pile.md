@@ -14,6 +14,8 @@ O vent recebe AIR na face externa, em tanque de 4.000 mB, e enche o canal de ar 
 
 Quebrar um membro ou o núcleo desmonta a pile, devolvendo os membros ainda presentes a tijolos e ejetando as barras uma vez. A própria célula quebrada também volta a tijolo; o jogador quebra o tijolo em uma segunda ação. O hook de mudança disponível não distingue jogador, explosão e comando, portanto `/setblock` e `/fill` sobre um membro também são sobrescritos pela reversão, como no Java. Células descarregadas suspendem a simulação, sem serem tratadas como falha estrutural. O núcleo e cada membro usam os block entities/persistência existentes; membros órfãos voltam a tijolos quando a ausência do núcleo pode ser confirmada.
 
+**Dimensões e chunks.** O host só consegue ejetar itens e explodir na dimensão ativa (`native_explode` devolve `false` fora dela). Em vez de transformar a pile em tijolos e perder as barras, uma pile fora da dimensão ativa **congela** (simulação, dispositivos, varredura de órfãos e desmontagem), como as células descarregadas, e continua do ponto em que parou quando a dimensão volta a ser a ativa. Quebrar um membro com parte da pile em chunk descarregado desmonta a pile na hora, como o `breakBlock` do Java; as células descarregadas ficam para a varredura de órfãos.
+
 ## Reação e calor
 
 | Barra | Fonte/tick | Reação | Vida | Calor/nêutron | Produto |
@@ -31,7 +33,7 @@ Cada barra recebe o fluxo anterior dividido pelo comprimento inteiro do canal, i
 
 O fluxo produzido é somado dentro de cada segmento vertical e propagado entre segmentos para o próximo tick. Segmentos de controle multiplicam o fluxo que os atravessa por `clamp(sum(control)/(depth-1),0,0.5)`; não bloqueiam a própria emissão das fontes. Foi preservada a peculiaridade de `getChannelVerticalIndex`: rotação de uma direção vertical conserva componentes X/Z zero, portanto todos os canais de controle caem no índice `left`. Segmentos de combustível são cadastrados antes e têm precedência se ocuparem esse mesmo índice. Canais de combustível perfurados no sentido contrário também conservam a indexação calculada a partir da sua própria direção. A rotação usa a [matriz original de ForgeDirection 1.7.10](https://github.com/MinecraftForge/MinecraftForge/blob/1.7.10/src/main/java/net/minecraftforge/common/util/ForgeDirection.java), verificada também em volume assimétrico.
 
-Cada canal de ar resfria os canais de combustível a até uma linha vertical de distância por `heat *= 1-(air/1000)*0,05`; consome `ceil((air/1000)*5)` mB/tick. Depois se aplica a todos os canais de combustível a perda passiva `*0,999`, com mínimo de 20°C. A falha ocorre estritamente **acima de 800°C depois do resfriamento**. Desmonta-se a pile, ejeta-se o combustível e chama-se a explosão nativa de força 15, com fogo, dano a blocos e entidades, no centro médio dos canais e no topo da pile.
+Cada canal de ar resfria os canais de combustível a até uma linha vertical de distância por `heat *= 1-(air/1000)*0,05`; consome `ceil((air/1000)*5)` mB/tick. Depois se aplica a todos os canais de combustível a perda passiva `*0,999`, com mínimo de 20°C. A falha ocorre estritamente **acima de 800°C depois do resfriamento**. Como no Java (`destroy()` com `meltingDown`), só o **núcleo** volta a tijolo: o combustível é ejetado e a explosão nativa de força 15, com fogo, dano a blocos e entidades, roda no centro médio dos canais e no topo da pile contra os membros ainda de pé. Os sobreviventes são revertidos a tijolo pela varredura de órfãos no tick seguinte (a varredura pula o tick da falha). Se a explosão não puder ser aplicada (chunk descarregado), isso é registrado no log.
 
 ## Dependência de conteúdo aprovada
 
@@ -49,20 +51,29 @@ Entraram somente `hand_drill` e `hand_drill_desh`, com nomes e texturas originai
 
 O modelo tem testes de todas as barras, limiar de vida, formação em quatro orientações, rejeição de volume/canais inválidos, ejeção, propagação e atraso de fluxo, controle, resfriamento, falha e persistência. O servidor testa notificações atrasadas, interação do loader, desmontagem (inclusive quebra por jogador: tijolo na própria célula e resto revertido), redstone, vent, descarga de células e explosão.
 
-**`float_roundtrip` (efeito em todo o `ntm-core`).** O `serde_json` padrão lê `f64` com um parser rápido que pode errar o último bit. Fluxo, calor e depleção das barras são `double` salvos em JSON; ao reabrir o mundo, alguns valores mudavam em 1 ULP e a simulação divergia da que foi salva. A feature `float_roundtrip` (em `[workspace.dependencies]`) usa o parser exato. Como a dependência é do workspace, vale para todo o crate: custo é a leitura de números ligeiramente mais lenta; nenhum formato muda e não há alteração de comportamento além de reler exatamente o que foi escrito. Os testes do `ntm-core` seguem verdes com ela.
+**`float_roundtrip` (escopo real: o binário do cliente).** O `serde_json` padrão lê `f64` com um parser rápido que pode errar o último bit. Fluxo, calor e depleção das barras são `double` salvos em JSON; ao reabrir o mundo, alguns valores mudavam em 1 ULP e a simulação divergia da que foi salva (num teste descartável, 14.662 de 200.000 valores semelhantes voltaram diferentes; com a feature, nenhum, e `native_reopen_keeps_channel_reaction_and_depletion` falha sem ela). A feature está em `[workspace.dependencies]`; no pacote nativo o `Cargo.toml` gerado de `ntm-core` também a fixa, e por unificação de features todo `serde_json` ligado ao `horizon-client` passa a usar o parser exato (o motor já faz isso em `horizon-port-pack`). O custo medido na leitura dos JSON de dados do crate (1,35 MB) é desprezível (2,89 → 3,35 ms, carga única). Nenhum formato de escrita muda, então saves existentes são lidos igual ou melhor. Alternativa sem efeito global, não adotada: gravar os `f64` como `u64` via `f64::to_bits`.
 
-**Redstone.** Loader e controle leem o sinal que a célula vizinha externa *recebe* (`native_redstone_many`). Isso corresponde ao caso de bloco sólido do `getIndirectPowerOutput` do Java 1.7.10; uma fonte não sólida (alavanca ou fio) encostada direto no dispositivo, cuja saída fraca o Java leria, não é detectada pelo host atual. Um bloco de redstone encostado direto também não alimenta; use um bloco sólido entre eles, como o roteiro de jogo faz.
+**Redstone.** Loader e controle leem o sinal que a *própria célula* recebe (`native_redstone_many`, um lote por dimensão; o vent não lê redstone). Equivale ao `getIndirectPowerLevelTo` do Java: uma alavanca ou botão encostado no dispositivo, um bloco de redstone adjacente ou fio apontando para ele o acionam. **Desvio deliberado:** o Java olha só a direção de saída do dispositivo; aqui as outras 5 faces também contam (uma alavanca em cima do loader o aciona). O motor não expõe o sinal por direção (`Level::signal`) e não foi criado mecanismo novo. O flanco de subida inicia o loader; no controle, sobe ou desce o alvo.
 
 ### Resultados (base rebaseada em `main` @ `01f0e8e3`, upstream `2f35078b3`, motor `2ca67d71e`)
 
-- `cargo test --workspace`: 293 testes unitários + 26 de integração, todos verdes; `cargo clippy --workspace -- -D warnings` limpo.
+- `cargo test --workspace`: 298 testes unitários + 26 de integração, todos verdes; `cargo clippy --workspace -- -D warnings` limpo. Testes novos da revisão: loader lê só a própria célula, pile em dimensão inativa congela sem perder barras, quebra de membro com chunk descarregado desmonta na hora, meltdown reverte só o núcleo e a varredura reverte o resto, `air` salvo é limitado a 1000, enchimento do vent sem estouro.
 - 216 testes Python do `tools/content-gen` (seed 42, com `HORIZON_RESOURCES` apontando para os recursos do cliente 26.3); validadores de conteúdo e receitas passaram.
 - Build nativo release no pin atual com `SKIP_UPSTREAM_CHECK=1` (o upstream já tinha avançado para `8ee72368`; a prova foi feita no SHA congelado `2f35078b3`).
-- **Prova em jogo descartável** (`tools/test-game/native_pile.py`, mundo novo, Xvfb mudo, sem injetar estado): 20 verificações na montagem e 25 na reabertura do processo, todas verdes.
+- **Prova em jogo descartável** (`tools/test-game/native_pile.py`, mundo novo, Xvfb mudo, sem injetar estado): 23 verificações na montagem, 25 na reabertura do processo e 16 na fase de destruição, todas verdes.
   - A broca desh forma a pile 5×5×5 (`formed_shape`) e perfura 5 canais: 2 de combustível, 1 de ventilação, 2 de controle. Loaders e controles são colocados como itens/blocos reais pelo gancho de face clicada.
   - Ar comprimido real: um barril de aço recebe `fluid_barrel_full__air` pela interface, o ar segue por dutos tipados AIR e enche o vent (4.000 mB) e o canal de ventilação (995 mB). Os pacotes `fluid_pack_full__*` não são despejáveis no motor, então o roteiro usa o barril.
-  - Controles abertos: fluxo cruzado 7,24; fechados: 0,19 (`control_reduces_reaction`).
-  - Cinco barras de Ra226Be e cinco de Pu239 carregadas por cliques; transmutação natural PU239 → RGP observada sem atalho (`pu239_transmuted_to_rgp`).
+  - **Alavancas reais**: os dois controles são alimentados por uma alavanca encostada na própria célula. Abertos: fluxo cruzado 7,24; fechados (alavancas desligadas): 0,19. No loader, com a barra de NU esperando, a alavanca desligada não carrega; ligada, carrega (`lever_loads_rod`).
+  - Cinco barras de Ra226Be e cinco de Pu239 carregadas por cliques; transmutação natural PU239 → RGP sem atalho.
   - Ventilação: sem suprimento a temperatura sobe (67,7 → 104,1 °C); com ar reconectado cai (97,4 °C).
   - A broca no loader desfaz o canal e ejeta as barras.
   - Reabertura: identidade, geometria, canais, barras, depleção, calor, fluxo, nível de controle, ar e conteúdo de loader/vent/controle/barril continuam coerentes.
+  - **Quebra por jogador** (`break` com o cliente, segunda pile 5×5×5): todas as 125 células viram `pile_brick`, inclusive a quebrada.
+  - **Falha térmica** (pile sem controles nem ar, Ra226Be + Pu239 carregados por cliques): o núcleo e todos os membros terminam como tijolo/ar/fogo, sem sobrar `pile_block`, com explosão e o registro `pile meltdown` no log.
+
+### Pendências registradas
+
+- Leitura de redstone por direção (`Level::signal`) exigiria um hook novo no motor; as 5 faces extras contam (desvio documentado acima).
+- Índice dos núcleos: `pile_core_at` ainda varre as máquinas do mundo por chamada (custo medido irrelevante pelo revisor).
+- Casos especiais em código compartilhado (`block_slots`, `fluid_ports`, filtro de `block_event`) devem virar entradas de tabela do tipo se surgir um terceiro caso.
+- A prova de chunk partido e de outra dimensão em jogo não foi feita; ambas têm teste de servidor.

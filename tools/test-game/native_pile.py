@@ -43,6 +43,15 @@ def tool(g):
     g.ctl('select ntm:hand_drill_desh')
 
 
+def block(g,p):
+    return g.ctl('block '+' '.join(map(str,p)))['block']
+
+
+def lever(g,p,on):
+    # A real lever on the wall block west of p's west neighbour: it feeds the cell next to it.
+    g.command(f'setblock {p[0]-1} {p[1]} {p[2]} minecraft:lever[face=wall,facing=east,powered={"true" if on else "false"}]')
+
+
 def load(g,p,kind):
     g.command('clear @s')
     g.command('give @s ntm:pile_rod__'+kind+' 1')
@@ -81,9 +90,9 @@ def setup(g):
     g.command(f'setblock {VENT[0]} {VENT[1]} {VENT[2]} ntm:pile_device__vent[facing=west]')
     for p in CONTROLS:
         g.command('setblock '+' '.join(map(str,p))+' ntm:pile_device__control[facing=west]')
-        # The control reads the signal its outer neighbour receives (a powered solid block).
-        g.command(f'setblock {p[0]-1} {p[1]} {p[2]} minecraft:stone')
-        g.command(f'setblock {p[0]-2} {p[1]} {p[2]} minecraft:redstone_block')
+        # The control reads the signal its own cell receives: a lever against it.
+        g.command(f'setblock {p[0]-2} {p[1]} {p[2]} minecraft:stone')
+        lever(g,p,True)
     # A full original compressed-air barrel (packs are not pourable), sent through AIR ducts.
     g.command(f'setblock {BARREL[0]} {BARREL[1]} {BARREL[2]} ntm:barrel_steel[facing=north]')
     for x in (35,36):g.command(f'setblock {x} 101 10 ntm:fluid_duct_neo')
@@ -101,12 +110,12 @@ def setup(g):
     g.check('reactor_heats',fuel(c,1)['heat']>20,c['channels'])
     # Close the controls and measure the loss of cross-segment input.
     before=fuel(c,1)['incoming']
-    for p in CONTROLS:g.command(f'setblock {p[0]-2} {p[1]} {p[2]} minecraft:air')
+    for p in CONTROLS:lever(g,p,False)
     time.sleep(5)
     closed=pile(g)
     after=fuel(closed,1)['incoming']
     g.check('control_reduces_reaction',after < before*.8,{'open':before,'closed':after})
-    for p in CONTROLS:g.command(f'setblock {p[0]-2} {p[1]} {p[2]} minecraft:redstone_block')
+    for p in CONTROLS:lever(g,p,True)
     # Follow the natural 500-neutron lifetime; no NBT/state shortcut.
     deadline=time.monotonic()+150
     while time.monotonic()<deadline:
@@ -125,6 +134,18 @@ def setup(g):
     time.sleep(4)
     cooled=pile(g);d=fuel(cooled,1)['heat']
     g.check('vent_cools_heated_channel',d < b and b>a,{'no_air_before':a,'no_air_after':b,'air_after':d})
+    # A lever against the second loader starts the stroke (rising edge on its own cell).
+    g.command('clear @s');g.command('give @s ntm:pile_rod__nu 1');g.ctl('select ntm:pile_rod__nu')
+    interact(g,LOADERS[1],'north',(LOADERS[1][0]+.5,101,LOADERS[1][2]-2.5))
+    g.check('lever_loader_rod_waiting',machine(g,LOADERS[1])['data']['Loader']['slots'][0]['count']==1,machine(g,LOADERS[1])['data'])
+    g.command(f'setblock {LOADERS[1][0]-1} {LOADERS[1][1]} {LOADERS[1][2]} minecraft:lever[face=wall,facing=north,powered=false]')
+    time.sleep(2)
+    g.check('lever_off_does_not_load',fuel(pile(g),1)['rods'][0]['kind']!=3,fuel(pile(g),1)['rods'])
+    g.command(f'setblock {LOADERS[1][0]-1} {LOADERS[1][1]} {LOADERS[1][2]} minecraft:lever[face=wall,facing=north,powered=true]')
+    time.sleep(3)
+    c=pile(g)
+    g.check('lever_loads_rod',fuel(c,1)['rods'][0]['kind']==3 and machine(g,LOADERS[1])['data']['Loader']['slots'][0] is None,{'rods':fuel(c,1)['rods'],'loader':machine(g,LOADERS[1])['data']})
+    g.command(f'setblock {LOADERS[1][0]-1} {LOADERS[1][1]} {LOADERS[1][2]} minecraft:air')
     # Undo a fuel channel using the drill through its loader: real item ejection.
     tool(g)
     interact(g,LOADERS[0],'north',(39.5,101,4.5))
@@ -175,11 +196,69 @@ def persistence(g,capture):
                 # The barrel may have supplied the vent during startup.
                 g.check('saved_barrel_'+key,str(a.get('tank',{}).get('fluid'))==str(b.get('tank',{}).get('fluid')),b)
 
+
+CORE_B=(40,102,20)
+LOADERS_B=[(39,102,19),(41,102,19)]
+
+
+def form_b(g):
+    g.command('fill 32 99 17 48 99 26 minecraft:stone')
+    g.command('fill 32 100 17 48 108 26 minecraft:air')
+    g.command('fill 38 100 20 42 104 24 ntm:pile_brick')
+    tool(g)
+    interact(g,CORE_B,'north',(40.5,101,17.5))
+    g.check('b_formed',machine(g,CORE_B)['data']['Core']['shape']['depth']==5,machine(g,CORE_B)['data'])
+
+
+def destroy(g):
+    """Player break and a thermal failure, on a second pile (the first one is persisted)."""
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tick unfreeze')
+    form_b(g)
+    for p in [(39,102,20),(41,102,20)]:interact(g,p,'north',(p[0]+.5,101,17.5))
+    cells=[(x,y,z) for x in range(38,43) for y in range(100,105) for z in range(20,25)]
+    # Break one exposed member by hand: the whole structure reverts, the cell too.
+    broken=(38,101,22)
+    g.command('tp @s 35.5 101 22.5')
+    g.ctl('break 38 101 22 --timeout 20')
+    time.sleep(2)
+    names=[block(g,c) for c in cells]
+    g.check('player_break_reverts_all_to_brick',all(n=='ntm:pile_brick' for n in names),sorted(set(names)))
+    g.check('player_break_cell_is_brick',block(g,broken)=='ntm:pile_brick',block(g,broken))
+    # Thermal failure: rebuild with no controls and no air; sources + plutonium melt it.
+    form_b(g)
+    for p in [(39,102,20),(41,102,20)]:interact(g,p,'north',(p[0]+.5,101,17.5))
+    for p in LOADERS_B:
+        g.command('clear @s');g.command('give @s ntm:pile_device__loader 1')
+        g.command(f'tp @s {p[0]+.5} 101 {p[2]-2.5}')
+        g.ctl(f'place {p[0]} {p[1]} {p[2]} --item ntm:pile_device__loader')
+    # The failure can come mid-loading and the blast takes the loaders with it.
+    try:
+        for kind,p in [('ra226be',LOADERS_B[0])]*5+[('pu239',LOADERS_B[1])]*5:
+            if block(g,CORE_B)!='ntm:pile_block__core':break
+            load(g,p,kind)
+    except (RuntimeError,KeyError,TypeError) as error:
+        g.evidence['load_interrupted']=str(error)
+    deadline=time.monotonic()+120
+    while time.monotonic()<deadline and block(g,CORE_B)=='ntm:pile_block__core':time.sleep(1)
+    time.sleep(3)
+    after=[block(g,c) for c in cells]
+    leftovers=[n for n in after if n.startswith('ntm:pile_block__')]
+    g.check('meltdown_dismantles_pile',block(g,CORE_B)!='ntm:pile_block__core' and not leftovers,{'core':block(g,CORE_B),'leftovers':len(leftovers)})
+    g.check('meltdown_explosion_damaged_blocks',sum(n in ('minecraft:air','minecraft:fire') for n in after)>0,sorted(set(after)))
+    log=(g.folder/'client-reopen.log').read_text(errors='replace')
+    g.check('meltdown_logged',('pile meltdown' in log),log[-400:])
+    items=g.ctl('entities')
+    g.evidence['entities_after_meltdown']=items
+
+
 if __name__=='__main__':
     mode=sys.argv[2] if len(sys.argv)>2 else 'setup'
     g=Game(sys.argv[1],'pile'+('' if mode=='setup' else '-'+mode))
     g.ctl('wait-ready 120')
     if mode=='setup':setup(g)
     elif mode in ('capture-state','check-state'):persistence(g,mode=='capture-state')
+    elif mode=='destroy':destroy(g)
     else:raise SystemExit('unknown mode: '+mode)
     g.evidence['ok']=True;g.save()
