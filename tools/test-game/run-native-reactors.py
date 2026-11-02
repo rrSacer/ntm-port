@@ -91,6 +91,8 @@ def run(args):
               'pile': [('setup', 'capture-state'), ('check-state', 'destroy')],
               'dims': [('setup', 'capture-state'), ('check-state',)],
               'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
+    if args.setup_only:
+        phases[args.scenario] = [phases[args.scenario][0][:1]]
     client = None
     try:
         if args.resume_reopen:
@@ -162,9 +164,13 @@ if __name__ == '__main__':
     parser.add_argument('--scratch-root', type=Path, required=True)
     parser.add_argument('--resume-reopen', type=Path,
                         help='resume a completed first session using the identical binary and bundle')
+    parser.add_argument('--setup-only', action='store_true',
+                        help='only the first phase, for isolated baseline comparisons')
     arguments = parser.parse_args()
+    if arguments.setup_only and arguments.resume_reopen:
+        parser.error('--setup-only cannot resume a reopened session')
     run(arguments)
-    if arguments.scenario == 'dims':
+    if arguments.scenario == 'dims' and not arguments.setup_only:
         # setup intentionally forceloads the Nether; the idle scenarios require
         # no forced chunks, and idle-clean additionally requires no reader.
         # Give each original scenario its own new world, as their contract asks.
