@@ -320,9 +320,7 @@ impl Channel {
         let mut next = Some(rod);
         for slot in &mut self.rods {
             std::mem::swap(slot, &mut next);
-            if next.is_none() {
-                return None;
-            }
+            next.as_ref()?;
         }
         next
     }

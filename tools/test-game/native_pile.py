@@ -66,6 +66,8 @@ def setup(g):
     interact(g,CORE,'north',(40.5,101,5.5))
     formed=pile(g)
     g.check('formed_shape',formed['shape']=={'at':list(CORE),'inward':[0,0,1],'up':2,'down':2,'left':2,'right':2,'depth':5},formed['shape'])
+    # Two stone ledges beside the pile top: a creative player teleported into air falls.
+    g.command('fill 39 104 6 41 104 7 minecraft:stone');g.command('fill 39 104 13 41 104 14 minecraft:stone')
     # Fuel, ventilation, and two independent top-down controls. No intersection.
     for p,face,standing in [((39,102,8),'north',(39.5,101,5.5)),((41,102,8),'north',(41.5,101,5.5)),((38,101,10),'west',(35.5,100,10.5)),((40,104,9),'up',(40.5,105,7.5)),((40,104,11),'up',(40.5,105,13.5))]:
         interact(g,p,face,standing)

@@ -93,6 +93,7 @@ impl Server {
     }
     /// None: unrelated block. Handled consumes the click only; a rod/tool
     /// action is returned only after the state/slot write succeeded.
+    #[allow(clippy::too_many_arguments)]
     pub fn native_pile_use(
         &mut self,
         host: &mut impl ServerHost,
