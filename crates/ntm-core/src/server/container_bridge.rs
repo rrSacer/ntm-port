@@ -7,7 +7,7 @@ use super::{Key, Server, ServerHost};
 use crate::{
     Pos,
     crafter::Crafter,
-    machine::Data,
+    machine::{Data, Machine},
 };
 use std::collections::BTreeMap;
 
@@ -767,14 +767,11 @@ pub fn layout(block: &str) -> Option<&'static Layout> {
 }
 
 /// What the bridge last wrote to (or read from) each machine's slots.
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Bridge {
     pub(super) last: BTreeMap<Key, Slots>,
-    data: BTreeMap<Key, Vec<i32>>,
-    /// Desired values whose writes failed, relative to `last` (host truth).
-    /// Each slot is reconciled independently before simulation resumes.
-    pub(super) pending: BTreeMap<Key, BTreeMap<usize, Option<Stack>>>,
-    pub(super) failed_data: std::collections::BTreeSet<Key>,
+    pub(super) data: BTreeMap<Key, Vec<i32>>,
+
 }
 
 fn totals<'a>(slots: impl Iterator<Item = &'a Option<Stack>>) -> BTreeMap<String, i64> {
@@ -919,27 +916,7 @@ impl Server {
             let Some(layout) = layout(&m.block) else { continue };
             let first = !r.bridge.last.contains_key(&key);
             let observed = now.clone();
-            let mut last = r.bridge.last.get(&key).cloned().unwrap_or_else(|| now.clone());
-            if let Some(pending) = r.bridge.pending.get_mut(&key) {
-                pending.retain(|&slot, desired| {
-                    let (Some(current), Some(old)) = (now.get_mut(slot), last.get_mut(slot)) else {
-                        return false;
-                    };
-                    let unchanged = current == old;
-                    // The machine already contains the desired value. Use it
-                    // as the delta baseline for aggregate (crafter) inventories.
-                    *old = desired.clone();
-                    if unchanged {
-                        *current = desired.clone();
-                    }
-                    // A player/hopper changed this slot: observed value wins,
-                    // discarding the pending write for this slot alone.
-                    unchanged
-                });
-            }
-            if r.bridge.pending.get(&key).is_some_and(BTreeMap::is_empty) {
-                r.bridge.pending.remove(&key);
-            }
+            let last = r.bridge.last.get(&key).cloned().unwrap_or_else(|| now.clone());
             let empty = now.iter().all(Option::is_none);
             match (&mut m.data, layout) {
                 (Data::Crafter(c), Layout::Crafter { inputs, outputs }) => {
@@ -1000,23 +977,12 @@ impl Server {
         }
     }
 
-    /// After the machines and the transactions: the machines' items back to
-    /// the slots, and their screens' values.
-    pub(super) fn slots_out(&mut self, host: &mut impl ServerHost) {
-        let Some(r) = self.ready() else { return };
-        let keys: Vec<Key> = r.bridge.last.keys().cloned().collect();
-        for key in keys {
-            let Some(m) = r.world.machines.get_mut(&key) else {
-                r.bridge.last.remove(&key);
-                r.bridge.data.remove(&key);
-                r.bridge.pending.remove(&key);
-                r.bridge.failed_data.remove(&key);
-                continue;
-            };
-            let Some(layout) = layout(&m.block) else { continue };
-            let Some(last) = r.bridge.last.get(&key).cloned() else { continue };
-            let mut want = last.clone();
-            let data = match (&mut m.data, layout) {
+    /// Derive slot writes only inside the speculative local step. `sync_out`
+    /// may create items, so network persistence must never call this helper.
+    pub(super) fn machine_output(m: &mut Machine, last: &Slots) -> (Slots, Vec<i32>) {
+        let Some(layout) = layout(&m.block) else { return (vec![None; last.len()], Vec::new()) };
+        let mut want = last.clone();
+        let data = match (&mut m.data, layout) {
                 (Data::Crafter(c), Layout::Crafter { inputs, outputs }) => {
                     lay_out(&mut want, inputs.clone(), &c.items, crate::crafter::STACK);
                     // The outputs over their slots; what they can't show stays
@@ -1035,35 +1001,27 @@ impl Server {
                     bomb_data(b)
                 }
                 (data, Layout::Native) => {
-                    let Some(n) = slotted(data) else { continue };
+                    let Some(n) = slotted(data) else { return (vec![None; last.len()], Vec::new()) };
                     n.sync_out();
                     want = n.slots_mut().clone();
                     let mut v = n.screen_data();
                     v.extend(n.save_state());
                     v
                 }
-                _ => continue,
+                _ => return (last.clone(), Vec::new()),
             };
-            let mut written=last.clone();
-            let mut pending=BTreeMap::new();
-            for (slot, (old, new)) in last.iter().zip(&want).enumerate() {
-                if old != new {
-                    if host.set_machine_slot(&key.0, key.1, slot as u32, new.clone()) { written[slot]=new.clone(); }
-                    else {pending.insert(slot,new.clone());}
-                }
-            }
-            if r.bridge.data.get(&key) == Some(&data) {
-                // A refused B may have returned to the confirmed A. Nothing
-                // remains to write; do not leave native_save blocked forever.
-                r.bridge.failed_data.remove(&key);
-            } else {
-                if data.is_empty() || host.set_machine_data(&key.0, key.1, &data) {
-                    r.bridge.data.insert(key.clone(), data);
-                    r.bridge.failed_data.remove(&key);
-                } else {r.bridge.failed_data.insert(key.clone());}
-            }
-            if pending.is_empty() {r.bridge.pending.remove(&key);} else {r.bridge.pending.insert(key.clone(),pending);}
-            r.bridge.last.insert(key, written);
+        (want, data)
+    }
+
+    pub(super) fn machine_screen(m: &mut Machine) -> Vec<i32> {
+        match &mut m.data {
+            Data::Crafter(c) => crafter_data(c),
+            Data::Bomb(b) => bomb_data(b),
+            d => slotted(d).map_or_else(Vec::new, |n| {
+                let mut data = n.screen_data();
+                data.extend(n.save_state());
+                data
+            }),
         }
     }
 
@@ -1072,14 +1030,12 @@ impl Server {
     pub(super) fn slots_gone(&mut self, key: &Key) -> bool {
         let Some(r) = self.ready() else { return false };
         r.bridge.data.remove(key);
-        r.bridge.pending.remove(key);
-        r.bridge.failed_data.remove(key);
         r.bridge.last.remove(key).is_some()
     }
 
     /// A menu button: the machine's own, or a recipe picked from the
     /// list (`crate::native::recipes`).
-    fn machine_button(&mut self, key: &Key, button: u32) {
+    pub(super) fn machine_button(&mut self, key: &Key, button: u32) {
         let Some(r) = self.ready() else { return };
         let Some(m) = r.world.machines.get_mut(key) else { return };
         if let Some(n) = slotted(&mut m.data) {

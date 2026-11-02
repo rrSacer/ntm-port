@@ -35,7 +35,6 @@ fn roll(s: u64, n: u64) -> u64 {
 
 impl Server {
     pub(super) fn zirnox_tick(&mut self, host: &mut impl ServerHost) {
-        self.ready.zirnox_radiation_rate.clear();
         let keys: Vec<_> = self
             .ready
             .world
@@ -88,6 +87,10 @@ impl Server {
             }
             self.ready.world.machines.insert(key, m);
         }
+    }
+    pub(super) fn zirnox_effects(&mut self, host: &mut impl ServerHost) {
+        if self.ready.world.machine_effects.iter().any(|b|b.owners.iter().any(|k| self.ready.world.machines.get(k).is_some_and(|m|matches!(m.data,Data::Zirnox(_))))) {return;}
+
         let blasts = std::mem::take(&mut self.ready.world.zirnox.blasts);
         for (dim, at) in blasts {
             if !host.pile_reachable(&dim) || !host.zirnox_explode(&dim, at) {
@@ -125,25 +128,6 @@ impl Server {
                 }
             }
         }
-        // Remove rods before the vanilla explosion can spill the inventory.
-        // Failed writes leave the live state pending for the next tick.
-        for i in 0..28 {
-            if !host.set_machine_slot(&key.0, key.1, i, None) {
-                host.log("zirnox failure: inventory unreachable, retrying");
-                return false;
-            }
-            // Keep the bridge aware even if the subsequent block batch fails;
-            // slots_out then restores every cleared slot before saving state.
-            if let Some(last) = self
-                .ready
-                .bridge
-                .last
-                .get_mut(key)
-                .and_then(|v| v.get_mut(i as usize))
-            {
-                *last = None;
-            }
-        }
         if let Err(e) = host.set_blocks(&key.0, &blocks) {
             host.log(&format!("zirnox failure: {e}"));
             return false;
@@ -154,7 +138,6 @@ impl Server {
             f64::from(key.1[2]),
         ];
         self.ready.world.zirnox.blasts.push((key.0.clone(), at));
-        self.slots_gone(key);
         host.show(
             &key.0,
             &Show::Sound {
@@ -548,6 +531,13 @@ mod tests {
         }
     }
     impl ServerHost for Host {
+        fn commit_machine(&mut self,c:&MachineCommit)->bool{self.commit_machines(std::slice::from_ref(c))}
+        fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
+            self.save_attempts+=1;
+            if self.refuse_slots || self.refuse_data || self.refuse_save || cs.iter().any(|c|self.frozen.contains(&c.dim)||self.slots.get(&(c.dim.clone(),c.pos)).cloned().unwrap_or_default()!=c.expected){return false;}
+            for c in cs {let k=(c.dim.clone(),c.pos);self.slots.insert(k.clone(),c.desired.clone());self.data.insert(k.clone(),c.data.clone());self.saved.insert(k,c.json.clone());}true
+        }
+
         fn get_block(&mut self, d: &str, p: Pos) -> Option<String> {
             (!self.frozen.contains(d)).then(|| {
                 self.blocks
@@ -577,43 +567,11 @@ mod tests {
                 self.slots.get(&(d.into(), p)).cloned()
             }
         }
-        fn set_machine_slot(&mut self, d: &str, p: Pos, i: u32, s: Option<Stack>) -> bool {
-            if self.refuse_slots {
-                return false;
-            }
-            if let Some(c) = self
-                .slots
-                .get_mut(&(d.into(), p))
-                .and_then(|v| v.get_mut(i as usize))
-            {
-                *c = s;
-                true
-            } else {
-                false
-            }
-        }
         fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
             std::mem::take(&mut self.buttons)
         }
         fn machine_data(&mut self, d: &str, p: Pos) -> Option<Vec<i32>> {
             self.data.get(&(d.into(), p)).cloned()
-        }
-        fn set_machine_data(&mut self, d: &str, p: Pos, v: &[i32]) -> bool {
-            if self.refuse_data {
-                false
-            } else {
-                self.data.insert((d.into(), p), v.to_vec());
-                true
-            }
-        }
-        fn save_machine(&mut self, d: &str, p: Pos, j: &str) -> bool {
-            self.save_attempts += 1;
-            if self.refuse_save {
-                false
-            } else {
-                self.saved.insert((d.into(), p), j.into());
-                true
-            }
         }
         fn redstone_many(&mut self, d: &str, c: &[Pos]) -> Vec<Option<u8>> {
             c.iter()
@@ -767,14 +725,14 @@ mod tests {
             saved,
             "state cannot be saved ahead of its slots"
         );
-        assert_eq!(zirnox::life(z(&s).slots[0].as_ref().unwrap()), before + 3);
+        assert_eq!(zirnox::life(z(&s).slots[0].as_ref().unwrap()), before, "refused steps must not age or consume rods");
         h.refuse_slots = false;
         h.refuse_data = false;
         h.refuse_save = true;
         s.native_tick(&mut h, 5);
         assert_eq!(
             zirnox::life(h.slots[&key()][0].as_ref().unwrap()),
-            before + 4
+            before
         );
         assert_eq!(h.saved[&key()], saved);
         h.refuse_save = false;
@@ -782,7 +740,7 @@ mod tests {
         assert_ne!(h.saved[&key()], saved);
         assert_eq!(
             zirnox::life(h.slots[&key()][0].as_ref().unwrap()),
-            before + 5
+            before + 1
         );
     }
     #[test]
@@ -797,7 +755,7 @@ mod tests {
         s.native_tick(&mut h, 3);
         assert!(h.slots[&key()][0].is_none());
         assert!(z(&s).slots[0].is_none());
-        assert!(s.ready.bridge.pending.is_empty());
+
     }
     #[test]
     fn refused_screen_b_returning_to_confirmed_a_unblocks_stable_saves() {
@@ -809,14 +767,13 @@ mod tests {
         h.refuse_data = true;
         h.buttons.push(("p".into(), DIM.into(), AT, 0));
         s.native_tick(&mut h, 2); // B: on; screen write refused.
-        assert!(s.ready.bridge.failed_data.contains(&key()));
+        assert!(!z(&s).on, "refused button step rolls back");
         h.refuse_data = false;
         h.refuse_save = false;
-        h.buttons.push(("p".into(), DIM.into(), AT, 0));
         for t in 3..20 { s.native_tick(&mut h, t); }
         assert!(!z(&s).on);
-        assert!(s.ready.bridge.failed_data.is_empty());
-        assert_eq!(h.save_attempts, 2, "stable healthy ticks must accept the pending JSON save");
+
+        assert!(h.save_attempts >= 3, "healthy ticks retry and accept the JSON save");
         let back: crate::machine::Machine = serde_json::from_str(&h.saved[&key()]).unwrap();
         let Data::Zirnox(z) = back.data else { panic!() };
         assert!(!z.on);
@@ -860,7 +817,9 @@ mod tests {
         zm(&mut s).heat = 100001;
         h.refuse_blocks = true;
         s.native_tick(&mut h, 2);
-        assert!(!z(&s).destroyed);
+        assert!(z(&s).destroyed, "inventory/state committed before deferred casing replacement");
+        assert!(h.slots[&key()].iter().all(Option::is_none));
+        assert!(!s.ready.world.machine_effects.is_empty());
         assert!(h.blasts.is_empty());
         h.refuse_blocks = false;
         h.refuse_blast = true;

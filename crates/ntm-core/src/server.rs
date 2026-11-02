@@ -31,7 +31,7 @@ pub trait ServerHost: Kv {
     fn log(&mut self, text: &str);
     /// Saved sky light, weather/time subtraction, and visibility at y+1.
     /// Pile rod ejection deliberately removes depletion, as the Java does.
-    fn pile_drop(&mut self, dim: &str, p: Pos, item: &str) { self.drop_items(dim,p,&[(item.into(),1)]); }
+    fn pile_drop(&mut self, dim: &str, p: Pos, item: &str) -> bool { self.drop_items(dim,p,&[(item.into(),1)]) }
     /// Read the original double `depletion` from an item's custom data.
     fn pile_depletion(&mut self, _stack: &container_bridge::Stack) -> f64 { 0. }
     /// Native Level.explode(null, ..., 15, true, BLOCK).
@@ -46,12 +46,12 @@ pub trait ServerHost: Kv {
     fn machine_slots(&mut self, _dim: &str, _p: Pos) -> Option<container_bridge::Slots> {
         None
     }
-    fn set_machine_slot(&mut self, _dim: &str, _p: Pos, _slot: u32, _stack: Option<container_bridge::Stack>) -> bool {
-        false
-    }
-    /// Its menu's data (the screen's values, then `Slotted::save_state`).
-    fn set_machine_data(&mut self, _dim: &str, _p: Pos, _values: &[i32]) -> bool {
-        false
+    /// Atomically compare all observed slots, then publish slots, menu data and
+    /// JSON together. Refusal MUST publish nothing. Unsupported hosts freeze.
+    fn commit_machine(&mut self, _commit: &MachineCommit) -> bool { false }
+    /// Same guarantee across a coupled group (pile loaders and their core).
+    fn commit_machines(&mut self, commits: &[MachineCommit]) -> bool {
+        commits.is_empty() || commits.len() == 1 && self.commit_machine(&commits[0])
     }
     fn machine_data(&mut self, _dim: &str, _p: Pos) -> Option<Vec<i32>> {
         None
@@ -60,10 +60,6 @@ pub trait ServerHost: Kv {
     fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
         Vec::new()
     }
-    /// The machine's whole state (JSON), kept with its block entity.
-    /// Keep `json` with the block entity. False: the block entity could not be
-    /// reached now (its dimension is unavailable); the state is kept again later.
-    fn save_machine(&mut self, _dim: &str, _p: Pos, _json: &str) -> bool { false }
     /// The redstone signal each of `cells` of `dim` receives (0..=15; none
     /// unloaded, or a host that can't read it: then a bomb reads its `lit`).
     fn redstone_many(&mut self, _dim: &str, cells: &[Pos]) -> Vec<Option<u8>> {
@@ -71,7 +67,7 @@ pub trait ServerHost: Kv {
     }
     /// Items a broken machine held outside its slots (the slots the game
     /// spills itself), dropped at `p`.
-    fn drop_items(&mut self, _dim: &str, _p: Pos, _items: &[(String, u32)]) {}
+    fn drop_items(&mut self, _dim: &str, _p: Pos, _items: &[(String, u32)]) -> bool { false }
     /// The players in the world (None: the host can't tell, and
     /// [`Server::set_players`] says).
     fn players(&mut self) -> Option<Vec<PlayerInfo>> {
@@ -91,6 +87,18 @@ pub trait ServerHost: Kv {
     fn show(&mut self, _dim: &str, _show: &crate::blast::visuals::Show) {}
     /// A named number player `id`'s client reads (the Geiger's).
     fn set_player_value(&mut self, _id: &str, _key: &str, _value: i64) {}
+}
+
+/// One indivisible machine update. `expected` is the inventory read before
+/// simulation, not a cached approximation. Hosts validate before any mutation.
+#[derive(Clone, Debug)]
+pub struct MachineCommit {
+    pub dim: String,
+    pub pos: Pos,
+    pub expected: container_bridge::Slots,
+    pub desired: container_bridge::Slots,
+    pub data: Vec<i32>,
+    pub json: String,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -114,13 +122,15 @@ enum BlockEvent {
 
 type Key = (String, Pos);
 
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 struct Ready {
     world: WorldState,
     topo: BTreeMap<String, Topology>,
     topo_dirty: bool,
     /// Chunk loaded, as last checked.
     loaded: BTreeMap<Key, bool>,
+    frozen: BTreeSet<Key>,
+    broken:BTreeMap<Key,String>,
     /// The state last written or seen, per machine.
     shown: BTreeMap<Key, String>,
     /// Machines and cables whose block was missing at the last check.
@@ -250,6 +260,7 @@ impl Server {
 
         // Loaded chunks, and what the world shows, a machine every 20 ticks.
         for (i, (key, m)) in r.world.machines.iter().enumerate() {
+            if r.frozen.contains(key) {continue;}
             let known = r.loaded.get(key).copied();
             if known.is_some() && !(tick + i as u64).is_multiple_of(LOAD_CHECK) {
                 continue;
@@ -298,13 +309,6 @@ impl Server {
             r.suspect.remove(key);
             host.log(&format!("machine {} at {:?} is gone from the world", m.block, key.1));
             r.topo_dirty = true;
-        }
-
-        // Machine ticks.
-        for (key, m) in r.world.machines.iter_mut() {
-            if r.loaded.get(key) == Some(&true) {
-                m.logic_mut().tick();
-            }
         }
 
         // Energy: a machine may be in several networks (one per separate
@@ -443,3 +447,5 @@ mod pile_server;
 pub use pile_server::PileUse;
 
 mod zirnox_server;
+mod transaction;
+pub use transaction::{CommittedEffects,WorldEffect};

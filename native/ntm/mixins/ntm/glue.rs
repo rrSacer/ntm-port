@@ -61,6 +61,14 @@ pub(super) fn world(open: bool) {
     }
 }
 
+/// A flushed world save makes already applied item/block effects durable.
+pub(super) fn world_saved(game:&mut crate::game::Game<'_>,wait:bool){
+    if let Some((server,_))=lock(&SERVER).as_mut(){
+        let mut host=Host{game,buttons:Vec::new()};
+        server.native_world_saved(&mut host,wait);
+    }
+}
+
 /// A block changed on the server: kept when a machine or cable is in it.
 pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: [i32; 3], old: horizon_world::registry::BlockStateId, new: horizon_world::registry::BlockStateId) {
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
@@ -268,9 +276,11 @@ fn in_place<R>(game: &mut crate::game::Game<'_>, dim: &str, f: impl FnOnce(&mut 
 }
 
 impl ServerHost for Host<'_, '_> {
-    fn pile_drop(&mut self, dim: &str, p: [i32;3], id: &str) {
-        let at = p.map(|v| f64::from(v) + 0.5);
-        in_place(self.game, dim, |g| { g.spawn_item(ItemStack::new(id, 1), at, crate::game::dispenser::new_item_motion(), 0); });
+    fn drop_items(&mut self,dim:&str,p:[i32;3],items:&[(String,u32)])->bool {
+        let at=p.map(|v|f64::from(v)+0.5);
+        in_place(self.game,dim,|g|{
+            for (id,n) in items {g.spawn_item(ItemStack::new(id,*n),at,crate::game::dispenser::new_item_motion(),0);}
+        }).is_some()
     }
     fn pile_depletion(&mut self, stack: &Stack) -> f64 {
         stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
@@ -337,39 +347,52 @@ impl ServerHost for Host<'_, '_> {
     fn machine_slots(&mut self, dim: &str, p: [i32; 3]) -> Option<Slots> {
         self.entity(dim, p, |e| e.items.iter().map(stack).collect())
     }
-    fn set_machine_slot(&mut self, dim: &str, p: [i32; 3], slot: u32, new: Option<Stack>) -> bool {
-        self.entity(dim, p, |e| {
-            let Some(cell) = e.items.get_mut(slot as usize) else { return false };
-            *cell = item(new.as_ref(), cell.take());
-            true
-        })
-        .unwrap_or(false)
-    }
     fn machine_data(&mut self, dim: &str, p: [i32; 3]) -> Option<Vec<i32>> {
         self.entity(dim, p, |e| e.data.clone())
     }
-    fn set_machine_data(&mut self, dim: &str, p: [i32; 3], values: &[i32]) -> bool {
-        let Some(block) = self.entity(dim, p, |e| e.id.clone()) else { return false };
-        let (_, synced) = file(self.game, &block);
-        let changed = self.entity(dim, p, |e| {
-            let sent = match e.nbt.get(&JavaString::from(DATA)) {
-                Some(Tag::IntArray(v)) => Some(v.clone()),
-                _ => None,
-            };
-            e.data = values.to_vec();
-            e.nbt.insert(JavaString::from(DATA), Tag::IntArray(values.to_vec()));
-            ntm_core::native::sync_changed(sent.as_deref(), values, &synced)
-        });
-        if changed == Some(true) {
-            // The clients' update tag is the level in place's to send; nobody to
-            // send it to (or no open level) in a level with no players.
-            if dim_of(dim) == Some(self.game.dim) {
-                self.game.native_block_entity_changed(p);
-            } else if self.watched(dim) {
-                in_place(self.game, dim, |g| g.native_block_entity_changed(p));
-            }
+    fn commit_machine(&mut self, c: &ntm_core::server::MachineCommit) -> bool {
+        self.commit_machines(std::slice::from_ref(c))
+    }
+    fn commit_machines(&mut self, commits: &[ntm_core::server::MachineCommit]) -> bool {
+        // This callback owns &mut Game for its entire duration. No event,
+        // hopper, chunk unload or block mutation can interleave these passes.
+        // Resolve ALL entities and validate ALL expected slots before changing
+        // any. Notifications run only after every member has been published.
+        let mut prepared=Vec::with_capacity(commits.len());
+        let mut seen=std::collections::BTreeSet::new();
+        for c in commits {
+            if !seen.insert((c.dim.clone(),c.pos)) { return false; }
+            let Some((id,valid))=self.entity(&c.dim,c.pos,|e| {
+                let observed:Slots=e.items.iter().map(stack).collect();
+                (e.id.clone(),observed==c.expected && e.items.len()==c.desired.len())
+            }) else {return false};
+            if !valid {return false;}
+            let (_,synced)=file(self.game,&id);
+            prepared.push(synced);
         }
-        changed.is_some()
+        let mut notify=Vec::new();
+        for (c,synced) in commits.iter().zip(prepared) {
+            // The preflight guarantees this entity is still accessible; this
+            // closure performs the entire update without any fallible operation.
+            let changed=self.entity(&c.dim,c.pos,|e| {
+                assert_eq!(e.items.iter().map(stack).collect::<Slots>(),c.expected,"exclusive preflight preserves expected slots");
+                assert_eq!(e.items.len(),c.desired.len());
+                let sent=match e.nbt.get(&JavaString::from(DATA)) {Some(Tag::IntArray(v))=>Some(v.clone()),_=>None};
+                for (cell,new) in e.items.iter_mut().zip(&c.desired) {
+                    *cell=item(new.as_ref(),cell.take());
+                }
+                e.data=c.data.clone();
+                e.nbt.insert(JavaString::from(DATA),Tag::IntArray(c.data.clone()));
+                e.nbt.insert(JavaString::from(STATE),Tag::String(JavaString::from(c.json.as_str())));
+                ntm_core::native::sync_changed(sent.as_deref(),&c.data,&synced)
+            }).expect("atomic preflight retains entity during exclusive Game access");
+            if changed {notify.push((c.dim.clone(),c.pos));}
+        }
+        for (dim,p) in notify {
+            if dim_of(&dim)==Some(self.game.dim){self.game.native_block_entity_changed(p);}
+            else if self.watched(&dim){in_place(self.game,&dim,|g|g.native_block_entity_changed(p));}
+        }
+        true
     }
     fn machine_buttons(&mut self) -> Vec<(String, String, [i32; 3], u32)> {
         std::mem::take(&mut self.buttons)
@@ -421,12 +444,7 @@ impl ServerHost for Host<'_, '_> {
             eprintln!("ntm: value {key} of {id}: {e}");
         }
     }
-    fn save_machine(&mut self, dim: &str, p: [i32; 3], json: &str) -> bool {
-        self.entity(dim, p, |e| {
-            e.nbt.insert(JavaString::from(STATE), Tag::String(JavaString::from(json)));
-        })
-        .is_some()
-    }
+
 }
 
 /// `show` in the level in place.

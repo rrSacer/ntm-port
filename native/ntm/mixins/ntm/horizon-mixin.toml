@@ -24,6 +24,18 @@ bindings = [
   { name = "phase", ty = "crate::game::native_lifecycle::WorldPhase", value = "phase" },
 ]
 
+# Existing API 306: only a flushed world save acknowledges effect receipts.
+[[injection]]
+id = "world-save-receipts"
+hook = "world_saved"
+hook_version = 1
+kind = "HEAD"
+helper = "world_saved.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "wait", ty = "bool", value = "wait" },
+]
+
 # A machine's block entity (L1): its state, slots and menu data through
 # ntm_core::native.
 [[injection]]

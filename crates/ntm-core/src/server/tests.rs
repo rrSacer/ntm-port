@@ -20,6 +20,7 @@ struct World {
     /// The machine block entities: their slots and menu data. Only the
     /// blocks a test gives slots have them.
     engine: BTreeMap<(String, Pos), (container_bridge::Slots, Vec<i32>)>,
+    model_entities: BTreeSet<Key>,
     /// Menu buttons pressed, taken on the next tick.
     presses: Vec<(String, Pos, u32)>,
     /// The redstone signal at cells (0 elsewhere).
@@ -48,6 +49,7 @@ impl World {
             writes: Vec::new(),
             dropped: Vec::new(),
             engine: BTreeMap::new(),
+            model_entities: BTreeSet::new(),
             presses: Vec::new(),
             signal: BTreeMap::new(),
             sun: BTreeMap::new(),
@@ -108,6 +110,13 @@ impl Kv for SHost {
 }
 
 impl ServerHost for SHost {
+    fn commit_machine(&mut self,c:&MachineCommit)->bool{self.commit_machines(std::slice::from_ref(c))}
+    fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
+        let mut w=self.world.borrow_mut();
+        if cs.iter().any(|c|!w.loaded(&c.dim,c.pos)||w.engine.get(&(c.dim.clone(),c.pos)).map(|e|e.0.clone()).unwrap_or_default()!=c.expected){return false;}
+        for c in cs {w.engine.insert((c.dim.clone(),c.pos),(c.desired.clone(),c.data.clone()));w.saved.insert((c.dim.clone(),c.pos),c.json.clone());}true
+    }
+
     fn solar_sample(&mut self, dim: &str, p: Pos) -> Option<(i32,i32,bool)> { self.world.borrow().sun.get(&(dim.into(),p)).copied() }
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String> {
         self.reads += 1;
@@ -129,33 +138,11 @@ impl ServerHost for SHost {
     fn machine_slots(&mut self, dim: &str, p: Pos) -> Option<container_bridge::Slots> {
         self.world.borrow().engine.get(&(dim.to_string(), p)).map(|e| e.0.clone())
     }
-    fn set_machine_slot(&mut self, dim: &str, p: Pos, slot: u32, stack: Option<container_bridge::Stack>) -> bool {
-        match self.world.borrow_mut().engine.get_mut(&(dim.to_string(), p)) {
-            Some(e) if (slot as usize) < e.0.len() => {
-                e.0[slot as usize] = stack;
-                true
-            }
-            _ => false,
-        }
-    }
     fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
         std::mem::take(&mut self.world.borrow_mut().presses).into_iter().map(|(d, p, b)| ("p1".to_string(), d, p, b)).collect()
     }
     fn machine_data(&mut self, dim: &str, p: Pos) -> Option<Vec<i32>> {
         self.world.borrow().engine.get(&(dim.to_string(), p)).map(|e| e.1.clone())
-    }
-    fn set_machine_data(&mut self, dim: &str, p: Pos, values: &[i32]) -> bool {
-        match self.world.borrow_mut().engine.get_mut(&(dim.to_string(), p)) {
-            Some(e) => {
-                e.1 = values.to_vec();
-                true
-            }
-            None => false,
-        }
-    }
-    fn save_machine(&mut self, dim: &str, p: Pos, json: &str) -> bool {
-        self.world.borrow_mut().saved.insert((dim.to_string(), p), json.into());
-        true
     }
     fn redstone_many(&mut self, dim: &str, cells: &[Pos]) -> Vec<Option<u8>> {
         let w = self.world.borrow();
@@ -176,11 +163,12 @@ impl ServerHost for SHost {
     fn set_player_value(&mut self, id: &str, key: &str, value: i64) {
         self.world.borrow_mut().values.insert((id.into(), key.into()), value);
     }
-    fn drop_items(&mut self, dim: &str, p: Pos, items: &[(String, u32)]) {
+    fn drop_items(&mut self, dim: &str, p: Pos, items: &[(String, u32)]) -> bool {
         let mut w = self.world.borrow_mut();
         for (item, n) in items {
             w.dropped.push(format!("{dim} {} {} {} {item} {n}", p[0], p[1], p[2]));
         }
+        true
     }
 }
 
@@ -217,6 +205,20 @@ impl Game {
     }
     /// One tick: the server's, then its block writes.
     fn step(&mut self) {
+        for event in std::mem::take(&mut self.server.queued) { self.server.native_event(&mut self.sh,event); }
+        let confirmed=self.server.ready.bridge.last.clone();
+        for (k,m) in &mut self.server.ready.world.machines {
+            let mut w=self.world.borrow_mut();
+            if w.model_entities.contains(k) && w.engine.get(k).map(|e|&e.0)!=confirmed.get(k) {
+                w.model_entities.remove(k);
+            }
+            if !w.engine.contains_key(k) || w.model_entities.contains(k) {
+                w.model_entities.insert(k.clone());
+                let n=crate::native::block_slots(&m.block).len();
+                let (slots,data)=Server::machine_output(m,&vec![None;n]);
+                w.engine.insert(k.clone(),(slots,data));
+            }
+        }
         self.tick += 1;
         self.server.native_tick(&mut self.sh, self.tick);
         self.world.borrow_mut().apply_writes();
@@ -234,6 +236,17 @@ impl Game {
     }
     /// A block broken: air in its place.
     fn break_block(&mut self, p: Pos) {
+        // Model-seeded legacy fixtures still have real BE slots now. Simulate
+        // the engine spilling those slots on break, as the native host does.
+        let key=(OW.to_string(),p);
+        if self.world.borrow().model_entities.contains(&key) {
+            let mut m=self.server.ready.world.machines[&key].clone();
+            let n=crate::native::block_slots(&m.block).len();
+            let slots=Server::machine_output(&mut m,&vec![None;n]).0;
+            self.world.borrow_mut().engine.remove(&key);
+            for s in slots.into_iter().flatten(){self.world.borrow_mut().dropped.push(format!("{OW} {} {} {} {} {}",p[0],p[1],p[2],s.id,s.count));}
+            self.world.borrow_mut().model_entities.remove(&key);
+        }
         self.place(p, "minecraft:air");
     }
     fn ready(&mut self) -> &mut Ready {
@@ -281,14 +294,14 @@ fn breaking_a_machine_drops_what_it_holds_outside_its_slots_once() {
 }
 
 #[test]
-fn a_vanished_machine_is_dropped_only_after_a_second_look() {
+fn a_confirmed_loaded_removal_becomes_a_tombstone() {
     let mut g = game();
     let bat = [3, 70, 0];
     g.place(bat, "ntm:machine_battery[facing=east,honey_level=0]");
     g.run(2);
     g.world.borrow_mut().set(OW, bat, "minecraft:stone");
     g.run(LOAD_CHECK as usize + 1);
-    assert_eq!(g.ready().world.machines.len(), 1, "kept after one look");
+    assert!(g.ready().world.machines.is_empty(), "an accessible replacement confirms removal");
     g.run(2 * LOAD_CHECK as usize);
     assert!(g.ready().world.machines.is_empty());
 }

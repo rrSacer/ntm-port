@@ -203,12 +203,17 @@ impl Crucible {
     pub fn step(&mut self, t: &Tables, source: Option<&mut dyn HeatSource>, world_tick: u64) -> bool {
         let before = (self.recipe_stack.clone(), self.waste_stack.clone(), self.slots.iter().flatten().map(|s| s.count).sum::<u32>());
         self.pull_heat(source);
+        self.local_step(t, world_tick);
+        before != (self.recipe_stack.clone(), self.waste_stack.clone(), self.slots.iter().flatten().map(|s| s.count).sum::<u32>())
+    }
+
+    /// Slot-affecting work, committed before inter-machine heat/metal flow.
+    pub fn local_step(&mut self, t: &Tables, world_tick: u64) {
         if !self.smelt(t) {
             self.progress = 0;
         }
         self.alloy(t, world_tick);
         self.clean();
-        before != (self.recipe_stack.clone(), self.waste_stack.clone(), self.slots.iter().flatten().map(|s| s.count).sum::<u32>())
     }
 
     fn clean(&mut self) {

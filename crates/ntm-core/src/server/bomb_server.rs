@@ -141,7 +141,6 @@ impl Server {
         }
         let online: Vec<String> = self.players.iter().map(|p| p.id.clone()).collect();
         self.blasts.entered.retain(|id, _| online.contains(id));
-        self.bombs_triggers(host);
         self.blasts.nukes.fuel = u64::from(self.bomb_config(host).fuel) * 1_000_000;
         self.bombs_admit(host);
         self.bomb_pulses(host);
@@ -181,7 +180,7 @@ impl Server {
     }
 
     /// Redstone and fuses: which loaded bombs go off this tick.
-    fn bombs_triggers(&mut self, host: &mut impl ServerHost) {
+    pub(super) fn bombs_triggers(&mut self, host: &mut impl ServerHost) {
         let Some(r) = self.ready() else { return };
         let bombs: Vec<(Key, String, bool, Option<Blast>, bool)> = r
             .world

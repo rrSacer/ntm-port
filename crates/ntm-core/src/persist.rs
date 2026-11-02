@@ -25,12 +25,21 @@ pub struct Kept {
     pub zirnox: crate::zirnox::Remnants,
     #[serde(default)]
     pub ticks: u64,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub removals:Vec<((String,Pos),Machine)>,
+    #[serde(default, skip_serializing_if = "std::collections::VecDeque::is_empty")]
+    pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
+    #[serde(default, skip_serializing_if = "std::collections::VecDeque::is_empty")]
+    pub applied_machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct WorldState {
     /// Ticks played in this world.
     pub ticks: u64,
+    pub removals:Vec<((String,Pos),Machine)>,
+    pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
+    pub applied_machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     pub radiation: BTreeMap<String, crate::radiation::Dose>,
     pub machines: BTreeMap<(String, Pos), Machine>,
     pub cables: BTreeSet<(String, Pos)>,
@@ -43,11 +52,17 @@ impl WorldState {
     /// or none that reads).
     pub fn load(kv: &mut impl Kv) -> Self {
         let kept: Kept = kv.get(KEY).and_then(|b| serde_json::from_slice(&b).ok()).unwrap_or_default();
+        let mut machine_effects=kept.applied_machine_effects;
+        machine_effects.extend(kept.machine_effects);
+        let machines=kept.removals.iter().cloned().collect();
         WorldState {
+            machines,
+            removals:kept.removals,
             radiation: kept.radiation,
             bombs: kept.bombs,
             zirnox: kept.zirnox,
             ticks: kept.ticks,
+            machine_effects,
             ..WorldState::default()
         }
     }
@@ -59,6 +74,9 @@ impl WorldState {
             bombs: self.bombs.clone(),
             zirnox: self.zirnox.clone(),
             ticks,
+            removals:self.removals.clone(),
+            machine_effects:self.machine_effects.clone(),
+            applied_machine_effects:self.applied_machine_effects.clone(),
         };
         serde_json::to_vec(&kept).unwrap_or_default()
     }

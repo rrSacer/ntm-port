@@ -1,6 +1,6 @@
 //! The native bundle's entry points (docs/nativo.md): the world from the
 //! start, each machine's state its block entity's (the host's
-//! `save_machine`, read back by [`Server::native_adopt`]), the cables found
+//! `commit_machine`, read back by [`Server::native_adopt`]), the cables found
 //! from the blocks, the tick's phases.
 use super::*;
 
@@ -19,6 +19,7 @@ impl Server {
         crate::radiation::warm();
         let world = WorldState::load(host);
         let kept = world.kept(0);
+        let broken=world.removals.iter().map(|(k,m)|(k.clone(),m.block.clone())).collect();
         Server {
             blasts: crate::blast::Runtime::default(),
             fluidnet: fluid_server::FluidNet::default(),
@@ -28,6 +29,7 @@ impl Server {
             queued: Vec::new(),
             ready: Ready {
                 world,
+                broken,
                 topo_dirty: true,
                 kept,
                 ..Ready::default()
@@ -39,25 +41,34 @@ impl Server {
     /// the machines and networks, the slots and states back.
     pub fn native_tick(&mut self, host: &mut impl ServerHost, tick: u64) {
         self.tick = tick;
+        self.ready.frozen.clear();
+        self.ready.zirnox_radiation_rate.clear();
         if let Some(players) = host.players() {
             self.players = players;
         }
+        self.flush_machine_effects(host);
         for e in std::mem::take(&mut self.queued) {
-            self.block_event(host, e);
+            self.native_event(host, e);
         }
-        // Adopted block entities must be classified before heat/solar phases,
-        // not first in simulate: otherwise their first thermal tick is lost.
+        // Check accessibility every tick: a refused local step must be able to
+        // recover, but must never simulate while its BE remains inaccessible.
         for (key,m) in &self.ready.world.machines {
-            if !self.ready.loaded.contains_key(key) {
-                let loaded = host.get_block(&key.0,key.1).is_some_and(|b| blockstate::id_of(&b) == m.block);
-                self.ready.loaded.insert(key.clone(),loaded);
-            }
+            let loaded=host.get_block(&key.0,key.1).is_some_and(|b|blockstate::id_of(&b)==m.block);
+            self.ready.loaded.insert(key.clone(),loaded);
         }
         self.native_find_cables(host);
         self.native_redstone(host);
-        self.slots_in(host);
-        self.pile_tick(host);
-        self.zirnox_tick(host);
+        self.local_steps(host);
+        self.flush_machine_effects(host);
+        for k in self.ready.world.machines.keys() {if self.ready.loaded.get(k)!=Some(&true){self.ready.frozen.insert(k.clone());}}
+        for batch in &self.ready.world.machine_effects {
+            for k in &batch.owners{self.ready.loaded.insert(k.clone(),false);self.ready.frozen.insert(k.clone());}
+        }
+        // Failed/local-inaccessible machines cannot be a hidden destination of
+        // foundry pouring, heat pulling, or other internal network transfers.
+        let mut frozen=BTreeMap::new();
+        for k in &self.ready.frozen{if let Some(m)=self.ready.world.machines.remove(k){frozen.insert(k.clone(),m);}}
+        if !frozen.is_empty(){self.ready.topo_dirty=true;}
         self.heat_tick();
         self.solar_tick(host);
         self.simulate(host);
@@ -65,11 +76,10 @@ impl Server {
         self.fluids_tick();
         self.fraction_tick();
         self.foundry_tick(host);
-        self.excavator_tick(host);
-        self.drill_tick(host);
         self.bombs_tick(host);
         self.radiation_tick(host);
-        self.slots_out(host);
+        if !frozen.is_empty(){self.ready.topo_dirty=true;self.ready.world.machines.append(&mut frozen);}
+        self.zirnox_effects(host);
         self.native_save(host);
         self.keep_world(host);
     }
@@ -113,6 +123,7 @@ impl Server {
     pub fn native_adopt(&mut self, dim: &str, pos: Pos, json: &str) -> bool {
         let Some(r) = self.ready() else { return false };
         let key = (dim.to_string(), pos);
+        if r.world.machine_effects.iter().any(|b|b.owners.contains(&key)){return true;}
         if r.world.machines.contains_key(&key) {
             return true;
         }
@@ -262,14 +273,16 @@ impl Server {
     fn native_save(&mut self, host: &mut impl ServerHost) {
         let Some(r) = self.ready() else { return };
         for (key, m) in &r.world.machines {
-            if r.loaded.get(key) != Some(&true) || r.bridge.pending.contains_key(key) || r.bridge.failed_data.contains(key) {
+            if r.loaded.get(key) != Some(&true) {
                 continue;
             }
             let Ok(json) = serde_json::to_string(m) else { continue };
             if r.native_saved.get(key) != Some(&json) {
                 // Marked kept only once written: an unreachable block entity
                 // (its dimension not available now) is written again later.
-                if host.save_machine(&key.0, key.1, &json) {
+                let Some(expected)=host.machine_slots(&key.0,key.1).or_else(|| container_bridge::layout(&m.block).is_none().then(Vec::new)) else{continue};
+                let data=Self::machine_screen(&mut m.clone());
+                if host.commit_machine(&MachineCommit{dim:key.0.clone(),pos:key.1,desired:expected.clone(),expected,data,json:json.clone()}) {
                     r.native_saved.insert(key.clone(), json);
                 }
             }
@@ -295,6 +308,10 @@ mod tests {
         /// Its dimension cannot be reached: every block entity access fails.
         unreachable: bool,
         refused_slots: BTreeSet<(Pos, u32)>,
+        refuse_after_staging:bool,
+        staged_writes:usize,
+        take_during_commit:Option<(Pos,usize)>,
+        player:Vec<Stack>,
         signal: BTreeMap<Pos, u8>,
         buttons: Vec<(String, String, Pos, u32)>,
         kv: crate::kv::MemKv,
@@ -313,6 +330,23 @@ mod tests {
     }
 
     impl ServerHost for World {
+        fn commit_machine(&mut self,c:&MachineCommit)->bool{self.commit_machines(std::slice::from_ref(c))}
+        fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
+            if self.unreachable{return false;}
+            if let Some((p,i))=self.take_during_commit.take(){if let Some(v)=self.slots.get_mut(&p).and_then(|s|s[i].take()){self.player.push(v);}}
+            let mut staged=self.slots.clone();
+            for c in cs {
+                if staged.get(&c.pos).cloned().unwrap_or_default()!=c.expected{return false;}
+                for (i,(a,b)) in c.expected.iter().zip(&c.desired).enumerate(){
+                    if a==b{continue;}
+                    if self.refused_slots.contains(&(c.pos,i as u32)){return false;}
+                    staged.entry(c.pos).or_default()[i]=b.clone();self.staged_writes+=1;
+                    if self.refuse_after_staging{return false;}
+                }
+            }
+            self.slots=staged;
+            for c in cs{self.data.insert(c.pos,c.data.clone());self.saved.insert(c.pos,c.json.clone());}true
+        }
         fn get_block(&mut self, _dim: &str, p: Pos) -> Option<String> {
             Some(self.blocks.get(&p).cloned().unwrap_or_else(|| "minecraft:air".into()))
         }
@@ -330,28 +364,6 @@ mod tests {
             }
             self.slots.get(&p).cloned()
         }
-        fn set_machine_slot(&mut self, _dim: &str, p: Pos, slot: u32, stack: Option<Stack>) -> bool {
-            if self.unreachable || self.refused_slots.contains(&(p, slot)) {
-                return false;
-            }
-            let Some(s) = self.slots.get_mut(&p).and_then(|s| s.get_mut(slot as usize)) else { return false };
-            *s = stack;
-            true
-        }
-        fn set_machine_data(&mut self, _dim: &str, p: Pos, values: &[i32]) -> bool {
-            if self.unreachable {
-                return false;
-            }
-            self.data.insert(p, values.to_vec());
-            true
-        }
-        fn save_machine(&mut self, _dim: &str, p: Pos, json: &str) -> bool {
-            if self.unreachable {
-                return false;
-            }
-            self.saved.insert(p, json.into());
-            true
-        }
         fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
             std::mem::take(&mut self.buttons)
         }
@@ -364,69 +376,131 @@ mod tests {
     const AT: Pos = [0, 64, 0];
     const FIREBOX: &str = "ntm:heater_firebox[facing=north,honey_level=0]";
 
+    /// Count resources on BOTH sides of the host boundary, including the
+    /// player's/hopper's withdrawn input, containers, and committed tank/work.
+    fn conservation_for(kind:&str) {
+        use crate::{combustion::Combustion,crafter::Station,foundry::Tables,zirnox};
+
+            for refusal in ["all","slot","staged"] {
+                let partial=refusal!="all";
+                for action in ["withdraw", "increment", "hopper"] {
+                    let block=match kind {"zirnox"=>zirnox::BLOCK,"diesel"=>"ntm:machine_diesel","assembler"=>"ntm:machine_assembly_machine",_=>"ntm:heater_firebox"};
+                    let machine_kind=match kind {"zirnox"=>Kind::Zirnox,"diesel"=>Kind::Combustion,"assembler"=>Kind::Crafter,_=>Kind::Firebox};
+                    let mut m=Machine::new(machine_kind,block,Some("north".into()));
+                    if let Data::Crafter(c)=&mut m.data {
+                        let r=Station::Assembly.recipes().iter().find(|r|r.name=="ass.plateiron").unwrap();
+                        c.recipe=Some(r.name.clone());c.progress=r.duration-1;c.power=100_000;
+                    }
+                    let (input,slot,count)=match kind {
+                        "zirnox"=>("ntm:fluid_barrel_full__water",25,28),
+                        "diesel"=>("ntm:fluid_barrel_full__diesel",0,3),
+                        "assembler"=>("minecraft:iron_ingot",4,17),
+                        _=>("minecraft:coal",0,2),
+                    };
+                    let mut w=World::default();w.blocks.insert(AT,block.into());
+                    let mut slots=vec![None;count];slots[slot]=Some(Stack::new(input,2));w.slots.insert(AT,slots);
+                    let mut s=Server::native(&mut w,0);assert!(s.native_adopt(OW,AT,&serde_json::to_string(&m).unwrap()));
+                    if refusal=="staged"{w.refuse_after_staging=true;}
+                    else if partial{w.refused_slots.insert((AT,slot as u32));}
+                    else{w.refused_slots.extend((0..count).map(|i|(AT,i as u32)));}
+                    s.native_tick(&mut w,1);
+                    assert_eq!(w.slots[&AT][slot],Some(Stack::new(input,2)),"{kind} {action}: input refused");
+                    assert!(w.slots[&AT].iter().enumerate().all(|(i,v)|i==slot||v.is_none()),"{kind}: partial refusal published a product");
+                    assert!(w.saved.is_empty(),"no speculative JSON can escape");
+                    if refusal=="staged"{assert!(w.staged_writes>0,"the failing host actually staged a slot write");}
+                    let mut outside=Vec::new();let supplied=if action=="withdraw"{2}else{3};
+                    match action {
+                        "withdraw"=>outside.push(w.slots.get_mut(&AT).unwrap()[slot].take().unwrap()),
+                        "increment"=>w.slots.get_mut(&AT).unwrap()[slot].as_mut().unwrap().count+=1,
+                        _=>{outside.push(w.slots.get_mut(&AT).unwrap()[slot].take().unwrap());w.slots.get_mut(&AT).unwrap()[slot]=Some(Stack::new(input,1));}
+                    }
+                    w.unreachable=false;w.refuse_after_staging=false;w.refused_slots.clear();s.native_tick(&mut w,2);
+                    let kept:&Machine=&s.ready.world.machines[&(OW.into(),AT)];
+                    let all:Vec<_>=outside.iter().chain(w.slots[&AT].iter().flatten()).collect();
+                    let n=|id:&str|all.iter().filter(|x|x.id==id).map(|s|s.count).sum::<u32>();
+                    match &kept.data {
+                        Data::Zirnox(z)=>{
+                            assert_eq!(n(input)*16000+z.water.mb,supplied*16000,"water conservation {partial} {action}");
+                            assert_eq!(n(input)+n("ntm:fluid_barrel_empty"),supplied,"container conservation");
+                        }
+                        Data::Combustion(c)=>{let Combustion::Diesel(d)=&**c else{panic!()};
+                            assert_eq!(n(input)*16000+d.tank.mb,supplied*16000,"diesel conservation {partial} {action}");
+                            assert_eq!(n(input)+n("ntm:fluid_barrel_empty"),supplied);
+                        }
+                        Data::Crafter(c)=>{
+                            assert_eq!(n(input)+n("ntm:plate_iron"),supplied,"assembler conservation {partial} {action}");
+                            if action=="withdraw"{assert!(c.out.is_empty());}
+                        }
+                        Data::Firebox(f)=>{
+                            let ticks=Tables::ntm().firebox_fuels[input].ticks;
+                            assert_eq!(n(input)*ticks+f.burn,supplied*ticks,"fuel/work conservation {partial} {action}");
+                            if action=="withdraw" {assert_eq!(f.heat,0);}
+                        }
+                        _=>panic!(),
+                    }
+                    assert_eq!(w.saved[&AT],serde_json::to_string(kept).unwrap(),"save contains confirmed state only");
+                }
+            }
+    }
+
+    #[test] fn conservation_zirnox(){conservation_for("zirnox");}
+    #[test] fn conservation_diesel(){conservation_for("diesel");}
+    #[test] fn conservation_assembler(){conservation_for("assembler");}
+    #[test] fn conservation_firebox(){conservation_for("firebox");}
+
     #[test]
-    fn partial_native_writes_reconcile_removal_and_replacement_per_slot() {
-        for replacement in [None, Some(Stack::new("minecraft:charcoal", 3))] {
-            let mut w = World::default();
-            let mut s = Server::native(&mut w, 0);
-            w.blocks.insert(AT, FIREBOX.into());
-            w.slots.insert(AT, vec![None; 2]);
-            s.native_block_changed(OW, AT, "minecraft:air", FIREBOX);
-            s.native_tick(&mut w, 1);
-            w.slots.get_mut(&AT).unwrap()[0] = Some(Stack::new("minecraft:coal", 2));
-            s.slots_in(&mut w);
-            let Data::Firebox(f) = &mut s.ready.world.machines.get_mut(&(OW.into(), AT)).unwrap().data else { panic!() };
-            f.slots = vec![Some(Stack::new("minecraft:coal", 1)), Some(Stack::new("ntm:ash", 1))];
-            w.refused_slots.insert((AT, 0));
-            s.slots_out(&mut w);
-            assert_eq!(w.slots[&AT][0].as_ref().unwrap().count, 2);
-            assert_eq!(w.slots[&AT][1], Some(Stack::new("ntm:ash", 1)));
-            // A player changes the pending slot and removes an acknowledged
-            // output while only slot 0 is blocked. Both observations must win.
-            w.slots.get_mut(&AT).unwrap()[0] = replacement.clone();
-            w.slots.get_mut(&AT).unwrap()[1] = None;
-            w.refused_slots.clear();
-            s.slots_in(&mut w);
-            s.slots_out(&mut w);
-            assert_eq!(w.slots[&AT], vec![replacement, None]);
-            assert!(s.ready.bridge.pending.is_empty());
+    fn reviewer_bucket_and_three_barrel_reproductions_conserve_exactly() {
+        for (input,amount,withdraw,expected_water) in [("minecraft:water_bucket",1,true,0),("ntm:fluid_barrel_full__water",3,false,16000)] {
+            let mut w=World::default();w.blocks.insert(AT,crate::zirnox::BLOCK.into());w.slots.insert(AT,vec![None;28]);
+            let mut s=Server::native(&mut w,0);s.native_block_changed(OW,AT,"minecraft:air",crate::zirnox::BLOCK);s.native_tick(&mut w,1);
+            w.slots.get_mut(&AT).unwrap()[25]=Some(Stack::new(input,if withdraw{amount}else{amount-1}));
+            w.refused_slots.insert((AT,25));s.native_tick(&mut w,2);
+            assert!(w.slots[&AT][27].is_none());
+            let player=if withdraw{w.slots.get_mut(&AT).unwrap()[25].take()}else{w.slots.get_mut(&AT).unwrap()[25].as_mut().unwrap().count+=1;None};
+            w.refused_slots.clear();s.native_tick(&mut w,3);
+            let Data::Zirnox(z)=&s.ready.world.machines[&(OW.into(),AT)].data else{panic!()};
+            assert_eq!(z.water.mb,expected_water);
+            if withdraw {assert_eq!(player.unwrap().id,input);assert!(w.slots[&AT][27].is_none());}
+            else {assert_eq!(w.slots[&AT][25].as_ref().unwrap().count,2);assert_eq!(w.slots[&AT][27].as_ref().unwrap().count,1);}
         }
     }
-
     #[test]
-    fn aggregate_crafter_pending_slots_keep_progress_but_accept_new_hopper_inputs() {
-        let block = "ntm:machine_assembly_machine[facing=north,honey_level=0]";
-        let key = (OW.into(), AT);
-        let mut w = World::default();
-        let mut s = Server::native(&mut w, 0);
-        w.blocks.insert(AT, block.into());
-        w.slots.insert(AT, vec![None; 17]);
-        s.native_block_changed(OW, AT, "minecraft:air", block);
-        s.native_tick(&mut w, 1);
-        w.slots.get_mut(&AT).unwrap()[4] = Some(Stack::new("a", 2));
-        s.slots_in(&mut w);
-        let Data::Crafter(c) = &mut s.ready.world.machines.get_mut(&key).unwrap().data else { panic!() };
-        c.items = vec![("a".into(), 1)];
-        c.out = vec![("b".into(), 1)];
-        w.refused_slots.insert((AT, 4));
-        s.slots_out(&mut w);
-        s.slots_in(&mut w);
-        s.slots_out(&mut w);
-        let Data::Crafter(c) = &s.ready.world.machines[&key].data else { panic!() };
-        assert_eq!(c.items, vec![("a".into(), 1)], "retry must not apply the simulation delta twice");
-        // A hopper replaces the refused input and fills another slot.
-        w.slots.get_mut(&AT).unwrap()[4] = Some(Stack::new("c", 3));
-        w.slots.get_mut(&AT).unwrap()[5] = Some(Stack::new("d", 4));
-        w.refused_slots.clear();
-        s.slots_in(&mut w);
-        s.slots_out(&mut w);
-        assert_eq!(w.slots[&AT][4], Some(Stack::new("c", 3)));
-        assert_eq!(w.slots[&AT][5], Some(Stack::new("d", 4)));
-        assert_eq!(w.slots[&AT][16], Some(Stack::new("b", 1)));
-        assert!(s.ready.bridge.pending.is_empty());
+    fn expected_inventory_conflict_discards_all_speculative_products() {
+        let mut w=World::default();w.blocks.insert(AT,crate::zirnox::BLOCK.into());
+        let mut slots=vec![None;28];slots[25]=Some(Stack::new("minecraft:water_bucket",1));w.slots.insert(AT,slots);
+        let mut s=Server::native(&mut w,0);s.native_block_changed(OW,AT,"minecraft:air",crate::zirnox::BLOCK);
+        w.take_during_commit=Some((AT,25));s.native_tick(&mut w,1);
+        assert_eq!(w.player.len(),1);assert!(w.slots[&AT][27].is_none());assert!(w.saved.is_empty());
+        let Data::Zirnox(z)=&s.ready.world.machines[&(OW.into(),AT)].data else{panic!()};assert_eq!(z.water.mb,0);
+        s.native_tick(&mut w,2);assert!(w.slots[&AT][27].is_none());
+        let Data::Zirnox(z)=&s.ready.world.machines[&(OW.into(),AT)].data else{panic!()};assert_eq!(z.water.mb,0);
     }
 
-    /// A machine whose dimension cannot be reached keeps running in memory but
+    #[test]
+    fn hosts_without_atomic_commit_freeze_instead_of_simulating() {
+        struct Unsupported(World);
+        impl Kv for Unsupported {
+            fn get(&mut self,k:&str)->Option<Vec<u8>>{self.0.get(k)}
+            fn set(&mut self,k:&str,v:&[u8])->Result<(),String>{self.0.set(k,v)}
+            fn delete(&mut self,k:&str){self.0.delete(k)}
+        }
+        impl ServerHost for Unsupported {
+            fn get_block(&mut self,d:&str,p:Pos)->Option<String>{self.0.get_block(d,p)}
+            fn machine_slots(&mut self,d:&str,p:Pos)->Option<Slots>{self.0.machine_slots(d,p)}
+            fn set_blocks(&mut self,_:&str,_:&[(Pos,String)])->Result<(),String>{panic!("no speculative effect")}
+            fn tell(&mut self,_:&str,_:&str){}
+            fn log(&mut self,_:&str){}
+        }
+        let mut w=Unsupported(World::default());w.0.blocks.insert(AT,FIREBOX.into());
+        w.0.slots.insert(AT,vec![Some(Stack::new("minecraft:coal",1)),None]);
+        let mut s=Server::native(&mut w,0);s.native_block_changed(OW,AT,"minecraft:air",FIREBOX);
+        for t in 1..40{s.native_tick(&mut w,t);}
+        let Data::Firebox(f)=&s.ready.world.machines[&(OW.into(),AT)].data else{panic!()};
+        assert_eq!((f.burn,f.heat),(0,0));assert_eq!(w.0.slots[&AT][0].as_ref().unwrap().count,1);
+        assert!(w.0.saved.is_empty());
+    }
+
+    /// A machine whose dimension cannot be reached stays frozen in memory but
     /// is not marked kept; its state (and a new machine's first state) is written
     /// once the block entity can be reached again.
     #[test]
@@ -487,6 +561,8 @@ mod tests {
             x.mode = crate::machine::BatteryMode::Output;
         }
         let f = Machine::new(crate::machine::Kind::ElectricFurnace, "ntm:machine_electric_furnace_off", Some("north".into()));
+        w.slots.insert(bat, vec![None; 1]);
+        w.slots.insert(fur, vec![None; 3]);
         assert!(again.native_adopt(OW, bat, &serde_json::to_string(&b).unwrap()));
         assert!(again.native_adopt(OW, fur, &serde_json::to_string(&f).unwrap()));
         for t in 110..130 {

@@ -19,7 +19,7 @@ fn state(role: &str) -> String {
 }
 
 impl Server {
-    fn pile_core_at(&self, dim: &str, p: Pos) -> Option<Key> {
+    pub(super) fn pile_core_at(&self, dim: &str, p: Pos) -> Option<Key> {
         self.ready.world.machines.iter().find_map(|(k, m)| {
             if k.0 == dim
                 && let Data::Pile(pile) = &m.data
@@ -105,7 +105,15 @@ impl Server {
     /// None: unrelated block. Handled consumes the click only; a rod/tool
     /// action is returned only after the state/slot write succeeded.
     #[allow(clippy::too_many_arguments)]
-    pub fn native_pile_use(
+    pub fn native_pile_use(&mut self,host:&mut impl ServerHost,dim:&str,at:Pos,face:Pos,held:Option<&Stack>,depletion:f64,player:&str)->Option<PileUse>{
+        let drill=held.is_some_and(|h|matches!(h.id.as_str(),"ntm:hand_drill"|"ntm:hand_drill_desh"));
+        if drill && host.get_block(dim,at).is_some_and(|b|blockstate::id_of(&b)!=pile::BRICK){
+            return self.atomic_pile_edit(host,dim,at,face,held,depletion,player);
+        }
+        self.native_pile_use_inner(host,dim,at,face,held,depletion,player)
+    }
+    #[allow(clippy::too_many_arguments)]
+    pub(super) fn native_pile_use_inner(
         &mut self,
         host: &mut impl ServerHost,
         dim: &str,
@@ -217,7 +225,8 @@ impl Server {
             });
         }
         let key = (dim.to_string(), at);
-        if let Some(Data::Pile(p)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data)
+        if let Some(mut machine) = self.ready.world.machines.get(&key).cloned()
+            && let Data::Pile(p) = &mut machine.data
             && let Pile::Loader(l) = &mut **p
         {
             if l.level <= 0. && !l.loading {
@@ -225,15 +234,25 @@ impl Server {
                     && Rod::of(&h.id, depletion).is_some()
                     && l.slots[0].is_none()
                 {
-                    let mut stack = h.clone();
-                    stack.count = 1;
-                    if host.set_machine_slot(dim, at, 0, Some(stack.clone())) {
-                        l.slots[0] = Some(stack);
+                    let Some(expected)=host.machine_slots(dim,at) else{return Some(PileUse::Handled)};
+                    // The hand is debited by the caller only after this atomic
+                    // slot/state commit, so refusal cannot create or lose a rod.
+                    if expected.first().is_none_or(Option::is_some){return Some(PileUse::Handled);}
+                    let mut stack=h.clone();stack.count=1;l.slots[0]=Some(stack);
+                    let (desired,data)=Self::machine_output(&mut machine,&expected);
+                    let json=serde_json::to_string(&machine).expect("machine serialization");
+                    let c=MachineCommit{dim:dim.into(),pos:at,expected,desired,data,json};
+                    if host.commit_machine(&c){
+                        self.ready.world.machines.insert(key.clone(),machine);
+                        self.ready.bridge.last.insert(key.clone(),c.desired);
+                        self.ready.bridge.data.insert(key.clone(),c.data);
+                        self.ready.native_saved.insert(key,c.json);
                         return Some(PileUse::ConsumeRod);
                     }
                     return Some(PileUse::Handled);
                 }
                 l.loading = true;
+                self.ready.world.machines.insert(key,machine);
             }
             return Some(PileUse::Handled);
         }
@@ -476,6 +495,8 @@ mod tests {
         blasts: Vec<[f64; 3]>,
         unloaded: BTreeSet<Pos>,
         inactive: BTreeSet<String>,
+        refuse_commit:bool,
+        refuse_items:bool,
     }
     impl Kv for Host {
         fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -489,6 +510,12 @@ mod tests {
         }
     }
     impl ServerHost for Host {
+        fn commit_machine(&mut self,c:&MachineCommit)->bool{self.commit_machines(std::slice::from_ref(c))}
+        fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
+            if self.refuse_commit || cs.iter().any(|c|self.inactive.contains(&c.dim)||self.unloaded.contains(&c.pos)||self.slots.get(&c.pos).cloned().unwrap_or_default()!=c.expected){return false;}
+            for c in cs {self.slots.insert(c.pos,c.desired.clone());self.saved.insert(c.pos,c.json.clone());}true
+        }
+
         fn get_block(&mut self, _: &str, p: Pos) -> Option<String> {
             (!self.unloaded.contains(&p)).then(|| {
                 self.blocks
@@ -512,20 +539,9 @@ mod tests {
         fn machine_slots(&mut self, _: &str, p: Pos) -> Option<Vec<Option<Stack>>> {
             self.slots.get(&p).cloned()
         }
-        fn set_machine_slot(&mut self, _: &str, p: Pos, i: u32, s: Option<Stack>) -> bool {
-            if let Some(slot) = self.slots.get_mut(&p).and_then(|v| v.get_mut(i as usize)) {
-                *slot = s;
-                true
-            } else {
-                false
-            }
-        }
-        fn save_machine(&mut self, _: &str, p: Pos, json: &str) -> bool {
-            self.saved.insert(p, json.into());
-            true
-        }
-        fn pile_drop(&mut self, _: &str, p: Pos, id: &str) {
-            self.drops.push((p, id.into()));
+        fn drop_items(&mut self,_:&str,p:Pos,items:&[(String,u32)])->bool{
+            if self.refuse_items{return false;}
+            for (id,n) in items {for _ in 0..*n{self.drops.push((p,id.clone()));}}true
         }
         fn pile_explode(&mut self, _: &str, at: [f64; 3]) -> bool {
             self.blasts.push(at);
@@ -581,6 +597,7 @@ mod tests {
         );
         replay(&mut s, &mut h);
         s.native_tick(&mut h, 1);
+        s.native_world_saved(&mut h,true);
         (s, h)
     }
     fn drill(s: &mut Server, h: &mut Host, p: Pos, face: Pos) {
@@ -591,6 +608,7 @@ mod tests {
         );
         replay(s, h);
         s.native_tick(h, 2);
+        s.native_world_saved(h,true);
     }
     fn device(s: &mut Server, h: &mut Host, p: Pos, id: &str, facing: &str) {
         let state = format!("{id}[facing={facing},honey_level=0]");
@@ -806,6 +824,85 @@ mod tests {
         assert_eq!(h.blocks[&AT], pile::BRICK);
     }
     #[test]
+    fn loader_core_and_ejection_conserve_rods_across_refusal_and_player_withdrawal() {
+        for withdraw in [false,true] {
+            let (mut s,mut h)=formed();drill(&mut s,&mut h,[-1,64,0],[0,0,-1]);
+            let at=[-1,64,-1];device(&mut s,&mut h,at,"ntm:pile_device__loader","north");
+            for r in &mut core(&mut s).channels[0].rods{*r=Rod::of("ntm:pile_rod__zr",0.);}
+            let held=core(&mut s).channels[0].rods.len();
+            h.slots.get_mut(&at).unwrap()[0]=Some(Stack::new("ntm:pile_rod__zr",1));
+            let Data::Pile(p)=&mut s.ready.world.machines.get_mut(&(DIM.into(),at)).unwrap().data else{panic!()};
+            let Pile::Loader(l)=&mut **p else{panic!()};l.level=1.;l.loading=false;l.delay=0;
+            h.refuse_commit=true;s.native_tick(&mut h,100);
+            assert!(h.drops.is_empty());assert!(h.slots[&at][0].is_some());
+            assert_eq!(core(&mut s).channels[0].rods.iter().flatten().count(),held);
+            let player=if withdraw {h.slots.get_mut(&at).unwrap()[0].take()}else{None};
+            h.refuse_commit=false;h.refuse_items=true;s.native_tick(&mut h,101);
+            let pending:usize=s.ready.world.machine_effects.iter().flat_map(|b|&b.effects).map(|e|match e {WorldEffect::Items{items,..}=>items.iter().map(|i|i.1 as usize).sum(),_=>0}).sum();
+            assert_eq!(core(&mut s).channels[0].rods.iter().flatten().count()+usize::from(player.is_some())+pending,held+1);
+            h.refuse_items=false;for t in 102..106{s.native_tick(&mut h,t);}
+            assert_eq!(h.drops.len(),usize::from(!withdraw));
+            assert_eq!(core(&mut s).channels[0].rods.iter().flatten().count()+usize::from(player.is_some())+h.drops.len(),held+1);
+        }
+    }
+    #[test]
+    fn drilling_out_a_channel_does_not_eject_before_the_core_commit() {
+        let (mut s,mut h)=formed();drill(&mut s,&mut h,[-1,64,0],[0,0,-1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__zr",0.).unwrap());
+        let tool=Stack::new("ntm:hand_drill_desh",1);h.refuse_commit=true;
+        assert_eq!(s.native_pile_use(&mut h,DIM,[-1,64,0],[0,0,-1],Some(&tool),0.,"p"),Some(PileUse::Handled));
+        assert!(h.drops.is_empty());assert_eq!(core(&mut s).channels[0].rods.iter().flatten().count(),1);
+        h.refuse_commit=false;
+        assert_eq!(s.native_pile_use(&mut h,DIM,[-1,64,0],[0,0,-1],Some(&tool),0.,"p"),Some(PileUse::WearDrill));
+        assert_eq!(h.drops.len(),1);assert!(core(&mut s).channels.is_empty());
+    }
+    #[test]
+    fn effect_receipts_clear_only_after_a_flushed_world_save() {
+        let mut h=Host::default();let mut s=Server::native(&mut h,0);
+        s.ready.world.machine_effects.push_back(CommittedEffects{owners:vec![],tombstones:vec![],effects:std::collections::VecDeque::from([WorldEffect::Items{dim:DIM.into(),pos:AT,items:vec![("ntm:pile_rod__zr".into(),1)]}])});
+        s.flush_machine_effects(&mut h);assert_eq!(h.drops.len(),1);
+        s.flush_machine_effects(&mut h);assert_eq!(h.drops.len(),1,"no repeat in memory");
+        s.native_world_saved(&mut h,false);
+        let unflushed=WorldState::load(&mut h);assert_eq!(unflushed.machine_effects.len(),1,"unflushed effects replay rather than lose an unsaved spawn");
+        h.kv.refuse.insert(crate::persist::KEY.into());s.native_world_saved(&mut h,true);
+        assert!(!s.ready.world.applied_machine_effects.is_empty(),"failed receipt write remains retryable");
+        h.kv.refuse.clear();s.native_world_saved(&mut h,true);
+        assert!(WorldState::load(&mut h).machine_effects.is_empty());
+        let mut reopened=Server::native(&mut h,0);reopened.native_tick(&mut h,1);
+        assert_eq!(h.drops.len(),1,"clean reopen cannot eject again");
+    }
+    #[test]
+    fn a_confirmed_core_tombstone_retries_without_duplicate_rods_even_after_reopening() {
+        let (mut s,mut h)=formed();drill(&mut s,&mut h,[-1,64,0],[0,0,-1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__nu",100.).unwrap());
+        h.blocks.insert(AT,"minecraft:air".into());s.native_block_changed(DIM,AT,pile::CORE,"minecraft:air");
+        h.refuse_commit=true;s.native_tick(&mut h,1);
+        assert!(h.drops.is_empty());assert_eq!(core(&mut s).channels[0].rods.iter().flatten().count(),1);
+        h.refuse_commit=false;h.refuse_items=true;s.native_tick(&mut h,2);
+        assert!(h.drops.is_empty());
+        let pending=WorldState::load(&mut h);assert!(!pending.machine_effects.is_empty());
+        let rods:usize=pending.machine_effects.iter().flat_map(|b|&b.tombstones).filter_map(|(_,m)|match &m.data{Data::Pile(p)=>match &**p{Pile::Core(Some(c))=>Some(c.channels.iter().map(|c|c.rods.iter().flatten().count()).sum::<usize>()),_=>None},_=>None}).sum();
+        assert_eq!(rods,1,"the pending tombstone retains every rod");
+        let mut again=Server::native(&mut h,2);
+        for (p,json) in h.saved.clone(){assert!(again.native_adopt(DIM,p,&json));}
+        for t in 3..6{again.native_tick(&mut h,t);}assert!(h.drops.is_empty());
+        h.refuse_items=false;for t in 6..10{again.native_tick(&mut h,t);}
+        assert_eq!(h.drops.iter().filter(|(_,id)|id=="ntm:pile_rod__nu").count(),1);
+        assert!(again.ready.world.machine_effects.is_empty());
+    }
+    #[test]
+    fn a_confirmed_break_in_an_inaccessible_level_keeps_its_tombstone_across_reopen() {
+        let (mut s,mut h)=formed();drill(&mut s,&mut h,[-1,64,0],[0,0,-1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__zr",0.).unwrap());
+        h.inactive.insert(DIM.into());h.blocks.insert(AT,"minecraft:air".into());
+        s.native_block_changed(DIM,AT,pile::CORE,"minecraft:air");s.native_tick(&mut h,5);
+        assert!(h.drops.is_empty());assert_eq!(WorldState::load(&mut h).removals.len(),1);
+        let mut reopened=Server::native(&mut h,5);assert_eq!(core(&mut reopened).channels[0].rods.iter().flatten().count(),1);
+        reopened.native_tick(&mut h,6);assert!(h.drops.is_empty());
+        h.inactive.clear();for t in 7..10{reopened.native_tick(&mut h,t);}
+        assert_eq!(h.drops.len(),1);assert!(reopened.ready.world.removals.is_empty());
+    }
+    #[test]
     fn native_core_break_in_a_frozen_dimension_keeps_its_rods_until_it_can_be_entered() {
         let (mut s, mut h) = formed();
         drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
@@ -823,7 +920,7 @@ mod tests {
         assert_eq!(h.blocks[&[1, 64, 2]], pile::BRICK);
     }
     #[test]
-    fn native_member_break_dismantles_at_once_with_part_of_the_pile_unloaded() {
+    fn native_member_break_waits_for_the_whole_atomic_group_to_be_accessible() {
         let (mut s, mut h) = formed();
         drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
         core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__nu", 100.).unwrap());
@@ -832,6 +929,9 @@ mod tests {
         h.blocks.insert([1, 64, 2], "minecraft:air".into());
         s.native_block_changed(DIM, [1, 64, 2], &old, "minecraft:air");
         s.native_tick(&mut h, 5);
+        assert!(h.drops.is_empty(),"an inaccessible member cannot be committed as a tombstone");
+        assert!(s.ready.world.machines.contains_key(&(DIM.into(),AT)));
+        h.unloaded.clear();s.native_tick(&mut h,6);
         assert_eq!(h.drops.len(), 1);
         assert!(!s.ready.world.machines.contains_key(&(DIM.into(), AT)));
         assert_eq!(h.blocks[&[1, 64, 2]], pile::BRICK);
@@ -862,6 +962,7 @@ mod tests {
         s.native_tick(&mut h, 6);
         assert_eq!(core(&mut s).channels[0].rods[0].as_ref().unwrap().kind, 5);
         let expected = core(&mut s).clone();
+        s.native_world_saved(&mut h,true);
         let mut reloaded = Server::native(&mut h, 0);
         for (p, json) in h.saved.clone() {
             assert!(reloaded.native_adopt(DIM, p, &json));
@@ -902,6 +1003,7 @@ mod tests {
         for tick in 10..14 {
             s.native_tick(&mut h, tick);
         }
+        s.native_world_saved(&mut h,true);
         let mut reopened = Server::native(&mut h, 0);
         for (p, json) in h.saved.clone() {
             assert!(reopened.native_adopt(DIM, p, &json));

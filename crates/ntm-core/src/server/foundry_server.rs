@@ -187,7 +187,7 @@ fn molten_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &K
     changed
 }
 
-fn crucible_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &Key, tick: u64) -> bool {
+fn crucible_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &Key, _tick: u64) -> bool {
     let Some(mut me) = m.remove(key) else { return false };
     let facing = me.facing.clone();
     let Data::Crucible(c) = &mut me.data else {
@@ -197,8 +197,8 @@ fn crucible_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: 
     // Any heat source under it: a firebox, the oven, a heater.
     let under = super::oil_server::heat_source_under(m, key);
     let mut changed = match under.as_ref().and_then(|u| m.get_mut(u)).and_then(|b| super::oil_server::heat_source(&mut b.data)) {
-        Some(s) => c.step(t, Some(s), tick),
-        None => c.step(t, None, tick),
+        Some(s) => { c.pull_heat(Some(s)); true },
+        None => { c.pull_heat(None); true },
     };
     if c.fade_jets() {
         changed = true;

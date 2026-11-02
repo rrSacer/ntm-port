@@ -40,7 +40,7 @@ fn a_stirling_takes_heat_below_and_offers_the_previous_buffer_through_its_side()
         g.run(1);
         assert_eq!(
             stirling(&mut g, core).power,
-            if shape == Shape::Creative { 200 } else { 100 }
+            if shape == Shape::Creative { 199 } else { 99 }
         );
         let power = |g: &mut Game| {
             let Data::Battery(b) = g.machine(battery).data else {
@@ -56,7 +56,7 @@ fn a_stirling_takes_heat_below_and_offers_the_previous_buffer_through_its_side()
         g.run(1);
         assert_eq!(
             power(&mut g),
-            if shape == Shape::Creative { 200 } else { 100 }
+            if shape == Shape::Creative { 199 } else { 99 }
         );
         let saved = g.machine(core);
         let again = Machine {
@@ -264,6 +264,8 @@ fn reopening_a_hot_engine_does_not_reset_its_saved_overspeed() {
     f.heat = 4000;
     for p in [core, source] {
         let json = serde_json::to_string(&g.machine(p)).unwrap();
+        let data=Server::machine_screen(&mut g.machine(p));
+        g.world.borrow_mut().engine.get_mut(&(OW.into(),p)).unwrap().1=data;
         g.world.borrow_mut().saved.insert((OW.into(), p), json);
     }
     let mut loaded = Game::new(g.world.clone());

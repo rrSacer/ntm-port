@@ -192,18 +192,11 @@ impl Server {
             let back = behind.as_ref().filter(|b| r.loaded.get(*b) == Some(&true) && matches!(r.world.machines.get(*b).map(|m| &m.data), Some(Data::GasCent(_))));
             let Some(mut a) = r.world.machines.remove(&key) else { continue };
             let Data::GasCent(ga) = &mut a.data else { continue };
-            let cascaded = match back {
-                Some(b) => {
+            if let Some(b) = back {
                     let mut bm = r.world.machines.remove(b).expect("checked");
                     let Data::GasCent(gb) = &mut bm.data else { unreachable!() };
-                    let cascaded = crate::gascent::cascade(ga, gb);
+                    crate::gascent::cascade(ga, gb);
                     r.world.machines.insert(b.clone(), bm);
-                    cascaded
-                }
-                None => false,
-            };
-            if !cascaded {
-                crate::gascent::end_of_line(ga);
             }
             r.world.machines.insert(key, a);
         }
