@@ -201,8 +201,9 @@ impl Server {
             let delta = [0, 1, 2].map(|i| eye[i] - center[i]);
             let len = delta.iter().map(|v| v * v).sum::<f64>().sqrt().max(0.001);
             let mut resistance = 0.;
-            for i in 1..len as usize {
-                let at = [0, 1, 2].map(|k| (center[k] + delta[k] * i as f64 / len).floor() as i32);
+            // Java's i < len includes floor(len) for fractional distances.
+            for i in (1_u32..).take_while(|&i| f64::from(i) < len) {
+                let at = [0, 1, 2].map(|k| (center[k] + delta[k] * f64::from(i) / len).floor() as i32);
                 if let Some(r) = host.block_resistance(&key.0, at) {
                     resistance += f64::from(r.max(0.));
                 }
@@ -518,6 +519,7 @@ mod tests {
         shows: Vec<String>,
         hurt: Vec<(String, f32)>,
         carried: BTreeMap<String, Vec<Stack>>,
+        shields: BTreeMap<Key, f32>,
     }
     impl Kv for Host {
         fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -623,6 +625,9 @@ mod tests {
         }
         fn hurt(&mut self, id: &str, n: f32, _: &str) {
             self.hurt.push((id.into(), n));
+        }
+        fn block_resistance(&mut self, dim: &str, at: Pos) -> Option<f32> {
+            Some(self.shields.get(&(dim.into(), at)).copied().unwrap_or(0.))
         }
     }
     fn key() -> Key {
@@ -896,6 +901,20 @@ mod tests {
         h.carried.get_mut("player").unwrap()[0].custom = Some("{life:200000}".into());
         s.native_tick(&mut h, 40);
         assert_eq!(s.radiation_shown["player"].1, 150000);
+    }
+    #[test]
+    fn ruin_shielding_includes_the_last_fractional_sample_but_not_the_eye() {
+        for (eye_x, wall_x, expected) in [(21., 20, 11897), (21., 19, 11897), (20.5, 20, 1250000)] {
+            let (mut h, mut s) = prepare();
+            zm(&mut s).destroyed = true;
+            zm(&mut s).on_fire = true;
+            s.ready.world.machines.get_mut(&key()).unwrap().block = zirnox::DESTROYED.into();
+            h.blocks.insert(key(), zirnox::DESTROYED.into());
+            h.shields.insert((DIM.into(), [wall_x, 64, 0]), 100.);
+            s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [eye_x, 62.88, 0.5], creative: false }]);
+            s.native_tick(&mut h, 2);
+            assert_eq!(s.ready.world.radiation["p"].millirad, expected, "eye={eye_x}, wall={wall_x}");
+        }
     }
     #[test]
     fn extraction_contract_is_ready_for_conditional_engine_hook() {
