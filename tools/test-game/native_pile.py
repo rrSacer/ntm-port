@@ -80,17 +80,19 @@ def setup(g):
         g.ctl(f'place {p[0]} {p[1]} {p[2]} --item ntm:pile_device__loader')
     g.command(f'setblock {VENT[0]} {VENT[1]} {VENT[2]} ntm:pile_device__vent[facing=west]')
     for p in CONTROLS:
-        g.command('setblock '+' '.join(map(str,p))+' ntm:pile_device__control[facing=north]')
-        g.command(f'setblock {p[0]} {p[1]} {p[2]-1} minecraft:redstone_block')
-    # A full original compressed-air package in a barrel, sent through AIR ducts.
+        g.command('setblock '+' '.join(map(str,p))+' ntm:pile_device__control[facing=west]')
+        # The control reads the signal its outer neighbour receives (a powered solid block).
+        g.command(f'setblock {p[0]-1} {p[1]} {p[2]} minecraft:stone')
+        g.command(f'setblock {p[0]-2} {p[1]} {p[2]} minecraft:redstone_block')
+    # A full original compressed-air barrel (packs are not pourable), sent through AIR ducts.
     g.command(f'setblock {BARREL[0]} {BARREL[1]} {BARREL[2]} ntm:barrel_steel[facing=north]')
     for x in (35,36):g.command(f'setblock {x} 101 10 ntm:fluid_duct_neo')
     type_duct(g,'air',[(35,101,10),(36,101,10)],(34,100,7))
     g.command('clear @s');g.command('tp @s 34.5 100 7.5')
-    fill_barrel(g,BARREL,1,'ntm:fluid_pack_full__air')
+    fill_barrel(g,BARREL,1,'ntm:fluid_barrel_full__air')
     time.sleep(4)
     c=pile(g)
-    g.check('compressed_air_reaches_channel',next(x for x in c['channels'] if x['kind']=='Ventilation')['air']>0,c['channels'])
+    g.check('compressed_air_reaches_channel',next(x for x in c['channels'] if x['kind']=='Ventilation')['air']>0,{'vent':machine(g,VENT)['data'],'barrel':machine(g,BARREL)['data'],'channels':c['channels']})
     g.check('controls_extracted',all(x['control']>.99 for x in c['channels'] if x['kind']=='Control'),c['channels'])
     for _ in range(5):load(g,LOADERS[0],'ra226be')
     for _ in range(5):load(g,LOADERS[1],'pu239')
@@ -99,12 +101,12 @@ def setup(g):
     g.check('reactor_heats',fuel(c,1)['heat']>20,c['channels'])
     # Close the controls and measure the loss of cross-segment input.
     before=fuel(c,1)['incoming']
-    for p in CONTROLS:g.command(f'setblock {p[0]} {p[1]} {p[2]-1} minecraft:air')
+    for p in CONTROLS:g.command(f'setblock {p[0]-2} {p[1]} {p[2]} minecraft:air')
     time.sleep(5)
     closed=pile(g)
     after=fuel(closed,1)['incoming']
     g.check('control_reduces_reaction',after < before*.8,{'open':before,'closed':after})
-    for p in CONTROLS:g.command(f'setblock {p[0]} {p[1]} {p[2]-1} minecraft:redstone_block')
+    for p in CONTROLS:g.command(f'setblock {p[0]-2} {p[1]} {p[2]} minecraft:redstone_block')
     # Follow the natural 500-neutron lifetime; no NBT/state shortcut.
     deadline=time.monotonic()+150
     while time.monotonic()<deadline:

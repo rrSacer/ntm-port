@@ -1,6 +1,6 @@
 # Chicago Pile MK2
 
-Runtime em implementação na branch `pile-mk2`. A pile legada não faz parte desta frente. Referências: `ItemPileRodMK2.EnumPileRod`, `TileEntityPileCore`, `TileEntityPileLoader`, `TileEntityPileVent`, `TileEntityPileControl` e `BlockPile{,Brick,Device}`.
+Runtime da pile MK2 na branch `pile-mk2`. A pile legada não faz parte desta frente. Referências: `ItemPileRodMK2.EnumPileRod`, `TileEntityPileCore`, `TileEntityPileLoader`, `TileEntityPileVent`, `TileEntityPileControl` e `BlockPile{,Brick,Device}`.
 
 ## Montagem e uso
 
@@ -47,6 +47,22 @@ Entraram somente `hand_drill` e `hand_drill_desh`, com nomes e texturas originai
 
 ## Verificação
 
-O modelo tem testes de todas as barras, limiar de vida, formação em quatro orientações, rejeição de volume/canais inválidos, ejeção, propagação e atraso de fluxo, controle, resfriamento, falha e persistência. O servidor testa notificações atrasadas, interação do loader, desmontagem, redstone, vent, descarga de células e explosão. A leitura de JSON usa `float_roundtrip`, pois a configuração anterior mudava alguns valores de fluxo em um ULP ao reabrir.
+O modelo tem testes de todas as barras, limiar de vida, formação em quatro orientações, rejeição de volume/canais inválidos, ejeção, propagação e atraso de fluxo, controle, resfriamento, falha e persistência. O servidor testa notificações atrasadas, interação do loader, desmontagem (inclusive quebra por jogador: tijolo na própria célula e resto revertido), redstone, vent, descarga de células e explosão.
 
-Resultados iniciais: 290 testes unitários + 26 de integração do `ntm-core`; 216 testes Python; validadores de conteúdo e receitas passaram. Build nativo, Clippy, prova descartável e rebase sobre a atualização do upstream ainda em andamento.
+**`float_roundtrip` (efeito em todo o `ntm-core`).** O `serde_json` padrão lê `f64` com um parser rápido que pode errar o último bit. Fluxo, calor e depleção das barras são `double` salvos em JSON; ao reabrir o mundo, alguns valores mudavam em 1 ULP e a simulação divergia da que foi salva. A feature `float_roundtrip` (em `[workspace.dependencies]`) usa o parser exato. Como a dependência é do workspace, vale para todo o crate: custo é a leitura de números ligeiramente mais lenta; nenhum formato muda e não há alteração de comportamento além de reler exatamente o que foi escrito. Os testes do `ntm-core` seguem verdes com ela.
+
+**Redstone.** Loader e controle leem o sinal que a célula vizinha externa *recebe* (`native_redstone_many`). Isso corresponde ao caso de bloco sólido do `getIndirectPowerOutput` do Java 1.7.10; uma fonte não sólida (alavanca ou fio) encostada direto no dispositivo, cuja saída fraca o Java leria, não é detectada pelo host atual. Um bloco de redstone encostado direto também não alimenta; use um bloco sólido entre eles, como o roteiro de jogo faz.
+
+### Resultados (base rebaseada em `main` @ `01f0e8e3`, upstream `2f35078b3`, motor `2ca67d71e`)
+
+- `cargo test --workspace`: 293 testes unitários + 26 de integração, todos verdes; `cargo clippy --workspace -- -D warnings` limpo.
+- 216 testes Python do `tools/content-gen` (seed 42, com `HORIZON_RESOURCES` apontando para os recursos do cliente 26.3); validadores de conteúdo e receitas passaram.
+- Build nativo release no pin atual com `SKIP_UPSTREAM_CHECK=1` (o upstream já tinha avançado para `8ee72368`; a prova foi feita no SHA congelado `2f35078b3`).
+- **Prova em jogo descartável** (`tools/test-game/native_pile.py`, mundo novo, Xvfb mudo, sem injetar estado): 20 verificações na montagem e 25 na reabertura do processo, todas verdes.
+  - A broca desh forma a pile 5×5×5 (`formed_shape`) e perfura 5 canais: 2 de combustível, 1 de ventilação, 2 de controle. Loaders e controles são colocados como itens/blocos reais pelo gancho de face clicada.
+  - Ar comprimido real: um barril de aço recebe `fluid_barrel_full__air` pela interface, o ar segue por dutos tipados AIR e enche o vent (4.000 mB) e o canal de ventilação (995 mB). Os pacotes `fluid_pack_full__*` não são despejáveis no motor, então o roteiro usa o barril.
+  - Controles abertos: fluxo cruzado 7,24; fechados: 0,19 (`control_reduces_reaction`).
+  - Cinco barras de Ra226Be e cinco de Pu239 carregadas por cliques; transmutação natural PU239 → RGP observada sem atalho (`pu239_transmuted_to_rgp`).
+  - Ventilação: sem suprimento a temperatura sobe (67,7 → 104,1 °C); com ar reconectado cai (97,4 °C).
+  - A broca no loader desfaz o canal e ejeta as barras.
+  - Reabertura: identidade, geometria, canais, barras, depleção, calor, fluxo, nível de controle, ar e conteúdo de loader/vent/controle/barril continuam coerentes.
