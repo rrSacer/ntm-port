@@ -22,6 +22,9 @@ def main():
     evidence=root/'content-gen-evidence'/({'bedrock':'bedrock-stages34'}.get(args.profile,args.profile));evidence.mkdir(parents=True,exist_ok=True)
     temporary=root.parent/'.agent-tmp';temporary.mkdir(exist_ok=True)
     scratch=Path(tempfile.mkdtemp(prefix='content-processing-probe-',dir=temporary))
+    # Unix sockets have a short path limit even when the worktree is deeply nested.
+    control_dir=tempfile.TemporaryDirectory(prefix='ntm-ctl-')
+    control=Path(control_dir.name)/'control.sock'
     for d in ['game','home','launcher','data','config']:(scratch/d).mkdir()
     (scratch/'game/options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nrenderDistance:2\nsimulationDistance:2\nmaxFps:15\nenableVsync:false\n')
     (scratch/'game/horizon-graphics.txt').write_text('workers:2\n')
@@ -33,7 +36,7 @@ def main():
     checks=[];process=None;mute=None
     def ctl(command):
         with socket.socket(socket.AF_UNIX) as client:
-            client.settimeout(45);client.connect(str(scratch/'control.sock'))
+            client.settimeout(45);client.connect(str(control))
             client.sendall((command+'\n').encode());reply=json.loads(client.makefile().readline())
         checks.append({'command':command,'reply':reply})
         if 'error' in reply or reply.get('ok') is False:raise AssertionError((command,reply))
@@ -46,14 +49,14 @@ def main():
         mute=subprocess.Popen(['python3',str(root/'tools/test-game/mute.py'),str(scratch/'game')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         with (scratch/'client.log').open('w') as log:
             process=subprocess.Popen([str(args.horizon_client),'--resources','/home/sacer/Games/horizon/.local/horizon-client/26.3',
-                '--dev-mod',str(args.package.resolve()),'--control-socket',str(scratch/'control.sock'),'--offscreen','--test-terrain',
+                '--dev-mod',str(args.package.resolve()),'--control-socket',str(control),'--offscreen','--test-terrain',
                 '--creative','--world','NTMProcessingProbe','--render-distance','2','--width','1280','--height','720','--name','ProcessingProbe'],
                 cwd=scratch/'game',env=env,stdout=log,stderr=subprocess.STDOUT)
             deadline=time.monotonic()+600
             while time.monotonic()<deadline:
                 if 'content mods not loaded' in (scratch/'client.log').read_text():raise RuntimeError('content mods not loaded; see client.log')
                 if process.poll() is not None:raise RuntimeError('client exited during startup')
-                if (scratch/'control.sock').exists():
+                if control.exists():
                     state=ctl('state')
                     if state.get('screen')=='playing' and state.get('player') and state.get('gamemode')=='creative':break
                 time.sleep(.5)
@@ -115,6 +118,7 @@ def main():
             try:process.wait(timeout=20)
             except subprocess.TimeoutExpired:process.kill();process.wait()
         if mute and mute.poll() is None:mute.terminate();mute.wait(timeout=10)
+        control_dir.cleanup()
         (evidence/'game-checks.json').write_text(json.dumps(checks,ensure_ascii=False,indent=2)+'\n')
         shutil.copy2(scratch/'client.log',evidence/'game-client.log') if (scratch/'client.log').exists() else None
 

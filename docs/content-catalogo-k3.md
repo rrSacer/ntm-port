@@ -124,3 +124,11 @@ Pacote candidato: 8.971.323 bytes, SHA-256 `c3ec8c12de8afb7c73c4dbcd2c8164376671
 O único alerta de whitespace no diff padrão vem do arquivo press_preheater.png.mcmeta, copiado byte a byte do fonte com finais CRLF. O check com cr-at-eol passa; não se alterou a animação para normalizar seu arquivo.
 
 A exportação isolada do conteúdo preparado reproduziu 18.354 arquivos e confirmou os 18.270 assets/data do pacote byte a byte. O único acréscimo após a árvore verificada é a documentação dos resultados finais.
+
+## Aceitação integrada em 02/11/2026
+
+No Horizon oficial `d928d1cd6` com as extensões locais no pin `3eb781ab5`, o probe nativo passou: 85 blocos colocados, 94 itens reconhecidos e quatro portas colocadas pelo item, com duas metades e abertura por clique. Foram 292 comandos/conferências, sem rejeição nem panic. Evidência: `content-gen-evidence/catalog-k3-native-current/game.json`.
+
+As 70 identidades Inert estão registradas e as tabelas Rust agora incluem 500 receitas de montadora, 160 construções e 36 smithing da bigorna. Os modelos curados de PWR/Watz foram preservados. As máquinas K3 catalogadas continuam sem processamento ou segurança inventados.
+
+O pacote desta integração também contém a ferramenta solar do lote de energia: 3.286 IDs no total, 9.093.273 bytes, SHA-256 `06b31d447623a7c88a2cc440f6866cd570d5d2d09b2d3a1cbb12395a0757cac8`. As contagens e o hash do candidato content-only acima são históricos.

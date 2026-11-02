@@ -2,7 +2,26 @@
 
 ## Integração nativa retomada em 02/11/2026
 
-As cinco máquinas agora têm simulação nativa de calor, vapor e HE, com vínculo pela ferramenta `ntm:mirror_tool`. A variante creative continua exigindo calor. O estado de engrenagem, excesso de velocidade e alvos é persistido nos block entities. O K3 e esta frente foram rebaseados na base atualizada; testes e aceitação real desta integração estão em andamento. A falha da engrenagem é simulada; o aviso sonoro, a explosão de overspeed (inclusive seu dano a entidades) e o projétil de engrenagem ainda não são emitidos.
+As cinco máquinas agora têm simulação nativa de calor, vapor e HE, com vínculo pela ferramenta `ntm:mirror_tool`. A variante creative continua exigindo calor. O estado de engrenagem, excesso de velocidade e alvos é persistido nos block entities. O K3 e esta frente foram rebaseados no Horizon oficial `d928d1cd6`, pin integrado `3eb781ab5`, e passaram na aceitação nativa. A falha da engrenagem é simulada; o aviso sonoro, a explosão de overspeed (inclusive seu dano a entidades) e o projétil de engrenagem ainda não são emitidos.
+
+### Verificação da integração atual
+
+No servidor integrado, com combustível, rede, água e ferramenta reais, `tools/test-game/native_solar_stirling.py` passou nas quatro fases, com 15 asserções:
+
+| Prova | Resultado |
+| --- | --- |
+| Stirling ferro e aço | Bateria passou de 565 para 21.136 HE em cada cenário; engrenagens intactas. |
+| Stirling creative | Bateria passou de 1.135 para 42.295 HE. |
+| Sem fonte quente | As três baterias pararam de crescer depois da retirada do firebox. |
+| Solar | 13 espelhos vinculados pela ferramenta; vapor passou de 7.400 para 16.000 mB de dia. |
+| Noite e teto | Vapor ficou em 16.000 mB à noite, espelho desligado; teto opaco também o desligou ao meio-dia. |
+| Reabertura real | Após `capture-state`, encerramento limpo e novo processo, `check-state` conferiu igualdade das 21 entidades: três motores, três baterias, caldeira, barril de vapor e 13 espelhos. |
+
+`ntm-core`: 269 testes unitários e 26 de integração passaram. Os 213 testes Python e os validadores de conteúdo/receitas passaram no lote integrado. No motor, passaram 121 testes `native_` e 29 testes de menus, além de Clippy com avisos tratados como erro para as bibliotecas afetadas e o `ntm-core`. O build nativo release passou.
+
+Evidência local: `.agent-tmp/energy-b_9zzycu/native-solar-stirling*.json`, relativa à raiz do projeto. O pacote integrado tem 9.093.273 bytes, SHA-256 `06b31d447623a7c88a2cc440f6866cd570d5d2d09b2d3a1cbb12395a0757cac8`. O cliente e o Xvfb de teste foram encerrados; não houve instalação nem abertura de mundos do jogador.
+
+Limites: a prova foi no Overworld, com tempo limpo e geometria controlada. A amostragem solar agora lê o mundo ativo ou estacionado da dimensão pedida, mas o acesso preexistente de `Host::entity` fora da dimensão ativa continua limitado; não se afirma operação ou persistência multidimensional completa. Clima, falha/reparo em jogo e reabertura com overspeed não zero não foram cobertos por esta prova. Os efeitos de overspeed ausentes são os nomeados acima.
 
 O trecho abaixo conserva o histórico e o contrato do conteúdo anterior.
 
@@ -39,9 +58,9 @@ O Stirling fornece o buffer anterior antes de zerar/recalcular o novo. Sem engre
 
 **Detalhe do fonte conservado:** `maxHeatNormal` e `maxHeatSteel` são campos configuráveis, mas `maxHeat()` usa os literais 300/1500. O contrato registra os valores efetivos; não aplica configurações externas.
 
-A ferramenta original grava o core da caldeira com Y+1. Ao vincular um espelho, limita a distância a **100 blocos inclusive** e exige `dx²+dz²≤dy²`. Esses dois limites são da ferramenta, não uma revalidação por tick no espelho. A ferramenta continua no backlog de equipamento com lógica própria.
+A ferramenta original grava o core da caldeira com Y+1. Ao vincular um espelho, limita a distância a **100 blocos inclusive** e exige `dx²+dz²≤dy²`. Esses dois limites são da ferramenta, não uma revalidação por tick no espelho. Esse vínculo agora é implementado pelo bundle nativo.
 
-## Verificação
+## Verificação histórica de conteúdo
 
 - **168 testes Python por seed 1 e 42**, incluindo seis testes do lote: IDs/estados/loot, construções originais, ausência de receita creative, limites solares, vínculo da ferramenta e semântica dos Stirling. Os validadores de conteúdo e receitas passaram.
 - Build/check: **6.356.238 bytes**, SHA-256 `ce49762047b1d29895f8f7bca5f4af0a1819511ea4849bdb264baad8230a94f0`. Durabilidade segue `components`, já aceito no fork após C1.

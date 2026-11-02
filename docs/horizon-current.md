@@ -10,8 +10,8 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
 - Upstream incorporado: `d928d1cd6161e95f5704d05e14193f5714730d9f`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
-- A antiga branch `ntm-next` e os trabalhos pendentes de catálogo e energia
-  continuam preservados. Não usar esses pins antigos para novos desenvolvimentos.
+- K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
+  `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
 
 O motor continua independente do NTM. Foram mantidos os modelos OBJ, animações,
 multiblocos, tamanhos exatos de contêineres, filtros para menus/funis, dados de menu
@@ -48,7 +48,11 @@ O antigo `tools/test-game/run-visual.sh` é do protótipo WebAssembly; para esta
 base, usar o executável produzido por `build-native.sh` com `dist/ntm.hmod`.
 Nos testes, configurar `HORIZON_HOME`, `HORIZON_LAUNCHER_HOME`, `XDG_DATA_HOME` e
 `XDG_CONFIG_HOME` em uma pasta descartável, com `HORIZON_NO_AUDIO=1`.
+Executar o cliente tendo essa pasta descartável como diretório de trabalho:
+caminhos relativos de mundos e cache também dependem dele.
 Os roteiros com XTest precisam de uma janela visível dentro do Xvfb isolado;
 nesses casos, omitir `--offscreen`, que oculta a janela e impede o foco do teclado.
 
-Resultados e limites da validação estão no artifact `horizon-atualizacao`.
+Resultados da migração inicial estão no artifact `horizon-atualizacao`;
+o fechamento seguinte está em `energia-solar-stirling-integracao`, com as provas
+de K3, geração solar/Stirling e reabertura de mundo no snapshot acima.
