@@ -21,7 +21,7 @@ as capacidades. Não há uma segunda extração Java nem outra tabela de combust
 | Água e vapor | Com `0 < heat < 100000`, água/CO₂ presentes e vapor livre: a partir de heat>10256, calcula o ciclo de superhotsteam e reduz o calor pela pressão. O ciclo **não é limitado pela água restante nem pelo espaço do vapor**; os tanques são limitados separadamente. Sem essas condições, subtrai 10 de calor. |
 | CO₂ | Não é consumido pela produção de vapor na fonte Java. A válvula libera até 1000 mB por clique. |
 | Limites | Falha após o resfriamento se pressão>100000 ou calor>100000; igualdade não falha. Calor igual a 100000 não entra no resfriamento. |
-| Controle | O sinal recebido pelas células superficiais da própria estrutura força ligado; sua descida desliga. O botão alterna sem sinal. Não se consulta o sinal recebido por um bloco vizinho para inferir o do dispositivo. |
+| Controle | O sinal recebido em toda a superfície da caixa 5×5×5 força ligado; sua descida desliga. O botão alterna sem sinal. A varredura inclui os cantos sem invólucro, como no Java; não consulta células externas à caixa para inferir o sinal. |
 | Portas | Quatro faces externas, lateral ±2, alturas +1 e +3, com rotação. Recebem água/CO₂ e enviam superhotsteam. O núcleo e as outras faces não são portas. Não há produção de HE. |
 | Recipientes | Carregam um por tick com as funções existentes de recipientes; aguardam espaço no tanque e na saída vazia. |
 
@@ -60,6 +60,12 @@ gravidade 0,04, amortecimento 0,85/reflexão −0,5, tempo de vida de cada tipo 
 regra destrutiva dos tipos concreto/trocador ascendentes. Elementos/grafite
 renovam a contaminação de 60 s, amplificadores 7/4, numa vizinhança de 2,5 blocos.
 A dose reproduz `HbmPotion.radiation`: `(amplificador+1)*0,05 RAD` por tick.
+A criação real de cada tipo incrementa `debris_created[0..5]` na persistência do
+mundo. A prova lê uma linha de base antes da falha e exige o delta exato
+`[20,10,10,10,20,2]`, independentemente de colisões posteriores; exige também os
+50 sobreviventes novos dos quatro tipos sem remoção destrutiva. Não confunde a
+contagem de sobreviventes com os 72 criados.
+
 O padrão Java `dialEnablePermaScrap=true` mantém esses detritos permanentemente;
 o tempo de vida só expira quando essa propriedade salva é falsa.
 
@@ -79,7 +85,18 @@ terra contaminada/micélio, madeira, trinitita, argila, portas e os minérios da
 fonte, com a chance padrão 1/250 de schrabídio. `waste_earth` e `waste_mycelium`
 foram declarados com as texturas Java, drop de terra e luz do micélio; este aplica
 a contaminação ao caminhar. A propagação do micélio é desligada por padrão na
-fonte e permanece desligada.
+fonte e permanece desligada. Os dois solos recebem random ticks pelo hook nativo
+existente: pouca luz acima (<4) e opacidade acima (>2) convertem o solo em terra.
+A leitura usa a luz/opacidade e o escurecimento do nível que está executando o
+hook (mesma origem de luz de `native_light`), e a troca usa `Behaviours::set_block`.
+`RadiationConfig.cleanupDeadDirt` é `false` no perfil Java padrão
+(`RADWORLD_03_regrow`); este port segue esse padrão sem criar outro toggle.
+A conversão de cogumelo acima para `mush` permanece excluída: o bloco tem regras
+próprias e será item futuro de catálogo K4, conforme decisão do coordenador.
+
+A seleção de madeira do `wasteDest` usa um catálogo próprio de equivalentes
+opacos (troncos, tábuas e blocos inteiros de madeira). Cercas, portões e baús
+permanecem intactos. A classificação compartilhada das crateras não foi alterada.
 
 ## Persistência, dimensões e entradas malformadas
 
@@ -88,9 +105,13 @@ As barras vivem nos slots nativos. Detritos, poção de radiação, transformaç
 terreno e explosões pendentes vivem na persistência já existente do mundo,
 independentes da sobrevivência do núcleo.
 
-Uma escrita recusada de slots é retentada, mantendo o resultado da simulação;
-não é marcada como concluída nem sobrescrita pela leitura antiga do tick seguinte.
-Dados de tela recusados também são retentados. `native_save` aguarda as escritas
+Uma escrita recusada guarda uma pendência por slot. Na leitura seguinte, se o
+valor do host continua igual ao último confirmado, preserva o resultado pendente
+da simulação. Se mudou por ação do jogador/funil, o novo valor vence e a pendência
+daquele slot é descartada; os outros slots sempre são lidos. Crafters agregados
+usam o valor desejado como base da reconciliação, sem repetir o delta da máquina.
+Dados de tela recusados também são retentados; retornar ao valor já confirmado
+limpa a pendência, sem bloquear um save estável na sequência A→B recusado→A. `native_save` aguarda as escritas
 pendentes e só marca um JSON como salvo se `save_machine` devolver sucesso.
 Valores de saves são limitados antes da aritmética: tanques, life, calor, cursores
 e detritos. Incrementos usam saturação quando apropriado.
@@ -112,35 +133,57 @@ Dimensões fechadas congelam máquinas/detritos; nenhum acesso abre um nível.
 | `checkTilt(CONFIG,true)` | Os toggles de gravidade e o perfil 528 estão desligados na configuração Java padrão; este port mantém esse perfil, sem criar uma configuração de inclinação paralela. |
 | OpenComputers, EnergyControl e redstone-over-radio | Integrações de mods externos sem equivalente instalado. GUI e redstone locais funcionam. |
 | `waste` em chunks descarregados | A API existente acessa somente blocos carregados; esses pontos são ignorados, sem carregar/gerar chunks para o efeito. A transformação das posições carregadas segue o limite/ordem da fonte. |
+| `WasteEarth.updateTick`: cogumelo→`mush` | Exclusão de catálogo K4 aceita pelo coordenador; `mush` não está declarado e possui regras próprias fora do ZIRNOX. Escurecimento está implementado; `cleanupDeadDirt=false` segue o padrão Java. |
 | `WasteEarth.canSustainPlant` | Blocos de terra usam o suporte a plantas do template vanilla; falta a restrição Java a plantas Cave. |
 | Salvamento do nível estacionado/comparadores | Valem as limitações gerais já documentadas em `docs/host-dimensoes.md`. |
 
-## Verificação
+## Verificação após revisão independente
+
+As correções R1–R7 estão em commits próprios. A ponte tem testes adicionais de
+escrita parcial, retirada/substituição de itens e entradas de funil em máquinas
+anteriores ao ZIRNOX (firebox e assembler agregado), além do cenário exato da
+barra retirada durante a recusa. A sequência de tela A→B recusado→A tem save
+aceito em ticks saudáveis. Blindagem cobre distância 20,5 e distância inteira;
+redstone cobre as 98 células da superfície, incluindo `core+[2,3,2]`.
 
 Base: `main` `df645f68`, motor `18eab7ab41e767d9e21dc4079cb2f21dbe116c95`,
 upstream congelado `2050c4e0f`. Build **release**, com `SKIP_UPSTREAM_CHECK=1`
-somente para esse snapshot; o pacote foi refeito com o empacotador do mesmo build.
+somente para esse snapshot; pacote refeito com o empacotador do mesmo build.
 
 | Grupo | Resultado |
 | --- | --- |
-| Rust NTM | 319 unitários + 26 de integração, todos passaram; 2 doctests ignorados. |
+| Rust NTM | 327 unitários + 26 integração passaram; 2 doctests ignorados. |
 | Clippy NTM | `--workspace -- -D warnings`, passou. |
-| Clippy nativo transformado | Passou; somente `clippy::collapsible_if` isentado, como na validação anterior do motor (o transformador remove comentários do upstream). |
-| Python conteúdo | 218 testes, todos passaram, com `HORIZON_RESOURCES` apontando para os recursos 26.3. |
-| Build nativo final | Cargo release em 8min03s; conteúdo reempacotado, 9.103.867 bytes. |
-| ZIRNOX nativo | 95 verificações: 50 montagem, 2 dimensão, 6 conversões, 1 captura, 6 reabertura, 30 falha. |
-| Pilha nativa | 23 operação + 25 reabertura + 31 destruição; mais uma precondição de ar positivo. Roteiro original intacto. |
-| Dimensões | 6 montagem + 4 reabertura funcional + 2 idle + 1 idle-clean. Roteiro original intacto. |
+| Clippy nativo transformado | Passou; somente `clippy::collapsible_if` isentado, diferença já conhecida do transformador upstream. |
+| Python conteúdo | 218 testes passaram com recursos 26.3 explícitos. |
+| Build nativo | Cargo release em 7min45s, 27 injeções; pacote 9.103.885 bytes. |
+| ZIRNOX nativo | 105 verificações: 52 montagem, 2 dimensão, 6 conversões, 1 captura, 6 reabertura, 35 falha, 3 solo. |
+| Pilha nativa | 26 montagem + 25 reabertura + 31 destruição + 1 precondição de ar positivo; main também passou as mesmas 26 verificações de montagem. |
+| Dimensões | 6 montagem + 4 retomada funcional + 2 idle + 1 idle-clean, em mundos separados; todos passaram. |
 
-A suíte inclui 11 testes de modelo ZIRNOX e oito de servidor, cobrindo reação,
-vizinhança, breeding, peculiaridade de água/vapor, limites de falha, controle,
-portas, radiação por vida, recusa de gravação, retomada estrita e dimensões abertas
-ou fechadas. A extração condicional futura tem uma função pura testada.
+A suíte inclui 12 testes de modelo ZIRNOX e 13 de servidor. Não há injeção de
+estado de máquina nem `life`: o reator é colocado com seu item, barras e
+recipientes entram pela tela, os dutos são tipados com o identificador, e
+`/tick sprint` avança a simulação normal.
 
-O driver reproduzível `tools/test-game/run-native-reactors.py` cria diretórios
-novos para mundo/configuração/cache e um Xvfb próprio, usa apenas comandos normais,
-cliques e recipientes e encerra os processos no final. Desliga o controle físico
-apenas nesse diretório descartável; não altera configurações do usuário.
+Resultados pós-revisão de ZIRNOX:
+
+- 41.337 mB de superhotsteam em tanques externos, com consumo de água.
+- Jogador confirmado no Nether forçado, `life` do Overworld 2.691→4.533.
+- Li→trítio, Th232→combustível de tório e ZFB→esgotada por reação natural.
+- Após encerrar/reabrir, `life` 43.042→43.569; mover pelo cursor conserva a vida.
+- Falha destrói quatro marcadores, deixa destroço em chamas e `waste_earth`. Cerca e baú são preservados; tronco e tábua são convertidos.
+- Baseline de criações zero; delta exato por tipo `[20,10,10,10,20,2]`, total 72. Sobreviventes novos `[20,10,10,10,14,1]`, total 65; os quatro tipos não destrutivos conservam os 50 itens esperados.
+- Solo coberto: 8/8 amostras de `waste_earth` e 8/8 de `waste_mycelium` viram terra por random tick. O roteiro confirma `minecraft:random_tick_speed=512` antes de acelerar e restaura 3 depois.
+
+SHA-256 cliente: `1e0d8b2250d83f3ed2ef8b1094b4445ca63e4659b5d11f415ee1ff35a86454b2`.
+SHA-256 `dist/ntm.hmod`: `eb96b19246c029df3be847d25c1ae068f88b177940a9b48cc9b00635dbcab631`.
+
+O driver `tools/test-game/run-native-reactors.py` cria mundo, configuração/cache e
+Xvfb descartáveis; desliga controle físico só nesse diretório e encerra os
+processos no final. `dims` executa também `idle` e `idle-clean`, cada um em mundo
+novo sem chunks forçados. O cenário pile repõe ar pela tela antes da captura e
+exige ar positivo. Não houve instalação, merge, push nem uso de mundo do jogador.
 
 ```sh
 agent-run env QUEUE=game python3 tools/test-game/run-native-reactors.py zirnox \
@@ -149,44 +192,62 @@ agent-run env QUEUE=game python3 tools/test-game/run-native-reactors.py zirnox \
   --scratch-root /mnt/ssd120/sacer/horizon-ntm/.agent-tmp/zirnox
 ```
 
-Trocar `zirnox` por `pile` ou `dims` para as regressões. `dims` executa também
-`idle` e `idle-clean`, cada qual em um mundo novo sem chunks forçados; `pile`
-repõe ar pelo contêiner antes da captura, exige ar
-positivo e mantém o roteiro original sem alterações.
+Trocar `zirnox` por `pile` ou `dims`. Para comparar só a montagem térmica com a
+main, usar `pile --setup-only`, o cliente de
+`.agent-tmp/migracao-upstream/target/release/horizon-client` e
+`--bundle /mnt/ssd120/sacer/horizon-ntm/ntm-port/dist/ntm.hmod`.
 
-SHA-256 do cliente: `c37fb64d16a345629449a7e37884a4038cac6bf07cd8866ef0ec4e76ea009a05`.
-SHA-256 de `dist/ntm.hmod`: `4913a9f343001e38ffc35e67f77cdc11f97fc9d8daca3fbed590d21292474791`.
+O Xvfb registra o aviso conhecido de TAA indisponível e usa o fallback; TAA não
+é validado por este ensaio. O detector exclui somente esse aviso conhecido.
 
 
-A prova ZIRNOX não injeta estado de máquina nem `life`. O reator é colocado com
-seu item; as 24 barras e recipientes entram pela tela, os dutos são tipados com
-o identificador e o tempo avança por `/tick sprint` normal. Resultados medidos:
+O fixture térmico da pilha foi corrigido em commits próprios, com autorização do
+coordenador. A asserção antiga podia reconectar ar abaixo do equilíbrio
+ventilado e observar aquecimento saudável. Exigir ar zero sem inserir os
+controles também reprovou na própria main: o calor chegou a 789,84 com ar 12 e
+falhou no tick seguinte. O fixture final insere os controles existentes enquanto
+o ar residual dissipa, prepara o identificador real, extrai os controles,
+aguarda calor em [150,400] e reconecta imediatamente. Falha explicitamente em
+120 s sem cumprir a preparação ou se passa de 400 antes de detectar ar. O
+limiar de falha da máquina continua estritamente >800. Mantém `b > a`, `d < h1`
+e a janela de resfriamento de oito segundos.
 
-- 38.837 mB de superhotsteam em tanques externos, com redução dos reservatórios de água.
-- Com o jogador confirmado no Nether forçado, `life` do Overworld avança de 2.520 para 4.320.
-- Li→trítio, Th232→combustível de tório e ZFB→esgotada por reação natural.
-- Após salvar, encerrar e reabrir, `life` avança estritamente de 42.943 para 43.473; mover a barra pelo cursor preserva a vida.
-- Uma segunda máquina sem refrigerante falha: destroço em chamas, quatro marcadores destruídos pela explosão, grama transformada em `waste_earth` e 64 detritos dos seis tipos ainda ativos.
-- Na regressão de dimensões, as duas máquinas retomadas carregam fornos novos (68.306 e 56.644 HE). Sem chunks forçados, o Nether fecha e salva em 17 s com leitor e também sem leitor.
+Mesmos scripts, mundos novos e mesma configuração, sem compilação concorrente:
 
-Evidências ficam em `.agent-tmp/zirnox/` relativamente à raiz do projeto:
+| Binário/pacote | Sem ar: a | Sem ar: b | Ar retornou: h1 | Após 8 s: d |
+| --- | ---: | ---: | ---: | ---: |
+| Main `df645f68` | 22,4612154166 | 168,0672008398 | 174,7426131791 | 44,1464398975 |
+| Branch corrigida | 22,4612401205 | 168,0672269737 | 144,6971612115 | 44,1415975343 |
 
-| Arquivo/pasta | Conteúdo |
+Ambos zeraram o ar em 61,55 s e atingiram a janela quente em 3,95 s. Retorno de
+ar: 995, calor abaixo de 400 em ambos. A main usou os hashes originais de cliente
+`e01fe940ff37a2e83f880ef2da74515c35020e60924c640a1a0b2cf7fa022893`
+e pacote `d8cd6303742230d743e04220ac1da6af8a3f3bfacbf80a237dafe7b93870e130`.
+A branch usou os hashes pós-revisão acima. Nenhuma regra de produção da pilha
+foi alterada.
+
+
+Dimensões: os dois fornos novos receberam 68.306 e 56.644 HE das máquinas
+retomadas. `idle` com leitor e `idle-clean` sem leitor fecharam/salvaram seus
+níveis em 17 s, cada qual em mundo novo sem chunks forçados. Todos os processos
+do cliente e Xvfb foram encerrados.
+
+Evidências pós-revisão em `.agent-tmp/zirnox/`, relativamente à raiz do projeto:
+
+| Arquivo/pasta | Conteúdo aceito |
 | --- | --- |
-| `validation.json` | Índice agregado, contagens, hashes, pins e ensaios reprovados. |
-| `zirnox-dcpmxt70/` | `report.json`, seis fases `native-zirnox-*.json` e sete capturas PNG. |
-| `pile-nhqiu8wb/` | Relatórios de montagem, captura, reabertura e destruição; ar positivo antes da captura. |
-| `dims-vhoibzxt/` | Montagem/reabertura com fontes e consumidores reais. |
-| `dims-idle-dt65izrb/`, `dims-idle-clean-j6pviyt0/` | Fechamento/salvamento em mundos independentes. |
-| `core-tests.log`, `core-clippy.log`, `python-tests.log`, `native-build.log`, `native-clippy.log`, `content-pack.log` | Logs de código e empacotamento. |
+| `validation-review.json` | Índice agregado pós-revisão, hashes, contagens, comparação térmica e ensaios reprovados. |
+| `zirnox-5x3_q3w_/` | 105 verificações, sete fases e capturas; criações por tipo contra baseline. |
+| `pile-1uc2za2z/` | Main: 26 verificações do fixture reforçado com hashes originais. |
+| `pile-lp2k66x2/` | Branch: 26 montagem + 25 reabertura + 31 destruição e precondição de ar positivo. |
+| `dims-jq0sd1rp/` | Montagem e retomada funcional com fornos novos. |
+| `dims-idle-hw0wvb_f/`, `dims-idle-clean-npe2c_0p/` | Mundos independentes, fechamento/salvamento em 17 s. |
+| `review-core-tests.log`, `review-core-clippy.log`, `review-python-tests.log`, `review-native-build.log`, `review-native-clippy.log`, `review-content-pack.log` | Suíte, Clippy, build e pacote pós-revisão. |
 
-A primeira execução da pilha reprovou a janela térmica de oito segundos
-(126,30→129,11 com ar); a repetição isolada passou o critério original
-(129,68→128,95). A causa da primeira reprovação não foi atribuída. O primeiro
-ensaio de idle foi descartado por manter o Nether forçado do setup; os ensaios
-aceitos usam mundos novos. Esses registros foram mantidos no índice agregado.
-
-O Xvfb emite o aviso conhecido de TAA indisponível e usa seu fallback. Esse aviso
-é registrado e excluído somente do detector de falhas de conteúdo; TAA não faz
-parte desta prova. Os clientes/Xvfb foram encerrados. Não houve instalação,
-merge, push ou uso de mundo do jogador.
+Os ensaios reprovados foram preservados. O fixture original da branch voltou a
+reconectar abaixo do equilíbrio (124,47→128,95), enquanto a main original
+reconectou em 160,27 e esfriou para 129,12. A comparação final usa o fixture
+reforçado idêntico aprovado nas duas versões, sem mudar o runtime. A primeira
+prova de solo usou o nome antigo da gamerule, rejeitado pelo comando; a fase foi
+retomada no mesmo binário/pacote após corrigir o nome e verificar o valor. Os
+registros aceitos distinguem esses ensaios dos resultados finais.
