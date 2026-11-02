@@ -2,11 +2,11 @@
   "game": "26.3",
   "hooks": 153,
   "horizon_repository": "https://github.com/horizon-rust/horizon",
-  "horizon_revision": "840fef9a0346cf16c58be3ea5146342a5f2dc17d",
+  "horizon_revision": "18eab7ab41e767d9e21dc4079cb2f21dbe116c95",
   "horizon_branch": "ntm-current",
   "horizon_mixins_repository": "https://github.com/horizon-rust/horizon-mixins",
   "horizon_mixins_revision": "ddd9700b21997c95d95ac6ee5ecafe3830cf622a",
   "horizon_mods_repository": "https://github.com/horizon-rust/horizon-mods",
   "horizon_mods_revision": "2f677e933703a25721c060a912642567fbbb0815",
-  "horizon_upstream_revision": "2f35078b3aee63ae7a6c6d9357aa2e8925fa756d"
+  "horizon_upstream_revision": "2050c4e0f52b74ad5361f061e0a015e8bfc894b2"
 }
