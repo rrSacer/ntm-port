@@ -24,6 +24,7 @@ def main():
     scratch=Path(tempfile.mkdtemp(prefix='content-processing-probe-',dir=temporary))
     for d in ['game','home','launcher','data','config']:(scratch/d).mkdir()
     (scratch/'game/options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nrenderDistance:2\nsimulationDistance:2\nmaxFps:15\nenableVsync:false\n')
+    (scratch/'game/horizon-graphics.txt').write_text('workers:2\n')
     env={**os.environ,'HOME':str(scratch/'home'),'HORIZON_HOME':str(scratch/'game'),
          'HORIZON_LAUNCHER_HOME':str(scratch/'launcher'),'XDG_DATA_HOME':str(scratch/'data'),
          'XDG_CONFIG_HOME':str(scratch/'config'),'HORIZON_LAUNCHER_NO_SELF_UPDATE':'1',
