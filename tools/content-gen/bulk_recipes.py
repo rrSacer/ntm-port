@@ -214,7 +214,7 @@ def annotate(src,rows):
     return resolver
 
 def generate(src,out,rows,emit):
-    resolver=Resolver(src,rows);provenance=[];gaps=[];existing=set()
+    base_resolver=Resolver(src,rows);resolver=base_resolver;pile_resolver=None;provenance=[];gaps=[];existing=set()
     remainders={r['id']:r['crafting_remainder'] for r in rows if r.get('crafting_remainder')}
     # M1 retains ownership of its recipes. Avoid duplicate shapes/results.
     for f in (out/'data/ntm/recipe').glob('*.json'):
@@ -261,6 +261,15 @@ def generate(src,out,rows,emit):
         def supported(pos):return not any(lo<pos<hi for lo,hi in guarded)
         for pos,args,callee in calls(text,r'\b(?:addRecipeAuto|addShapelessAuto|addZIRNOXRod|addRBMKRod|addPellet|add1To9Pair|addMineralSet|GameRegistry\.addSmelting|GameRegistry\.addRecipe|GameRegistry\.addShapelessRecipe)'):
             location=str(file.relative_to(src))+':'+str(text[:pos].count('\n')+1)
+            resolver=base_resolver
+            # These newly imported tools need DictGroup ANY_PLASTIC. Reuse
+            # the machine resolver's existing exact group expansion while
+            # keeping the previous vanilla catalog's conservative profile.
+            if file.name=='ToolRecipes.java' and re.match(r'new ItemStack\(ModItems\.hand_drill(?:_desh)?\)',args.strip()):
+                if pile_resolver is None:
+                    from machine_recipes import MachineResolver
+                    pile_resolver=MachineResolver(src,rows)
+                resolver=pile_resolver
             try:
                 parts=split(args)
                 if callee=='addZIRNOXRod':

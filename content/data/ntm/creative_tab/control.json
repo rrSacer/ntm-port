@@ -899,6 +899,8 @@
     "ntm:fluid_pack_full__xenon",
     "ntm:fluid_pack_full__xpjuice",
     "ntm:fluid_pack_full__xylene",
+    "ntm:hand_drill",
+    "ntm:hand_drill_desh",
     "ntm:battery_pack__battery_lead",
     "ntm:battery_pack__battery_lithium",
     "ntm:battery_pack__battery_quantum",

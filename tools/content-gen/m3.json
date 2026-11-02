@@ -21017,6 +21017,43 @@
       "behavior_gap": "Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot."
     },
     {
+      "id": "hand_drill",
+      "source_variable": "hand_drill",
+      "source_class": "ItemTooling",
+      "type": "item",
+      "category": "tool",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hand_drill.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 100,
+        "wear": true
+      },
+      "max_damage": 100,
+      "names": {
+        "en_us": "Hand Drill",
+        "pt_br": "Perfuratriz Manual"
+      },
+      "behavior_gap": "Native HAND_DRILL interaction on the MK2 pile only. Other IToolable interactions, crafting remainder and no-repair source behavior are not implemented."
+    },
+    {
+      "id": "hand_drill_desh",
+      "source_variable": "hand_drill_desh",
+      "source_class": "ItemTooling",
+      "type": "item",
+      "category": "tool",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hand_drill_desh.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
+      "names": {
+        "en_us": "Desh Hand Drill",
+        "pt_br": "Perfuratriz Manual de Desh"
+      },
+      "behavior_gap": "Native HAND_DRILL interaction on the MK2 pile only. Other IToolable interactions, crafting remainder and no-repair source behavior are not implemented."
+    },
+    {
       "id": "rbmk_rod",
       "source_variable": "rbmk_rod",
       "type": "block",

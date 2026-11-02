@@ -91924,6 +91924,59 @@
       }
     },
     {
+      "id": "ntm:hand_drill",
+      "source_variable": "hand_drill",
+      "source_class": "ItemTooling",
+      "type": "item",
+      "category": "tool",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hand_drill.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 100,
+        "wear": true
+      },
+      "max_damage": 100,
+      "names": {
+        "en_us": "Hand Drill",
+        "pt_br": "Perfuratriz Manual"
+      },
+      "behavior_gap": "Native HAND_DRILL interaction on the MK2 pile only. Other IToolable interactions, crafting remainder and no-repair source behavior are not implemented.",
+      "source_registry": "hbm:item.hand_drill",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hand_drill_desh",
+      "source_variable": "hand_drill_desh",
+      "source_class": "ItemTooling",
+      "type": "item",
+      "category": "tool",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hand_drill_desh.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
+      "names": {
+        "en_us": "Desh Hand Drill",
+        "pt_br": "Perfuratriz Manual de Desh"
+      },
+      "behavior_gap": "Native HAND_DRILL interaction on the MK2 pile only. Other IToolable interactions, crafting remainder and no-repair source behavior are not implemented.",
+      "source_registry": "hbm:item.hand_drill_desh",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:rbmk_rod",
       "source_variable": "rbmk_rod",
       "type": "block",

@@ -2856,6 +2856,8 @@
   "block.ntm.pile_block__air_out": "Chicago Pile (Saída de Ar)",
   "block.ntm.pile_block__control": "Chicago Pile (Controle)",
   "block.ntm.pile_block__edge": "Chicago Pile (Borda)",
+  "item.ntm.hand_drill": "Perfuratriz Manual",
+  "item.ntm.hand_drill_desh": "Perfuratriz Manual de Desh",
   "block.ntm.rbmk_rod": "Canal de Combustível RBMK",
   "block.ntm.rbmk_rod_mod": "Canal de Combustível Moderado RBMK",
   "block.ntm.rbmk_rod_reasim": "Canal de Combustível RBMK (ReaSim)",

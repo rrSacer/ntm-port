@@ -2856,6 +2856,8 @@
   "block.ntm.pile_block__air_out": "Chicago Pile (Air Out)",
   "block.ntm.pile_block__control": "Chicago Pile (Control)",
   "block.ntm.pile_block__edge": "Chicago Pile (Edge)",
+  "item.ntm.hand_drill": "Hand Drill",
+  "item.ntm.hand_drill_desh": "Desh Hand Drill",
   "block.ntm.rbmk_rod": "RBMK Fuel Channel",
   "block.ntm.rbmk_rod_mod": "RBMK Moderated Fuel Channel",
   "block.ntm.rbmk_rod_reasim": "RBMK Fuel Channel (ReaSim)",

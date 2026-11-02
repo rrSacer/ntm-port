@@ -87,3 +87,21 @@ def build(source):
                      'names':{'en_us':'Chicago Pile ('+role.replace('_',' ').title()+')','pt_br':'Chicago Pile ('+pt[role]+')'},
                      'behavior_gap':'Internal source role split into identity; no recipe, hidden from creative. Native structure core links, channels, connected textures and reverting to pile_brick on dismantling are deferred. No item loot.'})
     return rows
+
+
+def pile_tools(source):
+    """The two original HAND_DRILL tools required to form/drill a pile."""
+    items=(source/(BASE+'items/ModItems.java')).read_text()
+    translations={loc:lang(source/f'src/main/resources/assets/hbm/lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]}
+    rows=[]
+    for var in ('hand_drill','hand_drill_desh'):
+        match=re.search(r'\b'+var+r'\s*=\s*new ItemTooling\(ToolType.HAND_DRILL,\s*(\d+)\)',items)
+        if not match:raise ValueError('HAND_DRILL declaration drift: '+var)
+        durability=int(match[1]);name,_=registration(items,var,'item')
+        rows.append({'id':name,'source_variable':var,'source_class':'ItemTooling','type':'item','category':'tool',
+                     'source_texture':f'src/main/resources/assets/hbm/textures/items/{name}.png',
+                     'max_stack_size':1,'durability':{'max_damage':durability,'wear':durability>0},
+                     **({'max_damage':durability} if durability else {}),
+                     'names':{loc:tr['item.'+name+'.name'] for loc,tr in translations.items()},
+                     'behavior_gap':'Native HAND_DRILL interaction on the MK2 pile only. Other IToolable interactions, crafting remainder and no-repair source behavior are not implemented.'})
+    return rows

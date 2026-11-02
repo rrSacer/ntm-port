@@ -155,6 +155,7 @@ def build(source=SOURCE, output=ROOT / 'content'):
     rows.extend(petroleum_catalog.build(source))
     import reactor_catalog
     rows.extend(reactor_catalog.build(source))
+    rows.extend(reactor_catalog.pile_tools(source))
     import rbmk_catalog
     rows.extend(rbmk_catalog.build(source))
     import pwr_catalog

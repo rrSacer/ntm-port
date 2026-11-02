@@ -7796,6 +7796,24 @@
       }
     },
     {
+      "id": "ntm:bulk__e413a6b4d06e9d1898",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:141",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hand_drill",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2912efd422fa9547b8",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:142",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hand_drill_desh",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__553681706d5085dfb3",
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:151",
       "type": "minecraft:crafting_shapeless",
@@ -8057,7 +8075,7 @@
       }
     }
   ],
-  "generated_count": 895,
+  "generated_count": 897,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -13074,18 +13092,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item screwdriver_desh",
       "expression": "new ItemStack(ModItems.screwdriver_desh, 1), new Object[] { \"  I\", \" I \", \"S  \", 'S', ANY_PLASTIC.ingot(), 'I', DESH.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:141",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hand_drill",
-      "expression": "new ItemStack(ModItems.hand_drill), new Object[] { \" D\", \"S \", \" S\", 'D', DURA.ingot(), 'S', KEY_STICK }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:142",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hand_drill_desh",
-      "expression": "new ItemStack(ModItems.hand_drill_desh), new Object[] { \" D\", \"S \", \" S\", 'D', DESH.ingot(), 'S', ANY_PLASTIC.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:143",
