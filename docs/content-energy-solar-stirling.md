@@ -2,7 +2,7 @@
 
 ## Integração nativa retomada em 02/11/2026
 
-As cinco máquinas agora têm simulação nativa de calor, vapor e HE, com vínculo pela ferramenta `ntm:mirror_tool`. A variante creative continua exigindo calor. O estado de engrenagem, excesso de velocidade e alvos é persistido nos block entities. O K3 e esta frente foram rebaseados na base atualizada; testes e aceitação real desta integração estão em andamento. A falha da engrenagem é simulada; o efeito visual/projétil de overspeed ainda não é emitido.
+As cinco máquinas agora têm simulação nativa de calor, vapor e HE, com vínculo pela ferramenta `ntm:mirror_tool`. A variante creative continua exigindo calor. O estado de engrenagem, excesso de velocidade e alvos é persistido nos block entities. O K3 e esta frente foram rebaseados na base atualizada; testes e aceitação real desta integração estão em andamento. A falha da engrenagem é simulada; o aviso sonoro, a explosão de overspeed (inclusive seu dano a entidades) e o projétil de engrenagem ainda não são emitidos.
 
 O trecho abaixo conserva o histórico e o contrato do conteúdo anterior.
 
