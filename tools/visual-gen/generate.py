@@ -682,20 +682,21 @@ def main():
             # The block keeps its blockstate: the patched game leaves its cube
             # out of the chunk mesh and draws the OBJ; another game shows the cube.
     # The multiblocks' filler: a barrier that takes its time to mine.
-    d = dummy.split(':', 1)[1]
-    write_json(own(f'data/ntm/horizon/block/{d}.json'), {
-        'template': 'minecraft:barrier',
-        'properties': {'hardness': 5.0, 'explosion_resistance': 10.0, 'requires_tool': True, 'sounds': 'minecraft:iron_block'},
-        'item': False,
-    })
-    write_json(own(f'assets/ntm/blockstates/{d}.json'), {'variants': {'': {'model': f'ntm:block/{d}'}}})
-    write_json(own(f'assets/ntm/models/block/{d}.json'), {'textures': {'particle': spec['dummy_particle']}})
-    for loc, text in spec['dummy_names'].items():
-        path = out / f'assets/ntm/lang/{loc}.json'
-        if path.exists():
-            lang = json.loads(path.read_text())
-            lang[f'block.ntm.{d}'] = text
-            write_json(path, lang)
+    # Reuse the same invisible barrier mechanism with source-specific
+    # casing strength: a reactor's proxies must survive its own explosion.
+    for dummy_id,props in [(dummy,{})]+list(spec.get('dummy_variants',{}).items()):
+        d=dummy_id.split(':',1)[1]
+        write_json(own(f'data/ntm/horizon/block/{d}.json'), {
+            'template':'minecraft:barrier',
+            'properties':{'hardness':5.0,'explosion_resistance':10.0,'requires_tool':True,'sounds':'minecraft:iron_block',**props},
+            'item':False,
+        })
+        write_json(own(f'assets/ntm/blockstates/{d}.json'),{'variants':{'':{'model':f'ntm:block/{d}'}}})
+        write_json(own(f'assets/ntm/models/block/{d}.json'),{'textures':{'particle':spec['dummy_particle']}})
+        for loc,text in spec['dummy_names'].items():
+            path=out/f'assets/ntm/lang/{loc}.json'
+            if path.exists():
+                lang=json.loads(path.read_text());lang[f'block.ntm.{d}']=text;write_json(path,lang)
     # Textures no block entry names, as (content path, ntm-src path): the
     # screens a native mod draws on its own (the recipe selector).
     for target, source in spec.get('textures', {}).items():

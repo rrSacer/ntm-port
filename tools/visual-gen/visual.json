@@ -22013,7 +22013,7 @@
             2
           ],
           "offset": 2,
-          "dummy": "ntm:dummy_machine",
+          "dummy": "ntm:dummy_zirnox",
           "extra": [
             {
               "min": [
@@ -22617,7 +22617,7 @@
             2
           ],
           "offset": 2,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_zirnox_destroyed"
         }
       },
       "model": {
@@ -35910,5 +35910,15 @@
   },
   "textures": {
     "assets/ntm/textures/gui/processing/gui_recipe_selector.png": "textures/gui/processing/gui_recipe_selector.png"
+  },
+  "dummy_variants": {
+    "ntm:dummy_zirnox": {
+      "hardness": 5.0,
+      "explosion_resistance": 60.0
+    },
+    "ntm:dummy_zirnox_destroyed": {
+      "hardness": 100.0,
+      "explosion_resistance": 480.0
+    }
   }
 }

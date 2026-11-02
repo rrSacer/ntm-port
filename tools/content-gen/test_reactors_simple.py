@@ -32,10 +32,23 @@ class SimpleReactors(unittest.TestCase):
         rows={r['id']:r for r in build(SOURCE)}
         self.assertEqual(rows['zirnox_destroyed']['block_properties']['explosion_resistance'],480.0)
         self.assertEqual(rows['reactor_zirnox' if 'reactor_zirnox' in rows else 'machine_zirnox']['block_properties']['explosion_resistance'],60.0)
+        for name,resistance in [('machine_zirnox',60.0),('zirnox_destroyed',480.0)]:
+            machine=json.loads((ROOT/f'content/data/ntm/horizon_machine/{name}.json').read_text())
+            proxy=machine['multiblock']['dummy'].split(':')[1]
+            declaration=json.loads((ROOT/f'content/data/ntm/horizon/block/{proxy}.json').read_text())
+            self.assertEqual(declaration['template'],'minecraft:barrier')
+            self.assertEqual(declaration['properties']['explosion_resistance'],resistance)
         for name in ['waste_earth','waste_mycelium']:
             row=rows[name]
             self.assertEqual(row['drop'],'minecraft:dirt')
             for texture in row['surface_textures'].values():self.assertTrue((SOURCE/texture).is_file())
+
+    def test_zirnox_hazard_targets_are_machine_readable(self):
+        data=json.loads((ROOT/'crates/ntm-core/data/hazards.json').read_text())
+        rods=[e for e in data['entries'] if e['id'].startswith('ntm:rod_zirnox__')]
+        self.assertEqual(len(rods),11)
+        self.assertTrue(all('fuel_target_rad_s' in e for e in rods))
+        self.assertFalse(any('HazardModifierFuelRadiation' in g['expression'] and g['id'].startswith('ntm:rod_zirnox__') for g in data['extraction_gaps']))
 
     def test_metadata_and_transmutation(self):
         fuels=pile_fuels(SOURCE)

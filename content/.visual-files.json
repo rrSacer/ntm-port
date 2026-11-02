@@ -677,5 +677,11 @@
   "data/ntm/horizon/block/dummy_machine.json",
   "assets/ntm/blockstates/dummy_machine.json",
   "assets/ntm/models/block/dummy_machine.json",
+  "data/ntm/horizon/block/dummy_zirnox.json",
+  "assets/ntm/blockstates/dummy_zirnox.json",
+  "assets/ntm/models/block/dummy_zirnox.json",
+  "data/ntm/horizon/block/dummy_zirnox_destroyed.json",
+  "assets/ntm/blockstates/dummy_zirnox_destroyed.json",
+  "assets/ntm/models/block/dummy_zirnox_destroyed.json",
   "assets/ntm/textures/gui/processing/gui_recipe_selector.png"
 ]
