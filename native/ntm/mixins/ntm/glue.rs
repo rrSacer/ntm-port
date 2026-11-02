@@ -80,11 +80,28 @@ pub(super) fn menu_button(game: &crate::game::Game<'_>, pos: [i32; 3], id: i32) 
 
 /// A player's right click on a cell of a machine (`core` its core): the
 /// machine may take it (the turbines' levers). True when it did.
-pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [i32; 3]) -> bool {
+pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [i32; 3], face: [i32; 3]) -> bool {
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
     let dim = game.dim.id().to_string();
     let player = game.native_actor_uuid().unwrap_or_default();
+    let held = game.held().cloned();
+    let pile_stack = stack(&held);
+    let depletion = held.as_ref().map_or(0.0, |h| pile_depletion(h.data().and_then(|d| d.other("minecraft:custom_data"))));
+    let mut host = Host { game, buttons: Vec::new() };
+    if let Some(action) = server.native_pile_use(&mut host, &dim, pos, face, pile_stack.as_ref(), depletion, &player) {
+        match action {
+            ntm_core::server::PileUse::ConsumeRod => {
+                if let Some(h) = host.game.held_mut() { h.count -= 1; if h.count == 0 { *host.game.held_mut() = None; } }
+            }
+            ntm_core::server::PileUse::WearDrill => {
+                if held.as_ref().is_some_and(|h| &*h.item == "ntm:hand_drill") { host.game.damage_held_tool(); }
+            }
+            ntm_core::server::PileUse::Handled => {}
+        }
+        return true;
+    }
+    let game = host.game;
     if let Some(held) = game.held().cloned() {
         if &*held.item == "ntm:mirror_tool" {
             if let Some(target) = server.native_solar_target(&dim, core) {
@@ -113,7 +130,8 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
 
 /// A player used `stack` on the block at `pos`: the fluid identifier on a
 /// duct sets its fluid (`custom_data` `ntm_fluid`). True when taken.
-pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
+pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3], face: [i32; 3]) -> bool {
+    if matches!(&*stack.item,"ntm:hand_drill"|"ntm:hand_drill_desh") { return use_block(game,pos,pos,face); }
     if &*stack.item == DETONATOR {
         return detonator(game, Some(pos));
     }
@@ -212,6 +230,16 @@ impl Host<'_, '_> {
 }
 
 impl ServerHost for Host<'_, '_> {
+    fn pile_drop(&mut self, dim: &str, p: [i32;3], id: &str) {
+        if dim == self.game.dim.id() { self.game.spawn_item(ItemStack::new(id,1),p.map(|v|f64::from(v)+0.5),crate::game::dispenser::new_item_motion(),0); }
+    }
+    fn pile_depletion(&mut self, stack: &Stack) -> f64 {
+        stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
+    }
+    fn pile_explode(&mut self, dim: &str, at: [f64;3]) {
+        self.game.native_explode(dim, at, 15.0, true, crate::game::native_explosions::NativeBlast::Block);
+    }
+
     fn solar_sample(&mut self, dim: &str, p: [i32;3]) -> Option<(i32,i32,bool)> {
         self.game.native_loaded_block(dim,p)?;
         use crate::game::Dim;
@@ -248,8 +276,11 @@ impl ServerHost for Host<'_, '_> {
     fn set_blocks(&mut self, dim: &str, blocks: &[([i32; 3], String)]) -> Result<(), String> {
         self.game.native_set_blocks(dim, blocks)
     }
-    /// To the log: the server's thread has no helper for a player's chat.
+    /// Send through the native player-specific chat and retain a log trace.
     fn tell(&mut self, player: &str, text: &str) {
+        if let Ok(id) = u128::from_str_radix(&player.replace('-', ""),16) {
+            self.game.native_tell(id,horizon_client::text::Text::legacy(text));
+        }
         eprintln!("ntm: {player}: {text}");
     }
     fn log(&mut self, text: &str) {
@@ -406,6 +437,9 @@ fn stack(s: &Option<ItemStack>) -> Option<Stack> {
     let s = s.as_ref().filter(|s| s.count > 0 && &*s.item != "minecraft:air")?;
     let mut t = Stack::new(&s.item, s.count);
     t.damage = s.damage;
+    if ntm_core::pile::Rod::of(&s.item,0.0).is_some() {
+        t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);
+    }
     Some(t)
 }
 
@@ -413,7 +447,7 @@ fn stack(s: &Option<ItemStack>) -> Option<Stack> {
 /// the same item and damage, else a plain one.
 fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
     let new = new?;
-    match old {
+    let mut result = match old {
         Some(mut o) if *o.item == new.id && o.damage == new.damage => {
             o.count = new.count;
             Some(o)
@@ -423,7 +457,11 @@ fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
             it.damage = new.damage;
             Some(it)
         }
+    };
+    if let Some(it) = result.as_mut() && let Some(custom) = &new.custom && let Ok((tag,_)) = horizon_world::nbt::parse_snbt(custom) {
+        it.data_mut().set_other("minecraft:custom_data",Some(tag));
     }
+    result
 }
 
 /// A block entity's server tick: the machine is only adopted by the server
@@ -439,5 +477,34 @@ pub(super) fn tick(game: &mut crate::game::Game<'_>, pos: [i32; 3], entity: &mut
         && !server.native_has(&dim, pos)
     {
         server.native_adopt(&dim, pos, &state.to_string_lossy());
+    }
+}
+
+/// The Java rod stores a double; accept the NBT numeric forms as getDouble does.
+pub(super) fn pile_depletion(tag: Option<&Tag>) -> f64 {
+    let Some(Tag::Compound(c)) = tag else { return 0.0 };
+    match c.get(&JavaString::from("depletion")) {
+        Some(Tag::Double(n)) => f64::from_bits(*n), Some(Tag::Float(n)) => f64::from(f32::from_bits(*n)),
+        Some(Tag::Int(n)) => f64::from(*n), Some(Tag::Long(n)) => *n as f64,
+        _ => 0.0,
+    }
+}
+
+#[cfg(test)]
+mod pile_tests {
+    use super::*;
+    #[test]
+    fn native_pile_rod_depletion_survives_slot_conversion() {
+        let mut data=Compound::new();
+        data.insert(JavaString::from("depletion"),Tag::Double(12.5_f64.to_bits()));
+        let mut rod=ItemStack::new("ntm:pile_rod__nu",1);
+        rod.data_mut().set_other("minecraft:custom_data",Some(Tag::Compound(data)));
+        let saved=stack(&Some(rod)).unwrap();
+        let restored=item(Some(&saved),None).unwrap();
+        assert_eq!(pile_depletion(restored.data().and_then(|d|d.other("minecraft:custom_data"))),12.5);
+        // A transformed/ejected item is a new plain item, without depletion.
+        let product=Stack::new("ntm:pile_rod__pu239",1);
+        let plain=item(Some(&product),Some(restored)).unwrap();
+        assert_eq!(pile_depletion(plain.data().and_then(|d|d.other("minecraft:custom_data"))),0.0);
     }
 }

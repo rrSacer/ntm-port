@@ -56,6 +56,7 @@ impl Server {
         self.native_find_cables(host);
         self.native_redstone(host);
         self.slots_in(host);
+        self.pile_tick(host);
         self.heat_tick();
         self.solar_tick(host);
         self.simulate(host);

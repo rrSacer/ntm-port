@@ -262,6 +262,7 @@ bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "pos", ty = "[i32; 3]", value = "pos" },
   { name = "core", ty = "[i32; 3]", value = "core" },
+  { name = "face", ty = "[i32; 3]", value = "face" },
   { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
 ]
 
@@ -277,6 +278,7 @@ bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
   { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "face", ty = "[i32; 3]", value = "face" },
   { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
 ]
 
@@ -291,4 +293,18 @@ bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
   { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
+]
+
+# Pile devices retain the source's clicked-face IO placement (API 76).
+[[injection]]
+id = "pile-placement"
+hook = "state_for_placement"
+hook_version = 1
+kind = "HEAD"
+helper = "pile_placement.rs"
+bindings = [
+  { name = "level", ty = "&crate::game::GameLevel<'_>", value = "self" },
+  { name = "state", ty = "horizon_world::registry::BlockStateId", value = "state" },
+  { name = "context", ty = "&horizon_world::level::PlacementContext", value = "context" },
+  { name = "answer", ty = "&mut Option<Option<horizon_world::registry::BlockStateId>>", value = "&mut *answer" },
 ]

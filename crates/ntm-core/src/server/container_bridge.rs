@@ -123,6 +123,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::ElectricFurnace(f) => Some(f),
         Data::Steam(s) => s.slotted(),
         Data::Combustion(c) => Some(c.slotted()),
+        Data::Pile(p) if matches!(&**p, crate::pile::Pile::Loader(_)) => Some(&mut **p),
         Data::SolarStirling(s) => Some(&mut **s),
         _ => None,
     }
@@ -131,6 +132,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
 /// The blocks whose machines use the engine's slots, and their layout:
 /// (block, first input slot, inputs, output slot).
 pub const SLOTTED: &[(&str, Layout)] = &[
+    ("ntm:pile_device__loader", Layout::Native),
     ("ntm:machine_solar_boiler", Layout::Native),
     ("ntm:solar_mirror", Layout::Native),
     ("ntm:machine_stirling", Layout::Native),

@@ -24,6 +24,14 @@ pub(super) fn hud(game: &mut crate::game::Game<'_>, batch: &mut HudBatch, corner
 
 /// A radioactive item's lines, after the others.
 pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &mut Vec<(Text, u32)>) {
+    let depletion = crate::game::ntm_glue::pile_depletion(stack.data().and_then(|d|d.other("minecraft:custom_data")));
+    if let Some(rod) = ntm_core::pile::Rod::of(&stack.item,depletion) {
+        let spec = ntm_core::pile::RODS[rod.kind as usize];
+        if spec.life > 0.0 {
+            lines.push((Text::legacy(&format!("Lifetime: {:.0}",spec.life)),u32::MAX));
+            if rod.depletion > 0.0 { lines.push((Text::legacy(&format!("Depletion: {:.0}%",rod.depletion/spec.life*100.0)),u32::MAX)); }
+        }
+    }
     for line in client_rad::tooltip_lines(&stack.item, stack.count) {
         lines.push((Text::legacy(&line), u32::MAX));
     }

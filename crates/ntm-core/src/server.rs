@@ -22,6 +22,12 @@ pub trait ServerHost: Kv {
     fn tell(&mut self, player: &str, text: &str);
     fn log(&mut self, text: &str);
     /// Saved sky light, weather/time subtraction, and visibility at y+1.
+    /// Pile rod ejection deliberately removes depletion, as the Java does.
+    fn pile_drop(&mut self, dim: &str, p: Pos, item: &str) { self.drop_items(dim,p,&[(item.into(),1)]); }
+    /// Read the original double `depletion` from an item's custom data.
+    fn pile_depletion(&mut self, _stack: &container_bridge::Stack) -> f64 { 0. }
+    /// Native Level.explode(null, ..., 15, true, BLOCK).
+    fn pile_explode(&mut self, _dim: &str, _at: [f64;3]) {}
     fn solar_sample(&mut self, _dim: &str, _p: Pos) -> Option<(i32, i32, bool)> { None }
     /// The slots of the machine's block entity at `p`.
     fn machine_slots(&mut self, _dim: &str, _p: Pos) -> Option<container_bridge::Slots> {
@@ -160,6 +166,14 @@ impl Server {
     }
 
     fn block_event(&mut self, host: &mut impl ServerHost, e: BlockEvent) {
+        // Pile writes install their runtime state synchronously. Their delayed
+        // native notifications must not discard the newly assembled channels.
+        let (dim,pos,state,placed)=match &e { BlockEvent::Placed(d,p,s)=>(d,p,s,true),BlockEvent::Broken(d,p,s)=>(d,p,s,false) };
+        if let Some(m)=self.ready.world.machines.get(&(dim.clone(),*pos)) && let crate::machine::Data::Pile(p)=&m.data {
+            if placed && m.block==blockstate::id_of(state) || !placed && m.block!=blockstate::id_of(state) {return;}
+            if !placed && let crate::pile::Pile::Core(Some(c))=&**p {let c=c.clone();self.pile_destroy(host,dim,&c);}
+        }
+
         if let BlockEvent::Placed(dim, pos, state) = &e
             && registry::is_bomb(blockstate::id_of(state))
         {
@@ -393,3 +407,6 @@ mod radiation_server;
 #[cfg(test)]
 mod tests;
 
+
+mod pile_server;
+pub use pile_server::PileUse;
