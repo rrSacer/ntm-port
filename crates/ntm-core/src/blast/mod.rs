@@ -133,7 +133,6 @@ pub struct Runtime {
     pub pulses: Vec<Pulse>,
     /// The global settings, read once from the folder.
     pub global: Option<Config>,
-    pub warned_fallback: bool,
     pub warned_persist: bool,
     /// The tick a charge went off: its vanilla explosion used that tick's
     /// fuel, so the nukes wait for the next one.

@@ -1,8 +1,5 @@
-//! The bombs' settings: one global (the mod's folder, `bombcfg`) and, if
-//! set, one per world (in its save), which wins. Two modes: `otimizado`
-//! (vanilla commands only: what this milestone does) and `aprimorado`, a
-//! placeholder for visuals that need engine APIs still being researched
-//! (it falls back to `otimizado`, see [`super::visuals`]).
+//! Bomb settings, global or per world. Only optimized visuals are active.
+//! Legacy enhanced settings deserialize as optimized without losing other settings.
 
 use serde::{Deserialize, Serialize};
 
@@ -12,15 +9,14 @@ pub const KEY: &str = "bombcfg";
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Mode {
     #[default]
+    #[serde(alias = "Aprimorado", alias = "aprimorado", alias = "Enhanced", alias = "enhanced")]
     Otimizado,
-    Aprimorado,
 }
 
 impl Mode {
     pub fn name(self) -> &'static str {
         match self {
             Mode::Otimizado => "otimizado",
-            Mode::Aprimorado => "aprimorado",
         }
     }
 }
@@ -88,8 +84,7 @@ impl Config {
             "modo" | "mode" => {
                 self.mode = match value {
                     "otimizado" | "optimized" => Mode::Otimizado,
-                    "aprimorado" | "enhanced" => Mode::Aprimorado,
-                    _ => return Err("modo: otimizado | aprimorado".into()),
+                    _ => return Err("modo: otimizado (aprimorado arquivado)".into()),
                 }
             }
             "fallout" => self.fallout = on_off(value)?,
@@ -127,5 +122,20 @@ impl Config {
 
     pub fn load(bytes: Option<Vec<u8>>) -> Self {
         bytes.and_then(|b| serde_json::from_slice(&b).ok()).unwrap_or_default()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn archived_mode_keeps_existing_world_settings() {
+        let cfg = Config::load(Some(br#"{"mode":"Aprimorado","effects":false,"max_radius":17,"budget":1024}"#.to_vec()));
+        assert_eq!(cfg.mode, Mode::Otimizado);
+        assert!(!cfg.effects);
+        assert_eq!(cfg.max_radius, 17);
+        assert_eq!(cfg.budget, 1024);
+        assert_eq!(serde_json::to_value(&cfg).unwrap()["mode"], "Otimizado");
     }
 }

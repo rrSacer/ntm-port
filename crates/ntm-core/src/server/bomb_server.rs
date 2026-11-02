@@ -226,7 +226,7 @@ impl Server {
             && b.fuse.is_none()
         {
             b.fuse = Some(FUSE_TICKS);
-            let (vis, _) = visuals::backend(cfg.mode);
+            let vis = visuals::Optimized;
             show(host, &key.0, vis.fuse(&cfg, &key.0, key.1));
         }
     }
@@ -324,11 +324,7 @@ impl Server {
             Blast::Balefire { radius } => Blast::Balefire { radius: radius.min(cfg.max_radius) },
             b => b,
         };
-        let (vis, fell_back) = visuals::backend(cfg.mode);
-        if fell_back && !self.blasts.warned_fallback {
-            self.blasts.warned_fallback = true;
-            host.log("bomb visuals: modo aprimorado indisponível (APIs do motor em pesquisa): usando o otimizado");
-        }
+        let vis = visuals::Optimized;
         show(host, &dim, vis.detonation(&cfg, &visuals::Shot { dim: &dim, pos, blast, players: &players }));
         let c = center(pos);
         match blast {

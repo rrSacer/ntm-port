@@ -301,12 +301,6 @@ impl ServerHost for Host<'_, '_> {
 
 // ----------------------------------------------------- block entities
 
-/// The machines' block entity type ids: their blocks' ids. Every peer
-/// registers the same.
-pub(super) fn types(types: &mut Vec<String>) {
-    types.extend(ntm_core::registry::machine_ids().filter(|b| is_machine(b)).map(str::to_string));
-}
-
 /// A new machine block's block entity, empty: the server keeps the
 /// machine's state in it.
 pub(super) fn entity(block: &str, entity: &mut Option<(String, Compound)>) {

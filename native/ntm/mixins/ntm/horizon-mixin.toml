@@ -3,10 +3,10 @@ id = "ntm"
 version = "0.1.0"
 priority = 100
 
-# The commit it was built and tested on: ntm-next (upstream main plus the
-# merged hook PRs; its `pins`). It uses only named hook points.
+# Current upstream plus reusable model, multiblock and container extensions.
+# Keep the exact integration pin: official API alone lacks those extensions.
 [compatibility]
-horizon_revision = "15d31b261028dbf336d3f7294512c5a4a7eb19cc"
+horizon_revision = "6f5790dd149fef66ff29752ec1240e4d33aff2c5"
 
 # The logic, plain Rust (cargo test against the fake world): copied into
 # this folder by tools/package-native.sh, never kept here.
@@ -80,24 +80,13 @@ bindings = [
 
 # The clients' models (V3): the types, and what each update carries.
 [[injection]]
-id = "block-entity-types"
-hook = "block_entity_types"
-hook_version = 1
-kind = "HEAD"
-helper = "types.rs"
-bindings = [
-  { name = "types", ty = "&mut Vec<String>", value = "&mut *types" },
-]
-
-[[injection]]
 id = "block-entity-update-tag"
 hook = "block_entity_update_tag"
 hook_version = 1
 kind = "HEAD"
 helper = "update_tag.rs"
 bindings = [
-  { name = "id", ty = "&str", value = "id" },
-  { name = "nbt", ty = "&horizon_world::nbt::Compound", value = "nbt" },
+  { name = "entity", ty = "&horizon_client::containers::ModBlockEntity", value = "entity" },
   { name = "tag", ty = "&mut Option<horizon_world::nbt::Compound>", value = "&mut *tag" },
 ]
 

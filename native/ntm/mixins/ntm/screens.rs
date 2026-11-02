@@ -64,6 +64,7 @@ fn machine_screen(game: &crate::game::Game<'_>, block: &str, name: &str) -> Opti
         inventory_x: layout.inventory[0],
         inventory_y: layout.inventory[1],
         own_labels: true,
+        own_background: true,
         hide_inventory: false,
     })
 }
@@ -256,6 +257,7 @@ fn open_selector(game: &mut crate::game::Game<'_>, block: &str, data: &[i32], at
         inventory_x: 8.0,
         inventory_y: 84.0,
         own_labels: true,
+        own_background: true,
         hide_inventory: true,
     };
     if !game.native_screen_set_layout(shown) {

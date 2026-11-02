@@ -204,12 +204,11 @@ Tudo por comandos vanilla que o client mod roda (`S2C::Run`, `execute in
 
 `efeitos off` desliga tudo; `particulas N` (0–200) regula a quantidade.
 
-**Modo aprimorado (placeholder).** `blast/visuals.rs` define `trait Visuals`
-(`detonation`, `fuse`, `available`). `Optimized` é o modo atual. `Enhanced`
-existe como ponto de extensão para os efeitos que dependem de APIs do motor
-(pesquisadas por outro agente); hoje `available()` é falso e `backend()` cai no
-otimizado, com um aviso no log uma vez. Para ligá-lo: implementar `Enhanced`
-e fazer `available()` refletir a capacidade do motor.
+**Somente o modo otimizado está ativo (01/11/2026).** O visual aprimorado foi
+arquivado por decisão do usuário. O placeholder `Enhanced`, a seleção de backend
+e o aviso de fallback foram removidos. Configurações salvas com `Aprimorado`
+são lidas como `Otimizado`, preservando raio, orçamento, efeitos e demais opções.
+Comandos novos aceitam apenas `modo otimizado`.
 
 ## Dano e radiação
 
@@ -244,7 +243,7 @@ pasta (`bombcfg`), a do mundo no save dele e vale sobre a global.
 
 | Chave | Padrão | O quê |
 | --- | --- | --- |
-| `modo` | `otimizado` | `otimizado` ou `aprimorado` (cai no otimizado) |
+| `modo` | `otimizado` | somente `otimizado` |
 | `fallout` | on | fase de 2,5R |
 | `efeitos`, `particulas` | on, 24 | sons e partículas |
 | `dano` | on | dano de explosão |
@@ -337,7 +336,7 @@ limpos. Testes novos:
 | `…the_detonator_links_and_sets_off_a_ready_bomb` | sem vínculo, liga, "não está pronta", detona; N2 sem escória nem zona |
 | `…breaking_a_bomb_gives_its_components_back_once` | quebrar solta os componentes uma vez |
 | `…an_explosion_resumes_after_a_restart` | reinício com a explosão no meio: retoma e termina |
-| `…settings_are_global_or_per_world_and_enhanced_falls_back` | config global/mundo, `limpar`, valor inválido, aprimorado cai no otimizado |
+| `…settings_are_global_or_per_world` | config global/mundo, `limpar`, valor inválido; modo aprimorado recusado |
 | `ntm_core::explosion` `fallout.rs` (5) | regras e limites por distância, retomada no meio do fallout com rollback, chunk pendente até um jogador chegar (e após reinício), persistência leve, cratera esperando chunk sem segurar fallout nem a fila |
 | `fallout::tests::rings_cover_the_annulus_once` | anéis cobrem o anel uma vez |
 | `engine.rs` (10, antigos) | inalterados, passam com o plano esparso |

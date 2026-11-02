@@ -5,13 +5,18 @@ horizon-mixins** compilado junto com o jogo (`docs/native-mods.md` do Horizon).
 O plano completo está no artifact `horizon-migracao` do Traycer. Aqui fica o
 que o repositório tem dele.
 
+**Base ativa em 02/11/2026:** upstream `5d65d7b50`, integrado na branch
+`ntm-current` com as extensões genéricas ainda necessárias ao port. O arquivo
+`native/ntm/compatibility.json` fixa a revisão completa. A série antiga `ntm-next`
+fica preservada no Git. As bombas seguem somente no modo otimizado.
+
 ## Onde está
 
 | Caminho | O que é |
 | --- | --- |
 | `native/ntm/mixins/ntm/horizon-mixin.toml` | O bundle: o crate da lógica e os hooks nomeados |
 | `native/ntm/mixins/ntm/*.rs` | Um helper pequeno por hook |
-| `native/ntm/compatibility.json` | Os commits fixados: Horizon (`ntm-next`), horizon-mixins 0.6, horizon-mods (Recipes) |
+| `native/ntm/compatibility.json` | Os commits fixados: Horizon (`ntm-current`), horizon-mixins 0.6, horizon-mods (Recipes) |
 | `tools/package-native.sh [SAÍDA]` | O bundle pronto, com o `crates/ntm-core` copiado como `[[crate]]` |
 | `tools/build-native.sh` | O jogo com o NTM e o Recipes oficial dentro |
 
@@ -32,13 +37,13 @@ e exemplos (`examples/explosion_*.rs`).
 BUILD_DIR=<pasta grande> agent-run env QUEUE=cargo bash tools/build-native.sh
 ```
 
-1. Exporta o commit de `ntm-next` (`HORIZON_NEXT`, `NEXT_REV`) para `$BUILD_DIR/source`. Nunca usa o checkout em si.
+1. Confere o `main` oficial e exporta a revisão de `compatibility.json` (`HORIZON_NEXT`, `NEXT_REV`) para `$BUILD_DIR/source`. Nunca usa o checkout em si.
 2. Compila o horizon-mixins no commit fixado, uma vez.
 3. Junta os bundles em `$BUILD_DIR/mods`: o do NTM, por `package-native.sh`, e o `recipes` do horizon-mods no commit fixado.
-4. Roda `horizon-mixins apply` para `$BUILD_DIR/stage`.
-5. Roda `cargo build --locked --release -p horizon-client`, o comando do próprio release, sem a feature `mods`.
+4. Roda `horizon-mixins apply` para `$BUILD_DIR/generated` e sincroniza `$BUILD_DIR/stage` preservando os arquivos idênticos.
+5. Compila `horizon-client`, `horizon-ctl` (agora no `horizon-client-lib`) e o empacotador `cargo-horizon-mod`, com o perfil `release` e sem a feature antiga `mods`.
 
-O binário sai em `$BUILD_DIR/target/release/horizon-client`.
+O binário sai em `$BUILD_DIR/target/release/horizon-client`, ou em `$CARGO_TARGET_DIR/release/horizon-client` quando definido. A consulta do upstream só pode ser omitida com `SKIP_UPSTREAM_CHECK=1` para reproduzir o snapshot já selecionado.
 
 ## Hooks em uso
 
@@ -49,10 +54,9 @@ O binário sai em `$BUILD_DIR/target/release/horizon-client`.
 | `block_entity_ticks` | 1 | `ticks.rs` | Os block entities das máquinas fazem tick. |
 | `block_entity_container` | 1 | `container.rs` | Os slots, as faces e o menu vanilla de cada máquina. |
 | `block_entity_tick` | 1 | `tick.rs` | O tick do servidor: estado, slots e data do menu passam pelo `ntm_core::native`. |
-| `block_entity_types` | 1 | `types.rs` | Registra os ids de block entity das máquinas (o próprio id do bloco), iguais em todos os pares. |
 | `block_entity_update_tag` | 1 | `update_tag.rs` | Manda aos clientes `data` (IntArray, o vetor do menu) e `facing` (só nos blocos sem a propriedade, as bombas), o contrato com os modelos da V3. |
 
-O tick grava o `data` no compound, porque o `update_tag` só enxerga o compound, e chama `native_block_entity_changed` só quando muda um índice listado em `synced` no `horizon_machine/<bloco>.json` (lido uma vez por bloco com `native_data`). Os outros valores só importam à tela aberta. O hook `slot_filters` (V2, API 20) dá as regras dos slots, de `ntm_core::native::slot_filters`: a fornalha aceita o que funde, uma bateria criativa, e o resultado é só de saída. As regras valem para o menu, os cliques e os funis.
+O registro e a sincronização dos tipos de block entity são do upstream. O `update_tag` recebe a entidade oficial e seleciona seus dados visuais. O tick grava o `data` no compound e chama `native_block_entity_changed` só quando muda um índice listado em `synced` no `horizon_machine/<bloco>.json` (lido uma vez por bloco com `native_data`). Os outros valores só importam à tela aberta. O hook `slot_filters` (V2, API 20) dá as regras dos slots, de `ntm_core::native::slot_filters`: a fornalha aceita o que funde, uma bateria criativa, e o resultado é só de saída. As regras valem para o menu, os cliques e os funis.
 
 A cola fica no módulo `ntm_glue` (`glue.rs`), que converte `ModBlockEntity` e `ItemStack` para os tipos simples do `ntm_core::native` e de volta. Um slot que a lógica não mudou mantém a pilha do jogo, com todos os componentes.
 

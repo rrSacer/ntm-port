@@ -1,12 +1,6 @@
-//! What a detonation shows and sounds like: vanilla particles, sounds and
-//! effects the server sends through its host (`ServerHost::particles`,
-//! `sound`, `effect`). This is the extension point of the `aprimorado`
-//! mode: a [`Visuals`] backend turns a blast into [`Show`]s; the enhanced
-//! one needs engine APIs (shaders, camera, sky) another agent is
-//! researching, so for now it reports itself unavailable and the optimized
-//! one is used.
+//! Optimized blast visuals: bounded vanilla particles, sounds and status effects.
 
-use super::config::{Config, Mode};
+use super::config::Config;
 use crate::{Pos, bomb::Blast, server::PlayerInfo};
 
 /// A blast, as the visuals see it.
@@ -31,18 +25,6 @@ pub enum Show {
     Effect { player: String, id: &'static str, seconds: u32, amplifier: u8 },
 }
 
-pub trait Visuals {
-    fn name(&self) -> &'static str;
-    /// Whether this backend can run here (the enhanced one: engine APIs).
-    fn available(&self) -> bool {
-        true
-    }
-    /// What the blast shows at its moment.
-    fn detonation(&self, cfg: &Config, shot: &Shot) -> Vec<Show>;
-    /// What a charge shows when its fuse is lit.
-    fn fuse(&self, cfg: &Config, dim: &str, pos: Pos) -> Vec<Show>;
-}
-
 /// Vanilla particles and sounds: a handful per blast, no matter its size
 /// (the clients draw them; the server pays nothing).
 pub struct Optimized;
@@ -53,12 +35,8 @@ fn center(p: Pos) -> [f64; 3] {
 
 const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 
-impl Visuals for Optimized {
-    fn name(&self) -> &'static str {
-        "otimizado"
-    }
-
-    fn detonation(&self, cfg: &Config, s: &Shot) -> Vec<Show> {
+impl Optimized {
+    pub fn detonation(&self, cfg: &Config, s: &Shot) -> Vec<Show> {
         if !cfg.effects {
             return Vec::new();
         }
@@ -103,7 +81,7 @@ impl Visuals for Optimized {
         out
     }
 
-    fn fuse(&self, cfg: &Config, _dim: &str, pos: Pos) -> Vec<Show> {
+    pub fn fuse(&self, cfg: &Config, _dim: &str, pos: Pos) -> Vec<Show> {
         if !cfg.effects {
             return Vec::new();
         }
@@ -113,34 +91,6 @@ impl Visuals for Optimized {
             out.push(Show::Particles { id: "minecraft:smoke", color: WHITE, at: [at[0], at[1] + 0.5, at[2]], spread: [0.1; 3], speed: 0.01, count: 8 });
         }
         out
-    }
-}
-
-/// The enhanced mode's backend: not available until the engine has the APIs
-/// it needs. What it shows is the optimized one's (the fallback).
-pub struct Enhanced;
-
-impl Visuals for Enhanced {
-    fn name(&self) -> &'static str {
-        "aprimorado"
-    }
-    fn available(&self) -> bool {
-        false
-    }
-    fn detonation(&self, cfg: &Config, s: &Shot) -> Vec<Show> {
-        Optimized.detonation(cfg, s)
-    }
-    fn fuse(&self, cfg: &Config, dim: &str, pos: Pos) -> Vec<Show> {
-        Optimized.fuse(cfg, dim, pos)
-    }
-}
-
-/// The backend for `mode`, and whether it fell back to the optimized one.
-pub fn backend(mode: Mode) -> (&'static dyn Visuals, bool) {
-    match mode {
-        Mode::Otimizado => (&Optimized, false),
-        Mode::Aprimorado if Enhanced.available() => (&Enhanced, false),
-        Mode::Aprimorado => (&Optimized, true),
     }
 }
 

@@ -238,12 +238,13 @@ fn settings_are_global_or_per_world() {
     let who = player();
     let s = g.server.bomb_command(&mut g.sh, Some(&who), "config").unwrap();
     assert!(s.contains("raiomax 8") && s.contains("do mundo"), "{s}");
-    let s = g.server.bomb_command(&mut g.sh, Some(&who), "config global modo aprimorado").unwrap();
-    assert!(s.contains("modo aprimorado"), "{s}");
+    let s = g.server.bomb_command(&mut g.sh, Some(&who), "config global efeitos off").unwrap();
+    assert!(s.contains("efeitos off"), "{s}");
     // The world's own settings still win.
-    assert!(g.server.bomb_config(&mut g.sh).mode == crate::blast::Mode::Otimizado);
+    assert!(g.server.bomb_config(&mut g.sh).effects);
     g.server.bomb_command(&mut g.sh, Some(&who), "config mundo limpar").unwrap();
-    assert!(g.server.bomb_config(&mut g.sh).mode == crate::blast::Mode::Aprimorado);
+    assert!(!g.server.bomb_config(&mut g.sh).effects);
+    assert!(g.server.bomb_command(&mut g.sh, Some(&who), "config global modo aprimorado").is_err());
     assert!(g.server.bomb_command(&mut g.sh, Some(&who), "config mundo efeitos talvez").is_err());
     g.server.bomb_command(&mut g.sh, Some(&who), "config global raiomax 6").unwrap();
     g.server.bomb_command(&mut g.sh, Some(&who), "teste 6").unwrap();
