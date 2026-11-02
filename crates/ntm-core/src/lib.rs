@@ -100,3 +100,5 @@ pub fn warm_tables() {
     fluid::types();
     bedrock::deposit(0, 0);
 }
+
+pub mod pile;

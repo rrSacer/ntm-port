@@ -82,6 +82,7 @@ pub enum Kind {
     Combustion,
     /// Solar boilers, mirrors and Stirling engines (energy batch 4).
     SolarStirling,
+    Pile,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -178,6 +179,7 @@ pub enum Data {
     Steam(Box<crate::steam::Steam>),
     Combustion(Box<crate::combustion::Combustion>),
     SolarStirling(Box<crate::solar_stirling::SolarStirling>),
+    Pile(Box<crate::pile::Pile>),
     Inert { name: String },
 }
 
@@ -238,6 +240,7 @@ impl Machine {
                 Some(s) => Data::Steam(Box::new(s)),
                 None => Data::Inert { name: block_id.into() },
             },
+            Kind::Pile => Data::Pile(Box::new(crate::pile::Pile::of(block_id).expect("pile block"))),
             Kind::SolarStirling => Data::SolarStirling(Box::new(crate::solar_stirling::SolarStirling::of(block_id).expect("solar/stirling block"))),
             Kind::Combustion => match crate::combustion::Combustion::of(block_id) {
                 Some(c) => Data::Combustion(Box::new(c)),
@@ -321,6 +324,7 @@ impl Machine {
             Data::Heater(_) => Kind::Heater,
             Data::Steam(_) => Kind::Steam,
             Data::Combustion(_) => Kind::Combustion,
+            Data::Pile(_) => Kind::Pile,
             Data::SolarStirling(_) => Kind::SolarStirling,
             Data::Inert { .. } => Kind::Inert,
         }
@@ -361,6 +365,7 @@ impl Machine {
             Data::Heater(m) => &**m,
             Data::Steam(m) => &**m,
             Data::Combustion(m) => &**m,
+            Data::Pile(m) => &**m,
             Data::SolarStirling(m) => &**m,
             Data::Inert { name } => name,
         }
@@ -401,6 +406,7 @@ impl Machine {
             Data::Heater(m) => &mut **m,
             Data::Steam(m) => &mut **m,
             Data::Combustion(m) => &mut **m,
+            Data::Pile(m) => &mut **m,
             Data::SolarStirling(m) => &mut **m,
             Data::Inert { name } => name,
         }

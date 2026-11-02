@@ -1419,84 +1419,84 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:pile_device__loader",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_device__vent",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_device__control",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_block__dummy",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_block__core",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_block__channel",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_block__fuel_in",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_block__fuel_out",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_block__air_in",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_block__air_out",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_block__control",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:pile_block__edge",
-        kind: Kind::Inert,
+        kind: Kind::Pile,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1698,7 +1698,8 @@ pub const TOKEN: &str = "ntm:logic_token";
 
 /// A machine's fluid ports (the NTM's `TilePortShapes`, on one block): every
 /// machine with tanks has one port open all round; ducts are the cables.
-pub fn fluid_ports(spec: &BlockSpec, _facing: Option<&str>) -> Vec<crate::energy::Port> {
+pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
+    if spec.id == "ntm:pile_device__vent" { return facing.and_then(facing_dir).map(|d| vec![vec![d]]).unwrap_or_default(); }
     if spec.id == "ntm:machine_solar_boiler" { return vec![vec![[0,-1,0]]]; }
     match spec.kind {
         Kind::FluidStore

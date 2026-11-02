@@ -92,6 +92,7 @@ fn machine_files() -> &'static std::collections::HashMap<String, serde_json::Val
 
 /// Block `block`'s slot rules, from its machine file (none without one).
 pub fn block_slots(block: &str) -> Vec<SlotFilter> {
+    if block == "ntm:pile_device__loader" { return vec![SlotFilter { accept: Some(crate::pile::ROD_NAMES.iter().map(|n| format!("ntm:pile_rod__{n}")).collect()), max: Some(1), ..Default::default() }]; }
     machine_files().get(block).map(|v| file_slots(v.to_string().as_bytes())).unwrap_or_default()
 }
 
