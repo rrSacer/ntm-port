@@ -24,6 +24,7 @@ class XInput:
         x.XQueryTree.argtypes = [C.c_void_p, C.c_ulong, C.POINTER(C.c_ulong), C.POINTER(C.c_ulong),
                                  C.POINTER(C.POINTER(C.c_ulong)), C.POINTER(C.c_uint)]
         x.XSetInputFocus.argtypes = [C.c_void_p, C.c_ulong, C.c_int, C.c_ulong]
+        x.XGetInputFocus.argtypes = [C.c_void_p, C.POINTER(C.c_ulong), C.POINTER(C.c_int)]
         x.XFetchName.argtypes = [C.c_void_p, C.c_ulong, C.POINTER(C.c_char_p)]
         x.XMapRaised.argtypes = [C.c_void_p, C.c_ulong]
         x.XFlush.argtypes = [C.c_void_p]
@@ -62,6 +63,9 @@ class XInput:
         x.XSetInputFocus(self.display, target, 2, 0)
         x.XFlush(self.display)
         time.sleep(.2)
+        focused, revert = C.c_ulong(), C.c_int()
+        x.XGetInputFocus(self.display, C.byref(focused), C.byref(revert))
+        assert focused.value == target, 'Horizon lost keyboard focus; omit --offscreen on the isolated Xvfb'
 
     def edge(self, name, down):
         code = self.x.XKeysymToKeycode(self.display, self.x.XStringToKeysym(name.encode()))

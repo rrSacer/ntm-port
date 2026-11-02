@@ -48,5 +48,7 @@ O antigo `tools/test-game/run-visual.sh` é do protótipo WebAssembly; para esta
 base, usar o executável produzido por `build-native.sh` com `dist/ntm.hmod`.
 Nos testes, configurar `HORIZON_HOME`, `HORIZON_LAUNCHER_HOME`, `XDG_DATA_HOME` e
 `XDG_CONFIG_HOME` em uma pasta descartável, com `HORIZON_NO_AUDIO=1`.
+Os roteiros com XTest precisam de uma janela visível dentro do Xvfb isolado;
+nesses casos, omitir `--offscreen`, que oculta a janela e impede o foco do teclado.
 
 Resultados e limites da validação estão no artifact `horizon-atualizacao`.

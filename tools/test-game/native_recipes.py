@@ -4,7 +4,8 @@
 Usage: python3 tools/test-game/native_recipes.py GAME [montadora|bigorna ...]
 Run the game from build-native.sh with NTM content and GAME/control.sock; DISPLAY
 is the game's Xvfb (the montadora phase types with real X11 key events, the
-bigorna with `horizon-ctl type`).
+bigorna with `horizon-ctl type`). Use a visible window on that isolated Xvfb
+(omit --offscreen): current Horizon hides offscreen windows from the keyboard.
 
 The list is NTM's GUIScreenRecipeSelector (176x132, 8x5 grid, search of 32,
 Enter toggles its focus, Escape/E/Close return to the machine and send the
@@ -111,10 +112,12 @@ def montadora(game, keys):
     game.command(f'setblock {x + 2} {y} {z} ntm:machine_battery[facing=south]')
     game.command(f'setblock {x + 2} {y + 1} {z} minecraft:hopper[facing=down]')
     game.command(f'item replace block {x + 2} {y + 1} {z} container.0 with ntm:battery_creative 1')
-    game.open(x, y, z, dummy_height=1)
+    core = core_of(game, 'ntm:machine_assembly_machine', x, y, z)
+    # Placement may face either way. Click the exposed south cell of its
+    # symmetric 3x3 body, rather than the original placement cell behind it.
+    game.open(core[0], core[1], core[2] + 1, dummy_height=1)
     machine = screen_json('machine_assembly_machine')
     opener = next(b for b in machine['buttons'] if b['id'] == 0)
-    core = core_of(game, 'ntm:machine_assembly_machine', x, y, z)
     game.evidence['core'] = core
     game.snapshot('recipes-montadora-machine')
     before = game.ctl('screen')
