@@ -21,7 +21,7 @@ No servidor integrado, com combustível, rede, água e ferramenta reais, `tools/
 
 Evidência local: `.agent-tmp/energy-b_9zzycu/native-solar-stirling*.json`, relativa à raiz do projeto. O pacote integrado tem 9.093.273 bytes, SHA-256 `06b31d447623a7c88a2cc440f6866cd570d5d2d09b2d3a1cbb12395a0757cac8`. O cliente e o Xvfb de teste foram encerrados; não houve instalação nem abertura de mundos do jogador.
 
-Limites: a prova foi no Overworld, com tempo limpo e geometria controlada. A amostragem solar agora lê o mundo ativo ou estacionado da dimensão pedida, mas o acesso preexistente de `Host::entity` fora da dimensão ativa continua limitado; não se afirma operação ou persistência multidimensional completa. Clima, falha/reparo em jogo e reabertura com overspeed não zero não foram cobertos por esta prova. Os efeitos de overspeed ausentes são os nomeados acima.
+Limites: a prova foi no Overworld, com tempo limpo e geometria controlada. A amostragem solar lê o mundo ativo ou estacionado da dimensão pedida, e o acesso aos block entities (`Host::entity`) também chega às dimensões que não ticaram por último (`docs/host-dimensoes.md`); a prova em jogo dessa correção usa baterias, não os geradores solares/Stirling, e a reabertura de um mundo com geradores em outra dimensão não foi exercitada aqui. Clima, falha/reparo em jogo e reabertura com overspeed não zero não foram cobertos por esta prova. Os efeitos de overspeed ausentes são os nomeados acima.
 
 O trecho abaixo conserva o histórico e o contrato do conteúdo anterior.
 
