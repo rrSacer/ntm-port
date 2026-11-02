@@ -3,7 +3,7 @@
 
 No reactor state or rod life is injected. /tick sprint advances ordinary server
 simulation for the source's 20,000/50,000-life breeding/depletion checks.
-Usage: native_zirnox.py GAME setup|inactive|convert|capture-state|check-state|failure
+Usage: native_zirnox.py GAME setup|inactive|convert|capture-state|check-state|failure|soils
 """
 import json
 import re
@@ -240,6 +240,9 @@ def failure(g):
     markers=[add(core,(x,3,z)) for x,z in [(4,0),(-4,0),(0,4),(0,-4)]]
     for p in markers:g.command('setblock '+pos_text(p)+' minecraft:stone')
     grass=add(core,(15,-1,0));g.command('setblock '+pos_text(grass)+' minecraft:grass_block')
+    wood_cases=[('oak_fence','minecraft:oak_fence'),('chest','minecraft:chest'),('oak_log','ntm:waste_log'),('oak_planks','ntm:waste_planks')]
+    for i,(name,_) in enumerate(wood_cases):
+        g.command('setblock '+pos_text(add(core,(15,0,i+1)))+' minecraft:'+name)
     open_reactor(g,core)
     for slot in range(24):g.put('ntm:rod_zirnox__les_fuel',1,slot)
     g.check('cold_uncooled_loaded',state(g,core)['heat']==0,state(g,core))
@@ -255,6 +258,9 @@ def failure(g):
     g.check('native_explosion_breaks_surroundings',any(x=='minecraft:air' for x in remaining),remaining)
     sprint(g,120)
     g.check('waste_transforms_grass',block(g,grass)=='ntm:waste_earth',block(g,grass))
+    for i,(name,expected) in enumerate(wood_cases):
+        actual=block(g,add(core,(15,0,i+1))).split('[')[0]
+        g.check('waste_wood_'+name,actual==expected,actual)
     after=remnants()
     created=[a-b for a,b in zip(after['debris_created'],baseline.get('debris_created',[0]*6))]
     expected=[20,10,10,10,20,2]
