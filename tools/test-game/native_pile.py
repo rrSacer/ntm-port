@@ -127,26 +127,45 @@ def setup(g):
     # Ventilation response: stop supply and wait for the residual channel air
     # to dissipate before comparing heating slopes, then reconnect.
     g.command('setblock 36 101 10 minecraft:air')
-    # Cooling must start above the ventilated equilibrium (~129), rather
-    # than depending on the time spent typing the replacement duct. 200 is
-    # safely below Java's strict >800 failure threshold. Keep the original
-    # heating/cooling assertions and the eight-second cooled window below.
+    # Insert the existing controls while residual vent air dissipates; an
+    # uncontrolled pile can cross 800 before its last air reaches zero.
+    for p in CONTROLS:lever(g,p,False)
+    # Prepare the real identifier before heating so reconnecting does not
+    # depend on the latency of typing/giving an item near the failure limit.
+    g.command('clear @s')
+    g.command('give @s ntm:fluid_identifier_multi[minecraft:custom_data={ntm_fluid:"air"}] 1')
+    g.ctl('select ntm:fluid_identifier_multi')
+    g.command('tp @s 34.5 100 7.5')
     started=time.monotonic();deadline=started+120
     while True:
         c=pile(g)
         air=next(x for x in c['channels'] if x['kind']=='Ventilation')['air']
         heat=fuel(c,1)['heat']
-        if (air==0 and heat>=200) or time.monotonic()>=deadline:break
-        time.sleep(1)
-    g.check('unventilated_hot_precondition',air==0 and heat>=200,
-            {'air':air,'heat':heat,'required_heat':200,'failure_above':800,'waited':round(time.monotonic()-started,2),'timeout':120})
-    a=heat;time.sleep(4);b=fuel(pile(g),1)['heat']
+        if air==0 or time.monotonic()>=deadline:break
+        time.sleep(.25)
+    g.check('unventilated_zero_air_precondition',air==0,
+            {'air':air,'heat':heat,'waited':round(time.monotonic()-started,2),'timeout':120})
+    for p in CONTROLS:lever(g,p,True)
+    a=fuel(pile(g),1)['heat']
+    started=time.monotonic();deadline=started+120
+    while True:
+        c=pile(g);b=fuel(c,1)['heat']
+        air=next(x for x in c['channels'] if x['kind']=='Ventilation')['air']
+        if b>=150 or time.monotonic()>=deadline:break
+        time.sleep(.1)
+    g.check('unventilated_hot_precondition',air==0 and 150<=b<=400,
+            {'air':air,'heat':b,'required_window':[150,400],'failure_above':800,'waited':round(time.monotonic()-started,2),'timeout':120})
     g.command('setblock 36 101 10 ntm:fluid_duct_neo')
-    type_duct(g,'air',[(36,101,10)],(34,100,7))
-    # Wait for the air to arrive again (it travels through the ducts), then compare.
+    g.ctl('interact 36 101 10')
     deadline=time.monotonic()+60
-    while time.monotonic()<deadline and next(x for x in pile(g)['channels'] if x['kind']=='Ventilation')['air']<500:time.sleep(1)
-    h1=fuel(pile(g),1)['heat'];time.sleep(8);d=fuel(pile(g),1)['heat']
+    while True:
+        c=pile(g);h1=fuel(c,1)['heat']
+        air=next(x for x in c['channels'] if x['kind']=='Ventilation')['air']
+        if h1>400 or air>=500 or time.monotonic()>=deadline:break
+        time.sleep(.1)
+    g.check('air_returns_before_upper_heat_bound',air>=500 and h1<=400,
+            {'air':air,'heat':h1,'upper_bound':400,'timeout':60})
+    time.sleep(8);d=fuel(pile(g),1)['heat']
     g.check('vent_cools_heated_channel',d < h1 and b>a,{'no_air_before':a,'no_air_after':b,'air_back':h1,'air_later':d})
     # A lever against the second loader starts the stroke (rising edge on its own cell).
     g.command('clear @s');g.command('give @s ntm:pile_rod__nu 1');g.ctl('select ntm:pile_rod__nu')
