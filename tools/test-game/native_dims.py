@@ -140,15 +140,10 @@ def idle(g,reader_on=True):
     regions=g.folder/'saves'/'DimsTest'/'dimensions'/'minecraft'/'the_nether'/'region'
     g.command('execute in minecraft:overworld run tp @s 38.5 100 8.5')
     left=time.time()
-    # Long-lived particles of the level in place survive the redstone reads of the parked Nether.
+    # Smoke for visual inspection only. Client status['particles'] is a historical made()
+    # counter, not a live count, and cannot verify the server Game doing the parked reads.
     g.command('particle minecraft:campfire_cosy_smoke 38.5 102 8.5 0.3 0.3 0.3 0 60 force')
-    time.sleep(1)
-    first=g.ctl('status')['particles']
-    time.sleep(4)
-    later=g.ctl('status')['particles']
-    g.evidence['particles']={'first':first,'later':later}
-    count=lambda v: v if isinstance(v,int) else (sum(v.values()) if isinstance(v,dict) else len(v))
-    g.check('particles_survive_the_parked_reader',count(first)>0 and count(later)>0,{'first':first,'later':later})
+    time.sleep(5)
     deadline=left+90
     closed=False
     while time.time()<deadline and not closed:

@@ -48,4 +48,4 @@ Motor `ntm-current` `840fef9a0` (pins em `compatibility.json`, `horizon-mixin.to
 
 Testes em jogo (`native_dims.py`, binário no pin novo):
 - `comparator_feeds_the_loader_with_the_overworld_in_place` e `comparator_still_feeds_the_loader_while_not_last`: um comparador lendo um baú alimenta um loader no Overworld; com o Nether forçado e em lugar a leitura continua verdadeira. **No binário anterior (`6ac4cd00`, troca só do `World`) a segunda falha** (`was_redstone` volta a falso: o comparador lia as saídas do Nether).
-- `idle`: Nether com um leitor fecha e grava (17 s); `particles_survive_the_parked_reader`: 60 partículas de fumaça de longa duração do Overworld continuam vivas com o Nether estacionado lido a cada tick.
+- `idle`: Nether com um leitor fecha e grava (17 s). O roteiro também emite 60 partículas de fumaça no Overworld para inspeção visual; a sobrevivência delas não tem verificação automatizada. A antiga asserção `particles_survive_the_parked_reader` foi removida: `status['particles']` é o contador histórico `made()` do cliente, que não diminui com `clear()` e não mede partículas vivas no `Game` do servidor onde a visita ocorre.
