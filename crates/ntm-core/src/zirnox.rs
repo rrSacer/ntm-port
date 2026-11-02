@@ -55,6 +55,13 @@ pub struct Debris {
     pub kind: u8,
     pub age: u32,
     pub lifetime: u32,
+    #[serde(default = "enabled")]
+    pub permanent: bool,
+    #[serde(default)]
+    pub removed: bool,
+}
+fn enabled() -> bool {
+    true
 }
 impl Debris {
     pub fn spawn(dim: &str, at: Pos, seed: u64) -> Vec<Self> {
@@ -102,6 +109,8 @@ impl Debris {
                     kind,
                     age: 0,
                     lifetime,
+                    permanent: true,
+                    removed: false,
                 });
             }
         }
@@ -162,6 +171,20 @@ pub fn life(stack: &Stack) -> i32 {
         .filter(|n| n.is_finite())
         .unwrap_or(0.)
         .clamp(0., f64::from(i32::MAX)) as i32
+}
+
+/// HazardModifierFuelRadiation: Java first subtracts the f32 endpoints,
+/// then interpolates in double using depletion^0.4 and casts back to float.
+/// The shared radiation layer quantizes its result to milliRAD/s.
+pub fn radiation_rate(stack: &Stack) -> Option<u32> {
+    let f = fuel(&stack.id)?;
+    let h = crate::radiation::fuel_hazard(&stack.id)?;
+    let target = h.fuel_target_rad_s?;
+    let d = (f64::from(life(stack)) / f64::from(f.max_life))
+        .clamp(0., 1.)
+        .powf(0.4);
+    let level = (f64::from(h.radiation_rad_s) + f64::from(target - h.radiation_rad_s) * d) as f32;
+    Some((level * 1000.).round() as u32)
 }
 
 fn slots() -> Slots {
@@ -617,6 +640,20 @@ mod tests {
             assert!(!scan.contains(&[3, 64, 0]));
             assert!(!scan.contains(&[2, 68, 2]));
         }
+    }
+    #[test]
+    fn radiation_interpolates_all_fuels_including_fresh_nonradioactive_lithium() {
+        for (i, f) in table().fuels.iter().enumerate() {
+            let h = crate::radiation::fuel_hazard(&f.item).unwrap();
+            assert_eq!(radiation_rate(&rod(i, 0)), Some(h.radiation_millirad_s));
+            assert_eq!(
+                radiation_rate(&rod(i, f.max_life)),
+                Some((h.fuel_target_rad_s.unwrap() * 1000.).round() as u32)
+            );
+        }
+        assert_eq!(radiation_rate(&rod(1, 6250)), Some(37875));
+        assert_eq!(radiation_rate(&rod(9, 20000)), Some(1));
+        assert_eq!(radiation_rate(&rod(1, i32::MAX)), Some(150000));
     }
     #[test]
     fn debris_has_exact_counts_lifetimes_and_gaussian_launch_velocity() {

@@ -388,6 +388,9 @@ impl ServerHost for Host<'_, '_> {
                 .collect(),
         )
     }
+    fn inventory_stacks(&mut self,id:&str)->Option<Vec<Stack>> {
+        Some(self.game.native_player_inventory(id)?.into_iter().map(|c|Stack {id:c.item,count:c.count,damage:0,custom:c.custom_data}).collect())
+    }
     fn inventory(&mut self, id: &str) -> Option<Vec<(String, u32)>> {
         Some(self.game.native_player_inventory(id)?.into_iter().map(|c| (c.item, c.count)).collect())
     }

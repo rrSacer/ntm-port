@@ -39,7 +39,9 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
         lines.push((Text::legacy(if fuel.breeding {"Breeding: exige barras ativas vizinhas"}else{"Reage com a própria barra e as vizinhas ativas"}),u32::MAX));
         if !fuel.breeding {lines.push((Text::legacy(&format!("Calor por decaimento: {}",fuel.heat_per_decay)),u32::MAX));}
     }
-    for line in client_rad::tooltip_lines(&stack.item, stack.count) {
+    let rate=ntm_core::zirnox::fuel(&stack.item).and_then(|_|crate::game::ntm_glue::stack(&Some(stack.clone()))).and_then(|s|ntm_core::zirnox::radiation_rate(&s));
+    let hazard_lines=rate.map_or_else(||client_rad::tooltip_lines(&stack.item,stack.count),|rate|client_rad::tooltip_rate_lines(rate,stack.count));
+    for line in hazard_lines {
         lines.push((Text::legacy(&line), u32::MAX));
     }
 }

@@ -26356,6 +26356,7 @@
       "id": "ntm:rod_zirnox__natural_uranium_fuel",
       "radiation_rad_s": 0.35,
       "radiation_millirad_s": 350,
+      "fuel_target_rad_s": 172.5,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:232"
@@ -26367,6 +26368,7 @@
       "id": "ntm:rod_zirnox__uranium_fuel",
       "radiation_rad_s": 0.5,
       "radiation_millirad_s": 500,
+      "fuel_target_rad_s": 150.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:233"
@@ -26378,6 +26380,7 @@
       "id": "ntm:rod_zirnox__th232",
       "radiation_rad_s": 0.1,
       "radiation_millirad_s": 100,
+      "fuel_target_rad_s": 1.75,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:234"
@@ -26389,6 +26392,7 @@
       "id": "ntm:rod_zirnox__thorium_fuel",
       "radiation_rad_s": 1.75,
       "radiation_millirad_s": 1750,
+      "fuel_target_rad_s": 112.5,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:235"
@@ -26400,6 +26404,7 @@
       "id": "ntm:rod_zirnox__mox_fuel",
       "radiation_rad_s": 2.5,
       "radiation_millirad_s": 2500,
+      "fuel_target_rad_s": 150.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:236"
@@ -26411,6 +26416,7 @@
       "id": "ntm:rod_zirnox__plutonium_fuel",
       "radiation_rad_s": 4.25,
       "radiation_millirad_s": 4250,
+      "fuel_target_rad_s": 187.5,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:237"
@@ -26422,6 +26428,7 @@
       "id": "ntm:rod_zirnox__u233_fuel",
       "radiation_rad_s": 5.0,
       "radiation_millirad_s": 5000,
+      "fuel_target_rad_s": 150.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:238"
@@ -26433,6 +26440,7 @@
       "id": "ntm:rod_zirnox__u235_fuel",
       "radiation_rad_s": 1.0,
       "radiation_millirad_s": 1000,
+      "fuel_target_rad_s": 165.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:239"
@@ -26444,6 +26452,7 @@
       "id": "ntm:rod_zirnox__les_fuel",
       "radiation_rad_s": 5.85,
       "radiation_millirad_s": 5850,
+      "fuel_target_rad_s": 225.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:240"
@@ -26455,6 +26464,7 @@
       "id": "ntm:rod_zirnox__lithium",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
+      "fuel_target_rad_s": 0.001,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:241"
@@ -26466,6 +26476,7 @@
       "id": "ntm:rod_zirnox__zfb_mox",
       "radiation_rad_s": 2.5,
       "radiation_millirad_s": 2500,
+      "fuel_target_rad_s": 75.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:242"
@@ -30905,61 +30916,6 @@
       "id": "ntm:pellet_rtg_americium",
       "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:346",
       "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__natural_uranium_fuel",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:232",
-      "expression": "HazardModifierFuelRadiation(target=172.5): fresh base exported; life-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__uranium_fuel",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:233",
-      "expression": "HazardModifierFuelRadiation(target=150.0): fresh base exported; life-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__th232",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:234",
-      "expression": "HazardModifierFuelRadiation(target=1.75): fresh base exported; life-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__thorium_fuel",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:235",
-      "expression": "HazardModifierFuelRadiation(target=112.5): fresh base exported; life-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__mox_fuel",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:236",
-      "expression": "HazardModifierFuelRadiation(target=150.0): fresh base exported; life-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__plutonium_fuel",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:237",
-      "expression": "HazardModifierFuelRadiation(target=187.5): fresh base exported; life-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__u233_fuel",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:238",
-      "expression": "HazardModifierFuelRadiation(target=150.0): fresh base exported; life-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__u235_fuel",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:239",
-      "expression": "HazardModifierFuelRadiation(target=165.0): fresh base exported; life-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__les_fuel",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:240",
-      "expression": "HazardModifierFuelRadiation(target=225.0): fresh base exported; life-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__lithium",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:241",
-      "expression": "HazardModifierFuelRadiation(target=0.001): fresh base exported; life-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:rod_zirnox__zfb_mox",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:242",
-      "expression": "HazardModifierFuelRadiation(target=75.0): fresh base exported; life-dependent interpolation requires native item data."
     },
     {
       "id": "ntm:rbmk_fuel_ueu",

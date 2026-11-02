@@ -17,8 +17,8 @@ impl Server {
         }
         self.radiation_shown.retain(|id, _| self.players.iter().any(|p| &p.id == id));
         for p in self.players.clone() {
-            let carried = host.inventory(&p.id).unwrap_or_default();
-            let held = radiation::rate_of(carried.iter().map(|(i, n)| (i.as_str(), *n)));
+            let carried = host.inventory_stacks(&p.id).unwrap_or_default();
+            let held = carried.iter().fold(0u64,|sum,s|sum.saturating_add(crate::zirnox::radiation_rate(s).map_or_else(||radiation::rate_of([(s.id.as_str(),s.count)]),|rate|u64::from(rate)*u64::from(s.count))));
             let held = u32::try_from(held).unwrap_or(u32::MAX);
             let r = &mut self.ready;
             let now = r.world.ticks;
@@ -33,7 +33,7 @@ impl Server {
                 radiation::accumulate(dose, held);
                 radiation::sickness(dose)
             };
-            let shown = (i64::try_from(dose.millirad).unwrap_or(i64::MAX), i64::from(held.saturating_add(zones)));
+            let shown = (i64::try_from(dose.millirad).unwrap_or(i64::MAX), i64::from(held.saturating_add(zones).saturating_add(r.zirnox_radiation_rate.get(&p.id).copied().unwrap_or(0))));
             for h in harms {
                 match h {
                     Harm::Effect { id, amplifier, seconds } => host.effect(&p.id, id, seconds, amplifier),

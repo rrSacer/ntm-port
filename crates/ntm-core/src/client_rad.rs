@@ -38,9 +38,12 @@ fn rad(millirad: u64) -> String {
 /// trait, the rate, and the stack's total when it holds more than one.
 /// Empty for an item that is not radioactive.
 pub fn tooltip_lines(id: &str, count: u32) -> Vec<String> {
-    let Some(rate) = item_rate(id).filter(|r| *r > 0) else {
-        return Vec::new();
-    };
+    tooltip_rate_lines(item_rate(id).unwrap_or(0),count)
+}
+
+/// A rate computed from native item data (the same value as on the server).
+pub fn tooltip_rate_lines(rate:u32,count:u32)->Vec<String> {
+    if rate==0 {return Vec::new();}
     let mut lines = vec![
         "\u{a7}a[Radioactive]".to_owned(),
         format!("\u{a7}e{}RAD/s", rad(u64::from(rate))),

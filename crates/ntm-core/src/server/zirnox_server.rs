@@ -35,6 +35,7 @@ fn roll(s: u64, n: u64) -> u64 {
 
 impl Server {
     pub(super) fn zirnox_tick(&mut self, host: &mut impl ServerHost) {
+        self.ready.zirnox_radiation_rate.clear();
         let keys: Vec<_> = self
             .ready
             .world
@@ -115,7 +116,7 @@ impl Server {
                         let state = if p == key.1 {
                             format!("{}[facing={f},honey_level=0]", zirnox::DESTROYED)
                         } else if y <= 1 {
-                            format!("ntm:dummy_machine[facing={f},honey_level=0]")
+                            "ntm:dummy_zirnox_destroyed".into()
                         } else {
                             "minecraft:air".into()
                         };
@@ -207,10 +208,17 @@ impl Server {
                 }
             }
             let rad = if z.on_fire { 500000. } else { 75000. };
+            let amount = (rad / resistance.max(1.) / (len * len) * 1000.) as u64;
             crate::radiation::add_dose(
                 self.ready.world.radiation.entry(p.id.clone()).or_default(),
-                (rad / resistance.max(1.) / (len * len) * 1000.) as u64,
+                amount,
             );
+            let rate = self
+                .ready
+                .zirnox_radiation_rate
+                .entry(p.id.clone())
+                .or_default();
+            *rate = rate.saturating_add(amount.saturating_mul(20).min(u64::from(u32::MAX)) as u32);
             if z.on_fire && len < 5. {
                 host.hurt(&p.id, 2., "minecraft:on_fire");
             }
@@ -324,7 +332,7 @@ impl Server {
                 .all(|v| v.is_finite() && v.abs() <= 30_000_000.)
                 || !d.velocity.iter().all(|v| v.is_finite() && v.abs() < 100.)
             {
-                d.age = d.lifetime;
+                d.removed = true;
                 continue;
             }
             let cell = d.pos.map(|n| n.floor() as i32);
@@ -332,7 +340,7 @@ impl Server {
                 continue;
             }
             if !d.pos.iter().chain(&d.velocity).all(|v| v.is_finite()) {
-                d.age = d.lifetime;
+                d.removed = true;
                 continue;
             }
             d.velocity[1] -= 0.04;
@@ -370,7 +378,7 @@ impl Server {
                         }
                     }
                     if host.set_blocks(&d.dim, &changes).is_ok() {
-                        d.age = d.lifetime;
+                        d.removed = true;
                         continue;
                     }
                 }
@@ -405,7 +413,7 @@ impl Server {
             }
             d.age = d.age.saturating_add(1);
         }
-        debris.retain(|d| d.age < d.lifetime);
+        debris.retain(|d| !d.removed && (d.permanent || d.age < d.lifetime));
         self.ready.world.zirnox.debris = debris;
         // WasteEarth.onEntityWalking: glowing mycelium gives radiation
         // amplifier 3 for 30 seconds. Source spreading is off by default.
@@ -429,6 +437,12 @@ impl Server {
                         self.ready.world.radiation.entry(id.clone()).or_default(),
                         (u64::from(*level) + 1) * 50,
                     );
+                    let rate = self
+                        .ready
+                        .zirnox_radiation_rate
+                        .entry(id.clone())
+                        .or_default();
+                    *rate = rate.saturating_add((u32::from(*level) + 1) * 1000);
                 }
                 *remaining = remaining.saturating_sub(1);
             }
@@ -502,6 +516,7 @@ mod tests {
         buttons: Vec<(String, String, Pos, u32)>,
         shows: Vec<String>,
         hurt: Vec<(String, f32)>,
+        carried: BTreeMap<String, Vec<Stack>>,
     }
     impl Kv for Host {
         fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -600,6 +615,9 @@ mod tests {
         }
         fn show(&mut self, d: &str, _: &Show) {
             self.shows.push(d.into());
+        }
+        fn inventory_stacks(&mut self, id: &str) -> Option<Vec<Stack>> {
+            self.carried.get(id).cloned()
         }
         fn hurt(&mut self, id: &str, n: f32, _: &str) {
             self.hurt.push((id.into(), n));
@@ -821,6 +839,25 @@ mod tests {
         s.native_tick(&mut h, 3);
         assert_eq!(h.hurt.len(), 1);
         assert!(!z(&s).on_fire);
+    }
+    #[test]
+    fn player_inventory_nbt_drives_the_real_radiation_rate() {
+        let (mut h, mut s) = prepare();
+        let mut rod = Stack::new("ntm:rod_zirnox__uranium_fuel", 1);
+        rod.custom = Some("{life:6250}".into());
+        h.carried.insert("player".into(), vec![rod]);
+        s.set_players(vec![PlayerInfo {
+            id: "player".into(),
+            name: "player".into(),
+            dim: DIM.into(),
+            pos: [0., 64., 0.],
+            creative: true,
+        }]);
+        s.native_tick(&mut h, 20);
+        assert_eq!(s.radiation_shown["player"].1, 37875);
+        h.carried.get_mut("player").unwrap()[0].custom = Some("{life:200000}".into());
+        s.native_tick(&mut h, 40);
+        assert_eq!(s.radiation_shown["player"].1, 150000);
     }
     #[test]
     fn extraction_contract_is_ready_for_conditional_engine_hook() {

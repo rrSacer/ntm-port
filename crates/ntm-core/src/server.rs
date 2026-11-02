@@ -17,6 +17,10 @@ use std::collections::{BTreeMap, BTreeSet};
 /// What the engine needs from the game. Its [`Kv`] keeps the world's state
 /// outside the machines ([`crate::persist`]).
 pub trait ServerHost: Kv {
+    /// NativeCarried includes custom data already; older hosts keep their
+    /// plain inventory contract through this default adapter.
+    fn inventory_stacks(&mut self,id:&str)->Option<Vec<container_bridge::Stack>> {self.inventory(id).map(|v|v.into_iter().map(|(id,n)|container_bridge::Stack::new(&id,n)).collect())}
+
     fn block_resistance(&mut self,dim:&str,p:Pos)->Option<f32> {self.get_block(dim,p).map(|b|crate::blast::vanilla::resistance(&b).max(0.))}
 
     /// Native explosion (power 12, fire and block destruction) in its own level.
@@ -135,6 +139,7 @@ struct Ready {
     native_scanned: BTreeSet<Key>,
     /// The redstone signal batteries and bombs received this tick.
     native_signal: BTreeMap<Key, u8>,
+    zirnox_radiation_rate: BTreeMap<String,u32>,
     /// The world's state as last kept ([`crate::persist`]).
     kept: Vec<u8>,
 }

@@ -38,7 +38,7 @@ def number(expr):
 for match in re.finditer(r'public static final float (\w+)\s*=\s*([^;]+);',registry):
     try:constants[match[1]]=number(match[2])
     except (ValueError,SyntaxError):pass
-rates=defaultdict(dict);sources=defaultdict(list);gaps=[]
+rates=defaultdict(dict);sources=defaultdict(list);gaps=[];fuel_targets={}
 def put(item,kind,value,source):
     # Hazard source mutexes prevent adding equivalent ore-dictionary registrations.
     # Use the maximum equivalent entry. Explicit direct entries are applied later.
@@ -112,7 +112,7 @@ for pos,args,_ in calls(registry,r'\bregisterRTGPellet'):
         if value>0:put(item,kind,value,source)
     gaps.append({'id':item,'source':source,'expression':'HazardModifierRTGRadiation(target='+parts[2]+'): fresh base exported; lifetime-dependent interpolation requires native item data.'})
 # The metadata overload supplies its base at argument 2. Restrict to
-# ZIRNOX: the item lifetime modifier must remain a visible data gap.
+# ZIRNOX: export both endpoints for the native lifetime modifier.
 for pos,args,_ in calls(registry,r'\bregisterOtherFuel'):
     parts=split(args)
     if len(parts)!=5 or parts[0]!='rod_zirnox':continue
@@ -123,7 +123,7 @@ for pos,args,_ in calls(registry,r'\bregisterOtherFuel'):
     source='src/main/java/com/hbm/hazard/HazardRegistry.java:'+str(registry[:pos].count('\n')+1)
     put(item,'radiation',base,source)
     if parts[4]=='true':put(item,'blinding',20,source)
-    gaps.append({'id':item,'source':source,'expression':'HazardModifierFuelRadiation(target='+str(target)+'): fresh base exported; life-dependent interpolation requires native item data.'})
+    fuel_targets[item]=target
 # PWR rods: registerPWRFuel(enum, base) registers fresh=base, hot=10*base plus HOT 5, depleted=10*base.
 for pos,args,_ in calls(registry,r'\bregisterPWRFuel'):
     parts=split(args)
@@ -171,7 +171,7 @@ entries=[]
 for row in rows:
     data=rates[row['id']];rad=round(data.get('radiation',0),6)
     other={k:v for k,v in data.items() if k!='radiation'}
-    entries.append({'id':row['id'],'radiation_rad_s':rad,'radiation_millirad_s':round(rad*1000),'other_hazards':other,'sources':sources[row['id']], 'note':'Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.' if rad else 'No resolved RADIATION registration for this catalog identity; not a claim of physical safety.', 'resolution':'resolved source registration' if data else 'no matched source registration'})
+    entries.append({'id':row['id'],'radiation_rad_s':rad,'radiation_millirad_s':round(rad*1000),**({'fuel_target_rad_s':fuel_targets[row['id']]} if row['id'] in fuel_targets else {}),'other_hazards':other,'sources':sources[row['id']], 'note':'Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.' if rad else 'No resolved RADIATION registration for this catalog identity; not a claim of physical safety.', 'resolution':'resolved source registration' if data else 'no matched source registration'})
 output={'schema':1,'source':'HBM NTM 1.7.10 local ntm-src','units':'RAD/s per item (NTM gameplay units)','rules':{'stack':'sum(count * radiation_rad_s)','other_hazards_implemented_m1':False,'zero':'No resolved source registration; dynamic/NBT and missing source registrations are gaps.'},'entries':entries,'extraction_gaps':gaps}
 (ROOT/'crates/ntm-core/data/hazards.json').write_text(json.dumps(output,indent=2)+'\n')
 buckets=defaultdict(list)

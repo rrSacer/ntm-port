@@ -49,10 +49,12 @@ impl Reading {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Hazard {
     pub id: String,
     pub radiation_millirad_s: u32,
+    #[serde(default)] pub radiation_rad_s: f32,
+    #[serde(default)] pub fuel_target_rad_s: Option<f32>,
 }
 #[derive(Deserialize)]
 struct Table {
@@ -65,16 +67,17 @@ pub fn warm() {
 }
 
 /// The radioactive items (rate above zero) of the checked-in table.
+fn all_hazards() -> &'static [Hazard] {
+    static H: OnceLock<Vec<Hazard>> = OnceLock::new();
+    H.get_or_init(||serde_json::from_str::<Table>(include_str!("../data/hazards.json")).expect("checked-in hazard table").entries)
+}
 pub fn hazards() -> &'static [Hazard] {
     static H: OnceLock<Vec<Hazard>> = OnceLock::new();
-    H.get_or_init(|| {
-        serde_json::from_str::<Table>(include_str!("../data/hazards.json"))
-            .expect("checked-in hazard table")
-            .entries
-            .into_iter()
-            .filter(|h| h.radiation_millirad_s > 0)
-            .collect()
-    })
+    H.get_or_init(||all_hazards().iter().filter(|h|h.radiation_millirad_s>0).cloned().collect())
+}
+/// Includes fresh lithium's zero base: its life-dependent target is nonzero.
+pub fn fuel_hazard(id:&str)->Option<&'static Hazard> {
+    all_hazards().iter().find(|h|h.id==id && h.fuel_target_rad_s.is_some())
 }
 
 /// The bits of `radiation_millirad_s` some item has set, lowest first. Bit K
