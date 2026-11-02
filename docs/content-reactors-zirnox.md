@@ -30,6 +30,13 @@ três tanques, temperatura em °C, pressão em bar e o valor de redstone. O tool
 da barra mostra vida consumida e percentual sem usar dano vanilla. Os limites/filtros valem no menu nativo e na
 inserção por funil.
 
+A radiação de uma barra no inventário usa `HazardModifierFuelRadiation`:
+`base + (alvo-base)*(life/maxLife)^0,4`, preservando a ordem float/double Java e
+quantizando ao milliRAD/s da camada de radiação existente. Os 11 alvos são
+exportados como dados numéricos em `hazards.json`. Servidor e tooltip usam a mesma
+função; `NativeCarried.custom_data`, já disponível no motor, fornece `life` sem
+uma API nova. Até o lítio inicialmente não radioativo passa a emitir ao breeding.
+
 ## Falha e destroços
 
 A falha limpa os 28 slots, troca o núcleo por `zirnox_destroyed`, conserva sua base
@@ -41,7 +48,8 @@ persistência do mundo para nova tentativa.
 A quebra do destroço usa a loot table nativa para os seis drops Java: 6 concretos,
 4 tubos de aço, 2 grades, 6 detritos metálicos, 2 grafite e 4 fallout.
 
-A resistência do invólucro passou a 60 e a do destroço a 480, equivalentes aos
+A resistência do invólucro passou a 60 e a do destroço a 480, inclusive os proxies invisíveis específicos que usam o
+mesmo mecanismo barrier dos multiblocos existentes, equivalentes aos
 valores Java `setResistance(100)` e `setResistance(800)` após a escala 3/5 de
 `getExplosionResistance`. A resistência fallback 10 anterior deixava a própria
 explosão destruir o destroço. O destroço tem dureza 100, como a fonte.
@@ -52,6 +60,8 @@ gravidade 0,04, amortecimento 0,85/reflexão −0,5, tempo de vida de cada tipo 
 regra destrutiva dos tipos concreto/trocador ascendentes. Elementos/grafite
 renovam a contaminação de 60 s, amplificadores 7/4, numa vizinhança de 2,5 blocos.
 A dose reproduz `HbmPotion.radiation`: `(amplificador+1)*0,05 RAD` por tick.
+O padrão Java `dialEnablePermaScrap=true` mantém esses detritos permanentemente;
+o tempo de vida só expira quando essa propriedade salva é falsa.
 
 O destroço emite 500000 RAD por tick em chamas, 75000 apagado, divididos pela
 resistência acumulada no percurso de um bloco e pelo quadrado da distância aos
@@ -99,6 +109,7 @@ Dimensões fechadas congelam máquinas/detritos; nenhum acesso abre um nível.
 | `gas_meltdown`, `foam_layer` | Não estão no catálogo. A regra sorteia e conta emissões, exibidas por fumaça nativa; não cria um bloco fictício nem simula sua propagação. `block_foam` existente apaga o destroço. |
 | `AuxParticlePacketNT.rbmkflame`, som `hbm:block.rbmk_explosion` | Substituídos por chama/fumaça e sons de fogo/explosão nativos. |
 | `SatelliteRayScan`, conquista `achZIRNOXBoom`, `radMark`/elementais e `BossSpawnHandler.markFBI` | Sistemas correspondentes ausentes; não emitem evento/conquista/flag/spawn. |
+| `checkTilt(CONFIG,true)` | Os toggles de gravidade e o perfil 528 estão desligados na configuração Java padrão; este port mantém esse perfil, sem criar uma configuração de inclinação paralela. |
 | OpenComputers, EnergyControl e redstone-over-radio | Integrações de mods externos sem equivalente instalado. GUI e redstone locais funcionam. |
 | `waste` em chunks descarregados | A API existente acessa somente blocos carregados; esses pontos são ignorados, sem carregar/gerar chunks para o efeito. A transformação das posições carregadas segue o limite/ordem da fonte. |
 | `WasteEarth.canSustainPlant` | Blocos de terra usam o suporte a plantas do template vanilla; falta a restrição Java a plantas Cave. |
@@ -106,6 +117,76 @@ Dimensões fechadas congelam máquinas/detritos; nenhum acesso abre um nível.
 
 ## Verificação
 
-Em andamento: suíte Rust, Clippy, geração/testes Python e cenário descartável
-`tools/test-game/native_zirnox.py`. Os resultados e caminhos de evidências serão
-acrescentados após a execução completa; nenhuma prova em jogo é presumida.
+Base: `main` `df645f68`, motor `18eab7ab41e767d9e21dc4079cb2f21dbe116c95`,
+upstream congelado `2050c4e0f`. Build **release**, com `SKIP_UPSTREAM_CHECK=1`
+somente para esse snapshot; o pacote foi refeito com o empacotador do mesmo build.
+
+| Grupo | Resultado |
+| --- | --- |
+| Rust NTM | 319 unitários + 26 de integração, todos passaram; 2 doctests ignorados. |
+| Clippy NTM | `--workspace -- -D warnings`, passou. |
+| Clippy nativo transformado | Passou; somente `clippy::collapsible_if` isentado, como na validação anterior do motor (o transformador remove comentários do upstream). |
+| Python conteúdo | 218 testes, todos passaram, com `HORIZON_RESOURCES` apontando para os recursos 26.3. |
+| Build nativo final | Cargo release em 8min03s; conteúdo reempacotado, 9.103.867 bytes. |
+| ZIRNOX nativo | 95 verificações: 50 montagem, 2 dimensão, 6 conversões, 1 captura, 6 reabertura, 30 falha. |
+| Pilha nativa | 23 operação + 25 reabertura + 31 destruição; mais uma precondição de ar positivo. Roteiro original intacto. |
+| Dimensões | 6 montagem + 4 reabertura funcional + 2 idle + 1 idle-clean. Roteiro original intacto. |
+
+A suíte inclui 11 testes de modelo ZIRNOX e oito de servidor, cobrindo reação,
+vizinhança, breeding, peculiaridade de água/vapor, limites de falha, controle,
+portas, radiação por vida, recusa de gravação, retomada estrita e dimensões abertas
+ou fechadas. A extração condicional futura tem uma função pura testada.
+
+O driver reproduzível `tools/test-game/run-native-reactors.py` cria diretórios
+novos para mundo/configuração/cache e um Xvfb próprio, usa apenas comandos normais,
+cliques e recipientes e encerra os processos no final. Desliga o controle físico
+apenas nesse diretório descartável; não altera configurações do usuário.
+
+```sh
+agent-run env QUEUE=game python3 tools/test-game/run-native-reactors.py zirnox \
+  --binary /mnt/ssd120/sacer/horizon-ntm/.agent-tmp/zirnox/native-target/release/horizon-client \
+  --resources /home/sacer/Games/horizon/.local/horizon-client/26.3 \
+  --scratch-root /mnt/ssd120/sacer/horizon-ntm/.agent-tmp/zirnox
+```
+
+Trocar `zirnox` por `pile` ou `dims` para as regressões. `dims` executa também
+`idle` e `idle-clean`, cada qual em um mundo novo sem chunks forçados; `pile`
+repõe ar pelo contêiner antes da captura, exige ar
+positivo e mantém o roteiro original sem alterações.
+
+SHA-256 do cliente: `c37fb64d16a345629449a7e37884a4038cac6bf07cd8866ef0ec4e76ea009a05`.
+SHA-256 de `dist/ntm.hmod`: `4913a9f343001e38ffc35e67f77cdc11f97fc9d8daca3fbed590d21292474791`.
+
+
+A prova ZIRNOX não injeta estado de máquina nem `life`. O reator é colocado com
+seu item; as 24 barras e recipientes entram pela tela, os dutos são tipados com
+o identificador e o tempo avança por `/tick sprint` normal. Resultados medidos:
+
+- 38.837 mB de superhotsteam em tanques externos, com redução dos reservatórios de água.
+- Com o jogador confirmado no Nether forçado, `life` do Overworld avança de 2.520 para 4.320.
+- Li→trítio, Th232→combustível de tório e ZFB→esgotada por reação natural.
+- Após salvar, encerrar e reabrir, `life` avança estritamente de 42.943 para 43.473; mover a barra pelo cursor preserva a vida.
+- Uma segunda máquina sem refrigerante falha: destroço em chamas, quatro marcadores destruídos pela explosão, grama transformada em `waste_earth` e 64 detritos dos seis tipos ainda ativos.
+- Na regressão de dimensões, as duas máquinas retomadas carregam fornos novos (68.306 e 56.644 HE). Sem chunks forçados, o Nether fecha e salva em 17 s com leitor e também sem leitor.
+
+Evidências ficam em `.agent-tmp/zirnox/` relativamente à raiz do projeto:
+
+| Arquivo/pasta | Conteúdo |
+| --- | --- |
+| `validation.json` | Índice agregado, contagens, hashes, pins e ensaios reprovados. |
+| `zirnox-dcpmxt70/` | `report.json`, seis fases `native-zirnox-*.json` e sete capturas PNG. |
+| `pile-nhqiu8wb/` | Relatórios de montagem, captura, reabertura e destruição; ar positivo antes da captura. |
+| `dims-vhoibzxt/` | Montagem/reabertura com fontes e consumidores reais. |
+| `dims-idle-dt65izrb/`, `dims-idle-clean-j6pviyt0/` | Fechamento/salvamento em mundos independentes. |
+| `core-tests.log`, `core-clippy.log`, `python-tests.log`, `native-build.log`, `native-clippy.log`, `content-pack.log` | Logs de código e empacotamento. |
+
+A primeira execução da pilha reprovou a janela térmica de oito segundos
+(126,30→129,11 com ar); a repetição isolada passou o critério original
+(129,68→128,95). A causa da primeira reprovação não foi atribuída. O primeiro
+ensaio de idle foi descartado por manter o Nether forçado do setup; os ensaios
+aceitos usam mundos novos. Esses registros foram mantidos no índice agregado.
+
+O Xvfb emite o aviso conhecido de TAA indisponível e usa seu fallback. Esse aviso
+é registrado e excluído somente do detector de falhas de conteúdo; TAA não faz
+parte desta prova. Os clientes/Xvfb foram encerrados. Não houve instalação,
+merge, push ou uso de mundo do jogador.
