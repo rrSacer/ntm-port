@@ -193,10 +193,10 @@ escritas (teste `lite_persistence_skips_written_sections`).
 
 ## Efeitos (modo otimizado)
 
-Tudo por comandos vanilla que o client mod roda (`S2C::Run`, `execute in
-<dim>`), meia dúzia de linhas por explosão, qualquer que seja o raio:
+O servidor nativo emite partículas, sons e efeitos pelas APIs do Horizon,
+com uma quantidade limitada por explosão, qualquer que seja o raio:
 
-- `playsound` de explosão (volume pelo raio: ouvido a 16·volume blocos) e de
+- Som de explosão (volume pelo raio: ouvido a 16·volume blocos) e de
   trovão; o pavio aceso toca `entity.tnt.primed`;
 - `particle minecraft:flash{color:[…]}` (verde na balefire), `explosion_emitter`,
   e um "cogumelo" de `campfire_signal_smoke` (tronco) e `large_smoke` (copa);

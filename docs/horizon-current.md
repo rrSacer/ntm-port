@@ -44,4 +44,9 @@ permite uma compilação de teste. `SKIP_UPSTREAM_CHECK=1` só serve para repeti
 reproduzir uma revisão já selecionada; sem essa opção, toda execução consulta o
 Horizon oficial. O script não instala o jogo e não abre mundos do jogador.
 
-Validação desta atualização será registrada no artifact `horizon-atualizacao`.
+O antigo `tools/test-game/run-visual.sh` é do protótipo WebAssembly; para esta
+base, usar o executável produzido por `build-native.sh` com `dist/ntm.hmod`.
+Nos testes, configurar `HORIZON_HOME`, `HORIZON_LAUNCHER_HOME`, `XDG_DATA_HOME` e
+`XDG_CONFIG_HOME` em uma pasta descartável, com `HORIZON_NO_AUDIO=1`.
+
+Resultados e limites da validação estão no artifact `horizon-atualizacao`.
