@@ -144,10 +144,12 @@ def automation(g):
     """Java balancing at the side port; extraction at both port and core."""
     g.close();g.ground(245,101,8,width=18,height=9)
     core=tuple(place(g,'machine_radgen',250,101,8))
-    hopper=add(core,(2,0,0));nonport=add(core,(2,1,0))
+    # Opposite sides prevent the loading hopper from pulling the non-port
+    # fixture's stone through its bottom (ordinary vanilla hopper behavior).
+    hopper=add(core,(2,0,0));nonport=add(core,(-2,1,0))
     g.command('setblock '+pos_text(hopper)+' minecraft:hopper[facing=west]')
     g.command('item replace block '+pos_text(hopper)+' container.0 with ntm:gem_rad 24')
-    g.command('setblock '+pos_text(nonport)+' minecraft:hopper[facing=west]')
+    g.command('setblock '+pos_text(nonport)+' minecraft:hopper[facing=east]')
     g.command('item replace block '+pos_text(nonport)+' container.0 with minecraft:stone 1')
     deadline=time.monotonic()+40
     while time.monotonic()<deadline:
