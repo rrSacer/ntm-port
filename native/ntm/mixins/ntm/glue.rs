@@ -177,8 +177,11 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
         }
         if server.native_stirling_gear(&dim,core) == Some(&*held.item) {
             let mut host=Host{game,buttons:Vec::new()};
-            if server.native_stirling_repair(&mut host,&dim,core,&held.item) {
-                if let Some(h)=host.game.held_mut(){h.count-=1;if h.count==0{*host.game.held_mut()=None;}}
+            if server.native_stirling_repair(&mut host,&dim,core,&held.item)
+                && let Some(h)=host.game.held_mut()
+            {
+                h.count-=1;
+                if h.count==0{*host.game.held_mut()=None;}
             }
             return true;
         }

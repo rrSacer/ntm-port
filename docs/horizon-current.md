@@ -8,8 +8,8 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
-- Upstream incorporado: `2050c4e0f52b74ad5361f061e0a015e8bfc894b2` (snapshot congelado de 02/11/2026).
-- Motor de integração (pin): `18eab7ab41e767d9e21dc4079cb2f21dbe116c95`.
+- Upstream incorporado: `fc02103818c212920fd24aa34a2b2f91ba49e56f` (snapshot congelado de 03/11/2026).
+- Motor de integração (pin): `ec479adb3a66977b339672a7ff8747a7e951068e`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
   `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
@@ -244,3 +244,93 @@ Pendências: incorporar o upstream posterior ao snapshot em outra rodada; propor
 separadamente o conserto genérico do flash ao upstream; os três lints da cópia
 transformada continuam sendo uma diferença do transformador. Nenhum ajuste de API
 foi necessário no código Rust do NTM: esta adaptação altera apenas os pins e a documentação.
+
+## Quinta atualização — 03/11/2026, snapshot `fc0210381` — validado
+
+Snapshot congelado no início: `fc02103818c212920fd24aa34a2b2f91ba49e56f`, **1.242 commits** após `2050c4e0f`.
+Motor de integração: `ec479adb3a66977b339672a7ff8747a7e951068e`; base NTM: `cbcc3006d7661300133f9bbd0cb9a2f0610df1aa`.
+`SKIP_UPSTREAM_CHECK=1` foi usado somente para este snapshot; avanços posteriores
+ficam para outra rodada. Não houve push nem criação de subagentes.
+
+O merge resolveu dois arquivos: o fechamento criativo conserva o painel local e
+a limpeza oficial do foco de controle; os hooks de filtro e contêiner de item
+coexistem. Os três hooks locais passaram aos contratos e despachos do gerador
+tipado oficial. O atributo recursion_limit do snapshot quebra o mixins fixado:
+foi removido e os JSONs aninhados de mobs foram separados sem mudar seus campos.
+As novas fixtures upstream recebem filtros/modelos vazios, preservando suas asserções.
+
+As três isenções antigas de collapsible_if da fonte transformada foram eliminadas
+com condições equivalentes no motor. Clippy ainda encontrou uma quarta condição
+no glue Stirling, ajustada também. A rodada preliminar foi arquivada, e **toda a
+aceitação foi reiniciada com o release final**, um único cliente e pacote.
+
+| Extensão | Decisão em fc0210381 | Evidência e limite do mecanismo oficial |
+| --- | --- | --- |
+| OBJ, ossos, animações, líquidos, culling | Mantida | O novo `horizon-assets/obj.rs`/loader OBJ oficial resolve geometria estática/material para modelos baked. Não lê normais `vn` (o leitor local mantém normais por vértice) nem a composição por ossos, keyframes e líquidos sincronizados. A nova propriedade oficial render_shape seleciona a forma de desenho, mas não cobre por si só o noOcclusion/transparência e a descoberta automática dos arquivos horizon_model/liquid. Substituí-lo aqui degradaria iluminação/animação. |
+| Multiblocos | Mantida | Sem declaração oficial de volumes, dummies, núcleo, alcance e quebra conjunta equivalente. |
+| Contêiner de tamanho exato | Mantida | Os menus oficiais declarados (`horizon/menu`, já presentes em 2050c4e0f) permitem 1–256 slots. Exigem menu registrado e native_screen; o caminho local também atende contêiner de contagem exata sem registro/tela, e preserva os índices na previsão. Trocar apenas Kind perderia esse contrato; não há substituto novo neste intervalo. |
+| Filtros/limites compartilhados por slot | Mantida; despacho trocado pelo oficial | `menu_slot_rules` cobre menus. `Rules::may_pickup` agora protege cliques de hóspedes, mas não é política nativa compartilhada de extração por item/funil. `native_slot_filters` adotou contrato collect e despacho gerado oficial. |
+| Menu i32 e valores privados i64 | Mantidas | Os pacotes vanilla de menu ainda são i16. Attachments/EntityRef NBT não equivalem ao canal efêmero preciso exclusivo do dono nem aos pares de palavras existentes. |
+| Jogadores/inventário/dano/efeitos em lote por UUID | Mantida | EntityRef ganha velocidade, bounds, dados/tags; não substitui o conjunto de ações/consultas em lote por UUID do NTM. |
+| `visit_level` e `native_world_access` | Mantidas | `LevelRef` agora lê estados/propriedades/altura/tempo de níveis abertos, inclusive estacionados. Não oferece visita mutável completa, restauração em unwind, lote validado por inteiro, sinal de comparador/lid_openers e manutenção do idle/partículas. `native_edit_blocks` continua limitado ao nível em tick e sem updates de vizinhos. |
+| Assets montados | Mantida | `mod_image`, instance_dir e o novo loader OBJ não substituem leitura restrita a assets montados, aliases e listagem recursiva. |
+| Interação no núcleo multibloco | Mantida; despacho trocado pelo oficial | `right_click_block` não resolve núcleo/célula clicada e consumo entre as mãos. `native_use_block` adotou cancel/claimed no gerador oficial. |
+| Eventos e relayout de tela de BE | Mantida; despacho trocado pelo oficial | Eventos genéricos de tela não carregam bloco + dados i32 + relayout dos slots. `native_screen_event` adotou cancel/claimed e tipo exportado pelo mod_api oficial. |
+| Painel de receitas/foco criativo | Mantida | Novas categorias de receitas declaram tipos/ícones; o próprio contrato diz que ainda não adiciona tabs/displays. Não substitui o painel lateral/foco Recipes. Merge preserva também pad_clear_focus oficial. |
+| Flash (`lan_particles.rs`) | Mantida | Mudança oficial neste arquivo apenas troca partículas de blocos por track_explosion. ARGB de Flash continua ausente no encoder oficial. Roundtrip local branco/verde preservado. |
+| `[[module]] committed-world-updates` | Mantida | `Sim` e `Behaviours::sim` continuam pub(crate); `set_block` retorna false se o novo estado já foi publicado. Nenhuma entrada pública pós-publicação realiza as callbacks flag 3 depois de reter o conteúdo do BE atomicamente. O módulo delega ao Sim existente. |
+| `world_saved` | Oficial mantido, sem duplicação | API 306 existe no snapshot, hook chamado após save_level, save_parked_levels e metadata; wait indica flush. O bundle apenas injeta confirmação/limpeza dos recibos. Não é transação atômica mundo+arquivos do mod. |
+| Rede de BEs, componentes de itens, som/partículas, páginas criativas | Oficiais mantidos | Seguem os mecanismos oficiais já integrados. |
+
+Pendências auditadas:
+
+- `stillValid` por identidade do BE: #7973/#7880 acrescenta `BlockEntity::fits` e troca BEs incompatíveis com o bloco. `Slots::valid` ainda só verifica presença na coordenada e `still_valid` acrescenta alcance: não fixa identidade/geração da instância aberta. Correção útil incorporada, contrato completo continua pendente.
+- `can_take` condicional por item: #7845 propaga `Rules::may_pickup(slot, stack)` nos cliques de hóspedes e inclui regressões; a API 334 já existente `native_inventory_move_item(source, destination, item, cancel)` permite cancelar a transferência por item no funil (e 352 observa o começo da tentativa). É um recurso oficial útil para a automação futura, porém seu caminho curto exige trait mods registrados (`mods().is_empty()` pula a chamada em um bundle só de mixins). O funil em `game/machines.rs::can_take` continua baseado em outputs para contêiner de mod; ainda não há política única por slot/item/dados que cubra a previsão de menu, servidor e funil.
+- Fechar menus de BE: `native_close_menu` ainda recusa menus que não sejam `Slots::Native`; hooks `player_container_close` observam o fechamento. Não há helper oficial equivalente para fechar arbitrariamente o menu de BE do NTM por identidade.
+- Save atômico: autosave de arquivos dos jogadores sai da thread, falhas de save são reportadas/serializadas e world_saved(wait) permanece. Nenhuma transação entre regiões/metadata e os arquivos do mod; retém-se o protocolo NTM de efeitos/recibos e suas limitações de queda abrupta.
+- Entidades de mod: `EntityRef` agora fornece velocidade/on_ground/bounds/olho/distância, NBT, tags e nome, com handles por epoch; somadas a summon/displays/impactos existentes, ajudam a usar entidades vanilla. O conteúdo já permite entity_type derivado de snowball (item arremessado, dano fixo, rede e save por chunk); displays/falling blocks também já existem. São opções oficiais para projéteis simples, mas não equivalem à física, dano/térmica, recuperação e desenho dos detritos ZIRNOX. O intervalo não ampliou ENTITY_TEMPLATES além de snowball; não migrar os detritos cosméticos sem preservar esses contratos.
+
+Compatibilidade adicional: o snapshot introduz recursion_limit no crate root, rejeitado pelo mixins ddd9700 fixado (E_UNSUPPORTED_MACRO). Removido localmente conforme o mesmo mecanismo da PR oficial ainda aberta #8193, dividindo também os JSONs aninhados do controle de mobs para compilar no limite padrão; não se avançou o snapshot. O novo gerador exige mod_api para cada hook: os três hooks locais passam por contratos/despachos oficiais, sem alterar os pontos de injeção do NTM.
+
+| Verificação | Resultado |
+| --- | --- |
+| NTM | 369 unitários + 26 de integração passaram; 2 doctests continuam ignorados. |
+| Conteúdo Python | 218 passaram, recursos 26.3 explícitos. |
+| Motor, fonte original | 139 nativos; 36 menus; 34 render/mods; 66 conteúdo (incluindo os ignorados); 4 multiblocos; 2 i64; 3 partículas; 4 mod_api; 3 hooks tipados; 15 gerador. Todos passaram. Há sobreposição entre filtros; não somar como testes distintos. |
+| Clippy e formatação | Fonte original, NTM (all-targets) e cliente release transformado passaram com -D warnings e sem isenções. rustfmt passou. |
+| Updates flag 3 | Teste na cópia transformada passou: chest/redstone_block/stone comparados ao setBlock normal, conteúdo retido, luz/heightmaps, observer e lâmpada. |
+| Build | Release, 31 injeções e 6 módulos, incluindo Recipes. Conteúdo reempacotado com a ferramenta desse release. |
+| Mineração | 18 verificações, incluindo escavadeira, poço e torre de fracking. |
+| Bombas | 49 verificações, incluindo Little Boy/redstone, detonador e pavio. Nenhum erro de decode do flash. |
+| ZIRNOX | 110 verificações: montagem, inatividade, conversão, reabertura, falha e solos. Traço físico: uma explosão aplicada, centro [115,104,6], potência 12 e 72 detritos criados. |
+| Pile | 83 verificações, incluindo reabertura/destruição e precondição de ar positivo pela UI normal. |
+| Dimensões | 10 + 2 idle + 1 idle-clean; três mundos novos separados. |
+| Catálogo K3 | 340 verificações e 94 itens. |
+| Solar/Stirling | 15 verificações e 21 estados idênticos após encerrar/reabrir. |
+| Complementares em jogo | Prensa elétrica 7; eletrolisador 4; efeitos/dano de radiação 2. |
+| Recibos | Em cada um dos sete mundos dos roteiros nativos, machine_effects, applied_machine_effects, removals e prepared_retentions vazios após o encerramento normal. |
+
+
+Cliente: `.agent-tmp/zirnox/native-target/release/horizon-client`, SHA-256
+`912c112ffbf1d6743d878b0f66e7dcf1ca3e76ad572c764f7328f4a9abc940ae`. Conteúdo: `dist/ntm.hmod`, SHA-256 `eb96b19246c029df3be847d25c1ae068f88b177940a9b48cc9b00635dbcab631`,
+9.103.885 bytes (igual ao pacote da referência ZIRNOX atual).
+
+Evidências relativas à raiz do projeto: `.agent-tmp/upstream-fc021/`, especialmente
+`snapshot.json`, `validated-build.json`, `rust-results.json`, `game-summary.json`
+e logs. O agregado confere as mesmas fases, identidades e quantidades de checks de
+`.agent-tmp/zirnox/validation-generation.json`; os horários/ticks não são fixados. Quatro famílias de checks de UI incluem o número dinâmico de passos/polls no nome: o comparador normaliza somente esse sufixo e preserva a multiplicidade de cada asserção.
+A revisão estática pelo próprio executor está no artifact `revisao-upstream-fc021`.
+
+Os dez arquivos locais do usuário foram preservados byte a byte e ficaram fora do
+commit. Foram usados somente mundos descartáveis e Xvfb isolado. Os caches de
+jogo desta rodada foram removidos após extrair as provas; reutilizaram-se os
+caches Cargo existentes, sem criar targets adicionais. Os avisos de TAA no
+OpenGL/Xvfb continuam esperados; essa aceitação funcional/UI não valida TAA nem
+substitui a suíte completa de paridade vanilla.
+
+Pendências: incorporar futuros snapshots em outra rodada; enviar separadamente a
+correção genérica do flash ao upstream; acompanhar a correção oficial da
+compatibilidade recursion_limit/mixins (#8193); os contratos de stillValid por
+identidade, can_take unificado, fechamento de menu de BE, transação de save e
+entidades NTM continuam nos limites descritos acima. Nenhuma isenção de Clippy
+permaneceu nesta rodada.
