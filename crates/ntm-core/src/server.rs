@@ -136,6 +136,7 @@ struct Ready {
     broken:BTreeMap<Key,String>,
     pending_buttons:Vec<(String,String,Pos,u32)>,
     detonations:BTreeMap<Key,(String,container_bridge::Slots)>,
+    native_item_claims:BTreeMap<String,(u64,String,Option<Pos>)>,
     /// The state last written or seen, per machine.
     shown: BTreeMap<Key, String>,
     /// Machines and cables whose block was missing at the last check.

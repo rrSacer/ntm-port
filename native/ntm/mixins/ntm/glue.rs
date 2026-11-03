@@ -191,8 +191,9 @@ fn detonator(game: &mut crate::game::Game<'_>, target: Option<[i32; 3]>) -> bool
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
     let mut host = Host { game, buttons: Vec::new() };
+    eprintln!("ntm: detonator input: player={player} tick={} hand={:?} target={target:?}",host.game.ticks,host.game.hand);
     let Some(said) = server.native_detonator(&mut host, &player, target) else { return false };
-    host.tell(&player, &said);
+    if !said.is_empty(){host.tell(&player, &said);}
     true
 }
 

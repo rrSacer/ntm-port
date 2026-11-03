@@ -475,6 +475,7 @@ impl Server {
     pub fn native_detonator(&mut self, host: &mut impl ServerHost, id: &str, target: Option<Pos>) -> Option<String> {
         let p = self.players.iter().find(|p| p.id == id)?.clone();
         let on_bomb = target.filter(|t| matches!(self.ready.world.machines.get(&(p.dim.clone(), *t)).map(|m| &m.data), Some(Data::Bomb(_))));
+        if !self.native_claim_item(id,self.tick,native_server::DETONATOR,on_bomb){return Some(String::new());}
         Some(self.detonator(host, &p, on_bomb, on_bomb.is_some()))
     }
 
@@ -526,6 +527,8 @@ impl Server {
             // to the record): nothing goes off (revisão do M2, P2-10).
             return toast(self, "A bomba ligada não está mais lá.");
         }
+        if b.fuse.is_some(){return toast(self,"Pavio já aceso.");}
+        if self.ready.detonations.contains_key(&key){return toast(self,"Solicitação já pendente.");}
         let Some(expected)=host.machine_slots(&key.0,key.1) else{return toast(self,"Inventário da bomba indisponível.");};
         let mut observed=b;
         for (i,slot) in observed.slots.iter_mut().enumerate(){*slot=expected.get(i).and_then(Option::as_ref).filter(|s|s.count>0).map(|s|s.id.clone());}

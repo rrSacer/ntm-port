@@ -92,6 +92,14 @@ impl Server {
         self.keep_world(host);
     }
 
+    /// Match the engine's native_block_claim: a client may send another
+    /// hand/use before learning a server-only claim. Keep one tick of grace.
+    pub fn native_claim_item(&mut self,player:&str,tick:u64,item:&str,target:Option<Pos>)->bool {
+        self.ready.native_item_claims.retain(|_,(t,_,_)|tick.saturating_sub(*t)<=1);
+        if self.ready.native_item_claims.get(player).is_some_and(|(t,i,p)|tick.saturating_sub(*t)<=1&&i==item&&*p==target){return false;}
+        self.ready.native_item_claims.insert(player.into(),(tick,item.into(),target));true
+    }
+
     /// Native chat/console entry point. Administrative commands use the
     /// engine's operator level; matching a different command never claims it.
     pub fn native_bomb_command(&mut self,host:&mut impl ServerHost,who:&PlayerInfo,permission:u8,line:&str)->Option<Result<String,String>> {
@@ -601,6 +609,32 @@ mod tests {
         w.refuse_state=true;assert!(!server.native_stirling_repair(&mut w,OW,AT,"ntm:gear_large__iron"));assert_eq!(server.native_stirling_gear(OW,AT),Some("ntm:gear_large__iron"));assert!(w.saved.is_empty());
         w.refuse_state=false;assert!(server.native_stirling_repair(&mut w,OW,AT,"ntm:gear_large__iron"));assert_eq!(server.native_stirling_gear(OW,AT),None);assert!(w.saved.contains_key(&AT));
     }
+    #[test]
+    fn native_item_claims_deduplicate_only_the_same_player_item_and_intention() {
+        let mut w=World::default();let mut s=Server::native(&mut w,0);
+        assert!(s.native_claim_item("p",10,DETONATOR,None));
+        assert!(!s.native_claim_item("p",10,DETONATOR,None));
+        assert!(!s.native_claim_item("p",11,DETONATOR,None));
+        assert!(s.native_claim_item("q",11,DETONATOR,None));
+        assert!(s.native_claim_item("p",11,DETONATOR,Some(AT)));
+        assert!(s.native_claim_item("p",11,"other",Some(AT)));
+        assert!(s.native_claim_item("p",13,DETONATOR,None));
+    }
+
+    #[test]
+    fn a_duplicated_native_click_and_a_later_request_never_relight_a_fuse() {
+        let (mut w,mut s,p)=armed_bomb("ntm:dynamite");s.set_players(vec![p.clone()]);s.ready.detonations.clear();
+        let first=s.native_detonator(&mut w,&p.id,None).unwrap();assert_eq!(first,"Acendimento solicitado.");
+        assert_eq!(s.native_detonator(&mut w,&p.id,None),Some(String::new()));
+        assert_eq!(s.ready.detonations.len(),1);s.native_tick(&mut w,1);
+        let fuse=|s:&Server|match &s.ready.world.machines[&(OW.into(),AT)].data{Data::Bomb(b)=>b.fuse,_=>panic!()};
+        let initial=fuse(&s).unwrap();s.native_tick(&mut w,2);
+        assert_eq!(s.native_detonator(&mut w,&p.id,None).unwrap(),"Pavio já aceso.");
+        assert_eq!(fuse(&s),Some(initial-1));assert!(s.ready.detonations.is_empty());
+        assert_eq!(w.told.iter().filter(|t|t.as_str()=="Pavio aceso.").count(),1);
+        assert_eq!(s.ready.world.bombs.next,0);
+    }
+
     #[test]
     fn native_bomb_commands_require_operator_permission_and_keep_configuration() {
         let mut w=World::default();let mut s=Server::native(&mut w,0);
