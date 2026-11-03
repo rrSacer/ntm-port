@@ -30,7 +30,9 @@ def give_hand(g,item,count=1,slot=0):
 
 
 def inventory_tag(g):
-    return ' '.join(g.command('data get entity @s Inventory').get('chat',[]))
+    # 26.3 serializes equipped stacks outside the old Inventory list.
+    # Read the synchronized lossless stack components, including armor.
+    return json.dumps(g.ctl('inventory'),sort_keys=True)
 
 
 def setup(g):
