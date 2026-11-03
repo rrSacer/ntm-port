@@ -101,20 +101,22 @@ def setup(g):
     seen=[x for x in drained if x is not None]
     g.check('battery_comparator_falls_while_discharging',seen[-1]<seen[0] and all(y<=x for x,y in zip(seen,seen[1:])),drained)
 
-    # A second battery joins the cable at its end, as the pooled Java net lets a battery that holds charge
-    # feed one with room (`PowerNetMK2`: a buffer-mode battery is both a provider and a receiver): the first
-    # one's signal keeps falling, the new one's rises from 0.
+    # A second battery joins the cable at its end. Two batteries in buffer mode are both providers and
+    # receivers of the pooled Java net (`PowerNetMK2`) and settle at once, with equal weights, so the first
+    # is put in output mode by a redstone signal (`redHigh`): it only gives, the second takes. The first one's
+    # signal keeps falling, the new one's rises from 0.
     g.command('setblock %d %d %d ntm:machine_battery[facing=north]'%SECOND)
     build(g,SECOND)
     time.sleep(2)
+    g.command('setblock %d %d %d minecraft:redstone_block'%(a[0]-1,a[1],a[2]))
     first=[wire_power(g,reader_of(a))];second=[wire_power(g,reader_of(SECOND))]
     for _ in range(30):
         time.sleep(2)
         first.append(wire_power(g,reader_of(a)));second.append(wire_power(g,reader_of(SECOND)))
     g.evidence['battery_to_battery']={'first':first,'second':second}
     f=[x for x in first if x is not None];t=[x for x in second if x is not None]
-    g.check('second_battery_comparator_rises_from_the_first',t[0]==0 and t[-1]>t[0] and all(y>=x for x,y in zip(t,t[1:])),second)
-    g.check('first_battery_comparator_falls_into_the_second',f[-1]<f[0] and all(y<=x for x,y in zip(f,f[1:])),first)
+    g.check('second_battery_comparator_rises_from_the_first',t[0]<=1 and t[-1]>=t[0]+5 and all(y>=x for x,y in zip(t,t[1:])),second)
+    g.check('first_battery_comparator_falls_into_the_second',f[-1]<=f[0]-5 and all(y<=x for x,y in zip(f,f[1:])),first)
 
     # A tank fills with water barrels: each one lifts the signal strictly.
     tank_values=[wire_power(g,reader_of(TANK))]
