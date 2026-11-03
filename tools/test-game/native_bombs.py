@@ -49,7 +49,7 @@ def assemble(g, x):
     g.check('five_real_components',
             [s.get('item') for s in slots] == ['ntm:' + p for p in PARTS], slots)
     g.close()
-    state = machine(g, core)['data']['Bomb']
+    state = machine(g, core)['data']
     g.check('components_in_confirmed_state', state['slots'] == ['ntm:' + p for p in PARTS], state)
     return core
 
@@ -114,7 +114,7 @@ def charge(g, x, manual):
     g.evidence['phase'] = 'fuse-detonator' if manual else 'fuse-redstone'
     core = prepare(g, x, 'dynamite')
     start = detonator(g, core) if manual else lever(g, core)
-    fuse = machine(g, core)['data']['Bomb']['fuse']
+    fuse = machine(g, core)['data']['fuse']
     g.check('confirmed_fuse_before_explosion', isinstance(fuse, int) and 0 < fuse <= 80, fuse)
     g.check('charge_still_present_during_fuse', block(g, core) == 'ntm:dynamite', block(g, core))
     wait(g, 'fuse_caused_real_explosion',
