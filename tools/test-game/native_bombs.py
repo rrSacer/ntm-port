@@ -101,7 +101,7 @@ def nuke(g, x, manual):
     start = detonator(g, core) if manual else lever(g, core)
     cause = 'detonador' if manual else 'redstone'
     wait(g, 'real_nuke_admitted',
-         lambda: re.search(r'Little Boy at .*\(' + cause + r'\): explosion .*radius 12\n', log(g)[start:]) is not None,
+         lambda: re.search(r'ntm:nuke_boy at .*\(' + cause + r'\): explosion .*radius 12\n', log(g)[start:]) is not None,
          lambda: [l for l in log(g)[start:].splitlines() if 'Little Boy at' in l], 60)
     wait(g, 'bomb_and_components_consumed', lambda: block(g, core) == 'minecraft:air', lambda: block(g, core))
     below = (core[0], core[1]-1, core[2])
@@ -123,7 +123,7 @@ def charge(g, x, manual):
     g.check('confirmed_fuse_before_explosion', isinstance(fuse, int) and 0 < fuse <= 80, fuse)
     g.check('charge_still_present_during_fuse', block(g, core) == 'ntm:dynamite', block(g, core))
     wait(g, 'fuse_caused_real_explosion',
-         lambda: re.search(r'Dinamite at .*\(pavio\): power 8', log(g)[start:]) is not None,
+         lambda: re.search(r'ntm:dynamite at .*\(pavio\): power 8', log(g)[start:]) is not None,
          lambda: [l for l in log(g)[start:].splitlines() if 'Dinamite at' in l], 30)
     g.check('charge_removed', block(g, core) == 'minecraft:air', block(g, core))
     if manual:
