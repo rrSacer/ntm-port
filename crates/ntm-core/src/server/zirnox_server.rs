@@ -159,6 +159,9 @@ impl Server {
                 *n = n.saturating_add(1);
             }
         }
+        if host.trace_effects(){
+            host.log(&format!("ZIRNOX trace creation {}",serde_json::json!({"tick":self.tick,"world_tick":self.ready.world.ticks,"seed":s,"origin":origin,"debris":debris})));
+        }
         self.ready.world.zirnox.debris.extend(debris);
         self.ready.world.zirnox.waste.push(Waste {
             origin:Some(origin),
@@ -368,7 +371,9 @@ impl Server {
                             }
                         }
                     }
+                    let removed=host.trace_effects().then(||changes.iter().filter_map(|(p,_)|host.get_block(&d.dim,*p).filter(|b|blockstate::id_of(b)!="minecraft:air").map(|b|(*p,b))).collect::<Vec<_>>());
                     if host.set_blocks(&d.dim, &changes).is_ok() {
+                        if let Some(removed)=removed{host.log(&format!("ZIRNOX trace debris impact {}",serde_json::json!({"tick":self.tick,"world_tick":self.ready.world.ticks,"kind":d.kind,"age":d.age,"pos":d.pos,"velocity":d.velocity,"removed":removed})));}
                         d.removed = true;
                         continue;
                     }

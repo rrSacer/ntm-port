@@ -93,6 +93,9 @@ pub(super) fn world_saved(game:&mut crate::game::Game<'_>,wait:bool){
 /// A block changed on the server: kept when a machine or cable is in it.
 pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: [i32; 3], old: horizon_world::registry::BlockStateId, new: horizon_world::registry::BlockStateId) {
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
+    if trace_effects() && ["minecraft:oak_fence","minecraft:chest","minecraft:oak_log","minecraft:oak_planks"].contains(&old.as_str()){
+        eprintln!("ntm trace block {}",serde_json::json!({"tick":level.world.game_time,"dim":dim,"pos":pos,"old":old,"new":new}));
+    }
     let mut owned=lock(&OWNED_BLOCKS);
     if let Some(i)=owned.iter().position(|(d,p,n)|d==dim&&*p==pos&&n==ntm_core::blockstate::id_of(&new)) {owned.remove(i);return;}
     drop(owned);
@@ -102,6 +105,14 @@ pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: 
         lock(&POST_SYNC).retain(|(g,_)|g.dim!=dim||g.pos!=pos);
         lock(&CHANGES).push((dim.to_string(), pos, old, new));
     }
+}
+
+fn trace_effects()->bool{static TRACE:OnceLock<bool>=OnceLock::new();*TRACE.get_or_init(||std::env::var_os("NTM_TRACE_EFFECTS").is_some())}
+/// Existing API 22, observed without editing its toBlow list or RNG.
+pub(super) fn trace_explosion(game:&crate::game::Game<'_>,dim:&str,center:[f64;3],blocks:&[[i32;3]]){
+    if !trace_effects(){return;}
+    let targets:Vec<_>=blocks.iter().filter_map(|p|game.native_loaded_block(dim,*p).filter(|b|["minecraft:oak_fence","minecraft:chest","minecraft:oak_log","minecraft:oak_planks"].contains(&ntm_core::blockstate::id_of(b))).map(|b|(*p,b))).collect();
+    eprintln!("ntm trace explosion plan {}",serde_json::json!({"tick":game.world.game_time,"dim":dim,"center":center,"to_blow":blocks.len(),"wood_targets":targets}));
 }
 
 /// A menu button on a machine's screen.
@@ -484,6 +495,7 @@ impl Host<'_, '_> {
 }
 
 impl ServerHost for Host<'_, '_> {
+    fn trace_effects(&self)->bool{trace_effects()}
     fn cell_snapshot(&mut self,dim:&str,pos:[i32;3])->Option<ntm_core::server::CellSnapshot>{cell_snapshot(self.game,dim,pos)}
     fn drop_encoded_items(&mut self,dim:&str,pos:[i32;3],items:&[String])->bool{
         if self.game.native_loaded_block(dim,pos).is_none(){return false;}
@@ -508,7 +520,12 @@ impl ServerHost for Host<'_, '_> {
         Some(self.game.res.facts().get(world.block(p[0],p[1],p[2])).explosion_resistance)
     }
     fn zirnox_explode(&mut self, dim: &str, at: [f64;3]) -> bool {
-        in_place(self.game, dim, |g| g.native_explode(dim, at, 12.0, true, crate::game::native_explosions::NativeBlast::Block)).unwrap_or(false)
+        in_place(self.game, dim, |g|{
+            if trace_effects(){eprintln!("ntm trace ZIRNOX explosion call {}",serde_json::json!({"tick":g.world.game_time,"dim":dim,"center":at,"power":12}));}
+            let applied=g.native_explode(dim, at, 12.0, true, crate::game::native_explosions::NativeBlast::Block);
+            if trace_effects(){eprintln!("ntm trace ZIRNOX explosion result {}",serde_json::json!({"tick":g.world.game_time,"applied":applied}));}
+            applied
+        }).unwrap_or(false)
     }
     fn pile_explode(&mut self, dim: &str, at: [f64;3]) -> bool {
         in_place(self.game, dim, |g| g.native_explode(dim, at, 15.0, true, crate::game::native_explosions::NativeBlast::Block)).unwrap_or(false)

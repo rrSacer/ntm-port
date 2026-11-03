@@ -94,6 +94,8 @@ def run(args):
               'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
     if args.setup_only:
         phases[args.scenario] = [phases[args.scenario][0][:1]]
+    if args.failure_only:
+        phases['zirnox'] = [('failure',)]
     client = None
     try:
         if args.resume_reopen:
@@ -167,7 +169,11 @@ if __name__ == '__main__':
                         help='resume a completed first session using the identical binary and bundle')
     parser.add_argument('--setup-only', action='store_true',
                         help='only the first phase, for isolated baseline comparisons')
+    parser.add_argument('--failure-only', action='store_true',
+                        help='diagnostic ZIRNOX failure scene only; not full acceptance')
     arguments = parser.parse_args()
+    if arguments.failure_only and (arguments.scenario != 'zirnox' or arguments.setup_only or arguments.resume_reopen):
+        parser.error('--failure-only requires zirnox without setup/resume')
     if arguments.setup_only and arguments.resume_reopen:
         parser.error('--setup-only cannot resume a reopened session')
     run(arguments)

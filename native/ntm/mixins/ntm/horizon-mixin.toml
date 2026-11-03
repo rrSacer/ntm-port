@@ -364,3 +364,16 @@ id = "committed-world-updates"
 file = "crates/horizon-world/src/level/mod.rs"
 name = "ntm_committed_updates"
 source = "committed_updates.rs"
+
+[[injection]]
+id = "trace-explosion-readonly"
+hook = "explosion_detonate"
+hook_version = 1
+kind = "HEAD"
+helper = "trace_explosion.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "dimension", ty = "&str", value = "dimension" },
+  { name = "center", ty = "[f64; 3]", value = "center" },
+  { name = "blocks", ty = "&[[i32; 3]]", value = "&*blocks" },
+]

@@ -70,6 +70,7 @@ impl<H: ServerHost> Kv for Deferred<'_, H> {
     fn delete(&mut self, _: &str) {}
 }
 impl<H: ServerHost> ServerHost for Deferred<'_, H> {
+    fn trace_effects(&self)->bool{self.host.trace_effects()}
     fn get_block(&mut self, d: &str, p: Pos) -> Option<String> {
         if self.resource && !self.cells.contains_key(&(d.into(),p)) {
             let snapshot=self.host.cell_snapshot(d,p)?;

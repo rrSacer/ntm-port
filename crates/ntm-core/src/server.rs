@@ -32,6 +32,8 @@ pub trait ServerHost: Kv {
     fn set_machine_blocks(&mut self,dim:&str,blocks:&[(Pos,String)],_owners:&[(String,Pos)])->Result<(),String>{self.set_blocks(dim,blocks)}
     fn tell(&mut self, player: &str, text: &str);
     fn log(&mut self, text: &str);
+    /// Read-only diagnostic logging; never changes simulation or RNG.
+    fn trace_effects(&self)->bool{false}
     /// Saved sky light, weather/time subtraction, and visibility at y+1.
     /// Pile rod ejection deliberately removes depletion, as the Java does.
     fn pile_drop(&mut self, dim: &str, p: Pos, item: &str) -> bool { self.drop_items(dim,p,&[(item.into(),1)]) }
