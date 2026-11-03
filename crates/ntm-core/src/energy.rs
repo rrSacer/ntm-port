@@ -155,7 +155,14 @@ pub fn distribute(nodes: &mut [&mut dyn EnergyNode]) -> u64 {
         (&providers, &consumers),
         (&providers, &storage),
         (&storage, &consumers),
+        // `PowerNetMK2.update` pools every provider and every receiver, and a battery in buffer mode
+        // is in both sets: one holding charge feeds another with room. A lone one would only pass
+        // energy to itself.
+        (&storage, &storage),
     ] {
+        if from == to && from.len() < 2 {
+            continue;
+        }
         let amount = transfer(&mut offer, &mut demand, from, to, nodes);
         moved += amount;
     }
@@ -329,6 +336,27 @@ mod tests {
         con.max = 1000;
         let moved = distribute(&mut [&mut generation, &mut con, &mut bat]);
         assert_eq!((con.power, bat.power, moved), (60, 20, 30));
+    }
+
+    /// Two batteries that both give and take exchange energy through the cable, as the Java's pooled
+    /// `PowerNetMK2` does (a full one feeds an empty one); a battery in input mode only takes.
+    #[test]
+    fn batteries_exchange_energy_with_each_other() {
+        let mut a = N { role: Role::Storage, power: 1000, max: 1000, rate: 50 };
+        let mut b = N { role: Role::Storage, power: 0, max: 1000, rate: 50 };
+        distribute(&mut [&mut a, &mut b]);
+        assert_eq!((a.power, b.power), (950, 50));
+        for _ in 0..40 {
+            distribute(&mut [&mut a, &mut b]);
+        }
+        // Nothing is lost on the way, and the empty one kept what it got: as in the pooled Java net,
+        // two batteries with equal offer and room weigh the same and stop trading.
+        assert_eq!(a.power + b.power, 1000);
+        assert!(b.power >= 50, "{} {}", a.power, b.power);
+        // One battery alone moves nothing.
+        let mut lone = N { role: Role::Storage, power: 500, max: 1000, rate: 50 };
+        assert_eq!(distribute(&mut [&mut lone]), 0);
+        assert_eq!(lone.power, 500);
     }
 
     #[test]
