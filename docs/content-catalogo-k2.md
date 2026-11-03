@@ -1,6 +1,6 @@
 # Catálogo em massa K2: consumíveis, kits e materiais soltos
 
-Entram 116 itens, levando o catálogo a 3.191 (593 blocos e 2.598 itens). Todos são itens inertes: identidade, textura, nome (en_US e pt_BR) e os hooks do fonte listados como lacuna. Nenhum precisa de registro nativo.
+Entram 116 itens, levando o catálogo a 3.191 (593 blocos e 2.598 itens). Na importação K2, todos entraram como itens inertes: identidade, textura, nome (en_US e pt_BR) e os hooks do fonte listados como lacuna. A fundação de hooks ativa um lote representativo, descrito abaixo.
 
 ## Reconhecimento genérico de classes de item (bulk.py)
 
@@ -40,3 +40,14 @@ Receitas que dependiam desses itens e estavam em `skipped` passaram a resolver: 
 ## Prova e validação
 
 `verify-catalog-batch.py` entrega os 116 itens pelo inventário no binário nativo, mudo, com detector de rejeição: 116 IDs, 144 conferências, sem `reject` nem `panic` no log do cliente. 208 testes por seed 1/42 (inclui as regras de classe de item em `test_bulk_forms.py`), `validate-bulk` e `recipe-gen/validate` verdes. Pacote `ntm.hmod` SHA-256 `353fa287a9cd1b20ae6eceed2775a7aafe94bf47f8d20389ab6c390f09e0ff6c` (sobre o K1), aprovado no check do upstream e do fork.
+
+
+## Lote representativo de hooks (em validação)
+
+`cotton_candy`, `syringe_metal_medx`, `hazmat_kit` e `gas_mask_filter` usam
+agora a API nativa de uso/estado. O lote acrescenta `radaway`, `iv_empty`,
+M65, quatro peças hazmat amarelas e `attachment_mask`, com a mesa de
+modificação. O uso de coleta de sangue de `iv_empty` continua fora do lote.
+Os demais consumíveis K2 não foram ativados. Contratos e evidências atuais
+estão em [Hooks nativos de item](native-item-hooks.md) e no artifact `item-hooks`;
+as provas históricas acima dizem respeito à importação do catálogo.
