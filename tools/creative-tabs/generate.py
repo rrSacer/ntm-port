@@ -62,6 +62,16 @@ def source_tabs(ntm_src: Path):
         items=(ntm_src/'src/main/java/com/hbm/items/ModItems.java').read_text()
         for var in re.findall(r'\b(hand_drill(?:_desh)?)\s*=\s*new ItemTooling\(',items):
             out[var]=(BY_SOURCE[match[1]][1],order);order+=1
+    # ItemSimpleConsumable assigns its creative tab in the constructor.
+    # Its factory lambdas contain semicolons, so statement splitting cannot
+    # recover their assignments. Read only the declared constructor family.
+    factory=ntm_src/'src/main/java/com/hbm/items/special/ItemSimpleConsumable.java'
+    if factory.exists():
+        text=factory.read_text()
+        tab=re.search(r'setCreativeTab\(MainRegistry\.(\w+)\)',text)
+        if tab and tab[1] in BY_SOURCE:
+            for var in re.findall(r'ModItems\.(\w+)\s*=\s*new ItemSimpleConsumable\(',text):
+                out[var]=(BY_SOURCE[tab[1]][1],order);order+=1
     return out
 
 
