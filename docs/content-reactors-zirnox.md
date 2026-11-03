@@ -38,7 +38,7 @@ qualquer item, uma unidade por slot; só a automação (`isItemValidForSlot`) e 
 shift-click (`transferStackInSlot`, via `quick_move`) ficam restritos às barras.
 Os slots 24 e 25 também são `Slot` vanilla: mão livre e só o recipiente do fluido
 certo pelo shift-click. Como no Java (`mergeItemStack(24, 26)` e `(26, 28)`, que alcançam os `SlotTakeOnly`),
-o recipiente de CO₂ vai ao slot 24 e, se ocupado, transborda para o 26; o de água, ao 25 e depois ao 27. Recipientes 24..27
+o recipiente de CO₂ vai ao slot 24 e, se ocupado, transborda para o 26; o de água, ao 25 e depois ao 27. As barras entram de trás para a frente (`mergeItemStack(0, 24, true)`, `quick_reverse`): o primeiro slot livre é o último. Recipientes 24..27
 só são acessíveis pela tela, como os slots acessíveis Java. Ver o
 [contrato do hook e das origens Manual/Automation](native-slot-policy.md).
 
