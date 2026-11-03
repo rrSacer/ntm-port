@@ -196,6 +196,21 @@ fn detonator(game: &mut crate::game::Game<'_>, target: Option<[i32; 3]>) -> bool
     true
 }
 
+/// Use the engine's registered server command/permission/feedback path.
+pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::NativeServerPlayer,line:&str)->bool {
+    if line.split_whitespace().next()!=Some("ntmbomba"){return false;}
+    let who=PlayerInfo{id:game.native_actor_uuid().unwrap_or_else(||player.uuid.to_string()),name:player.name.clone(),dim:player.dimension.clone(),pos:player.position,creative:player.game_mode==1};
+    let mut guard=lock(&SERVER);
+    let mut host=Host{game,buttons:Vec::new()};
+    let (server,_)=guard.get_or_insert_with(||(Server::native(&mut host,0),0));
+    if let Some(reply)=server.native_bomb_command(&mut host,&who,player.permission,line){
+        let text=reply.unwrap_or_else(|e|format!("Erro: {e}"));
+        for line in text.lines(){host.game.native_feedback(horizon_client::text::Text::literal(line));}
+        return true;
+    }
+    false
+}
+
 /// The end of a server tick: the server's phases.
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
     let mut guard = lock(&SERVER);

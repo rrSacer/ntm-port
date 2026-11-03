@@ -92,6 +92,16 @@ impl Server {
         self.keep_world(host);
     }
 
+    /// Native chat/console entry point. Administrative commands use the
+    /// engine's operator level; matching a different command never claims it.
+    pub fn native_bomb_command(&mut self,host:&mut impl ServerHost,who:&PlayerInfo,permission:u8,line:&str)->Option<Result<String,String>> {
+        let line=line.trim();
+        let mut words=line.splitn(2,char::is_whitespace);
+        if words.next()!=Some("ntmbomba"){return None;}
+        if permission<2{return Some(Err("Este comando exige operador nível 2.".into()));}
+        Some(self.bomb_command(host,Some(who),words.next().unwrap_or_default().trim()))
+    }
+
     /// Record confirmed changes without simulating a machine. The native save
     /// callback also uses this when a player quits between two server ticks.
     pub fn native_record_events(&mut self,host:&mut impl ServerHost){
@@ -591,6 +601,20 @@ mod tests {
         w.refuse_state=true;assert!(!server.native_stirling_repair(&mut w,OW,AT,"ntm:gear_large__iron"));assert_eq!(server.native_stirling_gear(OW,AT),Some("ntm:gear_large__iron"));assert!(w.saved.is_empty());
         w.refuse_state=false;assert!(server.native_stirling_repair(&mut w,OW,AT,"ntm:gear_large__iron"));assert_eq!(server.native_stirling_gear(OW,AT),None);assert!(w.saved.contains_key(&AT));
     }
+    #[test]
+    fn native_bomb_commands_require_operator_permission_and_keep_configuration() {
+        let mut w=World::default();let mut s=Server::native(&mut w,0);
+        let p=PlayerInfo{id:"p".into(),name:"p".into(),dim:OW.into(),pos:[0.,64.,0.],creative:true};
+        assert!(s.native_bomb_command(&mut w,&p,4,"ntmbomba_extra status").is_none());
+        assert!(s.native_bomb_command(&mut w,&p,1,"ntmbomba config mundo raiomax 12").unwrap().is_err());
+        assert!(s.ready.world.bombs.cfg.is_none());
+        let reply=s.native_bomb_command(&mut w,&p,2,"ntmbomba config mundo raiomax 12").unwrap().unwrap();
+        assert!(reply.contains("raiomax 12"));assert_eq!(s.bomb_config(&mut w).max_radius,12);
+        s.native_tick(&mut w,1);s.native_world_saved(&mut w,true);
+        let mut reopened=Server::native(&mut w,2);assert_eq!(reopened.bomb_config(&mut w).max_radius,12);
+        assert!(reopened.native_bomb_command(&mut w,&p,4,"ntmbomba").unwrap().unwrap().starts_with("Bombas:"));
+    }
+
     #[test]
     fn a_clean_save_between_break_and_tick_preserves_hidden_contents_without_repeating_engine_slots() {
         let block="ntm:machine_crucible";
