@@ -203,10 +203,7 @@ impl Server {
             }
             let rad = if z.on_fire { 500000. } else { 75000. };
             let amount = (rad / resistance.max(1.) / (len * len) * 1000.) as u64;
-            crate::radiation::add_dose(
-                self.ready.world.radiation.entry(p.id.clone()).or_default(),
-                amount,
-            );
+            self.expose_player(host,&p.id,amount);
             let rate = self
                 .ready
                 .zirnox_radiation_rate
@@ -429,10 +426,12 @@ impl Server {
         for (id, (remaining, level)) in &mut self.ready.world.zirnox.irradiated {
             if let Some(p) = self.players.iter().find(|p| p.id == *id) {
                 if !p.creative {
-                    crate::radiation::add_dose(
-                        self.ready.world.radiation.entry(id.clone()).or_default(),
-                        (u64::from(*level) + 1) * 50,
-                    );
+                    let expected=host.player_dose(id,&self.ready.world.radiation.get(id).cloned().unwrap_or_default());
+                    if let Some(expected)=expected {
+                        let mut desired=expected.clone();
+                        crate::radiation::add_dose(&mut desired,((u64::from(*level)+1) as f64*50.0*host.radiation_factor(id)) as u64);
+                        if host.commit_player_dose(id,&expected,&desired){self.ready.world.radiation.insert(id.clone(),desired);}
+                    }
                     let rate = self
                         .ready
                         .zirnox_radiation_rate

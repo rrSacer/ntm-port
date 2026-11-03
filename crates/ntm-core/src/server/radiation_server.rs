@@ -10,6 +10,20 @@ use crate::radiation::{self, Harm};
 pub const RATE_EVERY: u64 = 20;
 
 impl Server {
+    pub fn player_dose(&self,id:&str)->radiation::Dose {self.ready.world.radiation.get(id).cloned().unwrap_or_default()}
+    pub(super) fn update_player_dose<T>(&mut self,host:&mut impl ServerHost,id:&str,change:impl FnOnce(&mut radiation::Dose)->T)->Option<T> {
+        let expected=host.player_dose(id,&self.player_dose(id))?;
+        let mut desired=expected.clone();
+        let result=change(&mut desired);
+        if !host.commit_player_dose(id,&expected,&desired){return None;}
+        self.ready.world.radiation.insert(id.into(),desired);
+        Some(result)
+    }
+    pub(super) fn expose_player(&mut self,host:&mut impl ServerHost,id:&str,amount:u64) {
+        let factor=host.radiation_factor(id);
+        let amount=(amount as f64*factor) as u64;
+        self.update_player_dose(host,id,|dose|radiation::add_dose(dose,amount));
+    }
     pub(super) fn radiation_tick(&mut self, host: &mut impl ServerHost) {
         let tick = self.tick;
         if !tick.is_multiple_of(RATE_EVERY) {
@@ -20,20 +34,15 @@ impl Server {
             let carried = host.inventory_stacks(&p.id).unwrap_or_default();
             let held = carried.iter().fold(0u64,|sum,s|sum.saturating_add(crate::zirnox::radiation_rate(s).or_else(||crate::radioisotopes::radiation_rate(s)).map_or_else(||radiation::rate_of([(s.id.as_str(),s.count)]),|rate|u64::from(rate)*u64::from(s.count))));
             let held = u32::try_from(held).unwrap_or(u32::MAX);
-            let r = &mut self.ready;
-            let now = r.world.ticks;
-            let zones = r.world.bombs.zones.iter().map(|z| z.rate(&p.dim, p.pos, now)).fold(0u32, u32::saturating_add);
+            let now = self.ready.world.ticks;
+            let zones = self.ready.world.bombs.zones.iter().map(|z| z.rate(&p.dim, p.pos, now)).fold(0u32, u32::saturating_add);
             let grace = self.blasts.entered.get(&p.id).is_none_or(|t| tick.saturating_sub(*t) < radiation::GRACE_TICKS);
-            let dose = r.world.radiation.entry(p.id.clone()).or_default();
-            // Creative and spectator players aren't contaminated
-            // (`ContaminationUtil`); the Geiger still reads the rate.
-            let harms = if p.creative || grace {
-                Vec::new()
-            } else {
-                radiation::accumulate(dose, held);
-                radiation::sickness(dose)
-            };
-            let shown = (i64::try_from(dose.millirad).unwrap_or(i64::MAX), i64::from(held.saturating_add(zones).saturating_add(r.zirnox_radiation_rate.get(&p.id).copied().unwrap_or(0))));
+            let protected = (f64::from(held)*host.radiation_factor(&p.id)) as u32;
+            let Some(harms) = self.update_player_dose(host,&p.id,|dose| {
+                if p.creative || grace {Vec::new()} else {radiation::accumulate(dose,protected);radiation::sickness(dose)}
+            }) else {continue};
+            let dose = &self.ready.world.radiation[&p.id];
+            let shown = (i64::try_from(dose.millirad).unwrap_or(i64::MAX), i64::from(held.saturating_add(zones).saturating_add(self.ready.zirnox_radiation_rate.get(&p.id).copied().unwrap_or(0))));
             for h in harms {
                 match h {
                     Harm::Effect { id, amplifier, seconds } => host.effect(&p.id, id, seconds, amplifier),
@@ -70,6 +79,39 @@ mod tests {
         fn log(&mut self,_:&str){}
         fn inventory_stacks(&mut self,_:&str)->Option<Vec<Stack>>{Some(self.carried.clone())}
         fn set_player_value(&mut self,_:&str,key:&str,value:i64){self.shown.insert(key.into(),value);}
+    }
+    #[test]
+    fn persistent_dose_wins_over_legacy_and_rejected_commit_publishes_nothing() {
+        struct Persistent {inner:Host,dose:Option<crate::radiation::Dose>,reject:bool}
+        impl Kv for Persistent {
+            fn get(&mut self,k:&str)->Option<Vec<u8>>{self.inner.get(k)}
+            fn set(&mut self,k:&str,v:&[u8])->Result<(),String>{self.inner.set(k,v)}
+            fn delete(&mut self,k:&str){self.inner.delete(k)}
+        }
+        impl ServerHost for Persistent {
+            fn get_block(&mut self,_:&str,_:Pos)->Option<String>{None}
+            fn set_blocks(&mut self,_:&str,_:&[(Pos,String)])->Result<(),String>{Ok(())}
+            fn tell(&mut self,_:&str,_:&str){}
+            fn log(&mut self,_:&str){}
+            fn player_dose(&mut self,_:&str,legacy:&crate::radiation::Dose)->Option<crate::radiation::Dose>{Some(self.dose.clone().unwrap_or_else(||legacy.clone()))}
+            fn commit_player_dose(&mut self,_:&str,expected:&crate::radiation::Dose,desired:&crate::radiation::Dose)->bool {
+                if self.reject || self.dose.as_ref().is_some_and(|d|d!=expected){return false;}
+                self.dose=Some(desired.clone());true
+            }
+        }
+        let mut h=Persistent{inner:Host::default(),dose:None,reject:false};
+        let mut s=Server::native(&mut h,0);
+        s.ready.world.radiation.insert("p".into(),crate::radiation::Dose{millirad:123_000});
+        s.update_player_dose(&mut h,"p",|d|radiation::add_dose(d,7_000));
+        assert_eq!(h.dose.as_ref().unwrap().millirad,130_000);
+        // Simulate reopening against an older independent world/KV save.
+        let mut reopened=Server::native(&mut h,0);
+        reopened.update_player_dose(&mut h,"p",|d|d.millirad=d.millirad.saturating_sub(1_000));
+        assert_eq!(reopened.player_dose("p").millirad,129_000);
+        h.reject=true;
+        assert!(reopened.update_player_dose(&mut h,"p",|d|d.millirad=0).is_none());
+        assert_eq!(h.dose.as_ref().unwrap().millirad,129_000);
+        assert_eq!(reopened.player_dose("p").millirad,129_000);
     }
     #[test]
     fn carried_pellet_rate_uses_custom_long_not_fresh_catalog_rate() {

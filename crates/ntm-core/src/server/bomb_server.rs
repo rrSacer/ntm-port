@@ -169,7 +169,7 @@ impl Server {
             }
         }
         if tick.is_multiple_of(20) {
-            self.area_dose();
+            self.area_dose(host);
         }
         if tick.is_multiple_of(200)
             && let Some(r) = self.ready()
@@ -400,9 +400,7 @@ impl Server {
             if millirad == 0 {
                 continue;
             }
-            if let Some(r) = self.ready() {
-                radiation::add_dose(r.world.radiation.entry(p.id.clone()).or_default(), millirad);
-            }
+            self.expose_player(host,&p.id,millirad);
             host.log(&format!("blast radiation: {} RAD to {}", millirad / 1000, p.name));
         }
     }
@@ -434,7 +432,7 @@ impl Server {
     /// One second of the fallout zones' radiation, for each player in one:
     /// the server knows where they are, so this needs no sample from the
     /// client (`radiation_done` only shows the rate in the Geiger).
-    fn area_dose(&mut self) {
+    fn area_dose(&mut self,host:&mut impl ServerHost) {
         // A carência de entrada da amostra do inventário vale aqui também,
         // por jogador: desde quando cada um está no mundo.
         let tick = self.tick;
@@ -447,16 +445,7 @@ impl Server {
             .map(|p| (p.id.clone(), self.area_rate(&p.id)))
             .filter(|(_, r)| *r > 0)
             .collect();
-        let Some(r) = self.ready() else { return };
-        for (id, rate) in doses {
-            let dose = r.world.radiation.entry(id).or_default();
-            let before = dose.millirad;
-            radiation::add_dose(dose, u64::from(rate));
-            // A sickness threshold (every 200 RAD) is saved at once, as the
-            // inventory's dose does.
-            if before / 200_000 != dose.millirad / 200_000 {
-            }
-        }
+        for (id, rate) in doses { self.expose_player(host,&id,u64::from(rate)); }
     }
 
     /// Area radiation at the player's place now (milliRAD/s).

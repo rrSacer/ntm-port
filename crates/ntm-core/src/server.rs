@@ -98,6 +98,10 @@ pub trait ServerHost: Kv {
     fn inventory(&mut self, _id: &str) -> Option<Vec<(String, u32)>> {
         None
     }
+    /// Persistent player-file dose; old hosts retain the world-state adapter.
+    fn player_dose(&mut self, _id:&str, legacy:&crate::radiation::Dose)->Option<crate::radiation::Dose>{Some(legacy.clone())}
+    fn commit_player_dose(&mut self,_id:&str,_expected:&crate::radiation::Dose,_desired:&crate::radiation::Dose)->bool{true}
+    fn radiation_factor(&mut self,_id:&str)->f64{1.0}
     /// Damage to player `id` of a registered type (`minecraft:magic`); the
     /// host skips creative and spectator players.
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
