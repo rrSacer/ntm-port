@@ -463,3 +463,13 @@ Motor `d5eb69a33a5c2d137d620865dd1e39e1e31aa38c`.
 - **Observação, não alterada:** no Java a bateria nova começa com `redLow = 0` (entrada apenas) e `redHigh = 2` (saída com redstone);
   o port começa em Buffer/Saída. Mudar isso quebraria os fluxos existentes (a bateria criativa alimentando máquinas sem redstone);
   fica registrado para uma decisão de produto.
+
+Validação desta rodada (binário `ec4feef1ac29177e5dd6f126cdf1229e2d77fa857b737e41b2478bac6f25966c`, pacote `b18682da…f06e`):
+
+- Motor: 139 `native_`, 47 `menu::tests::`, 23 de `lan::menu`, 18 `lan_bot`, 7 `block_entities`, 35 `mod_`; Clippy `-D warnings` e `fmt` limpos.
+- NTM: 417 testes (2 ignorados), Clippy do workspace e do stage sem isenções.
+- Em jogo, sem falhas: dims 14, zirnox 136, inventory-proxy 12, radioisotopes 67, bombs 49, pile 85, dims-idle 2, dims-idle-clean 1,
+  mining 18, solar 36, combustion 15, catalog 251, comparator 9 (inclui a transferência bateria→bateria).
+- `pile` falhou uma vez em `meltdown_dismantles_pile` (4 células restantes depois da explosão do meltdown) numa bateria completa e passou
+  em duas reexecuções; o cenário depende da explosão e do varrimento de órfãos e não usa baterias nem a ordem do shift-click. Não é
+  atribuível a estas mudanças, mas fica registrado como intermitente.
