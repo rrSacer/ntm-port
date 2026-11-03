@@ -166,7 +166,7 @@ evidência (`native-items-setup.json`, `-capture-state.json`, `-check-state.json
 
 | Roteiro `items` | Checks |
 | --- | --- |
-| `setup` (41): CAS nativo com recusa e repetição, comer com animação real, cancelar sem consumir, fome/saturação, cinco efeitos, seringa em inventário cheio e com espaço, kit hazmat, filtro instalado uma vez, desgaste por exposição, blacklist da máscara, gama com máscara/hazmat, RadAway (total exato e `iv_empty`), mesa real (14 slots, inserir, shift-click, remover, fechar conservando) | 24 |
+| `setup` (41): CAS nativo com recusa e repetição, comer com animação real, cancelar sem consumir, fome/saturação, cinco efeitos, seringa com espaço, kit hazmat, filtro instalado uma vez, desgaste por exposição, blacklist da máscara, gama com máscara/hazmat, RadAway (total exato e `iv_empty`), mesa real (14 slots, inserir, shift-click, remover, fechar conservando) e 18 checks de inventário cheio, um caso por item do lote (abaixo) | 41 |
 | `capture-state`: mesa preparando a peça com mod, RadAway acumulado | 6 |
 | `check-state` depois de fechar e reabrir o mundo: dose sem repetir tratamento, desgaste do filtro e carga, mods da armadura | 3 |
 
