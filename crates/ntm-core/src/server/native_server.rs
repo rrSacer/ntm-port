@@ -93,10 +93,12 @@ impl Server {
     }
 
     /// Match the engine's native_block_claim: a client may send another
-    /// hand/use before learning a server-only claim. Keep one tick of grace.
+    /// hand/use before learning a server-only claim. A claimed useOn also
+    /// suppresses its predicted-PASS Item.use fallback in the same hand.
+    /// Keep the engine precedent's one tick of grace.
     pub fn native_claim_item(&mut self,player:&str,tick:u64,item:&str,target:Option<Pos>)->bool {
         self.ready.native_item_claims.retain(|_,(t,_,_)|tick.saturating_sub(*t)<=1);
-        if self.ready.native_item_claims.get(player).is_some_and(|(t,i,p)|tick.saturating_sub(*t)<=1&&i==item&&*p==target){return false;}
+        if self.ready.native_item_claims.get(player).is_some_and(|(t,i,p)|tick.saturating_sub(*t)<=1&&i==item&&(*p==target||(p.is_some()&&target.is_none()))){return false;}
         self.ready.native_item_claims.insert(player.into(),(tick,item.into(),target));true
     }
 
@@ -619,6 +621,21 @@ mod tests {
         assert!(s.native_claim_item("p",11,DETONATOR,Some(AT)));
         assert!(s.native_claim_item("p",11,"other",Some(AT)));
         assert!(s.native_claim_item("p",13,DETONATOR,None));
+    }
+
+    #[test]
+    fn a_native_link_ignores_its_client_item_use_fallback_without_arming() {
+        let (mut w,mut s,p)=armed_bomb("ntm:dynamite");s.set_players(vec![p.clone()]);s.ready.detonations.clear();
+        assert!(s.native_detonator(&mut w,&p.id,Some(AT)).unwrap().contains("ligado"));
+        assert_eq!(s.native_detonator(&mut w,&p.id,None),Some(String::new()));
+        s.native_tick(&mut w,1);
+        assert_eq!(s.native_detonator(&mut w,&p.id,None),Some(String::new()));
+        let Data::Bomb(b)=&s.ready.world.machines[&(OW.into(),AT)].data else{panic!()};assert_eq!(b.fuse,None);assert!(s.ready.detonations.is_empty());
+        s.native_tick(&mut w,2);
+        assert_eq!(s.native_detonator(&mut w,&p.id,None).as_deref(),Some("Acendimento solicitado."));
+        s.native_tick(&mut w,3);
+        let Data::Bomb(b)=&s.ready.world.machines[&(OW.into(),AT)].data else{panic!()};assert_eq!(b.fuse,Some(crate::bomb::FUSE_TICKS-1));
+        assert_eq!(w.told.iter().filter(|t|t.as_str()=="Pavio aceso.").count(),1);
     }
 
     #[test]

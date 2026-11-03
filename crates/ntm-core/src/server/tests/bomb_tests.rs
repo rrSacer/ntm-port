@@ -268,6 +268,7 @@ fn the_native_detonator_links_on_a_bomb_and_fires_elsewhere() {
     let said = g.server.native_detonator(&mut g.sh, "p1", Some(at)).unwrap();
     assert!(said.contains("Detonador ligado"), "{said}");
     assert!(bomb_data(&mut g, at).is_some());
+    g.run(2); // A new click after the server-only link claim window.
     let said = g.server.native_detonator(&mut g.sh, "p1", Some([0, 69, 0])).unwrap();
     assert!(said.contains("solicitada"), "{said}");
     assert!(bomb_data(&mut g, at).is_some(),"the intent awaits the next local step");

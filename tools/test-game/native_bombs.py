@@ -69,6 +69,9 @@ def detonator(g, core):
         g.ctl('key shift up')
     wait(g, 'detonator_linked', lambda: 'Detonador ligado' in log(g)[start:],
          lambda: log(g)[start:][-1000:], 15)
+    time.sleep(.25)
+    linked = machine(g, core)['data']
+    g.check('link_alone_does_not_light_fuse', linked.get('fuse') is None, linked)
     g.check('link_does_not_consume_bomb', block(g, core).startswith('ntm:'), block(g, core))
     g.ctl('look 0 -90')
     g.ctl('use-item')
@@ -126,7 +129,7 @@ def charge(g, x, manual):
     wait(g, 'fuse_caused_real_explosion',
          lambda: re.search(r'ntm:dynamite at .*\(pavio\): power 8', log(g)[start:]) is not None,
          lambda: [l for l in log(g)[start:].splitlines() if 'Dinamite at' in l], 30)
-    g.check('charge_removed', block(g, core) == 'minecraft:air', block(g, core))
+    wait(g, 'charge_removed', lambda: block(g, core) == 'minecraft:air', lambda: block(g, core), 15)
     if manual:
         g.check('fuse_confirmed_once', log(g)[start:].count('Pavio aceso.') == 1,
                 [l for l in log(g)[start:].splitlines() if 'Pavio aceso.' in l])
