@@ -61,7 +61,12 @@ def detonator(g, core):
     g.ctl('select ntm:detonator')
     g.command(f'tp @s {core[0]+.5} {core[1]} {core[2]+4.5}')
     start = len(log(g))
-    g.ctl('interact ' + pos_text(core))
+    g.ctl('key shift down')
+    time.sleep(.2)
+    try:
+        g.ctl('interact ' + pos_text(core))
+    finally:
+        g.ctl('key shift up')
     wait(g, 'detonator_linked', lambda: 'Detonador ligado' in log(g)[start:],
          lambda: log(g)[start:][-1000:], 15)
     g.check('link_does_not_consume_bomb', block(g, core).startswith('ntm:'), block(g, core))
