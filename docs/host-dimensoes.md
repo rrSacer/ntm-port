@@ -67,17 +67,26 @@ Testes em jogo (`native_dims.py`, binário no pin novo):
 - `idle`: Nether com um leitor fecha e grava (17 s). O roteiro também emite 60 partículas de fumaça no Overworld para inspeção visual; a sobrevivência delas não tem verificação automatizada. A antiga asserção `particles_survive_the_parked_reader` foi removida: `status['particles']` é o contador histórico `made()` do cliente, que não diminui com `clear()` e não mede partículas vivas no `Game` do servidor onde a visita ocorre.
 
 
-## Onda 0, item 3 — itens de uma máquina em nível estacionado
+## Onda 0, item 3 — itens de uma máquina e comparadores em nível estacionado
 
 `Host::entity` (glue) clona os itens do block entity antes de `f`; se mudaram, `Game::visit_level(dim, |g| g.container_changed(pos))`
-roda depois da escrita, a mesma notificação que `native_with_mod_block_entity` faz no nível em lugar. É a metade do `setChanged`
-de que os comparadores dependem, sem abrir nível nem zerar a ociosidade.
+roda depois da escrita, a mesma notificação que `native_with_mod_block_entity` faz no nível em lugar, sem abrir nível nem zerar a
+ociosidade. A prova em jogo (`native_dims.py`, `parked_item_change`) funde uma picareta num forno do Overworld estacionado.
 
-Limite verificado: nenhuma máquina NTM é lida por comparador hoje (os blocos não declaram `hasAnalogOutputSignal`; no Java só
-caixas de armazenamento, tanques e baterias o fazem), e `container_changed` só avisa blocos com essa saída. A notificação fica
-correta para os blocos que a declararem (o armazenamento ainda não portado), mas **não há leitura de comparador a provar em jogo
-agora**. A prova em jogo (`native_dims.py setup`, `parked_item_change`) cobre o que existe: com o Nether em lugar e o Overworld
-estacionado, um forno elétrico alimentado por cabo funde uma picareta de ferro (pilha 1) numa pepita, o que escreve os itens
-da máquina no mundo estacionado pelo novo caminho; o resultado confere e os roteiros `idle` e `idle-clean` continuam fechando
-as dimensões (a ociosidade não é zerada). A leitura por comparador exigirá declarar a saída analógica (`has_analog_output` e
-`analog_output`, API 64) nos blocos de armazenamento quando forem portados.
+### Comparadores (correção da revisão, P3 #1)
+
+Os blocos portados cujo Java tem `hasComparatorInputOverride` são `ntm:machine_battery` (`getComparatorPower`: 0 sem carga, senão
+`floor(carga/máx*15)+1`, no máximo 15), `ntm:machine_fluidtank` e `ntm:barrel_steel` (a mesma fórmula sobre o fluido). Os demais
+blocos com a propriedade no Java (tanque BAT9000, `MachineBigAssTank`, soquete de bateria, caixas, Geiger, controle do reator MK1)
+ainda não existem no port: ao portá-los, basta incluí-los em `ntm_core::native::has_comparator` e `comparator_signal`.
+
+- `ntm_core::native::{has_comparator, comparator_signal}` calculam o sinal a partir do JSON salvo da máquina.
+- Dois injections do glue ligam a API 64: `has_analog_output` (`analog_flag.rs`) e `analog_output` (`analog_signal.rs`, lê o
+  `STATE` do block entity). Nenhum bloco além desses três responde.
+- `publish_atomic` compara o sinal antes e depois de cada commit de máquina; se mudou, chama `native_update_output_neighbors`
+  no nível da máquina (`visit_level`: um nível estacionado é visitado sem abri-lo nem zerar a ociosidade). A escrita de itens
+  em nível estacionado (`Host::entity`) continua chamando `container_changed`, que agora também avisa estes blocos.
+- Prova em jogo (`native_comparator.py`, 8 checks): máquinas vazias leem 0; a bateria sobe a 15 ao receber a bateria criativa e
+  desce estritamente (15, 14, 13, 12, 11) quando três fornos elétricos a descarregam pelo cabo; o tanque lê 0, 1, 2, 3 a cada
+  barril cheio de água; o barril de aço lê o seu nível; e, com o jogador no Nether, a bateria do Overworld estacionado sobe de 0 a 15
+  no comparador ao lado.

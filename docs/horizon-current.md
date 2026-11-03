@@ -9,7 +9,7 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
 - Upstream incorporado: `fc02103818c212920fd24aa34a2b2f91ba49e56f` (snapshot congelado de 03/11/2026).
-- Motor de integração (pin): `765c5ac91226995abe3af41638c9eb908e9eb3b3`.
+- Motor de integração (pin): `80145bdc1ba77e775894a1d5c19605cb96ad9ea4`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
   `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
@@ -338,7 +338,7 @@ permaneceu nesta rodada.
 
 ## Onda 0 — política de inventário e portas (marco 1)
 
-Motor `765c5ac91226995abe3af41638c9eb908e9eb3b3`, derivado do pin
+Motor `80145bdc1ba77e775894a1d5c19605cb96ad9ea4`, derivado do pin
 `ec479adb3` (`47173f4c4` e quatro correções da revisão); upstream congelado `fc0210381`. [Contrato e exemplo da
 API](native-slot-policy.md).
 
@@ -393,7 +393,7 @@ anterior `912c112ffbf1…`), `mining-50ih28gu`, `bombs-jjh4t8wg`, `pile-9ibhz_3e
 
 ## Onda 0 — itens 2 a 4 (menu por identidade, itens estacionados, formação da pilha)
 
-Motor `765c5ac91226995abe3af41638c9eb908e9eb3b3` (sobre `7607685b8`); NTM rebaseado em `fb93c7cf` (RTG/radgen).
+Motor `80145bdc1ba77e775894a1d5c19605cb96ad9ea4` (sobre `7607685b8`); NTM rebaseado em `fb93c7cf` (RTG/radgen).
 
 | Extensão local | Razão e composição com o oficial |
 | --- | --- |

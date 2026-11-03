@@ -90,6 +90,26 @@ pub(super) fn world_saved(game:&mut crate::game::Game<'_>,wait:bool){
     }
 }
 
+/// A battery, a fluid tank and a barrel give a comparator a signal (`hasComparatorInputOverride`).
+pub(super) fn has_analog_output(level: &crate::game::GameLevel<'_>, state: horizon_world::registry::BlockStateId, output: &mut bool) {
+    if ntm_core::native::has_comparator(&level.facts.get(state).name) { *output = true; }
+}
+
+/// `getComparatorInputOverride` from the machine's saved state, which the server commits each tick.
+pub(super) fn analog_output(level: &crate::game::GameLevel<'_>, pos: horizon_core::position::BlockPos, state: horizon_world::registry::BlockStateId, output: &mut i32) {
+    if !ntm_core::native::has_comparator(&level.facts.get(state).name) { return; }
+    let Some(horizon_client::containers::BlockEntity::Mod(m)) = level.world.block_entities.get(&(pos.x, pos.y, pos.z)) else { return };
+    if let Some(Tag::String(json)) = m.nbt.get(&JavaString::from(STATE)) {
+        *output = i32::from(ntm_core::native::comparator_signal(&json.to_string_lossy()));
+    }
+}
+
+/// The comparator signal a machine's saved JSON gives (0 for any block without one).
+fn comparator_of(block: &str, json: Option<&JavaString>) -> u8 {
+    if !ntm_core::native::has_comparator(block) { return 0; }
+    json.map_or(0, |j| ntm_core::native::comparator_signal(&j.to_string_lossy()))
+}
+
 /// A block changed on the server: kept when a machine or cable is in it.
 pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: [i32; 3], old: horizon_world::registry::BlockStateId, new: horizon_world::registry::BlockStateId) {
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
@@ -442,6 +462,7 @@ impl Host<'_, '_> {
             spawn.push((dim,d.origin.pos,items));
         }
         let mut notify=Vec::new();
+        let mut signals=Vec::new();
         for (c,synced) in commits.iter().zip(prepared) {
             // The preflight guarantees this entity is still accessible; this
             // closure performs the entire update without any fallible operation.
@@ -449,15 +470,18 @@ impl Host<'_, '_> {
                 assert_eq!(e.items.iter().map(stack).collect::<Slots>(),c.expected,"exclusive preflight preserves expected slots");
                 assert_eq!(e.items.len(),c.desired.len());
                 let sent=match e.nbt.get(&JavaString::from(DATA)) {Some(Tag::IntArray(v))=>Some(v.clone()),_=>None};
+                let before_signal=comparator_of(&e.id,match e.nbt.get(&JavaString::from(STATE)){Some(Tag::String(j))=>Some(j),_=>None});
                 for (cell,new) in e.items.iter_mut().zip(&c.desired) {
                     *cell=item(new.as_ref(),cell.take());
                 }
                 e.data=c.data.clone();
                 e.nbt.insert(JavaString::from(DATA),Tag::IntArray(c.data.clone()));
                 e.nbt.insert(JavaString::from(STATE),Tag::String(JavaString::from(c.json.as_str())));
-                ntm_core::native::sync_changed(sent.as_deref(),&c.data,&synced)
+                let after_signal=comparator_of(&e.id,match e.nbt.get(&JavaString::from(STATE)){Some(Tag::String(j))=>Some(j),_=>None});
+                (ntm_core::native::sync_changed(sent.as_deref(),&c.data,&synced),before_signal!=after_signal)
             }).expect("atomic preflight retains entity during exclusive Game access");
-            if changed {notify.push((c.dim.clone(),c.pos));}
+            if changed.0 {notify.push((c.dim.clone(),c.pos));}
+            if changed.1 {signals.push((c.dim.clone(),c.pos));}
         }
         // Publication cannot fail: exclusive Game access, resident/bounded
         // cells and valid states were checked above. No cascade runs here.
@@ -513,6 +537,11 @@ impl Host<'_, '_> {
         for (dim,p) in notify {
             if dim_of(&dim)==Some(self.game.dim){self.game.native_block_entity_changed(p);}
             else if self.watched(&dim){in_place(self.game,&dim,|g|g.native_block_entity_changed(p));}
+        }
+        // The comparators beside a battery, a tank or a barrel whose signal changed read it again,
+        // in its own level (a parked one by a passing visit: no level is opened, idleness keeps counting).
+        for (dim,p) in signals {
+            if let Some(d)=dim_of(&dim){self.game.visit_level(d,|g|g.native_update_output_neighbors(&dim,p));}
         }
         // The hand's part of the same step (checked above, infallible here).
         if wear_held{self.game.damage_held_tool();}
