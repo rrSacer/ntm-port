@@ -86,7 +86,7 @@ ainda não existem no port: ao portá-los, basta incluí-los em `ntm_core::nativ
 - `publish_atomic` compara o sinal antes e depois de cada commit de máquina; se mudou, chama `native_update_output_neighbors`
   no nível da máquina (`visit_level`: um nível estacionado é visitado sem abri-lo nem zerar a ociosidade). A escrita de itens
   em nível estacionado (`Host::entity`) continua chamando `container_changed`, que agora também avisa estes blocos.
-- Prova em jogo (`native_comparator.py`, 8 checks): máquinas vazias leem 0; a bateria sobe a 15 ao receber a bateria criativa e
+- Prova em jogo (`native_comparator.py`, 7 checks): máquinas vazias leem 0; a bateria sobe a 15 ao receber a bateria criativa e
   desce estritamente (15, 14, 13, 12, 11) quando três fornos elétricos a descarregam pelo cabo; o tanque lê 0, 1, 2, 3 a cada
   barril cheio de água; o barril de aço lê o seu nível; e, com o jogador no Nether, a bateria do Overworld estacionado sobe de 0 a 15
   no comparador ao lado.
