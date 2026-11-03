@@ -307,9 +307,14 @@ def destroy(g):
         g.evidence['load_interrupted']=str(error)
     deadline=time.monotonic()+120
     while time.monotonic()<deadline and block(g,CORE_B)=='ntm:pile_block__core':time.sleep(1)
-    time.sleep(3)
-    after=[block(g,c) for c in cells]
-    leftovers=[n for n in after if n.startswith('ntm:pile_block__')]
+    # The core reverts in the blast's tick, which can keep the server busy for several seconds; the
+    # orphan sweep reverts the standing members on the next tick (`meltdown_probe` counts that in ticks).
+    deadline=time.monotonic()+90
+    while True:
+        time.sleep(2)
+        after=[block(g,c) for c in cells]
+        leftovers=[n for n in after if n.startswith('ntm:pile_block__')]
+        if not leftovers or time.monotonic()>deadline:break
     g.check('meltdown_dismantles_pile',block(g,CORE_B)!='ntm:pile_block__core' and not leftovers,{'core':block(g,CORE_B),'leftovers':len(leftovers)})
     g.check('meltdown_explosion_damaged_blocks',sum(n in ('minecraft:air','minecraft:fire') for n in after)>0,sorted(set(after)))
     log=(g.folder/'client-reopen.log').read_text(errors='replace')
@@ -357,6 +362,64 @@ def nether_player(g):
     g.command('execute in minecraft:overworld run tp @s 35.5 101 22.5')
 
 
+def meltdown_probe(g,rounds=4):
+    """The thermal failure again and again on the second pile, sampling how long the blast leaves any
+    `ntm:pile_block__*` standing (the orphan sweep must revert them on the next server tick)."""
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tick unfreeze')
+    g.command('forceload add 30 0 50 30')
+    time.sleep(3)
+    g.command('fill 32 99 3 48 99 30 minecraft:stone')
+    cells=[(x,y,z) for x in range(38,43) for y in range(100,105) for z in range(20,25)]
+    rounds_out=[]
+    for n in range(rounds):
+        form_b(g)
+        for p in [(39,102,20),(41,102,20)]:interact(g,p,'north',(p[0]+.5,101,17.5))
+        for p in LOADERS_B:
+            g.command('clear @s');g.command('give @s ntm:pile_device__loader 1')
+            g.command(f'tp @s {p[0]+.5} 101 {p[2]-2.5}')
+            g.ctl(f'place {p[0]} {p[1]} {p[2]} --item ntm:pile_device__loader')
+        try:
+            for kind,p in [('ra226be',LOADERS_B[0])]*5+[('pu239',LOADERS_B[1])]*5:
+                if block(g,CORE_B)!='ntm:pile_block__core':break
+                load(g,p,kind)
+        except (RuntimeError,KeyError,TypeError) as error:
+            g.evidence['load_interrupted_%d'%n]=str(error)
+        # Freeze the server and step it five ticks at a time until the core reverts, then one at a time
+        # until no `ntm:pile_block__*` stands: the sweep is counted in ticks, not in a heavy tick's seconds.
+        g.command('tick freeze')
+        def now():
+            # The blast's tick can keep the server busy for several seconds: ask again until it answers.
+            deadline=time.monotonic()+90
+            while True:
+                try:
+                    text=' '.join(g.command('time query gametime').get('chat',[]))
+                    return int(re.search(r'game time is (\d+)',text).group(1))
+                except RuntimeError:
+                    if time.monotonic()>deadline:raise
+                    time.sleep(1)
+        def step(n):
+            start=now();g.command('tick step %d'%n)
+            deadline=time.monotonic()+60
+            while now()<start+n and time.monotonic()<deadline:time.sleep(.1)
+        melted_at=None;ticks=0
+        while ticks<2400 and block(g,CORE_B)=='ntm:pile_block__core':
+            step(5);ticks+=5
+        left=[c for c in cells if block(g,c).startswith('ntm:pile_block__')]
+        samples=[(0,len(left))];steps=0
+        while left and steps<40:
+            steps+=1
+            step(1)
+            left=[c for c in cells if block(g,c).startswith('ntm:pile_block__')]
+            samples.append((steps,len(left)))
+        detail=[(c,block(g,c),g.command('data get block %d %d %d ntm'%c).get('chat',[''])[0][:160]) for c in left[:6]] if left else []
+        g.command('tick unfreeze')
+        rounds_out.append({'round':n,'samples':samples,'cleared_after_ticks':steps if not left else None,'left':detail})
+        g.evidence['meltdown_probe']=rounds_out;g.save()
+    g.check('every_meltdown_cleared',all(r['cleared_after_ticks'] is not None and r['cleared_after_ticks']<=3 for r in rounds_out),rounds_out)
+
+
 if __name__=='__main__':
     mode=sys.argv[2] if len(sys.argv)>2 else 'setup'
     g=Game(sys.argv[1],'pile'+('' if mode=='setup' else '-'+mode))
@@ -364,5 +427,6 @@ if __name__=='__main__':
     if mode=='setup':setup(g)
     elif mode in ('capture-state','check-state'):persistence(g,mode=='capture-state')
     elif mode=='destroy':destroy(g)
+    elif mode=='meltdown':meltdown_probe(g,int(sys.argv[3]) if len(sys.argv)>3 else 3)
     else:raise SystemExit('unknown mode: '+mode)
     g.evidence['ok']=True;g.save()

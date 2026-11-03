@@ -936,6 +936,8 @@ mod tests {
         replay(&mut s, &mut h);
         s.native_tick(&mut h, 9);
         assert_eq!(h.blocks[&[1, 64, 2]], pile::BRICK);
+        // Every standing member, not only one: the sweep leaves no `pile_block` behind.
+        assert!(h.blocks.values().all(|b| !b.starts_with("ntm:pile_block__")), "{:?}", h.blocks.iter().filter(|(_, b)| b.starts_with("ntm:pile_block__")).count());
         assert_eq!(h.drops.len(), 1);
         assert_eq!(h.blasts.len(), 1);
     }

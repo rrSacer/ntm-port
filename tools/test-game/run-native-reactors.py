@@ -113,6 +113,7 @@ def run(args):
               'combustion': [('all',)],
               'catalog': [('setup',)],
               'comparator': [('setup',)],
+              'pile-meltdown': [('meltdown',)],
               'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
     if getattr(args, 'manual_only', False):
         phases['radioisotopes'] = [('setup', 'decay', 'capture-state'), ('check-state',)]
@@ -135,7 +136,8 @@ def run(args):
                 continue
             log_path = folder / ('client-first.log' if index == 0 else 'client-reopen.log')
             script = ('dims' if args.scenario.startswith('dims') else
-                      'solar_stirling' if args.scenario == 'solar' else args.scenario.replace('-', '_'))
+                      'solar_stirling' if args.scenario == 'solar' else
+                      'pile' if args.scenario == 'pile-meltdown' else args.scenario.replace('-', '_'))
             name = ('DimsTest' if script == 'dims' else 'InvProxyTest' if script == 'inventory_proxy'
                     else args.scenario.capitalize()[:12] + 'Test')
             command = [str(binary), '--resources', str(args.resources.resolve()),
@@ -189,7 +191,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'comparator'])
+    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'comparator', 'pile-meltdown'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)
