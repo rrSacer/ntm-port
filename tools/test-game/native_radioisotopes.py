@@ -10,7 +10,7 @@ import sys
 import time
 from native_game import Game
 from native_solar_stirling import place
-from native_zirnox import machine, pos_text, block, sprint, add
+from native_zirnox import machine, pos_text, block, sprint, add, game_time
 from native_combustion import battery_power
 
 
@@ -216,11 +216,36 @@ def persistence(g,capture):
         g.check('rtg_reopen_strict_life',new_life<old['radium_life'],[old['radium_life'],new_life])
         continuing=[(a,b) for a,b in zip(old['radgen']['queues'],now['queues']) if a['processing']]
         g.check('radgen_reopen_strict_progress',bool(continuing) and all(b['processing']==a['processing'] and b['progress']>a['progress'] for a,b in continuing),[old['radgen'],now])
-        # Reset sinks after reopening, then require a new positive transfer.
+        # Each isolated source has one receiver. Replacing the batteries
+        # leaves headroom, but transfer alone could spend the saved buffer.
+        # Freeze both snapshots so movement between reads cannot fake growth;
+        # only a strict increase of source +pending +ALL receivers proves new HE.
         for k in ('rtg_battery','radgen_battery'):
             p=c[k];g.command('setblock '+pos_text(p)+' minecraft:air');g.command('setblock '+pos_text(p)+' ntm:machine_battery[facing=north]')
-            before=battery_power(g,p);time.sleep(1);after=battery_power(g,p)
-            g.check(k+'_strict_reopen_generation',after>before,[before,after])
+        def energy(source,receiver):
+            state=data(g,c[source]);stored=battery_power(g,c[receiver])
+            if stored is None:raise AssertionError('missing receiver state: '+receiver)
+            return {'source_buffer_he':state['power'],'pending_he':state['pending'],
+                    'receivers_he':stored,'total_he':state['power']+state['pending']+stored}
+        g.command('tick freeze')
+        try:
+            before={s:energy(s,s+'_battery') for s in ('rtg','radgen')}
+            start=game_time(g)
+            g.command('tick step 100')
+            deadline=time.monotonic()+30
+            while game_time(g)<start+100:
+                if time.monotonic()>deadline:raise TimeoutError('100-tick frozen energy window')
+                time.sleep(.1)
+            after={s:energy(s,s+'_battery') for s in ('rtg','radgen')}
+            elapsed=game_time(g)-start
+            g.check('reopen_energy_window_ticks',elapsed==100,elapsed)
+            for source in ('rtg','radgen'):
+                delta=after[source]['total_he']-before[source]['total_he']
+                g.check(source+'_battery_strict_reopen_generation',delta>0,
+                        {'ticks':elapsed,'before':before[source],'after':after[source],
+                         'new_energy_he':delta})
+        finally:
+            g.command('tick unfreeze')
         open_machine(g,c['rtg']);g.check('depleted_pellet_survives_reopen',g.slots()[0].get('item')=='ntm:pellet_rtg_depleted__bismuth',g.slots())
         g.snapshot('radioisotopes-reopened');g.close()
 
@@ -228,5 +253,5 @@ def persistence(g,capture):
 if __name__=='__main__':
     g=Game(sys.argv[1],'radioisotopes-'+sys.argv[2]);mode=sys.argv[2]
     g.evidence['phase']=mode;g.ctl('wait-ready 120')
-    {'setup':setup,'decay':decay,'automation':automation,'capture-state':lambda g:persistence(g,True),'check-state':lambda g:persistence(g,False)}[mode](g)
+    {'setup':setup,'decay':decay,'automation':automation,'capture-state':lambda g:persistence(g,True),'check-state':lambda g:persistence(g,False),'reopen':lambda g:persistence(g,False)}[mode](g)
     g.evidence['ok']=True;g.save()
