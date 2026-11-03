@@ -2,7 +2,7 @@
 
 A branch `zirnox` implementa o reator, reaproveitando as redes de fluidos,
 block entities, menus, multiblocos, explosão e contaminação já existentes no NTM
-ou no Horizon. A implementação não altera o motor.
+ou no Horizon. O checkout e o pin do motor permanecem intactos. O bundle inclui uma ponte local mínima para concluir updates de células por meio do `Sim` upstream, registrada em `docs/horizon-current.md`.
 
 ## Contrato de simulação
 
@@ -143,7 +143,7 @@ Entradas fora do tick foram auditadas nesta correção:
 | Entrada | Fronteira de confirmação |
 | --- | --- |
 | Detonador e acendimento de pavio | O clique enfileira uma intenção com os slots observados. O próximo passo local relê componentes e confirma slots/estado antes de liberar detonação, som ou partículas. Recusa mantém a intenção; alteração das peças cancela com feedback. Há até um tick de latência. Mesmo jogador/item/intenção usa a janela de um tick de `native_block_claim`, incluindo o fallback cliente bloco→ar; pedido pendente/pavio aceso é no-op e nunca repete a confirmação nem reinicia o timer. |
-| Botões de tela/receita | Intenções permanecem pendentes até o passo aceitar; recusa não perde nem duplica o clique. |
+| Botões de tela/receita | Intenções guardam a geração e permanecem pendentes até o passo aceitar; recusa não perde nem duplica o clique. Limitação nominal do produtor: pacote antigo de uma janela ainda validada só por posição pode ser carimbado com o BE novo, antes de entrar na fila. Ver o ticket de identidade de janela abaixo. |
 | Inserção manual no loader da pilha | Grupo do loader/núcleo confirma antes de solicitar o débito da barra na mão, no mesmo acesso exclusivo ao `Game`. |
 | Broca em pilha existente/ejeção por quebra | Transação do grupo; geração quebrada não recebe edição manual. Ejeção adiada por tombstone. |
 | Engrenagem de reparo da Stirling | Confirma o BE antes de consumir a engrenagem da mão no mesmo `Game`; recusa conserva ambos os estados. |
@@ -169,6 +169,78 @@ Máquinas em dimensões abertas estacionadas continuam rodando e gravando por
 `Host::entity`. Explosão, sons e partículas passam por `in_place`/`visit_level`.
 Dimensões fechadas congelam máquinas/detritos; nenhum acesso abre um nível.
 
+## Auditoria de gerações e mineração conjunta
+
+Uma identidade é `(dimensão, posição, geração)`, acompanhada pelo estado esperado.
+Quebras e recolocações são consumidas antes dos retries. O contador monotônico é
+persistido; o limite `u64::MAX` congela a célula em vez de permitir ABA por overflow.
+Uma ausência positiva grava a `Removal` no KV antes de testar disponibilidade do
+resto do grupo. `None` significa inacessível e conserva o estado, sem ejeção.
+
+| Tipo / produtor | Precondição | Geração diferente / retry |
+| --- | --- | --- |
+| `MachineCommit` e grupo da pilha | Geração do modelo/JSON confirmado, bloco e todos os slots observados | Recusa tudo, nenhum setter parcial; nova simulação usa o inventário observado. |
+| Células lidas/consumidas pela escavadeira e `Drill` (well, pumpjack, fracker) | Estado completo, geração observada, chunk carregado, nível visitável e snapshot completo do BE/itens | Preflight recusa a operação inteira. Leituras de petróleo também participam quando o sorteio não esgota o depósito; não fica produto de uma leitura obsoleta. |
+| `WorldEffect::Blocks` | Guarda por célula: geração e ID esperado; o preflight final lê estado completo e BE real | Descarta escrita obsoleta sem sobrescrever a nova geração. Se ainda é a geração condenada, retém também itens inseridos depois do commit da falha: substituição e drops NBT publicam atomicamente. A captura é persistida antes da publicação e descartada em recusa. Escritas legadas sem guarda não são reaplicadas. |
+| `WorldEffect::Items` / `EncodedItems` | Origem confirmada do grupo e, para conteúdo minerado, célula antiga | Efeito físico da geração antiga: entrega uma vez, mesmo com ocupante novo. NBT completo dos itens é preservado pelo codec existente do motor. |
+| `WorldEffect::PileExplosion` | Origem confirmada da pilha | A explosão commitada ocorre uma vez, com origem/potência antigas; pode destruir blocos novos no raio. |
+| Fila de bomba ainda não admitida | `Queued.origin` da geração consumida; número persistente da explosão | Continua após commit. Antes do commit, a intenção antiga é cancelada. Após admissão vale o journal existente do motor. |
+| Falha ZIRNOX, detritos e waste | Origem da geração que confirmou a falha; cursores/entidades persistentes | São consequências físicas antigas e continuam. A escrita direta do invólucro/destroço permanece condicionada às guardas de `Blocks`. Tuplas antigas de explosão ainda são lidas como efeitos físicos legados. |
+| Intenção de detonador/pavio | Geração da bomba e componentes observados | Quebra cancela; recolocação com o mesmo ID/peças não reaproveita o pedido. Vínculo persistente do detonador por posição permanece. |
+| Botões de tela/receita | Geração entregue pelo hook; protegida na fila e no consumo da intenção | Descarta intenção enfileirada obsoleta. **Limitação de motor no produtor:** a janela valida posição/existência/alcance, não a identidade histórica do BE; pacote em trânsito pode chegar depois de uma recolocação do mesmo ID. |
+| Edição manual da pilha / reparo Stirling | Reconciliação dos fatos antes do clique, geração e commit do grupo/BE | Não edita uma geração quebrada; mão só é debitada depois da confirmação. |
+| Efeitos transitórios locais (`tell`, `log`, `hurt`, `effect`, `show`) | Guardas das origens confirmadas; liberação síncrona depois do commit | Não sobrevivem como escrita tardia; guardas obsoletas impedem a liberação. |
+| Sync de BE e retry pós-publicação | Estado/JSON da geração publicada; snapshot completo da célula para retry | Nunca repete crédito ou remoção. Nova quebra/recolocação cancela o sync; snapshot divergente é descartado. |
+| `Removal` / tombstone | Geração removida confirmada, conteúdo e indicador de slots já pertencentes ao motor | Persistência imediata fora do rollback e do `all()` do grupo. Ocupante novo não substitui conteúdo antigo; inacessibilidade apenas espera. |
+| Preparação de retenção antes da mineração | Snapshot completo da célula/BE original e geração, gravados no KV antes do consumo | Fonte intacta na mesma geração: descarta sem spawn. Fonte consumida ou caso ambíguo: replay físico. Fonte inacessível ou geração esgotada: congela. Recusa restaura o snapshot e elimina a preparação. |
+| Recibo aplicado / `world_saved` | Origem e efeito confirmados, com a mesma guarda de célula quando é uma escrita | Reabertura limpa não repete efeito confirmado. Replay de escrita obsoleta é descartado; replay físico conserva o conteúdo antigo. |
+
+A retenção de inventários minerados usa preparação por célula no KV. O BE da
+máquina, as células consumidas e os spawns publicam juntos; em seguida a preparação
+vira recibo aplicado. Uma recusa do journal impede o consumo. A recuperação
+compara estado, geração e snapshot completo do BE: fonte original intacta
+continua dona dos itens e não gera spawn; fonte consumida permite replay. O teste
+de crash após commit simula célula salva com a entidade ainda não salva; o replay
+restaura um spawn e a reabertura limpa seguinte não o repete. A janela de crash/I/O
+agora também inclui a preparação anterior ao commit, com duplicação possível no
+caso ambíguo. Ver a pendência nominal de save conjunto mundo/KV.
+
+A fronteira de publicação das células é explícita. Primeiro são validados todos
+os BEs e todas as células, inclusive mudanças externas entre a leitura e o commit.
+Depois todos os slots/JSON e as células são publicados sob acesso exclusivo ao
+`Game`, com operações previamente validadas. Só após a última publicação a ponte
+`ntm_committed_updates` chama as regras existentes do `Sim`: `onPlace`, vizinhos,
+comparadores e shapes indiretos. Luz, heightmap, malha e alterações de chunks usam
+o mesmo `World::set` do caminho vanilla. BEs removidos têm inventário retido sem
+`preRemoveSideEffects`, evitando uma segunda geração de drops. Isso também vale
+para toda substituição estrutural adiada (pilha/destroço): itens novos vindos de
+tela, funil, comando ou outro mod são lidos no preflight final e saem uma vez como
+drops da geração antiga, no mesmo commit da substituição. Propriedades visuais
+como `honey_level` não mudam a identidade; o snapshot completo é comparado sob
+acesso exclusivo na publicação. Uma falha posterior
+é log e retry de sync; jamais recusa ou rollback do produto já publicado.
+Células `moving_piston`, cujo bloco carregado vive em `Ticks` fora do snapshot de
+BE, aguardam o `finalTick` vanilla antes de serem consumidas.
+
+| Máquina / chamada Java | Flags modernas / conclusão | Diferença do caminho anterior |
+| --- | --- | --- |
+| Escavadeira: `func_147480_a(..., false)`, `setBlockToAir`, `setBlock(barricade)` | Publicação sem side effects, seguida dos updates equivalentes à flag 3; destruição emite evento 2001 e `block_destroy`, sem loot duplicado | O `strict` anterior suprimia vizinhos/shapes. Esta rodada corrige a fidelidade ao Java. |
+| `TileEntityOilDrillBase.tryDrill`: `setBlock(oil_pipe)` | Mesma flag 3, retendo o BE antigo e seu inventário | Tubo, crédito e estado agora publicam juntos; vizinhos/shapes são notificados. |
+| Well/pumpjack/fracker: `setBlock(ore_oil_empty)` e oil spots | Mesma flag 3; todos os destinos e leituras relevantes participam do preflight | Depósito não some depois de um crédito recusado e um crédito não sobrevive à mudança do depósito. |
+
+A varredura dos produtores de `set_blocks`/`mine_at` com crédito encontrou a
+escavadeira e o caminho `Drill` compartilhado por well/pumpjack/fracker. Bombas,
+pilha, invólucro ZIRNOX e waste são efeitos estruturais/físicos, sem crédito de
+mineração. Não há outro cortador/bomba de fluido do mundo implementado nesta ponte.
+As redes de energia/calor/fluido continuam depois dos passos confirmados.
+
+A API `native_close_menu(uuid)` existente só fecha `Slots::Native`, não os menus
+de BE das máquinas. Por decisão do coordenador, o NTM não acrescenta um protocolo
+ou hook novo para fechar essas janelas nesta rodada. A pendência nominal é
+[validar janela por identidade do BE, como `stillValid` vanilla](/root/.traycer/epics/5f50e725-564a-4cb7-848c-7bc5799a5749/artifacts/zirnox-menu-identidade/index.md).
+A fila/consumo das intenções de botão está validada; o produtor conserva essa
+limitação no pacote em trânsito entre quebra e recolocação do mesmo ID.
+
 ## Exclusões e aproximações nominais
 
 | Fonte/API | Situação neste port |
@@ -186,6 +258,37 @@ Dimensões fechadas congelam máquinas/detritos; nenhum acesso abre um nível.
 | `WasteEarth.canSustainPlant` | Blocos de terra usam o suporte a plantas do template vanilla; falta a restrição Java a plantas Cave. |
 | Crash/I/O entre `spawn_item`/save do mundo e cursor KV | **Pendência de motor autorizada.** Recibos só são descartados após `world_saved(wait=true)`; antes da confirmação, o replay pode duplicar efeitos. Não há garantia de commit conjunto dos dois armazenamentos. Recusas, retries e reabertura limpa após cursor confirmado têm ejeção exatamente uma vez. |
 | Salvamento do nível estacionado/comparadores | Valem as limitações gerais já documentadas em `docs/host-dimensoes.md`. |
+
+## Diagnóstico da cerca e isolamento do teste de waste
+
+A cena original foi repetida com `NTM_TRACE_EFFECTS=1`, sem alterar RNG,
+slots ou estado interno. Em `zirnox-5ejtxm3l`, a explosão única ocorreu no tick
+860, centro `[115,104,6]`, potência 12; seu plano não incluía nenhuma das quatro
+amostras de madeira (`wood_targets=[]`). No tick 876, um detrito tipo 5, idade 16,
+posição `[129.447724,101.124849,8.253124]`, removeu cerca, baú e tronco em
+`[130,101,7..9]`. O trace da mudança de cada bloco coincide com o impacto. A tábua
+restante virou `waste_planks` no tick 920. Logo, a reprovação era interferência
+física dos detritos no teste de classificação do waste.
+
+A repetição `zirnox-rgrxxana` passou na mesma cena: uma explosão, centro e potência
+iguais, tick 766, sem madeira no plano e sem impacto nas amostras. Nas rodadas
+históricas, as 50 direções horizontais não destrutivas persistidas permitem
+reconstruir unicamente o seed e as 72 velocidades iniciais, com erro angular
+numérico inferior a `2,1e-15`:
+
+| Cena | Tick de criação do modelo | Seed | Sobreviventes por tipo |
+| --- | ---: | ---: | --- |
+| `zirnox-rj5f4434`, passou | 17664 | 17400911311430943377 | 20,10,10,10,11,2 |
+| `zirnox-5x3_q3w_`, passou | 18323 | 14638207360112391339 | 20,10,10,10,13,1 |
+| `zirnox-mft6c84m`, falhou na cerca | 18262 | 7991530272019292422 | 20,10,10,10,12,0 |
+
+Todas têm a origem `[115,101,6]`, explosão em `[115,104,6]`, potência 12 e criação
+por tipo `[20,10,10,10,20,2]`. Os ticks variam com o tempo das interações do roteiro,
+e por isso também variam os seeds e trajetórias. O fixture `4eaf3673` fixa a
+orientação de montagem e coloca as amostras a x=24 relativo ao núcleo, atrás de
+uma parede de obsidiana. As quatro expectativas permanecem exatas: cerca e baú
+inalterados, tronco em `waste_log`, tábua em `waste_planks`. Não foi preciso alterar
+a explosão nem as regras físicas.
 
 ## Verificação após revisão independente
 
@@ -216,52 +319,63 @@ detonador recusada/cancelada e reparo com engrenagem recusado. Um save entre
 quebra e tick conserva os metais internos sem repetir os slots já soltos pelo
 motor. R2–R7 e o fixture `f7e806ec` foram aprovados na rechecagem anterior.
 
-Base `df645f68`; runtime final `f5cb2778`. Motor
+Base `df645f68`; runtime final `e920c2f3` e fixture `4eaf3673`. Motor
 `18eab7ab41e767d9e21dc4079cb2f21dbe116c95`, upstream congelado `2050c4e0f`.
-`SKIP_UPSTREAM_CHECK=1` somente para esse snapshot. Release e pacote da branch
-refeitos juntos; nenhuma alteração no motor/main.
+`SKIP_UPSTREAM_CHECK=1` somente para esse snapshot. Checkout e pin do motor/main
+permanecem intactos; a ponte local de updates está registrada em `horizon-current.md`.
+
+R8–R10 falham nos três cenários exatos do harness sobre `439ff430` e passam
+sobre o código final. A suíte inclui troca por outro ID e pelo mesmo ID com
+inventário novo, pedidos de nuke e pavio recusados antes da recolocação,
+explosão já confirmada antes da admissão e remoção positiva com outro membro
+inacessível. A mineração tem contraprova nas três famílias: o código anterior
+credita minério/petróleo apesar da recusa da célula; a publicação conjunta conserva
+produto, depósito e inventário retido. Essa contraprova de mineração usa uma cópia
+isolada com `resource:false`, que restaura apenas a fronteira anterior de efeitos
+e mantém as mesmas reproduções; não é um build integral do HEAD antigo. O teste
+nativo compara o caminho novo com `set_block` vanilla flag 3, em armazenamento real, luz/heightmap, inventário NBT
+completo, observador e circuito de redstone, sem drops extras.
 
 | Verificação | Resultado |
 | --- | --- |
-| Rust NTM | 349 unitários + 26 integração; 2 doctests ignorados. |
+| Rust NTM | 369 unitários + 26 integração; 2 doctests ignorados. |
 | Clippy NTM | `--workspace --all-targets -- -D warnings`, passou. |
-| Clippy nativo transformado | Passou com a única isenção `clippy::collapsible_if` do transformador upstream. |
+| Clippy nativo transformado | Passou; única isenção `clippy::collapsible_if` do transformador upstream. |
 | Python conteúdo | 218 testes, recursos 26.3 explícitos. |
-| Build nativo | Release em 6min09s, 30 injeções; pacote 9.103.885 bytes. |
-| ZIRNOX | 109 verificações: montagem, Nether forçado, conversões, captura, reabertura, falha e solo. |
-| Pilha | 83 verificações: montagem, ar positivo, reabertura e destruição. |
+| Harness R8–R10 | 3/3 passam; os mesmos 3/3 falham no HEAD anterior. |
+| Equivalência nativa da mineração | 1 teste passou, incluindo observador/redstone. |
+| Build nativo | Release em 6min25s, 31 injeções/6 módulos; pacote 9.103.885 bytes. |
+| ZIRNOX | 110 verificações, incluindo Nether forçado, conversões, retomada estrita, falha e solo. |
+| Pilha | 83 verificações, incluindo ar positivo, retomada e destruição. |
 | Dimensões | 13 verificações; idle e idle-clean em mundos novos separados. |
-| Bombas | 49 verificações: Little Boy com cinco peças reais por detonador e por alavanca; dinamite com pavio por detonador e redstone. Comando nativo confirma e relê o raio 12. |
+| Bombas | 49 verificações: Little Boy por detonador e alavanca; dinamite com pavio por detonador/redstone. |
+| Mineração física | 18 verificações: escavadeira, perfuratriz e fracker, com petróleo real e retenção de 7 diamantes de um baú minerado. |
 
-As provas colocam itens e movimentam barras/recipientes/peças pela tela;
-não injetam estado de máquina, vida ou pavio. `/tick sprint` avança a simulação
-normal. Detonador registra solicitação antes da confirmação; peças não retornam
-ao jogador/mundo. Após encerramento limpo, todos os cenários têm zero remoções,
-efeitos pendentes e recibos da ponte de máquinas no KV.
+As **273 verificações nativas** passaram no mesmo cliente/pacote. As provas usam
+montagem, tela, itens e fluidos reais; não injetam vida, estado de máquina ou pavio.
+`/tick sprint` avança a simulação normal. `/ntmbomba` configura e confirma o raio 12
+pelo comando nativo de operador. Após encerramento limpo, os sete mundos têm zero
+remoções, preparações de retenção, efeitos pendentes e recibos aplicados no KV.
 
-ZIRNOX: **40187 mB** de vapor em tanques externos, com consumo de água;
-vida **2610→4419** no Overworld com jogador no
-Nether forçado; vida **42965→43497** após reabrir.
-Li→trítio, Th232→combustível de tório e ZFB→esgotada ocorrem por reação natural. Falha deixa
-destroço, explode marcadores e transforma terreno, preservando cerca/baú.
-Criações por tipo contra baseline [0, 0, 0, 0, 0, 0]: **[20, 10, 10, 10, 20, 2]**,
-total 72. Sobreviventes novos **[20, 10, 10, 10, 11, 2]**; os quatro tipos
-não destrutivos mantêm os 50 esperados. Ambos os solos cobertos viram terra por
-random tick, 8/8 amostras de cada; a gamerule é consultada e restaurada.
+ZIRNOX produziu **39679 mB** de vapor em tanques externos. A vida avançou
+**2589→4389** no Overworld enquanto o jogador estava no Nether
+forçado, e **42958→43488** após reabrir. Li→trítio,
+Th232→combustível de tório e ZFB→esgotada ocorrem pela reação natural. A falha cria
+destroço e uma explosão, transforma o terreno e conserva as expectativas exatas
+de waste nas amostras protegidas. Criações por tipo: **[20, 10, 10, 10, 20, 2]**, total 72;
+sobreviventes novos: **[20, 10, 10, 10, 14, 0]**. Os quatro tipos não destrutivos mantêm os
+50 esperados. Solos cobertos viram terra: 8/8 amostras por solo, gamerule restaurada.
 
 ```text
-cliente sha256 08fa0d441fa3523657806c8fc101d5676a000db7fb6dff13689e3ea984614c49
+cliente sha256 55cfa5eef190b337a05627d4f2b1e906461da94ac22c6dd91eda54fab88fd78e
 ntm.hmod sha256 eb96b19246c029df3be847d25c1ae068f88b177940a9b48cc9b00635dbcab631
 ```
 
-Dimensões: os fornos novos receberam **68.306 e 56.644 HE** das máquinas
-retomadas. Os níveis sem chunks forçados fecharam/salvaram em **17 s**, tanto
-com leitor (`idle`) quanto sem leitor (`idle-clean`), em mundos distintos.
-
-Bombas: o traço final registra vínculo Main401→fallback402 ignorado→clique417;
-a dinamite registra vínculo Main1044→fallback1045 ignorado→clique1062, com
-**um** `Pavio aceso.`. O estado consultado entre vínculo e clique tem pavio
-vazio. A prova não confunde o fallback com uma segunda intenção do jogador.
+Dimensões: os fornos novos receberam **68306 e 56644 HE** das máquinas
+retomadas. Os níveis sem chunks forçados fecharam/salvaram em **17 s** com
+leitor e **17 s** sem leitor, em mundos separados. O roteiro de bombas mantém
+`count('Pavio aceso.') == 1`. Os testes de geração verificam separadamente o
+pavio sem reset em retry e o cancelamento do pedido anterior à recolocação.
 
 ### Fixture térmico e comparação histórica aprovada
 
@@ -274,7 +388,7 @@ continua estritamente >800. Nenhuma regra térmica de produção foi alterada.
 | --- | ---: | ---: | ---: | ---: |
 | Main df645f68, aprovada anteriormente | 22,4612154166 | 168,0672008398 | 174,7426131791 | 44,1464398975 |
 | Branch anterior, comparação aprovada | 22,4612401205 | 168,0672269737 | 144,6971612115 | 44,1415975343 |
-| Branch, runtime transacional final | 22.4612401205 | 168.0672269737 | 157.2842962683 | 44.1436261768 |
+| Branch, runtime final e920c2f3 | 22.4612401205 | 168.0672269737 | 164.9369800370 | 44.1448595439 |
 
 Main e branch anteriores passaram as mesmas 26 verificações de montagem, com
 hashes originais da main: cliente
@@ -285,42 +399,47 @@ harness do revisor. Essa comparação histórica não usa o novo binário.
 
 ### Evidências reproduzíveis
 
-Índice completo: `.agent-tmp/zirnox/validation-transaction.json`, na raiz do
-projeto. O agregador exige o mesmo cliente/pacote em todos os cenários.
+Índice completo: `.agent-tmp/zirnox/validation-generation.json`, na raiz do projeto.
+O agregador exige o mesmo cliente/pacote em todos os cenários e verifica os quatro
+journals vazios após fechamento limpo.
 
 | Pasta em `.agent-tmp/zirnox/` | Verificações |
 | --- | --- |
-| `zirnox-rj5f4434` | zirnox: 109; fases setup, inactive, convert, capture-state, check-state, failure, soils. |
-| `pile-sr66zl0d` | pile: 83; fases setup, capture-state, check-state, destroy. |
-| `dims-sujmq7wd` | dims: 10; fases setup, capture-state, check-state. |
-| `dims-idle-ru_wfq9m` | dims-idle: 2; fases idle. |
-| `dims-idle-clean-qp6v8mh9` | dims-idle-clean: 1; fases idle-clean. |
-| `bombs-wlaf75ji` | bombs: 49; fases setup. |
+| `mining-3el41xhf` | mining: 18; fases setup. |
+| `zirnox-wm3o9s9k` | zirnox: 110; fases setup, inactive, convert, capture-state, check-state, failure, soils. |
+| `pile-n6x9i5kq` | pile: 83; fases setup, capture-state, check-state, destroy. |
+| `dims-vjoyzngf` | dims: 10; fases setup, capture-state, check-state. |
+| `dims-idle-el6g0zdl` | dims-idle: 2; fases idle. |
+| `dims-idle-clean-2ka6uszg` | dims-idle-clean: 1; fases idle-clean. |
+| `bombs-m1r6hcko` | bombs: 49; fases setup. |
 
-Capturas do ZIRNOX no diretório acima: `native-zirnox-loaded.png`,
-`native-zirnox-life-tooltip.png` (tela/vida/indicadores),
-`native-zirnox-reopened.png`, `native-zirnox-failure.png` e
-`native-zirnox-soils.png`. A tela e o tooltip também foram inspecionados.
+Capturas no diretório do ZIRNOX: `native-zirnox-loaded.png`,
+`native-zirnox-life-tooltip.png`, `native-zirnox-reopened.png`,
+`native-zirnox-failure.png` e `native-zirnox-soils.png`.
 
-Logs: `detonator-tests.log`, `detonator-clippy.log`, `transaction-python.log`,
-`transaction-native-build.log`, `transaction-native-clippy.log`,
-`transaction-content-pack.log`, `atomic-probe.log` e
-`conservation-baseline.log`. A contraprova antiga falha em conservação, não em
-compilação. Ensaios preliminares reprovados permanecem nas pastas descartáveis.
+Logs em `.agent-tmp/zirnox/`: `generation-core-tests.log`,
+`generation-core-clippy.log`, `generation-python.log`, `generation-native-build.log`,
+`generation-native-equivalence.log`, `generation-native-clippy.log`,
+`generation-content-pack.log`, `generation-probe-final.log`, `generation-baseline.log`,
+`mining-baseline-machine_{excavator,well,fracking_tower}.log` e
+`generation-{mining,bombs,zirnox,pile,dims}-game.log`. O diagnóstico físico usa
+`zirnox-5ejtxm3l/client-first.log` e `trajectory-reconstruction.jsonl`.
+As contraprovas falham nas asserções de conservação/geração, não em compilação.
 
-O driver `tools/test-game/run-native-reactors.py` isola mundo, opções/cache e
-Xvfb; desliga controle físico só no diretório descartável e encerra processos.
-`dims` cria automaticamente outros dois mundos para idle e idle-clean, sem
-chunks forçados. O detector exclui somente o aviso conhecido de TAA indisponível;
+O driver `tools/test-game/run-native-reactors.py` isola mundo, opções/cache e Xvfb;
+desliga controle físico só no diretório descartável e encerra seus processos.
+`dims` cria automaticamente outros dois mundos para idle e idle-clean, sem chunks
+forçados. O detector exclui somente o aviso conhecido de TAA indisponível;
 essa renderização não foi validada. Nenhum mundo do jogador foi usado.
 
 ```sh
-agent-run env QUEUE=game python3 tools/test-game/run-native-reactors.py zirnox \
+agent-run env QUEUE=game NTM_TRACE_EFFECTS=1 python3 tools/test-game/run-native-reactors.py zirnox \
   --binary /mnt/ssd120/sacer/horizon-ntm/.agent-tmp/zirnox/native-target/release/horizon-client \
   --resources /home/sacer/Games/horizon/.local/horizon-client/26.3 \
   --scratch-root /mnt/ssd120/sacer/horizon-ntm/.agent-tmp/zirnox
 ```
 
-Trocar `zirnox` por `pile`, `dims` ou `bombs`. A comparação só de montagem com
+Trocar `zirnox` por `pile`, `dims`, `bombs` ou `mining`. `--failure-only` é apenas
+um diagnóstico e não substitui a aceitação completa. A comparação histórica com
 main usa `pile --setup-only`, cliente de `.agent-tmp/migracao-upstream/target/`
 e `--bundle /mnt/ssd120/sacer/horizon-ntm/ntm-port/dist/ntm.hmod`.
