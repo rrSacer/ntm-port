@@ -80,9 +80,12 @@ def lever(g, core):
     g.close()
     g.command('clear @s')
     g.command(f'setblock {pos_text(p)} minecraft:lever[face=floor,facing=north,powered=false]')
-    g.command(f'tp @s {core[0]+3.5} {core[1]} {core[2]+3.5}')
+    g.command(f'tp @s {core[0]+3.5} {core[1]} {core[2]+.5}')
     start = len(log(g))
-    g.ctl('interact ' + pos_text(p) + ' up')
+    g.ctl('interact ' + pos_text(p))
+    time.sleep(.1)
+    observed = g.ctl('block ' + pos_text(p))
+    g.check('physical_lever_powered', 'powered=true' in str(observed), observed)
     return start
 
 
