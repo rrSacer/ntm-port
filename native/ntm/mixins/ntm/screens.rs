@@ -71,6 +71,7 @@ fn machine_screen(game: &crate::game::Game<'_>, block: &str, name: &str) -> Opti
 
 /// A machine's screen opens: its size, where the slots sit on it, the player inventory.
 pub(super) fn open(game: &crate::game::Game<'_>, block: &str, out: &mut Option<crate::game::native_hooks::NativeScreen>) {
+    if block=="ntm:machine_armor_table"{*out=Some(crate::game::ntm_armor_table::screen());return;}
     *lock(&LIST) = None;
     let Some(layout) = layout(block) else { return };
     let Some(shown) = machine_screen(game, block, &layout.screen) else { return };
@@ -85,6 +86,7 @@ fn argb(rgb: u32) -> u32 {
 /// The background, then bars, needles, overlays and texts, then the title and
 /// the inventory's label.
 pub(super) fn draw(game: &crate::game::Game<'_>, block: &str, data: &[i32], batch: &mut HudBatch, origin: [f32; 2]) {
+    if block=="ntm:machine_armor_table"{crate::game::ntm_armor_table::draw(game,batch,origin);return;}
     if let Some(open) = lock(&LIST).as_ref().filter(|open| open.block == block) {
         draw_selector(game, open, batch, origin);
         return;
