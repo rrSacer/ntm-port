@@ -157,6 +157,7 @@ fn reconcile(server:&mut Server,host:&mut Host<'_, '_>){
 /// A player's right click on a cell of a machine (`core` its core): the
 /// machine may take it (the turbines' levers). True when it did.
 pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [i32; 3], face: [i32; 3]) -> bool {
+    if crate::game::ntm_armor_table::open(game,pos){return true;}
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
     let dim = game.dim.id().to_string();
@@ -231,6 +232,7 @@ pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos:
 
 /// A player used `stack` in the air: the detonator sets its bomb off.
 pub(super) fn use_item_air(game: &mut crate::game::Game<'_>, stack: &ItemStack) -> bool {
+    if crate::game::ntm_items::use_air(game,stack){return true;}
     &*stack.item == DETONATOR && detonator(game, None)
 }
 
@@ -250,6 +252,7 @@ fn detonator(game: &mut crate::game::Game<'_>, target: Option<[i32; 3]>) -> bool
 
 /// Use the engine's registered server command/permission/feedback path.
 pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::NativeServerPlayer,line:&str)->bool {
+    if crate::game::ntm_items::command(game,line){return true;}
     if line.split_whitespace().next()!=Some("ntmbomba"){return false;}
     let who=PlayerInfo{id:game.native_actor_uuid().unwrap_or_else(||player.uuid.to_string()),name:player.name.clone(),dim:player.dimension.clone(),pos:player.position,creative:player.game_mode==1};
     let mut guard=lock(&SERVER);
@@ -679,6 +682,13 @@ impl ServerHost for Host<'_, '_> {
                 .collect(),
         )
     }
+    fn player_dose(&mut self,id:&str,legacy:&ntm_core::radiation::Dose)->Option<ntm_core::radiation::Dose>{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::read_dose(g,legacy)).flatten()
+    }
+    fn commit_player_dose(&mut self,id:&str,expected:&ntm_core::radiation::Dose,desired:&ntm_core::radiation::Dose)->bool{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::write_dose(g,expected,desired)).unwrap_or(false)
+    }
+    fn radiation_factor(&mut self,id:&str)->f64{self.game.native_visit_player(id,|g|crate::game::ntm_items::radiation_factor(g)).unwrap_or(1.0)}
     fn inventory_stacks(&mut self,id:&str)->Option<Vec<Stack>> {
         Some(self.game.native_player_inventory(id)?.into_iter().map(|c|Stack {id:c.item,count:c.count,damage:0,custom:c.custom_data}).collect())
     }
@@ -754,6 +764,9 @@ pub(super) fn ticks(block: &str, ticks: &mut bool) {
 }
 
 pub(super) fn container(_game: &crate::game::Game<'_>, block: &str, container: &mut Option<ModContainer>) {
+    if block=="ntm:machine_armor_table"{
+        *container=Some(ModContainer{slots:14,faces:std::array::from_fn(|_|Vec::new()),inputs:Vec::new(),outputs:Vec::new(),menu:Some("ntm:armor_table".into())});return;
+    }
     let Some(c) = ntm_core::native::container(block) else { return };
     *container = Some(ModContainer {
         slots: c.slots,
@@ -767,6 +780,7 @@ pub(super) fn container(_game: &crate::game::Game<'_>, block: &str, container: &
 /// The rules of a machine's slots: what each takes, its limit, the output
 /// ones (the same for the menu, clicks and hoppers).
 pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: &mut Vec<ModSlotFilter>) {
+    if block=="ntm:machine_armor_table"{filters.extend(crate::game::ntm_armor_table::filters(_game));return;}
     let rules = ntm_core::native::slot_filters(block);
     use horizon_client::containers::SlotPolicy;
     let policy = match block {
@@ -1024,3 +1038,6 @@ mod world_commit_tests {
         }
     }
 }
+
+/// Legacy migration seed; all subsequent native dose lives in the player file.
+pub(super) fn item_dose(id:&str)->Option<ntm_core::radiation::Dose> {lock(&SERVER).as_ref().map(|(s,_)|s.player_dose(id))}

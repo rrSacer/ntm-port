@@ -405,3 +405,119 @@ bindings = [
   { name = "center", ty = "[f64; 3]", value = "center" },
   { name = "blocks", ty = "&[[i32; 3]]", value = "&*blocks" },
 ]
+
+[[module]]
+id = "items"
+file = "crates/horizon-client/src/game.rs"
+name = "ntm_items"
+source = "item_hooks.rs"
+
+[[injection]]
+id = "item-duration"
+hook = "use_duration"
+hook_version = 1
+kind = "HEAD"
+helper = "item_duration.rs"
+bindings = [
+ { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
+ { name = "duration", ty = "&mut i32", value = "&mut *duration" },
+]
+
+[[injection]]
+id = "item-animation"
+hook = "use_animation"
+hook_version = 1
+kind = "HEAD"
+helper = "item_animation.rs"
+bindings = [
+ { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
+ { name = "animation", ty = "&mut horizon_world::consumable::UseAnimation", value = "&mut *animation" },
+]
+
+[[injection]]
+id = "item-start"
+hook = "living_entity_use_item_start"
+hook_version = 1
+kind = "HEAD"
+helper = "item_start.rs"
+bindings = [
+ { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+ { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
+ { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+
+[[injection]]
+id = "item-finish"
+hook = "living_entity_use_item_finish"
+hook_version = 1
+kind = "HEAD"
+helper = "item_finish.rs"
+bindings = [
+ { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+ { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
+]
+
+[[injection]]
+id = "item-player-tick"
+hook = "player_tick"
+hook_version = 1
+kind = "HEAD"
+helper = "item_player_tick.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
+
+[[injection]]
+id = "item-equipment"
+hook = "on_equip"
+hook_version = 1
+kind = "HEAD"
+helper = "item_equipment.rs"
+bindings = [
+ { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+ { name = "slot", ty = "&str", value = "slot" },
+ { name = "new", ty = "Option<&horizon_client::items::ItemStack>", value = "new" },
+]
+
+[[injection]]
+id = "item-player-clone"
+hook = "player_clone"
+hook_version = 1
+kind = "HEAD"
+helper = "item_clone.rs"
+bindings = [
+ { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+ { name = "player", ty = "u128", value = "player" },
+ { name = "was_death", ty = "bool", value = "was_death" },
+]
+
+[[module]]
+id = "armor-table"
+file = "crates/horizon-client/src/game.rs"
+name = "ntm_armor_table"
+source = "armor_table.rs"
+
+[[injection]]
+id = "armor-table-click"
+hook = "menu_clicked"
+hook_version = 1
+kind = "HEAD"
+helper = "armor_table_click.rs"
+bindings = [
+ { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+ { name = "uuid", ty = "u128", value = "uuid" },
+ { name = "window", ty = "i32", value = "window" },
+ { name = "slot", ty = "i32", value = "slot" },
+ { name = "button", ty = "i32", value = "button" },
+ { name = "mode", ty = "i32", value = "mode" },
+]
+
+[[injection]]
+id = "armor-table-close"
+hook = "menu_closed"
+hook_version = 1
+kind = "HEAD"
+helper = "armor_table_close.rs"
+bindings = [
+ { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+ { name = "uuid", ty = "u128", value = "uuid" },
+ { name = "window", ty = "i32", value = "window" },
+]
