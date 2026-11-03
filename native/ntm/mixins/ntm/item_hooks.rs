@@ -409,6 +409,9 @@ pub(super) fn command(game: &mut Game<'_>, line: &str) -> bool {
     }
     let mut reply = String::from("false");
     match words.as_slice() {
+        [_, "transaction-check"] => {
+            reply = transaction_check(game).to_string();
+        }
         [_, "inspect"] => {
             if let Some(snapshot) = game.native_player_snapshot(&STATE) {
                 reply = horizon_world::snbt_text::to_snbt(&Tag::Compound(snapshot.state));
@@ -520,4 +523,40 @@ pub(super) fn cloned(game: &mut Game<'_>, player: u128, was_death: bool) {
     if let Err(error) = attachments.set(&STATE, state) {
         eprintln!("ntm item state respawn: {error:?}");
     }
+}
+
+/// Exercise the real native commit boundary without changing item counts:
+/// invalid benefits refuse everything, a confirmed edit rejects its replay,
+/// and restoration is another guarded transaction.
+fn transaction_check(game: &mut Game<'_>) -> bool {
+    let Some(expected) = game.native_player_snapshot(&STATE) else {
+        return false;
+    };
+    let mut desired = expected.clone();
+    let Some(seed) = legacy(game) else {
+        return false;
+    };
+    init(&mut desired, seed);
+    desired
+        .state
+        .insert("transaction_probe".into(), Tag::Long(1));
+    let invalid = NativePlayerBenefits {
+        effects: vec![("ntm:missing_effect".into(), 20, 0)],
+        ..Default::default()
+    };
+    if game.native_commit_player(&STATE, &expected, desired.clone(), invalid)
+        || game.native_player_snapshot(&STATE).as_ref() != Some(&expected)
+    {
+        return false;
+    }
+    if !game.native_commit_player(&STATE, &expected, desired.clone(), Default::default()) {
+        return false;
+    }
+    let replay = game.native_commit_player(&STATE, &expected, desired.clone(), Default::default());
+    let Some(current) = game.native_player_snapshot(&STATE) else {
+        return false;
+    };
+    let unchanged = current == desired;
+    let restored = game.native_commit_player(&STATE, &current, expected, Default::default());
+    !replay && unchanged && restored
 }

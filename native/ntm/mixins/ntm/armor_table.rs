@@ -41,7 +41,8 @@ static STATE: AttachmentType<Compound> = AttachmentType {
     copy_on_death: true,
     sync: false,
 };
-static OPEN: Mutex<Option<HashMap<u128, (i32, Menu)>>> = Mutex::new(None);
+type Sessions = HashMap<u128, (i32, Menu)>;
+static OPEN: Mutex<Option<Sessions>> = Mutex::new(None);
 static ARMOR: Mutex<Vec<(String, usize)>> = Mutex::new(Vec::new());
 fn lock<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
     m.lock().unwrap_or_else(|e| e.into_inner())
@@ -438,7 +439,7 @@ fn close_items(game: &mut Game<'_>) {
         return;
     };
     let mut drops: Vec<_> = mods.into_iter().flatten().collect();
-    if set_mods(&mut armor, &vec![None; 9]).is_none() {
+    if set_mods(&mut armor, &std::array::from_fn::<_, 9, _>(|_| None)).is_none() {
         return;
     }
     drops.push(armor);

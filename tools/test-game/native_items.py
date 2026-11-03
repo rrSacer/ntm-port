@@ -36,6 +36,7 @@ def inventory_tag(g):
 def setup(g):
     g.ctl('wait-ready 120');g.close();g.command('gamemode creative @s');g.command('clear @s')
     g.ground(20,101,8,width=12,height=8)
+    probe=g.command('ntmitem transaction-check');g.check('native_cas_refusal_replay_and_restore',any('true' in line for line in probe.get('chat',[])),probe)
     # The cotton candy is always edible and carries the five Java effects.
     give_hand(g,'ntm:cotton_candy',2)
     g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.45)
