@@ -42,6 +42,27 @@ Filtros `accept`/`reject`, `output`, limites de pilha, faces e listas
 o comportamento anterior. `Rules::may_pickup` e o evento oficial
 `inventory_move_item` continuam ativos e também podem recusar operações.
 
+### Troca direta: o slot é avaliado vazio
+
+Quando um item **diferente** toma o lugar do que está no slot (clique com o
+cursor ocupado, teclas 1–9 ou `F`), `may_pickup` aprova a retirada e a inserção
+é consultada sobre uma visão em que o slot já está vazio; as demais posições
+continuam sendo as atuais. Assim uma política como "só insere em slot vazio" não
+exige dois cliques. Mesclar o **mesmo** item numa pilha existente continua vendo
+o slot ocupado. Cliente (`Menu`) e hóspede LAN (`lan::menu`) aplicam a mesma
+regra, inclusive o desdobramento da tecla numérica: se a pilha excede o limite
+do slot, ele recebe até `max`, o resto fica na mão/hotbar e a pilha antiga vai
+para o inventário (ou ao chão).
+
+### Shift-click mais estreito que a mão
+
+`ModSlotFilter::quick_move: Option<Vec<String>>` limita o que o **shift-click**
+(`transferStackInSlot`) move para o slot, além de `accept`/`reject`/`policy`.
+`None` não acrescenta restrição; o clique, a tecla numérica e o drag seguem só as
+outras regras. Um contêiner Java que usa `Slot` vanilla com um
+`transferStackInSlot` seletivo (como o ZIRNOX) declara `accept: None` e
+`quick_move: Some(itens)`. O shift-click permanece de origem `Manual`.
+
 Filtros estáticos devem expressar restrições comuns às duas origens. Por
 exemplo, se RTG aceita qualquer item manualmente, não adicione um `accept`
 estático que o limite a pellets: ponha a restrição da automação na política.
@@ -76,6 +97,10 @@ O sufixo do exemplo é apenas ilustrativo. O ZIRNOX usa sua tabela fonte por
 `ntm_core::native::slot_allows` → `zirnox::can_extract`; isso mantém barras ativas,
 incluindo combustível produzido pelo breeding, dentro do reator. Os slots 0..23
 são acessíveis por automação; 24..27 continuam acessíveis somente pela tela.
+Fiel ao `ContainerReactorZirnox.java`, os slots 0..23 são `Slot` vanilla: a
+inserção **manual** aceita qualquer item (uma unidade por slot). A restrição a
+barras vale na automação (`isItemValidForSlot`, em `slot_allows`) e no
+shift-click (`quick_move`, `transferStackInSlot`).
 
 ## Integração RTG/radgen
 

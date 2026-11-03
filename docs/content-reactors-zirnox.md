@@ -32,7 +32,11 @@ inserção por funil. A política condicional compartilhada de
 `canExtractItem(slot,stack,side)` consulta `zirnox::can_extract(slot,item)` nas
 extrações por automação: barras ativas ficam; itens sem combustível ativo saem
 dos slots 0..23. Isso também conserva dentro do reator o combustível ativo
-produzido pelo breeding. Retirada manual continua permitida. Recipientes 24..27
+produzido pelo breeding. Retirada manual continua permitida. Os slots 0..23 são
+`Slot` vanilla no Java: a inserção manual (clique, tecla numérica, drag) aceita
+qualquer item, uma unidade por slot; só a automação (`isItemValidForSlot`) e o
+shift-click (`transferStackInSlot`, via `quick_move`) ficam restritos às barras.
+Recipientes 24..27
 só são acessíveis pela tela, como os slots acessíveis Java. Ver o
 [contrato do hook e das origens Manual/Automation](native-slot-policy.md).
 

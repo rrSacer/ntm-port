@@ -712,7 +712,8 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
     let policy = (block == ntm_core::zirnox::BLOCK)
         .then_some(horizon_client::containers::SlotPolicy(zirnox_slot_policy));
     filters.extend(rules.into_iter().map(|f| ModSlotFilter {
-        accept: f.accept, reject: f.reject, max: f.max, output: f.output, policy,
+        accept: f.accept, reject: f.reject, max: f.max, output: f.output,
+        quick_move: f.quick_move, policy,
     }));
 }
 

@@ -61,6 +61,8 @@ pub struct SlotFilter {
     pub reject: Vec<String>,
     pub max: Option<u32>,
     pub output: bool,
+    /// The items a shift-click may move in (none: as `accept`).
+    pub quick_move: Option<Vec<String>>,
 }
 
 /// The rules of block `block`'s slots, in order (menu, clicks and hoppers
@@ -88,11 +90,15 @@ pub enum SlotAction { Insert, Extract }
 
 /// Additional pure restriction on a slot, composed with static filters, limits and faces.
 /// `slots` must be the current complete container, never a cached tick snapshot.
-/// Manual ZIRNOX extraction is unrestricted; automation follows canExtractItem.
+/// Manual ZIRNOX insertion and extraction are unrestricted (vanilla `Slot`s); automation
+/// follows `isItemValidForSlot` (rods only into the rod slots) and `canExtractItem`.
 pub fn slot_allows(block: &str, _slots: &[Option<crate::server::container_bridge::Stack>], slot: usize,
     item: &crate::server::container_bridge::Stack, action: SlotAction, origin: SlotOrigin) -> bool {
     block != crate::zirnox::BLOCK || origin == SlotOrigin::Manual
-        || action == SlotAction::Insert || crate::zirnox::can_extract(slot, &item.id)
+        || match action {
+            SlotAction::Insert => slot >= 24 || crate::zirnox::fuel(&item.id).is_some(),
+            SlotAction::Extract => crate::zirnox::can_extract(slot, &item.id),
+        }
 }
 
 /// The furnace's menu data: power, its maximum, progress, its total (the
@@ -113,7 +119,11 @@ fn machine_files() -> &'static std::collections::HashMap<String, serde_json::Val
 /// Block `block`'s slot rules, from its machine file (none without one).
 pub fn block_slots(block: &str) -> Vec<SlotFilter> {
     if block == crate::zirnox::BLOCK {
-        let mut slots=vec![SlotFilter {accept:Some(crate::zirnox::table().fuels.iter().map(|f|f.item.clone()).collect()), max:Some(1), ..Default::default()};24];
+        // Java's `ContainerReactorZirnox` builds slots 0..23 as plain `Slot`s: a hand
+        // may place anything, one item at a time. Only `transferStackInSlot` (shift-click)
+        // and the automation (`slot_allows`) are limited to the rods.
+        let rods=crate::zirnox::table().fuels.iter().map(|f|f.item.clone()).collect();
+        let mut slots=vec![SlotFilter {max:Some(1), quick_move:Some(rods), ..Default::default()};24];
         for f in ["carbondioxide","water"] {slots.push(SlotFilter {accept:Some(crate::fluid::all_full_containers().into_iter().filter(|s|crate::fluid::contents(s).is_some_and(|c|c.fluid==f)).collect()),..Default::default()});}
         slots.extend([SlotFilter {output:true,..Default::default()},SlotFilter {output:true,..Default::default()}]);
         return slots;
@@ -140,6 +150,7 @@ pub fn file_slots(file: &[u8]) -> Vec<SlotFilter> {
             reject: list("reject").unwrap_or_default(),
             max: s.get("max").and_then(|m| m.as_u64()).map(|m| m as u32),
             output: s.get("output").and_then(|o| o.as_bool()).unwrap_or(false),
+            quick_move: None,
         };
         let cells = match s.get("grid").and_then(|g| g.as_array()) {
             Some(g) if g.len() == 4 => (g[2].as_u64().unwrap_or(1) * g[3].as_u64().unwrap_or(1)) as usize,
@@ -325,6 +336,30 @@ mod tests {
         assert!(slot_allows(crate::zirnox::BLOCK, &slots, 0, &active, SlotAction::Extract, SlotOrigin::Manual));
         assert!(slot_allows(crate::zirnox::BLOCK, &slots, 0, &active, SlotAction::Insert, SlotOrigin::Automation));
         assert_eq!(slots, vec![Some(active), Some(spent)]);
+    }
+
+    /// `ContainerReactorZirnox` builds slots 0..23 as plain `Slot`s, so a hand places any
+    /// item; the rods-only rule is `isItemValidForSlot` (automation) and `transferStackInSlot`.
+    #[test]
+    fn zirnox_manual_insertion_is_unrestricted_but_automation_and_shift_click_take_rods() {
+        use crate::server::container_bridge::Stack;
+        let rod = Stack::new(&crate::zirnox::table().fuels[0].item, 1);
+        let spent = Stack::new(&crate::zirnox::table().fuels[0].output, 1);
+        let junk = Stack::new("minecraft:dirt", 1);
+        let allows = |slot, item: &Stack, origin| slot_allows(crate::zirnox::BLOCK, &[], slot, item, SlotAction::Insert, origin);
+        for item in [&rod, &spent, &junk] {
+            assert!(allows(0, item, SlotOrigin::Manual));
+        }
+        assert!(allows(0, &rod, SlotOrigin::Automation));
+        assert!(!allows(0, &spent, SlotOrigin::Automation));
+        assert!(!allows(23, &junk, SlotOrigin::Automation));
+        let slots = block_slots(crate::zirnox::BLOCK);
+        let quick = |s: &SlotFilter, id: &str| s.quick_move.as_ref().is_none_or(|q| q.iter().any(|x| x == id));
+        for s in &slots[..24] {
+            assert!(s.accept.is_none() && s.max == Some(1));
+            assert!(quick(s, &rod.id) && !quick(s, &junk.id) && !quick(s, &spent.id));
+        }
+        assert!(slots[24..].iter().all(|s| s.quick_move.is_none()));
     }
 
     #[test]

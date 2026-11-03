@@ -208,6 +208,27 @@ def capture(g):
     g.ctl('save')
 
 
+def manual_non_fuel(g,core):
+    """ContainerReactorZirnox builds slots 0..23 as vanilla `Slot`s: a hand places any item there."""
+    g.close();g.command('give @s minecraft:dirt 1');time.sleep(1);open_reactor(g,core)
+    slots=g.ctl('screen')['slots']
+    dirt=next(s['slot'] for s in slots if s['slot']<36 and s.get('item')=='minecraft:dirt')
+    rod_slot=next(s['slot'] for s in slots if 300<=s['slot']<324 and not s.get('item'))
+    def settle(want_slot,want_item,want_carried):
+        deadline=time.monotonic()+10
+        while True:
+            screen=g.ctl('screen');carried=(screen.get('carried') or {}).get('item')
+            cell=next(s for s in screen['slots'] if s['slot']==want_slot).get('item')
+            if (cell,carried)==(want_item,want_carried) or time.monotonic()>deadline:return cell,carried
+            time.sleep(.1)
+    g.ctl(f'click-slot {dirt}');settle(dirt,None,'minecraft:dirt')
+    g.ctl(f'click-slot {rod_slot}');placed=settle(rod_slot,'minecraft:dirt',None)
+    g.check('manual_non_fuel_enters_rod_slot',placed==('minecraft:dirt',None),placed)
+    g.ctl(f'click-slot {rod_slot}');settle(rod_slot,None,'minecraft:dirt')
+    g.ctl(f'click-slot {dirt}');back=settle(dirt,'minecraft:dirt',None)
+    g.check('manual_non_fuel_returns_whole',back==('minecraft:dirt',None) and not next(s for s in g.ctl('screen')['slots'] if s['slot']==rod_slot).get('item'),back)
+
+
 def check(g):
     c=config(g);core=c['core'];saved=json.loads((g.folder/'zirnox-before-reopen.json').read_text())
     g.command('tp @s '+pos_text(add(core,(0,0,5))));time.sleep(2)
@@ -233,6 +254,7 @@ def check(g):
             time.sleep(.1)
         g.check('cursor_move_ack_'+str(len(g.evidence['steps'])),accepted,{'cursor':cursor,'slot':cell})
     g.check('rod_life_survives_manual_moves',life(g,core)==before,{'before':before,'after':life(g,core)})
+    manual_non_fuel(g,core)
     import os
     from xinput import XInput
     ui=g.ctl('ui');bounds=next(w['bounds'] for w in ui['widgets'] if w.get('id')=='slot-300')
