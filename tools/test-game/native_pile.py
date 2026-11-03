@@ -4,6 +4,7 @@ No machine state is injected. capture-state/check-state check geometry, inventor
 across a clean client restart (including heat, flux, rod depletion and devices).
 """
 import json
+import re
 import sys
 import time
 from native_game import Game
@@ -63,6 +64,32 @@ def load(g,p,kind):
     time.sleep(1.6)
 
 
+def hand_damage(g):
+    """The damage of the stack in the selected hotbar slot (`minecraft:damage`)."""
+    text=' '.join(g.command('data get entity @s SelectedItem.components."minecraft:damage"').get('chat',[]))
+    found=re.findall(r'-?\d+',text)
+    return int(found[-1]) if found else 0
+
+
+def formation_wear(g):
+    """A plain drill forming a pile in survival: the pile, its blocks' first state and exactly one
+    point of wear arrive together (the creative player of the rest of the scenario wears nothing)."""
+    second=(46,102,8)
+    g.command('gamemode survival @s')
+    g.command('fill 44 99 3 48 99 18 minecraft:stone')
+    g.command('fill 44 100 8 48 104 12 ntm:pile_brick')
+    g.command('clear @s');g.command('give @s ntm:hand_drill 1');g.ctl('select ntm:hand_drill')
+    before=hand_damage(g)
+    interact(g,second,'north',(46.5,101,5.5))
+    formed=machine(g,second)['data']['Core']
+    after=hand_damage(g)
+    g.check('formation_wears_the_drill_once',after-before==1,{'before':before,'after':after})
+    g.check('formation_cells_hold_their_first_state',formed['shape']['at']==list(second) and machine(g,(46,100,8))['data'] is not None,formed['shape'])
+    g.command('gamemode creative @s')
+    g.command('fill 44 100 8 48 104 12 minecraft:air')
+    time.sleep(2)
+
+
 def setup(g):
     g.close()
     g.command('gamemode creative @s')
@@ -70,6 +97,7 @@ def setup(g):
     time.sleep(3)
     g.command('fill 32 99 3 48 108 18 minecraft:air')
     g.command('fill 32 99 3 48 99 18 minecraft:stone')
+    formation_wear(g)
     g.command('fill 38 100 8 42 104 12 ntm:pile_brick')
     tool(g)
     interact(g,CORE,'north',(40.5,101,5.5))

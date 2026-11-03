@@ -380,7 +380,7 @@ fn cell_snapshot(game:&crate::game::Game<'_>,dim:&str,pos:[i32;3])->Option<ntm_c
 }
 
 impl Host<'_, '_> {
-    fn publish_atomic(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop]) -> bool {
+    fn publish_atomic(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool) -> bool {
         // This callback owns &mut Game for its entire duration. No event,
         // hopper, chunk unload or block mutation can interleave these passes.
         // Resolve ALL entities and validate ALL expected slots before changing
@@ -429,6 +429,9 @@ impl Host<'_, '_> {
             cells.push((w.clone(),dim,old,state));
         }
         if cells.len()>65_536{return false;}
+        // The tool the click used is still the one in hand, and it wears: checked before
+        // anything is published, applied with the publication.
+        if wear_held && !self.game.held().is_some_and(|h|&*h.item=="ntm:hand_drill"){return false;}
         let mut spawn=Vec::new();
         for d in retained {
             if self.game.native_loaded_block(&d.origin.dim,d.origin.pos).is_none(){return false;}
@@ -495,13 +498,24 @@ impl Host<'_, '_> {
                 }
                 let landed=g.world.block(p[0],p[1],p[2]);
                 let name=g.res.facts().get(*new).name.clone();
-                if g.res.facts().get(*old).name!=name && g.res.facts().get(landed).name==name && let Some(entity)=g.new_block_entity(&name){g.world.block_entities.insert((p[0],p[1],p[2]),entity);}
+                if g.res.facts().get(*old).name!=name && g.res.facts().get(landed).name==name && let Some(entity)=g.new_block_entity(&name){
+                    g.world.block_entities.insert((p[0],p[1],p[2]),entity);
+                    // A formation's first state goes in with the block entity itself.
+                    if let Some(init)=&w.initial && let Some(horizon_client::containers::BlockEntity::Mod(m))=g.world.block_entities.get_mut(&(p[0],p[1],p[2])){
+                        m.data=init.data.clone();
+                        m.nbt.insert(JavaString::from(DATA),Tag::IntArray(init.data.clone()));
+                        m.nbt.insert(JavaString::from(STATE),Tag::String(JavaString::from(init.json.as_str())));
+                        g.world.modified.insert((p[0]>>4,p[2]>>4));
+                    }
+                }
             }).expect("post-publication level remains accessible");
         }
         for (dim,p) in notify {
             if dim_of(&dim)==Some(self.game.dim){self.game.native_block_entity_changed(p);}
             else if self.watched(&dim){in_place(self.game,&dim,|g|g.native_block_entity_changed(p));}
         }
+        // The hand's part of the same step (checked above, infallible here).
+        if wear_held{self.game.damage_held_tool();}
         true
     }
 }
@@ -605,12 +619,19 @@ impl ServerHost for Host<'_, '_> {
     }
     fn commit_machines(&mut self, commits: &[ntm_core::server::MachineCommit]) -> bool {
         let retained:Vec<_>=commits.iter().flat_map(|c|&c.cells).filter(|w|ntm_core::blockstate::id_of(&w.expected.state)!=ntm_core::blockstate::id_of(&w.desired)&&!w.expected.items.is_empty()).map(|w|ntm_core::server::RetainedDrop{origin:w.guard.clone(),items:w.expected.items.clone()}).collect();
-        self.publish_atomic(commits,&[],&retained)
+        self.publish_atomic(commits,&[],&retained,false)
     }
     fn commit_structural(&mut self,cells:&[ntm_core::server::CellWrite],drops:&[ntm_core::server::RetainedDrop],owners:&[(String,[i32;3])])->bool{
         let own=cells.iter().filter(|c|owners.contains(&c.guard.key())).map(|c|(c.guard.dim.clone(),c.guard.pos,ntm_core::blockstate::id_of(&c.desired).into())).collect();
         let _scope=OwnedBlockScope::new(own);
-        self.publish_atomic(&[],cells,drops)
+        self.publish_atomic(&[],cells,drops,false)
+    }
+    /// A pile's formation: bricks to pile blocks, the block entities with their first JSON and
+    /// menu data, and the held drill's wear, all in the one exclusive publication.
+    fn commit_formation(&mut self,cells:&[ntm_core::server::CellWrite],wear_held:bool,owners:&[(String,[i32;3])])->bool{
+        let own=cells.iter().filter(|c|owners.contains(&c.guard.key())).map(|c|(c.guard.dim.clone(),c.guard.pos,ntm_core::blockstate::id_of(&c.desired).into())).collect();
+        let _scope=OwnedBlockScope::new(own);
+        self.publish_atomic(&[],cells,&[],wear_held)
     }
     fn machine_buttons(&mut self) -> Vec<(String, String, [i32; 3], u32)> {
         std::mem::take(&mut self.buttons)

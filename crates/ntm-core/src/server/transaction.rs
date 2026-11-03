@@ -76,7 +76,7 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
             let snapshot=self.host.cell_snapshot(d,p)?;
             if !self.world_writes.iter().any(|w|w.guard.dim==d&&w.guard.pos==p){
                 let guard=CellGuard{dim:d.into(),pos:p,generation:self.generations.get(&(d.into(),p)).copied().unwrap_or(0),state:snapshot.state.clone()};
-                self.world_writes.push(CellWrite{notify:true,guard,desired:snapshot.state.clone(),expected:snapshot,destroy:false});
+                self.world_writes.push(CellWrite{notify:true,initial:None,guard,desired:snapshot.state.clone(),expected:snapshot,destroy:false});
             }
             return Some(self.world_writes.iter().find(|w|w.guard.dim==d&&w.guard.pos==p).unwrap().expected.state.clone());
         }
@@ -110,7 +110,7 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
                 let Some(expected)=self.host.cell_snapshot(d,*pos) else{self.valid=false;return Err("unavailable consumed cell".into())};
                 let guard=CellGuard{dim:d.into(),pos:*pos,generation:self.generations.get(&(d.into(),*pos)).copied().unwrap_or(0),state:expected.state.clone()};
                 let destroy=blockstate::id_of(desired)=="minecraft:air" && blockstate::id_of(&expected.state)!="minecraft:air";
-                self.world_writes.push(CellWrite{notify:true,guard,expected,desired:desired.clone(),destroy});
+                self.world_writes.push(CellWrite{notify:true,initial:None,guard,expected,desired:desired.clone(),destroy});
             }
             return Ok(());
         }
@@ -225,7 +225,7 @@ impl Server {
                                     retained.retain(|d|d.origin.key()!=g.key());
                                     if blockstate::id_of(&actual)!=blockstate::id_of(desired)&&!snapshot.items.is_empty(){retained.push(RetainedDrop{origin:g.clone(),items:snapshot.items.clone()});}
                                 }
-                                cells.push(CellWrite{notify:false,guard:g.clone(),expected:snapshot,desired:desired.clone(),destroy:false});
+                                cells.push(CellWrite{notify:false,initial:None,guard:g.clone(),expected:snapshot,desired:desired.clone(),destroy:false});
                                 physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());
                             }
                             Some(_)=>{},

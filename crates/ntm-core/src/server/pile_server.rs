@@ -62,6 +62,75 @@ impl Server {
         self.ready.topo_dirty = true;
         Ok(())
     }
+    /// A pile's formation in one step: every cell's new block, its block entity
+    /// with the machine's first JSON, and the held drill's wear. The model is
+    /// recorded only after the host confirmed the publication, so a refusal
+    /// leaves the bricks, the model and the tool as they were.
+    fn pile_form(
+        &mut self,
+        host: &mut impl ServerHost,
+        dim: &str,
+        core: Core,
+        held: Option<&Stack>,
+    ) -> Result<(), String> {
+        let wear = held.is_some_and(|h| h.id == "ntm:hand_drill");
+        let cells = core.cells();
+        let owners: Vec<_> = cells.iter().map(|(p, _)| (dim.to_string(), *p)).collect();
+        let mut writes = Vec::new();
+        let mut formed = Vec::new();
+        for (p, role) in cells {
+            let id = format!("ntm:pile_block__{role}");
+            let key = (dim.to_string(), p);
+            let Some(expected) = host.cell_snapshot(dim, p) else {
+                return Err(format!("pile formation: {p:?} is not loaded"));
+            };
+            if blockstate::id_of(&expected.state) != pile::BRICK || expected.entity.is_some() {
+                return Err(format!("pile formation: {p:?} is not a plain brick"));
+            }
+            let generation = self
+                .ready
+                .world
+                .machines
+                .get(&key)
+                .map(|m| m.generation)
+                .unwrap_or_else(|| self.ready.world.generations.get(&key).copied().unwrap_or(0));
+            let mut m = Machine::new(Kind::Pile, &id, Some("north".into()));
+            m.generation = generation;
+            m.data = Data::Pile(Box::new(if p == core.shape.at {
+                Pile::Core(Some(core.clone()))
+            } else {
+                Pile::Member(Some(core.shape.at))
+            }));
+            let json = serde_json::to_string(&m).map_err(|e| e.to_string())?;
+            let data = Self::machine_screen(&mut m.clone());
+            writes.push(CellWrite {
+                notify: false,
+                guard: CellGuard {
+                    dim: dim.to_string(),
+                    pos: p,
+                    generation,
+                    state: pile::BRICK.to_string(),
+                },
+                desired: state(&role),
+                expected,
+                destroy: false,
+                initial: Some(InitialState { json: json.clone(), data }),
+            });
+            formed.push((key, m, json, state(&role)));
+        }
+        if !host.commit_formation(&writes, wear, &owners) {
+            return Err("pile formation refused: nothing changed".into());
+        }
+        for (key, m, json, shown) in formed {
+            self.ready.world.machines.insert(key.clone(), m);
+            self.ready.loaded.insert(key.clone(), true);
+            self.ready.seen.insert(key.clone());
+            self.ready.native_saved.insert(key.clone(), json);
+            self.ready.shown.insert(key, shown);
+        }
+        self.ready.topo_dirty = true;
+        Ok(())
+    }
     fn pile_eject(host: &mut impl ServerHost, dim: &str, at: Pos, rod: Rod) {
         host.pile_drop(dim, at, &rod.id());
     }
@@ -145,8 +214,10 @@ impl Server {
                         .is_some_and(|b| blockstate::id_of(&b) == pile::BRICK)
                 });
                 return Some(match formed {
-                    Ok(shape) => match self.pile_write(host, dim, Core::new(shape)) {
-                        Ok(()) => PileUse::WearDrill,
+                    // The drill's wear is part of the formation's commit: nothing
+                    // is left for the caller to apply afterwards.
+                    Ok(shape) => match self.pile_form(host, dim, Core::new(shape), held) {
+                        Ok(()) => PileUse::Handled,
                         Err(e) => {
                             host.log(&e);
                             PileUse::Handled
@@ -502,6 +573,12 @@ mod tests {
         refuse_commit:bool,
         refuse_items:bool,
         drop_budget:Option<usize>,
+        /// The next formation is refused after its preflight (nothing may change).
+        refuse_formation:bool,
+        /// The drill's wear applied with a formation.
+        worn:usize,
+        /// First JSON published with a formation's block entities.
+        first_json:BTreeMap<Pos,String>,
     }
     impl Kv for Host {
         fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -525,6 +602,12 @@ mod tests {
             self.set_machine_blocks(dim,&blocks,owners).is_ok()
         }
 
+        fn commit_formation(&mut self,cells:&[CellWrite],wear_held:bool,owners:&[(String,Pos)])->bool{
+            if self.refuse_formation||!self.commit_structural(cells,&[],owners){return false;}
+            for c in cells{if let Some(i)=&c.initial{self.first_json.insert(c.guard.pos,i.json.clone());}}
+            if wear_held{self.worn+=1;}
+            true
+        }
         fn commit_machine(&mut self,c:&MachineCommit)->bool{self.commit_machines(std::slice::from_ref(c))}
         fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
             if self.refuse_commit || cs.iter().any(|c|self.inactive.contains(&c.dim)||self.unloaded.contains(&c.pos)||self.slots.get(&c.pos).cloned().unwrap_or_default()!=c.expected){return false;}
@@ -614,8 +697,9 @@ mod tests {
         let tool = Stack::new("ntm:hand_drill", 1);
         assert_eq!(
             s.native_pile_use(&mut h, DIM, AT, [0, 0, -1], Some(&tool), 0., "p"),
-            Some(PileUse::WearDrill)
+            Some(PileUse::Handled)
         );
+        assert_eq!(h.worn, 1, "the wear was part of the formation");
         replay(&mut s, &mut h);
         s.native_tick(&mut h, 1);
         s.native_world_saved(&mut h,true);
@@ -630,6 +714,66 @@ mod tests {
         replay(s, h);
         s.native_tick(h, 2);
         s.native_world_saved(h,true);
+    }
+    fn bricks(h: &mut Host) {
+        for x in -2..=2 {
+            for y in 62..=66 {
+                for z in 0..5 {
+                    h.blocks.insert([x, y, z], pile::BRICK.into());
+                }
+            }
+        }
+    }
+    /// The formation is one step: the bricks, the model, every block entity's first JSON and the
+    /// drill's wear all come together, and a refusal at the host leaves each as it was.
+    #[test]
+    fn formation_publishes_blocks_first_state_and_wear_together_or_not_at_all() {
+        let tool = Stack::new("ntm:hand_drill", 1);
+        let mut h = Host::default();
+        let mut s = Server::native(&mut h, 0);
+        bricks(&mut h);
+        let bricks_before = h.blocks.clone();
+        h.refuse_formation = true;
+        assert_eq!(
+            s.native_pile_use(&mut h, DIM, AT, [0, 0, -1], Some(&tool), 0., "p"),
+            Some(PileUse::Handled)
+        );
+        assert_eq!(h.blocks, bricks_before, "no brick changed");
+        assert!(s.ready.world.machines.is_empty(), "no model");
+        assert_eq!((h.worn, h.first_json.len()), (0, 0), "no wear, no state");
+        h.refuse_formation = false;
+        assert_eq!(
+            s.native_pile_use(&mut h, DIM, AT, [0, 0, -1], Some(&tool), 0., "p"),
+            Some(PileUse::Handled)
+        );
+        assert_eq!(h.worn, 1);
+        assert_eq!(s.ready.world.machines.len(), 125);
+        assert_eq!(h.first_json.len(), 125, "each cell got its JSON with the cell");
+        for (k, m) in &s.ready.world.machines {
+            assert_eq!(s.ready.native_saved.get(k), h.first_json.get(&k.1), "{k:?}");
+            assert!(h.blocks[&k.1].starts_with(&m.block));
+        }
+        // The desh drill does not wear.
+        let mut h2 = Host::default();
+        let mut s2 = Server::native(&mut h2, 0);
+        bricks(&mut h2);
+        let desh = Stack::new("ntm:hand_drill_desh", 1);
+        s2.native_pile_use(&mut h2, DIM, AT, [0, 0, -1], Some(&desh), 0., "p");
+        assert_eq!((h2.worn, s2.ready.world.machines.len()), (0, 125));
+    }
+    /// A cell that is not a plain brick (or not loaded) refuses the whole formation before any
+    /// write: the wear stays unspent.
+    #[test]
+    fn formation_with_an_unloaded_cell_changes_nothing() {
+        let tool = Stack::new("ntm:hand_drill", 1);
+        let mut h = Host::default();
+        let mut s = Server::native(&mut h, 0);
+        bricks(&mut h);
+        h.unloaded.insert([1, 65, 2]);
+        let before = h.blocks.clone();
+        s.native_pile_use(&mut h, DIM, AT, [0, 0, -1], Some(&tool), 0., "p");
+        assert_eq!(h.blocks, before);
+        assert_eq!((h.worn, s.ready.world.machines.len(), h.first_json.len()), (0, 0, 0));
     }
     fn device(s: &mut Server, h: &mut Host, p: Pos, id: &str, facing: &str) {
         let state = format!("{id}[facing={facing},honey_level=0]");

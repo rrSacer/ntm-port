@@ -67,6 +67,13 @@ pub trait ServerHost: Kv {
     /// Atomic structural publication plus retained, lossless old-BE drops.
     /// Unsupported hosts refuse; there is no partial setter fallback.
     fn commit_structural(&mut self,_cells:&[CellWrite],_drops:&[RetainedDrop],_owners:&[(String,Pos)])->bool{false}
+    /// A pile's formation: the cells' new block entities with their first state,
+    /// and the held drill's wear when `wear_held`, published in one step. Refusal
+    /// changes nothing, the tool included. Defaults to the structural commit,
+    /// which wears nothing.
+    fn commit_formation(&mut self,cells:&[CellWrite],wear_held:bool,owners:&[(String,Pos)])->bool{
+        !wear_held && self.commit_structural(cells,&[],owners)
+    }
     fn machine_data(&mut self, _dim: &str, _p: Pos) -> Option<Vec<i32>> {
         None
     }
@@ -140,6 +147,16 @@ pub struct CellWrite {
     pub desired: String,
     /// Excavator destroyBlock(false) also emits destruction/game events.
     pub destroy: bool,
+    /// What the block entity this write creates holds from the start: the
+    /// machine's first JSON and menu data, published with the cell.
+    #[serde(default)]
+    pub initial: Option<InitialState>,
+}
+/// A machine's state at its block entity's creation (`CellWrite::initial`).
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct InitialState {
+    pub json: String,
+    pub data: Vec<i32>,
 }
 
 #[derive(Clone, Debug, PartialEq)]
