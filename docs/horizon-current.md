@@ -9,7 +9,7 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
 - Upstream incorporado: `fc02103818c212920fd24aa34a2b2f91ba49e56f` (snapshot congelado de 03/11/2026).
-- Motor de integração (pin): `ec479adb3a66977b339672a7ff8747a7e951068e`.
+- Motor de integração (pin): `47173f4c4a87f47b64502dc443d9ff41dc069cad`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
   `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
@@ -334,3 +334,31 @@ compatibilidade recursion_limit/mixins (#8193); os contratos de stillValid por
 identidade, can_take unificado, fechamento de menu de BE, transação de save e
 entidades NTM continuam nos limites descritos acima. Nenhuma isenção de Clippy
 permaneceu nesta rodada.
+
+
+## Onda 0 — política de inventário e portas (marco 1)
+
+Motor `47173f4c4a87f47b64502dc443d9ff41dc069cad`, derivado do pin
+`ec479adb3`; upstream congelado `fc0210381`. [Contrato e exemplo da
+API](native-slot-policy.md).
+
+| Extensão local | Razão e composição com o oficial |
+| --- | --- |
+| `ModSlotFilter::policy`, `SlotAction`, `SlotOrigin` | O hook `slot_filters` existente recebe um callback puro com inventário atual, índice local, stack completo, ação e origem Manual/Automation. Previsão, menus autoritativos, shift-click, bundle, drag, troca, descarte e funil consultam a mesma regra. `Rules::may_pickup`, `inventory_move_item`, filtros estáticos, limites e faces continuam ativos. |
+| `Multiblock::inventory_ports` e `inventory_core` | Resolve apenas dummies declarados como portas até o contêiner do núcleo vivo. `Containers::view` compartilha o comportamento com funis, carrinhos e `native_insert_item`. O núcleo conserva o inventário próprio; não-portas e núcleos sem BE não expõem contêiner. |
+
+O ZIRNOX habilita saída automática nos slots 0..23 somente quando
+`zirnox::can_extract` permite; a exclusão provisória da extração foi removida.
+As cinco portas seguem `ReactorZirnox.getAllPorts`. O funil vanilla entra pela
+porta superior e extrai pelo núcleo inferior. Sob cada porta lateral há
+invólucro, que impede a instalação física de um funil extrator também no Java.
+A trilha RTG/radgen ligará suas próprias funções depois da integração deste
+marco, sem cherry-picks entre branches.
+
+Validação concluída no release `515b953d702ee196bf840023cad147d8aed35196ccb265e8369f40f3dffdbfcf`
+com o pacote `c2eda3dc2bc98b7f9d710b3bd3c3e3db39a84509515e7fae23c439b9a6894321` (`dist/ntm.hmod`, 9.103.922 bytes):
+
+- **Testes de unidade e integração:** NTM (371 unitários + 26 de integração, 8 Python de reatores simples), motor (139 `native_`, 38 `menu::tests`, 5 `mod_multiblocks`, 35 `mod_`, 2 `conditional_policy`) e Clippy `-D warnings` sem isenções (fonte do motor, NTM e stage transformada).
+- **Prova `inventory-proxy` (`inventory-proxy-iz5l5y6f`):** 12 checks (`ok: true`), inserindo 2 barras ativas pelo funil sobre a porta lateral `[1,0,0]`, extraindo apenas a barra convertida (`ntm:rod_zirnox_tritium: 1`) pelo funil sob a porta lateral, recusando acesso na célula não-porta `[1,0,-2]` e preservando conservação exata.
+- **Prova `zirnox` com `automation` (`zirnox-2xubdn0h`):** 123 checks (`ok: true`). Na fase `automation`, o funil sob o núcleo extraiu exatamente `11 ntm:rod_zirnox_zfb_mox_depleted` e `1 ntm:rod_zirnox_tritium` (0 extraídas no binário anterior `912c112ffbf1...`), preservou as 12 barras ativas (`1 natural_uranium_fuel`, `10 zfb_mox`, `1 thorium_fuel`) e os slots 26–27; o funil na porta superior `[0,4,0]` inseriu `1 ntm:rod_zirnox__u235_fuel` no núcleo e a célula não-porta `[1,5,0]` reteve a barra fornecida, com conservação exata.
+- **Regressão completa em jogo no mesmo binário:** `mining` (`mining-50ih28gu`, 18 checks), `bombs` (`bombs-jjh4t8wg`, 49 checks), `pile` (`pile-9ibhz_3e`, 83 checks), `dims` (`dims-34f1wlwd`, 10 checks), `dims-idle` (`dims-idle-k1pkjqvu`, 2 checks), `dims-idle-clean` (`dims-idle-clean-dnrbdizz`, 1 check) e `general.py` (`general-dnj_x0kf`, catálogo K3 com 340 checks / 94 itens + 49 checks de prensa, eletrolisador, radiação, solar/Stirling e reabertura de mundo).

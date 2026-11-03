@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import zipfile
 
 from native_game import Game
 
@@ -57,6 +58,21 @@ def run(args):
     bundle = (args.bundle or work / 'dist/ntm.hmod').resolve()
     folder = (args.resume_reopen.resolve() if args.resume_reopen else
               Path(tempfile.mkdtemp(prefix=args.scenario + '-', dir=args.scratch_root)))
+    if args.scenario == 'inventory-proxy':
+        # A disposable engine fixture: retain the real item policy and container,
+        # but replace only the shape with a radgen-style three-port multiblock.
+        fixture = folder / 'inventory-proxy.hmod'
+        with zipfile.ZipFile(bundle) as source, zipfile.ZipFile(fixture, 'w') as target:
+            for entry in source.infolist():
+                data = source.read(entry.filename)
+                if entry.filename == 'data/ntm/horizon_machine/machine_zirnox.json':
+                    doc = json.loads(data)
+                    doc['multiblock'] = {'min': [-1, 0, -2], 'max': [1, 0, 3], 'offset': 2,
+                        'dummy': 'ntm:dummy_zirnox',
+                        'inventory_ports': [[0, 0, 3], [1, 0, 0], [-1, 0, 0]]}
+                    data = json.dumps(doc).encode()
+                target.writestr(entry, data)
+        bundle = fixture
     report = {'ok': False, 'scenario': args.scenario, 'game': str(folder),
               'binary': str(binary), 'binary_sha256': digest(binary),
               'bundle': str(bundle), 'bundle_sha256': digest(bundle), 'phases': []}
@@ -87,10 +103,11 @@ def run(args):
     with os.fdopen(reader) as pipe:
         env['DISPLAY'] = ':' + pipe.readline().strip()
     phases = {'zirnox': [('setup', 'inactive', 'convert', 'capture-state'),
-                         ('check-state', 'failure', 'soils')],
+                         ('check-state', 'automation', 'failure', 'soils')],
               'pile': [('setup', 'capture-state'), ('check-state', 'destroy')],
               'dims': [('setup', 'capture-state'), ('check-state',)],
               'bombs': [('setup',)], 'mining': [('setup',)],
+              'inventory-proxy': [('setup',)],
               'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
     if args.setup_only:
         phases[args.scenario] = [phases[args.scenario][0][:1]]
@@ -108,8 +125,8 @@ def run(args):
             if args.resume_reopen and index == 0:
                 continue
             log_path = folder / ('client-first.log' if index == 0 else 'client-reopen.log')
-            script = 'dims' if args.scenario.startswith('dims') else args.scenario
-            name = script.capitalize() + 'Test'
+            script = 'dims' if args.scenario.startswith('dims') else args.scenario.replace('-', '_')
+            name = 'InvProxyTest' if script == 'inventory_proxy' else script.capitalize() + 'Test'
             command = [str(binary), '--resources', str(args.resources.resolve()),
                        '--dev-mod', str(bundle), '--control-socket', str(folder / 'control.sock'),
                        '--test-terrain', '--render-distance', '2', '--width', '1280',
@@ -160,7 +177,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining'])
+    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)

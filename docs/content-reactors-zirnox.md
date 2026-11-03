@@ -28,7 +28,13 @@ as capacidades. Não há uma segunda extração Java nem outra tabela de combust
 A tela original e seus 28 slots são reaproveitados, com calor, pressão, ligado,
 três tanques, temperatura em °C, pressão em bar e o valor de redstone. O tooltip
 da barra mostra vida consumida e percentual sem usar dano vanilla. Os limites/filtros valem no menu nativo e na
-inserção por funil.
+inserção por funil. A política condicional compartilhada de
+`canExtractItem(slot,stack,side)` consulta `zirnox::can_extract(slot,item)` nas
+extrações por automação: barras ativas ficam; itens sem combustível ativo saem
+dos slots 0..23. Isso também conserva dentro do reator o combustível ativo
+produzido pelo breeding. Retirada manual continua permitida. Recipientes 24..27
+só são acessíveis pela tela, como os slots acessíveis Java. Ver o
+[contrato do hook e das origens Manual/Automation](native-slot-policy.md).
 
 A radiação de uma barra no inventário usa `HazardModifierFuelRadiation`:
 `base + (alvo-base)*(life/maxLife)^0,4`, preservando a ordem float/double Java e
@@ -245,7 +251,6 @@ limitação no pacote em trânsito entre quebra e recolocação do mesmo ID.
 
 | Fonte/API | Situação neste port |
 | --- | --- |
-| `canExtractItem(slot,stack,side)` | **Pendência de motor aceita provisoriamente pelo coordenador.** O pin só permite listas estáticas de saída. Funis podem inserir barras em 0..23; sua extração automática fica desabilitada, inclusive de barras ativas. Retirada manual funciona. Recipientes 24..27 só pela tela, como os slots acessíveis Java. A função pura `zirnox::can_extract(slot,item)` já expressa e testa a regra definitiva: apenas itens convertidos saem dos 24 slots. Falta um hook condicional em `ModContainer`/`can_take`. |
 | `EntityZirnoxDebris` e seu renderer/interação | Não existe registro de entidade customizada equivalente no bundle atual. As regras são simuladas e persistidas; o desenho usa partículas nativas. Não há malha giratória, caixa de colisão por tipo nem coleta por clique direito. Colisões são aproximadas por voxel em vez de `moveEntity`/raytrace das caixas Java. |
 | `EntityLivingBase` | Dano e contaminação do host atual alcançam jogadores; a mesma consulta em mobs não está exposta. Sem radiação/dano em mobs. |
 | `gas_meltdown`, `foam_layer` | Não estão no catálogo. A regra sorteia e conta emissões, exibidas por fumaça nativa; não cria um bloco fictício nem simula sua propagação. `block_foam` existente apaga o destroço. |

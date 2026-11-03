@@ -3,7 +3,7 @@
 
 No reactor state or rod life is injected. /tick sprint advances ordinary server
 simulation for the source's 20,000/50,000-life breeding/depletion checks.
-Usage: native_zirnox.py GAME setup|inactive|convert|capture-state|check-state|failure|soils
+Usage: native_zirnox.py GAME setup|inactive|convert|capture-state|check-state|automation|failure|soils
 """
 import json
 import re
@@ -246,6 +246,72 @@ def check(g):
     g.snapshot('zirnox-reopened')
 
 
+
+def automation(g):
+    """A real hopper drains naturally converted rods and leaves active fuel intact."""
+    c=config(g);core=tuple(c['core'])
+    lever(g,c,False)
+    g.check('automation_reactor_stopped',not state(g,core)['on'],state(g,core))
+    open_reactor(g,core)
+    before={s['slot']-300:(s.get('item'),s.get('count',0)) for s in g.slots()}
+    active={i:v for i,v in before.items() if i<24 and (v[0] or '').startswith('ntm:rod_zirnox__')}
+    converted=Counter()
+    for i,(item,count) in before.items():
+        if i<24 and item and i not in active:converted[item]+=count
+    g.check('automation_has_active_and_naturally_converted_rods',bool(active) and bool(converted),
+            {'active':active,'converted':dict(converted)})
+    g.close()
+    hopper=add(core,(0,-1,0))
+    # This is below the reactor's base, not one of its structural cells.
+    low=add(core,(-1,-3,-1));high=add(core,(1,-1,2))
+    g.command('fill '+pos_text(add(core,(-1,-4,-1)))+' '+pos_text(add(core,(1,-4,3)))+' minecraft:stone')
+    g.command('fill '+pos_text(low)+' '+pos_text(high)+' minecraft:air')
+    g.command('setblock '+pos_text(hopper)+' minecraft:hopper[facing=down]')
+    # A hopper moves one item per eight ticks. Give all 24 slots ample time.
+    time.sleep(12)
+    g.command('clear @s')
+    g.command(f'tp @s {hopper[0]+.5} {hopper[1]-2} {hopper[2]+2.5}')
+    g.ctl('interact '+pos_text(hopper)+' south');time.sleep(.7)
+    g.check('automation_hopper_menu',len(g.slots())==5,g.ctl('screen'))
+    received=Counter()
+    for s in g.slots():
+        if s.get('item'):received[s['item']]+=s.get('count',0)
+    g.check('automation_only_converted_rods_extracted',received==converted,
+            {'expected':dict(converted),'received':dict(received)})
+    g.close();open_reactor(g,core)
+    after={s['slot']-300:(s.get('item'),s.get('count',0)) for s in g.slots()}
+    g.check('automation_active_rods_and_container_slots_unchanged',
+            all(after.get(i)==v for i,v in before.items() if i in active or i>=24),
+            {'before':before,'after':after})
+    remaining=Counter()
+    for i,(item,count) in after.items():
+        if i<24 and item:remaining[item]+=count
+    original=Counter()
+    for i,(item,count) in before.items():
+        if i<24 and item:original[item]+=count
+    g.check('automation_rod_conservation',remaining+received==original,
+            {'before':dict(original),'reactor':dict(remaining),'hopper':dict(received)})
+    g.close()
+    top=add(core,(0,5,0));nonport=add(core,(1,5,0))
+    for p in (top,nonport):g.command('setblock '+pos_text(p)+' minecraft:hopper[facing=down]')
+    added='ntm:rod_zirnox__u235_fuel'
+    for p in (top,nonport):
+        g.command('item replace block '+pos_text(p)+' container.0 with '+added+' 1')
+    time.sleep(2)
+    open_reactor(g,core)
+    final={s['slot']-300:(s.get('item'),s.get('count',0)) for s in g.slots()}
+    new_count=sum(v[1] for i,v in final.items() if i<24 and v[0]==added)
+    g.check('automation_top_inventory_port_inserts_into_core',new_count==1,final)
+    g.close()
+    nonport_data=' '.join(g.command('data get block '+pos_text(nonport)+' Items[{Slot:0b}].count').get('chat',[]))
+    g.check('automation_non_port_keeps_its_supplied_rod',re.search(r'\b1\s*$',nonport_data) is not None,nonport_data)
+    # One supplied rod entered; the other remains in its hopper. The lower
+    # hopper must not extract the newly inserted active fuel.
+    g.check('automation_port_conservation',sum(v[1] for i,v in final.items() if i<24 and v[0])+sum(received.values())+1==sum(original.values())+2,
+            {'reactor':final,'extracted':dict(received),'nonport':1,'supplied':2})
+    g.snapshot('zirnox-automation');g.close()
+
+
 def failure(g):
     g.close()
     g.ground(110,101,8,width=20,height=8)
@@ -311,7 +377,7 @@ def soils(g):
     g.snapshot('zirnox-soils')
 
 
-PHASES={'setup':setup,'inactive':inactive,'convert':convert,'capture-state':capture,'check-state':check,'failure':failure,'soils':soils}
+PHASES={'setup':setup,'inactive':inactive,'convert':convert,'capture-state':capture,'check-state':check,'failure':failure,'soils':soils,'automation':automation}
 if __name__=='__main__':
     g=Game(sys.argv[1],'zirnox-'+sys.argv[2]);g.ctl('wait-ready 120')
     g.evidence['phase']=sys.argv[2]
