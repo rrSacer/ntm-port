@@ -96,6 +96,9 @@ pub trait ServerHost: Kv {
 /// simulation, not a cached approximation. Hosts validate before any mutation.
 #[derive(Clone, Debug)]
 pub struct MachineCommit {
+    pub guard:CellGuard,
+    /// A previously confirmed BE must still carry this generation tag.
+    pub expected_saved:bool,
     pub dim: String,
     pub pos: Pos,
     pub expected: container_bridge::Slots,
@@ -133,9 +136,11 @@ struct Ready {
     /// Chunk loaded, as last checked.
     loaded: BTreeMap<Key, bool>,
     frozen: BTreeSet<Key>,
+    facts_pending:bool,
+    facts_dirty:bool,
     broken:BTreeMap<Key,String>,
-    pending_buttons:Vec<(String,String,Pos,u32)>,
-    detonations:BTreeMap<Key,(String,container_bridge::Slots)>,
+    pending_buttons:Vec<generation::Guarded<(String,String,Pos,u32)>>,
+    detonations:BTreeMap<Key,generation::Guarded<(String,container_bridge::Slots)>>,
     native_item_claims:BTreeMap<String,(u64,String,Option<Pos>)>,
     /// The state last written or seen, per machine.
     shown: BTreeMap<Key, String>,
@@ -169,7 +174,7 @@ pub struct Server {
     players: Vec<PlayerInfo>,
     /// What each player's client was last told: dose and rate.
     radiation_shown: BTreeMap<String, (i64, i64)>,
-    queued: Vec<BlockEvent>,
+    queued: Vec<(BlockEvent,u64)>,
     ready: Ready,
 }
 
@@ -454,4 +459,9 @@ pub use pile_server::PileUse;
 
 mod zirnox_server;
 mod transaction;
+mod generation;
+pub use generation::CellGuard;
 pub use transaction::{CommittedEffects,WorldEffect};
+
+#[cfg(test)]
+mod generation_tests;

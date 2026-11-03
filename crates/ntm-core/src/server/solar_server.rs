@@ -85,7 +85,7 @@ impl Server {
     pub fn native_stirling_repair(&mut self,host:&mut impl ServerHost,dim:&str,core:Pos,gear:&str)->bool {
         if self.native_stirling_gear(dim,core)!=Some(gear){return false;}
         let key=(dim.to_string(),core);
-        if self.ready.broken.contains_key(&key){return false;}
+        if self.ready.broken.contains_key(&key)||self.ready.world.machines.get(&key).is_some_and(|m|!self.model_current(&key,m)){return false;}
         let Some(mut machine)=self.ready.world.machines.get(&key).cloned() else{return false};
         if !host.get_block(dim,core).is_some_and(|b|blockstate::id_of(&b)==machine.block){return false;}
         let Some(expected)=host.machine_slots(dim,core) else{return false};
@@ -94,7 +94,7 @@ impl Server {
         s.has_cog=true;
         let data=Self::machine_screen(&mut machine);
         let json=serde_json::to_string(&machine).expect("machine serialization");
-        if !host.commit_machine(&MachineCommit{dim:dim.into(),pos:core,expected:expected.clone(),desired:expected.clone(),data:data.clone(),json:json.clone()}){return false;}
+        if !host.commit_machine(&MachineCommit{guard:CellGuard::machine(&key,&machine),expected_saved:self.ready.native_saved.contains_key(&key),dim:dim.into(),pos:core,expected:expected.clone(),desired:expected.clone(),data:data.clone(),json:json.clone()}){return false;}
         self.ready.world.machines.insert(key.clone(),machine);
         self.ready.bridge.last.insert(key.clone(),expected);
         self.ready.bridge.data.insert(key.clone(),data);

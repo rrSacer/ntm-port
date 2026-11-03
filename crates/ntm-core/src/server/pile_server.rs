@@ -42,11 +42,13 @@ impl Server {
     ) -> Result<(), String> {
         let cells = core.cells();
         let blocks: Vec<_> = cells.iter().map(|(p, r)| (*p, state(r))).collect();
-        host.set_blocks(dim, &blocks)?;
+        let owners:Vec<_>=cells.iter().map(|(p,_)|(dim.to_string(),*p)).collect();
+        host.set_machine_blocks(dim, &blocks,&owners)?;
         for (p, role) in cells {
             let id = format!("ntm:pile_block__{role}");
             let key = (dim.to_string(), p);
             let mut m = Machine::new(Kind::Pile, &id, Some("north".into()));
+            m.generation=self.ready.world.machines.get(&key).map(|m|m.generation).unwrap_or_else(||self.ready.world.generations.get(&key).copied().unwrap_or(0));
             m.data = Data::Pile(Box::new(if p == core.shape.at {
                 Pile::Core(Some(core.clone()))
             } else {
@@ -106,7 +108,8 @@ impl Server {
     /// action is returned only after the state/slot write succeeded.
     #[allow(clippy::too_many_arguments)]
     pub fn native_pile_use(&mut self,host:&mut impl ServerHost,dim:&str,at:Pos,face:Pos,held:Option<&Stack>,depletion:f64,player:&str)->Option<PileUse>{
-        if self.ready.broken.contains_key(&(dim.to_string(),at)){return Some(PileUse::Handled);}
+        let key=(dim.to_string(),at);
+        if self.ready.broken.contains_key(&key)||self.ready.world.machines.get(&key).is_some_and(|m|!self.model_current(&key,m)){return Some(PileUse::Handled);}
         let drill=held.is_some_and(|h|matches!(h.id.as_str(),"ntm:hand_drill"|"ntm:hand_drill_desh"));
         if drill && host.get_block(dim,at).is_some_and(|b|blockstate::id_of(&b)!=pile::BRICK){
             return self.atomic_pile_edit(host,dim,at,face,held,depletion,player);
@@ -242,7 +245,7 @@ impl Server {
                     let mut stack=h.clone();stack.count=1;l.slots[0]=Some(stack);
                     let (desired,data)=Self::machine_output(&mut machine,&expected);
                     let json=serde_json::to_string(&machine).expect("machine serialization");
-                    let c=MachineCommit{dim:dim.into(),pos:at,expected,desired,data,json};
+                    let c=MachineCommit{guard:CellGuard::machine(&key,&machine),expected_saved:self.ready.native_saved.contains_key(&key),dim:dim.into(),pos:at,expected,desired,data,json};
                     if host.commit_machine(&c){
                         self.ready.world.machines.insert(key.clone(),machine);
                         self.ready.bridge.last.insert(key.clone(),c.desired);
@@ -536,6 +539,11 @@ mod tests {
             }
             Ok(())
         }
+        fn set_machine_blocks(&mut self,dim:&str,blocks:&[(Pos,String)],owners:&[(String,Pos)])->Result<(),String>{
+            let first=self.changes.len();self.set_blocks(dim,blocks)?;
+            let events=self.changes.split_off(first);
+            self.changes.extend(events.into_iter().filter(|(p,_,_)|!owners.contains(&(dim.to_string(),*p))));Ok(())
+        }
         fn tell(&mut self, _: &str, _: &str) {}
         fn log(&mut self, _: &str) {}
         fn machine_slots(&mut self, _: &str, p: Pos) -> Option<Vec<Option<Stack>>> {
@@ -678,7 +686,7 @@ mod tests {
         s.native_tick(&mut h, 5);
         assert!(!s.ready.world.machines.contains_key(&(DIM.into(), AT)));
         assert_eq!(h.blocks[&AT], pile::BRICK);
-        assert_eq!(h.blocks[&[1, 64, 2]], pile::BRICK);
+        assert_eq!(h.blocks[&[1, 64, 2]], "minecraft:stone", "a replacement belongs to its own generation");
         assert_eq!(h.drops.len(), 1);
     }
     #[test]
@@ -879,7 +887,7 @@ mod tests {
     #[test]
     fn effect_receipts_clear_only_after_a_flushed_world_save() {
         let mut h=Host::default();let mut s=Server::native(&mut h,0);
-        s.ready.world.machine_effects.push_back(CommittedEffects{owners:vec![],tombstones:vec![],effects:std::collections::VecDeque::from([WorldEffect::Items{dim:DIM.into(),pos:AT,items:vec![("ntm:pile_rod__zr".into(),1)]}])});
+        s.ready.world.machine_effects.push_back(CommittedEffects{origins:vec![],owners:vec![],tombstones:vec![],effects:std::collections::VecDeque::from([WorldEffect::Items{dim:DIM.into(),pos:AT,items:vec![("ntm:pile_rod__zr".into(),1)]}])});
         s.flush_machine_effects(&mut h);assert_eq!(h.drops.len(),1);
         s.flush_machine_effects(&mut h);assert_eq!(h.drops.len(),1,"no repeat in memory");
         s.native_world_saved(&mut h,false);

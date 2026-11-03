@@ -36,6 +36,8 @@ pub struct Kept {
     pub ticks: u64,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub removals:Vec<Removal>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub generations:Vec<((String,Pos),u64)>,
     #[serde(default, skip_serializing_if = "std::collections::VecDeque::is_empty")]
     pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     #[serde(default, skip_serializing_if = "std::collections::VecDeque::is_empty")]
@@ -47,6 +49,7 @@ pub struct WorldState {
     /// Ticks played in this world.
     pub ticks: u64,
     pub removals:Vec<Removal>,
+    pub generations:BTreeMap<(String,Pos),u64>,
     pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     pub applied_machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     pub radiation: BTreeMap<String, crate::radiation::Dose>,
@@ -67,6 +70,7 @@ impl WorldState {
         WorldState {
             machines,
             removals:kept.removals,
+            generations:kept.generations.into_iter().collect(),
             radiation: kept.radiation,
             bombs: kept.bombs,
             zirnox: kept.zirnox,
@@ -84,6 +88,7 @@ impl WorldState {
             zirnox: self.zirnox.clone(),
             ticks,
             removals:self.removals.clone(),
+            generations:self.generations.iter().map(|(k,g)|(k.clone(),*g)).collect(),
             machine_effects:self.machine_effects.clone(),
             applied_machine_effects:self.applied_machine_effects.clone(),
         };

@@ -94,18 +94,30 @@ pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: 
     let mut owned=lock(&OWNED_BLOCKS);
     if let Some(i)=owned.iter().position(|(d,p,n)|d==dim&&*p==pos&&n==ntm_core::blockstate::id_of(&new)) {owned.remove(i);return;}
     drop(owned);
-    let ours = |b: &str| b.starts_with("ntm:");
-    if ours(&old) || ours(&new) {
+    // Arbitrary cells can be guarded mining/role-effect destinations too.
+    // The core ignores untracked vanilla cells without retaining an epoch.
+    if old != new {
         lock(&CHANGES).push((dim.to_string(), pos, old, new));
     }
 }
 
 /// A menu button on a machine's screen.
-pub(super) fn menu_button(game: &crate::game::Game<'_>, pos: [i32; 3], id: i32) {
-    let player = game.native_actor_uuid().unwrap_or_default();
-    if let Ok(id) = u32::try_from(id) {
-        lock(&BUTTONS).push((player, game.dim.id().to_string(), pos, id));
+pub(super) fn menu_button(game:&crate::game::Game<'_>,pos:[i32;3],id:i32,entity:&ModBlockEntity){
+    let Some(Tag::String(json))=entity.nbt.get(&JavaString::from(STATE)) else{return};
+    let Ok(machine)=serde_json::from_str::<ntm_core::machine::Machine>(&json.to_string_lossy()) else{return};
+    let mut server_lock=lock(&SERVER);
+    let Some((server,_))=server_lock.as_mut() else{return};
+    if let Ok(button)=u32::try_from(id){server.native_menu_button(&game.native_actor_uuid().unwrap_or_default(),game.dim.id(),pos,button,machine.generation);}
+}
+
+/// Input callbacks may precede ServerTickEnd. Consume their external facts
+/// before capturing a machine generation or retrying any old world effect.
+fn reconcile(server:&mut Server,host:&mut Host<'_, '_>){
+    for (dim,pos,old,new) in std::mem::take(&mut *lock(&CHANGES)){
+        let now=ntm_core::server::native_server::native_change_state(&new,host.game.native_loaded_block(&dim,pos));
+        server.native_block_changed(&dim,pos,&old,&now);
     }
+    server.native_record_events(host);
 }
 
 /// A player's right click on a cell of a machine (`core` its core): the
@@ -119,6 +131,7 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
     let pile_stack = stack(&held);
     let depletion = held.as_ref().map_or(0.0, |h| pile_depletion(h.data().and_then(|d| d.other("minecraft:custom_data"))));
     let mut host = Host { game, buttons: Vec::new() };
+    reconcile(server,&mut host);
     if let Some(action) = server.native_pile_use(&mut host, &dim, pos, face, pile_stack.as_ref(), depletion, &player) {
         match action {
             ntm_core::server::PileUse::ConsumeRod => {
@@ -192,6 +205,7 @@ fn detonator(game: &mut crate::game::Game<'_>, target: Option<[i32; 3]>) -> bool
     let Some((server, _)) = guard.as_mut() else { return false };
     let mut host = Host { game, buttons: Vec::new() };
     eprintln!("ntm: detonator input: player={player} tick={} hand={:?} target={target:?}",host.game.ticks,host.game.hand);
+    reconcile(server,&mut host);
     let Some(said) = server.native_detonator(&mut host, &player, target) else { return false };
     if !said.is_empty(){host.tell(&player, &said);}
     true
@@ -204,6 +218,7 @@ pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mo
     let mut guard=lock(&SERVER);
     let mut host=Host{game,buttons:Vec::new()};
     let (server,_)=guard.get_or_insert_with(||(Server::native(&mut host,0),0));
+    reconcile(server,&mut host);
     if let Some(reply)=server.native_bomb_command(&mut host,&who,player.permission,line){
         let text=reply.unwrap_or_else(|e|format!("Erro: {e}"));
         for line in text.lines(){host.game.native_feedback(horizon_client::text::Text::literal(line));}
@@ -415,7 +430,9 @@ impl ServerHost for Host<'_, '_> {
             if !seen.insert((c.dim.clone(),c.pos)) { return false; }
             let Some((id,valid))=self.entity(&c.dim,c.pos,|e| {
                 let observed:Slots=e.items.iter().map(stack).collect();
-                (e.id.clone(),observed==c.expected && e.items.len()==c.desired.len())
+                let saved=e.nbt.get(&JavaString::from(STATE)).and_then(|tag|match tag{Tag::String(json)=>serde_json::from_str::<ntm_core::machine::Machine>(&json.to_string_lossy()).ok().map(|m|m.generation),_=>None});
+                let generation=if c.expected_saved{saved==Some(c.guard.generation)}else{saved.is_none_or(|g|g==c.guard.generation)};
+                (e.id.clone(),generation && e.id==c.guard.state && observed==c.expected && e.items.len()==c.desired.len())
             }) else {return false};
             if !valid {return false;}
             let (_,synced)=file(self.game,&id);

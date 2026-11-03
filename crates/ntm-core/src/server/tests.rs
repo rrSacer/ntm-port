@@ -205,7 +205,7 @@ impl Game {
     }
     /// One tick: the server's, then its block writes.
     fn step(&mut self) {
-        for event in std::mem::take(&mut self.server.queued) { self.server.native_event(&mut self.sh,event); }
+        self.server.native_record_events(&mut self.sh);
         let confirmed=self.server.ready.bridge.last.clone();
         for (k,m) in &mut self.server.ready.world.machines {
             let mut w=self.world.borrow_mut();

@@ -10,6 +10,8 @@ pub enum WorldEffect {
     Blocks {
         dim: String,
         blocks: Vec<(Pos, String)>,
+        #[serde(default)]
+        expected: Vec<CellGuard>,
     },
     Items {
         dim: String,
@@ -24,6 +26,8 @@ pub enum WorldEffect {
 #[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct CommittedEffects {
     pub owners: Vec<(String, Pos)>,
+    #[serde(default)]
+    pub origins: Vec<CellGuard>,
     pub effects: std::collections::VecDeque<WorldEffect>,
     /// Removed machines retain their contents here until every effect succeeds.
     pub tombstones: Vec<((String, Pos), Machine)>,
@@ -35,7 +39,12 @@ type AfterCommit<H> = Box<dyn FnOnce(&mut H)>;
 struct Deferred<'a, H> {
     host: &'a mut H,
     slots: BTreeMap<Key, Slots>,
-    effects: Vec<AfterCommit<H>>,
+    effects: Vec<(Vec<CellGuard>,AfterCommit<H>)>,
+    generations:BTreeMap<Key,u64>,
+    cells:BTreeMap<Key,CellGuard>,
+    vacant:BTreeSet<Key>,
+    origins:Vec<CellGuard>,
+    valid:bool,
     critical: std::collections::VecDeque<WorldEffect>,
 }
 impl<H: ServerHost> Kv for Deferred<'_, H> {
@@ -73,19 +82,26 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
         self.host.solar_sample(d, p)
     }
     fn set_blocks(&mut self, d: &str, b: &[(Pos, String)]) -> Result<(), String> {
-        self.critical.push_back(WorldEffect::Blocks {
-            dim: d.into(),
-            blocks: b.to_vec(),
-        });
+        let mut expected=Vec::new();
+        for (pos,_) in b {
+            let Some(state)=self.host.get_block(d,*pos) else{self.valid=false;return Err("unavailable effect destination".into())};
+            let key=(d.to_string(),*pos);
+            let current=self.generations.get(&key).copied().unwrap_or(0);
+            let generation=self.cells.get(&key).map_or(current,|origin|{
+                if origin.generation==current || self.vacant.contains(&key)&&blockstate::id_of(&state)=="minecraft:air"&&origin.generation.checked_add(1)==Some(current){current}else{origin.generation}
+            });
+            expected.push(CellGuard{dim:d.into(),pos:*pos,generation,state:blockstate::id_of(&state).into()});
+        }
+        self.critical.push_back(WorldEffect::Blocks {dim:d.into(),blocks:b.to_vec(),expected});
         Ok(())
     }
     fn tell(&mut self, p: &str, t: &str) {
         let (p, t) = (p.to_string(), t.to_string());
-        self.effects.push(Box::new(move |h| h.tell(&p, &t)));
+        self.effects.push((self.origins.clone(),Box::new(move |h| h.tell(&p, &t))));
     }
     fn log(&mut self, t: &str) {
         let t = t.to_string();
-        self.effects.push(Box::new(move |h| h.log(&t)));
+        self.effects.push((self.origins.clone(),Box::new(move |h| h.log(&t))));
     }
     fn drop_items(&mut self, d: &str, p: Pos, i: &[(String, u32)]) -> bool {
         self.critical.push_back(WorldEffect::Items {
@@ -107,100 +123,79 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
     }
     fn hurt(&mut self, p: &str, a: f32, k: &str) {
         let (p, k) = (p.to_string(), k.to_string());
-        self.effects.push(Box::new(move |h| h.hurt(&p, a, &k)));
+        self.effects.push((self.origins.clone(),Box::new(move |h| h.hurt(&p, a, &k))));
     }
     fn effect(&mut self, p: &str, e: &str, s: u32, a: u8) {
         let (p, e) = (p.to_string(), e.to_string());
-        self.effects.push(Box::new(move |h| h.effect(&p, &e, s, a)));
+        self.effects.push((self.origins.clone(),Box::new(move |h| h.effect(&p, &e, s, a))));
     }
     fn show(&mut self, d: &str, s: &crate::blast::visuals::Show) {
         let (d, s) = (d.to_string(), s.clone());
-        self.effects.push(Box::new(move |h| h.show(&d, &s)));
+        self.effects.push((self.origins.clone(),Box::new(move |h| h.show(&d, &s))));
     }
 }
 
 impl Server {
+    pub(super) fn track_effect_cells(&mut self) {
+        let guards:Vec<_>=self.ready.world.machine_effects.iter().chain(&self.ready.world.applied_machine_effects).flat_map(|b|b.origins.iter().chain(b.effects.iter().flat_map(|e|match e{WorldEffect::Blocks{expected,..}=>expected.as_slice(),_=>&[]}))).cloned().collect();
+        for g in guards{self.ready.world.generations.entry(g.key()).or_insert(g.generation);}
+    }
+
     pub(super) fn flush_machine_effects(&mut self, host: &mut impl ServerHost) {
-        let batches = self.ready.world.machine_effects.len();
-        if batches == 0 {
-            return;
-        }
+        // External facts must invalidate old writes before the first retry.
+        if !self.queued.is_empty(){self.native_record_events(host);}
+        if self.ready.facts_pending{return;}
+        let batches=self.ready.world.machine_effects.len();
+        if batches==0{return;}
         for _ in 0..batches {
             loop {
-                let Some(batch) = self.ready.world.machine_effects.front() else {
-                    return;
-                };
-                let Some(effect) = batch.effects.front() else {
-                    self.ready.world.machine_effects.pop_front();
-                    break;
-                };
-                let dim = match effect {
-                    WorldEffect::Blocks { dim, .. }
-                    | WorldEffect::Items { dim, .. }
-                    | WorldEffect::PileExplosion { dim, .. } => dim,
-                };
-                if !host.pile_reachable(dim) {
-                    self.ready.world.machine_effects.rotate_left(1);
-                    break;
-                }
-                // Record the tombstone/intent before releasing its world effect.
-                let kept = self.ready.world.kept(self.ready.world.ticks);
-                if let Err(e) = host.set(crate::persist::KEY, &kept) {
-                    host.log(&format!("pending machine effect: {e}"));
-                    return;
-                }
-                let effect = self
-                    .ready
-                    .world
-                    .machine_effects
-                    .front()
-                    .unwrap()
-                    .effects
-                    .front()
-                    .unwrap();
-                let done = match effect {
-                    WorldEffect::Blocks { dim, blocks } => host
-                        .set_machine_blocks(
-                            dim,
-                            blocks,
-                            &self.ready.world.machine_effects.front().unwrap().owners,
-                        )
-                        .is_ok(),
-                    WorldEffect::Items { dim, pos, items } => host.drop_items(dim, *pos, items),
-                    WorldEffect::PileExplosion { dim, pos } => host.pile_explode(dim, *pos),
-                };
-                if !done {
-                    self.ready.world.machine_effects.rotate_left(1);
-                    break;
-                }
-                let batch = self.ready.world.machine_effects.front_mut().unwrap();
-                let effect = batch.effects.pop_front().unwrap();
-                // A successful spawn still exists only in the world's memory.
-                // Keep its replay receipt until a flushed world save confirms
-                // entities/blocks on disk; never clear it just for a KV write.
-                let receipt = CommittedEffects {
-                    owners: batch.owners.clone(),
-                    tombstones: Vec::new(),
-                    effects: std::collections::VecDeque::from([effect]),
-                };
-                if matches!(receipt.effects.front(), Some(WorldEffect::Blocks { .. })) {
-                    // A block-role replacement can recreate its BE. The new
-                    // entity needs the confirmed JSON again in this same tick.
-                    for k in &receipt.owners {
-                        self.ready.native_saved.remove(k);
+                let Some(batch)=self.ready.world.machine_effects.front() else{break};
+                let Some(mut effect)=batch.effects.front().cloned() else{self.ready.world.machine_effects.pop_front();break};
+                let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::PileExplosion{dim,..}=>dim};
+                if !host.pile_reachable(dim){self.ready.world.machine_effects.rotate_left(1);break;}
+                let mut wait=false;
+                let mut physical=false;
+                if let WorldEffect::Blocks{dim,blocks,expected}=&mut effect {
+                    let mut keep=Vec::new();let mut guards=Vec::new();
+                    for (pos,desired) in &*blocks {
+                        let Some(g)=expected.iter().find(|g|g.pos==*pos&&g.dim==*dim) else{continue};
+                        if !self.current_guard(g){continue;}
+                        match host.get_block(dim,*pos){
+                            None=>{wait=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
+                            Some(actual) if blockstate::id_of(&actual)==g.state=>{physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
+                            Some(actual) if blockstate::id_of(&actual)==blockstate::id_of(desired)=>{physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
+                            Some(_)=>{},
+                        }
                     }
+                    *blocks=keep;*expected=guards;
+                }else{
+                    // Confirmed items and explosions belong to the old origin,
+                    // independently of whatever occupies its position now.
+                    physical=true;
                 }
-                self.ready.world.applied_machine_effects.push_back(receipt);
+                if wait{self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect;self.ready.world.machine_effects.rotate_left(1);break;}
+                self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect.clone();
+                if let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){host.log(&format!("pending machine effect: {e}"));return;}
+                let done=match &effect {
+                    WorldEffect::Blocks{dim,blocks,..}=>blocks.is_empty()||host.set_machine_blocks(dim,blocks,&self.ready.world.machine_effects.front().unwrap().owners).is_ok(),
+                    WorldEffect::Items{dim,pos,items}=>host.drop_items(dim,*pos,items),
+                    WorldEffect::PileExplosion{dim,pos}=>host.pile_explode(dim,*pos),
+                };
+                if !done{self.ready.world.machine_effects.rotate_left(1);break;}
+                let batch=self.ready.world.machine_effects.front_mut().unwrap();
+                let effect=batch.effects.pop_front().unwrap();
+                if physical {
+                    let receipt=CommittedEffects{origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect])};
+                    if matches!(receipt.effects.front(),Some(WorldEffect::Blocks{..})){
+                        for g in &receipt.origins {
+                            if self.ready.world.machines.get(&g.key()).is_some_and(|m|m.generation==g.generation){self.ready.native_saved.remove(&g.key());}
+                        }
+                    }
+                    self.ready.world.applied_machine_effects.push_back(receipt);
+                }
             }
         }
-        // Persist the advanced cursor even when the queue became empty. The
-        // previous pre-effect write must not make a completed batch reappear.
-        let kept = self.ready.world.kept(self.ready.world.ticks);
-        if host.set(crate::persist::KEY, &kept).is_ok() {
-            self.ready.kept = self.ready.world.kept(0);
-        } else {
-            self.ready.kept = Vec::new();
-        }
+        if host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)).is_ok(){self.ready.kept=self.ready.world.kept(0);}else{self.ready.kept=Vec::new();}
     }
 
     /// The existing engine hook reports whether world/entity writes have
@@ -225,36 +220,24 @@ impl Server {
     /// Block events are observed facts. Broken states are handled by the same
     /// speculative group step as missing-but-loaded blocks, never as drops
     /// before an inventory commit. Placement still installs the model first.
-    pub(super) fn native_event(&mut self, host: &mut impl ServerHost, e: BlockEvent) {
+    pub(super) fn native_event(&mut self, host: &mut impl ServerHost, e: BlockEvent,generation:u64) {
         match e {
-            BlockEvent::Broken(d, p, s) => {
-                let k = (d.clone(), p);
-                if let Some(m) = self.ready.world.machines.get(&k) {
-                    // Ignore delayed notifications from our own replacement.
-                    if m.block == blockstate::id_of(&s) {
-                        // Its BE may already be gone even if the level closes
-                        // before its coupled group can commit. Keep the full
-                        // confirmed state outside that missing BE meanwhile.
-                        if !self.ready.world.removals.iter().any(|r| r.key == k) {
-                            self.ready.world.removals.push(crate::persist::Removal {
-                                key: k.clone(),
-                                machine: m.clone(),
-                                engine_slots: self.ready.bridge.last.contains_key(&k)
-                                    || container_bridge::layout(&m.block).is_some(),
-                            });
-                        }
-                        self.ready.broken.insert(k, s);
-                    }
-                } else {
-                    self.block_event(host, BlockEvent::Broken(d, p, s));
+            BlockEvent::Broken(d,p,s)=>{
+                let k=(d.clone(),p);
+                if self.ready.world.machines.get(&k).is_some_and(|m|m.generation==generation){
+                    self.remember_removal(&k);
+                }else if !self.ready.world.machines.contains_key(&k){
+                    self.block_event(host,BlockEvent::Broken(d,p,s));
                 }
             }
-            BlockEvent::Placed(d, p, s) => {
-                let k = (d.clone(), p);
-                if self.ready.broken.contains_key(&k) {
-                    self.queued.push(BlockEvent::Placed(d, p, s));
-                } else {
-                    self.block_event(host, BlockEvent::Placed(d, p, s));
+            BlockEvent::Placed(d,p,s)=>{
+                let k=(d.clone(),p);
+                if self.ready.world.generations.get(&k).copied().unwrap_or(0)!=generation{return;}
+                if self.ready.broken.contains_key(&k){
+                    self.queued.push((BlockEvent::Placed(d,p,s),generation));
+                }else{
+                    self.block_event(host,BlockEvent::Placed(d,p,s));
+                    if let Some(m)=self.ready.world.machines.get_mut(&k){m.generation=generation;}
                 }
             }
         }
@@ -285,6 +268,11 @@ impl Server {
             slots: observed.clone(),
             effects: Vec::new(),
             critical: std::collections::VecDeque::new(),
+            cells:before.world.machines.iter().map(|(k,m)|(k.clone(),CellGuard::machine(k,m))).collect(),
+            vacant:before.broken.keys().cloned().collect(),
+            generations:before.world.generations.clone(),
+            origins:before.world.machines.iter().filter(|(k,_)|k.0==dim).map(|(k,m)|CellGuard::machine(k,m)).collect(),
+            valid:true,
         };
         let outcome =
             self.native_pile_use_inner(&mut staged, dim, at, face, held, depletion, player);
@@ -296,8 +284,10 @@ impl Server {
             .filter(|(k, m)| before.world.machines.get(*k) != Some(*m))
             .map(|(k, _)| k.clone())
             .collect();
+        staged.origins=keys.iter().filter_map(|k|before.world.machines.get(k).map(|m|CellGuard::machine(k,m))).collect();
+        for (guards,_) in &mut staged.effects{*guards=staged.origins.clone();}
         if keys.iter().any(|k| {
-            before.broken.contains_key(k)
+            before.broken.contains_key(k) || before.world.machines.get(k).is_some_and(|m|!self.model_current(k,m))
                 || before.world.machines.get(k).is_some_and(|m| match &m.data {
                     crate::machine::Data::Pile(p) => match &**p {
                         crate::pile::Pile::Core(Some(c)) => before
@@ -321,6 +311,8 @@ impl Server {
             let m = self.ready.world.machines.get_mut(k).unwrap();
             let (desired, data) = Self::machine_output(m, expected);
             commits.push(MachineCommit {
+                guard:CellGuard::machine(k,&before.world.machines[k]),
+                expected_saved:before.native_saved.contains_key(k),
                 dim: k.0.clone(),
                 pos: k.1,
                 expected: expected.clone(),
@@ -329,7 +321,7 @@ impl Server {
                 json: serde_json::to_string(m).expect("machine serialization"),
             });
         }
-        if !staged.host.commit_machines(&commits) {
+        if !staged.valid || !staged.host.commit_machines(&commits) {
             self.ready = before;
             return Some(PileUse::Handled);
         }
@@ -344,14 +336,16 @@ impl Server {
                 .world
                 .machine_effects
                 .push_back(CommittedEffects {
+                    origins:staged.origins.clone(),
                     owners: keys,
                     effects: staged.critical,
                     tombstones: Vec::new(),
                 });
         }
-        for effect in staged.effects {
-            effect(staged.host);
+        for (guards,effect) in staged.effects {
+            if guards.iter().all(|g|self.current_guard(g)){effect(staged.host);}
         }
+        self.track_effect_cells();
         self.flush_machine_effects(staged.host);
         self.native_save(staged.host);
         outcome
@@ -360,7 +354,12 @@ impl Server {
     pub(super) fn local_steps(&mut self, host: &mut impl ServerHost) {
         self.validate_detonations(host);
         let mut buttons = std::mem::take(&mut self.ready.pending_buttons);
-        buttons.extend(host.machine_buttons());
+        for (player,dim,pos,button) in host.machine_buttons(){
+            if let Some(m)=self.ready.world.machines.get(&(dim.clone(),pos)){
+                buttons.push(generation::Guarded{guard:CellGuard::machine(&(dim.clone(),pos),m),value:(player,dim,pos,button)});
+            }
+        }
+        buttons.retain(|i|self.current_guard(&i.guard)&&!self.ready.broken.contains_key(&i.guard.key()));
         let mut groups: Vec<Vec<Key>> = Vec::new();
         let mut piles: BTreeMap<Key, Vec<Key>> = BTreeMap::new();
         for (k, m) in &self.ready.world.machines {
@@ -369,7 +368,7 @@ impl Server {
                 .world
                 .machine_effects
                 .iter()
-                .any(|b| b.owners.contains(k))
+                .any(|b| b.origins.iter().any(|g|g.key()==*k&&g.generation==m.generation))
             {
                 continue;
             }
@@ -412,6 +411,7 @@ impl Server {
                 let Some(m) = self.ready.world.machines.get(k) else {
                     return false;
                 };
+                if !before.broken.contains_key(k)&&!self.model_current(k,m){return false;}
                 let Some(actual) = host.get_block(&k.0, k.1) else {
                     return false;
                 };
@@ -440,6 +440,11 @@ impl Server {
                     slots: observed.clone(),
                     effects: Vec::new(),
                     critical: std::collections::VecDeque::new(),
+                    cells:before.world.machines.iter().map(|(k,m)|(k.clone(),CellGuard::machine(k,m))).collect(),
+            vacant:before.broken.keys().cloned().collect(),
+            generations:before.world.generations.clone(),
+                    origins:before.world.machines.iter().map(|(k,m)|CellGuard::machine(k,m)).collect(),
+                    valid:true,
                 };
                 let removed: Vec<_> = keys
                     .iter()
@@ -462,7 +467,8 @@ impl Server {
                     );
                 }
                 self.slots_in(&mut staged);
-                for (_, d, p, b) in &buttons {
+                for input in &buttons {
+                    let (_,d,p,b)=&input.value;
                     if keys.contains(&(d.clone(), *p)) {
                         self.machine_button(&(d.clone(), *p), *b);
                     }
@@ -535,6 +541,8 @@ impl Server {
                         || self.ready.bridge.data.get(k) != Some(&data)
                     {
                         commits.push(MachineCommit {
+                            guard:CellGuard::machine(k,&before.world.machines[k]),
+                            expected_saved:before.native_saved.contains_key(k),
                             dim: k.0.clone(),
                             pos: k.1,
                             expected: last.clone(),
@@ -544,9 +552,9 @@ impl Server {
                         });
                     }
                 }
-                accepted = staged.host.commit_machines(&commits);
+                accepted = staged.valid && staged.host.commit_machines(&commits);
                 if accepted {
-                    buttons.retain(|(_, d, p, _)| !keys.contains(&(d.clone(), *p)));
+                    buttons.retain(|i| !keys.contains(&i.guard.key()));
                     for k in &keys {
                         self.ready.broken.remove(k);
                         self.ready.world.removals.retain(|r| &r.key != k);
@@ -574,13 +582,14 @@ impl Server {
                             .world
                             .machine_effects
                             .push_back(CommittedEffects {
+                                origins:staged.origins.clone(),
                                 owners: keys.clone(),
                                 effects: staged.critical,
                                 tombstones,
                             });
                     }
-                    for effect in staged.effects {
-                        effect(staged.host);
+                    for (guards,effect) in staged.effects {
+                        if guards.iter().all(|g|self.current_guard(g)){effect(staged.host);}
                     }
                 }
             }
@@ -596,7 +605,8 @@ impl Server {
             }
             self.ready.world.machines.append(&mut outside);
         }
-        buttons.retain(|(_, d, p, _)| self.ready.world.machines.contains_key(&(d.clone(), *p)));
+        buttons.retain(|i| self.ready.world.machines.get(&i.guard.key()).is_some_and(|m|m.generation==i.guard.generation));
         self.ready.pending_buttons = buttons;
+        self.track_effect_cells();
     }
 }

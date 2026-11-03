@@ -187,6 +187,9 @@ pub enum Data {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Machine {
+    /// Identity of this BE lifetime; owned role changes preserve it.
+    #[serde(default)]
+    pub generation: u64,
     /// The block it is (`ntm:machine_battery`): its look comes from
     /// [`crate::registry::spec`].
     pub block: String,
@@ -268,6 +271,7 @@ impl Machine {
             },
         };
         Self {
+            generation: 0,
             block: block_id.into(),
             facing,
             data,
@@ -284,6 +288,7 @@ impl Machine {
             return self;
         }
         let mut new = Machine::new(spec.kind, &self.block, self.facing.clone());
+        new.generation=self.generation;
         if let (Data::Crafter(mut c), Data::Electrolyser(e)) = (self.data, &mut new.data) {
             // Its fluid line had no nitric acid tank then.
             c.tin.extend(e.fluid.tin.iter().skip(c.tin.len()).cloned());

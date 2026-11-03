@@ -535,7 +535,8 @@ impl Server {
         match observed.blast() {
             None=>toast(self,"A bomba não está pronta: faltam componentes."),
             Some(blast)=>{
-                self.ready.detonations.insert(key,(player.id.clone(),expected));
+                let guard=CellGuard::machine(&key,&self.ready.world.machines[&key]);
+                self.ready.detonations.insert(key,generation::Guarded{guard,value:(player.id.clone(),expected)});
                 toast(self,if matches!(blast,Blast::Conventional{..}) {"Acendimento solicitado."}else{"Detonação solicitada."})
             }
         }
@@ -544,8 +545,9 @@ impl Server {
     /// Invalidate an old request as soon as the observed components change.
     /// Cancelling a control intent is not contingent on an inventory write.
     pub(super) fn validate_detonations(&mut self,host:&mut impl ServerHost){
-        for (key,(player,expected)) in self.ready.detonations.clone(){
-            let changed=if let Some(m)=self.ready.world.machines.get(&key){
+        for (key,intent) in self.ready.detonations.clone(){
+            let (player,expected)=intent.value;
+            let changed=if !self.current_guard(&intent.guard)||self.ready.broken.contains_key(&key){true}else if let Some(m)=self.ready.world.machines.get(&key){
                 match host.get_block(&key.0,key.1){
                     None=>continue,
                     Some(b) if blockstate::id_of(&b)!=m.block=>true,
@@ -562,7 +564,9 @@ impl Server {
     pub(super) fn requested_detonations(&mut self,host:&mut impl ServerHost){
         let keys:Vec<_>=self.ready.detonations.keys().filter(|k|self.ready.world.machines.contains_key(*k)).cloned().collect();
         for key in keys{
-            let (player,_)=self.ready.detonations.remove(&key).unwrap();
+            let intent=self.ready.detonations.remove(&key).unwrap();
+            if !self.current_guard(&intent.guard)||self.ready.broken.contains_key(&key){continue;}
+            let (player,_)=intent.value;
             let blast=self.ready.world.machines.get(&key).and_then(|m|match &m.data{Data::Bomb(b)=>b.blast(),_=>None});
             match blast {
                 Some(Blast::Conventional{..})=>{self.light_fuse(host,&key);host.tell(&player,"Pavio aceso.");}

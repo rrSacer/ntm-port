@@ -56,8 +56,9 @@ impl Server {
         if let Some(players) = host.players() {
             self.players = players;
         }
-        self.flush_machine_effects(host);
         self.native_record_events(host);
+        if self.ready.facts_pending{self.keep_world(host);return;}
+        self.flush_machine_effects(host);
         // Check accessibility every tick: a refused local step must be able to
         // recover, but must never simulate while its BE remains inaccessible.
         for (key,m) in &self.ready.world.machines {
@@ -70,7 +71,7 @@ impl Server {
         self.flush_machine_effects(host);
         for k in self.ready.world.machines.keys() {if self.ready.loaded.get(k)!=Some(&true){self.ready.frozen.insert(k.clone());}}
         for batch in &self.ready.world.machine_effects {
-            for k in &batch.owners{self.ready.loaded.insert(k.clone(),false);self.ready.frozen.insert(k.clone());}
+            for g in &batch.origins{let k=g.key();if self.ready.world.machines.get(&k).is_some_and(|m|m.generation==g.generation){self.ready.loaded.insert(k.clone(),false);self.ready.frozen.insert(k);}}
         }
         // Failed/local-inaccessible machines cannot be a hidden destination of
         // foundry pouring, heat pulling, or other internal network transfers.
@@ -115,7 +116,10 @@ impl Server {
     /// Record confirmed changes without simulating a machine. The native save
     /// callback also uses this when a player quits between two server ticks.
     pub fn native_record_events(&mut self,host:&mut impl ServerHost){
-        for e in std::mem::take(&mut self.queued){self.native_event(host,e);}
+        for (e,generation) in std::mem::take(&mut self.queued){self.native_event(host,e,generation);}
+        self.observe_removals(host);
+        self.cancel_obsolete_inputs(host);
+        self.checkpoint_facts(host);
     }
 
     /// The world's state outside the blocks, kept when it changed (the
@@ -143,11 +147,17 @@ impl Server {
         if blockstate::id_of(old) == blockstate::id_of(new) {
             return;
         }
+        let key=(dim.to_string(),pos);
+        if !tracked(old)&&!tracked(new)&&!self.ready.world.generations.contains_key(&key){return;}
+        let old_generation=self.ready.world.generations.get(&key).copied().unwrap_or(0);
+        let generation=old_generation.checked_add(1).unwrap_or(u64::MAX);
+        self.ready.world.generations.insert(key,generation);
+        self.ready.facts_dirty=true;
         if tracked(old) {
-            self.queued.push(BlockEvent::Broken(dim.into(), pos, old.into()));
+            self.queued.push((BlockEvent::Broken(dim.into(), pos, old.into()),old_generation));
         }
         if tracked(new) {
-            self.queued.push(BlockEvent::Placed(dim.into(), pos, new.into()));
+            self.queued.push((BlockEvent::Placed(dim.into(), pos, new.into()),generation));
         }
     }
 
@@ -157,12 +167,15 @@ impl Server {
     pub fn native_adopt(&mut self, dim: &str, pos: Pos, json: &str) -> bool {
         let Some(r) = self.ready() else { return false };
         let key = (dim.to_string(), pos);
-        if r.world.machine_effects.iter().any(|b|b.owners.contains(&key)){return true;}
         if r.world.machines.contains_key(&key) {
             return true;
         }
         let Ok(m) = serde_json::from_str::<Machine>(json) else { return false };
         let m = m.upgraded();
+        if r.world.machine_effects.iter().any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)){return true;}
+        let current=r.world.generations.entry(key.clone()).or_insert(m.generation);
+        if m.generation<*current{return false;}
+        *current=m.generation;
         for cell in container_bridge::energy_port_cells(&m.block,pos) { r.native_scan.push_back((dim.to_string(),cell)); }
         r.world.machines.insert(key.clone(), m);
         r.seen.insert(key.clone());
@@ -307,7 +320,7 @@ impl Server {
     pub(super) fn native_save(&mut self, host: &mut impl ServerHost) {
         let Some(r) = self.ready() else { return };
         for (key, m) in &r.world.machines {
-            if r.loaded.get(key) != Some(&true) {
+            if r.loaded.get(key) != Some(&true) || m.generation==u64::MAX || r.world.generations.get(key).copied().unwrap_or(0)!=m.generation || !host.get_block(&key.0,key.1).is_some_and(|s|blockstate::id_of(&s)==m.block) {
                 continue;
             }
             let Ok(json) = serde_json::to_string(m) else { continue };
@@ -316,7 +329,7 @@ impl Server {
                 // (its dimension not available now) is written again later.
                 let Some(expected)=host.machine_slots(&key.0,key.1).or_else(|| container_bridge::layout(&m.block).is_none().then(Vec::new)) else{continue};
                 let data=Self::machine_screen(&mut m.clone());
-                if host.commit_machine(&MachineCommit{dim:key.0.clone(),pos:key.1,desired:expected.clone(),expected,data,json:json.clone()}) {
+                if host.commit_machine(&MachineCommit{guard:CellGuard::machine(key,m),expected_saved:r.native_saved.contains_key(key),dim:key.0.clone(),pos:key.1,desired:expected.clone(),expected,data,json:json.clone()}) {
                     r.native_saved.insert(key.clone(), json);
                 }
             }

@@ -166,6 +166,7 @@ bindings = [
   { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
   { name = "pos", ty = "[i32; 3]", value = "pos" },
   { name = "id", ty = "i32", value = "id" },
+  { name = "entity", ty = "&horizon_client::containers::ModBlockEntity", value = "&*entity" },
 ]
 
 # The machines' screens (L2): horizon_screen/*.json drawn on the native screen

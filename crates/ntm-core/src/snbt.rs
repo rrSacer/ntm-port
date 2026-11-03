@@ -220,4 +220,3 @@ mod tests {
         assert_eq!(canonical("{a:1"), None);
     }
 }
-
