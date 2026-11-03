@@ -821,7 +821,7 @@ mod world_commit_tests {
         let id=|name:&str,props:&[(&str,&str)]|registry.resolve(&horizon_world::chunk::BlockState{name:format!("minecraft:{name}"),properties:props.iter().map(|(k,v)|(k.to_string(),v.to_string())).collect()}).unwrap();
         let at=BlockPos::new(1,100,1);
         for name in ["chest","redstone_block","stone"]{
-            let old=id(name,&[]);let air=b.air();
+            let old=id(name,&[]);let air=id("air",&[]);
             let mut vanilla=Resident::new(air);let mut committed=Resident::new(air);
             let mut vt=Ticks::new(0);let mut ct=Ticks::new(0);
             for ticks in [&mut vt,&mut ct]{for x in -1..=1{for z in -1..=1{ticks.add_empty_chunk(ChunkPos::new(x,z)).unwrap();}}}
