@@ -74,13 +74,8 @@ def setup(g):
     effects={e['id'].split(':')[-1]:e['amplifier'] for e in after['effects']}
     g.check('java_food_effects',all(effects.get(k)==v for k,v in {'poison':0,'wither':0,'weakness':2,'speed':2,'resistance':4}.items()),effects)
     g.command('effect clear @s');g.command('clear @s');g.command('gamemode creative @s')
-    # A stacked syringe cannot lose its container in a full inventory.
-    give_hand(g,'ntm:syringe_metal_medx',2)
-    for slot in [f'hotbar.{i}' for i in range(1,9)]+[f'inventory.{i}' for i in range(27)]:
-        g.command(f'item replace entity @s {slot} with minecraft:stone 64')
-    use(g)
-    g.check('full_inventory_refuses_entire_syringe',counts(g).get('ntm:syringe_metal_medx')==2 and not counts(g).get('ntm:syringe_metal_empty'),counts(g))
-    g.command('clear @s minecraft:stone 64');use(g)
+    # A stacked syringe returns its container to the inventory.
+    give_hand(g,'ntm:syringe_metal_medx',2);use(g)
     actual=counts(g);g.check('syringe_count_and_container',actual.get('ntm:syringe_metal_medx')==1 and actual.get('ntm:syringe_metal_empty')==1,actual)
     effects=g.ctl('state')['player']['effects']
     g.check('medx_resistance_three',any(e['id'].endswith('resistance') and e['amplifier']==2 for e in effects),effects)
@@ -112,7 +107,81 @@ def setup(g):
     give_hand(g,'ntm:radaway');use(g);time.sleep(7.5)
     g.check('radaway_exact_java_total',state(g)['dose']==60000,state(g))
     g.check('radaway_returns_iv_empty',counts(g).get('ntm:iv_empty')==1,counts(g))
+    full_inventory(g)
     armor_table(g)
+
+
+def dropped(g):
+    """Item entities near the player, by item id."""
+    found={}
+    for e in g.ctl('entities')['entities']:
+        item=e.get('item') or {}
+        if item.get('item'):found[item['item']]=found.get(item['item'],0)+item.get('count',0)
+    return found
+
+
+def full(g,item,count=1,armor=None,mode='survival'):
+    """Every inventory slot taken: the item in hotbar.0, stone elsewhere."""
+    g.command('gamemode creative @s');g.command('kill @e[type=minecraft:item]');g.command('clear @s')
+    for slot in ['head','chest','legs','feet']:g.command(f'item replace entity @s armor.{slot} with minecraft:air')
+    g.command('give @s minecraft:stone 2304');g.command(f'item replace entity @s hotbar.0 with {item} {count}');g.ctl('select 1')
+    for slot,worn in (armor or {}).items():g.command(f'item replace entity @s armor.{slot} with {worn}')
+    g.command(f'gamemode {mode} @s');time.sleep(.5)
+    g.check('inventory_is_full_'+item.split(':')[-1],counts(g).get('minecraft:stone')==2240,counts(g))
+
+
+def full_inventory(g):
+    """Java item by item: a container that does not fit is dropped (or lost in
+    creative), the use still completes; where Java refuses, we refuse."""
+    g.close();g.command('tp @s 24.5 101 7.5');time.sleep(1)
+    # Food has no container: eating in a full inventory only consumes the food.
+    full(g,'ntm:cotton_candy',2);g.command('effect give @s minecraft:hunger 1 255 true');time.sleep(1.6)
+    use(g,1.8);actual=counts(g)
+    g.check('full_food_consumes_one',actual.get('ntm:cotton_candy')==1 and not dropped(g),{'counts':actual,'dropped':dropped(g)})
+    g.command('effect clear @s')
+    # ItemSyringe: the used-up stack becomes the empty syringe in its own slot...
+    full(g,'ntm:syringe_metal_medx',1);use(g);actual=counts(g)
+    g.check('full_last_syringe_becomes_empty_in_place',actual.get('ntm:syringe_metal_empty')==1 and not actual.get('ntm:syringe_metal_medx') and not dropped(g),{'counts':actual,'dropped':dropped(g)})
+    # ...and with more in the stack the empty syringe is dropped, never lost.
+    full(g,'ntm:syringe_metal_medx',2);use(g);actual=counts(g);away=dropped(g)
+    effects=g.ctl('state')['player']['effects']
+    g.check('full_stacked_syringe_drops_container',actual.get('ntm:syringe_metal_medx')==1 and not actual.get('ntm:syringe_metal_empty') and away.get('ntm:syringe_metal_empty')==1 and any(e['id'].endswith('resistance') and e['amplifier']==2 for e in effects),{'counts':actual,'dropped':away,'effects':effects})
+    g.command('effect clear @s')
+    # ItemSimpleConsumable.doRadaway: the emptied slot is still taken while the
+    # container is added, so even the last RadAway drops its iv_empty.
+    g.command('ntmitem dose 200000')
+    full(g,'ntm:radaway',1);use(g);actual=counts(g);away=dropped(g);treated=state(g)
+    g.check('full_last_radaway_drops_container',not actual.get('ntm:radaway') and not actual.get('ntm:iv_empty') and away.get('ntm:iv_empty')==1 and treated.get('radaway',0)>0,{'counts':actual,'dropped':away,'state':treated})
+    full(g,'ntm:radaway',2);use(g);actual=counts(g);away=dropped(g)
+    g.check('full_stacked_radaway_keeps_stack_and_drops_container',actual.get('ntm:radaway')==1 and away.get('ntm:iv_empty')==1,{'counts':actual,'dropped':away})
+    # With one free slot the container goes there, not to the ground.
+    full(g,'ntm:radaway',1);g.command('item replace entity @s inventory.26 with minecraft:air');use(g);actual=counts(g)
+    g.check('free_slot_takes_radaway_container',actual.get('ntm:iv_empty')==1 and not dropped(g),{'counts':actual,'dropped':dropped(g)})
+    # Creative mode: addItemStackToInventory discards what does not fit.
+    full(g,'ntm:radaway',1,mode='creative');use(g);actual=counts(g)
+    g.check('creative_full_radaway_discards_container',not actual.get('ntm:iv_empty') and not dropped(g),{'counts':actual,'dropped':dropped(g)})
+    # ItemStarterKit.giveHaz: the kit never refuses; replaced armor is dropped.
+    full(g,'ntm:hazmat_kit',armor={'head':'ntm:gas_mask_m65','chest':'minecraft:iron_chestplate'});use(g);actual=counts(g);away=dropped(g)
+    g.check('full_kit_equips_and_drops_replaced_armor',all(actual.get('ntm:hazmat_'+p)==1 for p in ['helmet','plate','legs','boots']) and not actual.get('ntm:hazmat_kit') and away.get('ntm:gas_mask_m65')==1 and away.get('minecraft:iron_chestplate')==1 and actual.get('minecraft:stone')==2240,{'counts':actual,'dropped':away})
+    # ItemFilter: installing swaps the held stack, so a full inventory is fine.
+    full(g,'ntm:gas_mask_filter',armor={'head':'ntm:gas_mask_m65'});use(g)
+    g.command('item replace entity @s hotbar.0 with ntm:gas_mask_filter[minecraft:damage=500] 1');time.sleep(.3);use(g)
+    held=g.ctl('inventory')['held'] or {}
+    g.check('full_filter_swap_returns_old_filter_in_hand',held.get('item')=='ntm:gas_mask_filter' and not dropped(g) and '500' in inventory_tag(g),{'held':held,'dropped':dropped(g)})
+    # ArmorGasMask.onItemRightClick: sneaking takes the filter out; no room drops it.
+    g.command('item replace entity @s hotbar.0 from entity @s armor.head');g.command('item replace entity @s armor.head with minecraft:air')
+    g.ctl('key shift down');time.sleep(.6);use(g);g.ctl('key shift up');time.sleep(.3)
+    mask=(g.ctl('inventory')['held'] or {});away=dropped(g)
+    g.check('full_sneak_use_drops_removed_filter',mask.get('item')=='ntm:gas_mask_m65' and away.get('ntm:gas_mask_filter')==1 and 'hfrFilter' not in inventory_tag(g),{'held':mask,'dropped':away})
+    g.command('kill @e[type=minecraft:item]');g.command('item replace entity @s inventory.26 with minecraft:air')
+    g.command('item replace entity @s armor.head with ntm:gas_mask_m65');give_hand(g,'ntm:gas_mask_filter');use(g)
+    g.command('item replace entity @s hotbar.0 from entity @s armor.head');g.command('item replace entity @s armor.head with minecraft:air');g.ctl('select 1')
+    g.ctl('key shift down');time.sleep(.6);use(g);g.ctl('key shift up');time.sleep(.3)
+    g.check('free_slot_takes_removed_filter',counts(g).get('ntm:gas_mask_filter')==1 and not dropped(g),{'counts':counts(g),'dropped':dropped(g)})
+    # The plate has no container: a right click equips it from a full inventory.
+    full(g,'ntm:hazmat_plate');use(g);inv=g.ctl('inventory')
+    g.check('full_plate_equips',any(a.get('item')=='ntm:hazmat_plate' for a in inv['armor']) and not dropped(g) and counts(g).get('minecraft:stone')==2240,{'armor':inv['armor'],'dropped':dropped(g)})
+    g.command('kill @e[type=minecraft:item]');g.command('gamemode creative @s');g.command('clear @s')
 
 
 def table_slot(screen,n):

@@ -64,29 +64,34 @@ fn held(s: &mut NativePlayerSnapshot, slot: usize) -> Option<&mut Option<ItemSta
         s.inventory.get_mut(slot)
     }
 }
-/// Plan counted insertion on a cloned inventory. Full inventory refuses the
-/// complete use, so kit/container overflow never deletes or duplicates items.
-fn insert(game: &Game<'_>, slots: &mut [Option<ItemStack>], mut stack: ItemStack) -> bool {
-    let Some(info) = game.items().get(&stack.item) else {
-        return false;
-    };
+/// `InventoryPlayer.addItemStackToInventory` on a cloned inventory: merge into
+/// matching stacks, then the first empty slot. `reserved` is a slot a used-up
+/// stack still occupies while the item runs, so it is not empty. Returns what
+/// did not fit; in creative mode the leftover vanishes, as in Java.
+fn add_stack(
+    game: &Game<'_>,
+    slots: &mut [Option<ItemStack>],
+    mut stack: ItemStack,
+    reserved: Option<usize>,
+) -> Option<ItemStack> {
+    let max = game.items().get(&stack.item)?.max_stack;
     for s in slots.iter_mut().flatten() {
         if s.same_item_same_components(&stack) {
-            let n = stack.count.min(info.max_stack.saturating_sub(s.count));
+            let n = stack.count.min(max.saturating_sub(s.count));
             s.count += n;
             stack.count -= n;
         }
     }
-    for s in slots.iter_mut() {
-        if s.is_none() && stack.count > 0 {
-            let n = stack.count.min(info.max_stack);
+    for (i, s) in slots.iter_mut().enumerate() {
+        if s.is_none() && Some(i) != reserved && stack.count > 0 {
+            let n = stack.count.min(max);
             let mut part = stack.clone();
             part.count = n;
             *s = Some(part);
             stack.count -= n;
         }
     }
-    stack.count == 0
+    (stack.count > 0 && !game.creative).then_some(stack)
 }
 fn legacy(game: &Game<'_>) -> Option<Dose> {
     crate::game::ntm_glue::item_dose(game.native_actor_uuid().as_deref()?)
@@ -132,7 +137,56 @@ pub(super) fn use_air(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         install_filter(game, stack);
         return true;
     }
+    if matches!(&*stack.item, "ntm:gas_mask_m65" | "ntm:attachment_mask") {
+        return remove_filter(game, stack);
+    }
     false
+}
+
+/// ArmorGasMask/ItemModGasmask.onItemRightClick: sneaking with the mask in
+/// hand takes its filter out. The filter goes to the inventory or, when there
+/// is no room, to the ground. True when the click was claimed.
+fn remove_filter(game: &mut Game<'_>, stack: &ItemStack) -> bool {
+    if !game.keys.contains(&winit::keyboard::KeyCode::ShiftLeft) {
+        return false;
+    }
+    let installed = custom(stack)
+        .and_then(|d| d.get(&JavaString::from("hfrFilter")).and_then(item_from_nbt));
+    let Some(filter) = installed else {
+        return false;
+    };
+    let Some(expected) = game.native_player_snapshot(&STATE) else {
+        // A client only predicts the claim; the server edits the stacks.
+        return true;
+    };
+    let mut desired = expected.clone();
+    let held_slot = game.held_slot();
+    let Some(Some(held)) = held(&mut desired, held_slot) else {
+        return false;
+    };
+    if held != stack {
+        return false;
+    }
+    let Some(mut data) = custom(held) else {
+        return false;
+    };
+    data.remove(&JavaString::from("hfrFilter"));
+    held.data_mut()
+        .set_other("minecraft:custom_data", Some(Tag::Compound(data)));
+    let drops: Vec<_> = add_stack(game, &mut desired.inventory, filter, None)
+        .into_iter()
+        .collect();
+    game.native_commit_player(
+        &STATE,
+        &expected,
+        desired,
+        NativePlayerBenefits {
+            drops,
+            silent_equipment: true,
+            ..Default::default()
+        },
+    );
+    true
 }
 
 pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
@@ -157,7 +211,9 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     if spec.cooldown > 0 && number(&desired.state, "sickness") > 0 {
         return false;
     }
-    let Some(slot) = held(&mut desired, game.held_slot()) else {
+    let held_slot = game.held_slot();
+    let mut drops = Vec::new();
+    let Some(slot) = held(&mut desired, held_slot) else {
         return false;
     };
     if slot.as_ref() != Some(stack) {
@@ -166,12 +222,20 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     let mut rest = stack.clone();
     rest.count -= 1;
     *slot = (rest.count > 0).then_some(rest);
-    if let Some(id) = spec.container
-        && !insert(game, &mut desired.inventory, ItemStack::new(id, 1))
-    {
-        return false;
+    let emptied = slot.is_none();
+    if let Some(id) = spec.container {
+        let container = ItemStack::new(id, 1);
+        if emptied && spec.container_in_place {
+            *slot = Some(container);
+        } else {
+            // Java drops what does not fit; the emptied slot is still taken.
+            let reserved = (emptied && held_slot != crate::game::shield::OFFHAND_SLOT)
+                .then_some(held_slot);
+            drops.extend(add_stack(game, &mut desired.inventory, container, reserved));
+        }
     }
     if &*stack.item == "ntm:hazmat_kit" {
+        // ItemStarterKit.giveHaz drops the replaced armor in the world.
         for (index, id) in [
             "ntm:hazmat_helmet",
             "ntm:hazmat_plate",
@@ -181,11 +245,7 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         .into_iter()
         .enumerate()
         {
-            if let Some(old) = desired.armor[index].take()
-                && !insert(game, &mut desired.inventory, old)
-            {
-                return false;
-            }
+            drops.extend(desired.armor[index].take());
             desired.armor[index] = Some(ItemStack::new(id, 1));
         }
     }
@@ -204,6 +264,7 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             .map(|e| (e.id.into(), e.ticks, e.amplifier))
             .collect(),
         cooldown: (spec.cooldown > 0).then(|| (stack.item.to_string(), spec.cooldown)),
+        drops,
         ..Default::default()
     };
     let applied = game.native_commit_player(&STATE, &expected, desired, benefits);

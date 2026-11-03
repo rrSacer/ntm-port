@@ -21,6 +21,9 @@ pub struct UseSpec {
     pub food: Option<(i32, f32)>,
     pub effects: &'static [Effect],
     pub container: Option<&'static str>,
+    /// ItemSyringe returns the container as the used-up stack itself; the
+    /// others add it to the inventory while the emptied slot is still taken.
+    pub container_in_place: bool,
     pub radaway: u32,
     pub cooldown: i32,
 }
@@ -33,6 +36,7 @@ pub fn use_spec(id: &str) -> Option<UseSpec> {
         food: None,
         effects: &[],
         container: None,
+        container_in_place: false,
         radaway: 0,
         cooldown: 0,
     };
@@ -78,6 +82,7 @@ pub fn use_spec(id: &str) -> Option<UseSpec> {
                 amplifier: 2,
             }];
             spec.container = Some("ntm:syringe_metal_empty");
+            spec.container_in_place = true;
             // PotionConfig defaults to OFF; do not invent potion sickness.
         }
         "ntm:radaway" => {
@@ -159,6 +164,19 @@ pub fn filter_protects(mask: &str, filter: &str, hazard: Hazard) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    /// ItemSyringe hands back its container as the used-up stack; RadAway
+    /// adds the container to the inventory while the emptied slot is taken.
+    #[test]
+    fn container_placement_follows_each_java_item() {
+        let medx = use_spec("ntm:syringe_metal_medx").unwrap();
+        assert_eq!(medx.container, Some("ntm:syringe_metal_empty"));
+        assert!(medx.container_in_place);
+        let radaway = use_spec("ntm:radaway").unwrap();
+        assert_eq!(radaway.container, Some("ntm:iv_empty"));
+        assert!(!radaway.container_in_place);
+        assert_eq!(use_spec("ntm:cotton_candy").unwrap().container, None);
+        assert_eq!(use_spec("ntm:hazmat_kit").unwrap().container, None);
+    }
     #[test]
     fn life_endpoints_and_invalid_state() {
         assert_eq!(interpolate(20., 4., 100., 100.), Some(20.));
