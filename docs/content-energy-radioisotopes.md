@@ -39,8 +39,24 @@ Validação intermediária: 383 testes unitários Rust e 26 de integração pass
 Clippy `--workspace --all-targets -- -D warnings` passou. A suíte inclui os 28
 combustíveis até conclusão real, conservação de itens/energia, recusas de commit,
 conflito de inventário, i64 acima de i32, interpolação, quatro orientações da porta
-e retomada estrita. O teste nativo de ida/volta do i64 e dos campos extras também passou. Prova completa em jogo e regressões ainda pendentes; nenhum desses
-resultados declara prontidão para merge.
+e retomada estrita. O teste nativo de ida/volta do i64 e dos campos extras também passou. Clippy do
+cliente/bundle transformado passou com `-D warnings`, sem qualquer `-A`.
+
+A prova manual `radioisotopes-jou6nkkx` passou 50 verificações no pin `ec479adb3`
+(upstream congelado `fc0210381`): montagem, 12 filas manuais, entrada de não
+combustível, recusa de funil RTG, geração nas duas baterias, chumbo→bismuto,
+resíduo tiny, sucata sem resíduo, gema→diamante e extração pelo núcleo.
+Após reabrir, a vida caiu de **11.519.957.679 para 11.519.957.478**; as filas
+avançaram estritamente mantendo os itens em processamento. As baterias novas
+receberam **14.210→41.615 HE** do RTG e **35.000→170.000 HE** do radgen.
+O relatório declara `excluded_phases: ["automation"]`; isto não fecha as duas
+dependências de motor acima nem declara prontidão para merge.
+
+Solar/Stirling (36 verificações com reabertura) e combustão passaram no mesmo
+cliente/pacote. Demais regressões estão em andamento. Índice intermediário:
+`.agent-tmp/rtg/manual-validation.json`; logs de suite, Clippy e build nessa pasta.
+Cliente SHA-256 `ceabd253a8740bf2a21b55cef97c6585b2e6c035d082b4af32d8970d255ba59b`;
+pacote SHA-256 `81f63a2d0cc4be0eba92ab819339c29244e079dc97dd26c74f116f39f80cf361`.
 
 O roteiro `tools/test-game/native_radioisotopes.py`, integrado ao driver
 `run-native-reactors.py radioisotopes`, usa montagem/tela, recusa de funil no RTG, distribuição por funil no radgen, baterias reais,
