@@ -321,16 +321,25 @@ impl Host<'_, '_> {
         if target == self.game.dim {
             return self.game.native_with_mod_block_entity(pos, f);
         }
+        let key = (pos[0], pos[1], pos[2]);
         let world = self.game.levels.parked_world_mut(target)?;
-        let Some(horizon_client::containers::BlockEntity::Mod(m)) = world.block_entities.get_mut(&(pos[0], pos[1], pos[2])) else {
+        let Some(horizon_client::containers::BlockEntity::Mod(m)) = world.block_entities.get_mut(&key) else {
             return None;
         };
         if m.id.is_empty() {
             return None;
         }
+        let before = m.items.clone();
         let out = f(m);
+        let moved = m.items != before;
         // Its chunk is saved next time, as `setChanged` would.
         world.modified.insert((pos[0] >> 4, pos[2] >> 4));
+        if moved {
+            // The other half of `setChanged`: the comparators reading it are told, in
+            // that level (`native_with_mod_block_entity` does this for the one in place).
+            // A passing visit: no level is opened and its idleness keeps counting.
+            self.game.visit_level(target, |g| g.container_changed(key));
+        }
         Some(out)
     }
 
