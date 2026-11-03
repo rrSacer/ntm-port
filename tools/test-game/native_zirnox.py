@@ -249,13 +249,20 @@ def check(g):
 def failure(g):
     g.close()
     g.ground(110,101,8,width=20,height=8)
+    # Keep the diagnostic and full scene in the same placement frame. A fresh
+    # client otherwise retains its spawn yaw and places the core on the other side.
+    g.command('tp @s 115.5 101 11.5 180 0')
     core=tuple(place(g,'machine_zirnox',115,101,8))
+    g.check('failure_core_frame',core==(115,101,6),{'core':core,'facing':machine(g,core)['facing']})
     markers=[add(core,(x,3,z)) for x,z in [(4,0),(-4,0),(0,4),(0,-4)]]
     for p in markers:g.command('setblock '+pos_text(p)+' minecraft:stone')
-    grass=add(core,(15,-1,0));g.command('setblock '+pos_text(grass)+' minecraft:grass_block')
+    # Waste rules are independent of the physical debris trajectories. Shield
+    # these samples beyond the blast so a random exchanger cannot remove them.
+    g.command('fill '+pos_text(add(core,(18,-3,-8)))+' '+pos_text(add(core,(20,12,12)))+' minecraft:obsidian')
+    grass=add(core,(24,-1,0));g.command('setblock '+pos_text(grass)+' minecraft:grass_block')
     wood_cases=[('oak_fence','minecraft:oak_fence'),('chest','minecraft:chest'),('oak_log','ntm:waste_log'),('oak_planks','ntm:waste_planks')]
     for i,(name,_) in enumerate(wood_cases):
-        g.command('setblock '+pos_text(add(core,(15,0,i+1)))+' minecraft:'+name)
+        g.command('setblock '+pos_text(add(core,(24,0,i+1)))+' minecraft:'+name)
     open_reactor(g,core)
     for slot in range(24):g.put('ntm:rod_zirnox__les_fuel',1,slot)
     g.check('cold_uncooled_loaded',state(g,core)['heat']==0,state(g,core))
@@ -272,7 +279,7 @@ def failure(g):
     sprint(g,120)
     g.check('waste_transforms_grass',block(g,grass)=='ntm:waste_earth',block(g,grass))
     for i,(name,expected) in enumerate(wood_cases):
-        actual=block(g,add(core,(15,0,i+1))).split('[')[0]
+        actual=block(g,add(core,(24,0,i+1))).split('[')[0]
         g.check('waste_wood_'+name,actual==expected,actual)
     after=remnants()
     created=[a-b for a,b in zip(after['debris_created'],baseline.get('debris_created',[0]*6))]
