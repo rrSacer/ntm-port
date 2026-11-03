@@ -115,6 +115,11 @@
     "ntm:gas_mask_filter_combo",
     "ntm:gas_mask_filter_mono",
     "ntm:gas_mask_filter_piss",
-    "ntm:gas_mask_filter_rag"
+    "ntm:gas_mask_filter_rag",
+    "ntm:gas_mask_m65",
+    "ntm:hazmat_boots",
+    "ntm:hazmat_helmet",
+    "ntm:hazmat_legs",
+    "ntm:hazmat_plate"
   ]
 }

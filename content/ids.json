@@ -26468,7 +26468,6 @@
       "source_class": "ItemFilter",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2838",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
       "max_stack_size": 1,
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter.png",
@@ -26483,7 +26482,9 @@
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
-      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear"
     },
     {
       "id": "ntm:gas_mask_filter_combo",

@@ -132,6 +132,16 @@
       "template": "minecraft:iron_ingot",
       "max_stack_size": 1,
       "behavior": "ArmorModHandler helmet_only: native item_hooks"
+    },
+    {
+      "id": "gas_mask_filter",
+      "source_variable": "gas_mask_filter",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear"
     }
   ]
 }
