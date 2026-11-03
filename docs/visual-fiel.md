@@ -158,9 +158,9 @@ interface machines {
 
 ### 2.4 A ponte no port (`container_bridge.rs`)
 
-- **Os slots são a verdade.** Antes de `simulate`, `slots_in` aplica à máquina o que os jogadores mudaram desde a
-  última escrita (por diferença, nunca por cópia). Depois de `run_txs`, `slots_out` devolve o estado da máquina aos
-  slots e manda os valores da tela.
+- **Os slots são a verdade.** O passo local aplica o inventário observado, roda a máquina e produz slots/tela/JSON
+  numa transação `commit_machine`. Recusa restaura o snapshot completo e descarta efeitos; o próximo tick relê
+  o inventário. Redes rodam só depois da confirmação. Grupos de pilha usam `commit_machines`; não há setters parciais.
 - **Por diferença:** um `Give` da tela antiga, ou um `TakeHeld` que se confirma, muda a máquina, e a próxima escrita
   mostra isso. Copiar os slots duplicaria.
 - **Sessão nova:**

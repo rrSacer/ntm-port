@@ -31,6 +31,22 @@ Consequências: máquina **nova** nunca recebia `STATE` no block entity (bloco m
 
 Limitações: (1) ao mudar itens de uma máquina de um nível estacionado, o `container_changed` do motor (que precisa do nível em lugar) não roda. Os **funis** leem os slots atuais e não dependem dele; os **comparadores** que leem a máquina perdem a notificação dessa mudança, e voltar a ser o nível em lugar não a repõe (só o próximo evento do comparador a atualiza). Não enfileirei a notificação: exigiria guardar posições por nível e entrar nele depois, e o ganho é só para comparadores em níveis sem jogador. (2) A persistência de um nível estacionado depende do motor salvá-lo (`modified` marcado; `save_parked_levels` e `close_idle_levels` o fazem). (3) A visita não dispara `LevelEvent` de abrir/fechar nem chegadas por portal, e nunca abre um nível.
 
+## Atualização ZIRNOX — commit atômico
+
+Os nomes dos setters na descrição histórica acima foram substituídos por
+`ServerHost::commit_machine` / `commit_machines`. O host valida `expected` e os
+limites de todos os slots antes de publicar slots, dados e JSON; grupos de pilha
+usam o mesmo acesso exclusivo ao `Game`, sem fallback parcial. `Host::entity`
+continua acessando diretamente níveis abertos estacionados. Falha congela o
+passo local e o exclui das redes; o tick seguinte tenta a partir do inventário
+observado. Os setters separados foram removidos.
+
+Drops e alterações de mundo são liberados após a confirmação. Tombstones e
+cursores preservam o conteúdo de remoções confirmadas quando o nível fecha;
+recibos só são descartados depois do hook existente `world_saved(wait=true)`.
+A janela de crash/I/O entre mundo e KV permite replay/duplicação e permanece
+pendência de motor. Ver [contrato completo](content-reactors-zirnox.md).
+
 ## Verificação
 
 - `an_unreachable_block_entity_is_written_again_later`, `native_core_break_in_a_frozen_dimension_*` e os testes da pile.
