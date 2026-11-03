@@ -89,20 +89,22 @@ def parked_comparator(g):
 
 
 def identity_close(g):
-    """`stillValid` is the block entity object, not the position: an open machine menu closes when
-    a `clone` replaces the machine with another of the same id in one command (no tick sees the
-    position empty), and a menu opened on the new machine works."""
-    a,b=(34,101,6),(34,101,8)
-    for p in (a,b):
-        g.command('setblock %d %d %d ntm:machine_electric_furnace_off[facing=north]'%p)
+    """`stillValid` is the block entity object, not the position. With the tick frozen, an open
+    machine menu sees its machine broken and another of the same id placed at once (no tick finds
+    the position empty); the menu must close, and one opened on the new machine must work."""
+    a=(34,101,6)
+    g.command('setblock %d %d %d ntm:machine_electric_furnace_off[facing=north]'%a)
     time.sleep(2)
     g.command('tp @s %.1f 101 %.1f'%(a[0]+.5,a[2]-2.5))
     g.ctl('interact %d %d %d north'%a)
     deadline=time.monotonic()+5
     while time.monotonic()<deadline and g.ctl('screen').get('screen')!='container':time.sleep(.2)
     g.check('identity_menu_opens',g.ctl('screen').get('screen')=='container',g.ctl('screen').get('screen'))
-    g.command('clone %d %d %d %d %d %d %d %d %d replace'%(b+b+a))
-    deadline=time.monotonic()+5
+    g.command('tick freeze')
+    g.command('setblock %d %d %d minecraft:air'%a)
+    g.command('setblock %d %d %d ntm:machine_electric_furnace_off[facing=north]'%a)
+    g.command('tick unfreeze')
+    deadline=time.monotonic()+8
     while time.monotonic()<deadline and g.ctl('screen').get('screen')=='container':time.sleep(.2)
     g.check('identity_menu_closes_when_the_machine_is_replaced',g.ctl('screen').get('screen')!='container',g.ctl('screen').get('screen'))
     g.ctl('interact %d %d %d north'%a)
@@ -110,8 +112,7 @@ def identity_close(g):
     while time.monotonic()<deadline and g.ctl('screen').get('screen')!='container':time.sleep(.2)
     g.check('identity_new_menu_works_on_the_new_machine',g.ctl('screen').get('screen')=='container',g.ctl('screen').get('screen'))
     g.close()
-    for p in (a,b):
-        g.command('setblock %d %d %d minecraft:air'%p)
+    g.command('setblock %d %d %d minecraft:air'%a)
 
 
 def setup(g):
