@@ -160,15 +160,24 @@ motor inclui também o cursor e os drops pós-publicação necessários aos menu
 
 ## Aceitação
 
-Binário `1c3315ca9c4f…` e pacote `3fbcad5823f7…`, motor `60d48181f`, no mesmo par para
+Binário `777dffefdaf6…` e pacote `3fbcad5823f7…`, motor `57e52927c`, no mesmo par para
 todos os cenários (hashes iguais antes e depois). Cada fase grava a própria
 evidência (`native-items-setup.json`, `-capture-state.json`, `-check-state.json`).
 
 | Roteiro `items` | Checks |
 | --- | --- |
-| `setup`: CAS nativo com recusa e repetição, comer com animação real, cancelar sem consumir, fome/saturação, cinco efeitos, seringa em inventário cheio e com espaço, kit hazmat, filtro instalado uma vez, desgaste por exposição, blacklist da máscara, gama com máscara/hazmat, RadAway (total exato e `iv_empty`), mesa real (14 slots, inserir, shift-click, remover, fechar conservando) | 24 |
+| `setup` (41): CAS nativo com recusa e repetição, comer com animação real, cancelar sem consumir, fome/saturação, cinco efeitos, seringa em inventário cheio e com espaço, kit hazmat, filtro instalado uma vez, desgaste por exposição, blacklist da máscara, gama com máscara/hazmat, RadAway (total exato e `iv_empty`), mesa real (14 slots, inserir, shift-click, remover, fechar conservando) | 24 |
 | `capture-state`: mesa preparando a peça com mod, RadAway acumulado | 6 |
 | `check-state` depois de fechar e reabrir o mundo: dose sem repetir tratamento, desgaste do filtro e carga, mods da armadura | 3 |
+
+Inventário cheio (survival, 36 slots de pedra, uma execução por caso): comida só
+consome; última `syringe_metal_medx` vira seringa vazia no próprio slot; medx
+empilhada derruba a seringa vazia; último RadAway derruba o `iv_empty` (o slot
+esvaziado ainda está ocupado) e RadAway empilhado mantém a pilha e derruba o
+recipiente; com um slot livre o `iv_empty` vai para ele; em criativo é descartado;
+o kit veste as quatro peças e derruba o capacete e o peitoral trocados; a troca
+de filtro devolve o antigo na mão; sneak com a máscara na mão derruba o filtro
+(sem espaço) ou o guarda no slot livre; a placa equipa. Todos conservam o total.
 
 Regressão no mesmo binário: `mining` 18 checks, `bombs` 49, `zirnox` 127, `pile` 83,
 `dims` 10 (com `dims-idle` 2 e `dims-idle-clean` 1), `inventory-proxy` 12,
@@ -176,7 +185,7 @@ Regressão no mesmo binário: `mining` 18 checks, `bombs` 49, `zirnox` 127, `pil
 O `pile` falhou uma vez numa repetição (`interact`: nenhuma face visível do
 bloco, sem relação com itens) e passou em duas execuções seguidas, no mesmo binário.
 
-Verificação estática no HEAD final: NTM 416 testes passaram (2 doctests herdados
+Verificação estática no HEAD final: NTM 417 testes passaram (2 doctests herdados
 ignorados), Clippy `-D warnings` do workspace e da cópia transformada do motor sem
 isenções; motor 1.560 testes de `horizon-client-lib` (inclui
 `a_native_menus_cursor_published_after_the_resend_is_synced`) e 764 de
