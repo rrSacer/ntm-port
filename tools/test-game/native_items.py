@@ -35,6 +35,26 @@ def inventory_tag(g):
     return json.dumps(g.ctl('inventory'),sort_keys=True)
 
 
+def settle(g,done,timeout=8):
+    """Poll the synchronized screen until `done(screen)`; the server answers a
+    native-menu click one tick after the resend of the old menu."""
+    deadline=time.monotonic()+timeout
+    while True:
+        screen=g.ctl('screen')
+        if done(screen) or time.monotonic()>deadline:return screen
+        time.sleep(.25)
+
+
+def put(g,item,count,slot):
+    g.command(f'give @s {item} {count}')
+    screen=settle(g,lambda s:any(x['slot']<36 and x.get('item')==item for x in s.get('slots',[])))
+    source=next((x['slot'] for x in screen.get('slots',[]) if x['slot']<36 and x.get('item')==item),None)
+    if source is None:raise AssertionError(f'item not received: {item}')
+    g.ctl(f'click-slot {source}');g.ctl(f'click-slot {300+slot}')
+    screen=settle(g,lambda s:not s.get('carried') and any(x['slot']==300+slot and x.get('item')==item for x in s.get('slots',[])))
+    g.check(f'insert_{item}_{slot}',not screen.get('carried') and any(x['slot']==300+slot and x.get('item')==item for x in screen.get('slots',[])),screen)
+
+
 def setup(g):
     g.ctl('wait-ready 120');g.close();g.command('gamemode creative @s');g.command('clear @s')
     g.ground(20,101,8,width=12,height=8)
@@ -77,7 +97,13 @@ def setup(g):
     # Real gamma dose uses the same equipped-armor resolver as other sources.
     g.command('gamemode survival @s');give_hand(g,'ntm:ingot_uranium');time.sleep(11)
     def rate_sample():
-        a=state(g)['dose'];time.sleep(3.1);b=state(g)['dose'];return b-a
+        # The dose is added once a second: measure the size of single
+        # increments (never a window that may hold three or four of them).
+        last=state(g)['dose'];steps=[];deadline=time.monotonic()+30
+        while len(steps)<3 and time.monotonic()<deadline:
+            time.sleep(.2);now=state(g)['dose']
+            if now!=last:steps.append(now-last);last=now
+        steps.sort();return steps[len(steps)//2] if steps else 0
     mask=rate_sample()
     g.command('item replace entity @s armor.head with minecraft:air');bare=rate_sample()
     g.command('item replace entity @s armor.chest with ntm:hazmat_plate');hazmat=rate_sample()
@@ -89,29 +115,43 @@ def setup(g):
     armor_table(g)
 
 
+def table_slot(screen,n):
+    return next((x.get('item') for x in screen.get('slots',[]) if x['slot']==300+n),None)
+
+
+def open_table(g):
+    g.close();g.ctl('interact 24 101 8 south')
+    return settle(g,lambda s:s.get('screen')=='container' and sum(x['slot']>=300 for x in s.get('slots',[]))==14)
+
+
 def armor_table(g):
     g.close();g.command('clear @s');g.command('setblock 24 101 8 ntm:machine_armor_table')
-    g.command('tp @s 24.5 101 11.5');g.ctl('interact 24 101 8 south');time.sleep(.7)
-    g.check('table_has_exact_14_slots',len(g.slots())==14,g.ctl('screen'))
-    g.put('ntm:hazmat_helmet',1,9);g.put('ntm:attachment_mask',1,0)
+    g.command('tp @s 24.5 101 11.5');screen=open_table(g)
+    g.check('table_has_exact_14_slots',len(g.slots())==14,screen)
+    put(g,'ntm:hazmat_helmet',1,9);put(g,'ntm:attachment_mask',1,0)
     g.check('mod_slot_shows_attachment',g.slots()[0].get('item')=='ntm:attachment_mask',g.slots())
-    g.ctl('click-slot 309 shift');time.sleep(.5)
-    g.check('shift_click_equips_armor_and_absorbs_views',not g.slots()[0].get('item') and not g.slots()[9].get('item') and g.slots()[10].get('item')=='ntm:hazmat_helmet',g.slots())
+    g.ctl('click-slot 309 shift')
+    screen=settle(g,lambda s:table_slot(s,10)=='ntm:hazmat_helmet' and not s.get('carried'))
+    g.check('shift_click_equips_armor_and_absorbs_views',not table_slot(screen,0) and not table_slot(screen,9) and table_slot(screen,10)=='ntm:hazmat_helmet',g.slots())
     g.snapshot('items-armor-table')
     g.close();give_hand(g,'ntm:gas_mask_filter');use(g)
     g.command('ntmitem expose lung 321')
     tag=inventory_tag(g);g.check('nested_mod_filter_is_active','ntm_armor_mods' in tag and 'hfrFilter' in tag and '321' in tag,tag)
     # Taking the module out changes the helmet NBT in the same UI operation.
-    g.ctl('interact 24 101 8 south');time.sleep(.5)
-    g.ctl('click-slot 310 shift');time.sleep(.4)
-    g.ctl('click-slot 300');time.sleep(.3)
-    target=next(s['slot'] for s in g.ctl('screen')['slots'] if s['slot']<36 and not s.get('item'))
-    g.ctl(f'click-slot {target}');time.sleep(.4)
+    open_table(g)
+    g.ctl('click-slot 310 shift')
+    settle(g,lambda s:table_slot(s,9)=='ntm:hazmat_helmet' and table_slot(s,0)=='ntm:attachment_mask')
+    g.ctl('click-slot 300')
+    screen=settle(g,lambda s:s.get('carried') is not None)
+    target=next(s['slot'] for s in screen['slots'] if s['slot']<36 and not s.get('item'))
+    g.ctl(f'click-slot {target}')
+    settle(g,lambda s:not s.get('carried') and not table_slot(s,0))
     g.check('module_removed_into_inventory',not g.slots()[0].get('item') and counts(g).get('ntm:attachment_mask')==1,{'slots':g.slots(),'counts':counts(g)})
     # Reinstall, then leave the central armor in the menu on close. Java drops
     # the separated module and armor, so count both pickups and inventory.
     source=next(s['slot'] for s in g.ctl('screen')['slots'] if s['slot']<36 and s.get('item')=='ntm:attachment_mask')
-    g.ctl(f'click-slot {source}');g.ctl('click-slot 300');time.sleep(.4);g.close();time.sleep(.5)
+    g.ctl(f'click-slot {source}');g.ctl('click-slot 300')
+    settle(g,lambda s:not s.get('carried') and table_slot(s,0)=='ntm:attachment_mask');g.close();time.sleep(1.5)
     entities=g.ctl('entities')['entities'];drops=[e.get('item') or {} for e in entities]
     total=lambda item:counts(g).get(item,0)+sum(x.get('count',0) for x in drops if x.get('item')==item)
     g.check('table_close_conserves_armor_and_mod',total('ntm:hazmat_helmet')==1 and total('ntm:attachment_mask')==1,{'counts':counts(g),'entities':entities})
@@ -122,6 +162,15 @@ def capture(g):
     g.command('item replace entity @s armor.head with ntm:gas_mask_m65')
     give_hand(g,'ntm:gas_mask_filter');use(g);g.command('ntmitem expose lung 777')
     give_hand(g,'minecraft:stick');g.command('ntmitem charge 123456789')
+    # Keep the worn-out mask in the hotbar, then equip a hazmat helmet with an
+    # attachment mod through the real table so the reopen proves its NBT.
+    g.command('item replace entity @s hotbar.6 from entity @s armor.head');g.command('item replace entity @s armor.head with minecraft:air')
+    g.check('mask_kept_with_filter_wear','777' in inventory_tag(g) and 'hfrFilter' in inventory_tag(g),inventory_tag(g))
+    g.command('setblock 24 101 8 ntm:machine_armor_table');g.command('tp @s 24.5 101 11.5');screen=open_table(g)
+    g.check('capture_table_open',len(g.slots())==14,screen)
+    put(g,'ntm:hazmat_helmet',1,9);put(g,'ntm:attachment_mask',1,0)
+    g.ctl('click-slot 309 shift');settle(g,lambda s:table_slot(s,10)=='ntm:hazmat_helmet' and not s.get('carried'));g.close();time.sleep(.5)
+    mods=inventory_tag(g);g.check('helmet_worn_with_mod_before_reopen','ntm_armor_mods' in mods and 'attachment_mask' in mods,mods)
     # Two doses accumulate treatment time. The invariant detects timer reset,
     # lost dose or replayed treatment across the normal world close/reopen.
     g.command('ntmitem dose 500000');give_hand(g,'ntm:radaway',2,1);use(g);use(g)
@@ -138,10 +187,11 @@ def reopened(g):
     g.check('treatment_resumes_without_replay',current['dose']-1000*current.get('radaway',0)==expected['invariant'] and current.get('radaway',0)<=expected['radaway'],{'before':expected,'after':current})
     tag=inventory_tag(g)
     g.check('filter_wear_and_stack_charge_survive','777' in tag and '123456789' in tag and 'ntm_charge' in tag and 'hfrFilter' in tag,tag)
+    g.check('armor_mods_survive','ntm_armor_mods' in tag and 'attachment_mask' in tag and 'hazmat_helmet' in tag,tag)
     g.snapshot('items-reopened')
 
 
 if __name__=='__main__':
-    g=Game(sys.argv[1],'items');mode=sys.argv[2] if len(sys.argv)>2 else 'setup';g.evidence['phase']=mode
+    g=Game(sys.argv[1],'items-'+(sys.argv[2] if len(sys.argv)>2 else 'setup'));mode=sys.argv[2] if len(sys.argv)>2 else 'setup';g.evidence['phase']=mode
     {'setup':setup,'capture-state':capture,'check-state':reopened}[mode](g)
     g.evidence['ok']=True;g.save()

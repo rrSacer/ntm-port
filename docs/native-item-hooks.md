@@ -128,6 +128,15 @@ Comandos de operador nível 2 usam a mesma API do jogo:
 Estado da validação e evidências ficam no artifact `item-hooks`.
 
 
+O clique direito na mesa roda dentro do turno do jogador, onde o hub está emprestado
+ao turno e `game.lan` está vazio; por isso `open` só registra o pedido e
+`drain`, no fim do tick do servidor (`ServerTickEnd`), abre o menu pela mesma
+visita ao jogador que usam os cliques e o fechamento. O servidor responde a um
+clique em menu nativo depois de reenviar o menu antigo; o cursor publicado pelo
+commit chega ao cliente pela extensão do motor `sent_carried`
+(`docs/horizon-current.md`). A limpeza no tick do jogador lê a sessão da mesa, não
+o menu do hóspede, que o turno não enxerga.
+
 A mesa conserva sua peça física no attachment separado `ntm:armor_table`,
 salvo junto com o jogador. As posições de mods são vistas desse NBT, os slots
 de armadura são vistas do equipamento real. Após reabrir sem o menu, a limpeza

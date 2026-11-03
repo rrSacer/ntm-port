@@ -19,6 +19,11 @@ use std::{collections::HashMap, sync::Mutex};
 const BLOCK: &str = "ntm:machine_armor_table";
 const MENU: &str = "ntm:armor_table";
 const N: usize = 14;
+fn trace(event: &str) {
+    if std::env::var_os("NTM_TRACE_ITEMS").is_some() {
+        eprintln!("ntm armor_table {event}");
+    }
+}
 fn empty() -> Compound {
     Compound::new()
 }
@@ -44,6 +49,7 @@ static STATE: AttachmentType<Compound> = AttachmentType {
 type Sessions = HashMap<u128, (i32, Menu)>;
 static OPEN: Mutex<Option<Sessions>> = Mutex::new(None);
 static ARMOR: Mutex<Vec<(String, usize)>> = Mutex::new(Vec::new());
+static PENDING: Mutex<Vec<(u128, [i32; 3])>> = Mutex::new(Vec::new());
 fn lock<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
     m.lock().unwrap_or_else(|e| e.into_inner())
 }
@@ -214,6 +220,10 @@ fn load(game: &Game<'_>, m: &mut Menu, s: &NativePlayerSnapshot) -> Option<()> {
     m.drops.clear();
     Some(())
 }
+/// A right click on the table. The click runs inside the player's turn, where
+/// the hub is lent to the turn and `game.lan` is empty, so a native menu cannot
+/// be opened here: the request waits for `drain` at the end of the server tick.
+/// A client claims the click too, so it never falls through to another screen.
 pub(super) fn open(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
     if !game
         .native_loaded_block(game.dim.id(), pos)
@@ -221,6 +231,31 @@ pub(super) fn open(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
     {
         return false;
     }
+    if game.native_authoritative()
+        && game.lan_acting.is_some()
+        && let Some(player) = game.native_acting_player()
+    {
+        let mut pending = lock(&PENDING);
+        pending.retain(|(uuid, _)| *uuid != player.uuid);
+        pending.push((player.uuid, pos));
+    }
+    true
+}
+/// The end of the server tick: the hub is back in `game.lan`, outside every
+/// player's turn. Opens each requested table through the same player visit the
+/// clicks and the close use.
+pub(super) fn drain(game: &mut Game<'_>) {
+    let pending = std::mem::take(&mut *lock(&PENDING));
+    if !pending.is_empty() {
+        trace("open requests drained");
+    }
+    for (uuid, pos) in pending {
+        game.native_visit_player(&horizon_protocol::crypto::uuid_string(uuid), |game| {
+            open_now(game, pos)
+        });
+    }
+}
+fn open_now(game: &mut Game<'_>, pos: [i32; 3]) {
     if let Some(uuid) = game.native_acting_player().map(|p| p.uuid) {
         let old = lock(&OPEN).as_mut().and_then(|s| s.remove(&uuid)).is_some();
         if old {
@@ -228,23 +263,23 @@ pub(super) fn open(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
         }
     }
     let Some(snapshot) = game.native_player_snapshot(&STATE) else {
-        return true;
+        return;
     };
     let Some(items) = view(&snapshot) else {
-        return true;
+        return;
     };
     if items
         .iter()
         .flatten()
         .any(|s| s.count != 1 || game.items().get(&s.item).is_none())
     {
-        return true;
+        return;
     }
     let Some(conn) = game.lan_acting else {
-        return true;
+        return;
     };
     let Some(mut host) = game.lan.take() else {
-        return true;
+        return;
     };
     game.guest_close_all(&mut host, conn);
     if let Some(guest) = host.hub.guest_mut(conn) {
@@ -271,7 +306,6 @@ pub(super) fn open(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
             .get_or_insert_with(Default::default)
             .insert(snapshot.uuid, (window, model(game)));
     }
-    true
 }
 fn move_to(
     game: &Game<'_>,
@@ -337,21 +371,29 @@ pub(super) fn clicked(
         .and_then(|h| h.hub.guests.iter().find(|g| g.uuid == uuid))
         .and_then(|g| g.menu.as_ref())
         .is_some_and(|m| m.window == window && m.mod_type.is_some_and(|t| t.id == MENU));
+    trace(&format!(
+        "click slot={slot} button={button} mode={mode} window={window} current={current}"
+    ));
     if !current {
+        trace("click ignored: not this menu");
         return;
     }
     game.native_visit_player(&horizon_protocol::crypto::uuid_string(uuid), |game| {
         let Some(expected) = game.native_player_snapshot(&STATE) else {
+            trace("click refused: no player snapshot");
             return;
         };
         let mut sessions = lock(&OPEN);
         let Some((id, m)) = sessions.as_mut().and_then(|s| s.get_mut(&uuid)) else {
+            trace("click refused: no session");
             return;
         };
         if *id != window {
+            trace("click refused: stale window");
             return;
         }
         if load(game, m, &expected).is_none() {
+            trace("click refused: menu model rejects the snapshot");
             return;
         }
         let before = table_armor(&expected);
@@ -369,9 +411,13 @@ pub(super) fn clicked(
                 4 => Input::Throw,
                 5 => Input::QuickCraft,
                 6 => Input::PickupAll,
-                _ => return,
+                _ => {
+                    trace("click refused: unsupported mode");
+                    return;
+                }
             };
             if m.click(&env(game), slot, button, input).is_err() {
+                trace("click refused: model rejects the click");
                 return;
             }
         }
@@ -382,6 +428,7 @@ pub(super) fn clicked(
         {
             let slots: Vec<_> = (0..9).map(|i| m.slot(i).cloned()).collect();
             if set_mods(a, &slots).is_none() {
+                trace("click refused: armor mods do not encode");
                 return;
             }
         }
@@ -404,15 +451,20 @@ pub(super) fn clicked(
         };
         if !game.native_commit_player(&STATE, &expected, desired.clone(), benefits) {
             *m = model(game);
+            trace("click refused: commit rejected");
             return;
         }
         let Some(items) = view(&desired) else {
+            trace("click refused: no view");
             return;
         };
         if let Some(conn) = game.lan_acting
             && let Some(host) = game.lan.as_mut()
         {
             host.hub.set_native_menu(conn, items);
+            trace("click committed");
+        } else {
+            trace("click done without the hub");
         }
     });
 }
@@ -462,13 +514,13 @@ pub(super) fn tick(game: &mut Game<'_>) {
     let Some(player) = game.native_acting_player() else {
         return;
     };
-    let open = game
-        .lan
+    // The hub is lent to the turn here, so the open menu is told by the
+    // session the open and close hooks keep, not read from the guest.
+    let active = lock(&OPEN)
         .as_ref()
-        .and_then(|h| h.hub.guests.iter().find(|g| g.uuid == player.uuid))
-        .and_then(|g| g.menu.as_ref())
-        .is_some_and(|m| m.mod_type.is_some_and(|t| t.id == MENU));
-    if !open {
+        .is_some_and(|s| s.contains_key(&player.uuid))
+        || lock(&PENDING).iter().any(|(uuid, _)| *uuid == player.uuid);
+    if !active {
         close_items(game);
     }
 }
