@@ -109,6 +109,8 @@ def run(args):
               'bombs': [('setup',)], 'mining': [('setup',)],
               'inventory-proxy': [('setup',)],
               'radioisotopes': [('setup', 'decay', 'capture-state'), ('check-state', 'automation')],
+              'solar': [('all', 'capture-state'), ('check-state',)],
+              'combustion': [('all',)],
               'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
     if getattr(args, 'manual_only', False):
         phases['radioisotopes'] = [('setup', 'decay', 'capture-state'), ('check-state',)]
@@ -130,7 +132,8 @@ def run(args):
             if args.resume_reopen and index == 0:
                 continue
             log_path = folder / ('client-first.log' if index == 0 else 'client-reopen.log')
-            script = 'dims' if args.scenario.startswith('dims') else args.scenario.replace('-', '_')
+            script = ('dims' if args.scenario.startswith('dims') else
+                      'solar_stirling' if args.scenario == 'solar' else args.scenario.replace('-', '_'))
             name = 'InvProxyTest' if script == 'inventory_proxy' else script.capitalize() + 'Test'
             command = [str(binary), '--resources', str(args.resources.resolve()),
                        '--dev-mod', str(bundle), '--control-socket', str(folder / 'control.sock'),
@@ -150,8 +153,9 @@ def run(args):
                     continue
                 if args.scenario == 'pile' and mode == 'capture-state':
                     refill_pile(folder)
+                script_modes = [] if mode == 'all' and args.scenario in ('solar', 'combustion') else [mode]
                 subprocess.run([sys.executable, str(work / f'tools/test-game/native_{script}.py'),
-                                str(folder), mode], cwd=folder, env=env, check=True, timeout=900)
+                                str(folder), *script_modes], cwd=folder, env=env, check=True, timeout=900)
                 report['phases'].append(mode)
             Game(folder, f'shutdown-{index}').ctl('quit')
             client.wait(timeout=60)
@@ -182,7 +186,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes'])
+    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)
