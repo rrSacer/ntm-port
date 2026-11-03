@@ -125,6 +125,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Combustion(c) => Some(c.slotted()),
         Data::Pile(p) if matches!(&**p, crate::pile::Pile::Loader(_)) => Some(&mut **p),
         Data::SolarStirling(s) => Some(&mut **s),
+        Data::Radioisotope(r) => Some(&mut **r),
         Data::Zirnox(z) if !z.destroyed => Some(&mut **z),
         _ => None,
     }
@@ -133,6 +134,8 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
 /// The blocks whose machines use the engine's slots, and their layout:
 /// (block, first input slot, inputs, output slot).
 pub const SLOTTED: &[(&str, Layout)] = &[
+    ("ntm:machine_rtg_grey", Layout::Native),
+    ("ntm:machine_radgen", Layout::Native),
     ("ntm:machine_zirnox", Layout::Native),
     ("ntm:pile_device__loader", Layout::Native),
     ("ntm:machine_solar_boiler", Layout::Native),
@@ -343,7 +346,10 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
 
 /// Exact outward port cells, in the order of registry::ports. These do not
 /// become cables: the graph keeps each cell's faces and machine owner.
-pub fn energy_port_cells(block: &str, core: Pos) -> Vec<Pos> {
+pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
+    if block == crate::radioisotopes::RADGEN {
+        return facing.and_then(crate::registry::facing_dir).map(|d|vec![[core[0]-d[0]*3,core[1],core[2]-d[2]*3]]).unwrap_or_default();
+    }
     if matches!(block, "ntm:machine_stirling" | "ntm:machine_stirling_steel" | "ntm:machine_stirling_creative") {
         crate::energy::DIRS.iter().filter(|d| d[1] == 0).map(|d| [core[0]+d[0], core[1], core[2]+d[2]]).collect()
     } else { Vec::new() }

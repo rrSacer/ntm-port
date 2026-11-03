@@ -1501,21 +1501,20 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
-    // Energy batch 5 (db859b71): the RTG and the radiation generator.
-    // Inert until their stage is approved.
+    // Energy batch 5: RTG and radgen, transactional radioisotope runtime.
     BlockSpec {
         id: "ntm:machine_rtg_grey",
-        kind: Kind::Inert,
+        kind: Kind::Radioisotope,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_radgen",
-        kind: Kind::Inert,
+        kind: Kind::Radioisotope,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::Back,
     },
     // Energy batch 4 (fa0862a): the solar boiler, its mirrors and the
     // Stirling engines (`crate::solar_stirling`).

@@ -39,7 +39,14 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
         lines.push((Text::legacy(if fuel.breeding {"Breeding: exige barras ativas vizinhas"}else{"Reage com a própria barra e as vizinhas ativas"}),u32::MAX));
         if !fuel.breeding {lines.push((Text::legacy(&format!("Calor por decaimento: {}",fuel.heat_per_decay)),u32::MAX));}
     }
-    let rate=ntm_core::zirnox::fuel(&stack.item).and_then(|_|crate::game::ntm_glue::stack(&Some(stack.clone()))).and_then(|s|ntm_core::zirnox::radiation_rate(&s));
+    let native=crate::game::ntm_glue::stack(&Some(stack.clone()));
+    if let Some(p)=ntm_core::radioisotopes::pellet(&stack.item) {
+        let life=native.as_ref().map_or(p.lifespan_ticks,ntm_core::radioisotopes::life);
+        lines.push((Text::legacy(&format!("Calor: {} TU/t",p.heat_tu.decay_enabled)),u32::MAX));
+        lines.push((Text::legacy(&format!("Vida restante: {:.3}% ({life} / {} ticks)",life as f64/p.lifespan_ticks as f64*100.,p.lifespan_ticks)),u32::MAX));
+        lines.push((Text::legacy(&format!("Decai para: {}",p.decay_item)),u32::MAX));
+    }
+    let rate=native.as_ref().and_then(|s|ntm_core::zirnox::radiation_rate(s).or_else(||ntm_core::radioisotopes::radiation_rate(s)));
     let hazard_lines=rate.map_or_else(||client_rad::tooltip_lines(&stack.item,stack.count),|rate|client_rad::tooltip_rate_lines(rate,stack.count));
     for line in hazard_lines {
         lines.push((Text::legacy(&line), u32::MAX));

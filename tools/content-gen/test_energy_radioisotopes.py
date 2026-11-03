@@ -59,6 +59,10 @@ class Radioisotopes(unittest.TestCase):
         self.assertEqual(hazards['ntm:pellet_rtg']['radiation_rad_s'],15)
         self.assertEqual(hazards['ntm:pellet_rtg_lead']['radiation_rad_s'],15000)
         self.assertEqual(hazards['ntm:pellet_rtg_depleted__neptunium']['radiation_rad_s'],3.75)
+        for pellet in self.data['rtg_pellets']:
+            self.assertEqual(hazards[pellet['item']]['rtg_target_rad_s'],0.0)
+        raw=json.loads((ROOT/'crates/ntm-core/data/hazards.json').read_text())
+        self.assertFalse(any('HazardModifierRTGRadiation' in g['expression'] for g in raw['extraction_gaps']))
         for ident in self.rows:
             if ident.startswith('ntm:nuclear_waste_short__'):self.assertEqual(hazards[ident]['radiation_rad_s'],30)
             if ident.startswith('ntm:nuclear_waste_short_depleted_tiny__'):self.assertEqual(hazards[ident]['radiation_rad_s'],.3)

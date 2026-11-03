@@ -1,4 +1,50 @@
-# Energia, lote 5: RTG e radgen
+# Energia: RTG e radgen
+
+## Runtime — 03/11/2026 (branch rtg-radgen, em validação)
+
+As duas identidades agora usam `Kind::Radioisotope`. O núcleo está em
+`crates/ntm-core/src/radioisotopes.rs`, com tabela gerada do contrato Java.
+Telas, modelo e multibloco já declarados em `visual.json` são reaproveitados.
+A tela RTG conserva calor/capacidade e HE; a do radgen expõe progresso, duração
+e produção das doze filas. O motor não recebe setters novos nesta branch.
+
+| Máquina | Contrato de execução |
+| --- | --- |
+| RTG | 15 slots manuais quaisquer, como Slot vanilla. A classe base Java recusa inserção por funil e o RTG recusa extração; os índices são expostos em todas as faces, mas **o RTG não tem automação por funil no Java**. Só pellets vivos geram calor, uma contribuição por stack. Buffer 100.000 HE, limite 600 TU e 5 HE/TU nos defaults. |
+| Vida | `custom_data.PELLET_DEPLETION` é i64. Ausência do compound significa vida completa; compound sem campo significa zero. O calor é lido antes do decremento/substituição. Outros campos são preservados no decremento; o produto é um stack novo de um item, como no Java. |
+| Radgen | Entradas 0..11 e saídas 12..23; 28 combustíveis, cada fila guarda progresso, duração, produção e item singular sem NBT. Consome no início; gera também no primeiro e último ticks; reinicia só no tick seguinte. Buffer cheio não para a reação. Ao quebrar, cai só o inventário; combustível já consumido não é reembolsado, como no Java. |
+| Resíduos | A admissão verifica item/meta e capacidade da saída. A conclusão segue o Java: não revalida saída alterada por comandos. Sucata não deixa resíduo; gema deixa diamante. |
+| Portas HE | RTG: `around`, seis faces no núcleo. Radgen: uma porta a três blocos atrás do núcleo, aberta só para trás, rotacionada com facing. Nenhuma das duas lê redstone para desligar. |
+| Ordem de energia | A etapa transacional grava `pending` junto do consumo/vida/fila. A rede pode retirar apenas o buffer anterior. Depois soma-se a geração pendente e aplica-se o limite; assim não se perde geração pelo clamp antecipado e não se oferece energia produzida no mesmo tick. A pendência é persistida para recuperar o estágio confirmado. |
+| Persistência | JSON no BE é publicado junto dos slots, sob guarda da geração. `pending`, filas e configuração de RTG são serializados; ao reabrir, slots do BE permanecem a fonte dos itens. Campos de tela são derivados. |
+| Hazard | O extrator exporta `rtg_target_rad_s`. Servidor e tooltip interpolam a radiação pela vida usando o `custom_data` de `NativeCarried`. Endpoints operam em float32 e interpolação em double, conforme Java. |
+
+Defaults Java: `doRTGsDecay=true`, `scaleRTGPower=false`, perfil 528 desligado.
+O núcleo cobre os ramos de decaimento e escala; configuração global externa de
+perfis ainda não faz parte do port. HOT/BLINDING continuam na tabela de conteúdo;
+a implementação geral desses hazards não integra este recorte de geração/radiação.
+As cinco reciclagens de pellets esgotados continuam exigindo o retorno da carcaça
+já registrado no lote de conteúdo abaixo.
+
+**Dependência aberta, sem exclusão aceita:** o radgen equilibra a inserção entre
+entradas vazias e pilhas menores do mesmo item/meta. A distribuição vale só para automação; a tela aceita qualquer item nas entradas, como Slot vanilla. Os filtros estáticos não
+expressam essa distinção. O coordenador encaminhou um hook genérico de inserção/extração
+condicional à onda 0 do motor; `can_insert` e `can_extract` estão prontos e testados
+nesta branch. A conexão e a aceitação completa de funis aguardam esse hook.
+
+Validação intermediária: 381 testes unitários Rust e 26 de integração passaram;
+Clippy `--workspace --all-targets -- -D warnings` passou. A suíte inclui os 28
+combustíveis até conclusão real, conservação de itens/energia, recusas de commit,
+conflito de inventário, i64 acima de i32, interpolação, quatro orientações da porta
+e retomada estrita. Prova em jogo e regressões ainda pendentes; nenhum desses
+resultados declara prontidão para merge.
+
+O roteiro `tools/test-game/native_radioisotopes.py`, integrado ao driver
+`run-native-reactors.py radioisotopes`, usa montagem/tela, recusa de funil no RTG, distribuição por funil no radgen, baterias reais,
+`/tick sprint` para decaimento natural e reabertura com vida/progresso estritos.
+Evidências desta branch ficam em `.agent-tmp/rtg/`.
+
+## Lote 5 de conteúdo — registro histórico
 
 O lote acrescenta 70 identidades originais: `ntm:machine_rtg_grey` (variável Java `machine_rtg`), `ntm:machine_radgen`, dez pellets RTG vivos, seis pellets esgotados e 52 resíduos do radgen (oito classes curtas e cinco longas, cada uma em normal/tiny/vivo/esgotado). Os dois blocos usam beehive com facing horizontal e honey_level 0..5 e ficam Inert; visual-gen mantém `auto: false`. Texturas e nomes vêm do fonte; os nomes dos resíduos incluem a classe isotópica que o original exibia no tooltip.
 

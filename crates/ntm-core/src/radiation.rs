@@ -55,6 +55,7 @@ pub struct Hazard {
     pub radiation_millirad_s: u32,
     #[serde(default)] pub radiation_rad_s: f32,
     #[serde(default)] pub fuel_target_rad_s: Option<f32>,
+    #[serde(default)] pub rtg_target_rad_s: Option<f32>,
 }
 #[derive(Deserialize)]
 struct Table {
@@ -78,6 +79,10 @@ pub fn hazards() -> &'static [Hazard] {
 /// Includes fresh lithium's zero base: its life-dependent target is nonzero.
 pub fn fuel_hazard(id:&str)->Option<&'static Hazard> {
     all_hazards().iter().find(|h|h.id==id && h.fuel_target_rad_s.is_some())
+}
+
+pub fn rtg_hazard(id: &str) -> Option<&'static Hazard> {
+    all_hazards().iter().find(|h| h.id==id && h.rtg_target_rad_s.is_some())
 }
 
 /// The bits of `radiation_millirad_s` some item has set, lowest first. Bit K

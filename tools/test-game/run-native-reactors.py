@@ -108,7 +108,12 @@ def run(args):
               'dims': [('setup', 'capture-state'), ('check-state',)],
               'bombs': [('setup',)], 'mining': [('setup',)],
               'inventory-proxy': [('setup',)],
+              'radioisotopes': [('setup', 'decay', 'capture-state'), ('check-state', 'automation')],
               'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
+    if getattr(args, 'manual_only', False):
+        phases['radioisotopes'] = [('setup', 'decay', 'capture-state'), ('check-state',)]
+        report['scope'] = 'manual acceptance; conditional hopper phase still pending'
+        report['excluded_phases'] = ['automation']
     if args.setup_only:
         phases[args.scenario] = [phases[args.scenario][0][:1]]
     if args.failure_only:
@@ -177,18 +182,22 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy'])
+    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)
     parser.add_argument('--scratch-root', type=Path, required=True)
     parser.add_argument('--resume-reopen', type=Path,
                         help='resume a completed first session using the identical binary and bundle')
+    parser.add_argument('--manual-only', action='store_true',
+                        help='radioisotopes only: explicitly defer the conditional hopper phase')
     parser.add_argument('--setup-only', action='store_true',
                         help='only the first phase, for isolated baseline comparisons')
     parser.add_argument('--failure-only', action='store_true',
                         help='diagnostic ZIRNOX failure scene only; not full acceptance')
     arguments = parser.parse_args()
+    if arguments.manual_only and arguments.scenario != 'radioisotopes':
+        parser.error('--manual-only requires radioisotopes')
     if arguments.failure_only and (arguments.scenario != 'zirnox' or arguments.setup_only or arguments.resume_reopen):
         parser.error('--failure-only requires zirnox without setup/resume')
     if arguments.setup_only and arguments.resume_reopen:

@@ -11,7 +11,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-SRC=ROOT.parent/'ntm-src'
+SRC=Path(__import__('os').environ.get('NTM_SRC', ROOT.parent/'ntm-src'))
 sys.path.insert(0,str(ROOT/'tools/content-gen'))
 from bulk_recipes import Resolver,calls,clean,split,Unsupported
 rows=json.loads((ROOT/'content/ids.json').read_text())['entries']
@@ -38,7 +38,7 @@ def number(expr):
 for match in re.finditer(r'public static final float (\w+)\s*=\s*([^;]+);',registry):
     try:constants[match[1]]=number(match[2])
     except (ValueError,SyntaxError):pass
-rates=defaultdict(dict);sources=defaultdict(list);gaps=[];fuel_targets={}
+rates=defaultdict(dict);sources=defaultdict(list);gaps=[];fuel_targets={};rtg_targets={}
 def put(item,kind,value,source):
     # Hazard source mutexes prevent adding equivalent ore-dictionary registrations.
     # Use the maximum equivalent entry. Explicit direct entries are applied later.
@@ -110,7 +110,7 @@ for pos,args,_ in calls(registry,r'\bregisterRTGPellet'):
     for kind,expression in zip(['hot','blinding'],parts[3:]):
         value=number(expression)
         if value>0:put(item,kind,value,source)
-    gaps.append({'id':item,'source':source,'expression':'HazardModifierRTGRadiation(target='+parts[2]+'): fresh base exported; lifetime-dependent interpolation requires native item data.'})
+    rtg_targets[item]=number(parts[2])
 # The metadata overload supplies its base at argument 2. Restrict to
 # ZIRNOX: export both endpoints for the native lifetime modifier.
 for pos,args,_ in calls(registry,r'\bregisterOtherFuel'):
@@ -171,7 +171,7 @@ entries=[]
 for row in rows:
     data=rates[row['id']];rad=round(data.get('radiation',0),6)
     other={k:v for k,v in data.items() if k!='radiation'}
-    entries.append({'id':row['id'],'radiation_rad_s':rad,'radiation_millirad_s':round(rad*1000),**({'fuel_target_rad_s':fuel_targets[row['id']]} if row['id'] in fuel_targets else {}),'other_hazards':other,'sources':sources[row['id']], 'note':'Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.' if rad else 'No resolved RADIATION registration for this catalog identity; not a claim of physical safety.', 'resolution':'resolved source registration' if data else 'no matched source registration'})
+    entries.append({'id':row['id'],'radiation_rad_s':rad,'radiation_millirad_s':round(rad*1000),**({'fuel_target_rad_s':fuel_targets[row['id']]} if row['id'] in fuel_targets else {}),**({'rtg_target_rad_s':rtg_targets[row['id']]} if row['id'] in rtg_targets else {}),'other_hazards':other,'sources':sources[row['id']], 'note':'Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.' if rad else 'No resolved RADIATION registration for this catalog identity; not a claim of physical safety.', 'resolution':'resolved source registration' if data else 'no matched source registration'})
 output={'schema':1,'source':'HBM NTM 1.7.10 local ntm-src','units':'RAD/s per item (NTM gameplay units)','rules':{'stack':'sum(count * radiation_rad_s)','other_hazards_implemented_m1':False,'zero':'No resolved source registration; dynamic/NBT and missing source registrations are gaps.'},'entries':entries,'extraction_gaps':gaps}
 (ROOT/'crates/ntm-core/data/hazards.json').write_text(json.dumps(output,indent=2)+'\n')
 buckets=defaultdict(list)

@@ -41,6 +41,7 @@ pub mod refinery;
 pub mod screens;
 pub mod shredder;
 pub mod radiation;
+pub mod radioisotopes;
 pub mod registry;
 pub mod server;
 pub mod snbt;

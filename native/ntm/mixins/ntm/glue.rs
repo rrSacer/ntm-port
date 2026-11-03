@@ -750,7 +750,7 @@ pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
     let s = s.as_ref().filter(|s| s.count > 0 && &*s.item != "minecraft:air")?;
     let mut t = Stack::new(&s.item, s.count);
     t.damage = s.damage;
-    if ntm_core::pile::Rod::of(&s.item,0.0).is_some() || ntm_core::zirnox::fuel(&s.item).is_some() {
+    if ntm_core::pile::Rod::of(&s.item,0.0).is_some() || ntm_core::zirnox::fuel(&s.item).is_some() || ntm_core::radioisotopes::pellet(&s.item).is_some() {
         t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);
     }
     Some(t)
@@ -824,6 +824,24 @@ mod pile_tests {
         let product=Stack::new("ntm:pile_rod__pu239",1);
         let plain=item(Some(&product),Some(restored)).unwrap();
         assert_eq!(pile_depletion(plain.data().and_then(|d|d.other("minecraft:custom_data"))),0.0);
+    }
+}
+
+#[cfg(test)]
+mod radioisotope_tests {
+    use super::*;
+    #[test]
+    fn native_pellet_long_and_other_components_survive_a_move_and_decay() {
+        let mut pellet=ItemStack::new("ntm:pellet_rtg_radium",1);
+        let (tag,_)=horizon_world::nbt::parse_snbt("{PELLET_DEPLETION:11519999999l,nested:{name:'unchanged'}}").unwrap();
+        pellet.data_mut().set_other("minecraft:custom_data",Some(tag));
+        let s=stack(&Some(pellet.clone())).unwrap();
+        assert_eq!(ntm_core::radioisotopes::life(&s),11_519_999_999);
+        let moved=item(Some(&s),None).unwrap();
+        assert_eq!(stack(&Some(moved)),Some(s));
+        let product=Stack::new("ntm:pellet_rtg_depleted__lead",1);
+        let spent=item(Some(&product),Some(pellet)).unwrap();
+        assert!(spent.data().and_then(|d|d.other("minecraft:custom_data")).is_none());
     }
 }
 

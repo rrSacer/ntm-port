@@ -35,6 +35,9 @@ pub fn machine_block(block: &str) -> bool {
 /// the others' come from their machine files.
 pub fn container(block: &str) -> Option<Container> {
     use crate::machine::furnace_slot::*;
+    if block == crate::radioisotopes::RTG {
+        return Some(Container {slots:15,faces:std::array::from_fn(|_|(0..15).collect()),inputs:vec![],outputs:vec![],menu:Some("minecraft:generic_9x3")});
+    }
     if block == crate::zirnox::BLOCK {
         let rods:Vec<_>=(0..24).collect();
         return Some(Container {slots:28,faces:std::array::from_fn(|_|rods.clone()),inputs:rods.clone(),outputs:rods,menu:Some("minecraft:generic_9x3")});

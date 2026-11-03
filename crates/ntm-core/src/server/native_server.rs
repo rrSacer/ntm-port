@@ -82,6 +82,9 @@ impl Server {
         self.solar_tick(host);
         self.simulate(host);
         self.stirling_finish();
+        for m in self.ready.world.machines.values_mut() {
+            if let crate::machine::Data::Radioisotope(r) = &mut m.data { r.finish(); }
+        }
         self.fluids_tick();
         self.fraction_tick();
         self.foundry_tick(host);
@@ -176,7 +179,7 @@ impl Server {
         let current=r.world.generations.entry(key.clone()).or_insert(m.generation);
         if m.generation<*current{return false;}
         *current=m.generation;
-        for cell in container_bridge::energy_port_cells(&m.block,pos) { r.native_scan.push_back((dim.to_string(),cell)); }
+        for cell in container_bridge::energy_port_cells(&m.block,pos,m.facing.as_deref()) { r.native_scan.push_back((dim.to_string(),cell)); }
         r.world.machines.insert(key.clone(), m);
         r.seen.insert(key.clone());
         r.topo_dirty = true;

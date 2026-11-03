@@ -271,3 +271,6 @@ if hm.is_dir():
 
 # Stateful reactor data is exported once by recipe-gen.
 (root / 'crates/ntm-core/data/reactors_simple.json').write_text((root / 'content/machine-recipes/reactors_simple.json').read_text())
+
+# Radioisotopes: keep Java float32/long lifetimes and fuel contracts verbatim.
+(root / 'crates/ntm-core/data/radioisotopes.json').write_text((root / 'content/machine-recipes/radioisotopes.json').read_text())

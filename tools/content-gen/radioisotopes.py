@@ -68,7 +68,7 @@ def export(source, output, rows):
                 'tick_order':'Provide stored power first, sum per-pellet heat (before its decay), clamp heat to heatMax, add heat*5 HE, clamp stored power to powerMax.',
                 'decay':'Per stack PELLET_DEPLETION. Uninitialized getLifespan initializes full lifespan; with an existing NBT compound missing the field it reads 0. If decay enabled and remaining<=0 replace with decay item; otherwise decrement by one. Heat was sampled before replacement.',
                 'scaled_power':'When scaleRTGPower is enabled: ceil(baseHeat * remaining/maxLifespan), cast to Java short; otherwise baseHeat.',
-                'automation':'All 15 slots exposed on every face; extraction denied.'},
+                'automation':'All 15 slots exposed on every face; insertion delegates to TileEntityMachineBase (false), extraction denied. Manual vanilla slots accept any item.'},
             'ntm:machine_radgen':{'source':rad_path,'input_slots':12,'output_slots':12,
                 'power_max_he':int(re.search(r'maxPower = (\d+)',rad)[1]),
                 'tick_order':'Provide stored power first. Start eligible idle queues, consume exactly one input and store a singular copy without NBT. Then each active queue produces its HE, increments progress and completes at progress>=duration, inserting its residue. Clamp the total power to maxPower.',
@@ -80,5 +80,5 @@ def export(source, output, rows):
                   'scale_power':'enable528 || MachineConfig.scaleRTGPower','defaults':defaults,
                   'lifespan':'RTGUtil.getLifespan uses 48000 ticks/day, 100 days/year here, float32 multiplication then long conversion; setDecays multiplies the long by 1.5 and converts back to long. External config overrides not applied.'},
         'selection':'Source algorithm/fuel snapshot, no synthetic generic crafting duration or radiation-to-HE conversion.',
-        'runtime_gaps':['Native RTG/radgen logic, lifespan item data, queues, power network, menus and faithful multiblocks/models are separate work. New blocks remain Inert.'],
+        'runtime_gaps':['Conditional radgen insertion awaits the shared engine inventory-rule hook (wave 0); pure rules and transactional runtime implemented.'],
         'coverage':{'machines':2,'rtg_pellets':len(pellets),'radgen_fuels':len(fuels),'skipped':0}})

@@ -29352,6 +29352,7 @@
       "id": "ntm:pellet_rtg_radium",
       "radiation_rad_s": 11.25,
       "radiation_millirad_s": 11250,
+      "rtg_target_rad_s": 0.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:338"
@@ -29363,6 +29364,7 @@
       "id": "ntm:pellet_rtg_weak",
       "radiation_rad_s": 5.25,
       "radiation_millirad_s": 5250,
+      "rtg_target_rad_s": 0.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:339"
@@ -29374,6 +29376,7 @@
       "id": "ntm:pellet_rtg",
       "radiation_rad_s": 15.0,
       "radiation_millirad_s": 15000,
+      "rtg_target_rad_s": 0.0,
       "other_hazards": {
         "hot": 3.0
       },
@@ -29387,6 +29390,7 @@
       "id": "ntm:pellet_rtg_strontium",
       "radiation_rad_s": 22.5,
       "radiation_millirad_s": 22500,
+      "rtg_target_rad_s": 0.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:340"
@@ -29398,6 +29402,7 @@
       "id": "ntm:pellet_rtg_cobalt",
       "radiation_rad_s": 45.0,
       "radiation_millirad_s": 45000,
+      "rtg_target_rad_s": 0.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:341"
@@ -29409,6 +29414,7 @@
       "id": "ntm:pellet_rtg_actinium",
       "radiation_rad_s": 45.0,
       "radiation_millirad_s": 45000,
+      "rtg_target_rad_s": 0.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:342"
@@ -29420,6 +29426,7 @@
       "id": "ntm:pellet_rtg_americium",
       "radiation_rad_s": 12.75,
       "radiation_millirad_s": 12750,
+      "rtg_target_rad_s": 0.0,
       "other_hazards": {},
       "sources": [
         "src/main/java/com/hbm/hazard/HazardRegistry.java:346"
@@ -29431,6 +29438,7 @@
       "id": "ntm:pellet_rtg_polonium",
       "radiation_rad_s": 112.5,
       "radiation_millirad_s": 112500,
+      "rtg_target_rad_s": 0.0,
       "other_hazards": {
         "hot": 3.0
       },
@@ -29444,6 +29452,7 @@
       "id": "ntm:pellet_rtg_gold",
       "radiation_rad_s": 750.0,
       "radiation_millirad_s": 750000,
+      "rtg_target_rad_s": 0.0,
       "other_hazards": {
         "hot": 5.0
       },
@@ -29457,6 +29466,7 @@
       "id": "ntm:pellet_rtg_lead",
       "radiation_rad_s": 15000.0,
       "radiation_millirad_s": 15000000,
+      "rtg_target_rad_s": 0.0,
       "other_hazards": {
         "hot": 7.0,
         "blinding": 50.0
@@ -30867,56 +30877,6 @@
     }
   ],
   "extraction_gaps": [
-    {
-      "id": "ntm:pellet_rtg",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:337",
-      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:pellet_rtg_radium",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:338",
-      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:pellet_rtg_weak",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:339",
-      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:pellet_rtg_strontium",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:340",
-      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:pellet_rtg_cobalt",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:341",
-      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:pellet_rtg_actinium",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:342",
-      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:pellet_rtg_polonium",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:343",
-      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:pellet_rtg_lead",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:344",
-      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:pellet_rtg_gold",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:345",
-      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
-    {
-      "id": "ntm:pellet_rtg_americium",
-      "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:346",
-      "expression": "HazardModifierRTGRadiation(target=0): fresh base exported; lifetime-dependent interpolation requires native item data."
-    },
     {
       "id": "ntm:rbmk_fuel_ueu",
       "source": "src/main/java/com/hbm/hazard/HazardRegistry.java:379",

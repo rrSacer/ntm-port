@@ -1114,3 +1114,84 @@ fn refusing_the_retention_journal_prevents_resource_consumption_and_spawn() {
     assert_eq!(h.blocks[&target], "minecraft:air");
     assert_eq!(h.retained.len(), 1);
 }
+
+fn isotope(h: &Host) -> crate::radioisotopes::Radioisotope {
+    let m:Machine=serde_json::from_str(&h.saved[&P]).unwrap();
+    let Data::Radioisotope(r)=m.data else{panic!()};*r
+}
+#[test]
+fn radioisotopes_refused_commit_never_consumes_items_life_or_energy() {
+    use crate::radioisotopes::{RTG,RADGEN,Radioisotope,DEPLETION};
+    for block in [RTG,RADGEN] {for withdraw in [false,true] {
+        let mut h=Host::default();let mut s=install(&mut h,block,if block==RTG {15}else{24});
+        let item=if block==RTG {"ntm:pellet_rtg_lead"}else{"ntm:gem_rad"};
+        let input=Stack::new(item,1);h.slots.get_mut(&P).unwrap()[0]=Some(input.clone());
+        h.refuse=true;s.native_tick(&mut h,2);
+        assert_eq!(h.slots[&P][0],Some(input.clone()));
+        match isotope(&h) {Radioisotope::Rtg(r)=>{assert_eq!(r.power+r.pending,0);assert_eq!(r.heat,0)},Radioisotope::Radgen(r)=>{assert_eq!(r.power+r.pending,0);assert!(r.queues.iter().all(|q|q.processing.is_none()));}}
+        if withdraw {h.slots.get_mut(&P).unwrap()[0]=None;} else if block==RTG {
+            h.slots.get_mut(&P).unwrap()[1]=Some(input.clone());
+        } else {h.slots.get_mut(&P).unwrap()[0].as_mut().unwrap().count+=1;}
+        h.refuse=false;s.native_tick(&mut h,3);
+        let external=usize::from(withdraw);
+        match isotope(&h) {
+            Radioisotope::Rtg(r)=>{
+                assert_eq!(r.power,if withdraw {0}else{3000});
+                let items=h.slots[&P].iter().flatten().collect::<Vec<_>>();assert_eq!(items.len()+external,if withdraw {1}else{2});
+                for s in items {assert_eq!(crate::radioisotopes::life(s),21599);assert!(s.custom.as_ref().unwrap().contains(DEPLETION));}
+            },
+            Radioisotope::Radgen(r)=>{
+                let active=r.queues.iter().filter(|q|q.processing.is_some()).count();
+                let slotted=h.slots[&P].iter().flatten().map(|s|s.count as usize).sum::<usize>();
+                assert_eq!(slotted+active+external,if withdraw {1}else{2});assert_eq!(r.power,if withdraw {0}else{25000});
+                assert_eq!(r.queues[0].progress,if withdraw {0}else{1});
+            }
+        }
+    }}
+}
+#[test]
+fn isotope_conflict_in_expected_rolls_back_and_clean_reopen_resumes_strictly() {
+    use crate::radioisotopes::{RTG,RADGEN,Radioisotope};
+    for block in [RTG,RADGEN] {
+        let mut h=Host::default();let mut s=install(&mut h,block,if block==RTG {15}else{24});
+        let item=if block==RTG {"ntm:pellet_rtg_radium"}else{"ntm:gem_rad"};
+        h.slots.get_mut(&P).unwrap()[0]=Some(Stack::new(item,1));
+        h.insert_on_commit=Some((P,0));s.native_tick(&mut h,2);
+        assert_eq!(h.slots[&P][0].as_ref().unwrap().count,2);
+        match isotope(&h) {Radioisotope::Rtg(r)=>assert_eq!(r.power,0),Radioisotope::Radgen(r)=>assert_eq!(r.power,0)}
+        s.native_tick(&mut h,3);s.native_tick(&mut h,4);
+        let before=isotope(&h);let slots=h.slots[&P].clone();let json=h.saved[&P].clone();
+        let mut reopened=Server::native(&mut h,4);assert!(reopened.native_adopt(D,P,&json));
+        assert_eq!(h.slots[&P],slots);reopened.native_tick(&mut h,5);
+        match (before,isotope(&h)) {
+            (Radioisotope::Rtg(a),Radioisotope::Rtg(b))=>{
+                assert!(b.power>a.power);let remaining=crate::radioisotopes::life(h.slots[&P][0].as_ref().unwrap());
+                assert_eq!(remaining,11_520_000_000-3);
+            },
+            (Radioisotope::Radgen(a),Radioisotope::Radgen(b))=>{assert!(b.power>a.power);assert!(b.queues[0].progress>a.queues[0].progress);assert_eq!(b.queues[0].processing,a.queues[0].processing);},
+            _=>panic!()
+        }
+    }
+}
+#[test]
+fn radgen_back_port_is_exact_and_follows_all_four_facings() {
+    use crate::{radioisotopes::RADGEN,energy::Role,machine::BatteryMode};
+    for face in ["north","south","east","west"] {
+        let dir=crate::registry::facing_dir(face).unwrap();
+        let port=[P[0]-dir[0]*3,P[1],P[2]-dir[2]*3];
+        assert_eq!(super::container_bridge::energy_port_cells(RADGEN,P,Some(face)),vec![port]);
+        let mut h=Host::default();let mut s=install(&mut h,RADGEN,24);
+        let key=(D.to_string(),P);
+        s.ready.world.machines.get_mut(&key).unwrap().facing=Some(face.into());
+        let out=[P[0]-dir[0]*4,P[1],P[2]-dir[2]*4];
+        let bp=[out[0]-dir[0],out[1],out[2]-dir[2]];
+        h.blocks.insert(out,"ntm:red_cable".into());h.blocks.insert(bp,"ntm:machine_battery".into());h.slots.insert(bp,vec![None;2]);
+        s.native_block_changed(D,out,"minecraft:air","ntm:red_cable");s.native_block_changed(D,bp,"minecraft:air","ntm:machine_battery");
+        h.slots.get_mut(&P).unwrap()[0]=Some(Stack::new("ntm:gem_rad",1));
+        s.native_tick(&mut h,2);
+        let m=s.ready.world.machines.get_mut(&(D.into(),bp)).unwrap();let Data::Battery(b)=&mut m.data else{panic!()};b.mode=BatteryMode::Input;
+        assert_eq!(m.logic_mut().energy().unwrap().role(),Role::Storage);
+        s.native_tick(&mut h,3);
+        let Data::Battery(b)=&s.ready.world.machines[&(D.into(),bp)].data else{panic!()};assert!(b.power>0,"{face}");
+    }
+}

@@ -434,7 +434,7 @@ fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
         let ports = registry::ports(spec, m.facing.as_deref());
         if m.kind() != Kind::Inert && !ports.is_empty() {
             dims.entry(d).or_default().1.insert(*p, ports);
-            for (i,cell) in container_bridge::energy_port_cells(&m.block,*p).into_iter().enumerate() {
+            for (i,cell) in container_bridge::energy_port_cells(&m.block,*p,m.facing.as_deref()).into_iter().enumerate() {
                 dims.entry(d).or_default().2.insert((*p,i),cell);
             }
             // A multiblock's bottom cells carry its power, as HBM's proxies.
