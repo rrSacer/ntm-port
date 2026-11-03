@@ -9,7 +9,7 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
 - Upstream incorporado: `fc02103818c212920fd24aa34a2b2f91ba49e56f` (snapshot congelado de 03/11/2026).
-- Motor de integração (pin): `47173f4c4a87f47b64502dc443d9ff41dc069cad`.
+- Motor de integração (pin): `7607685b8e8a8000c8c20e417510eeaf468d7a15`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
   `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
@@ -338,8 +338,8 @@ permaneceu nesta rodada.
 
 ## Onda 0 — política de inventário e portas (marco 1)
 
-Motor `47173f4c4a87f47b64502dc443d9ff41dc069cad`, derivado do pin
-`ec479adb3`; upstream congelado `fc0210381`. [Contrato e exemplo da
+Motor `7607685b8e8a8000c8c20e417510eeaf468d7a15`, derivado do pin
+`ec479adb3` (`47173f4c4` e quatro correções da revisão); upstream congelado `fc0210381`. [Contrato e exemplo da
 API](native-slot-policy.md).
 
 | Extensão local | Razão e composição com o oficial |
@@ -355,10 +355,36 @@ invólucro, que impede a instalação física de um funil extrator também no Ja
 A trilha RTG/radgen ligará suas próprias funções depois da integração deste
 marco, sem cherry-picks entre branches.
 
-Validação concluída no release `515b953d702ee196bf840023cad147d8aed35196ccb265e8369f40f3dffdbfcf`
-com o pacote `c2eda3dc2bc98b7f9d710b3bd3c3e3db39a84509515e7fae23c439b9a6894321` (`dist/ntm.hmod`, 9.103.922 bytes):
+### Correções da revisão independente (P3)
 
-- **Testes de unidade e integração:** NTM (371 unitários + 26 de integração, 8 Python de reatores simples), motor (139 `native_`, 38 `menu::tests`, 5 `mod_multiblocks`, 35 `mod_`, 2 `conditional_policy`) e Clippy `-D warnings` sem isenções (fonte do motor, NTM e stage transformada).
-- **Prova `inventory-proxy` (`inventory-proxy-iz5l5y6f`):** 12 checks (`ok: true`), inserindo 2 barras ativas pelo funil sobre a porta lateral `[1,0,0]`, extraindo apenas a barra convertida (`ntm:rod_zirnox_tritium: 1`) pelo funil sob a porta lateral, recusando acesso na célula não-porta `[1,0,-2]` e preservando conservação exata.
-- **Prova `zirnox` com `automation` (`zirnox-2xubdn0h`):** 123 checks (`ok: true`). Na fase `automation`, o funil sob o núcleo extraiu exatamente `11 ntm:rod_zirnox_zfb_mox_depleted` e `1 ntm:rod_zirnox_tritium` (0 extraídas no binário anterior `912c112ffbf1...`), preservou as 12 barras ativas (`1 natural_uranium_fuel`, `10 zfb_mox`, `1 thorium_fuel`) e os slots 26–27; o funil na porta superior `[0,4,0]` inseriu `1 ntm:rod_zirnox__u235_fuel` no núcleo e a célula não-porta `[1,5,0]` reteve a barra fornecida, com conservação exata.
-- **Regressão completa em jogo no mesmo binário:** `mining` (`mining-50ih28gu`, 18 checks), `bombs` (`bombs-jjh4t8wg`, 49 checks), `pile` (`pile-9ibhz_3e`, 83 checks), `dims` (`dims-34f1wlwd`, 10 checks), `dims-idle` (`dims-idle-k1pkjqvu`, 2 checks), `dims-idle-clean` (`dims-idle-clean-dnrbdizz`, 1 check) e `general.py` (`general-dnj_x0kf`, catálogo K3 com 340 checks / 94 itens + 49 checks de prensa, eletrolisador, radiação, solar/Stirling e reabertura de mundo).
+| # | Correção | Commit do motor |
+| --- | --- | --- |
+| 1 | `bundle_click` na LAN exige `may_place` na retirada parcial para a trouxa, como `menu/bundle.rs` e `try_remove`. | `3e479f8b0` |
+| 2 | `swap` (teclas 1–9 e `F`) na LAN divide a pilha até `slot_max`, como `Menu::swap`: o resto fica na mão/hotbar e a pilha antiga vai ao inventário ou ao chão. | `88327ab6c` |
+| 3 | Troca direta (cursor ocupado, teclas 1–9, `F`) avalia `may_place` com o slot já vazio depois de `may_pickup`, no cliente e na LAN. Mesclar o mesmo item continua vendo o slot ocupado. | `f27edd9de` |
+| 5 | Os slots 0..23 do ZIRNOX são `Slot` vanilla no Java: a inserção manual é irrestrita (uma unidade). Barras ficam exigidas na automação (`slot_allows`) e no shift-click, por `ModSlotFilter::quick_move`. | `7607685b8` (motor) e `1e62763f` (NTM) |
+
+O item 5 exigiu um campo novo no motor: sem ele, remover o `accept` estático
+deixaria o shift-click mover qualquer item para as barras, o que o
+`transferStackInSlot` Java não faz. Os slots 24 e 25 (recipientes) também são
+`Slot` vanilla no Java e a tela ainda os restringe por `accept`; ficam como
+observação, fora do escopo pedido (só a automação os alcançaria, e as faces
+não os expõem).
+
+Validação das correções (após as quatro, mesmo binário em todos os roteiros):
+release `horizon-client` `539b1e144b59c4ffb173e76e946e32f800bcfeda0c903444933704b2cf11f87e`,
+pacote `dist/ntm.hmod` `c2eda3dc2bc98b7f9d710b3bd3c3e3db39a84509515e7fae23c439b9a6894321`
+(9.103.922 bytes, idêntico ao anterior: nada mudou no conteúdo), pin `7607685b8`.
+
+- **Motor:** 139 `native_`, 43 `menu::tests::` (inclui 21 de `lan::menu`), 5 `mod_multiblocks`, 35 `mod_` (render), 2+4 `conditional_policy`; Clippy `-D warnings` sem isenções nas bibliotecas, `cargo fmt --check` e Clippy da cópia transformada (stage).
+  Testes novos: `guest_bundle_partial_take_needs_the_slot_to_accept_placement`, `limited_slot_splits_oversized_offhand_and_hotbar_swaps`, `conditional_policy_sees_the_slot_empty_when_a_stack_replaces_it` e a versão `guest_`, `quick_move_filter_narrows_shift_click_but_not_hand_placement` e a versão `guest_`.
+- **NTM:** 372 unitários + 26 de integração (2 ignorados), Clippy `-D warnings` do workspace sem isenções. Teste novo: `zirnox_manual_insertion_is_unrestricted_but_automation_and_shift_click_take_rods`.
+- **Em jogo (`--scratch-root proofs`):** `zirnox` (`zirnox-pvmk0r95`, 127 checks, 0 falhas, inclui `automation` e as novas `manual_non_fuel_*`: terra substitui uma barra viva no slot 300, a barra volta inteira, a terra volta ao inventário e a vida da barra não muda), `inventory-proxy` (`inventory-proxy-29egtrei`, 12), `bombs` (`bombs-43v377jt`, 49), `pile` (`pile-p90_s6q8`, 83), `dims` (`dims-s28w2hfs`, 10), `dims-idle` (`dims-idle-jsq4d1ed`, 2), `dims-idle-clean` (`dims-idle-clean-1fsb1cwp`, 1), `mining` (`mining-yzmarqd8`, 18) e `general.py` (`general-x18sezpx`, catálogo K3 340 checks/94 itens + 49 de prensa, eletrolisador, radiação, solar/Stirling e reabertura).
+  Uma execução anterior do `zirnox` (`zirnox-2muh4e3g`) falhou no roteiro novo, que procurava um slot de barra vazio quando os 24 estão cheios; o roteiro foi corrigido para substituir a barra do slot 300 e a execução acima é a do roteiro final.
+- Limite: não há roteiro de dois clientes, então a LAN foi coberta só pelos testes de `lan::menu`; nenhum roteiro em jogo exerce o hóspede LAN.
+
+Registro anterior ao pacote de correções (binário `515b953d702e…`, pin `47173f4c4`):
+`inventory-proxy-iz5l5y6f` (12 checks), `zirnox-2xubdn0h` (123 checks, com a primeira
+prova de `automation`: 11 `zfb_mox_depleted` + 1 trítio extraídos, 0 no binário
+anterior `912c112ffbf1…`), `mining-50ih28gu`, `bombs-jjh4t8wg`, `pile-9ibhz_3e`,
+`dims-34f1wlwd`, `dims-idle-k1pkjqvu`, `dims-idle-clean-dnrbdizz` e `general-dnj_x0kf`.

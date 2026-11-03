@@ -211,9 +211,8 @@ def capture(g):
 def manual_non_fuel(g,core):
     """ContainerReactorZirnox builds slots 0..23 as vanilla `Slot`s: a hand places any item there."""
     g.close();g.command('give @s minecraft:dirt 1');time.sleep(1);open_reactor(g,core)
-    slots=g.ctl('screen')['slots']
-    dirt=next(s['slot'] for s in slots if s['slot']<36 and s.get('item')=='minecraft:dirt')
-    rod_slot=next(s['slot'] for s in slots if 300<=s['slot']<324 and not s.get('item'))
+    dirt=next(s['slot'] for s in g.ctl('screen')['slots'] if s['slot']<36 and s.get('item')=='minecraft:dirt')
+    rod='ntm:rod_zirnox__natural_uranium_fuel';rod_slot=300
     def settle(want_slot,want_item,want_carried):
         deadline=time.monotonic()+10
         while True:
@@ -222,11 +221,14 @@ def manual_non_fuel(g,core):
             if (cell,carried)==(want_item,want_carried) or time.monotonic()>deadline:return cell,carried
             time.sleep(.1)
     g.ctl(f'click-slot {dirt}');settle(dirt,None,'minecraft:dirt')
-    g.ctl(f'click-slot {rod_slot}');placed=settle(rod_slot,'minecraft:dirt',None)
-    g.check('manual_non_fuel_enters_rod_slot',placed==('minecraft:dirt',None),placed)
-    g.ctl(f'click-slot {rod_slot}');settle(rod_slot,None,'minecraft:dirt')
-    g.ctl(f'click-slot {dirt}');back=settle(dirt,'minecraft:dirt',None)
-    g.check('manual_non_fuel_returns_whole',back==('minecraft:dirt',None) and not next(s for s in g.ctl('screen')['slots'] if s['slot']==rod_slot).get('item'),back)
+    # The cursor's dirt replaces the live rod in the rod slot.
+    g.ctl(f'click-slot {rod_slot}');placed=settle(rod_slot,'minecraft:dirt',rod)
+    g.check('manual_non_fuel_replaces_rod_in_slot',placed==('minecraft:dirt',rod),placed)
+    # And the rod goes back, bringing the dirt to the cursor again.
+    g.ctl(f'click-slot {rod_slot}');back=settle(rod_slot,rod,'minecraft:dirt')
+    g.check('manual_rod_returns_whole',back==(rod,'minecraft:dirt'),back)
+    g.ctl(f'click-slot {dirt}');home=settle(dirt,'minecraft:dirt',None)
+    g.check('manual_non_fuel_returns_whole',home==('minecraft:dirt',None),home)
 
 
 def check(g):
