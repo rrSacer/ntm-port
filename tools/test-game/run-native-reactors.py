@@ -90,7 +90,7 @@ def run(args):
                          ('check-state', 'failure', 'soils')],
               'pile': [('setup', 'capture-state'), ('check-state', 'destroy')],
               'dims': [('setup', 'capture-state'), ('check-state',)],
-              'bombs': [('setup',)],
+              'bombs': [('setup',)], 'mining': [('setup',)],
               'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
     if args.setup_only:
         phases[args.scenario] = [phases[args.scenario][0][:1]]
@@ -158,7 +158,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs'])
+    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)
