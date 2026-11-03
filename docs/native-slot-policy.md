@@ -59,7 +59,10 @@ para o inventário (ou ao chão).
 `ModSlotFilter::quick_move: Option<Vec<String>>` limita o que o **shift-click**
 (`transferStackInSlot`) move para o slot, além de `accept`/`reject`/`policy`.
 `None` não acrescenta restrição; o clique, a tecla numérica e o drag seguem só as
-outras regras. Um contêiner Java que usa `Slot` vanilla com um
+outras regras.
+Um slot `output` que nomeia a lista também a recebe pelo shift-click: o `mergeItemStack` do 1.7.10 nunca
+consultava `isItemValid`, então um shift-click podia terminar num `SlotTakeOnly`. A mão continua sem
+colocar nada ali (`ModSlotFilter::quick_inserts`). Um contêiner Java que usa `Slot` vanilla com um
 `transferStackInSlot` seletivo (como o ZIRNOX) declara `accept: None` e
 `quick_move: Some(itens)`. O shift-click permanece de origem `Manual`.
 

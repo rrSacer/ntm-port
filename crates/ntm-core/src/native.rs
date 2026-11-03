@@ -112,6 +112,29 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
         }
 }
 
+/// The ported blocks whose Java block has `hasComparatorInputOverride`:
+/// `MachineBattery` (by charge), `MachineFluidTank` and `BlockFluidBarrel` (by fluid).
+pub fn has_comparator(block: &str) -> bool {
+    matches!(block, "ntm:machine_battery" | "ntm:machine_fluidtank" | "ntm:barrel_steel")
+}
+
+/// `getComparatorPower` of the machine saved as `json`, 0 to 15: nothing stored is 0,
+/// else `floor(fraction * 15) + 1` (`TileEntityMachineBattery`, `TileEntityBarrel`,
+/// `TileEntityMachineFluidTank`), so a full store is 15.
+pub fn comparator_signal(json: &str) -> u8 {
+    use crate::machine::{Data, Machine};
+    let Ok(machine) = serde_json::from_str::<Machine>(json) else { return 0 };
+    let (stored, max) = match &machine.data {
+        Data::Battery(b) => (b.power as f64, b.max as f64),
+        Data::FluidStore(f) => (f64::from(f.tank.mb), f64::from(f.tank.cap)),
+        _ => return 0,
+    };
+    if stored == 0. {
+        return 0;
+    }
+    ((stored / max * 15.) as i32).saturating_add(1).clamp(0, 15) as u8
+}
+
 /// The furnace's menu data: power, its maximum, progress, its total (the
 /// vanilla furnace's flame and arrow).
 pub fn furnace_data(f: &ElectricFurnace) -> Vec<i32> {
@@ -138,7 +161,10 @@ pub fn block_slots(block: &str) -> Vec<SlotFilter> {
         // Slots 24 and 25 are vanilla `Slot`s too; their `transferStackInSlot` branches
         // send only carbon dioxide and water containers, respectively.
         for f in ["carbondioxide","water"] {slots.push(SlotFilter {quick_move:Some(crate::fluid::all_full_containers().into_iter().filter(|s|crate::fluid::contents(s).is_some_and(|c|c.fluid==f)).collect()),..Default::default()});}
-        slots.extend([SlotFilter {output:true,..Default::default()},SlotFilter {output:true,..Default::default()}]);
+        // Slots 26 and 27 are `SlotTakeOnly`, yet 1.7.10's `mergeItemStack(24, 26)` and `(26, 28)` reach them
+        // too: the carbon dioxide containers go to 24 and then 26, the water ones to 25 and then 27.
+        let (co2,water)=(slots[24].quick_move.clone(),slots[25].quick_move.clone());
+        slots.extend([SlotFilter {output:true,quick_move:co2,..Default::default()},SlotFilter {output:true,quick_move:water,..Default::default()}]);
         return slots;
     }
     if block == "ntm:pile_device__loader" { return vec![SlotFilter { accept: Some(crate::pile::ROD_NAMES.iter().map(|n| format!("ntm:pile_rod__{n}")).collect()), max: Some(1), ..Default::default() }]; }
@@ -338,6 +364,42 @@ mod tests {
         assert!(container("minecraft:stone").is_none() && machine_block("ntm:machine_press"));
     }
 
+    /// `getComparatorPower`: empty is 0, else `floor(fraction * 15) + 1`, full 15.
+    #[test]
+    fn comparator_signals_follow_the_java_formulas() {
+        use crate::machine::{Data, Kind, Machine};
+        let battery = |power: u64| {
+            let mut m = Machine::new(Kind::Battery, "ntm:machine_battery", Some("north".into()));
+            let max = if let Data::Battery(b) = &mut m.data {
+                b.power = power.min(b.max);
+                b.max
+            } else {
+                panic!()
+            };
+            (serde_json::to_string(&m).unwrap(), max)
+        };
+        let (_, max) = battery(0);
+        let signal = |power: u64| comparator_signal(&battery(power).0);
+        assert_eq!(signal(0), 0);
+        assert_eq!(signal(1), 1);
+        assert_eq!(signal(max.div_ceil(15)), 2);
+        assert_eq!(signal(max / 2), 8);
+        assert_eq!(signal(max - 1), 15);
+        assert_eq!(signal(max), 15);
+        let tank = |mb: u32| {
+            let mut m = Machine::new(Kind::FluidStore, "ntm:machine_fluidtank", None);
+            let Data::FluidStore(f) = &mut m.data else { panic!() };
+            f.tank.mb = mb.min(f.tank.cap);
+            serde_json::to_string(&m).unwrap()
+        };
+        assert_eq!(comparator_signal(&tank(0)), 0);
+        assert_eq!(comparator_signal(&tank(1)), 1);
+        assert_eq!(comparator_signal(&tank(128_000)), 8);
+        assert_eq!(comparator_signal(&tank(256_000)), 15);
+        assert_eq!(comparator_signal("{}"), 0);
+        assert!(has_comparator("ntm:barrel_steel") && !has_comparator("ntm:machine_zirnox"));
+    }
+
     #[test]
     fn zirnox_slot_policy_keeps_active_rods_and_allows_manual_removal() {
         let active = crate::server::container_bridge::Stack::new(&crate::zirnox::table().fuels[0].item, 1);
@@ -381,7 +443,9 @@ mod tests {
         assert!(water.as_ref().is_some_and(|q| !q.is_empty() && q.iter().all(|i| !i.contains("carbon"))));
         assert!(allows(24, &junk, SlotOrigin::Manual) && allows(25, &junk, SlotOrigin::Manual));
         assert!(!allows(24, &rod, SlotOrigin::Automation) && !allows(25, &junk, SlotOrigin::Automation));
-        assert!(slots[26..].iter().all(|s| s.output && s.quick_move.is_none()));
+        // The take-only slots take the same containers by shift-click, after their input slots.
+        assert!(slots[26].output && slots[26].quick_move == slots[24].quick_move);
+        assert!(slots[27].output && slots[27].quick_move == slots[25].quick_move);
     }
 
     #[test]

@@ -230,6 +230,31 @@ def manual_non_fuel(g,core):
         g.check('manual_original_returns_to_'+name+'_slot',back==(held,'minecraft:dirt'),back)
         g.ctl(f'click-slot {dirt}');home=settle(dirt,'minecraft:dirt',None)
         g.check('manual_non_fuel_returns_from_'+name,home==('minecraft:dirt',None),home)
+    # 1.7.10's `mergeItemStack(24, 26)` reaches the take-only slot 26 too: with slot 24 taken, a carbon
+    # dioxide container moved by shift-click overflows into it (and the water one into 27 after 25).
+    barrel='ntm:fluid_barrel_full__carbondioxide'
+    taken=cell(324)
+    if taken is None:
+        g.ctl(f'click-slot {dirt}');settle(dirt,None,'minecraft:dirt')
+        g.ctl('click-slot 324');settle(324,'minecraft:dirt',None)
+    g.command('give @s '+barrel+' 1');time.sleep(1)
+    spare=next(s['slot'] for s in g.ctl('screen')['slots'] if s['slot']<36 and s.get('item')==barrel)
+    if cell(326) is not None:
+        # The converted reactor left an empty barrel in the take-only slot: take it out first.
+        g.ctl('click-slot 326 shift')
+        deadline=time.monotonic()+8
+        while time.monotonic()<deadline and cell(326) is not None:time.sleep(.2)
+    before=cell(326)
+    g.ctl(f'click-slot {spare} shift')
+    deadline=time.monotonic()+8
+    while time.monotonic()<deadline and cell(326)==before:time.sleep(.2)
+    g.check('shift_click_overflows_into_the_take_only_slot',before is None and cell(326)==barrel,{'before':before,'after':cell(326),'slot_24':cell(324)})
+    g.ctl('click-slot 326 shift')
+    deadline=time.monotonic()+8
+    while time.monotonic()<deadline and cell(326) is not None:time.sleep(.2)
+    if taken is None:
+        g.ctl('click-slot 324');settle(324,None,'minecraft:dirt')
+        g.ctl(f'click-slot {dirt}');settle(dirt,'minecraft:dirt',None)
 
 
 def check(g):
