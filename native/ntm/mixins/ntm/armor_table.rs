@@ -191,6 +191,9 @@ fn model(game: &Game<'_>) -> Menu {
     m
 }
 fn load(game: &Game<'_>, m: &mut Menu, s: &NativePlayerSnapshot) -> Option<()> {
+    // A mode/selection change while the menu stays open changes its rules.
+    m.creative = game.creative;
+    m.selected = game.selected;
     let v = view(s)?;
     if v.iter()
         .flatten()
