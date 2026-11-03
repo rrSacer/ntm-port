@@ -39,6 +39,39 @@
       3
     ],
     "offset": 2,
-    "dummy": "ntm:dummy_machine"
+    "dummy": "ntm:dummy_machine",
+    "inventory_ports": [
+      [
+        0,
+        0,
+        3
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        -1,
+        0,
+        0
+      ]
+    ],
+    "energy_ports": [
+      {
+        "pos": [
+          0,
+          0,
+          3
+        ],
+        "faces": [
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      }
+    ]
   }
 }

@@ -27,10 +27,18 @@ def pellet_life(g,p,slot):
 
 
 def open_machine(g,p):
-    # Radgen is accessed from its side port, at +/-1 from the core.
-    g.close();g.command(f'tp @s {p[0]+3.5} {p[1]} {p[2]+.5}')
-    target=add(p,(1,0,0)) if machine(g,p)['block'].endswith('radgen') else p
-    g.ctl('interact '+pos_text(target)+' east');time.sleep(.7)
+    # Approach the RTG from its free south face; its east wire blocks that
+    # ray. Radgen is opened from the side opposite its loading hopper.
+    g.close();m=machine(g,p)
+    if m['block'].endswith('radgen'):
+        if m['facing'] in ('north','south'):
+            target=add(p,(-1,0,0));side='west';stand=(p[0]-3.5,p[1],p[2]+.5)
+        else:
+            target=add(p,(0,0,1));side='south';stand=(p[0]+.5,p[1],p[2]+3.5)
+    else:
+        target=p;side='south';stand=(p[0]+.5,p[1],p[2]+3.5)
+    g.command('tp @s '+' '.join(map(str,stand)))
+    g.ctl('interact '+pos_text(target)+' '+side);time.sleep(.7)
     g.check('menu_'+str(len(g.evidence['steps'])),g.ctl('screen').get('screen')=='container',g.ctl('screen'))
 
 
@@ -113,11 +121,11 @@ def decay(g):
     g.check('natural_gem_diamonds',all(s.get('item')=='minecraft:diamond' for s in slots[14:24]),slots)
     g.check('earlier_waste_preserved',slots[12].get('item')=='ntm:nuclear_waste_short_depleted_tiny__uranium235',slots)
     g.snapshot('radgen-residues');g.close()
-    # Extract finished residue via a real hopper under a side proxy; inputs
-    # and in-flight fuel must remain in their queues/slots.
-    out=add(rad,(1,-1,0));g.command('setblock '+pos_text(out)+' minecraft:hopper[facing=east]');time.sleep(2)
+    # Core path: port-proxy resolution is a separate wave-0 acceptance.
+    # Inputs and in-flight fuel must remain in their queues/slots.
+    out=add(rad,(0,-1,0));g.command('setblock '+pos_text(out)+' minecraft:hopper[facing=east]');time.sleep(2)
     text=' '.join(g.command('data get block '+pos_text(out)+' Items').get('chat',[]))
-    g.check('radgen_hopper_extracts_only_residue','nuclear_waste_short_depleted_tiny' in text and 'gem_rad' not in text,text)
+    g.check('radgen_core_hopper_extracts_only_residue','nuclear_waste_short_depleted_tiny' in text and 'gem_rad' not in text,text)
     g.command('setblock '+pos_text(out)+' minecraft:air')
 
 

@@ -26,17 +26,20 @@ a implementação geral desses hazards não integra este recorte de geração/ra
 As cinco reciclagens de pellets esgotados continuam exigindo o retorno da carcaça
 já registrado no lote de conteúdo abaixo.
 
-**Dependência aberta, sem exclusão aceita:** o radgen equilibra a inserção entre
+**Dependências abertas, sem exclusão aceita:**
+
+1. As três portas de inventário do radgen precisam resolver o dummy até o núcleo no caminho de funil. O motor atual consulta o BE daquela célula diretamente. Declaradas em `multiblock.inventory_ports` (quadro do colocador): `[0,0,3]`, `[1,0,0]` e `[-1,0,0]`. `energy_ports` declara a porta traseira `[0,0,3]`, aberta em `[0,0,1]`. A prova intermediária de extração usa o núcleo; a prova de porta está pendente da onda 0.
+2. O radgen equilibra a inserção entre
 entradas vazias e pilhas menores do mesmo item/meta. A distribuição vale só para automação; a tela aceita qualquer item nas entradas, como Slot vanilla. Os filtros estáticos não
 expressam essa distinção. O coordenador encaminhou um hook genérico de inserção/extração
 condicional à onda 0 do motor; `can_insert` e `can_extract` estão prontos e testados
 nesta branch. A conexão e a aceitação completa de funis aguardam esse hook.
 
-Validação intermediária: 381 testes unitários Rust e 26 de integração passaram;
+Validação intermediária: 383 testes unitários Rust e 26 de integração passaram;
 Clippy `--workspace --all-targets -- -D warnings` passou. A suíte inclui os 28
 combustíveis até conclusão real, conservação de itens/energia, recusas de commit,
 conflito de inventário, i64 acima de i32, interpolação, quatro orientações da porta
-e retomada estrita. Prova em jogo e regressões ainda pendentes; nenhum desses
+e retomada estrita. O teste nativo de ida/volta do i64 e dos campos extras também passou. Prova completa em jogo e regressões ainda pendentes; nenhum desses
 resultados declara prontidão para merge.
 
 O roteiro `tools/test-game/native_radioisotopes.py`, integrado ao driver

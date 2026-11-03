@@ -134,7 +134,8 @@ def run(args):
             log_path = folder / ('client-first.log' if index == 0 else 'client-reopen.log')
             script = ('dims' if args.scenario.startswith('dims') else
                       'solar_stirling' if args.scenario == 'solar' else args.scenario.replace('-', '_'))
-            name = 'InvProxyTest' if script == 'inventory_proxy' else script.capitalize() + 'Test'
+            name = ('DimsTest' if script == 'dims' else 'InvProxyTest' if script == 'inventory_proxy'
+                    else args.scenario.capitalize()[:12] + 'Test')
             command = [str(binary), '--resources', str(args.resources.resolve()),
                        '--dev-mod', str(bundle), '--control-socket', str(folder / 'control.sock'),
                        '--test-terrain', '--render-distance', '2', '--width', '1280',
