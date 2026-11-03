@@ -110,6 +110,7 @@ def montadora(game, keys):
     # Power: a buffer battery beside the machine, filled by a creative
     # battery in a hopper above it (as native_redes.py does).
     game.command(f'setblock {x + 2} {y} {z} ntm:machine_battery[facing=south]')
+    game.battery_output(x + 2, y, z)
     game.command(f'setblock {x + 2} {y + 1} {z} minecraft:hopper[facing=down]')
     game.command(f'item replace block {x + 2} {y + 1} {z} container.0 with ntm:battery_creative 1')
     core = core_of(game, 'ntm:machine_assembly_machine', x, y, z)

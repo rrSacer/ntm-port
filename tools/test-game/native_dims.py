@@ -37,6 +37,8 @@ def red(g):
 
 
 def feed(g,p):
+    # A new battery takes power only; a redstone block under it makes it give (`redHigh` = output).
+    g.battery_output(p[0],p[1],p[2],'minecraft:overworld')
     g.command(f'execute in minecraft:overworld run setblock {p[0]} {p[1]+1} {p[2]} minecraft:hopper[facing=down]')
     g.command(f'execute in minecraft:overworld run item replace block {p[0]} {p[1]+1} {p[2]} container.0 with ntm:battery_creative 1')
 

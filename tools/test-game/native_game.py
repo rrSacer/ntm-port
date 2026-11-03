@@ -61,6 +61,12 @@ class Game:
         self.command(f'tp @s {x+.5} {y} {z+3.5}')
         time.sleep(2)
 
+    def battery_output(self, x, y, z, dimension=None):
+        """What a player does to make a battery give power: it starts input-only (`redLow = 0`), and a
+        redstone signal puts it in `redHigh`, output. A redstone block under it is that signal."""
+        where = f'execute in {dimension} run ' if dimension else ''
+        self.command(f'{where}setblock {x} {y - 1} {z} minecraft:redstone_block')
+
     def slots(self):
         return [s for s in self.ctl('screen').get('slots', []) if s['slot'] >= 300]
 

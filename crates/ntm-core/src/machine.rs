@@ -535,7 +535,8 @@ impl Battery {
         Self {
             power: 0,
             max,
-            mode: BatteryMode::Buffer,
+            // `TileEntityMachineBattery`: `redLow = 0` (input only; `redHigh = 2`, output, with a redstone signal).
+            mode: BatteryMode::Input,
             mode_high: high_mode(),
             powered: false,
             slots: battery_slots(),

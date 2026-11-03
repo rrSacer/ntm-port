@@ -92,6 +92,7 @@ def setup(g):
     time.sleep(1)
     g.close()
     full=wire_power(g,reader_of(a))
+    g.battery_output(*a)
     for p in SINKS:g.command('setblock %d %d %d ntm:machine_electric_furnace_off[facing=north]'%p)
     drained=[full]
     for _ in range(30):
@@ -101,14 +102,11 @@ def setup(g):
     seen=[x for x in drained if x is not None]
     g.check('battery_comparator_falls_while_discharging',seen[-1]<seen[0] and all(y<=x for x,y in zip(seen,seen[1:])),drained)
 
-    # A second battery joins the cable at its end. Two batteries in buffer mode are both providers and
-    # receivers of the pooled Java net (`PowerNetMK2`) and settle at once, with equal weights, so the first
-    # is put in output mode by a redstone signal (`redHigh`): it only gives, the second takes. The first one's
-    # signal keeps falling, the new one's rises from 0.
+    # A second battery joins the cable at its end. It starts input-only, so it only takes; the first one
+    # (given a redstone signal above) gives. The first one's signal keeps falling, the new one's rises from 0.
     g.command('setblock %d %d %d ntm:machine_battery[facing=north]'%SECOND)
     build(g,SECOND)
     time.sleep(2)
-    g.command('setblock %d %d %d minecraft:redstone_block'%(a[0]-1,a[1],a[2]))
     first=[wire_power(g,reader_of(a))];second=[wire_power(g,reader_of(SECOND))]
     for _ in range(30):
         time.sleep(2)

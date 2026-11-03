@@ -495,7 +495,10 @@ mod screens {
         let mut b = Battery::new(1_000_000);
         b.slots[0] = Some(Stack::new(CREATIVE_BATTERY, 1));
         b.sync_in();
-        assert_eq!(b.screen_data(), vec![1_000_000, 1_000_000, 1, 2, 1]);
+        // As the Java tile starts: `redLow = 0` (input only), `redHigh = 2` (output).
+        assert_eq!(b.screen_data(), vec![1_000_000, 1_000_000, 0, 2, 1]);
+        assert_eq!((b.mode, b.mode_high), (BatteryMode::Input, BatteryMode::Output));
+        b.button(0);
         b.button(0);
         b.button(1);
         assert_eq!((b.mode, b.mode_high), (BatteryMode::Output, BatteryMode::None));

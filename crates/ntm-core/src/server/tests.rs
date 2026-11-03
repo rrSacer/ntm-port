@@ -335,6 +335,8 @@ fn energy_follows_the_ntm_ports() {
             panic!()
         };
         b.power = 100_000;
+        // A new battery only takes (Java `redLow = 0`): it gives with a redstone signal.
+        b.mode = crate::machine::BatteryMode::Output;
     }
     g.run(20);
     let Data::ElectricFurnace(w) = g.machine(fw).data else { panic!() };

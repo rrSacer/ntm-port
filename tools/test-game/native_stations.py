@@ -19,9 +19,10 @@ from native_recipes import core_of, count, pick
 
 
 def power(game, x, y, z, beside=2):
-    """A buffer battery `beside` blocks east of a machine's core (2 for a 3x3
-    one, 1 for a single column), filled by a creative battery in a hopper."""
+    """A battery `beside` blocks east of a machine's core (2 for a 3x3 one, 1 for a single
+    column), filled by a creative battery in a hopper and set to give by a redstone block."""
     game.command(f'setblock {x + beside} {y} {z} ntm:machine_battery[facing=south]')
+    game.battery_output(x + beside, y, z)
     game.command(f'setblock {x + beside} {y + 1} {z} minecraft:hopper[facing=down]')
     game.command(f'item replace block {x + beside} {y + 1} {z} container.0 with ntm:battery_creative 1')
 

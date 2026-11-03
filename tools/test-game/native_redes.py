@@ -64,6 +64,8 @@ if phase == 'energia':
     cmd(f'setblock {x + 2} {Y - 1} {z} minecraft:stone')
     cmd(f'setblock {x + 3} {Y - 1} {z} minecraft:stone')
     ev['bateria_posta'] = cmd(f'setblock {bat[0]} {Y} {z} ntm:machine_battery[facing=south]')
+    # A new battery takes power only; a redstone signal (a block under it) makes it give.
+    cmd(f'setblock {bat[0]} {Y - 1} {z} minecraft:redstone_block')
     for cx in (x + 1, x + 2, x + 3):
         cmd(f'setblock {cx} {Y} {z} ntm:red_cable')
     ev['fornalha_posta'] = cmd(f'setblock {fur[0]} {Y} {z} ntm:machine_electric_furnace_off[facing=south]')
