@@ -26,14 +26,28 @@ A família monta a operação numa cópia do snapshot. Exemplo conceitual:
 let expected = game.native_player_snapshot(&STATE)?;
 let mut desired = expected.clone();
 // Retirar uma unidade do slot observado, inserir recipiente e atualizar estado.
-// Se faltar espaço para qualquer resultado, recusar a operação inteira.
+// O que não cabe vira `drops` do mesmo commit, como no Java.
 game.native_commit_player(&STATE, &expected, desired, benefits)
 ```
 
-O planejador conta toda unidade antes de publicar; não apaga recipientes nem
-produz loot parcial quando o inventário está cheio. A política deste lote é
-recusar o uso sem espaço, preservando o item. O Java derruba alguns recipientes
-no chão; essa diferença evita introduzir uma segunda publicação de pickups.
+O planejador conta toda unidade antes de publicar. Inventário cheio segue o Java
+item a item, e o que não cabe sai como `drops` do mesmo commit (publicados depois
+da validação, sem duplicar nem perder):
+
+| Item | Java | Port |
+| --- | --- | --- |
+| `cotton_candy` | sem recipiente | só consome |
+| `syringe_metal_medx` | `stack--`; vazio vira `syringe_metal_empty` no próprio slot; senão `addItemStackToInventory` ou `dropPlayerItemWithRandomChoice` | idem |
+| `radaway` | `giveSoundAndDecrement` + `tryAddItem`: o slot esvaziado ainda está ocupado, então até o último RadAway derruba o `iv_empty` sem espaço | idem (`reserved`) |
+| `hazmat_kit` | `giveHaz` nunca recusa; a armadura trocada vira entidade no mundo | a armadura trocada vira drop |
+| `gas_mask_filter` | `ItemFilter` troca a pilha da mão pelo filtro antigo | idem, sem inventário |
+| `gas_mask_m65`, `attachment_mask` | com sneak, tira o filtro: inventário ou drop | idem |
+| `hazmat_plate` | `ItemArmor` equipa pelo clique, sem recipiente | motor |
+
+Em criativo, `addItemStackToInventory` descarta o que não cabe (retorna `true`) e
+nada cai no chão; o port reproduz isso. O drop usa `player_drop` do motor (lançado
+dos olhos, com as estatísticas de drop); o Java do kit solta a entidade parada na
+posição dos olhos e o dos demais usa `dropPlayerItemWithRandomChoice`.
 
 ## Uso e previsão
 
@@ -177,5 +191,5 @@ Limites desta aceitação:
 - Não há roteiro de dois clientes: o hóspede LAN é coberto pelo motor (o jogador
   local já entra como hóspede da instância integrada) e pelo teste do hub, não por
   um segundo cliente.
-- A política deste lote é recusar o uso sem espaço, em vez de derrubar o
-  recipiente como o Java faz em alguns casos.
+- O drop de inventário cheio usa a física de lançamento do motor (`player_drop`), não
+  a velocidade exata de `dropPlayerItemWithRandomChoice` nem a entidade parada do kit.
