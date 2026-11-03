@@ -9,7 +9,7 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
 - Upstream incorporado: `fc02103818c212920fd24aa34a2b2f91ba49e56f` (snapshot congelado de 03/11/2026).
-- Motor de integração (pin): `7607685b8e8a8000c8c20e417510eeaf468d7a15`.
+- Motor de integração (pin): `765c5ac91226995abe3af41638c9eb908e9eb3b3`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
   `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
@@ -338,7 +338,7 @@ permaneceu nesta rodada.
 
 ## Onda 0 — política de inventário e portas (marco 1)
 
-Motor `7607685b8e8a8000c8c20e417510eeaf468d7a15`, derivado do pin
+Motor `765c5ac91226995abe3af41638c9eb908e9eb3b3`, derivado do pin
 `ec479adb3` (`47173f4c4` e quatro correções da revisão); upstream congelado `fc0210381`. [Contrato e exemplo da
 API](native-slot-policy.md).
 
