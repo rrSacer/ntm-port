@@ -235,7 +235,9 @@ impl Server {
     pub(super) fn trigger(&mut self, host: &mut impl ServerHost, key: Key, blast: Blast, why: &str) {
         let Some(r) = self.ready() else { return };
         // The bomb is spent: its block and its components go with it.
-        let name = r.world.machines.remove(&key).map(|m| m.block).unwrap_or_default();
+        let removed=r.world.machines.remove(&key);
+        let origin=removed.as_ref().map(|m|CellGuard::machine(&key,m));
+        let name=removed.map(|m|m.block).unwrap_or_default();
         r.loaded.remove(&key);
         r.shown.remove(&key);
         r.seen.remove(&key);
@@ -244,7 +246,7 @@ impl Server {
         let n = r.world.bombs.next;
         r.world.bombs.next += 1;
         let (dim, pos) = key.clone();
-        r.world.bombs.queue.push(Queued { n, dim: dim.clone(), pos, blast, name, why: why.into(), started: false });
+        r.world.bombs.queue.push(Queued { origin, n, dim: dim.clone(), pos, blast, name, why: why.into(), started: false });
         self.blasts.lit.remove(&key);
         if why != "teste"
             && let Err(e) = host.set_blocks(&dim, &[(pos, "minecraft:air".into())])

@@ -77,7 +77,7 @@ impl Server {
                 } else if levels.iter().all(Option::is_some) {
                     z.set_powered(false);
                 }
-                if z.step() && self.zirnox_meltdown(host, &key, m.facing.as_deref()) {
+                if z.step() && self.zirnox_meltdown(host, &key, m.facing.as_deref(),m.generation) {
                     m.block = zirnox::DESTROYED.into();
                     **z = Zirnox::of(zirnox::DESTROYED);
                     self.ready.native_saved.remove(&key);
@@ -92,9 +92,10 @@ impl Server {
         if self.ready.world.machine_effects.iter().any(|b|b.owners.iter().any(|k| self.ready.world.machines.get(k).is_some_and(|m|matches!(m.data,Data::Zirnox(_))))) {return;}
 
         let blasts = std::mem::take(&mut self.ready.world.zirnox.blasts);
-        for (dim, at) in blasts {
-            if !host.pile_reachable(&dim) || !host.zirnox_explode(&dim, at) {
-                self.ready.world.zirnox.blasts.push((dim, at));
+        for blast in blasts {
+            let (dim,at)=blast.location();
+            if !host.pile_reachable(dim) || !host.zirnox_explode(dim, at) {
+                self.ready.world.zirnox.blasts.push(blast);
             }
         }
         self.zirnox_waste(host);
@@ -105,6 +106,7 @@ impl Server {
         host: &mut impl ServerHost,
         key: &Key,
         facing: Option<&str>,
+        generation:u64,
     ) -> bool {
         let f = facing.unwrap_or("north");
         // Clear the tall live casing; ruined geometry is only its 5x2x5
@@ -137,7 +139,8 @@ impl Server {
             f64::from(key.1[1]) + 3.,
             f64::from(key.1[2]),
         ];
-        self.ready.world.zirnox.blasts.push((key.0.clone(), at));
+        let origin=CellGuard{dim:key.0.clone(),pos:key.1,generation,state:zirnox::BLOCK.into()};
+        self.ready.world.zirnox.blasts.push(zirnox::CommittedBlast::Guarded{origin:origin.clone(),at});
         host.show(
             &key.0,
             &Show::Sound {
@@ -149,7 +152,8 @@ impl Server {
             },
         );
         let s = seed(&key.0, key.1, self.ready.world.ticks);
-        let debris = Debris::spawn(&key.0, key.1, s);
+        let mut debris = Debris::spawn(&key.0, key.1, s);
+        for d in &mut debris{d.origin=Some(origin.clone());}
         for d in &debris {
             if let Some(n) = self.ready.world.zirnox.debris_created.get_mut(usize::from(d.kind)) {
                 *n = n.saturating_add(1);
@@ -157,6 +161,7 @@ impl Server {
         }
         self.ready.world.zirnox.debris.extend(debris);
         self.ready.world.zirnox.waste.push(Waste {
+            origin:Some(origin),
             dim: key.0.clone(),
             center: key.1,
             cursor: 0,
@@ -941,7 +946,7 @@ mod tests {
         for (i, (before, _)) in cases.iter().enumerate() {
             h.blocks.insert((DIM.into(), [15, 64, i as i32]), format!("minecraft:{before}"));
         }
-        s.ready.world.zirnox.waste.push(Waste { dim: DIM.into(), center: AT, cursor: 0, seed: 42 });
+        s.ready.world.zirnox.waste.push(Waste { origin:None,dim: DIM.into(), center: AT, cursor: 0, seed: 42 });
         for t in 2..90 { s.native_tick(&mut h, t); }
         for (i, (_, after)) in cases.iter().enumerate() {
             assert_eq!(&h.blocks[&(DIM.into(), [15, 64, i as i32])], after);

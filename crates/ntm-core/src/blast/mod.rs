@@ -74,6 +74,9 @@ pub struct BombWorld {
 /// A bomb set off, waiting its turn (`BombWorld.queue`).
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Queued {
+    /// Confirmed old generation; physical blasts are never cancelled by reuse.
+    #[serde(default)]
+    pub origin: Option<crate::server::CellGuard>,
     /// The explosion's number (`w<world>n<number>`).
     pub n: u64,
     pub dim: String,

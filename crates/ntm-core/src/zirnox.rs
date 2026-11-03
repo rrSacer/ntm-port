@@ -27,7 +27,7 @@ pub struct Remnants {
     pub debris: Vec<Debris>,
     /// Cumulative actual creations per type, independent of later collisions.
     pub debris_created: [u64; 6],
-    pub blasts: Vec<(String, [f64; 3])>,
+    pub blasts: Vec<CommittedBlast>,
     pub waste: Vec<Waste>,
     /// Expiring radiation potion from fuel/graphite debris, by player UUID.
     pub irradiated: BTreeMap<String, (u32, u8)>,
@@ -48,8 +48,20 @@ impl Remnants {
     }
 }
 
+/// Legacy tuples remain readable; new confirmed blasts retain their origin.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum CommittedBlast {
+    Guarded { origin:crate::server::CellGuard, at:[f64;3] },
+    Legacy(String,[f64;3]),
+}
+impl CommittedBlast {
+    pub fn location(&self)->(&str,[f64;3]){match self{Self::Guarded{origin,at}=>(origin.dim.as_str(),*at),Self::Legacy(dim,at)=>(dim.as_str(),*at)}}
+}
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Waste {
+    #[serde(default)]
+    pub origin:Option<crate::server::CellGuard>,
     pub dim: String,
     pub center: Pos,
     pub cursor: u32,
@@ -57,6 +69,8 @@ pub struct Waste {
 }
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Debris {
+    #[serde(default)]
+    pub origin:Option<crate::server::CellGuard>,
     pub dim: String,
     pub pos: [f64; 3],
     pub velocity: [f64; 3],
@@ -107,6 +121,7 @@ impl Debris {
                     _ => 1200,
                 } + out.len() as u32 % 50;
                 out.push(Self {
+                    origin:None,
                     dim: dim.into(),
                     pos: [
                         f64::from(at[0]) + 0.5,
