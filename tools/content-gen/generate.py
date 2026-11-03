@@ -45,15 +45,18 @@ def registration(source, variable, kind):
  # Registrations may use the local register(Block) helper or the Forge API.
  call = rf'(?:GameRegistry\.register{kind.title()}\(\s*{variable}\s*,|\bregister\(\s*{variable}\s*\))'
  if not re.search(call,source): raise ValueError(f'No {kind} registration for {variable}')
- assignment = re.search(rf'^\s*{variable}\s*=\s*(?:\([A-Za-z0-9_$.]+\)\s*)?new\b', source, re.M)
+ assignment = re.search(rf'^\s*(?:ModItems\.)?{variable}\s*=\s*(?:\([A-Za-z0-9_$.]+\)\s*)?new\b', source, re.M)
  if not assignment: raise ValueError(f'No assignment for {variable}')
  # A builder chain may carry `;` inside a trailing `//` comment: end the
  # statement at the first `;` that survives comment stripping.
  lines=[]
+ depth=0
  for line in source[assignment.start():].split('\n'):
   code=re.sub(r'\s//.*$','',line)
   lines.append(code)
-  if code.rstrip().endswith(';'):break
+  structural=re.sub(r'"(?:\\.|[^"\\])*"', '""', code)
+  depth+=sum(structural.count(c) for c in '({[')-sum(structural.count(c) for c in ')}]')
+  if depth==0 and code.rstrip().endswith(';'):break
  text='\n'.join(lines)
  name=re.search(r'\.(?:setBlockName|setUnlocalizedName)\("([^"]+)"\)',text)
  if not name: raise ValueError(f'No unlocalized name for {variable}')
@@ -65,6 +68,7 @@ def catalog(src, manifest):
  java=src/'src/main/java/com/hbm'; assets=src/'src/main/resources/assets/hbm'
  sources={k:(java/f'{folder}/Mod{folder.title()}.java').read_text() for k,folder in [('block','blocks'),('item','items')]}
  sources['item']+='\n'+(java/'items/ModItemsArmor.java').read_text()
+ sources['item']+='\n'+(java/'items/special/ItemSimpleConsumable.java').read_text()
  langs={loc:lang(assets/f'lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]}
  mats=(java/'inventory/material/Mats.java').read_text()
  result=[]
@@ -215,6 +219,7 @@ def generate(src,out,rows,distributions,max_damage=True):
    if max_damage and row.get('max_damage'):
     if declaration['max_stack_size']!=1:raise ValueError('Durable item must have stack size 1: '+row['id'])
     declaration['components']={'minecraft:max_damage':row['max_damage']}
+   if row.get('components'):declaration.setdefault('components',{}).update(row['components'])
    emit(f'data/ntm/horizon/item/{name}.json',declaration)
    emit(f'assets/ntm/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':tex}})
    if row.get('overlay_textures'):
@@ -314,6 +319,12 @@ def generate(src,out,rows,distributions,max_damage=True):
    model='ntm:item/'+name
   emit(f'assets/ntm/items/{name}.json',{'model':{'type':'minecraft:model','model':model}})
   for loc in languages:languages[loc][('block.' if kind=='block' else 'item.')+'ntm.'+name]=row['names'][loc]
+ if any(row['id']=='ntm:machine_armor_table' for row in rows):
+  emit('data/ntm/horizon/menu/armor_table.json',{'slots':14,'data_slots':0})
+  gui='src/main/resources/assets/hbm/textures/gui/machine/gui_armor_modifier.png'
+  emit_bytes('assets/ntm/textures/gui/machine/gui_armor_modifier.png',(src/gui).read_bytes())
+  languages['en_us']['container.ntm.armor_table']='Armor Modification Table'
+  languages['pt_br']['container.ntm.armor_table']='Mesa de Modificação de Armadura'
  for loc,value in languages.items():
   # Preserve visual-gen's dummy_machine lang key across content regenerations when dummy_machine is active.
   existing_lang=out/f'assets/ntm/lang/{loc}.json'
@@ -350,11 +361,11 @@ def main():
   m3_catalog.build(args.source,args.output)
  manifest=json.loads(args.catalog.read_text())
  if args.catalog.resolve()==(HERE/'m1.json').resolve() and (HERE/'bulk.json').exists():
-  for extension in ('bulk.json','bombs.json','m3.json'):
+  for extension in ('bulk.json','bombs.json','m3.json','item_hooks.json'):
    if not (HERE/extension).exists():continue
    bulk=json.loads((HERE/extension).read_text())
    original_ids={e['id'] for e in manifest['entries']}
-   if extension in ('bombs.json','m3.json'):
+   if extension in ('bombs.json','m3.json','item_hooks.json'):
     for spec in bulk['entries']:
      previous=next((r for r in manifest['entries'] if r['id']==spec['id']),None)
      if previous:

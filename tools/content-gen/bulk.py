@@ -115,7 +115,7 @@ def main():
     # Rows already in bulk.json stay byte-identical on regeneration, and names
     # another catalog (m3.json, bombs.json) already declares are never claimed here.
     frozen={r['id']:r for r in json.loads((HERE/'bulk.json').read_text())['entries']} if (HERE/'bulk.json').exists() else {}
-    claimed={r['source_variable'] for f in ('m3.json','bombs.json') if (HERE/f).exists() for r in json.loads((HERE/f).read_text())['entries']}
+    claimed={r['source_variable'] for f in ('m3.json','bombs.json','item_hooks.json') if (HERE/f).exists() for r in json.loads((HERE/f).read_text())['entries']}
     source={'item':(java/'items/ModItems.java').read_text()+'\n'+(java/'items/ModItemsArmor.java').read_text(),'block':(java/'blocks/ModBlocks.java').read_text()}
     item_main_lines=len((java/'items/ModItems.java').read_text().splitlines())
     enum=enums(java); rows=[]; audit=[]; machines=[]

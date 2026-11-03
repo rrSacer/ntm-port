@@ -106782,6 +106782,218 @@
           "max": 5
         }
       }
+    },
+    {
+      "id": "ntm:radaway",
+      "source_variable": "radaway",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks",
+      "source_registry": "hbm:item.radaway",
+      "names": {
+        "en_us": "RadAway",
+        "pt_br": "Radaway"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.radaway.name",
+        "pt_br": "port translation"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/radaway.png"
+    },
+    {
+      "id": "ntm:iv_empty",
+      "source_variable": "iv_empty",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior_gap": "ItemSimpleConsumable blood draw remains wave 1",
+      "source_registry": "hbm:item.iv_empty",
+      "names": {
+        "en_us": "IV Bag",
+        "pt_br": "Bolsa de Soro"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.iv_empty.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.iv_empty.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/iv_empty.png"
+    },
+    {
+      "id": "ntm:gas_mask_m65",
+      "source_variable": "gas_mask_m65",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 165,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.gas_mask_m65",
+      "names": {
+        "en_us": "M65-Z Gas Mask",
+        "pt_br": "Máscara de Gás M65-Z"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.gas_mask_m65.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.gas_mask_m65.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_m65.png"
+    },
+    {
+      "id": "ntm:hazmat_helmet",
+      "source_variable": "hazmat_helmet",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 660,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_helmet",
+      "names": {
+        "en_us": "Hazmat Helmet",
+        "pt_br": "Capacete Antirradição"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_helmet.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_helmet.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_helmet.png"
+    },
+    {
+      "id": "ntm:hazmat_plate",
+      "source_variable": "hazmat_plate",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 960,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 5,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_plate",
+      "names": {
+        "en_us": "Hazmat Chestplate",
+        "pt_br": "Peitoral Antirradição"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_plate.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_plate.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_plate.png"
+    },
+    {
+      "id": "ntm:hazmat_legs",
+      "source_variable": "hazmat_legs",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_leggings",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 900,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 4,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_legs",
+      "names": {
+        "en_us": "Hazmat Leggings",
+        "pt_br": "Calças Antirradição"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_legs.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_legs.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_legs.png"
+    },
+    {
+      "id": "ntm:hazmat_boots",
+      "source_variable": "hazmat_boots",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_boots",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 780,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 1,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_boots",
+      "names": {
+        "en_us": "Hazmat Boots",
+        "pt_br": "Botas Antirradição"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_boots.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_boots.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_boots.png"
+    },
+    {
+      "id": "ntm:attachment_mask",
+      "source_variable": "attachment_mask",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler helmet_only: native item_hooks",
+      "source_registry": "hbm:item.attachment_mask",
+      "names": {
+        "en_us": "Gas Mask Attachable",
+        "pt_br": "Máscara de Gás Acoplável"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.attachment_mask.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.attachment_mask.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/attachment_mask.png"
     }
   ]
 }

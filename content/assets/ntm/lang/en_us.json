@@ -3300,5 +3300,14 @@
   "itemGroup.ntm.weapons": "NTM Weapons and Turrets",
   "itemGroup.ntm.consumables": "NTM Consumables and Gear",
   "block.ntm.dummy_zirnox": "Machine (part)",
-  "block.ntm.dummy_zirnox_destroyed": "Machine (part)"
+  "block.ntm.dummy_zirnox_destroyed": "Machine (part)",
+  "item.ntm.radaway": "RadAway",
+  "item.ntm.iv_empty": "IV Bag",
+  "item.ntm.gas_mask_m65": "M65-Z Gas Mask",
+  "item.ntm.hazmat_helmet": "Hazmat Helmet",
+  "item.ntm.hazmat_plate": "Hazmat Chestplate",
+  "item.ntm.hazmat_legs": "Hazmat Leggings",
+  "item.ntm.hazmat_boots": "Hazmat Boots",
+  "item.ntm.attachment_mask": "Gas Mask Attachable",
+  "container.ntm.armor_table": "Armor Modification Table"
 }

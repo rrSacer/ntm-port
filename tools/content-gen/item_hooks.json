@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "id": "radaway",
+      "source_variable": "radaway",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks"
+    },
+    {
+      "id": "iv_empty",
+      "source_variable": "iv_empty",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior_gap": "ItemSimpleConsumable blood draw remains wave 1"
+    },
+    {
+      "id": "gas_mask_m65",
+      "source_variable": "gas_mask_m65",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 165,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_helmet",
+      "source_variable": "hazmat_helmet",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 660,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_plate",
+      "source_variable": "hazmat_plate",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 960,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 5,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_legs",
+      "source_variable": "hazmat_legs",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_leggings",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 900,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 4,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_boots",
+      "source_variable": "hazmat_boots",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_boots",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 780,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 1,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attachment_mask",
+      "source_variable": "attachment_mask",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler helmet_only: native item_hooks"
+    }
+  ]
+}

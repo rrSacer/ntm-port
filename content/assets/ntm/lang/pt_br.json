@@ -3300,5 +3300,14 @@
   "itemGroup.ntm.weapons": "Armas e Torretas do NTM",
   "itemGroup.ntm.consumables": "Consumíveis e Equipamentos do NTM",
   "block.ntm.dummy_zirnox": "Máquina (parte)",
-  "block.ntm.dummy_zirnox_destroyed": "Máquina (parte)"
+  "block.ntm.dummy_zirnox_destroyed": "Máquina (parte)",
+  "item.ntm.radaway": "Radaway",
+  "item.ntm.iv_empty": "Bolsa de Soro",
+  "item.ntm.gas_mask_m65": "Máscara de Gás M65-Z",
+  "item.ntm.hazmat_helmet": "Capacete Antirradição",
+  "item.ntm.hazmat_plate": "Peitoral Antirradição",
+  "item.ntm.hazmat_legs": "Calças Antirradição",
+  "item.ntm.hazmat_boots": "Botas Antirradição",
+  "item.ntm.attachment_mask": "Máscara de Gás Acoplável",
+  "container.ntm.armor_table": "Mesa de Modificação de Armadura"
 }
