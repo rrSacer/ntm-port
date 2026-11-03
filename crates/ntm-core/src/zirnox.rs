@@ -206,8 +206,7 @@ pub fn radiation_rate(stack: &Stack) -> Option<u32> {
     let d = (f64::from(life(stack)) / f64::from(f.max_life))
         .clamp(0., 1.)
         .powf(0.4);
-    let level = (f64::from(h.radiation_rad_s) + f64::from(target - h.radiation_rad_s) * d) as f32;
-    Some((level * 1000.).round() as u32)
+    crate::item_hooks::hazard_rate(h.radiation_rad_s,target,d)
 }
 
 fn slots() -> Slots {

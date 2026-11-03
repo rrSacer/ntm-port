@@ -30,6 +30,7 @@ pub mod gascent;
 pub mod hash;
 pub mod heater;
 pub mod kv;
+pub mod item_hooks;
 pub mod machine;
 pub mod native;
 pub mod oil_drill;
