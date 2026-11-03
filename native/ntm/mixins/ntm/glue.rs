@@ -408,6 +408,7 @@ impl Host<'_, '_> {
         if cells.len()>65_536{return false;}
         let mut spawn=Vec::new();
         for d in retained {
+            if self.game.native_loaded_block(&d.origin.dim,d.origin.pos).is_none(){return false;}
             let Some(dim)=dim_of(&d.origin.dim)else{return false};
             if self.game.visit_level(dim,|_|()).is_none(){return false;}
             let items:Option<Vec<_>>=d.items.iter().map(|i|horizon_world::nbt::parse_snbt(i).ok().and_then(|(t,_)|horizon_client::save::item_from_nbt(&t))).collect();
@@ -485,11 +486,13 @@ impl Host<'_, '_> {
 impl ServerHost for Host<'_, '_> {
     fn cell_snapshot(&mut self,dim:&str,pos:[i32;3])->Option<ntm_core::server::CellSnapshot>{cell_snapshot(self.game,dim,pos)}
     fn drop_encoded_items(&mut self,dim:&str,pos:[i32;3],items:&[String])->bool{
+        if self.game.native_loaded_block(dim,pos).is_none(){return false;}
         let items:Option<Vec<_>>=items.iter().map(|i|horizon_world::nbt::parse_snbt(i).ok().and_then(|(t,_)|horizon_client::save::item_from_nbt(&t))).collect();
         let Some(items)=items else{eprintln!("ntm: invalid retained item NBT at {dim} {pos:?}");return false};
         in_place(self.game,dim,|g|for i in items{g.spawn_item(i,pos.map(|v|f64::from(v)+0.5),crate::game::dispenser::new_item_motion(),0);}).is_some()
     }
     fn drop_items(&mut self,dim:&str,p:[i32;3],items:&[(String,u32)])->bool {
+        if self.game.native_loaded_block(dim,p).is_none(){return false;}
         let at=p.map(|v|f64::from(v)+0.5);
         in_place(self.game,dim,|g|{
             for (id,n) in items {g.spawn_item(ItemStack::new(id,*n),at,crate::game::dispenser::new_item_motion(),0);}
@@ -571,7 +574,10 @@ impl ServerHost for Host<'_, '_> {
     fn commit_machine(&mut self, c: &ntm_core::server::MachineCommit) -> bool {
         self.commit_machines(std::slice::from_ref(c))
     }
-    fn commit_machines(&mut self, commits: &[ntm_core::server::MachineCommit]) -> bool {self.publish_atomic(commits,&[],&[])}
+    fn commit_machines(&mut self, commits: &[ntm_core::server::MachineCommit]) -> bool {
+        let retained:Vec<_>=commits.iter().flat_map(|c|&c.cells).filter(|w|ntm_core::blockstate::id_of(&w.expected.state)!=ntm_core::blockstate::id_of(&w.desired)&&!w.expected.items.is_empty()).map(|w|ntm_core::server::RetainedDrop{origin:w.guard.clone(),items:w.expected.items.clone()}).collect();
+        self.publish_atomic(commits,&[],&retained)
+    }
     fn commit_structural(&mut self,cells:&[ntm_core::server::CellWrite],drops:&[ntm_core::server::RetainedDrop],owners:&[(String,[i32;3])])->bool{
         let own=cells.iter().filter(|c|owners.contains(&c.guard.key())).map(|c|(c.guard.dim.clone(),c.guard.pos,ntm_core::blockstate::id_of(&c.desired).into())).collect();
         let _scope=OwnedBlockScope::new(own);

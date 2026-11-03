@@ -42,6 +42,8 @@ pub struct Kept {
     pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     #[serde(default, skip_serializing_if = "std::collections::VecDeque::is_empty")]
     pub applied_machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
+    #[serde(default, skip_serializing_if = "std::collections::VecDeque::is_empty")]
+    pub prepared_retentions:std::collections::VecDeque<crate::server::PreparedRetention>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -52,6 +54,7 @@ pub struct WorldState {
     pub generations:BTreeMap<(String,Pos),u64>,
     pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     pub applied_machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
+    pub prepared_retentions:std::collections::VecDeque<crate::server::PreparedRetention>,
     pub radiation: BTreeMap<String, crate::radiation::Dose>,
     pub machines: BTreeMap<(String, Pos), Machine>,
     pub cables: BTreeSet<(String, Pos)>,
@@ -70,6 +73,7 @@ impl WorldState {
         WorldState {
             machines,
             removals:kept.removals,
+            prepared_retentions:kept.prepared_retentions,
             generations:kept.generations.into_iter().collect(),
             radiation: kept.radiation,
             bombs: kept.bombs,
@@ -91,6 +95,7 @@ impl WorldState {
             generations:self.generations.iter().map(|(k,g)|(k.clone(),*g)).collect(),
             machine_effects:self.machine_effects.clone(),
             applied_machine_effects:self.applied_machine_effects.clone(),
+            prepared_retentions:self.prepared_retentions.clone(),
         };
         serde_json::to_vec(&kept).unwrap_or_default()
     }

@@ -118,7 +118,7 @@ pub struct MachineCommit {
 }
 
 /// A loaded cell, including its complete block entity, not just its slots.
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct CellSnapshot {
     pub state: String,
     pub entity: Option<String>,
@@ -130,7 +130,7 @@ pub struct RetainedDrop {
     pub items:Vec<String>,
 }
 /// Consumed world cells publish in the same atomic operation as the machine.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct CellWrite {
     pub notify:bool,
     pub guard: CellGuard,
@@ -494,7 +494,7 @@ mod zirnox_server;
 mod transaction;
 mod generation;
 pub use generation::CellGuard;
-pub use transaction::{CommittedEffects,WorldEffect};
+pub use transaction::{CommittedEffects,WorldEffect,PreparedRetention};
 
 #[cfg(test)]
 mod generation_tests;

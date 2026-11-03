@@ -36,6 +36,14 @@ pub struct CommittedEffects {
     pub tombstones: Vec<((String, Pos), Machine)>,
 }
 
+/// A lossless retention journal written before consuming a BE's cell.
+/// Recovery can prove the original source is still intact and discard it.
+#[derive(Clone,Debug,PartialEq,serde::Serialize,serde::Deserialize)]
+pub struct PreparedRetention {
+    pub source:CellWrite,
+    pub receipt:CommittedEffects,
+}
+
 /// World effects are held until the inventory/state commit succeeds.
 type AfterCommit<H> = Box<dyn FnOnce(&mut H)>;
 
@@ -159,15 +167,37 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
 }
 
 impl Server {
+    fn recover_retentions(&mut self,host:&mut impl ServerHost)->bool{
+        if self.ready.world.prepared_retentions.is_empty(){return true;}
+        let before=self.ready.world.clone();
+        for _ in 0..before.prepared_retentions.len(){
+            let prepared=self.ready.world.prepared_retentions.pop_front().unwrap();
+            let g=&prepared.source.guard;
+            if g.generation==u64::MAX{self.ready.world.prepared_retentions.push_back(prepared);continue;}
+            let Some(actual)=host.cell_snapshot(&g.dim,g.pos)else{self.ready.world.prepared_retentions.push_back(prepared);continue};
+            if !(self.current_guard(g)&&actual==prepared.source.expected){
+                // Consumed or genuinely ambiguous: keep the old physical
+                // retention. An intact source still owns its items, so emits none.
+                self.ready.world.machine_effects.push_back(prepared.receipt);
+            }
+        }
+        if self.ready.world.prepared_retentions==before.prepared_retentions && self.ready.world.machine_effects==before.machine_effects{return true;}
+        match host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){
+            Ok(())=>{self.ready.kept=self.ready.world.kept(0);true}
+            Err(e)=>{self.ready.world.prepared_retentions=before.prepared_retentions;self.ready.world.machine_effects=before.machine_effects;host.log(&format!("retention recovery checkpoint: {e}"));false}
+        }
+    }
+
     pub(super) fn track_effect_cells(&mut self) {
         let guards:Vec<_>=self.ready.world.machine_effects.iter().chain(&self.ready.world.applied_machine_effects).flat_map(|b|b.origins.iter().chain(b.effects.iter().flat_map(|e|match e{WorldEffect::Blocks{expected,..}=>expected.as_slice(),_=>&[]}))).cloned().collect();
         for g in guards{self.ready.world.generations.entry(g.key()).or_insert(g.generation);}
+        for p in &self.ready.world.prepared_retentions{let g=&p.source.guard;self.ready.world.generations.entry(g.key()).or_insert(g.generation);}
     }
 
     pub(super) fn flush_machine_effects(&mut self, host: &mut impl ServerHost) {
         // External facts must invalidate old writes before the first retry.
         if !self.queued.is_empty(){self.native_record_events(host);}
-        if self.ready.facts_pending{return;}
+        if self.ready.facts_pending || !self.recover_retentions(host){return;}
         let batches=self.ready.world.machine_effects.len();
         if batches==0{return;}
         for _ in 0..batches {
@@ -409,7 +439,7 @@ impl Server {
                 .ready
                 .world
                 .machine_effects
-                .iter()
+                .iter().chain(self.ready.world.prepared_retentions.iter().map(|p|&p.receipt))
                 .any(|b| b.origins.iter().any(|g|g.key()==*k&&g.generation==m.generation))
             {
                 continue;
@@ -476,6 +506,7 @@ impl Server {
                 }
             });
             let mut accepted = false;
+            let mut journaled=false;
             if accessible {
                 let mut staged = Deferred {
                     host,
@@ -599,14 +630,29 @@ impl Server {
                 if !staged.world_writes.is_empty(){
                     if let Some(c)=commits.first_mut(){c.cells=staged.world_writes.clone();}else{staged.valid=false;}
                 }
+                let preparations:Vec<_>=staged.world_writes.iter().filter(|w|blockstate::id_of(&w.expected.state)!=blockstate::id_of(&w.desired)&&!w.expected.items.is_empty()).map(|w|{
+                    let mut origins=staged.origins.clone();origins.push(w.guard.clone());
+                    PreparedRetention{source:w.clone(),receipt:CommittedEffects{owners:keys.clone(),origins,tombstones:Vec::new(),effects:std::collections::VecDeque::from([WorldEffect::EncodedItems{dim:w.guard.dim.clone(),pos:w.guard.pos,items:w.expected.items.clone()}])}}
+                }).collect();
+                if staged.valid && !preparations.is_empty(){
+                    // Only confirmed world state is journaled. The speculative
+                    // machine's new state belongs solely to its atomic BE commit.
+                    let mut durable=before.world.clone();
+                    for p in &preparations{durable.generations.entry(p.source.guard.key()).or_insert(p.source.guard.generation);}
+                    durable.prepared_retentions.extend(preparations.clone());
+                    match staged.host.set(crate::persist::KEY,&durable.kept(durable.ticks)){
+                        Ok(())=>{journaled=true;self.ready.world.prepared_retentions.extend(preparations.clone());}
+                        Err(e)=>{staged.valid=false;staged.host.log(&format!("retention preparation: {e}"));}
+                    }
+                }
                 accepted = staged.valid && staged.host.commit_machines(&commits);
                 if accepted {
+                    for p in &preparations{
+                        self.ready.world.prepared_retentions.retain(|other|other!=p);
+                        self.ready.world.applied_machine_effects.push_back(p.receipt.clone());
+                    }
                     for w in &staged.world_writes {
                         if w.desired!=w.expected.state{self.ready.world.generations.entry(w.guard.key()).or_insert(w.guard.generation);}
-                        if blockstate::id_of(&w.expected.state)!=blockstate::id_of(&w.desired) && !w.expected.items.is_empty(){
-                            staged.origins.push(w.guard.clone());
-                            staged.critical.push_back(WorldEffect::EncodedItems{dim:w.guard.dim.clone(),pos:w.guard.pos,items:w.expected.items.clone()});
-                        }
                     }
                     buttons.retain(|i| !keys.contains(&i.guard.key()));
                     for k in &keys {
@@ -650,6 +696,9 @@ impl Server {
             if !accepted {
                 self.ready = before;
                 self.blasts.lit = lit_before;
+                if journaled && let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){
+                    self.ready.facts_pending=true;host.log(&format!("discard refused retention preparation: {e}"));
+                }
                 // No simulation or network exchange while the BE is missing
                 // or its atomic host rejects the step. A future tick retries.
                 for k in &keys {

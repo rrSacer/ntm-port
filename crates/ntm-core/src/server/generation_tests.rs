@@ -34,12 +34,22 @@ struct Host {
     retained: Vec<String>,
     supply_on_structural: Option<Stack>,
     structural_rejections: usize,
+    crash_before_commit: bool,
+    crash_after_commit: bool,
+    refuse_preparation: bool,
 }
 impl Kv for Host {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
         self.kv.get(k)
     }
     fn set(&mut self, k: &str, v: &[u8]) -> Result<(), String> {
+        if self.refuse_preparation
+            && k == crate::persist::KEY
+            && serde_json::from_slice::<crate::persist::Kept>(v)
+                .is_ok_and(|kept| !kept.prepared_retentions.is_empty())
+        {
+            return Err("refused retention journal".into());
+        }
         self.kv.set(k, v)
     }
     fn delete(&mut self, k: &str) {
@@ -129,6 +139,9 @@ impl ServerHost for Host {
     }
     fn commit_machines(&mut self, cs: &[MachineCommit]) -> bool {
         self.commit_calls += 1;
+        if self.crash_before_commit && cs.iter().any(|c| !c.cells.is_empty()) {
+            panic!("simulated crash before atomic commit");
+        }
         if let Some((p, i)) = self.insert_on_commit.take() {
             self.slots.get_mut(&p).unwrap()[i].as_mut().unwrap().count += 1;
         }
@@ -167,10 +180,18 @@ impl ServerHost for Host {
                 self.saved.remove(&w.guard.pos);
             }
         }
+        for w in cs.iter().flat_map(|c| &c.cells) {
+            if blockstate::id_of(&w.expected.state) != blockstate::id_of(&w.desired) {
+                self.retained.extend_from_slice(&w.expected.items);
+            }
+        }
         for c in cs {
             self.slots.insert(c.pos, c.desired.clone());
             self.data.insert(c.pos, c.data.clone());
             self.saved.insert(c.pos, c.json.clone());
+        }
+        if self.crash_after_commit && cs.iter().any(|c| !c.cells.is_empty()) {
+            panic!("simulated crash after atomic commit");
         }
         true
     }
@@ -953,5 +974,143 @@ fn late_screen_and_hopper_inputs_are_retained_atomically_when_a_condemned_be_is_
                 .flatten()
                 .all(|i| i.id != "minecraft:water_bucket")
         );
+        s.native_world_saved(&mut h, true);
+        let mut reopened = Server::native(&mut h, 20);
+        for (at, json) in h.saved.clone() {
+            reopened.native_adopt(D, at, &json);
+        }
+        reopened.native_tick(&mut h, 21);
+        assert_eq!(
+            h.retained
+                .iter()
+                .filter(|i| i.contains("minecraft:water_bucket"))
+                .count(),
+            1,
+            "clean reopen repeats late {source} input"
+        );
     }
+}
+
+#[test]
+fn a_refused_structural_capture_does_not_duplicate_a_withdrawn_item_on_retry() {
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let Data::Zirnox(z) = &mut s.ready.world.machines.get_mut(&(D.into(), P)).unwrap().data else {
+        panic!()
+    };
+    z.heat = zirnox::MAX + 100;
+    h.refuse_blocks = true;
+    s.native_tick(&mut h, 2);
+    h.slots.get_mut(&P).unwrap()[25] = Some(Stack::new("minecraft:water_bucket", 1));
+    s.native_tick(&mut h, 3);
+    assert!(h.retained.is_empty());
+    assert!(
+        s.ready
+            .world
+            .machine_effects
+            .iter()
+            .flat_map(|b| &b.effects)
+            .all(|e| !matches!(e,super::WorldEffect::Blocks{retained,..} if !retained.is_empty()))
+    );
+    // Clean reopen while the refused generation still owns its real input.
+    s.native_world_saved(&mut h, true);
+    let player = h.slots.get_mut(&P).unwrap()[25].take().unwrap();
+    let mut reopened = Server::native(&mut h, 10);
+    h.refuse_blocks = false;
+    for t in 11..15 {
+        reopened.native_tick(&mut h, t);
+    }
+    assert_eq!(blockstate::id_of(&h.blocks[&P]), zirnox::DESTROYED);
+    assert_eq!(player.count, 1);
+    assert_eq!(
+        h.retained
+            .iter()
+            .filter(|i| i.contains("minecraft:water_bucket"))
+            .count(),
+        0
+    );
+}
+
+fn retained_excavator() -> (Host, Server, Pos) {
+    let (mut h, s, target) = resource_machine("ntm:machine_excavator");
+    h.blocks.insert(target, "minecraft:chest".into());
+    h.encoded
+        .insert(target, vec!["{id:'minecraft:diamond',count:7}".into()]);
+    (h, s, target)
+}
+#[test]
+fn prepared_retention_is_discarded_after_a_crash_when_its_original_cell_and_be_are_intact() {
+    let (mut h, mut s, target) = retained_excavator();
+    h.crash_before_commit = true;
+    assert!(
+        std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| s.native_tick(&mut h, 2)))
+            .is_err()
+    );
+    assert_eq!(WorldState::load(&mut h).prepared_retentions.len(), 1);
+    assert_eq!(h.blocks[&target], "minecraft:chest");
+    assert!(h.retained.is_empty());
+    h.crash_before_commit = false;
+    let mut reopened = Server::native(&mut h, 10);
+    for (at, json) in h.saved.clone() {
+        reopened.native_adopt(D, at, &json);
+    }
+    reopened.native_tick(&mut h, 11);
+    assert_eq!(h.blocks[&target], "minecraft:chest");
+    assert!(h.retained.is_empty());
+    assert!(WorldState::load(&mut h).prepared_retentions.is_empty());
+}
+#[test]
+fn prepared_retention_replays_a_consumed_cell_once_when_its_atomic_spawn_was_not_saved() {
+    let (mut h, mut s, target) = retained_excavator();
+    h.crash_after_commit = true;
+    assert!(
+        std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| s.native_tick(&mut h, 2)))
+            .is_err()
+    );
+    assert_eq!(h.blocks[&target], "minecraft:air");
+    assert_eq!(h.retained.len(), 1);
+    assert_eq!(WorldState::load(&mut h).prepared_retentions.len(), 1);
+    // Simulated torn world save: consumed cell/BE persisted, item entity did not.
+    h.retained.clear();
+    h.crash_after_commit = false;
+    let mut reopened = Server::native(&mut h, 10);
+    for (at, json) in h.saved.clone() {
+        reopened.native_adopt(D, at, &json);
+    }
+    reopened.native_tick(&mut h, 11);
+    reopened.native_tick(&mut h, 12);
+    assert_eq!(h.retained.len(), 1);
+    assert!(WorldState::load(&mut h).prepared_retentions.is_empty());
+    reopened.native_world_saved(&mut h, true);
+    let mut clean = Server::native(&mut h, 20);
+    for (at, json) in h.saved.clone() {
+        clean.native_adopt(D, at, &json);
+    }
+    clean.native_tick(&mut h, 21);
+    assert_eq!(h.retained.len(), 1);
+}
+#[test]
+fn refusing_the_atomic_mining_commit_discards_preparation_without_a_spawn() {
+    let (mut h, mut s, target) = retained_excavator();
+    h.refuse = true;
+    s.native_tick(&mut h, 2);
+    assert!(h.retained.is_empty());
+    assert_eq!(h.blocks[&target], "minecraft:chest");
+    assert!(WorldState::load(&mut h).prepared_retentions.is_empty());
+    assert_eq!(h.encoded[&target].len(), 1);
+}
+
+#[test]
+fn refusing_the_retention_journal_prevents_resource_consumption_and_spawn() {
+    let (mut h, mut s, target) = retained_excavator();
+    h.refuse_preparation = true;
+    s.native_tick(&mut h, 2);
+    assert_eq!(h.blocks[&target], "minecraft:chest");
+    assert!(h.retained.is_empty());
+    assert_eq!(resource_total(&s, &h), 0);
+    assert!(WorldState::load(&mut h).prepared_retentions.is_empty());
+    h.refuse_preparation = false;
+    s.native_tick(&mut h, 3);
+    assert_eq!(h.blocks[&target], "minecraft:air");
+    assert_eq!(h.retained.len(), 1);
 }

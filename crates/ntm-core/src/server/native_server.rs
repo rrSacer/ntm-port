@@ -70,7 +70,7 @@ impl Server {
         self.local_steps(host);
         self.flush_machine_effects(host);
         for k in self.ready.world.machines.keys() {if self.ready.loaded.get(k)!=Some(&true){self.ready.frozen.insert(k.clone());}}
-        for batch in &self.ready.world.machine_effects {
+        for batch in self.ready.world.machine_effects.iter().chain(self.ready.world.prepared_retentions.iter().map(|p|&p.receipt)) {
             for g in &batch.origins{let k=g.key();if self.ready.world.machines.get(&k).is_some_and(|m|m.generation==g.generation){self.ready.loaded.insert(k.clone(),false);self.ready.frozen.insert(k);}}
         }
         // Failed/local-inaccessible machines cannot be a hidden destination of
@@ -172,7 +172,7 @@ impl Server {
         }
         let Ok(m) = serde_json::from_str::<Machine>(json) else { return false };
         let m = m.upgraded();
-        if r.world.machine_effects.iter().any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)){return true;}
+        if r.world.machine_effects.iter().chain(r.world.prepared_retentions.iter().map(|p|&p.receipt)).any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)){return true;}
         let current=r.world.generations.entry(key.clone()).or_insert(m.generation);
         if m.generation<*current{return false;}
         *current=m.generation;
