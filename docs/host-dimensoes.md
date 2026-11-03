@@ -29,7 +29,7 @@ Consequências: máquina **nova** nunca recebia `STATE` no block entity (bloco m
 | `solar_sample` | já lia o mundo estacionado; segue sem troca de nível (e `native_loaded_block`/`native_set_blocks`/`native_redstone_many` já aceitam dimensão) |
 | `use_block`, `use_item`, `menu_button`, `tick` do block entity | contexto do jogador/do nível que está ticando: a dimensão em lugar é a certa |
 
-Limitações: (1) ~~ao mudar itens de uma máquina de um nível estacionado, o `container_changed` não roda~~ **corrigido (onda 0, item 3)**: `Host::entity` compara os itens antes e depois da escrita no nível estacionado e, se mudaram, chama `container_changed` numa visita passageira (`visit_level`), que não abre nível nem zera a ociosidade; os comparadores daquela máquina são notificados no próprio nível. (2) A persistência de um nível estacionado depende do motor salvá-lo (`modified` marcado; `save_parked_levels` e `close_idle_levels` o fazem). (3) A visita não dispara `LevelEvent` de abrir/fechar nem chegadas por portal, e nunca abre um nível.
+Limitações: (1) ~~o `container_changed` não rodava~~ **corrigido (onda 0, item 3, ver o fim deste documento)**; (2) A persistência de um nível estacionado depende do motor salvá-lo (`modified` marcado; `save_parked_levels` e `close_idle_levels` o fazem). (3) A visita não dispara `LevelEvent` de abrir/fechar nem chegadas por portal, e nunca abre um nível.
 
 ## Atualização ZIRNOX — commit atômico
 
@@ -67,10 +67,17 @@ Testes em jogo (`native_dims.py`, binário no pin novo):
 - `idle`: Nether com um leitor fecha e grava (17 s). O roteiro também emite 60 partículas de fumaça no Overworld para inspeção visual; a sobrevivência delas não tem verificação automatizada. A antiga asserção `particles_survive_the_parked_reader` foi removida: `status['particles']` é o contador histórico `made()` do cliente, que não diminui com `clear()` e não mede partículas vivas no `Game` do servidor onde a visita ocorre.
 
 
-## Onda 0, item 3 — comparadores em nível estacionado
+## Onda 0, item 3 — itens de uma máquina em nível estacionado
 
 `Host::entity` (glue) clona os itens do block entity antes de `f`; se mudaram, `Game::visit_level(dim, |g| g.container_changed(pos))`
-roda depois da escrita, a mesma notificação que `native_with_mod_block_entity` faz no nível em lugar. Prova em jogo
-(`native_dims.py setup`, `parked_comparator`): com o Nether em lugar e o Overworld estacionado, uma bateria carregada alimenta um
-forno elétrico por cabo; um funil insere uma picareta de ferro (item de pilha 1) e o comparador ao lado lê o forno; ao fundir
-a picareta em pepita o `OutputSignal` do comparador cai. Sem a notificação ele continua com o valor da picareta.
+roda depois da escrita, a mesma notificação que `native_with_mod_block_entity` faz no nível em lugar. É a metade do `setChanged`
+de que os comparadores dependem, sem abrir nível nem zerar a ociosidade.
+
+Limite verificado: nenhuma máquina NTM é lida por comparador hoje (os blocos não declaram `hasAnalogOutputSignal`; no Java só
+caixas de armazenamento, tanques e baterias o fazem), e `container_changed` só avisa blocos com essa saída. A notificação fica
+correta para os blocos que a declararem (o armazenamento ainda não portado), mas **não há leitura de comparador a provar em jogo
+agora**. A prova em jogo (`native_dims.py setup`, `parked_item_change`) cobre o que existe: com o Nether em lugar e o Overworld
+estacionado, um forno elétrico alimentado por cabo funde uma picareta de ferro (pilha 1) numa pepita, o que escreve os itens
+da máquina no mundo estacionado pelo novo caminho; o resultado confere e os roteiros `idle` e `idle-clean` continuam fechando
+as dimensões (a ociosidade não é zerada). A leitura por comparador exigirá declarar a saída analógica (`has_analog_output` e
+`analog_output`, API 64) nos blocos de armazenamento quando forem portados.
