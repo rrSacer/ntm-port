@@ -357,3 +357,16 @@ bindings = [
   { name = "command", ty = "&str", value = "command" },
   { name = "ran", ty = "&mut bool", value = "&mut *ran" },
 ]
+
+# Sim/Behaviours::sim remain pub(crate) upstream. Delegate, never fork rules.
+[[module]]
+id = "committed-world-updates"
+file = "crates/horizon-world/src/level/mod.rs"
+name = "ntm_committed_updates"
+source = "committed_updates.rs"
+
+[[module]]
+id = "committed-world-equivalence-tests"
+file = "crates/horizon-world/src/level/tests.rs"
+name = "ntm_committed_equivalence"
+source = "committed_updates_tests.rs"

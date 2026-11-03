@@ -245,7 +245,7 @@ impl Server {
                     let mut stack=h.clone();stack.count=1;l.slots[0]=Some(stack);
                     let (desired,data)=Self::machine_output(&mut machine,&expected);
                     let json=serde_json::to_string(&machine).expect("machine serialization");
-                    let c=MachineCommit{guard:CellGuard::machine(&key,&machine),expected_saved:self.ready.native_saved.contains_key(&key),dim:dim.into(),pos:at,expected,desired,data,json};
+                    let c=MachineCommit{cells:Vec::new(),guard:CellGuard::machine(&key,&machine),expected_saved:self.ready.native_saved.contains_key(&key),dim:dim.into(),pos:at,expected,desired,data,json};
                     if host.commit_machine(&c){
                         self.ready.world.machines.insert(key.clone(),machine);
                         self.ready.bridge.last.insert(key.clone(),c.desired);

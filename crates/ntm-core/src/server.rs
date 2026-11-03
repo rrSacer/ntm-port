@@ -56,6 +56,12 @@ pub trait ServerHost: Kv {
     fn commit_machines(&mut self, commits: &[MachineCommit]) -> bool {
         commits.is_empty() || commits.len() == 1 && self.commit_machine(&commits[0])
     }
+    /// Full BE snapshot and lossless item NBT for cells consumed by a machine.
+    fn cell_snapshot(&mut self, dim:&str, pos:Pos)->Option<CellSnapshot>{
+        self.get_block(dim,pos).map(|state|CellSnapshot{state,entity:None,items:Vec::new()})
+    }
+    /// Lossless retained BE contents, released only after the world/BE commit.
+    fn drop_encoded_items(&mut self,_dim:&str,_pos:Pos,_items:&[String])->bool{false}
     fn machine_data(&mut self, _dim: &str, _p: Pos) -> Option<Vec<i32>> {
         None
     }
@@ -96,6 +102,7 @@ pub trait ServerHost: Kv {
 /// simulation, not a cached approximation. Hosts validate before any mutation.
 #[derive(Clone, Debug)]
 pub struct MachineCommit {
+    pub cells: Vec<CellWrite>,
     pub guard:CellGuard,
     /// A previously confirmed BE must still carry this generation tag.
     pub expected_saved:bool,
@@ -105,6 +112,23 @@ pub struct MachineCommit {
     pub desired: container_bridge::Slots,
     pub data: Vec<i32>,
     pub json: String,
+}
+
+/// A loaded cell, including its complete block entity, not just its slots.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct CellSnapshot {
+    pub state: String,
+    pub entity: Option<String>,
+    pub items: Vec<String>,
+}
+/// Consumed world cells publish in the same atomic operation as the machine.
+#[derive(Clone, Debug)]
+pub struct CellWrite {
+    pub guard: CellGuard,
+    pub expected: CellSnapshot,
+    pub desired: String,
+    /// Excavator destroyBlock(false) also emits destruction/game events.
+    pub destroy: bool,
 }
 
 #[derive(Clone, Debug, PartialEq)]

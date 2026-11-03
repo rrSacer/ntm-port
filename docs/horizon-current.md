@@ -81,6 +81,7 @@ integrado, além das GUIs e da bomba otimizada; a rodada desse pin passou (ver a
 
 | Extensão / caminho local | Resultado da comparação com o upstream | Decisão |
 | --- | --- | --- |
+| Replay pós-commit (`native/ntm/mixins/ntm/committed_updates.rs`, módulo do bundle em `horizon-world::level`) | `Sim/Behaviours::sim` são `pub(crate)` no upstream; não há entrada pública para concluir os updates de uma escrita já publicada. | Extensão local mínima autorizada: delega vizinhos, onPlace e shapes indiretos ao `Sim` existente. Reavaliar a cada atualização e remover quando o upstream expuser essa entrada. |
 | OBJ, ossos, animações, líquidos e culling (`mod_models`, `gfx/mod_models`, `block_entity_render`) | As mudanças oficiais tratam modelos vanilla, equipamento de mobs e itens soltos; não carregam o formato declarativo OBJ/animações usado pelo NTM. | Mantida. O desenho local foi combinado com a nova ordem oficial de sombras antes dos itens translúcidos. |
 | Multiblocos (`horizon-world/mod_multiblocks`, `game/multiblocks`) | Não surgiu declaração de volumes, dummies, núcleo, alcance e quebra conjunta equivalente. | Mantida, incluindo a validação do clique nas células. |
 | Tamanho exato de contêiner (`Kind::NativeContainer`, `lan/menu`) | Os menus oficiais seguem templates vanilla; não substituem a contagem arbitrária usada nas máquinas. | Mantida para preservar índices e slots sem arredondamento. |

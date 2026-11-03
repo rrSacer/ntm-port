@@ -150,7 +150,7 @@ impl Server {
         let key=(dim.to_string(),pos);
         if !tracked(old)&&!tracked(new)&&!self.ready.world.generations.contains_key(&key){return;}
         let old_generation=self.ready.world.generations.get(&key).copied().unwrap_or(0);
-        let generation=old_generation.checked_add(1).unwrap_or(u64::MAX);
+        let generation=old_generation.saturating_add(1);
         self.ready.world.generations.insert(key,generation);
         self.ready.facts_dirty=true;
         if tracked(old) {
@@ -329,7 +329,7 @@ impl Server {
                 // (its dimension not available now) is written again later.
                 let Some(expected)=host.machine_slots(&key.0,key.1).or_else(|| container_bridge::layout(&m.block).is_none().then(Vec::new)) else{continue};
                 let data=Self::machine_screen(&mut m.clone());
-                if host.commit_machine(&MachineCommit{guard:CellGuard::machine(key,m),expected_saved:r.native_saved.contains_key(key),dim:key.0.clone(),pos:key.1,desired:expected.clone(),expected,data,json:json.clone()}) {
+                if host.commit_machine(&MachineCommit{cells:Vec::new(),guard:CellGuard::machine(key,m),expected_saved:r.native_saved.contains_key(key),dim:key.0.clone(),pos:key.1,desired:expected.clone(),expected,data,json:json.clone()}) {
                     r.native_saved.insert(key.clone(), json);
                 }
             }

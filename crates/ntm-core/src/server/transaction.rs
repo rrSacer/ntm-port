@@ -18,6 +18,7 @@ pub enum WorldEffect {
         pos: Pos,
         items: Vec<(String, u32)>,
     },
+    EncodedItems { dim: String, pos: Pos, items: Vec<String> },
     PileExplosion {
         dim: String,
         pos: [f64; 3],
@@ -45,6 +46,8 @@ struct Deferred<'a, H> {
     vacant:BTreeSet<Key>,
     origins:Vec<CellGuard>,
     valid:bool,
+    resource:bool,
+    world_writes:Vec<CellWrite>,
     critical: std::collections::VecDeque<WorldEffect>,
 }
 impl<H: ServerHost> Kv for Deferred<'_, H> {
@@ -58,6 +61,14 @@ impl<H: ServerHost> Kv for Deferred<'_, H> {
 }
 impl<H: ServerHost> ServerHost for Deferred<'_, H> {
     fn get_block(&mut self, d: &str, p: Pos) -> Option<String> {
+        if self.resource && !self.cells.contains_key(&(d.into(),p)) {
+            let snapshot=self.host.cell_snapshot(d,p)?;
+            if !self.world_writes.iter().any(|w|w.guard.dim==d&&w.guard.pos==p){
+                let guard=CellGuard{dim:d.into(),pos:p,generation:self.generations.get(&(d.into(),p)).copied().unwrap_or(0),state:snapshot.state.clone()};
+                self.world_writes.push(CellWrite{guard,desired:snapshot.state.clone(),expected:snapshot,destroy:false});
+            }
+            return Some(self.world_writes.iter().find(|w|w.guard.dim==d&&w.guard.pos==p).unwrap().expected.state.clone());
+        }
         self.host.get_block(d, p)
     }
     fn block_resistance(&mut self, d: &str, p: Pos) -> Option<f32> {
@@ -82,6 +93,16 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
         self.host.solar_sample(d, p)
     }
     fn set_blocks(&mut self, d: &str, b: &[(Pos, String)]) -> Result<(), String> {
+        if self.resource {
+            for (pos,desired) in b {
+                if let Some(previous)=self.world_writes.iter_mut().find(|w|w.guard.dim==d&&w.guard.pos==*pos){previous.desired=desired.clone();previous.destroy=blockstate::id_of(desired)=="minecraft:air" && blockstate::id_of(&previous.expected.state)!="minecraft:air";continue;}
+                let Some(expected)=self.host.cell_snapshot(d,*pos) else{self.valid=false;return Err("unavailable consumed cell".into())};
+                let guard=CellGuard{dim:d.into(),pos:*pos,generation:self.generations.get(&(d.into(),*pos)).copied().unwrap_or(0),state:expected.state.clone()};
+                let destroy=blockstate::id_of(desired)=="minecraft:air" && blockstate::id_of(&expected.state)!="minecraft:air";
+                self.world_writes.push(CellWrite{guard,expected,desired:desired.clone(),destroy});
+            }
+            return Ok(());
+        }
         let mut expected=Vec::new();
         for (pos,_) in b {
             let Some(state)=self.host.get_block(d,*pos) else{self.valid=false;return Err("unavailable effect destination".into())};
@@ -90,7 +111,7 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
             let generation=self.cells.get(&key).map_or(current,|origin|{
                 if origin.generation==current || self.vacant.contains(&key)&&blockstate::id_of(&state)=="minecraft:air"&&origin.generation.checked_add(1)==Some(current){current}else{origin.generation}
             });
-            expected.push(CellGuard{dim:d.into(),pos:*pos,generation,state:blockstate::id_of(&state).into()});
+            expected.push(CellGuard{dim:d.into(),pos:*pos,generation,state});
         }
         self.critical.push_back(WorldEffect::Blocks {dim:d.into(),blocks:b.to_vec(),expected});
         Ok(())
@@ -148,10 +169,9 @@ impl Server {
         let batches=self.ready.world.machine_effects.len();
         if batches==0{return;}
         for _ in 0..batches {
-            loop {
-                let Some(batch)=self.ready.world.machine_effects.front() else{break};
+            while let Some(batch)=self.ready.world.machine_effects.front() {
                 let Some(mut effect)=batch.effects.front().cloned() else{self.ready.world.machine_effects.pop_front();break};
-                let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::PileExplosion{dim,..}=>dim};
+                let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::EncodedItems{dim,..}|WorldEffect::PileExplosion{dim,..}=>dim};
                 if !host.pile_reachable(dim){self.ready.world.machine_effects.rotate_left(1);break;}
                 let mut wait=false;
                 let mut physical=false;
@@ -162,8 +182,8 @@ impl Server {
                         if !self.current_guard(g){continue;}
                         match host.get_block(dim,*pos){
                             None=>{wait=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
-                            Some(actual) if blockstate::id_of(&actual)==g.state=>{physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
-                            Some(actual) if blockstate::id_of(&actual)==blockstate::id_of(desired)=>{physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
+                            Some(actual) if actual==g.state=>{physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
+                            Some(actual) if actual==*desired=>{physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
                             Some(_)=>{},
                         }
                     }
@@ -179,6 +199,7 @@ impl Server {
                 let done=match &effect {
                     WorldEffect::Blocks{dim,blocks,..}=>blocks.is_empty()||host.set_machine_blocks(dim,blocks,&self.ready.world.machine_effects.front().unwrap().owners).is_ok(),
                     WorldEffect::Items{dim,pos,items}=>host.drop_items(dim,*pos,items),
+                    WorldEffect::EncodedItems{dim,pos,items}=>host.drop_encoded_items(dim,*pos,items),
                     WorldEffect::PileExplosion{dim,pos}=>host.pile_explode(dim,*pos),
                 };
                 if !done{self.ready.world.machine_effects.rotate_left(1);break;}
@@ -273,6 +294,7 @@ impl Server {
             generations:before.world.generations.clone(),
             origins:before.world.machines.iter().filter(|(k,_)|k.0==dim).map(|(k,m)|CellGuard::machine(k,m)).collect(),
             valid:true,
+            resource:false,world_writes:Vec::new(),
         };
         let outcome =
             self.native_pile_use_inner(&mut staged, dim, at, face, held, depletion, player);
@@ -311,6 +333,7 @@ impl Server {
             let m = self.ready.world.machines.get_mut(k).unwrap();
             let (desired, data) = Self::machine_output(m, expected);
             commits.push(MachineCommit {
+                cells: Vec::new(),
                 guard:CellGuard::machine(k,&before.world.machines[k]),
                 expected_saved:before.native_saved.contains_key(k),
                 dim: k.0.clone(),
@@ -445,6 +468,7 @@ impl Server {
             generations:before.world.generations.clone(),
                     origins:before.world.machines.iter().map(|(k,m)|CellGuard::machine(k,m)).collect(),
                     valid:true,
+                    resource:before.world.machines.values().any(|m|matches!(m.data,crate::machine::Data::Excavator(_)|crate::machine::Data::Drill(_))),world_writes:Vec::new(),
                 };
                 let removed: Vec<_> = keys
                     .iter()
@@ -541,6 +565,7 @@ impl Server {
                         || self.ready.bridge.data.get(k) != Some(&data)
                     {
                         commits.push(MachineCommit {
+                cells: Vec::new(),
                             guard:CellGuard::machine(k,&before.world.machines[k]),
                             expected_saved:before.native_saved.contains_key(k),
                             dim: k.0.clone(),
@@ -552,8 +577,18 @@ impl Server {
                         });
                     }
                 }
+                if !staged.world_writes.is_empty(){
+                    if let Some(c)=commits.first_mut(){c.cells=staged.world_writes.clone();}else{staged.valid=false;}
+                }
                 accepted = staged.valid && staged.host.commit_machines(&commits);
                 if accepted {
+                    for w in &staged.world_writes {
+                        if w.desired!=w.expected.state{self.ready.world.generations.entry(w.guard.key()).or_insert(w.guard.generation);}
+                        if blockstate::id_of(&w.expected.state)!=blockstate::id_of(&w.desired) && !w.expected.items.is_empty(){
+                            staged.origins.push(w.guard.clone());
+                            staged.critical.push_back(WorldEffect::EncodedItems{dim:w.guard.dim.clone(),pos:w.guard.pos,items:w.expected.items.clone()});
+                        }
+                    }
                     buttons.retain(|i| !keys.contains(&i.guard.key()));
                     for k in &keys {
                         self.ready.broken.remove(k);

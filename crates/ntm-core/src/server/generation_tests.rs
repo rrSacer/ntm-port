@@ -29,6 +29,9 @@ struct Host {
     commit_calls: usize,
     insert_on_commit: Option<(Pos, usize)>,
     refuse_at: Option<Pos>,
+    change_cell: Option<(Pos, String)>,
+    encoded: BTreeMap<Pos, Vec<String>>,
+    retained: Vec<String>,
 }
 impl Kv for Host {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -50,6 +53,19 @@ impl ServerHost for Host {
                 .unwrap_or("minecraft:air".into())
         })
     }
+    fn cell_snapshot(&mut self, d: &str, p: Pos) -> Option<super::CellSnapshot> {
+        let state = self.get_block(d, p)?;
+        let items = self.encoded.get(&p).cloned().unwrap_or_default();
+        Some(super::CellSnapshot {
+            state,
+            entity: (!items.is_empty()).then(|| format!("{items:?}")),
+            items,
+        })
+    }
+    fn drop_encoded_items(&mut self, _: &str, _: Pos, items: &[String]) -> bool {
+        self.retained.extend_from_slice(items);
+        true
+    }
     fn machine_slots(&mut self, _: &str, p: Pos) -> Option<Slots> {
         if self.unloaded.contains(&p) {
             None
@@ -68,6 +84,24 @@ impl ServerHost for Host {
         if let Some((p, i)) = self.insert_on_commit.take() {
             self.slots.get_mut(&p).unwrap()[i].as_mut().unwrap().count += 1;
         }
+        if let Some((p, state)) = self.change_cell.take() {
+            self.blocks.insert(p, state);
+        }
+        if cs
+            .iter()
+            .flat_map(|c| &c.cells)
+            .any(|w| self.cell_snapshot(&w.guard.dim, w.guard.pos).as_ref() != Some(&w.expected))
+        {
+            return false;
+        }
+        if self.refuse_blocks
+            && cs
+                .iter()
+                .flat_map(|c| &c.cells)
+                .any(|w| w.desired != w.expected.state)
+        {
+            return false;
+        }
         if self.refuse
             || cs.iter().any(|c| self.refuse_at == Some(c.pos))
             || cs.iter().any(|c| {
@@ -76,6 +110,14 @@ impl ServerHost for Host {
             })
         {
             return false;
+        }
+        for w in cs.iter().flat_map(|c| &c.cells) {
+            self.blocks.insert(w.guard.pos, w.desired.clone());
+            if blockstate::id_of(&w.expected.state) != blockstate::id_of(&w.desired) {
+                self.encoded.remove(&w.guard.pos);
+                self.slots.remove(&w.guard.pos);
+                self.saved.remove(&w.guard.pos);
+            }
         }
         for c in cs {
             self.slots.insert(c.pos, c.desired.clone());
@@ -99,7 +141,7 @@ impl ServerHost for Host {
                 self.saved.remove(p);
                 self.data.remove(p);
                 if let Some(c) = ntm_core::native::container(blockstate::id_of(s)) {
-                    self.slots.insert(*p, vec![None; c.slots as usize]);
+                    self.slots.insert(*p, vec![None; c.slots]);
                 }
             }
             self.blocks.insert(*p, s.clone());
@@ -671,4 +713,141 @@ fn an_inaccessible_cell_is_not_a_removal_and_exhausted_generations_freeze() {
     s.native_tick(&mut h, 3);
     assert_eq!(h.slots[&P][25].as_ref().unwrap().count, 1);
     assert_eq!(z(&h).water.mb, 0);
+}
+
+fn resource_machine(block: &str) -> (Host, Server, Pos) {
+    let mut h = Host::default();
+    let mut s = install(&mut h, block, crate::native::block_slots(block).len());
+    let target = [P[0], P[1] - 1, P[2]];
+    let m = s.ready.world.machines.get_mut(&(D.into(), P)).unwrap();
+    match &mut m.data {
+        Data::Excavator(e) => {
+            e.enabled = true;
+            e.power = crate::excavator::MAX_POWER;
+            e.worked = 100;
+            h.slots.get_mut(&P).unwrap()[crate::excavator::slot::DRILL] =
+                Some(Stack::new("ntm:drillbit__ferro", 1));
+            let target = [P[0], P[1] - 4, P[2]];
+            h.blocks.insert(target, "minecraft:iron_ore".into());
+            return (h, s, target);
+        }
+        Data::Drill(d) => {
+            d.power = d.shape.spec().max_power;
+            d.ticks = d.delay() - 1;
+            if d.tanks.len() > 2 {
+                d.tanks[2].mb = 1000;
+            }
+            h.blocks.insert(target, crate::oil_drill::OIL.into());
+        }
+        _ => panic!(),
+    }
+    (h, s, target)
+}
+fn resource_total(s: &Server, _h: &Host) -> u64 {
+    let m = &s.ready.world.machines[&(D.into(), P)];
+    match &m.data {
+        Data::Excavator(e) => e
+            .slots
+            .iter()
+            .flatten()
+            .filter(|i| i.id == "minecraft:iron_ore")
+            .map(|i| u64::from(i.count))
+            .sum(),
+        Data::Drill(d) => u64::from(d.tanks[0].mb),
+        _ => panic!(),
+    }
+}
+#[test]
+fn resource_consumption_compares_the_world_even_when_a_deposit_is_not_drained() {
+    for block in [
+        "ntm:machine_excavator",
+        "ntm:machine_well",
+        "ntm:machine_fracking_tower",
+    ] {
+        let (mut h, mut s, target) = resource_machine(block);
+        h.change_cell = Some((target, "minecraft:air".into()));
+        s.native_tick(&mut h, 2);
+        assert_eq!(
+            resource_total(&s, &h),
+            0,
+            "stale world read credited resource for {block}"
+        );
+        assert_eq!(h.blocks[&target], "minecraft:air");
+        // The player's extracted resource is the only product; retry observes air.
+        s.native_tick(&mut h, 3);
+        assert_eq!(
+            resource_total(&s, &h),
+            0,
+            "retry duplicated the player resource for {block}"
+        );
+    }
+}
+#[test]
+fn refused_world_commit_never_credits_mining_and_retry_preserves_retained_be_items() {
+    let (mut h, mut s, target) = resource_machine("ntm:machine_excavator");
+    h.blocks.insert(target, "minecraft:chest".into());
+    let nbt = "{id:'minecraft:diamond',count:7,components:{'minecraft:custom_name':'Tesouro'}}"
+        .to_string();
+    h.encoded.insert(target, vec![nbt.clone()]);
+    h.refuse_blocks = true;
+    s.native_tick(&mut h, 2);
+    assert_eq!(h.blocks[&target], "minecraft:chest");
+    assert!(h.retained.is_empty());
+    h.refuse_blocks = false;
+    s.native_tick(&mut h, 3);
+    assert_eq!(h.blocks[&target], "minecraft:air");
+    assert_eq!(h.retained, vec![nbt]);
+    s.native_tick(&mut h, 4);
+    assert_eq!(h.retained.len(), 1);
+}
+
+#[test]
+fn refused_consumed_cells_and_player_breaks_conserve_all_three_machine_products() {
+    for block in [
+        "ntm:machine_excavator",
+        "ntm:machine_well",
+        "ntm:machine_fracking_tower",
+    ] {
+        let (mut h, mut s, target) = resource_machine(block);
+        if let Data::Drill(d) = &mut s.ready.world.machines.get_mut(&(D.into(), P)).unwrap().data {
+            let seed = (0..10000)
+                .find(|seed| {
+                    let mut test = (**d).clone();
+                    test.rolls = *seed;
+                    test.suck(crate::oil_drill::OIL)
+                })
+                .expect("draining draw");
+            d.rolls = seed;
+        }
+        h.refuse_blocks = true;
+        s.native_tick(&mut h, 2);
+        assert_eq!(
+            resource_total(&s, &h),
+            0,
+            "refused world mutation credited {block}"
+        );
+        assert_ne!(h.blocks[&target], "minecraft:air");
+        // The player mines the whole remaining source. It is counted once,
+        // and neither the refused result nor its resource debit may survive.
+        let player_resource = 1;
+        h.blocks.insert(target, "minecraft:air".into());
+        h.refuse_blocks = false;
+        for tick in 3..8 {
+            s.native_tick(&mut h, tick);
+        }
+        assert_eq!(
+            player_resource + resource_total(&s, &h),
+            1,
+            "resource duplicated for {block}"
+        );
+    }
+}
+
+#[test]
+fn all_three_mining_fixtures_produce_with_a_healthy_atomic_host(){
+    for block in ["ntm:machine_excavator","ntm:machine_well","ntm:machine_fracking_tower"]{
+        let (mut h,mut s,_)=resource_machine(block);
+        s.native_tick(&mut h,2);
+        assert!(resource_total(&s,&h)>0,"dead fixture for {block}");
+    }
 }

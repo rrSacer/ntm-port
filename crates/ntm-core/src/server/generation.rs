@@ -86,7 +86,7 @@ impl Server {
                         _ => None,
                     })
                     .unwrap_or(&m.block);
-                (blockstate::id_of(&actual) != expected).then_some((k.clone(), m.generation))
+                (blockstate::id_of(&actual) != blockstate::id_of(expected)).then_some((k.clone(), m.generation))
             })
             .collect();
         for (k, generation) in absent {
@@ -94,7 +94,7 @@ impl Server {
                 self.ready
                     .world
                     .generations
-                    .insert(k.clone(), generation.checked_add(1).unwrap_or(u64::MAX));
+                    .insert(k.clone(), generation.saturating_add(1));
             }
             self.remember_removal(&k);
         }

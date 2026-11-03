@@ -28,6 +28,7 @@ static SERVER: Mutex<Option<(Server, u64)>> = Mutex::new(None);
 /// writes report here while it holds its own.
 static CHANGES: Mutex<Vec<(String, [i32; 3], String, String)>> = Mutex::new(Vec::new());
 /// Menu buttons pressed: (player, dimension, position, button).
+static POST_SYNC:Mutex<Vec<(ntm_core::server::CellGuard,ntm_core::server::CellSnapshot)>>=Mutex::new(Vec::new());
 static BUTTONS: Mutex<Vec<(String, String, [i32; 3], u32)>> = Mutex::new(Vec::new());
 
 /// Confirmed role writes already installed the model synchronously. Tag only
@@ -67,6 +68,7 @@ pub(super) fn world(open: bool) {
     *lock(&SERVER) = None;
     lock(&CHANGES).clear();
     lock(&BUTTONS).clear();
+    lock(&POST_SYNC).clear();
     if open {
         eprintln!("ntm native: {} machine blocks", ntm_core::registry::machine_ids().count());
     }
@@ -97,6 +99,7 @@ pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: 
     // Arbitrary cells can be guarded mining/role-effect destinations too.
     // The core ignores untracked vanilla cells without retaining an epoch.
     if old != new {
+        lock(&POST_SYNC).retain(|(g,_)|g.dim!=dim||g.pos!=pos);
         lock(&CHANGES).push((dim.to_string(), pos, old, new));
     }
 }
@@ -229,6 +232,16 @@ pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mo
 
 /// The end of a server tick: the server's phases.
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
+    let mut retry=Vec::new();
+    for (origin,expected) in std::mem::take(&mut *lock(&POST_SYNC)){
+        // Any identity change since this committed sync makes it obsolete.
+        match cell_snapshot(game,&origin.dim,origin.pos){
+            None=>retry.push((origin,expected)),
+            Some(actual) if actual==expected=>{in_place(game,&origin.dim,|g|{g.world.modified.insert((origin.pos[0]>>4,origin.pos[2]>>4));g.native_block_entity_changed(origin.pos);});},
+            Some(_)=>{},
+        }
+    }
+    lock(&POST_SYNC).extend(retry);
     let mut guard = lock(&SERVER);
     let changes = std::mem::take(&mut *lock(&CHANGES));
     let buttons = std::mem::take(&mut *lock(&BUTTONS));
@@ -332,7 +345,24 @@ fn in_place<R>(game: &mut crate::game::Game<'_>, dim: &str, f: impl FnOnce(&mut 
     game.visit_level(dim_of(dim)?, f)
 }
 
+/// Snapshot the whole entity, including item components and custom data.
+fn cell_snapshot(game:&crate::game::Game<'_>,dim:&str,pos:[i32;3])->Option<ntm_core::server::CellSnapshot>{
+    let state=game.native_loaded_block(dim,pos)?;
+    let target=dim_of(dim)?;
+    let world=if target==game.dim{&game.world}else{game.levels.parked_world(target)?};
+    let entity=world.block_entities.get(&(pos[0],pos[1],pos[2]));
+    let items=entity.map(|e|e.contents().iter().map(|i|horizon_world::snbt_text::to_snbt(&horizon_client::save::item_to_nbt(i))).collect()).unwrap_or_default();
+    let entity=entity.map(|e|horizon_world::snbt_text::to_snbt(&horizon_client::save::encode_block_entity((pos[0],pos[1],pos[2]),e,ntm_core::blockstate::id_of(&state))));
+    Some(ntm_core::server::CellSnapshot{state,entity,items})
+}
+
 impl ServerHost for Host<'_, '_> {
+    fn cell_snapshot(&mut self,dim:&str,pos:[i32;3])->Option<ntm_core::server::CellSnapshot>{cell_snapshot(self.game,dim,pos)}
+    fn drop_encoded_items(&mut self,dim:&str,pos:[i32;3],items:&[String])->bool{
+        let items:Option<Vec<_>>=items.iter().map(|i|horizon_world::nbt::parse_snbt(i).ok().and_then(|(t,_)|horizon_client::save::item_from_nbt(&t))).collect();
+        let Some(items)=items else{eprintln!("ntm: invalid retained item NBT at {dim} {pos:?}");return false};
+        in_place(self.game,dim,|g|for i in items{g.spawn_item(i,pos.map(|v|f64::from(v)+0.5),crate::game::dispenser::new_item_motion(),0);}).is_some()
+    }
     fn drop_items(&mut self,dim:&str,p:[i32;3],items:&[(String,u32)])->bool {
         let at=p.map(|v|f64::from(v)+0.5);
         in_place(self.game,dim,|g|{
@@ -438,6 +468,32 @@ impl ServerHost for Host<'_, '_> {
             let (_,synced)=file(self.game,&id);
             prepared.push(synced);
         }
+        // Resolve states, complete BE snapshots and visitability before ANY
+        // publication. A queued external A→air→A also invalidates these cells.
+        if self.game.remote.is_some() || self.game.world_debug{return false;}
+        let mut cells=Vec::new();
+        let mut cell_keys=std::collections::BTreeSet::new();
+        for w in commits.iter().flat_map(|c|&c.cells){
+            let key=(w.guard.dim.clone(),w.guard.pos);
+            if !cell_keys.insert(key.clone()) || seen.contains(&key) || w.guard.generation==u64::MAX{return false;}
+            if lock(&CHANGES).iter().any(|(d,p,_,_)|d==&key.0&&p==&key.1){return false;}
+            if cell_snapshot(self.game,&key.0,key.1).as_ref()!=Some(&w.expected){return false;}
+            // A moving piston's carried state lives in Ticks, outside the BE
+            // snapshot. Wait for its vanilla finalTick rather than mine a
+            // transient, unaccounted carried block or remove its base early.
+            if ntm_core::blockstate::id_of(&w.expected.state)=="minecraft:moving_piston"{return false;}
+            let Some(dim)=dim_of(&key.0) else{return false};
+            if self.game.visit_level(dim,|_|()).is_none(){return false;}
+            let mut reader=horizon_client::command::Reader::new(&w.desired);
+            let Ok(arg)=horizon_client::command::block::parse(&mut reader,&self.game.ui.registries,false) else{return false};
+            if reader.can_read() || arg.nbt.is_some() || arg.tag{return false;}
+            let Ok(state)=self.game.pack.assets.registry.resolve(&horizon_world::chunk::BlockState{name:arg.id,properties:arg.properties.into_iter().collect()}) else{return false};
+            let Some(old)=self.game.visit_level(dim,|g|g.world.block(w.guard.pos[0],w.guard.pos[1],w.guard.pos[2]))else{return false};
+            // Debug levels reject set_raw; preflight every visited level too.
+            if self.game.visit_level(dim,|g|g.world_debug).unwrap_or(true){return false;}
+            cells.push((w.clone(),dim,old,state));
+        }
+        if cells.len()>65_536{return false;}
         let mut notify=Vec::new();
         for (c,synced) in commits.iter().zip(prepared) {
             // The preflight guarantees this entity is still accessible; this
@@ -455,6 +511,44 @@ impl ServerHost for Host<'_, '_> {
                 ntm_core::native::sync_changed(sent.as_deref(),&c.data,&synced)
             }).expect("atomic preflight retains entity during exclusive Game access");
             if changed {notify.push((c.dim.clone(),c.pos));}
+        }
+        // Publication cannot fail: exclusive Game access, resident/bounded
+        // cells and valid states were checked above. No cascade runs here.
+        for (w,dim,old,new) in &cells {
+            self.game.visit_level(*dim,|g|{
+                let pos=w.guard.pos;
+                if old==new{return;}
+                if g.res.facts().get(*old).name!=g.res.facts().get(*new).name{
+                    g.world.block_entities.remove(&(pos[0],pos[1],pos[2]));
+                }
+                g.with_level(|b,level,ticks|{
+                    let changed=b.set_block(level,ticks,horizon_core::position::BlockPos::new(pos[0],pos[1],pos[2]),*new,horizon_world::level::flags::UPDATE_CLIENTS|horizon_world::level::flags::UPDATE_SKIP_ALL_SIDEEFFECTS);
+                    assert!(changed,"exclusive loaded-cell preflight guarantees publication");
+                });
+            }).expect("preflight retains visited level");
+        }
+        // All BE and cell writes now exist. Notify through vanilla Sim only.
+        // Failures after this boundary are diagnostics/sync retries; NEVER a
+        // refusal, because rolling back resource accounting would duplicate it.
+        for (w,dim,old,new) in &cells {
+            self.game.visit_level(*dim,|g|{
+                if old==new{return;}
+                let p=w.guard.pos;
+                if g.res.facts().get(*old).name!=g.res.facts().get(*new).name{g.jukebox_removed(p);}
+                let pos=horizon_core::position::BlockPos::new(p[0],p[1],p[2]);
+                g.with_level(|b,level,ticks|b.ntm_committed_updates(level,ticks,pos,*old,*new));
+                if w.destroy{
+                    g.level_events.push(horizon_world::level::LevelEvent::LevelEvent{id:2001,pos,data:old.0 as i32});
+                    g.level_events.push(horizon_world::level::LevelEvent::GameEvent{pos,event:"minecraft:block_destroy",state:Some(*old)});
+                }
+                if let Err(e)=g.process_level_events(){
+                    eprintln!("ntm: committed cell updates {p:?}: {e}; retaining sync retry");
+                    if let Some(snapshot)=cell_snapshot(g,&w.guard.dim,p){let mut guard=w.guard.clone();if g.res.facts().get(*old).name!=g.res.facts().get(*new).name{guard.generation=guard.generation.saturating_add(1);}guard.state=snapshot.state.clone();lock(&POST_SYNC).push((guard,snapshot));}
+                }
+                let landed=g.world.block(p[0],p[1],p[2]);
+                let name=g.res.facts().get(*new).name.clone();
+                if g.res.facts().get(*old).name!=name && g.res.facts().get(landed).name==name && let Some(entity)=g.new_block_entity(&name){g.world.block_entities.insert((p[0],p[1],p[2]),entity);}
+            }).expect("post-publication level remains accessible");
         }
         for (dim,p) in notify {
             if dim_of(&dim)==Some(self.game.dim){self.game.native_block_entity_changed(p);}
@@ -685,5 +779,90 @@ mod zirnox_tests {
         let product=Stack::new("ntm:rod_zirnox_uranium_fuel_depleted",1);
         let spent=item(Some(&product),Some(rod)).unwrap();
         assert!(spent.data().and_then(|d|d.other("minecraft:custom_data")).is_none());
+    }
+}
+
+#[cfg(test)]
+mod world_commit_tests {
+    use super::*;
+    use horizon_core::position::{BlockPos,ChunkPos};
+    use horizon_world::{registry::BlockStateId,level::{Behaviours,LevelAccess,LevelEvent,Ticks,flags}};
+    use horizon_client::{world::World,containers::BlockEntity,chunk::Chunk};
+    use std::{cell::RefCell,sync::Arc};
+    struct Resident {
+        world:World,events:Vec<LevelEvent>,neighbors:RefCell<Vec<BlockPos>>,retained:Vec<String>,time:i64,
+    }
+    impl Resident {
+        fn new(air:BlockStateId)->Self{
+            let mut world=World::new(air,0);
+            for x in -1..=1{for z in -1..=1{world.chunks.insert((x,z),Arc::new(Chunk::empty(x,z)));}}
+            Self{world,events:Vec::new(),neighbors:RefCell::new(Vec::new()),retained:Vec::new(),time:0}
+        }
+        fn retain(&mut self,p:BlockPos){
+            if let Some(be)=self.world.block_entities.remove(&(p.x,p.y,p.z)){
+                self.retained.extend(be.contents().iter().map(|i|horizon_world::snbt_text::to_snbt(&horizon_client::save::item_to_nbt(i))));
+            }
+        }
+    }
+    impl LevelAccess for Resident {
+        fn block_state(&self,p:BlockPos)->BlockStateId{self.world.block(p.x,p.y,p.z)}
+        fn set_raw(&mut self,p:BlockPos,s:BlockStateId)->Option<BlockStateId>{let old=self.block_state(p);self.world.set(p.x,p.y,p.z,s).ok()?;Some(old)}
+        fn is_loaded(&self,p:BlockPos)->bool{self.world.loaded(p.x,p.z)}
+        fn random(&mut self)->&mut horizon_core::random::LegacyRandom{&mut self.world.random}
+        fn game_time(&self)->i64{self.time}
+        fn emit(&mut self,e:LevelEvent){self.events.push(e);}
+        fn observe_neighbor_changed(&self,p:BlockPos,_:BlockStateId,_:horizon_world::level::BlockId,_:bool){self.neighbors.borrow_mut().push(p);}
+    }
+    #[test]
+    fn atomic_world_publication_matches_vanilla_storage_light_heightmaps_be_and_updates(){
+        let root=std::path::PathBuf::from(std::env::var_os("HORIZON_RESOURCES").expect("HORIZON_RESOURCES required"));
+        let registry=horizon_world::level::data::load_registry(&root).unwrap();
+        let b=Behaviours::load(&registry,&root).unwrap();
+        let id=|name:&str,props:&[(&str,&str)]|registry.resolve(&horizon_world::chunk::BlockState{name:format!("minecraft:{name}"),properties:props.iter().map(|(k,v)|(k.to_string(),v.to_string())).collect()}).unwrap();
+        let at=BlockPos::new(1,100,1);
+        for name in ["chest","redstone_block","stone"]{
+            let old=id(name,&[]);let air=b.air();
+            let mut vanilla=Resident::new(air);let mut committed=Resident::new(air);
+            let mut vt=Ticks::new(0);let mut ct=Ticks::new(0);
+            for ticks in [&mut vt,&mut ct]{for x in -1..=1{for z in -1..=1{ticks.add_empty_chunk(ChunkPos::new(x,z)).unwrap();}}}
+            for level in [&mut vanilla,&mut committed]{
+                level.world.set(at.x,at.y,at.z,old).unwrap();
+                level.world.set(2,100,1,id("observer",&[("facing","west"),("powered","false")])).unwrap();
+                level.world.set(1,100,2,id("redstone_lamp",&[("lit","true")])).unwrap();
+                let mut jewel=ItemStack::new("minecraft:diamond",7);
+                jewel.data_mut().set_other("minecraft:custom_name",Some(Tag::String("Tesouro".into())));
+                if name=="chest"{let mut slots=vec![None;27];slots[0]=Some(jewel);level.world.block_entities.insert((1,100,1),BlockEntity::Chest(slots));}
+                level.retain(at);
+            }
+            assert!(b.set_block(&mut vanilla,&mut vt,at,air,flags::UPDATE_ALL));
+            assert!(b.set_block(&mut committed,&mut ct,at,air,flags::UPDATE_CLIENTS|flags::UPDATE_SKIP_ALL_SIDEEFFECTS));
+            b.ntm_committed_updates(&mut committed,&mut ct,at,old,air);
+            assert_eq!(committed.retained,vanilla.retained);
+            if name=="chest"{
+                assert_eq!(committed.retained.len(),1);
+                let (tag,_)=horizon_world::nbt::parse_snbt(&committed.retained[0]).unwrap();
+                let jewel=horizon_client::save::item_from_nbt(&tag).unwrap();
+                assert_eq!(jewel.count,7);assert!(jewel.data().unwrap().other("minecraft:custom_name").is_some());
+            }
+            assert!(!committed.world.block_entities.contains_key(&(1,100,1)));
+            let mut pulse=false;
+            for _ in 0..8{
+                for level in [&mut vanilla,&mut committed]{level.time+=1;}
+                b.tick_scheduled(&mut vanilla,&mut vt);b.tick_scheduled(&mut committed,&mut ct);
+                for x in 0..=3{for z in 0..=3{
+                    assert_eq!(committed.world.world_surface(x,z,|s|b.is_air(s)),vanilla.world.world_surface(x,z,|s|b.is_air(s)));
+                    assert_eq!(committed.world.motion_blocking(x,z,|s|!b.is_air(s)),vanilla.world.motion_blocking(x,z,|s|!b.is_air(s)));
+                    for y in 99..=101{assert_eq!(committed.world.block(x,y,z),vanilla.world.block(x,y,z));assert_eq!(committed.world.light(x,y,z),vanilla.world.light(x,y,z));}
+                }}
+                assert_eq!(committed.world.dirty_light,vanilla.world.dirty_light);
+                assert_eq!(committed.world.light_edits,vanilla.world.light_edits);
+                assert_eq!(committed.events,vanilla.events);
+                assert_eq!(*committed.neighbors.borrow(),*vanilla.neighbors.borrow());
+                pulse|=committed.world.block(2,100,1)==id("observer",&[("facing","west"),("powered","true")]);
+            }
+            assert!(pulse,"observer notified for {name}");
+            assert!(!committed.events.iter().any(|e|matches!(e,LevelEvent::DropResources{..})));
+            assert_eq!(committed.world.block(1,100,2),id("redstone_lamp",&[("lit","false")]));
+        }
     }
 }
