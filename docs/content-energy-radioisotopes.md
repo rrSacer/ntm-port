@@ -58,7 +58,28 @@ as filas avançaram mantendo os mesmos itens em processamento e as baterias
 receberam **14.210→41.615 HE** e **35.000→170.000 HE**. Teste nativo de
 preservação do i64 e dos campos extras passou; Clippy nativo sem `-A` passou.
 A suíte do pin novo tem **387 unitários +26 integração**, Clippy core limpo e
-**219 Python**. Regressões completas no mesmo release estão em andamento.
+**219 Python**. As regressões completas fecharam no mesmo cliente:
+
+| Cenário | Verificações |
+| --- | ---: |
+| RTG/radgen, incluindo automação e reabertura | 66 |
+| Mineração | 18 |
+| Bombas | 49 |
+| ZIRNOX, incluindo automação e reabertura | 127 |
+| Pilha | 83 |
+| Dimensões +idle +idle-clean | 13 |
+| Inventory-proxy (forma de fixture declarada) | 12 |
+| Solar/Stirling, incluindo reabertura | 36 |
+| Combustão | 15 |
+| Catálogo K3 +radioisótopos (87 blocos, 164 itens) | 251 |
+| **Total** | **670** |
+
+Os níveis idle fecharam e salvaram em 17 s, com e sem leitor. O agregador
+`.agent-tmp/rtg/collect-validation.py` exige hashes iguais de cliente/pacote e
+confere os quatro journals vazios após o fechamento de cada mundo. O fixture
+`inventory-proxy` usa o mesmo cliente e um hmod derivado que altera somente
+`machine_zirnox.json.multiblock`; a comparação byte a byte do restante passou.
+Índice completo: `.agent-tmp/rtg/validation-policy.json`.
 
 Índice: `.agent-tmp/rtg/runtime-validation.json`.
 Cliente SHA-256 `3f9402c7da8dbfc11ef06294871e9f0457f897037d3dd519fbabcc7fb4028c21`;
