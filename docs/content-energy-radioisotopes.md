@@ -1,6 +1,6 @@
 # Energia: RTG e radgen
 
-## Runtime — 03/11/2026 (branch rtg-radgen, em validação)
+## Runtime — 03/11/2026 (branch rtg-radgen)
 
 As duas identidades agora usam `Kind::Radioisotope`. O núcleo está em
 `crates/ntm-core/src/radioisotopes.rs`, com tabela gerada do contrato Java.
@@ -48,8 +48,23 @@ inserção por porta e os testes da mesma política cobrem a regra.
 
 A fase `automation` conta 24 gems entre entrada e processamento, depois 12
 diamantes +12 gems após sprint natural, e conserva 24 após extrações pela porta
-lateral e sob o núcleo. A execução no pin novo está em andamento; os números
-aprovados do pin anterior abaixo são históricos e não substituem essa prova.
+lateral e sob o núcleo. A cena `radioisotopes-u98qgbku` passou as **66 verificações** no pin `7607685b8`,
+sem fase excluída. O funil lateral extraiu 5 diamantes e o funil sob o núcleo
+extraiu 7; nenhum retirou gem. A célula não-porta manteve a pedra e o RTG manteve
+sua recusa de inserção/extração automáticas.
+
+Na reabertura, a vida radium i64 caiu de **11.519.957.675 para 11.519.957.479**,
+as filas avançaram mantendo os mesmos itens em processamento e as baterias
+receberam **14.210→41.615 HE** e **35.000→170.000 HE**. Teste nativo de
+preservação do i64 e dos campos extras passou; Clippy nativo sem `-A` passou.
+A suíte do pin novo tem **387 unitários +26 integração**, Clippy core limpo e
+**219 Python**. Regressões completas no mesmo release estão em andamento.
+
+Índice: `.agent-tmp/rtg/runtime-validation.json`.
+Cliente SHA-256 `3f9402c7da8dbfc11ef06294871e9f0457f897037d3dd519fbabcc7fb4028c21`;
+pacote SHA-256 `b18682da6df57763ecf5955ca9bdc276c4cb314661aebb3ee7af0f3ee9d8f06e`.
+
+### Histórico da aceitação anterior, pin ec479adb3
 
 Validação intermediária: 383 testes unitários Rust e 26 de integração passaram;
 Clippy `--workspace --all-targets -- -D warnings` passou. A suíte inclui os 28
