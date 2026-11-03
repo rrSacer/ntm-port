@@ -207,14 +207,16 @@ impl Server {
     /// actually flushed. Until then replay after a crash may duplicate an
     /// effect, but must never acknowledge an entity not yet saved by the world.
     pub fn native_world_saved(&mut self, host: &mut impl ServerHost, wait: bool) {
-        if !wait || self.ready.world.applied_machine_effects.is_empty() {
+        let applied = wait.then(|| std::mem::take(&mut self.ready.world.applied_machine_effects));
+        if self.ready.world.kept(0) == self.ready.kept {
             return;
         }
-        let applied = std::mem::take(&mut self.ready.world.applied_machine_effects);
         let kept = self.ready.world.kept(self.ready.world.ticks);
         if let Err(e) = host.set(crate::persist::KEY, &kept) {
-            self.ready.world.applied_machine_effects = applied;
-            host.log(&format!("machine effect receipts: {e}"));
+            if let Some(applied) = applied {
+                self.ready.world.applied_machine_effects = applied;
+            }
+            host.log(&format!("machine effect receipts/removals: {e}"));
         } else {
             self.ready.kept = self.ready.world.kept(0);
         }
@@ -233,8 +235,13 @@ impl Server {
                         // Its BE may already be gone even if the level closes
                         // before its coupled group can commit. Keep the full
                         // confirmed state outside that missing BE meanwhile.
-                        if !self.ready.world.removals.iter().any(|(key, _)| key == &k) {
-                            self.ready.world.removals.push((k.clone(), m.clone()));
+                        if !self.ready.world.removals.iter().any(|r| r.key == k) {
+                            self.ready.world.removals.push(crate::persist::Removal {
+                                key: k.clone(),
+                                machine: m.clone(),
+                                engine_slots: self.ready.bridge.last.contains_key(&k)
+                                    || container_bridge::layout(&m.block).is_some(),
+                            });
                         }
                         self.ready.broken.insert(k, s);
                     }
@@ -289,6 +296,22 @@ impl Server {
             .filter(|(k, m)| before.world.machines.get(*k) != Some(*m))
             .map(|(k, _)| k.clone())
             .collect();
+        if keys.iter().any(|k| {
+            before.broken.contains_key(k)
+                || before.world.machines.get(k).is_some_and(|m| match &m.data {
+                    crate::machine::Data::Pile(p) => match &**p {
+                        crate::pile::Pile::Core(Some(c)) => before
+                            .broken
+                            .keys()
+                            .any(|b| b.0 == k.0 && c.shape.contains(b.1)),
+                        _ => false,
+                    },
+                    _ => false,
+                })
+        }) {
+            self.ready = before;
+            return Some(PileUse::Handled);
+        }
         let mut commits = Vec::new();
         for k in &keys {
             let Some(expected) = observed.get(k) else {
@@ -335,6 +358,7 @@ impl Server {
     }
 
     pub(super) fn local_steps(&mut self, host: &mut impl ServerHost) {
+        self.validate_detonations(host);
         let mut buttons = std::mem::take(&mut self.ready.pending_buttons);
         buttons.extend(host.machine_buttons());
         let mut groups: Vec<Vec<Key>> = Vec::new();
@@ -445,6 +469,7 @@ impl Server {
                 }
                 self.pile_tick(&mut staged);
                 self.zirnox_tick(&mut staged);
+                self.requested_detonations(&mut staged);
                 for m in self.ready.world.machines.values_mut() {
                     m.logic_mut().tick();
                     match &mut m.data {
@@ -524,7 +549,7 @@ impl Server {
                     buttons.retain(|(_, d, p, _)| !keys.contains(&(d.clone(), *p)));
                     for k in &keys {
                         self.ready.broken.remove(k);
-                        self.ready.world.removals.retain(|(key, _)| key != k);
+                        self.ready.world.removals.retain(|r| &r.key != k);
                         if !self.ready.world.machines.contains_key(k) {
                             self.slots_gone(k);
                             self.ready.native_saved.remove(k);

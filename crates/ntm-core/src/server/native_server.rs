@@ -26,7 +26,9 @@ impl Server {
         crate::radiation::warm();
         let world = WorldState::load(host);
         let kept = world.kept(0);
-        let broken=world.removals.iter().map(|(k,m)|(k.clone(),m.block.clone())).collect();
+        let broken=world.removals.iter().map(|r|(r.key.clone(),r.machine.block.clone())).collect();
+        let mut bridge=container_bridge::Bridge::default();
+        for r in &world.removals {if r.engine_slots{bridge.last.insert(r.key.clone(),Vec::new());}}
         Server {
             blasts: crate::blast::Runtime::default(),
             fluidnet: fluid_server::FluidNet::default(),
@@ -37,6 +39,7 @@ impl Server {
             ready: Ready {
                 world,
                 broken,
+                bridge,
                 topo_dirty: true,
                 kept,
                 ..Ready::default()
@@ -54,9 +57,7 @@ impl Server {
             self.players = players;
         }
         self.flush_machine_effects(host);
-        for e in std::mem::take(&mut self.queued) {
-            self.native_event(host, e);
-        }
+        self.native_record_events(host);
         // Check accessibility every tick: a refused local step must be able to
         // recover, but must never simulate while its BE remains inaccessible.
         for (key,m) in &self.ready.world.machines {
@@ -89,6 +90,12 @@ impl Server {
         self.zirnox_effects(host);
         self.native_save(host);
         self.keep_world(host);
+    }
+
+    /// Record confirmed changes without simulating a machine. The native save
+    /// callback also uses this when a player quits between two server ticks.
+    pub fn native_record_events(&mut self,host:&mut impl ServerHost){
+        for e in std::mem::take(&mut self.queued){self.native_event(host,e);}
     }
 
     /// The world's state outside the blocks, kept when it changed (the
@@ -317,8 +324,11 @@ mod tests {
         refused_slots: BTreeSet<(Pos, u32)>,
         refuse_after_staging:bool,
         staged_writes:usize,
+        refuse_state:bool,
+        told:Vec<String>,
         take_during_commit:Option<(Pos,usize)>,
         player:Vec<Stack>,
+        emitted:Vec<Stack>,
         signal: BTreeMap<Pos, u8>,
         buttons: Vec<(String, String, Pos, u32)>,
         kv: crate::kv::MemKv,
@@ -340,7 +350,7 @@ mod tests {
         fn commit_machine(&mut self,c:&MachineCommit)->bool{self.commit_machines(std::slice::from_ref(c))}
         fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
             if self.unreachable{return false;}
-            if let Some((p,i))=self.take_during_commit.take(){if let Some(v)=self.slots.get_mut(&p).and_then(|s|s[i].take()){self.player.push(v);}}
+            if let Some((p,i))=self.take_during_commit.take() && let Some(v)=self.slots.get_mut(&p).and_then(|s|s[i].take()){self.player.push(v);}
             let mut staged=self.slots.clone();
             for c in cs {
                 if staged.get(&c.pos).cloned().unwrap_or_default()!=c.expected{return false;}
@@ -351,6 +361,7 @@ mod tests {
                     if self.refuse_after_staging{return false;}
                 }
             }
+            if self.refuse_state{return false;}
             self.slots=staged;
             for c in cs{self.data.insert(c.pos,c.data.clone());self.saved.insert(c.pos,c.json.clone());}true
         }
@@ -363,7 +374,8 @@ mod tests {
             }
             Ok(())
         }
-        fn tell(&mut self, _player: &str, _text: &str) {}
+        fn tell(&mut self, _player: &str, text: &str) {self.told.push(text.into());}
+        fn drop_items(&mut self,_:&str,_:Pos,items:&[(String,u32)])->bool{self.emitted.extend(items.iter().map(|(id,n)|Stack::new(id,*n)));true}
         fn log(&mut self, _text: &str) {}
         fn machine_slots(&mut self, _dim: &str, p: Pos) -> Option<Slots> {
             if self.unreachable {
@@ -520,6 +532,87 @@ mod tests {
         s.native_tick(&mut w,3);
         let Data::Zirnox(z)=&s.ready.world.machines[&(OW.into(),AT)].data else{panic!()};
         assert_eq!(z.water.mb,1000);assert_eq!(w.slots[&AT][27].as_ref().unwrap().id,"minecraft:bucket");
+    }
+
+    fn armed_bomb(block:&str)->(World,Server,PlayerInfo) {
+        let mut w=World::default();w.blocks.insert(AT,block.into());
+        let parts=crate::bomb::bomb_type(block).unwrap().slots.iter().map(|s|Some(Stack::new(s.item,1))).collect();w.slots.insert(AT,parts);
+        let m=Machine::new(Kind::Bomb,block,None);let mut s=Server::native(&mut w,0);assert!(s.native_adopt(OW,AT,&serde_json::to_string(&m).unwrap()));
+        let p=PlayerInfo{id:"p".into(),name:"p".into(),dim:OW.into(),pos:[0.,64.,4.],creative:true};
+        s.bomb_command(&mut w,Some(&p),"config mundo raiomax 4").unwrap();
+        assert!(s.detonator(&mut w,&p,Some(AT),true).contains("ligado"));
+        assert!(s.detonator(&mut w,&p,None,false).contains("solicitad"));
+        (w,s,p)
+    }
+    #[test]
+    fn a_manual_nuke_spends_no_components_or_effects_before_atomic_confirmation() {
+        for partial in [false,true] {
+            let (mut w,mut s,_)=armed_bomb("ntm:nuke_boy");let original=w.slots[&AT].clone();
+            w.refuse_state= !partial;w.refuse_after_staging=partial;s.native_tick(&mut w,1);
+            assert_eq!(w.slots[&AT],original);assert_eq!(s.ready.world.bombs.next,0);assert_eq!(s.ready.detonations.len(),1);
+            assert_eq!(w.blocks[&AT],"ntm:nuke_boy");assert!(s.ready.world.bombs.queue.is_empty());
+            w.refuse_state=false;w.refuse_after_staging=false;s.native_tick(&mut w,2);
+            assert!(w.slots[&AT].iter().all(Option::is_none));assert_eq!(s.ready.world.bombs.next,1);
+            assert!(!s.ready.world.machines.contains_key(&(OW.into(),AT)));assert!(s.ready.detonations.is_empty());
+            for t in 3..6{s.native_tick(&mut w,t);}assert_eq!(s.ready.world.bombs.next,1,"the retained intent confirms exactly once");
+        }
+    }
+    #[test]
+    fn changing_a_requested_bombs_parts_cancels_even_after_a_commit_conflict() {
+        for during in [false,true] {
+            let (mut w,mut s,_)=armed_bomb("ntm:nuke_boy");
+            if during{w.take_during_commit=Some((AT,0));}else{w.refuse_state=true;}
+            s.native_tick(&mut w,1);
+            let withdrawn=if during{w.player.pop().unwrap()}else{w.slots.get_mut(&AT).unwrap()[0].take().unwrap()};
+            assert_eq!(w.slots[&AT].iter().flatten().map(|s|s.count).sum::<u32>()+withdrawn.count,5);
+            w.refuse_state=false;s.native_tick(&mut w,2);
+            assert_eq!(s.ready.world.bombs.next,0);assert!(s.ready.detonations.is_empty());
+            assert!(w.told.iter().any(|t|t.contains("componentes mudaram")));
+            w.slots.get_mut(&AT).unwrap()[0]=Some(withdrawn);s.native_tick(&mut w,3);
+            assert_eq!(s.ready.world.bombs.next,0,"replacing a component must not resurrect the cancelled request");
+            assert_eq!(w.slots[&AT].iter().flatten().map(|s|s.count).sum::<u32>(),5);
+        }
+    }
+    #[test]
+    fn a_manual_fuse_is_lit_once_only_after_its_state_commit() {
+        let (mut w,mut s,_)=armed_bomb("ntm:dynamite");w.refuse_state=true;s.native_tick(&mut w,1);
+        let fuse=|s:&Server|match &s.ready.world.machines[&(OW.into(),AT)].data{Data::Bomb(b)=>b.fuse,_=>panic!()};
+        assert_eq!(fuse(&s),None);assert_eq!(s.ready.detonations.len(),1);
+        w.refuse_state=false;s.native_tick(&mut w,2);let lit=fuse(&s).unwrap();assert_eq!(lit,crate::bomb::FUSE_TICKS-1);
+        for t in 3..8{s.native_tick(&mut w,t);}assert_eq!(fuse(&s),Some(lit-5));
+        assert_eq!(w.told.iter().filter(|s|s.as_str()=="Pavio aceso.").count(),1);
+    }
+    #[test]
+    fn a_repair_gear_is_requested_from_the_hand_only_after_the_stirling_commit() {
+        use crate::solar_stirling::SolarStirling;
+        let block="ntm:machine_stirling";let mut w=World::default();w.blocks.insert(AT,block.into());w.slots.insert(AT,vec![]);
+        let mut m=Machine::new(Kind::SolarStirling,block,Some("north".into()));let Data::SolarStirling(s)=&mut m.data else{panic!()};let SolarStirling::Stirling(s)=&mut **s else{panic!()};s.has_cog=false;
+        let mut server=Server::native(&mut w,0);assert!(server.native_adopt(OW,AT,&serde_json::to_string(&m).unwrap()));
+        w.refuse_state=true;assert!(!server.native_stirling_repair(&mut w,OW,AT,"ntm:gear_large__iron"));assert_eq!(server.native_stirling_gear(OW,AT),Some("ntm:gear_large__iron"));assert!(w.saved.is_empty());
+        w.refuse_state=false;assert!(server.native_stirling_repair(&mut w,OW,AT,"ntm:gear_large__iron"));assert_eq!(server.native_stirling_gear(OW,AT),None);assert!(w.saved.contains_key(&AT));
+    }
+    #[test]
+    fn a_clean_save_between_break_and_tick_preserves_hidden_contents_without_repeating_engine_slots() {
+        let block="ntm:machine_crucible";
+        let mut w=World::default();w.blocks.insert(AT,block.into());
+        let mut slots=vec![None;10];slots[2]=Some(Stack::new("minecraft:iron_ingot",1));w.slots.insert(AT,slots);
+        let mut m=Machine::new(Kind::Crucible,block,Some("north".into()));
+        let Data::Crucible(c)=&mut m.data else{panic!()};c.waste_stack=vec![("iron".into(),144)];
+        let mut s=Server::native(&mut w,0);assert!(s.native_adopt(OW,AT,&serde_json::to_string(&m).unwrap()));
+        s.native_tick(&mut w,1);
+        // The engine spills physical slots, then reports Broken. Quit before
+        // the next machine step: only the hidden molten metal is NTM's debt.
+        let item=w.slots.remove(&AT).unwrap()[2].take().unwrap();w.player.push(item);
+        w.saved.remove(&AT);w.blocks.insert(AT,"minecraft:air".into());
+        s.native_block_changed(OW,AT,block,"minecraft:air");s.native_record_events(&mut w);s.native_world_saved(&mut w,true);
+        assert!(s.ready.world.removals[0].engine_slots);assert!(w.emitted.is_empty());
+        let mut reopened=Server::native(&mut w,2);reopened.native_tick(&mut w,3);
+        assert_eq!(w.player,vec![Stack::new("minecraft:iron_ingot",1)]);
+        assert_eq!(w.emitted,vec![Stack::new("ntm:scraps__iron",2)]);
+        assert!(!reopened.native_has(OW,AT));reopened.native_world_saved(&mut w,true);
+        let mut again=Server::native(&mut w,4);again.native_tick(&mut w,5);
+        assert_eq!(w.emitted,vec![Stack::new("ntm:scraps__iron",2)]);
+        assert!(again.ready.world.removals.is_empty());assert!(again.ready.world.machine_effects.is_empty());
     }
 
     /// A machine whose dimension cannot be reached stays frozen in memory but

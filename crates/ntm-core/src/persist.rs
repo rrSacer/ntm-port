@@ -14,6 +14,15 @@ pub const KEY: &str = "world";
 /// Ticks between keeps of the clock alone: a crash sets it back at most this.
 pub const TICKS_EVERY: u64 = 600;
 
+/// A confirmed removal may outlive its BE. Remember which inventory the
+/// engine already owns/drops, so reopening cannot emit those slots again.
+#[derive(Clone,Debug,PartialEq,Serialize,Deserialize)]
+pub struct Removal {
+    pub key:(String,Pos),
+    pub machine:Machine,
+    pub engine_slots:bool,
+}
+
 /// What the world keeps outside its blocks.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Kept {
@@ -26,7 +35,7 @@ pub struct Kept {
     #[serde(default)]
     pub ticks: u64,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub removals:Vec<((String,Pos),Machine)>,
+    pub removals:Vec<Removal>,
     #[serde(default, skip_serializing_if = "std::collections::VecDeque::is_empty")]
     pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     #[serde(default, skip_serializing_if = "std::collections::VecDeque::is_empty")]
@@ -37,7 +46,7 @@ pub struct Kept {
 pub struct WorldState {
     /// Ticks played in this world.
     pub ticks: u64,
-    pub removals:Vec<((String,Pos),Machine)>,
+    pub removals:Vec<Removal>,
     pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     pub applied_machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     pub radiation: BTreeMap<String, crate::radiation::Dose>,
@@ -54,7 +63,7 @@ impl WorldState {
         let kept: Kept = kv.get(KEY).and_then(|b| serde_json::from_slice(&b).ok()).unwrap_or_default();
         let mut machine_effects=kept.applied_machine_effects;
         machine_effects.extend(kept.machine_effects);
-        let machines=kept.removals.iter().cloned().collect();
+        let machines=kept.removals.iter().map(|r|(r.key.clone(),r.machine.clone())).collect();
         WorldState {
             machines,
             removals:kept.removals,

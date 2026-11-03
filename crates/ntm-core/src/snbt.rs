@@ -177,21 +177,6 @@ fn number(w: &str) -> Option<String> {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::canonical;
-
-    #[test]
-    fn the_engines_order_and_numbers_are_the_same_data() {
-        let mine = "{ntm_ore:{light:0.229536d,heavy:0.405059d,rare:0d,actinide:2.2d}}";
-        let engine = "{ntm_ore: {rare: 0.0d, actinide: 2.2d, light: 0.229536d, heavy: 0.405059d}}";
-        assert_eq!(canonical(mine), canonical(engine));
-        assert_eq!(canonical(mine).as_deref(), Some("{ntm_ore:{actinide:2.2d,heavy:0.405059d,light:0.229536d,rare:0.0d}}"));
-        assert_eq!(canonical("{a:1b,b:\"x y\",c:[I;1,2],d:1.5f}").as_deref(), Some("{a:1b,b:\"x y\",c:[I;1,2],d:1.5f}"));
-        assert_eq!(canonical("{a:1"), None);
-    }
-}
-
 /// Top-level compound fields, using the same parser as canonicalisation.
 /// Nested tags and quoted delimiters are preserved.
 pub fn fields(s: &str) -> Option<std::collections::BTreeMap<String, String>> {
@@ -220,3 +205,19 @@ pub fn with_field(s: Option<&str>, key: &str, value: &str) -> String {
     let body = fields.iter().map(|(k,v)| format!("{}:{v}",quote(k))).collect::<Vec<_>>().join(",");
     canonical(&format!("{{{body}}}")).expect("valid compound field")
 }
+
+#[cfg(test)]
+mod tests {
+    use super::canonical;
+
+    #[test]
+    fn the_engines_order_and_numbers_are_the_same_data() {
+        let mine = "{ntm_ore:{light:0.229536d,heavy:0.405059d,rare:0d,actinide:2.2d}}";
+        let engine = "{ntm_ore: {rare: 0.0d, actinide: 2.2d, light: 0.229536d, heavy: 0.405059d}}";
+        assert_eq!(canonical(mine), canonical(engine));
+        assert_eq!(canonical(mine).as_deref(), Some("{ntm_ore:{actinide:2.2d,heavy:0.405059d,light:0.229536d,rare:0.0d}}"));
+        assert_eq!(canonical("{a:1b,b:\"x y\",c:[I;1,2],d:1.5f}").as_deref(), Some("{a:1b,b:\"x y\",c:[I;1,2],d:1.5f}"));
+        assert_eq!(canonical("{a:1"), None);
+    }
+}
+

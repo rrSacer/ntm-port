@@ -74,8 +74,16 @@ pub(super) fn world(open: bool) {
 
 /// A flushed world save makes already applied item/block effects durable.
 pub(super) fn world_saved(game:&mut crate::game::Game<'_>,wait:bool){
+    let changes=std::mem::take(&mut *lock(&CHANGES));
     if let Some((server,_))=lock(&SERVER).as_mut(){
         let mut host=Host{game,buttons:Vec::new()};
+        for (dim,pos,old,new) in changes {
+            let now=ntm_core::server::native_server::native_change_state(&new,host.game.native_loaded_block(&dim,pos));
+            server.native_block_changed(&dim,pos,&old,&now);
+        }
+        // A quit/save between ticks must not forget a removed core's hidden
+        // contents. Record tombstones only; do not tick or emit after saving.
+        server.native_record_events(&mut host);
         server.native_world_saved(&mut host,wait);
     }
 }
@@ -141,8 +149,10 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
             }
         }
         if server.native_stirling_gear(&dim,core) == Some(&*held.item) {
-            if let Some(h) = game.held_mut() { h.count -= 1; if h.count == 0 { *game.held_mut() = None; } }
-            server.native_stirling_repair(&dim,core,&held.item);
+            let mut host=Host{game,buttons:Vec::new()};
+            if server.native_stirling_repair(&mut host,&dim,core,&held.item) {
+                if let Some(h)=host.game.held_mut(){h.count-=1;if h.count==0{*host.game.held_mut()=None;}}
+            }
             return true;
         }
     }
@@ -379,6 +389,10 @@ impl ServerHost for Host<'_, '_> {
         // hopper, chunk unload or block mutation can interleave these passes.
         // Resolve ALL entities and validate ALL expected slots before changing
         // any. Notifications run only after every member has been published.
+        // A use callback may run before ServerTickEnd consumes a confirmed
+        // external break/replacement. Do not write an old model into that new
+        // BE generation, even when its id and empty slots happen to match.
+        if lock(&CHANGES).iter().any(|(d,p,old,new)|ntm_core::blockstate::id_of(old)!=ntm_core::blockstate::id_of(new)&&commits.iter().any(|c|c.dim==*d&&c.pos==*p)){return false;}
         let mut prepared=Vec::with_capacity(commits.len());
         let mut seen=std::collections::BTreeSet::new();
         for c in commits {
@@ -579,12 +593,17 @@ pub(super) fn tick(game: &mut crate::game::Game<'_>, pos: [i32; 3], entity: &mut
     if !is_machine(&entity.id) {
         return;
     }
-    let Some(Tag::String(state)) = entity.nbt.get(&JavaString::from(STATE)) else { return };
     let dim = game.dim.id().to_string();
     if let Some((server, _)) = lock(&SERVER).as_mut()
         && !server.native_has(&dim, pos)
     {
-        server.native_adopt(&dim, pos, &state.to_string_lossy());
+        if let Some(Tag::String(state))=entity.nbt.get(&JavaString::from(STATE)) {
+            server.native_adopt(&dim,pos,&state.to_string_lossy());
+        }else if let Some(state)=game.native_loaded_block(&dim,pos){
+            // A just-placed BE may have been saved before its first NTM tick.
+            // Its real slots remain authoritative; adopt the empty model.
+            server.native_block_changed(&dim,pos,"minecraft:air",&state);
+        }
     }
 }
 

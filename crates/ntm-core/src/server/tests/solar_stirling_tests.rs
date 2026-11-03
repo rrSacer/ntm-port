@@ -146,7 +146,7 @@ fn repair_accepts_only_the_gears_material_and_not_on_a_good_engine() {
     g.run(1);
     assert!(
         !g.server
-            .native_stirling_repair(OW, core, "ntm:gear_large__iron")
+            .native_stirling_repair(&mut g.sh,OW, core, "ntm:gear_large__iron")
     );
     let Data::SolarStirling(s) = &mut g
         .ready()
@@ -164,11 +164,11 @@ fn repair_accepts_only_the_gears_material_and_not_on_a_good_engine() {
     s.has_cog = false;
     assert!(
         !g.server
-            .native_stirling_repair(OW, core, "ntm:gear_large__steel")
+            .native_stirling_repair(&mut g.sh,OW, core, "ntm:gear_large__steel")
     );
     assert!(
         g.server
-            .native_stirling_repair(OW, core, "ntm:gear_large__iron")
+            .native_stirling_repair(&mut g.sh,OW, core, "ntm:gear_large__iron")
     );
     assert!(stirling(&mut g, core).has_cog);
 }

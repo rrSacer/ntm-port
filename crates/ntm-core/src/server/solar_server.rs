@@ -80,25 +80,25 @@ impl Server {
         };
         if s.has_cog { None } else { s.shape.gear() }
     }
-    /// Called only after taking one matching gear from the acting hand.
-    pub fn native_stirling_repair(&mut self, dim: &str, core: Pos, gear: &str) -> bool {
-        if self.native_stirling_gear(dim, core) != Some(gear) {
-            return false;
-        }
-        let Data::SolarStirling(s) = &mut self
-            .ready
-            .world
-            .machines
-            .get_mut(&(dim.into(), core))
-            .expect("checked")
-            .data
-        else {
-            unreachable!()
-        };
-        let SolarStirling::Stirling(s) = &mut **s else {
-            unreachable!()
-        };
-        s.has_cog = true;
+    /// The native caller takes the matching hand item only after this atomic
+    /// BE update succeeds, while retaining exclusive access to the same Game.
+    pub fn native_stirling_repair(&mut self,host:&mut impl ServerHost,dim:&str,core:Pos,gear:&str)->bool {
+        if self.native_stirling_gear(dim,core)!=Some(gear){return false;}
+        let key=(dim.to_string(),core);
+        if self.ready.broken.contains_key(&key){return false;}
+        let Some(mut machine)=self.ready.world.machines.get(&key).cloned() else{return false};
+        if !host.get_block(dim,core).is_some_and(|b|blockstate::id_of(&b)==machine.block){return false;}
+        let Some(expected)=host.machine_slots(dim,core) else{return false};
+        let Data::SolarStirling(s)=&mut machine.data else{return false};
+        let SolarStirling::Stirling(s)=&mut **s else{return false};
+        s.has_cog=true;
+        let data=Self::machine_screen(&mut machine);
+        let json=serde_json::to_string(&machine).expect("machine serialization");
+        if !host.commit_machine(&MachineCommit{dim:dim.into(),pos:core,expected:expected.clone(),desired:expected.clone(),data:data.clone(),json:json.clone()}){return false;}
+        self.ready.world.machines.insert(key.clone(),machine);
+        self.ready.bridge.last.insert(key.clone(),expected);
+        self.ready.bridge.data.insert(key.clone(),data);
+        self.ready.native_saved.insert(key,json);
         true
     }
 }

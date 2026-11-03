@@ -526,15 +526,45 @@ impl Server {
             // to the record): nothing goes off (revisão do M2, P2-10).
             return toast(self, "A bomba ligada não está mais lá.");
         }
-        match b.blast() {
-            None => toast(self, "A bomba não está pronta: faltam componentes."),
-            Some(Blast::Conventional { .. }) => {
-                self.light_fuse(host, &key);
-                toast(self, "Pavio aceso.")
+        let Some(expected)=host.machine_slots(&key.0,key.1) else{return toast(self,"Inventário da bomba indisponível.");};
+        let mut observed=b;
+        for (i,slot) in observed.slots.iter_mut().enumerate(){*slot=expected.get(i).and_then(Option::as_ref).filter(|s|s.count>0).map(|s|s.id.clone());}
+        match observed.blast() {
+            None=>toast(self,"A bomba não está pronta: faltam componentes."),
+            Some(blast)=>{
+                self.ready.detonations.insert(key,(player.id.clone(),expected));
+                toast(self,if matches!(blast,Blast::Conventional{..}) {"Acendimento solicitado."}else{"Detonação solicitada."})
             }
-            Some(blast) => {
-                self.trigger(host, key, blast, "detonador");
-                toast(self, "Detonada.")
+        }
+    }
+
+    /// Invalidate an old request as soon as the observed components change.
+    /// Cancelling a control intent is not contingent on an inventory write.
+    pub(super) fn validate_detonations(&mut self,host:&mut impl ServerHost){
+        for (key,(player,expected)) in self.ready.detonations.clone(){
+            let changed=if let Some(m)=self.ready.world.machines.get(&key){
+                match host.get_block(&key.0,key.1){
+                    None=>continue,
+                    Some(b) if blockstate::id_of(&b)!=m.block=>true,
+                    Some(_)=>match host.machine_slots(&key.0,key.1){None=>continue,Some(v)=>v!=expected},
+                }
+            }else{true};
+            if changed{
+                self.ready.detonations.remove(&key);
+                host.tell(&player,"Detonação cancelada: os componentes mudaram ou a bomba foi removida.");
+            }
+        }
+    }
+    /// Called after slots_in, inside the speculative local machine step.
+    pub(super) fn requested_detonations(&mut self,host:&mut impl ServerHost){
+        let keys:Vec<_>=self.ready.detonations.keys().filter(|k|self.ready.world.machines.contains_key(*k)).cloned().collect();
+        for key in keys{
+            let (player,_)=self.ready.detonations.remove(&key).unwrap();
+            let blast=self.ready.world.machines.get(&key).and_then(|m|match &m.data{Data::Bomb(b)=>b.blast(),_=>None});
+            match blast {
+                Some(Blast::Conventional{..})=>{self.light_fuse(host,&key);host.tell(&player,"Pavio aceso.");}
+                Some(blast)=>{self.trigger(host,key,blast,"detonador");host.tell(&player,"Detonada.");}
+                None=>host.tell(&player,"Detonação cancelada: os componentes mudaram."),
             }
         }
     }

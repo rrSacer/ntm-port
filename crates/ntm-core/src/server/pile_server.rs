@@ -106,6 +106,7 @@ impl Server {
     /// action is returned only after the state/slot write succeeded.
     #[allow(clippy::too_many_arguments)]
     pub fn native_pile_use(&mut self,host:&mut impl ServerHost,dim:&str,at:Pos,face:Pos,held:Option<&Stack>,depletion:f64,player:&str)->Option<PileUse>{
+        if self.ready.broken.contains_key(&(dim.to_string(),at)){return Some(PileUse::Handled);}
         let drill=held.is_some_and(|h|matches!(h.id.as_str(),"ntm:hand_drill"|"ntm:hand_drill_desh"));
         if drill && host.get_block(dim,at).is_some_and(|b|blockstate::id_of(&b)!=pile::BRICK){
             return self.atomic_pile_edit(host,dim,at,face,held,depletion,player);

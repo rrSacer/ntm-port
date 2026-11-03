@@ -175,7 +175,7 @@ fn the_detonator_links_and_sets_off_a_ready_bomb() {
     assert!(said.contains("não está pronta"), "{said}");
     assemble(&mut g, at, id, 0..12);
     let said = g.server.detonator(&mut g.sh, &p, None, false);
-    assert!(said.contains("Detonada"), "{said}");
+    assert!(said.contains("solicitada"), "{said}");
     g.run(3);
     assert!(bomb_data(&mut g, at).is_none());
     until_quiet(&mut g, 2000);
@@ -269,6 +269,8 @@ fn the_native_detonator_links_on_a_bomb_and_fires_elsewhere() {
     assert!(said.contains("Detonador ligado"), "{said}");
     assert!(bomb_data(&mut g, at).is_some());
     let said = g.server.native_detonator(&mut g.sh, "p1", Some([0, 69, 0])).unwrap();
-    assert!(said.contains("Detonada"), "{said}");
+    assert!(said.contains("solicitada"), "{said}");
+    assert!(bomb_data(&mut g, at).is_some(),"the intent awaits the next local step");
+    g.run(1);
     assert!(bomb_data(&mut g, at).is_none());
 }
