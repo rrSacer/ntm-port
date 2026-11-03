@@ -29,7 +29,7 @@ Consequências: máquina **nova** nunca recebia `STATE` no block entity (bloco m
 | `solar_sample` | já lia o mundo estacionado; segue sem troca de nível (e `native_loaded_block`/`native_set_blocks`/`native_redstone_many` já aceitam dimensão) |
 | `use_block`, `use_item`, `menu_button`, `tick` do block entity | contexto do jogador/do nível que está ticando: a dimensão em lugar é a certa |
 
-Limitações: (1) ao mudar itens de uma máquina de um nível estacionado, o `container_changed` do motor (que precisa do nível em lugar) não roda. Os **funis** leem os slots atuais e não dependem dele; os **comparadores** que leem a máquina perdem a notificação dessa mudança, e voltar a ser o nível em lugar não a repõe (só o próximo evento do comparador a atualiza). Não enfileirei a notificação: exigiria guardar posições por nível e entrar nele depois, e o ganho é só para comparadores em níveis sem jogador. (2) A persistência de um nível estacionado depende do motor salvá-lo (`modified` marcado; `save_parked_levels` e `close_idle_levels` o fazem). (3) A visita não dispara `LevelEvent` de abrir/fechar nem chegadas por portal, e nunca abre um nível.
+Limitações: (1) ~~ao mudar itens de uma máquina de um nível estacionado, o `container_changed` não roda~~ **corrigido (onda 0, item 3)**: `Host::entity` compara os itens antes e depois da escrita no nível estacionado e, se mudaram, chama `container_changed` numa visita passageira (`visit_level`), que não abre nível nem zera a ociosidade; os comparadores daquela máquina são notificados no próprio nível. (2) A persistência de um nível estacionado depende do motor salvá-lo (`modified` marcado; `save_parked_levels` e `close_idle_levels` o fazem). (3) A visita não dispara `LevelEvent` de abrir/fechar nem chegadas por portal, e nunca abre um nível.
 
 ## Atualização ZIRNOX — commit atômico
 
@@ -65,3 +65,12 @@ Motor `ntm-current` `840fef9a0` (pins em `compatibility.json`, `horizon-mixin.to
 Testes em jogo (`native_dims.py`, binário no pin novo):
 - `comparator_feeds_the_loader_with_the_overworld_in_place` e `comparator_still_feeds_the_loader_while_not_last`: um comparador lendo um baú alimenta um loader no Overworld; com o Nether forçado e em lugar a leitura continua verdadeira. **No binário anterior (`6ac4cd00`, troca só do `World`) a segunda falha** (`was_redstone` volta a falso: o comparador lia as saídas do Nether).
 - `idle`: Nether com um leitor fecha e grava (17 s). O roteiro também emite 60 partículas de fumaça no Overworld para inspeção visual; a sobrevivência delas não tem verificação automatizada. A antiga asserção `particles_survive_the_parked_reader` foi removida: `status['particles']` é o contador histórico `made()` do cliente, que não diminui com `clear()` e não mede partículas vivas no `Game` do servidor onde a visita ocorre.
+
+
+## Onda 0, item 3 — comparadores em nível estacionado
+
+`Host::entity` (glue) clona os itens do block entity antes de `f`; se mudaram, `Game::visit_level(dim, |g| g.container_changed(pos))`
+roda depois da escrita, a mesma notificação que `native_with_mod_block_entity` faz no nível em lugar. Prova em jogo
+(`native_dims.py setup`, `parked_comparator`): com o Nether em lugar e o Overworld estacionado, uma bateria carregada alimenta um
+forno elétrico por cabo; um funil insere uma picareta de ferro (item de pilha 1) e o comparador ao lado lê o forno; ao fundir
+a picareta em pepita o `OutputSignal` do comparador cai. Sem a notificação ele continua com o valor da picareta.

@@ -111,12 +111,12 @@ impl Server {
                     generation,
                     state: pile::BRICK.to_string(),
                 },
-                desired: state(&role),
+                desired: state(role),
                 expected,
                 destroy: false,
                 initial: Some(InitialState { json: json.clone(), data }),
             });
-            formed.push((key, m, json, state(&role)));
+            formed.push((key, m, json, state(role)));
         }
         if !host.commit_formation(&writes, wear, &owners) {
             return Err("pile formation refused: nothing changed".into());
