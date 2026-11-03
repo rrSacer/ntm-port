@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Real components/UI, manual detonator and redstone/fuses in a fresh world.
 
-Only the existing administrative radius cap is changed (12) to bound the proof;
-no machine state, components or fuse values are injected. Bombs are item-placed.
+The real default Little Boy radius (120) is exercised. No machine state,
+configuration, components or fuse values are injected. Bombs are item-placed.
 """
 import json
 import re
@@ -101,7 +101,7 @@ def nuke(g, x, manual):
     start = detonator(g, core) if manual else lever(g, core)
     cause = 'detonador' if manual else 'redstone'
     wait(g, 'real_nuke_admitted',
-         lambda: re.search(r'Little Boy at .*\(' + cause + r'\): explosion .*radius 12', log(g)[start:]) is not None,
+         lambda: re.search(r'Little Boy at .*\(' + cause + r'\): explosion .*radius 120\n', log(g)[start:]) is not None,
          lambda: [l for l in log(g)[start:].splitlines() if 'Little Boy at' in l], 60)
     wait(g, 'bomb_and_components_consumed', lambda: block(g, core) == 'minecraft:air', lambda: block(g, core))
     below = (core[0], core[1]-1, core[2])
@@ -134,12 +134,10 @@ def charge(g, x, manual):
 def main():
     g = Game(sys.argv[1], 'bombs')
     g.command('gamemode creative')
-    result = g.command('ntmbomba config mundo raiomax 12')
-    g.check('radius_cap_configured', any('raiomax 12' in s for s in result.get('chat', [])), result)
     nuke(g, 0, True)
-    nuke(g, 80, False)
-    charge(g, 160, True)
-    charge(g, 240, False)
+    nuke(g, 320, False)
+    charge(g, 640, True)
+    charge(g, 960, False)
     g.command('forceload remove all')
     g.snapshot('bombs-final')
     worlds = list(g.folder.glob('**/data/ntm/world'))
