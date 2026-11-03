@@ -102,7 +102,7 @@ def run(args):
     os.close(writer)
     with os.fdopen(reader) as pipe:
         env['DISPLAY'] = ':' + pipe.readline().strip()
-    phases = {'zirnox': [('setup', 'inactive', 'convert', 'capture-state'),
+    phases = {'items': [('setup','capture-state'),('check-state',)], 'zirnox': [('setup', 'inactive', 'convert', 'capture-state'),
                          ('check-state', 'automation', 'failure', 'soils')],
               'pile': [('setup', 'capture-state'), ('check-state', 'destroy')],
               'dims': [('setup', 'capture-state'), ('check-state',)],
@@ -192,7 +192,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'comparator', 'pile-meltdown', 'stations', 'recipes'])
+    parser.add_argument('scenario', choices=['items', 'zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'comparator', 'pile-meltdown', 'stations', 'recipes'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)
