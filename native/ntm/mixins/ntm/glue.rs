@@ -709,7 +709,23 @@ pub(super) fn container(_game: &crate::game::Game<'_>, block: &str, container: &
 /// ones (the same for the menu, clicks and hoppers).
 pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: &mut Vec<ModSlotFilter>) {
     let rules = ntm_core::native::slot_filters(block);
-    filters.extend(rules.into_iter().map(|f| ModSlotFilter { accept: f.accept, reject: f.reject, max: f.max, output: f.output }));
+    let policy = (block == ntm_core::zirnox::BLOCK)
+        .then_some(horizon_client::containers::SlotPolicy(zirnox_slot_policy));
+    filters.extend(rules.into_iter().map(|f| ModSlotFilter {
+        accept: f.accept, reject: f.reject, max: f.max, output: f.output, policy,
+    }));
+}
+
+fn zirnox_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    use horizon_client::containers::{SlotAction, SlotOrigin};
+    let slots: Slots = slots.iter().map(stack).collect();
+    let Some(item) = stack(&Some(item.clone())) else { return false; };
+    ntm_core::native::slot_allows(ntm_core::zirnox::BLOCK, &slots, slot, &item,
+        match action { SlotAction::Insert => ntm_core::native::SlotAction::Insert,
+            SlotAction::Extract => ntm_core::native::SlotAction::Extract },
+        match origin { SlotOrigin::Manual => ntm_core::native::SlotOrigin::Manual,
+            SlotOrigin::Automation => ntm_core::native::SlotOrigin::Automation })
 }
 
 /// What the clients see of a machine: its data and, for a block without

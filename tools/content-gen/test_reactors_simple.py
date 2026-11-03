@@ -46,6 +46,17 @@ class SimpleReactors(unittest.TestCase):
             self.assertTrue(declared['properties']['random_ticks'])
             for texture in row['surface_textures'].values():self.assertTrue((SOURCE/texture).is_file())
 
+    def test_zirnox_inventory_ports_follow_all_five_java_proxies(self):
+        import re
+        java=(SOURCE/'src/main/java/com/hbm/blocks/machine/ReactorZirnox.java').read_text()
+        body=java.split('getAllPorts(ForgeDirection dir)',1)[1].split('checkRequirement',1)[0]
+        ports=[list(map(int,p)) for p in re.findall(r'\{\s*(-?\d+),\s*(-?\d+),\s*(-?\d+),\s*ForgeDirection',body)]
+        self.assertEqual(len(ports),5)
+        actual=json.loads((ROOT/'content/data/ntm/horizon_machine/machine_zirnox.json').read_text())
+        visual=json.loads((ROOT/'tools/visual-gen/visual.json').read_text())
+        self.assertEqual(actual['multiblock']['inventory_ports'],ports)
+        self.assertEqual(visual['blocks']['ntm:machine_zirnox']['machine']['multiblock']['inventory_ports'],ports)
+
     def test_zirnox_hazard_targets_are_machine_readable(self):
         data=json.loads((ROOT/'crates/ntm-core/data/hazards.json').read_text())
         rods=[e for e in data['entries'] if e['id'].startswith('ntm:rod_zirnox__')]

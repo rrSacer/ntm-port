@@ -175,7 +175,7 @@ pub fn fuel(id: &str) -> Option<&'static Fuel> {
     table().fuels.iter().find(|f| f.item == id)
 }
 /// Java canExtractItem: the same rod slots become extractable after conversion.
-/// Prepared for a future conditional native hopper-extraction hook.
+/// Shared slot policy applies it only to automation; manual removal stays allowed.
 pub fn can_extract(slot: usize, item: &str) -> bool {
     slot < 24 && fuel(item).is_none()
 }

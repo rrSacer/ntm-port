@@ -37,7 +37,7 @@ pub fn container(block: &str) -> Option<Container> {
     use crate::machine::furnace_slot::*;
     if block == crate::zirnox::BLOCK {
         let rods:Vec<_>=(0..24).collect();
-        return Some(Container {slots:28,faces:std::array::from_fn(|_|rods.clone()),inputs:rods,outputs:vec![],menu:Some("minecraft:generic_9x3")});
+        return Some(Container {slots:28,faces:std::array::from_fn(|_|rods.clone()),inputs:rods.clone(),outputs:rods,menu:Some("minecraft:generic_9x3")});
     }
     if block == FURNACE {
         return Some(Container {
@@ -77,6 +77,22 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         SlotFilter { accept: Some(vec![CREATIVE_BATTERY.into()]), max: Some(1), ..Default::default() },
         SlotFilter { output: true, ..Default::default() },
     ]
+}
+
+/// Origin of an inventory operation. Shift-click and every screen gesture are Manual.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum SlotOrigin { Manual, Automation }
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum SlotAction { Insert, Extract }
+
+/// Additional pure restriction on a slot, composed with static filters, limits and faces.
+/// `slots` must be the current complete container, never a cached tick snapshot.
+/// Manual ZIRNOX extraction is unrestricted; automation follows canExtractItem.
+pub fn slot_allows(block: &str, _slots: &[Option<crate::server::container_bridge::Stack>], slot: usize,
+    item: &crate::server::container_bridge::Stack, action: SlotAction, origin: SlotOrigin) -> bool {
+    block != crate::zirnox::BLOCK || origin == SlotOrigin::Manual
+        || action == SlotAction::Insert || crate::zirnox::can_extract(slot, &item.id)
 }
 
 /// The furnace's menu data: power, its maximum, progress, its total (the
@@ -296,6 +312,27 @@ mod tests {
         assert_eq!(container(F).map(|c| (c.slots, c.menu)), Some((3, Some("minecraft:furnace"))));
         assert_eq!(container("ntm:machine_press").map(|c| c.slots), Some(4));
         assert!(container("minecraft:stone").is_none() && machine_block("ntm:machine_press"));
+    }
+
+    #[test]
+    fn zirnox_slot_policy_keeps_active_rods_and_allows_manual_removal() {
+        let active = crate::server::container_bridge::Stack::new(&crate::zirnox::table().fuels[0].item, 1);
+        let spent = crate::server::container_bridge::Stack::new(&crate::zirnox::table().fuels[0].output, 1);
+        let slots = vec![Some(active.clone()), Some(spent.clone())];
+        assert!(!slot_allows(crate::zirnox::BLOCK, &slots, 0, &active, SlotAction::Extract, SlotOrigin::Automation));
+        assert!(slot_allows(crate::zirnox::BLOCK, &slots, 1, &spent, SlotAction::Extract, SlotOrigin::Automation));
+        assert!(!slot_allows(crate::zirnox::BLOCK, &slots, 24, &spent, SlotAction::Extract, SlotOrigin::Automation));
+        assert!(slot_allows(crate::zirnox::BLOCK, &slots, 0, &active, SlotAction::Extract, SlotOrigin::Manual));
+        assert!(slot_allows(crate::zirnox::BLOCK, &slots, 0, &active, SlotAction::Insert, SlotOrigin::Automation));
+        assert_eq!(slots, vec![Some(active), Some(spent)]);
+    }
+
+    #[test]
+    fn zirnox_automation_reaches_rod_outputs_but_not_container_slots() {
+        let c = container(crate::zirnox::BLOCK).unwrap();
+        assert_eq!(c.outputs, (0..24).collect::<Vec<_>>());
+        assert!(c.faces.iter().all(|face| face == &c.outputs));
+        assert_eq!(c.inputs, c.outputs);
     }
 
     /// A machine file's slots: a grid's cells each with its rule.

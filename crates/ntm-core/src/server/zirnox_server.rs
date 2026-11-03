@@ -945,13 +945,13 @@ mod tests {
         }
     }
     #[test]
-    fn extraction_contract_is_ready_for_conditional_engine_hook() {
+    fn extraction_contract_exposes_conditional_rod_outputs() {
         assert!(!zirnox::can_extract(0, &zirnox::table().fuels[0].item));
         assert!(zirnox::can_extract(23, &zirnox::table().fuels[0].output));
         assert!(!zirnox::can_extract(24, "minecraft:bucket"));
         let c = crate::native::container(zirnox::BLOCK).unwrap();
         assert_eq!(c.inputs, (0..24).collect::<Vec<_>>());
-        assert!(c.outputs.is_empty());
+        assert_eq!(c.outputs, (0..24).collect::<Vec<_>>());
         assert!(c.faces.iter().all(|v| v.len() == 24));
     }
     #[test]
