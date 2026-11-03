@@ -80,5 +80,6 @@ def export(source, output, rows):
                   'scale_power':'enable528 || MachineConfig.scaleRTGPower','defaults':defaults,
                   'lifespan':'RTGUtil.getLifespan uses 48000 ticks/day, 100 days/year here, float32 multiplication then long conversion; setDecays multiplies the long by 1.5 and converts back to long. External config overrides not applied.'},
         'selection':'Source algorithm/fuel snapshot, no synthetic generic crafting duration or radiation-to-HE conversion.',
-        'runtime_gaps':['Conditional radgen insertion awaits the shared engine inventory-rule hook (wave 0); pure rules and transactional runtime implemented.'],
+        'runtime_gaps':[],
+        'runtime_notes':['Native transactional runtime implemented; Manual and Automation use shared slot policy, inventory ports resolve to the core. Defaults match Java; optional global profiles are separate scope.'],
         'coverage':{'machines':2,'rtg_pellets':len(pellets),'radgen_fuels':len(fuels),'skipped':0}})

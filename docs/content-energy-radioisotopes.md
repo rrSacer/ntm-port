@@ -26,14 +26,30 @@ a implementação geral desses hazards não integra este recorte de geração/ra
 As cinco reciclagens de pellets esgotados continuam exigindo o retorno da carcaça
 já registrado no lote de conteúdo abaixo.
 
-**Dependências abertas, sem exclusão aceita:**
+**Política e portas integradas — pin `7607685b8`:**
 
-1. As três portas de inventário do radgen precisam resolver o dummy até o núcleo no caminho de funil. O motor atual consulta o BE daquela célula diretamente. Declaradas em `multiblock.inventory_ports` (quadro do colocador): `[0,0,3]`, `[1,0,0]` e `[-1,0,0]`. `energy_ports` declara a porta traseira `[0,0,3]`, aberta em `[0,0,1]`. A prova intermediária de extração usa o núcleo; a prova de porta está pendente da onda 0.
-2. O radgen equilibra a inserção entre
-entradas vazias e pilhas menores do mesmo item/meta. A distribuição vale só para automação; a tela aceita qualquer item nas entradas, como Slot vanilla. Os filtros estáticos não
-expressam essa distinção. O coordenador encaminhou um hook genérico de inserção/extração
-condicional à onda 0 do motor; `can_insert` e `can_extract` estão prontos e testados
-nesta branch. A conexão e a aceitação completa de funis aguardam esse hook.
+A política pura de slots é consultada na previsão e no servidor, com o
+inventário atual e a origem `Manual` ou `Automation`. RTG recusa inserção e
+extração automáticas; radgen equilibra as 12 entradas apenas na automação.
+Manual aceita qualquer item nas entradas. Ambos usam `quick_move=None`: os
+`transferStackInSlot` Java fazem merge de qualquer item nesse intervalo, e
+somente as saídas do radgen impedem inserção. Não foi aplicado um filtro de
+combustível ao shift-click.
+
+As três portas de inventário do radgen resolvem o dummy até o núcleo:
+`multiblock.inventory_ports` declara `[0,0,3]`, `[1,0,0]` e `[-1,0,0]` no quadro
+do colocador. A rede HE do NTM usa apenas a porta traseira `[0,0,3]`, aberta em
+`[0,0,1]`, também registrada em `energy_ports`. Uma célula estrutural não-porta
+não expõe o contêiner. O núcleo permanece acessível ao funil **por baixo para
+extração**. Acima e nas laterais ele está envolto por dummies: o Java não permite
+inserção direta no núcleo por funil vanilla nessa geometria. Por decisão do
+coordenador, a prova não perfura o multibloco nem usa uma forma sintética; a
+inserção por porta e os testes da mesma política cobrem a regra.
+
+A fase `automation` conta 24 gems entre entrada e processamento, depois 12
+diamantes +12 gems após sprint natural, e conserva 24 após extrações pela porta
+lateral e sob o núcleo. A execução no pin novo está em andamento; os números
+aprovados do pin anterior abaixo são históricos e não substituem essa prova.
 
 Validação intermediária: 383 testes unitários Rust e 26 de integração passaram;
 Clippy `--workspace --all-targets -- -D warnings` passou. A suíte inclui os 28

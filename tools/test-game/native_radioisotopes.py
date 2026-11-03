@@ -129,25 +129,74 @@ def decay(g):
     g.command('setblock '+pos_text(out)+' minecraft:air')
 
 
+def inventory(g,p):
+    """Read actual NBT stacks without altering them (container conservation)."""
+    text=' '.join(g.command('data get block '+pos_text(p)+' Items').get('chat',[]))
+    entries=[]
+    for compound in re.findall(r'\{[^{}]*\}',text):
+        item=re.search(r'id:\s*["\']([^"\']+)["\']',compound)
+        count=re.search(r'count:\s*(\d+)',compound)
+        if item and count:entries.append((item[1],int(count[1])))
+    return entries
+
+
 def automation(g):
-    """Separate mandatory final phase: run when the generic engine hook exists."""
+    """Java balancing at the side port; extraction at both port and core."""
     g.close();g.ground(245,101,8,width=18,height=9)
     core=tuple(place(g,'machine_radgen',250,101,8))
-    hopper=add(core,(2,0,0))
+    hopper=add(core,(2,0,0));nonport=add(core,(2,1,0))
     g.command('setblock '+pos_text(hopper)+' minecraft:hopper[facing=west]')
     g.command('item replace block '+pos_text(hopper)+' container.0 with ntm:gem_rad 24')
+    g.command('setblock '+pos_text(nonport)+' minecraft:hopper[facing=west]')
+    g.command('item replace block '+pos_text(nonport)+' container.0 with minecraft:stone 1')
     deadline=time.monotonic()+40
     while time.monotonic()<deadline:
         a=data(g,core)
-        if all(q['processing'] for q in a['queues']):break
+        if all(q['processing'] for q in a['queues']) and not inventory(g,hopper):break
         time.sleep(.5)
     g.check('twelve_hopper_queues',all(q['processing'] for q in a['queues']),a)
-    time.sleep(6);open_machine(g,core);slots=g.slots()
+    open_machine(g,core);slots=g.slots()
     inputs=[s.get('count',0) if s.get('item') else 0 for s in slots[:12]]
     g.check('hopper_balanced_twelve_inputs',inputs==[1]*12,slots)
     count=sum(inputs)+sum(q['processing']['count'] for q in data(g,core)['queues'] if q['processing'])
     g.check('hopper_conserves_twenty_four_gems',count==24,count)
+    g.check('nonport_cannot_insert',inventory(g,nonport)==[('minecraft:stone',1)],inventory(g,nonport))
     g.snapshot('radgen-twelve-hopper-queues');g.close()
+    # Repeat the RTG refusal in this phase, against both live and depleted
+    # pellets. These positions were built by setup without bypassing the UI.
+    c=json.loads((g.folder/'radioisotopes-config.json').read_text())
+    top=add(c['rtg'],(0,1,0))
+    g.check('rtg_hopper_still_refuses_insert',inventory(g,top)==[('ntm:pellet_rtg_gold',1)],inventory(g,top))
+    g.check('rtg_hopper_still_refuses_extract',inventory(g,c['rtg_output_hopper'])==[],inventory(g,c['rtg_output_hopper']))
+    # The shortest remaining queue completion bounds a natural sprint; after
+    # the latest one finishes there are exactly 12 diamonds +12 in-flight gems.
+    a=data(g,core);sprint(g,max(q['max_progress']-q['progress'] for q in a['queues'])+2)
+    open_machine(g,core);slots=g.slots();a=data(g,core)
+    diamonds=sum(s.get('count',0) for s in slots[12:] if s.get('item')=='minecraft:diamond')
+    remaining=sum(s.get('count',0) for s in slots[:12] if s.get('item')=='ntm:gem_rad')+sum(q['processing']['count'] for q in a['queues'] if q['processing'])
+    g.check('natural_twelve_gem_residues',diamonds==12,slots)
+    g.check('completion_conserves_twenty_four',diamonds+remaining==24,{'diamonds':diamonds,'gems':remaining})
+    g.close()
+    # A hopper below the side port first; preserve its contents in place and
+    # switch it off with redstone before checking the under-core hopper.
+    port_out=add(core,(1,-1,0));core_out=add(core,(0,-1,0))
+    g.command('setblock '+pos_text(port_out)+' minecraft:hopper[facing=east]')
+    time.sleep(1.5)
+    g.command('setblock '+pos_text(add(core,(2,-1,0)))+' minecraft:redstone_block')
+    port_items=inventory(g,port_out)
+    g.check('side_port_extracts_residue',any(i=='minecraft:diamond' and n>0 for i,n in port_items),port_items)
+    g.check('side_port_never_extracts_gems',all(i=='minecraft:diamond' for i,n in port_items),port_items)
+    g.command('setblock '+pos_text(core_out)+' minecraft:hopper[facing=west]')
+    time.sleep(3)
+    core_items=inventory(g,core_out)
+    g.check('core_extracts_residue',any(i=='minecraft:diamond' and n>0 for i,n in core_items),core_items)
+    g.check('core_never_extracts_gems',all(i=='minecraft:diamond' for i,n in core_items),core_items)
+    open_machine(g,core);slots=g.slots();a=data(g,core)
+    outputs=sum(s.get('count',0) for s in slots[12:] if s.get('item')=='minecraft:diamond')
+    outputs+=sum(n for i,n in inventory(g,port_out)+core_items if i=='minecraft:diamond')
+    remaining=sum(s.get('count',0) for s in slots[:12] if s.get('item')=='ntm:gem_rad')+sum(q['processing']['count'] for q in a['queues'] if q['processing'])
+    g.check('extraction_conserves_twenty_four',outputs==12 and outputs+remaining==24,{'diamonds':outputs,'gems':remaining,'port':port_items,'core':core_items})
+    g.snapshot('radgen-port-and-core-extraction');g.close()
 
 
 def persistence(g,capture):

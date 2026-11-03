@@ -689,6 +689,43 @@ mod tests {
         }
     }
     #[test]
+    fn native_policy_composes_origins_and_java_quick_move() {
+        use crate::native::{
+            SlotAction::{Extract, Insert},
+            SlotOrigin::{Automation, Manual},
+            slot_allows,
+        };
+        let a = Stack::new("ntm:gem_rad", 1);
+        let junk = Stack::new("minecraft:stone", 1);
+        for block in [RTG, RADGEN] {
+            let filters = crate::native::slot_filters(block);
+            // Both Java transferStackInSlot implementations merge ANY item
+            // into the input range, so quick_move must add no item restriction.
+            assert!(filters.iter().all(|f| f.quick_move.is_none()));
+            let mut slots = vec![None; filters.len()];
+            for slot in 0..filters.len() {
+                for item in [&a, &junk] {
+                    assert_eq!(
+                        slot_allows(block, &slots, slot, item, Insert, Manual),
+                        can_insert_manual(block, slot)
+                    );
+                    assert_eq!(
+                        slot_allows(block, &slots, slot, item, Insert, Automation),
+                        can_insert(block, &slots, slot, item)
+                    );
+                    assert_eq!(
+                        slot_allows(block, &slots, slot, item, Extract, Automation),
+                        can_extract(block, slot)
+                    );
+                    assert!(slot_allows(block, &slots, slot, item, Extract, Manual));
+                }
+            }
+            slots[0] = Some(a.clone());
+            assert!(slot_allows(block, &slots, 0, &junk, Insert, Manual));
+            assert!(!slot_allows(block, &slots, 0, &a, Insert, Automation));
+        }
+    }
+    #[test]
     fn native_container_separates_manual_slots_from_automation() {
         let r = crate::native::container(RTG).unwrap();
         assert_eq!(r.slots, 15);

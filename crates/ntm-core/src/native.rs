@@ -95,8 +95,16 @@ pub enum SlotAction { Insert, Extract }
 /// `slots` must be the current complete container, never a cached tick snapshot.
 /// Manual ZIRNOX insertion and extraction are unrestricted (vanilla `Slot`s); automation
 /// follows `isItemValidForSlot` (rods only into the rod slots) and `canExtractItem`.
-pub fn slot_allows(block: &str, _slots: &[Option<crate::server::container_bridge::Stack>], slot: usize,
+pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge::Stack>], slot: usize,
     item: &crate::server::container_bridge::Stack, action: SlotAction, origin: SlotOrigin) -> bool {
+    if matches!(block, crate::radioisotopes::RTG | crate::radioisotopes::RADGEN) {
+        return match (action,origin) {
+            (SlotAction::Insert,SlotOrigin::Manual) => crate::radioisotopes::can_insert_manual(block,slot),
+            (SlotAction::Insert,SlotOrigin::Automation) => crate::radioisotopes::can_insert(block,slots,slot,item),
+            (SlotAction::Extract,SlotOrigin::Manual) => true,
+            (SlotAction::Extract,SlotOrigin::Automation) => crate::radioisotopes::can_extract(block,slot),
+        };
+    }
     block != crate::zirnox::BLOCK || origin == SlotOrigin::Manual
         || match action {
             SlotAction::Insert => slot >= 24 || crate::zirnox::fuel(&item.id).is_some(),

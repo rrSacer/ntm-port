@@ -709,8 +709,13 @@ pub(super) fn container(_game: &crate::game::Game<'_>, block: &str, container: &
 /// ones (the same for the menu, clicks and hoppers).
 pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: &mut Vec<ModSlotFilter>) {
     let rules = ntm_core::native::slot_filters(block);
-    let policy = (block == ntm_core::zirnox::BLOCK)
-        .then_some(horizon_client::containers::SlotPolicy(zirnox_slot_policy));
+    use horizon_client::containers::SlotPolicy;
+    let policy = match block {
+        ntm_core::zirnox::BLOCK => Some(SlotPolicy(zirnox_slot_policy)),
+        ntm_core::radioisotopes::RTG => Some(SlotPolicy(rtg_slot_policy)),
+        ntm_core::radioisotopes::RADGEN => Some(SlotPolicy(radgen_slot_policy)),
+        _ => None,
+    };
     filters.extend(rules.into_iter().map(|f| ModSlotFilter {
         accept: f.accept, reject: f.reject, max: f.max, output: f.output,
         quick_move: f.quick_move, policy,
@@ -719,10 +724,22 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
 
 fn zirnox_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::zirnox::BLOCK, slots, slot, item, action, origin)
+}
+fn rtg_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::radioisotopes::RTG, slots, slot, item, action, origin)
+}
+fn radgen_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::radioisotopes::RADGEN, slots, slot, item, action, origin)
+}
+fn machine_slot_policy(block: &str, slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     use horizon_client::containers::{SlotAction, SlotOrigin};
     let slots: Slots = slots.iter().map(stack).collect();
     let Some(item) = stack(&Some(item.clone())) else { return false; };
-    ntm_core::native::slot_allows(ntm_core::zirnox::BLOCK, &slots, slot, &item,
+    ntm_core::native::slot_allows(block, &slots, slot, &item,
         match action { SlotAction::Insert => ntm_core::native::SlotAction::Insert,
             SlotAction::Extract => ntm_core::native::SlotAction::Extract },
         match origin { SlotOrigin::Manual => ntm_core::native::SlotOrigin::Manual,
