@@ -497,7 +497,7 @@ pub(super) fn screen() -> horizon_client::mod_api::NativeScreen {
     }
 }
 pub(super) fn draw(game: &Game<'_>, batch: &mut horizon_client::hud::HudBatch, [x, y]: [f32; 2]) {
-    let sprite = "ntm:textures/gui/machine/gui_armor_modifier.png";
+    let sprite = "ntm:gui/machine/gui_armor_modifier";
     game.native_sprite(
         batch,
         sprite,
