@@ -62,6 +62,9 @@ pub trait ServerHost: Kv {
     }
     /// Lossless retained BE contents, released only after the world/BE commit.
     fn drop_encoded_items(&mut self,_dim:&str,_pos:Pos,_items:&[String])->bool{false}
+    /// Atomic structural publication plus retained, lossless old-BE drops.
+    /// Unsupported hosts refuse; there is no partial setter fallback.
+    fn commit_structural(&mut self,_cells:&[CellWrite],_drops:&[RetainedDrop],_owners:&[(String,Pos)])->bool{false}
     fn machine_data(&mut self, _dim: &str, _p: Pos) -> Option<Vec<i32>> {
         None
     }
@@ -121,9 +124,15 @@ pub struct CellSnapshot {
     pub entity: Option<String>,
     pub items: Vec<String>,
 }
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct RetainedDrop {
+    pub origin:CellGuard,
+    pub items:Vec<String>,
+}
 /// Consumed world cells publish in the same atomic operation as the machine.
 #[derive(Clone, Debug)]
 pub struct CellWrite {
+    pub notify:bool,
     pub guard: CellGuard,
     pub expected: CellSnapshot,
     pub desired: String,

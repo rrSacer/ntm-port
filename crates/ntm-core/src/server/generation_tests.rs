@@ -32,6 +32,8 @@ struct Host {
     change_cell: Option<(Pos, String)>,
     encoded: BTreeMap<Pos, Vec<String>>,
     retained: Vec<String>,
+    supply_on_structural: Option<Stack>,
+    structural_rejections: usize,
 }
 impl Kv for Host {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -55,7 +57,15 @@ impl ServerHost for Host {
     }
     fn cell_snapshot(&mut self, d: &str, p: Pos) -> Option<super::CellSnapshot> {
         let state = self.get_block(d, p)?;
-        let items = self.encoded.get(&p).cloned().unwrap_or_default();
+        let mut items = self.encoded.get(&p).cloned().unwrap_or_default();
+        items.extend(
+            self.slots
+                .get(&p)
+                .into_iter()
+                .flatten()
+                .flatten()
+                .map(|i| format!("{{id:'{}',count:{}}}", i.id, i.count)),
+        );
         Some(super::CellSnapshot {
             state,
             entity: (!items.is_empty()).then(|| format!("{items:?}")),
@@ -64,6 +74,44 @@ impl ServerHost for Host {
     }
     fn drop_encoded_items(&mut self, _: &str, _: Pos, items: &[String]) -> bool {
         self.retained.extend_from_slice(items);
+        true
+    }
+    fn commit_structural(
+        &mut self,
+        cells: &[super::CellWrite],
+        drops: &[super::RetainedDrop],
+        _: &[(String, Pos)],
+    ) -> bool {
+        let inserted = self.supply_on_structural.take();
+        if let Some(item) = &inserted {
+            self.slots.get_mut(&P).unwrap()[25] = Some(item.clone());
+        }
+        if cells
+            .iter()
+            .any(|c| self.cell_snapshot(&c.guard.dim, c.guard.pos).as_ref() != Some(&c.expected))
+        {
+            self.structural_rejections += 1;
+            if inserted.is_some() {
+                assert_eq!(blockstate::id_of(&self.blocks[&P]), zirnox::BLOCK);
+                assert_eq!(self.slots[&P][25], inserted);
+                assert!(self.retained.is_empty(), "refusal must not publish a drop");
+            }
+            return false;
+        }
+        // One fake host batch, with preflight before all mutation/drop release.
+        if self.refuse_blocks || cells.iter().any(|c| self.unloaded.contains(&c.guard.pos)) {
+            return false;
+        }
+        let blocks: Vec<_> = cells
+            .iter()
+            .map(|c| (c.guard.pos, c.desired.clone()))
+            .collect();
+        if self.set_blocks(D, &blocks).is_err() {
+            return false;
+        }
+        for d in drops {
+            self.retained.extend_from_slice(&d.items);
+        }
         true
     }
     fn machine_slots(&mut self, _: &str, p: Pos) -> Option<Slots> {
@@ -655,6 +703,7 @@ fn receipt_replay_checks_its_cell_generation_and_keeps_old_drops_separate() {
             owners: vec![(D.into(), P)],
             tombstones: vec![],
             effects: std::collections::VecDeque::from([WorldEffect::Blocks {
+                retained: Vec::new(),
                 dim: D.into(),
                 blocks: vec![(P, zirnox::DESTROYED.into())],
                 expected: vec![old],
@@ -844,10 +893,65 @@ fn refused_consumed_cells_and_player_breaks_conserve_all_three_machine_products(
 }
 
 #[test]
-fn all_three_mining_fixtures_produce_with_a_healthy_atomic_host(){
-    for block in ["ntm:machine_excavator","ntm:machine_well","ntm:machine_fracking_tower"]{
-        let (mut h,mut s,_)=resource_machine(block);
-        s.native_tick(&mut h,2);
-        assert!(resource_total(&s,&h)>0,"dead fixture for {block}");
+fn all_three_mining_fixtures_produce_with_a_healthy_atomic_host() {
+    for block in [
+        "ntm:machine_excavator",
+        "ntm:machine_well",
+        "ntm:machine_fracking_tower",
+    ] {
+        let (mut h, mut s, _) = resource_machine(block);
+        s.native_tick(&mut h, 2);
+        assert!(resource_total(&s, &h) > 0, "dead fixture for {block}");
+    }
+}
+
+#[test]
+fn late_screen_and_hopper_inputs_are_retained_atomically_when_a_condemned_be_is_replaced() {
+    for source in ["screen", "hopper"] {
+        let mut h = Host::default();
+        let mut s = install(&mut h, zirnox::BLOCK, 28);
+        let Data::Zirnox(z) = &mut s.ready.world.machines.get_mut(&(D.into(), P)).unwrap().data
+        else {
+            panic!()
+        };
+        z.heat = zirnox::MAX + 100;
+        h.refuse_blocks = true;
+        s.native_tick(&mut h, 2);
+        assert_eq!(blockstate::id_of(&h.blocks[&P]), zirnox::BLOCK);
+        assert!(h.retained.is_empty());
+        h.refuse_blocks = false;
+        if source == "screen" {
+            h.slots.get_mut(&P).unwrap()[25] = Some(Stack::new("minecraft:water_bucket", 1));
+        } else {
+            h.supply_on_structural = Some(Stack::new("minecraft:water_bucket", 1));
+        }
+        s.native_tick(&mut h, 3);
+        if source == "hopper" {
+            assert!(
+                h.structural_rejections > 0,
+                "stale BE snapshot must refuse publication before the retry"
+            );
+        }
+        for t in 4..7 {
+            s.native_tick(&mut h, t);
+        }
+        assert_eq!(blockstate::id_of(&h.blocks[&P]), zirnox::DESTROYED);
+        let total = h
+            .retained
+            .iter()
+            .filter(|i| i.contains("minecraft:water_bucket"))
+            .count();
+        assert_eq!(
+            total, 1,
+            "late {source} input must survive as one old-generation drop"
+        );
+        assert!(
+            h.slots
+                .get(&P)
+                .into_iter()
+                .flatten()
+                .flatten()
+                .all(|i| i.id != "minecraft:water_bucket")
+        );
     }
 }

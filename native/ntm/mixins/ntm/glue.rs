@@ -356,6 +356,132 @@ fn cell_snapshot(game:&crate::game::Game<'_>,dim:&str,pos:[i32;3])->Option<ntm_c
     Some(ntm_core::server::CellSnapshot{state,entity,items})
 }
 
+impl Host<'_, '_> {
+    fn publish_atomic(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop]) -> bool {
+        // This callback owns &mut Game for its entire duration. No event,
+        // hopper, chunk unload or block mutation can interleave these passes.
+        // Resolve ALL entities and validate ALL expected slots before changing
+        // any. Notifications run only after every member has been published.
+        // A use callback may run before ServerTickEnd consumes a confirmed
+        // external break/replacement. Do not write an old model into that new
+        // BE generation, even when its id and empty slots happen to match.
+        if lock(&CHANGES).iter().any(|(d,p,old,new)|ntm_core::blockstate::id_of(old)!=ntm_core::blockstate::id_of(new)&&commits.iter().any(|c|c.dim==*d&&c.pos==*p)){return false;}
+        let mut prepared=Vec::with_capacity(commits.len());
+        let mut seen=std::collections::BTreeSet::new();
+        for c in commits {
+            if !seen.insert((c.dim.clone(),c.pos)) { return false; }
+            let Some((id,valid))=self.entity(&c.dim,c.pos,|e| {
+                let observed:Slots=e.items.iter().map(stack).collect();
+                let saved=e.nbt.get(&JavaString::from(STATE)).and_then(|tag|match tag{Tag::String(json)=>serde_json::from_str::<ntm_core::machine::Machine>(&json.to_string_lossy()).ok().map(|m|m.generation),_=>None});
+                let generation=if c.expected_saved{saved==Some(c.guard.generation)}else{saved.is_none_or(|g|g==c.guard.generation)};
+                (e.id.clone(),generation && e.id==c.guard.state && observed==c.expected && e.items.len()==c.desired.len())
+            }) else {return false};
+            if !valid {return false;}
+            let (_,synced)=file(self.game,&id);
+            prepared.push(synced);
+        }
+        // Resolve states, complete BE snapshots and visitability before ANY
+        // publication. A queued external A→air→A also invalidates these cells.
+        if self.game.remote.is_some() || self.game.world_debug{return false;}
+        let mut cells=Vec::new();
+        let mut cell_keys=std::collections::BTreeSet::new();
+        for w in commits.iter().flat_map(|c|&c.cells).chain(extra){
+            let key=(w.guard.dim.clone(),w.guard.pos);
+            if !cell_keys.insert(key.clone()) || seen.contains(&key) || w.guard.generation==u64::MAX{return false;}
+            if lock(&CHANGES).iter().any(|(d,p,_,_)|d==&key.0&&p==&key.1){return false;}
+            if cell_snapshot(self.game,&key.0,key.1).as_ref()!=Some(&w.expected){return false;}
+            // A moving piston's carried state lives in Ticks, outside the BE
+            // snapshot. Wait for its vanilla finalTick rather than mine a
+            // transient, unaccounted carried block or remove its base early.
+            if ntm_core::blockstate::id_of(&w.expected.state)=="minecraft:moving_piston"{return false;}
+            let Some(dim)=dim_of(&key.0) else{return false};
+            if self.game.visit_level(dim,|_|()).is_none(){return false;}
+            let mut reader=horizon_client::command::Reader::new(&w.desired);
+            let Ok(arg)=horizon_client::command::block::parse(&mut reader,&self.game.ui.registries,false) else{return false};
+            if reader.can_read() || arg.nbt.is_some() || arg.tag{return false;}
+            let Ok(state)=self.game.pack.assets.registry.resolve(&horizon_world::chunk::BlockState{name:arg.id,properties:arg.properties.into_iter().collect()}) else{return false};
+            let Some(old)=self.game.visit_level(dim,|g|g.world.block(w.guard.pos[0],w.guard.pos[1],w.guard.pos[2]))else{return false};
+            // Debug levels reject set_raw; preflight every visited level too.
+            if self.game.visit_level(dim,|g|g.world_debug).unwrap_or(true){return false;}
+            cells.push((w.clone(),dim,old,state));
+        }
+        if cells.len()>65_536{return false;}
+        let mut spawn=Vec::new();
+        for d in retained {
+            let Some(dim)=dim_of(&d.origin.dim)else{return false};
+            if self.game.visit_level(dim,|_|()).is_none(){return false;}
+            let items:Option<Vec<_>>=d.items.iter().map(|i|horizon_world::nbt::parse_snbt(i).ok().and_then(|(t,_)|horizon_client::save::item_from_nbt(&t))).collect();
+            let Some(items)=items else{return false};
+            spawn.push((dim,d.origin.pos,items));
+        }
+        let mut notify=Vec::new();
+        for (c,synced) in commits.iter().zip(prepared) {
+            // The preflight guarantees this entity is still accessible; this
+            // closure performs the entire update without any fallible operation.
+            let changed=self.entity(&c.dim,c.pos,|e| {
+                assert_eq!(e.items.iter().map(stack).collect::<Slots>(),c.expected,"exclusive preflight preserves expected slots");
+                assert_eq!(e.items.len(),c.desired.len());
+                let sent=match e.nbt.get(&JavaString::from(DATA)) {Some(Tag::IntArray(v))=>Some(v.clone()),_=>None};
+                for (cell,new) in e.items.iter_mut().zip(&c.desired) {
+                    *cell=item(new.as_ref(),cell.take());
+                }
+                e.data=c.data.clone();
+                e.nbt.insert(JavaString::from(DATA),Tag::IntArray(c.data.clone()));
+                e.nbt.insert(JavaString::from(STATE),Tag::String(JavaString::from(c.json.as_str())));
+                ntm_core::native::sync_changed(sent.as_deref(),&c.data,&synced)
+            }).expect("atomic preflight retains entity during exclusive Game access");
+            if changed {notify.push((c.dim.clone(),c.pos));}
+        }
+        // Publication cannot fail: exclusive Game access, resident/bounded
+        // cells and valid states were checked above. No cascade runs here.
+        for (w,dim,old,new) in &cells {
+            self.game.visit_level(*dim,|g|{
+                let pos=w.guard.pos;
+                if old==new{return;}
+                if g.res.facts().get(*old).name!=g.res.facts().get(*new).name{
+                    g.world.block_entities.remove(&(pos[0],pos[1],pos[2]));
+                }
+                g.with_level(|b,level,ticks|{
+                    let changed=b.set_block(level,ticks,horizon_core::position::BlockPos::new(pos[0],pos[1],pos[2]),*new,horizon_world::level::flags::UPDATE_CLIENTS|horizon_world::level::flags::UPDATE_SKIP_ALL_SIDEEFFECTS);
+                    assert!(changed,"exclusive loaded-cell preflight guarantees publication");
+                });
+            }).expect("preflight retains visited level");
+        }
+        // Retained contents publish in the same exclusive, infallible commit.
+        for (dim,pos,items) in spawn {
+            self.game.visit_level(dim,|g|for item in items{g.spawn_item(item,pos.map(|n|f64::from(n)+0.5),crate::game::dispenser::new_item_motion(),0);}).expect("retained drop level passed preflight");
+        }
+        // All BE and cell writes now exist. Notify through vanilla Sim only.
+        // Failures after this boundary are diagnostics/sync retries; NEVER a
+        // refusal, because rolling back resource accounting would duplicate it.
+        for (w,dim,old,new) in &cells {
+            self.game.visit_level(*dim,|g|{
+                if old==new{return;}
+                let p=w.guard.pos;
+                if g.res.facts().get(*old).name!=g.res.facts().get(*new).name{g.jukebox_removed(p);}
+                let pos=horizon_core::position::BlockPos::new(p[0],p[1],p[2]);
+                if w.notify{g.with_level(|b,level,ticks|b.ntm_committed_updates(level,ticks,pos,*old,*new));}
+                if w.destroy{
+                    g.level_events.push(horizon_world::level::LevelEvent::LevelEvent{id:2001,pos,data:old.0 as i32});
+                    g.level_events.push(horizon_world::level::LevelEvent::GameEvent{pos,event:"minecraft:block_destroy",state:Some(*old)});
+                }
+                if let Err(e)=g.process_level_events(){
+                    eprintln!("ntm: committed cell updates {p:?}: {e}; retaining sync retry");
+                    if let Some(snapshot)=cell_snapshot(g,&w.guard.dim,p){let mut guard=w.guard.clone();if g.res.facts().get(*old).name!=g.res.facts().get(*new).name{guard.generation=guard.generation.saturating_add(1);}guard.state=snapshot.state.clone();lock(&POST_SYNC).push((guard,snapshot));}
+                }
+                let landed=g.world.block(p[0],p[1],p[2]);
+                let name=g.res.facts().get(*new).name.clone();
+                if g.res.facts().get(*old).name!=name && g.res.facts().get(landed).name==name && let Some(entity)=g.new_block_entity(&name){g.world.block_entities.insert((p[0],p[1],p[2]),entity);}
+            }).expect("post-publication level remains accessible");
+        }
+        for (dim,p) in notify {
+            if dim_of(&dim)==Some(self.game.dim){self.game.native_block_entity_changed(p);}
+            else if self.watched(&dim){in_place(self.game,&dim,|g|g.native_block_entity_changed(p));}
+        }
+        true
+    }
+}
+
 impl ServerHost for Host<'_, '_> {
     fn cell_snapshot(&mut self,dim:&str,pos:[i32;3])->Option<ntm_core::server::CellSnapshot>{cell_snapshot(self.game,dim,pos)}
     fn drop_encoded_items(&mut self,dim:&str,pos:[i32;3],items:&[String])->bool{
@@ -445,116 +571,11 @@ impl ServerHost for Host<'_, '_> {
     fn commit_machine(&mut self, c: &ntm_core::server::MachineCommit) -> bool {
         self.commit_machines(std::slice::from_ref(c))
     }
-    fn commit_machines(&mut self, commits: &[ntm_core::server::MachineCommit]) -> bool {
-        // This callback owns &mut Game for its entire duration. No event,
-        // hopper, chunk unload or block mutation can interleave these passes.
-        // Resolve ALL entities and validate ALL expected slots before changing
-        // any. Notifications run only after every member has been published.
-        // A use callback may run before ServerTickEnd consumes a confirmed
-        // external break/replacement. Do not write an old model into that new
-        // BE generation, even when its id and empty slots happen to match.
-        if lock(&CHANGES).iter().any(|(d,p,old,new)|ntm_core::blockstate::id_of(old)!=ntm_core::blockstate::id_of(new)&&commits.iter().any(|c|c.dim==*d&&c.pos==*p)){return false;}
-        let mut prepared=Vec::with_capacity(commits.len());
-        let mut seen=std::collections::BTreeSet::new();
-        for c in commits {
-            if !seen.insert((c.dim.clone(),c.pos)) { return false; }
-            let Some((id,valid))=self.entity(&c.dim,c.pos,|e| {
-                let observed:Slots=e.items.iter().map(stack).collect();
-                let saved=e.nbt.get(&JavaString::from(STATE)).and_then(|tag|match tag{Tag::String(json)=>serde_json::from_str::<ntm_core::machine::Machine>(&json.to_string_lossy()).ok().map(|m|m.generation),_=>None});
-                let generation=if c.expected_saved{saved==Some(c.guard.generation)}else{saved.is_none_or(|g|g==c.guard.generation)};
-                (e.id.clone(),generation && e.id==c.guard.state && observed==c.expected && e.items.len()==c.desired.len())
-            }) else {return false};
-            if !valid {return false;}
-            let (_,synced)=file(self.game,&id);
-            prepared.push(synced);
-        }
-        // Resolve states, complete BE snapshots and visitability before ANY
-        // publication. A queued external A→air→A also invalidates these cells.
-        if self.game.remote.is_some() || self.game.world_debug{return false;}
-        let mut cells=Vec::new();
-        let mut cell_keys=std::collections::BTreeSet::new();
-        for w in commits.iter().flat_map(|c|&c.cells){
-            let key=(w.guard.dim.clone(),w.guard.pos);
-            if !cell_keys.insert(key.clone()) || seen.contains(&key) || w.guard.generation==u64::MAX{return false;}
-            if lock(&CHANGES).iter().any(|(d,p,_,_)|d==&key.0&&p==&key.1){return false;}
-            if cell_snapshot(self.game,&key.0,key.1).as_ref()!=Some(&w.expected){return false;}
-            // A moving piston's carried state lives in Ticks, outside the BE
-            // snapshot. Wait for its vanilla finalTick rather than mine a
-            // transient, unaccounted carried block or remove its base early.
-            if ntm_core::blockstate::id_of(&w.expected.state)=="minecraft:moving_piston"{return false;}
-            let Some(dim)=dim_of(&key.0) else{return false};
-            if self.game.visit_level(dim,|_|()).is_none(){return false;}
-            let mut reader=horizon_client::command::Reader::new(&w.desired);
-            let Ok(arg)=horizon_client::command::block::parse(&mut reader,&self.game.ui.registries,false) else{return false};
-            if reader.can_read() || arg.nbt.is_some() || arg.tag{return false;}
-            let Ok(state)=self.game.pack.assets.registry.resolve(&horizon_world::chunk::BlockState{name:arg.id,properties:arg.properties.into_iter().collect()}) else{return false};
-            let Some(old)=self.game.visit_level(dim,|g|g.world.block(w.guard.pos[0],w.guard.pos[1],w.guard.pos[2]))else{return false};
-            // Debug levels reject set_raw; preflight every visited level too.
-            if self.game.visit_level(dim,|g|g.world_debug).unwrap_or(true){return false;}
-            cells.push((w.clone(),dim,old,state));
-        }
-        if cells.len()>65_536{return false;}
-        let mut notify=Vec::new();
-        for (c,synced) in commits.iter().zip(prepared) {
-            // The preflight guarantees this entity is still accessible; this
-            // closure performs the entire update without any fallible operation.
-            let changed=self.entity(&c.dim,c.pos,|e| {
-                assert_eq!(e.items.iter().map(stack).collect::<Slots>(),c.expected,"exclusive preflight preserves expected slots");
-                assert_eq!(e.items.len(),c.desired.len());
-                let sent=match e.nbt.get(&JavaString::from(DATA)) {Some(Tag::IntArray(v))=>Some(v.clone()),_=>None};
-                for (cell,new) in e.items.iter_mut().zip(&c.desired) {
-                    *cell=item(new.as_ref(),cell.take());
-                }
-                e.data=c.data.clone();
-                e.nbt.insert(JavaString::from(DATA),Tag::IntArray(c.data.clone()));
-                e.nbt.insert(JavaString::from(STATE),Tag::String(JavaString::from(c.json.as_str())));
-                ntm_core::native::sync_changed(sent.as_deref(),&c.data,&synced)
-            }).expect("atomic preflight retains entity during exclusive Game access");
-            if changed {notify.push((c.dim.clone(),c.pos));}
-        }
-        // Publication cannot fail: exclusive Game access, resident/bounded
-        // cells and valid states were checked above. No cascade runs here.
-        for (w,dim,old,new) in &cells {
-            self.game.visit_level(*dim,|g|{
-                let pos=w.guard.pos;
-                if old==new{return;}
-                if g.res.facts().get(*old).name!=g.res.facts().get(*new).name{
-                    g.world.block_entities.remove(&(pos[0],pos[1],pos[2]));
-                }
-                g.with_level(|b,level,ticks|{
-                    let changed=b.set_block(level,ticks,horizon_core::position::BlockPos::new(pos[0],pos[1],pos[2]),*new,horizon_world::level::flags::UPDATE_CLIENTS|horizon_world::level::flags::UPDATE_SKIP_ALL_SIDEEFFECTS);
-                    assert!(changed,"exclusive loaded-cell preflight guarantees publication");
-                });
-            }).expect("preflight retains visited level");
-        }
-        // All BE and cell writes now exist. Notify through vanilla Sim only.
-        // Failures after this boundary are diagnostics/sync retries; NEVER a
-        // refusal, because rolling back resource accounting would duplicate it.
-        for (w,dim,old,new) in &cells {
-            self.game.visit_level(*dim,|g|{
-                if old==new{return;}
-                let p=w.guard.pos;
-                if g.res.facts().get(*old).name!=g.res.facts().get(*new).name{g.jukebox_removed(p);}
-                let pos=horizon_core::position::BlockPos::new(p[0],p[1],p[2]);
-                g.with_level(|b,level,ticks|b.ntm_committed_updates(level,ticks,pos,*old,*new));
-                if w.destroy{
-                    g.level_events.push(horizon_world::level::LevelEvent::LevelEvent{id:2001,pos,data:old.0 as i32});
-                    g.level_events.push(horizon_world::level::LevelEvent::GameEvent{pos,event:"minecraft:block_destroy",state:Some(*old)});
-                }
-                if let Err(e)=g.process_level_events(){
-                    eprintln!("ntm: committed cell updates {p:?}: {e}; retaining sync retry");
-                    if let Some(snapshot)=cell_snapshot(g,&w.guard.dim,p){let mut guard=w.guard.clone();if g.res.facts().get(*old).name!=g.res.facts().get(*new).name{guard.generation=guard.generation.saturating_add(1);}guard.state=snapshot.state.clone();lock(&POST_SYNC).push((guard,snapshot));}
-                }
-                let landed=g.world.block(p[0],p[1],p[2]);
-                let name=g.res.facts().get(*new).name.clone();
-                if g.res.facts().get(*old).name!=name && g.res.facts().get(landed).name==name && let Some(entity)=g.new_block_entity(&name){g.world.block_entities.insert((p[0],p[1],p[2]),entity);}
-            }).expect("post-publication level remains accessible");
-        }
-        for (dim,p) in notify {
-            if dim_of(&dim)==Some(self.game.dim){self.game.native_block_entity_changed(p);}
-            else if self.watched(&dim){in_place(self.game,&dim,|g|g.native_block_entity_changed(p));}
-        }
-        true
+    fn commit_machines(&mut self, commits: &[ntm_core::server::MachineCommit]) -> bool {self.publish_atomic(commits,&[],&[])}
+    fn commit_structural(&mut self,cells:&[ntm_core::server::CellWrite],drops:&[ntm_core::server::RetainedDrop],owners:&[(String,[i32;3])])->bool{
+        let own=cells.iter().filter(|c|owners.contains(&c.guard.key())).map(|c|(c.guard.dim.clone(),c.guard.pos,ntm_core::blockstate::id_of(&c.desired).into())).collect();
+        let _scope=OwnedBlockScope::new(own);
+        self.publish_atomic(&[],cells,drops)
     }
     fn machine_buttons(&mut self) -> Vec<(String, String, [i32; 3], u32)> {
         std::mem::take(&mut self.buttons)

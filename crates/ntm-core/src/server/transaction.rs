@@ -12,6 +12,8 @@ pub enum WorldEffect {
         blocks: Vec<(Pos, String)>,
         #[serde(default)]
         expected: Vec<CellGuard>,
+        #[serde(default)]
+        retained:Vec<RetainedDrop>,
     },
     Items {
         dim: String,
@@ -65,7 +67,7 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
             let snapshot=self.host.cell_snapshot(d,p)?;
             if !self.world_writes.iter().any(|w|w.guard.dim==d&&w.guard.pos==p){
                 let guard=CellGuard{dim:d.into(),pos:p,generation:self.generations.get(&(d.into(),p)).copied().unwrap_or(0),state:snapshot.state.clone()};
-                self.world_writes.push(CellWrite{guard,desired:snapshot.state.clone(),expected:snapshot,destroy:false});
+                self.world_writes.push(CellWrite{notify:true,guard,desired:snapshot.state.clone(),expected:snapshot,destroy:false});
             }
             return Some(self.world_writes.iter().find(|w|w.guard.dim==d&&w.guard.pos==p).unwrap().expected.state.clone());
         }
@@ -99,7 +101,7 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
                 let Some(expected)=self.host.cell_snapshot(d,*pos) else{self.valid=false;return Err("unavailable consumed cell".into())};
                 let guard=CellGuard{dim:d.into(),pos:*pos,generation:self.generations.get(&(d.into(),*pos)).copied().unwrap_or(0),state:expected.state.clone()};
                 let destroy=blockstate::id_of(desired)=="minecraft:air" && blockstate::id_of(&expected.state)!="minecraft:air";
-                self.world_writes.push(CellWrite{guard,expected,desired:desired.clone(),destroy});
+                self.world_writes.push(CellWrite{notify:true,guard,expected,desired:desired.clone(),destroy});
             }
             return Ok(());
         }
@@ -111,9 +113,9 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
             let generation=self.cells.get(&key).map_or(current,|origin|{
                 if origin.generation==current || self.vacant.contains(&key)&&blockstate::id_of(&state)=="minecraft:air"&&origin.generation.checked_add(1)==Some(current){current}else{origin.generation}
             });
-            expected.push(CellGuard{dim:d.into(),pos:*pos,generation,state});
+            expected.push(CellGuard{dim:d.into(),pos:*pos,generation,state:blockstate::id_of(&state).into()});
         }
-        self.critical.push_back(WorldEffect::Blocks {dim:d.into(),blocks:b.to_vec(),expected});
+        self.critical.push_back(WorldEffect::Blocks {dim:d.into(),blocks:b.to_vec(),expected,retained:Vec::new()});
         Ok(())
     }
     fn tell(&mut self, p: &str, t: &str) {
@@ -175,19 +177,31 @@ impl Server {
                 if !host.pile_reachable(dim){self.ready.world.machine_effects.rotate_left(1);break;}
                 let mut wait=false;
                 let mut physical=false;
-                if let WorldEffect::Blocks{dim,blocks,expected}=&mut effect {
+                let mut cells=Vec::new();
+                if let WorldEffect::Blocks{dim,blocks,expected,retained}=&mut effect {
                     let mut keep=Vec::new();let mut guards=Vec::new();
                     for (pos,desired) in &*blocks {
                         let Some(g)=expected.iter().find(|g|g.pos==*pos&&g.dim==*dim) else{continue};
                         if !self.current_guard(g){continue;}
                         match host.get_block(dim,*pos){
                             None=>{wait=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
-                            Some(actual) if actual==g.state=>{physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
-                            Some(actual) if actual==*desired=>{physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
+                            Some(actual) if blockstate::id_of(&actual)==blockstate::id_of(&g.state) || blockstate::id_of(&actual)==blockstate::id_of(desired)=>{
+                                let Some(snapshot)=host.cell_snapshot(dim,*pos) else{wait=true;keep.push((*pos,desired.clone()));guards.push(g.clone());continue};
+                                // Refresh only a still-existing source. A journal
+                                // replay whose source is already gone retains its
+                                // old physical drop rather than silently losing it.
+                                if blockstate::id_of(&actual)==blockstate::id_of(&g.state){
+                                    retained.retain(|d|d.origin.key()!=g.key());
+                                    if blockstate::id_of(&actual)!=blockstate::id_of(desired)&&!snapshot.items.is_empty(){retained.push(RetainedDrop{origin:g.clone(),items:snapshot.items.clone()});}
+                                }
+                                cells.push(CellWrite{notify:false,guard:g.clone(),expected:snapshot,desired:desired.clone(),destroy:false});
+                                physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());
+                            }
                             Some(_)=>{},
                         }
                     }
                     *blocks=keep;*expected=guards;
+                    physical|=!retained.is_empty();
                 }else{
                     // Confirmed items and explosions belong to the old origin,
                     // independently of whatever occupies its position now.
@@ -197,12 +211,17 @@ impl Server {
                 self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect.clone();
                 if let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){host.log(&format!("pending machine effect: {e}"));return;}
                 let done=match &effect {
-                    WorldEffect::Blocks{dim,blocks,..}=>blocks.is_empty()||host.set_machine_blocks(dim,blocks,&self.ready.world.machine_effects.front().unwrap().owners).is_ok(),
+                    WorldEffect::Blocks{retained,..}=>cells.is_empty()&&retained.is_empty()||host.commit_structural(&cells,retained,&self.ready.world.machine_effects.front().unwrap().owners),
                     WorldEffect::Items{dim,pos,items}=>host.drop_items(dim,*pos,items),
                     WorldEffect::EncodedItems{dim,pos,items}=>host.drop_encoded_items(dim,*pos,items),
                     WorldEffect::PileExplosion{dim,pos}=>host.pile_explode(dim,*pos),
                 };
-                if !done{self.ready.world.machine_effects.rotate_left(1);break;}
+                if !done{
+                    // A rejected atomic publication emitted no item. Discard
+                    // its captured inventory; the next attempt observes it anew.
+                    if let Some(WorldEffect::Blocks{retained,..})=self.ready.world.machine_effects.front_mut().and_then(|b|b.effects.front_mut()){retained.clear();}
+                    self.ready.world.machine_effects.rotate_left(1);break;
+                }
                 let batch=self.ready.world.machine_effects.front_mut().unwrap();
                 let effect=batch.effects.pop_front().unwrap();
                 if physical {

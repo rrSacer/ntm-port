@@ -17,7 +17,7 @@ impl Behaviours {
         new: BlockStateId,
     ) {
         let mut sim = self.sim(level, ticks);
-        if self.block(old) != self.block(new) {
+        if self.block(old) != self.block(new) || self.data(new).is(super::classes::Class::BaseRail) {
             sim.affect_neighbors_after_removal(old, pos, false);
         }
         sim.on_place(new, pos, old, false);

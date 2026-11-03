@@ -380,6 +380,16 @@ mod tests {
     }
 
     impl ServerHost for World {
+        fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
+            if !drops.is_empty(){return false;}
+            if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
+            let dims:BTreeSet<_>=cells.iter().map(|c|c.guard.dim.clone()).collect();
+            if dims.len()>1{return false;}
+            let Some(dim)=dims.first()else{return true};
+            let blocks:Vec<_>=cells.iter().map(|c|(c.guard.pos,c.desired.clone())).collect();
+            self.set_machine_blocks(dim,&blocks,owners).is_ok()
+        }
+
         fn commit_machine(&mut self,c:&MachineCommit)->bool{self.commit_machines(std::slice::from_ref(c))}
         fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
             if self.unreachable{return false;}
