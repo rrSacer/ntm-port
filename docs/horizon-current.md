@@ -504,6 +504,7 @@ Validação (binário `e57ab62508c8c7c9bbdf5283fc3794882b462b0d9654c23e8aefc9a8f
 - Em jogo, sem falhas: dims 14, zirnox 136, inventory-proxy 12, radioisotopes 67, bombs 49, pile 85 (×5), pile-meltdown 32, dims-idle 2,
   dims-idle-clean 1, mining 18, solar 36, combustion 15, catalog 251, comparator 9, stations 5.
 ## Hooks de item — extensão local em validação
+## Hooks de item — extensões locais
 
 | Extensão local | Equivalente no upstream congelado `fc0210381` | Decisão |
 | --- | --- | --- |

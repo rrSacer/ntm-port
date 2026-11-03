@@ -1,7 +1,8 @@
 # Hooks nativos de item, stack e equipamento
 
 Implementação na branch `item-hooks`, sobre upstream congelado `fc0210381`.
-A validação está em andamento; a existência desta API não conclui os 116 itens K2.
+A API e o lote de prova estão aceitos em jogo (seção Aceitação); a existência
+desta API não conclui os 116 itens K2.
 
 ## Contrato de publicação
 
@@ -142,3 +143,39 @@ salvo junto com o jogador. As posições de mods são vistas desse NBT, os slots
 de armadura são vistas do equipamento real. Após reabrir sem o menu, a limpeza
 usa o mesmo commit de fechamento e libera os itens uma vez. A transação do
 motor inclui também o cursor e os drops pós-publicação necessários aos menus.
+
+## Aceitação
+
+Binário `1c3315ca9c4f…` e pacote `3fbcad5823f7…`, motor `60d48181f`, no mesmo par para
+todos os cenários (hashes iguais antes e depois). Cada fase grava a própria
+evidência (`native-items-setup.json`, `-capture-state.json`, `-check-state.json`).
+
+| Roteiro `items` | Checks |
+| --- | --- |
+| `setup`: CAS nativo com recusa e repetição, comer com animação real, cancelar sem consumir, fome/saturação, cinco efeitos, seringa em inventário cheio e com espaço, kit hazmat, filtro instalado uma vez, desgaste por exposição, blacklist da máscara, gama com máscara/hazmat, RadAway (total exato e `iv_empty`), mesa real (14 slots, inserir, shift-click, remover, fechar conservando) | 24 |
+| `capture-state`: mesa preparando a peça com mod, RadAway acumulado | 6 |
+| `check-state` depois de fechar e reabrir o mundo: dose sem repetir tratamento, desgaste do filtro e carga, mods da armadura | 3 |
+
+Regressão no mesmo binário: `mining` 18 checks, `bombs` 49, `zirnox` 127, `pile` 83,
+`dims` 10 (com `dims-idle` 2 e `dims-idle-clean` 1), `inventory-proxy` 12,
+`radioisotopes` 67, `solar` 36, `combustion` 15 e `catalog` 251.
+O `pile` falhou uma vez numa repetição (`interact`: nenhuma face visível do
+bloco, sem relação com itens) e passou em duas execuções seguidas, no mesmo binário.
+
+Verificação estática no HEAD final: NTM 416 testes passaram (2 doctests herdados
+ignorados), Clippy `-D warnings` do workspace e da cópia transformada do motor sem
+isenções; motor 1.560 testes de `horizon-client-lib` (inclui
+`a_native_menus_cursor_published_after_the_resend_is_synced`) e 764 de
+`horizon-client` passaram, Clippy do motor e `cargo fmt --check` limpos.
+
+Limites desta aceitação:
+
+- Nenhuma fonte ambiental do port chama `filter_exposure` ainda; o desgaste foi
+  provado pelo comando de operador `/ntmitem expose`, que usa a mesma API. A
+  dose inicial do RadAway e a carga da pilha também vêm de comandos de operador
+  (`/ntmitem dose` e `charge`); a dose gama do inventário é real.
+- Não há roteiro de dois clientes: o hóspede LAN é coberto pelo motor (o jogador
+  local já entra como hóspede da instância integrada) e pelo teste do hub, não por
+  um segundo cliente.
+- A política deste lote é recusar o uso sem espaço, em vez de derrubar o
+  recipiente como o Java faz em alguns casos.
