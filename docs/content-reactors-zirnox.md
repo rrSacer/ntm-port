@@ -36,7 +36,8 @@ produzido pelo breeding. Retirada manual continua permitida. Os slots 0..23 são
 `Slot` vanilla no Java: a inserção manual (clique, tecla numérica, drag) aceita
 qualquer item, uma unidade por slot; só a automação (`isItemValidForSlot`) e o
 shift-click (`transferStackInSlot`, via `quick_move`) ficam restritos às barras.
-Recipientes 24..27
+Os slots 24 e 25 também são `Slot` vanilla: mão livre e só o recipiente do fluido
+certo pelo shift-click. Recipientes 24..27
 só são acessíveis pela tela, como os slots acessíveis Java. Ver o
 [contrato do hook e das origens Manual/Automation](native-slot-policy.md).
 

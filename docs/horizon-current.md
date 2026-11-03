@@ -366,10 +366,11 @@ marco, sem cherry-picks entre branches.
 
 O item 5 exigiu um campo novo no motor: sem ele, remover o `accept` estático
 deixaria o shift-click mover qualquer item para as barras, o que o
-`transferStackInSlot` Java não faz. Os slots 24 e 25 (recipientes) também são
-`Slot` vanilla no Java e a tela ainda os restringe por `accept`; ficam como
-observação, fora do escopo pedido (só a automação os alcançaria, e as faces
-não os expõem).
+`transferStackInSlot` Java não faz. Os slots 24 e 25 (recipientes de CO₂ e de
+água) são `Slot` vanilla no Java e receberam o mesmo tratamento depois: mão
+livre, só recipientes do fluido certo pelo shift-click e nada pela automação
+(`isItemValidForSlot` é falso para `i >= 24`). Os slots 26 e 27 seguem
+`SlotTakeOnly`.
 
 Validação das correções (após as quatro, mesmo binário em todos os roteiros):
 release `horizon-client` `539b1e144b59c4ffb173e76e946e32f800bcfeda0c903444933704b2cf11f87e`,

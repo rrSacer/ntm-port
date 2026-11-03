@@ -94,7 +94,7 @@ pub enum SlotAction { Insert, Extract }
 /// Additional pure restriction on a slot, composed with static filters, limits and faces.
 /// `slots` must be the current complete container, never a cached tick snapshot.
 /// Manual ZIRNOX insertion and extraction are unrestricted (vanilla `Slot`s); automation
-/// follows `isItemValidForSlot` (rods only into the rod slots) and `canExtractItem`.
+/// follows `isItemValidForSlot` (rods only, and only into the rod slots) and `canExtractItem`.
 pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge::Stack>], slot: usize,
     item: &crate::server::container_bridge::Stack, action: SlotAction, origin: SlotOrigin) -> bool {
     if matches!(block, crate::radioisotopes::RTG | crate::radioisotopes::RADGEN) {
@@ -107,7 +107,7 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     block != crate::zirnox::BLOCK || origin == SlotOrigin::Manual
         || match action {
-            SlotAction::Insert => slot >= 24 || crate::zirnox::fuel(&item.id).is_some(),
+            SlotAction::Insert => slot < 24 && crate::zirnox::fuel(&item.id).is_some(),
             SlotAction::Extract => crate::zirnox::can_extract(slot, &item.id),
         }
 }
@@ -135,7 +135,9 @@ pub fn block_slots(block: &str) -> Vec<SlotFilter> {
         // and the automation (`slot_allows`) are limited to the rods.
         let rods=crate::zirnox::table().fuels.iter().map(|f|f.item.clone()).collect();
         let mut slots=vec![SlotFilter {max:Some(1), quick_move:Some(rods), ..Default::default()};24];
-        for f in ["carbondioxide","water"] {slots.push(SlotFilter {accept:Some(crate::fluid::all_full_containers().into_iter().filter(|s|crate::fluid::contents(s).is_some_and(|c|c.fluid==f)).collect()),..Default::default()});}
+        // Slots 24 and 25 are vanilla `Slot`s too; their `transferStackInSlot` branches
+        // send only carbon dioxide and water containers, respectively.
+        for f in ["carbondioxide","water"] {slots.push(SlotFilter {quick_move:Some(crate::fluid::all_full_containers().into_iter().filter(|s|crate::fluid::contents(s).is_some_and(|c|c.fluid==f)).collect()),..Default::default()});}
         slots.extend([SlotFilter {output:true,..Default::default()},SlotFilter {output:true,..Default::default()}]);
         return slots;
     }
@@ -370,7 +372,16 @@ mod tests {
             assert!(s.accept.is_none() && s.max == Some(1));
             assert!(quick(s, &rod.id) && !quick(s, &junk.id) && !quick(s, &spent.id));
         }
-        assert!(slots[24..].iter().all(|s| s.quick_move.is_none()));
+        // The fluid slots are vanilla `Slot`s as well: any item by hand, one kind of
+        // container by shift-click, nothing by automation.
+        let co2 = &slots[24].quick_move;
+        let water = &slots[25].quick_move;
+        assert!(slots[24].accept.is_none() && slots[25].accept.is_none());
+        assert!(co2.as_ref().is_some_and(|q| !q.is_empty() && q.iter().all(|i| !i.contains("water"))));
+        assert!(water.as_ref().is_some_and(|q| !q.is_empty() && q.iter().all(|i| !i.contains("carbon"))));
+        assert!(allows(24, &junk, SlotOrigin::Manual) && allows(25, &junk, SlotOrigin::Manual));
+        assert!(!allows(24, &rod, SlotOrigin::Automation) && !allows(25, &junk, SlotOrigin::Automation));
+        assert!(slots[26..].iter().all(|s| s.output && s.quick_move.is_none()));
     }
 
     #[test]

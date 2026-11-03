@@ -209,26 +209,27 @@ def capture(g):
 
 
 def manual_non_fuel(g,core):
-    """ContainerReactorZirnox builds slots 0..23 as vanilla `Slot`s: a hand places any item there."""
+    """ContainerReactorZirnox builds the rod and fluid-input slots as vanilla `Slot`s: a hand places any item there."""
     g.close();g.command('give @s minecraft:dirt 1');time.sleep(1);open_reactor(g,core)
     dirt=next(s['slot'] for s in g.ctl('screen')['slots'] if s['slot']<36 and s.get('item')=='minecraft:dirt')
-    rod='ntm:rod_zirnox__natural_uranium_fuel';rod_slot=300
+    def cell(slot):return next(s for s in g.ctl('screen')['slots'] if s['slot']==slot).get('item')
     def settle(want_slot,want_item,want_carried):
         deadline=time.monotonic()+10
         while True:
-            screen=g.ctl('screen');carried=(screen.get('carried') or {}).get('item')
-            cell=next(s for s in screen['slots'] if s['slot']==want_slot).get('item')
-            if (cell,carried)==(want_item,want_carried) or time.monotonic()>deadline:return cell,carried
+            carried=(g.ctl('screen').get('carried') or {}).get('item')
+            if (cell(want_slot),carried)==(want_item,want_carried) or time.monotonic()>deadline:return cell(want_slot),carried
             time.sleep(.1)
-    g.ctl(f'click-slot {dirt}');settle(dirt,None,'minecraft:dirt')
-    # The cursor's dirt replaces the live rod in the rod slot.
-    g.ctl(f'click-slot {rod_slot}');placed=settle(rod_slot,'minecraft:dirt',rod)
-    g.check('manual_non_fuel_replaces_rod_in_slot',placed==('minecraft:dirt',rod),placed)
-    # And the rod goes back, bringing the dirt to the cursor again.
-    g.ctl(f'click-slot {rod_slot}');back=settle(rod_slot,rod,'minecraft:dirt')
-    g.check('manual_rod_returns_whole',back==(rod,'minecraft:dirt'),back)
-    g.ctl(f'click-slot {dirt}');home=settle(dirt,'minecraft:dirt',None)
-    g.check('manual_non_fuel_returns_whole',home==('minecraft:dirt',None),home)
+    for name,slot in [('rod',300),('co2_input',324),('water_input',325)]:
+        held=cell(slot)
+        g.ctl(f'click-slot {dirt}');settle(dirt,None,'minecraft:dirt')
+        # The cursor's dirt takes the slot's place (swap, or a plain put if it is empty).
+        g.ctl(f'click-slot {slot}');placed=settle(slot,'minecraft:dirt',held)
+        g.check('manual_non_fuel_enters_'+name+'_slot',placed==('minecraft:dirt',held),placed)
+        # And the original item goes back, bringing the dirt to the cursor again.
+        g.ctl(f'click-slot {slot}');back=settle(slot,held,'minecraft:dirt')
+        g.check('manual_original_returns_to_'+name+'_slot',back==(held,'minecraft:dirt'),back)
+        g.ctl(f'click-slot {dirt}');home=settle(dirt,'minecraft:dirt',None)
+        g.check('manual_non_fuel_returns_from_'+name,home==('minecraft:dirt',None),home)
 
 
 def check(g):
