@@ -777,7 +777,7 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
     };
     filters.extend(rules.into_iter().map(|f| ModSlotFilter {
         accept: f.accept, reject: f.reject, max: f.max, output: f.output,
-        quick_move: f.quick_move, policy,
+        quick_move: f.quick_move, quick_reverse: f.quick_reverse, policy,
     }));
 }
 

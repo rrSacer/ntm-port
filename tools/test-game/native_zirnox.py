@@ -255,6 +255,28 @@ def manual_non_fuel(g,core):
     if taken is None:
         g.ctl('click-slot 324');settle(324,None,'minecraft:dirt')
         g.ctl(f'click-slot {dirt}');settle(dirt,'minecraft:dirt',None)
+    # `mergeItemStack(0, 24, true)`: a rod moved in by shift-click takes the LAST free rod slot. Two rods
+    # go out to the inventory (slots 300 and 301 are free); one shift-clicked back lands in 301, not 300.
+    rods=[cell(300),cell(301)]
+    for rod_slot in (300,301):
+        g.ctl(f'click-slot {rod_slot} shift')
+        deadline=time.monotonic()+8
+        while time.monotonic()<deadline and cell(rod_slot) is not None:time.sleep(.2)
+    def inventory_rod(item,skip=()):
+        return next(s['slot'] for s in g.ctl('screen')['slots'] if s['slot']<36 and s['slot'] not in skip and s.get('item')==item)
+    first=inventory_rod(rods[0])
+    g.ctl(f'click-slot {first} shift')
+    deadline=time.monotonic()+8
+    while time.monotonic()<deadline and cell(301) is None and cell(300) is None:time.sleep(.2)
+    landed={300:cell(300),301:cell(301)}
+    g.check('shift_click_fills_the_rod_slots_back_to_front',landed[301] is not None and landed[300] is None,{'landed':landed,'moved_out':rods})
+    # Put the rods back where they were: the one in 301 goes to 300, the other (in the inventory) to 301.
+    g.ctl('click-slot 301');settle(301,None,landed[301])
+    g.ctl('click-slot 300');settle(300,landed[301],None)
+    other=inventory_rod(rods[1])
+    g.ctl(f'click-slot {other}');settle(other,None,rods[1])
+    g.ctl('click-slot 301');settle(301,rods[1],None)
+    g.check('rods_are_back_in_their_slots',(cell(300),cell(301))==(rods[0],rods[1]),{'slots':(cell(300),cell(301)),'expected':rods})
 
 
 def check(g):

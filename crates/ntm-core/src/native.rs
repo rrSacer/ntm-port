@@ -66,6 +66,8 @@ pub struct SlotFilter {
     pub output: bool,
     /// The items a shift-click may move in (none: as `accept`).
     pub quick_move: Option<Vec<String>>,
+    /// A shift-click fills this run of slots from its last to its first (`mergeItemStack(.., true)`).
+    pub quick_reverse: bool,
 }
 
 /// The rules of block `block`'s slots, in order (menu, clicks and hoppers
@@ -157,7 +159,7 @@ pub fn block_slots(block: &str) -> Vec<SlotFilter> {
         // may place anything, one item at a time. Only `transferStackInSlot` (shift-click)
         // and the automation (`slot_allows`) are limited to the rods.
         let rods=crate::zirnox::table().fuels.iter().map(|f|f.item.clone()).collect();
-        let mut slots=vec![SlotFilter {max:Some(1), quick_move:Some(rods), ..Default::default()};24];
+        let mut slots=vec![SlotFilter {max:Some(1), quick_move:Some(rods), quick_reverse:true, ..Default::default()};24];
         // Slots 24 and 25 are vanilla `Slot`s too; their `transferStackInSlot` branches
         // send only carbon dioxide and water containers, respectively.
         for f in ["carbondioxide","water"] {slots.push(SlotFilter {quick_move:Some(crate::fluid::all_full_containers().into_iter().filter(|s|crate::fluid::contents(s).is_some_and(|c|c.fluid==f)).collect()),..Default::default()});}
@@ -190,6 +192,7 @@ pub fn file_slots(file: &[u8]) -> Vec<SlotFilter> {
             max: s.get("max").and_then(|m| m.as_u64()).map(|m| m as u32),
             output: s.get("output").and_then(|o| o.as_bool()).unwrap_or(false),
             quick_move: None,
+            quick_reverse: false,
         };
         let cells = match s.get("grid").and_then(|g| g.as_array()) {
             Some(g) if g.len() == 4 => (g[2].as_u64().unwrap_or(1) * g[3].as_u64().unwrap_or(1)) as usize,
@@ -431,7 +434,7 @@ mod tests {
         let slots = block_slots(crate::zirnox::BLOCK);
         let quick = |s: &SlotFilter, id: &str| s.quick_move.as_ref().is_none_or(|q| q.iter().any(|x| x == id));
         for s in &slots[..24] {
-            assert!(s.accept.is_none() && s.max == Some(1));
+            assert!(s.accept.is_none() && s.max == Some(1) && s.quick_reverse);
             assert!(quick(s, &rod.id) && !quick(s, &junk.id) && !quick(s, &spent.id));
         }
         // The fluid slots are vanilla `Slot`s as well: any item by hand, one kind of
@@ -443,6 +446,8 @@ mod tests {
         assert!(water.as_ref().is_some_and(|q| !q.is_empty() && q.iter().all(|i| !i.contains("carbon"))));
         assert!(allows(24, &junk, SlotOrigin::Manual) && allows(25, &junk, SlotOrigin::Manual));
         assert!(!allows(24, &rod, SlotOrigin::Automation) && !allows(25, &junk, SlotOrigin::Automation));
+        // Java fills the rods from the last slot back (`mergeItemStack(0, 24, true)`); the fluid slots in order.
+        assert!(slots[24..].iter().all(|s| !s.quick_reverse));
         // The take-only slots take the same containers by shift-click, after their input slots.
         assert!(slots[26].output && slots[26].quick_move == slots[24].quick_move);
         assert!(slots[27].output && slots[27].quick_move == slots[25].quick_move);

@@ -9,7 +9,7 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
 - Upstream incorporado: `fc02103818c212920fd24aa34a2b2f91ba49e56f` (snapshot congelado de 03/11/2026).
-- Motor de integração (pin): `80145bdc1ba77e775894a1d5c19605cb96ad9ea4`.
+- Motor de integração (pin): `d5eb69a33a5c2d137d620865dd1e39e1e31aa38c`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
   `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
@@ -338,7 +338,7 @@ permaneceu nesta rodada.
 
 ## Onda 0 — política de inventário e portas (marco 1)
 
-Motor `80145bdc1ba77e775894a1d5c19605cb96ad9ea4`, derivado do pin
+Motor `d5eb69a33a5c2d137d620865dd1e39e1e31aa38c`, derivado do pin
 `ec479adb3` (`47173f4c4` e quatro correções da revisão); upstream congelado `fc0210381`. [Contrato e exemplo da
 API](native-slot-policy.md).
 
@@ -393,7 +393,7 @@ anterior `912c112ffbf1…`), `mining-50ih28gu`, `bombs-jjh4t8wg`, `pile-9ibhz_3e
 
 ## Onda 0 — itens 2 a 4 (menu por identidade, itens estacionados, formação da pilha)
 
-Motor `80145bdc1ba77e775894a1d5c19605cb96ad9ea4` (sobre `7607685b8`); NTM rebaseado em `fb93c7cf` (RTG/radgen).
+Motor `d5eb69a33a5c2d137d620865dd1e39e1e31aa38c` (sobre `7607685b8`); NTM rebaseado em `fb93c7cf` (RTG/radgen).
 
 | Extensão local | Razão e composição com o oficial |
 | --- | --- |
@@ -422,7 +422,7 @@ Validação (mesmo binário `a79e93f2f051b30ad48a998b922d3a62f219718f7087f6382e2
 
 ### Correções da revisão do marco 2 (P3)
 
-Motor `80145bdc1ba77e775894a1d5c19605cb96ad9ea4`; NTM `wave0-integrity` com `662c5bf9` e `0364228a`.
+Motor `d5eb69a33a5c2d137d620865dd1e39e1e31aa38c`; NTM `wave0-integrity` com `662c5bf9` e `0364228a`.
 
 - **Comparadores (P3 #1).** A bateria, o tanque de fluido e o barril de aço (os portados cujo Java tem `hasComparatorInputOverride`)
   respondem à API 64 (`has_analog_output`, `analog_output`) com as fórmulas do Java, e o glue chama `native_update_output_neighbors`
