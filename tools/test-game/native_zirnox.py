@@ -218,7 +218,20 @@ def check(g):
     # Move the live rod through the real cursor twice; life must follow it.
     lever(g,c,False);open_reactor(g,core);before=life(g,core)
     empty=next(s['slot'] for s in g.ctl('screen')['slots'] if s['slot']<36 and not s.get('item'))
-    g.ctl('click-slot 300');g.ctl(f'click-slot {empty}');g.ctl(f'click-slot {empty}');g.ctl('click-slot 300')
+    # click-slot queues a server action; wait for both cursor and destination
+    # acknowledgement before the next move, rather than racing stale UI slots.
+    rod = 'ntm:rod_zirnox__natural_uranium_fuel'
+    for source, destination, carried in [(300,300,True),(empty,empty,False),(empty,empty,True),(300,300,False)]:
+        g.ctl(f'click-slot {source}')
+        deadline=time.monotonic()+10
+        while True:
+            screen=g.ctl('screen')
+            cursor=screen.get('carried')
+            cell=next(s for s in screen['slots'] if s['slot']==destination)
+            accepted=(cursor is not None and cursor.get('item')==rod and not cell.get('item')) if carried else (not cursor and cell.get('item')==rod)
+            if accepted or time.monotonic()>deadline:break
+            time.sleep(.1)
+        g.check('cursor_move_ack_'+str(len(g.evidence['steps'])),accepted,{'cursor':cursor,'slot':cell})
     g.check('rod_life_survives_manual_moves',life(g,core)==before,{'before':before,'after':life(g,core)})
     import os
     from xinput import XInput
