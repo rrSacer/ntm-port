@@ -8,9 +8,14 @@
 //!
 //! Each entry has an `id` that never changes: the id of the effect that created it. Applying an effect
 //! twice, as a replay after a crash does, finds the id and adds nothing. Spawning an entry's items
-//! makes it `Spawned`; it is retired when its item entities are gone (picked up, merged, burnt), in the
-//! same step as the world sees that. The retired id stays in `applied` until the host's storage no
-//! longer names the effect, because only then can no replay bring it back.
+//! makes it `Spawned`; it leaves the ledger when its item entities are gone (folded into another stack of
+//! the ledger, picked up, burnt), in the same step as the world sees that. The id stays in `applied` until
+//! the host's storage no longer names the effect, because only then can no replay bring it back.
+//!
+//! The entities live in the entity files of whatever chunks they reach, which are written apart from the
+//! ledger's record. The host writes the record first: every chunk its entities were seen in (`seen`) is named
+//! there before any entity file can hold them, so a reopened world knows every file to look in before it
+//! decides that a stack never reached one.
 
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
@@ -68,10 +73,37 @@ pub struct Entry {
     /// How many items its entities hold now, once they have merged with others or split (0: as `item` says).
     #[serde(default, skip_serializing_if = "is_zero")]
     pub live: u32,
-    /// The chunk its entities were last seen in (None: still in the chunk of `at`): a reopened world looks there
-    /// before it decides that they never reached the files.
+    /// The chunk its entities were last seen in (None: still in the chunk of `at`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last: Option<[i32; 2]>,
+    /// Every other chunk than the one of `at` its entities were seen in: the entity files that may hold them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub seen: Vec<[i32; 2]>,
+}
+
+impl Entry {
+    /// The chunk of `at`, whose ledger owns the entry.
+    pub fn origin(&self) -> [i32; 2] {
+        [self.at[0] >> 4, self.at[2] >> 4]
+    }
+    /// The chunks whose entity files may hold the stack: its own, and every one its entities were seen in.
+    pub fn holders(&self) -> Vec<[i32; 2]> {
+        let mut out = vec![self.origin()];
+        for c in self.seen.iter().chain(&self.last) {
+            if !out.contains(c) {
+                out.push(*c);
+            }
+        }
+        out
+    }
+    /// Its entities are in `chunk`. True when the ledger did not name that chunk yet.
+    pub fn see(&mut self, chunk: [i32; 2]) -> bool {
+        if chunk == self.origin() || self.seen.contains(&chunk) {
+            return false;
+        }
+        self.seen.push(chunk);
+        true
+    }
 }
 
 fn is_zero(n: &u32) -> bool {
@@ -127,7 +159,7 @@ impl ChunkLedger {
             self.applied.insert(id);
         }
         for (idx, item) in items.into_iter().enumerate() {
-            self.entries.push(Entry { id, idx: idx as u32, at, item, state: State::Pending, live: 0, last: None });
+            self.entries.push(Entry { id, idx: idx as u32, at, item, state: State::Pending, live: 0, last: None, seen: Vec::new() });
         }
         true
     }
@@ -164,7 +196,8 @@ impl ChunkLedger {
     pub fn is_paid(&self, id: u64) -> bool {
         self.applied.contains(&id) && !self.entries.iter().any(|e| e.id == id)
     }
-    /// The stack is paid; when it was the effect's last, the id moves to `applied`.
+    /// The stack folded into another stack of this ledger, which holds its items now; when it was the effect's
+    /// last, the id moves to `applied`. An entity file older than the record may still show it: it is `gone`.
     pub fn retire(&mut self, id: u64, idx: u32) {
         let Some(i) = self.entries.iter().position(|e| e.id == id && e.idx == idx) else {
             return;
@@ -175,8 +208,9 @@ impl ChunkLedger {
             self.applied.insert(id);
         }
     }
-    /// The stack's entities were saved with the world (confirmed): the world's own files keep them from here,
-    /// and the ledger stops following them. Unlike `retire`, the entities live on, so they are not `gone`.
+    /// The ledger stops following the stack: its entities were saved with the world (confirmed), or taken out of
+    /// it (picked up, burnt). Either way an entity file that still shows one is the world's own business from here,
+    /// as for any drop: unlike `retire`, they are not `gone`.
     pub fn release(&mut self, id: u64, idx: u32) {
         let Some(i) = self.entries.iter().position(|e| e.id == id && e.idx == idx) else {
             return;
@@ -291,6 +325,24 @@ mod tests {
         let mut released = back.clone();
         released.release(a, 0);
         assert!(released.entries.is_empty() && released.applied.contains(&a) && !released.is_gone(a, 0));
+    }
+
+    #[test]
+    fn the_chunks_a_stack_was_seen_in_are_named_once_and_survive_the_record() {
+        let mut ledger = ChunkLedger::default();
+        let id = effect_id(4, 0);
+        ledger.apply(id, [-1, 64, 17], vec!["x".into()]);
+        let e = &mut ledger.entries[0];
+        assert_eq!(e.origin(), [-1, 1]);
+        assert!(!e.see([-1, 1]), "its own chunk is always a holder");
+        assert!(e.see([0, 1]) && !e.see([0, 1]) && e.see([0, 2]));
+        e.last = Some([0, 2]);
+        assert_eq!(e.holders(), vec![[-1, 1], [0, 1], [0, 2]]);
+        let back = ChunkLedger::from_json(&ledger.to_json());
+        assert_eq!(back.entries[0].seen, vec![[0, 1], [0, 2]]);
+        // A record written before `seen` existed reads as one seen nowhere else.
+        let old = ChunkLedger::from_json(&ledger.to_json().replace(",\"seen\":[[0,1],[0,2]]", ""));
+        assert!(old.entries[0].seen.is_empty() && old.entries[0].last == Some([0, 2]));
     }
 
     #[test]
