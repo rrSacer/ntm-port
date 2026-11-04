@@ -118,6 +118,22 @@ def prepare(g):
     g.ctl('save')
 
 
+def sweep(g):
+    """A big batch: the pile's core goes away and the orphan sweep reverts every other member in one batch.
+    Counts the storage writes and bytes it costs (not one per effect)."""
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    before = ledger(g)
+    g.command('setblock 47 102 8 minecraft:air')
+    time.sleep(12)
+    now = settled(g)
+    after = now['ledger']
+    cost = {'kv_writes': after['kv_writes'] - before['kv_writes'], 'kv_bytes': after['kv_bytes'] - before['kv_bytes']}
+    g.evidence['sweep_cost'] = cost
+    g.check('sweep_batch_writes_storage_a_bounded_number_of_times', cost['kv_writes'] <= 40, cost)
+    g.check('sweep_keeps_every_rod', now['channels'] + now['loaders'] + now['entities'] + now['inventory'] == TOTAL, now)
+
+
 def undo(g):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
@@ -176,6 +192,6 @@ def drain(g):
 if __name__ == '__main__':
     mode = sys.argv[2]
     g = Game(sys.argv[1], 'crash-' + mode)
-    {'prepare': prepare, 'undo': undo, 'verify': verify, 'again': lambda g: verify(g, True), 'drain': drain}[mode](g)
+    {'prepare': prepare, 'undo': undo, 'verify': verify, 'again': lambda g: verify(g, True), 'drain': drain, 'sweep': sweep}[mode](g)
     g.evidence['ok'] = True
     g.save()
