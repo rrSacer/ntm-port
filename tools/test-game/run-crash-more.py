@@ -110,7 +110,8 @@ def play(args, base, scratch, env, scenario, point):
         result['while_away'] = act.get('while_away')
         result['act_checks'] = {k: {'ok': v['ok'], **({'actual': v['actual']} if not v['ok'] else {})}
                                 for k, v in act.get('checks', {}).items()}
-        if acted:
+        result['died_in_act'] = bool(acted) and crash_proof.died_in_act(world, point)
+        if acted and not result['died_in_act']:
             raise AssertionError('action failed before its save; see act evidence')
         if point == 'none':
             result['exit'] = 'survived'
