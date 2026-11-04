@@ -341,7 +341,9 @@ def energy(g):
         return len((g.folder/'client-first.log').read_text(errors='replace'))
     g.command('clear @s');give_hand(g,'ntm:bdcl',2);mark=log_size();use(g,2.1);time.sleep(.5)
     g.check('bdcl_is_consumed_without_a_container',counts(g).get('ntm:bdcl')==1 and len(counts(g))==1,counts(g))
-    g.check('bdcl_gulps_on_the_java_counts_exactly',gulps(mark)==[0,5,10,15,19,26],gulps(mark))
+    full_use=[0,5,10,15,19,26];heard=gulps(mark)
+    # The button is still down when the first drink ends, so a second use may begin: its gulps start over.
+    g.check('bdcl_gulps_on_the_java_counts_exactly',heard[:6]==full_use and heard[6:]==full_use[:len(heard)-6],heard)
     # Cancelled after about twelve ticks: only the gulps already due are heard, and nothing is consumed.
     give_hand(g,'ntm:bdcl',2);mark=log_size();g.close();g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.55);g.ctl('mouse right up');time.sleep(.5)
     heard=gulps(mark)
