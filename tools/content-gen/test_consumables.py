@@ -229,10 +229,11 @@ class Pills(unittest.TestCase):
             self.assertEqual(row.get('cure', {}).get('effects', []), cure, name)
             harm = re.search(r'for\(int i = 0; i < (\d+); i\+\+\)\s*player\.attackEntityFrom\([^,]*\?[^,]*:[^,]*,\s*(\d+)\)', body)
             roll = re.search(r'if\(rand\.nextInt\((\d+)\) == 0\) \{\s*player\.attackEntityFrom\(ModDamageSource\.overdose, (\d+)\)', body)
+            # euthanizedSelf(2) are setDamageBypassesArmor only; overdose is also setDamageIsAbsolute.
             if harm:
-                self.assertEqual(row['hurt'], {'amount': int(harm.group(2)), 'times': int(harm.group(1))}, name)
+                self.assertEqual(row['hurt'], {'amount': int(harm.group(2)), 'times': int(harm.group(1)), 'damage_type': 'minecraft:magic'}, name)
             elif roll:
-                self.assertEqual(row['hurt'], {'amount': int(roll.group(2)), 'chance': int(roll.group(1))}, name)
+                self.assertEqual(row['hurt'], {'amount': int(roll.group(2)), 'chance': int(roll.group(1)), 'damage_type': 'minecraft:generic_kill'}, name)
             else:
                 self.assertNotIn('hurt', row, name)
             rad = re.search(r'incrementRadiation\(player, (-?[\d.]+)F\)', body)
@@ -321,7 +322,10 @@ class SimpleConsumables(unittest.TestCase):
         poison = method(self.text, 'public static void effectPoison', 'public static void effectAwesome')
         self.assertIn(', 30)', poison)
         self.assertNotIn('hasPotionSickness', poison)
-        self.assertEqual(TABLE['ntm:syringe_poison']['hurt'], {'amount': 30})
+        damage = read('lib/ModDamageSource.java')
+        self.assertRegex(damage, r'euthanizedSelf = \(new DamageSource\("euthanizedSelf"\)\)\.setDamageBypassesArmor\(\);')
+        self.assertRegex(damage, r'overdose = \(new DamageSource\("overdose"\)\)\.setDamageIsAbsolute\(\)\.setDamageBypassesArmor\(\);')
+        self.assertEqual(TABLE['ntm:syringe_poison']['hurt'], {'amount': 30, 'damage_type': 'minecraft:magic'})
         awesome = self.text[self.text.index('public static void effectAwesome'):]
         mine = []
         for vanilla, ticks, amplifier in re.findall(r'new PotionEffect\(Potion\.(\w+)\.id, ([\d\s*]+), (\d+)\)', awesome):

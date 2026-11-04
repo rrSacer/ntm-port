@@ -297,9 +297,9 @@
       "sound": "hbm:item.syringe"
     },
     "ntm:syringe_poison": {
-      "origin": "ItemSimpleConsumable.effectPoison, init(): attackEntityFrom(euthanizedSelf, 30), no sickness check",
+      "origin": "ItemSimpleConsumable.effectPoison, init(): attackEntityFrom(euthanizedSelf, 30), no sickness check; euthanizedSelf bypasses armor only, so Resistance still absorbs it: minecraft:magic",
       "consume": "always",
-      "hurt": {"amount": 30},
+      "hurt": {"amount": 30, "damage_type": "minecraft:magic"},
       "gives": [{"item": "ntm:syringe_empty", "overflow": "thrown", "creative": true}],
       "sound": "hbm:item.syringe"
     },
@@ -400,9 +400,9 @@
       "sound": "random.burp"
     },
     "ntm:plan_c": {
-      "origin": "ItemPill, ModItems.java:2835: ten attackEntityFrom(euthanizedSelf, 1000)",
+      "origin": "ItemPill, ModItems.java:2835: ten attackEntityFrom(euthanizedSelf, 1000); armor only is bypassed, Resistance still absorbs: minecraft:magic",
       "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
-      "hurt": {"amount": 1000, "times": 10},
+      "hurt": {"amount": 1000, "times": 10, "damage_type": "minecraft:magic"},
       "sound": "random.burp"
     },
     "ntm:pill_red": {
@@ -412,9 +412,9 @@
       "sound": "random.burp"
     },
     "ntm:chocolate": {
-      "origin": "ItemPill, ModItems.java:2947: 1 in 25 overdose (1000 damage), then speed, haste and jump 60 seconds",
+      "origin": "ItemPill, ModItems.java:2947: 1 in 25 overdose (1000 absolute damage: armor and Resistance bypassed, minecraft:generic_kill), then speed, haste and jump 60 seconds",
       "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
-      "hurt": {"amount": 1000, "chance": 25},
+      "hurt": {"amount": 1000, "chance": 25, "damage_type": "minecraft:generic_kill"},
       "effects": [["haste", 1200, 3], ["speed", 1200, 3], ["jump_boost", 1200, 3]],
       "sound": "random.burp"
     },

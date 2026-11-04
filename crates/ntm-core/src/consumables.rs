@@ -132,11 +132,11 @@ pub struct Hurt {
     pub times: u32,
     #[serde(default)]
     pub chance: u32,
-    #[serde(default = "kill")]
+    /// The 26.3 type that carries the Java source's flags: `minecraft:magic`
+    /// (`#bypasses_armor` only) for `euthanizedSelf`, which Resistance still
+    /// absorbs, and `minecraft:generic_kill` (`#bypasses_armor` and
+    /// `#bypasses_resistance`) for the absolute `overdose`. Written on every row.
     pub damage_type: String,
-}
-fn kill() -> String {
-    "minecraft:generic_kill".into()
 }
 
 /// One part a loot crate can hold, drawn with this weight.
@@ -740,6 +740,13 @@ mod tests {
             (overdose.amount, overdose.times, overdose.chance),
             (1000.0, 1, 25)
         );
+        // `overdose` is absolute (Resistance does not soften it);
+        // `euthanizedSelf` only skips the armor, so Resistance still does.
+        assert_eq!(overdose.damage_type, "minecraft:generic_kill");
+        for id in ["ntm:plan_c", "ntm:syringe_poison"] {
+            let hurt = spec(id).hurt.as_ref().unwrap();
+            assert_eq!(hurt.damage_type, "minecraft:magic", "{id}");
+        }
         let plan_c = spec("ntm:plan_c").hurt.as_ref().unwrap();
         assert_eq!(
             (plan_c.amount, plan_c.times, plan_c.chance),
