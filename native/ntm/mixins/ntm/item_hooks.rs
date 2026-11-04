@@ -1242,17 +1242,22 @@ pub(super) fn command(game: &mut Game<'_>, line: &str) -> bool {
                 reply = horizon_world::snbt_text::to_snbt(&Tag::Compound(snapshot.state));
             }
         }
-        // The operator's way to end the herbal sickness the tick would restore
-        // after an `/effect clear`; the effect list itself is `/effect clear`'s.
+        // The operator's way to end the herbal sickness, which the tick would
+        // otherwise restore after an `/effect clear`: the remembered time and the
+        // effect go together.
         [_, "cure"] => {
             if let Some(expected) = game.native_player_snapshot(&STATE) {
                 let mut desired = expected.clone();
                 if number(&desired.state, "herbal") > 0 {
                     set(&mut desired.state, "herbal", 0);
                 }
-                reply = (desired == expected
-                    || game.native_commit_player(&STATE, &expected, desired, Default::default()))
-                .to_string();
+                let done = desired == expected
+                    || game.native_commit_player(&STATE, &expected, desired, Default::default());
+                if done {
+                    game.potions.effects.list.retain(|e| e.id != SICKNESS);
+                    game.apply_effect_status();
+                }
+                reply = done.to_string();
             }
         }
         // The reading the instruments use (`radBuf`, milliRAD/s).
