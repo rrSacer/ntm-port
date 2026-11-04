@@ -37,7 +37,7 @@ def use(g,seconds=0):
     else:
         # One click: a held button repeats the use of an instant item on a slow frame.
         g.ctl('mouse right click')
-    time.sleep(.4)
+    time.sleep(.8)  # a loaded machine answers a click a few ticks late
 
 
 def give_hand(g,item,count=1,slot=0):
