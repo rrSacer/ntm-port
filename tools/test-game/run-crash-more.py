@@ -30,6 +30,8 @@ DEFAULT_POINTS = {
     'coupled-ea': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
     'coupled-eb': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
     'crossing': ['none'],
+    'origin-pickup': ['none'],
+    'origin-pickup-away': ['none'],
     'save-quit': ['none'],
     'mining': crash_proof.POINTS,
     'break': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],
