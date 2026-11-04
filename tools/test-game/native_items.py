@@ -108,7 +108,9 @@ def setup(g):
     g.check('radaway_exact_java_total',state(g)['dose']==60000,state(g))
     g.check('radaway_returns_iv_empty',counts(g).get('ntm:iv_empty')==1,counts(g))
     full_inventory(g)
+    filter_destruction(g)
     armor_table(g)
+    death_resets_dose(g)
 
 
 def dropped(g):
@@ -146,6 +148,12 @@ def full_inventory(g):
     full(g,'ntm:syringe_metal_medx',2);use(g);actual=counts(g);away=dropped(g)
     effects=g.ctl('state')['player']['effects']
     g.check('full_stacked_syringe_drops_container',actual.get('ntm:syringe_metal_medx')==1 and not actual.get('ntm:syringe_metal_empty') and away.get('ntm:syringe_metal_empty')==1 and any(e['id'].endswith('resistance') and e['amplifier']==2 for e in effects),{'counts':actual,'dropped':away,'effects':effects})
+    # `Player.drop(stack, false)`: pickup delay 40, so a slot freed at once does
+    # not take the syringe back yet; it does after the delay.
+    g.command('item replace entity @s inventory.26 with minecraft:air');time.sleep(.4)
+    early=counts(g).get('ntm:syringe_metal_empty',0)
+    time.sleep(3.6);late=counts(g).get('ntm:syringe_metal_empty',0)
+    g.check('thrown_container_waits_its_pickup_delay',early==0 and late==1,{'early':early,'late':late,'dropped':dropped(g)})
     g.command('effect clear @s')
     # ItemSimpleConsumable.doRadaway: the emptied slot is still taken while the
     # container is added, so even the last RadAway drops its iv_empty.
@@ -163,6 +171,10 @@ def full_inventory(g):
     # ItemStarterKit.giveHaz: the kit never refuses; replaced armor is dropped.
     full(g,'ntm:hazmat_kit',armor={'head':'ntm:gas_mask_m65','chest':'minecraft:iron_chestplate'});use(g);actual=counts(g);away=dropped(g)
     g.check('full_kit_equips_and_drops_replaced_armor',all(actual.get('ntm:hazmat_'+p)==1 for p in ['helmet','plate','legs','boots']) and not actual.get('ntm:hazmat_kit') and away.get('ntm:gas_mask_m65')==1 and away.get('minecraft:iron_chestplate')==1 and actual.get('minecraft:stone')==2240,{'counts':actual,'dropped':away})
+    # giveHaz's EntityItem sets no delay (the field's 0): a freed slot takes one
+    # of the replaced pieces back at once.
+    g.command('item replace entity @s inventory.26 with minecraft:air');time.sleep(1.2);back=counts(g);left=dropped(g)
+    g.check('world_drop_has_no_pickup_delay',back.get('ntm:gas_mask_m65',0)+back.get('minecraft:iron_chestplate',0)==1 and left.get('ntm:gas_mask_m65',0)+left.get('minecraft:iron_chestplate',0)==1,{'counts':back,'dropped':left})
     # ItemFilter: installing swaps the held stack, so a full inventory is fine.
     full(g,'ntm:gas_mask_filter',armor={'head':'ntm:gas_mask_m65'});use(g)
     g.command('item replace entity @s hotbar.0 with ntm:gas_mask_filter[minecraft:damage=500] 1');time.sleep(.3);use(g)
@@ -184,6 +196,29 @@ def full_inventory(g):
     g.command('kill @e[type=minecraft:item]');g.command('gamemode creative @s');g.command('clear @s')
 
 
+def filter_destruction(g):
+    """ArmorUtil.damageGasMaskFilter: past 20000 the filter is removed and gone."""
+    g.close();g.command('gamemode creative @s');g.command('clear @s');g.command('kill @e[type=minecraft:item]')
+    g.command('item replace entity @s armor.head with ntm:gas_mask_m65');give_hand(g,'ntm:gas_mask_filter');use(g)
+    g.command('ntmitem expose lung 20000');worn=inventory_tag(g)
+    g.check('filter_at_limit_stays','hfrFilter' in worn and '20000' in worn,worn)
+    g.command('ntmitem expose lung 1');gone=inventory_tag(g)
+    g.check('filter_past_limit_is_destroyed','hfrFilter' not in gone and not counts(g).get('ntm:gas_mask_filter') and not dropped(g).get('ntm:gas_mask_filter'),{'tag':gone,'dropped':dropped(g)})
+    g.command('item replace entity @s armor.head with minecraft:air')
+
+
+def death_resets_dose(g):
+    """item_hooks::cloned: a dead player's dose is 0, and the legacy mirror
+    does not bring it back at the next radiation tick."""
+    g.close();g.command('clear @s');g.command('gamemode survival @s');g.command('ntmitem dose 300000')
+    before=state(g)['dose'];g.check('dose_before_death',before>=300000,before)
+    g.command('kill @s');time.sleep(2);g.ctl('respawn');g.ctl('wait-ready 60');g.close();time.sleep(4)
+    after=state(g)['dose']
+    g.check('death_resets_dose_for_the_next_radiation_tick',after==0,after)
+    time.sleep(3);again=state(g)['dose'];g.check('dose_stays_zero_after_more_ticks',again==0,again)
+    g.command('gamemode creative @s')
+
+
 def table_slot(screen,n):
     return next((x.get('item') for x in screen.get('slots',[]) if x['slot']==300+n),None)
 
@@ -195,7 +230,11 @@ def open_table(g):
 
 def armor_table(g):
     g.close();g.command('clear @s');g.command('setblock 24 101 8 ntm:machine_armor_table')
-    g.command('tp @s 24.5 101 11.5');screen=open_table(g)
+    g.command('tp @s 24.5 101 11.5')
+    # BlockArmorTable.onBlockActivated: `!player.isSneaking()`.
+    g.ctl('key shift down');time.sleep(.6);g.ctl('interact 24 101 8 south');time.sleep(1.5);sneak=g.ctl('screen');g.ctl('key shift up');time.sleep(.3)
+    g.check('sneaking_does_not_open_the_table',sneak.get('screen')!='container',sneak)
+    screen=open_table(g)
     g.check('table_has_exact_14_slots',len(g.slots())==14,screen)
     put(g,'ntm:hazmat_helmet',1,9);put(g,'ntm:attachment_mask',1,0)
     g.check('mod_slot_shows_attachment',g.slots()[0].get('item')=='ntm:attachment_mask',g.slots())

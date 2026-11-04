@@ -1,7 +1,9 @@
 // Native adapter shared by consumables, equipment and stack state.
 use crate::game::{
     Game,
-    native_player_transactions::{NativePlayerBenefits, NativePlayerSnapshot},
+    native_player_transactions::{
+        NativeDrop, NativeDropMode, NativePlayerBenefits, NativePlayerSnapshot,
+    },
 };
 use horizon_client::items::ItemStack;
 use horizon_items::item_nbt::{item_from_nbt, item_to_nbt};
@@ -147,6 +149,9 @@ pub(super) fn use_air(game: &mut Game<'_>, stack: &ItemStack) -> bool {
 /// hand takes its filter out. The filter goes to the inventory or, when there
 /// is no room, to the ground. True when the click was claimed.
 fn remove_filter(game: &mut Game<'_>, stack: &ItemStack) -> bool {
+    // `keys` holds the logical sneak (the mapping of `key.sneak`, however it is
+    // bound or toggled); the physical keys are `physical_keys`. A guest's turn
+    // maps its sneaking into it, as `Game::use_hand` reads it.
     if !game.keys.contains(&winit::keyboard::KeyCode::ShiftLeft) {
         return false;
     }
@@ -173,8 +178,10 @@ fn remove_filter(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     data.remove(&JavaString::from("hfrFilter"));
     held.data_mut()
         .set_other("minecraft:custom_data", Some(Tag::Compound(data)));
+    // `dropPlayerItemWithRandomChoice(filter, true)`.
     let drops: Vec<_> = add_stack(game, &mut desired.inventory, filter, None)
         .into_iter()
+        .map(|d| NativeDrop::new(d, NativeDropMode::Random))
         .collect();
     game.native_commit_player(
         &STATE,
@@ -204,10 +211,15 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         return false;
     };
     let mut desired = expected.clone();
-    let Some(seed) = legacy(game) else {
-        return false;
-    };
-    init(&mut desired, seed);
+    // Only what touches the dose or the sickness timer needs the dose seed of
+    // the legacy mirror (the server exists after its first tick); food, effects
+    // and equipment do not wait for it.
+    if spec.radaway > 0 || spec.cooldown > 0 {
+        let Some(seed) = legacy(game) else {
+            return false;
+        };
+        init(&mut desired, seed);
+    }
     if spec.cooldown > 0 && number(&desired.state, "sickness") > 0 {
         return false;
     }
@@ -231,11 +243,17 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             // Java drops what does not fit; the emptied slot is still taken.
             let reserved = (emptied && held_slot != crate::game::shield::OFFHAND_SLOT)
                 .then_some(held_slot);
-            drops.extend(add_stack(game, &mut desired.inventory, container, reserved));
+            // `tryAddItem`: `dropPlayerItemWithRandomChoice(container, false)`.
+            drops.extend(
+                add_stack(game, &mut desired.inventory, container, reserved)
+                    .map(|d| NativeDrop::new(d, NativeDropMode::Thrown)),
+            );
         }
     }
     if &*stack.item == "ntm:hazmat_kit" {
-        // ItemStarterKit.giveHaz drops the replaced armor in the world.
+        // ItemStarterKit.giveHaz: `world.spawnEntityInWorld(new EntityItem(world,
+        // posX, posY + eyeHeight, posZ, armor))`. It sets no pickup delay, so the
+        // field's default of 0 stands, and no thrower.
         for (index, id) in [
             "ntm:hazmat_helmet",
             "ntm:hazmat_plate",
@@ -245,7 +263,11 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         .into_iter()
         .enumerate()
         {
-            drops.extend(desired.armor[index].take());
+            drops.extend(
+                desired.armor[index]
+                    .take()
+                    .map(|d| NativeDrop::new(d, NativeDropMode::World { delay: 0 })),
+            );
             desired.armor[index] = Some(ItemStack::new(id, 1));
         }
     }

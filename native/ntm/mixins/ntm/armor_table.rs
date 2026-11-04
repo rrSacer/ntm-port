@@ -2,7 +2,9 @@
 // mods, plus four views of the player's worn armor. Views never own items.
 use crate::game::{
     Game,
-    native_player_transactions::{NativePlayerBenefits, NativePlayerSnapshot},
+    native_player_transactions::{
+        NativeDrop, NativeDropMode, NativePlayerBenefits, NativePlayerSnapshot,
+    },
 };
 use horizon_client::{
     containers::{ModSlotFilter, SlotAction, SlotOrigin, SlotPolicy},
@@ -224,12 +226,18 @@ fn load(game: &Game<'_>, m: &mut Menu, s: &NativePlayerSnapshot) -> Option<()> {
 /// the hub is lent to the turn and `game.lan` is empty, so a native menu cannot
 /// be opened here: the request waits for `drain` at the end of the server tick.
 /// A client claims the click too, so it never falls through to another screen.
-pub(super) fn open(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
+pub(super) fn open(game: &mut Game<'_>, pos: [i32; 3], sneaking: bool) -> bool {
     if !game
         .native_loaded_block(game.dim.id(), pos)
         .is_some_and(|b| ntm_core::blockstate::id_of(&b) == BLOCK)
     {
         return false;
+    }
+    // BlockArmorTable.onBlockActivated: `!player.isSneaking()`. Nothing opens
+    // while sneaking; the click is swallowed here so it does not fall through
+    // to a menu this block has no container for.
+    if sneaking {
+        return true;
     }
     if game.native_authoritative()
         && game.lan_acting.is_some()
@@ -256,6 +264,18 @@ pub(super) fn drain(game: &mut Game<'_>) {
     }
 }
 fn open_now(game: &mut Game<'_>, pos: [i32; 3]) {
+    // The request waited for the end of the tick: the block may be gone and
+    // the player dead by now.
+    if game
+        .player
+        .as_ref()
+        .is_none_or(|p| p.health.dead_or_dying())
+        || !game
+            .native_loaded_block(game.dim.id(), pos)
+            .is_some_and(|b| ntm_core::blockstate::id_of(&b) == BLOCK)
+    {
+        return;
+    }
     if let Some(uuid) = game.native_acting_player().map(|p| p.uuid) {
         let old = lock(&OPEN).as_mut().and_then(|s| s.remove(&uuid)).is_some();
         if old {
@@ -446,7 +466,12 @@ pub(super) fn clicked(
         desired.offhand = m.player_item(40).cloned();
         desired.carried = m.carried.clone();
         let benefits = NativePlayerBenefits {
-            drops: m.dropped.clone(),
+            // A THROW click in the menu is `Player.drop(stack, true)`.
+            drops: m
+                .dropped
+                .iter()
+                .map(|d| NativeDrop::new(d.clone(), NativeDropMode::Hand))
+                .collect(),
             ..Default::default()
         };
         if !game.native_commit_player(&STATE, &expected, desired.clone(), benefits) {
@@ -493,6 +518,8 @@ fn close_items(game: &mut Game<'_>) {
     let Some(mods) = mods(&armor) else {
         return;
     };
+    // ContainerArmorTable.onContainerClosed: `dropPlayerItemWithRandomChoice(
+    // stack, false)` for each separated mod, then for the armor.
     let mut drops: Vec<_> = mods.into_iter().flatten().collect();
     if set_mods(&mut armor, &std::array::from_fn::<_, 9, _>(|_| None)).is_none() {
         return;
@@ -505,7 +532,10 @@ fn close_items(game: &mut Game<'_>) {
         &expected,
         desired,
         NativePlayerBenefits {
-            drops,
+            drops: drops
+                .into_iter()
+                .map(|d| NativeDrop::new(d, NativeDropMode::Thrown))
+                .collect(),
             ..Default::default()
         },
     );

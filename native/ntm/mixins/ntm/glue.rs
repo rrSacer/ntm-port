@@ -156,8 +156,8 @@ fn reconcile(server:&mut Server,host:&mut Host<'_, '_>){
 
 /// A player's right click on a cell of a machine (`core` its core): the
 /// machine may take it (the turbines' levers). True when it did.
-pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [i32; 3], face: [i32; 3]) -> bool {
-    if crate::game::ntm_armor_table::open(game,pos){return true;}
+pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [i32; 3], face: [i32; 3], sneaking: bool) -> bool {
+    if crate::game::ntm_armor_table::open(game,pos,sneaking){return true;}
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
     let dim = game.dim.id().to_string();
@@ -214,7 +214,7 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
 /// A player used `stack` on the block at `pos`: the fluid identifier on a
 /// duct sets its fluid (`custom_data` `ntm_fluid`). True when taken.
 pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3], face: [i32; 3]) -> bool {
-    if matches!(&*stack.item,"ntm:hand_drill"|"ntm:hand_drill_desh") { return use_block(game,pos,pos,face); }
+    if matches!(&*stack.item,"ntm:hand_drill"|"ntm:hand_drill_desh") { return use_block(game,pos,pos,face,false); }
     if &*stack.item == DETONATOR {
         return detonator(game, Some(pos));
     }
