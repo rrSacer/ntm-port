@@ -5,6 +5,8 @@ use crate::game::{
         NativeDrop, NativeDropMode, NativePlayerBenefits, NativePlayerSnapshot,
     },
 };
+use std::sync::Mutex;
+
 use horizon_client::items::ItemStack;
 use horizon_items::item_nbt::{item_from_nbt, item_to_nbt};
 use horizon_world::{
@@ -22,6 +24,10 @@ use ntm_core::{
 /// still has to run, and the tick puts it back after anything but the antidote
 /// (or its own expiry) removed it.
 const SICKNESS: &str = "ntm:potion_sickness";
+
+fn lock<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
+    m.lock().unwrap_or_else(|e| e.into_inner())
+}
 
 fn empty() -> Compound {
     Compound::new()
@@ -764,17 +770,19 @@ fn random(game: &Game<'_>) -> f32 {
     (z >> 40) as f32 / (1u64 << 24) as f32
 }
 
+/// A chocolate-milk blast waiting for the end of the server tick: where it
+/// went off, and in which level.
+struct Blast {
+    dim: String,
+    center: [f64; 3],
+}
+static BLASTS: Mutex<Vec<Blast>> = Mutex::new(Vec::new());
+
 /// `ItemEnergy.onEaten` for chocolate milk: `ExplosionVNT(world, x, y + h/2, z,
-/// 50)` with `BlockAllocatorStandard(32)`, `BlockProcessorStandard().setNoDrop()`,
-/// `EntityProcessorCross(5)` and `PlayerProcessorStandard`, in that order:
-/// allocate, hurt and push the entities, then remove the blocks. The rays are
-/// the NTM crater module's vanilla allocation (`blast::vanilla`), the blocks
-/// go out as air in batches with no drops, and every living player of the level
-/// in range takes the Cross damage and push. Mobs and dropped items are not
-/// reached (no engine API for them yet; see the doc).
+/// 50)`. The blast is only queued here: the use runs inside the drinker's turn,
+/// where the other players cannot be reached, so `drain` carries it out at
+/// `ServerTickEnd`, when the hub is back.
 fn chocolate_milk_blast(game: &mut Game<'_>) {
-    use ntm_core::blast::vanilla;
-    const SIZE: f32 = 50.0;
     let Some(p) = game.player.as_ref() else {
         return;
     };
@@ -784,43 +792,95 @@ fn chocolate_milk_blast(game: &mut Game<'_>) {
         p.position.z,
     ];
     let dim = game.dim.id().to_string();
-    let (cells, _) = vanilla::allocate_vnt(center, SIZE, 32, &mut |b| game.native_loaded_block(&dim, b));
-    // The drinker, then the other living players of the level, as the engine's
-    // batch-by-UUID helpers reach them.
-    cross_player(game, center, SIZE, &dim);
-    let me = game.native_actor_uuid();
-    let others: Vec<String> = game
+    lock(&BLASTS).push(Blast { dim, center });
+}
+
+/// The queued blasts, at the end of the server tick. Java's order for
+/// `ExplosionVNT`: `BlockAllocatorStandard(32)` reads the blocks, then
+/// `EntityProcessorCross(5)` and `PlayerProcessorStandard` hurt and push every
+/// living player of the level in range (measuring their exposure against the
+/// blocks still standing) and `BlockProcessorStandard().setNoDrop()` removes
+/// them. Mobs and dropped items are not reached (no engine API for them yet;
+/// see the doc).
+pub(super) fn drain(game: &mut Game<'_>) {
+    let blasts = std::mem::take(&mut *lock(&BLASTS));
+    for blast in blasts {
+        explode(game, &blast);
+    }
+}
+
+fn explode(game: &mut Game<'_>, blast: &Blast) {
+    use ntm_core::blast::vanilla;
+    const SIZE: f32 = 50.0;
+    let Blast { dim, center } = blast;
+    let (cells, _) = vanilla::allocate_vnt(*center, SIZE, 32, &mut |b| game.native_loaded_block(dim, b));
+    let players: Vec<String> = game
         .native_players()
         .into_iter()
-        .filter(|q| q.alive && q.dimension == dim && Some(&q.uuid) != me.as_ref())
+        .filter(|q| q.alive && &q.dimension == dim)
         .map(|q| q.uuid)
         .collect();
-    for uuid in others {
-        game.native_visit_player(&uuid, |g| cross_player(g, center, SIZE, &dim));
+    for uuid in players {
+        game.native_visit_player(&uuid, |g| cross_player(g, *center, SIZE));
     }
     let air: Vec<([i32; 3], String)> = cells.iter().map(|c| (*c, "minecraft:air".to_string())).collect();
     for chunk in air.chunks(ntm_core::explosion::BLOCKS_PER_CALL) {
-        if let Err(e) = game.native_set_blocks(&dim, chunk) {
+        if let Err(e) = game.native_set_blocks(dim, chunk) {
             eprintln!("ntm item: chocolate milk blast: {e}");
             break;
         }
     }
     // `ExplosionCreator.composeEffectStandard` is a client particle show; the
     // vanilla explosion sound and emitter stand for it.
-    if let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| *s == "block") {
-        game.with_level(|_, level, _| {
-            level.native_play_sound("minecraft:entity.generic.explode", center, source, 4.0, 0.7)
-        });
+    crate::game::ntm_glue::in_place(game, dim, |game| {
+        if let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| *s == "block") {
+            game.with_level(|_, level, _| {
+                level.native_play_sound("minecraft:entity.generic.explode", *center, source, 4.0, 0.7)
+            });
+        }
+        if let Some(kind) = horizon_client::particles::ParticleType::from_name("minecraft:explosion_emitter") {
+            let options = horizon_client::particles::ParticleOptions::simple(kind);
+            game.with_level(|_, level, _| level.native_send_particles(&options, None, *center, [0.0; 3], 0.0, 1));
+        }
+    });
+}
+
+/// `World.getBlockDensity(node, box)` of 1.7.10: a grid over the box, stepped
+/// `1 / (2 · extent + 1)` along each axis, with one ray from every point to the
+/// node; the share of rays no block box stops. Each ray is the engine's
+/// collision raycast (`seen_percent` over a degenerate box is one point), so
+/// slabs, stairs and fences stop it by their real shape.
+fn block_density(game: &Game<'_>, node: [f64; 3], min: [f64; 3], max: [f64; 3]) -> f32 {
+    let step = |a: usize| 1.0 / ((max[a] - min[a]) as f32 * 2.0 + 1.0);
+    let (sx, sy, sz) = (step(0), step(1), step(2));
+    let (mut seen, mut total) = (0_u32, 0_u32);
+    let mut x = 0.0_f32;
+    while x <= 1.0 {
+        let mut y = 0.0_f32;
+        while y <= 1.0 {
+            let mut z = 0.0_f32;
+            while z <= 1.0 {
+                let at = [
+                    min[0] + (max[0] - min[0]) * f64::from(x),
+                    min[1] + (max[1] - min[1]) * f64::from(y),
+                    min[2] + (max[2] - min[2]) * f64::from(z),
+                ];
+                if game.seen_percent(node, at, at) > 0.5 {
+                    seen += 1;
+                }
+                total += 1;
+                z += sz;
+            }
+            y += sy;
+        }
+        x += sx;
     }
-    if let Some(kind) = horizon_client::particles::ParticleType::from_name("minecraft:explosion_emitter") {
-        let options = horizon_client::particles::ParticleOptions::simple(kind);
-        game.with_level(|_, level, _| level.native_send_particles(&options, None, center, [0.0; 3], 0.0, 1));
-    }
+    seen as f32 / total as f32
 }
 
 /// `EntityProcessorCross.process` for the player the game is acting as: the
 /// box distance, the densest of the seven nodes, then the push and the damage.
-fn cross_player(game: &mut Game<'_>, center: [f64; 3], size: f32, dim: &str) {
+fn cross_player(game: &mut Game<'_>, center: [f64; 3], size: f32) {
     use ntm_core::blast::vanilla;
     let Some(p) = game.player.as_ref() else {
         return;
@@ -833,12 +893,12 @@ fn cross_player(game: &mut Game<'_>, center: [f64; 3], size: f32, dim: &str) {
     let dist = vanilla::box_distance(min, max, center);
     let delta = [feet[0] - center[0], feet[1] + eye - center[1], feet[2] - center[2]];
     let length = (delta[0] * delta[0] + delta[1] * delta[1] + delta[2] * delta[2]).sqrt();
-    if length == 0.0 {
+    if length == 0.0 || vanilla::cross_hit(size, dist, 1.0).is_none() {
         return;
     }
     let density = vanilla::cross_nodes(center, 5.0)
         .iter()
-        .map(|node| vanilla::exposure(*node, feet, &mut |b| game.native_loaded_block(dim, b)))
+        .map(|node| block_density(game, *node, min, max))
         .fold(0.0_f32, f32::max);
     if let Some((damage, knockback)) = vanilla::cross_hit(size, dist, density) {
         if let Some(p) = game.player.as_mut() {

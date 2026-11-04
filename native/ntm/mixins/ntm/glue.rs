@@ -405,7 +405,7 @@ fn dim_of(id: &str) -> Option<crate::game::Dim> {
 /// (spawn an item, explode, tell its players): the engine's passing visit
 /// (`visit_level`), which opens nothing, puts the level back also when `f`
 /// panics and leaves no trace (particles, idleness). None: `dim` is not open.
-fn in_place<R>(game: &mut crate::game::Game<'_>, dim: &str, f: impl FnOnce(&mut crate::game::Game<'_>) -> R) -> Option<R> {
+pub(super) fn in_place<R>(game: &mut crate::game::Game<'_>, dim: &str, f: impl FnOnce(&mut crate::game::Game<'_>) -> R) -> Option<R> {
     game.visit_level(dim_of(dim)?, f)
 }
 
