@@ -1024,6 +1024,27 @@ impl ServerHost for Host<'_, '_> {
         ledger_add(self.game,dim,id,p,items.to_vec())
     }
     fn ledger_prune(&mut self,live:&std::collections::BTreeSet<u64>){ledger_prune(self.game,live);}
+    fn cell_generation(&mut self,dim:&str,pos:[i32;3])->Option<u64>{
+        self.entity(dim,pos,|e|match e.nbt.get(&JavaString::from(STATE)){
+            Some(Tag::String(json))=>serde_json::from_str::<ntm_core::machine::Machine>(&json.to_string_lossy()).ok().map(|m|m.generation),
+            _=>None,
+        }).flatten()
+    }
+    fn effect_seen(&mut self,id:u64,dim:&str,pos:[i32;3])->bool{
+        in_place(self.game,dim,|g|{
+            let key=chunk_key(dim,[pos[0]>>4,pos[2]>>4]);
+            g.world.loaded(pos[0],pos[2])&&ledger_get(g,&key).knows(id)
+        }).unwrap_or(false)
+    }
+    fn effect_applied(&mut self,id:u64,cells:&[(String,[i32;3])]){
+        for (dim,pos) in cells{
+            in_place(self.game,dim,|g|{
+                let key=chunk_key(dim,[pos[0]>>4,pos[2]>>4]);
+                let mut ledger=ledger_get(g,&key);
+                if ledger.note_applied(id){ledger_store(g,&key,ledger);}
+            });
+        }
+    }
     fn pile_depletion(&mut self, stack: &Stack) -> f64 {
         stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
     }

@@ -77,6 +77,7 @@ impl WorldState {
         let kept: Kept = kv.get(KEY).and_then(|b| serde_json::from_slice(&b).ok()).unwrap_or_default();
         let mut machine_effects=kept.applied_machine_effects;
         machine_effects.extend(kept.machine_effects);
+        for b in &mut machine_effects{b.replayed=true;}
         let machines=kept.removals.iter().map(|r|(r.key.clone(),r.machine.clone())).collect();
         WorldState {
             machines,

@@ -127,6 +127,10 @@ impl ChunkLedger {
         }
         true
     }
+    /// The effect `id` changed blocks of this chunk, saved in the very record that holds the blocks. True when new.
+    pub fn note_applied(&mut self, id: u64) -> bool {
+        self.applied.insert(id)
+    }
     pub fn mark_spawned(&mut self, id: u64, idx: u32) {
         if let Some(e) = self.entries.iter_mut().find(|e| e.id == id && e.idx == idx) {
             e.state = State::Spawned;
