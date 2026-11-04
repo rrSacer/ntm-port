@@ -841,6 +841,7 @@ fn chocolate_milk_blast(game: &mut Game<'_>) {
 pub(super) fn drain(game: &mut Game<'_>) {
     let blasts = std::mem::take(&mut *lock(&BLASTS));
     for blast in blasts {
+        trace(game, "blast", &format!("{} {:?}", blast.dim, blast.center));
         explode(game, &blast);
     }
 }
@@ -856,8 +857,10 @@ fn explode(game: &mut Game<'_>, blast: &Blast) {
         .filter(|q| q.alive && &q.dimension == dim)
         .map(|q| q.uuid)
         .collect();
+    trace(game, "blast-allocated", &format!("{} cells, {} players", cells.len(), players.len()));
     for uuid in players {
-        game.native_visit_player(&uuid, |g| cross_player(g, *center, SIZE));
+        let visited = game.native_visit_player(&uuid, |g| cross_player(g, *center, SIZE));
+        trace(game, "blast-player", &format!("{uuid} visited {}", visited.is_some()));
     }
     let air: Vec<([i32; 3], String)> = cells.iter().map(|c| (*c, "minecraft:air".to_string())).collect();
     for chunk in air.chunks(ntm_core::explosion::BLOCKS_PER_CALL) {
@@ -866,6 +869,7 @@ fn explode(game: &mut Game<'_>, blast: &Blast) {
             break;
         }
     }
+    trace(game, "blast-removed", &format!("{} blocks", air.len()));
     // `ExplosionCreator.composeEffectStandard` is a client particle show; the
     // vanilla explosion sound and emitter stand for it.
     crate::game::ntm_glue::in_place(game, dim, |game| {
