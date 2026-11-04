@@ -168,7 +168,7 @@ pub(super) fn use_air(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     if instrument(game, stack) {
         return true;
     }
-    if matches!(&*stack.item, "ntm:gas_mask_m65" | "ntm:attachment_mask") {
+    if item_hooks::is_gas_mask(&stack.item) {
         return remove_filter(game, stack);
     }
     false
@@ -1146,8 +1146,10 @@ fn custom(stack: &ItemStack) -> Option<Compound> {
         _ => None,
     }
 }
+/// The `IGasMask` that filters for a worn helmet: the helmet itself when it is
+/// one (M65, the hazmat hoods), or the attachment mask installed on it.
 fn mask_of(helmet: &ItemStack) -> Option<ItemStack> {
-    if &*helmet.item == "ntm:gas_mask_m65" {
+    if item_hooks::is_gas_mask(&helmet.item) && &*helmet.item != "ntm:attachment_mask" {
         return Some(helmet.clone());
     }
     let data = custom(helmet)?;
@@ -1158,7 +1160,7 @@ fn mask_of(helmet: &ItemStack) -> Option<ItemStack> {
     (&*mask.item == "ntm:attachment_mask").then_some(mask)
 }
 fn put_mask(helmet: &mut ItemStack, mask: ItemStack) -> bool {
-    if &*helmet.item == "ntm:gas_mask_m65" {
+    if item_hooks::is_gas_mask(&helmet.item) && &*helmet.item != "ntm:attachment_mask" {
         *helmet = mask;
         return true;
     }

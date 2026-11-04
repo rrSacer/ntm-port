@@ -70,7 +70,7 @@ pub enum Hazard {
     CarbonMonoxide,
 }
 /// `ArmorUtil.register`: the hazard classes each filter stops. The mask's own
-/// blacklist (blistering gas for the M65) still prevails.
+/// blacklist (`mask_blacklist`) still prevails.
 pub fn filter_classes(filter: &str) -> &'static [Hazard] {
     use Hazard::*;
     match filter {
@@ -88,11 +88,28 @@ pub fn is_filter(id: &str) -> bool {
     !filter_classes(id).is_empty()
 }
 
-pub fn filter_protects(mask: &str, filter: &str, hazard: Hazard) -> bool {
-    if !matches!(mask, "ntm:gas_mask_m65" | "ntm:attachment_mask") || hazard == Hazard::BlisteringGas {
-        return false;
+/// The `IGasMask` helmets of the port and the hazards each one never
+/// protects against (`getBlacklist`): `ArmorGasMask` and `ItemModGasmask`
+/// refuse blistering gas, while the `ArmorHazmatMask` hoods (yellow, red and
+/// grey) have "no restrictions". `None` when the item is no gas mask.
+pub fn mask_blacklist(mask: &str) -> Option<&'static [Hazard]> {
+    match mask {
+        "ntm:gas_mask_m65" | "ntm:attachment_mask" => Some(&[Hazard::BlisteringGas]),
+        "ntm:hazmat_helmet" | "ntm:hazmat_helmet_red" | "ntm:hazmat_helmet_grey" => Some(&[]),
+        _ => None,
     }
-    filter_classes(filter).contains(&hazard)
+}
+
+/// Whether an item is an `IGasMask` that takes a filter.
+pub fn is_gas_mask(id: &str) -> bool {
+    mask_blacklist(id).is_some()
+}
+
+pub fn filter_protects(mask: &str, filter: &str, hazard: Hazard) -> bool {
+    let Some(blacklist) = mask_blacklist(mask) else {
+        return false;
+    };
+    !blacklist.contains(&hazard) && filter_classes(filter).contains(&hazard)
 }
 
 #[cfg(test)]
@@ -122,6 +139,26 @@ mod tests {
         assert!(!filter_protects(m65, "ntm:gas_mask_filter", CarbonMonoxide));
         assert!(!filter_protects(m65, "ntm:stone", CoarseParticles));
         assert!(is_filter("ntm:gas_mask_filter_rag") && !is_filter("ntm:gas_mask_m65"));
+    }
+
+    /// `ArmorHazmatMask implements IGasMask` with an empty blacklist: the
+    /// yellow, red and grey hoods take filters and, unlike the M65 and the
+    /// attachment mask, let a filter stop blistering gas.
+    #[test]
+    fn the_hazmat_hoods_are_gas_masks_without_a_blacklist() {
+        use Hazard::*;
+        for hood in ["ntm:hazmat_helmet", "ntm:hazmat_helmet_red", "ntm:hazmat_helmet_grey"] {
+            assert!(is_gas_mask(hood), "{hood}");
+            assert!(filter_protects(hood, "ntm:gas_mask_filter", BlisteringGas), "{hood}");
+            assert!(filter_protects(hood, "ntm:gas_mask_filter_combo", BlisteringGas), "{hood}");
+            assert!(filter_protects(hood, "ntm:gas_mask_filter_rag", CoarseParticles), "{hood}");
+            assert!(!filter_protects(hood, "ntm:gas_mask_filter_rag", LungGas), "{hood}");
+        }
+        for mask in ["ntm:gas_mask_m65", "ntm:attachment_mask"] {
+            assert!(is_gas_mask(mask) && !filter_protects(mask, "ntm:gas_mask_filter", BlisteringGas));
+        }
+        assert!(!is_gas_mask("ntm:hazmat_plate") && !is_gas_mask("ntm:stone"));
+        assert!(!filter_protects("ntm:hazmat_plate", "ntm:gas_mask_filter", CoarseParticles));
     }
 
     #[test]
