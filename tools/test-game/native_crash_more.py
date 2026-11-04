@@ -467,6 +467,12 @@ def holder_away_then_save(g, item, holder, stay, release):
     g.ctl('save')
 
 
+def item_stacks(g, item):
+    """How many loaded item entities hold `item`, in every loaded chunk."""
+    lines = g.command('execute as @e[type=minecraft:item] run data get entity @s Item').get('chat', [])
+    return sum(1 for line in lines if item in line)
+
+
 def origin_spread(g, core):
     """The contents' entities apart in the destination, so that they cannot fold before the source is away."""
     for k in range(8):
@@ -542,7 +548,7 @@ def origin_pickup_act(g):
     g.command('fill 496 99 0 511 99 15 minecraft:stone')
     if SCENARIO == 'origin-merge':
         origin_spread(g, core)
-        g.evidence['spread'] = len(g.ctl('entities 400')['entities'])
+        g.evidence['spread'] = item_stacks(g, 'ntm:niter')
     else:
         g.command('tp @e[type=minecraft:item] 503.5 100 8.5')
     time.sleep(1)
@@ -562,8 +568,7 @@ def origin_pickup_act(g):
     if SCENARIO == 'origin-merge':
         g.command('tp @e[type=minecraft:item] 503.5 100 8.5')
         time.sleep(3)
-        stacks = [e for e in g.ctl('entities 400')['entities'] if e.get('kind') == 'item' and e['item']['item'] == 'ntm:niter']
-        folded = {'stacks': len(stacks), 'entities': world_items(g, 'ntm:niter'), 'spread': g.evidence['spread']}
+        folded = {'stacks': item_stacks(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'), 'spread': g.evidence['spread']}
         g.check('contents_folded_into_one_stack_while_source_is_away', folded['stacks'] == 1 and folded['entities'] == NITER and folded['spread'] > 1, folded)
     elif SCENARIO == 'origin-vanish':
         g.command('kill @e[type=minecraft:item]')
