@@ -170,6 +170,9 @@ commit chega ao cliente pela extensão do motor `sent_carried`
 (`docs/horizon-current.md`). A limpeza no tick do jogador lê a sessão da mesa, não
 o menu do hóspede, que o turno não enxerga.
 
+A mesa não abre com o jogador agachado (`BlockArmorTable.onBlockActivated`) e `open_now`
+revalida o bloco e a vida do jogador antes de abrir.
+
 A mesa conserva sua peça física no attachment separado `ntm:armor_table`,
 salvo junto com o jogador. As posições de mods são vistas desse NBT, os slots
 de armadura são vistas do equipamento real. Após reabrir sem o menu, a limpeza
@@ -178,13 +181,13 @@ motor inclui também o cursor e os drops pós-publicação necessários aos menu
 
 ## Aceitação
 
-Binário `777dffefdaf6…` e pacote `3fbcad5823f7…`, motor `57e52927c`, no mesmo par para
+Binário `b656b04ed528…` e pacote `3fbcad5823f7…`, motor `24ddb0137` (sobre `ntm-current` `d5eb69a33`), NTM sobre `main` `05e51050`, no mesmo par para
 todos os cenários (hashes iguais antes e depois). Cada fase grava a própria
 evidência (`native-items-setup.json`, `-capture-state.json`, `-check-state.json`).
 
 | Roteiro `items` | Checks |
 | --- | --- |
-| `setup` (41): CAS nativo com recusa e repetição, comer com animação real, cancelar sem consumir, fome/saturação, cinco efeitos, seringa com espaço, kit hazmat, filtro instalado uma vez, desgaste por exposição, blacklist da máscara, gama com máscara/hazmat, RadAway (total exato e `iv_empty`), mesa real (14 slots, inserir, shift-click, remover, fechar conservando) e 18 checks de inventário cheio, um caso por item do lote (abaixo) | 41 |
+| `setup` (49): CAS nativo com recusa e repetição, comer com animação real, cancelar sem consumir, fome/saturação, cinco efeitos, seringa com espaço, kit hazmat, filtro instalado uma vez, desgaste por exposição, blacklist da máscara, gama com máscara/hazmat, RadAway (total exato e `iv_empty`), mesa real (14 slots, inserir, shift-click, remover, fechar conservando) 18 checks de inventário cheio (um caso por item do lote, abaixo), os pickup delays dos modos `Thrown` e `World`, a mesa recusando o clique agachado, o filtro no limite (20000 fica, 20001 destrói) e a morte zerando a dose no próximo `radiation_tick` | 49 |
 | `capture-state`: mesa preparando a peça com mod, RadAway acumulado | 6 |
 | `check-state` depois de fechar e reabrir o mundo: dose sem repetir tratamento, desgaste do filtro e carga, mods da armadura | 3 |
 
@@ -197,17 +200,30 @@ o kit veste as quatro peças e derruba o capacete e o peitoral trocados; a troca
 de filtro devolve o antigo na mão; sneak com a máscara na mão derruba o filtro
 (sem espaço) ou o guarda no slot livre; a placa equipa. Todos conservam o total.
 
-Regressão no mesmo binário: `mining` 18 checks, `bombs` 49, `zirnox` 127, `pile` 83,
-`dims` 10 (com `dims-idle` 2 e `dims-idle-clean` 1), `inventory-proxy` 12,
-`radioisotopes` 67, `solar` 36, `combustion` 15 e `catalog` 251.
-O `pile` falhou uma vez numa repetição (`interact`: nenhuma face visível do
-bloco, sem relação com itens) e passou em duas execuções seguidas, no mesmo binário.
+Regressão no mesmo binário (`mining` 18 checks, `bombs` 49, `zirnox` 136, `pile` 85,
+`dims` 14 com `dims-idle` 2 e `dims-idle-clean` 1, `inventory-proxy` 12,
+`radioisotopes` 67, `solar` 36, `combustion` 15, `catalog` 251, `comparator` 9,
+`stations` 5 e `pile-meltdown` 32): todas passaram. Os roteiros novos da onda 0
+rodaram no binário do item-hooks sobre o motor e o NTM rebaseados.
 
-Verificação estática no HEAD final: NTM 417 testes passaram (2 doctests herdados
+Verificação estática no HEAD final: NTM 421 testes passaram (2 doctests herdados
 ignorados), Clippy `-D warnings` do workspace e da cópia transformada do motor sem
-isenções; motor 1.560 testes de `horizon-client-lib` (inclui
-`a_native_menus_cursor_published_after_the_resend_is_synced`) e 764 de
-`horizon-client` passaram, Clippy do motor e `cargo fmt --check` limpos.
+isenções; motor 1.565 testes de `horizon-client-lib` e 767 de `horizon-client`, Clippy
+e `cargo fmt --check` limpos. Testes novos desta rodada: `random_toss_ignores_the_view…`,
+`world_item_hop_is_the_entity_constructors`, `drops_name_their_java_mode`,
+`a_native_menu_click_is_answered_with_the_state_after_the_mod` e
+`container_placement_follows_each_java_item`.
+
+### Revisão independente (`artifacts/revisao-item-hooks`): 0 P0/P1/P2, 6 P3
+
+| Achado | Resposta |
+| --- | --- |
+| P3-1 mesa abria agachado | `use-block` passa `sneaking`; `armor_table::open` não abre (o clique é engolido, pois a mesa não tem BE e a queda para o menu mostraria "not available yet"). Prova: `sneaking_does_not_open_the_table`. |
+| P3-2 rollback de 1 tick no hóspede LAN | O clique só marca `Menu::native_resend`; `Hub::flush_native_resends` envia o menu e o cursor depois de `run_native_menu_events`, no mesmo tick, com o resultado. Teste de hub. |
+| P3-3 `open_now` sem revalidar | Revalida o bloco e `dead_or_dying` antes de abrir. |
+| P3-4 `ShiftLeft` físico | Não procede: `Game::keys` guarda o sneak lógico (o mapeamento de `key.sneak`, com toggle e remap; o físico fica em `physical_keys`), o mesmo que `use_hand` lê. Só acrescentei o comentário. |
+| P3-5 `legacy(game)` em itens sem dose | `complete` só exige a semente do espelho para `radaway` e `cooldown`. |
+| P3-6 testes | `expose` 20000/20001 (destruição), morte e respawn com dose 0 depois do próximo `radiation_tick`, pickup delays. `charge` num item elétrico real: nenhum está portado (as baterias de item são só identidades), pendência da família de baterias de item. |
 
 Limites desta aceitação:
 
