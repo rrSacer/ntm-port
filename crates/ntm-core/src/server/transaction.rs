@@ -468,6 +468,9 @@ impl Server {
             return Some(PileUse::Handled);
         }
         let mut commits = Vec::new();
+        // A tool use that leaves world effects owing journals what it leaves in the machines that outlive it.
+        let journal=!staged.critical.is_empty();
+        let mut survivors=Vec::new();
         for k in &keys {
             let Some(expected) = observed.get(k) else {
                 self.ready = before;
@@ -475,6 +478,12 @@ impl Server {
             };
             let m = self.ready.world.machines.get_mut(k).unwrap();
             let (desired, data) = Self::machine_output(m, expected);
+            let mut json=serde_json::to_string(m).expect("machine serialization");
+            if journal&&(self.ready.native_saved.get(k)!=Some(&json)||&desired!=expected){
+                m.rev+=1;
+                json=serde_json::to_string(m).expect("machine serialization");
+                survivors.push(Survivor{dim:k.0.clone(),pos:k.1,generation:m.generation,rev:m.rev,json:json.clone()});
+            }
             commits.push(MachineCommit {
                 cells: Vec::new(),
                 guard:CellGuard::machine(k,&before.world.machines[k]),
@@ -484,7 +493,7 @@ impl Server {
                 expected: expected.clone(),
                 desired,
                 data,
-                json: serde_json::to_string(m).expect("machine serialization"),
+                json,
             });
         }
         if !staged.valid || !staged.host.commit_machines(&commits) {
@@ -506,6 +515,7 @@ impl Server {
                     owners: keys,
                     effects: staged.critical,
                     tombstones: Vec::new(),
+                    survivors,
                 ..Default::default()});
         }
         for (guards,effect) in staged.effects {
