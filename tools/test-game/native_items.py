@@ -275,7 +275,7 @@ def energy(g):
     """Family 1: ItemEnergy cans and bottles, the canteen, the mango, the BDCL
     and the chocolate milk, in the Java order: use, effects, container and
     cap, full inventory, creative, then the cooldown across a reopen."""
-    g.close();g.command('gamemode survival @s');g.command('clear @s');g.command('ntmitem cure');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
+    g.close();g.command('gamemode survival @s');g.command('clear @s');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
     g.command('ntmitem dose 0');g.command('tp @s 20.5 101 11.5');time.sleep(.5)
     give_hand(g,'ntm:can_smart',2)
     g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.5)
@@ -363,7 +363,7 @@ def starve(g):
 
 
 def reset(g,mode='survival',dose=0):
-    g.close();g.command(f'gamemode {mode} @s');g.command('clear @s');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
+    g.close();g.command(f'gamemode {mode} @s');g.command('clear @s');g.command('ntmitem cure');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
     g.command(f'ntmitem dose {dose}');g.command('tp @s 20.5 101 11.5');time.sleep(.5)
 
 
