@@ -723,6 +723,26 @@ fn a_refused_zirnox_ruin_write_preserves_a_new_zirnox_inventory() {
 }
 
 #[test]
+fn an_older_chunk_does_not_bring_back_a_machine_a_receipt_consumed() {
+    use super::{CommittedEffects, WorldEffect};
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let key = (D.to_string(), P);
+    let guard = super::CellGuard::machine(&key, &s.ready.world.machines[&key]);
+    let saved = serde_json::to_string(&s.ready.world.machines[&key]).unwrap();
+    s.ready.world.machines.remove(&key);
+    // The receipt was replayed and kept for the next confirmed save: it has left the pending list.
+    s.ready.world.applied_machine_effects.push_back(CommittedEffects {
+        origins: vec![guard.clone()],
+        owners: vec![key.clone()],
+        effects: std::collections::VecDeque::from([WorldEffect::Blocks { retained: Vec::new(), dim: D.into(), blocks: vec![(P, zirnox::DESTROYED.into())], expected: vec![guard] }]),
+        ..Default::default()
+    });
+    assert!(s.native_adopt(D, P, &saved), "told as handled");
+    assert!(!s.ready.world.machines.contains_key(&key), "but the stale machine is not back");
+}
+
+#[test]
 fn receipt_replay_checks_its_cell_generation_and_keeps_old_drops_separate() {
     use super::{CellGuard, CommittedEffects, WorldEffect};
     let mut h = Host::default();
