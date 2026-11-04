@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Real use animations, counted commits, armor-table UI and reopen acceptance."""
 import json
+import os
 import re
 import sys
 import time
@@ -22,7 +23,11 @@ def state(g):
 def use(g,seconds=0):
     g.close();g.ctl('look-at 20 160 8')
     if seconds:
-        g.ctl('mouse right down');time.sleep(seconds);g.ctl('mouse right up')
+        timing={'purpose':'complete','requested_seconds':seconds,'requested':time.monotonic()}
+        g.evidence.setdefault('food_input_timing',[]).append(timing)
+        # The game schedules its own release: an evidence write or delayed RPC reply cannot extend the hold.
+        timing['result']=g.ctl(f'use-item --hold {seconds}')
+        timing['returned']=time.monotonic()
     else:
         # One click: a held button repeats the use of an instant item on a slow frame.
         g.ctl('mouse right click')
@@ -72,18 +77,27 @@ def setup(g):
     probe=g.command('ntmitem transaction-check');g.check('native_cas_refusal_replay_and_restore',any('true' in line for line in probe.get('chat',[])),probe)
     # The cotton candy is always edible and carries the five Java effects.
     give_hand(g,'ntm:cotton_candy',2)
-    g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.45)
-    active=g.ctl('state');g.check('real_eating_started',active.get('using') is not None,active)
-    g.ctl('mouse right up');time.sleep(.4)
-    g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,counts(g))
+    with g.defer_evidence():
+        g.ctl('look-at 20 160 8')
+        timing={'purpose':'cancel','down_requested':time.monotonic()}
+        g.evidence.setdefault('food_input_timing',[]).append(timing)
+        g.ctl('mouse right down');timing['down_returned']=time.monotonic();time.sleep(.45)
+        timing['state_requested']=time.monotonic();active=g.ctl('state');timing['state_returned']=time.monotonic()
+        timing['up_requested']=time.monotonic();g.ctl('mouse right up');timing['up_returned']=time.monotonic()
+        g.check('real_eating_started',active.get('using') is not None,active);time.sleep(.4)
+        g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,counts(g))
     g.command('gamemode survival @s')
     g.command('effect give @s minecraft:hunger 1 255 true');time.sleep(1.6)
-    before=g.ctl('state')['player'];use(g,1.8)
-    after=g.ctl('state')['player']
-    g.check('food_and_saturation_apply',after['food']>before['food'] and after['saturation']>before['saturation'],{'before':before,'after':after})
-    g.check('only_one_food_consumed',counts(g).get('ntm:cotton_candy')==1,counts(g))
-    effects={e['id'].split(':')[-1]:e['amplifier'] for e in after['effects']}
-    g.check('java_food_effects',all(effects.get(k)==v for k,v in {'poison':0,'wither':0,'weakness':2,'speed':2,'resistance':4}.items()),effects)
+    with g.defer_evidence():
+        before=g.ctl('state')['player'];use(g,1.8)
+        after=g.ctl('state')['player']
+        g.check('food_and_saturation_apply',after['food']>before['food'] and after['saturation']>before['saturation'],{'before':before,'after':after})
+        g.check('only_one_food_consumed',counts(g).get('ntm:cotton_candy')==1,counts(g))
+        effects={e['id'].split(':')[-1]:e['amplifier'] for e in after['effects']}
+        g.check('java_food_effects',all(effects.get(k)==v for k,v in {'poison':0,'wither':0,'weakness':2,'speed':2,'resistance':4}.items()),effects)
+    if os.environ.get('NTM_ITEMS_FOOD_PROBE'):
+        g.evidence['scope']='diagnostic: food input only, excludes the remaining items acceptance'
+        return
     g.command('effect clear @s');g.command('clear @s');g.command('gamemode creative @s')
     # A stacked syringe returns its container to the inventory.
     give_hand(g,'ntm:syringe_metal_medx',2);use(g)
@@ -149,8 +163,9 @@ def full_inventory(g):
     g.close();g.command('tp @s 24.5 101 7.5');time.sleep(1)
     # Food has no container: eating in a full inventory only consumes the food.
     full(g,'ntm:cotton_candy',2);g.command('effect give @s minecraft:hunger 1 255 true');time.sleep(1.6)
-    use(g,1.8);actual=counts(g)
-    g.check('full_food_consumes_one',actual.get('ntm:cotton_candy')==1 and not dropped(g),{'counts':actual,'dropped':dropped(g)})
+    with g.defer_evidence():
+        use(g,1.8);actual=counts(g)
+        g.check('full_food_consumes_one',actual.get('ntm:cotton_candy')==1 and not dropped(g),{'counts':actual,'dropped':dropped(g)})
     g.command('effect clear @s')
     # ItemSyringe: the used-up stack becomes the empty syringe in its own slot...
     full(g,'ntm:syringe_metal_medx',1);use(g);actual=counts(g)
