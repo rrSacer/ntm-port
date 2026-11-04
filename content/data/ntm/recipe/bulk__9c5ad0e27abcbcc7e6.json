@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:med_bag",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LL",
+    "SI",
+    "LL"
+  ],
+  "key": {
+    "L": "minecraft:leather",
+    "S": "ntm:syringe_metal_super",
+    "I": "ntm:radaway"
+  }
+}

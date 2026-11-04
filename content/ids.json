@@ -26467,10 +26467,14 @@
       "source_variable": "gas_mask_filter",
       "source_class": "ItemFilter",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2838",
-      "category": "component",
+      "category": "consumable",
+      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
       "max_stack_size": 1,
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter.png",
+      "template": "minecraft:iron_ingot",
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear",
       "source_registry": "hbm:item.gas_mask_filter",
       "names": {
         "en_us": "Gas Mask Filter",
@@ -26482,9 +26486,7 @@
       },
       "source_recipe_machine": [],
       "source_recipe_references": [],
-      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
-      "max_damage": 20000,
-      "behavior": "ItemFilter: native installation and exposure wear"
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:gas_mask_filter_combo",
@@ -106801,7 +106803,10 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.radaway.name",
         "pt_br": "port translation"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/radaway.png"
+      "source_texture": "src/main/resources/assets/hbm/textures/items/radaway.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:iv_empty",
@@ -106820,7 +106825,10 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.iv_empty.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.iv_empty.name"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/iv_empty.png"
+      "source_texture": "src/main/resources/assets/hbm/textures/items/iv_empty.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:gas_mask_m65",
@@ -106851,7 +106859,10 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.gas_mask_m65.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.gas_mask_m65.name"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_m65.png"
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_m65.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:hazmat_helmet",
@@ -106882,7 +106893,10 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_helmet.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_helmet.name"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_helmet.png"
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_helmet.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:hazmat_plate",
@@ -106913,7 +106927,10 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_plate.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_plate.name"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_plate.png"
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_plate.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:hazmat_legs",
@@ -106944,7 +106961,10 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_legs.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_legs.name"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_legs.png"
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_legs.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:hazmat_boots",
@@ -106975,7 +106995,10 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_boots.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_boots.name"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_boots.png"
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_boots.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
       "id": "ntm:attachment_mask",
@@ -106994,7 +107017,10 @@
         "en_us": "assets/hbm/lang/en_US.lang:item.attachment_mask.name",
         "pt_br": "assets/hbm/lang/pt_BR.lang:item.attachment_mask.name"
       },
-      "source_texture": "src/main/resources/assets/hbm/textures/items/attachment_mask.png"
+      "source_texture": "src/main/resources/assets/hbm/textures/items/attachment_mask.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     }
   ]
 }

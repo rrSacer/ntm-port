@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:hazmat_helmet",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EEE",
+    "EIE",
+    " P "
+  ],
+  "key": {
+    "E": "ntm:hazmat_cloth",
+    "I": "#ntm:bulk/paneglass",
+    "P": "#ntm:bulk/plateiron"
+  }
+}

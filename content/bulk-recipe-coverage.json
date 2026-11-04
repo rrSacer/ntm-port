@@ -2846,6 +2846,42 @@
       }
     },
     {
+      "id": "ntm:bulk__63fb48c8594559e215",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:122",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_helmet",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__572e08a3a6ec83d0a0",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:123",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_plate",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__035f37f39fd2715d6e",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:124",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_legs",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__e38e0e437499a63ad0",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:125",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_boots",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__4572a44692380345a7",
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:174",
       "type": "minecraft:crafting_shaped",
@@ -3154,6 +3190,15 @@
     {
       "id": "ntm:bulk__821b4b88c213c6566d",
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:136",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:med_bag",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__9c5ad0e27abcbcc7e6",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:137",
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:med_bag",
@@ -8075,7 +8120,7 @@
       }
     }
   ],
-  "generated_count": 897,
+  "generated_count": 902,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -11030,30 +11075,6 @@
       "expression": "new ItemStack(ModItems.jetpack_boost, 1), new Object[] { \"PCP\", \"DJD\", \"PAP\", 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ADVANCED), 'P', BIGMT.plate(), 'D', DESH.ingot(), 'J', ModItems.jetpack_vector, 'A', CU.plateCast() }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:122",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_helmet",
-      "expression": "new ItemStack(ModItems.hazmat_helmet, 1), new Object[] { \"EEE\", \"EIE\", \" P \", 'E', ModItems.hazmat_cloth, 'I', KEY_ANYPANE, 'P', IRON.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:123",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_plate",
-      "expression": "new ItemStack(ModItems.hazmat_plate, 1), new Object[] { \"E E\", \"EEE\", \"EEE\", 'E', ModItems.hazmat_cloth }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:124",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_legs",
-      "expression": "new ItemStack(ModItems.hazmat_legs, 1), new Object[] { \"EEE\", \"E E\", \"E E\", 'E', ModItems.hazmat_cloth }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:125",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_boots",
-      "expression": "new ItemStack(ModItems.hazmat_boots, 1), new Object[] { \"E E\", \"E E\", 'E', ModItems.hazmat_cloth }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:126",
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item hazmat_helmet_red",
@@ -11206,7 +11227,7 @@
     {
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:155",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item gas_mask_m65",
+      "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
       "expression": "new ItemStack(ModItems.gas_mask_m65, 1), new Object[] { \"PPP\", \"GPG\", \" F \", 'G', KEY_ANYPANE, 'P', ANY_RUBBER.ingot(), 'F', IRON.plate() }"
     },
     {
@@ -11594,12 +11615,6 @@
       "expression": "new ItemStack(ModItems.med_bag, 1), new Object[] { \"LLL\", \"SIS\", \"LLL\", 'L', Items.leather, 'S', ModItems.syringe_metal_stimpak, 'I', ModItems.syringe_antidote }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:137",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item radaway",
-      "expression": "new ItemStack(ModItems.med_bag, 1), new Object[] { \"LL\", \"SI\", \"LL\", 'L', Items.leather, 'S', ModItems.syringe_metal_super, 'I', ModItems.radaway }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:138",
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
@@ -11620,7 +11635,7 @@
     {
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:143",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item iv_empty",
+      "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
       "expression": "new ItemStack(ModItems.iv_empty, 4), new Object[] { \"S\", \"I\", \"S\", 'S', ANY_RUBBER.ingot(), 'I', IRON.plate() }"
     },
     {
@@ -11632,7 +11647,7 @@
     {
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:147",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item radaway",
+      "reason": "unregistered/ambiguous source item iv_blood",
       "expression": "new ItemStack(ModItems.radaway, 1), new Object[] { ModItems.iv_blood, COAL.dust(), Items.pumpkin_seeds }"
     },
     {
@@ -11770,7 +11785,7 @@
     {
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:178",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item attachment_mask",
+      "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
       "expression": "new ItemStack(ModItems.attachment_mask, 1), new Object[] { \"DID\", \"IGI\", \" F \", 'D', ModItems.ducttape, 'I', ANY_RUBBER.ingot(), 'G', KEY_ANYPANE, 'F', IRON.plate() }"
     },
     {
