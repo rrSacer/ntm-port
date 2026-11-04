@@ -278,16 +278,16 @@ Limites desta aceitação:
 
 ## Aceitação da onda 1 (consumíveis, kits e medicina)
 
-Binário `horizon-client` `9df7de9d6b42…` e pacote `ntm.hmod` `d37e33ca6c62…` (pin do motor
+Binário `horizon-client` `d7f5a365dfa0…` e pacote `ntm.hmod` `5a15e08d26cb…` (pin do motor
 `0615f5db0`, sem mudança no motor), o mesmo par em todos os cenários, com os hashes conferidos
-antes e depois (`evidence/hashes-review-fixes.txt`). Esta é a rodada que fecha as correções da
-revisão independente (`revisao-k2`).
+antes e depois (`evidence/hashes-r2.txt`). Esta é a rodada que fecha as correções da revisão independente
+(`revisao-k2`) e da sua rechecagem (R1 a R3 e a atomicidade do fertilizante).
 
 | Roteiro `items` | Checks |
 |---|---|
-| `setup` (uma seção por família: bebidas, medicina, comidas, kits, filtros e capuzes hazmat, instrumentos com a janela do `rad_buf`, fósforo, fertilizante e lente AMS em jogo, `chocolate_milk` com o jogador morrendo) | 175 |
-| `capture-state`: cooldown do cantil, antídoto limpando o RadAway, enjoo herbal sob o leite, `radx`, tratamento de RadAway | 9 |
-| `check-state` depois de fechar e reabrir o mundo (inclui o leite de novo sobre o enjoo restaurado) | 7 |
+| `setup` (uma seção por família: bebidas com os goles exatos do BDCL, medicina com o leite e o antídoto sobre o RadAway, comidas, kits, filtros e capuzes hazmat, instrumentos com a janela do `rad_buf`, fósforo, fertilizante com o controle vanilla e lente AMS em jogo, `chocolate_milk` com o jogador morrendo) | 179 |
+| `capture-state`: cooldown do cantil, antídoto limpando o RadAway, enjoo herbal sob o leite, o leite zerando um RadAway novo, `radx`, tratamento de RadAway | 10 |
+| `check-state` depois de fechar e reabrir o mundo (RadAway zerado sem dose nova no meio e dose igual; o leite de novo sobre o enjoo restaurado) | 7 |
 
 Cada seção usa o item real com animação (segurar o botão direito), mede o efeito pelo
 estado do jogador, confere o recipiente devolvido e repete o uso com o inventário
@@ -310,7 +310,77 @@ Limites desta aceitação:
 Regressão completa no mesmo par binário e pacote (os hashes conferem antes e depois), sem falha:
 `mining` 18, `bombs` 49, `zirnox` 136, `pile` 85, `pile-meltdown` 32, `dims` 14 com `dims-idle` 2 e
 `dims-idle-clean` 1, `inventory-proxy` 12, `radioisotopes` 67, `solar` 36, `combustion` 15,
-`catalog` 251, `comparator` 9 e `stations` 5, mais o `items` acima (191). Uma pausa programada do
+`catalog` 251, `comparator` 9 e `stations` 5, mais o `items` acima (196). Durante o desenvolvimento, execuções do `items` falharam por temporização do script em máquina
+carregada (um clique respondido tarde; o limite do subprocesso subiu de 900 s para 1800 s depois que
+o roteiro cresceu) e passaram depois do ajuste do roteiro, sem mudar o binário.
+Verificação estática no HEAD final: NTM 421 testes passaram (2 doctests herdados
+ignorados), Clippy `-D warnings` do workspace e da cópia transformada do motor sem
+isenções; motor 1.565 testes de `horizon-client-lib` e 766 de `horizon-client`, Clippy
+e `cargo fmt --check` limpos. Testes novos desta rodada: `world_item_hop_is_the_entity_constructors`, `drops_name_their_java_mode`,
+`a_native_menu_click_is_answered_with_the_state_after_the_mod` e
+`container_placement_follows_each_java_item`.
+
+### Revisão independente (`artifacts/revisao-item-hooks`): 0 P0/P1/P2, 6 P3
+
+| Achado | Resposta |
+| --- | --- |
+| P3-1 mesa abria agachado | `use-block` passa `sneaking`; `armor_table::open` não abre (o clique é engolido, pois a mesa não tem BE e a queda para o menu mostraria "not available yet"). Prova: `sneaking_does_not_open_the_table`. |
+| P3-2 rollback de 1 tick no hóspede LAN | O clique só marca `Menu::native_resend`; `Hub::flush_native_resends` envia o menu e o cursor depois de `run_native_menu_events`, no mesmo tick, com o resultado. Teste de hub. |
+| P3-3 `open_now` sem revalidar | Revalida o bloco e `dead_or_dying` antes de abrir. |
+| P3-4 `ShiftLeft` físico | Não procede: `Game::keys` guarda o sneak lógico (o mapeamento de `key.sneak`, com toggle e remap; o físico fica em `physical_keys`), o mesmo que `use_hand` lê. Só acrescentei o comentário. |
+| P3-5 `legacy(game)` em itens sem dose | `complete` só exige a semente do espelho para `radaway` e `cooldown`. |
+| P3-6 testes | `expose` 20000/20001 (destruição), morte e respawn com dose 0 depois do próximo `radiation_tick`, pickup delays. `charge` num item elétrico real: nenhum está portado (as baterias de item são só identidades), pendência da família de baterias de item. |
+
+Limites desta aceitação:
+
+- Nenhuma fonte ambiental do port chama `filter_exposure` ainda; o desgaste foi
+  provado pelo comando de operador `/ntmitem expose`, que usa a mesma API. A
+  dose inicial do RadAway e a carga da pilha também vêm de comandos de operador
+  (`/ntmitem dose` e `charge`); a dose gama do inventário é real.
+- Não há roteiro de dois clientes: o hóspede LAN é coberto pelo motor (o jogador
+  local já entra como hóspede da instância integrada) e pelo teste do hub, não por
+  um segundo cliente.
+- Um jogador com espaço recolhe de volta a peça trocada do kit na hora, como no Java
+  (delay 0, conferido no decompilado do 1.7.10).
+- `/ntmitem charge` prova o `patch_stack` num `minecraft:stick`. Nenhum item elétrico
+  real está portado (as baterias de item são só identidades), então o teste com
+  bateria real fica como pendência da família de baterias de item.
+
+## Aceitação da onda 1 (consumíveis, kits e medicina)
+
+Binário `horizon-client` `d7f5a365dfa0…` e pacote `ntm.hmod` `5a15e08d26cb…` (pin do motor
+`0615f5db0`, sem mudança no motor), o mesmo par em todos os cenários, com os hashes conferidos
+antes e depois (`evidence/hashes-r2.txt`). Esta é a rodada que fecha as correções da revisão independente
+(`revisao-k2`) e da sua rechecagem (R1 a R3 e a atomicidade do fertilizante).
+
+| Roteiro `items` | Checks |
+|---|---|
+| `setup` (uma seção por família: bebidas com os goles exatos do BDCL, medicina com o leite e o antídoto sobre o RadAway, comidas, kits, filtros e capuzes hazmat, instrumentos com a janela do `rad_buf`, fósforo, fertilizante com o controle vanilla e lente AMS em jogo, `chocolate_milk` com o jogador morrendo) | 179 |
+| `capture-state`: cooldown do cantil, antídoto limpando o RadAway, enjoo herbal sob o leite, o leite zerando um RadAway novo, `radx`, tratamento de RadAway | 10 |
+| `check-state` depois de fechar e reabrir o mundo (RadAway zerado sem dose nova no meio e dose igual; o leite de novo sobre o enjoo restaurado) | 7 |
+
+Cada seção usa o item real com animação (segurar o botão direito), mede o efeito pelo
+estado do jogador, confere o recipiente devolvido e repete o uso com o inventário
+cheio e em criativo. O Geiger e o dosímetro leem o `rad_buf` do servidor de radiação
+(a mesma autoridade da dose), a lente AMS e os kits têm tabela própria no doc do catálogo.
+
+Limites desta aceitação:
+
+- Não há segundo cliente: o `chocolate_milk` fere todos os jogadores vivos do nível no
+  alcance pelo caminho `native_visit_player`, mas só o jogador local foi exercitado em jogo.
+- A regra de dose do Rad-X (+0,2 no expoente) e os cliques do Geiger são provados por teste de unidade;
+  em jogo foi provado o efeito de conteúdo e o relatório.
+- Sons e partículas são os vanilla listados em `docs/content-catalogo-k2.md`.
+- O crescimento forçado da célula clicada do `powder_fertilizer` é a repetição do `growCrop` do motor
+  (que sorteia por dentro): em jogo a muda mudou nas 6 tentativas (avanço de estágio, 0 árvores) e
+  gastou uma pilha cada, contra 5 de 10 do bone meal vanilla (3 árvores). Dependência nominal: API de
+  crescimento forçado no motor, na próxima frente de motor (com dano em entidades e tick de `ItemEntity`).
+- Um `/effect clear` também é desfeito para o enjoo herbal (o tick o restaura); `/ntmitem cure` o encerra. O RadAway, ao contrário, é uma poção curável: o leite, o antídoto e o `/effect clear` o encerram.
+
+Regressão completa no mesmo par binário e pacote (os hashes conferem antes e depois), sem falha:
+`mining` 18, `bombs` 49, `zirnox` 136, `pile` 85, `pile-meltdown` 32, `dims` 14 com `dims-idle` 2 e
+`dims-idle-clean` 1, `inventory-proxy` 12, `radioisotopes` 67, `solar` 36, `combustion` 15,
+`catalog` 251, `comparator` 9 e `stations` 5, mais o `items` acima (196). Uma pausa programada do
 computador interrompeu a regressão no meio de `dims-idle`; ele e os seguintes rodaram de novo depois,
 no mesmo binário. Durante o desenvolvimento, execuções do `items` falharam por temporização do
 script em máquina carregada (um clique que o servidor respondeu tarde) e passaram depois do ajuste
