@@ -233,6 +233,10 @@ pub struct Server {
     players: Vec<PlayerInfo>,
     /// What each player's client was last told: dose and rate.
     radiation_shown: BTreeMap<String, (i64, i64)>,
+    /// `HbmLivingProps.radEnv`: what point `contaminate` calls added to each
+    /// player since the last window, in milliRAD. The radiation tick folds it
+    /// into the reading it publishes (`radBuf`) and starts a new window.
+    radiation_env: BTreeMap<String, i64>,
     queued: Vec<(BlockEvent,u64)>,
     ready: Ready,
 }

@@ -236,6 +236,13 @@ pub(super) fn rad_buffer(uuid: &str) -> i64 {
     lock(&SERVER).as_ref().map_or(0, |(server, _)| server.rad_buf(uuid))
 }
 
+/// `ContaminationUtil.contaminate` of a player: the amount joins `radEnv`.
+pub(super) fn contaminate(uuid: &str, millirad: i64) {
+    if let Some((server, _)) = lock(&SERVER).as_mut() {
+        server.note_contamination(uuid, millirad);
+    }
+}
+
 /// The fallout zones' rate at a position, milliRAD/s.
 pub(super) fn zone_rate(dim: &str, pos: [f64; 3]) -> u32 {
     lock(&SERVER).as_ref().map_or(0, |(server, _)| server.zone_rate(dim, pos))

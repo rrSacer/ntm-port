@@ -35,6 +35,7 @@ impl Server {
             tick,
             players: Vec::new(),
             radiation_shown: BTreeMap::new(),
+            radiation_env: BTreeMap::new(),
             queued: Vec::new(),
             ready: Ready {
                 world,

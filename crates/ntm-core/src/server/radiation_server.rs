@@ -25,6 +25,14 @@ impl Server {
     pub fn rad_buf(&self, id: &str) -> i64 {
         self.radiation_shown.get(id).map_or(0, |s| s.1)
     }
+    /// `ContaminationUtil.contaminate(.., RADIATION, .., amount)` adds the raw
+    /// amount to `radEnv` before any gate (creative, armor, immunity), so a
+    /// bottle's 5 RAD reaches the next reading even when it changes no dose.
+    /// A direct `incrementRadiation` does not call this.
+    pub fn note_contamination(&mut self, id: &str, millirad: i64) {
+        let env = self.radiation_env.entry(id.into()).or_insert(0);
+        *env = env.saturating_add(millirad);
+    }
     /// `ChunkRadiationManager.getRadiation` for the port: the rate of the
     /// fallout zones where `pos` is.
     pub fn zone_rate(&self, dim: &str, pos: [f64; 3]) -> u32 {
@@ -42,6 +50,7 @@ impl Server {
             return;
         }
         self.radiation_shown.retain(|id, _| self.players.iter().any(|p| &p.id == id));
+        self.radiation_env.retain(|id, _| self.players.iter().any(|p| &p.id == id));
         for p in self.players.clone() {
             let carried = host.inventory_stacks(&p.id).unwrap_or_default();
             let held = carried.iter().fold(0u64,|sum,s|sum.saturating_add(crate::zirnox::radiation_rate(s).or_else(||crate::radioisotopes::radiation_rate(s)).map_or_else(||radiation::rate_of([(s.id.as_str(),s.count)]),|rate|u64::from(rate)*u64::from(s.count))));
@@ -54,7 +63,11 @@ impl Server {
                 if p.creative || grace {Vec::new()} else {radiation::accumulate(dose,protected);radiation::sickness(dose)}
             }) else {continue};
             let dose = &self.ready.world.radiation[&p.id];
-            let shown = (i64::try_from(dose.millirad).unwrap_or(i64::MAX), i64::from(held.saturating_add(zones).saturating_add(self.ready.zirnox_radiation_rate.get(&p.id).copied().unwrap_or(0))));
+            // `radBuf = radEnv; radEnv = 0` once a second: the continuous
+            // sources of this second plus the point contaminations since the last.
+            let events = self.radiation_env.remove(&p.id).unwrap_or(0);
+            let continuous = i64::from(held.saturating_add(zones).saturating_add(self.ready.zirnox_radiation_rate.get(&p.id).copied().unwrap_or(0)));
+            let shown = (i64::try_from(dose.millirad).unwrap_or(i64::MAX), continuous.saturating_add(events));
             for h in harms {
                 match h {
                     Harm::Effect { id, amplifier, seconds } => host.effect(&p.id, id, seconds, amplifier),
@@ -135,5 +148,22 @@ mod tests {
         // The shared path still honors the ZIRNOX modifier and ordinary waste.
         h.carried=vec![Stack::new("ntm:nuclear_waste_short__uranium235",1),Stack{custom:Some("{life:6250}".into()),..Stack::new("ntm:rod_zirnox__uranium_fuel",1)}];
         s.tick=60;s.radiation_tick(&mut h);assert_eq!(h.shown[radiation::KEY_RATE],67875);
+    }
+    /// A bottle's point `contaminate` joins the continuous sources in the same
+    /// second's reading, once, and the next window starts empty.
+    #[test]
+    fn point_contamination_joins_the_window_once() {
+        let mut h=Host::default();let mut s=Server::native(&mut h,0);
+        s.players=vec![PlayerInfo{id:"p".into(),name:"p".into(),dim:"minecraft:overworld".into(),pos:[0.,64.,0.],creative:true}];
+        h.carried=vec![Stack{custom:Some("{PELLET_DEPLETION:5760000000l}".into()),..Stack::new("ntm:pellet_rtg_radium",2)}];
+        s.note_contamination("p",5_000);s.note_contamination("p",15_000);
+        s.note_contamination("gone",9_000);
+        assert_eq!(s.rad_buf("p"),0,"nothing before the window closes");
+        s.tick=20;s.radiation_tick(&mut h);
+        assert_eq!(h.shown[radiation::KEY_RATE],11250+20_000);
+        assert_eq!(s.rad_buf("p"),31_250);
+        s.tick=40;s.radiation_tick(&mut h);
+        assert_eq!(s.rad_buf("p"),11_250,"events are spent with their window");
+        assert!(!s.radiation_env.contains_key("gone"));
     }
 }

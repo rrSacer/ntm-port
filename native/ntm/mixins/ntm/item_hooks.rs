@@ -602,6 +602,13 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     let applied = game.native_commit_player(&STATE, &expected, desired, benefits);
     if applied {
         trace(game, "use", &stack.item);
+        // `contaminate` feeds `radEnv` (the next `radBuf` window) whatever its
+        // gates decide; the direct `incrementRadiation` of a pill does not.
+        if let (Some(d), Some(uuid)) = (&spec.dose, game.native_actor_uuid())
+            && !d.creative
+        {
+            crate::game::ntm_glue::contaminate(&uuid, d.millirad);
+        }
         if let Some(sound) = spec.sound.as_deref() {
             play(game, sound);
         }
