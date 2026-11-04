@@ -143,6 +143,52 @@ bindings = [
   { name = "phase", ty = "crate::game::native_lifecycle::ServerTickPhase", value = "phase" },
 ]
 
+# The ledger of what machines owe the world lives in the chunk records: it follows their loading.
+[[injection]]
+id = "ledger-chunk-load"
+hook = "chunk_load"
+hook_version = 1
+kind = "HEAD"
+helper = "ledger_chunk_load.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "dimension", ty = "&str", value = "dimension" },
+  { name = "chunk", ty = "[i32; 2]", value = "chunk" },
+]
+
+[[injection]]
+id = "ledger-chunk-unload"
+hook = "chunk_unload"
+hook_version = 1
+kind = "HEAD"
+helper = "ledger_chunk_unload.rs"
+bindings = [
+  { name = "dimension", ty = "&str", value = "dimension" },
+  { name = "chunk", ty = "[i32; 2]", value = "chunk" },
+]
+
+[[injection]]
+id = "ledger-entities-load"
+hook = "entities_load"
+hook_version = 1
+kind = "HEAD"
+helper = "ledger_entities_load.rs"
+bindings = [
+  { name = "dimension", ty = "&str", value = "dimension" },
+  { name = "chunk", ty = "[i32; 2]", value = "chunk" },
+]
+
+[[injection]]
+id = "ledger-entities-unload"
+hook = "entities_unload"
+hook_version = 1
+kind = "HEAD"
+helper = "ledger_entities_unload.rs"
+bindings = [
+  { name = "dimension", ty = "&str", value = "dimension" },
+  { name = "chunk", ty = "[i32; 2]", value = "chunk" },
+]
+
 # Comparators read the charge of a battery and the fill of a tank or a barrel (API 64).
 [[injection]]
 id = "comparator-flag"
