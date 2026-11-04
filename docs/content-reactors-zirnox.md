@@ -227,8 +227,9 @@ e BEs NTM sem modelo/geração inicializada conservam o caminho vanilla.
 Passos que mudam máquinas em mais de um chunk, inclusive Loader→Core sem ejeção, mantêm um diário por mundo
 dos sobreviventes de maior revisão por posição/geração. A adoção de um BE antigo restaura também slots e bridge.
 Save & Quit confirma, poda e regrava chunks/entidades alterados pelo hook antes de terminar. A revisão encontrou
-cinco P1 na entrega anterior; as contraprovas B1 e as provas do binário corrigido estão em andamento (ver
-`docs/horizon-current.md`, "Onda 0 — item 5").
+cinco P1 na entrega anterior. As contraprovas B1/B2 e a validação C4 foram concluídas: 57 casos,
+duas reaberturas por caso, oito cortes reais entre chunks e regressão completa no mesmo binário.
+A entrega aguarda revisão independente (ver `docs/horizon-current.md`, "Onda 0 — item 5").
 
 A fronteira de publicação das células é explícita. Primeiro são validados todos
 os BEs e todas as células, inclusive mudanças externas entre a leitura e o commit.
@@ -280,7 +281,7 @@ limitação no pacote em trânsito entre quebra e recolocação do mesmo ID.
 | `waste` em chunks descarregados | A API existente acessa somente blocos carregados; esses pontos são ignorados, sem carregar/gerar chunks para o efeito. A transformação das posições carregadas segue o limite/ordem da fonte. |
 | `WasteEarth.updateTick`: cogumelo→`mush` | Exclusão de catálogo K4 aceita pelo coordenador; `mush` não está declarado e possui regras próprias fora do ZIRNOX. Escurecimento está implementado; `cleanupDeadDirt=false` segue o padrão Java. |
 | `WasteEarth.canSustainPlant` | Blocos de terra usam o suporte a plantas do template vanilla; falta a restrição Java a plantas Cave. |
-| Crash/I/O entre `spawn_item`/save do mundo e cursor KV | Item 5 reaberto pela revisão: ledger no registro do chunk, ids por efeito e diário por mundo dos sobreviventes. Correções implementadas; contraprovas e aceitação final em andamento (ver `docs/horizon-current.md`). |
+| Crash/I/O entre `spawn_item`/save do mundo e cursor KV | Item 5 reaberto pela revisão: ledger no registro do chunk, ids por efeito e diário por mundo dos sobreviventes. C4 concluído: 57 casos com duas reaberturas e regressão completa, aguardando revisão independente (ver `docs/horizon-current.md`). |
 | Salvamento do nível estacionado/comparadores | Valem as limitações gerais já documentadas em `docs/host-dimensoes.md`. |
 
 ## Diagnóstico da cerca e isolamento do teste de waste
@@ -314,7 +315,10 @@ uma parede de obsidiana. As quatro expectativas permanecem exatas: cerca e baú
 inalterados, tronco em `waste_log`, tábua em `waste_planks`. Não foi preciso alterar
 a explosão nem as regras físicas.
 
-## Verificação após revisão independente
+## Verificação histórica após revisão independente
+
+Os números desta seção pertencem às correções anteriores ao save C4. Para a validação atual do item 5,
+ver `docs/horizon-current.md`, seção "Onda 0 — item 5".
 
 R1 foi refeito em `2a80e3b0`, seguido por `f910e450`, `048e38ca` e
 `ff755b15`: transação completa, proteção de geração do BE, retenção de entradas
