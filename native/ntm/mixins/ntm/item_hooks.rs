@@ -960,10 +960,13 @@ fn cross_player(game: &mut Game<'_>, center: [f64; 3], size: f32) {
 
 pub(super) fn tick(game: &mut Game<'_>) {
     // `ItemBDCL.onUsingTick`: the gulps between the first sip and the groan.
+    // The player tick runs after the engine advanced the use, so `used` already
+    // counts this tick: the tick `onUsingTick` sees is one less.
     if let Some((slot, used)) = game.using
         && game.stack_in(slot).is_some_and(|s| &*s.item == "ntm:bdcl")
-        && ntm_core::consumables::bdcl_gulps().contains(&used)
+        && ntm_core::consumables::bdcl_gulp_after(used)
     {
+        trace(game, "gulp", &(used - 1).to_string());
         play(game, "hbm:player.gulp");
     }
     let Some(expected) = game.native_player_snapshot(&STATE) else {

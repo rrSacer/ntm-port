@@ -379,6 +379,13 @@ fn bdcl_counts() -> Vec<i32> {
     }
 }
 
+/// Whether `ItemBDCL.onUsingTick` plays the gulp on the tick that ends with
+/// `used` ticks of the use counted (the engine advances the count before the
+/// player tick runs, so the first tick after the click is 1).
+pub fn bdcl_gulp_after(used: u32) -> bool {
+    used >= 1 && bdcl_gulps().contains(&(used - 1))
+}
+
 /// How many player ticks `ItemBDCL` takes.
 pub fn bdcl_ticks() -> i32 {
     bdcl_counts().len() as i32
@@ -574,6 +581,9 @@ mod tests {
         assert_eq!(bdcl_ticks(), 34);
         // Counts 40, 35, 30, 25, 20 and 10 reach the gulp check; 15 is skipped.
         assert_eq!(bdcl_gulps(), [0, 5, 10, 15, 19, 26]);
+        // The hook sees the count already advanced: the first gulp is on 1.
+        let heard: Vec<u32> = (0..=bdcl_ticks() as u32).filter(|u| bdcl_gulp_after(*u)).collect();
+        assert_eq!(heard, [1, 6, 11, 16, 20, 27]);
         assert_eq!(spec("ntm:bdcl").ticks, bdcl_ticks());
     }
 

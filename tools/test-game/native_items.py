@@ -333,8 +333,19 @@ def energy(g):
     g.check('mango_speed_two_hundred_ticks',has_effects(effects,{'speed':(0,200)}),effects)
     g.command('effect clear @s')
     # The BDCL drinks in 34 ticks (its onUsingTick skips the count) and leaves nothing.
-    g.command('clear @s');give_hand(g,'ntm:bdcl',2);use(g,2.1)
+    def gulps(since):
+        # The `gulp` trace carries the use tick (counted from 0) `onUsingTick` would play it on.
+        log=(g.folder/'client-first.log').read_text(errors='replace')[since:]
+        return [int(m) for m in re.findall(r'"event":"gulp","item":"(\d+)"',log)]
+    def log_size():
+        return len((g.folder/'client-first.log').read_text(errors='replace'))
+    g.command('clear @s');give_hand(g,'ntm:bdcl',2);mark=log_size();use(g,2.1);time.sleep(.5)
     g.check('bdcl_is_consumed_without_a_container',counts(g).get('ntm:bdcl')==1 and len(counts(g))==1,counts(g))
+    g.check('bdcl_gulps_on_the_java_counts_exactly',gulps(mark)==[0,5,10,15,19,26],gulps(mark))
+    # Cancelled after about twelve ticks: only the gulps already due are heard, and nothing is consumed.
+    give_hand(g,'ntm:bdcl',2);mark=log_size();g.close();g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.55);g.ctl('mouse right up');time.sleep(.5)
+    heard=gulps(mark)
+    g.check('cancelled_bdcl_stops_its_gulps',heard==[0,5,10,15,19,26][:len(heard)] and 2<=len(heard)<=4 and counts(g).get('ntm:bdcl')==2,{'heard':heard,'counts':counts(g)})
     # The chocolate milk is the last: its blast removes the floor around the player.
     g.command('gamemode creative @s');g.command('clear @s');give_hand(g,'ntm:chocolate_milk',1)
     floor=g.ctl('block 20 100 8').get('state','');use(g,1.8);time.sleep(4)
