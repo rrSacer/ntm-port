@@ -120,7 +120,7 @@ Resumo dos 116 itens: 58 ativo, 19 dependente, 39 parcial.
 | `ntm:cell_antimatter` | ItemDrop | dependente | `ItemDrop`, ModItems.java:2689 | `onEntityItemUpdate` (efeito ao cair no chão): sem gancho de tick de item solto (`ItemEntity.tick`, `onGround`, remover/trocar) no motor fixado; `ExplosionVNT(3).makeAmat()` |
 | `ntm:cheese` | ItemLemon | ativo | ItemLemon(5, 0.75F), ModItems.java:3637 | - |
 | `ntm:cheese_quesadilla` | ItemLemon | ativo | ItemLemon(8, 1.0F), ModItems.java:3638 | - |
-| `ntm:chocolate` | ItemPill | ativo | ItemPill, ModItems.java:2947: 1 in 25 overdose (1000 damage), then speed, haste and jump 60 seconds | - |
+| `ntm:chocolate` | ItemPill | ativo | ItemPill, ModItems.java:2947: 1 in 25 overdose (1000 absolute damage: armor and Resistance bypassed, minecraft:generic_kill), then speed, haste and jump 60 seconds | - |
 | `ntm:chocolate_milk` | ItemEnergy | parcial | ItemEnergy, ModItems.java:2944 | mobs e itens soltos do raio 100 não levam dano nem empurrão (sem API de dano a mobs); `ExplosionCreator.composeEffectStandard` é um show de partículas do cliente, substituído por som e emissor vanilla; os raios usam o acaso por hash de posição do `ntm-core`, não o `world.rand` |
 | `ntm:cigarette` | ItemCigarette | parcial | ItemCigarette, ModItems.java:2847: black lung and asbestos (HbmLivingProps) and the no9 achievement are not in the port | asbestos e black lung; conquista `achNo9` |
 | `ntm:coffee` | ItemEnergy | ativo | ItemEnergy, ModItems.java:2945 | - |
@@ -177,7 +177,7 @@ Resumo dos 116 itens: 58 ativo, 19 dependente, 39 parcial.
 | `ntm:pellet_antimatter` | ItemDrop | dependente | `ItemDrop`, ModItems.java:2721 | `onEntityItemUpdate` (efeito ao cair no chão): sem gancho de tick de item solto (`ItemEntity.tick`, `onGround`, remover/trocar) no motor fixado; `ExplosionVNT(20).makeAmat()` |
 | `ntm:pill_iodine` | ItemPill | parcial | ItemPill, ModItems.java:2834: removes the bad effects; HbmPotion.radiation is not an effect in the port | `HbmPotion.radiation` não existe (idem med_bag) |
 | `ntm:pill_red` | ItemPill | parcial | ItemPill, ModItems.java:2836: Astolfization one hour | o `PermaSyncHandler` só desenha uma marca no cliente; o efeito `ntm:death` existe, passivo, 1 hora |
-| `ntm:plan_c` | ItemPill | ativo | ItemPill, ModItems.java:2835: ten attackEntityFrom(euthanizedSelf, 1000) | - |
+| `ntm:plan_c` | ItemPill | ativo | ItemPill, ModItems.java:2835: ten attackEntityFrom(euthanizedSelf, 1000); armor only is bypassed, Resistance still absorbs: minecraft:magic | - |
 | `ntm:plastic_bag` | ItemPlasticBag | dependente | `ItemPlasticBag`, ModItems.java:3358 | menu de inventário ligado à pilha (`InventoryPlasticBag`, 1 slot) |
 | `ntm:powder_fertilizer` | ItemFertilizer | ativo | `ItemFertilizer.onItemUse` | o bone meal do motor decide cada célula; o Java força a central e sorteia as outras (`func_149852_a`) |
 | `ntm:prototype_kit` | ItemStarterKit | parcial | ItemStarterKit.onItemRightClick prototype_kit, ModItems.java:3793 | itens Java ausentes do port: `ModBlocks.nuke_prototype x1`, `ModItems.rod_quad[URANIUM] x4`, `ModItems.rod_quad[LEAD] x4`, `ModItems.rod_quad[NP237] x2` |
@@ -225,7 +225,7 @@ Resumo dos 116 itens: 58 ativo, 19 dependente, 39 parcial.
 | `ntm:syringe_metal_medx`, `ntm:syringe_metal_stimpak`, `ntm:syringe_metal_psycho`, `ntm:syringe_metal_super`, `ntm:syringe_taint`, `ntm:syringe_antidote` e mais 4 | `hbm:item.syringe` | `minecraft:entity.arrow.hit_player` | 1.0 / 1.0 |
 | `ntm:radaway`, `ntm:radaway_strong`, `ntm:radaway_flush`, `ntm:iv_blood` | `hbm:item.radaway` | `minecraft:item.bottle.fill` | 1.0 / 1.0 |
 | `ntm:nuke_starter_kit`, `ntm:nuke_advanced_kit`, `ntm:nuke_commercially_kit`, `ntm:nuke_electric_kit`, `ntm:gadget_kit`, `ntm:boy_kit` e mais 13 | `hbm:item.unpack` | `minecraft:item.bundle.drop_contents` | 1.0 / 1.0 |
-| `ntm:bdcl` (a cada 5 ticks) | `hbm:player.gulp` | `minecraft:entity.generic.drink` | 1.0 / 1.0 |
+| `ntm:bdcl` (nos ticks 0, 5, 10, 15, 19 e 26 do uso: `count % 5 == 0 && count >= 10`) | `hbm:player.gulp` | `minecraft:entity.generic.drink` | 1.0 / 1.0 |
 | `ntm:bdcl` | `hbm:player.groan` | `minecraft:entity.player.breath` | 1.0 / 1.0 |
 | `ntm:cigarette`, `ntm:crackpipe` | `hbm:player.cough` | `minecraft:entity.panda.sneeze` | 1.0 / 1.0 |
 | `ntm:med_ipecac`, `ntm:med_ptsd` | `hbm:entity.vomit` | `minecraft:entity.fox.spit` | 1.0 / 1.0 |

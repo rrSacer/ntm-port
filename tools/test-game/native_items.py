@@ -9,7 +9,10 @@ from pathlib import Path
 from native_game import Game
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,vnt').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt').split(',')
+
+
+FAMILY_RUNS=[]
 
 
 def counts(g):
@@ -71,6 +74,11 @@ def put(g,item,count,slot):
 def setup(g):
     g.ctl('wait-ready 120');g.close();g.command('gamemode creative @s');g.command('clear @s')
     g.ground(20,101,8,width=12,height=8)
+    if os.environ.get('NTM_ONLY'):
+        # A rerun of the named families alone (on a loaded machine the proof batch's clicks are timing-sensitive).
+        for name,run in FAMILY_RUNS:
+            if name in FAMILIES:run(g)
+        return
     probe=g.command('ntmitem transaction-check');g.check('native_cas_refusal_replay_and_restore',any('true' in line for line in probe.get('chat',[])),probe)
     # The cotton candy is always edible and carries the five Java effects.
     give_hand(g,'ntm:cotton_candy',2)
@@ -129,7 +137,7 @@ def setup(g):
     armor_table(g)
     death_resets_dose(g)
     # NTM_FAMILIES narrows a rerun to the families a binary has (default: all).
-    for name,run in (('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments)):
+    for name,run in FAMILY_RUNS:
         if name in FAMILIES:run(g)
 
 
@@ -462,8 +470,11 @@ def foods(g):
     g.check('soup_returns_the_bowl',counts(g).get('minecraft:bowl')==1,counts(g))
     reset(g);starve(g);hold(g,'ntm:glyphid_meat_grilled',1.8)
     g.check('grilled_glyphid_meat_never_gives_strength',not effect_map(g).get('strength') and not counts(g),effect_map(g))
-    reset(g);hold(g,'ntm:med_ipecac',1.8);effects=effect_map(g)
-    g.check('ipecac_is_always_edible_and_starves',has_effects(effects,{'hunger':(49,50)}) and not counts(g),effects)
+    # ItemLemon's setAlwaysEdible guard compares a field that is still null in the constructor: needs hunger.
+    reset(g);g.check('ipecac_needs_hunger_at_full_food',refused(g,'ntm:med_ipecac',1),counts(g))
+    reset(g);g.check('ptsd_needs_hunger_at_full_food',refused(g,'ntm:med_ptsd',1),counts(g))
+    reset(g);starve(g);hold(g,'ntm:med_ipecac',1.8);effects=effect_map(g)
+    g.check('ipecac_when_hungry_induces_hunger',has_effects(effects,{'hunger':(49,50)}) and not counts(g),effects)
     reset(g);starve(g);g.command('effect give @s minecraft:slow_falling 120 0 true');g.command('effect give @s minecraft:fire_resistance 120 0 true');hold(g,'ntm:schnitzel_vegan',1.8);effects=effect_map(g)
     g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)}),effects)
     extinguish(g)
@@ -570,6 +581,35 @@ def instruments(g):
     reset(g,'creative')
 
 
+def on_blocks(g):
+    """The match and the fertilizer used on blocks (ItemMatch, ItemFertilizer) and the AMS lens stack."""
+    # ItemMatch.onItemUse: fire on the cell beside the clicked face; the match is spent outside creative.
+    reset(g);g.ground(20,101,8,width=12,height=8);g.command('tp @s 20.5 101 11.5');time.sleep(.5)
+    give_hand(g,'ntm:matchstick',2);g.close();g.ctl('interact 20 100 8 up');time.sleep(.6)
+    state_=g.ctl('block 20 101 8').get('state','')
+    g.check('match_lights_fire_on_the_clicked_face','fire' in state_ and counts(g).get('ntm:matchstick')==1,{'block':state_,'counts':counts(g)})
+    g.command('setblock 20 101 8 minecraft:air')
+    reset(g,'creative');give_hand(g,'ntm:matchstick',2);g.close();g.ctl('interact 22 100 8 up');time.sleep(.6)
+    state_=g.ctl('block 22 101 8').get('state','')
+    g.check('creative_match_is_not_spent','fire' in state_ and counts(g).get('ntm:matchstick')==2,{'block':state_,'counts':counts(g)})
+    g.command('setblock 22 101 8 minecraft:air')
+    # ItemFertilizer: bone meal on the 3x3x3 around the click; spent only when something grew.
+    reset(g);g.command('setblock 22 100 8 minecraft:farmland[moisture=7]');g.command('setblock 22 101 8 minecraft:wheat[age=0]');time.sleep(.4)
+    give_hand(g,'ntm:powder_fertilizer',3);g.close();g.ctl('interact 21 100 8 up');time.sleep(.8)
+    age=re.search(r'age=(\d+)',g.ctl('block 22 101 8').get('state',''))
+    g.check('fertilizer_grows_the_crop_around_the_click',age is not None and int(age.group(1))>0 and counts(g).get('ntm:powder_fertilizer')==2,{'age':age and age.group(1),'counts':counts(g)})
+    g.command('setblock 22 101 8 minecraft:air')
+    # Nothing to grow: the fertilizer stays.
+    g.ctl('interact 19 100 9 up');time.sleep(.8)
+    g.check('fertilizer_stays_when_nothing_grows',counts(g).get('ntm:powder_fertilizer')==2,counts(g))
+    # The AMS lens: the control socket cannot read a tooltip (its line is a unit test), so the
+    # scene proves the item exists with its `damage` long, which the tooltip reads.
+    reset(g,'creative');g.command('give @s ntm:ams_lens[minecraft:custom_data={damage:108000000L}] 1');time.sleep(.5)
+    tag=components(g,'ntm:ams_lens') or ''
+    g.check('ams_lens_keeps_its_damage_tag','108000000' in tag and counts(g).get('ntm:ams_lens')==1,tag)
+    g.ground(20,101,8,width=12,height=8);reset(g,'creative')
+
+
 def table_slot(screen,n):
     return next((x.get('item') for x in screen.get('slots',[]) if x['slot']==300+n),None)
 
@@ -660,7 +700,11 @@ def reopened(g):
     g.snapshot('items-reopened')
 
 
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks)]
+
+
 if __name__=='__main__':
     g=Game(sys.argv[1],'items-'+(sys.argv[2] if len(sys.argv)>2 else 'setup'));mode=sys.argv[2] if len(sys.argv)>2 else 'setup';g.evidence['phase']=mode
     {'setup':setup,'capture-state':capture,'check-state':reopened}[mode](g)
     g.evidence['ok']=True;g.save()
+

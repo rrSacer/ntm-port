@@ -122,7 +122,7 @@ EXTRA = [
 SOUND_SUBSTITUTES = {
     'random.burp': 'Comer ItemFood (burp)', 'hbm:item.syringe': 'Injeção', 'hbm:item.radaway': 'Bolsa de RadAway',
     'hbm:item.unpack': 'Abrir kit', 'hbm:player.groan': 'Fim do BDCL', 'hbm:player.cough': 'Cigarro e cachimbo',
-    'hbm:entity.vomit': 'Vômito (ipecac, PTSD)', 'random.orb': 'Bolsa de XP', 'hbm:player.gulp': 'BDCL (gole a cada 5 ticks)',
+    'hbm:entity.vomit': 'Vômito (ipecac, PTSD)', 'random.orb': 'Bolsa de XP', 'hbm:player.gulp': 'BDCL (gole nos ticks 0, 5, 10, 15, 19 e 26)',
 }
 
 
@@ -140,7 +140,7 @@ def sounds():
     out = ['| Item(ns) | Som Java | Substituto vanilla | Volume / tom |', '|---|---|---|---|']
     for java, event, volume, pitch, spread in rows:
         items = used.get(java, [])
-        label = ', '.join(f'`{i}`' for i in items[:6]) + (f' e mais {len(items) - 6}' if len(items) > 6 else '') or '`ntm:bdcl` (a cada 5 ticks)' if java == 'hbm:player.gulp' else ', '.join(f'`{i}`' for i in items[:6]) + (f' e mais {len(items) - 6}' if len(items) > 6 else '')
+        label = ', '.join(f'`{i}`' for i in items[:6]) + (f' e mais {len(items) - 6}' if len(items) > 6 else '') or '`ntm:bdcl` (nos ticks 0, 5, 10, 15, 19 e 26 do uso: `count % 5 == 0 && count >= 10`)' if java == 'hbm:player.gulp' else ', '.join(f'`{i}`' for i in items[:6]) + (f' e mais {len(items) - 6}' if len(items) > 6 else '')
         tone = f'{volume} / {pitch}' + (f' + rand*{spread}' if float(spread) else '')
         out.append(f'| {label or "-"} | `{java}` | `{event}` | {tone} |')
     return '\n'.join(out)

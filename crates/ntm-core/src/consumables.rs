@@ -360,22 +360,41 @@ pub fn sound(java: &str) -> Option<Sound> {
     })
 }
 
-/// How many player ticks `ItemBDCL` takes: `getMaxItemUseDuration` is 40, but
-/// `onUsingTick(count)` also does `itemInUseCount--` whenever `count <= 24 &&
-/// count % 4 == 0`, and drinks (`count == 1`) on the tick it sees 1.
-pub fn bdcl_ticks() -> i32 {
+/// The `count` each tick of an `ItemBDCL` use gives `onUsingTick`:
+/// `getMaxItemUseDuration` is 40, but the item also does `itemInUseCount--`
+/// whenever `count <= 24 && count % 4 == 0`, and drinks (`count == 1`) on the
+/// tick it sees 1.
+fn bdcl_counts() -> Vec<i32> {
     let mut count = 40;
-    let mut ticks = 0;
+    let mut seen = Vec::new();
     loop {
-        ticks += 1;
+        seen.push(count);
         if count == 1 {
-            return ticks;
+            return seen;
         }
         if count <= 24 && count % 4 == 0 {
             count -= 1;
         }
         count -= 1;
     }
+}
+
+/// How many player ticks `ItemBDCL` takes.
+pub fn bdcl_ticks() -> i32 {
+    bdcl_counts().len() as i32
+}
+
+/// The ticks of the use (counted from 0) on which `onUsingTick` plays
+/// `hbm:player.gulp`: `count % 5 == 0 && count >= 10`. The skipped counts
+/// (15 among them) never reach the check.
+pub fn bdcl_gulps() -> Vec<u32> {
+    bdcl_counts()
+        .into_iter()
+        .enumerate()
+        .filter(|(_, count)| count % 5 == 0 && *count >= 10)
+        .map(|(tick, _)| tick as u32)
+        .collect()
+}
 }
 
 #[cfg(test)]
@@ -554,6 +573,8 @@ mod tests {
     #[test]
     fn the_bdcl_drinks_in_thirty_four_ticks() {
         assert_eq!(bdcl_ticks(), 34);
+        // Counts 40, 35, 30, 25, 20 and 10 reach the gulp check; 15 is skipped.
+        assert_eq!(bdcl_gulps(), [0, 5, 10, 15, 19, 26]);
         assert_eq!(spec("ntm:bdcl").ticks, bdcl_ticks());
     }
 
