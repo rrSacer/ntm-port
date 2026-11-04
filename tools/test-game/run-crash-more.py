@@ -24,6 +24,7 @@ crash_proof = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crash_proof)
 
 DEFAULT_POINTS = {
+    'vanilla-break': ['chunks_written', 'entities_written'],
     'coupled-a': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
     'coupled-b': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
     'coupled-ea': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
