@@ -16,6 +16,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import zlib
 
 here = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location('crash_proof', here / 'run-crash-proof.py')
@@ -23,13 +24,13 @@ crash_proof = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crash_proof)
 
 DEFAULT_POINTS = {
-    'coupled-a': ['none', 'save_begin', 'region_record:1', 'region_record:2'],
-    'coupled-b': ['none', 'save_begin', 'region_record:1', 'region_record:2'],
-    'coupled-ea': ['none', 'save_begin', 'region_record:1', 'region_record:2'],
-    'coupled-eb': ['none', 'save_begin', 'region_record:1', 'region_record:2'],
+    'coupled-a': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'coupled-b': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'coupled-ea': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'coupled-eb': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
     'crossing': ['none'],
     'save-quit': ['none'],
-    'mining': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],
+    'mining': crash_proof.POINTS,
     'break': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],
     'replace': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],
 }
@@ -51,15 +52,56 @@ def evidence(folder, mode):
     return json.loads(path.read_text()) if path.exists() else {}
 
 
+def saved_coupled(folder, scenario):
+    """Read the two actual chunk records before replay: which side of the transfer reached disk.
+
+    This fixture uses ASCII machine JSON in the NBT string tag `ntm`; finding that named tag keeps the
+    diagnostic independent of runtime adoption and avoids treating both geometries as proof of write order.
+    """
+    if not scenario.startswith('coupled'):
+        return None
+    region = folder / 'saves/CrashTest/dimensions/minecraft/overworld/region/r.0.0.mca'
+    data = region.read_bytes()
+    states = {}
+    for cx in (2, 3):
+        offset = int.from_bytes(data[cx * 4:cx * 4 + 3], 'big') * 4096
+        length = int.from_bytes(data[offset:offset + 4], 'big')
+        raw = data[offset + 5:offset + 4 + length]
+        if data[offset + 4] != 2:
+            raise AssertionError('fixture expected zlib chunk records')
+        raw = zlib.decompress(raw)
+        at, machines = 0, []
+        while (tag := raw.find(b'\x08\x00\x03ntm', at)) >= 0:
+            size = int.from_bytes(raw[tag + 6:tag + 8], 'big')
+            at = tag + 8 + size
+            m = json.loads(raw[tag + 8:at])
+            d = m.get('data', {})
+            if 'Core' in d:
+                machines.append({'role': 'core', 'rev': m.get('rev', 0),
+                                 'rods': sum(bool(r) for c in d['Core']['channels'] if c['kind'] == 'Fuel' for r in c['rods'])})
+            elif 'Loader' in d:
+                machines.append({'role': 'loader', 'rev': m.get('rev', 0),
+                                 'rods': sum(s['count'] for s in d['Loader']['slots'] if s)})
+        states[str(cx)] = sorted(machines, key=lambda m: m['role'])
+    return states
+
+
 def play(args, base, scratch, env, scenario, point):
     folder = scratch / ('point-' + point.replace(':', '-'))
-    shutil.copytree(base, folder, ignore=shutil.ignore_patterns('control.sock', 'native-crash-more-act.json',
+    crash_proof.clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-crash-more-act.json',
                                                                  'native-crash-more-verify.json', 'native-crash-more-again.json'))
     world = More(args, folder, env, scenario)
     result = {'scenario': scenario, 'point': point, 'folder': str(folder), 'ok': False}
     try:
         world.launch(point)
-        world.script('act', check=False)
+        acted = world.script('act', check=False)
+        act = evidence(folder, 'act')
+        result['act'] = act.get('after_act') or act.get('after_undo')
+        result['while_away'] = act.get('while_away')
+        result['act_checks'] = {k: {'ok': v['ok'], **({'actual': v['actual']} if not v['ok'] else {})}
+                                for k, v in act.get('checks', {}).items()}
+        if acted:
+            raise AssertionError('action failed before its save; see act evidence')
         if point == 'none':
             result['exit'] = 'survived'
             world.quit()
@@ -74,7 +116,18 @@ def play(args, base, scratch, env, scenario, point):
             if not result['killed_at_the_point']:
                 raise AssertionError('client exited without reaching ' + point)
             (folder / 'control.sock').unlink(missing_ok=True)
-        result['act'] = evidence(folder, 'act').get('after_act') or evidence(folder, 'act').get('after_undo')
+        result['disk_before_reopen'] = saved_coupled(folder, scenario)
+        if scenario.startswith('coupled') and point.startswith(('live_chunk:', 'region_record:')):
+            before, after = saved_coupled(base, scenario), result['disk_before_reopen']
+            changed = [c for c in ('2', '3') if before[c] != after[c]]
+            result['disk_base'] = before
+            result['new_chunks'] = changed
+            result['cut_valid'] = len(changed) == 1
+            if point.startswith('live_chunk:'):
+                target = point.split(':', 1)[1].split(',')[0]
+                result['cut_valid'] &= changed == [target]
+            if not result['cut_valid']:
+                raise AssertionError('invalid cut: must save exactly one of core/loader chunks before replay')
         world.launch()
         verified = world.script('verify', check=False)
         result['first_reopen'] = evidence(folder, 'verify').get('counted')
@@ -129,7 +182,9 @@ def main():
     os.close(writer)
     with os.fdopen(reader) as pipe:
         env['DISPLAY'] = ':' + pipe.readline().strip()
-    report = {'ok': False, 'scenario': args.scenario, 'binary': str(args.binary), 'points': []}
+    report = {'ok': False, 'scenario': args.scenario, 'binary': str(args.binary),
+              'binary_sha256': crash_proof.digest(args.binary), 'bundle_sha256': crash_proof.digest(args.bundle),
+              'points': []}
     try:
         world = More(args, base, env, args.scenario)
         world.launch()

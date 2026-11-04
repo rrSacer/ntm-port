@@ -123,8 +123,14 @@ def coupled_prepare(g):
     if full:
         for _ in range(5):
             load_rod(g, loader)
+    # Persist the rod in the loader first. The crash must cut a transfer of an already saved item,
+    # not the preceding player insertion (whose playerdata has its own save boundary).
+    g.command('clear @s')
+    g.command(f'give @s {ROD} 1')
+    g.ctl(f'select {ROD}')
+    interact(g, loader, 'north', (loader[0] + .5, 101, loader[2] - 2.5))
     channels, loaders = pile_rods(g, cx)
-    g.check('prepared', channels + loaders == (5 if full else 0), (channels, loaders))
+    g.check('prepared', channels == (5 if full else 0) and loaders == 1, (channels, loaders))
     g.command('clear @s')
     g.ctl('save')
 
@@ -134,8 +140,16 @@ def coupled_act(g):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
     loader = geometry(cx)[side][0]
-    load_rod(g, loader)
+    g.command('clear @s')
+    g.check('saved_rod_starts_in_the_loader', pile_rods(g, cx) == (5 if full else 0, 1), pile_rods(g, cx))
+    interact(g, loader, 'north', (loader[0] + .5, 101, loader[2] - 2.5))
+    time.sleep(1.8)
+    deadline = time.monotonic() + 30
+    expected = (5 if full else 1, 0)
+    while pile_rods(g, cx) != expected and time.monotonic() < deadline:
+        time.sleep(.2)
     g.evidence['after_act'] = {'rods': pile_rods(g, cx), 'entities': entities(g, ROD)}
+    g.check('transfer_completed_before_the_cut', tuple(g.evidence['after_act']['rods']) == expected, g.evidence['after_act'])
     save_expecting_death(g)
 
 
@@ -148,7 +162,7 @@ def coupled_verify(g, again=False):
     channels, loaders = pile_rods(g, cx)
     held = channels + loaders + entities(g, ROD) + inventory(g, ROD)
     expected = 6 if full else 1
-    detail = {'channels': channels, 'loaders': loaders, 'entities': entities(g, ROD), 'ledger': led}
+    detail = {'channels': channels, 'loaders': loaders, 'entities': entities(g, ROD), 'inventory': inventory(g, ROD), 'total': held, 'expected': expected, 'ledger': led}
     g.evidence['counted' + ('_again' if again else '')] = detail
     g.check('no_rod_lost_or_duplicated', held == expected, detail)
     core = geometry(cx)['core']
@@ -166,6 +180,15 @@ def crossing_prepare(g):
             load_rod(g, geo[side][0])
     for x in (46.5, 48.5):
         g.command(f'summon minecraft:item {x} 103 13.5 {{Item:{{id:"{ROD}",count:1}}}}')
+    if SCENARIO == 'crossing':
+        # Forced tickets keep two full neighbour rings. An adjacent destination cannot unload while the
+        # source is forced, so put the destination beyond that halo and prove its unload explicitly.
+        g.command('forceload add 128 0 143 15')
+        time.sleep(3)
+        g.command('fill 128 99 0 143 99 15 minecraft:stone')
+    elif SCENARIO == 'save-quit':
+        # Nether ticks last: reconciliation must also visit the parked Overworld, where these drops live.
+        g.command('execute in minecraft:the_nether run forceload add 0 0')
     g.command('clear @s')
     g.ctl('save')
 
@@ -180,23 +203,38 @@ def crossing_act(g):
     led = quiet(g, 4)
     g.evidence['after_undo'] = {'entities': entities(g, ROD), 'ledger': led}
     # Every drop goes to the upper chunk; then that chunk is let go while the lower one stays.
-    g.command('tp @e[type=minecraft:item] 53.5 103 13.5')
+    g.command('tp @e[type=minecraft:item] 133.5 103 13.5')
     time.sleep(3)
     g.command('forceload remove 48 0 64 24')
+    g.command('forceload remove 128 0 143 15')
     g.command('tp @s -250.5 101 5.5')
-    time.sleep(14)
+    # A reopen can deduplicate the two copies again and hide the in-game failure. Prove the actual unload
+    # and inspect the source while the destination's entities are still on disk.
+    deadline = time.monotonic() + 90
+    while time.monotonic() < deadline:
+        loaded = g.command('execute if loaded 133 99 13 run say NTM_DESTINATION_LOADED')
+        if not any('NTM_DESTINATION_LOADED' in line for line in loaded.get('chat', [])):
+            break
+        time.sleep(1)
+    g.check('destination_really_unloaded', not any('NTM_DESTINATION_LOADED' in line for line in loaded.get('chat', [])), loaded)
+    source = g.command('execute if loaded 46 99 13 run say NTM_SOURCE_LOADED')
+    g.check('source_stays_loaded', any('NTM_SOURCE_LOADED' in line for line in source.get('chat', [])), source)
+    time.sleep(2)
     g.evidence['while_away'] = ledger(g)
+    copies = g.command('execute as @e[type=minecraft:item] run data get entity @s Item')
+    g.check('no_copy_while_destination_is_unloaded', not any(ROD in line for line in copies.get('chat', [])), copies)
     g.command('forceload add 30 0 64 24')
-    g.command('tp @s 53.5 101 15.5')
+    g.command('forceload add 128 0 143 15')
+    g.command('tp @s 133.5 101 15.5')
 
 
 def crossing_verify(g, again=False):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
-    g.command('tp @s 53.5 101 15.5')
+    g.command('tp @s 133.5 101 15.5' if SCENARIO == 'crossing' else 'tp @s 53.5 101 15.5')
     led = quiet(g, 10)
     held = entities(g, ROD) + inventory(g, ROD)
-    detail = {'entities': entities(g, ROD), 'ledger': led}
+    detail = {'entities': entities(g, ROD), 'inventory': inventory(g, ROD), 'total': held, 'expected': 12, 'ledger': led}
     g.evidence['counted' + ('_again' if again else '')] = detail
     g.check('no_rod_duplicated_by_a_chunk_that_unloaded', held == 12, detail)
 
@@ -288,7 +326,7 @@ def mining_verify(g, again=False):
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     led = quiet(g, 14)
     total = chest_count(g, chest) + entities(g, 'minecraft:diamond') + inventory(g, 'minecraft:diamond')
-    detail = {'chest': chest_count(g, chest), 'entities': entities(g, 'minecraft:diamond'), 'ledger': led,
+    detail = {'chest': chest_count(g, chest), 'entities': entities(g, 'minecraft:diamond'), 'inventory': inventory(g, 'minecraft:diamond'), 'total': total, 'expected': DIAMONDS, 'ledger': led,
               'machine': machine_present(g, core)}
     g.evidence['counted' + ('_again' if again else '')] = detail
     g.check('diamonds_exactly_once', total == DIAMONDS, detail)
@@ -303,7 +341,7 @@ NITER = 16
 
 def mixer_items(g, p):
     text = ' '.join(g.command('data get block %d %d %d Items' % p).get('chat', []))
-    return sum(int(n) for n in re.findall(r'(?:count|Count): ?(\d+)', text) if True) if 'niter' in text else 0
+    return sum(int(n) for n in re.findall(r'(?:count|Count): ?(\d+)', text)) if 'niter' in text else 0
 
 
 def break_prepare(g):
@@ -344,6 +382,9 @@ def break_act(g):
         time.sleep(.5)
         g.ctl('place %d %d %d --item ntm:machine_mixer' % core)
         time.sleep(1)
+    g.evidence['after_act'] = {'block': g.ctl('block %d %d %d' % core).get('state', ''),
+                               'entities': entities(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'),
+                               'ledger': ledger(g)}
     save_expecting_death(g)
 
 
@@ -357,7 +398,7 @@ def break_verify(g, again=False):
     state = g.ctl('block %d %d %d' % core).get('state', '')
     inside = mixer_items(g, core) if state.startswith('ntm:machine_mixer') else 0
     total = inside + entities(g, 'ntm:niter') + inventory(g, 'ntm:niter')
-    detail = {'block': state, 'inside': inside, 'entities': entities(g, 'ntm:niter'), 'ledger': led,
+    detail = {'block': state, 'inside': inside, 'entities': entities(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'total': total, 'expected': NITER, 'ledger': led,
               'machine': machine_present(g, core)}
     g.evidence['counted' + ('_again' if again else '')] = detail
     g.check('niter_exactly_once', total == NITER, detail)

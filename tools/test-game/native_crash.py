@@ -167,6 +167,9 @@ def verify(g, again=False):
     g.check('nothing_left_to_spawn', led['pending'] == 0, led)
     g.check('one_carrier_per_owed_stack', led['tagged_items'] == led['owed_items'], led)
     g.check('every_stack_has_its_one_entity', now['entities'] >= led['tagged_items'], now)
+    if again:
+        g.check('confirmed_save_persisted_the_release',
+                all(led.get(k, -1) == 0 for k in ('pending', 'spawned', 'applied', 'gone', 'tagged', 'keyed')), led)
     # The pile's cells: whole, or all reverted — never half.
     cells = [(x, y, z) for x in range(45, 50) for y in range(100, 105) for z in range(8, 13)]
     names = {block(g, c) for c in cells}
