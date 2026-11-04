@@ -652,14 +652,22 @@ def on_blocks(g):
     # Nothing to grow: the fertilizer stays.
     g.ctl('interact 19 100 9 up');time.sleep(.8)
     g.check('fertilizer_stays_when_nothing_grows',counts(g).get('ntm:powder_fertilizer')==2,counts(g))
-    # The clicked cell grows by force (ItemFertilizer `force`), not by the 45% sapling roll: every trial
-    # must turn the sapling into a tree and spend one fertilizer.
-    grown=0
-    for trial in range(6):
+    # The clicked cell grows by force (ItemFertilizer `force`), not by the 45% sapling roll. A vanilla bone
+    # meal control tells whether this harness can grow trees at all (it needs the worldgen features);
+    # if it can, every fertilizer trial must turn the sapling into a tree and spend one fertilizer.
+    def sapling_trial(item):
         reset(g);g.command('fill 17 101 6 27 118 10 minecraft:air');g.command('setblock 22 100 8 minecraft:grass_block');g.command('setblock 22 101 8 minecraft:oak_sapling[stage=0]');time.sleep(.4)
-        give_hand(g,'ntm:powder_fertilizer',2);g.close();g.ctl('interact 22 101 8 up');time.sleep(.9)
-        grown+='sapling' not in g.ctl('block 22 101 8').get('state','sapling') and counts(g).get('ntm:powder_fertilizer')==1
-    g.check('fertilizer_forces_the_clicked_cell',grown==6,{'grown_of_6':grown})
+        give_hand(g,item,2);g.close();g.ctl('interact 22 101 8 up');time.sleep(.9)
+        block=g.ctl('block 22 101 8').get('state','sapling')
+        return 'sapling' not in block and counts(g).get(item)==1
+    control=sum(sapling_trial('minecraft:bone_meal') for _ in range(10))
+    if control:
+        grown=sum(sapling_trial('ntm:powder_fertilizer') for _ in range(6))
+        g.check('fertilizer_forces_the_clicked_cell',grown==6,{'vanilla_bone_meal_grew_of_10':control,'fertilizer_grew_of_6':grown})
+    else:
+        # Not a pass: this world cannot grow a sapling even with vanilla bone meal, so the forced
+        # cell cannot be told from the engine's own refusal here. The evidence says so.
+        g.note('fertilizer_forced_cell_not_proven_in_game','vanilla bone meal grew 0 of 10 saplings in the scratch world (no tree features), so the forced re-roll of the clicked cell is only covered by code review')
     g.command('fill 17 101 6 27 118 10 minecraft:air')
     # The AMS lens: the tooltip line comes from the lens stack's `damage` long, read through the same
     # function as `ntmitem lens`; the socket cannot read a tooltip, the function is what it draws.
@@ -746,13 +754,13 @@ def capture(g):
     # Family 1-3 state that must survive the reopen: the canteen's cooldown (stack damage),
     # the Rad-X and herbal effects (mob effects) and the dose from coffee_radium.
     g.command('item replace entity @s hotbar.7 with ntm:canteen_vodka 1');g.ctl('select 8');use(g,.8);g.command('effect clear @s')
-    g.command('effect give @s ntm:radx 6000 0')
     canteen=stack_damage(g,'ntm:canteen_vodka')
     g.check('canteen_cooldown_before_reopen',canteen is not None and 150<=canteen<=180,canteen)
     # The herbal pill's sickness has no curative items: milk leaves it. The pill's -100 RAD moves the dose,
     # so the invariant is read after it.
     give_hand(g,'ntm:pill_herbal');use(g,.9);give_hand(g,'minecraft:milk_bucket');use(g,2.2);time.sleep(.6)
     effects=effect_map(g);g.check('herbal_sickness_survives_milk_before_reopen','potion_sickness' in effects and 'weakness' not in effects,effects)
+    g.command('effect give @s ntm:radx 6000 0')
     current=state(g);invariant=current['dose']-1000*current.get('radaway',0)
     expected={'invariant':invariant,'dose':current['dose'],'radaway':current.get('radaway',0),'canteen':canteen}
     (g.folder/'items-expected.json').write_text(json.dumps(expected,indent=2))

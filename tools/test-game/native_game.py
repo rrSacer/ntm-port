@@ -52,6 +52,11 @@ class Game:
         if not passed:
             raise AssertionError(f'{name}: {actual}')
 
+    def note(self, name, text):
+        """Something the run could not prove, kept in the evidence instead of a passing check."""
+        self.evidence.setdefault('notes', {})[name] = text
+        self.save()
+
     def command(self, text):
         result = self.ctl('command ' + text)
         time.sleep(.3)  # Commands travel through the integrated server.
