@@ -115,6 +115,11 @@ pub(super) fn animation(stack: &ItemStack, value: &mut horizon_world::consumable
         };
     }
 }
+/// `VersatileConfig.hasPotionSickness`: `isPotionActive(HbmPotion.potionsickness)`.
+fn sick(game: &Game<'_>) -> bool {
+    game.potions.effects.get("ntm:potion_sickness").is_some()
+}
+
 /// `onItemRightClick`'s condition for `setItemInUse`: `canEat`, the canteen's
 /// cooldown, the bottle opener. A client runs the same test to predict the
 /// pose; only the server edits items.
@@ -130,8 +135,14 @@ pub(super) fn start(game: &mut Game<'_>, stack: &ItemStack, canceled: &mut bool)
             .flatten()
             .any(|s| &*s.item == id)
     });
-    if !spec.may_start(game.creative, food, stack.damage, has_required) {
+    if !spec.may_start(game.creative, food, stack.damage, has_required, sick(game)) {
         *canceled = true;
+        // `addChatComponentMessage`, on the server only.
+        if let Some(message) = &spec.message
+            && !game.native_window()
+        {
+            game.native_feedback(horizon_client::text::Text::literal(message.clone()));
+        }
         return;
     }
     // Prediction only starts a pose. Inventory/effects commit on the server.
@@ -150,14 +161,208 @@ pub(super) fn use_air(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         complete(game, stack);
         return true;
     }
-    if &*stack.item == "ntm:gas_mask_filter" {
+    if item_hooks::is_filter(&stack.item) {
         install_filter(game, stack);
+        return true;
+    }
+    if instrument(game, stack) {
         return true;
     }
     if matches!(&*stack.item, "ntm:gas_mask_m65" | "ntm:attachment_mask") {
         return remove_filter(game, stack);
     }
     false
+}
+
+/// The hand instruments used in the air (`onItemRightClick`): the Geiger
+/// counter, the dosimeter and the digamma diagnostic print their reports, the
+/// survey scanner scans, the pipettes step their capacity. A client only
+/// claims the click.
+fn instrument(game: &mut Game<'_>, stack: &ItemStack) -> bool {
+    use ntm_core::instruments as ins;
+    let id: &str = &stack.item;
+    if !matches!(
+        id,
+        "ntm:geiger_counter" | "ntm:dosimeter" | "ntm:digamma_diagnostic" | "ntm:survey_scanner" | "ntm:pipette" | "ntm:pipette_boron" | "ntm:pipette_laboratory"
+    ) {
+        return false;
+    }
+    if game.native_player_snapshot(&STATE).is_none() {
+        return true;
+    }
+    let say = |game: &mut Game<'_>, line: &str| game.native_feedback(horizon_client::text::Text::legacy(line));
+    match id {
+        "ntm:geiger_counter" | "ntm:dosimeter" => {
+            play(game, "hbm:item.techBoop");
+            let buffer = rad_buffer(game);
+            let lines = if id == "ntm:dosimeter" {
+                ins::dosimeter_lines(buffer)
+            } else {
+                let Some(seed) = legacy(game) else {
+                    return true;
+                };
+                let dose = read_dose(game, &seed).map_or(0, |d| d.millirad);
+                let (zone, resistance) = (zone_rate(game), -radiation_factor(game).log10());
+                ins::geiger_lines(&ins::Readings { dose_millirad: dose, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance })
+            };
+            lines.iter().for_each(|l| say(game, l));
+        }
+        "ntm:digamma_diagnostic" => {
+            play(game, "hbm:item.techBoop");
+            // HbmLivingProps.getDigamma: the port has no digamma, so it is 0.
+            ins::diagnostic_lines(0.0).iter().for_each(|l| say(game, l));
+        }
+        "ntm:survey_scanner" => survey(game, say),
+        _ => pipette(game, stack, say),
+    }
+    true
+}
+
+/// `radBuf` in milliRAD/s: the radiation server's reading of the last second.
+fn rad_buffer(game: &Game<'_>) -> i64 {
+    game.native_actor_uuid().map_or(0, |u| crate::game::ntm_glue::rad_buffer(&u))
+}
+
+fn zone_rate(game: &Game<'_>) -> u32 {
+    match (game.native_actor_uuid(), game.player.as_ref()) {
+        (Some(_), Some(p)) => crate::game::ntm_glue::zone_rate(game.dim.id(), [p.position.x, p.position.y, p.position.z]),
+        _ => 0,
+    }
+}
+
+/// `ItemSurveyScanner.onItemRightClick`: 11 x 11 columns five blocks apart,
+/// every second block from `y + 15` down, for the ores the port has. The
+/// bedrock-oil particle markers and the bedrock-ore tile are not ported.
+fn survey(game: &mut Game<'_>, say: impl Fn(&mut Game<'_>, &str)) {
+    let Some(p) = game.player.as_ref() else {
+        return;
+    };
+    let [x, y, z] = [p.position.x.floor() as i32, p.position.y.floor() as i32, p.position.z.floor() as i32];
+    let dim = game.dim.id().to_string();
+    let (mut oil, mut bedrock_oil, mut coltan, mut depth, mut schist, mut australium) = (false, false, false, false, false, false);
+    for a in -5..=5 {
+        for b in -5..=5 {
+            let mut i = y + 15;
+            while i > 1 {
+                if let Some(block) = game.native_loaded_block(&dim, [x + a * 5, i, z + b * 5]) {
+                    match block.split('[').next().unwrap_or("") {
+                        "ntm:ore_oil" => oil = true,
+                        "ntm:ore_coltan" => coltan = true,
+                        "ntm:stone_depth" | "ntm:stone_depth_nether" => depth = true,
+                        "ntm:stone_gneiss" => schist = true,
+                        "ntm:ore_australium" => australium = true,
+                        "ntm:ore_bedrock_oil" => {
+                            bedrock_oil = true;
+                            break;
+                        }
+                        _ => {}
+                    }
+                }
+                i -= 2;
+            }
+        }
+    }
+    for line in ntm_core::instruments::survey_messages(oil, bedrock_oil, coltan, depth, schist, australium) {
+        say(game, line);
+    }
+}
+
+/// `ItemPipette.onItemRightClick`: an empty pipette steps its capacity; a
+/// full one says so. The `type`, `fill` and `capacity` shorts live in the
+/// stack's custom data, as `initNBT` writes them.
+fn pipette(game: &mut Game<'_>, stack: &ItemStack, say: impl Fn(&mut Game<'_>, &str)) {
+    use ntm_core::instruments as ins;
+    let short = |data: &Compound, key: &str| match data.get(&JavaString::from(key)) {
+        Some(Tag::Short(n)) => Some(i32::from(*n)),
+        _ => None,
+    };
+    let data = custom(stack).unwrap_or_default();
+    let max = ins::pipette_max(&stack.item);
+    let fill = short(&data, "fill").unwrap_or(0);
+    if fill != 0 {
+        say(game, "§ePipette not empty!");
+        return;
+    }
+    let capacity = short(&data, "capacity").unwrap_or(max);
+    let sneaking = game.keys.contains(&winit::keyboard::KeyCode::ShiftLeft);
+    let next = ins::pipette_capacity(&stack.item, capacity, sneaking);
+    let slot = game.held_slot();
+    let done = patch_stack(game, slot, stack, |d| {
+        d.insert("type".into(), Tag::Short(0));
+        d.insert("fill".into(), Tag::Short(0));
+        d.insert("capacity".into(), Tag::Short(next as i16));
+        true
+    });
+    if done {
+        say(game, &format!("{next}/{max}mB"));
+    }
+}
+
+/// A held item used on a block, `onItemUse`: the match and the fertilizer.
+/// Only the server edits stacks and blocks; a client claims the click so the
+/// item is not placed or used as its template.
+pub(super) fn use_on_block(
+    game: &mut Game<'_>,
+    stack: &ItemStack,
+    pos: [i32; 3],
+    face: [i32; 3],
+) -> bool {
+    if !matches!(&*stack.item, "ntm:matchstick" | "ntm:powder_fertilizer") {
+        return false;
+    }
+    let Some(expected) = game.native_player_snapshot(&STATE) else {
+        return true;
+    };
+    let creative = game.creative;
+    let dim = game.dim.id().to_string();
+    let used = if &*stack.item == "ntm:matchstick" {
+        // ItemMatch: the cell beside the clicked face; fire if it is air, and
+        // the match goes either way (not in creative).
+        let at = [pos[0] + face[0], pos[1] + face[1], pos[2] + face[2]];
+        if game
+            .native_loaded_block(&dim, at)
+            .is_some_and(|b| matches!(b.as_str(), "minecraft:air" | "minecraft:cave_air" | "minecraft:void_air"))
+        {
+            let _ = game.native_set_blocks(&dim, &[(at, "minecraft:fire".to_string())]);
+            let pitch = 0.8 + random(game) * 0.4;
+            if let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| *s == "block") {
+                let center = [f64::from(at[0]) + 0.5, f64::from(at[1]) + 0.5, f64::from(at[2]) + 0.5];
+                game.with_level(|_, level, _| {
+                    level.native_play_sound("minecraft:item.flintandsteel.use", center, source, 1.0, pitch)
+                });
+            }
+        }
+        true
+    } else {
+        // ItemFertilizer: bone meal on the 3x3x3 around the click; it is spent
+        // only if something grew.
+        let mut grew = false;
+        for dx in -1..=1 {
+            for dy in -1..=1 {
+                for dz in -1..=1 {
+                    let cell = horizon_core::position::BlockPos::new(pos[0] + dx, pos[1] + dy, pos[2] + dz);
+                    grew |= game.with_level(|b, level, ticks| {
+                        b.use_bone_meal(level, ticks, cell, horizon_core::geometry::Direction::Up)
+                    });
+                }
+            }
+        }
+        let _ = game.process_level_events();
+        grew
+    };
+    if used && !creative {
+        let held_slot = game.held_slot();
+        let mut desired = expected.clone();
+        if let Some(slot) = held(&mut desired, held_slot)
+            && slot.as_ref() == Some(stack)
+        {
+            let mut rest = stack.clone();
+            rest.count -= 1;
+            *slot = (rest.count > 0).then_some(rest);
+            game.native_commit_player(&STATE, &expected, desired, Default::default());
+        }
+    }
+    true
 }
 
 /// ArmorGasMask/ItemModGasmask.onItemRightClick: sneaking with the mask in
@@ -226,6 +431,13 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         return false;
     };
     let creative = game.creative;
+    if spec.sickness_gate && sick(game) {
+        return false;
+    }
+    // `iv_xp_empty` only fills when the player has the points.
+    if spec.xp_cost > 0 && xp_total(&game.experience) < spec.xp_cost {
+        return false;
+    }
     let mut desired = expected.clone();
     // Only what touches the dose or the sickness timer needs the dose seed of
     // the legacy mirror (the server exists after its first tick); food, effects
@@ -267,7 +479,21 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     // used-up stack's own; otherwise the emptied slot is still taken while
     // the item runs, so it is not free for the next one.
     let mut replaced = false;
-    for give in &spec.gives {
+    let mut gives = spec.gives.clone();
+    if spec.loot.is_some() {
+        // `choose(list)` on an empty list throws in the Java and nothing happens.
+        let Some(part) = spec.draw(random(game)) else {
+            return false;
+        };
+        gives.push(item_hooks::Give {
+            item: part.to_string(),
+            count: 1,
+            replace: false,
+            overflow: item_hooks::Overflow::Lost,
+            creative: true,
+        });
+    }
+    for give in &gives {
         if creative && !give.creative {
             continue;
         }
@@ -288,25 +514,23 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             drops.push(NativeDrop::new(rest, NativeDropMode::Thrown));
         }
     }
-    if spec.special.as_deref() == Some("hazmat_kit") {
+    if let Some(tier) = spec.special.as_deref().and_then(|s| s.strip_prefix("hazmat_kit:")) {
+        let suffix = match tier {
+            "1" => "_red",
+            "2" => "_grey",
+            _ => "",
+        };
         // ItemStarterKit.giveHaz: `world.spawnEntityInWorld(new EntityItem(world,
         // posX, posY + eyeHeight, posZ, armor))`. It sets no pickup delay, so the
         // field's default of 0 stands, and no thrower.
-        for (index, id) in [
-            "ntm:hazmat_helmet",
-            "ntm:hazmat_plate",
-            "ntm:hazmat_legs",
-            "ntm:hazmat_boots",
-        ]
-        .into_iter()
-        .enumerate()
-        {
+        for (index, part) in ["helmet", "plate", "legs", "boots"].into_iter().enumerate() {
+            let id = format!("ntm:hazmat_{part}{suffix}");
             drops.extend(
                 desired.armor[index]
                     .take()
                     .map(|d| NativeDrop::new(d, NativeDropMode::World { delay: 0 })),
             );
-            desired.armor[index] = Some(ItemStack::new(id, 1));
+            desired.armor[index] = Some(ItemStack::new(&id, 1));
         }
     }
     if spec.radaway > 0 {
@@ -340,11 +564,119 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         if let Some(sound) = spec.sound.as_deref() {
             play(game, sound);
         }
-        if spec.special.as_deref() == Some("chocolate_milk_blast") {
-            chocolate_milk_blast(game);
-        }
+        after_commit(game, spec);
     }
     applied
+}
+
+/// What the Java does to the player that the atomic commit has no field for:
+/// removing effects, experience, direct health loss and damage. They run in
+/// the same server turn as the commit, in the order the Java classes use.
+fn after_commit(game: &mut Game<'_>, spec: &item_hooks::UseSpec) {
+    if let Some(cure) = &spec.cure {
+        match cure {
+            item_hooks::Cure::All => game.potions.effects.clear(),
+            item_hooks::Cure::Effects(ids) => game
+                .potions
+                .effects
+                .list
+                .retain(|e| !ids.iter().any(|id| id == e.id)),
+        }
+        game.apply_effect_status();
+    }
+    if spec.xp_cost > 0 || spec.xp_gain > 0 {
+        let from = game.experience.level;
+        let mut e = game.experience.clone();
+        if spec.xp_cost > 0 {
+            // `EnchantmentUtil.setExperience(player, total - cost)`.
+            let rest = xp_total(&e) - spec.xp_cost;
+            e = horizon_client::entities::Experience::default();
+            e.give(rest);
+        } else {
+            e.give(spec.xp_gain);
+        }
+        game.experience = e;
+        game.native_player_level_changed(from);
+    }
+    if spec.hp_cost > 0.0 {
+        let left = game
+            .player
+            .as_ref()
+            .map(|p| p.health.health() - spec.hp_cost);
+        match left {
+            Some(left) if left > 0.0 => {
+                if let Some(p) = game.player.as_mut() {
+                    let _ = p.set_health(left, false);
+                }
+            }
+            // `setHealth(0)` then `onDeath`.
+            Some(_) => {
+                game.hurt_player_from(1.0e6, None, "minecraft:generic_kill", Some(None));
+            }
+            None => {}
+        }
+    }
+    if let Some(hurt) = &spec.hurt {
+        for _ in 0..hurt.times {
+            // `rand.nextInt(chance) == 0`.
+            if hurt.chance > 0 && (random(game) * hurt.chance as f32) as u32 != 0 {
+                continue;
+            }
+            game.hurt_player_from(hurt.amount, None, &hurt.damage_type, Some(None));
+        }
+    }
+    match spec.special.as_deref() {
+        Some("chocolate_milk_blast") => chocolate_milk_blast(game),
+        // `world.playSoundEffect(.., "hbm:entity.vomit", 1, 1)`; the vomit
+        // packet of ItemLemon carries no mode and a count of 0, so it draws nothing.
+        Some("vomit") => play(game, "hbm:entity.vomit"),
+        Some("smoke") => smoke(game),
+        // `player.setFire(5 * 20)` takes seconds: 100 seconds; `motionY = 2`.
+        Some("schnitzel_vegan") => {
+            if let Some(p) = game.player.as_mut() {
+                p.set_remaining_fire_ticks(100 * 20);
+                p.velocity.y = 2.0;
+            }
+        }
+        // ExplosionNukeSmall.explode(PARAMS_MEDIUM): no counterpart in the port.
+        // The kit's own effect is the benefit above; its ambient flag is set here.
+        Some("stealth_boy") => {
+            for e in game.potions.effects.list.iter_mut().filter(|e| e.id == "invisibility") {
+                e.ambient = true;
+            }
+        }
+        Some("bomb_waffle_blast") | None => {}
+        Some(s) if s.starts_with("hazmat_kit:") => {}
+        Some(other) => eprintln!("ntm item: unknown special {other}"),
+    }
+}
+
+/// The cigarette's `vomit` packet in `smoke` mode: 30 smoke particles at
+/// `posY - yOffset + eyeHeight + 1`, drifting along the view.
+fn smoke(game: &mut Game<'_>) {
+    use horizon_client::particles::{ParticleOptions, ParticleType};
+    let Some(p) = game.player.as_ref() else {
+        return;
+    };
+    let at = [
+        p.position.x,
+        p.position.y + f64::from(p.dimensions.eye_height) + 1.0,
+        p.position.z,
+    ];
+    let Some(kind) = ParticleType::from_name("minecraft:smoke") else {
+        return;
+    };
+    let options = ParticleOptions::simple(kind);
+    game.with_level(|_, level, _| level.native_send_particles(&options, None, at, [0.1; 3], 0.01, 30));
+}
+
+/// `EnchantmentUtil.getTotalExperience`: the points in the completed levels
+/// plus those on the bar. It uses the engine's bar sizes: the port's XP is the
+/// 26.3 one, and the 1.7.10 `xpBarCap` describes a different bar.
+fn xp_total(e: &horizon_client::entities::Experience) -> i32 {
+    use horizon_client::entities::Experience as X;
+    let done: i32 = (0..e.level).map(X::needed).sum();
+    done + (X::needed(e.level) as f32 * e.progress) as i32
 }
 
 /// Plays the vanilla event that stands for a Java sound, at the player, as
@@ -384,23 +716,90 @@ fn random(game: &Game<'_>) -> f32 {
     (z >> 40) as f32 / (1u64 << 24) as f32
 }
 
-/// `ItemEnergy.onEaten` for chocolate milk: `ExplosionVNT(50)` at the
-/// player's middle. The engine's blast stops at radius 32
-/// (`NATIVE_EXPLOSION_MAX_RADIUS`) and has no VNT block/entity processors,
-/// so this is the vanilla-rule blast at the cap; see docs/content-catalogo-k2.md.
+/// `ItemEnergy.onEaten` for chocolate milk: `ExplosionVNT(world, x, y + h/2, z,
+/// 50)` with `BlockAllocatorStandard(32)`, `BlockProcessorStandard().setNoDrop()`,
+/// `EntityProcessorCross(5)` and `PlayerProcessorStandard`, in that order:
+/// allocate, hurt and push the entities, then remove the blocks. The rays are
+/// the NTM crater module's vanilla allocation (`blast::vanilla`), the blocks
+/// go out as air in batches with no drops, and every living player of the level
+/// in range takes the Cross damage and push. Mobs and dropped items are not
+/// reached (no engine API for them yet; see the doc).
 fn chocolate_milk_blast(game: &mut Game<'_>) {
+    use ntm_core::blast::vanilla;
+    const SIZE: f32 = 50.0;
     let Some(p) = game.player.as_ref() else {
         return;
     };
-    let center = [p.position.x, p.position.y + f64::from(p.dimensions.height) / 2.0, p.position.z];
-    let dimension = game.dim.id();
-    game.native_explode(
-        dimension,
-        center,
-        32.0,
-        false,
-        crate::game::native_explosions::NativeBlast::Block,
-    );
+    let center = [
+        p.position.x,
+        p.position.y + f64::from(p.dimensions.height) / 2.0,
+        p.position.z,
+    ];
+    let dim = game.dim.id().to_string();
+    let (cells, _) = vanilla::allocate_vnt(center, SIZE, 32, &mut |b| game.native_loaded_block(&dim, b));
+    // The drinker, then the other living players of the level, as the engine's
+    // batch-by-UUID helpers reach them.
+    cross_player(game, center, SIZE, &dim);
+    let me = game.native_actor_uuid();
+    let others: Vec<String> = game
+        .native_players()
+        .into_iter()
+        .filter(|q| q.alive && q.dimension == dim && Some(&q.uuid) != me.as_ref())
+        .map(|q| q.uuid)
+        .collect();
+    for uuid in others {
+        game.native_visit_player(&uuid, |g| cross_player(g, center, SIZE, &dim));
+    }
+    let air: Vec<([i32; 3], String)> = cells.iter().map(|c| (*c, "minecraft:air".to_string())).collect();
+    for chunk in air.chunks(ntm_core::explosion::BLOCKS_PER_CALL) {
+        if let Err(e) = game.native_set_blocks(&dim, chunk) {
+            eprintln!("ntm item: chocolate milk blast: {e}");
+            break;
+        }
+    }
+    // `ExplosionCreator.composeEffectStandard` is a client particle show; the
+    // vanilla explosion sound and emitter stand for it.
+    if let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| *s == "block") {
+        game.with_level(|_, level, _| {
+            level.native_play_sound("minecraft:entity.generic.explode", center, source, 4.0, 0.7)
+        });
+    }
+    if let Some(kind) = horizon_client::particles::ParticleType::from_name("minecraft:explosion_emitter") {
+        let options = horizon_client::particles::ParticleOptions::simple(kind);
+        game.with_level(|_, level, _| level.native_send_particles(&options, None, center, [0.0; 3], 0.0, 1));
+    }
+}
+
+/// `EntityProcessorCross.process` for the player the game is acting as: the
+/// box distance, the densest of the seven nodes, then the push and the damage.
+fn cross_player(game: &mut Game<'_>, center: [f64; 3], size: f32, dim: &str) {
+    use ntm_core::blast::vanilla;
+    let Some(p) = game.player.as_ref() else {
+        return;
+    };
+    let feet = [p.position.x, p.position.y, p.position.z];
+    let (width, height) = (f64::from(p.dimensions.width), f64::from(p.dimensions.height));
+    let eye = f64::from(p.dimensions.eye_height);
+    let min = [feet[0] - width / 2.0, feet[1], feet[2] - width / 2.0];
+    let max = [feet[0] + width / 2.0, feet[1] + height, feet[2] + width / 2.0];
+    let dist = vanilla::box_distance(min, max, center);
+    let delta = [feet[0] - center[0], feet[1] + eye - center[1], feet[2] - center[2]];
+    let length = (delta[0] * delta[0] + delta[1] * delta[1] + delta[2] * delta[2]).sqrt();
+    if length == 0.0 {
+        return;
+    }
+    let density = vanilla::cross_nodes(center, 5.0)
+        .iter()
+        .map(|node| vanilla::exposure(*node, feet, &mut |b| game.native_loaded_block(dim, b)))
+        .fold(0.0_f32, f32::max);
+    if let Some((damage, knockback)) = vanilla::cross_hit(size, dist, density) {
+        if let Some(p) = game.player.as_mut() {
+            p.velocity.x += delta[0] / length * knockback;
+            p.velocity.y += delta[1] / length * knockback;
+            p.velocity.z += delta[2] / length * knockback;
+        }
+        game.hurt_player_from(damage, Some(center), "minecraft:explosion", Some(None));
+    }
 }
 
 pub(super) fn tick(game: &mut Game<'_>) {
@@ -434,8 +833,61 @@ pub(super) fn tick(game: &mut Game<'_>) {
             }
         }
     }
+    // `ItemHot.onUpdate`: one less heat per tick, then the tag is gone.
+    for s in desired.inventory.iter_mut().flatten() {
+        if ntm_core::instruments::is_hot(&s.item)
+            && let Some(Tag::Compound(mut data)) = s.data().and_then(|d| d.other("minecraft:custom_data")).cloned()
+        {
+            let heat = match data.get(&JavaString::from("heat")) {
+                Some(Tag::Int(h)) => *h,
+                _ => 0,
+            };
+            match ntm_core::instruments::cool(heat) {
+                Some(h) => {
+                    data.insert("heat".into(), Tag::Int(h));
+                    s.data_mut().set_other("minecraft:custom_data", Some(Tag::Compound(data)));
+                }
+                None => s.data_mut().set_other("minecraft:custom_data", None),
+            }
+        }
+    }
     if desired != expected {
         game.native_commit_player(&STATE, &expected, desired, Default::default());
+    }
+    clicks(game);
+}
+
+/// `ItemGeigerCounter.onUpdate` and `ItemDosimeter.onUpdate` for each one in
+/// the main inventory, every fifth tick: a click by the radiation buffer.
+fn clicks(game: &mut Game<'_>) {
+    use ntm_core::instruments as ins;
+    if game.world.game_time % 5 != 0 {
+        return;
+    }
+    let found: Vec<bool> = game
+        .inventory
+        .iter()
+        .flatten()
+        .filter_map(|s| match &*s.item {
+            "ntm:geiger_counter" => Some(true),
+            "ntm:dosimeter" => Some(false),
+            _ => None,
+        })
+        .collect();
+    if found.is_empty() {
+        return;
+    }
+    let x = rad_buffer(game) as f32 / 1000.0;
+    for geiger in found {
+        let (pick, idle) = (random(game), random(game));
+        let click = if geiger {
+            ins::click(ins::geiger_pool, 50, x, pick, idle)
+        } else {
+            ins::click(ins::dosimeter_pool, 100, x, pick, idle)
+        };
+        if let Some(r) = click {
+            play(game, &format!("hbm:item.geiger{r}"));
+        }
     }
 }
 
@@ -459,7 +911,11 @@ pub(super) fn write_dose(game: &mut Game<'_>, before: &Dose, after: &Dose) -> bo
     game.native_commit_player(&STATE, &expected, desired, Default::default())
 }
 pub(super) fn radiation_factor(game: &Game<'_>) -> f64 {
-    item_hooks::dose_factor(game.armor.iter().flatten().map(|s| s.item.as_ref()))
+    // HazmatRegistry.getResistance: the armor plus 0.2 while Rad-X is active.
+    item_hooks::dose_factor(
+        game.armor.iter().flatten().map(|s| s.item.as_ref()),
+        game.potions.effects.get("ntm:radx").is_some(),
+    )
 }
 
 /// Atomic stack custom-data edit. The caller supplies the complete expected

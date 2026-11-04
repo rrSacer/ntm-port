@@ -39,6 +39,13 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
         lines.push((Text::legacy(if fuel.breeding {"Breeding: exige barras ativas vizinhas"}else{"Reage com a própria barra e as vizinhas ativas"}),u32::MAX));
         if !fuel.breeding {lines.push((Text::legacy(&format!("Calor por decaimento: {}",fuel.heat_per_decay)),u32::MAX));}
     }
+    if &*stack.item=="ntm:ams_lens" {
+        let damage=match stack.data().and_then(|d|d.other("minecraft:custom_data")) {
+            Some(horizon_world::nbt::Tag::Compound(c))=>match c.get(&horizon_world::nbt::JavaString::from("damage")) {Some(horizon_world::nbt::Tag::Long(n))=>*n,_=>0},
+            _=>0,
+        };
+        lines.push((Text::literal(ntm_core::consumables::lens_line(ntm_core::consumables::AMS_LENS_MAX,damage)),u32::MAX));
+    }
     let native=crate::game::ntm_glue::stack(&Some(stack.clone()));
     if let Some(p)=ntm_core::radioisotopes::pellet(&stack.item) {
         let life=native.as_ref().map_or(p.lifespan_ticks,ntm_core::radioisotopes::life);

@@ -214,6 +214,7 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
 /// A player used `stack` on the block at `pos`: the fluid identifier on a
 /// duct sets its fluid (`custom_data` `ntm_fluid`). True when taken.
 pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3], face: [i32; 3]) -> bool {
+    if crate::game::ntm_items::use_on_block(game, stack, pos, face) { return true; }
     if matches!(&*stack.item,"ntm:hand_drill"|"ntm:hand_drill_desh") { return use_block(game,pos,pos,face,false); }
     if &*stack.item == DETONATOR {
         return detonator(game, Some(pos));
@@ -228,6 +229,16 @@ pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos:
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
     server.native_use_item(game.dim.id(), pos, &stack.item, fluid.as_deref())
+}
+
+/// The radiation server's reading for a player (`radBuf`, milliRAD/s).
+pub(super) fn rad_buffer(uuid: &str) -> i64 {
+    lock(&SERVER).as_ref().map_or(0, |(server, _)| server.rad_buf(uuid))
+}
+
+/// The fallout zones' rate at a position, milliRAD/s.
+pub(super) fn zone_rate(dim: &str, pos: [f64; 3]) -> u32 {
+    lock(&SERVER).as_ref().map_or(0, |(server, _)| server.zone_rate(dim, pos))
 }
 
 /// A player used `stack` in the air: the detonator sets its bomb off.
