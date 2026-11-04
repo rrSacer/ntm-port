@@ -72,6 +72,25 @@ def evidence(folder, mode):
     return json.loads(path.read_text()) if path.exists() else {}
 
 
+def sweep(args, base, scratch, env):
+    """A big batch (the orphan sweep of a pile whose core went away): storage writes and bytes, rods kept."""
+    folder = scratch / 'point-sweep'
+    shutil.copytree(base, folder, ignore=shutil.ignore_patterns('control.sock', 'native-crash-*.json'))
+    world = World(args, folder, env)
+    result = {'point': 'sweep', 'folder': str(folder), 'ok': False}
+    try:
+        world.launch()
+        world.script('sweep')
+        result['cost'] = evidence(folder, 'sweep').get('sweep_cost')
+        world.quit()
+        result['ok'] = True
+    except Exception as error:
+        result['error'] = repr(error)
+        if getattr(world, 'client', None) is not None and world.client.poll() is None:
+            world.client.kill(); world.client.wait()
+    return result
+
+
 def play(args, base, scratch, env, point):
     folder = scratch / ('point-' + point.replace(':', '-'))
     shutil.copytree(base, folder, ignore=shutil.ignore_patterns('control.sock', 'native-crash-*.json'))
@@ -154,7 +173,7 @@ def main():
             for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'),
                              ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
                 copy_env[key] = str(folder / sub)
-            outcome = play(args, base, scratch, copy_env, point)
+            outcome = (sweep if point == 'sweep' else play)(*((args, base, scratch, copy_env) + (() if point == 'sweep' else (point,))))
             report['points'].append(outcome)
             print(json.dumps(outcome), flush=True)
             (scratch / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
