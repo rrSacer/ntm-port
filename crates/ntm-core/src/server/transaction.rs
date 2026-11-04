@@ -26,8 +26,14 @@ pub enum WorldEffect {
         pos: [f64; 3],
     },
 }
-#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct CommittedEffects {
+    /// Names this batch for good (0: not named yet): with `done` it gives each item effect a stable id.
+    #[serde(default)]
+    pub serial: u64,
+    /// Effects of the batch already applied: the id of the front effect is `(serial, done)`.
+    #[serde(default)]
+    pub done: u32,
     pub owners: Vec<(String, Pos)>,
     #[serde(default)]
     pub origins: Vec<CellGuard>,
@@ -256,6 +262,13 @@ impl Server {
                 let unchanged=journaled&&!repeatable&&effect==journal;
                 #[cfg(test)]
                 let unchanged=unchanged&&!self.ready.strict_journal;
+                // Name the batch for good before anything is applied: its effects' ids must outlive a crash.
+                if self.ready.world.machine_effects.front().is_some_and(|b|b.serial==0){
+                    self.ready.world.effect_serial+=1;
+                    let serial=self.ready.world.effect_serial;
+                    self.ready.world.machine_effects.front_mut().unwrap().serial=serial;
+                }
+                let effect_id={let b=self.ready.world.machine_effects.front().unwrap();crate::ledger::effect_id(b.serial,b.done)};
                 self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect.clone();
                 if !unchanged{
                     if let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){host.log(&format!("pending machine effect: {e}"));return;}
@@ -263,8 +276,8 @@ impl Server {
                 }
                 let done=match &effect {
                     WorldEffect::Blocks{retained,..}=>cells.is_empty()&&retained.is_empty()||host.commit_structural(&cells,retained,&self.ready.world.machine_effects.front().unwrap().owners),
-                    WorldEffect::Items{dim,pos,items}=>host.drop_items(dim,*pos,items),
-                    WorldEffect::EncodedItems{dim,pos,items}=>host.drop_encoded_items(dim,*pos,items),
+                    WorldEffect::Items{dim,pos,items}=>host.apply_items(effect_id,dim,*pos,items),
+                    WorldEffect::EncodedItems{dim,pos,items}=>host.apply_encoded_items(effect_id,dim,*pos,items),
                     WorldEffect::PileExplosion{dim,pos}=>host.pile_explode(dim,*pos),
                 };
                 if !done{
@@ -276,8 +289,11 @@ impl Server {
                 repeatable|=!replays;
                 let batch=self.ready.world.machine_effects.front_mut().unwrap();
                 let effect=batch.effects.pop_front().unwrap();
+                let (serial,done)=(batch.serial,batch.done);
+                batch.done+=1;
                 if physical {
-                    let receipt=CommittedEffects{origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect])};
+                    // The receipt keeps the effect's place in its batch, so a replay derives the same id.
+                    let receipt=CommittedEffects{serial,done,origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect]),..Default::default()};
                     if matches!(receipt.effects.front(),Some(WorldEffect::Blocks{..})){
                         for g in &receipt.origins {
                             if self.ready.world.machines.get(&g.key()).is_some_and(|m|m.generation==g.generation){self.ready.native_saved.remove(&g.key());}
@@ -287,8 +303,23 @@ impl Server {
                 }
             }
         }
-        if host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)).is_ok(){self.ready.kept=self.ready.world.kept(0);}else{self.ready.kept=Vec::new();}
+        if host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)).is_ok(){self.ready.kept=self.ready.world.kept(0);self.prune_ledger(host);}else{self.ready.kept=Vec::new();}
     }
+
+    /// Every effect id the stored state still names: batches waiting, receipts waiting for a flushed save,
+    /// retentions prepared. The ledgers keep a retired id only while it is here.
+    pub(super) fn live_effect_ids(&self)->std::collections::BTreeSet<u64>{
+        let mut live=std::collections::BTreeSet::new();
+        let batches=self.ready.world.machine_effects.iter().chain(&self.ready.world.applied_machine_effects).chain(self.ready.world.prepared_retentions.iter().map(|p|&p.receipt));
+        for b in batches{
+            if b.serial!=0{for k in 0..b.effects.len(){live.insert(crate::ledger::effect_id(b.serial,b.done+k as u32));}}
+            for e in &b.effects{if let WorldEffect::Blocks{retained,..}=e{for d in retained{live.insert(crate::ledger::retained_id(&d.origin.dim,d.origin.pos,d.origin.generation));}}}
+        }
+        for p in &self.ready.world.prepared_retentions{let g=&p.source.guard;live.insert(crate::ledger::retained_id(&g.dim,g.pos,g.generation));}
+        live
+    }
+
+    pub(super) fn prune_ledger(&self,host:&mut impl ServerHost){host.ledger_prune(&self.live_effect_ids());}
 
     /// The existing engine hook reports whether world/entity writes have
     /// actually flushed. Until then replay after a crash may duplicate an
@@ -306,6 +337,7 @@ impl Server {
             host.log(&format!("machine effect receipts/removals: {e}"));
         } else {
             self.ready.kept = self.ready.world.kept(0);
+            self.prune_ledger(host);
         }
     }
 
@@ -434,7 +466,7 @@ impl Server {
                     owners: keys,
                     effects: staged.critical,
                     tombstones: Vec::new(),
-                });
+                ..Default::default()});
         }
         for (guards,effect) in staged.effects {
             if guards.iter().all(|g|self.current_guard(g)){effect(staged.host);}
@@ -654,7 +686,7 @@ impl Server {
                 }
                 let preparations:Vec<_>=staged.world_writes.iter().filter(|w|blockstate::id_of(&w.expected.state)!=blockstate::id_of(&w.desired)&&!w.expected.items.is_empty()).map(|w|{
                     let mut origins=staged.origins.clone();origins.push(w.guard.clone());
-                    PreparedRetention{source:w.clone(),receipt:CommittedEffects{owners:keys.clone(),origins,tombstones:Vec::new(),effects:std::collections::VecDeque::from([WorldEffect::EncodedItems{dim:w.guard.dim.clone(),pos:w.guard.pos,items:w.expected.items.clone()}])}}
+                    PreparedRetention{source:w.clone(),receipt:CommittedEffects{owners:keys.clone(),origins,tombstones:Vec::new(),effects:std::collections::VecDeque::from([WorldEffect::EncodedItems{dim:w.guard.dim.clone(),pos:w.guard.pos,items:w.expected.items.clone()}]),..Default::default()}}
                 }).collect();
                 if staged.valid && !preparations.is_empty(){
                     // Only confirmed world state is journaled. The speculative
@@ -708,7 +740,7 @@ impl Server {
                                 owners: keys.clone(),
                                 effects: staged.critical,
                                 tombstones,
-                            });
+                            ..Default::default()});
                     }
                     for (guards,effect) in staged.effects {
                         if guards.iter().all(|g|self.current_guard(g)){effect(staged.host);}

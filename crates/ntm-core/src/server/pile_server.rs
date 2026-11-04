@@ -1110,7 +1110,7 @@ mod tests {
     #[test]
     fn effect_receipts_clear_only_after_a_flushed_world_save() {
         let mut h=Host::default();let mut s=Server::native(&mut h,0);
-        s.ready.world.machine_effects.push_back(CommittedEffects{origins:vec![],owners:vec![],tombstones:vec![],effects:std::collections::VecDeque::from([WorldEffect::Items{dim:DIM.into(),pos:AT,items:vec![("ntm:pile_rod__zr".into(),1)]}])});
+        s.ready.world.machine_effects.push_back(CommittedEffects{origins:vec![],owners:vec![],tombstones:vec![],effects:std::collections::VecDeque::from([WorldEffect::Items{dim:DIM.into(),pos:AT,items:vec![("ntm:pile_rod__zr".into(),1)]}]),..Default::default()});
         s.flush_machine_effects(&mut h);assert_eq!(h.drops.len(),1);
         s.flush_machine_effects(&mut h);assert_eq!(h.drops.len(),1,"no repeat in memory");
         s.native_world_saved(&mut h,false);
