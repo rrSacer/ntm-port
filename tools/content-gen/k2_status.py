@@ -77,7 +77,7 @@ NOTHING = {
 DONE = {
     'ntm:ams_lens': ('parcial', '`ItemLens.addInformation`', 'a barra de durabilidade (`showDurabilityBar`) não é desenhada: o gancho `native_item_bar` não está injetado; o tooltip está portado'),
     'ntm:matchstick': ('ativo', '`ItemMatch.onItemUse`', ''),
-    'ntm:powder_fertilizer': ('ativo', '`ItemFertilizer.onItemUse`', 'a célula clicada cresce sempre e as outras sorteiam o seu próprio sucesso, como `fertilize(..., force)`; o motor só expõe `growCrop` (com o sorteio dentro), então a central o repete até a planta mudar (mudas, azaleias, propágulos, cogumelos e fungos), no máximo 64 vezes; o sorteio do crescimento usa o acaso do nível, não o de `world.rand`'),
+    'ntm:powder_fertilizer': ('ativo', '`ItemFertilizer.onItemUse`', 'a célula clicada cresce sempre e as outras sorteiam o seu próprio sucesso, como `fertilize(..., force)`; o motor só expõe `growCrop` (com o sorteio dentro), então a central o repete até a planta mudar (mudas, azaleias, propágulos, cogumelos e fungos), no máximo 64 vezes; o sorteio do crescimento usa o acaso do nível, não o de `world.rand`; dependência nominal: API de crescimento forçado no motor (próxima frente), e esse forçar não foi provado em jogo (o mundo de teste não cresce mudas)'),
 }
 
 

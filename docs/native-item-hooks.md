@@ -278,14 +278,16 @@ Limites desta aceitação:
 
 ## Aceitação da onda 1 (consumíveis, kits e medicina)
 
-Binário `horizon-client` `29696bb0653e…` e pacote `ntm.hmod` `d37e33ca6c62…` (pin do motor
-`0615f5db0`, sem mudança no motor), o mesmo par em todos os cenários.
+Binário `horizon-client` `9df7de9d6b42…` e pacote `ntm.hmod` `d37e33ca6c62…` (pin do motor
+`0615f5db0`, sem mudança no motor), o mesmo par em todos os cenários, com os hashes conferidos
+antes e depois (`evidence/hashes-review-fixes.txt`). Esta é a rodada que fecha as correções da
+revisão independente (`revisao-k2`).
 
 | Roteiro `items` | Checks |
 |---|---|
-| `setup` (lote anterior mais uma seção por família: bebidas, medicina, comidas, kits, filtros, instrumentos, `chocolate_milk` com o jogador morrendo) | 148 |
-| `capture-state`: cooldown do cantil, efeitos de conteúdo (`radx`, `potion_sickness`), tratamento de RadAway | 7 |
-| `check-state` depois de fechar e reabrir o mundo | 5 |
+| `setup` (uma seção por família: bebidas, medicina, comidas, kits, filtros e capuzes hazmat, instrumentos com a janela do `rad_buf`, fósforo, fertilizante e lente AMS em jogo, `chocolate_milk` com o jogador morrendo) | 175 |
+| `capture-state`: cooldown do cantil, antídoto limpando o RadAway, enjoo herbal sob o leite, `radx`, tratamento de RadAway | 9 |
+| `check-state` depois de fechar e reabrir o mundo (inclui o leite de novo sobre o enjoo restaurado) | 7 |
 
 Cada seção usa o item real com animação (segurar o botão direito), mede o efeito pelo
 estado do jogador, confere o recipiente devolvido e repete o uso com o inventário
@@ -299,13 +301,20 @@ Limites desta aceitação:
 - A regra de dose do Rad-X (+0,2 no expoente) e os cliques do Geiger são provados por teste de unidade;
   em jogo foi provado o efeito de conteúdo e o relatório.
 - Sons e partículas são os vanilla listados em `docs/content-catalogo-k2.md`.
+- O crescimento forçado da célula clicada do `powder_fertilizer` não está provado em jogo: o mundo de
+  teste não cresce mudas nem com bone meal vanilla (0 de 10), e o JSON de evidência traz a nota
+  `fertilizer_forced_cell_not_proven_in_game`. Dependência nominal: API de crescimento forçado no
+  motor, na próxima frente de motor (com dano em entidades e tick de `ItemEntity`).
+- Um `/effect clear` também é desfeito para o enjoo herbal (o tick o restaura); `/ntmitem cure` o encerra.
 
 Regressão completa no mesmo par binário e pacote (os hashes conferem antes e depois), sem falha:
 `mining` 18, `bombs` 49, `zirnox` 136, `pile` 85, `pile-meltdown` 32, `dims` 14 com `dims-idle` 2 e
 `dims-idle-clean` 1, `inventory-proxy` 12, `radioisotopes` 67, `solar` 36, `combustion` 15,
-`catalog` 251, `comparator` 9 e `stations` 5. Duas execuções falharam por carga da máquina e passaram
-repetidas no mesmo binário: `bombs` (a alavanca física do pavio não ligou) e `pile-meltdown` (o
-subprocesso estourou os 900 s com o servidor preso no estouro, já documentado em `horizon-current.md`).
-Verificação estática: 433 testes do NTM e Clippy `-D warnings` do workspace sem isenções; 38 testes
-Python de `test_consumables.py`.
+`catalog` 251, `comparator` 9 e `stations` 5, mais o `items` acima (191). Uma pausa programada do
+computador interrompeu a regressão no meio de `dims-idle`; ele e os seguintes rodaram de novo depois,
+no mesmo binário. Durante o desenvolvimento, execuções do `items` falharam por temporização do
+script em máquina carregada (um clique que o servidor respondeu tarde) e passaram depois do ajuste
+do roteiro, sem mudar o binário.
+Verificação estática: 435 testes do NTM e Clippy `-D warnings` do workspace e do stage do motor sem
+isenções; 38 testes Python de `test_consumables.py`.
 
