@@ -39,7 +39,7 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
         lines.push((Text::legacy(if fuel.breeding {"Breeding: exige barras ativas vizinhas"}else{"Reage com a própria barra e as vizinhas ativas"}),u32::MAX));
         if !fuel.breeding {lines.push((Text::legacy(&format!("Calor por decaimento: {}",fuel.heat_per_decay)),u32::MAX));}
     }
-    if let Some(line)=crate::game::ntm_items::lens_tooltip(&stack) {
+    if let Some(line)=crate::game::ntm_items::lens_tooltip(stack) {
         lines.push((Text::literal(line),u32::MAX));
     }
     let native=crate::game::ntm_glue::stack(&Some(stack.clone()));

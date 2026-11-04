@@ -606,10 +606,10 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
                 }
             }
         }
-        Some(item_hooks::Cure::Effects(ids)) if ids.iter().any(|id| id == SICKNESS) => {
-            if number(&desired.state, "herbal") > 0 {
-                set(&mut desired.state, "herbal", 0);
-            }
+        Some(item_hooks::Cure::Effects(ids))
+            if ids.iter().any(|id| id == SICKNESS) && number(&desired.state, "herbal") > 0 =>
+        {
+            set(&mut desired.state, "herbal", 0);
         }
         _ => {}
     }
