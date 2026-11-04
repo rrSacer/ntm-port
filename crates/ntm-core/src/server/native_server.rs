@@ -60,6 +60,7 @@ impl Server {
         self.native_record_events(host);
         if self.ready.facts_pending{self.keep_world(host);return;}
         self.flush_machine_effects(host);
+        self.settle_ghosts(host);
         // Check accessibility every tick: a refused local step must be able to
         // recover, but must never simulate while its BE remains inaccessible.
         for (key,m) in &self.ready.world.machines {
@@ -189,23 +190,37 @@ impl Server {
         let Ok(m) = serde_json::from_str::<Machine>(json) else { return false };
         let mut m = m.upgraded();
         let batches = r.world.machine_effects.iter().chain(&r.world.applied_machine_effects).chain(r.world.prepared_retentions.iter().map(|p|&p.receipt));
-        // What the storage's journal says this machine became (the newest, if several batches name it).
-        let journal = batches.clone().flat_map(|b|&b.survivors).filter(|s|s.dim==dim&&s.pos==pos&&s.generation==m.generation).max_by_key(|s|s.rev).cloned();
-        // A machine that an unconfirmed receipt already consumed (replayed or not) is not brought back by an older
-        // chunk. One that outlives it is brought to the state the receipt's step left it in.
-        if journal.is_none() && batches.clone().any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)){return true;}
+        // What the storage's journal says this machine became in a step whose block entities may have reached the disk
+        // in different chunks (the newest, if several steps named it).
+        let journal = r.world.survivors.get(&key).filter(|s|s.generation==m.generation).cloned();
+        // A machine that an unconfirmed receipt consumed is not brought back by an older chunk: the break goes through.
+        if journal.is_none() && batches.clone().any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)) {
+            let taken = r.world.machine_effects.iter().any(|b|b.effects.iter().any(|e|matches!(e,WorldEffect::Blocks{expected,..} if expected.iter().any(|g|g.key()==key))));
+            if !taken && !r.ghosts.iter().any(|(k,_)|*k==key) {
+                r.ghosts.push((key.clone(), CellGuard{dim:dim.to_string(),pos,generation:m.generation,state:m.block.clone()}));
+            }
+            return true;
+        }
         if let Some(j) = journal {
             if j.rev > m.rev {
                 if let Ok(newer) = serde_json::from_str::<Machine>(&j.json) {
                     eprintln!("ntm: {dim} {pos:?}: the chunk is older than the journal (rev {} < {}); the journal's state is used", m.rev, j.rev);
                     m = newer.upgraded();
+                    r.restored.insert(key.clone());
                 }
             } else if j.rev < m.rev {
                 eprintln!("ntm: {dim} {pos:?}: the chunk is newer than the journal (rev {} > {}); the chunk's state is kept", m.rev, j.rev);
             }
         }
+        let named = batches.clone().any(|b|b.owners.contains(&key)||b.origins.iter().any(|g|g.key()==key)||b.effects.iter().any(|e|matches!(e,WorldEffect::Blocks{expected,..} if expected.iter().any(|g|g.key()==key))))
+            || r.world.removals.iter().any(|x|x.key==key);
         let current=r.world.generations.entry(key.clone()).or_insert(m.generation);
-        if m.generation<*current{return false;}
+        if m.generation<*current {
+            if named {return false;}
+            // The storage is ahead of this chunk: the break (or the replacement) that advanced the generation was never
+            // saved with it, nothing was released for it, and the machine of the chunk is the one the world has.
+            eprintln!("ntm: {dim} {pos:?}: the chunk predates a break that never reached it; generation {} is the machine's again", m.generation);
+        }
         *current=m.generation;
         for cell in container_bridge::energy_port_cells(&m.block,pos,m.facing.as_deref()) { r.native_scan.push_back((dim.to_string(),cell)); }
         r.world.machines.insert(key.clone(), m);

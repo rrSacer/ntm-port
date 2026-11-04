@@ -865,16 +865,7 @@ mod tests {
         let before = s.ready.world.machines[&(DIM.into(), AT)].rev;
         let tool = Stack::new("ntm:hand_drill_desh", 1);
         assert_eq!(s.native_pile_use(&mut h, DIM, [-1, 64, 0], [0, 0, -1], Some(&tool), 0., "p"), Some(PileUse::WearDrill));
-        let journaled = s
-            .ready
-            .world
-            .machine_effects
-            .iter()
-            .chain(&s.ready.world.applied_machine_effects)
-            .flat_map(|b| &b.survivors)
-            .find(|v| v.pos == AT)
-            .cloned()
-            .expect("the core is journaled");
+        let journaled = s.ready.world.survivors.get(&(DIM.to_string(), AT)).cloned().expect("the core is journaled");
         let now = &s.ready.world.machines[&(DIM.into(), AT)];
         assert_eq!((journaled.rev, now.rev), (before + 1, before + 1));
         let saved: crate::machine::Machine = serde_json::from_str(&journaled.json).unwrap();

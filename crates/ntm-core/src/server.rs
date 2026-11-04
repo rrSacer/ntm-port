@@ -211,6 +211,11 @@ struct Ready {
     frozen: BTreeSet<Key>,
     facts_pending:bool,
     facts_dirty:bool,
+    /// Machines whose state came from the journal, not from a block entity of an older chunk: their slots are the
+    /// model's, the block entity is brought to them.
+    restored:BTreeSet<Key>,
+    /// Machines an older chunk still shows although a receipt consumed them: the block goes, its contents were released.
+    ghosts:Vec<(Key,generation::CellGuard)>,
     broken:BTreeMap<Key,String>,
     pending_buttons:Vec<generation::Guarded<(String,String,Pos,u32)>>,
     detonations:BTreeMap<Key,generation::Guarded<(String,container_bridge::Slots)>>,
