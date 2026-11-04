@@ -306,6 +306,10 @@ static EFFECT_TYPE: horizon_world::attachments::AttachmentType<String> = horizon
     sync: false,
 };
 
+/// Writes of the host's storage and their bytes, for `/ntmledger`: a batch of effects must not cost one write each.
+static KV_WRITES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+static KV_BYTES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+
 type ChunkKey = (String, i32, i32);
 /// The ledgers of the loaded chunks that have one, as the chunks hold them.
 static LEDGERS: Mutex<std::collections::BTreeMap<ChunkKey, ntm_core::ledger::ChunkLedger>> = Mutex::new(std::collections::BTreeMap::new());
@@ -616,7 +620,7 @@ fn ledger_report(game: &mut crate::game::Game<'_>) -> String {
             tagged_items += game.dropped.iter().find(|d| d.id == id).map_or(0, |d| i64::from(d.stack.count));
         }
     }
-    format!("ntmledger chunks={} pending={pending} spawned={spawned} applied={applied} owed_items={owed} tagged={tagged} tagged_items={tagged_items}", ledgers.len())
+    format!("ntmledger chunks={} pending={pending} spawned={spawned} applied={applied} owed_items={owed} tagged={tagged} tagged_items={tagged_items} kv_writes={} kv_bytes={}", ledgers.len(), KV_WRITES.load(std::sync::atomic::Ordering::Relaxed), KV_BYTES.load(std::sync::atomic::Ordering::Relaxed))
 }
 
 fn ledger_tick(game: &mut crate::game::Game<'_>) {
@@ -736,6 +740,8 @@ impl Kv for Host<'_, '_> {
         std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
         // A new file renamed over the old: a crash leaves one or the other.
         let tmp = dir.join(format!("{key}.tmp"));
+        KV_WRITES.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        KV_BYTES.fetch_add(value.len() as u64, std::sync::atomic::Ordering::Relaxed);
         std::fs::write(&tmp, value).and_then(|()| std::fs::rename(&tmp, &path)).map_err(|e| e.to_string())
     }
     fn delete(&mut self, key: &str) {
