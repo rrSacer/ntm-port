@@ -23,13 +23,12 @@ class BlastFurnaceContracts(unittest.TestCase):
         cls.ores, _ = dictionary(cls.resolver)
 
     def test_order_and_explicit_missing_content(self):
-        self.assertEqual(self.data['coverage'], {'source_recipes': 15, 'emitted': 12, 'skipped': 3, 'fuels': 20})
-        self.assertEqual([r['source_index'] for r in self.data['recipes']], list(range(9)) + [12, 13, 14])
-        self.assertEqual([r['source_index'] for r in self.data['skipped']], [9, 10, 11])
+        self.assertEqual(self.data['coverage'], {'source_recipes': 15, 'emitted': 14, 'skipped': 1, 'fuels': 20})
+        self.assertEqual([r['source_index'] for r in self.data['recipes']], list(range(9)) + list(range(10, 15)))
+        self.assertEqual([r['source_index'] for r in self.data['skipped']], [9])
         for row in self.data['recipes'] + self.data['skipped']:
             self.assertEqual(self.data['source_recipe_order'][row['source_index']], row['name'])
-        expected = [['ModItems.meteorite_sword_hardened', 'ModItems.meteorite_sword_alloyed'],
-                    ['ModItems.ingot_meteorite'], ['ModItems.ingot_meteorite']]
+        expected = [['ModItems.meteorite_sword_hardened', 'ModItems.meteorite_sword_alloyed']]
         self.assertEqual([r['missing_items'] for r in self.data['skipped']], expected)
 
     def test_steel_slag_sand_and_ore_alternatives(self):

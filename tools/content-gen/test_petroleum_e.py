@@ -35,10 +35,11 @@ class PetroleumE(unittest.TestCase):
         loot=json.loads((ROOT/'content/data/ntm/loot_table/blocks/plant_flower__cd1.json').read_text())
         self.assertEqual(loot['pools'][0]['entries'][0]['name'],'ntm:plant_flower__cd0')
 
-    def test_consumables_have_no_invented_medical_behavior(self):
+    def test_consumables_use_the_integrated_native_runtime(self):
         for name in ['bio_wafer','pill_herbal']:
             row=self.rows['ntm:'+name];self.assertEqual(row['template'],'minecraft:iron_ingot')
-            self.assertIn('medical effects',row['behavior_gap'])
+            self.assertEqual(row['behavior'], 'native item_hooks: consumables.json')
+            self.assertNotIn('behavior_gap', row)
 
     def test_hephaestus_first_heatexchanger_steps_only(self):
         d=self.tables['hephaestus'];self.assertEqual(d['coverage'],{'heating_steps':18,'emitted':9,'skipped':0})
