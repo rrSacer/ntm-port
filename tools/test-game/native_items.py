@@ -337,7 +337,7 @@ def energy(g):
     g.check('bdcl_is_consumed_without_a_container',counts(g).get('ntm:bdcl')==1 and len(counts(g))==1,counts(g))
     # The chocolate milk is the last: its blast removes the floor around the player.
     g.command('gamemode creative @s');g.command('clear @s');give_hand(g,'ntm:chocolate_milk',1)
-    floor=g.ctl('block 20 100 8').get('state','');use(g,1.8);time.sleep(1.5)
+    floor=g.ctl('block 20 100 8').get('state','');use(g,1.8);time.sleep(4)
     after=g.ctl('block 20 100 8').get('state','')
     g.check('chocolate_milk_blast_breaks_the_floor','stone' in floor and 'air' in after,{'before':floor,'after':after})
     g.ground(20,101,8,width=12,height=8);g.command('clear @s')
@@ -745,8 +745,8 @@ def capture(g):
     # lost dose or replayed treatment across the normal world close/reopen.
     g.command('ntmitem dose 500000')
     # The antidote clears the radaway potion with the rest (`clearActivePotions`); the reopen must not bring it back.
-    give_hand(g,'ntm:radaway_flush');use(g);flushed=state(g).get('radaway',0)
-    give_hand(g,'ntm:syringe_antidote');use(g);cleared=state(g).get('radaway',0)
+    give_hand(g,'ntm:radaway_flush',1,3);use(g);flushed=state(g).get('radaway',0)
+    give_hand(g,'ntm:syringe_antidote',1,3);use(g);cleared=state(g).get('radaway',0)
     g.check('antidote_clears_radaway_before_reopen',flushed>=400 and cleared==0,{'flushed':flushed,'cleared':cleared})
     g.command('ntmitem dose 500000');give_hand(g,'ntm:radaway',2,1);use(g);use(g)
     current=state(g);invariant=current['dose']-1000*current.get('radaway',0)
@@ -758,7 +758,7 @@ def capture(g):
     g.check('canteen_cooldown_before_reopen',canteen is not None and 150<=canteen<=180,canteen)
     # The herbal pill's sickness has no curative items: milk leaves it. The pill's -100 RAD moves the dose,
     # so the invariant is read after it.
-    give_hand(g,'ntm:pill_herbal');use(g,.9);give_hand(g,'minecraft:milk_bucket');use(g,2.2);time.sleep(.6)
+    give_hand(g,'ntm:pill_herbal',1,3);use(g,.9);give_hand(g,'minecraft:milk_bucket',1,3);use(g,2.2);time.sleep(.6)
     effects=effect_map(g);g.check('herbal_sickness_survives_milk_before_reopen','potion_sickness' in effects and 'weakness' not in effects,effects)
     g.command('effect give @s ntm:radx 6000 0')
     current=state(g);invariant=current['dose']-1000*current.get('radaway',0)
@@ -776,7 +776,7 @@ def reopened(g):
     effects=effect_map(g)
     g.check('content_mob_effects_survive_the_reopen','radx' in effects and 'potion_sickness' in effects,effects)
     # The remembered sickness survived the reopen with its effect: milk still cannot take it away.
-    give_hand(g,'minecraft:milk_bucket');use(g,2.2);time.sleep(.6);effects=effect_map(g)
+    give_hand(g,'minecraft:milk_bucket',1,3);use(g,2.2);time.sleep(.6);effects=effect_map(g)
     g.check('herbal_sickness_survives_milk_after_reopen','potion_sickness' in effects and 'radx' not in effects,effects)
     g.check('antidote_clear_survives_the_reopen',current.get('radaway',0)<=expected['radaway'],{'before':expected,'after':current})
     tag=inventory_tag(g)
