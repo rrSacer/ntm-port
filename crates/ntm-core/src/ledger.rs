@@ -51,23 +51,32 @@ pub enum State {
     Spawned,
 }
 
+/// One stack an effect owes. An effect with several stacks has several entries, so each stack's fate
+/// (still a pending debt, a living item entity, paid) is its own.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Entry {
     #[serde(with = "hex")]
     pub id: u64,
+    /// The stack's place in its effect.
+    pub idx: u32,
     /// Where the items appear (a cell of the chunk).
     pub at: [i32; 3],
-    /// The item stacks as SNBT, lossless.
-    pub items: Vec<String>,
+    /// The item stack as SNBT, lossless.
+    pub item: String,
     #[serde(default)]
     pub state: State,
+}
+
+/// The name an item entity carries for its entry: `<id>:<idx>`.
+pub fn entity_tag(id: u64, idx: u32) -> String {
+    format!("{id:016x}:{idx}")
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ChunkLedger {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub entries: Vec<Entry>,
-    /// Ids whose effect was applied and is retired, kept until the host's storage forgets the effect.
+    /// Ids whose effect was applied and is paid, kept until the host's storage forgets the effect.
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty", with = "hex_set")]
     pub applied: BTreeSet<u64>,
 }
@@ -80,31 +89,35 @@ impl ChunkLedger {
         self.applied.contains(&id) || self.entries.iter().any(|e| e.id == id)
     }
     /// Owes `items` at `at` for the effect `id`; false (nothing added) when the effect is already here,
-    /// pending, spawned or retired.
+    /// pending, spawned or paid.
     pub fn apply(&mut self, id: u64, at: [i32; 3], items: Vec<String>) -> bool {
         if self.knows(id) {
             return false;
         }
-        if !items.is_empty() {
-            self.entries.push(Entry { id, at, items, state: State::Pending });
-        } else {
+        if items.is_empty() {
             self.applied.insert(id);
+        }
+        for (idx, item) in items.into_iter().enumerate() {
+            self.entries.push(Entry { id, idx: idx as u32, at, item, state: State::Pending });
         }
         true
     }
-    pub fn mark_spawned(&mut self, id: u64) {
-        if let Some(e) = self.entries.iter_mut().find(|e| e.id == id) {
+    pub fn mark_spawned(&mut self, id: u64, idx: u32) {
+        if let Some(e) = self.entries.iter_mut().find(|e| e.id == id && e.idx == idx) {
             e.state = State::Spawned;
         }
     }
-    /// The entry is paid: its id moves to `applied`.
-    pub fn retire(&mut self, id: u64) {
-        if let Some(i) = self.entries.iter().position(|e| e.id == id) {
-            self.entries.remove(i);
+    /// The stack is paid; when it was the effect's last, the id moves to `applied`.
+    pub fn retire(&mut self, id: u64, idx: u32) {
+        let Some(i) = self.entries.iter().position(|e| e.id == id && e.idx == idx) else {
+            return;
+        };
+        self.entries.remove(i);
+        if !self.entries.iter().any(|e| e.id == id) {
             self.applied.insert(id);
         }
     }
-    /// Forgets the retired ids the host's storage no longer names. Returns whether any went.
+    /// Forgets the paid ids the host's storage no longer names. Returns whether any went.
     pub fn prune(&mut self, live: &BTreeSet<u64>) -> bool {
         let before = self.applied.len();
         self.applied.retain(|id| live.contains(id));
@@ -151,12 +164,16 @@ mod tests {
     fn an_effect_applied_twice_is_owed_once() {
         let mut ledger = ChunkLedger::default();
         let id = effect_id(7, 0);
-        assert!(ledger.apply(id, [1, 64, 2], vec!["{id:\"a\",count:1}".into()]));
-        // A replay after a crash finds it pending, then spawned, then retired.
-        assert!(!ledger.apply(id, [1, 64, 2], vec!["{id:\"a\",count:1}".into()]));
-        ledger.mark_spawned(id);
+        assert!(ledger.apply(id, [1, 64, 2], vec!["a".into(), "b".into()]));
+        // A replay after a crash finds it pending, then spawned, then paid.
+        assert!(!ledger.apply(id, [1, 64, 2], vec!["a".into(), "b".into()]));
+        ledger.mark_spawned(id, 0);
+        ledger.mark_spawned(id, 1);
         assert!(!ledger.apply(id, [1, 64, 2], vec!["x".into()]));
-        ledger.retire(id);
+        ledger.retire(id, 0);
+        assert!(!ledger.applied.contains(&id), "one stack is still owed");
+        assert!(!ledger.apply(id, [1, 64, 2], vec!["x".into()]));
+        ledger.retire(id, 1);
         assert!(ledger.entries.is_empty() && ledger.applied.contains(&id));
         assert!(!ledger.apply(id, [1, 64, 2], vec!["x".into()]));
         assert!(ledger.entries.is_empty(), "nothing came back");
@@ -169,6 +186,7 @@ mod tests {
         assert_eq!(retained_id("minecraft:overworld", [3, 64, -4], 5), retained_id("minecraft:overworld", [3, 64, -4], 5));
         assert_ne!(retained_id("minecraft:overworld", [3, 64, -4], 5), retained_id("minecraft:overworld", [3, 64, -4], 6));
         assert_ne!(retained_id("minecraft:overworld", [3, 64, -4], 5), retained_id("minecraft:the_nether", [3, 64, -4], 5));
+        assert_ne!(entity_tag(1, 0), entity_tag(1, 1));
     }
 
     #[test]
@@ -178,8 +196,8 @@ mod tests {
         ledger.apply(a, [0, 0, 0], vec!["a".into()]);
         ledger.apply(b, [0, 0, 0], vec!["b".into()]);
         ledger.apply(c, [0, 0, 0], vec![]);
-        ledger.mark_spawned(a);
-        ledger.retire(b);
+        ledger.mark_spawned(a, 0);
+        ledger.retire(b, 0);
         let back = ChunkLedger::from_json(&ledger.to_json());
         assert_eq!(back, ledger);
         assert_eq!(back.entries.len(), 1);
