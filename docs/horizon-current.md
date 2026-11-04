@@ -503,6 +503,39 @@ Validação (binário `e57ab62508c8c7c9bbdf5283fc3794882b462b0d9654c23e8aefc9a8f
 - NTM: 417 testes (2 ignorados), Clippy do workspace e do stage sem isenções. Motor sem mudança desde `d5eb69a33` (testes da rodada anterior).
 - Em jogo, sem falhas: dims 14, zirnox 136, inventory-proxy 12, radioisotopes 67, bombs 49, pile 85 (×5), pile-meltdown 32, dims-idle 2,
   dims-idle-clean 1, mining 18, solar 36, combustion 15, catalog 251, comparator 9, stations 5.
+## Onda 0 — item 5 (save atômico)
+
+Motor `4b3e48286aadaf56a588fc5ff707e9a60dd4f959` (sobre `ntm-current` `0615f5db0`): failpoints do save e `merge_key` do item no chão. Branch `wave0-save`.
+
+**Garantia.** Os arquivos de um mundo (`region/`, `entities/`, `level.dat`, jogadores, o KV do NTM) não têm commit
+global; por isso a atomicidade estrita entre arquivos é impossível. O que se garante, e está provado, é por **registro
+de chunk**: o que uma máquina deve ao mundo vive no registro do chunk da célula que o deve, gravado junto com os blocos
+e os block entities, e a reabertura reconcilia o KV (que fica à frente do disco) com cada chunk por id e por revisão.
+
+| Parte | Onde vive | Como a reabertura reconcilia |
+| --- | --- | --- |
+| Itens devidos (ejeção, retenção de BE consumido) | Ledger `ntm:ledger` no anexo do chunk: entrada por pilha, `Pending → Spawned → paga` | Id determinístico por efeito (`serial.done`, ou geração para retenção): o mesmo efeito reaplicado não acrescenta nada. Entidade marcada com `ntm:effect` (anexo da entidade, nunca o item): achada de novo, ou recriada se nunca chegou aos arquivos. |
+| Fusão no chão | Contagem viva da entrada (`live`) + `ItemEntity.merge_key` | Itens do ledger só fundem com os do mesmo chunk de origem; a contagem muda no mesmo registro. Cópia obsoleta de pilha já fundida é removida. |
+| Fim do rastreio | Primeiro `world_saved(wait=true)` depois do spawn | A entrada é liberada, a chave volta a 0 e a fusão vanilla retoma. |
+| Efeito de bloco de lote reaberto | Id do efeito no ledger de cada chunk-alvo, junto dos blocos | Só os chunks cujo registro não tem o id recebem o efeito; a guarda de geração é relaxada somente se o BE do chunk é da mesma geração. |
+| Estado das máquinas que sobrevivem ao passo (o core do pile após desfazer um canal) | `Machine.rev` no BE + diário `survivors` no lote | BE de `rev` menor que a do diário é trocado pelo estado do diário; igual não faz nada; maior é registrado e o BE é preservado. |
+
+**Prova.** `tools/test-game/run-crash-proof.py` (cenário `native_crash.py`): pilha de 125 células cruzando a fronteira de chunk
+x=48, 10 hastes nos canais mais 2 comuns no chão, desfaz os dois canais e salva sob `HORIZON_FAILPOINT`. Pontos: `save_begin`,
+`region_record:1/2/3` (entre registros de chunk), `chunks_written`, `entities_written`, `level_saved`, `parked_saved`,
+`level_dat_written`, `metadata_saved`, `players_saved`, `world_saved`, mais o controle sem falha. Em todos: 12 hastes após cada uma de duas
+reaberturas, pilha sem core zumbi, `drain` retira o que é devido. Lote grande (pilha sem core: varredura de 125 células): 14
+gravações de KV e 1,9 MB no total, não uma por efeito.
+
+**Resíduo igual ao do vanilla (do formato de mundo, não do NTM).** (a) item que o jogador pega: o inventário vai no arquivo do
+jogador e a entidade some do de entidades, em momentos diferentes, como qualquer drop; (b) o `world_saved(wait=false)` do autosave
+não libera a entrada (só um save confirmado libera), o que apenas mantém por mais tempo a restrição de fusão; (c) o ledger de chunks
+de níveis estacionados é lido quando o nível está em lugar.
+
+**Custo.** Passo de pile (média/pior) e desfazer um canal, release, 125 máquinas: antes 657 µs / 1,16 ms / 822 µs, depois
+655 µs / 0,89 ms / 842 µs (`timing_of_pile_steps_and_of_an_undo`, `--ignored`). `rev` só sobe em passos que deixam efeitos devidos,
+e só nas máquinas que mudaram.
+
 ## Hooks de item — extensão local em validação
 ## Hooks de item — extensões locais
 
