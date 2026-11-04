@@ -399,7 +399,7 @@ fn item_snbt(stack: &ItemStack) -> String {
 
 /// Forgets the paid ids the storage no longer names, in every loaded chunk that keeps some.
 fn ledger_prune(game: &mut crate::game::Game<'_>, live: &std::collections::BTreeSet<u64>) {
-    let keys: Vec<ChunkKey> = lock(&LEDGERS).iter().filter(|(_, l)| !l.applied.is_empty()).map(|(k, _)| k.clone()).collect();
+    let keys: Vec<ChunkKey> = lock(&LEDGERS).iter().filter(|(_, l)| !l.applied.is_empty() || !l.gone.is_empty()).map(|(k, _)| k.clone()).collect();
     for key in keys {
         in_place(game, &key.0.clone(), |g| {
             let mut ledger = ledger_get(g, &key);
@@ -421,6 +421,19 @@ fn entity_effect(g: &mut crate::game::Game<'_>, entity: u32) -> Option<String> {
     g.entity_attachments.get_mut(&uuid)?.get_existing(&EFFECT_TYPE).ok().flatten().filter(|t| !t.is_empty())
 }
 
+/// Where the entities of an entry last were seen when they left the world with a chunk that unloaded.
+static AWAY: Mutex<std::collections::BTreeMap<(String, u64, u32), Vec<[i32; 2]>>> = Mutex::new(std::collections::BTreeMap::new());
+
+fn chunk_ready(g: &mut crate::game::Game<'_>, dim: &str, c: [i32; 2]) -> bool {
+    g.world.loaded(c[0] * 16, c[1] * 16) && lock(&ENTITIES_READY).contains(&chunk_key(dim, c))
+}
+
+/// The loaded item entities that carry `tag`.
+fn tagged_entities(g: &mut crate::game::Game<'_>, tag: &str) -> Vec<(u32, [i32; 2])> {
+    let ids: Vec<(u32, [i32; 2])> = g.dropped.iter().map(|d| (d.id, chunk_at(&d.position))).collect();
+    ids.into_iter().filter(|(id, _)| entity_effect(g, *id).as_deref() == Some(tag)).collect()
+}
+
 /// Every owed stack of one chunk: spawn what is pending, retire what was paid, find again after a reopen what
 /// was spawned, and spawn again what a reopened world proves never reached its files.
 fn ledger_chunk(g: &mut crate::game::Game<'_>, key: &ChunkKey, unloaded: &std::collections::BTreeSet<ChunkKey>) {
@@ -435,69 +448,90 @@ fn ledger_chunk(g: &mut crate::game::Game<'_>, key: &ChunkKey, unloaded: &std::c
         let mut state = entry.state;
         if state == ntm_core::ledger::State::Spawned {
             let tracked = lock(&TRACKED).get(&tkey).cloned();
-            match tracked {
-                Some(list) => {
-                    let alive: Vec<(u32, [i32; 2])> = list
-                        .iter()
-                        .filter_map(|(id, _)| g.dropped.iter().find(|d| d.id == *id && d.stack.count > 0).map(|d| (d.id, chunk_at(&d.position))))
-                        .collect();
-                    if alive.is_empty() {
-                        // Gone: paid (picked up, merged, burnt) unless its chunk's entities were just put away to be saved.
-                        let put_away = list.iter().any(|(_, c)| unloaded.contains(&chunk_key(&key.0, *c)) || !g.world.loaded(c[0] * 16, c[1] * 16));
-                        lock(&TRACKED).remove(&tkey);
-                        if !put_away {
-                            ledger.retire(entry.id, entry.idx);
-                            changed = true;
-                        }
+            if let Some(list) = tracked {
+                let alive: Vec<(u32, [i32; 2])> = list
+                    .iter()
+                    .filter_map(|(id, _)| g.dropped.iter().find(|d| d.id == *id && d.stack.count > 0).map(|d| (d.id, chunk_at(&d.position))))
+                    .collect();
+                // Those that are not in the world: put away with a chunk that unloaded, or gone (picked up, merged, burnt).
+                let away: Vec<[i32; 2]> = list
+                    .iter()
+                    .filter(|(id, _)| !alive.iter().any(|(a, _)| a == id))
+                    .map(|(_, c)| *c)
+                    .filter(|c| unloaded.contains(&chunk_key(&key.0, *c)) || !g.world.loaded(c[0] * 16, c[1] * 16))
+                    .collect();
+                if alive.is_empty() {
+                    lock(&TRACKED).remove(&tkey);
+                    if away.is_empty() {
+                        ledger.retire(entry.id, entry.idx);
+                        changed = true;
                     } else {
-                        // Merged with others or split on the ground: what they hold is what is owed.
-                        let held: u32 = alive.iter().filter_map(|(id, _)| g.dropped.iter().find(|d| d.id == *id)).map(|d| d.stack.count).sum();
-                        changed |= ledger.set_live(entry.id, entry.idx, held);
-                        lock(&TRACKED).insert(tkey, alive);
+                        // Its chunk took it to its files: wait for that chunk, then look for it by its tag.
+                        lock(&AWAY).insert(tkey, away);
                     }
+                } else {
+                    // Merged with others or split on the ground: what they hold is what is owed.
+                    let held: u32 = alive.iter().filter_map(|(id, _)| g.dropped.iter().find(|d| d.id == *id)).map(|d| d.stack.count).sum();
+                    changed |= ledger.set_live(entry.id, entry.idx, held);
+                    if let Some((_, c)) = alive.first() {
+                        changed |= ledger.set_last(entry.id, entry.idx, *c);
+                    }
+                    if !away.is_empty() {
+                        lock(&AWAY).insert(tkey.clone(), away);
+                    }
+                    lock(&TRACKED).insert(tkey, alive);
+                }
+                continue;
+            }
+            // Not followed in this session: reopened, or taken to a chunk's files while it was followed.
+            let waiting = lock(&AWAY).get(&tkey).cloned();
+            if let Some(chunks) = waiting {
+                if !chunks.iter().all(|c| chunk_ready(g, &key.0, *c)) {
                     continue;
                 }
-                None => {
-                    // After a reopen: its entity is in the world if its file got it.
-                    let ids: Vec<(u32, [i32; 2])> = g.dropped.iter().map(|d| (d.id, chunk_at(&d.position))).collect();
-                    let mut found: Vec<(u32, [i32; 2])> = Vec::new();
-                    for (id, chunk) in ids {
-                        if entity_effect(g, id).as_deref() == Some(tag.as_str()) {
-                            found.push((id, chunk));
-                        }
-                    }
-                    if !found.is_empty() {
-                        for d in g.dropped.iter_mut().filter(|d| found.iter().any(|(id, _)| *id == d.id)) {
-                            d.merge_key = ntm_core::ledger::merge_key([key.1, key.2]);
-                        }
-                        // The entities may be older than the record (a crash between their files): what the
-                        // record says is owed is what the world must hold.
-                        let owed = if entry.live > 0 { entry.live } else { item_count(&entry.item) };
-                        let held: u32 = found.iter().filter_map(|(id, _)| g.dropped.iter().find(|d| d.id == *id)).map(|d| d.stack.count).sum();
-                        if held < owed
-                            && let Some(d) = g.dropped.iter_mut().find(|d| found.iter().any(|(id, _)| *id == d.id))
-                        {
-                            d.stack.count += owed - held;
-                        } else if held > owed {
-                            changed |= ledger.set_live(entry.id, entry.idx, held);
-                        }
-                        lock(&TRACKED).insert(tkey, found);
-                        continue;
-                    }
-                    // Not in the world: it never reached the files, unless it wandered to a chunk that has not loaded.
-                    let ready = lock(&ENTITIES_READY).clone();
-                    let around = (-1..=1).all(|dx| (-1..=1).all(|dz| {
-                        let (cx, cz) = (key.1 + dx, key.2 + dz);
-                        !g.world.loaded(cx * 16, cz * 16) || ready.contains(&(key.0.clone(), cx, cz))
-                    }));
-                    if !around {
-                        continue;
-                    }
-                    state = ntm_core::ledger::State::Pending;
-                }
+                lock(&AWAY).remove(&tkey);
             }
+            let found = tagged_entities(g, &tag);
+            if !found.is_empty() {
+                for d in g.dropped.iter_mut().filter(|d| found.iter().any(|(id, _)| *id == d.id)) {
+                    d.merge_key = ntm_core::ledger::merge_key([key.1, key.2]);
+                }
+                // The entities may be older than the record (a crash between their files): what the record says is
+                // owed is what the world must hold.
+                let owed = if entry.live > 0 { entry.live } else { item_count(&entry.item) };
+                let held: u32 = found.iter().filter_map(|(id, _)| g.dropped.iter().find(|d| d.id == *id)).map(|d| d.stack.count).sum();
+                if held < owed
+                    && let Some(d) = g.dropped.iter_mut().find(|d| found.iter().any(|(id, _)| *id == d.id))
+                {
+                    d.stack.count += owed - held;
+                } else if held > owed {
+                    changed |= ledger.set_live(entry.id, entry.idx, held);
+                }
+                if let Some((_, c)) = found.first() {
+                    changed |= ledger.set_last(entry.id, entry.idx, *c);
+                }
+                lock(&TRACKED).insert(tkey, found);
+                continue;
+            }
+            // Not in the world. It never reached the files only if the chunk it was last in has its entities in.
+            let last = entry.last.unwrap_or([key.1, key.2]);
+            if !chunk_ready(g, &key.0, last) {
+                continue;
+            }
+            state = ntm_core::ledger::State::Pending;
         }
         if state == ntm_core::ledger::State::Pending {
+            // Another run may have put it into a chunk's files already: that one is the stack, not a second.
+            let existing = tagged_entities(g, &tag);
+            if !existing.is_empty() {
+                for d in g.dropped.iter_mut().filter(|d| existing.iter().any(|(id, _)| *id == d.id)) {
+                    d.merge_key = ntm_core::ledger::merge_key([key.1, key.2]);
+                }
+                lock(&TRACKED).insert(tkey, existing);
+                ledger.mark_spawned(entry.id, entry.idx);
+                changed = true;
+                continue;
+            }
             let parsed = horizon_world::nbt::parse_snbt(&entry.item).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t));
             let Some(mut stack) = parsed else {
                 eprintln!("ntm: invalid owed item NBT {:?}", entry.item);
@@ -518,6 +552,7 @@ fn ledger_chunk(g: &mut crate::game::Game<'_>, key: &ChunkKey, unloaded: &std::c
                     let _ = map.set(&EFFECT_TYPE, tag);
                 }
                 lock(&TRACKED).insert(tkey, vec![(eid, chunk)]);
+                ledger.set_last(entry.id, entry.idx, chunk);
             }
             ledger.mark_spawned(entry.id, entry.idx);
             changed = true;
@@ -532,28 +567,62 @@ fn item_count(item: &str) -> u32 {
     horizon_world::nbt::parse_snbt(item).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t)).map_or(0, |s| s.count)
 }
 
-/// Item entities that carry the tag of a stack the ledger has seen go are older copies of it (the entity files
-/// lag the chunk record after a crash, and the stack has merged or been taken since): they go.
-fn ledger_stale(game: &mut crate::game::Game<'_>) {
-    let any_gone = lock(&LEDGERS).values().any(|l| !l.gone.is_empty());
-    if !any_gone {
-        return;
-    }
-    let ready = lock(&ENTITIES_READY).clone();
-    let ids: Vec<(u32, [i32; 2])> = game.dropped.iter().map(|d| (d.id, chunk_at(&d.position))).collect();
-    let dim = game.dim.id().to_string();
+/// What the dropped item entities of the level in place say about the ledger, with the level's dimension:
+/// older copies of a stack the ledger saw go are removed (the entity files lag the chunk record after a crash, and the
+/// stack has merged or been taken since), a second entity of one tag is the stale one, and the tag of a stack that was
+/// released (or that no ledger knows) is cleared, so the item merges again as any other.
+fn ledger_sweep(g: &mut crate::game::Game<'_>, dim: &str) {
+    let ledgers: std::collections::BTreeMap<ChunkKey, ntm_core::ledger::ChunkLedger> =
+        lock(&LEDGERS).iter().filter(|(k, _)| k.0 == dim).map(|(k, v)| (k.clone(), v.clone())).collect();
+    let ids: Vec<(u32, [i32; 2])> = g.dropped.iter().map(|d| (d.id, chunk_at(&d.position))).collect();
+    let mut seen: std::collections::BTreeMap<String, u32> = std::collections::BTreeMap::new();
     for (id, chunk) in ids {
-        if !ready.contains(&chunk_key(&dim, chunk)) {
+        if !lock(&ENTITIES_READY).contains(&chunk_key(dim, chunk)) {
             continue;
         }
-        let Some(tag) = entity_effect(game, id) else { continue };
-        let Some((effect, idx, _)) = ntm_core::ledger::parse_tag(&tag) else { continue };
-        let (gone, owed) = {
-            let ledgers = lock(&LEDGERS);
-            (ledgers.values().any(|l| l.is_gone(effect, idx)), ledgers.values().any(|l| l.entries.iter().any(|e| e.id == effect && e.idx == idx)))
+        let Some(tag) = entity_effect(g, id) else { continue };
+        let Some((effect, idx, origin)) = ntm_core::ledger::parse_tag(&tag) else { continue };
+        let okey = chunk_key(dim, origin);
+        let ledger = ledgers.get(&okey);
+        let owed = ledger.is_some_and(|l| l.entries.iter().any(|e| e.id == effect && e.idx == idx));
+        let gone = ledger.is_some_and(|l| l.is_gone(effect, idx));
+        let remove = if gone && !owed {
+            true
+        } else if owed {
+            // Two entities of one tag: the one this session follows is the stack.
+            match seen.get(&tag).copied() {
+                Some(first) => {
+                    let followed = lock(&TRACKED).get(&(dim.to_string(), effect, idx)).is_some_and(|l| l.iter().any(|(e, _)| *e == id));
+                    if followed {
+                        if let Some(i) = g.dropped.iter().position(|d| d.id == first) {
+                            g.remove_dropped(i);
+                        }
+                        seen.insert(tag.clone(), id);
+                        false
+                    } else {
+                        true
+                    }
+                }
+                None => {
+                    seen.insert(tag.clone(), id);
+                    false
+                }
+            }
+        } else {
+            // No entry and not gone: released by a confirmed save. When the chunk that owned it is in, the tag is spent.
+            if chunk_ready(g, dim, origin) {
+                use horizon_client::mod_api::Holder;
+                if let Ok(map) = g.attachment_map_quiet(Holder::Entity(id)) {
+                    let _ = map.set(&EFFECT_TYPE, String::new());
+                }
+                if let Some(d) = g.dropped.iter_mut().find(|d| d.id == id) {
+                    d.merge_key = 0;
+                }
+            }
+            false
         };
-        if gone && !owed && let Some(i) = game.dropped.iter().position(|d| d.id == id) {
-            game.remove_dropped(i);
+        if remove && let Some(i) = g.dropped.iter().position(|d| d.id == id) {
+            g.remove_dropped(i);
         }
     }
 }
@@ -650,6 +719,15 @@ fn ledger_report(game: &mut crate::game::Game<'_>, words: &[&str]) -> String {
     format!("ntmledger chunks={} pending={pending} spawned={spawned} applied={applied} gone={gone} owed_items={owed} tagged={tagged} tagged_items={tagged_items} keyed={keyed} kv_writes={} kv_bytes={}", ledgers.len(), KV_WRITES.load(std::sync::atomic::Ordering::Relaxed), KV_BYTES.load(std::sync::atomic::Ordering::Relaxed))
 }
 
+/// `ledger_sweep` in every dimension that has a ledger, and the one in place.
+fn ledger_sweep_all(game: &mut crate::game::Game<'_>) {
+    let mut dims: std::collections::BTreeSet<String> = lock(&LEDGERS).keys().map(|k| k.0.clone()).collect();
+    dims.insert(game.dim.id().to_string());
+    for dim in dims {
+        in_place(game, &dim.clone(), |g| ledger_sweep(g, &dim));
+    }
+}
+
 fn ledger_tick(game: &mut crate::game::Game<'_>) {
     {
         let mut fresh = lock(&CHUNKS_FRESH);
@@ -666,14 +744,14 @@ fn ledger_tick(game: &mut crate::game::Game<'_>) {
     }
     let keys: Vec<ChunkKey> = lock(&LEDGERS).iter().filter(|(_, l)| !l.entries.is_empty()).map(|(k, _)| k.clone()).collect();
     if keys.is_empty() {
-        ledger_stale(game);
+        ledger_sweep_all(game);
         return;
     }
     let unloaded = std::mem::take(&mut *lock(&ENTITIES_UNLOADED));
     for key in keys {
         in_place(game, &key.0.clone(), |g| ledger_chunk(g, &key, &unloaded));
     }
-    ledger_stale(game);
+    ledger_sweep_all(game);
 }
 
 /// A chunk loaded: its ledger, if it has one, is read and kept.
@@ -690,10 +768,15 @@ pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [
 
 pub(super) fn chunk_unloaded(dim: &str, chunk: [i32; 2]) {
     let key = chunk_key(dim, chunk);
-    lock(&LEDGERS).remove(&key);
+    // Its ledger is read again when it loads; what it followed is looked for by tag then.
+    if let Some(ledger) = lock(&LEDGERS).remove(&key) {
+        for e in &ledger.entries {
+            lock(&TRACKED).remove(&(dim.to_string(), e.id, e.idx));
+            lock(&AWAY).remove(&(dim.to_string(), e.id, e.idx));
+        }
+    }
     lock(&ENTITIES_READY).remove(&key);
     lock(&CHUNKS_FRESH).remove(&key);
-    lock(&TRACKED).retain(|(d, _, _), v| !(d == dim && v.iter().all(|(_, c)| *c == chunk)));
 }
 
 pub(super) fn entities_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2]) {

@@ -68,6 +68,10 @@ pub struct Entry {
     /// How many items its entities hold now, once they have merged with others or split (0: as `item` says).
     #[serde(default, skip_serializing_if = "is_zero")]
     pub live: u32,
+    /// The chunk its entities were last seen in (None: still in the chunk of `at`): a reopened world looks there
+    /// before it decides that they never reached the files.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last: Option<[i32; 2]>,
 }
 
 fn is_zero(n: &u32) -> bool {
@@ -123,7 +127,7 @@ impl ChunkLedger {
             self.applied.insert(id);
         }
         for (idx, item) in items.into_iter().enumerate() {
-            self.entries.push(Entry { id, idx: idx as u32, at, item, state: State::Pending, live: 0 });
+            self.entries.push(Entry { id, idx: idx as u32, at, item, state: State::Pending, live: 0, last: None });
         }
         true
     }
@@ -141,6 +145,16 @@ impl ChunkLedger {
         match self.entries.iter_mut().find(|e| e.id == id && e.idx == idx) {
             Some(e) if e.live != held => {
                 e.live = held;
+                true
+            }
+            _ => false,
+        }
+    }
+    /// The entry's entities were last seen in `chunk`. True when that changed it.
+    pub fn set_last(&mut self, id: u64, idx: u32, chunk: [i32; 2]) -> bool {
+        match self.entries.iter_mut().find(|e| e.id == id && e.idx == idx) {
+            Some(e) if e.last != Some(chunk) => {
+                e.last = Some(chunk);
                 true
             }
             _ => false,

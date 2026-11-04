@@ -922,6 +922,12 @@ impl Server {
             let Some(layout) = layout(&m.block) else { continue };
             let first = !r.bridge.last.contains_key(&key);
             let observed = now.clone();
+            if r.restored.remove(&key) {
+                // The model came from the journal and the block entity is older: the model's slots are the truth, and
+                // the next step writes them over the block entity's.
+                r.bridge.last.insert(key, observed);
+                continue;
+            }
             let last = r.bridge.last.get(&key).cloned().unwrap_or_else(|| now.clone());
             let empty = now.iter().all(Option::is_none);
             match (&mut m.data, layout) {
