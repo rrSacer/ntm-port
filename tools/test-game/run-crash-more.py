@@ -28,6 +28,7 @@ DEFAULT_POINTS = {
     'coupled-ea': ['none', 'save_begin', 'region_record:1', 'region_record:2'],
     'coupled-eb': ['none', 'save_begin', 'region_record:1', 'region_record:2'],
     'crossing': ['none'],
+    'save-quit': ['none'],
     'mining': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],
     'break': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],
     'replace': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],
@@ -70,15 +71,21 @@ def play(args, base, scratch, env, scenario, point):
                 world.client.kill()
                 world.client.wait()
                 raise AssertionError('the game was not killed at ' + point)
+            if not result['killed_at_the_point']:
+                raise AssertionError('client exited without reaching ' + point)
             (folder / 'control.sock').unlink(missing_ok=True)
         result['act'] = evidence(folder, 'act').get('after_act') or evidence(folder, 'act').get('after_undo')
         world.launch()
-        world.script('verify')
+        verified = world.script('verify', check=False)
         result['first_reopen'] = evidence(folder, 'verify').get('counted')
+        if verified:
+            raise AssertionError('first reopen failed; see counted evidence')
         world.quit()
         world.launch()
-        world.script('again')
+        verified = world.script('again', check=False)
         result['second_reopen'] = evidence(folder, 'again').get('counted_again')
+        if verified:
+            raise AssertionError('second reopen failed; see counted evidence')
         world.quit()
         result['ok'] = True
     except Exception as error:
@@ -90,6 +97,8 @@ def play(args, base, scratch, env, scenario, point):
 
 
 def main():
+    import resource
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))  # failpoint aborts must not dump gigabytes of game memory
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('scenario')
     parser.add_argument('points', nargs='*')
