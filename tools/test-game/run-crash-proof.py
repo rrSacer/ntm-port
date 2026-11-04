@@ -114,7 +114,10 @@ def play(args, base, scratch, env, point):
     result = {'point': point, 'folder': str(folder), 'ok': False}
     try:
         world.launch(point)
-        world.script('undo', check=False)
+        acted = world.script('undo', check=False)
+        result['after_undo'] = evidence(folder, 'undo').get('after_undo')
+        if acted:
+            raise AssertionError('undo failed before its save; see undo evidence')
         if point == 'none':
             result['exit'] = 'survived'
             world.quit()
@@ -125,16 +128,20 @@ def play(args, base, scratch, env, point):
             if code is None:
                 world.client.kill(); world.client.wait()
                 raise AssertionError('the game was not killed at ' + point)
+            if not result['killed_at_the_point']:
+                raise AssertionError('client exited without reaching ' + point)
             (folder / 'control.sock').unlink(missing_ok=True)
-        undo = evidence(folder, 'undo')
-        result['after_undo'] = undo.get('after_undo')
         world.launch()
-        world.script('verify')
+        verified = world.script('verify', check=False)
         result['first_reopen'] = evidence(folder, 'verify').get('counted')
+        if verified:
+            raise AssertionError('first reopen failed; see counted evidence')
         world.quit()
         world.launch()
-        world.script('again')
+        verified = world.script('again', check=False)
         result['second_reopen'] = evidence(folder, 'again').get('counted_again')
+        if verified:
+            raise AssertionError('second reopen failed; see counted evidence')
         world.script('drain')
         world.quit()
         result['ok'] = True
@@ -185,7 +192,7 @@ def main():
         world.launch()
         world.script('prepare')
         world.quit()
-        for point in args.points or POINTS:
+        for point in args.points or [*POINTS, 'sweep']:
             # Each copy is played by the same binary; HORIZON_HOME is inside the copy's own folder.
             copy_env = dict(env)
             folder = scratch / ('point-' + point.replace(':', '-'))
