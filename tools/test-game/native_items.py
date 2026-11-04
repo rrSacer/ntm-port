@@ -547,7 +547,7 @@ def instruments(g):
     g.check('geiger_report',all(k in text for k in ('GEIGER COUNTER','Total environmental radiation','Player contamination','Player resistance')) and '250.0 RAD' in text,text)
     reset(g,'survival',dose=0);g.command('give @s ntm:ingot_uranium 64');time.sleep(3)
     hold(g,'ntm:dosimeter',0,1,1);text=chat_lines(g)
-    g.check('dosimeter_reads_the_server_buffer','DOSIMETER' in text and re.search(r'RAD/s',text) and not re.search(r'environmental radiation: \S*0\.0 RAD/s',text),text)
+    g.check('dosimeter_reads_the_server_buffer','DOSIMETER' in text and '>3.6 RAD/s' in text.split('DOSIMETER')[0],text)
     hold(g,'ntm:digamma_diagnostic',0,1,2);text=chat_lines(g)
     g.check('diagnostic_report','DIGAMMA DIAGNOSTIC' in text and 'DRX' in text,text)
     reset(g);g.command('setblock 25 100 11 ntm:ore_oil');g.command('setblock 20 100 16 ntm:stone_gneiss');time.sleep(.4)

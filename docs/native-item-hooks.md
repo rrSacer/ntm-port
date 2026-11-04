@@ -274,3 +274,37 @@ Limites desta aceitação:
 - `/ntmitem charge` prova o `patch_stack` num `minecraft:stick`. Nenhum item elétrico
   real está portado (as baterias de item são só identidades), então o teste com
   bateria real fica como pendência da família de baterias de item.
+
+## Aceitação da onda 1 (consumíveis, kits e medicina)
+
+Binário `horizon-client` `29696bb0653e…` e pacote `ntm.hmod` `d37e33ca6c62…` (pin do motor
+`0615f5db0`, sem mudança no motor), o mesmo par em todos os cenários.
+
+| Roteiro `items` | Checks |
+|---|---|
+| `setup` (lote anterior mais uma seção por família: bebidas, medicina, comidas, kits, filtros, instrumentos, `chocolate_milk` com o jogador morrendo) | 148 |
+| `capture-state`: cooldown do cantil, efeitos de conteúdo (`radx`, `potion_sickness`), tratamento de RadAway | 7 |
+| `check-state` depois de fechar e reabrir o mundo | 5 |
+
+Cada seção usa o item real com animação (segurar o botão direito), mede o efeito pelo
+estado do jogador, confere o recipiente devolvido e repete o uso com o inventário
+cheio e em criativo. O Geiger e o dosímetro leem o `rad_buf` do servidor de radiação
+(a mesma autoridade da dose), a lente AMS e os kits têm tabela própria no doc do catálogo.
+
+Limites desta aceitação:
+
+- Não há segundo cliente: o `chocolate_milk` fere todos os jogadores vivos do nível no
+  alcance pelo caminho `native_visit_player`, mas só o jogador local foi exercitado em jogo.
+- A regra de dose do Rad-X (+0,2 no expoente) e os cliques do Geiger são provados por teste de unidade;
+  em jogo foi provado o efeito de conteúdo e o relatório.
+- Sons e partículas são os vanilla listados em `docs/content-catalogo-k2.md`.
+
+Regressão completa no mesmo par binário e pacote (os hashes conferem antes e depois), sem falha:
+`mining` 18, `bombs` 49, `zirnox` 136, `pile` 85, `pile-meltdown` 32, `dims` 14 com `dims-idle` 2 e
+`dims-idle-clean` 1, `inventory-proxy` 12, `radioisotopes` 67, `solar` 36, `combustion` 15,
+`catalog` 251, `comparator` 9 e `stations` 5. Duas execuções falharam por carga da máquina e passaram
+repetidas no mesmo binário: `bombs` (a alavanca física do pavio não ligou) e `pile-meltdown` (o
+subprocesso estourou os 900 s com o servidor preso no estouro, já documentado em `horizon-current.md`).
+Verificação estática: 433 testes do NTM e Clippy `-D warnings` do workspace sem isenções; 38 testes
+Python de `test_consumables.py`.
+
