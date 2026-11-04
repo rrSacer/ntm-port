@@ -63,6 +63,20 @@ def stirling(game, shape):
     game.snapshot('solar-stirling-'+shape)
 
 
+def select_received(game,item):
+    """A command reply confirms the server grant, before the client necessarily applied its inventory packet."""
+    started=time.monotonic();samples=[]
+    while True:
+        inventory=game.ctl('inventory')
+        ready=any(slot.get('item')==item for slot in inventory.get('hotbar',[]) if slot)
+        samples.append({'elapsed':time.monotonic()-started,'hotbar_ready':ready,'count':inventory.get('counts',{}).get(item,0)})
+        game.evidence['given_tool_delivery']=samples
+        if ready:return game.ctl('select '+item)
+        if time.monotonic()-started>10:
+            game.save();raise AssertionError('granted tool did not reach the hotbar: '+str(samples))
+        time.sleep(.1)
+
+
 def solar(game):
     game.evidence['phase'] = 'solar'
     x,y,z = 530,112,8
@@ -90,7 +104,7 @@ def solar(game):
     for px,py,pz in mirrors: game.command(f'setblock {px} {py} {pz} ntm:solar_mirror[facing=south,honey_level=0]')
     game.command('clear @s')
     game.command('give @s ntm:mirror_tool 1')
-    game.ctl('select ntm:mirror_tool')
+    select_received(game,'ntm:mirror_tool')
     # Open the exposed south cell of the boiler's symmetric 3x3 body,
     # regardless of the facing chosen during placement.
     game.command(f'tp @s {cx+.5} {cy} {cz+4.5}')
