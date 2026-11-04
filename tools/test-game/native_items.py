@@ -607,12 +607,12 @@ def instruments(g):
         while time.monotonic()<end:
             seen.append(int(' '.join(g.command('ntmitem radbuf').get('chat',[]))));time.sleep(.1)
         return seen
-    reset(g,'creative',dose=300000);g.command('give @s ntm:ingot_uranium 8');g.command('give @s ntm:bottle_opener 1');time.sleep(.5)
+    reset(g,'creative',dose=300000);g.command('item replace entity @s hotbar.5 with ntm:ingot_uranium 8');g.command('item replace entity @s hotbar.6 with ntm:bottle_opener 1');time.sleep(.5)
     base=max(radbuf_window(2.6));g.check('continuous_source_reads_in_the_buffer',base>0,base)
     g.command('effect give @s ntm:radx 600 0');hold(g,'ntm:radaway_flush',0)
     hold(g,'ntm:bottle_nuka',2.2,1,1);seen=radbuf_window()
     g.check('bottle_contaminate_joins_the_buffer_once',max(seen)==base+5000 and seen.count(base+5000)>=1 and seen[-1]==base,{'base':base,'seen':sorted(set(seen)),'last':seen[-1]})
-    hold(g,'ntm:coffee_radium',1.2,1,2);seen=radbuf_window(2.6)
+    hold(g,'ntm:coffee_radium',2.2,1,2);seen=radbuf_window(2.6)
     g.check('direct_increment_stays_out_of_the_buffer',max(seen)==base,{'base':base,'seen':sorted(set(seen))})
     g.command('clear @s')
     # Pipette: an empty one steps its capacity by 50 (sneaking lowers it); the laboratory one by 1.
