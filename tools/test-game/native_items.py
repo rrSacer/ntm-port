@@ -57,7 +57,13 @@ def settle(g,done,timeout=8):
     deadline=time.monotonic()+timeout
     while True:
         screen=g.ctl('screen')
-        if done(screen) or time.monotonic()>deadline:return screen
+        # The old menu is resent before the answer, so a slot can show the click and blank again for a tick:
+        # the screen counts as settled only when a second look, after a tick, still agrees.
+        if done(screen):
+            time.sleep(.15)
+            again=g.ctl('screen')
+            if done(again):return again
+        if time.monotonic()>deadline:return screen
         time.sleep(.25)
 
 
@@ -740,7 +746,8 @@ def armor_table(g):
     screen=open_table(g)
     g.check('table_has_exact_14_slots',len(g.slots())==14,screen)
     put(g,'ntm:hazmat_helmet',1,9);put(g,'ntm:attachment_mask',1,0)
-    g.check('mod_slot_shows_attachment',g.slots()[0].get('item')=='ntm:attachment_mask',g.slots())
+    screen=settle(g,lambda s:table_slot(s,0)=='ntm:attachment_mask')
+    g.check('mod_slot_shows_attachment',table_slot(screen,0)=='ntm:attachment_mask',screen.get('slots'))
     g.ctl('click-slot 309 shift')
     screen=settle(g,lambda s:table_slot(s,10)=='ntm:hazmat_helmet' and not s.get('carried'))
     g.check('shift_click_equips_armor_and_absorbs_views',not table_slot(screen,0) and not table_slot(screen,9) and table_slot(screen,10)=='ntm:hazmat_helmet',g.slots())

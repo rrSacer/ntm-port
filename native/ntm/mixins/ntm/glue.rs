@@ -400,6 +400,9 @@ fn ledger_add_here(g: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32;
     let mut ledger = ledger_get(g, &key);
     if ledger.apply(id, pos, items) {
         ledger_store(g, &key, ledger);
+        // The debt is in the chunk's record; in this same exclusive step it becomes entities, as a vanilla drop
+        // does (no tick between them). A chunk whose entities are not in yet keeps it pending for the next tick.
+        ledger_chunk(g, &key, &std::collections::BTreeSet::new());
     }
     true
 }
