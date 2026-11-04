@@ -505,49 +505,54 @@ Validação (binário `e57ab62508c8c7c9bbdf5283fc3794882b462b0d9654c23e8aefc9a8f
   dims-idle-clean 1, mining 18, solar 36, combustion 15, catalog 251, comparator 9, stations 5.
 ## Onda 0 — item 5 (save atômico)
 
-Motor `4b3e48286aadaf56a588fc5ff707e9a60dd4f959` (sobre `ntm-current` `0615f5db0`): failpoints do save e `merge_key` do item no chão. Branch `wave0-save`.
+Branch `wave0-save`, motor `ddd954eed` sobre `ntm-current` `0615f5db0`: failpoints do save,
+`ItemEntity.merge_key` e segunda gravação do que o hook de save confirmado sujou.
+**Estado: correções da revisão implementadas; provas finais em andamento.** A prova anterior exercitava somente
+uma pilha desfeita e não cobria os cinco P1 encontrados pela revisão independente.
 
-**Garantia.** Os arquivos de um mundo (`region/`, `entities/`, `level.dat`, jogadores, o KV do NTM) não têm commit
-global; por isso a atomicidade estrita entre arquivos é impossível. O que se garante, e está provado, é por **registro
-de chunk**: o que uma máquina deve ao mundo vive no registro do chunk da célula que o deve, gravado junto com os blocos
-e os block entities, e a reabertura reconcilia o KV (que fica à frente do disco) com cada chunk por id e por revisão.
+**Regra de autoridade.** Todo estado que precisa bater com um chunk vive no registro desse chunk ou é derivado
+dele na reabertura. Os arquivos `region/`, `entities/`, `level.dat`, jogadores e KV continuam sem commit global.
+O KV guarda intenções e reconciliação de passos entre chunks; sozinho, um contador do KV não invalida o BE salvo.
 
-| Parte | Onde vive | Como a reabertura reconcilia |
+| Parte | Onde vive | Reconciliação implementada |
 | --- | --- | --- |
-| Itens devidos (ejeção, retenção de BE consumido) | Ledger `ntm:ledger` no anexo do chunk: entrada por pilha, `Pending → Spawned → paga` | Id determinístico por efeito (`serial.done`, ou geração para retenção): o mesmo efeito reaplicado não acrescenta nada. Entidade marcada com `ntm:effect` (anexo da entidade, nunca o item): achada de novo, ou recriada se nunca chegou aos arquivos. |
-| Fusão no chão | Contagem viva da entrada (`live`) + `ItemEntity.merge_key` | Itens do ledger só fundem com os do mesmo chunk de origem; a contagem muda no mesmo registro. Cópia obsoleta de pilha já fundida é removida. |
-| Fim do rastreio | Primeiro `world_saved(wait=true)` depois do spawn | A entrada é liberada, a chave volta a 0 e a fusão vanilla retoma. |
-| Efeito de bloco de lote reaberto | Id do efeito no ledger de cada chunk-alvo, junto dos blocos | Só os chunks cujo registro não tem o id recebem o efeito; a guarda de geração é relaxada somente se o BE do chunk é da mesma geração. |
-| Estado das máquinas que sobrevivem ao passo (o core do pile após desfazer um canal) | `Machine.rev` no BE + diário `survivors` no lote | BE de `rev` menor que a do diário é trocado pelo estado do diário; igual não faz nada; maior é registrado e o BE é preservado. |
+| Itens devidos (ejeção e conteúdo de BE consumido) | Anexo `ntm:ledger` do chunk da origem, junto de blocos e BEs; entrada por pilha, `Pending → Spawned → paga` | Id por efeito (`serial.done`) ou `retained_id(dim,pos,generation)` para retenção. Reaplicação do mesmo id não acrescenta dívida. Conteúdo minerado não cria journal novo de retenção no KV. |
+| Materialização | Dívida publicada junto do consumo, entidades criadas no mesmo passo exclusivo | Entidade marcada `ntm:effect`, nunca o item. Pending procura tag já existente antes de spawnar. |
+| Item que atravessa chunks | Contagem viva (`live`), último chunk observado na entrada e rastreio dos destinos ausentes | Descarregar destino não equivale a pickup. Só se recria quando o último chunk observado está carregado e com suas entidades prontas, sem portador da tag. |
+| Fusão no chão | `ItemEntity.merge_key` em runtime | Itens rastreados fundem dentro do mesmo chunk de origem. Todos os níveis com ledger são visitados para reconciliar entidades e contar o diagnóstico. |
+| Fim do rastreio | Primeiro `world_saved(wait=true)` após o spawn | Libera entrada, tag e chave em memória, poda ids e regrava chunks sujos/entidades antes de concluir o save. Poda também quando o KV não mudou. Autosave sem espera mantém o rastreio. |
+| Efeito de bloco reaberto | Id no ledger de cada chunk-alvo, gravado junto dos blocos | Só recebe o efeito quem ainda não guarda seu id. Retenções são filtradas pelas guardas ainda válidas a cada tentativa, inclusive após esperar outro chunk. |
+| Máquinas sobreviventes | `Machine.rev` no BE e diário **por mundo**, com o último sobrevivente por posição/geração | Ativado por efeitos devidos ou mudanças em mais de um chunk, inclusive Loader→Core sem ejeção. Revisão do BE menor restaura modelo, slots e bridge; igual preserva BE; maior é registrada e preservada. |
+| Máquina consumida / geração adiantada | BE do chunk + referência de recibo ou remoção ainda pendente | Máquina consumida por recibo vira fantasma e seu bloco é removido. Sem referência pendente, contador adiantado do KV recua para a geração do BE salvo. |
 
-**Prova.** `tools/test-game/run-crash-proof.py` (cenário `native_crash.py`): pilha de 125 células cruzando a fronteira de chunk
-x=48, 10 hastes nos canais mais 2 comuns no chão, desfaz os dois canais e salva sob `HORIZON_FAILPOINT`. Pontos: `save_begin`,
-`region_record:1/2/3` (entre registros de chunk), `chunks_written`, `entities_written`, `level_saved`, `parked_saved`,
-`level_dat_written`, `metadata_saved`, `players_saved`, `world_saved`, mais o controle sem falha. Em todos: 12 hastes após cada uma de duas
-reaberturas, pilha sem core zumbi, `drain` retira o que é devido. Lote grande (pilha sem core: varredura de 125 células): 14
-gravações de KV e 1,9 MB no total, não uma por efeito.
+**Provas exigidas.** `run-crash-more.py`: Save & Quit com pending/spawned/applied/keyed/tagged zerados;
+drop cruzando chunk que descarrega sem queda; baú com 7 diamantes minerado; Loader→Core nas duas posições e
+com/sem ejeção; quebra e recolocação de misturador com 16 niter. Cada cenário deve falhar no B1 (`41bd4596`)
+antes da aceitação no binário corrigido. Save & Quit e cada queda exigem duas reaberturas e contagem exata.
 
-**O invariante do diário de efeitos (`flush_machine_effects` pula a gravação do KV antes de um efeito) com o ledger.** Revisado e mantido:
-a gravação omitida só deixa o KV com `done` menor e mais efeitos na fila, e a reprodução refaz esses efeitos com os mesmos ids
-(`serial.done`), porque todo lote da fila recebe o serial **antes da primeira gravação da chamada** (`name_batches`; nasce também na
-criação do lote). Efeitos de bloco simples reproduzem sem dano: o chunk que já guarda o id (ledger do chunk) é pulado e o que não guarda
-recebe o efeito. Itens e retenções são idempotentes por id no ledger, então a regra de gravar antes de itens (`repeatable`) fica mais
-conservadora que o necessário, não menos segura. O ledger só grava na memória do chunk; a ida ao disco é a do save do chunk.
+`run-crash-proof.py` conserva os 14 casos originais: controle; `save_begin`; `region_record:1/2/3`;
+`chunks_written`; `entities_written`; `level_saved`; `parked_saved`; `level_dat_written`;
+`metadata_saved`; `players_saved`; `world_saved`; lote grande. Pilha de 125 células cruzando x=48,
+10 hastes nos canais mais 2 comuns no chão. A segunda reabertura também deve provar a liberação do rastreio.
 
-**Resíduo igual ao do vanilla (do formato de mundo, não do NTM).** (a) item que o jogador pega: o inventário vai no arquivo do
-jogador e a entidade some do de entidades, em momentos diferentes, como qualquer drop; (b) o `world_saved(wait=false)` do autosave
-não libera a entrada (só um save confirmado libera), o que apenas mantém por mais tempo a restrição de fusão; (c) o ledger de chunks
-de níveis estacionados é lido quando o nível está em lugar.
+**Caminho quente.** `name_batches` nomeia todos os lotes antes da primeira gravação. Omitir uma gravação antes
+de um efeito simples só deixa cursor menor no KV: o replay usa os mesmos ids e pula os chunks que já os guardam.
+Itens, explosões e retenções mantêm a barreira de gravação. O ledger só altera memória do chunk; sua ida ao disco
+é a do registro do chunk. O diário de sobreviventes não replica todo commit de toda máquina.
 
-**Custo.** Passo de pile (média/pior) e desfazer um canal, release, 125 máquinas: antes 657 µs / 1,16 ms / 822 µs, depois
-655 µs / 0,89 ms / 842 µs (`timing_of_pile_steps_and_of_an_undo`, `--ignored`). `rev` só sobe em passos que deixam efeitos devidos,
-e só nas máquinas que mudaram.
+**Limites do formato.** Pickup continua dividido entre arquivo do jogador e arquivo da entidade, como no vanilla.
+Autosave sem espera prolonga a restrição de fusão até um save confirmado. Chunks de dimensões estacionadas têm
+seus anexos lidos quando o nível é visitado. Esses limites não autorizam duplicação adicional atribuível ao NTM.
+
+**Custo e regressões.** Medidas antigas (antes das correções da revisão) não são aceitação deste HEAD. Repetir
+média/pior tick e desfazer canal, mais `pile-meltdown`, e a bateria completa no mesmo binário final.
 
 ## Hooks de item — extensão local em validação
 ## Hooks de item — extensões locais
 
 | Extensão local | Equivalente no upstream congelado `fc0210381` | Decisão |
 | --- | --- | --- |
+| `save_live_later` e `HORIZON_FAILPOINT=live_chunk:x,z` | O writer já distingue chunks vivos de protos; os ordinais antigos contam ambos. | Diagnóstico aprovado pelo coordenador. O alvo vai primeiro em sua região e o processo cai após seu header, somente no lote vivo de `save_level`. Desligado por padrão; ordem normal e gameplay preservados. O harness exige no `.mca` exatamente um dos chunks novo e o outro antigo. |
 | `native_player_transactions`: snapshot por UUID/época, CAS de inventário completo, armadura, offhand e attachment com codec; fome, cura, efeitos e cooldown após validação | Hooks oficiais de uso/equipamento/dano e attachments já existem. Não oferecem commit conjunto nem recusa sem consumir parte do inventário. | Extensão local; reutiliza persistência de attachments, efeitos, cooldowns e eventos oficiais. Nenhum tipo do NTM entra no motor. |
 | `remote_open_screen`: id validado do bloco de origem no BE temporário de menu customizado | O upstream deixa o id vazio e perde os filtros condicionais no caminho de previsão. | Preservar o id apenas quando o bloco clicado declara o mesmo menu; políticas compartilhadas seguem idênticas no servidor e no cliente. |
 | `Hub::sync_containers` e `Menu::sent_carried`: o cursor que o mod publica depois de um clique em menu nativo | O upstream reenvia o menu e o cursor antigos quando o clique vai ao mod (`resend_menu`) e só compara slots na sincronização do tick. Um cursor alterado pelo commit do mod nunca chegava ao cliente. | Extensão local, restrita a `Slots::Native`: o hub guarda o último cursor enviado e manda `SetCursorItem` quando difere. Teste `a_native_menus_cursor_published_after_the_resend_is_synced`. |
