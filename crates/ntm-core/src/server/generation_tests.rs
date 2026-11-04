@@ -896,6 +896,34 @@ fn a_surviving_machine_in_an_older_chunk_gets_the_state_the_journal_gives_it() {
 }
 
 #[test]
+fn a_replacement_survivor_is_restored_even_when_its_predecessor_had_a_higher_revision() {
+    use super::Survivor;
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let key = (D.to_string(), P);
+    let mut old = s.ready.world.machines.remove(&key).unwrap();
+    old.rev = 8;
+    s.journal_survivor(Survivor {
+        dim: D.into(), pos: P, generation: old.generation, rev: old.rev,
+        json: serde_json::to_string(&old).unwrap(),
+    });
+    let mut chunk = old.clone();
+    chunk.generation += 1;
+    chunk.rev = 0;
+    chunk.facing = Some("north".into());
+    let mut updated = chunk.clone();
+    updated.rev = 1;
+    updated.facing = Some("south".into());
+    s.journal_survivor(Survivor {
+        dim: D.into(), pos: P, generation: updated.generation, rev: updated.rev,
+        json: serde_json::to_string(&updated).unwrap(),
+    });
+    // This replacement's BE predates its first coupled step. An old machine's rev=8 cannot block rev=1 of this one.
+    assert!(s.native_adopt(D, P, &serde_json::to_string(&chunk).unwrap()));
+    assert_eq!(s.ready.world.machines[&key].facing.as_deref(), Some("south"));
+}
+
+#[test]
 fn a_chunk_that_holds_the_effect_is_not_given_it_twice() {
     let (h, _) = old_chunk_replay(true);
     assert_eq!(blockstate::id_of(&h.blocks[&P]), zirnox::BLOCK, "untouched");

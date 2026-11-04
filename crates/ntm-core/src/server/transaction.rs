@@ -221,7 +221,7 @@ impl Server {
     /// Keeps the state a machine was left in by a journaled step: the one of the highest revision.
     pub(super) fn journal_survivor(&mut self,s:Survivor){
         let key=(s.dim.clone(),s.pos);
-        if self.ready.world.survivors.get(&key).is_none_or(|old|old.rev<=s.rev){self.ready.world.survivors.insert(key,s);}
+        if self.ready.world.survivors.get(&key).is_none_or(|old|old.generation!=s.generation||old.rev<=s.rev){self.ready.world.survivors.insert(key,s);}
     }
 
     /// Gives every queued batch that has none its serial (the counter is kept with the journal).
