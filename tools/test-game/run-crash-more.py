@@ -3,8 +3,9 @@
 
   python3 tools/test-game/run-crash-more.py --binary B --resources R --scratch-root S SCENARIO [POINT ...]
 
-SCENARIO: coupled-a coupled-b coupled-ea coupled-eb crossing mining break replace. Points default to the ones that
-matter for the scenario. A world that passed is deleted; the report keeps the numbers.
+SCENARIO: coupled-a coupled-b coupled-ea coupled-eb crossing crossing-kill mining break replace origin-pickup
+origin-pickup-away origin-merge origin-vanish origin-kill. Points default to the ones that matter for the scenario;
+`kill` ends the process with SIGKILL after the action, outside any save. A world that passed is deleted; the report keeps the numbers.
 """
 import argparse
 import importlib.util
@@ -32,6 +33,10 @@ DEFAULT_POINTS = {
     'crossing': ['none'],
     'origin-pickup': ['none'],
     'origin-pickup-away': ['none'],
+    'origin-merge': ['none'],
+    'origin-vanish': ['none'],
+    'origin-kill': ['kill'],
+    'crossing-kill': ['kill'],
     'save-quit': ['none'],
     'mining': crash_proof.POINTS,
     'break': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],
@@ -110,6 +115,11 @@ def play(args, base, scratch, env, scenario, point):
         if point == 'none':
             result['exit'] = 'survived'
             world.quit()
+        elif point == 'kill':
+            # No save at all: the process dies where the action left it (SIGKILL keeps what reached the page cache).
+            world.client.kill()
+            result['exit'] = world.client.wait()
+            (folder / 'control.sock').unlink(missing_ok=True)
         else:
             code = world.died()
             result['exit'] = code
