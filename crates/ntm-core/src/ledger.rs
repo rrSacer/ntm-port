@@ -65,6 +65,19 @@ pub struct Entry {
     pub item: String,
     #[serde(default)]
     pub state: State,
+    /// How many items its entities hold now, once they have merged with others or split (0: as `item` says).
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub live: u32,
+}
+
+fn is_zero(n: &u32) -> bool {
+    *n == 0
+}
+
+/// The entry an entity tag names.
+pub fn parse_tag(tag: &str) -> Option<(u64, u32)> {
+    let (id, idx) = tag.split_once(':')?;
+    Some((u64::from_str_radix(id, 16).ok()?, idx.parse().ok()?))
 }
 
 /// The name an item entity carries for its entry: `<id>:<idx>`.
@@ -98,7 +111,7 @@ impl ChunkLedger {
             self.applied.insert(id);
         }
         for (idx, item) in items.into_iter().enumerate() {
-            self.entries.push(Entry { id, idx: idx as u32, at, item, state: State::Pending });
+            self.entries.push(Entry { id, idx: idx as u32, at, item, state: State::Pending, live: 0 });
         }
         true
     }
@@ -106,6 +119,20 @@ impl ChunkLedger {
         if let Some(e) = self.entries.iter_mut().find(|e| e.id == id && e.idx == idx) {
             e.state = State::Spawned;
         }
+    }
+    /// The entry's items are `held` now (merged or split on the ground). True when that changed it.
+    pub fn set_live(&mut self, id: u64, idx: u32, held: u32) -> bool {
+        match self.entries.iter_mut().find(|e| e.id == id && e.idx == idx) {
+            Some(e) if e.live != held => {
+                e.live = held;
+                true
+            }
+            _ => false,
+        }
+    }
+    /// The effect was applied and every stack of it is paid.
+    pub fn is_paid(&self, id: u64) -> bool {
+        self.applied.contains(&id) && !self.entries.iter().any(|e| e.id == id)
     }
     /// The stack is paid; when it was the effect's last, the id moves to `applied`.
     pub fn retire(&mut self, id: u64, idx: u32) {
@@ -177,6 +204,24 @@ mod tests {
         assert!(ledger.entries.is_empty() && ledger.applied.contains(&id));
         assert!(!ledger.apply(id, [1, 64, 2], vec!["x".into()]));
         assert!(ledger.entries.is_empty(), "nothing came back");
+    }
+
+    #[test]
+    fn what_merged_on_the_ground_is_what_is_owed() {
+        let mut ledger = ChunkLedger::default();
+        let (a, b) = (effect_id(3, 0), effect_id(3, 1));
+        ledger.apply(a, [0, 0, 0], vec!["x".into()]);
+        ledger.apply(b, [0, 0, 0], vec!["x".into()]);
+        ledger.mark_spawned(a, 0);
+        ledger.mark_spawned(b, 0);
+        // `a` took `b`'s item: one step, one record.
+        assert!(ledger.set_live(a, 0, 2));
+        assert!(!ledger.set_live(a, 0, 2));
+        ledger.retire(b, 0);
+        let back = ChunkLedger::from_json(&ledger.to_json());
+        assert_eq!(back.entries[0].live, 2);
+        assert!(back.is_paid(b) && !back.is_paid(a));
+        assert_eq!(parse_tag(&entity_tag(a, 0)), Some((a, 0)));
     }
 
     #[test]
