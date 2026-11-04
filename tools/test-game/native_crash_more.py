@@ -341,7 +341,7 @@ def mining_verify(g, again=False):
 # ------------------------------------------------------------------------------------------------- break / replace
 
 MIXER = (140, 100, 8)
-NITER = 16
+NITER = int(os.environ.get('NTM_CRASH_NITER', '16'))
 
 
 def mixer_items(g, p):
