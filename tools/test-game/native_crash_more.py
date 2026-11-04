@@ -358,6 +358,8 @@ def break_prepare(g):
     g.ground(x - 3, y, z, width=8)
     g.command('clear @s')
     g.command('give @s ntm:machine_mixer 1')
+    if SCENARIO.startswith('origin-pickup'):
+        g.command(f'tp @s {x + .5} {y} {z + 3.5}')
     g.ctl(f'place {x} {y} {z} --item ntm:machine_mixer')
     g.command('clear @s')
     open_machine(g, x, y, z)
@@ -423,6 +425,65 @@ def break_verify(g, again=False):
         g.check('a_standing_mixer_is_a_live_machine', machine_present(g, core), detail)
 
 
+def world_items(g, item):
+    lines = g.command('execute as @e[type=minecraft:item] run data get entity @s Item').get('chat', [])
+    return sum(int(n) for line in lines if item in line for n in re.findall(r'(?:count|Count): ?(\d+)', line))
+
+
+def origin_pickup_act(g):
+    g.ctl('wait-ready 120')
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = tuple(prep['core'])
+    g.command('gamemode survival @s')
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 4))
+    g.command('give @s minecraft:diamond_pickaxe 1')
+    g.ctl('select minecraft:diamond_pickaxe')
+    g.ctl('break %d %d %d --timeout 30' % core)
+    time.sleep(1)
+    g.check('broken_contents_are_tracked', ledger(g)['spawned'] > 0, ledger(g))
+    g.command('forceload add 496 0 511 15')
+    time.sleep(2)
+    g.command('fill 496 99 0 511 99 15 minecraft:stone')
+    g.command('tp @e[type=minecraft:item] 503.5 100 8.5')
+    time.sleep(1)
+    g.command('forceload remove all')
+    g.command('forceload add 496 0 511 15')
+    g.command('tp @s 503.5 102 13.5')
+    deadline = time.monotonic() + 90
+    while True:
+        loaded = g.command('execute if loaded %d %d %d run say NTM_SOURCE_LOADED' % core)
+        source_loaded = any('NTM_SOURCE_LOADED' in s for s in loaded.get('chat', []))
+        if not source_loaded or time.monotonic() > deadline:
+            break
+        time.sleep(1)
+    g.check('source_really_unloaded', not source_loaded, loaded)
+    g.evidence['while_away'] = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'), 'ledger': ledger(g)}
+    g.check('contents_still_alive_in_destination', g.evidence['while_away']['entities'] == NITER, g.evidence['while_away'])
+    g.command('tp @s 503.5 100 8.5')
+    time.sleep(3)
+    picked = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter')}
+    g.check('all_contents_picked_up_while_source_is_away', picked == {'inventory': NITER, 'entities': 0}, picked)
+    if SCENARIO != 'origin-pickup-away':
+        g.command('forceload add %d %d' % (core[0], core[2]))
+        time.sleep(6)
+    detail = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'), 'ledger': ledger(g)}
+    detail['total'] = detail['inventory'] + detail['entities']
+    g.evidence['after_act'] = detail
+    g.check('source_reload_does_not_duplicate_picked_up_contents', detail['total'] == NITER, detail)
+    save_expecting_death(g)
+
+
+def origin_pickup_verify(g, again=False):
+    g.ctl('wait-ready 120')
+    g.command('forceload add 128 0 143 15')
+    g.command('forceload add 496 0 511 15')
+    led = quiet(g)
+    detail = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'), 'ledger': led}
+    detail['total'] = detail['inventory'] + detail['entities']
+    g.evidence['counted' + ('_again' if again else '')] = detail
+    g.check('picked_up_contents_remain_exactly_once', detail['total'] == NITER, detail)
+
+
 # ------------------------------------------------------------------------------------------------------------ common
 
 def save_expecting_death(g):
@@ -443,6 +504,8 @@ def drain(g):
 STEPS = {
     'coupled': (coupled_prepare, coupled_act, coupled_verify),
     'crossing': (crossing_prepare, crossing_act, crossing_verify),
+    'origin-pickup': (break_prepare, origin_pickup_act, origin_pickup_verify),
+    'origin-pickup-away': (break_prepare, origin_pickup_act, origin_pickup_verify),
     'save-quit': (crossing_prepare, save_quit_act, save_quit_verify),
     'mining': (mining_prepare, mining_act, mining_verify),
     'vanilla-break': (vanilla_break_prepare, break_act, break_verify),
