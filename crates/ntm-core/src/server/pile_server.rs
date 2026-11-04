@@ -579,12 +579,22 @@ mod tests {
         worn:usize,
         /// First JSON published with a formation's block entities.
         first_json:BTreeMap<Pos,String>,
+        /// Journal writes of the last sweep tick (`melt`).
+        sweep_sets:u64,
+        /// For each journal write, how many `Items` effects it still held pending.
+        pending_items_at_sets:Vec<usize>,
     }
     impl Kv for Host {
         fn get(&mut self, k: &str) -> Option<Vec<u8>> {
             self.kv.get(k)
         }
         fn set(&mut self, k: &str, v: &[u8]) -> Result<(), String> {
+            if k == crate::persist::KEY
+                && let Ok(kept) = serde_json::from_slice::<crate::persist::Kept>(v)
+            {
+                let items = kept.machine_effects.iter().flat_map(|b| &b.effects).filter(|e| matches!(e, WorldEffect::Items { .. })).count();
+                self.pending_items_at_sets.push(items);
+            }
             self.kv.set(k, v)
         }
         fn delete(&mut self, k: &str) {
@@ -940,6 +950,62 @@ mod tests {
         assert!(h.blocks.values().all(|b| !b.starts_with("ntm:pile_block__")), "{:?}", h.blocks.iter().filter(|(_, b)| b.starts_with("ntm:pile_block__")).count());
         assert_eq!(h.drops.len(), 1);
         assert_eq!(h.blasts.len(), 1);
+    }
+    /// The meltdown of `formed()`'s pile, its blast tick and then its sweep tick, journaled before
+    /// every effect (`strict`) or as the server does. What the world ends as, and the writes it took.
+    fn melt(strict: bool, items_first: bool) -> Host {
+        let (mut s, mut h) = formed();
+        s.ready.strict_journal = strict;
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        let c = core(&mut s);
+        c.channels[0].load(Rod::of("ntm:pile_rod__waste", 0.).unwrap());
+        c.channels[0].heat = 802.;
+        s.native_tick(&mut h, 8);
+        replay(&mut s, &mut h);
+        if items_first {
+            // An effect that must not repeat, ahead of the sweep's.
+            s.ready.world.machine_effects.push_front(CommittedEffects {
+                origins: vec![],
+                owners: vec![],
+                tombstones: vec![],
+                effects: std::collections::VecDeque::from([WorldEffect::Items { dim: DIM.into(), pos: [0, 70, 0], items: vec![("ntm:pile_rod__zr".into(), 1)] }]),
+            });
+        }
+        let before = h.kv.sets;
+        h.pending_items_at_sets.clear();
+        s.native_tick(&mut h, 9);
+        assert!(h.blocks.values().all(|b| !b.starts_with("ntm:pile_block__")));
+        assert!(s.ready.world.machine_effects.is_empty());
+        h.sweep_sets = h.kv.sets - before;
+        h
+    }
+    #[test]
+    fn the_meltdown_sweep_journals_once_and_ends_as_a_write_per_effect() {
+        let strict = melt(true, false);
+        let fast = melt(false, false);
+        // The same world: blocks, drops, blast, and the journal the server ends with.
+        assert_eq!(fast.blocks, strict.blocks);
+        assert_eq!(fast.drops, strict.drops);
+        assert_eq!(fast.blasts, strict.blasts);
+        assert_eq!(fast.kv.map["world"], strict.kv.map["world"]);
+        // 124 members: a write before each of them, against one before the first and one at the end.
+        assert!(strict.sweep_sets > 100, "{}", strict.sweep_sets);
+        assert!(fast.sweep_sets <= 3, "{}", fast.sweep_sets);
+        assert!(fast.kv.written * 20 < strict.kv.written, "{} against {} bytes", fast.kv.written, strict.kv.written);
+    }
+    #[test]
+    fn an_effect_that_must_not_repeat_is_journaled_before_the_next_one_goes_out() {
+        let strict = melt(true, true);
+        let fast = melt(false, true);
+        assert_eq!(fast.blocks, strict.blocks);
+        assert_eq!(fast.drops, strict.drops);
+        assert_eq!(fast.kv.map["world"], strict.kv.map["world"]);
+        assert_eq!(fast.drops.iter().filter(|d| d.1 == "ntm:pile_rod__zr").count(), 1);
+        // Items (write, final), then the first block after them (write, because the drop went out), then the final.
+        assert!(fast.sweep_sets <= 5, "{}", fast.sweep_sets);
+        // Only the first write still holds the items; every later one, the first block's included, has them done.
+        assert_eq!(fast.pending_items_at_sets.first(), Some(&1), "{:?}", fast.pending_items_at_sets);
+        assert!(fast.pending_items_at_sets.iter().skip(1).all(|n| *n == 0), "{:?}", fast.pending_items_at_sets);
     }
     #[test]
     fn native_loader_reads_the_signal_of_its_own_cell_only() {

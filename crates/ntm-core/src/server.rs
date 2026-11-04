@@ -187,6 +187,9 @@ type Key = (String, Pos);
 #[derive(Clone, Debug, Default)]
 struct Ready {
     world: WorldState,
+    /// Tests: journal before every effect, as the server did before it skipped the repeats.
+    #[cfg(test)]
+    strict_journal: bool,
     topo: BTreeMap<String, Topology>,
     topo_dirty: bool,
     /// Chunk loaded, as last checked.

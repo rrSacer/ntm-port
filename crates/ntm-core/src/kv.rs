@@ -13,6 +13,8 @@ pub struct MemKv {
     pub map: std::collections::BTreeMap<String, Vec<u8>>,
     /// Bytes written so far: what the one-call budget would count.
     pub written: u64,
+    /// Writes so far (each one a file written whole and renamed on the native host).
+    pub sets: u64,
     /// Keys whose writes fail (a full folder, an I/O error).
     pub refuse: std::collections::BTreeSet<String>,
 }
@@ -29,6 +31,7 @@ impl Kv for MemKv {
             return Err("would hold over 64 keys".into());
         }
         self.written += value.len() as u64;
+        self.sets += 1;
         self.map.insert(key.into(), value.to_vec());
         Ok(())
     }

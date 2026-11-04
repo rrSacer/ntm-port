@@ -201,9 +201,22 @@ impl Server {
         if self.ready.facts_pending || !self.recover_retentions(host){return;}
         let batches=self.ready.world.machine_effects.len();
         if batches==0{return;}
+        // Journal write-ahead, and when it may be skipped. `set` rewrites the whole journal, so one
+        // before each of n queued effects costs n times its size (a meltdown's sweep: 125 writes of
+        // 2 MB, the server blocked in `rename` for seconds). A write may be left out before an effect
+        // only when all of this hold, so a crash replays to the same world as before:
+        //  1. a write in this call already holds every queued batch (`journaled`);
+        //  2. the effect, refreshed against the world, is equal to what that write holds;
+        //  3. nothing that a replay would repeat went out since that write (`repeatable`): items,
+        //     an explosion, or a block removal with retained drops. These pop from the journal
+        //     before the next effect, as always.
+        // Plain `Blocks` effects replay harmlessly: the guard compares the cell as it stands.
+        let mut journaled=false;
+        let mut repeatable=false;
         for _ in 0..batches {
             while let Some(batch)=self.ready.world.machine_effects.front() {
                 let Some(mut effect)=batch.effects.front().cloned() else{self.ready.world.machine_effects.pop_front();break};
+                let journal=effect.clone();
                 let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::EncodedItems{dim,..}|WorldEffect::PileExplosion{dim,..}=>dim};
                 if !host.pile_reachable(dim){self.ready.world.machine_effects.rotate_left(1);break;}
                 let mut wait=false;
@@ -239,8 +252,15 @@ impl Server {
                     physical=true;
                 }
                 if wait{self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect;self.ready.world.machine_effects.rotate_left(1);break;}
+                let replays=matches!(&effect,WorldEffect::Blocks{retained,..} if retained.is_empty());
+                let unchanged=journaled&&!repeatable&&effect==journal;
+                #[cfg(test)]
+                let unchanged=unchanged&&!self.ready.strict_journal;
                 self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect.clone();
-                if let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){host.log(&format!("pending machine effect: {e}"));return;}
+                if !unchanged{
+                    if let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){host.log(&format!("pending machine effect: {e}"));return;}
+                    journaled=true;repeatable=false;
+                }
                 let done=match &effect {
                     WorldEffect::Blocks{retained,..}=>cells.is_empty()&&retained.is_empty()||host.commit_structural(&cells,retained,&self.ready.world.machine_effects.front().unwrap().owners),
                     WorldEffect::Items{dim,pos,items}=>host.drop_items(dim,*pos,items),
@@ -253,6 +273,7 @@ impl Server {
                     if let Some(WorldEffect::Blocks{retained,..})=self.ready.world.machine_effects.front_mut().and_then(|b|b.effects.front_mut()){retained.clear();}
                     self.ready.world.machine_effects.rotate_left(1);break;
                 }
+                repeatable|=!replays;
                 let batch=self.ready.world.machine_effects.front_mut().unwrap();
                 let effect=batch.effects.pop_front().unwrap();
                 if physical {
