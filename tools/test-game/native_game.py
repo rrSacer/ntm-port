@@ -3,7 +3,9 @@
 Use a fresh creative world from build-native.sh and control.sock in GAME.
 Commands and failed checks are retained in the scenario's evidence JSON.
 """
+from contextlib import contextmanager
 import json
+import os
 import socket
 import time
 from pathlib import Path
@@ -13,6 +15,8 @@ class Game:
     def __init__(self, folder, scenario):
         self.folder = Path(folder)
         self.output = self.folder / f'native-{scenario}.json'
+        self._deferred_saves=0
+        self._pending_input_delay=0
         self.evidence = {'scenario': scenario, 'ok': False, 'steps': [], 'checks': {}}
 
     def ctl(self, line, _retry=0):
@@ -26,6 +30,7 @@ class Game:
                     return status
                 time.sleep(.25)
             raise TimeoutError('player/chunks not ready')
+        started=time.monotonic()
         with socket.socket(socket.AF_UNIX) as sock:
             sock.settimeout(120)
             sock.connect(str(self.folder / 'control.sock'))
@@ -36,13 +41,35 @@ class Game:
             # A heavy server tick (a meltdown's blast) can outlast the controller's wait: ask again.
             time.sleep(5)
             return self.ctl(line, _retry + 1)
-        self.evidence['steps'].append({'command': line, 'result': result})
-        self.save()
+        step={'command': line, 'result': result}
+        if os.environ.get('NTM_CTL_TIMING'):
+            step['started']=started;step['reply_seconds']=time.monotonic()-started
+        self.evidence['steps'].append(step)
+        saved=time.monotonic();self.save()
+        if os.environ.get('NTM_CTL_TIMING'):step['save_seconds']=time.monotonic()-saved
         if result.get('error'):
             raise RuntimeError(f'{line}: {result["error"]}')
         return result
 
+    @contextmanager
+    def defer_evidence(self):
+        """Keep timed input independent of filesystem latency; flush after releasing it, including on failure."""
+        self._deferred_saves+=1
+        try:
+            yield
+        finally:
+            self._deferred_saves-=1
+            self.save()
+
     def save(self):
+        delay=float(os.environ.get('NTM_CTL_SAVE_DELAY','0'))
+        if delay and self.evidence['steps'] and self.evidence['steps'][-1]['command']=='mouse right down':
+            self._pending_input_delay=delay
+        if self._deferred_saves:return
+        if self._pending_input_delay:
+            self.evidence['injected_input_evidence_delay_seconds']=self._pending_input_delay
+            time.sleep(self._pending_input_delay)
+            self._pending_input_delay=0
         self.output.write_text(json.dumps(self.evidence, indent=2, ensure_ascii=False) + '\n')
 
     def check(self, name, passed, actual):
