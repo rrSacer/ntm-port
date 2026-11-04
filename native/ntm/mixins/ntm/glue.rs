@@ -101,6 +101,9 @@ pub(super) fn player_break(game:&mut crate::game::Game<'_>,pos:[i32;3],state:hor
 /// Existing API 234. The level removed the BE and `with_level` flushes its spawns before returning,
 /// so no save can observe the removed block before these debts enter that chunk's record.
 pub(super) fn player_spill_spawn(game:&mut crate::game::Game<'_>,entity:u32,pos:[f64;3]) {
+    horizon_client::spans::time("ntm_spill_spawn",||player_spill_spawn_timed(game,entity,pos));
+}
+fn player_spill_spawn_timed(game:&mut crate::game::Game<'_>,entity:u32,pos:[f64;3]) {
     let at=pos.map(|v|v.floor() as i32);
     let dim=game.dim.id().to_string();let key=(dim.clone(),at);
     let mut pending=lock(&PLAYER_SPILLS);
@@ -168,6 +171,9 @@ pub(super) fn world(open: bool) {
 
 /// A flushed world save makes already applied item/block effects durable.
 pub(super) fn world_saved(game:&mut crate::game::Game<'_>,wait:bool){
+    horizon_client::spans::time("ntm_world_saved", || world_saved_timed(game, wait));
+}
+fn world_saved_timed(game:&mut crate::game::Game<'_>,wait:bool){
     let changes=std::mem::take(&mut *lock(&CHANGES));
     if wait{ledger_confirm(game);}
     if let Some((server,_))=lock(&SERVER).as_mut(){
@@ -465,6 +471,9 @@ fn ledger_load(g: &mut crate::game::Game<'_>, chunk: [i32; 2]) -> ntm_core::ledg
 
 /// Writes the ledger into the chunk's attachments (and keeps it for the ticks), on the level in place.
 fn ledger_store(g: &mut crate::game::Game<'_>, key: &ChunkKey, ledger: ntm_core::ledger::ChunkLedger) {
+    horizon_client::spans::time("ntm_ledger_store", || ledger_store_timed(g, key, ledger));
+}
+fn ledger_store_timed(g: &mut crate::game::Game<'_>, key: &ChunkKey, ledger: ntm_core::ledger::ChunkLedger) {
     use horizon_client::mod_api::Holder;
     if let Ok(map) = g.attachment_map_quiet(Holder::Chunk([key.1, key.2])) {
         let _ = map.set(&LEDGER_TYPE, if ledger.is_empty() { String::new() } else { ledger.to_json() });
@@ -485,6 +494,9 @@ fn ledger_get(g: &mut crate::game::Game<'_>, key: &ChunkKey) -> ntm_core::ledger
 /// Owes `items` (SNBT stacks) at `pos` for the effect `id`, on the level in place. True when the effect is
 /// owed now or was before; false when its chunk is not loaded (the effect is retried).
 fn ledger_add_here(g: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32; 3], items: Vec<String>) -> bool {
+    horizon_client::spans::time("ntm_ledger_add", || ledger_add_here_timed(g, dim, id, pos, items))
+}
+fn ledger_add_here_timed(g: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32; 3], items: Vec<String>) -> bool {
     if !g.world.loaded(pos[0], pos[2]) {
         return false;
     }
@@ -547,6 +559,9 @@ fn tagged_entities(g: &mut crate::game::Game<'_>, tag: &str) -> Vec<(u32, [i32; 
 /// Every owed stack of one chunk: spawn what is pending, retire what was paid, find again after a reopen what
 /// was spawned, and spawn again what a reopened world proves never reached its files.
 fn ledger_chunk(g: &mut crate::game::Game<'_>, key: &ChunkKey, unloaded: &std::collections::BTreeSet<ChunkKey>) {
+    horizon_client::spans::time("ntm_ledger_chunk", || ledger_chunk_timed(g, key, unloaded));
+}
+fn ledger_chunk_timed(g: &mut crate::game::Game<'_>, key: &ChunkKey, unloaded: &std::collections::BTreeSet<ChunkKey>) {
     if !lock(&ENTITIES_READY).contains(key) || !g.world.loaded(key.1 * 16, key.2 * 16) {
         return;
     }
@@ -831,6 +846,9 @@ fn ledger_report(game: &mut crate::game::Game<'_>, words: &[&str]) -> String {
 
 /// `ledger_sweep` in every dimension that has a ledger, and the one in place.
 fn ledger_sweep_all(game: &mut crate::game::Game<'_>) {
+    horizon_client::spans::time("ntm_ledger_sweep", || ledger_sweep_all_timed(game));
+}
+fn ledger_sweep_all_timed(game: &mut crate::game::Game<'_>) {
     let mut dims: std::collections::BTreeSet<String> = lock(&LEDGERS).keys().map(|k| k.0.clone()).collect();
     dims.insert(game.dim.id().to_string());
     for dim in dims {
@@ -914,7 +932,7 @@ pub(super) fn entities_put_away(dim: &str, chunk: [i32; 2]) {
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
     // A declined/unsuccessful break must not claim an unrelated later item.
     lock(&PLAYER_SPILLS).clear();
-    ledger_tick(game);
+    horizon_client::spans::time("ntm_ledger_tick", || ledger_tick(game));
     let mut retry=Vec::new();
     for (origin,expected) in std::mem::take(&mut *lock(&POST_SYNC)){
         // Any identity change since this committed sync makes it obsolete.
@@ -938,7 +956,7 @@ pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
         let now = ntm_core::server::native_server::native_change_state(&new,host.game.native_loaded_block(&dim,pos));
         server.native_block_changed(&dim, pos, &old, &now);
     }
-    server.native_tick(&mut host, *tick);
+    horizon_client::spans::time("ntm_native_tick", || server.native_tick(&mut host, *tick));
 }
 
 // ------------------------------------------------------------ the host
@@ -957,6 +975,17 @@ impl Kv for Host<'_, '_> {
         std::fs::read(self.store(key)?).ok()
     }
     fn set(&mut self, key: &str, value: &[u8]) -> Result<(), String> {
+        horizon_client::spans::time("ntm_kv_set", || self.set_timed(key, value))
+    }
+    fn delete(&mut self, key: &str) {
+        if let Some(p) = self.store(key) {
+            let _ = std::fs::remove_file(p);
+        }
+    }
+}
+
+impl Host<'_, '_> {
+    fn set_timed(&mut self, key: &str, value: &[u8]) -> Result<(), String> {
         let path = self.store(key).ok_or_else(|| format!("key {key}"))?;
         let dir = path.parent().expect("under the world");
         std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
@@ -965,11 +994,6 @@ impl Kv for Host<'_, '_> {
         KV_WRITES.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         KV_BYTES.fetch_add(value.len() as u64, std::sync::atomic::Ordering::Relaxed);
         std::fs::write(&tmp, value).and_then(|()| std::fs::rename(&tmp, &path)).map_err(|e| e.to_string())
-    }
-    fn delete(&mut self, key: &str) {
-        if let Some(p) = self.store(key) {
-            let _ = std::fs::remove_file(p);
-        }
     }
 }
 
@@ -1052,6 +1076,9 @@ fn cell_snapshot(game:&crate::game::Game<'_>,dim:&str,pos:[i32;3])->Option<ntm_c
 
 impl Host<'_, '_> {
     fn publish_atomic(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool) -> bool {
+        horizon_client::spans::time("ntm_publish_atomic", || self.publish_atomic_timed(commits, extra, retained, wear_held))
+    }
+    fn publish_atomic_timed(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool) -> bool {
         // This callback owns &mut Game for its entire duration. No event,
         // hopper, chunk unload or block mutation can interleave these passes.
         // Resolve ALL entities and validate ALL expected slots before changing
@@ -1242,13 +1269,13 @@ impl ServerHost for Host<'_, '_> {
         }).unwrap_or(false)
     }
     fn effect_applied(&mut self,id:u64,cells:&[(String,[i32;3])]){
-        for (dim,pos) in cells{
+        horizon_client::spans::time("ntm_effect_applied",||for (dim,pos) in cells{
             in_place(self.game,dim,|g|{
                 let key=chunk_key(dim,[pos[0]>>4,pos[2]>>4]);
                 let mut ledger=ledger_get(g,&key);
                 if ledger.note_applied(id){ledger_store(g,&key,ledger);}
             });
-        }
+        });
     }
     fn pile_depletion(&mut self, stack: &Stack) -> f64 {
         stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
