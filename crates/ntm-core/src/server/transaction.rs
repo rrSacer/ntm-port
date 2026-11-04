@@ -40,6 +40,10 @@ pub struct CommittedEffects {
     pub effects: std::collections::VecDeque<WorldEffect>,
     /// Removed machines retain their contents here until every effect succeeds.
     pub tombstones: Vec<((String, Pos), Machine)>,
+    /// Runtime only: the batch came back from the storage of an earlier session, so the world's files may be
+    /// older than it. Each chunk says by its ledger whether it already holds an effect.
+    #[serde(skip)]
+    pub replayed: bool,
 }
 
 /// A lossless retention journal written before consuming a BE's cell.
@@ -225,6 +229,13 @@ impl Server {
                 let journal=effect.clone();
                 let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::EncodedItems{dim,..}|WorldEffect::PileExplosion{dim,..}=>dim};
                 if !host.pile_reachable(dim){self.ready.world.machine_effects.rotate_left(1);break;}
+                // Name the batch for good before anything is applied: its effects' ids must outlive a crash.
+                if self.ready.world.machine_effects.front().is_some_and(|b|b.serial==0){
+                    self.ready.world.effect_serial+=1;
+                    let serial=self.ready.world.effect_serial;
+                    self.ready.world.machine_effects.front_mut().unwrap().serial=serial;
+                }
+                let (effect_id,replayed)={let b=self.ready.world.machine_effects.front().unwrap();(crate::ledger::effect_id(b.serial,b.done),b.replayed)};
                 let mut wait=false;
                 let mut physical=false;
                 let mut cells=Vec::new();
@@ -232,7 +243,13 @@ impl Server {
                     let mut keep=Vec::new();let mut guards=Vec::new();
                     for (pos,desired) in &*blocks {
                         let Some(g)=expected.iter().find(|g|g.pos==*pos&&g.dim==*dim) else{continue};
-                        if !self.current_guard(g){continue;}
+                        // The chunk's own record says whether it already holds this effect (it was saved after it).
+                        if host.effect_seen(effect_id,dim,*pos){continue;}
+                        // A chunk older than the storage still has the very machine the effect consumed (its block entity
+                        // is of the same generation), whatever the generations since say: its record does not hold the
+                        // effect, so the effect is due there. A machine placed anew has a generation of its own.
+                        let stale_chunk=replayed&&host.get_block(dim,*pos).is_some_and(|b|blockstate::id_of(&b)==blockstate::id_of(&g.state))&&host.cell_generation(dim,*pos)==Some(g.generation);
+                        if !self.current_guard(g)&&!stale_chunk{continue;}
                         match host.get_block(dim,*pos){
                             None=>{wait=true;keep.push((*pos,desired.clone()));guards.push(g.clone());}
                             Some(actual) if blockstate::id_of(&actual)==blockstate::id_of(&g.state) || blockstate::id_of(&actual)==blockstate::id_of(desired)=>{
@@ -280,7 +297,11 @@ impl Server {
                     host.log(&format!("effect {}.{} {kind} owners={} origins={}",b.serial,b.done,b.owners.len(),b.origins.len()));
                 }
                 let done=match &effect {
-                    WorldEffect::Blocks{retained,..}=>cells.is_empty()&&retained.is_empty()||host.commit_structural(&cells,retained,&self.ready.world.machine_effects.front().unwrap().owners),
+                    WorldEffect::Blocks{retained,..}=>cells.is_empty()&&retained.is_empty()||{
+                        let applied=host.commit_structural(&cells,retained,&self.ready.world.machine_effects.front().unwrap().owners);
+                        if applied{let at:Vec<_>=cells.iter().map(|c|(c.guard.dim.clone(),c.guard.pos)).collect();host.effect_applied(effect_id,&at);}
+                        applied
+                    },
                     WorldEffect::Items{dim,pos,items}=>host.apply_items(effect_id,dim,*pos,items),
                     WorldEffect::EncodedItems{dim,pos,items}=>host.apply_encoded_items(effect_id,dim,*pos,items),
                     WorldEffect::PileExplosion{dim,pos}=>host.pile_explode(dim,*pos),
@@ -298,7 +319,7 @@ impl Server {
                 batch.done+=1;
                 if physical {
                     // The receipt keeps the effect's place in its batch, so a replay derives the same id.
-                    let receipt=CommittedEffects{serial,done,origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect])};
+                    let receipt=CommittedEffects{serial,done,origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect]),replayed:false};
                     if matches!(receipt.effects.front(),Some(WorldEffect::Blocks{..})){
                         for g in &receipt.origins {
                             if self.ready.world.machines.get(&g.key()).is_some_and(|m|m.generation==g.generation){self.ready.native_saved.remove(&g.key());}

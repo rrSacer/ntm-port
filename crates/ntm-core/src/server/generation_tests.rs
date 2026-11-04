@@ -39,6 +39,7 @@ struct Host {
     refuse_preparation: bool,
     /// The ids of the effects the host's ledger already holds: it survives a "crash" of the server.
     ledger: BTreeSet<u64>,
+    blocks_done: BTreeSet<(u64, Pos)>,
     pruned: usize,
 }
 impl Kv for Host {
@@ -67,6 +68,16 @@ impl ServerHost for Host {
                 .cloned()
                 .unwrap_or("minecraft:air".into())
         })
+    }
+    fn cell_generation(&mut self, _: &str, p: Pos) -> Option<u64> {
+        let saved = self.saved.get(&p)?;
+        serde_json::from_str::<Machine>(saved).ok().map(|m| m.generation)
+    }
+    fn effect_seen(&mut self, id: u64, _: &str, p: Pos) -> bool {
+        self.blocks_done.contains(&(id, p))
+    }
+    fn effect_applied(&mut self, id: u64, cells: &[(String, Pos)]) {
+        self.blocks_done.extend(cells.iter().map(|(_, p)| (id, *p)));
     }
     fn cell_snapshot(&mut self, d: &str, p: Pos) -> Option<super::CellSnapshot> {
         let state = self.get_block(d, p)?;
@@ -740,6 +751,49 @@ fn an_older_chunk_does_not_bring_back_a_machine_a_receipt_consumed() {
     });
     assert!(s.native_adopt(D, P, &saved), "told as handled");
     assert!(!s.ready.world.machines.contains_key(&key), "but the stale machine is not back");
+}
+
+/// An older chunk with the very machine a receipt consumed: the effect is due there, whatever the storage's
+/// generations say; a chunk whose record already holds the effect is left alone.
+fn old_chunk_replay(seen: bool) -> (Host, Server) {
+    use super::{CommittedEffects, WorldEffect};
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let key = (D.to_string(), P);
+    let old = super::CellGuard::machine(&key, &s.ready.world.machines[&key]);
+    h.saved.insert(P, serde_json::to_string(&s.ready.world.machines[&key]).unwrap());
+    s.ready.world.machines.remove(&key);
+    s.ready.world.effect_serial = 7;
+    s.ready.world.generations.insert(key, old.generation + 3);
+    s.ready.world.applied_machine_effects.push_back(CommittedEffects {
+        serial: 7,
+        origins: vec![old.clone()],
+        owners: vec![(D.into(), P)],
+        effects: std::collections::VecDeque::from([WorldEffect::Blocks { retained: Vec::new(), dim: D.into(), blocks: vec![(P, zirnox::DESTROYED.into())], expected: vec![old] }]),
+        ..Default::default()
+    });
+    if seen {
+        h.blocks_done.insert((ntm_core::ledger::effect_id(7, 0), P));
+    }
+    h.set(ntm_core::persist::KEY, &s.ready.world.kept(0)).unwrap();
+    let mut reopened = Server::native(&mut h, 1);
+    assert!(reopened.native_adopt(D, P, &h.saved[&P].clone()));
+    reopened.native_tick(&mut h, 2);
+    reopened.native_tick(&mut h, 3);
+    (h, reopened)
+}
+
+#[test]
+fn a_chunk_older_than_the_storage_gets_the_effect_it_missed() {
+    let (h, _) = old_chunk_replay(false);
+    assert_eq!(blockstate::id_of(&h.blocks[&P]), zirnox::DESTROYED, "the missed effect was applied");
+    assert!(h.blocks_done.contains(&(ntm_core::ledger::effect_id(7, 0), P)), "and the chunk now records it");
+}
+
+#[test]
+fn a_chunk_that_holds_the_effect_is_not_given_it_twice() {
+    let (h, _) = old_chunk_replay(true);
+    assert_eq!(blockstate::id_of(&h.blocks[&P]), zirnox::BLOCK, "untouched");
 }
 
 #[test]
