@@ -1,0 +1,897 @@
+[
+  {
+    "class": "ArmorGasMask",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/item_hooks.rs"
+    ]
+  },
+  {
+    "class": "BlockArmorTable",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/armor_table.rs"
+    ]
+  },
+  {
+    "class": "BlockC4",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "BlockDynamite",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "BlockGraphiteDrilled",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/pile_server.rs"
+    ]
+  },
+  {
+    "class": "BlockGraphiteDrilledBase",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/pile_server.rs"
+    ]
+  },
+  {
+    "class": "BlockGraphiteNeutronDetector",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/pile_server.rs"
+    ]
+  },
+  {
+    "class": "BlockGraphiteRod",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/pile_server.rs"
+    ]
+  },
+  {
+    "class": "BlockModDoor",
+    "source_exists": true,
+    "port": [
+      "content/data/ntm/horizon/block/door_*.json"
+    ]
+  },
+  {
+    "class": "BlockPileDevice",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/pile_server.rs"
+    ]
+  },
+  {
+    "class": "BlockSemtex",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "BlockTNT",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "BlockTNTBase",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "ContainerArmorTable",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/armor_table.rs"
+    ]
+  },
+  {
+    "class": "EntityNukeTorex",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "ExplosionCreator",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "ExplosionNukeSmall",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "GUIArmorTable",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/armor_table.rs"
+    ]
+  },
+  {
+    "class": "ItemBDCL",
+    "source_exists": true,
+    "port": [
+      "consumiveis-k2 (not integrated; generic event map only)"
+    ]
+  },
+  {
+    "class": "ItemCigarette",
+    "source_exists": true,
+    "port": [
+      "consumiveis-k2 (not integrated; generic event map only)"
+    ]
+  },
+  {
+    "class": "ItemCottonCandy",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/item_hooks.rs"
+    ]
+  },
+  {
+    "class": "ItemCounterfeitKeys",
+    "source_exists": true,
+    "port": [
+      "consumiveis-k2 (not integrated; generic event map only)"
+    ]
+  },
+  {
+    "class": "ItemDosimeter",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/item_hooks.rs"
+    ]
+  },
+  {
+    "class": "ItemFilter",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/item_hooks.rs"
+    ]
+  },
+  {
+    "class": "ItemGeigerCounter",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/item_hooks.rs"
+    ]
+  },
+  {
+    "class": "ItemLemon",
+    "source_exists": true,
+    "port": [
+      "consumiveis-k2 (not integrated; generic event map only)"
+    ]
+  },
+  {
+    "class": "ItemLootCrate",
+    "source_exists": true,
+    "port": [
+      "consumiveis-k2 (not integrated; generic event map only)"
+    ]
+  },
+  {
+    "class": "ItemMuchoMango",
+    "source_exists": true,
+    "port": [
+      "consumiveis-k2 (not integrated; generic event map only)"
+    ]
+  },
+  {
+    "class": "ItemPill",
+    "source_exists": true,
+    "port": [
+      "consumiveis-k2 (not integrated; generic event map only)"
+    ]
+  },
+  {
+    "class": "ItemRepairKit",
+    "source_exists": true,
+    "port": [
+      "consumiveis-k2 (not integrated; generic event map only)"
+    ]
+  },
+  {
+    "class": "ItemSimpleConsumable",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/item_hooks.rs"
+    ]
+  },
+  {
+    "class": "ItemStarterKit",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/item_hooks.rs"
+    ]
+  },
+  {
+    "class": "ItemSyringe",
+    "source_exists": true,
+    "port": [
+      "native/ntm/mixins/ntm/item_hooks.rs"
+    ]
+  },
+  {
+    "class": "MachineArcFurnaceLarge",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/arc_furnace.rs"
+    ]
+  },
+  {
+    "class": "MachineStirling",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/solar_stirling.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "NukeBoy",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "NukeGadget",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "NukeMan",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "NukeMike",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "NukeN2",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "NukeTsar",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs"
+    ]
+  },
+  {
+    "class": "TileEntityBarrel",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/fluidbox.rs",
+      "crates/ntm-core/src/machine.rs",
+      "crates/ntm-core/src/native.rs"
+    ]
+  },
+  {
+    "class": "TileEntityChungus",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/sounds.rs",
+      "crates/ntm-core/src/server/container_bridge.rs",
+      "crates/ntm-core/src/steam.rs"
+    ]
+  },
+  {
+    "class": "TileEntityCondenser",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/steam.rs"
+    ]
+  },
+  {
+    "class": "TileEntityCondenserPowered",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/steam.rs"
+    ]
+  },
+  {
+    "class": "TileEntityCrucible",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/foundry/crucible.rs",
+      "crates/ntm-core/src/server/foundry_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityElectrolyser",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)",
+      "crates/ntm-core/src/crafter.rs",
+      "crates/ntm-core/src/electrolyser.rs",
+      "crates/ntm-core/src/server/foundry_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityFireboxBase",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/foundry/firebox.rs"
+    ]
+  },
+  {
+    "class": "TileEntityFoundryBase",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/foundry/flow.rs"
+    ]
+  },
+  {
+    "class": "TileEntityFoundryCastingBase",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/foundry/cast.rs"
+    ]
+  },
+  {
+    "class": "TileEntityFoundryChannel",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/foundry/flow.rs",
+      "crates/ntm-core/src/server/foundry_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityFoundryOutlet",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/foundry/flow.rs",
+      "crates/ntm-core/src/server/foundry_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityFoundryTank",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/foundry/flow.rs",
+      "crates/ntm-core/src/server/foundry_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityHeatBoiler",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/boiler.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityHeatBoilerIndustrial",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/boiler.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityHeaterElectric",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/heater.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityHeaterFirebox",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/heater.rs",
+      "crates/ntm-core/src/sounds.rs",
+      "crates/ntm-core/src/foundry/firebox.rs"
+    ]
+  },
+  {
+    "class": "TileEntityHeaterHeatex",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)",
+      "crates/ntm-core/src/heater.rs",
+      "crates/ntm-core/src/server/container_bridge.rs"
+    ]
+  },
+  {
+    "class": "TileEntityHeaterOilburner",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)",
+      "crates/ntm-core/src/heater.rs"
+    ]
+  },
+  {
+    "class": "TileEntityHeaterOven",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/foundry/firebox.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineArcFurnaceLarge",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/arc_furnace.rs",
+      "crates/ntm-core/src/sounds.rs",
+      "crates/ntm-core/src/server/foundry_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineAssemblyMachine",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/crafter.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineBase",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/radioisotopes.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineBattery",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/machine.rs",
+      "crates/ntm-core/src/native.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineBlastFurnace",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blastfurnace.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineCatalyticCracker",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/processing.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineCatalyticReformer",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/processing.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineCentrifuge",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/crafter.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineChemicalPlant",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/crafter.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineCoker",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/processing.rs",
+      "crates/ntm-core/src/coker.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineCombustionEngine",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/combustion.rs",
+      "crates/ntm-core/src/sounds.rs",
+      "crates/ntm-core/src/server/container_bridge.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineCrystallizer",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/sounds.rs",
+      "crates/ntm-core/src/crafter.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineDiesel",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/combustion.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineEPress",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/press.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineElectricFurnace",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)",
+      "crates/ntm-core/src/machine.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineExcavator",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/excavator.rs",
+      "crates/ntm-core/src/server/excavator_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineFluidTank",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/fluidbox.rs",
+      "crates/ntm-core/src/machine.rs",
+      "crates/ntm-core/src/native.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineFrackingTower",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/oil_drill.rs",
+      "crates/ntm-core/src/server/oil_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineFractionTower",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/fraction.rs",
+      "crates/ntm-core/src/server/oil_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineGasCent",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/gascent.rs",
+      "crates/ntm-core/src/sounds.rs",
+      "crates/ntm-core/src/server/fluid_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineHydrotreater",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/processing.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineIndustrialTurbine",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/steam.rs",
+      "crates/ntm-core/src/sounds.rs",
+      "crates/ntm-core/src/server/container_bridge.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineLargeTurbine",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/steam.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineLiquefactor",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/crafter.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineMixer",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/crafter.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineOilWell",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/oil_drill.rs",
+      "crates/ntm-core/src/server/oil_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineOreSlopper",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/bedrock.rs",
+      "crates/ntm-core/src/server/container_bridge.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachinePUREX",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/crafter.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachinePress",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/press.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachinePumpjack",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/oil_drill.rs",
+      "crates/ntm-core/src/server/oil_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachinePyroOven",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/crafter.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineRTG",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/radioisotopes.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineRadGen",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/radioisotopes.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineRefinery",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/processing.rs",
+      "crates/ntm-core/src/refinery.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineShredder",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/shredder.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineSolidifier",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/crafter.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineTurbineGas",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/combustion.rs",
+      "crates/ntm-core/src/sounds.rs",
+      "crates/ntm-core/src/server/container_bridge.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineTurbofan",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/combustion.rs",
+      "crates/ntm-core/src/sounds.rs",
+      "crates/ntm-core/src/server/container_bridge.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineVacuumDistill",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/processing.rs"
+    ]
+  },
+  {
+    "class": "TileEntityMachineWoodBurner",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/machine.rs"
+    ]
+  },
+  {
+    "class": "TileEntityNukeBalefire",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/blast/visuals.rs",
+      "crates/ntm-core/src/bomb.rs"
+    ]
+  },
+  {
+    "class": "TileEntityNukeBoy",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/bomb.rs"
+    ]
+  },
+  {
+    "class": "TileEntityNukeGadget",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/bomb.rs"
+    ]
+  },
+  {
+    "class": "TileEntityNukeMan",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/bomb.rs"
+    ]
+  },
+  {
+    "class": "TileEntityNukeMike",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/bomb.rs"
+    ]
+  },
+  {
+    "class": "TileEntityNukeN2",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/bomb.rs"
+    ]
+  },
+  {
+    "class": "TileEntityNukeTsar",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/bomb.rs"
+    ]
+  },
+  {
+    "class": "TileEntityOilDrillBase",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/oil_drill.rs",
+      "crates/ntm-core/src/server/oil_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityPileCore",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/pile_server.rs",
+      "crates/ntm-core/src/pile.rs"
+    ]
+  },
+  {
+    "class": "TileEntityPileLoader",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/pile_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntityPipeBaseNT",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/fluidbox.rs"
+    ]
+  },
+  {
+    "class": "TileEntityReactorZirnox",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/zirnox_server.rs"
+    ]
+  },
+  {
+    "class": "TileEntitySolarBoiler",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)",
+      "crates/ntm-core/src/solar_stirling.rs"
+    ]
+  },
+  {
+    "class": "TileEntitySolarMirror",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)",
+      "crates/ntm-core/src/solar_stirling.rs"
+    ]
+  },
+  {
+    "class": "TileEntitySteamEngine",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/container_bridge.rs",
+      "crates/ntm-core/src/steam.rs"
+    ]
+  },
+  {
+    "class": "TileEntityStirling",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/solar_stirling.rs",
+      "crates/ntm-core/src/sounds.rs"
+    ]
+  },
+  {
+    "class": "TileEntityTurbineBase",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/steam.rs"
+    ]
+  },
+  {
+    "class": "TileEntityZirnoxDestroyed",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/zirnox_server.rs"
+    ]
+  },
+  {
+    "class": "ZirnoxDestroyed",
+    "source_exists": true,
+    "port": [
+      "crates/ntm-core/src/server/zirnox_server.rs"
+    ]
+  }
+]

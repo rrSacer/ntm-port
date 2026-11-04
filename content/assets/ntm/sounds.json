@@ -1,0 +1,1033 @@
+{
+  "block.assemblercut": {
+    "sounds": [
+      {
+        "name": "ntm:block/assemblercut",
+        "stream": false
+      }
+    ]
+  },
+  "block.assembleroperate": {
+    "sounds": [
+      {
+        "name": "ntm:block/assembleroperate",
+        "stream": true
+      }
+    ]
+  },
+  "block.assemblerstart": {
+    "sounds": [
+      {
+        "name": "ntm:block/assemblerstart",
+        "stream": false
+      }
+    ]
+  },
+  "block.assemblerstop": {
+    "sounds": [
+      {
+        "name": "ntm:block/assemblerstop",
+        "stream": false
+      }
+    ]
+  },
+  "block.assemblerstrike": {
+    "sounds": [
+      "ntm:block/assemblerstrike1",
+      "ntm:block/assemblerstrike2"
+    ]
+  },
+  "block.bobble": {
+    "sounds": [
+      {
+        "name": "ntm:block/bobble",
+        "stream": false
+      }
+    ]
+  },
+  "block.boiler": {
+    "sounds": [
+      {
+        "name": "ntm:block/boiler",
+        "stream": false
+      }
+    ]
+  },
+  "block.boilergroan": {
+    "sounds": [
+      "ntm:block/boilergroan0",
+      "ntm:block/boilergroan1",
+      "ntm:block/boilergroan2"
+    ]
+  },
+  "block.broadcast1": {
+    "sounds": [
+      {
+        "name": "ntm:block/broadcast1",
+        "stream": true
+      }
+    ]
+  },
+  "block.broadcast2": {
+    "sounds": [
+      {
+        "name": "ntm:block/broadcast2",
+        "stream": true
+      }
+    ]
+  },
+  "block.broadcast3": {
+    "sounds": [
+      {
+        "name": "ntm:block/broadcast3",
+        "stream": true
+      }
+    ]
+  },
+  "block.centrifugeoperate": {
+    "sounds": [
+      {
+        "name": "ntm:block/centrifugeoperate",
+        "stream": false
+      }
+    ]
+  },
+  "block.chemicalplant": {
+    "sounds": [
+      {
+        "name": "ntm:block/chemicalplant",
+        "stream": false
+      }
+    ]
+  },
+  "block.chemplantoperate": {
+    "sounds": [
+      {
+        "name": "ntm:block/chemplantoperate",
+        "stream": true
+      }
+    ]
+  },
+  "block.chunguslever": {
+    "sounds": [
+      {
+        "name": "ntm:block/chunguslever",
+        "stream": false
+      }
+    ]
+  },
+  "block.chungusturbinerunning": {
+    "sounds": [
+      {
+        "name": "ntm:block/chungusturbine",
+        "stream": false
+      }
+    ]
+  },
+  "block.closec": {
+    "sounds": [
+      "ntm:block/closec1",
+      "ntm:block/closec2",
+      "ntm:block/closec3"
+    ]
+  },
+  "block.cratebreak": {
+    "sounds": [
+      "ntm:block/cratebreak1",
+      "ntm:block/cratebreak2",
+      "ntm:block/cratebreak3",
+      "ntm:block/cratebreak4",
+      "ntm:block/cratebreak5"
+    ]
+  },
+  "block.crateclose": {
+    "sounds": [
+      {
+        "name": "ntm:block/crateclose",
+        "stream": false
+      }
+    ]
+  },
+  "block.crateopen": {
+    "sounds": [
+      {
+        "name": "ntm:block/crateopen",
+        "stream": false
+      }
+    ]
+  },
+  "block.damage": {
+    "sounds": [
+      "ntm:block/dam1",
+      "ntm:block/dam2",
+      "ntm:block/dam3",
+      "ntm:block/dam4"
+    ]
+  },
+  "block.debris": {
+    "sounds": [
+      "ntm:block/debris1",
+      "ntm:block/debris2",
+      "ntm:block/debris3"
+    ]
+  },
+  "block.dieseloperate": {
+    "sounds": [
+      {
+        "name": "ntm:block/dieseloperate",
+        "stream": false
+      }
+    ]
+  },
+  "block.electrichum": {
+    "sounds": [
+      {
+        "name": "ntm:block/electrichum",
+        "stream": false
+      }
+    ]
+  },
+  "block.engine": {
+    "sounds": [
+      {
+        "name": "ntm:block/engine",
+        "stream": false
+      }
+    ]
+  },
+  "block.fel": {
+    "sounds": [
+      {
+        "name": "ntm:block/fel",
+        "stream": false
+      }
+    ]
+  },
+  "block.fensuhum": {
+    "sounds": [
+      {
+        "name": "ntm:block/fensuhum",
+        "stream": false
+      }
+    ]
+  },
+  "block.flesh": {
+    "sounds": [
+      "ntm:block/flesh1",
+      "ntm:block/flesh2",
+      "ntm:block/flesh4",
+      "ntm:block/flesh5"
+    ]
+  },
+  "block.fusionreactorrunning": {
+    "sounds": [
+      {
+        "name": "ntm:block/fusionreactorspin",
+        "stream": false
+      }
+    ]
+  },
+  "block.hephaestusrunning": {
+    "sounds": [
+      {
+        "name": "ntm:block/hephaestusrunning",
+        "stream": false
+      }
+    ]
+  },
+  "block.hornfardual": {
+    "sounds": [
+      {
+        "name": "ntm:block/hornfardual",
+        "stream": false
+      }
+    ]
+  },
+  "block.hornfarsingle": {
+    "sounds": [
+      {
+        "name": "ntm:block/hornfarsingle",
+        "stream": false
+      }
+    ]
+  },
+  "block.hornneardual": {
+    "sounds": [
+      {
+        "name": "ntm:block/hornneardual",
+        "stream": false
+      }
+    ]
+  },
+  "block.hornnearsingle": {
+    "sounds": [
+      {
+        "name": "ntm:block/hornnearsingle",
+        "stream": false
+      }
+    ]
+  },
+  "block.hunduns_magnificent_howl": {
+    "sounds": [
+      {
+        "name": "ntm:block/hunduns_magnificent_howl",
+        "stream": false
+      }
+    ]
+  },
+  "block.igeneratoroperate": {
+    "sounds": [
+      {
+        "name": "ntm:block/igeneratoroperate",
+        "stream": false
+      }
+    ]
+  },
+  "block.largeturbinerunning": {
+    "sounds": [
+      {
+        "name": "ntm:block/largeturbine",
+        "stream": false
+      }
+    ]
+  },
+  "block.leverlarge": {
+    "sounds": [
+      {
+        "name": "ntm:block/leverlarge",
+        "stream": false
+      }
+    ]
+  },
+  "block.leverstart": {
+    "sounds": [
+      {
+        "name": "ntm:block/leverstart",
+        "stream": false
+      }
+    ]
+  },
+  "block.lockhang": {
+    "sounds": [
+      {
+        "name": "ntm:block/lockhang",
+        "stream": false
+      }
+    ]
+  },
+  "block.lockopen": {
+    "sounds": [
+      {
+        "name": "ntm:block/lockopen",
+        "stream": false
+      }
+    ]
+  },
+  "block.metalimpact": {
+    "sounds": [
+      "ntm:block/metalimpact1",
+      "ntm:block/metalimpact2"
+    ]
+  },
+  "block.mineroperate": {
+    "sounds": [
+      {
+        "name": "ntm:block/mineroperate",
+        "stream": true
+      }
+    ]
+  },
+  "block.missileassembly": {
+    "sounds": [
+      {
+        "name": "ntm:block/missileassembly",
+        "stream": false
+      }
+    ]
+  },
+  "block.missileassembly2": {
+    "sounds": [
+      {
+        "name": "ntm:block/missileassembly2",
+        "stream": false
+      }
+    ]
+  },
+  "block.motor": {
+    "sounds": [
+      {
+        "name": "ntm:block/motor",
+        "stream": false
+      }
+    ]
+  },
+  "block.openc": {
+    "sounds": [
+      "ntm:block/openc1",
+      "ntm:block/openc2",
+      "ntm:block/opencsqueaky"
+    ]
+  },
+  "block.opendoor": {
+    "sounds": [
+      "ntm:block/door_open_1",
+      "ntm:block/door_open_2"
+    ]
+  },
+  "block.pipeplaced": {
+    "sounds": [
+      {
+        "name": "ntm:block/pipeplaced",
+        "stream": false
+      }
+    ]
+  },
+  "block.platemetalplace": {
+    "sounds": [
+      "ntm:block/platemetal_bar1",
+      "ntm:block/platemetal_bar2",
+      "ntm:block/platemetal_bar3",
+      "ntm:block/platemetal_bar4",
+      "ntm:block/platemetal_bar5",
+      "ntm:block/platemetal_bar6"
+    ]
+  },
+  "block.pressoperate": {
+    "sounds": [
+      {
+        "name": "ntm:block/pressoperate",
+        "stream": false
+      }
+    ]
+  },
+  "block.pyrooperate": {
+    "sounds": [
+      {
+        "name": "ntm:block/pyrooperate",
+        "stream": false
+      }
+    ]
+  },
+  "block.rbmk_az5_cover": {
+    "sounds": [
+      {
+        "name": "ntm:block/rbmk_az5_cover",
+        "stream": false
+      }
+    ]
+  },
+  "block.rbmk_explosion": {
+    "sounds": [
+      {
+        "name": "ntm:block/rbmk_explosion",
+        "stream": false
+      }
+    ]
+  },
+  "block.reactorloop": {
+    "sounds": [
+      {
+        "name": "ntm:block/reactorloop",
+        "stream": false
+      }
+    ]
+  },
+  "block.reactorstop": {
+    "sounds": [
+      {
+        "name": "ntm:block/reactorstop",
+        "stream": false
+      }
+    ]
+  },
+  "block.screm": {
+    "sounds": [
+      "ntm:screm/scream1",
+      "ntm:screm/scream01",
+      "ntm:screm/scream2",
+      "ntm:screm/scream02",
+      "ntm:screm/scream3",
+      "ntm:screm/scream03",
+      "ntm:screm/scream4",
+      "ntm:screm/scream04",
+      "ntm:screm/scream5",
+      "ntm:screm/scream05",
+      "ntm:screm/scream6",
+      "ntm:screm/scream06",
+      "ntm:screm/scream7",
+      "ntm:screm/scream07",
+      "ntm:screm/scream08",
+      "ntm:screm/scream09",
+      "ntm:screm/scream10",
+      "ntm:screm/scream11",
+      "ntm:screm/scream12",
+      "ntm:screm/scream13",
+      "ntm:screm/scream14",
+      "ntm:screm/scream15",
+      "ntm:screm/scream16",
+      "ntm:screm/scream17",
+      "ntm:screm/scream18",
+      "ntm:screm/scream19",
+      "ntm:screm/scream20",
+      "ntm:screm/scream21",
+      "ntm:screm/scream22",
+      "ntm:screm/scream23",
+      "ntm:screm/scream24",
+      "ntm:screm/scream25"
+    ]
+  },
+  "block.shutdown": {
+    "sounds": [
+      {
+        "name": "ntm:block/shutdown",
+        "stream": true
+      }
+    ]
+  },
+  "block.sonarping": {
+    "sounds": [
+      {
+        "name": "ntm:block/sonarping",
+        "stream": false
+      }
+    ]
+  },
+  "block.soyuzready": {
+    "sounds": [
+      {
+        "name": "ntm:block/soyuzready",
+        "stream": true
+      }
+    ]
+  },
+  "block.spark": {
+    "sounds": [
+      "ntm:block/spark1",
+      "ntm:block/spark2",
+      "ntm:block/spark3",
+      "ntm:block/spark4",
+      "ntm:block/spark5",
+      "ntm:block/spark6"
+    ]
+  },
+  "block.squeakytoy": {
+    "sounds": [
+      {
+        "name": "ntm:block/squeakytoy",
+        "stream": false
+      }
+    ]
+  },
+  "block.steamengineoperate": {
+    "sounds": [
+      {
+        "name": "ntm:block/steamengineoperate",
+        "stream": false
+      }
+    ]
+  },
+  "block.storageclose": {
+    "sounds": [
+      {
+        "name": "ntm:block/storageclose",
+        "stream": false
+      }
+    ]
+  },
+  "block.storageopen": {
+    "sounds": [
+      {
+        "name": "ntm:block/storageopen",
+        "stream": false
+      }
+    ]
+  },
+  "block.turbinegasrunning": {
+    "sounds": [
+      {
+        "name": "ntm:block/turbinegasrunning",
+        "stream": false
+      }
+    ]
+  },
+  "block.turbinegasshutdown": {
+    "sounds": [
+      {
+        "name": "ntm:block/turbinegasshutdown",
+        "stream": true
+      }
+    ]
+  },
+  "block.turbinegasstartup": {
+    "sounds": [
+      {
+        "name": "ntm:block/turbinegasstartup",
+        "stream": false
+      }
+    ]
+  },
+  "block.turbofanoperate": {
+    "sounds": [
+      {
+        "name": "ntm:block/turbofanoperate",
+        "stream": true
+      }
+    ]
+  },
+  "block.vaultscrape": {
+    "sounds": [
+      {
+        "name": "ntm:block/vaultscrape",
+        "stream": false
+      }
+    ]
+  },
+  "block.vaultscrapenew": {
+    "sounds": [
+      {
+        "name": "ntm:block/vaultscrapenew",
+        "stream": false
+      }
+    ]
+  },
+  "block.vaultthud": {
+    "sounds": [
+      {
+        "name": "ntm:block/vaultthud",
+        "stream": false
+      }
+    ]
+  },
+  "block.vaultthudnew": {
+    "sounds": [
+      {
+        "name": "ntm:block/vaultthudnew",
+        "stream": false
+      }
+    ]
+  },
+  "block.warnoverspeed": {
+    "sounds": [
+      {
+        "name": "ntm:block/warnoverspeed",
+        "stream": false
+      }
+    ]
+  },
+  "door.transitionsealopen": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/transition_seal_open",
+        "stream": true
+      }
+    ]
+  },
+  "door.alarm6": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/alarm6",
+        "stream": true
+      }
+    ]
+  },
+  "door.garage_move": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/garage_move",
+        "stream": false
+      }
+    ]
+  },
+  "door.garage_stop": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/garage_stop",
+        "stream": false
+      }
+    ]
+  },
+  "door.lever": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/lever1",
+        "stream": false
+      }
+    ]
+  },
+  "door.qe_sliding_opened": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/doorslide_opened1",
+        "stream": false
+      }
+    ]
+  },
+  "door.qe_sliding_opening": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/doorslide_opening1",
+        "stream": false
+      }
+    ]
+  },
+  "door.qe_sliding_shut": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/doorshut_1",
+        "stream": false
+      }
+    ]
+  },
+  "door.sliding_door_opened": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/sliding_door_opened",
+        "stream": false
+      }
+    ]
+  },
+  "door.sliding_door_opening": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/sliding_door_opening",
+        "stream": false
+      }
+    ]
+  },
+  "door.sliding_door_shut": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/sliding_door_shut",
+        "stream": false
+      }
+    ]
+  },
+  "door.sliding_seal_open": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/doormove2",
+        "stream": false
+      }
+    ]
+  },
+  "door.sliding_seal_stop": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/metal_stop1",
+        "stream": false
+      }
+    ]
+  },
+  "door.wghstart": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/wgh_start",
+        "stream": true
+      }
+    ]
+  },
+  "door.wghstop": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/wgh_stop",
+        "stream": true
+      }
+    ]
+  },
+  "door.wgh_big_start": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/door_wgh_big_start",
+        "stream": false
+      }
+    ]
+  },
+  "door.wgh_big_stop": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/door_wgh_big_stop",
+        "stream": false
+      }
+    ]
+  },
+  "door.wgh_start": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/wgh_start",
+        "stream": false
+      }
+    ]
+  },
+  "door.wgh_stop": {
+    "sounds": [
+      {
+        "name": "ntm:block/door/wgh_stop",
+        "stream": false
+      }
+    ]
+  },
+  "item.battery": {
+    "sounds": [
+      {
+        "name": "ntm:tool/battery",
+        "stream": false
+      }
+    ]
+  },
+  "item.gasmaskscrew": {
+    "sounds": [
+      {
+        "name": "ntm:tool/gasmaskscrew",
+        "stream": false
+      }
+    ]
+  },
+  "item.geiger1": {
+    "sounds": [
+      {
+        "name": "ntm:tool/geiger1",
+        "stream": false
+      }
+    ]
+  },
+  "item.geiger2": {
+    "sounds": [
+      {
+        "name": "ntm:tool/geiger2",
+        "stream": false
+      }
+    ]
+  },
+  "item.geiger3": {
+    "sounds": [
+      {
+        "name": "ntm:tool/geiger3",
+        "stream": false
+      }
+    ]
+  },
+  "item.geiger4": {
+    "sounds": [
+      {
+        "name": "ntm:tool/geiger4",
+        "stream": false
+      }
+    ]
+  },
+  "item.geiger5": {
+    "sounds": [
+      {
+        "name": "ntm:tool/geiger5",
+        "stream": false
+      }
+    ]
+  },
+  "item.geiger6": {
+    "sounds": [
+      {
+        "name": "ntm:tool/geiger6",
+        "stream": false
+      }
+    ]
+  },
+  "item.jetpacktank": {
+    "sounds": [
+      {
+        "name": "ntm:tool/jetpacktank",
+        "stream": false
+      }
+    ]
+  },
+  "item.pinbreak": {
+    "sounds": [
+      {
+        "name": "ntm:tool/pinbreak",
+        "stream": false
+      }
+    ]
+  },
+  "item.pinunlock": {
+    "sounds": [
+      {
+        "name": "ntm:tool/pinunlock",
+        "stream": false
+      }
+    ]
+  },
+  "item.radaway": {
+    "sounds": [
+      {
+        "name": "ntm:tool/radaway",
+        "stream": false
+      }
+    ]
+  },
+  "item.repair": {
+    "sounds": [
+      "ntm:tool/repair1",
+      "ntm:tool/repair2",
+      "ntm:tool/repair3",
+      "ntm:tool/repair4",
+      "ntm:tool/repair5",
+      "ntm:tool/repair6",
+      "ntm:tool/repair7"
+    ]
+  },
+  "item.spray": {
+    "sounds": [
+      {
+        "name": "ntm:tool/spray",
+        "stream": false
+      }
+    ]
+  },
+  "item.syringe": {
+    "sounds": [
+      {
+        "name": "ntm:tool/stim",
+        "stream": false
+      }
+    ]
+  },
+  "item.techbleep": {
+    "sounds": [
+      {
+        "name": "ntm:tool/techbleep",
+        "stream": false
+      }
+    ]
+  },
+  "item.techboop": {
+    "sounds": [
+      {
+        "name": "ntm:tool/techboop",
+        "stream": false
+      }
+    ]
+  },
+  "item.unpack": {
+    "sounds": [
+      "ntm:tool/extract1",
+      "ntm:tool/extract2"
+    ]
+  },
+  "item.upgradeplug": {
+    "sounds": [
+      {
+        "name": "ntm:tool/upgradeplug",
+        "stream": false
+      }
+    ]
+  },
+  "item.vice": {
+    "sounds": [
+      {
+        "name": "ntm:tool/vice",
+        "stream": false
+      }
+    ]
+  },
+  "player.cough": {
+    "sounds": [
+      "ntm:player/cough1",
+      "ntm:player/cough2",
+      "ntm:player/cough3",
+      "ntm:player/cough4"
+    ]
+  },
+  "player.groan": {
+    "sounds": [
+      "ntm:player/groan1",
+      "ntm:player/groan2",
+      "ntm:player/groan3"
+    ]
+  },
+  "player.gulp": {
+    "sounds": [
+      "ntm:player/gulp1",
+      "ntm:player/gulp2",
+      "ntm:player/gulp3",
+      "ntm:player/gulp4"
+    ]
+  },
+  "weapon.explosionlargefar": {
+    "sounds": [
+      {
+        "name": "ntm:weapon/explosionlargefar",
+        "stream": false
+      }
+    ]
+  },
+  "weapon.explosionlargenear": {
+    "sounds": [
+      {
+        "name": "ntm:weapon/explosionlargenear",
+        "stream": false
+      }
+    ]
+  },
+  "weapon.explosionmedium": {
+    "sounds": [
+      {
+        "name": "ntm:weapon/explosion_medium",
+        "stream": false
+      }
+    ]
+  },
+  "weapon.explosionsmallfar": {
+    "sounds": [
+      "ntm:weapon/explosionsmallfar1",
+      "ntm:weapon/explosionsmallfar2"
+    ]
+  },
+  "weapon.explosionsmallnear": {
+    "sounds": [
+      "ntm:weapon/explosionsmallnear1",
+      "ntm:weapon/explosionsmallnear2",
+      "ntm:weapon/explosionsmallnear3"
+    ]
+  },
+  "weapon.explosiontiny": {
+    "sounds": [
+      "ntm:weapon/explosiontiny1",
+      "ntm:weapon/explosiontiny2"
+    ]
+  },
+  "weapon.fstbmbping": {
+    "sounds": [
+      {
+        "name": "ntm:weapon/fstbmbping",
+        "stream": false
+      }
+    ]
+  },
+  "weapon.fstbmbstart": {
+    "sounds": [
+      {
+        "name": "ntm:weapon/fstbmbstart",
+        "stream": false
+      }
+    ]
+  },
+  "weapon.mukeexplosion": {
+    "sounds": [
+      {
+        "name": "ntm:weapon/mukeexplosion",
+        "stream": false
+      }
+    ]
+  },
+  "weapon.nuclearexplosion": {
+    "sounds": [
+      {
+        "name": "ntm:weapon/nuclearexplosion",
+        "stream": true
+      }
+    ]
+  },
+  "weapon.reload.boltopen": {
+    "sounds": [
+      "ntm:weapon/reload/boltopen"
+    ]
+  }
+}

@@ -1,0 +1,1179 @@
+{
+  "source_revision": "4f5924e2b9e1e49cee61787674d2658acb3d559b",
+  "license": "LGPL-3.0-only",
+  "selected_events": [
+    "block.assemblerCut",
+    "block.assemblerOperate",
+    "block.assemblerStart",
+    "block.assemblerStop",
+    "block.assemblerStrike",
+    "block.bobble",
+    "block.boiler",
+    "block.boilerGroan",
+    "block.broadcast1",
+    "block.broadcast2",
+    "block.broadcast3",
+    "block.centrifugeOperate",
+    "block.chemicalPlant",
+    "block.chemplantOperate",
+    "block.chungusLever",
+    "block.chungusTurbineRunning",
+    "block.closeC",
+    "block.crateBreak",
+    "block.crateClose",
+    "block.crateOpen",
+    "block.damage",
+    "block.debris",
+    "block.dieselOperate",
+    "block.electricHum",
+    "block.engine",
+    "block.fel",
+    "block.fensuHum",
+    "block.flesh",
+    "block.fusionReactorRunning",
+    "block.hephaestusRunning",
+    "block.hornFarDual",
+    "block.hornFarSingle",
+    "block.hornNearDual",
+    "block.hornNearSingle",
+    "block.hunduns_magnificent_howl",
+    "block.igeneratorOperate",
+    "block.largeTurbineRunning",
+    "block.leverLarge",
+    "block.leverStart",
+    "block.lockHang",
+    "block.lockOpen",
+    "block.metalImpact",
+    "block.minerOperate",
+    "block.missileAssembly",
+    "block.missileAssembly2",
+    "block.motor",
+    "block.openC",
+    "block.openDoor",
+    "block.pipePlaced",
+    "block.platemetalPlace",
+    "block.pressOperate",
+    "block.pyroOperate",
+    "block.rbmk_az5_cover",
+    "block.rbmk_explosion",
+    "block.reactorLoop",
+    "block.reactorStop",
+    "block.screm",
+    "block.shutdown",
+    "block.sonarPing",
+    "block.soyuzReady",
+    "block.spark",
+    "block.squeakyToy",
+    "block.steamEngineOperate",
+    "block.storageClose",
+    "block.storageOpen",
+    "block.turbinegasRunning",
+    "block.turbinegasShutdown",
+    "block.turbinegasStartup",
+    "block.turbofanOperate",
+    "block.vaultScrape",
+    "block.vaultScrapeNew",
+    "block.vaultThud",
+    "block.vaultThudNew",
+    "block.warnOverspeed",
+    "door.TransitionSealOpen",
+    "door.alarm6",
+    "door.garage_move",
+    "door.garage_stop",
+    "door.lever",
+    "door.qe_sliding_opened",
+    "door.qe_sliding_opening",
+    "door.qe_sliding_shut",
+    "door.sliding_door_opened",
+    "door.sliding_door_opening",
+    "door.sliding_door_shut",
+    "door.sliding_seal_open",
+    "door.sliding_seal_stop",
+    "door.wghStart",
+    "door.wghStop",
+    "door.wgh_big_start",
+    "door.wgh_big_stop",
+    "door.wgh_start",
+    "door.wgh_stop",
+    "item.battery",
+    "item.gasmaskScrew",
+    "item.geiger1",
+    "item.geiger2",
+    "item.geiger3",
+    "item.geiger4",
+    "item.geiger5",
+    "item.geiger6",
+    "item.jetpackTank",
+    "item.pinBreak",
+    "item.pinUnlock",
+    "item.radaway",
+    "item.repair",
+    "item.spray",
+    "item.syringe",
+    "item.techBleep",
+    "item.techBoop",
+    "item.unpack",
+    "item.upgradePlug",
+    "item.vice",
+    "player.cough",
+    "player.groan",
+    "player.gulp",
+    "weapon.explosionLargeFar",
+    "weapon.explosionLargeNear",
+    "weapon.explosionMedium",
+    "weapon.explosionSmallFar",
+    "weapon.explosionSmallNear",
+    "weapon.explosionTiny",
+    "weapon.fstbmbPing",
+    "weapon.fstbmbStart",
+    "weapon.mukeExplosion",
+    "weapon.nuclearExplosion",
+    "weapon.reload.boltOpen"
+  ],
+  "excluded_by_license": {
+    "block.reactorStart": [
+      "block/reactorStart.ogg"
+    ],
+    "block.closeDoor": [
+      "block/door_close_2.ogg"
+    ],
+    "block.leverStop": [
+      "block/leverStop.ogg"
+    ],
+    "item.boltgun": [
+      "tool/boltgun.ogg"
+    ]
+  },
+  "files": {
+    "block/assemblercut.ogg": {
+      "source": "block/assemblerCut.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "a1e207ce93284c7bb0a449f2eecfcaae68ae6a76f0e944a2ecf94150d1639e0b"
+    },
+    "block/assembleroperate.ogg": {
+      "source": "block/assemblerOperate.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "4375cb5643d223c4e3894c138521f3e234611775b925e822cc5066adef8fd297"
+    },
+    "block/assemblerstart.ogg": {
+      "source": "block/assemblerStart.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "de1eeef1b6d5842d7be96ab42bf4dd8838680c2fc8908fab341f75271905b4c1"
+    },
+    "block/assemblerstop.ogg": {
+      "source": "block/assemblerStop.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "1f5e99631a40031a44e7734ce6929bc22298b40ca26d66c9c29fa8776f5012f5"
+    },
+    "block/assemblerstrike1.ogg": {
+      "source": "block/assemblerStrike1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "71056500bd1f4ada8e612cac5d4b10994db4099f907ea5c050ca3394905f4e7d"
+    },
+    "block/assemblerstrike2.ogg": {
+      "source": "block/assemblerStrike2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "7e19223f5f6188f3da1aebd23a9e9534a1d2fd02e57ee100608f2af256c7876b"
+    },
+    "block/bobble.ogg": {
+      "source": "block/bobble.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "a47523c9917ecae7f95e5a27a6340069dc8fc4f984631552a079777dce83751c"
+    },
+    "block/boiler.ogg": {
+      "source": "block/boiler.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "784634e7bc29e31850ae93f9bcc95070e6b66793bd4bef9485893e5b5c10eb11"
+    },
+    "block/boilergroan0.ogg": {
+      "source": "block/boilerGroan0.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "231b77050b681d7c936c4faf71d27e609ee7171e1a846c40dc608463e98b5cd2"
+    },
+    "block/boilergroan1.ogg": {
+      "source": "block/boilerGroan1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "5957505edc4c5988ecd4f94b2fa788c1beee8f674d92f1e769c0e8341545bf18"
+    },
+    "block/boilergroan2.ogg": {
+      "source": "block/boilerGroan2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9dadf2b3383a5ca91936f823f66e82d1fbaa0485c05231cff6546b366f2d68e3"
+    },
+    "block/broadcast1.ogg": {
+      "source": "block/broadcast1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "e2f2f4f2b036cd432eab05ac90890ff4136676faff263350aba5176acd44e991"
+    },
+    "block/broadcast2.ogg": {
+      "source": "block/broadcast2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "58a45f72e7d54811c3705e295513510bbc204c2dbbafcf955a9a18f36136bd59"
+    },
+    "block/broadcast3.ogg": {
+      "source": "block/broadcast3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "39c44162acd1f34179f601eea2b2033a4a2f74267b0104a858e79282200cdda2"
+    },
+    "block/centrifugeoperate.ogg": {
+      "source": "block/centrifugeOperate.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "00a11c52857d206ddcb06fbf9a1df76a1696825205ca8a9a263cad3b645f701f"
+    },
+    "block/chemicalplant.ogg": {
+      "source": "block/chemicalPlant.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "8de0c2558da2af819eacd9acc779b5a973580859cb21b215da62279c033a2433"
+    },
+    "block/chemplantoperate.ogg": {
+      "source": "block/chemplantOperate.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "e98624efeeb853a52f4c09b11423b3d6441eb747a5eea90fd3989e80b81ac997"
+    },
+    "block/chunguslever.ogg": {
+      "source": "block/chungusLever.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "eae25289afc29334eafe8d8a9dbf289254723addf90fd21aaec537cc9abd0589"
+    },
+    "block/chungusturbine.ogg": {
+      "source": "block/chungusTurbine.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "1294966b8c9e458e22402bdb41d73fb5a8985bb1f81a925361c8b660a51791ed"
+    },
+    "block/closec1.ogg": {
+      "source": "block/closeC1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "4ab7d94930729d4eada5507dc3c2f841af3788b20bb9a0c5002b87699870f791"
+    },
+    "block/closec2.ogg": {
+      "source": "block/closeC2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "617a8b56af8aecf23be6b8081b7fbc1998e79dd6c004c35adc3057d379047211"
+    },
+    "block/closec3.ogg": {
+      "source": "block/closeC3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "32045ac142501727ec0a5abf7a2a5fd704f65c7b69cec7ca5e804f812027b3ef"
+    },
+    "block/cratebreak1.ogg": {
+      "source": "block/crateBreak1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "630ec2121f2779f6ffdab78195701274e3f0319c5e16a20dea397afaea0f1fae"
+    },
+    "block/cratebreak2.ogg": {
+      "source": "block/crateBreak2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f32b5b78471c7fa0f5ec0e4ccac4265f59bbd8c86132d4772c8de1565451c8d2"
+    },
+    "block/cratebreak3.ogg": {
+      "source": "block/crateBreak3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b1769c655c7d52d6b39177d4d3fcc45029f01c6abceba2e34604225ecb445f66"
+    },
+    "block/cratebreak4.ogg": {
+      "source": "block/crateBreak4.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f5ccf8c5e132158bf6a63538fe34ffc341930d5fe9c9bd4e32335c6573058f76"
+    },
+    "block/cratebreak5.ogg": {
+      "source": "block/crateBreak5.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "40f04f42c86754ae6f9f9ccfd15470cb7c2d60bc58e51ef7129867ef2ed83553"
+    },
+    "block/crateclose.ogg": {
+      "source": "block/crateClose.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "146d3c6ba33be53cd80f02fdbe33d3c0858cd1ba0a0da25e8737515a3dc9677a"
+    },
+    "block/crateopen.ogg": {
+      "source": "block/crateOpen.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "069079af4c78006c11d2cc335aae44ac45781dca380cd87e6229faeeb57b792d"
+    },
+    "block/dam1.ogg": {
+      "source": "block/dam1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "3b36a5500ba3b62fd9a35cdefc0f8f45b91d788cb2d0ddc8366b54bf1e3c07be"
+    },
+    "block/dam2.ogg": {
+      "source": "block/dam2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "080d89daa5536054e53a1fbd6b0d7a4c360f521ac660e4c2e587042cead46d8f"
+    },
+    "block/dam3.ogg": {
+      "source": "block/dam3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "7f03fe7c933c4695aa39e183d06c02cd9168b0068054a652d0f1c5b03e1f01bd"
+    },
+    "block/dam4.ogg": {
+      "source": "block/dam4.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "717b6bc98d1c25f8b4301c67cc6750496a0f4ff3c17cd83f680c350b4143483b"
+    },
+    "block/debris1.ogg": {
+      "source": "block/debris1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b9d13067894a786dadb43515804528f5aa528a21a8095354966ea0e572fe6b3d"
+    },
+    "block/debris2.ogg": {
+      "source": "block/debris2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "4ab322563321957f1f876e8e3c417e21ec71ad5c8f76eea1fdc5ac77ac045128"
+    },
+    "block/debris3.ogg": {
+      "source": "block/debris3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "77165f95225d06c238e2a960cd766e46ad2af0618fb4ad245cd6575a9da15b9d"
+    },
+    "block/dieseloperate.ogg": {
+      "source": "block/dieselOperate.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "0b8f03394544e3198b163d430f0069875da557040e6364cc10d1eeaac2a90b3b"
+    },
+    "block/door/alarm6.ogg": {
+      "source": "block/door/alarm6.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "a0a1db31985069ffd784101bbd0be7ca4ac6cd139cd7bb38f6f316c7a474e843"
+    },
+    "block/door/door_wgh_big_start.ogg": {
+      "source": "block/door/door_wgh_big_start.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b1e9f6c2a044dfd73894f9c0ffd79cc981bece80a10812cc21a6c51e48aaa9b2"
+    },
+    "block/door/door_wgh_big_stop.ogg": {
+      "source": "block/door/door_wgh_big_stop.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "625e9229623a8bae933855b3350d87df0a524ff463d0ed5afebf837e8538fb42"
+    },
+    "block/door/doormove2.ogg": {
+      "source": "block/door/doormove2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "4525c97a751f6802fc3a78c6df61479b57baf99ba0935f2e069eedb2c0e19cd0"
+    },
+    "block/door/doorshut_1.ogg": {
+      "source": "block/door/doorshut_1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "deae59bb30b07a8130086c253757474d39ddd4330a18a26955a12740c19d99ca"
+    },
+    "block/door/doorslide_opened1.ogg": {
+      "source": "block/door/doorslide_opened1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "149d156aed0fa1bc48b3a30ba9bd3b07f7202b634f4f2dd0985ac395eccf893b"
+    },
+    "block/door/doorslide_opening1.ogg": {
+      "source": "block/door/doorslide_opening1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "116b45cd71a86305094513e1a1ce908a6a15c460600109add2d5869b4144a4a1"
+    },
+    "block/door/garage_move.ogg": {
+      "source": "block/door/garage_move.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "5f65a51e6a39d35d7fe9a8b86c1429856a1babd35a150dfc3f4f310550bf9d60"
+    },
+    "block/door/garage_stop.ogg": {
+      "source": "block/door/garage_stop.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f22e0a4bae143b926894002d33cf4416be4cc3d02b7e7f0762e72f4868ac9f01"
+    },
+    "block/door/lever1.ogg": {
+      "source": "block/door/lever1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "431518c831f38992ab768dcd292ed0cb0e5e6923bbbda533481d93093f233d7b"
+    },
+    "block/door/metal_stop1.ogg": {
+      "source": "block/door/metal_stop1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "3a6336ad86bde1b81a8334487d9ffc97fdc54d3bc15fca93f07ebfc4c12954cf"
+    },
+    "block/door/sliding_door_opened.ogg": {
+      "source": "block/door/sliding_door_opened.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "149d156aed0fa1bc48b3a30ba9bd3b07f7202b634f4f2dd0985ac395eccf893b"
+    },
+    "block/door/sliding_door_opening.ogg": {
+      "source": "block/door/sliding_door_opening.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "116b45cd71a86305094513e1a1ce908a6a15c460600109add2d5869b4144a4a1"
+    },
+    "block/door/sliding_door_shut.ogg": {
+      "source": "block/door/sliding_door_shut.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "deae59bb30b07a8130086c253757474d39ddd4330a18a26955a12740c19d99ca"
+    },
+    "block/door/transition_seal_open.ogg": {
+      "source": "block/door/transition_seal_open.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "27bbe1163a9dc34c37a5740f8d7d0ceb7661e6e3940dcb1f172328cb6d976294"
+    },
+    "block/door/wgh_start.ogg": {
+      "source": "block/door/wgh_start.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "cd9dc680daa7388258a06b867bd17c4347f64dee08ae34a202b077ba5fe961f1"
+    },
+    "block/door/wgh_stop.ogg": {
+      "source": "block/door/wgh_stop.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "1deb845e5b81b2980a58998b8a779c58954ccd9b59c37bb9aada80da23602ce7"
+    },
+    "block/door_open_1.ogg": {
+      "source": "block/door_open_1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b2ec688458afb6e48965dcbbb339066e38527625bc295ab7538795c87a56a615"
+    },
+    "block/door_open_2.ogg": {
+      "source": "block/door_open_2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "dc38a30e5b1e1d134c6722fb4e1ac861d6fd2d444a0270349d41f6330e4a6656"
+    },
+    "block/electrichum.ogg": {
+      "source": "block/electricHum.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "47f4c813a35bfe3d72a16051692aff0ddeb7dfffe61179b3500c4f595f241784"
+    },
+    "block/engine.ogg": {
+      "source": "block/engine.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f3a7970eab8edfd9a7110476ce1eedc6d04a3847950682cf9b8bc5110a02820f"
+    },
+    "block/fel.ogg": {
+      "source": "block/fel.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "895c9abcfa691777cf44384347ac4818010193a760f0318ac3995a192a7f7cbc"
+    },
+    "block/fensuhum.ogg": {
+      "source": "block/fensuHum.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "e93bddeea43334392ca4cdff46304b8fe83c170adb553ed6984321f420b859e7"
+    },
+    "block/flesh1.ogg": {
+      "source": "block/flesh1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "5627b193c56b9392efa5c6ff4f0d4b276e44b8cefd86a6cd120187176e0b2b9d"
+    },
+    "block/flesh2.ogg": {
+      "source": "block/flesh2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "5c5e313413a3bd098e6aadefb5548a3d0630039d383fc7ab101e9e38e9f6c18a"
+    },
+    "block/flesh4.ogg": {
+      "source": "block/flesh4.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "79602a0e38bf827227ab673e30d2d3380ef6f8f7eb35a9b58c1c372b5a7dbe4e"
+    },
+    "block/flesh5.ogg": {
+      "source": "block/flesh5.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "176073536da48e5913a47640927f3ab0d2e852cf6e4cbefc09e1a93536784fc6"
+    },
+    "block/fusionreactorspin.ogg": {
+      "source": "block/fusionReactorSpin.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "05f75d673233c000526f0dc954138563928cca35dcc170bf03d2b440dfab2997"
+    },
+    "block/hephaestusrunning.ogg": {
+      "source": "block/hephaestusRunning.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "ef093c5bdff08234606b05cdff453d78ce7bc1f63f4e75be9d18807112894afb"
+    },
+    "block/hornfardual.ogg": {
+      "source": "block/hornFarDual.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "c05b478031e17f6e01732e8bfdfd8d92517b2474c88ba1c86fa4edfb787a078e"
+    },
+    "block/hornfarsingle.ogg": {
+      "source": "block/hornFarSingle.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "4a1c7b267c13afc1c8d955129917caec75b777a505f65945a5fbc736e4528787"
+    },
+    "block/hornneardual.ogg": {
+      "source": "block/hornNearDual.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "31991e9ee7f5f6022471407ab5feb1251df8456b9c8a88c1dfc43356f835d0e6"
+    },
+    "block/hornnearsingle.ogg": {
+      "source": "block/hornNearSingle.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "424a6451d63afe805df375c047923c5179ec34af7e655fd1f1602e59f2e24b8c"
+    },
+    "block/hunduns_magnificent_howl.ogg": {
+      "source": "block/hunduns_magnificent_howl.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "825248518ce37d3f5a16ff46e83f87e4af40422a1158b55b8d5af5d6f78190a9"
+    },
+    "block/igeneratoroperate.ogg": {
+      "source": "block/igeneratorOperate.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "7a6e82f4f73ffcfb543ba35ea9a2c444049899b44b7eeb20ca29815d14f38f37"
+    },
+    "block/largeturbine.ogg": {
+      "source": "block/largeTurbine.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "1b0f754e358a5c65f75add64cd4cbf4254a08369d974c96e0da97c5ca9912882"
+    },
+    "block/leverlarge.ogg": {
+      "source": "block/leverLarge.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f2b710e33f5ffec68ff3b595bfb28b4609ab80ed3239e3faf59413644e8ab74b"
+    },
+    "block/leverstart.ogg": {
+      "source": "block/leverStart.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f5b67f1f5d7c4aa3f0ca83d090d084fba014e40335eb580702f3389f16325793"
+    },
+    "block/lockhang.ogg": {
+      "source": "block/lockHang.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "d95dcad6bf5bfce27979c1d484fbefdc3d585e36a08f9d3e5a47f4e2d6dc94a2"
+    },
+    "block/lockopen.ogg": {
+      "source": "block/lockOpen.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "14c5910471119f46e05d4ab1ad74382d49edd91aaa7373d1e05a54f10487f3d3"
+    },
+    "block/metalimpact1.ogg": {
+      "source": "block/metalImpact1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "a0a67f69ff7b1c9b451836e7ba235535e3e3b4ca6a61584c21ebccd36098df6a"
+    },
+    "block/metalimpact2.ogg": {
+      "source": "block/metalImpact2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "ba757514de462debd2d2ea61027bb99148c413953026a5cd4b131b321cb4e8b2"
+    },
+    "block/mineroperate.ogg": {
+      "source": "block/minerOperate.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b2a2d10b7bb43dd487c1ac975a69eda3156f5a3eb93caae9dd6d8904b2afaa5d"
+    },
+    "block/missileassembly.ogg": {
+      "source": "block/missileAssembly.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "eaf1ed0d45f23acf9a08419a76796d2ba5bfe8d7daf4572d5f232d49d43f0f98"
+    },
+    "block/missileassembly2.ogg": {
+      "source": "block/missileAssembly2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "fafedb6b6d773788dd0544ade66a9f9242b37e315665ecc4cc3b6c5111be939b"
+    },
+    "block/motor.ogg": {
+      "source": "block/motor.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "58b985e1477f8ddacf76fe7b08be9f6b275506da39fe61a3ffa77a0a60a2720a"
+    },
+    "block/openc1.ogg": {
+      "source": "block/openC1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "09ff197d83281a7294ae9799c5c0ea3f1030239aa42c3c527bcde9f3571316ab"
+    },
+    "block/openc2.ogg": {
+      "source": "block/openC2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "4f1767db1f06ad45004091431fc7d53596492a6fd55e6d92166854961f024110"
+    },
+    "block/opencsqueaky.ogg": {
+      "source": "block/openCSqueaky.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "d6e1774fb0cb20c7a759f1ff75821765a0dd8b36f41dc10762dd7b866164f638"
+    },
+    "block/pipeplaced.ogg": {
+      "source": "block/pipePlaced.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "d49a668a10040046a8507eb780ce82be00571fd8712bb40954d5064fd452c2fa"
+    },
+    "block/platemetal_bar1.ogg": {
+      "source": "block/platemetal_bar1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "bae1871684ba6b64e088f986d24fb01b5c6d638ed6a00123d3392073c7dec17a"
+    },
+    "block/platemetal_bar2.ogg": {
+      "source": "block/platemetal_bar2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "de6a1af47246f0cc53c86345720658594d112a796c4d5faf138da8cc01b0ed52"
+    },
+    "block/platemetal_bar3.ogg": {
+      "source": "block/platemetal_bar3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f915383385ddd2828d826c5aff80d802fc3e4c3fb02db05c00d5087ac95aa876"
+    },
+    "block/platemetal_bar4.ogg": {
+      "source": "block/platemetal_bar4.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9798a44c72aa1b1645a1ba71a096cfa6445c74e0992030b49e98c4dd3c5aecd1"
+    },
+    "block/platemetal_bar5.ogg": {
+      "source": "block/platemetal_bar5.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "4a64cb41f7e3a021c0e5329fdfb55fc9c399c2cd6f10989f297fa5040cb709c4"
+    },
+    "block/platemetal_bar6.ogg": {
+      "source": "block/platemetal_bar6.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9f3c0faa0c2b4e58724ce944caf11f092317db89906d74dbeaaf3420a3d488ad"
+    },
+    "block/pressoperate.ogg": {
+      "source": "block/pressOperate.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "566eba460bba642d1e9dbb53d80aefe3c0ae5f6ab1e49389da32fee7e38dc45a"
+    },
+    "block/pyrooperate.ogg": {
+      "source": "block/pyroOperate.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f4a66233b4138fa9741ea5ea899516df46a136df0300c55448fac86efe24ebd4"
+    },
+    "block/rbmk_az5_cover.ogg": {
+      "source": "block/rbmk_az5_cover.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "bf849ea4dad0e6d115c1daf1f311651e3d86e9168fc3ccd7d10c42d522a9f19b"
+    },
+    "block/rbmk_explosion.ogg": {
+      "source": "block/rbmk_explosion.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "12f0eeb39d2ec791f5a5f70d23cede7a4b2a47d1a4346eb06ca1ce9ffe5dd654"
+    },
+    "block/reactorloop.ogg": {
+      "source": "block/reactorLoop.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "e20a3b4c25f3ef5e4fed8cc46f9903d9fbe50a2609fed26de50924cf91d28fe9"
+    },
+    "block/reactorstop.ogg": {
+      "source": "block/reactorStop.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "839d975e0488006038881f24f2a0a0f3b188e0439041042fe2d3fc62daa32617"
+    },
+    "block/shutdown.ogg": {
+      "source": "block/shutdown.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f033834c38eb546d7727d45e8260d974d6365e74380a8740c4b94dba3fb35c33"
+    },
+    "block/sonarping.ogg": {
+      "source": "block/sonarPing.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "92665c5accd47701810c85b53337d833f15f1a36ce8a9c557a34933fd856c534"
+    },
+    "block/soyuzready.ogg": {
+      "source": "block/soyuzReady.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9ec99c591f0d2c477006b33e4d865ab51049f59b4f3b2a4f67a1ecd1c6c173a6"
+    },
+    "block/spark1.ogg": {
+      "source": "block/spark1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "e7a309b93e1addf212121179213c78f9cd7dad49be0c94e259b21362b4b286ab"
+    },
+    "block/spark2.ogg": {
+      "source": "block/spark2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "6b1afed5117c1589bcab1a06aafbadc724b31157b1125b0909ece500c2b313cc"
+    },
+    "block/spark3.ogg": {
+      "source": "block/spark3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "1237807d45c6fa1cb83c371c00e9d4e091979163d1a2509e23eb4b2cb3f63152"
+    },
+    "block/spark4.ogg": {
+      "source": "block/spark4.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "145b057dd163b3a7c67bb1ace3a303af8c59f217b5c74f6f076eb2e4b7f86b48"
+    },
+    "block/spark5.ogg": {
+      "source": "block/spark5.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "d426c00a05cda541e2f068d28dd43432c015a5fa72b02e5386198bf14fd4465e"
+    },
+    "block/spark6.ogg": {
+      "source": "block/spark6.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "34f5055ddddd01450ccc5d28027ec428552e3ebb2373dd53f8c48e9f8e133157"
+    },
+    "block/squeakytoy.ogg": {
+      "source": "block/squeakyToy.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "7e6d70d4150f7555b3144351a7a5484b19ca051ae69371a60c1e901f5c3359d9"
+    },
+    "block/steamengineoperate.ogg": {
+      "source": "block/steamEngineOperate.ogg",
+      "license": "CC0-1.0",
+      "sha256": "08087f5f21bdcc71c69fd1d6c0c858023401bd6266148e2834ff73c4360d5bce"
+    },
+    "block/storageclose.ogg": {
+      "source": "block/storageClose.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "bfda77c41701694cb6bb2d8bb072c3cd927fa770191b7b82e6d30df253e06081"
+    },
+    "block/storageopen.ogg": {
+      "source": "block/storageOpen.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "c05d4c2e227e77f4a5327bf26d3a19ae0bf8e1c4460a28ad97ccb16a58995130"
+    },
+    "block/turbinegasrunning.ogg": {
+      "source": "block/turbinegasRunning.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "0be728dda1ffe787c38f115c059c8dbfa1e33e8baeb6f848e29e64d2e477dc41"
+    },
+    "block/turbinegasshutdown.ogg": {
+      "source": "block/turbinegasShutdown.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "0fe9ce7902ee8953cad5c10041e22f706141be4c90058d0e14eee39378227665"
+    },
+    "block/turbinegasstartup.ogg": {
+      "source": "block/turbinegasStartup.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "5ecefc530e2c3075a3e6c8bfe11068e570601cff303eb07d416fe1a1b3162874"
+    },
+    "block/turbofanoperate.ogg": {
+      "source": "block/turbofanOperate.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f609e527082ce242d97935bcd8fa9fb7115c2345091f8cea19e5e337f8a48dd4"
+    },
+    "block/vaultscrape.ogg": {
+      "source": "block/vaultScrape.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b31c8044644eef18070a687c4881f4f62fc5cbeeb2c776bc51e771f2aae81d3d"
+    },
+    "block/vaultscrapenew.ogg": {
+      "source": "block/vaultScrapeNew.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "a1e01cffed5a8827c92f1ce45c7a7179a18c49cc73e095fc024000ba6985b40b"
+    },
+    "block/vaultthud.ogg": {
+      "source": "block/vaultThud.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "62024e05568e6f877f8ce77fe101de6730c44994d6867d118bbe03ff82778128"
+    },
+    "block/vaultthudnew.ogg": {
+      "source": "block/vaultThudNew.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f6ead97a83b62450ed491b6bfb90be03b6c59d9aee62376f2277b5d2262deb30"
+    },
+    "block/warnoverspeed.ogg": {
+      "source": "block/warnOverspeed.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "41a046e73c4ac7ebac1feca7d0c8f56f2194eb7926dd4bf3e3b1904652b2cb96"
+    },
+    "player/cough1.ogg": {
+      "source": "player/cough1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "cbcb9813d2b3ee71d6f15c7467868039482636a22d4e9fab075e9b9a004bca49"
+    },
+    "player/cough2.ogg": {
+      "source": "player/cough2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f348d302a3d0f3273c525e056f70568355b939f86a876e033054791c738d9a53"
+    },
+    "player/cough3.ogg": {
+      "source": "player/cough3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "8b61d23206ec78f36a8fcd6e9f197e7e6487f0fa579bb5a3bc2cc5decbd4d035"
+    },
+    "player/cough4.ogg": {
+      "source": "player/cough4.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "a7746ce6a117159af38c696ce27db7101dde74d84889c69a603229155f534ba6"
+    },
+    "player/groan1.ogg": {
+      "source": "player/groan1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9f3cc94c8e662c4ae8686a374aeba1804f8aad4fef0d05d08417e0b32f1f3682"
+    },
+    "player/groan2.ogg": {
+      "source": "player/groan2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "324a06d757328e462d564228f0dac2be2a9ad73e0f094daaf871449ed2e7210b"
+    },
+    "player/groan3.ogg": {
+      "source": "player/groan3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "d14954da3296d5f223cb1983f6202ffdb785faa4cde19b1978c143c55f67d7e7"
+    },
+    "player/gulp1.ogg": {
+      "source": "player/gulp1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f6b041ddf0b64c3fecc8374ae29f54a7d35ad0284f75b1e6279b4fa0d5e5169b"
+    },
+    "player/gulp2.ogg": {
+      "source": "player/gulp2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "15bb3d00eb94e0f36343346eec4f72cf3a6968c2df8d4314a6a75ab0b967ed6a"
+    },
+    "player/gulp3.ogg": {
+      "source": "player/gulp3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "514217da95e57150f8a1824b5b87417b0363f22d1756b30a51a05901b5f2b8ef"
+    },
+    "player/gulp4.ogg": {
+      "source": "player/gulp4.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "2c562d698fc98fea72deef1dcef7e61f6b23946e0fd5f114a05ea644d5a1e0b5"
+    },
+    "screm/scream01.ogg": {
+      "source": "screm/scream01.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "454dfb6ed33117e3fd2343319185228825009c5ee202beed2f049a1badc72650"
+    },
+    "screm/scream02.ogg": {
+      "source": "screm/scream02.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9282943116e6319f673973f3212bc0d9636f8529ddedd5724269eac93ed2c006"
+    },
+    "screm/scream03.ogg": {
+      "source": "screm/scream03.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9be84cfad574f0b9c2d8f699c73da1ccd40cdaf563fddb77801cc8d48f0b7aa3"
+    },
+    "screm/scream04.ogg": {
+      "source": "screm/scream04.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "8866bfc2e68cf77f44b235d68f26ba7f19ddebe4ca19dbd3491ce8bec82201c3"
+    },
+    "screm/scream05.ogg": {
+      "source": "screm/scream05.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "3fd4205690bd468a506f467e845b9458b81f15b4beaaf39c08244abce5c36025"
+    },
+    "screm/scream06.ogg": {
+      "source": "screm/scream06.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "a2d3792ac4c4f33c4ec25bfe28e70d75512174871cc8bf5e8e6c6dd843ff1b66"
+    },
+    "screm/scream07.ogg": {
+      "source": "screm/scream07.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "24db91b6826b43912c350002816dccf381536c76cea193665e722d12eaf67469"
+    },
+    "screm/scream08.ogg": {
+      "source": "screm/scream08.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "5fa8783f953c8e8386f405c5b401b7fcd65526106f45643a1ec2f7324bd5e374"
+    },
+    "screm/scream09.ogg": {
+      "source": "screm/scream09.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "ba02af053effcfb85e48fb8532b52b893f7eac05cbd7359ea3ac8e122fd10761"
+    },
+    "screm/scream1.ogg": {
+      "source": "screm/scream1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "79bdcfeeb0d884741f20691e8bdb0949c0efd4f5630b6a1a7e900aae5cbe98eb"
+    },
+    "screm/scream10.ogg": {
+      "source": "screm/scream10.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "cc053afbc9f27cbb1166b3dc7ee541fa8b4f56829ae4e12a38c715a2d5c4888b"
+    },
+    "screm/scream11.ogg": {
+      "source": "screm/scream11.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "60dddf00c73a774fbe95084eddcb3988e1ff61e3dcb95fc462ab9a3342d8afd7"
+    },
+    "screm/scream12.ogg": {
+      "source": "screm/scream12.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "e980c73ec63057b19b5a2c1ef25dfffa62ebb29b093d92343bfa7d9e9acb7906"
+    },
+    "screm/scream13.ogg": {
+      "source": "screm/scream13.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "e9f17689c7d40775cbc533a41bb28467767179dc98e325586dbbbe8e6095d29b"
+    },
+    "screm/scream14.ogg": {
+      "source": "screm/scream14.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b528e84e98853f9790c88c7aeab756ee1a7e4a8f01c2f57b7d195ba47fd4297a"
+    },
+    "screm/scream15.ogg": {
+      "source": "screm/scream15.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "3b160a7538fa1cf5ae6aee33a631c626ef54f8791c7be1cb7e47356d770259f7"
+    },
+    "screm/scream16.ogg": {
+      "source": "screm/scream16.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b96b26db7f5004a1d97997a39ce3242b96431d148c61d45ecc53d23697a15382"
+    },
+    "screm/scream17.ogg": {
+      "source": "screm/scream17.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "006d413fd90a7cdde39f9ccb659b99c53a01a773fccbc04f562438174d1e96be"
+    },
+    "screm/scream18.ogg": {
+      "source": "screm/scream18.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "2a7ce333fae23071b537448605d8e31e4cdaaa6530ab5dcfacb59cc186dff29f"
+    },
+    "screm/scream19.ogg": {
+      "source": "screm/scream19.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "fbed10ad93c974659376b9d53f81221a08c5dca66f9e7149440f0ece5abe90fe"
+    },
+    "screm/scream2.ogg": {
+      "source": "screm/scream2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "e9d772742cb85b89a5ad7a35d56fc9dcd0017b09d54166f5ed76e65d684547c0"
+    },
+    "screm/scream20.ogg": {
+      "source": "screm/scream20.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "423367f6a43306fd21b2bc3acbc01dce54099e93bfcb625b02681980abd6c9de"
+    },
+    "screm/scream21.ogg": {
+      "source": "screm/scream21.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b8f96fb3f337cd10af65bca5d5cd10b17140f23e9afd3cf0bbf06bb54c1680cd"
+    },
+    "screm/scream22.ogg": {
+      "source": "screm/scream22.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "dc913e203a8bb2ddf8ec6ef07c551c65d5d8cb787d2021612afc09ccfceb5a85"
+    },
+    "screm/scream23.ogg": {
+      "source": "screm/scream23.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "ab19724ec28e4178c127a62d2c6ff9e54c61d9e12c42903199a164d5e4ed59cd"
+    },
+    "screm/scream24.ogg": {
+      "source": "screm/scream24.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b60ce710632cdc9e4a468dc27703a41a12c18e8d90fdac1871c4d04d781dc70c"
+    },
+    "screm/scream25.ogg": {
+      "source": "screm/scream25.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "df2967d63ef0944bc6987ba8099af90d87d843960d4f2668cf96054f30a786c3"
+    },
+    "screm/scream3.ogg": {
+      "source": "screm/scream3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "480b5133302e8049de430c94337545f2bd0c5105741e0afa237e501038c2dd8a"
+    },
+    "screm/scream4.ogg": {
+      "source": "screm/scream4.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "8190b2ec5e7f139e8cfc52a327ee48b8911170c65bc1014b4fdf6375a5aeaae5"
+    },
+    "screm/scream5.ogg": {
+      "source": "screm/scream5.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "55e921ab9edc4c6b40a378ae6552e596e3e833d35e01be0cfad7857f038219c1"
+    },
+    "screm/scream6.ogg": {
+      "source": "screm/scream6.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "0462994121dc2e06fb2405180d5592f3d51e85adf2be7a1d482f002e353be652"
+    },
+    "screm/scream7.ogg": {
+      "source": "screm/scream7.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "e8b0bd14f1b586881cbf8a17ffc8a2018610b404302da4e2052edce986bb949d"
+    },
+    "tool/battery.ogg": {
+      "source": "tool/battery.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "537cf379abe4571e73d85e9cb1fceb83beed06eca27076e28c8afd16576e00b0"
+    },
+    "tool/extract1.ogg": {
+      "source": "tool/extract1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "8b46a93a5253647bb71e064175a1636c1730b7a3f57247143fe326e1064c4951"
+    },
+    "tool/extract2.ogg": {
+      "source": "tool/extract2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9c63d770972716d910eba4e9f0e706f1cb03cc615ebe1e2a773d4130b25d2458"
+    },
+    "tool/gasmaskscrew.ogg": {
+      "source": "tool/gasmaskScrew.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "4f367bc1e38a8fe994249332ff1b3cd132a7bf06778be486af78f0b724249845"
+    },
+    "tool/geiger1.ogg": {
+      "source": "tool/geiger1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "045118b655d5deda089004e32108d86246606562097817b5dc45c3d940eb040f"
+    },
+    "tool/geiger2.ogg": {
+      "source": "tool/geiger2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "da3b7781de43db8811467562dc21d1194d7273619e9949e27d457fb8b3049efa"
+    },
+    "tool/geiger3.ogg": {
+      "source": "tool/geiger3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "5f8dcf66a748e58134a2e7487f8b7e3e47466dde9248680bb732ec32647eedae"
+    },
+    "tool/geiger4.ogg": {
+      "source": "tool/geiger4.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "c8e7f1f6077c0286a288dcfbe7db8bf3df709a8c8e81092b116ffe1741c76a1e"
+    },
+    "tool/geiger5.ogg": {
+      "source": "tool/geiger5.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "407a0387f0d2485021e4faf8f767fe8420cef8b792cec19a491c1fdf0085b91b"
+    },
+    "tool/geiger6.ogg": {
+      "source": "tool/geiger6.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "bd944e67f56488fe754f90638d3dacb02bdadeb5fa228171cca406501e02a5b6"
+    },
+    "tool/jetpacktank.ogg": {
+      "source": "tool/jetpackTank.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "d9282a3f719e3d6c5a4a551df0ac5ab204e38abc18118b103cf06317685fef9c"
+    },
+    "tool/pinbreak.ogg": {
+      "source": "tool/pinBreak.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "1b6e175b4fb805a6f92bae463af95592b71ffd6bc046503e474cb31496708d96"
+    },
+    "tool/pinunlock.ogg": {
+      "source": "tool/pinUnlock.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "89076964c9f932411c57deabbf3d17566ac63bcf10eedb11fddcb0f6e1cf4fb8"
+    },
+    "tool/radaway.ogg": {
+      "source": "tool/radaway.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b8d10e6ab5faa70c1f5adfee583daf5c45f1884cf4734702e29a5bc557afc6aa"
+    },
+    "tool/repair1.ogg": {
+      "source": "tool/repair1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "c5dfdf12eb9f44375f0d6c48f467f03a4b29ecfba01ba3db3259a14f558b721e"
+    },
+    "tool/repair2.ogg": {
+      "source": "tool/repair2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "3785ebf76851b11b09667a5813f265f2441289a6c596f1312c633e0ad8ee22de"
+    },
+    "tool/repair3.ogg": {
+      "source": "tool/repair3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "4658005a9ba95431611794a71579bfaad6c148a45c66c9631f8fcfee75fa9574"
+    },
+    "tool/repair4.ogg": {
+      "source": "tool/repair4.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "b12ffda34c8b39a0551e73331b18e520d974f21e509c4590f300771dcb04012a"
+    },
+    "tool/repair5.ogg": {
+      "source": "tool/repair5.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "055f74e49781d16a77ad80300b9442d89926f4d646fb344c0d6b1858d6f560e9"
+    },
+    "tool/repair6.ogg": {
+      "source": "tool/repair6.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "26a83345297936c905781f2f396875ea06cd5b277b9bb4b7be910a8af3dc49ac"
+    },
+    "tool/repair7.ogg": {
+      "source": "tool/repair7.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "366ae62c3ad49a4a9acec29b7fb3ef4b74d10ab9d742d3eac58bae3adc0b5b78"
+    },
+    "tool/spray.ogg": {
+      "source": "tool/spray.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "033eb4e92965c693fb9be9c34ced74e88402b773e4b82c76a00aa1ba98ed4edc"
+    },
+    "tool/stim.ogg": {
+      "source": "tool/stim.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "cfc46e3d1628ce36520c8b6a364fb5ded3d61fa19104fc7cbaffd15e25fc85dd"
+    },
+    "tool/techbleep.ogg": {
+      "source": "tool/techBleep.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9c8997077e0e252ce9e65c4b48a0b91f5dc58dd11e38d86d8ee51f4fba576740"
+    },
+    "tool/techboop.ogg": {
+      "source": "tool/techBoop.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "f52d0a4332819578e2f61af0c5b90a9761a472e756140e05bff3b2a1cec6cd3c"
+    },
+    "tool/upgradeplug.ogg": {
+      "source": "tool/upgradePlug.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "178c665506261be8737749c01642baf397a5f4d8de56e0123abca56fd85aa33b"
+    },
+    "tool/vice.ogg": {
+      "source": "tool/vice.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "94f8ca4d3832e4b057c9f4e20823defc914549e8f2e74c5157516958ec9d5780"
+    },
+    "weapon/explosion_medium.ogg": {
+      "source": "weapon/explosion_medium.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "130dcd5f164254524fa62d8171b950d0c41696d131070ed13fd088ba26dd4104"
+    },
+    "weapon/explosionlargefar.ogg": {
+      "source": "weapon/explosionLargeFar.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "2e7a0b95bfa5be6f29535ae2158a96c75b87a549e11ce37f94453e033b38d9a0"
+    },
+    "weapon/explosionlargenear.ogg": {
+      "source": "weapon/explosionLargeNear.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "603d30d35d2127fa03ee5c949fe3e7517a06b9dcbefaa6cf2d5637cc140c831f"
+    },
+    "weapon/explosionsmallfar1.ogg": {
+      "source": "weapon/explosionSmallFar1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "d628eb92aca29ee9a27ffa93e383c07ffabc6b17b7ef2a2905be534865d6a71e"
+    },
+    "weapon/explosionsmallfar2.ogg": {
+      "source": "weapon/explosionSmallFar2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9ec9b44fbf4b0656790b9dae60020375e8d40cf1a6d7230a59a016d16f7b90a7"
+    },
+    "weapon/explosionsmallnear1.ogg": {
+      "source": "weapon/explosionSmallNear1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "e6135f121c775afaae3afedbf578ed5296801fa960c15c400cd160fcf7179861"
+    },
+    "weapon/explosionsmallnear2.ogg": {
+      "source": "weapon/explosionSmallNear2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "2af3ae36b192f68588da3b066cac44c13f82b519777c0e99c484d968e5e48385"
+    },
+    "weapon/explosionsmallnear3.ogg": {
+      "source": "weapon/explosionSmallNear3.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "956ed783ffa1d6153099f8c36e5044256748ac1d514352dc20b5912a3f8e4ad3"
+    },
+    "weapon/explosiontiny1.ogg": {
+      "source": "weapon/explosionTiny1.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "452b573a3832a71856417064a4365644d1502b0098fa1e6073fefb07d15d8d32"
+    },
+    "weapon/explosiontiny2.ogg": {
+      "source": "weapon/explosionTiny2.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "8c54d0207f3bbdfa05360f228969e1f094ee45825024774a24841768deff939e"
+    },
+    "weapon/fstbmbping.ogg": {
+      "source": "weapon/fstbmbPing.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "701cb1aa8d0b151801848bacb6d818bd201db59eff265e3a9afe36838c2490b1"
+    },
+    "weapon/fstbmbstart.ogg": {
+      "source": "weapon/fstbmbStart.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "57b40fac41679e77519ff4e4ff182e134ac28d804354fd4dfc0b18bef53cf510"
+    },
+    "weapon/mukeexplosion.ogg": {
+      "source": "weapon/mukeExplosion.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "72f81d17945b565aac16500357604c7e4902f048704b076e83da25f8a46706b6"
+    },
+    "weapon/nuclearexplosion.ogg": {
+      "source": "weapon/nuclearExplosion.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "c4f117c34d871d1d678dd864721aa4dc7988474e6d622fa178d44b3b7aa623f0"
+    },
+    "weapon/reload/boltopen.ogg": {
+      "source": "weapon/reload/boltOpen.ogg",
+      "license": "LGPL-3.0-only",
+      "sha256": "9f84a0e92f6dd21645381581cea4433bb9dc6176d07c4f87f1a4ac5b3bc39812"
+    }
+  }
+}

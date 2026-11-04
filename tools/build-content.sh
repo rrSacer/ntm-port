@@ -7,6 +7,7 @@ packer="${HORIZON_MOD:-/home/sacer/Games/horizon/target/release/cargo-horizon-mo
 export CARGO_NET_OFFLINE="${CARGO_NET_OFFLINE:-true}"
 dist="${DIST:-$root/dist}"
 mkdir -p "$dist"
+python3 "$root/tools/sound-gen/validate.py"
 (cd "$root/content" && "$packer" build)
 cp "$root/content/target/horizon-mod/ntm.hmod" "$dist/ntm.hmod"
 ls -l "$dist"

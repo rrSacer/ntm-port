@@ -1,0 +1,282 @@
+{
+  "TileEntityReactorZirnox": [
+    "crates/ntm-core/src/server/zirnox_server.rs"
+  ],
+  "TileEntityZirnoxDestroyed": [
+    "crates/ntm-core/src/server/zirnox_server.rs"
+  ],
+  "ZirnoxDestroyed": [
+    "crates/ntm-core/src/server/zirnox_server.rs"
+  ],
+  "TileEntityPileCore": [
+    "crates/ntm-core/src/server/pile_server.rs"
+  ],
+  "TileEntityPileLoader": [
+    "crates/ntm-core/src/server/pile_server.rs"
+  ],
+  "BlockPileDevice": [
+    "crates/ntm-core/src/server/pile_server.rs"
+  ],
+  "BlockGraphiteRod": [
+    "crates/ntm-core/src/server/pile_server.rs"
+  ],
+  "BlockGraphiteDrilled": [
+    "crates/ntm-core/src/server/pile_server.rs"
+  ],
+  "BlockGraphiteDrilledBase": [
+    "crates/ntm-core/src/server/pile_server.rs"
+  ],
+  "BlockGraphiteNeutronDetector": [
+    "crates/ntm-core/src/server/pile_server.rs"
+  ],
+  "TileEntityMachinePress": [
+    "crates/ntm-core/src/press.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineEPress": [
+    "crates/ntm-core/src/press.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineAssemblyMachine": [
+    "crates/ntm-core/src/crafter.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineCentrifuge": [
+    "crates/ntm-core/src/crafter.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineChemicalPlant": [
+    "crates/ntm-core/src/crafter.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachinePUREX": [
+    "crates/ntm-core/src/crafter.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineGasCent": [
+    "crates/ntm-core/src/gascent.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineShredder": [
+    "crates/ntm-core/src/shredder.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineBlastFurnace": [
+    "crates/ntm-core/src/blastfurnace.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineRTG": [
+    "crates/ntm-core/src/radioisotopes.rs"
+  ],
+  "TileEntityMachineRadGen": [
+    "crates/ntm-core/src/radioisotopes.rs"
+  ],
+  "TileEntityMachineDiesel": [
+    "crates/ntm-core/src/combustion.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineCombustionEngine": [
+    "crates/ntm-core/src/combustion.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineTurbofan": [
+    "crates/ntm-core/src/combustion.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineTurbineGas": [
+    "crates/ntm-core/src/combustion.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityStirling": [
+    "crates/ntm-core/src/solar_stirling.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "MachineStirling": [
+    "crates/ntm-core/src/solar_stirling.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntitySolarBoiler": [
+    "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)"
+  ],
+  "TileEntityHeaterElectric": [
+    "crates/ntm-core/src/heater.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityHeaterOilburner": [
+    "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)"
+  ],
+  "TileEntityHeaterFirebox": [
+    "crates/ntm-core/src/heater.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityHeatBoiler": [
+    "crates/ntm-core/src/boiler.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityHeatBoilerIndustrial": [
+    "crates/ntm-core/src/boiler.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineLargeTurbine": [
+    "crates/ntm-core/src/steam.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineIndustrialTurbine": [
+    "crates/ntm-core/src/steam.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityMachineRefinery": [
+    "crates/ntm-core/src/processing.rs"
+  ],
+  "TileEntityMachineCatalyticReformer": [
+    "crates/ntm-core/src/processing.rs"
+  ],
+  "TileEntityMachineHydrotreater": [
+    "crates/ntm-core/src/processing.rs"
+  ],
+  "TileEntityMachineCoker": [
+    "crates/ntm-core/src/processing.rs"
+  ],
+  "ItemGeigerCounter": [
+    "native/ntm/mixins/ntm/item_hooks.rs"
+  ],
+  "ItemDosimeter": [
+    "native/ntm/mixins/ntm/item_hooks.rs"
+  ],
+  "ItemCottonCandy": [
+    "native/ntm/mixins/ntm/item_hooks.rs"
+  ],
+  "ItemSyringe": [
+    "native/ntm/mixins/ntm/item_hooks.rs"
+  ],
+  "ItemSimpleConsumable": [
+    "native/ntm/mixins/ntm/item_hooks.rs"
+  ],
+  "ItemStarterKit": [
+    "native/ntm/mixins/ntm/item_hooks.rs"
+  ],
+  "ItemFilter": [
+    "native/ntm/mixins/ntm/item_hooks.rs"
+  ],
+  "ArmorGasMask": [
+    "native/ntm/mixins/ntm/item_hooks.rs"
+  ],
+  "BlockArmorTable": [
+    "native/ntm/mixins/ntm/armor_table.rs"
+  ],
+  "ContainerArmorTable": [
+    "native/ntm/mixins/ntm/armor_table.rs"
+  ],
+  "GUIArmorTable": [
+    "native/ntm/mixins/ntm/armor_table.rs"
+  ],
+  "BlockModDoor": [
+    "content/data/ntm/horizon/block/door_*.json"
+  ],
+  "EntityNukeTorex": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "ExplosionNukeSmall": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "ExplosionCreator": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "TileEntityElectrolyser": [
+    "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)"
+  ],
+  "TileEntityMachineCrystallizer": [
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "TileEntityChungus": [
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "ItemPill": [
+    "consumiveis-k2 (not integrated; generic event map only)"
+  ],
+  "ItemLemon": [
+    "consumiveis-k2 (not integrated; generic event map only)"
+  ],
+  "ItemMuchoMango": [
+    "consumiveis-k2 (not integrated; generic event map only)"
+  ],
+  "ItemCigarette": [
+    "consumiveis-k2 (not integrated; generic event map only)"
+  ],
+  "ItemBDCL": [
+    "consumiveis-k2 (not integrated; generic event map only)"
+  ],
+  "ItemRepairKit": [
+    "consumiveis-k2 (not integrated; generic event map only)"
+  ],
+  "ItemLootCrate": [
+    "consumiveis-k2 (not integrated; generic event map only)"
+  ],
+  "ItemCounterfeitKeys": [
+    "consumiveis-k2 (not integrated; generic event map only)"
+  ],
+  "TileEntityMachineArcFurnaceLarge": [
+    "crates/ntm-core/src/arc_furnace.rs",
+    "crates/ntm-core/src/sounds.rs"
+  ],
+  "MachineArcFurnaceLarge": [
+    "crates/ntm-core/src/arc_furnace.rs"
+  ],
+  "NukeBoy": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "NukeGadget": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "NukeMan": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "NukeMike": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "NukeTsar": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "NukeN2": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "TileEntityNukeBalefire": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "BlockTNTBase": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "BlockTNT": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "BlockC4": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "BlockDynamite": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "BlockSemtex": [
+    "crates/ntm-core/src/blast/visuals.rs"
+  ],
+  "TileEntityMachineElectricFurnace": [
+    "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)"
+  ],
+  "TileEntitySolarMirror": [
+    "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)"
+  ],
+  "TileEntityHeaterHeatex": [
+    "crates/ntm-core/src/sounds.rs (source scan; no authored loop unless declared)"
+  ],
+  "TileEntityMachineOilWell": [
+    "crates/ntm-core/src/oil_drill.rs",
+    "crates/ntm-core/src/server/oil_server.rs"
+  ],
+  "TileEntityMachinePumpjack": [
+    "crates/ntm-core/src/oil_drill.rs",
+    "crates/ntm-core/src/server/oil_server.rs"
+  ],
+  "TileEntityMachineFrackingTower": [
+    "crates/ntm-core/src/oil_drill.rs",
+    "crates/ntm-core/src/server/oil_server.rs"
+  ]
+}

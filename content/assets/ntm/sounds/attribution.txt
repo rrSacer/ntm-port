@@ -1,0 +1,3 @@
+HBM Nuclear Tech Mod audio assets. Source: https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT
+LGPL version 3; see license-lgpl.txt and license-gpl.txt.
+Only resource identifiers and filenames were lowercased; audio bytes unchanged.

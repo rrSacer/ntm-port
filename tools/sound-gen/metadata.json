@@ -1,0 +1,625 @@
+{
+  "block/assemblercut.ogg": [
+    {
+      "Software": "Adobe Audition CC 2019.0 (Macintosh)",
+      "DATE": "2019-02-26T18:56:57+01:00"
+    }
+  ],
+  "block/assembleroperate.ogg": [],
+  "block/assemblerstart.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "block/assemblerstop.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "block/assemblerstrike1.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-10-25"
+    }
+  ],
+  "block/assemblerstrike2.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-10-25"
+    }
+  ],
+  "block/bobble.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-10-27"
+    }
+  ],
+  "block/boiler.ogg": [
+    {
+      "DATE": "2023-05-21T17:17"
+    }
+  ],
+  "block/boilergroan0.ogg": [],
+  "block/boilergroan1.ogg": [],
+  "block/boilergroan2.ogg": [],
+  "block/broadcast1.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "block/broadcast2.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "block/broadcast3.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "block/centrifugeoperate.ogg": [],
+  "block/chemicalplant.ogg": [
+    {
+      "DATE": "2025-06-13T21:56"
+    }
+  ],
+  "block/chemplantoperate.ogg": [],
+  "block/chunguslever.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "block/chungusturbine.ogg": [],
+  "block/closec1.ogg": [],
+  "block/closec2.ogg": [],
+  "block/closec3.ogg": [],
+  "block/cratebreak1.ogg": [],
+  "block/cratebreak2.ogg": [],
+  "block/cratebreak3.ogg": [],
+  "block/cratebreak4.ogg": [],
+  "block/cratebreak5.ogg": [
+    {
+      "Software": "Sound Forge 4.5",
+      "DATE": "2002-05-13"
+    }
+  ],
+  "block/crateclose.ogg": [],
+  "block/crateopen.ogg": [],
+  "block/dam1.ogg": [],
+  "block/dam2.ogg": [],
+  "block/dam3.ogg": [],
+  "block/dam4.ogg": [],
+  "block/debris1.ogg": [],
+  "block/debris2.ogg": [],
+  "block/debris3.ogg": [],
+  "block/dieseloperate.ogg": [],
+  "block/door/alarm6.ogg": [],
+  "block/door/door_wgh_big_start.ogg": [
+    {
+      "Software": "Sound Forge 4.5",
+      "DATE": "2001-08-27"
+    }
+  ],
+  "block/door/door_wgh_big_stop.ogg": [
+    {
+      "Software": "Sound Forge 4.5",
+      "DATE": "2001-08-27"
+    }
+  ],
+  "block/door/doormove2.ogg": [
+    {
+      "encoder": "Lavc59.9.100 libvorbis"
+    }
+  ],
+  "block/door/doorshut_1.ogg": [
+    {
+      "Software": "Sound Forge 4.5",
+      "DATE": "2001-08-27"
+    }
+  ],
+  "block/door/doorslide_opened1.ogg": [],
+  "block/door/doorslide_opening1.ogg": [],
+  "block/door/garage_move.ogg": [
+    {
+      "Software": "Sound Forge 4.5;Sonic Foundry Sound Forge 6.0",
+      "DATE": "2001-08-27"
+    }
+  ],
+  "block/door/garage_stop.ogg": [
+    {
+      "Software": "Sound Forge 4.5",
+      "DATE": "2001-08-27"
+    }
+  ],
+  "block/door/lever1.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig;Sonic Foundry Sound Forge 6.0"
+    }
+  ],
+  "block/door/metal_stop1.ogg": [
+    {
+      "Software": "Sound Forge 4.5;Sonic Foundry Sound Forge 5.0",
+      "DATE": "2001-08-27"
+    }
+  ],
+  "block/door/sliding_door_opened.ogg": [],
+  "block/door/sliding_door_opening.ogg": [],
+  "block/door/sliding_door_shut.ogg": [
+    {
+      "Software": "Sound Forge 4.5",
+      "DATE": "2001-08-27"
+    }
+  ],
+  "block/door/transition_seal_open.ogg": [
+    {
+      "encoder": "Lavc59.9.100 libvorbis"
+    }
+  ],
+  "block/door/wgh_start.ogg": [],
+  "block/door/wgh_stop.ogg": [],
+  "block/door_open_1.ogg": [
+    {
+      "compatible_brands": "isommp42",
+      "encoder": "Lavc58.47.103 libvorbis",
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig",
+      "major_brand": "mp42",
+      "minor_version": "0"
+    }
+  ],
+  "block/door_open_2.ogg": [
+    {
+      "compatible_brands": "isommp42",
+      "encoder": "Lavc58.47.103 libvorbis",
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig",
+      "major_brand": "mp42",
+      "minor_version": "0"
+    }
+  ],
+  "block/electrichum.ogg": [],
+  "block/engine.ogg": [],
+  "block/fel.ogg": [
+    {
+      "ENCODER": "VLC media player"
+    }
+  ],
+  "block/fensuhum.ogg": [
+    {
+      "TXXX": "isomiso2avc1mp41"
+    }
+  ],
+  "block/flesh1.ogg": [
+    {
+      "ENCODER": "Cool Edit"
+    }
+  ],
+  "block/flesh2.ogg": [
+    {
+      "ENCODER": "Cool Edit"
+    }
+  ],
+  "block/flesh4.ogg": [
+    {
+      "ENCODER": "Cool Edit"
+    }
+  ],
+  "block/flesh5.ogg": [
+    {
+      "ENCODER": "Cool Edit"
+    }
+  ],
+  "block/fusionreactorspin.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "block/hephaestusrunning.ogg": [],
+  "block/hornfardual.ogg": [
+    {
+      "Software": "Lavf58.19.102",
+      "compatible_brands": "iso6mp41",
+      "major_brand": "dash",
+      "minor_version": "0"
+    }
+  ],
+  "block/hornfarsingle.ogg": [
+    {
+      "Software": "Lavf58.19.102",
+      "compatible_brands": "iso6mp41",
+      "major_brand": "dash",
+      "minor_version": "0"
+    }
+  ],
+  "block/hornneardual.ogg": [
+    {
+      "Software": "Lavf58.19.102",
+      "compatible_brands": "iso6mp41",
+      "major_brand": "dash",
+      "minor_version": "0"
+    }
+  ],
+  "block/hornnearsingle.ogg": [
+    {
+      "Software": "Lavf58.19.102",
+      "compatible_brands": "iso6mp41",
+      "major_brand": "dash",
+      "minor_version": "0"
+    }
+  ],
+  "block/hunduns_magnificent_howl.ogg": [
+    {
+      "TXXX": "isomiso2avc1mp41"
+    }
+  ],
+  "block/igeneratoroperate.ogg": [],
+  "block/largeturbine.ogg": [],
+  "block/leverlarge.ogg": [],
+  "block/leverstart.ogg": [],
+  "block/lockhang.ogg": [],
+  "block/lockopen.ogg": [
+    {
+      "Software": "FL Studio 12",
+      "COMMENTS": "Modified by FL Studio 12"
+    }
+  ],
+  "block/metalimpact1.ogg": [
+    {
+      "Software": "Sound Forge 4.5;Sonic Foundry Sound Forge 5.0",
+      "DATE": "2002-05-16"
+    }
+  ],
+  "block/metalimpact2.ogg": [
+    {
+      "Software": "Sound Forge 4.5",
+      "DATE": "2001-07-09"
+    }
+  ],
+  "block/mineroperate.ogg": [],
+  "block/missileassembly.ogg": [
+    {
+      "compatible_brands": "isommp42",
+      "encoder": "Lavc58.47.103 libvorbis",
+      "major_brand": "mp42",
+      "minor_version": "0"
+    }
+  ],
+  "block/missileassembly2.ogg": [
+    {
+      "compatible_brands": "isommp42",
+      "encoder": "Lavc58.47.103 libvorbis",
+      "major_brand": "mp42",
+      "minor_version": "0"
+    }
+  ],
+  "block/motor.ogg": [],
+  "block/openc1.ogg": [],
+  "block/openc2.ogg": [],
+  "block/opencsqueaky.ogg": [],
+  "block/pipeplaced.ogg": [],
+  "block/platemetal_bar1.ogg": [
+    {
+      "ENCODER": "Cool Edit"
+    }
+  ],
+  "block/platemetal_bar2.ogg": [
+    {
+      "ENCODER": "Cool Edit"
+    }
+  ],
+  "block/platemetal_bar3.ogg": [
+    {
+      "ENCODER": "Cool Edit"
+    }
+  ],
+  "block/platemetal_bar4.ogg": [
+    {
+      "ENCODER": "Cool Edit"
+    }
+  ],
+  "block/platemetal_bar5.ogg": [
+    {
+      "ENCODER": "Cool Edit"
+    }
+  ],
+  "block/platemetal_bar6.ogg": [
+    {
+      "ENCODER": "Cool Edit"
+    }
+  ],
+  "block/pressoperate.ogg": [],
+  "block/pyrooperate.ogg": [],
+  "block/rbmk_az5_cover.ogg": [],
+  "block/rbmk_explosion.ogg": [
+    {
+      "track": "6",
+      "ALBUM": "title",
+      "ARTIST": "artist",
+      "GENRE": "genre",
+      "Length": "21026",
+      "TITLE": "Track 06"
+    }
+  ],
+  "block/reactorloop.ogg": [
+    {
+      "ENCODER": "FL Studio"
+    }
+  ],
+  "block/reactorstop.ogg": [],
+  "block/shutdown.ogg": [],
+  "block/sonarping.ogg": [],
+  "block/soyuzready.ogg": [
+    {
+      "compatible_brands": "isommp42",
+      "encoder": "Lavc58.47.103 libvorbis",
+      "major_brand": "mp42",
+      "minor_version": "0"
+    }
+  ],
+  "block/spark1.ogg": [],
+  "block/spark2.ogg": [],
+  "block/spark3.ogg": [],
+  "block/spark4.ogg": [],
+  "block/spark5.ogg": [],
+  "block/spark6.ogg": [],
+  "block/squeakytoy.ogg": [
+    {
+      "Software": "Lavf58.19.102",
+      "compatible_brands": "iso6mp41",
+      "major_brand": "dash",
+      "minor_version": "0"
+    }
+  ],
+  "block/steamengineoperate.ogg": [
+    {
+      "Software": "Audacity",
+      "ARTIST": "qubodup",
+      "TITLE": "steam",
+      "COMMENTS": "CC0, mix of CC0 sounds https://freesound.org/people/sniperous/sounds/365071/ and https://freesound.org/people/BEDEEN/sounds/425046/"
+    }
+  ],
+  "block/storageclose.ogg": [],
+  "block/storageopen.ogg": [],
+  "block/turbinegasrunning.ogg": [
+    {
+      "Software": "Lavf59.16.100"
+    }
+  ],
+  "block/turbinegasshutdown.ogg": [
+    {
+      "Software": "Lavf59.16.100"
+    }
+  ],
+  "block/turbinegasstartup.ogg": [
+    {
+      "Software": "Lavf59.16.100"
+    }
+  ],
+  "block/turbofanoperate.ogg": [],
+  "block/vaultscrape.ogg": [],
+  "block/vaultscrapenew.ogg": [],
+  "block/vaultthud.ogg": [],
+  "block/vaultthudnew.ogg": [],
+  "block/warnoverspeed.ogg": [],
+  "player/cough1.ogg": [],
+  "player/cough2.ogg": [],
+  "player/cough3.ogg": [],
+  "player/cough4.ogg": [],
+  "player/groan1.ogg": [],
+  "player/groan2.ogg": [],
+  "player/groan3.ogg": [],
+  "player/gulp1.ogg": [],
+  "player/gulp2.ogg": [],
+  "player/gulp3.ogg": [],
+  "player/gulp4.ogg": [],
+  "screm/scream01.ogg": [],
+  "screm/scream02.ogg": [],
+  "screm/scream03.ogg": [],
+  "screm/scream04.ogg": [],
+  "screm/scream05.ogg": [],
+  "screm/scream06.ogg": [],
+  "screm/scream07.ogg": [],
+  "screm/scream08.ogg": [],
+  "screm/scream09.ogg": [],
+  "screm/scream1.ogg": [],
+  "screm/scream10.ogg": [],
+  "screm/scream11.ogg": [],
+  "screm/scream12.ogg": [],
+  "screm/scream13.ogg": [],
+  "screm/scream14.ogg": [],
+  "screm/scream15.ogg": [],
+  "screm/scream16.ogg": [],
+  "screm/scream17.ogg": [],
+  "screm/scream18.ogg": [],
+  "screm/scream19.ogg": [],
+  "screm/scream2.ogg": [],
+  "screm/scream20.ogg": [],
+  "screm/scream21.ogg": [],
+  "screm/scream22.ogg": [],
+  "screm/scream23.ogg": [],
+  "screm/scream24.ogg": [],
+  "screm/scream25.ogg": [],
+  "screm/scream3.ogg": [],
+  "screm/scream4.ogg": [],
+  "screm/scream5.ogg": [],
+  "screm/scream6.ogg": [],
+  "screm/scream7.ogg": [],
+  "tool/battery.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "tool/extract1.ogg": [],
+  "tool/extract2.ogg": [],
+  "tool/gasmaskscrew.ogg": [
+    {
+      "Software": "Edison"
+    }
+  ],
+  "tool/geiger1.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "tool/geiger2.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "tool/geiger3.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "tool/geiger4.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "tool/geiger5.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "tool/geiger6.ogg": [
+    {
+      "Software": "File created by GoldWave.  GoldWave copyright (C) Chris Craig"
+    }
+  ],
+  "tool/jetpacktank.ogg": [
+    {
+      "Software": "Sony Sound Forge 9.0",
+      "DATE": "2009-02-03"
+    }
+  ],
+  "tool/pinbreak.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-08-23"
+    }
+  ],
+  "tool/pinunlock.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-08-23"
+    }
+  ],
+  "tool/radaway.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2008-02-02"
+    }
+  ],
+  "tool/repair1.ogg": [],
+  "tool/repair2.ogg": [],
+  "tool/repair3.ogg": [],
+  "tool/repair4.ogg": [],
+  "tool/repair5.ogg": [],
+  "tool/repair6.ogg": [],
+  "tool/repair7.ogg": [],
+  "tool/spray.ogg": [],
+  "tool/stim.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-04-04"
+    }
+  ],
+  "tool/techbleep.ogg": [
+    {
+      "Software": "Sound Forge 4.5",
+      "DATE": "1998-09-17"
+    }
+  ],
+  "tool/techboop.ogg": [
+    {
+      "Software": "Sound Forge 4.5",
+      "DATE": "1998-09-17"
+    }
+  ],
+  "tool/upgradeplug.ogg": [
+    {
+      "compatible_brands": "isommp42",
+      "encoder": "Lavc58.47.103 libvorbis",
+      "major_brand": "mp42",
+      "minor_version": "0"
+    }
+  ],
+  "tool/vice.ogg": [],
+  "weapon/explosion_medium.ogg": [
+    {
+      "compatible_brands": "isommp42",
+      "minor_version": "0",
+      "major_brand": "mp42",
+      "encoder": "Lavc58.80.100 libvorbis"
+    }
+  ],
+  "weapon/explosionlargefar.ogg": [
+    {
+      "ENCODER": "NCT"
+    }
+  ],
+  "weapon/explosionlargenear.ogg": [
+    {
+      "ENCODER": "NCT"
+    }
+  ],
+  "weapon/explosionsmallfar1.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-06-06"
+    }
+  ],
+  "weapon/explosionsmallfar2.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-06-06"
+    }
+  ],
+  "weapon/explosionsmallnear1.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-09-13"
+    }
+  ],
+  "weapon/explosionsmallnear2.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-10-16"
+    }
+  ],
+  "weapon/explosionsmallnear3.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-12-31"
+    }
+  ],
+  "weapon/explosiontiny1.ogg": [
+    {
+      "Software": "Sound Forge Pro 10.0",
+      "DATE": "2009-12-21"
+    }
+  ],
+  "weapon/explosiontiny2.ogg": [
+    {
+      "Software": "Sound Forge Pro 10.0",
+      "DATE": "2009-12-21"
+    }
+  ],
+  "weapon/fstbmbping.ogg": [],
+  "weapon/fstbmbstart.ogg": [],
+  "weapon/mukeexplosion.ogg": [
+    {
+      "Software": "Sony Sound Forge 8.0",
+      "DATE": "2007-10-17"
+    }
+  ],
+  "weapon/nuclearexplosion.ogg": [
+    {
+      "TXXX": "qt  "
+    }
+  ],
+  "weapon/reload/boltopen.ogg": [
+    {
+      "Software": "Sony Sound Forge 7.0;Sony Sound Forge 8.0",
+      "DATE": "2005-04-02"
+    }
+  ]
+}

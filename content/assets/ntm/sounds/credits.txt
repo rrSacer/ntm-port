@@ -1,0 +1,7 @@
+HBM Nuclear Tech Mod audio; upstream revision is in tools/sound-gen/manifest.json.
+Default declaration: LGPL v3 (license-lgpl.txt and license-gpl.txt).
+Audio bytes unchanged. Identifier/file case normalized for modern resources.
+
+block/steamengineoperate.ogg: CC0-1.0
+[{"Software": "Audacity", "ARTIST": "qubodup", "TITLE": "steam", "COMMENTS": "CC0, mix of CC0 sounds https://freesound.org/people/sniperous/sounds/365071/ and https://freesound.org/people/BEDEEN/sounds/425046/"}]
+
