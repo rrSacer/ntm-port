@@ -16,6 +16,13 @@ use ntm_core::{
     radiation::Dose,
 };
 
+/// `HbmPotion.potionsickness`, the effect the herbal pill applies. Its curative
+/// items are `setCurativeItems(empty)`: milk does not cure it, but the engine's
+/// milk clears every effect. `herbal` in the attachment remembers how long it
+/// still has to run, and the tick puts it back after anything but the antidote
+/// (or its own expiry) removed it.
+const SICKNESS: &str = "ntm:potion_sickness";
+
 fn empty() -> Compound {
     Compound::new()
 }
@@ -23,7 +30,7 @@ fn codec(value: &Compound) -> Result<Compound, AttachmentError> {
     if !value.is_empty() && value.get(&JavaString::from("schema")) != Some(&Tag::Int(1)) {
         return Err(AttachmentError::Decode);
     }
-    for key in ["dose", "radaway", "sickness"] {
+    for key in ["dose", "radaway", "sickness", "herbal"] {
         if let Some(value) = value.get(&JavaString::from(key)) {
             match value {
                 Tag::Long(n) if *n >= 0 => {}
@@ -456,7 +463,12 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         .as_ref()
         .filter(|d| d.creative || !creative)
         .map(|d| d.millirad);
-    if spec.radaway > 0 || spec.cooldown > 0 || dose.is_some() {
+    let sick_ticks = spec
+        .effects
+        .iter()
+        .find(|e| e.id == SICKNESS)
+        .map(|e| e.ticks.max(0) as u64);
+    if spec.radaway > 0 || spec.cooldown > 0 || dose.is_some() || sick_ticks.is_some() {
         let Some(seed) = legacy(game) else {
             return false;
         };
@@ -541,6 +553,26 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             );
             desired.armor[index] = Some(ItemStack::new(&id, 1));
         }
+    }
+    // `clearActivePotions` takes the radaway potion and the herbal sickness
+    // along; a list of `removePotionEffect` takes the ones it names.
+    match &spec.cure {
+        Some(item_hooks::Cure::All) => {
+            for key in ["radaway", "herbal"] {
+                if number(&desired.state, key) > 0 {
+                    set(&mut desired.state, key, 0);
+                }
+            }
+        }
+        Some(item_hooks::Cure::Effects(ids)) if ids.iter().any(|id| id == SICKNESS) => {
+            if number(&desired.state, "herbal") > 0 {
+                set(&mut desired.state, "herbal", 0);
+            }
+        }
+        _ => {}
+    }
+    if let Some(ticks) = sick_ticks {
+        set(&mut desired.state, "herbal", ticks);
     }
     if spec.radaway > 0 {
         let remaining = number(&desired.state, "radaway").saturating_add(u64::from(spec.radaway));
@@ -830,6 +862,22 @@ pub(super) fn tick(game: &mut Game<'_>) {
     if sickness > 0 {
         set(&mut desired.state, "sickness", sickness - 1);
     }
+    // The herbal sickness follows its effect while it runs; if a milk bucket
+    // wiped the effect with time still left, it comes back for that time.
+    let herbal = number(&desired.state, "herbal");
+    let mut benefits = NativePlayerBenefits::default();
+    if herbal > 0 {
+        match game.potions.effects.get(SICKNESS) {
+            Some(effect) => set(&mut desired.state, "herbal", effect.duration.max(1) as u64 - 1),
+            // Within a tick of the end the effect expired by itself.
+            None if herbal > 2 => {
+                let left = herbal - 1;
+                set(&mut desired.state, "herbal", left);
+                benefits.effects.push((SICKNESS.to_string(), left as i32, 0));
+            }
+            None => set(&mut desired.state, "herbal", 0),
+        }
+    }
     // `ItemCanteen.onUpdate`: every second its damage (the cooldown) drops by
     // one, for each canteen in the main inventory.
     if game.world.game_time % 20 == 0 {
@@ -861,7 +909,7 @@ pub(super) fn tick(game: &mut Game<'_>) {
         }
     }
     if desired != expected {
-        game.native_commit_player(&STATE, &expected, desired, Default::default());
+        game.native_commit_player(&STATE, &expected, desired, benefits);
     }
     clicks(game);
 }
