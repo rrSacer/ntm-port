@@ -137,11 +137,9 @@ mantêm o cursor; efeitos aceitos não se repetem em memória. Recibos dos efeit
 aplicados permanecem no KV até o hook existente `world_saved(wait=true)` confirmar
 o save de chunks e entidades. Reabertura limpa após essa confirmação não repete
 a ejeção. O que um efeito deve ao mundo vive, desde o item 5 da onda 0, no
-registro do chunk (ledger, ver `docs/horizon-current.md`, "Onda 0 — item 5"): os
-itens e o estado dos modelos que sobrevivem ao passo gravam junto com os blocos
-e os block entities, e a reabertura de um mundo cujos arquivos de chunk estão
-mais antigos que o KV é reconciliada por id e por revisão, sem perda nem
-duplicação.
+registro do chunk (ledger, ver `docs/horizon-current.md`, "Onda 0 — item 5"): as dívidas de itens gravam junto com o BE e os blocos. Passos que mudam mais de um chunk mantêm
+um diário por mundo dos modelos sobreviventes, reconciliado com os BEs por geração e revisão.
+As correções da revisão do item 5 estão em validação; a prova antiga não cobria todos os caminhos.
 
 Redes de energia, calor e fluidos rodam depois dos passos confirmados. Uma recusa
 de save dessas trocas conserva o estado em memória para regravar. Solar/caldeira
@@ -186,8 +184,11 @@ Dimensões fechadas congelam máquinas/detritos; nenhum acesso abre um nível.
 ## Auditoria de gerações e mineração conjunta
 
 Uma identidade é `(dimensão, posição, geração)`, acompanhada pelo estado esperado.
-Quebras e recolocações são consumidas antes dos retries. O contador monotônico é
-persistido; o limite `u64::MAX` congela a célula em vez de permitir ABA por overflow.
+Quebras e recolocações são consumidas antes dos retries. O contador avança na sessão e é persistido,
+mas, na reabertura, o BE do chunk prevalece sobre um contador adiantado do KV quando não há recibo
+ou remoção pendente que o referencie. Uma máquina consumida por recibo vira fantasma, com remoção
+do bloco antigo. Uma nova geração também inicia seu próprio histórico de revisões do sobrevivente.
+O limite `u64::MAX` congela a célula em vez de permitir ABA por overflow.
 Uma ausência positiva grava a `Removal` no KV antes de testar disponibilidade do
 resto do grupo. `None` significa inacessível e conserva o estado, sem ejeção.
 
@@ -206,18 +207,20 @@ resto do grupo. `None` significa inacessível e conserva o estado, sem ejeção.
 | Efeitos transitórios locais (`tell`, `log`, `hurt`, `effect`, `show`) | Guardas das origens confirmadas; liberação síncrona depois do commit | Não sobrevivem como escrita tardia; guardas obsoletas impedem a liberação. |
 | Sync de BE e retry pós-publicação | Estado/JSON da geração publicada; snapshot completo da célula para retry | Nunca repete crédito ou remoção. Nova quebra/recolocação cancela o sync; snapshot divergente é descartado. |
 | `Removal` / tombstone | Geração removida confirmada, conteúdo e indicador de slots já pertencentes ao motor | Persistência imediata fora do rollback e do `all()` do grupo. Ocupante novo não substitui conteúdo antigo; inacessibilidade apenas espera. |
-| Preparação de retenção antes da mineração | Snapshot completo da célula/BE original e geração, gravados no KV antes do consumo | Fonte intacta na mesma geração: descarta sem spawn. Fonte consumida ou caso ambíguo: replay físico. Fonte inacessível ou geração esgotada: congela. Recusa restaura o snapshot e elimina a preparação. |
+| Retenção na mineração | Snapshot completo no preflight; dívida no ledger do mesmo chunk que perde o BE | Consumo, estado da mineradora e retenção publicados juntos. Reabrir registro anterior restaura fonte intacta sem replay de KV; registro novo já contém dívida com id estável. |
 | Recibo aplicado / `world_saved` | Origem e efeito confirmados, com a mesma guarda de célula quando é uma escrita | Reabertura limpa não repete efeito confirmado. Replay de escrita obsoleta é descartado; replay físico conserva o conteúdo antigo. |
 
-A retenção de inventários minerados usa preparação por célula no KV. O BE da
-máquina, as células consumidas e os spawns publicam juntos; em seguida a preparação
-vira recibo aplicado. Uma recusa do journal impede o consumo. A recuperação
-compara estado, geração e snapshot completo do BE: fonte original intacta
-continua dona dos itens e não gera spawn; fonte consumida permite replay. O teste
-de crash após commit simula célula salva com a entidade ainda não salva; o replay
-restaura um spawn e a reabertura limpa seguinte não o repete. A janela de crash/I/O
-agora também inclui a preparação anterior ao commit, com duplicação possível no
-caso ambíguo; esse caso é o do ledger do item 5, fechado pela prova de queda.
+A retenção de inventários minerados vive no ledger do registro do chunk da célula consumida, com
+`retained_id(dim,pos,generation)`. BE, célula e dívida são publicados sob o mesmo acesso exclusivo ao mundo;
+a entidade é materializada no mesmo passo, depois dessa publicação. Uma recusa não publica dívida nem consome
+a célula. Se o registro antigo volta após queda, volta também o BE intacto, sem dívida nova para reproduzir.
+Não se criam preparações nem recibos de retenção no KV; o leitor de preparações antigas permanece para migração.
+
+Passos que mudam máquinas em mais de um chunk, inclusive Loader→Core sem ejeção, mantêm um diário por mundo
+dos sobreviventes de maior revisão por posição/geração. A adoção de um BE antigo restaura também slots e bridge.
+Save & Quit confirma, poda e regrava chunks/entidades alterados pelo hook antes de terminar. A revisão encontrou
+cinco P1 na entrega anterior; as contraprovas B1 e as provas do binário corrigido estão em andamento (ver
+`docs/horizon-current.md`, "Onda 0 — item 5").
 
 A fronteira de publicação das células é explícita. Primeiro são validados todos
 os BEs e todas as células, inclusive mudanças externas entre a leitura e o commit.
@@ -269,7 +272,7 @@ limitação no pacote em trânsito entre quebra e recolocação do mesmo ID.
 | `waste` em chunks descarregados | A API existente acessa somente blocos carregados; esses pontos são ignorados, sem carregar/gerar chunks para o efeito. A transformação das posições carregadas segue o limite/ordem da fonte. |
 | `WasteEarth.updateTick`: cogumelo→`mush` | Exclusão de catálogo K4 aceita pelo coordenador; `mush` não está declarado e possui regras próprias fora do ZIRNOX. Escurecimento está implementado; `cleanupDeadDirt=false` segue o padrão Java. |
 | `WasteEarth.canSustainPlant` | Blocos de terra usam o suporte a plantas do template vanilla; falta a restrição Java a plantas Cave. |
-| Crash/I/O entre `spawn_item`/save do mundo e cursor KV | Fechado no item 5 (ledger no registro do chunk, ids por efeito, diário dos sobreviventes por revisão). Prova: `kill` sem limpeza em 13 pontos de `save_game_with` e entre registros de chunk, com contagem exata de hastes após duas reaberturas. O que resta é o do formato de mundo (ver `docs/horizon-current.md`). |
+| Crash/I/O entre `spawn_item`/save do mundo e cursor KV | Item 5 reaberto pela revisão: ledger no registro do chunk, ids por efeito e diário por mundo dos sobreviventes. Correções implementadas; contraprovas e aceitação final em andamento (ver `docs/horizon-current.md`). |
 | Salvamento do nível estacionado/comparadores | Valem as limitações gerais já documentadas em `docs/host-dimensoes.md`. |
 
 ## Diagnóstico da cerca e isolamento do teste de waste
