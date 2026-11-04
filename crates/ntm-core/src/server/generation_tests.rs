@@ -267,6 +267,42 @@ fn install(h: &mut Host, block: &str, n: usize) -> Server {
     s.native_tick(h, 1);
     s
 }
+
+#[test]
+fn a_waiting_structural_effect_does_not_release_contents_of_a_source_consumed_elsewhere() {
+    use super::{CellGuard, CommittedEffects, WorldEffect};
+    let mut h = Host::default();
+    let mut s = Server::native(&mut h, 0);
+    let other = [16, 64, 0];
+    h.blocks.insert(P, "minecraft:chest".into());
+    h.blocks.insert(other, "minecraft:stone".into());
+    h.encoded.insert(P, vec!["{id:'minecraft:diamond',count:7}".into()]);
+    s.ready.world.generations.insert((D.into(), P), 0);
+    h.unloaded.insert(other);
+    s.ready.world.machine_effects.push_back(CommittedEffects {
+        effects: std::collections::VecDeque::from([WorldEffect::Blocks {
+            dim: D.into(),
+            blocks: vec![(P, "minecraft:air".into()), (other, "minecraft:air".into())],
+            expected: vec![
+                CellGuard { dim: D.into(), pos: P, generation: 0, state: "minecraft:chest".into() },
+                CellGuard { dim: D.into(), pos: other, generation: 0, state: "minecraft:stone".into() },
+            ],
+            retained: Vec::new(),
+        }]),
+        ..Default::default()
+    });
+    s.flush_machine_effects(&mut h);
+    assert!(h.retained.is_empty(), "the second chunk keeps the whole effect waiting");
+    // The player breaks the chest while the other chunk is absent: those seven diamonds are already theirs.
+    s.native_block_changed(D, P, "minecraft:chest", "minecraft:air");
+    h.blocks.insert(P, "minecraft:air".into());
+    h.encoded.remove(&P);
+    h.unloaded.clear();
+    s.flush_machine_effects(&mut h);
+    assert!(h.retained.is_empty(), "the stale snapshot must not emit the same diamonds again");
+    assert_eq!(h.blocks[&other], "minecraft:air", "the still-valid part completes");
+}
+
 fn z(h: &Host) -> ntm_core::zirnox::Zirnox {
     let m: Machine = serde_json::from_str(&h.saved[&P]).unwrap();
     let Data::Zirnox(z) = m.data else { panic!() };

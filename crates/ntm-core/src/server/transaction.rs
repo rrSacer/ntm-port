@@ -305,6 +305,9 @@ impl Server {
                             Some(_)=>{},
                         }
                     }
+                    // A source may have been consumed elsewhere while another chunk kept this effect waiting.
+                    // Its old snapshot no longer belongs to this effect, even when it was retained on an earlier pass.
+                    retained.retain(|d| guards.contains(&d.origin));
                     *blocks=keep;*expected=guards;
                     physical|=!retained.is_empty();
                 }else{
