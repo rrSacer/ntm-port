@@ -836,14 +836,17 @@ mod tests {
     }
 
     #[test]
-    fn the_two_medicines_are_always_edible_and_induce_vomiting() {
+    fn the_two_medicines_need_hunger_and_induce_vomiting() {
+        // `setAlwaysEdible` is guarded by `this == ModItems.med_ipecac`, which
+        // is still null while the constructor runs: the guard never fires.
         for id in ["ntm:med_ipecac", "ntm:med_ptsd"] {
             let s = spec(id);
-            assert_eq!(s.gate, Gate::FoodAlways, "{id}");
+            assert_eq!(s.gate, Gate::Food, "{id}");
             assert_eq!(s.food_stats(), Some((0, 0.0)));
             assert_eq!(fx(id), [("hunger", 50, 49)]);
             assert_eq!(s.special.as_deref(), Some("vomit"));
-            assert!(s.may_start(false, 20, 0, false, false));
+            assert!(!s.may_start(false, 20, 0, false, false), "{id} at full hunger");
+            assert!(s.may_start(false, 19, 0, false, false), "{id} hungry");
         }
     }
 

@@ -550,16 +550,16 @@
       "sound": "random.burp"
     },
     "ntm:med_ipecac": {
-      "origin": "ItemLemon(0, 0), ModItems.java:3622: alwaysEdible; the vomit particle packet has no mode and count 0, so only the sound shows",
-      "ticks": 32, "animation": "eat", "gate": "food_always", "consume": "always",
+      "origin": "ItemLemon(0, 0, false), ModItems.java:3622: NOT alwaysEdible (the constructor compares ModItems.med_ipecac before the field is assigned, so setAlwaysEdible never runs); the vomit particle packet has no mode and count 0, so only the sound shows",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
       "food": [0, 0.0],
       "effects": [["hunger", 50, 49]],
       "special": "vomit",
       "sound": "random.burp"
     },
     "ntm:med_ptsd": {
-      "origin": "ItemLemon(0, 0), ModItems.java:3623: alwaysEdible; the vomit particle packet has no mode and count 0, so only the sound shows",
-      "ticks": 32, "animation": "eat", "gate": "food_always", "consume": "always",
+      "origin": "ItemLemon(0, 0, false), ModItems.java:3623: NOT alwaysEdible (the constructor compares ModItems.med_ptsd before the field is assigned, so setAlwaysEdible never runs); the vomit particle packet has no mode and count 0, so only the sound shows",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
       "food": [0, 0.0],
       "effects": [["hunger", 50, 49]],
       "special": "vomit",

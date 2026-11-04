@@ -161,8 +161,8 @@ Resumo dos 116 itens: 58 ativo, 19 dependente, 39 parcial.
 | `ntm:man_kit` | ItemStarterKit | ativo | ItemStarterKit.onItemRightClick man_kit, ModItems.java:3787 | - |
 | `ntm:matchstick` | ItemMatch | ativo | `ItemMatch.onItemUse` | - |
 | `ntm:med_bag` | ItemSyringe | parcial | ItemSyringe.onItemRightClick med_bag, ModItems.java:2827: setHealth(getMaxHealth()), no sound, no container | `HbmPotion.radiation` (efeito que contamina) não existe: a dose vive no attachment do jogador |
-| `ntm:med_ipecac` | ItemLemon | ativo | ItemLemon(0, 0), ModItems.java:3622: alwaysEdible; the vomit particle packet has no mode and count 0, so only the sound shows | - |
-| `ntm:med_ptsd` | ItemLemon | ativo | ItemLemon(0, 0), ModItems.java:3623: alwaysEdible; the vomit particle packet has no mode and count 0, so only the sound shows | - |
+| `ntm:med_ipecac` | ItemLemon | ativo | ItemLemon(0, 0, false), ModItems.java:3622: NOT alwaysEdible (the constructor compares ModItems.med_ipecac before the field is assigned, so setAlwaysEdible never runs); the vomit particle packet has no mode and count 0, so only the sound shows | - |
+| `ntm:med_ptsd` | ItemLemon | ativo | ItemLemon(0, 0, false), ModItems.java:3623: NOT alwaysEdible (the constructor compares ModItems.med_ptsd before the field is assigned, so setAlwaysEdible never runs); the vomit particle packet has no mode and count 0, so only the sound shows | - |
 | `ntm:mike_kit` | ItemStarterKit | ativo | ItemStarterKit.onItemRightClick mike_kit, ModItems.java:3788 | - |
 | `ntm:mucho_mango` | ItemMuchoMango | ativo | ItemMuchoMango(10), ModItems.java:3639; alwaysEdible, right click unconditional | - |
 | `ntm:multi_kit` | ItemStarterKit | parcial | ItemStarterKit.onItemRightClick multi_kit, ModItems.java:3790 | itens Java ausentes do port: `ModBlocks.bomb_multi x6` |

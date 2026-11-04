@@ -359,9 +359,14 @@ class Foods(unittest.TestCase):
             self.assertEqual((row['ticks'], row['animation'], row['consume'], row['sound']), (32, 'eat', 'always', 'random.burp'), name)
 
     def test_gates(self):
-        always = {'med_ipecac', 'med_ptsd', 'apple_euphemium'}
+        # The only setAlwaysEdible in ItemLemon compares ModItems.med_ipecac
+        # inside the constructor, before the static field is assigned: it is
+        # null there, so the guard never fires and the two medicines need hunger.
+        always = {'cotton_candy', 'apple_euphemium'}
         ctor = re.search(r'if\(this == ModItems\.med_ipecac \|\| this == ModItems\.med_ptsd\) \{\s*this\.setAlwaysEdible\(\);', self.lemon)
         self.assertTrue(ctor)
+        self.assertRegex(self.mod['med_ipecac'], r'new ItemLemon\(0, 0, false\)')
+        self.assertIn('this.setAlwaysEdible()', read('items/food/ItemCottonCandy.java'))
         self.assertIn('this.setAlwaysEdible()', read('items/food/ItemAppleEuphemium.java'))
         for item, row in TABLE.items():
             name = item.removeprefix('ntm:')
