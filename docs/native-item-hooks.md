@@ -223,7 +223,7 @@ rodaram no binário do item-hooks sobre o motor e o NTM rebaseados.
 
 Verificação estática no HEAD final: NTM 421 testes passaram (2 doctests herdados
 ignorados), Clippy `-D warnings` do workspace e da cópia transformada do motor sem
-isenções; motor 1.565 testes de `horizon-client-lib` e 767 de `horizon-client`, Clippy
+isenções; motor 1.565 testes de `horizon-client-lib` e 766 de `horizon-client`, Clippy
 e `cargo fmt --check` limpos. Testes novos desta rodada: `world_item_hop_is_the_entity_constructors`, `drops_name_their_java_mode`,
 `a_native_menu_click_is_answered_with_the_state_after_the_mod` e
 `container_placement_follows_each_java_item`.
