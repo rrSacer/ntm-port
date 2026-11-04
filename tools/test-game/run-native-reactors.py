@@ -91,6 +91,7 @@ def run(args):
                HORIZON_NO_UPDATE_CHECK='1', WAYLAND_DISPLAY='')
     if args.scenario in ('sounds', 'items'):
         env['HORIZON_TRACE_SOUNDS'] = 'ntm:'
+        env['NTM_TRACE_ITEMS'] = '1'
     (folder / 'options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nmaxFps:30\nenableVsync:false\nguiScale:2\ntutorialStep:none\n')
     # Prevent a physical controller on the host from steering this test window.
     # This file belongs exclusively to the newly created disposable directory.

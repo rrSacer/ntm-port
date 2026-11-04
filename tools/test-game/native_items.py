@@ -140,6 +140,17 @@ def setup(g):
     for name,run in FAMILY_RUNS:
         if name in FAMILIES:run(g)
 
+    # All families above use real items. Assert resolution in the window rather
+    # than merely checking that the server accepted a named sound event.
+    from native_sounds import resolved, log_lines
+    for event in ['ntm:item.syringe', 'ntm:item.radaway', 'ntm:item.unpack',
+                  'ntm:player.gulp', 'ntm:player.groan', 'ntm:item.techboop']:
+        lines = resolved(g, event)
+        g.check('audio_' + event, bool(lines), lines[:2])
+    clicks = [line for line in log_lines(g) if 'sound resolved event=ntm:item.geiger' in line]
+    g.check('audio_instrument_clicks', bool(clicks) and all('decoded=Some((' in line for line in clicks), clicks[:6])
+    g.check('unregistered_vomit_has_no_alias', not any('event=ntm:entity.vomit ' in line for line in log_lines(g)), 'ItemLemon original event stays silent')
+
 
 def dropped(g):
     """Item entities near the player, by item id."""
