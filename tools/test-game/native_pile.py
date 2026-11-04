@@ -4,6 +4,7 @@ No machine state is injected. capture-state/check-state check geometry, inventor
 across a clean client restart (including heat, flux, rod depletion and devices).
 """
 import json
+import os
 import re
 import sys
 import time
@@ -446,6 +447,6 @@ if __name__=='__main__':
     if mode=='setup':setup(g)
     elif mode in ('capture-state','check-state'):persistence(g,mode=='capture-state')
     elif mode=='destroy':destroy(g)
-    elif mode=='meltdown':meltdown_probe(g,int(sys.argv[3]) if len(sys.argv)>3 else 3)
+    elif mode=='meltdown':meltdown_probe(g,int(sys.argv[3]) if len(sys.argv)>3 else int(os.environ.get('NTM_MELTDOWN_ROUNDS','3')))
     else:raise SystemExit('unknown mode: '+mode)
     g.evidence['ok']=True;g.save()
