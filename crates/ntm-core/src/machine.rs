@@ -187,11 +187,19 @@ pub enum Data {
     Inert { name: String },
 }
 
+fn is_zero_rev(n: &u64) -> bool {
+    *n == 0
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Machine {
     /// Identity of this BE lifetime; owned role changes preserve it.
     #[serde(default)]
     pub generation: u64,
+    /// Revision of the state last journaled with a batch of world effects (0: never): a block entity older than
+    /// the journal in the storage is replaced by the journal's state when the world opens.
+    #[serde(default, skip_serializing_if = "is_zero_rev")]
+    pub rev: u64,
     /// The block it is (`ntm:machine_battery`): its look comes from
     /// [`crate::registry::spec`].
     pub block: String,
@@ -278,7 +286,7 @@ impl Machine {
         };
         Self {
             generation: 0,
-            audio: Vec::new(),
+            rev: 0, audio: Vec::new(),
             block: block_id.into(),
             facing,
             data,
@@ -296,6 +304,7 @@ impl Machine {
         }
         let mut new = Machine::new(spec.kind, &self.block, self.facing.clone());
         new.generation=self.generation;
+        new.rev=self.rev;
         if let (Data::Crafter(mut c), Data::Electrolyser(e)) = (self.data, &mut new.data) {
             // Its fluid line had no nitric acid tank then.
             c.tin.extend(e.fluid.tin.iter().skip(c.tin.len()).cloned());

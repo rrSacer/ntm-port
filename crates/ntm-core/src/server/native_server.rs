@@ -182,9 +182,23 @@ impl Server {
             return true;
         }
         let Ok(m) = serde_json::from_str::<Machine>(json) else { return false };
-        let m = m.upgraded();
-        // A machine that an unconfirmed receipt already consumed (replayed or not) is not brought back by an older chunk.
-        if r.world.machine_effects.iter().chain(&r.world.applied_machine_effects).chain(r.world.prepared_retentions.iter().map(|p|&p.receipt)).any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)){return true;}
+        let mut m = m.upgraded();
+        let batches = r.world.machine_effects.iter().chain(&r.world.applied_machine_effects).chain(r.world.prepared_retentions.iter().map(|p|&p.receipt));
+        // What the storage's journal says this machine became (the newest, if several batches name it).
+        let journal = batches.clone().flat_map(|b|&b.survivors).filter(|s|s.dim==dim&&s.pos==pos&&s.generation==m.generation).max_by_key(|s|s.rev).cloned();
+        // A machine that an unconfirmed receipt already consumed (replayed or not) is not brought back by an older
+        // chunk. One that outlives it is brought to the state the receipt's step left it in.
+        if journal.is_none() && batches.clone().any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)){return true;}
+        if let Some(j) = journal {
+            if j.rev > m.rev {
+                if let Ok(newer) = serde_json::from_str::<Machine>(&j.json) {
+                    eprintln!("ntm: {dim} {pos:?}: the chunk is older than the journal (rev {} < {}); the journal's state is used", m.rev, j.rev);
+                    m = newer.upgraded();
+                }
+            } else if j.rev < m.rev {
+                eprintln!("ntm: {dim} {pos:?}: the chunk is newer than the journal (rev {} > {}); the chunk's state is kept", m.rev, j.rev);
+            }
+        }
         let current=r.world.generations.entry(key.clone()).or_insert(m.generation);
         if m.generation<*current{return false;}
         *current=m.generation;

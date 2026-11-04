@@ -87,7 +87,7 @@ fn the_solidifier_turns_coal_oil_into_tar() {
 /// A world saved with them inert loads them as the crafters they are now.
 #[test]
 fn inert_oil_machines_load_as_crafters() {
-    let m = crate::machine::Machine { generation: 0, audio: Vec::new(),
+    let m = crate::machine::Machine { generation: 0, rev: 0, audio: Vec::new(),
         block: "ntm:machine_liquefactor".into(),
         facing: Some("north".into()),
         data: Data::Inert { name: "ntm:machine_liquefactor".into() },
