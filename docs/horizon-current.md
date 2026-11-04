@@ -527,6 +527,13 @@ x=48, 10 hastes nos canais mais 2 comuns no chão, desfaz os dois canais e salva
 reaberturas, pilha sem core zumbi, `drain` retira o que é devido. Lote grande (pilha sem core: varredura de 125 células): 14
 gravações de KV e 1,9 MB no total, não uma por efeito.
 
+**O invariante do diário de efeitos (`flush_machine_effects` pula a gravação do KV antes de um efeito) com o ledger.** Revisado e mantido:
+a gravação omitida só deixa o KV com `done` menor e mais efeitos na fila, e a reprodução refaz esses efeitos com os mesmos ids
+(`serial.done`), porque todo lote da fila recebe o serial **antes da primeira gravação da chamada** (`name_batches`; nasce também na
+criação do lote). Efeitos de bloco simples reproduzem sem dano: o chunk que já guarda o id (ledger do chunk) é pulado e o que não guarda
+recebe o efeito. Itens e retenções são idempotentes por id no ledger, então a regra de gravar antes de itens (`repeatable`) fica mais
+conservadora que o necessário, não menos segura. O ledger só grava na memória do chunk; a ida ao disco é a do save do chunk.
+
 **Resíduo igual ao do vanilla (do formato de mundo, não do NTM).** (a) item que o jogador pega: o inventário vai no arquivo do
 jogador e a entidade some do de entidades, em momentos diferentes, como qualquer drop; (b) o `world_saved(wait=false)` do autosave
 não libera a entrada (só um save confirmado libera), o que apenas mantém por mais tempo a restrição de fusão; (c) o ledger de chunks

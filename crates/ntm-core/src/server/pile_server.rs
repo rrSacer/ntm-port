@@ -1027,6 +1027,7 @@ mod tests {
                 owners: vec![],
                 tombstones: vec![],
                 effects: std::collections::VecDeque::from([WorldEffect::Items { dim: DIM.into(), pos: [0, 70, 0], items: vec![("ntm:pile_rod__zr".into(), 1)] }]),
+                ..Default::default()
             });
         }
         let before = h.kv.sets;
