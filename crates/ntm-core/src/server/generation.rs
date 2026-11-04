@@ -103,18 +103,13 @@ impl Server {
         if !self.ready.facts_dirty && !self.ready.facts_pending {
             return true;
         }
-        let now = self.ready.world.kept(0);
-        if now == self.ready.kept {
+        if !self.world_changed() {
             self.ready.facts_pending = false;
             self.ready.facts_dirty = false;
             return true;
         }
-        match host.set(
-            crate::persist::KEY,
-            &self.ready.world.kept(self.ready.world.ticks),
-        ) {
+        match self.write_world(host) {
             Ok(()) => {
-                self.ready.kept = now;
                 self.ready.facts_pending = false;
                 self.ready.facts_dirty = false;
                 true

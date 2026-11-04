@@ -91,11 +91,14 @@ impl Server {
     pub(super) fn zirnox_effects(&mut self, host: &mut impl ServerHost) {
         if self.ready.world.machine_effects.iter().any(|b|b.owners.iter().any(|k| self.ready.world.machines.get(k).is_some_and(|m|matches!(m.data,Data::Zirnox(_))))) {return;}
 
-        let blasts = std::mem::take(&mut self.ready.world.zirnox.blasts);
-        for blast in blasts {
-            let (dim,at)=blast.location();
-            if !host.pile_reachable(dim) || !host.zirnox_explode(dim, at) {
-                self.ready.world.zirnox.blasts.push(blast);
+        // Read first: taking stamps the kept part, which an idle world must not rewrite.
+        if !self.ready.world.zirnox.blasts.is_empty() {
+            let blasts = std::mem::take(&mut self.ready.world.zirnox.blasts);
+            for blast in blasts {
+                let (dim,at)=blast.location();
+                if !host.pile_reachable(dim) || !host.zirnox_explode(dim, at) {
+                    self.ready.world.zirnox.blasts.push(blast);
+                }
             }
         }
         self.zirnox_waste(host);
@@ -278,6 +281,9 @@ impl Server {
         }
     }
     fn zirnox_waste(&mut self, host: &mut impl ServerHost) {
+        if self.ready.world.zirnox.waste.is_empty() {
+            return;
+        }
         let mut jobs = std::mem::take(&mut self.ready.world.zirnox.waste);
         for job in &mut jobs {
             if !host.pile_reachable(&job.dim) {
@@ -322,6 +328,9 @@ impl Server {
         self.ready.world.zirnox.waste = jobs;
     }
     fn zirnox_debris(&mut self, host: &mut impl ServerHost) {
+        if self.ready.world.zirnox.debris.is_empty() {
+            return;
+        }
         let mut debris = std::mem::take(&mut self.ready.world.zirnox.debris);
         for d in &mut debris {
             if !host.pile_reachable(&d.dim) {
