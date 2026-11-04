@@ -8,6 +8,11 @@ second reopen. Scenarios:
                                  one rod pushed in: nothing is ejected, so no effect is owed
   coupled-ea / coupled-eb        the same with a full channel: the push ejects a rod
   crossing                       no crash: drops of a pile move into a chunk that then unloads
+  crossing-kill                  the same, and the process dies while that chunk's entities are on disk only
+  origin-pickup(-away)           a broken mixer's contents are picked up in another chunk while the mixer's chunk
+                                 is unloaded (and, in -away, it stays unloaded until the save)
+  origin-merge / origin-vanish   its fragments fold into one stack / are killed there instead
+  origin-kill                    they reach another chunk that unloads, and the process dies before any save
   save-quit                      released ledgers and merge keys survive a clean quit
   mining                         an excavator mines a chest of diamonds
   break / replace                a mixer with items is broken (and, in replace, another put in its place)
@@ -185,7 +190,7 @@ def crossing_prepare(g):
             load_rod(g, geo[side][0])
     for x in (46.5, 48.5):
         g.command(f'summon minecraft:item {x} 103 13.5 {{Item:{{id:"{ROD}",count:1}}}}')
-    if SCENARIO == 'crossing':
+    if SCENARIO in ('crossing', 'crossing-kill'):
         # Forced tickets keep two full neighbour rings. An adjacent destination cannot unload while the
         # source is forced, so put the destination beyond that halo and prove its unload explicitly.
         g.command('forceload add 128 0 143 15')
@@ -228,6 +233,12 @@ def crossing_act(g):
     g.evidence['while_away'] = ledger(g)
     copies = g.command('execute as @e[type=minecraft:item] run data get entity @s Item')
     g.check('no_copy_while_destination_is_unloaded', not any(ROD in line for line in copies.get('chat', [])), copies)
+    if SCENARIO == 'crossing-kill':
+        # The destination's entities went to the writer with its unload; let it write them, then die there.
+        g.command('forceload add 30 0 64 24')
+        time.sleep(4)
+        g.save()
+        return
     g.command('forceload add 30 0 64 24')
     g.command('forceload add 128 0 143 15')
     g.command('tp @s 133.5 101 15.5')
@@ -236,6 +247,8 @@ def crossing_act(g):
 def crossing_verify(g, again=False):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
+    if SCENARIO == 'crossing-kill' and not again:
+        holder_away_then_save(g, ROD, (133, 99, 13), (53.5, 101, 15.5), 'forceload remove 128 0 143 15')
     g.command('tp @s 133.5 101 15.5' if SCENARIO == 'crossing' else 'tp @s 53.5 101 15.5')
     led = quiet(g, 10)
     held = entities(g, ROD) + inventory(g, ROD)
@@ -358,7 +371,7 @@ def break_prepare(g):
     g.ground(x - 3, y, z, width=8)
     g.command('clear @s')
     g.command('give @s ntm:machine_mixer 1')
-    if SCENARIO.startswith('origin-pickup'):
+    if SCENARIO.startswith('origin'):
         g.command(f'tp @s {x + .5} {y} {z + 3.5}')
     g.ctl(f'place {x} {y} {z} --item ntm:machine_mixer')
     g.command('clear @s')
@@ -430,6 +443,89 @@ def world_items(g, item):
     return sum(int(n) for line in lines if item in line for n in re.findall(r'(?:count|Count): ?(\d+)', line))
 
 
+def unloaded(g, p):
+    deadline = time.monotonic() + 90
+    while True:
+        loaded = g.command('execute if loaded %d %d %d run say NTM_CHUNK_LOADED' % tuple(p))
+        here = any('NTM_CHUNK_LOADED' in s for s in loaded.get('chat', []))
+        if not here or time.monotonic() > deadline:
+            return not here
+        time.sleep(1)
+
+
+def holder_away_then_save(g, item, holder, stay, release):
+    """After a reopen: the chunk whose entity file holds the stack stays unloaded while the world settles, a confirmed
+    save follows, and only then does the chunk come back. A stack spawned again meanwhile would be released by that
+    save and meet its older copy as a second stack."""
+    g.command(release)
+    g.command('tp @s %s %s %s' % stay)
+    g.check('holder_chunk_unloaded_on_reopen', unloaded(g, holder), holder)
+    led = quiet(g, 8)
+    seen = {'entities': world_items(g, item), 'inventory': inventory(g, item), 'ledger': led}
+    g.evidence['holder_away'] = seen
+    g.check('nothing_spawned_while_its_holder_is_away', seen['entities'] == 0, seen)
+    g.ctl('save')
+
+
+def origin_spread(g, core):
+    """The contents' entities apart in the destination, so that they cannot fold before the source is away."""
+    for k in range(8):
+        near = '@e[type=minecraft:item,x=%d,y=%d,z=%d,distance=..12,limit=1]' % core
+        if not g.command(f'execute if entity {near} run say NTM_LEFT').get('chat'):
+            break
+        g.command(f'tp {near} {497.5 + 2 * k} 100 3.5')
+        time.sleep(.3)
+
+
+def origin_kill_act(g):
+    g.ctl('wait-ready 120')
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = tuple(prep['core'])
+    g.command('gamemode survival @s')
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 4))
+    g.command('give @s minecraft:diamond_pickaxe 1')
+    g.ctl('select minecraft:diamond_pickaxe')
+    g.ctl('break %d %d %d --timeout 30' % core)
+    time.sleep(1)
+    g.check('broken_contents_are_tracked', ledger(g)['spawned'] > 0, ledger(g))
+    g.command('gamemode creative @s')
+    g.command('forceload add 496 0 511 15')
+    time.sleep(2)
+    g.command('fill 496 99 0 511 99 15 minecraft:stone')
+    g.command('tp @e[type=minecraft:item] 503.5 100 8.5')
+    time.sleep(2)
+    # The source stays (the player is there); the destination is let go and writes its entities.
+    g.command('forceload remove 496 0 511 15')
+    g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
+    g.check('destination_really_unloaded', unloaded(g, (503, 99, 8)), 'destination')
+    time.sleep(4)
+    g.evidence['after_act'] = {'block': g.ctl('block %d %d %d' % core).get('state', ''), 'entities': world_items(g, 'ntm:niter'),
+                               'inventory': inventory(g, 'ntm:niter'), 'ledger': ledger(g)}
+    g.save()
+
+
+def origin_kill_verify(g, again=False):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = tuple(prep['core'])
+    if not again:
+        holder_away_then_save(g, 'ntm:niter', (503, 99, 8), (core[0] + 3, core[1], core[2] + 6), 'forceload remove 496 0 511 15')
+    g.command('forceload add 496 0 511 15')
+    g.command('forceload add %d %d' % (core[0], core[2]))
+    led = quiet(g, 10)
+    state = g.ctl('block %d %d %d' % core).get('state', '')
+    inside = mixer_items(g, core) if state.startswith('ntm:machine_mixer') else 0
+    detail = {'block': state, 'inside': inside, 'entities': world_items(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'ledger': led}
+    detail['total'] = detail['inside'] + detail['entities'] + detail['inventory']
+    g.evidence['counted' + ('_again' if again else '')] = detail
+    g.check('niter_exactly_once', detail['total'] == NITER, detail)
+
+
+def origin_expected():
+    return 0 if SCENARIO == 'origin-vanish' else NITER
+
+
 def origin_pickup_act(g):
     g.ctl('wait-ready 120')
     prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
@@ -444,7 +540,11 @@ def origin_pickup_act(g):
     g.command('forceload add 496 0 511 15')
     time.sleep(2)
     g.command('fill 496 99 0 511 99 15 minecraft:stone')
-    g.command('tp @e[type=minecraft:item] 503.5 100 8.5')
+    if SCENARIO == 'origin-merge':
+        origin_spread(g, core)
+        g.evidence['spread'] = len(g.ctl('entities 400')['entities'])
+    else:
+        g.command('tp @e[type=minecraft:item] 503.5 100 8.5')
     time.sleep(1)
     g.command('forceload remove all')
     g.command('forceload add 496 0 511 15')
@@ -459,17 +559,28 @@ def origin_pickup_act(g):
     g.check('source_really_unloaded', not source_loaded, loaded)
     g.evidence['while_away'] = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'), 'ledger': ledger(g)}
     g.check('contents_still_alive_in_destination', g.evidence['while_away']['entities'] == NITER, g.evidence['while_away'])
-    g.command('tp @s 503.5 100 8.5')
-    time.sleep(3)
-    picked = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter')}
-    g.check('all_contents_picked_up_while_source_is_away', picked == {'inventory': NITER, 'entities': 0}, picked)
+    if SCENARIO == 'origin-merge':
+        g.command('tp @e[type=minecraft:item] 503.5 100 8.5')
+        time.sleep(3)
+        stacks = [e for e in g.ctl('entities 400')['entities'] if e.get('kind') == 'item' and e['item']['item'] == 'ntm:niter']
+        folded = {'stacks': len(stacks), 'entities': world_items(g, 'ntm:niter'), 'spread': g.evidence['spread']}
+        g.check('contents_folded_into_one_stack_while_source_is_away', folded['stacks'] == 1 and folded['entities'] == NITER and folded['spread'] > 1, folded)
+    elif SCENARIO == 'origin-vanish':
+        g.command('kill @e[type=minecraft:item]')
+        time.sleep(2)
+        g.check('contents_gone_while_source_is_away', world_items(g, 'ntm:niter') == 0, world_items(g, 'ntm:niter'))
+    else:
+        g.command('tp @s 503.5 100 8.5')
+        time.sleep(3)
+        picked = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter')}
+        g.check('all_contents_picked_up_while_source_is_away', picked == {'inventory': NITER, 'entities': 0}, picked)
     if SCENARIO != 'origin-pickup-away':
         g.command('forceload add %d %d' % (core[0], core[2]))
         time.sleep(6)
     detail = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'), 'ledger': ledger(g)}
     detail['total'] = detail['inventory'] + detail['entities']
     g.evidence['after_act'] = detail
-    g.check('source_reload_does_not_duplicate_picked_up_contents', detail['total'] == NITER, detail)
+    g.check('source_reload_does_not_duplicate_picked_up_contents', detail['total'] == origin_expected(), detail)
     save_expecting_death(g)
 
 
@@ -481,7 +592,7 @@ def origin_pickup_verify(g, again=False):
     detail = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'), 'ledger': led}
     detail['total'] = detail['inventory'] + detail['entities']
     g.evidence['counted' + ('_again' if again else '')] = detail
-    g.check('picked_up_contents_remain_exactly_once', detail['total'] == NITER, detail)
+    g.check('picked_up_contents_remain_exactly_once', detail['total'] == origin_expected(), detail)
 
 
 # ------------------------------------------------------------------------------------------------------------ common
@@ -506,6 +617,10 @@ STEPS = {
     'crossing': (crossing_prepare, crossing_act, crossing_verify),
     'origin-pickup': (break_prepare, origin_pickup_act, origin_pickup_verify),
     'origin-pickup-away': (break_prepare, origin_pickup_act, origin_pickup_verify),
+    'origin-merge': (break_prepare, origin_pickup_act, origin_pickup_verify),
+    'origin-vanish': (break_prepare, origin_pickup_act, origin_pickup_verify),
+    'origin-kill': (break_prepare, origin_kill_act, origin_kill_verify),
+    'crossing-kill': (crossing_prepare, crossing_act, crossing_verify),
     'save-quit': (crossing_prepare, save_quit_act, save_quit_verify),
     'mining': (mining_prepare, mining_act, mining_verify),
     'vanilla-break': (vanilla_break_prepare, break_act, break_verify),
