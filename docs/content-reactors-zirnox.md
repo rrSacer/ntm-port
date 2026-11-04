@@ -186,8 +186,9 @@ Dimensões fechadas congelam máquinas/detritos; nenhum acesso abre um nível.
 Uma identidade é `(dimensão, posição, geração)`, acompanhada pelo estado esperado.
 Quebras e recolocações são consumidas antes dos retries. O contador avança na sessão e é persistido,
 mas, na reabertura, o BE do chunk prevalece sobre um contador adiantado do KV quando não há recibo
-ou remoção pendente que o referencie. Uma máquina consumida por recibo vira fantasma, com remoção
-do bloco antigo. Uma nova geração também inicia seu próprio histórico de revisões do sobrevivente.
+ou remoção pendente que referencie a mesma geração. Tombstone ou substituição explícita prova
+o consumo; uma origem usada apenas como guarda de leitura não o prova. A máquina consumida
+vira fantasma, com remoção do bloco antigo. Uma nova geração também inicia seu próprio histórico de revisões do sobrevivente.
 O limite `u64::MAX` congela a célula em vez de permitir ABA por overflow.
 Uma ausência positiva grava a `Removal` no KV antes de testar disponibilidade do
 resto do grupo. `None` significa inacessível e conserva o estado, sem ejeção.
@@ -196,7 +197,7 @@ resto do grupo. `None` significa inacessível e conserva o estado, sem ejeção.
 | --- | --- | --- |
 | `MachineCommit` e grupo da pilha | Geração do modelo/JSON confirmado, bloco e todos os slots observados | Recusa tudo, nenhum setter parcial; nova simulação usa o inventário observado. |
 | Células lidas/consumidas pela escavadeira e `Drill` (well, pumpjack, fracker) | Estado completo, geração observada, chunk carregado, nível visitável e snapshot completo do BE/itens | Preflight recusa a operação inteira. Leituras de petróleo também participam quando o sorteio não esgota o depósito; não fica produto de uma leitura obsoleta. |
-| `WorldEffect::Blocks` | Guarda por célula: geração e ID esperado; o preflight final lê estado completo e BE real | Descarta escrita obsoleta sem sobrescrever a nova geração. Se ainda é a geração condenada, retém também itens inseridos depois do commit da falha: substituição e drops NBT publicam atomicamente. A captura é persistida antes da publicação e descartada em recusa. Escritas legadas sem guarda não são reaplicadas. |
+| `WorldEffect::Blocks` | Guarda por célula: geração e ID esperado; o preflight final lê estado completo e BE real | Descarta escrita obsoleta sem sobrescrever a nova geração. Se ainda é a geração condenada, retém também itens inseridos depois do commit da falha: substituição e drops NBT publicam atomicamente. A dívida integra o registro do chunk no mesmo acesso exclusivo da substituição; uma recusa não a publica. Escritas legadas sem guarda não são reaplicadas. |
 | `WorldEffect::Items` / `EncodedItems` | Origem confirmada do grupo e, para conteúdo minerado, célula antiga | Efeito físico da geração antiga: entrega uma vez, mesmo com ocupante novo. NBT completo dos itens é preservado pelo codec existente do motor. |
 | `WorldEffect::PileExplosion` | Origem confirmada da pilha | A explosão commitada ocorre uma vez, com origem/potência antigas; pode destruir blocos novos no raio. |
 | Fila de bomba ainda não admitida | `Queued.origin` da geração consumida; número persistente da explosão | Continua após commit. Antes do commit, a intenção antiga é cancelada. Após admissão vale o journal existente do motor. |
@@ -208,6 +209,7 @@ resto do grupo. `None` significa inacessível e conserva o estado, sem ejeção.
 | Sync de BE e retry pós-publicação | Estado/JSON da geração publicada; snapshot completo da célula para retry | Nunca repete crédito ou remoção. Nova quebra/recolocação cancela o sync; snapshot divergente é descartado. |
 | `Removal` / tombstone | Geração removida confirmada, conteúdo e indicador de slots já pertencentes ao motor | Persistência imediata fora do rollback e do `all()` do grupo. Ocupante novo não substitui conteúdo antigo; inacessibilidade apenas espera. |
 | Retenção na mineração | Snapshot completo no preflight; dívida no ledger do mesmo chunk que perde o BE | Consumo, estado da mineradora e retenção publicados juntos. Reabrir registro anterior restaura fonte intacta sem replay de KV; registro novo já contém dívida com id estável. |
+| Quebra de container NTM pelo jogador | Slots e geração NTM já inicializada no BE; captura após a decisão de cancelamento | Adota os fragmentos vanilla reais por componentes e quota no ledger do chunk. Mantém contagens, loot e movimento; BE sem modelo NTM segue o caminho vanilla. |
 | Recibo aplicado / `world_saved` | Origem e efeito confirmados, com a mesma guarda de célula quando é uma escrita | Reabertura limpa não repete efeito confirmado. Replay de escrita obsoleta é descartado; replay físico conserva o conteúdo antigo. |
 
 A retenção de inventários minerados vive no ledger do registro do chunk da célula consumida, com
@@ -215,6 +217,12 @@ A retenção de inventários minerados vive no ledger do registro do chunk da c�
 a entidade é materializada no mesmo passo, depois dessa publicação. Uma recusa não publica dívida nem consome
 a célula. Se o registro antigo volta após queda, volta também o BE intacto, sem dívida nova para reproduzir.
 Não se criam preparações nem recibos de retenção no KV; o leitor de preparações antigas permanece para migração.
+
+Na quebra pelo jogador, os hooks existentes `destroy_block` e `item_spawn` capturam e adotam os
+fragmentos que o motor já produziu. O acesso exclusivo de `with_level` entrega esses spawns antes de
+retornar, sem save entre a remoção do bloco e o registro da dívida. Não esvazia os slots nem repete loot.
+A captura transitória expira no tick/fechamento; quebra cancelada não publica dívida. Containers vanilla
+e BEs NTM sem modelo/geração inicializada conservam o caminho vanilla.
 
 Passos que mudam máquinas em mais de um chunk, inclusive Loader→Core sem ejeção, mantêm um diário por mundo
 dos sobreviventes de maior revisão por posição/geração. A adoção de um BE antigo restaura também slots e bridge.

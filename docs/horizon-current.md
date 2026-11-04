@@ -503,6 +503,7 @@ Validação (binário `e57ab62508c8c7c9bbdf5283fc3794882b462b0d9654c23e8aefc9a8f
 - NTM: 417 testes (2 ignorados), Clippy do workspace e do stage sem isenções. Motor sem mudança desde `d5eb69a33` (testes da rodada anterior).
 - Em jogo, sem falhas: dims 14, zirnox 136, inventory-proxy 12, radioisotopes 67, bombs 49, pile 85 (×5), pile-meltdown 32, dims-idle 2,
   dims-idle-clean 1, mining 18, solar 36, combustion 15, catalog 251, comparator 9, stations 5.
+
 ## Onda 0 — item 5 (save atômico)
 
 Branch `wave0-save`, motor `ddd954eed` sobre `ntm-current` `0615f5db0`: failpoints do save,
@@ -517,13 +518,14 @@ O KV guarda intenções e reconciliação de passos entre chunks; sozinho, um co
 | Parte | Onde vive | Reconciliação implementada |
 | --- | --- | --- |
 | Itens devidos (ejeção e conteúdo de BE consumido) | Anexo `ntm:ledger` do chunk da origem, junto de blocos e BEs; entrada por pilha, `Pending → Spawned → paga` | Id por efeito (`serial.done`) ou `retained_id(dim,pos,generation)` para retenção. Reaplicação do mesmo id não acrescenta dívida. Conteúdo minerado não cria journal novo de retenção no KV. |
+| Quebra de container NTM pelo jogador | Slots e geração do BE capturados no hook autorizado; dívida no chunk da máquina | Adota os fragmentos vanilla já criados, com seus componentes, sem alterar loot ou movimento. O nível entrega os spawns antes de retornar, antes de outro save. Não envolve containers vanilla nem inventa geração para BE sem modelo NTM. |
 | Materialização | Dívida publicada junto do consumo, entidades criadas no mesmo passo exclusivo | Entidade marcada `ntm:effect`, nunca o item. Pending procura tag já existente antes de spawnar. |
 | Item que atravessa chunks | Contagem viva (`live`), último chunk observado na entrada e rastreio dos destinos ausentes | Descarregar destino não equivale a pickup. Só se recria quando o último chunk observado está carregado e com suas entidades prontas, sem portador da tag. |
 | Fusão no chão | `ItemEntity.merge_key` em runtime | Itens rastreados fundem dentro do mesmo chunk de origem. Todos os níveis com ledger são visitados para reconciliar entidades e contar o diagnóstico. |
 | Fim do rastreio | Primeiro `world_saved(wait=true)` após o spawn | Libera entrada, tag e chave em memória, poda ids e regrava chunks sujos/entidades antes de concluir o save. Poda também quando o KV não mudou. Autosave sem espera mantém o rastreio. |
 | Efeito de bloco reaberto | Id no ledger de cada chunk-alvo, gravado junto dos blocos | Só recebe o efeito quem ainda não guarda seu id. Retenções são filtradas pelas guardas ainda válidas a cada tentativa, inclusive após esperar outro chunk. |
 | Máquinas sobreviventes | `Machine.rev` no BE e diário **por mundo**, com o último sobrevivente por posição/geração | Ativado por efeitos devidos ou mudanças em mais de um chunk, inclusive Loader→Core sem ejeção. Revisão do BE menor restaura modelo, slots e bridge; igual preserva BE; maior é registrada e preservada. |
-| Máquina consumida / geração adiantada | BE do chunk + referência de recibo ou remoção ainda pendente | Máquina consumida por recibo vira fantasma e seu bloco é removido. Sem referência pendente, contador adiantado do KV recua para a geração do BE salvo. |
+| Máquina consumida / geração adiantada | BE do chunk + referência de recibo ou remoção ainda pendente | Tombstone ou substituição explícita da mesma geração prova o consumo: a máquina vira fantasma e seu bloco é removido. Origem usada só como guarda de leitura não prova consumo. Sem referência pendente à mesma geração, contador adiantado do KV recua para a geração do BE salvo. |
 
 **Provas exigidas.** `run-crash-more.py`: Save & Quit com pending/spawned/applied/keyed/tagged zerados;
 drop cruzando chunk que descarrega sem queda; baú com 7 diamantes minerado; Loader→Core nas duas posições e
@@ -547,7 +549,6 @@ seus anexos lidos quando o nível é visitado. Esses limites não autorizam dupl
 **Custo e regressões.** Medidas antigas (antes das correções da revisão) não são aceitação deste HEAD. Repetir
 média/pior tick e desfazer canal, mais `pile-meltdown`, e a bateria completa no mesmo binário final.
 
-## Hooks de item — extensão local em validação
 ## Hooks de item — extensões locais
 
 | Extensão local | Equivalente no upstream congelado `fc0210381` | Decisão |
