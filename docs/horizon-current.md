@@ -569,5 +569,5 @@ Sem mudança no motor (pin `0615f5db0`). O que o NTM ganhou e onde está documen
 | `ntm_core::consumables` (`consumables.json` e `kits.json`) e o glue `item_hooks.rs` | O mesmo commit atômico do jogador (`native_commit_player`) aplica a tabela de uso de cada família; ver [Hooks nativos de item](native-item-hooks.md) e [o catálogo K2](content-catalogo-k2.md). |
 | `ntm_core::blast::vanilla::allocate_vnt`, `cross_hit` | `ExplosionVNT` do `chocolate_milk` pelo motor de explosões do NTM (resolução 32, força até 64, dano e empurrão do `EntityProcessorCross`); mobs e itens soltos esperam a API de entidades. |
 | `Server::rad_buf`, `note_contamination` e `zone_rate` | A `radBuf` por jogador vem da mesma leitura que move a dose (sem caminho paralelo), na janela de um segundo, com os `contaminate` pontuais somados à taxa contínua: Geiger, dosímetro. |
-| Mob effects de conteúdo `ntm:radx`, `stability`, `death`, `potion_sickness`, `taint` | Estados passivos que o Java lê com `isPotionActive`; o motor não tem tick para efeitos de conteúdo. |
+| Mob effects de conteúdo `ntm:radx`, `radaway`, `stability`, `death`, `potion_sickness`, `taint` | Estados passivos que o Java lê com `isPotionActive`; o motor não tem tick para efeitos de conteúdo. |
 
