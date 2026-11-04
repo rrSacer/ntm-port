@@ -141,7 +141,7 @@ pub(super) fn start(game: &mut Game<'_>, stack: &ItemStack, canceled: &mut bool)
         if let Some(message) = &spec.message
             && !game.native_window()
         {
-            game.native_feedback(horizon_client::text::Text::literal(message.clone()));
+            tell(game, message);
         }
         return;
     }
@@ -190,7 +190,7 @@ fn instrument(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     if game.native_player_snapshot(&STATE).is_none() {
         return true;
     }
-    let say = |game: &mut Game<'_>, line: &str| game.native_feedback(horizon_client::text::Text::legacy(line));
+    let say = |game: &mut Game<'_>, line: &str| tell(game, line);
     match id {
         "ntm:geiger_counter" | "ntm:dosimeter" => {
             play(game, "hbm:item.techBoop");
@@ -198,9 +198,7 @@ fn instrument(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             let lines = if id == "ntm:dosimeter" {
                 ins::dosimeter_lines(buffer)
             } else {
-                let Some(seed) = legacy(game) else {
-                    return true;
-                };
+                let seed = legacy(game).unwrap_or_default();
                 let dose = read_dose(game, &seed).map_or(0, |d| d.millirad);
                 let (zone, resistance) = (zone_rate(game), -radiation_factor(game).log10());
                 ins::geiger_lines(&ins::Readings { dose_millirad: dose, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance })
@@ -216,6 +214,17 @@ fn instrument(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         _ => pipette(game, stack, say),
     }
     true
+}
+
+/// A chat line to the acting player, as a packet (`addChatMessage`): it reaches
+/// a LAN guest's client, which `native_feedback` (the command capture) does not.
+fn tell(game: &mut Game<'_>, line: &str) {
+    if let Some(id) = game
+        .native_actor_uuid()
+        .and_then(|u| u128::from_str_radix(&u.replace('-', ""), 16).ok())
+    {
+        game.native_tell(id, horizon_client::text::Text::legacy(line));
+    }
 }
 
 /// `radBuf` in milliRAD/s: the radiation server's reading of the last second.

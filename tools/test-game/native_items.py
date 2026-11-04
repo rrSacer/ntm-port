@@ -436,8 +436,8 @@ def medicine(g):
         g.ctl('respawn');g.ctl('wait-ready 60');g.close()
     g.check('chocolate_effects',has_effects(effects,{'haste':(3,1200),'speed':(3,1200),'jump_boost':(3,1200)}),effects)
     # plan C kills a survival player; creative is immune but the pill is still eaten.
-    reset(g,'creative');hold(g,'ntm:plan_c',.9)
-    g.check('plan_c_cannot_hurt_creative_but_is_eaten',health(g)>19 and not counts(g),{'health':health(g),'counts':counts(g)})
+    reset(g,'creative');g.command('effect give @s minecraft:instant_health 1 10 true');time.sleep(.8);before=health(g);hold(g,'ntm:plan_c',.9)
+    g.check('plan_c_cannot_hurt_creative_but_is_eaten',health(g)>=before-.01 and before>19 and not counts(g),{'before':before,'health':health(g),'counts':counts(g)})
     reset(g);hold(g,'ntm:plan_c',.9);time.sleep(1.5);dead=g.ctl('state')['player']
     g.check('plan_c_kills_a_survival_player',dead.get('death_time') is not None or dead['health']<=0,dead)
     g.ctl('respawn');g.ctl('wait-ready 60');g.close();reset(g,'creative')
@@ -529,7 +529,7 @@ def other_filters(g):
 
 
 def chat_lines(g):
-    return ' | '.join(g.ctl('chat').get('chat',[]))
+    return ' | '.join(g.ctl('chat-log 12').get('chat',[]))
 
 
 def components(g,item):

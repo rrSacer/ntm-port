@@ -319,4 +319,17 @@ mod tests {
         assert_eq!(box_distance(min, max, [4.0, 6.0, 0.5]), 5.0);
     }
 
+    /// The rays' random is a hash of the position, not `world.rand`: the size of
+    /// a strength-50 crater in flat stone barely moves with it (shifting the
+    /// center by whole blocks changes every hash input).
+    #[test]
+    fn the_vnt_crater_size_hardly_depends_on_the_random_stream() {
+        let counts: Vec<f64> = (0..6)
+            .map(|i| allocate_vnt([0.5 + 37.0 * f64::from(i), 64.5, 0.5 + 11.0 * f64::from(i)], 50.0, 32, &mut flat).0.len() as f64)
+            .collect();
+        let mean = counts.iter().sum::<f64>() / counts.len() as f64;
+        let worst = counts.iter().map(|c| ((c - mean) / mean).abs()).fold(0.0, f64::max);
+        assert!(worst < 0.03, "{counts:?} spread {worst}");
+    }
+
 }
