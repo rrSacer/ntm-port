@@ -114,6 +114,7 @@ def run(args):
               'catalog': [('setup',)],
               'comparator': [('setup',)],
               'pile-meltdown': [('meltdown',)],
+              'stations': [('misturador',)], 'recipes': [('montadora',)],
               'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
     if getattr(args, 'manual_only', False):
         phases['radioisotopes'] = [('setup', 'decay', 'capture-state'), ('check-state',)]
@@ -191,7 +192,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'comparator', 'pile-meltdown'])
+    parser.add_argument('scenario', choices=['zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'comparator', 'pile-meltdown', 'stations', 'recipes'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)

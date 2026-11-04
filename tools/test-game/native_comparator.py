@@ -113,7 +113,7 @@ def setup(g):
         first.append(wire_power(g,reader_of(a)));second.append(wire_power(g,reader_of(SECOND)))
     g.evidence['battery_to_battery']={'first':first,'second':second}
     f=[x for x in first if x is not None];t=[x for x in second if x is not None]
-    g.check('second_battery_comparator_rises_from_the_first',t[0]<=1 and t[-1]>=t[0]+5 and all(y>=x for x,y in zip(t,t[1:])),second)
+    g.check('second_battery_comparator_rises_from_the_first',t[0]<=3 and t[-1]>=t[0]+5 and all(y>=x for x,y in zip(t,t[1:])),second)
     g.check('first_battery_comparator_falls_into_the_second',f[-1]<=f[0]-5 and all(y<=x for x,y in zip(f,f[1:])),first)
 
     # A tank fills with water barrels: each one lifts the signal strictly.

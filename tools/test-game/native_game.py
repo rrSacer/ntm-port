@@ -15,7 +15,7 @@ class Game:
         self.output = self.folder / f'native-{scenario}.json'
         self.evidence = {'scenario': scenario, 'ok': False, 'steps': [], 'checks': {}}
 
-    def ctl(self, line):
+    def ctl(self, line, _retry=0):
         if line.startswith('wait-ready '):
             deadline = time.monotonic() + float(line.split()[1])
             while time.monotonic() < deadline:
@@ -32,6 +32,10 @@ class Game:
             sock.sendall((line + '\n').encode())
             with sock.makefile() as stream:
                 result = json.loads(stream.readline())
+        if 'did not answer within' in str(result.get('error')) and _retry < 12:
+            # A heavy server tick (a meltdown's blast) can outlast the controller's wait: ask again.
+            time.sleep(5)
+            return self.ctl(line, _retry + 1)
         self.evidence['steps'].append({'command': line, 'result': result})
         self.save()
         if result.get('error'):
