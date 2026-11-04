@@ -379,7 +379,17 @@ pub(super) fn use_on_block(
         return true;
     }
     // ItemFertilizer: `fertilize` on the 3x3x3 around the click; it is spent
-    // only if some cell was a growable target.
+    // only if some cell was a growable target. Outside creative the stack is
+    // spent first, in a confirmed commit, and only then may the world change; if
+    // nothing was growable the stack is given back the same way. So a refused
+    // commit never leaves a free growth behind.
+    let silent = || NativePlayerBenefits {
+        silent_equipment: true,
+        ..Default::default()
+    };
+    if !creative && !game.native_commit_player(&STATE, &expected, desired, silent()) {
+        return true;
+    }
     let mut grew = false;
     for dx in -1..=1 {
         for dy in -1..=1 {
@@ -393,8 +403,17 @@ pub(super) fn use_on_block(
             }
         }
     }
-    if grew && !creative {
-        game.native_commit_player(&STATE, &expected, desired, Default::default());
+    if !grew
+        && !creative
+        && let Some(spent) = game.native_player_snapshot(&STATE)
+    {
+        let mut back = spent.clone();
+        if let Some(slot) = held(&mut back, held_slot) {
+            *slot = Some(stack.clone());
+            if !game.native_commit_player(&STATE, &spent, back, silent()) {
+                eprintln!("ntm item: fertilizer refund refused");
+            }
+        }
     }
     true
 }

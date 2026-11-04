@@ -676,22 +676,26 @@ def on_blocks(g):
     # Nothing to grow: the fertilizer stays.
     g.ctl('interact 19 100 9 up');time.sleep(.8)
     g.check('fertilizer_stays_when_nothing_grows',counts(g).get('ntm:powder_fertilizer')==2,counts(g))
-    # The clicked cell grows by force (ItemFertilizer `force`), not by the 45% sapling roll. A vanilla bone
-    # meal control tells whether this harness can grow trees at all (it needs the worldgen features);
-    # if it can, every fertilizer trial must turn the sapling into a tree and spend one fertilizer.
-    def sapling_trial(item):
-        reset(g);g.command('fill 17 101 6 27 118 10 minecraft:air');g.command('setblock 22 100 8 minecraft:grass_block');g.command('setblock 22 101 8 minecraft:oak_sapling[stage=0]');time.sleep(.4)
-        give_hand(g,item,2);g.close();g.ctl('interact 22 101 8 up');time.sleep(.9)
-        block=g.ctl('block 22 101 8').get('state','sapling')
-        return 'sapling' not in block and counts(g).get(item)==1
-    control=sum(sapling_trial('minecraft:bone_meal') for _ in range(10))
-    if control:
-        grown=sum(sapling_trial('ntm:powder_fertilizer') for _ in range(6))
-        g.check('fertilizer_forces_the_clicked_cell',grown==6,{'vanilla_bone_meal_grew_of_10':control,'fertilizer_grew_of_6':grown})
+    # The clicked cell grows by force (ItemFertilizer `force`), not by the 45% sapling roll. A valid growth
+    # may only advance the sapling (`stage=0` to `stage=1`) or turn it into a tree, and either is growth.
+    # Vanilla bone meal is the control: what it does to a sapling in this world is recorded, and the
+    # fertilizer must change the clicked sapling in every trial, spending exactly one.
+    def sapling_trial(item,stage):
+        reset(g);g.command('fill 17 101 6 27 118 10 minecraft:air');g.command('setblock 22 100 8 minecraft:grass_block');g.command(f'setblock 22 101 8 minecraft:oak_sapling[stage={stage}]');time.sleep(.4)
+        before=g.ctl('block 22 101 8').get('state','');give_hand(g,item,2);g.close();g.ctl('interact 22 101 8 up');time.sleep(.9)
+        after=g.ctl('block 22 101 8').get('state','')
+        return {'before':before,'after':after,'changed':after!=before,'tree':'sapling' not in after,'spent':counts(g).get(item)==1}
+    vanilla=[sapling_trial('minecraft:bone_meal',stage) for stage in (0,0,0,0,0,1,1,1,1,1)]
+    forced=[sapling_trial('ntm:powder_fertilizer',0) for _ in range(6)]
+    summary={'vanilla_changed_of_10':sum(t['changed'] for t in vanilla),'vanilla_trees_of_10':sum(t['tree'] for t in vanilla),'vanilla_spent_of_10':sum(t['spent'] for t in vanilla),'vanilla_samples':[t['before']+' -> '+t['after'] for t in vanilla[:2]],
+             'fertilizer_changed_of_6':sum(t['changed'] for t in forced),'fertilizer_trees_of_6':sum(t['tree'] for t in forced),'fertilizer_spent_of_6':sum(t['spent'] for t in forced),'fertilizer_samples':[t['before']+' -> '+t['after'] for t in forced[:2]]}
+    if summary['vanilla_changed_of_10']:
+        # The world does grow saplings: the forced cell must always change, and cost one each time.
+        g.check('fertilizer_forces_the_clicked_cell',summary['fertilizer_changed_of_6']==6 and summary['fertilizer_spent_of_6']==6,summary)
     else:
-        # Not a pass: this world cannot grow a sapling even with vanilla bone meal, so the forced
-        # cell cannot be told from the engine's own refusal here. The evidence says so.
-        g.note('fertilizer_forced_cell_not_proven_in_game','vanilla bone meal grew 0 of 10 saplings in the scratch world (no tree features), so the forced re-roll of the clicked cell is only covered by code review')
+        # Not a pass: vanilla bone meal changed no sapling either (stage or tree) in 10 trials, so the forced
+        # cell cannot be told from the engine's own refusal in this world. The evidence says so.
+        g.note('fertilizer_forced_cell_not_proven_in_game',summary)
     g.command('fill 17 101 6 27 118 10 minecraft:air')
     # The AMS lens: the tooltip line comes from the lens stack's `damage` long, read through the same
     # function as `ntmitem lens`; the socket cannot read a tooltip, the function is what it draws.
