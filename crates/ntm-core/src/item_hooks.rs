@@ -1,7 +1,9 @@
 //! Item-family contracts, independent of the native host. The use table is
 //! `consumables`; the hazard and gas-mask rules (HazmatRegistry, ArmorUtil)
 //! are here.
-pub use crate::consumables::{Animation, Consume, Effect, Gate, Give, Overflow, UseSpec, use_spec};
+pub use crate::consumables::{
+    Animation, Consume, Cure, Effect, Gate, Give, Hurt, Overflow, UseSpec, use_spec,
+};
 
 /// All stack hazards use one endpoint interpolation. Reject non-finite state
 /// rather than allowing NaN to erase a hazard. Values outside the life range
@@ -37,11 +39,24 @@ pub fn resistance(id: &str) -> f64 {
         "ntm:hazmat_plate" => 0.24,
         "ntm:hazmat_legs" => 0.18,
         "ntm:hazmat_boots" => 0.06,
+        // HazmatRegistry: red is 1.0 and grey 2.0 times the body fractions
+        // (helmet 0.2, chest 0.4, legs 0.3, boots 0.1); yellow is 0.6.
+        "ntm:hazmat_helmet_red" => 0.2,
+        "ntm:hazmat_plate_red" => 0.4,
+        "ntm:hazmat_legs_red" => 0.3,
+        "ntm:hazmat_boots_red" => 0.1,
+        "ntm:hazmat_helmet_grey" => 0.4,
+        "ntm:hazmat_plate_grey" => 0.8,
+        "ntm:hazmat_legs_grey" => 0.6,
+        "ntm:hazmat_boots_grey" => 0.2,
         _ => 0.0,
     }
 }
-pub fn dose_factor<'a>(equipment: impl IntoIterator<Item = &'a str>) -> f64 {
-    10.0f64.powf(-equipment.into_iter().map(resistance).sum::<f64>())
+/// `10^(-HazmatRegistry.getResistance)`: the four pieces, and `+0.2F` while
+/// the Rad-X potion is active.
+pub fn dose_factor<'a>(equipment: impl IntoIterator<Item = &'a str>, radx: bool) -> f64 {
+    let sum = equipment.into_iter().map(resistance).sum::<f64>() + if radx { f64::from(0.2_f32) } else { 0.0 };
+    10.0f64.powf(-sum)
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -54,19 +69,30 @@ pub enum Hazard {
     Bacteria,
     CarbonMonoxide,
 }
+/// `ArmorUtil.register`: the hazard classes each filter stops. The mask's own
+/// blacklist (blistering gas for the M65) still prevails.
+pub fn filter_classes(filter: &str) -> &'static [Hazard] {
+    use Hazard::*;
+    match filter {
+        "ntm:gas_mask_filter" => &[CoarseParticles, FineParticles, LungGas, BlisteringGas, Bacteria],
+        "ntm:gas_mask_filter_mono" => &[CoarseParticles, CarbonMonoxide],
+        "ntm:gas_mask_filter_combo" => &[CoarseParticles, FineParticles, LungGas, BlisteringGas, Bacteria, CarbonMonoxide],
+        "ntm:gas_mask_filter_rag" => &[CoarseParticles],
+        "ntm:gas_mask_filter_piss" => &[CoarseParticles, LungGas],
+        _ => &[],
+    }
+}
+
+/// Whether an item is an `ItemFilter` (20000 wear, stack size 1).
+pub fn is_filter(id: &str) -> bool {
+    !filter_classes(id).is_empty()
+}
+
 pub fn filter_protects(mask: &str, filter: &str, hazard: Hazard) -> bool {
-    if !matches!(mask, "ntm:gas_mask_m65" | "ntm:attachment_mask")
-        || hazard == Hazard::BlisteringGas
-    {
+    if !matches!(mask, "ntm:gas_mask_m65" | "ntm:attachment_mask") || hazard == Hazard::BlisteringGas {
         return false;
     }
-    match filter {
-        "ntm:gas_mask_filter" => matches!(
-            hazard,
-            Hazard::CoarseParticles | Hazard::FineParticles | Hazard::LungGas | Hazard::Bacteria
-        ),
-        _ => false,
-    }
+    filter_classes(filter).contains(&hazard)
 }
 
 #[cfg(test)]
@@ -79,10 +105,29 @@ mod tests {
         assert_eq!(interpolate(20., 4., -1., 100.), Some(4.));
         assert_eq!(interpolate(20., 4., f64::NAN, 100.), None);
     }
+    /// ArmorUtil.register, filter by filter.
+    #[test]
+    fn each_filter_stops_the_classes_the_java_registers() {
+        use Hazard::*;
+        let m65 = "ntm:gas_mask_m65";
+        assert!(filter_protects(m65, "ntm:gas_mask_filter_mono", CarbonMonoxide));
+        assert!(!filter_protects(m65, "ntm:gas_mask_filter_mono", LungGas));
+        assert!(filter_protects(m65, "ntm:gas_mask_filter_combo", CarbonMonoxide));
+        assert!(filter_protects(m65, "ntm:gas_mask_filter_combo", Bacteria));
+        assert!(!filter_protects(m65, "ntm:gas_mask_filter_combo", BlisteringGas), "the M65 blacklists blistering gas");
+        assert!(filter_protects(m65, "ntm:gas_mask_filter_rag", CoarseParticles));
+        assert!(!filter_protects(m65, "ntm:gas_mask_filter_rag", FineParticles));
+        assert!(filter_protects(m65, "ntm:gas_mask_filter_piss", LungGas));
+        assert!(!filter_protects(m65, "ntm:gas_mask_filter_piss", FineParticles));
+        assert!(!filter_protects(m65, "ntm:gas_mask_filter", CarbonMonoxide));
+        assert!(!filter_protects(m65, "ntm:stone", CoarseParticles));
+        assert!(is_filter("ntm:gas_mask_filter_rag") && !is_filter("ntm:gas_mask_m65"));
+    }
+
     #[test]
     fn java_protection_has_distinct_gamma_and_filter_paths() {
-        assert!((dose_factor(["ntm:hazmat_plate"]) - 0.5754399373371569).abs() < 1e-10);
-        assert!((dose_factor(["ntm:gas_mask_m65"]) - 0.803526).abs() < 1e-5);
+        assert!((dose_factor(["ntm:hazmat_plate"], false) - 0.5754399373371569).abs() < 1e-10);
+        assert!((dose_factor(["ntm:gas_mask_m65"], false) - 0.803526).abs() < 1e-5);
         assert!(filter_protects(
             "ntm:gas_mask_m65",
             "ntm:gas_mask_filter",

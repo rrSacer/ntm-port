@@ -31,6 +31,7 @@ pub mod hash;
 pub mod heater;
 pub mod kv;
 pub mod consumables;
+pub mod instruments;
 pub mod item_hooks;
 pub mod machine;
 pub mod native;

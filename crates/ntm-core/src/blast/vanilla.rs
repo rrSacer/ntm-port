@@ -36,7 +36,25 @@ pub const MAX_POWER: f32 = 20.0;
 /// `read` is `None` where no chunk is loaded (the ray stops there). The
 /// power is held to [`MAX_POWER`] (the cube grows as its cube).
 pub fn explode(center: [f64; 3], power: f32, read: &mut impl FnMut(Pos) -> Option<String>) -> (Vec<Pos>, u32) {
-    let power = if power.is_finite() { power.clamp(0.0, MAX_POWER) } else { 0.0 };
+    allocate(center, power, 16, MAX_POWER, read)
+}
+
+/// The strongest `ExplosionVNT` this computes. Power 64 reads a cube of
+/// 225³ blocks (~11 M cells, ~55 MiB); the NTM's own VNT explosions are
+/// 50 (`chocolate_milk`) and below.
+pub const VNT_MAX_POWER: f32 = 64.0;
+
+/// `BlockAllocatorStandard(resolution).allocate`: the same rays as vanilla's
+/// explosion, over a cube of `resolution` rays per side (vanilla's is 16).
+/// The rays' random is a hash of the position, as [`explode`]'s.
+pub fn allocate_vnt(center: [f64; 3], size: f32, resolution: u32, read: &mut impl FnMut(Pos) -> Option<String>) -> (Vec<Pos>, u32) {
+    allocate(center, size, resolution.clamp(2, 64), VNT_MAX_POWER, read)
+}
+
+fn allocate(center: [f64; 3], power: f32, resolution: u32, max: f32, read: &mut impl FnMut(Pos) -> Option<String>) -> (Vec<Pos>, u32) {
+    let n = resolution as i32;
+    let last = n - 1;
+    let power = if power.is_finite() { power.clamp(0.0, max) } else { 0.0 };
     // Farthest a ray goes: power·1.3 / 0.225 steps of 0.3.
     let reach = ((power * 1.3 / 0.225) * 0.3).ceil() as i32 + 1;
     let side = 2 * reach + 1;
@@ -53,13 +71,17 @@ pub fn explode(center: [f64; 3], power: f32, read: &mut impl FnMut(Pos) -> Optio
     let mut hit = vec![false; res.len()];
     let mut reads = 0;
     let mut out = Vec::new();
-    for i in 0..16 {
-        for j in 0..16 {
-            for k in 0..16 {
-                if !(i == 0 || i == 15 || j == 0 || j == 15 || k == 0 || k == 15) {
+    for i in 0..n {
+        for j in 0..n {
+            for k in 0..n {
+                if !(i == 0 || i == last || j == 0 || j == last || k == 0 || k == last) {
                     continue;
                 }
-                let mut d = [i as f64 / 15.0 * 2.0 - 1.0, j as f64 / 15.0 * 2.0 - 1.0, k as f64 / 15.0 * 2.0 - 1.0];
+                let mut d = [
+                    f64::from(i) / f64::from(last) * 2.0 - 1.0,
+                    f64::from(j) / f64::from(last) * 2.0 - 1.0,
+                    f64::from(k) / f64::from(last) * 2.0 - 1.0,
+                ];
                 let len = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt();
                 d = [d[0] / len, d[1] / len, d[2] / len];
                 let mut f = power * (0.7 + 0.6 * rand01(c[0] + i, c[1] + j, c[2] + k, 31));
@@ -151,6 +173,47 @@ pub fn damage(power: f32, dist: f64, exposure: f32) -> f32 {
     (i * i + i) / 2.0 * 7.0 * 2.0 * power + 1.0
 }
 
+/// What `EntityProcessorCross` does to an entity whose box is `dist` blocks
+/// from the blast: the range is twice the explosion's size, `density` is the
+/// largest share any node sees of the entity, and the damage is
+/// `(int)((k² + k) / 2 · 8 · range + 1)` with `k = (1 − dist / range) ·
+/// density`. Returns `(damage, knockback k)`, or `None` out of range.
+pub fn cross_hit(size: f32, dist: f64, density: f32) -> Option<(f32, f64)> {
+    let range = 2.0 * f64::from(size);
+    let scaled = dist / range;
+    if scaled.is_nan() || scaled > 1.0 || !size.is_finite() || size <= 0.0 {
+        return None;
+    }
+    let k = (1.0 - scaled) * f64::from(density.clamp(0.0, 1.0));
+    Some((((k * k + k) / 2.0 * 8.0 * range + 1.0).floor() as f32, k))
+}
+
+/// The seven nodes of `EntityProcessorCross(nodeDist)`: the center and one
+/// per axis direction, `nodeDist` away.
+pub fn cross_nodes(center: [f64; 3], node_dist: f64) -> [[f64; 3]; 7] {
+    let mut nodes = [center; 7];
+    // ForgeDirection order: DOWN, UP, NORTH, SOUTH, WEST, EAST, UNKNOWN.
+    let offsets = [[0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1], [-1, 0, 0], [1, 0, 0], [0, 0, 0]];
+    for (node, o) in nodes.iter_mut().zip(offsets) {
+        for a in 0..3 {
+            node[a] = center[a] + f64::from(o[a]) * node_dist;
+        }
+    }
+    nodes
+}
+
+/// The distance from a box (`min`..`max`) to `at`, zero per axis inside it.
+pub fn box_distance(min: [f64; 3], max: [f64; 3], at: [f64; 3]) -> f64 {
+    let axis = |a: usize| {
+        if min[a] <= at[a] && max[a] >= at[a] {
+            0.0
+        } else {
+            (min[a] - at[a]).abs().min((max[a] - at[a]).abs())
+        }
+    };
+    (axis(0).powi(2) + axis(1).powi(2) + axis(2).powi(2)).sqrt()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -204,4 +267,56 @@ mod tests {
         let wall = exposure([0.5, 70.5, 0.5], [6.5, 70.0, 0.5], &mut |p| Some(if p[0] == 3 { "minecraft:obsidian" } else { "minecraft:air" }.into()));
         assert_eq!(wall, 0.0);
     }
+    #[test]
+    fn the_plain_explosion_is_the_resolution_sixteen_allocation() {
+        assert_eq!(explode([0.5, 64.5, 0.5], 10.0, &mut flat).0, allocate_vnt([0.5, 64.5, 0.5], 10.0, 16, &mut flat).0);
+    }
+
+    /// `ExplosionVNT(world, x, y, z, 50)` with `BlockAllocatorStandard(32)`
+    /// (chocolate milk): the cap is not the charges' 20, and 32 rays a side dig
+    /// at least as much as 16.
+    #[test]
+    fn a_strength_fifty_vnt_blast_is_not_held_to_the_charges_cap() {
+        let at = [0.5, 64.5, 0.5];
+        let (fifty, reads) = allocate_vnt(at, 50.0, 32, &mut flat);
+        let (twenty, _) = explode(at, 50.0, &mut flat);
+        assert!(fifty.len() > 4 * twenty.len(), "{} vs {}", fifty.len(), twenty.len());
+        assert!(fifty.iter().all(|p| p[1] < 64), "only the stone below, never the air");
+        assert!(reads < 3_000_000);
+        // Obsidian still stops it and an unloaded chunk too.
+        assert!(allocate_vnt(at, 50.0, 32, &mut |p| Some(if p[1] < 64 { "minecraft:obsidian" } else { "minecraft:air" }.into())).0.is_empty());
+        assert!(allocate_vnt(at, 50.0, 32, &mut |_| None).0.is_empty());
+        let finer = allocate_vnt(at, 30.0, 32, &mut flat).0.len();
+        let coarse = allocate_vnt(at, 30.0, 16, &mut flat).0.len();
+        assert!(finer >= coarse);
+    }
+
+    /// `EntityProcessorCross`: range 2 * size, `(int)((k² + k) / 2 * 8 * range + 1)`.
+    #[test]
+    fn the_cross_processor_scales_damage_by_twice_the_size() {
+        // A box on the center sees density 1: k = 1, (1 + 1) / 2 * 8 * 100 + 1.
+        assert_eq!(cross_hit(50.0, 0.0, 1.0), Some((801.0, 1.0)));
+        // Half way out.
+        let (damage, k) = cross_hit(50.0, 50.0, 1.0).unwrap();
+        assert_eq!(k, 0.5);
+        assert_eq!(damage, ((0.25 + 0.5) / 2.0 * 8.0 * 100.0 + 1.0_f64).floor() as f32);
+        assert_eq!(cross_hit(50.0, 100.0, 1.0).map(|h| h.1), Some(0.0));
+        assert_eq!(cross_hit(50.0, 100.1, 1.0), None);
+        // No density, no knockback, one point of damage (the `+ 1`).
+        assert_eq!(cross_hit(50.0, 10.0, 0.0), Some((1.0, 0.0)));
+        let nodes = cross_nodes([10.0, 20.0, 30.0], 5.0);
+        assert_eq!(nodes[0], [10.0, 15.0, 30.0]);
+        assert_eq!(nodes[1], [10.0, 25.0, 30.0]);
+        assert_eq!(nodes[5], [15.0, 20.0, 30.0]);
+        assert_eq!(nodes[6], [10.0, 20.0, 30.0]);
+    }
+
+    #[test]
+    fn the_box_distance_is_zero_inside_and_per_axis_outside() {
+        let (min, max) = ([0.0; 3], [1.0, 2.0, 1.0]);
+        assert_eq!(box_distance(min, max, [0.5, 1.0, 0.5]), 0.0);
+        assert_eq!(box_distance(min, max, [4.0, 1.0, 0.5]), 3.0);
+        assert_eq!(box_distance(min, max, [4.0, 6.0, 0.5]), 5.0);
+    }
+
 }

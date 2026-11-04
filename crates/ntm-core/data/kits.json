@@ -1,0 +1,1129 @@
+{
+ "schema": 1,
+ "entries": {
+  "ntm:nuke_starter_kit": {
+   "origin": "ItemStarterKit.onItemRightClick nuke_starter_kit, ModItems.java:3781",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:ingot_uranium",
+     "count": 32,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:powder_yellowcake",
+     "count": 32,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_press",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_blast_furnace",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_gascent",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_assembly_machine",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_chemical_plant",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_industrial_turbine",
+     "count": 2,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:radaway",
+     "count": 8,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:radx",
+     "count": 2,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:stamp_titanium_flat",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:stamp_titanium_flat",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:stamp_titanium_flat",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_steel",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_lead",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_copper",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:gas_mask_m65",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:geiger_counter",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:1"
+  },
+  "ntm:nuke_advanced_kit": {
+   "origin": "ItemStarterKit.onItemRightClick nuke_advanced_kit, ModItems.java:3782",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:powder_yellowcake",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:powder_plutonium",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_steel",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_copper",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_tungsten",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_lead",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_polymer",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_blast_furnace",
+     "count": 3,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_gascent",
+     "count": 3,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_centrifuge",
+     "count": 2,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pile_brick",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pile_brick",
+     "count": 61,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_industrial_turbine",
+     "count": 4,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_radgen",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_rtg_grey",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_assembly_machine",
+     "count": 3,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_chemical_plant",
+     "count": 2,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_fluidtank",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pellet_rtg",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pellet_rtg",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pellet_rtg",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pellet_rtg_weak",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pellet_rtg_weak",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pellet_rtg_weak",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:cell_empty",
+     "count": 32,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:rod_empty",
+     "count": 32,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fluid_barrel_full__coolant",
+     "count": 4,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:radaway_strong",
+     "count": 4,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:radx",
+     "count": 4,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pill_iodine",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:geiger_counter",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:survey_scanner",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:gas_mask_m65",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:2",
+   "unported": [
+    "ModBlocks.machine_uf6_tank x2",
+    "ModBlocks.machine_puf6_tank x2"
+   ]
+  },
+  "ntm:nuke_commercially_kit": {
+   "origin": "ItemStarterKit.onItemRightClick nuke_commercially_kit, ModItems.java:3783",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:pile_brick",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pile_brick",
+     "count": 61,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_fluidtank",
+     "count": 8,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:billet_pu238be",
+     "count": 40,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_u233",
+     "count": 40,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_uranium_fuel",
+     "count": 32,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_plutonium_fuel",
+     "count": 16,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:ingot_mox_fuel",
+     "count": 8,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:inf_water_mk2",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:inf_water_mk2",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:inf_water_mk2",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:rod_empty",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:rod_dual_empty",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:rod_quad_empty",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fluid_tank_lead_empty",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fluid_barrel_empty",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:barrel_steel",
+     "count": 16,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:plate_iron",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "minecraft:ink_sac",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:radaway_flush",
+     "count": 8,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:iv_blood",
+     "count": 8,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pill_iodine",
+     "count": 8,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:gas_mask_filter_combo",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:gas_mask_filter_combo",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:gas_mask_filter_combo",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:2"
+  },
+  "ntm:nuke_electric_kit": {
+   "origin": "ItemStarterKit.onItemRightClick nuke_electric_kit, ModItems.java:3784",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:coil_copper",
+     "count": 16,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:coil_gold",
+     "count": 8,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:coil_tungsten",
+     "count": 8,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:motor",
+     "count": 4,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:circuit__vacuum_tube",
+     "count": 16,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:circuit__capacitor",
+     "count": 16,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:circuit__basic",
+     "count": 16,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:wiring_red_copper",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:magnetron",
+     "count": 5,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:piston_selenium",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:piston_selenium",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:piston_selenium",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:canister_full__diesel",
+     "count": 16,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:canister_full__biofuel",
+     "count": 16,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_excavator",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_diesel",
+     "count": 2,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:red_cable",
+     "count": 64,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:red_pylon",
+     "count": 8,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:machine_battery_socket",
+     "count": 4,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:battery_pack__battery_lead",
+     "count": 4,
+     "overflow": "lost"
+    }
+   ],
+   "unported": [
+    "ModItems.battery_potato x1",
+    "ModItems.screwdriver x1",
+    "ModBlocks.red_wire_coated x16",
+    "ModBlocks.machine_converter_he_rf x1",
+    "ModBlocks.machine_converter_rf_he x1"
+   ]
+  },
+  "ntm:gadget_kit": {
+   "origin": "ItemStarterKit.onItemRightClick gadget_kit, ModItems.java:3785",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:nuke_gadget",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:early_explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:early_explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:early_explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:early_explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:gadget_wireing",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:gadget_core",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:0"
+  },
+  "ntm:boy_kit": {
+   "origin": "ItemStarterKit.onItemRightClick boy_kit, ModItems.java:3786",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:nuke_boy",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:boy_shielding",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:boy_target",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:boy_bullet",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:boy_propellant",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:boy_igniter",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:0"
+  },
+  "ntm:man_kit": {
+   "origin": "ItemStarterKit.onItemRightClick man_kit, ModItems.java:3787",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:nuke_man",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:early_explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:early_explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:early_explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:early_explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:man_igniter",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:man_core",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:0"
+  },
+  "ntm:mike_kit": {
+   "origin": "ItemStarterKit.onItemRightClick mike_kit, ModItems.java:3788",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:nuke_mike",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:man_core",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:mike_core",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:mike_deut",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:mike_cooling_unit",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:0"
+  },
+  "ntm:tsar_kit": {
+   "origin": "ItemStarterKit.onItemRightClick tsar_kit, ModItems.java:3789",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:nuke_tsar",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:explosive_lenses",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:man_core",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:tsar_core",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:0"
+  },
+  "ntm:multi_kit": {
+   "origin": "ItemStarterKit.onItemRightClick multi_kit, ModItems.java:3790",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "minecraft:tnt",
+     "count": 26,
+     "overflow": "lost"
+    },
+    {
+     "item": "minecraft:gunpowder",
+     "count": 2,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pellet_cluster",
+     "count": 2,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:powder_fire",
+     "count": 2,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:powder_poison",
+     "count": 2,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:pellet_gas",
+     "count": 2,
+     "overflow": "lost"
+    }
+   ],
+   "unported": [
+    "ModBlocks.bomb_multi x6"
+   ]
+  },
+  "ntm:custom_kit": {
+   "origin": "ItemStarterKit.onItemRightClick custom_kit, ModItems.java:3791",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:custom_tnt",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_tnt",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_tnt",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_tnt",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_tnt",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_tnt",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_nuke",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_nuke",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_nuke",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_nuke",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_hydro",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_hydro",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_amat",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_amat",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_dirty",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_dirty",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_dirty",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_schrab",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:custom_fall",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "unported": [
+    "ModBlocks.nuke_custom x1"
+   ]
+  },
+  "ntm:fleija_kit": {
+   "origin": "ItemStarterKit.onItemRightClick fleija_kit, ModItems.java:3792",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:fleija_igniter",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fleija_igniter",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fleija_propellant",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fleija_propellant",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fleija_propellant",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fleija_core",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fleija_core",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fleija_core",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fleija_core",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fleija_core",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:fleija_core",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:2",
+   "unported": [
+    "ModBlocks.nuke_fleija x1"
+   ]
+  },
+  "ntm:solinium_kit": {
+   "origin": "ItemStarterKit.onItemRightClick solinium_kit, ModItems.java:3796",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:solinium_igniter",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:solinium_igniter",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:solinium_igniter",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:solinium_igniter",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:solinium_propellant",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:solinium_propellant",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:solinium_propellant",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:solinium_propellant",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:solinium_core",
+     "count": 1,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:1",
+   "unported": [
+    "ModBlocks.nuke_solinium x1"
+   ]
+  },
+  "ntm:prototype_kit": {
+   "origin": "ItemStarterKit.onItemRightClick prototype_kit, ModItems.java:3793",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "gives": [
+    {
+     "item": "ntm:igniter",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
+     "item": "ntm:cell_sas3",
+     "count": 4,
+     "overflow": "lost"
+    }
+   ],
+   "special": "hazmat_kit:2",
+   "unported": [
+    "ModBlocks.nuke_prototype x1",
+    "ModItems.rod_quad[URANIUM] x4",
+    "ModItems.rod_quad[LEAD] x4",
+    "ModItems.rod_quad[NP237] x2"
+   ]
+  },
+  "ntm:stealth_boy": {
+   "origin": "ItemStarterKit.onItemRightClick stealth_boy, ModItems.java:2837",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "effects": [
+    [
+     "invisibility",
+     600,
+     1
+    ]
+   ],
+   "special": "stealth_boy"
+  },
+  "ntm:euphemium_kit": {
+   "origin": "ItemStarterKit.onItemRightClick euphemium_kit, ModItems.java:3795",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "unported": [
+    "ModItems.euphemium_helmet x1",
+    "ModItems.euphemium_plate x1",
+    "ModItems.euphemium_legs x1",
+    "ModItems.euphemium_boots x1",
+    "ModBlocks.statue_elb_f x1"
+   ]
+  },
+  "ntm:hazmat_kit": {
+   "origin": "ItemStarterKit.onItemRightClick hazmat_kit, ModItems.java:3797",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "special": "hazmat_kit:0"
+  },
+  "ntm:hazmat_red_kit": {
+   "origin": "ItemStarterKit.onItemRightClick hazmat_red_kit, ModItems.java:3798",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "special": "hazmat_kit:1"
+  },
+  "ntm:hazmat_grey_kit": {
+   "origin": "ItemStarterKit.onItemRightClick hazmat_grey_kit, ModItems.java:3799",
+   "consume": "always",
+   "sound": "hbm:item.unpack",
+   "special": "hazmat_kit:2"
+  },
+  "ntm:loot_10": {
+   "origin": "ItemLootCrate.onItemRightClick loot_10, ModItems.java:3803",
+   "consume": "always",
+   "loot": [],
+   "unported": []
+  },
+  "ntm:loot_15": {
+   "origin": "ItemLootCrate.onItemRightClick loot_15, ModItems.java:3804",
+   "consume": "always",
+   "loot": [],
+   "unported": []
+  },
+  "ntm:loot_misc": {
+   "origin": "ItemLootCrate.onItemRightClick loot_misc, ModItems.java:3805",
+   "consume": "always",
+   "loot": [
+    {
+     "item": "ntm:mp_warhead_10_taint",
+     "weight": 0.2
+    },
+    {
+     "item": "ntm:mp_warhead_10_cloud",
+     "weight": 0.1
+    },
+    {
+     "item": "ntm:mp_warhead_15_boxcar",
+     "weight": 0.02
+    },
+    {
+     "item": "ntm:mp_warhead_15_n2",
+     "weight": 0.1
+    },
+    {
+     "item": "ntm:mp_warhead_15_balefire",
+     "weight": 0.02
+    },
+    {
+     "item": "ntm:mp_warhead_15_turbine",
+     "weight": 0.01
+    }
+   ],
+   "unported": [
+    "mp_thruster_15_solid_hexdecuple",
+    "mp_thruster_15_balefire_large_rad",
+    "mp_stability_10_space",
+    "mp_stability_15_soyuz"
+   ]
+  }
+ }
+}

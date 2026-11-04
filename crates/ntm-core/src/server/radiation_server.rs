@@ -19,6 +19,18 @@ impl Server {
         self.ready.world.radiation.insert(id.into(),desired);
         Some(result)
     }
+    /// `HbmLivingProps.radBuf`: the exposure the player had in the last
+    /// second, in milliRAD/s, as the radiation tick measured it (the same
+    /// numbers that move the dose). 0 before the first reading.
+    pub fn rad_buf(&self, id: &str) -> i64 {
+        self.radiation_shown.get(id).map_or(0, |s| s.1)
+    }
+    /// `ChunkRadiationManager.getRadiation` for the port: the rate of the
+    /// fallout zones where `pos` is.
+    pub fn zone_rate(&self, dim: &str, pos: [f64; 3]) -> u32 {
+        let now = self.ready.world.ticks;
+        self.ready.world.bombs.zones.iter().map(|z| z.rate(dim, pos, now)).fold(0u32, u32::saturating_add)
+    }
     pub(super) fn expose_player(&mut self,host:&mut impl ServerHost,id:&str,amount:u64) {
         let factor=host.radiation_factor(id);
         let amount=(amount as f64*factor) as u64;

@@ -1,0 +1,582 @@
+[
+{
+"id": "ams_lens",
+"class": "ItemLens",
+"at": "ModItems.java:3721"
+},
+{
+"id": "apple_euphemium",
+"class": "ItemAppleEuphemium",
+"at": "ModItems.java:3812"
+},
+{
+"id": "balefire_and_ham",
+"class": "ItemSoup",
+"at": "ModItems.java:3619"
+},
+{
+"id": "balefire_and_steel",
+"class": "ItemBalefireMatch",
+"at": "ModItems.java:4295"
+},
+{
+"id": "balefire_scrambled",
+"class": "ItemSoup",
+"at": "ModItems.java:3618"
+},
+{
+"id": "bdcl",
+"class": "ItemBDCL",
+"at": "ModItems.java:2849"
+},
+{
+"id": "beta",
+"class": "ItemDrop",
+"at": "ModItemsArmor.java:35"
+},
+{
+"id": "black_hole",
+"class": "ItemDrop",
+"at": "ModItems.java:2719"
+},
+{
+"id": "boat_rubber",
+"class": "ItemBoatRubber",
+"at": "ModItems.java:2950"
+},
+{
+"id": "bobmazon",
+"class": "ItemCatalog",
+"at": "ModItems.java:3894"
+},
+{
+"id": "bomb_waffle",
+"class": "ItemWaffle",
+"at": "ModItems.java:3610"
+},
+{
+"id": "bottle2_fritz",
+"class": "ItemEnergy",
+"at": "ModItems.java:2942"
+},
+{
+"id": "bottle2_korl",
+"class": "ItemEnergy",
+"at": "ModItems.java:2941"
+},
+{
+"id": "bottle_cherry",
+"class": "ItemEnergy",
+"at": "ModItems.java:2936"
+},
+{
+"id": "bottle_nuka",
+"class": "ItemEnergy",
+"at": "ModItems.java:2935"
+},
+{
+"id": "bottle_quantum",
+"class": "ItemEnergy",
+"at": "ModItems.java:2937"
+},
+{
+"id": "bottle_rad",
+"class": "ItemEnergy",
+"at": "ModItems.java:2939"
+},
+{
+"id": "bottle_sparkle",
+"class": "ItemEnergy",
+"at": "ModItems.java:2938"
+},
+{
+"id": "boy_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3786"
+},
+{
+"id": "can_bepis",
+"class": "ItemEnergy",
+"at": "ModItems.java:2931"
+},
+{
+"id": "can_breen",
+"class": "ItemEnergy",
+"at": "ModItems.java:2932"
+},
+{
+"id": "can_creature",
+"class": "ItemEnergy",
+"at": "ModItems.java:2926"
+},
+{
+"id": "can_luna",
+"class": "ItemEnergy",
+"at": "ModItems.java:2930"
+},
+{
+"id": "can_mrsugar",
+"class": "ItemEnergy",
+"at": "ModItems.java:2928"
+},
+{
+"id": "can_mug",
+"class": "ItemEnergy",
+"at": "ModItems.java:2933"
+},
+{
+"id": "can_overcharge",
+"class": "ItemEnergy",
+"at": "ModItems.java:2929"
+},
+{
+"id": "can_redbomb",
+"class": "ItemEnergy",
+"at": "ModItems.java:2927"
+},
+{
+"id": "can_smart",
+"class": "ItemEnergy",
+"at": "ModItems.java:2925"
+},
+{
+"id": "canteen_vodka",
+"class": "ItemCanteen",
+"at": "ModItems.java:3632"
+},
+{
+"id": "casing_bag",
+"class": "ItemCasingBag",
+"at": "ModItems.java:3362"
+},
+{
+"id": "cell_anti_schrabidium",
+"class": "ItemDrop",
+"at": "ModItems.java:2693"
+},
+{
+"id": "cell_antimatter",
+"class": "ItemDrop",
+"at": "ModItems.java:2689"
+},
+{
+"id": "cheese",
+"class": "ItemLemon",
+"at": "ModItems.java:3637"
+},
+{
+"id": "cheese_quesadilla",
+"class": "ItemLemon",
+"at": "ModItems.java:3638"
+},
+{
+"id": "chocolate",
+"class": "ItemPill",
+"at": "ModItems.java:2947"
+},
+{
+"id": "chocolate_milk",
+"class": "ItemEnergy",
+"at": "ModItems.java:2944"
+},
+{
+"id": "cigarette",
+"class": "ItemCigarette",
+"at": "ModItems.java:2847"
+},
+{
+"id": "coffee",
+"class": "ItemEnergy",
+"at": "ModItems.java:2945"
+},
+{
+"id": "coffee_radium",
+"class": "ItemEnergy",
+"at": "ModItems.java:2946"
+},
+{
+"id": "containment_box",
+"class": "ItemLeadBox",
+"at": "ModItems.java:3357"
+},
+{
+"id": "cotton_candy",
+"class": "ItemCottonCandy",
+"at": "ModItems.java:3613"
+},
+{
+"id": "crackpipe",
+"class": "ItemCigarette",
+"at": "ModItems.java:2848"
+},
+{
+"id": "crystal_xen",
+"class": "ItemDrop",
+"at": "ModItems.java:2722"
+},
+{
+"id": "custom_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3791"
+},
+{
+"id": "definitelyfood",
+"class": "ItemLemon",
+"at": "ModItems.java:3621"
+},
+{
+"id": "demon_core_open",
+"class": "ItemDemonCore",
+"at": "ModItems.java:2695"
+},
+{
+"id": "euphemium_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3795"
+},
+{
+"id": "five_htp",
+"class": "ItemPill",
+"at": "ModItems.java:2833"
+},
+{
+"id": "fleija_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3792"
+},
+{
+"id": "fmn",
+"class": "ItemPill",
+"at": "ModItems.java:2832"
+},
+{
+"id": "fooditem",
+"class": "ItemLemon",
+"at": "ModItems.java:3628"
+},
+{
+"id": "gadget_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3785"
+},
+{
+"id": "gas_mask_filter",
+"class": "ItemFilter",
+"at": "ModItems.java:2838"
+},
+{
+"id": "gas_mask_filter_combo",
+"class": "ItemFilter",
+"at": "ModItems.java:2840"
+},
+{
+"id": "gas_mask_filter_mono",
+"class": "ItemFilter",
+"at": "ModItems.java:2839"
+},
+{
+"id": "gas_mask_filter_piss",
+"class": "ItemFilter",
+"at": "ModItems.java:2842"
+},
+{
+"id": "gas_mask_filter_rag",
+"class": "ItemFilter",
+"at": "ModItems.java:2841"
+},
+{
+"id": "glowing_stew",
+"class": "ItemSoup",
+"at": "ModItems.java:3617"
+},
+{
+"id": "glyphid_meat",
+"class": "ItemLemon",
+"at": "ModItems.java:3640"
+},
+{
+"id": "glyphid_meat_grilled",
+"class": "ItemLemon",
+"at": "ModItems.java:3641"
+},
+{
+"id": "hazmat_grey_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3799"
+},
+{
+"id": "hazmat_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3797"
+},
+{
+"id": "hazmat_red_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3798"
+},
+{
+"id": "ingot_c4",
+"class": "ItemLemon",
+"at": "ModItems.java:2170"
+},
+{
+"id": "ingot_smore",
+"class": "ItemFood",
+"at": "ModItems.java:2122"
+},
+{
+"id": "key_kit",
+"class": "ItemCounterfeitKeys",
+"at": "ModItems.java:3852"
+},
+{
+"id": "lemon",
+"class": "ItemLemon",
+"at": "ModItems.java:3620"
+},
+{
+"id": "loop_stew",
+"class": "ItemLemon",
+"at": "ModItems.java:3626"
+},
+{
+"id": "loops",
+"class": "ItemLemon",
+"at": "ModItems.java:3625"
+},
+{
+"id": "loot_10",
+"class": "ItemLootCrate",
+"at": "ModItems.java:3802"
+},
+{
+"id": "loot_15",
+"class": "ItemLootCrate",
+"at": "ModItems.java:3804"
+},
+{
+"id": "loot_misc",
+"class": "ItemLootCrate",
+"at": "ModItems.java:3805"
+},
+{
+"id": "man_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3787"
+},
+{
+"id": "matchstick",
+"class": "ItemMatch",
+"at": "ModItems.java:4294"
+},
+{
+"id": "med_bag",
+"class": "ItemSyringe",
+"at": "ModItems.java:2826"
+},
+{
+"id": "med_ipecac",
+"class": "ItemLemon",
+"at": "ModItems.java:3622"
+},
+{
+"id": "med_ptsd",
+"class": "ItemLemon",
+"at": "ModItems.java:3623"
+},
+{
+"id": "mike_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3788"
+},
+{
+"id": "mucho_mango",
+"class": "ItemMuchoMango",
+"at": "ModItems.java:3639"
+},
+{
+"id": "multi_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3790"
+},
+{
+"id": "nugget",
+"class": "ItemLemon",
+"at": "ModItems.java:3634"
+},
+{
+"id": "nuke_advanced_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3782"
+},
+{
+"id": "nuke_commercially_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3783"
+},
+{
+"id": "nuke_electric_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3784"
+},
+{
+"id": "nuke_starter_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3780"
+},
+{
+"id": "pancake",
+"class": "ItemPancake",
+"at": "ModItems.java:3633"
+},
+{
+"id": "particle_digamma",
+"class": "ItemDigamma",
+"at": "ModItems.java:2713"
+},
+{
+"id": "peas",
+"class": "ItemPeas",
+"at": "ModItems.java:3635"
+},
+{
+"id": "pellet_antimatter",
+"class": "ItemDrop",
+"at": "ModItems.java:2721"
+},
+{
+"id": "pill_iodine",
+"class": "ItemPill",
+"at": "ModItems.java:2834"
+},
+{
+"id": "pill_red",
+"class": "ItemPill",
+"at": "ModItems.java:2836"
+},
+{
+"id": "plan_c",
+"class": "ItemPill",
+"at": "ModItems.java:2835"
+},
+{
+"id": "plastic_bag",
+"class": "ItemPlasticBag",
+"at": "ModItems.java:3358"
+},
+{
+"id": "powder_fertilizer",
+"class": "ItemFertilizer",
+"at": "ModItems.java:2529"
+},
+{
+"id": "prototype_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3793"
+},
+{
+"id": "pudding",
+"class": "ItemLemon",
+"at": "ModItems.java:3631"
+},
+{
+"id": "radx",
+"class": "ItemPill",
+"at": "ModItems.java:2828"
+},
+{
+"id": "rag",
+"class": "ItemRag",
+"at": "ModItems.java:2398"
+},
+{
+"id": "schnitzel_vegan",
+"class": "ItemSchnitzelVegan",
+"at": "ModItems.java:3612"
+},
+{
+"id": "singularity",
+"class": "ItemDrop",
+"at": "ModItems.java:2715"
+},
+{
+"id": "singularity_counter_resonant",
+"class": "ItemDrop",
+"at": "ModItems.java:2717"
+},
+{
+"id": "singularity_spark",
+"class": "ItemDrop",
+"at": "ModItems.java:2720"
+},
+{
+"id": "singularity_super_heated",
+"class": "ItemDrop",
+"at": "ModItems.java:2718"
+},
+{
+"id": "siox",
+"class": "ItemPill",
+"at": "ModItems.java:2829"
+},
+{
+"id": "solinium_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3796"
+},
+{
+"id": "spongebob_macaroni",
+"class": "ItemLemon",
+"at": "ModItems.java:3627"
+},
+{
+"id": "static_sandwich",
+"class": "ItemLemon",
+"at": "ModItems.java:3630"
+},
+{
+"id": "stealth_boy",
+"class": "ItemStarterKit",
+"at": "ModItems.java:2837"
+},
+{
+"id": "syringe_metal_medx",
+"class": "ItemSyringe",
+"at": "ModItems.java:2821"
+},
+{
+"id": "syringe_metal_psycho",
+"class": "ItemSyringe",
+"at": "ModItems.java:2822"
+},
+{
+"id": "syringe_metal_stimpak",
+"class": "ItemSyringe",
+"at": "ModItems.java:2820"
+},
+{
+"id": "syringe_metal_super",
+"class": "ItemSyringe",
+"at": "ModItems.java:2823"
+},
+{
+"id": "syringe_taint",
+"class": "ItemSyringe",
+"at": "ModItems.java:2824"
+},
+{
+"id": "tsar_kit",
+"class": "ItemStarterKit",
+"at": "ModItems.java:3789"
+},
+{
+"id": "twinkie",
+"class": "ItemLemon",
+"at": "ModItems.java:3629"
+},
+{
+"id": "xanax",
+"class": "ItemPill",
+"at": "ModItems.java:2831"
+}
+]

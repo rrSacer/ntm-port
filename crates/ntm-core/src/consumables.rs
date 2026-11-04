@@ -34,6 +34,9 @@ pub enum Gate {
     FoodAlways,
     /// `ItemCanteen`: only a flask whose damage (the cooldown) is zero.
     Cooled,
+    /// The right click never starts the use here (`ItemPancake` without the
+    /// BJ armor, which the port does not have); `message` says why.
+    Never,
 }
 
 /// How the used stack shrinks.
@@ -110,6 +113,39 @@ pub struct Dose {
     pub creative: bool,
 }
 
+/// Which effects a use removes.
+#[derive(Clone, Debug, PartialEq, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Cure {
+    /// `clearActivePotions`.
+    All,
+    /// A list of `removePotionEffect`.
+    Effects(Vec<String>),
+}
+
+/// `attackEntityFrom(source, amount)` on the player, `times` times, each one
+/// only with probability `1 / chance` when `chance` is set (`nextInt(n) == 0`).
+#[derive(Clone, Debug, PartialEq, Deserialize)]
+pub struct Hurt {
+    pub amount: f32,
+    #[serde(default = "one")]
+    pub times: u32,
+    #[serde(default)]
+    pub chance: u32,
+    #[serde(default = "kill")]
+    pub damage_type: String,
+}
+fn kill() -> String {
+    "minecraft:generic_kill".into()
+}
+
+/// One part a loot crate can hold, drawn with this weight.
+#[derive(Clone, Debug, PartialEq, Deserialize)]
+pub struct Loot {
+    pub item: String,
+    pub weight: f32,
+}
+
 #[derive(Clone, Debug, Default, PartialEq, Deserialize)]
 #[serde(rename_all = "snake_case", deny_unknown_fields)]
 pub struct UseSpec {
@@ -126,6 +162,11 @@ pub struct UseSpec {
     /// An item the player must carry (`inventory.hasItem`).
     #[serde(default)]
     pub requires: Option<String>,
+    /// `VersatileConfig.hasPotionSickness(player)` stops the use. The
+    /// `applyPotionSickness` calls are no-ops with the default PotionConfig
+    /// (OFF), but the effect itself can still come from `pill_herbal`.
+    #[serde(default)]
+    pub sickness_gate: bool,
     #[serde(default)]
     pub consume: Consume,
     #[serde(default)]
@@ -139,6 +180,18 @@ pub struct UseSpec {
     #[serde(default)]
     pub dose: Option<Dose>,
     #[serde(default)]
+    pub cure: Option<Cure>,
+    #[serde(default)]
+    pub hurt: Option<Hurt>,
+    /// `setHealth(max(health - n, 0))`, which skips armor and hurt time.
+    #[serde(default)]
+    pub hp_cost: f32,
+    /// Experience points the use takes (refused without them) and gives.
+    #[serde(default)]
+    pub xp_cost: i32,
+    #[serde(default)]
+    pub xp_gain: i32,
+    #[serde(default)]
     pub radaway: u32,
     #[serde(default)]
     pub cooldown: i32,
@@ -147,6 +200,18 @@ pub struct UseSpec {
     /// Java sound id; see [`sound`].
     #[serde(default)]
     pub sound: Option<String>,
+    /// The chat line a refused use shows (`addChatComponentMessage`).
+    #[serde(default)]
+    pub message: Option<String>,
+    /// `ItemLootCrate`: one part drawn by weight (`rand` over the list, kept
+    /// with the part's rarity chance). `Some` with no parts is a crate whose
+    /// Java list is empty, which throws there and does nothing here.
+    #[serde(default)]
+    pub loot: Option<Vec<Loot>>,
+    /// Java items the row would add that the port does not have, by their
+    /// Java name (`ModItems.geiger_counter x1`); they are not given.
+    #[serde(default)]
+    pub unported: Vec<String>,
     /// A behaviour the glue implements by name.
     #[serde(default)]
     pub special: Option<String>,
@@ -160,12 +225,22 @@ struct File {
 fn table() -> &'static HashMap<String, UseSpec> {
     static T: OnceLock<HashMap<String, UseSpec>> = OnceLock::new();
     T.get_or_init(|| {
-        let mut file: File = serde_json::from_str(include_str!("../data/consumables.json"))
-            .expect("checked-in consumables table");
-        for (id, spec) in &mut file.entries {
-            spec.id = id.clone();
+        let mut all = HashMap::new();
+        // Kits are generated from ItemStarterKit (tools/content-gen/kits.py).
+        for text in [
+            include_str!("../data/consumables.json"),
+            include_str!("../data/kits.json"),
+        ] {
+            let file: File = serde_json::from_str(text).expect("checked-in consumables table");
+            for (id, mut spec) in file.entries {
+                spec.id = id.clone();
+                assert!(
+                    all.insert(id.clone(), spec).is_none(),
+                    "{id} is in two tables"
+                );
+            }
         }
-        file.entries
+        all
     })
 }
 
@@ -187,8 +262,9 @@ impl UseSpec {
         food_level: i32,
         damage: u32,
         has_required: bool,
+        sick: bool,
     ) -> bool {
-        if self.requires.is_some() && !has_required {
+        if (self.requires.is_some() && !has_required) || (self.sickness_gate && sick) {
             return false;
         }
         match self.gate {
@@ -196,14 +272,17 @@ impl UseSpec {
             Gate::Food => !creative && food_level < 20,
             Gate::FoodAlways => !creative,
             Gate::Cooled => damage == 0,
+            Gate::Never => false,
         }
     }
 
     /// `FoodStats.addStats(heal, modifier)` clamps the food level to 20 and
     /// the saturation to the food level, so a heal beyond 20 (`nugget` heals
-    /// 200) ends in the same state as 20. The engine takes 0..=20.
+    /// 200) ends in the same state as 20, and so does a modifier beyond 20
+    /// (`apple_euphemium` has 100: 20 * 20 * 2 already fills any bar). The
+    /// engine takes 0..=20 for both.
     pub fn food_stats(&self) -> Option<(i32, f32)> {
-        self.food.map(|(n, s)| (n.clamp(0, 20), s))
+        self.food.map(|(n, s)| (n.clamp(0, 20), s.clamp(0.0, 20.0)))
     }
 
     /// Whether the stack shrinks for this player.
@@ -214,6 +293,32 @@ impl UseSpec {
             Consume::Never | Consume::SetDamage => false,
         }
     }
+}
+
+impl UseSpec {
+    /// The part a loot crate gives for a uniform `roll` in `[0, 1)`.
+    pub fn draw(&self, roll: f32) -> Option<&str> {
+        let loot = self.loot.as_ref()?;
+        let total: f32 = loot.iter().map(|l| l.weight).sum();
+        let mut at = roll.clamp(0.0, 0.999_999) * total;
+        for l in loot {
+            if at < l.weight {
+                return Some(&l.item);
+            }
+            at -= l.weight;
+        }
+        loot.last().map(|l| l.item.as_str())
+    }
+}
+
+/// `new ItemLens(60 * 60 * 60 * 20 * 100)`, the AMS lens's `maxDamage`.
+pub const AMS_LENS_MAX: i64 = 60 * 60 * 60 * 20 * 100;
+
+/// `ItemLens.addInformation`: the tooltip line of a lens that took `damage`
+/// of its `max` (the `damage` long of its NBT, 0 without one).
+pub fn lens_line(max: i64, damage: i64) -> String {
+    let left = max - damage;
+    format!("Durability: {left}/{max} ({}%)", left * 100 / max)
 }
 
 /// A Java sound and the engine's vanilla event that stands for it: the port
@@ -238,6 +343,13 @@ pub fn sound(java: &str) -> Option<Sound> {
         "hbm:player.groan" => ("minecraft:entity.player.breath", 1.0, 1.0, 0.0),
         "hbm:player.cough" => ("minecraft:entity.panda.sneeze", 1.0, 1.0, 0.0),
         "hbm:entity.vomit" => ("minecraft:entity.fox.spit", 1.0, 1.0, 0.0),
+        "hbm:item.techBoop" => ("minecraft:block.note_block.bit", 1.0, 1.0, 0.0),
+        "hbm:item.geiger1" => ("minecraft:block.lever.click", 1.0, 1.0, 0.0),
+        "hbm:item.geiger2" => ("minecraft:block.lever.click", 1.0, 1.1, 0.0),
+        "hbm:item.geiger3" => ("minecraft:block.lever.click", 1.0, 1.2, 0.0),
+        "hbm:item.geiger4" => ("minecraft:block.lever.click", 1.0, 1.3, 0.0),
+        "hbm:item.geiger5" => ("minecraft:block.lever.click", 1.0, 1.4, 0.0),
+        "hbm:item.geiger6" => ("minecraft:block.lever.click", 1.0, 1.5, 0.0),
         _ => return None,
     };
     Some(Sound {
@@ -300,7 +412,11 @@ mod tests {
             let s = spec(id);
             assert!(known.contains(id), "{id} is not in content/ids.json");
             for give in &s.gives {
-                assert!(known.contains(&give.item), "{id} gives {}", give.item);
+                assert!(
+                    give.item.starts_with("minecraft:") || known.contains(&give.item),
+                    "{id} gives {}",
+                    give.item
+                );
             }
             if let Some(required) = &s.requires {
                 assert!(known.contains(required), "{id} requires {required}");
@@ -366,24 +482,30 @@ mod tests {
     fn gates_follow_can_eat_and_the_canteen() {
         let candy = spec("ntm:cotton_candy");
         assert!(
-            candy.may_start(false, 20, 0, false),
+            candy.may_start(false, 20, 0, false, false),
             "alwaysEdible at full hunger"
         );
         assert!(
-            !candy.may_start(true, 5, 0, false),
+            !candy.may_start(true, 5, 0, false, false),
             "1.7.10 creative cannot eat"
         );
         let can = spec("ntm:can_bepis");
         assert!(
-            can.may_start(true, 20, 0, false),
+            can.may_start(true, 20, 0, false, false),
             "ItemEnergy never asks canEat"
         );
         let bottle = spec("ntm:bottle_rad");
-        assert!(!bottle.may_start(false, 5, 0, false), "no bottle opener");
-        assert!(bottle.may_start(false, 5, 0, true));
+        assert!(
+            !bottle.may_start(false, 5, 0, false, false),
+            "no bottle opener"
+        );
+        assert!(bottle.may_start(false, 5, 0, true, false));
         let canteen = spec("ntm:canteen_vodka");
-        assert!(canteen.may_start(true, 20, 0, false));
-        assert!(!canteen.may_start(false, 5, 1, false), "still cooling down");
+        assert!(canteen.may_start(true, 20, 0, false, false));
+        assert!(
+            !canteen.may_start(false, 5, 1, false, false),
+            "still cooling down"
+        );
         assert_eq!(
             (canteen.consume, canteen.set_damage),
             (Consume::SetDamage, 180)
@@ -398,7 +520,7 @@ mod tests {
         assert_eq!(mango.food_stats(), Some((10, 0.6)));
         assert_eq!(fx("ntm:mucho_mango"), [("speed", 200, 0)]);
         assert!(
-            mango.may_start(false, 20, 0, false),
+            mango.may_start(false, 20, 0, false, false),
             "right click is unconditional"
         );
         assert!(mango.consumes(true), "ItemFood decrements in every mode");
@@ -467,5 +589,459 @@ mod tests {
         assert!(medx.gives[0].replace && medx.gives[0].creative);
         assert_eq!(spec("ntm:radaway").radaway, 140);
         assert!(!spec("ntm:radaway").gives[0].replace);
+    }
+    /// ItemSyringe: the metal syringes replace the used-up stack with the
+    /// empty one; the taint syringe returns two containers and replaces none.
+    #[test]
+    fn syringes_follow_item_syringe() {
+        let stimpak = spec("ntm:syringe_metal_stimpak");
+        assert_eq!((stimpak.heal, stimpak.ticks), (5.0, 0));
+        assert!(stimpak.sickness_gate && stimpak.gives[0].replace);
+        assert_eq!(
+            fx("ntm:syringe_metal_psycho"),
+            [("resistance", 2400, 0), ("strength", 2400, 0)]
+        );
+        let sup = spec("ntm:syringe_metal_super");
+        assert_eq!((sup.heal, sup.consumes(true)), (25.0, true));
+        assert_eq!(fx("ntm:syringe_metal_super"), [("slowness", 200, 0)]);
+        let taint = spec("ntm:syringe_taint");
+        assert!(
+            !taint.sickness_gate,
+            "the taint branch never asks for potion sickness"
+        );
+        assert_eq!(
+            taint
+                .gives
+                .iter()
+                .map(|g| (g.item.as_str(), g.replace))
+                .collect::<Vec<_>>(),
+            [
+                ("ntm:syringe_metal_empty", false),
+                ("ntm:bottle2_empty", false)
+            ]
+        );
+        assert_eq!(
+            fx("ntm:syringe_taint"),
+            [("ntm:taint", 1200, 0), ("nausea", 100, 0)]
+        );
+    }
+
+    #[test]
+    fn the_med_bag_heals_fully_and_cures_the_bad_effects() {
+        let bag = spec("ntm:med_bag");
+        assert!(
+            bag.heal >= 1.0e5,
+            "setHealth(getMaxHealth()) whatever the maximum"
+        );
+        assert!(bag.gives.is_empty() && bag.sound.is_none());
+        let Some(Cure::Effects(ids)) = &bag.cure else {
+            panic!("cure list")
+        };
+        assert_eq!(ids.len(), 8);
+        assert!(
+            [
+                "blindness",
+                "nausea",
+                "mining_fatigue",
+                "hunger",
+                "slowness",
+                "poison",
+                "weakness",
+                "wither"
+            ]
+            .iter()
+            .all(|e| ids.iter().any(|i| i == e))
+        );
+        assert_eq!(spec("ntm:pill_iodine").cure, bag.cure);
+        assert_eq!(spec("ntm:syringe_antidote").cure, Some(Cure::All));
+    }
+
+    #[test]
+    fn simple_consumables_follow_item_simple_consumable() {
+        assert_eq!(spec("ntm:radaway_strong").radaway, 350);
+        assert_eq!(spec("ntm:radaway_flush").radaway, 500);
+        for id in ["ntm:radaway", "ntm:radaway_strong", "ntm:radaway_flush"] {
+            let s = spec(id);
+            assert_eq!(
+                (
+                    s.gives[0].item.as_str(),
+                    s.gives[0].replace,
+                    s.gives[0].overflow
+                ),
+                ("ntm:iv_empty", false, Overflow::Thrown)
+            );
+        }
+        assert_eq!(spec("ntm:iv_empty").hp_cost, 5.0);
+        assert_eq!(spec("ntm:iv_empty").gives[0].item, "ntm:iv_blood");
+        assert_eq!(spec("ntm:iv_blood").heal, 5.0);
+        assert_eq!(
+            (spec("ntm:iv_xp_empty").xp_cost, spec("ntm:iv_xp").xp_gain),
+            (100, 100)
+        );
+        assert_eq!(
+            spec("ntm:syringe_poison")
+                .hurt
+                .as_ref()
+                .map(|h| (h.amount, h.times, h.chance)),
+            Some((30.0, 1, 0))
+        );
+        let awesome = spec("ntm:syringe_awesome");
+        assert_eq!(awesome.effects.len(), 11);
+        assert!(
+            awesome
+                .effects
+                .iter()
+                .any(|e| e.id == "strength" && e.amplifier == 24)
+        );
+        assert!(
+            awesome
+                .effects
+                .iter()
+                .any(|e| e.id == "ntm:radx" && e.ticks == 1000 && e.amplifier == 9)
+        );
+    }
+
+    /// ItemPill extends ItemFood with heal 0: ten ticks of eating, no `canEat`,
+    /// only the potion-sickness test, and the burp.
+    #[test]
+    fn pills_follow_item_pill() {
+        for id in ids().filter(|i| spec(i).origin.starts_with("ItemPill")) {
+            let s = spec(id);
+            assert_eq!(
+                (s.ticks, s.animation, s.gate, s.consume),
+                (10, Animation::Eat, Gate::Always, Consume::Always),
+                "{id}"
+            );
+            assert!(
+                s.sickness_gate && s.food.is_none() && s.sound.as_deref() == Some("random.burp"),
+                "{id}"
+            );
+            // Creative may take a pill: the pill's own right click skips canEat.
+            assert!(s.may_start(true, 20, 0, false, false), "{id}");
+            assert!(
+                !s.may_start(false, 20, 0, false, true),
+                "{id}: potion sickness"
+            );
+        }
+        assert_eq!(fx("ntm:radx"), [("ntm:radx", 3600, 0)]);
+        assert_eq!(fx("ntm:pill_red"), [("ntm:death", 72000, 0)]);
+        assert_eq!(fx("ntm:five_htp"), [("ntm:stability", 12000, 0)]);
+        assert_eq!(fx("ntm:fmn"), [("blindness", 60, 0)]);
+        assert_eq!(
+            fx("ntm:chocolate"),
+            [
+                ("haste", 1200, 3),
+                ("speed", 1200, 3),
+                ("jump_boost", 1200, 3)
+            ]
+        );
+        let overdose = spec("ntm:chocolate").hurt.as_ref().unwrap();
+        assert_eq!(
+            (overdose.amount, overdose.times, overdose.chance),
+            (1000.0, 1, 25)
+        );
+        let plan_c = spec("ntm:plan_c").hurt.as_ref().unwrap();
+        assert_eq!(
+            (plan_c.amount, plan_c.times, plan_c.chance),
+            (1000.0, 10, 0)
+        );
+        let herbal = spec("ntm:pill_herbal");
+        assert_eq!(
+            herbal.dose.as_ref().map(|d| (d.millirad, d.creative)),
+            Some((-100_000, true))
+        );
+        assert_eq!(
+            fx("ntm:pill_herbal"),
+            [
+                ("nausea", 200, 0),
+                ("weakness", 12000, 2),
+                ("mining_fatigue", 12000, 2),
+                ("poison", 100, 2),
+                ("ntm:potion_sickness", 12000, 0)
+            ]
+        );
+    }
+
+    /// The pills whose Java also sets digamma, asbestos or black lung keep
+    /// only what the port has; the missing system is named in the catalog doc.
+    #[test]
+    fn pills_that_need_lung_or_digamma_state_do_their_visible_part_only() {
+        for id in ["ntm:siox", "ntm:xanax"] {
+            let s = spec(id);
+            assert!(
+                s.effects.is_empty() && s.cure.is_none() && s.dose.is_none() && s.hurt.is_none(),
+                "{id}"
+            );
+        }
+    }
+
+    #[test]
+    fn bio_wafer_is_an_item_lemon_that_needs_hunger() {
+        let wafer = spec("ntm:bio_wafer");
+        assert_eq!(
+            (wafer.ticks, wafer.gate, wafer.food_stats()),
+            (32, Gate::Food, Some((4, 2.0)))
+        );
+        assert!(!wafer.may_start(false, 20, 0, false, false));
+        assert!(wafer.may_start(false, 19, 0, false, false));
+        assert!(
+            !wafer.may_start(true, 0, 0, false, false),
+            "creative cannot eat"
+        );
+    }
+    /// `ItemLemon` and the vanilla foods it shares a bar with: needs hunger,
+    /// 32 ticks, the burp, `ItemFood.onEaten` stats.
+    #[test]
+    fn item_lemon_foods_follow_item_food() {
+        for (id, stats) in [
+            ("ntm:lemon", (3, 0.5)),
+            ("ntm:loops", (4, 0.25)),
+            ("ntm:fooditem", (2, 5.0)),
+            ("ntm:cheese_quesadilla", (8, 1.0)),
+            ("ntm:ingot_smore", (10, 20.0)),
+            ("ntm:glowing_stew", (6, 0.6)),
+        ] {
+            let s = spec(id);
+            assert_eq!(
+                (s.ticks, s.animation, s.gate, s.food_stats()),
+                (32, Animation::Eat, Gate::Food, Some(stats)),
+                "{id}"
+            );
+            assert!(s.consumes(true), "{id}: ItemFood decrements in every mode");
+            assert!(!s.may_start(false, 20, 0, false, false), "{id}: not hungry");
+        }
+        // setPotionEffect on glyphid_meat_grilled is dead code: ItemLemon.onFoodEaten never calls super.
+        assert!(spec("ntm:glyphid_meat_grilled").effects.is_empty());
+        let stew = spec("ntm:loop_stew");
+        assert_eq!(
+            fx("ntm:loop_stew"),
+            [
+                ("regeneration", 400, 1),
+                ("resistance", 1200, 2),
+                ("speed", 1200, 1),
+                ("strength", 400, 2)
+            ]
+        );
+        assert_eq!(
+            (stew.gives[0].item.as_str(), stew.gives[0].replace),
+            ("minecraft:bowl", true)
+        );
+        for soup in [
+            "ntm:glowing_stew",
+            "ntm:balefire_scrambled",
+            "ntm:balefire_and_ham",
+        ] {
+            assert_eq!(spec(soup).gives[0].item, "minecraft:bowl", "{soup}");
+        }
+    }
+
+    #[test]
+    fn the_two_medicines_are_always_edible_and_induce_vomiting() {
+        for id in ["ntm:med_ipecac", "ntm:med_ptsd"] {
+            let s = spec(id);
+            assert_eq!(s.gate, Gate::FoodAlways, "{id}");
+            assert_eq!(s.food_stats(), Some((0, 0.0)));
+            assert_eq!(fx(id), [("hunger", 50, 49)]);
+            assert_eq!(s.special.as_deref(), Some("vomit"));
+            assert!(s.may_start(false, 20, 0, false, false));
+        }
+    }
+
+    #[test]
+    fn an_oversized_modifier_ends_in_the_same_state() {
+        // Euphemium apple: heal 20, saturation modifier 100.
+        let apple = spec("ntm:apple_euphemium");
+        assert_eq!(apple.food_stats(), Some((20, 20.0)));
+        for (food, sat) in [(0, 0.0), (10, 4.0), (19, 19.0)] {
+            let java = {
+                let f = (food + 20).min(20);
+                (f, (sat + 20.0 * 100.0 * 2.0_f32).min(f as f32))
+            };
+            let (n, m) = apple.food_stats().unwrap();
+            let f = (food + n).clamp(0, 20);
+            assert_eq!(java, (f, (sat + n as f32 * m * 2.0).clamp(0.0, f as f32)));
+        }
+        assert_eq!(
+            fx("ntm:apple_euphemium"),
+            [
+                ("resistance", i32::MAX, 120),
+                ("fire_resistance", i32::MAX, 0),
+                ("saturation", i32::MAX, 120)
+            ]
+        );
+    }
+
+    #[test]
+    fn the_pancake_is_refused_without_the_bj_armor() {
+        let pancake = spec("ntm:pancake");
+        assert_eq!(pancake.gate, Gate::Never);
+        assert!(!pancake.may_start(false, 0, 0, false, false));
+        assert_eq!(
+            pancake.message.as_deref(),
+            Some("Your teeth are too soft to eat this.")
+        );
+    }
+
+    #[test]
+    fn cigarettes_bow_for_thirty_ticks_and_raise_the_dose() {
+        let cig = spec("ntm:cigarette");
+        assert_eq!(
+            (cig.ticks, cig.animation, cig.consume),
+            (30, Animation::Bow, Consume::Always)
+        );
+        assert_eq!(
+            cig.dose.as_ref().map(|d| (d.millirad, d.creative)),
+            Some((100_000, true))
+        );
+        let pipe = spec("ntm:crackpipe");
+        assert_eq!((pipe.heal, pipe.special.as_deref()), (10.0, Some("smoke")));
+        assert_eq!(fx("ntm:crackpipe"), [("nausea", 200, 0)]);
+    }
+
+    #[test]
+    fn the_rag_and_the_peas() {
+        let rag = spec("ntm:rag");
+        assert_eq!(
+            (rag.gives[0].item.as_str(), rag.gives[0].overflow, rag.ticks),
+            ("ntm:rag_piss", Overflow::Lost, 0)
+        );
+        assert_eq!(spec("ntm:peas").consume, Consume::UnlessCreative);
+    }
+
+    #[test]
+    fn the_vegan_schnitzel_burns_and_launches() {
+        let s = spec("ntm:schnitzel_vegan");
+        assert_eq!(
+            fx("ntm:schnitzel_vegan"),
+            [
+                ("blindness", 200, 0),
+                ("nausea", 600, 0),
+                ("hunger", 3600, 4),
+                ("wither", 60, 0)
+            ]
+        );
+        assert_eq!(
+            (s.gate, s.special.as_deref()),
+            (Gate::Food, Some("schnitzel_vegan"))
+        );
+    }
+    /// ItemStarterKit: every `addItemStackToInventory` result is ignored, so
+    /// what does not fit is lost; `giveHaz` is the armor, by tier.
+    #[test]
+    fn kits_follow_item_starter_kit() {
+        let kit = spec("ntm:nuke_starter_kit");
+        assert_eq!(kit.sound.as_deref(), Some("hbm:item.unpack"));
+        assert_eq!(kit.special.as_deref(), Some("hazmat_kit:1"));
+        assert_eq!(
+            (kit.gives[0].item.as_str(), kit.gives[0].count),
+            ("ntm:ingot_uranium", 32)
+        );
+        assert!(
+            kit.gives
+                .iter()
+                .all(|g| g.overflow == Overflow::Lost && g.creative)
+        );
+        assert!(
+            kit.gives.iter().any(|g| g.item == "ntm:geiger_counter"),
+            "the Geiger counter is in the port now"
+        );
+        assert!(
+            spec("ntm:nuke_advanced_kit")
+                .unported
+                .iter()
+                .any(|u| u == "ModBlocks.machine_uf6_tank x2")
+        );
+        assert_eq!(
+            spec("ntm:hazmat_kit").special.as_deref(),
+            Some("hazmat_kit:0")
+        );
+        assert_eq!(
+            spec("ntm:hazmat_red_kit").special.as_deref(),
+            Some("hazmat_kit:1")
+        );
+        assert_eq!(
+            spec("ntm:hazmat_grey_kit").special.as_deref(),
+            Some("hazmat_kit:2")
+        );
+        assert!(spec("ntm:hazmat_kit").gives.is_empty());
+        // Metadata items resolve to their variants.
+        let electric = spec("ntm:nuke_electric_kit");
+        assert!(
+            electric
+                .gives
+                .iter()
+                .any(|g| g.item == "ntm:circuit__vacuum_tube" && g.count == 16)
+        );
+        assert!(
+            electric
+                .gives
+                .iter()
+                .any(|g| g.item == "ntm:canister_full__diesel" && g.count == 16)
+        );
+        let advanced = spec("ntm:nuke_advanced_kit");
+        assert!(
+            advanced
+                .gives
+                .iter()
+                .any(|g| g.item == "ntm:fluid_barrel_full__coolant" && g.count == 4)
+        );
+        assert!(
+            spec("ntm:multi_kit")
+                .gives
+                .iter()
+                .any(|g| g.item == "minecraft:tnt" && g.count == 26)
+        );
+        assert_eq!(
+            spec("ntm:euphemium_kit").gives.len(),
+            0,
+            "no euphemium armor in the port"
+        );
+    }
+
+    #[test]
+    fn the_stealth_boy_is_thirty_seconds_of_invisibility() {
+        let boy = spec("ntm:stealth_boy");
+        assert_eq!(fx("ntm:stealth_boy"), [("invisibility", 600, 1)]);
+        assert_eq!(boy.special.as_deref(), Some("stealth_boy"));
+    }
+
+    /// `ItemLootCrate.choose`: a part is drawn uniformly and kept with its
+    /// rarity's chance, so the chance is its weight. Two of the crates have an
+    /// empty list in the Java, where `nextInt(0)` throws.
+    #[test]
+    fn loot_crates_draw_by_rarity_weight() {
+        assert_eq!(spec("ntm:loot_10").loot.as_deref(), Some(&[][..]));
+        assert_eq!(spec("ntm:loot_10").draw(0.5), None);
+        let misc = spec("ntm:loot_misc");
+        let total: f32 = misc.loot.as_ref().unwrap().iter().map(|l| l.weight).sum();
+        assert!((total - (0.2 + 0.1 + 0.02 + 0.1 + 0.02 + 0.01)).abs() < 1e-6);
+        assert_eq!(misc.draw(0.0), Some("ntm:mp_warhead_10_taint"));
+        assert_eq!(misc.draw(0.999), Some("ntm:mp_warhead_15_turbine"));
+        // Equal weights split a roll evenly.
+        let mut seen = std::collections::HashMap::new();
+        for i in 0..1000 {
+            *seen
+                .entry(misc.draw(i as f32 / 1000.0).unwrap())
+                .or_insert(0) += 1;
+        }
+        assert!(
+            (430..=460).contains(&seen["ntm:mp_warhead_10_taint"]),
+            "0.2 of 0.45"
+        );
+        assert!(seen["ntm:mp_warhead_10_taint"] > seen["ntm:mp_warhead_10_cloud"]);
+    }
+    #[test]
+    fn the_ams_lens_tooltip_is_the_java_line() {
+        assert_eq!(AMS_LENS_MAX, 432_000_000);
+        assert_eq!(
+            lens_line(AMS_LENS_MAX, 0),
+            "Durability: 432000000/432000000 (100%)"
+        );
+        assert_eq!(
+            lens_line(AMS_LENS_MAX, 108_000_000),
+            "Durability: 324000000/432000000 (75%)"
+        );
+        // The percentage truncates, as `(int)((max - damage) * 100 / max)` does.
+        assert_eq!(lens_line(1000, 1), "Durability: 999/1000 (99%)");
     }
 }

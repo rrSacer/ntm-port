@@ -13,6 +13,7 @@
     },
     "ntm:syringe_metal_medx": {
       "origin": "ItemSyringe.onItemRightClick syringe_metal_medx, ModItems.java:2821",
+      "sickness_gate": true,
       "consume": "always",
       "effects": [["resistance", 4800, 2]],
       "gives": [{"item": "ntm:syringe_metal_empty", "replace": true, "overflow": "thrown", "creative": true}],
@@ -25,14 +26,10 @@
       "gives": [{"item": "ntm:iv_empty", "overflow": "thrown", "creative": true}],
       "sound": "hbm:item.radaway"
     },
-    "ntm:hazmat_kit": {
-      "origin": "ItemStarterKit.giveHaz(0), ModItems.java:3797",
-      "consume": "always",
-      "special": "hazmat_kit"
-    },
 
     "ntm:can_smart": {
       "origin": "ItemEnergy.makeCan, ModItems.java:2925",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "effects": [["speed", 600, 1], ["resistance", 600, 2], ["strength", 600, 0]],
       "gives": [
@@ -42,6 +39,7 @@
     },
     "ntm:can_creature": {
       "origin": "ItemEnergy.makeCan, ModItems.java:2926",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "effects": [["speed", 600, 0], ["resistance", 600, 2], ["regeneration", 600, 1]],
       "gives": [
@@ -51,6 +49,7 @@
     },
     "ntm:can_redbomb": {
       "origin": "ItemEnergy.makeCan, ModItems.java:2927",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "effects": [["speed", 600, 0], ["absorption", 600, 2], ["jump_boost", 600, 1]],
       "gives": [
@@ -60,6 +59,7 @@
     },
     "ntm:can_mrsugar": {
       "origin": "ItemEnergy.makeCan, ModItems.java:2928",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "effects": [["speed", 600, 0], ["haste", 600, 1], ["jump_boost", 600, 2]],
       "gives": [
@@ -69,6 +69,7 @@
     },
     "ntm:can_overcharge": {
       "origin": "ItemEnergy.makeCan, ModItems.java:2929",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "effects": [["speed", 600, 1], ["resistance", 600, 2], ["strength", 600, 0]],
       "gives": [
@@ -78,6 +79,7 @@
     },
     "ntm:can_luna": {
       "origin": "ItemEnergy.makeCan, ModItems.java:2930",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "effects": [["speed", 600, 1], ["resistance", 600, 2], ["strength", 600, 1], ["regeneration", 600, 2]],
       "gives": [
@@ -87,6 +89,7 @@
     },
     "ntm:can_bepis": {
       "origin": "ItemEnergy.makeCan, ModItems.java:2931",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "effects": [["speed", 600, 3], ["resistance", 600, 3]],
       "gives": [
@@ -96,6 +99,7 @@
     },
     "ntm:can_breen": {
       "origin": "ItemEnergy.makeCan, ModItems.java:2932",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "effects": [["nausea", 600, 0]],
       "gives": [
@@ -105,6 +109,7 @@
     },
     "ntm:can_mug": {
       "origin": "ItemEnergy.makeCan, ModItems.java:2933",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "effects": [["resistance", 3600, 2], ["regeneration", 1200, 2]],
       "gives": [
@@ -114,6 +119,7 @@
     },
     "ntm:bottle_nuka": {
       "origin": "ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2935",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "requires": "ntm:bottle_opener",
       "heal": 4,
@@ -126,6 +132,7 @@
     },
     "ntm:bottle_cherry": {
       "origin": "ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2936",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "requires": "ntm:bottle_opener",
       "heal": 6,
@@ -138,6 +145,7 @@
     },
     "ntm:bottle_quantum": {
       "origin": "ItemEnergy.makeBottle(bottle_empty, cap_quantum), ModItems.java:2937",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "requires": "ntm:bottle_opener",
       "heal": 10,
@@ -150,6 +158,7 @@
     },
     "ntm:bottle_sparkle": {
       "origin": "ItemEnergy.makeBottle(bottle_empty, cap_sparkle), ModItems.java:2938",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "requires": "ntm:bottle_opener",
       "heal": 10,
@@ -162,6 +171,7 @@
     },
     "ntm:bottle_rad": {
       "origin": "ItemEnergy.makeBottle(bottle_empty, cap_rad), ModItems.java:2939",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "requires": "ntm:bottle_opener",
       "heal": 10,
@@ -174,6 +184,7 @@
     },
     "ntm:bottle2_korl": {
       "origin": "ItemEnergy.makeBottle(bottle2_empty, cap_korl), ModItems.java:2941",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "requires": "ntm:bottle_opener",
       "heal": 6,
@@ -185,6 +196,7 @@
     },
     "ntm:bottle2_fritz": {
       "origin": "ItemEnergy.makeBottle(bottle2_empty, cap_fritz), ModItems.java:2942",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "requires": "ntm:bottle_opener",
       "heal": 6,
@@ -196,17 +208,20 @@
     },
     "ntm:chocolate_milk": {
       "origin": "ItemEnergy, ModItems.java:2944",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "special": "chocolate_milk_blast"
     },
     "ntm:coffee": {
       "origin": "ItemEnergy, ModItems.java:2945",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "heal": 10,
       "effects": [["speed", 1200, 2]]
     },
     "ntm:coffee_radium": {
       "origin": "ItemEnergy, ModItems.java:2946",
+      "sickness_gate": true,
       "ticks": 32, "animation": "drink", "consume": "unless_creative",
       "heal": 10,
       "effects": [["speed", 1200, 2]],
@@ -215,6 +230,7 @@
 
     "ntm:canteen_vodka": {
       "origin": "ItemCanteen(3 * 60), ModItems.java:3632",
+      "sickness_gate": true,
       "ticks": 10, "animation": "drink", "gate": "cooled", "consume": "set_damage", "set_damage": 180,
       "effects": [["nausea", 200, 0], ["strength", 600, 2]]
     },
@@ -229,6 +245,378 @@
       "origin": "ItemBDCL, ModItems.java:2849; getMaxItemUseDuration 40, onUsingTick skips ticks (see consumables.rs)",
       "ticks": 34, "animation": "drink", "consume": "unless_creative",
       "sound": "hbm:player.groan"
+    }
+    ,"ntm:syringe_metal_stimpak": {
+      "origin": "ItemSyringe.onItemRightClick syringe_metal_stimpak, ModItems.java:2820",
+      "sickness_gate": true,
+      "consume": "always",
+      "heal": 5,
+      "gives": [{"item": "ntm:syringe_metal_empty", "replace": true, "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.syringe"
+    },
+    "ntm:syringe_metal_psycho": {
+      "origin": "ItemSyringe.onItemRightClick syringe_metal_psycho, ModItems.java:2822",
+      "sickness_gate": true,
+      "consume": "always",
+      "effects": [["resistance", 2400, 0], ["strength", 2400, 0]],
+      "gives": [{"item": "ntm:syringe_metal_empty", "replace": true, "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.syringe"
+    },
+    "ntm:syringe_metal_super": {
+      "origin": "ItemSyringe.onItemRightClick syringe_metal_super, ModItems.java:2823",
+      "sickness_gate": true,
+      "consume": "always",
+      "heal": 25,
+      "effects": [["slowness", 200, 0]],
+      "gives": [{"item": "ntm:syringe_metal_empty", "replace": true, "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.syringe"
+    },
+    "ntm:med_bag": {
+      "origin": "ItemSyringe.onItemRightClick med_bag, ModItems.java:2827: setHealth(getMaxHealth()), no sound, no container",
+      "sickness_gate": true,
+      "consume": "always",
+      "heal": 1000000,
+      "cure": {"effects": ["blindness", "nausea", "mining_fatigue", "hunger", "slowness", "poison", "weakness", "wither"]}
+    },
+    "ntm:syringe_taint": {
+      "origin": "ItemSyringe.onItemRightClick syringe_taint, ModItems.java:2824: no sickness check; both containers are added, none replaces the slot",
+      "consume": "always",
+      "effects": [["ntm:taint", 1200, 0], ["nausea", 100, 0]],
+      "gives": [
+        {"item": "ntm:syringe_metal_empty", "overflow": "thrown", "creative": true},
+        {"item": "ntm:bottle2_empty", "overflow": "thrown", "creative": true}
+      ],
+      "sound": "hbm:item.syringe"
+    },
+    "ntm:syringe_antidote": {
+      "origin": "ItemSimpleConsumable.effectAntidote, init()",
+      "sickness_gate": true,
+      "consume": "always",
+      "cure": "all",
+      "gives": [{"item": "ntm:syringe_empty", "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.syringe"
+    },
+    "ntm:syringe_poison": {
+      "origin": "ItemSimpleConsumable.effectPoison, init(): attackEntityFrom(euthanizedSelf, 30), no sickness check",
+      "consume": "always",
+      "hurt": {"amount": 30},
+      "gives": [{"item": "ntm:syringe_empty", "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.syringe"
+    },
+    "ntm:syringe_awesome": {
+      "origin": "ItemSimpleConsumable.effectAwesome, init()",
+      "sickness_gate": true,
+      "consume": "always",
+      "effects": [
+        ["regeneration", 1000, 9], ["resistance", 1000, 9], ["fire_resistance", 1000, 0], ["strength", 1000, 24],
+        ["haste", 1000, 9], ["speed", 1000, 6], ["jump_boost", 1000, 9], ["health_boost", 1000, 9],
+        ["absorption", 1000, 4], ["nausea", 100, 4], ["ntm:radx", 1000, 9]
+      ],
+      "gives": [{"item": "ntm:syringe_empty", "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.syringe"
+    },
+    "ntm:radaway_strong": {
+      "origin": "ItemSimpleConsumable.doRadaway(350), init()",
+      "consume": "always",
+      "radaway": 350,
+      "gives": [{"item": "ntm:iv_empty", "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.radaway"
+    },
+    "ntm:radaway_flush": {
+      "origin": "ItemSimpleConsumable.doRadaway(500), init(); its tooltip says 1000 RAD, the code adds 500 ticks",
+      "consume": "always",
+      "radaway": 500,
+      "gives": [{"item": "ntm:iv_empty", "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.radaway"
+    },
+    "ntm:iv_empty": {
+      "origin": "ItemSimpleConsumable init(): blood draw, setHealth(max(health - 5, 0))",
+      "consume": "always",
+      "hp_cost": 5,
+      "gives": [{"item": "ntm:iv_blood", "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.syringe"
+    },
+    "ntm:iv_blood": {
+      "origin": "ItemSimpleConsumable init(): heal(5), radaway sound",
+      "consume": "always",
+      "heal": 5,
+      "gives": [{"item": "ntm:iv_empty", "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.radaway"
+    },
+    "ntm:iv_xp_empty": {
+      "origin": "ItemSimpleConsumable init(): takes 100 experience points when the player has them",
+      "consume": "always",
+      "xp_cost": 100,
+      "gives": [{"item": "ntm:iv_xp", "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.syringe"
+    },
+    "ntm:iv_xp": {
+      "origin": "ItemSimpleConsumable init(): addExperience(100), random.orb",
+      "consume": "always",
+      "xp_gain": 100,
+      "gives": [{"item": "ntm:iv_xp_empty", "overflow": "thrown", "creative": true}],
+      "sound": "random.orb"
+    },
+
+    "ntm:radx": {
+      "origin": "ItemPill, ModItems.java:2828: Rad-X potion 3 minutes",
+      "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
+      "effects": [["ntm:radx", 3600, 0]],
+      "sound": "random.burp"
+    },
+    "ntm:siox": {
+      "origin": "ItemPill, ModItems.java:2829: asbestos and black lung only (HbmLivingProps), not in the port",
+      "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
+      "sound": "random.burp"
+    },
+    "ntm:pill_herbal": {
+      "origin": "ItemPill, ModItems.java:2830: incrementRadiation(-100) reaches the dose; asbestos and black lung do not",
+      "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
+      "dose": {"millirad": -100000, "creative": true},
+      "effects": [["nausea", 200, 0], ["weakness", 12000, 2], ["mining_fatigue", 12000, 2], ["poison", 100, 2], ["ntm:potion_sickness", 12000, 0]],
+      "sound": "random.burp"
+    },
+    "ntm:xanax": {
+      "origin": "ItemPill, ModItems.java:2831: digamma -0.5 only (HbmLivingProps), not in the port",
+      "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
+      "sound": "random.burp"
+    },
+    "ntm:fmn": {
+      "origin": "ItemPill, ModItems.java:2832: digamma capped at 2 (not in the port) and blindness 60 ticks",
+      "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
+      "effects": [["blindness", 60, 0]],
+      "sound": "random.burp"
+    },
+    "ntm:five_htp": {
+      "origin": "ItemPill, ModItems.java:2833: digamma to 0 (not in the port) and Stability 10 minutes",
+      "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
+      "effects": [["ntm:stability", 12000, 0]],
+      "sound": "random.burp"
+    },
+    "ntm:pill_iodine": {
+      "origin": "ItemPill, ModItems.java:2834: removes the bad effects; HbmPotion.radiation is not an effect in the port",
+      "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
+      "cure": {"effects": ["blindness", "nausea", "mining_fatigue", "hunger", "slowness", "poison", "weakness", "wither"]},
+      "sound": "random.burp"
+    },
+    "ntm:plan_c": {
+      "origin": "ItemPill, ModItems.java:2835: ten attackEntityFrom(euthanizedSelf, 1000)",
+      "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
+      "hurt": {"amount": 1000, "times": 10},
+      "sound": "random.burp"
+    },
+    "ntm:pill_red": {
+      "origin": "ItemPill, ModItems.java:2836: Astolfization one hour",
+      "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
+      "effects": [["ntm:death", 72000, 0]],
+      "sound": "random.burp"
+    },
+    "ntm:chocolate": {
+      "origin": "ItemPill, ModItems.java:2947: 1 in 25 overdose (1000 damage), then speed, haste and jump 60 seconds",
+      "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
+      "hurt": {"amount": 1000, "chance": 25},
+      "effects": [["haste", 1200, 3], ["speed", 1200, 3], ["jump_boost", 1200, 3]],
+      "sound": "random.burp"
+    },
+    "ntm:bio_wafer": {
+      "origin": "ItemLemon(4, 2F, false), ModItems.java:2553",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [4, 2.0],
+      "sound": "random.burp"
+    },
+    "ntm:lemon": {
+      "origin": "ItemLemon(3, 0.5F), ModItems.java:3620",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [3, 0.5],
+      "sound": "random.burp"
+    },
+    "ntm:definitelyfood": {
+      "origin": "ItemLemon(3, 0.5F), ModItems.java:3621",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [3, 0.5],
+      "sound": "random.burp"
+    },
+    "ntm:loops": {
+      "origin": "ItemLemon(4, 0.25F), ModItems.java:3625",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [4, 0.25],
+      "sound": "random.burp"
+    },
+    "ntm:spongebob_macaroni": {
+      "origin": "ItemLemon(5, 1.0F), ModItems.java:3627",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [5, 1.0],
+      "sound": "random.burp"
+    },
+    "ntm:fooditem": {
+      "origin": "ItemLemon(2, 5.0F), ModItems.java:3628",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [2, 5.0],
+      "sound": "random.burp"
+    },
+    "ntm:twinkie": {
+      "origin": "ItemLemon(3, 0.25F), ModItems.java:3629",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [3, 0.25],
+      "sound": "random.burp"
+    },
+    "ntm:static_sandwich": {
+      "origin": "ItemLemon(6, 1.0F), ModItems.java:3630",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [6, 1.0],
+      "sound": "random.burp"
+    },
+    "ntm:pudding": {
+      "origin": "ItemLemon(6, 1.0F), ModItems.java:3631",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [6, 1.0],
+      "sound": "random.burp"
+    },
+    "ntm:nugget": {
+      "origin": "ItemLemon(200, 1.0F), ModItems.java:3634",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [200, 1.0],
+      "sound": "random.burp"
+    },
+    "ntm:cheese": {
+      "origin": "ItemLemon(5, 0.75F), ModItems.java:3637",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [5, 0.75],
+      "sound": "random.burp"
+    },
+    "ntm:cheese_quesadilla": {
+      "origin": "ItemLemon(8, 1.0F), ModItems.java:3638",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [8, 1.0],
+      "sound": "random.burp"
+    },
+    "ntm:glyphid_meat": {
+      "origin": "ItemLemon(3, 0.5F), ModItems.java:3640",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [3, 0.5],
+      "sound": "random.burp"
+    },
+    "ntm:glyphid_meat_grilled": {
+      "origin": "ItemLemon(8, 0.75F), ModItems.java:3641; setPotionEffect(damageBoost 180s) is never applied: ItemLemon.onFoodEaten does not call super",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [8, 0.75],
+      "sound": "random.burp"
+    },
+    "ntm:ingot_c4": {
+      "origin": "ItemLemon(4, 5, true), ModItems.java:2170",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [4, 5.0],
+      "sound": "random.burp"
+    },
+    "ntm:ingot_semtex": {
+      "origin": "ItemLemon(4, 5, true), ModItems.java:2169",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [4, 5.0],
+      "sound": "random.burp"
+    },
+    "ntm:ingot_smore": {
+      "origin": "ItemFood(10, 20F, false), ModItems.java:2122",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [10, 20.0],
+      "sound": "random.burp"
+    },
+    "ntm:loop_stew": {
+      "origin": "ItemLemon(10, 0.5F), ModItems.java:3626; onEaten returns the bowl",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [10, 0.5],
+      "effects": [["regeneration", 400, 1], ["resistance", 1200, 2], ["speed", 1200, 1], ["strength", 400, 2]],
+      "gives": [{"item": "minecraft:bowl", "replace": true, "overflow": "thrown", "creative": true}],
+      "sound": "random.burp"
+    },
+    "ntm:glowing_stew": {
+      "origin": "ItemSoup(6), ModItems.java:3617: vanilla ItemSoup, stack size 1, returns the bowl",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [6, 0.6],
+      "gives": [{"item": "minecraft:bowl", "replace": true, "overflow": "thrown", "creative": true}],
+      "sound": "random.burp"
+    },
+    "ntm:balefire_scrambled": {
+      "origin": "ItemSoup(6), ModItems.java:3618: vanilla ItemSoup, stack size 1, returns the bowl",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [6, 0.6],
+      "gives": [{"item": "minecraft:bowl", "replace": true, "overflow": "thrown", "creative": true}],
+      "sound": "random.burp"
+    },
+    "ntm:balefire_and_ham": {
+      "origin": "ItemSoup(6), ModItems.java:3619: vanilla ItemSoup, stack size 1, returns the bowl",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [6, 0.6],
+      "gives": [{"item": "minecraft:bowl", "replace": true, "overflow": "thrown", "creative": true}],
+      "sound": "random.burp"
+    },
+    "ntm:med_ipecac": {
+      "origin": "ItemLemon(0, 0), ModItems.java:3622: alwaysEdible; the vomit particle packet has no mode and count 0, so only the sound shows",
+      "ticks": 32, "animation": "eat", "gate": "food_always", "consume": "always",
+      "food": [0, 0.0],
+      "effects": [["hunger", 50, 49]],
+      "special": "vomit",
+      "sound": "random.burp"
+    },
+    "ntm:med_ptsd": {
+      "origin": "ItemLemon(0, 0), ModItems.java:3623: alwaysEdible; the vomit particle packet has no mode and count 0, so only the sound shows",
+      "ticks": 32, "animation": "eat", "gate": "food_always", "consume": "always",
+      "food": [0, 0.0],
+      "effects": [["hunger", 50, 49]],
+      "special": "vomit",
+      "sound": "random.burp"
+    },
+    "ntm:schnitzel_vegan": {
+      "origin": "ItemSchnitzelVegan(0, true), ModItems.java:3612: setFire(5 * 20) is 100 seconds, motionY = 2",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [0, 0.6],
+      "effects": [["blindness", 200, 0], ["nausea", 600, 0], ["hunger", 3600, 4], ["wither", 60, 0]],
+      "special": "schnitzel_vegan",
+      "sound": "random.burp"
+    },
+    "ntm:bomb_waffle": {
+      "origin": "ItemWaffle(20, false), ModItems.java:3610: ExplosionNukeSmall.explode(PARAMS_MEDIUM) has no counterpart in the port",
+      "ticks": 32, "animation": "eat", "gate": "food", "consume": "always",
+      "food": [20, 0.6],
+      "special": "bomb_waffle_blast",
+      "sound": "random.burp"
+    },
+    "ntm:pancake": {
+      "origin": "ItemPancake(20, 20, false), ModItems.java:3633: onItemRightClick needs ArmorFSB with bj_helmet, which the port does not have",
+      "ticks": 32, "animation": "eat", "gate": "never", "consume": "always",
+      "food": [20, 20.0],
+      "message": "Your teeth are too soft to eat this.",
+      "sound": "random.burp"
+    },
+    "ntm:apple_euphemium": {
+      "origin": "ItemAppleEuphemium(20, 100, false), ModItems.java:3812: alwaysEdible, epic, glint",
+      "ticks": 32, "animation": "eat", "gate": "food_always", "consume": "always",
+      "food": [20, 100.0],
+      "effects": [["resistance", 2147483647, 120], ["fire_resistance", 2147483647, 0], ["saturation", 2147483647, 120]],
+      "sound": "random.burp"
+    },
+    "ntm:cigarette": {
+      "origin": "ItemCigarette, ModItems.java:2847: black lung and asbestos (HbmLivingProps) and the no9 achievement are not in the port",
+      "ticks": 30, "animation": "bow", "consume": "always",
+      "dose": {"millirad": 100000, "creative": true},
+      "sound": "hbm:player.cough",
+      "special": "smoke"
+    },
+    "ntm:crackpipe": {
+      "origin": "ItemCigarette, ModItems.java:2848: black lung (HbmLivingProps) is not in the port",
+      "ticks": 30, "animation": "bow", "consume": "always",
+      "heal": 10,
+      "effects": [["nausea", 200, 0]],
+      "sound": "hbm:player.cough",
+      "special": "smoke"
+    },
+    "ntm:peas": {
+      "origin": "ItemPeas, ModItems.java:3635: despawns EntityQuackos in 50 blocks, which the port does not have",
+      "consume": "unless_creative"
+    },
+    "ntm:rag": {
+      "origin": "ItemRag.onItemRightClick, ModItems.java:2398: the rag_piss is added with the result ignored",
+      "consume": "always",
+      "gives": [{"item": "ntm:rag_piss", "overflow": "lost", "creative": true}]
     }
   }
 }
