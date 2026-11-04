@@ -136,10 +136,12 @@ Efeitos de blocos, drops e explosão da pilha ficam numa fila persistida. Recusa
 mantêm o cursor; efeitos aceitos não se repetem em memória. Recibos dos efeitos
 aplicados permanecem no KV até o hook existente `world_saved(wait=true)` confirmar
 o save de chunks e entidades. Reabertura limpa após essa confirmação não repete
-a ejeção. A janela entre save do mundo e cursor KV pode repetir efeitos após um
-crash/falha de I/O; a escolha autorizada conserva o replay, com risco de duplicar,
-sem confirmar prematuramente um spawn ainda não salvo. A solução definitiva
-exige um commit conjunto de mundo/KV ou efeitos persistidos pelo próprio motor.
+a ejeção. O que um efeito deve ao mundo vive, desde o item 5 da onda 0, no
+registro do chunk (ledger, ver `docs/horizon-current.md`, "Onda 0 — item 5"): os
+itens e o estado dos modelos que sobrevivem ao passo gravam junto com os blocos
+e os block entities, e a reabertura de um mundo cujos arquivos de chunk estão
+mais antigos que o KV é reconciliada por id e por revisão, sem perda nem
+duplicação.
 
 Redes de energia, calor e fluidos rodam depois dos passos confirmados. Uma recusa
 de save dessas trocas conserva o estado em memória para regravar. Solar/caldeira
@@ -215,7 +217,7 @@ continua dona dos itens e não gera spawn; fonte consumida permite replay. O tes
 de crash após commit simula célula salva com a entidade ainda não salva; o replay
 restaura um spawn e a reabertura limpa seguinte não o repete. A janela de crash/I/O
 agora também inclui a preparação anterior ao commit, com duplicação possível no
-caso ambíguo. Ver a pendência nominal de save conjunto mundo/KV.
+caso ambíguo; esse caso é o do ledger do item 5, fechado pela prova de queda.
 
 A fronteira de publicação das células é explícita. Primeiro são validados todos
 os BEs e todas as células, inclusive mudanças externas entre a leitura e o commit.
@@ -267,7 +269,7 @@ limitação no pacote em trânsito entre quebra e recolocação do mesmo ID.
 | `waste` em chunks descarregados | A API existente acessa somente blocos carregados; esses pontos são ignorados, sem carregar/gerar chunks para o efeito. A transformação das posições carregadas segue o limite/ordem da fonte. |
 | `WasteEarth.updateTick`: cogumelo→`mush` | Exclusão de catálogo K4 aceita pelo coordenador; `mush` não está declarado e possui regras próprias fora do ZIRNOX. Escurecimento está implementado; `cleanupDeadDirt=false` segue o padrão Java. |
 | `WasteEarth.canSustainPlant` | Blocos de terra usam o suporte a plantas do template vanilla; falta a restrição Java a plantas Cave. |
-| Crash/I/O entre `spawn_item`/save do mundo e cursor KV | **Pendência de motor autorizada.** Recibos só são descartados após `world_saved(wait=true)`; antes da confirmação, o replay pode duplicar efeitos. Não há garantia de commit conjunto dos dois armazenamentos. Recusas, retries e reabertura limpa após cursor confirmado têm ejeção exatamente uma vez. |
+| Crash/I/O entre `spawn_item`/save do mundo e cursor KV | Fechado no item 5 (ledger no registro do chunk, ids por efeito, diário dos sobreviventes por revisão). Prova: `kill` sem limpeza em 13 pontos de `save_game_with` e entre registros de chunk, com contagem exata de hastes após duas reaberturas. O que resta é o do formato de mundo (ver `docs/horizon-current.md`). |
 | Salvamento do nível estacionado/comparadores | Valem as limitações gerais já documentadas em `docs/host-dimensoes.md`. |
 
 ## Diagnóstico da cerca e isolamento do teste de waste

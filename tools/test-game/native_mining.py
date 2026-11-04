@@ -78,7 +78,8 @@ def excavator(g):
     raw = sum(s.get('count', 0) for s in actual if s.get('item') == 'minecraft:iron_ore')
     g.check('real_ore_credited_once', raw == 8, actual)
     g.close()
-    items = g.ctl('entities')['entities']
+    # The drop falls down the shaft the excavator keeps digging: a wide radius, not a race against the fall.
+    items = g.ctl('entities 150')['entities']
     diamonds = sum((e.get('item') or {}).get('count', 0) for e in items
                    if (e.get('item') or {}).get('item') == 'minecraft:diamond')
     g.check('mined_be_contents_retained_once', diamonds == 7, items)
