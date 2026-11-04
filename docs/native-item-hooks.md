@@ -278,9 +278,9 @@ Limites desta aceitação:
 
 ## Aceitação da onda 1 (consumíveis, kits e medicina)
 
-Binário `horizon-client` `d7f5a365dfa0…` e pacote `ntm.hmod` `5a15e08d26cb…` (pin do motor
+Binário `horizon-client` `7eb2ffc12972…` (rebaseado sobre `main` `0e0b0ca8`) e pacote `ntm.hmod` `5a15e08d26cb…` (pin do motor
 `0615f5db0`, sem mudança no motor), o mesmo par em todos os cenários, com os hashes conferidos
-antes e depois (`evidence/hashes-r2.txt`). Esta é a rodada que fecha as correções da revisão independente
+antes e depois (`evidence/hashes-rebase.txt`). Esta é a rodada que fecha as correções da revisão independente
 (`revisao-k2`) e da sua rechecagem (R1 a R3 e a atomicidade do fertilizante).
 
 | Roteiro `items` | Checks |
@@ -385,6 +385,7 @@ computador interrompeu a regressão no meio de `dims-idle`; ele e os seguintes r
 no mesmo binário. Durante o desenvolvimento, execuções do `items` falharam por temporização do
 script em máquina carregada (um clique que o servidor respondeu tarde) e passaram depois do ajuste
 do roteiro, sem mudar o binário.
-Verificação estática: 435 testes do NTM e Clippy `-D warnings` do workspace e do stage do motor sem
+Depois do rebase sobre `main` `0e0b0ca8` (correção da montadora e do meltdown), no binário novo: `items` 179 + 10 + 7, `recipes` 5 (montadora e bigorna), `pile` 85 e `pile-meltdown` 32, sem falha; a regressão dos demais cenários é a do binário anterior, cujo código não mudou além do rebase.
+Verificação estática: 437 testes do NTM e Clippy `-D warnings` do workspace e do stage do motor sem
 isenções; 38 testes Python de `test_consumables.py`.
 
