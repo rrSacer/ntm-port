@@ -4,6 +4,7 @@
 Adapts bedrock.py's excavator and petroleo_d well/fracker scenarios to the
 native socket driver. No machine state is injected.
 """
+import os
 import sys
 import time
 from native_game import Game
@@ -69,10 +70,21 @@ def excavator(g):
     screen = screen_json('machine_excavator')
     button = next(b for b in screen['buttons'] if b['id'] == 0)
     g.button(button['rect'], screen['size'])
+    started = time.monotonic()
+    def sample(label):
+        if os.environ.get('NTM_MINING_MEASURE'):
+            g.evidence.setdefault('drop_timeline', []).append({
+                'at': label, 'seconds_after_start': time.monotonic() - started,
+                'player': g.ctl('state').get('player'),
+                'diamonds': [e for e in g.ctl('entities 150')['entities']
+                             if (e.get('item') or {}).get('item') == 'minecraft:diamond'],
+            })
+            g.save()
     time.sleep(.6)
     g.close()
     wait(g, 'real_ore_removed', lambda: state(g, target), lambda s: s.startswith('minecraft:air'))
     wait(g, 'chest_removed_without_second_loot', lambda: state(g, chest), lambda s: s.startswith('minecraft:air'))
+    sample('chest_observed_removed')
     open_excavator(g, core)
     actual = g.slots()
     raw = sum(s.get('count', 0) for s in actual if s.get('item') == 'minecraft:iron_ore')
@@ -81,6 +93,7 @@ def excavator(g):
     items = g.ctl('entities')['entities']
     diamonds = sum((e.get('item') or {}).get('count', 0) for e in items
                    if (e.get('item') or {}).get('item') == 'minecraft:diamond')
+    sample('original_radius_check')
     g.check('mined_be_contents_retained_once', diamonds == 7, items)
     g.evidence['excavator_core'] = core
 
