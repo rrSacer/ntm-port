@@ -72,7 +72,7 @@ manifest da Mojang). Nomes ofuscados do jar: `EntityItem` é `xk` e `EntityPlaye
 | Fato | Onde (decompilado) |
 | --- | --- |
 | salto do construtor: `motionX = (float)(random·0,2 − 0,1)`, `motionY = 0,2f`, `motionZ` igual, yaw `random·360` | `xk` linhas 17 a 26 (construtor de 3 coordenadas; o de 5 só chama `setEntityItemStack`) |
-| `delayBeforeCanPickup` é o campo `public int b` de `xk`, sem inicializador: padrão 0; `onCollideWithPlayer` pega com `b == 0` | `xk` linha 11 |
+| `delayBeforeCanPickup` é o campo `public int b` de `xk`, sem inicializador (padrão 0); o tick (`xk.h()`) o decrementa enquanto for maior que 0 | `xk` linha 11 |
 | `dropPlayerItemWithRandomChoice(stack, flag)` ignora o flag: `return func_146097_a(stack, false, false)` | `yz` linhas 411 a 413 |
 | posição `posY − 0,3 + eyeHeight`, delay 40, thrower só se o 3º argumento, estatística `stat.drop` em todos os modos | `yz` linhas 422 a 426 e 446 |
 | fórmula do ramo `false`: 0,3, `+0,1`, ruído `0,02·rand`, `(rand−rand)·0,1` | `yz` linhas 435 a 443 |
