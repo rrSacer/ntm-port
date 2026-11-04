@@ -479,10 +479,10 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         rest.count -= 1;
         *slot = (rest.count > 0).then_some(rest);
         emptied = slot.is_none();
-    } else if spec.consume == item_hooks::Consume::SetDamage {
-        if let Some(s) = slot.as_mut() {
-            s.damage = spec.set_damage;
-        }
+    } else if spec.consume == item_hooks::Consume::SetDamage
+        && let Some(s) = slot.as_mut()
+    {
+        s.damage = spec.set_damage;
     }
     // Returned items, in the order the Java adds them. A replaced slot is the
     // used-up stack's own; otherwise the emptied slot is still taken while
@@ -595,7 +595,7 @@ fn after_commit(game: &mut Game<'_>, spec: &item_hooks::UseSpec) {
     }
     if spec.xp_cost > 0 || spec.xp_gain > 0 {
         let from = game.experience.level;
-        let mut e = game.experience.clone();
+        let mut e = game.experience;
         if spec.xp_cost > 0 {
             // `EnchantmentUtil.setExperience(player, total - cost)`.
             let rest = xp_total(&e) - spec.xp_cost;
