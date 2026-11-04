@@ -116,6 +116,15 @@ def sweep(args, base, scratch, env):
     return result
 
 
+def died_in_act(world, point):
+    """A region record point may be reached before the save the action asks for: the ledger writes its chunk's record
+    as soon as the action changes it, and the k-th region record of the session is then that one. The process died
+    between region records all the same; the reopens count as for any point."""
+    if not point.startswith('region_record') or world.client.poll() is None:
+        return False
+    return 'HORIZON_FAILPOINT' in world.log.read_text(errors='replace')
+
+
 def play(args, base, scratch, env, point):
     folder = scratch / ('point-' + point.replace(':', '-'))
     clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-crash-*.json'))
@@ -125,7 +134,8 @@ def play(args, base, scratch, env, point):
         world.launch(point)
         acted = world.script('undo', check=False)
         result['after_undo'] = evidence(folder, 'undo').get('after_undo')
-        if acted:
+        result['died_in_act'] = bool(acted) and died_in_act(world, point)
+        if acted and not result['died_in_act']:
             raise AssertionError('undo failed before its save; see undo evidence')
         if point == 'none':
             result['exit'] = 'survived'
