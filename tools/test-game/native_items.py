@@ -735,15 +735,25 @@ def capture(g):
     mods=inventory_tag(g);g.check('helmet_worn_with_mod_before_reopen','ntm_armor_mods' in mods and 'attachment_mask' in mods,mods)
     # Two doses accumulate treatment time. The invariant detects timer reset,
     # lost dose or replayed treatment across the normal world close/reopen.
+    g.command('ntmitem dose 500000')
+    # The antidote clears the radaway potion with the rest (`clearActivePotions`); the reopen must not bring it back.
+    give_hand(g,'ntm:radaway_flush');use(g);flushed=state(g).get('radaway',0)
+    give_hand(g,'ntm:syringe_antidote');use(g);cleared=state(g).get('radaway',0)
+    g.check('antidote_clears_radaway_before_reopen',flushed>=400 and cleared==0,{'flushed':flushed,'cleared':cleared})
     g.command('ntmitem dose 500000');give_hand(g,'ntm:radaway',2,1);use(g);use(g)
     current=state(g);invariant=current['dose']-1000*current.get('radaway',0)
     g.check('radaway_treatment_accumulates',invariant==220000,current)
     # Family 1-3 state that must survive the reopen: the canteen's cooldown (stack damage),
     # the Rad-X and herbal effects (mob effects) and the dose from coffee_radium.
     g.command('item replace entity @s hotbar.7 with ntm:canteen_vodka 1');g.ctl('select 8');use(g,.8);g.command('effect clear @s')
-    g.command('effect give @s ntm:radx 6000 0');g.command('effect give @s ntm:potion_sickness 6000 0')
+    g.command('effect give @s ntm:radx 6000 0')
     canteen=stack_damage(g,'ntm:canteen_vodka')
     g.check('canteen_cooldown_before_reopen',canteen is not None and 150<=canteen<=180,canteen)
+    # The herbal pill's sickness has no curative items: milk leaves it. The pill's -100 RAD moves the dose,
+    # so the invariant is read after it.
+    give_hand(g,'ntm:pill_herbal');use(g,.9);give_hand(g,'minecraft:milk_bucket');use(g,2.2);time.sleep(.6)
+    effects=effect_map(g);g.check('herbal_sickness_survives_milk_before_reopen','potion_sickness' in effects and 'weakness' not in effects,effects)
+    current=state(g);invariant=current['dose']-1000*current.get('radaway',0)
     expected={'invariant':invariant,'dose':current['dose'],'radaway':current.get('radaway',0),'canteen':canteen}
     (g.folder/'items-expected.json').write_text(json.dumps(expected,indent=2))
     g.snapshot('items-before-reopen')
@@ -757,6 +767,10 @@ def reopened(g):
     g.check('canteen_cooldown_survives_the_reopen',left is not None and 0<left<=expected['canteen'],{'before':expected['canteen'],'after':left})
     effects=effect_map(g)
     g.check('content_mob_effects_survive_the_reopen','radx' in effects and 'potion_sickness' in effects,effects)
+    # The remembered sickness survived the reopen with its effect: milk still cannot take it away.
+    give_hand(g,'minecraft:milk_bucket');use(g,2.2);time.sleep(.6);effects=effect_map(g)
+    g.check('herbal_sickness_survives_milk_after_reopen','potion_sickness' in effects and 'radx' not in effects,effects)
+    g.check('antidote_clear_survives_the_reopen',current.get('radaway',0)<=expected['radaway'],{'before':expected,'after':current})
     tag=inventory_tag(g)
     g.check('filter_wear_and_stack_charge_survive','777' in tag and '123456789' in tag and 'ntm_charge' in tag and 'hfrFilter' in tag,tag)
     g.check('armor_mods_survive','ntm_armor_mods' in tag and 'attachment_mask' in tag and 'hazmat_helmet' in tag,tag)
