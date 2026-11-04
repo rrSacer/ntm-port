@@ -255,7 +255,7 @@ fn detonator(game: &mut crate::game::Game<'_>, target: Option<[i32; 3]>) -> bool
 pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::NativeServerPlayer,line:&str)->bool {
     if crate::game::ntm_items::command(game,line){return true;}
     if line.split_whitespace().next()==Some("ntmledger"){
-        for text in ledger_report(game).lines(){game.native_feedback(horizon_client::text::Text::literal(text));}
+        for text in ledger_report(game,&line.split_whitespace().skip(1).collect::<Vec<_>>()).lines(){game.native_feedback(horizon_client::text::Text::literal(text));}
         return true;
     }
     if line.split_whitespace().next()!=Some("ntmbomba"){return false;}
@@ -599,14 +599,24 @@ fn ledger_confirm(game: &mut crate::game::Game<'_>) {
 }
 
 /// `/ntmledger`: what the loaded chunks owe, and the entities that carry an owed stack, for proving a save.
-fn ledger_report(game: &mut crate::game::Game<'_>) -> String {
+fn ledger_report(game: &mut crate::game::Game<'_>, words: &[&str]) -> String {
+    if words.first() == Some(&"machine") {
+        // `ntmledger machine <x> <y> <z>`: whether the server holds a machine for the cell in the dimension in place.
+        let at: Vec<i32> = words[1..].iter().filter_map(|w| w.parse().ok()).collect();
+        if let [x, y, z] = at[..] {
+            let dim = game.dim.id().to_string();
+            let present = lock(&SERVER).as_mut().is_some_and(|(server, _)| server.native_has_machine(&dim, [x, y, z]));
+            return format!("ntmledger machine={}", if present { "present" } else { "missing" });
+        }
+    }
     let count = |item: &str| -> i64 {
         horizon_world::nbt::parse_snbt(item).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t)).map_or(0, |s| i64::from(s.count))
     };
-    let (mut pending, mut spawned, mut applied, mut owed) = (0, 0, 0, 0);
+    let (mut pending, mut spawned, mut applied, mut gone, mut owed) = (0, 0, 0, 0, 0);
     let ledgers = lock(&LEDGERS).clone();
     for ledger in ledgers.values() {
         applied += ledger.applied.len();
+        gone += ledger.gone.len();
         for entry in &ledger.entries {
             match entry.state {
                 ntm_core::ledger::State::Pending => pending += 1,
@@ -615,15 +625,29 @@ fn ledger_report(game: &mut crate::game::Game<'_>) -> String {
             owed += if entry.live > 0 { i64::from(entry.live) } else { count(&entry.item) };
         }
     }
-    let ids: Vec<u32> = game.dropped.iter().map(|d| d.id).collect();
-    let (mut tagged, mut tagged_items) = (0, 0);
-    for id in ids {
-        if entity_effect(game, id).is_some() {
-            tagged += 1;
-            tagged_items += game.dropped.iter().find(|d| d.id == id).map_or(0, |d| i64::from(d.stack.count));
-        }
+    let mut dims: std::collections::BTreeSet<String> = ledgers.keys().map(|k| k.0.clone()).collect();
+    dims.insert(game.dim.id().to_string());
+    let (mut tagged, mut tagged_items, mut keyed) = (0, 0, 0);
+    for dim in dims {
+        let (t, ti, k) = in_place(game, &dim.clone(), |g| {
+            let ids: Vec<u32> = g.dropped.iter().map(|d| d.id).collect();
+            let (mut t, mut ti, mut k) = (0, 0, 0);
+            for id in ids {
+                let keyed_here = g.dropped.iter().find(|d| d.id == id).is_some_and(|d| d.merge_key != 0);
+                k += i64::from(keyed_here);
+                if entity_effect(g, id).is_some() {
+                    t += 1;
+                    ti += g.dropped.iter().find(|d| d.id == id).map_or(0, |d| i64::from(d.stack.count));
+                }
+            }
+            (t, ti, k)
+        })
+        .unwrap_or((0, 0, 0));
+        tagged += t;
+        tagged_items += ti;
+        keyed += k;
     }
-    format!("ntmledger chunks={} pending={pending} spawned={spawned} applied={applied} owed_items={owed} tagged={tagged} tagged_items={tagged_items} kv_writes={} kv_bytes={}", ledgers.len(), KV_WRITES.load(std::sync::atomic::Ordering::Relaxed), KV_BYTES.load(std::sync::atomic::Ordering::Relaxed))
+    format!("ntmledger chunks={} pending={pending} spawned={spawned} applied={applied} gone={gone} owed_items={owed} tagged={tagged} tagged_items={tagged_items} keyed={keyed} kv_writes={} kv_bytes={}", ledgers.len(), KV_WRITES.load(std::sync::atomic::Ordering::Relaxed), KV_BYTES.load(std::sync::atomic::Ordering::Relaxed))
 }
 
 fn ledger_tick(game: &mut crate::game::Game<'_>) {

@@ -167,6 +167,11 @@ impl Server {
     /// A machine's block entity seen with its saved state (the world was
     /// opened again): the machine, unless it is already known. False when
     /// the state doesn't read.
+    /// Whether the server holds a machine for the cell (a test and diagnostic question).
+    pub fn native_has_machine(&mut self, dim: &str, pos: Pos) -> bool {
+        self.ready().is_some_and(|r| r.world.machines.contains_key(&(dim.to_string(), pos)))
+    }
+
     pub fn native_adopt(&mut self, dim: &str, pos: Pos, json: &str) -> bool {
         let Some(r) = self.ready() else { return false };
         let key = (dim.to_string(), pos);
