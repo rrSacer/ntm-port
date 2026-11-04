@@ -23,6 +23,7 @@ from native_crash import ledger
 
 SCENARIO = os.environ.get('NTM_CRASH_SCENARIO', 'coupled-a')
 ROD = 'ntm:pile_rod__ra226be'
+INCOMING = 'ntm:pile_rod__zr'
 
 # scenario -> (core x, which loader, a full channel first)
 COUPLED = {'coupled-a': (47, 'R', False), 'coupled-b': (48, 'L', False),
@@ -126,8 +127,10 @@ def coupled_prepare(g):
     # Persist the rod in the loader first. The crash must cut a transfer of an already saved item,
     # not the preceding player insertion (whose playerdata has its own save boundary).
     g.command('clear @s')
-    g.command(f'give @s {ROD} 1')
-    g.ctl(f'select {ROD}')
+    # A different kind makes a full-channel shift observable even when its total stays five.
+    rod = INCOMING if full else ROD
+    g.command(f'give @s {rod} 1')
+    g.ctl(f'select {rod}')
     interact(g, loader, 'north', (loader[0] + .5, 101, loader[2] - 2.5))
     channels, loaders = pile_rods(g, cx)
     g.check('prepared', channels == (5 if full else 0) and loaders == 1, (channels, loaders))
@@ -148,7 +151,7 @@ def coupled_act(g):
     expected = (5 if full else 1, 0)
     while pile_rods(g, cx) != expected and time.monotonic() < deadline:
         time.sleep(.2)
-    g.evidence['after_act'] = {'rods': pile_rods(g, cx), 'entities': entities(g, ROD)}
+    g.evidence['after_act'] = {'rods': pile_rods(g, cx), 'entities': entities(g, ROD) + entities(g, INCOMING)}
     g.check('transfer_completed_before_the_cut', tuple(g.evidence['after_act']['rods']) == expected, g.evidence['after_act'])
     save_expecting_death(g)
 
@@ -160,9 +163,11 @@ def coupled_verify(g, again=False):
     g.command('tp @s 53.5 101 15.5')
     led = quiet(g)
     channels, loaders = pile_rods(g, cx)
-    held = channels + loaders + entities(g, ROD) + inventory(g, ROD)
+    outside = entities(g, ROD) + entities(g, INCOMING)
+    carried = inventory(g, ROD) + inventory(g, INCOMING)
+    held = channels + loaders + outside + carried
     expected = 6 if full else 1
-    detail = {'channels': channels, 'loaders': loaders, 'entities': entities(g, ROD), 'inventory': inventory(g, ROD), 'total': held, 'expected': expected, 'ledger': led}
+    detail = {'channels': channels, 'loaders': loaders, 'entities': outside, 'inventory': carried, 'total': held, 'expected': expected, 'ledger': led}
     g.evidence['counted' + ('_again' if again else '')] = detail
     g.check('no_rod_lost_or_duplicated', held == expected, detail)
     core = geometry(cx)['core']
