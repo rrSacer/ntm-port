@@ -175,6 +175,9 @@ def main():
                 copy_env[key] = str(folder / sub)
             outcome = (sweep if point == 'sweep' else play)(*((args, base, scratch, copy_env) + (() if point == 'sweep' else (point,))))
             report['points'].append(outcome)
+            if outcome['ok']:
+                # Each copy of the world is large: a point that passed leaves only its numbers.
+                shutil.rmtree(folder, ignore_errors=True)
             print(json.dumps(outcome), flush=True)
             (scratch / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
         report['ok'] = all(p['ok'] for p in report['points'])
