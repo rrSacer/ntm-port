@@ -293,7 +293,7 @@ impl Server {
                 batch.done+=1;
                 if physical {
                     // The receipt keeps the effect's place in its batch, so a replay derives the same id.
-                    let receipt=CommittedEffects{serial,done,origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect]),..Default::default()};
+                    let receipt=CommittedEffects{serial,done,origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect])};
                     if matches!(receipt.effects.front(),Some(WorldEffect::Blocks{..})){
                         for g in &receipt.origins {
                             if self.ready.world.machines.get(&g.key()).is_some_and(|m|m.generation==g.generation){self.ready.native_saved.remove(&g.key());}
