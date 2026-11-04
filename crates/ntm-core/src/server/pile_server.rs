@@ -49,6 +49,7 @@ impl Server {
             let key = (dim.to_string(), p);
             let mut m = Machine::new(Kind::Pile, &id, Some("north".into()));
             m.generation=self.ready.world.machines.get(&key).map(|m|m.generation).unwrap_or_else(||self.ready.world.generations.get(&key).copied().unwrap_or(0));
+            m.rev=self.ready.world.machines.get(&key).map_or(0,|m|m.rev);
             m.data = Data::Pile(Box::new(if p == core.shape.at {
                 Pile::Core(Some(core.clone()))
             } else {
@@ -853,6 +854,34 @@ mod tests {
         assert_eq!(h.blocks[&AT], pile::BRICK);
         assert_eq!(h.blocks[&[1, 64, 2]], "minecraft:stone", "a replacement belongs to its own generation");
         assert_eq!(h.drops.len(), 1);
+    }
+    /// Undoing a channel leaves the core a new state that only the core's block entity holds; the batch of
+    /// effects journals that state with a revision, so a chunk saved before it can be brought up to it.
+    #[test]
+    fn an_undo_journals_the_state_it_leaves_in_the_core() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__nu", 40.).unwrap());
+        let before = s.ready.world.machines[&(DIM.into(), AT)].rev;
+        let tool = Stack::new("ntm:hand_drill_desh", 1);
+        assert_eq!(s.native_pile_use(&mut h, DIM, [-1, 64, 0], [0, 0, -1], Some(&tool), 0., "p"), Some(PileUse::WearDrill));
+        let journaled = s
+            .ready
+            .world
+            .machine_effects
+            .iter()
+            .chain(&s.ready.world.applied_machine_effects)
+            .flat_map(|b| &b.survivors)
+            .find(|v| v.pos == AT)
+            .cloned()
+            .expect("the core is journaled");
+        let now = &s.ready.world.machines[&(DIM.into(), AT)];
+        assert_eq!((journaled.rev, now.rev), (before + 1, before + 1));
+        let saved: crate::machine::Machine = serde_json::from_str(&journaled.json).unwrap();
+        let Data::Pile(p) = &saved.data else { panic!() };
+        let Pile::Core(Some(c)) = &**p else { panic!() };
+        assert!(c.channels.is_empty(), "the journal holds the state the step left: the channel is gone");
+        assert_eq!(s.ready.native_saved.get(&(DIM.into(), AT)), Some(&journaled.json), "and the block entity got the same");
     }
     #[test]
     fn native_player_core_break_restores_its_cell_and_every_member() {
