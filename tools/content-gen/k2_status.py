@@ -140,15 +140,17 @@ SOUND_SUBSTITUTES = {
 def sounds():
     rs = (ROOT / 'crates/ntm-core/src/consumables.rs').read_text()
     block = rs[rs.index('pub fn sound('):rs.index('pub fn sound(') + 1600]
-    mapping = {j: (e, v, p) for j, e, v, p in re.findall(r'"([\w.:]+)" => \("(minecraft:[\w.]+)", ([\d.]+), ([\d.]+), [\d.]+\)', block)[:0]}
     rows = re.findall(r'"([\w.:]+)" => \("(minecraft:[\w.]+)", ([\d.]+), ([\d.]+), ([\d.]+)\)', block)
+    events = json.loads((ROOT / 'crates/ntm-core/data/sound-events.json').read_text())['events']
+    keys = set(SOUND_SUBSTITUTES) | {'hbm:item.techBoop'} | {f'hbm:item.geiger{i}' for i in range(1, 7)}
+    rows += [(key, events.get(key, 'silêncio: evento ausente no original'), '1.0', '1.0', '0.0') for key in sorted(keys) if key.startswith('hbm:')]
     used = {}
     for item, row in TABLE.items():
         if row.get('sound'):
             used.setdefault(row['sound'], []).append(item)
         if row.get('special') in ('vomit',):
             used.setdefault('hbm:entity.vomit', []).append(item)
-    out = ['| Item(ns) | Som Java | Substituto vanilla | Volume / tom |', '|---|---|---|---|']
+    out = ['| Item(ns) | Som Java | Evento no port | Volume / tom |', '|---|---|---|---|']
     for java, event, volume, pitch, spread in rows:
         items = used.get(java, [])
         label = ', '.join(f'`{i}`' for i in items[:6]) + (f' e mais {len(items) - 6}' if len(items) > 6 else '') or '`ntm:bdcl` (nos ticks 0, 5, 10, 15, 19 e 26 do uso: `count % 5 == 0 && count >= 10`)' if java == 'hbm:player.gulp' else ', '.join(f'`{i}`' for i in items[:6]) + (f' e mais {len(items) - 6}' if len(items) > 6 else '')
@@ -163,7 +165,7 @@ def main():
     start, end = '<!-- k2-status:start -->', '<!-- k2-status:end -->'
     summary = ', '.join(f'{n} {k}' for k, n in sorted(counts.items()))
     extra = '\n'.join(['| Item | Estado | Origem Java | Dependências nominais |', '|---|---|---|---|'] + [f'| `{a}` | {b} | {c} | {d} |'.replace('`ntm:', '`ntm:') for a, b, c, d in EXTRA])
-    block = f'{start}\n\nResumo dos {len(K2)} itens: {summary}.\n\n{table}\n\n### Itens fora dos 116, adicionados nesta onda\n\n{extra}\n\n### Sons do HBM usados e seus substitutos\n\n{sounds()}\n\n{end}'
+    block = f'{start}\n\nResumo dos {len(K2)} itens: {summary}.\n\n{table}\n\n### Itens fora dos 116, adicionados nesta onda\n\n{extra}\n\n### Sons usados e resolução dos eventos originais\n\n{sounds()}\n\n{end}'
     if start in text:
         text = re.sub(re.escape(start) + '.*?' + re.escape(end), lambda _: block, text, flags=re.S)
     else:

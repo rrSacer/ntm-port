@@ -89,7 +89,7 @@ def run(args):
         env[key] = str(folder / sub)
     env.update(HORIZON_NO_AUDIO='1', HORIZON_LAUNCHER_NO_SELF_UPDATE='1',
                HORIZON_NO_UPDATE_CHECK='1', WAYLAND_DISPLAY='')
-    if args.scenario == 'sounds':
+    if args.scenario in ('sounds', 'items'):
         env['HORIZON_TRACE_SOUNDS'] = 'ntm:'
     (folder / 'options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nmaxFps:30\nenableVsync:false\nguiScale:2\ntutorialStep:none\n')
     # Prevent a physical controller on the host from steering this test window.

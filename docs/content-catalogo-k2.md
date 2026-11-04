@@ -222,25 +222,25 @@ Resumo dos 116 itens: 52 ativo, 19 dependente, 45 parcial.
 | `ntm:gun_kit_1, ntm:gun_kit_2` | dependente | `ItemRepairKit` | repara armas: onda de armas (só identidade) |
 | `ntm:ingot_meteorite, ntm:ingot_meteorite_forged, ntm:blade_meteorite, ntm:ingot_steel_dusted, ntm:ingot_chainsteel` | parcial | `ItemHot` | esfriamento de 1 por tick e o fim da tag portados; `heatUp` vem das receitas de bigorna e fundição com NBT (não portadas); no Java o `heat` é estático e vale 100 para todos |
 
-### Sons do HBM usados e seus substitutos
+### Sons usados e resolução dos eventos originais
 
-| Item(ns) | Som Java | Substituto vanilla | Volume / tom |
+| Item(ns) | Som Java | Evento no port | Volume / tom |
 |---|---|---|---|
 | `ntm:cotton_candy`, `ntm:mucho_mango`, `ntm:radx`, `ntm:siox`, `ntm:pill_herbal`, `ntm:xanax` e mais 33 | `random.burp` | `minecraft:entity.player.burp` | 0.5 / 0.9 + rand*0.1 |
 | `ntm:iv_xp` | `random.orb` | `minecraft:entity.experience_orb.pickup` | 1.0 / 1.0 |
-| `ntm:syringe_metal_medx`, `ntm:syringe_metal_stimpak`, `ntm:syringe_metal_psycho`, `ntm:syringe_metal_super`, `ntm:syringe_taint`, `ntm:syringe_antidote` e mais 4 | `hbm:item.syringe` | `minecraft:entity.arrow.hit_player` | 1.0 / 1.0 |
-| `ntm:radaway`, `ntm:radaway_strong`, `ntm:radaway_flush`, `ntm:iv_blood` | `hbm:item.radaway` | `minecraft:item.bottle.fill` | 1.0 / 1.0 |
-| `ntm:nuke_starter_kit`, `ntm:nuke_advanced_kit`, `ntm:nuke_commercially_kit`, `ntm:nuke_electric_kit`, `ntm:gadget_kit`, `ntm:boy_kit` e mais 13 | `hbm:item.unpack` | `minecraft:item.bundle.drop_contents` | 1.0 / 1.0 |
-| `ntm:bdcl` (nos ticks 0, 5, 10, 15, 19 e 26 do uso: `count % 5 == 0 && count >= 10`) | `hbm:player.gulp` | `minecraft:entity.generic.drink` | 1.0 / 1.0 |
-| `ntm:bdcl` | `hbm:player.groan` | `minecraft:entity.player.breath` | 1.0 / 1.0 |
-| `ntm:cigarette`, `ntm:crackpipe` | `hbm:player.cough` | `minecraft:entity.panda.sneeze` | 1.0 / 1.0 |
-| `ntm:med_ipecac`, `ntm:med_ptsd` | `hbm:entity.vomit` | `minecraft:entity.fox.spit` | 1.0 / 1.0 |
-| - | `hbm:item.techBoop` | `minecraft:block.note_block.bit` | 1.0 / 1.0 |
-| - | `hbm:item.geiger1` | `minecraft:block.lever.click` | 1.0 / 1.0 |
-| - | `hbm:item.geiger2` | `minecraft:block.lever.click` | 1.0 / 1.1 |
-| - | `hbm:item.geiger3` | `minecraft:block.lever.click` | 1.0 / 1.2 |
-| - | `hbm:item.geiger4` | `minecraft:block.lever.click` | 1.0 / 1.3 |
-| - | `hbm:item.geiger5` | `minecraft:block.lever.click` | 1.0 / 1.4 |
-| - | `hbm:item.geiger6` | `minecraft:block.lever.click` | 1.0 / 1.5 |
+| `ntm:med_ipecac`, `ntm:med_ptsd` | `hbm:entity.vomit` | `silêncio: evento ausente no original` | 1.0 / 1.0 |
+| - | `hbm:item.geiger1` | `ntm:item.geiger1` | 1.0 / 1.0 |
+| - | `hbm:item.geiger2` | `ntm:item.geiger2` | 1.0 / 1.0 |
+| - | `hbm:item.geiger3` | `ntm:item.geiger3` | 1.0 / 1.0 |
+| - | `hbm:item.geiger4` | `ntm:item.geiger4` | 1.0 / 1.0 |
+| - | `hbm:item.geiger5` | `ntm:item.geiger5` | 1.0 / 1.0 |
+| - | `hbm:item.geiger6` | `ntm:item.geiger6` | 1.0 / 1.0 |
+| `ntm:radaway`, `ntm:radaway_strong`, `ntm:radaway_flush`, `ntm:iv_blood` | `hbm:item.radaway` | `ntm:item.radaway` | 1.0 / 1.0 |
+| `ntm:syringe_metal_medx`, `ntm:syringe_metal_stimpak`, `ntm:syringe_metal_psycho`, `ntm:syringe_metal_super`, `ntm:syringe_taint`, `ntm:syringe_antidote` e mais 4 | `hbm:item.syringe` | `ntm:item.syringe` | 1.0 / 1.0 |
+| - | `hbm:item.techBoop` | `ntm:item.techboop` | 1.0 / 1.0 |
+| `ntm:nuke_starter_kit`, `ntm:nuke_advanced_kit`, `ntm:nuke_commercially_kit`, `ntm:nuke_electric_kit`, `ntm:gadget_kit`, `ntm:boy_kit` e mais 13 | `hbm:item.unpack` | `ntm:item.unpack` | 1.0 / 1.0 |
+| `ntm:cigarette`, `ntm:crackpipe` | `hbm:player.cough` | `ntm:player.cough` | 1.0 / 1.0 |
+| `ntm:bdcl` | `hbm:player.groan` | `ntm:player.groan` | 1.0 / 1.0 |
+| `ntm:bdcl` (nos ticks 0, 5, 10, 15, 19 e 26 do uso: `count % 5 == 0 && count >= 10`) | `hbm:player.gulp` | `ntm:player.gulp` | 1.0 / 1.0 |
 
 <!-- k2-status:end -->

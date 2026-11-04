@@ -321,8 +321,7 @@ pub fn lens_line(max: i64, damage: i64) -> String {
     format!("Durability: {left}/{max} ({}%)", left * 100 / max)
 }
 
-/// A Java sound and the engine's vanilla event that stands for it: the port
-/// carries no `sounds.json` of its own.
+/// A Java sound resolved through the audited HBM table or its vanilla id.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Sound {
     pub event: &'static str,
@@ -336,20 +335,7 @@ pub fn sound(java: &str) -> Option<Sound> {
     let (event, volume, pitch, spread) = match java {
         "random.burp" => ("minecraft:entity.player.burp", 0.5, 0.9, 0.1),
         "random.orb" => ("minecraft:entity.experience_orb.pickup", 1.0, 1.0, 0.0),
-        "hbm:item.syringe" => ("minecraft:entity.arrow.hit_player", 1.0, 1.0, 0.0),
-        "hbm:item.radaway" => ("minecraft:item.bottle.fill", 1.0, 1.0, 0.0),
-        "hbm:item.unpack" => ("minecraft:item.bundle.drop_contents", 1.0, 1.0, 0.0),
-        "hbm:player.gulp" => ("minecraft:entity.generic.drink", 1.0, 1.0, 0.0),
-        "hbm:player.groan" => ("minecraft:entity.player.breath", 1.0, 1.0, 0.0),
-        "hbm:player.cough" => ("minecraft:entity.panda.sneeze", 1.0, 1.0, 0.0),
-        "hbm:entity.vomit" => ("minecraft:entity.fox.spit", 1.0, 1.0, 0.0),
-        "hbm:item.techBoop" => ("minecraft:block.note_block.bit", 1.0, 1.0, 0.0),
-        "hbm:item.geiger1" => ("minecraft:block.lever.click", 1.0, 1.0, 0.0),
-        "hbm:item.geiger2" => ("minecraft:block.lever.click", 1.0, 1.1, 0.0),
-        "hbm:item.geiger3" => ("minecraft:block.lever.click", 1.0, 1.2, 0.0),
-        "hbm:item.geiger4" => ("minecraft:block.lever.click", 1.0, 1.3, 0.0),
-        "hbm:item.geiger5" => ("minecraft:block.lever.click", 1.0, 1.4, 0.0),
-        "hbm:item.geiger6" => ("minecraft:block.lever.click", 1.0, 1.5, 0.0),
+        java if java.starts_with("hbm:") => (crate::sounds::event(java)?, 1.0, 1.0, 0.0),
         _ => return None,
     };
     Some(Sound {
@@ -582,22 +568,24 @@ mod tests {
         // Counts 40, 35, 30, 25, 20 and 10 reach the gulp check; 15 is skipped.
         assert_eq!(bdcl_gulps(), [0, 5, 10, 15, 19, 26]);
         // The hook sees the count already advanced: the first gulp is on 1.
-        let heard: Vec<u32> = (0..=bdcl_ticks() as u32).filter(|u| bdcl_gulp_after(*u)).collect();
+        let heard: Vec<u32> = (0..=bdcl_ticks() as u32)
+            .filter(|u| bdcl_gulp_after(*u))
+            .collect();
         assert_eq!(heard, [1, 6, 11, 16, 20, 27]);
         assert_eq!(spec("ntm:bdcl").ticks, bdcl_ticks());
     }
 
     #[test]
-    fn sounds_map_to_vanilla_events() {
+    fn sounds_resolve_original_events_and_keep_unregistered_vomit_silent() {
         let burp = sound("random.burp").unwrap();
         assert_eq!((burp.volume, burp.pitch, burp.spread), (0.5, 0.9, 0.1));
-        assert!(
-            sound("hbm:item.syringe")
-                .unwrap()
-                .event
-                .starts_with("minecraft:")
-        );
+        assert!(sound("hbm:item.syringe").unwrap().event.starts_with("ntm:"));
         assert!(sound("hbm:missing").is_none());
+        assert!(sound("hbm:entity.vomit").is_none());
+        for index in 1..=6 {
+            let click = sound(&format!("hbm:item.geiger{index}")).unwrap();
+            assert_eq!((click.pitch, click.spread), (1.0, 0.0));
+        }
     }
 
     /// The five items the proof batch already carried keep their numbers.
@@ -882,7 +870,10 @@ mod tests {
             assert_eq!(s.food_stats(), Some((0, 0.0)));
             assert_eq!(fx(id), [("hunger", 50, 49)]);
             assert_eq!(s.special.as_deref(), Some("vomit"));
-            assert!(!s.may_start(false, 20, 0, false, false), "{id} at full hunger");
+            assert!(
+                !s.may_start(false, 20, 0, false, false),
+                "{id} at full hunger"
+            );
             assert!(s.may_start(false, 19, 0, false, false), "{id} hungry");
         }
     }

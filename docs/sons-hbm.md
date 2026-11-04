@@ -42,13 +42,13 @@ Quatro eventos estão **excluídos por licença**. Seus arquivos contêm “Soun
 
 O importador audita metadados antes de copiar. `tools/build-content.sh` também chama o guard de licença para **todos** os Ogg do pacote: hashes já auditados são reconhecidos; qualquer arquivo novo ou alterado passa novamente pelo `ffprobe`. Aviso de copyright sem declaração compatível para o áudio bloqueia o build; o aviso de copyright do próprio encoder no campo Software não é tratado como licença do áudio. Aviso Sound Dogs é sempre recusado, mesmo se outro campo contiver CC0.
 
-## Integração posterior de K2 e ramos ainda ausentes
+## Consumíveis K2 e ramos ainda ausentes
 
-A branch `consumiveis-k2` foi apenas consultada por `git show`; não foi alterada. Para seus sons, substituir a escolha do substituto no helper K2 por `ntm_core::sounds::event(chave_java)` e obter a categoria com `ntm_core::sounds::category(evento)`. Alternativamente, chamar `crate::game::ntm_sounds::player(game, chave_java, volume, pitch)` depois do commit aceito. Conservar o volume, pitch e tick já calculados no K2; Geiger 1–6 usam pitch **1**, sem os pitches artificiais do substituto de alavanca. Burp, XP e outros eventos que o próprio Java usa como vanilla continuam vanilla.
+A branch foi rebaseada sobre `main` `9f11740a`, integrando o runtime K2. O helper `consumables::sound` agora resolve os nomes HBM pela tabela genérica auditada. Geiger 1–6 usam pitch **1**, sem os pitches artificiais da antiga alavanca. Volume, pitch e tick dos consumíveis seguem o Java; burp e XP continuam eventos vanilla. A categoria vem do `sounds.json` original. Os cues antigos do lote inicial foram removidos para evitar áudio duplo depois da integração.
 
 `hbm:entity.vomit` é um bug do original: `ItemLemon.java:104` chama esse nome, que **não está no sounds.json**; o evento existente é `hbm:player.vomit`. No Java fica em silêncio e no port também. Não foi criado alias. `event("hbm:entity.vomit")` retorna `None`.
 
-Geiger/dosímetro e os demais consumíveis ampliados só ganham seu runtime com a integração K2; seus eventos estão disponíveis neste pacote. Fora do runtime atual também ficam os timers fstbmbStart/Ping da Balefire, as portas complexas/fechaduras, os efeitos de dano/giblets dos rotores e slopper, a corrosão de barril plástico e os ramos de inserção direta de barras/detector da pile que o port ainda não implementa. O inventário conserva essas chamadas como referência; nenhum desses ramos foi substituído por outro som.
+Fora do runtime atual ficam os timers fstbmbStart/Ping da Balefire, as portas complexas/fechaduras, os efeitos de dano/giblets dos rotores e slopper, a corrosão de barril plástico e os ramos de inserção direta de barras/detector da pile que o port ainda não implementa. O inventário conserva essas chamadas como referência; nenhum desses ramos foi substituído por outro som.
 
 ## Verificação
 
