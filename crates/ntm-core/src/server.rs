@@ -72,6 +72,12 @@ pub trait ServerHost: Kv {
     fn apply_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[(String,u32)])->bool{self.drop_items(dim,pos,items)}
     /// `apply_items` for lossless item NBT.
     fn apply_encoded_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[String])->bool{self.drop_encoded_items(dim,pos,items)}
+    /// The generation of the machine the cell's block entity was saved with (None: no such block entity).
+    fn cell_generation(&mut self,_dim:&str,_pos:Pos)->Option<u64>{None}
+    /// Whether the chunk of `pos` already holds the effect `id` (it was saved after the effect was applied).
+    fn effect_seen(&mut self,_id:u64,_dim:&str,_pos:Pos)->bool{false}
+    /// The effect `id` was applied to `cells`: each cell's chunk records it with the blocks it just changed.
+    fn effect_applied(&mut self,_id:u64,_cells:&[(String,Pos)]){}
     /// The ids of every effect the storage still names: a ledger may forget the retired ones not listed.
     fn ledger_prune(&mut self,_live:&std::collections::BTreeSet<u64>){}
     /// A pile's formation: the cells' new block entities with their first state,
