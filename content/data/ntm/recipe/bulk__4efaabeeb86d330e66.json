@@ -1,0 +1,20 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:key_red",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RCA",
+    "CIC",
+    "KCR"
+  ],
+  "key": {
+    "R": "#ntm:bulk/dyered",
+    "C": "#ntm:bulk/wiredensestarmetal",
+    "A": "ntm:gem_alexandrite",
+    "I": "ntm:ingot_chainsteel",
+    "K": "ntm:key"
+  }
+}

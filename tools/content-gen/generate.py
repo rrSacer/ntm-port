@@ -219,6 +219,7 @@ def generate(src,out,rows,distributions,max_damage=True):
    if max_damage and row.get('max_damage'):
     if declaration['max_stack_size']!=1:raise ValueError('Durable item must have stack size 1: '+row['id'])
     declaration['components']={'minecraft:max_damage':row['max_damage']}
+   if row.get('rarity'):declaration['rarity']=row['rarity']
    if row.get('components'):declaration.setdefault('components',{}).update(row['components'])
    emit(f'data/ntm/horizon/item/{name}.json',declaration)
    emit(f'assets/ntm/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':tex}})
@@ -325,6 +326,8 @@ def generate(src,out,rows,distributions,max_damage=True):
   emit_bytes('assets/ntm/textures/gui/machine/gui_armor_modifier.png',(src/gui).read_bytes())
   languages['en_us']['container.ntm.armor_table']='Armor Modification Table'
   languages['pt_br']['container.ntm.armor_table']='Mesa de Modificação de Armadura'
+ import mob_effects
+ mob_effects.generate(src,emit,emit_bytes,languages,transform_png,{loc:lang(src/f'src/main/resources/assets/hbm/lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]})
  for loc,value in languages.items():
   # Preserve visual-gen's dummy_machine lang key across content regenerations when dummy_machine is active.
   existing_lang=out/f'assets/ntm/lang/{loc}.json'

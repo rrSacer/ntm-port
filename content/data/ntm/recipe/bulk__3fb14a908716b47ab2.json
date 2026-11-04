@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:pipette_boron",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  P",
+    " B ",
+    "B  "
+  ],
+  "key": {
+    "P": "#ntm:bulk/ingotrubber",
+    "B": "ntm:glass_boron"
+  }
+}

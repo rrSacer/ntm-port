@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:dosimeter",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WGW",
+    "WCW",
+    "WBW"
+  ],
+  "key": {
+    "W": "#ntm:bulk/plankwood",
+    "G": "#ntm:bulk/paneglass",
+    "C": "ntm:circuit__vacuum_tube",
+    "B": "#ntm:bulk/ingotberyllium"
+  }
+}

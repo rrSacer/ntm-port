@@ -1,0 +1,19 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:syringe_awesome",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SNS",
+    "PCP",
+    "SNS"
+  ],
+  "key": {
+    "C": "ntm:syringe_empty",
+    "S": "#ntm:bulk/dustsulfur",
+    "P": "#ntm:bulk/nuggetplutonium239",
+    "N": "#ntm:bulk/nuggetplutonium238"
+  }
+}

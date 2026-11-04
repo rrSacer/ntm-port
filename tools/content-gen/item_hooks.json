@@ -17,7 +17,7 @@
       "category": "consumable",
       "template": "minecraft:iron_ingot",
       "max_stack_size": 64,
-      "behavior_gap": "ItemSimpleConsumable blood draw remains wave 1"
+      "behavior": "native item_hooks: consumables.json"
     },
     {
       "id": "gas_mask_m65",
@@ -316,7 +316,7 @@
       "id": "hazmat_kit",
       "source_variable": "hazmat_kit",
       "type": "item",
-      "behavior": "native item_hooks: consumables.json",
+      "behavior": "native item_hooks: kits.json",
       "behavior_gap": null
     },
     {
@@ -327,6 +327,926 @@
       "template": "minecraft:iron_ingot",
       "max_stack_size": 1,
       "behavior_gap": "WeaponSpecial melee and ability hooks wait for the weapons wave; the item exists so the ItemEnergy bottles can test for it (inventory.hasItem)"
+    },
+    {
+      "id": "syringe_metal_stimpak",
+      "source_variable": "syringe_metal_stimpak",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "syringe_metal_psycho",
+      "source_variable": "syringe_metal_psycho",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "syringe_metal_super",
+      "source_variable": "syringe_metal_super",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "med_bag",
+      "source_variable": "med_bag",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "syringe_taint",
+      "source_variable": "syringe_taint",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "radx",
+      "source_variable": "radx",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "siox",
+      "source_variable": "siox",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "pill_herbal",
+      "source_variable": "pill_herbal",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "xanax",
+      "source_variable": "xanax",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "fmn",
+      "source_variable": "fmn",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "five_htp",
+      "source_variable": "five_htp",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "pill_iodine",
+      "source_variable": "pill_iodine",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "plan_c",
+      "source_variable": "plan_c",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "pill_red",
+      "source_variable": "pill_red",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "chocolate",
+      "source_variable": "chocolate",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bio_wafer",
+      "source_variable": "bio_wafer",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "radaway_strong",
+      "source_variable": "radaway_strong",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json"
+    },
+    {
+      "id": "radaway_flush",
+      "source_variable": "radaway_flush",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json"
+    },
+    {
+      "id": "iv_blood",
+      "source_variable": "iv_blood",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json"
+    },
+    {
+      "id": "iv_xp_empty",
+      "source_variable": "iv_xp_empty",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json"
+    },
+    {
+      "id": "iv_xp",
+      "source_variable": "iv_xp",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json"
+    },
+    {
+      "id": "syringe_antidote",
+      "source_variable": "syringe_antidote",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json"
+    },
+    {
+      "id": "syringe_poison",
+      "source_variable": "syringe_poison",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json"
+    },
+    {
+      "id": "syringe_awesome",
+      "source_variable": "syringe_awesome",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json",
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      },
+      "rarity": "uncommon"
+    },
+    {
+      "id": "lemon",
+      "source_variable": "lemon",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "definitelyfood",
+      "source_variable": "definitelyfood",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "loops",
+      "source_variable": "loops",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "spongebob_macaroni",
+      "source_variable": "spongebob_macaroni",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "fooditem",
+      "source_variable": "fooditem",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "twinkie",
+      "source_variable": "twinkie",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "static_sandwich",
+      "source_variable": "static_sandwich",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "pudding",
+      "source_variable": "pudding",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "nugget",
+      "source_variable": "nugget",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "cheese",
+      "source_variable": "cheese",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "cheese_quesadilla",
+      "source_variable": "quesadilla",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "glyphid_meat",
+      "source_variable": "glyphid_meat",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "glyphid_meat_grilled",
+      "source_variable": "glyphid_meat_grilled",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "ingot_c4",
+      "source_variable": "ingot_c4",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "ingot_semtex",
+      "source_variable": "ingot_semtex",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "ingot_smore",
+      "source_variable": "ingot_smore",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "loop_stew",
+      "source_variable": "loop_stew",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "glowing_stew",
+      "source_variable": "glowing_stew",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "balefire_scrambled",
+      "source_variable": "balefire_scrambled",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "balefire_and_ham",
+      "source_variable": "balefire_and_ham",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "med_ipecac",
+      "source_variable": "med_ipecac",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "med_ptsd",
+      "source_variable": "med_ptsd",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "schnitzel_vegan",
+      "source_variable": "schnitzel_vegan",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bomb_waffle",
+      "source_variable": "bomb_waffle",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "pancake",
+      "source_variable": "pancake",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "apple_euphemium",
+      "source_variable": "apple_euphemium",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null,
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "cigarette",
+      "source_variable": "cigarette",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "crackpipe",
+      "source_variable": "crackpipe",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "peas",
+      "source_variable": "peas",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "rag",
+      "source_variable": "rag",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "hazmat_helmet_red",
+      "source_variable": "hazmat_helmet_red",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 660,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_plate_red",
+      "source_variable": "hazmat_plate_red",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 960,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 5,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_legs_red",
+      "source_variable": "hazmat_legs_red",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_leggings",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 900,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 4,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_boots_red",
+      "source_variable": "hazmat_boots_red",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_boots",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 780,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 1,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_helmet_grey",
+      "source_variable": "hazmat_helmet_grey",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 660,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_plate_grey",
+      "source_variable": "hazmat_plate_grey",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 960,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 5,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_legs_grey",
+      "source_variable": "hazmat_legs_grey",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_leggings",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 900,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 4,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hazmat_boots_grey",
+      "source_variable": "hazmat_boots_grey",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_boots",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 780,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 1,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      }
+    },
+    {
+      "id": "nuke_starter_kit",
+      "source_variable": "nuke_starter_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "nuke_advanced_kit",
+      "source_variable": "nuke_advanced_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "nuke_commercially_kit",
+      "source_variable": "nuke_commercially_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "nuke_electric_kit",
+      "source_variable": "nuke_electric_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "gadget_kit",
+      "source_variable": "gadget_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "boy_kit",
+      "source_variable": "boy_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "man_kit",
+      "source_variable": "man_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "mike_kit",
+      "source_variable": "mike_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "tsar_kit",
+      "source_variable": "tsar_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "multi_kit",
+      "source_variable": "multi_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "custom_kit",
+      "source_variable": "custom_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "fleija_kit",
+      "source_variable": "fleija_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "solinium_kit",
+      "source_variable": "solinium_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "prototype_kit",
+      "source_variable": "prototype_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "euphemium_kit",
+      "source_variable": "euphemium_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "hazmat_red_kit",
+      "source_variable": "hazmat_red_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "hazmat_grey_kit",
+      "source_variable": "hazmat_grey_kit",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "stealth_boy",
+      "source_variable": "stealth_boy",
+      "type": "item",
+      "behavior": "native item_hooks: kits.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "gas_mask_filter_mono",
+      "source_variable": "gas_mask_filter_mono",
+      "type": "item",
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear",
+      "behavior_gap": null
+    },
+    {
+      "id": "gas_mask_filter_combo",
+      "source_variable": "gas_mask_filter_combo",
+      "type": "item",
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear",
+      "behavior_gap": null
+    },
+    {
+      "id": "gas_mask_filter_rag",
+      "source_variable": "gas_mask_filter_rag",
+      "type": "item",
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear",
+      "behavior_gap": null
+    },
+    {
+      "id": "gas_mask_filter_piss",
+      "source_variable": "gas_mask_filter_piss",
+      "type": "item",
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear",
+      "behavior_gap": null
+    },
+    {
+      "id": "matchstick",
+      "source_variable": "matchstick",
+      "type": "item",
+      "behavior": "native item_hooks",
+      "behavior_gap": null
+    },
+    {
+      "id": "powder_fertilizer",
+      "source_variable": "powder_fertilizer",
+      "type": "item",
+      "behavior": "native item_hooks",
+      "behavior_gap": null
+    },
+    {
+      "id": "ams_lens",
+      "source_variable": "ams_lens",
+      "type": "item",
+      "behavior": "native item_hooks",
+      "behavior_gap": null
+    },
+    {
+      "id": "geiger_counter",
+      "source_variable": "geiger_counter",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: instruments"
+    },
+    {
+      "id": "dosimeter",
+      "source_variable": "dosimeter",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: instruments"
+    },
+    {
+      "id": "digamma_diagnostic",
+      "source_variable": "digamma_diagnostic",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: instruments"
+    },
+    {
+      "id": "survey_scanner",
+      "source_variable": "survey_scanner",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: instruments",
+      "behavior_gap": "Bedrock-oil particle markers, the bedrock-ore tile and the entanglement-kit End travel are not ported"
+    },
+    {
+      "id": "pipette",
+      "source_variable": "pipette",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: pipette capacity",
+      "behavior_gap": "Filling and emptying go through machine fluid slots (IFillableItem), which the port does not have"
+    },
+    {
+      "id": "pipette_boron",
+      "source_variable": "pipette_boron",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: pipette capacity",
+      "behavior_gap": "Filling and emptying go through machine fluid slots (IFillableItem), which the port does not have"
+    },
+    {
+      "id": "pipette_laboratory",
+      "source_variable": "pipette_laboratory",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: pipette capacity",
+      "behavior_gap": "Filling and emptying go through machine fluid slots (IFillableItem), which the port does not have"
+    },
+    {
+      "id": "inf_water",
+      "source_variable": "inf_water",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior_gap": "Identity only: FluidLoaderInfinite (the machine tank slot that draws from it) is not ported"
+    },
+    {
+      "id": "inf_water_mk2",
+      "source_variable": "inf_water_mk2",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior_gap": "Identity only: FluidLoaderInfinite (the machine tank slot that draws from it) is not ported"
+    },
+    {
+      "id": "fluid_barrel_infinite",
+      "source_variable": "fluid_barrel_infinite",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior_gap": "Identity only: FluidLoaderInfinite (the machine tank slot that draws from it) is not ported"
+    },
+    {
+      "id": "chlorine_pinwheel",
+      "source_variable": "chlorine_pinwheel",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior_gap": "Identity only: FluidLoaderInfinite (the machine tank slot that draws from it) is not ported"
+    },
+    {
+      "id": "gun_kit_1",
+      "source_variable": "gun_kit_1",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior_gap": "Identity only: ItemRepairKit repairs weapons, which wait for the weapons wave"
+    },
+    {
+      "id": "gun_kit_2",
+      "source_variable": "gun_kit_2",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior_gap": "Identity only: ItemRepairKit repairs weapons, which wait for the weapons wave"
+    },
+    {
+      "id": "ingot_meteorite",
+      "source_variable": "ingot_meteorite",
+      "type": "item",
+      "category": "component",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: ItemHot cooling",
+      "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported"
+    },
+    {
+      "id": "ingot_meteorite_forged",
+      "source_variable": "ingot_meteorite_forged",
+      "type": "item",
+      "category": "component",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: ItemHot cooling",
+      "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported"
+    },
+    {
+      "id": "blade_meteorite",
+      "source_variable": "blade_meteorite",
+      "type": "item",
+      "category": "component",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: ItemHot cooling",
+      "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported"
+    },
+    {
+      "id": "ingot_steel_dusted",
+      "source_variable": "ingot_steel_dusted",
+      "type": "item",
+      "category": "component",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: ItemHot cooling",
+      "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported"
+    },
+    {
+      "id": "ingot_chainsteel",
+      "source_variable": "ingot_chainsteel",
+      "type": "item",
+      "category": "component",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: ItemHot cooling",
+      "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported"
     }
   ]
 }

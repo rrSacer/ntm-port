@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:pipette_laboratory",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  C",
+    " R ",
+    "P  "
+  ],
+  "key": {
+    "C": "ntm:circuit__chip",
+    "R": "#ntm:bulk/ingotrubber",
+    "P": "ntm:pipette_boron"
+  }
+}

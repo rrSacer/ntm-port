@@ -3771,10 +3771,10 @@
       "source_class": "ItemLens",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3721",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (addInformation, showDurabilityBar); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/ams_lens.png",
+      "behavior": "native item_hooks",
       "source_registry": "hbm:item.ams_lens",
       "names": {
         "en_us": "Stabilizer Lens",
@@ -3818,10 +3818,14 @@
       "source_class": "ItemAppleEuphemium",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3812",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (hasEffect)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/apple_euphemium.png",
+      "behavior": "native item_hooks: consumables.json",
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      },
+      "rarity": "epic",
       "source_registry": "hbm:item.apple_euphemium",
       "names": {
         "en_us": "Euphemium Apple",
@@ -3987,9 +3991,9 @@
       "source_class": "ItemSoup",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3619",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (none)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/balefire_and_ham.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.balefire_and_ham",
       "names": {
         "en_us": "Ham and Balefire Eggs",
@@ -4039,9 +4043,9 @@
       "source_class": "ItemSoup",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3618",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (none)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/balefire_scrambled.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.balefire_scrambled",
       "names": {
         "en_us": "Scrambled Balefire Egg",
@@ -15674,9 +15678,9 @@
       "source_class": "ItemWaffle",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3610",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (none)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/bomb_waffle.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.bomb_waffle",
       "names": {
         "en_us": "Waffle of Mass Destruction",
@@ -15999,10 +16003,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3786",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/boy_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.boy_kit",
       "names": {
         "en_us": "Little Boy Kit",
@@ -18171,9 +18175,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3637",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/cheese.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.cheese",
       "names": {
         "en_us": "Cheese",
@@ -18194,9 +18198,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3638",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/quesadilla.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.cheese_quesadilla",
       "names": {
         "en_us": "Cheese Quesadilla",
@@ -18385,9 +18389,9 @@
       "source_class": "ItemPill",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2947",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/chocolate.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.chocolate",
       "names": {
         "en_us": "Ithis-Brand Radium Chocolate",
@@ -18691,10 +18695,10 @@
       "source_class": "ItemCigarette",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2847",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 16,
       "source_texture": "src/main/resources/assets/hbm/textures/items/cigarette.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.cigarette",
       "names": {
         "en_us": "FFI-Brand Cigarette",
@@ -22990,10 +22994,10 @@
       "source_class": "ItemCigarette",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2848",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, onEaten, getMaxItemUseDuration, getItemUseAction, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/crackpipe.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.crackpipe",
       "names": {
         "en_us": "Health Pipe",
@@ -23976,10 +23980,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3791",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/custom_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.custom_kit",
       "names": {
         "en_us": "Custom Nuke Kit",
@@ -24533,9 +24537,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3621",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/definitelyfood.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.definitelyfood",
       "names": {
         "en_us": "MRE",
@@ -25268,10 +25272,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3795",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/code.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.euphemium_kit",
       "names": {
         "en_us": "Euphemium Kit",
@@ -25499,9 +25503,9 @@
       "source_class": "ItemPill",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2833",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/5htp.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.five_htp",
       "names": {
         "en_us": "Enteramine Pills",
@@ -25667,10 +25671,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3792",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/fleija_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.fleija_kit",
       "names": {
         "en_us": "F.L.E.I.J.A. Kit",
@@ -25833,9 +25837,9 @@
       "source_class": "ItemPill",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2832",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/tablet.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.fmn",
       "names": {
         "en_us": "Flunitrazepam Tablet",
@@ -25856,9 +25860,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3628",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/fooditem.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.fooditem",
       "names": {
         "en_us": "food item",
@@ -26398,10 +26402,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3785",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/gadget_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.gadget_kit",
       "names": {
         "en_us": "The Gadget Kit",
@@ -26496,10 +26500,11 @@
       "source_class": "ItemFilter",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2840",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
       "max_stack_size": 1,
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_combo.png",
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear",
       "source_registry": "hbm:item.gas_mask_filter_combo",
       "names": {
         "en_us": "Gas Mask Combo Filter",
@@ -26520,10 +26525,11 @@
       "source_class": "ItemFilter",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2839",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
       "max_stack_size": 1,
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_mono.png",
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear",
       "source_registry": "hbm:item.gas_mask_filter_mono",
       "names": {
         "en_us": "Catalytic Mask Filter",
@@ -26544,10 +26550,11 @@
       "source_class": "ItemFilter",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2842",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
       "max_stack_size": 1,
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_piss.png",
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear",
       "source_registry": "hbm:item.gas_mask_filter_piss",
       "names": {
         "en_us": "Advanced Makeshift Gas Mask Filter",
@@ -26568,10 +26575,11 @@
       "source_class": "ItemFilter",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2841",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
       "max_stack_size": 1,
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/gas_mask_filter_rag.png",
+      "max_damage": 20000,
+      "behavior": "ItemFilter: native installation and exposure wear",
       "source_registry": "hbm:item.gas_mask_filter_rag",
       "names": {
         "en_us": "Makeshift Gas Mask Filter",
@@ -26941,9 +26949,9 @@
       "source_class": "ItemSoup",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3617",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (none)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/glowing_stew.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.glowing_stew",
       "names": {
         "en_us": "Glowing Mushroom Stew",
@@ -26995,9 +27003,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3640",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/glyphid_meat.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.glyphid_meat",
       "names": {
         "en_us": "Glyphid Meat",
@@ -27027,9 +27035,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3641",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/glyphid_meat_grilled.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.glyphid_meat_grilled",
       "names": {
         "en_us": "Grilled Glyphid Meat",
@@ -27237,10 +27245,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3799",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_grey_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.hazmat_grey_kit",
       "names": {
         "en_us": "High-Performance Hazmat Kit",
@@ -27264,7 +27272,7 @@
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_kit.png",
-      "behavior": "native item_hooks: consumables.json",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.hazmat_kit",
       "names": {
         "en_us": "Hazmat Kit",
@@ -27285,10 +27293,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3798",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_red_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.hazmat_red_kit",
       "names": {
         "en_us": "Advanced Hazmat Kit",
@@ -27779,9 +27787,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2170",
       "category": "ingot",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_c4.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.ingot_c4",
       "names": {
         "en_us": "Bar of Composition C-4",
@@ -29470,9 +29478,9 @@
       "source_class": "ItemFood",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2122",
       "category": "ingot",
-      "behavior_gap": "Inert item: source hooks not implemented (none)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_smore.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.ingot_smore",
       "names": {
         "en_us": "S'more Ingot",
@@ -30296,9 +30304,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3620",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/lemon.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.lemon",
       "names": {
         "en_us": "\"Lemon\"",
@@ -30465,10 +30473,10 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3626",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/loop_stew.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.loop_stew",
       "names": {
         "en_us": "IT Breakfast",
@@ -30489,9 +30497,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3625",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/loops.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.loops",
       "names": {
         "en_us": "Lööps",
@@ -30661,10 +30669,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3787",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/man_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.man_kit",
       "names": {
         "en_us": "Fat Man Kit",
@@ -30685,9 +30693,9 @@
       "source_class": "ItemMatch",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:4294",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemUse)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/matchstick.png",
+      "behavior": "native item_hooks",
       "source_registry": "hbm:item.matchstick",
       "names": {
         "en_us": "Matchstick",
@@ -30708,9 +30716,9 @@
       "source_class": "ItemSyringe",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2826",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/med_bag.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.med_bag",
       "names": {
         "en_us": "First Aid Kit",
@@ -30731,9 +30739,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3622",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/med_ipecac_new.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.med_ipecac",
       "names": {
         "en_us": "Ipecac Syrup",
@@ -30754,9 +30762,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3623",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/med_ptsd_new.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.med_ptsd",
       "names": {
         "en_us": "PTSD Medication",
@@ -31044,10 +31052,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3788",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/mike_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.mike_kit",
       "names": {
         "en_us": "Ivy Mike Kit",
@@ -31963,10 +31971,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3790",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/multi_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.multi_kit",
       "names": {
         "en_us": "Multi Purpose Bomb Kit",
@@ -32284,9 +32292,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3634",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/nugget.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.nugget",
       "names": {
         "en_us": "Chicken Nugget",
@@ -33681,10 +33689,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3782",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_advanced_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.nuke_advanced_kit",
       "names": {
         "en_us": "Atomic Science Advanced Kit",
@@ -33705,10 +33713,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3783",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_commercially_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.nuke_commercially_kit",
       "names": {
         "en_us": "Atomic Science Kit for Commercial Uses",
@@ -33729,10 +33737,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3784",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_electric_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.nuke_electric_kit",
       "names": {
         "en_us": "Electronic Engineer's Kit",
@@ -33753,10 +33761,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3780",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/nuke_starter_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.nuke_starter_kit",
       "names": {
         "en_us": "Atomic Science Starter Kit",
@@ -42743,9 +42751,9 @@
       "source_class": "ItemPancake",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3633",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/pancake.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.pancake",
       "names": {
         "en_us": "Pancake made from Scrap Metal, Nails and Gem Dust",
@@ -45853,9 +45861,9 @@
       "source_class": "ItemPeas",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3635",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/peas.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.peas",
       "names": {
         "en_us": "Peas",
@@ -46051,9 +46059,9 @@
       "source_class": "ItemPill",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2834",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/pill_iodine.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.pill_iodine",
       "names": {
         "en_us": "Iodine Pill",
@@ -46074,9 +46082,9 @@
       "source_class": "ItemPill",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2836",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/pill_red.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.pill_red",
       "names": {
         "en_us": "Red Pill",
@@ -46218,9 +46226,9 @@
       "source_class": "ItemPill",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2835",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/plan_c.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.plan_c",
       "names": {
         "en_us": "Plan C",
@@ -49677,9 +49685,9 @@
       "source_class": "ItemFertilizer",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2529",
       "category": "powder",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemUse)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/powder_fertilizer.png",
+      "behavior": "native item_hooks",
       "source_registry": "hbm:item.powder_fertilizer",
       "names": {
         "en_us": "Industrial Fertilizer",
@@ -51134,10 +51142,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3793",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/prototype_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.prototype_kit",
       "names": {
         "en_us": "Prototype Kit",
@@ -51158,9 +51166,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3631",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/pudding.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.pudding",
       "names": {
         "en_us": "Pudding",
@@ -52261,9 +52269,9 @@
       "source_class": "ItemPill",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2828",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/radx.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.radx",
       "names": {
         "en_us": "Rad-X",
@@ -52284,9 +52292,9 @@
       "source_class": "ItemRag",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2398",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/rag.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.rag",
       "names": {
         "en_us": "Cloth",
@@ -53385,9 +53393,9 @@
       "source_class": "ItemSchnitzelVegan",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3612",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (none)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/schnitzel_vegan.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.schnitzel_vegan",
       "names": {
         "en_us": "Vegan Schnitzel",
@@ -56507,9 +56515,9 @@
       "source_class": "ItemPill",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2829",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/siox.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.siox",
       "names": {
         "en_us": "SiOX Cancer Medication",
@@ -56725,10 +56733,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3796",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/solinium_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.solinium_kit",
       "names": {
         "en_us": "Solinium Kit",
@@ -56803,9 +56811,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3627",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/spongebob_macaroni.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.spongebob_macaroni",
       "names": {
         "en_us": "Spongebob Macaroni",
@@ -57969,9 +57977,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3630",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/static_sandwich.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.static_sandwich",
       "names": {
         "en_us": "Sandwich Garnished with TV Static",
@@ -57992,9 +58000,9 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2837",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/stealth_boy.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.stealth_boy",
       "names": {
         "en_us": "Stealth Device",
@@ -58819,9 +58827,9 @@
       "source_class": "ItemSyringe",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2822",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_psycho.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.syringe_metal_psycho",
       "names": {
         "en_us": "Psycho",
@@ -58842,9 +58850,9 @@
       "source_class": "ItemSyringe",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2820",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_stimpak.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.syringe_metal_stimpak",
       "names": {
         "en_us": "Stimpak",
@@ -58865,9 +58873,9 @@
       "source_class": "ItemSyringe",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2823",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_metal_super.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.syringe_metal_super",
       "names": {
         "en_us": "Super Stimpak",
@@ -58888,9 +58896,9 @@
       "source_class": "ItemSyringe",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2824",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_taint.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.syringe_taint",
       "names": {
         "en_us": "Watery Taint Injection",
@@ -59529,10 +59537,10 @@
       "source_class": "ItemStarterKit",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3789",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "source_texture": "src/main/resources/assets/hbm/textures/items/tsar_kit.png",
+      "behavior": "native item_hooks: kits.json",
       "source_registry": "hbm:item.tsar_kit",
       "names": {
         "en_us": "Tsar Bomba Kit",
@@ -59605,9 +59613,9 @@
       "source_class": "ItemLemon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3629",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onEaten, addInformation); per-stack NBT state",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/twinkie.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.twinkie",
       "names": {
         "en_us": "Twinkie",
@@ -61594,9 +61602,9 @@
       "source_class": "ItemPill",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2831",
       "category": "component",
-      "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, getMaxItemUseDuration, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "source_texture": "src/main/resources/assets/hbm/textures/items/xanax.png",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.xanax",
       "names": {
         "en_us": "NAXA Anti-Digamma Medication",
@@ -89465,7 +89473,7 @@
         "en_us": "Bar of Semtex",
         "pt_br": "Barra de Semtex"
       },
-      "behavior_gap": "Original edible/special item use is not reproduced; processing identity and hazard data only",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.ingot_semtex",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -104883,7 +104891,7 @@
         "en_us": "Algae Wafer",
         "pt_br": "Pastilha de Alga"
       },
-      "behavior_gap": "Recipe component only; source nutrition/eating and ItemPill medical effects/side effects require consumable logic.",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.bio_wafer",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -104910,7 +104918,7 @@
         "en_us": "Herbal Paste",
         "pt_br": "Pasta de Ervas"
       },
-      "behavior_gap": "Recipe component only; source nutrition/eating and ItemPill medical effects/side effects require consumable logic.",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.pill_herbal",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -106816,7 +106824,7 @@
       "category": "consumable",
       "template": "minecraft:iron_ingot",
       "max_stack_size": 64,
-      "behavior_gap": "ItemSimpleConsumable blood draw remains wave 1",
+      "behavior": "native item_hooks: consumables.json",
       "source_registry": "hbm:item.iv_empty",
       "names": {
         "en_us": "IV Bag",
@@ -107043,6 +107051,887 @@
       "source_texture": "src/main/resources/assets/hbm/textures/items/bottle_opener.png",
       "source_recipe_machine": [],
       "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:radaway_strong",
+      "source_variable": "radaway_strong",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json",
+      "source_registry": "hbm:item.radaway_strong",
+      "names": {
+        "en_us": "Strong RadAway",
+        "pt_br": "RadAway Forte"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.radaway_strong.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.radaway_strong.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/radaway_strong.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:radaway_flush",
+      "source_variable": "radaway_flush",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json",
+      "source_registry": "hbm:item.radaway_flush",
+      "names": {
+        "en_us": "Elite RadAway",
+        "pt_br": "RadAway de Elite"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.radaway_flush.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.radaway_flush.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/radaway_flush.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:iv_blood",
+      "source_variable": "iv_blood",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json",
+      "source_registry": "hbm:item.iv_blood",
+      "names": {
+        "en_us": "Blood Bag",
+        "pt_br": "Bolsa de Sangue"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.iv_blood.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.iv_blood.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/iv_blood.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:iv_xp_empty",
+      "source_variable": "iv_xp_empty",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json",
+      "source_registry": "hbm:item.iv_xp_empty",
+      "names": {
+        "en_us": "Empty Experience Bag",
+        "pt_br": "Bolsa de Experiência Vazia"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.iv_xp_empty.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.iv_xp_empty.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/iv_xp_empty.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:iv_xp",
+      "source_variable": "iv_xp",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json",
+      "source_registry": "hbm:item.iv_xp",
+      "names": {
+        "en_us": "Experience Bag",
+        "pt_br": "Bolsa de Experiência"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.iv_xp.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.iv_xp.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/iv_xp.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:syringe_antidote",
+      "source_variable": "syringe_antidote",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json",
+      "source_registry": "hbm:item.syringe_antidote",
+      "names": {
+        "en_us": "Antidote",
+        "pt_br": "Antídoto"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.syringe_antidote.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.syringe_antidote.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_antidote.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:syringe_poison",
+      "source_variable": "syringe_poison",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json",
+      "source_registry": "hbm:item.syringe_poison",
+      "names": {
+        "en_us": "Poisonous Injection",
+        "pt_br": "Injeção Venenosa"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.syringe_poison.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.syringe_poison.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_poison.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:syringe_awesome",
+      "source_variable": "syringe_awesome",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: consumables.json",
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      },
+      "rarity": "uncommon",
+      "source_registry": "hbm:item.syringe_awesome",
+      "names": {
+        "en_us": "AWESOME",
+        "pt_br": "INCRÍVEL"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.syringe_awesome.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.syringe_awesome.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/syringe_awesome.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_helmet_red",
+      "source_variable": "hazmat_helmet_red",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 660,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_helmet_red",
+      "names": {
+        "en_us": "Advanced Hazmat Helmet",
+        "pt_br": "Capacete Antirradição Avançado"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_helmet_red.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_helmet_red.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_helmet_red.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_plate_red",
+      "source_variable": "hazmat_plate_red",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 960,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 5,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_plate_red",
+      "names": {
+        "en_us": "Advanced Hazmat Chestplate",
+        "pt_br": "Peitoral Antirradição Avançado"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_plate_red.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_plate_red.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_plate_red.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_legs_red",
+      "source_variable": "hazmat_legs_red",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_leggings",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 900,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 4,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_legs_red",
+      "names": {
+        "en_us": "Advanced Hazmat Leggings",
+        "pt_br": "Calças Antirradição Avançadas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_legs_red.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_legs_red.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_legs_red.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_boots_red",
+      "source_variable": "hazmat_boots_red",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_boots",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 780,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 1,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_boots_red",
+      "names": {
+        "en_us": "Advanced Hazmat Boots",
+        "pt_br": "Botas Antirradição Avançadas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_boots_red.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_boots_red.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_boots_red.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_helmet_grey",
+      "source_variable": "hazmat_helmet_grey",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 660,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_helmet_grey",
+      "names": {
+        "en_us": "High-Performance Hazmat Helmet",
+        "pt_br": "Capacete Antirradição de Alto Desempenho"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_helmet_grey.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_helmet_grey.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_helmet_grey.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_plate_grey",
+      "source_variable": "hazmat_plate_grey",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 960,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 5,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_plate_grey",
+      "names": {
+        "en_us": "High-Performance Hazmat Chestplate",
+        "pt_br": "Peitoral Antirradição de Alto Desempenho"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_plate_grey.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_plate_grey.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_plate_grey.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_legs_grey",
+      "source_variable": "hazmat_legs_grey",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_leggings",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 900,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 4,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_legs_grey",
+      "names": {
+        "en_us": "High-Performance Hazmat Leggings",
+        "pt_br": "Calças Antirradição de Alto Desempenho"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_legs_grey.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_legs_grey.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_legs_grey.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:hazmat_boots_grey",
+      "source_variable": "hazmat_boots_grey",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_boots",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 780,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 1,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
+      "source_registry": "hbm:item.hazmat_boots_grey",
+      "names": {
+        "en_us": "High-Performance Hazmat Boots",
+        "pt_br": "Botas Antirradição de Alto Desempenho"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.hazmat_boots_grey.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.hazmat_boots_grey.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/hazmat_boots_grey.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:geiger_counter",
+      "source_variable": "geiger_counter",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: instruments",
+      "source_registry": "hbm:item.geiger_counter",
+      "names": {
+        "en_us": "Handheld Geiger Counter",
+        "pt_br": "Contador Geiger Portátil"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.geiger_counter.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.geiger_counter.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/geiger_counter.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:dosimeter",
+      "source_variable": "dosimeter",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: instruments",
+      "source_registry": "hbm:item.dosimeter",
+      "names": {
+        "en_us": "Dosimeter",
+        "pt_br": "Dosímetro"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.dosimeter.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.dosimeter.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/dosimeter.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:digamma_diagnostic",
+      "source_variable": "digamma_diagnostic",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: instruments",
+      "source_registry": "hbm:item.digamma_diagnostic",
+      "names": {
+        "en_us": "Digamma Diagnostic",
+        "pt_br": "Diagnóstico Digamma"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.digamma_diagnostic.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.digamma_diagnostic.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/digamma_diagnostic.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:survey_scanner",
+      "source_variable": "survey_scanner",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: instruments",
+      "behavior_gap": "Bedrock-oil particle markers, the bedrock-ore tile and the entanglement-kit End travel are not ported",
+      "source_registry": "hbm:item.survey_scanner",
+      "names": {
+        "en_us": "Survey Scanner",
+        "pt_br": "Scanner de Levantamento"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.survey_scanner.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.survey_scanner.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/survey_scanner.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pipette",
+      "source_variable": "pipette",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: pipette capacity",
+      "behavior_gap": "Filling and emptying go through machine fluid slots (IFillableItem), which the port does not have",
+      "source_registry": "hbm:item.pipette",
+      "names": {
+        "en_us": "Pipette",
+        "pt_br": "Pipeta"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.pipette.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.pipette.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pipette.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pipette_boron",
+      "source_variable": "pipette_boron",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: pipette capacity",
+      "behavior_gap": "Filling and emptying go through machine fluid slots (IFillableItem), which the port does not have",
+      "source_registry": "hbm:item.pipette_boron",
+      "names": {
+        "en_us": "Boron Pipette",
+        "pt_br": "Pipeta de Boro"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.pipette_boron.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.pipette_boron.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pipette_boron.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:pipette_laboratory",
+      "source_variable": "pipette_laboratory",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks: pipette capacity",
+      "behavior_gap": "Filling and emptying go through machine fluid slots (IFillableItem), which the port does not have",
+      "source_registry": "hbm:item.pipette_laboratory",
+      "names": {
+        "en_us": "Laboratory Grade Pipette",
+        "pt_br": "Pipeta de Grau Laboratorial"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.pipette_laboratory.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.pipette_laboratory.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/pipette_laboratory.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:inf_water",
+      "source_variable": "inf_water",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior_gap": "Identity only: FluidLoaderInfinite (the machine tank slot that draws from it) is not ported",
+      "source_registry": "hbm:item.inf_water",
+      "names": {
+        "en_us": "Infinite Water Tank",
+        "pt_br": "Tanque Infinito de Água"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.inf_water.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.inf_water.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/inf_water.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:inf_water_mk2",
+      "source_variable": "inf_water_mk2",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior_gap": "Identity only: FluidLoaderInfinite (the machine tank slot that draws from it) is not ported",
+      "source_registry": "hbm:item.inf_water_mk2",
+      "names": {
+        "en_us": "Large Infinite Water Tank",
+        "pt_br": "Tanque Infinito Grande de Água"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.inf_water_mk2.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.inf_water_mk2.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/inf_water_mk2.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:fluid_barrel_infinite",
+      "source_variable": "fluid_barrel_infinite",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior_gap": "Identity only: FluidLoaderInfinite (the machine tank slot that draws from it) is not ported",
+      "source_registry": "hbm:item.fluid_barrel_infinite",
+      "names": {
+        "en_us": "Infinite Fluid Barrel",
+        "pt_br": "Barril de Fluido Infinito"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.fluid_barrel_infinite.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.fluid_barrel_infinite.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/fluid_barrel_infinite.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:chlorine_pinwheel",
+      "source_variable": "chlorine_pinwheel",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior_gap": "Identity only: FluidLoaderInfinite (the machine tank slot that draws from it) is not ported",
+      "source_registry": "hbm:item.chlorine_pinwheel",
+      "names": {
+        "en_us": "Chlorine Pinwheel",
+        "pt_br": "Catavento de Cloro"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.chlorine_pinwheel.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.chlorine_pinwheel.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/chlorine_pinwheel.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:gun_kit_1",
+      "source_variable": "gun_kit_1",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior_gap": "Identity only: ItemRepairKit repairs weapons, which wait for the weapons wave",
+      "source_registry": "hbm:item.gun_kit_1",
+      "names": {
+        "en_us": "Gun Oil",
+        "pt_br": "Óleo para Armas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.gun_kit_1.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.gun_kit_1.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gun_kit_1.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:gun_kit_2",
+      "source_variable": "gun_kit_2",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior_gap": "Identity only: ItemRepairKit repairs weapons, which wait for the weapons wave",
+      "source_registry": "hbm:item.gun_kit_2",
+      "names": {
+        "en_us": "Gun Repair Kit",
+        "pt_br": "Kit de Reparo de Armas"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.gun_kit_2.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.gun_kit_2.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/gun_kit_2.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ingot_meteorite",
+      "source_variable": "ingot_meteorite",
+      "type": "item",
+      "category": "component",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: ItemHot cooling",
+      "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported",
+      "source_registry": "hbm:item.ingot_meteorite",
+      "names": {
+        "en_us": "Meteorite Ingot",
+        "pt_br": "Lingote de Meteorito"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.ingot_meteorite.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.ingot_meteorite.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_meteorite.png",
+      "source_recipe_machine": [
+        {
+          "machine": "blast_furnace",
+          "source": "src/main/java/com/hbm/inventory/recipes/BlastFurnaceRecipesNT.java:68"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ingot_meteorite_forged",
+      "source_variable": "ingot_meteorite_forged",
+      "type": "item",
+      "category": "component",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: ItemHot cooling",
+      "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported",
+      "source_registry": "hbm:item.ingot_meteorite_forged",
+      "names": {
+        "en_us": "Forged Meteorite Ingot",
+        "pt_br": "Lingote de Meteorito Forjado"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.ingot_meteorite_forged.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.ingot_meteorite_forged.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_meteorite_forged.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:550"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:blade_meteorite",
+      "source_variable": "blade_meteorite",
+      "type": "item",
+      "category": "component",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: ItemHot cooling",
+      "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported",
+      "source_registry": "hbm:item.blade_meteorite",
+      "names": {
+        "en_us": "Meteorite Blade",
+        "pt_br": "Lâmina de Meteorito"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.blade_meteorite.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.blade_meteorite.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/blade_meteorite.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:83"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ingot_steel_dusted",
+      "source_variable": "ingot_steel_dusted",
+      "type": "item",
+      "category": "component",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: ItemHot cooling",
+      "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported",
+      "source_registry": "hbm:item.ingot_steel_dusted",
+      "names": {
+        "en_us": "Dusted Steel Ingot",
+        "pt_br": "Lingote de Aço Empoeirado"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.ingot_steel_dusted.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.ingot_steel_dusted.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_steel_dusted.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:80"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:ingot_chainsteel",
+      "source_variable": "ingot_chainsteel",
+      "type": "item",
+      "category": "component",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 64,
+      "behavior": "native item_hooks: ItemHot cooling",
+      "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported",
+      "source_registry": "hbm:item.ingot_chainsteel",
+      "names": {
+        "en_us": "Heavy Chainsteel",
+        "pt_br": "Aço Corrente Pesado"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.ingot_chainsteel.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.ingot_chainsteel.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/ingot_chainsteel.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:79"
+        }
+      ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     }
   ]

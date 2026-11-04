@@ -1,0 +1,13 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:digamma_diagnostic",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:geiger_counter",
+    "#ntm:bulk/billetpolonium210",
+    "#ntm:bulk/ingotasbestos"
+  ]
+}

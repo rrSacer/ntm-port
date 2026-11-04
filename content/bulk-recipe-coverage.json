@@ -1811,6 +1811,15 @@
       }
     },
     {
+      "id": "ntm:bulk__4efaabeeb86d330e66",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:550",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:key_red",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__f7afd219faf07ca6b8",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:551",
       "type": "minecraft:crafting_shaped",
@@ -2297,6 +2306,15 @@
       }
     },
     {
+      "id": "ntm:bulk__f6ca83d9166310f6e5",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:737",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:mech_key",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__0e438d468a621c69fe",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:750",
       "type": "minecraft:crafting_shaped",
@@ -2567,6 +2585,15 @@
       }
     },
     {
+      "id": "ntm:bulk__d52ce907e7c58f21f3",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:912",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:parts_legendary__tier1",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__21a6c2ac30e0291930",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:913",
       "type": "minecraft:crafting_shapeless",
@@ -2576,12 +2603,30 @@
       }
     },
     {
+      "id": "ntm:bulk__649220b8f3ae341cba",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:914",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:parts_legendary__tier2",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__226202ad9a8c207fdd",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:915",
       "type": "minecraft:crafting_shapeless",
       "result": {
         "id": "ntm:parts_legendary__tier2",
         "count": 3
+      }
+    },
+    {
+      "id": "ntm:bulk__7fa4397db7948ac10c",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:916",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:parts_legendary__tier3",
+        "count": 1
       }
     },
     {
@@ -2882,6 +2927,78 @@
       }
     },
     {
+      "id": "ntm:bulk__54eb426479717e073a",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:126",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_helmet_red",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__04816c3df5d4a5d2bf",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:127",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_plate_red",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__467b2b93246f90963e",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:128",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_legs_red",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__dca85760a1b596f34a",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:129",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_boots_red",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4181cb90fdca1a9ae0",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:130",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_helmet_grey",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__66c43a8f0c04300e4d",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:131",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_plate_grey",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__579d14f7fc0740e5b9",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:132",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_legs_grey",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__25e243a57a5a22a63e",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:133",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_boots_grey",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__4572a44692380345a7",
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:174",
       "type": "minecraft:crafting_shaped",
@@ -3098,6 +3215,78 @@
       }
     },
     {
+      "id": "ntm:bulk__48884570d434748df5",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:98",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:syringe_antidote",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__0c086bd19b978491c0",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:99",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:syringe_antidote",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__d7dbc2d0bfb754f823",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:100",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:syringe_antidote",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__c6c2599d2c25e9f5bf",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:101",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:syringe_antidote",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__183f0e60fe7e5a5852",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:102",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:syringe_poison",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__19ff1964ca4fab7ade",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:103",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:syringe_poison",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__652e510b239729e4da",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:104",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:syringe_awesome",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__820d8ce8efed4190f3",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:105",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:syringe_awesome",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__b52658b32f3150fde6",
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:106",
       "type": "minecraft:crafting_shaped",
@@ -3188,6 +3377,15 @@
       }
     },
     {
+      "id": "ntm:bulk__0a48dc64f9725e5b19",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:135",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:med_bag",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__821b4b88c213c6566d",
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:136",
       "type": "minecraft:crafting_shaped",
@@ -3202,6 +3400,24 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:med_bag",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0a992cb1712adc79ad",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:144",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:iv_xp_empty",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f6c31de8498f7b0b3d",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:149",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:radaway_flush",
         "count": 1
       }
     },
@@ -7832,6 +8048,42 @@
       }
     },
     {
+      "id": "ntm:bulk__d30502be8652403edf",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:114",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:dosimeter",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__643a3d4239d7fd970c",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:116",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:digamma_diagnostic",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3fb14a908716b47ab2",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:127",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pipette_boron",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f389b31a66ae33db17",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:128",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:pipette_laboratory",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__bdad423b315c020e07",
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:132",
       "type": "minecraft:crafting_shaped",
@@ -8129,7 +8381,7 @@
       }
     }
   ],
-  "generated_count": 903,
+  "generated_count": 931,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -9112,13 +9364,13 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:542",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item gun_kit_1",
+      "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
       "expression": "new ItemStack(ModItems.gun_kit_1, 1), new Object[] { ANY_RUBBER.ingot(), Fluids.WOODOIL.getDict(1_000), IRON.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:543",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item gun_kit_2",
+      "reason": "unregistered/ambiguous source item wrench",
       "expression": "new ItemStack(ModItems.gun_kit_2, 1), new Object[] { ModItems.gun_kit_1, ModItems.wrench, ModItems.ducttape, Fluids.LUBRICANT.getDict(1_000) }"
     },
     {
@@ -9132,12 +9384,6 @@
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary KEY_TOOL_SCREWDRIVER",
       "expression": "new ItemStack(ModItems.key_kit, 1), new Object[] { \"PKP\", \"DTD\", \"PKP\", 'P', GOLD.plate(), 'K', ModItems.key, 'D', DESH.dust(), 'T', KEY_TOOL_SCREWDRIVER }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:550",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ingot_chainsteel",
-      "expression": "new ItemStack(ModItems.key_red, 1), new Object[] { \"RCA\", \"CIC\", \"KCR\", 'R', KEY_RED, 'C', STAR.wireDense(), 'A', ModItems.gem_alexandrite, 'I', ModItems.ingot_chainsteel, 'K', ModItems.key }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:552",
@@ -9304,13 +9550,13 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:592",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item inf_water",
+      "reason": "unsupported expression Fluids.WATER.getDict(1_000)",
       "expression": "new ItemStack(ModItems.inf_water, 1), new Object[] { \"222\", \"131\", \"222\", '1', Fluids.WATER.getDict(1_000), '2', AL.plate(), '3', DIAMOND.gem() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:593",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item inf_water_mk2",
+      "reason": "unresolved ore dictionary STEEL.pipe()",
       "expression": "new ItemStack(ModItems.inf_water_mk2, 1), new Object[] { \"BPB\", \"PTP\", \"BPB\", 'B', ModItems.inf_water, 'P', STEEL.pipe(), 'T', STEEL.shell() }"
     },
     {
@@ -9346,7 +9592,7 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:609",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item geiger_counter",
+      "reason": "unregistered/ambiguous source item geiger",
       "expression": "new ItemStack(ModItems.geiger_counter), new Object[] { ModBlocks.geiger }"
     },
     {
@@ -9678,12 +9924,6 @@
       "callee": "addRecipeAuto",
       "reason": "missing subtype upgrade_ejector:2",
       "expression": "new ItemStack(ModItems.upgrade_ejector, 1, 2), new Object[] { \" C \", \"PUP\", \" C \", 'C', ModItems.plate_saturnite, 'P', ModItems.motor, 'U', new ItemStack(ModItems.upgrade_ejector, 1, 1) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:737",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ingot_meteorite_forged",
-      "expression": "new ItemStack(ModItems.mech_key, 1), new Object[] { \"MCM\", \"MKM\", \"MMM\", 'M', ModItems.ingot_meteorite_forged, 'C', ModItems.coin_maskman, 'K', ModItems.key }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:738",
@@ -10296,24 +10536,6 @@
       "callee": "addRecipeAuto",
       "reason": "missing vanilla 26.3 item yellow_flower",
       "expression": "new ItemStack(ModItems.ball_resin), new Object[] { \"DD\", \"DD\", 'D', Blocks.yellow_flower }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:912",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item ingot_chainsteel",
-      "expression": "DictFrame.fromOne(ModItems.parts_legendary, EnumLegendaryType.TIER1), new Object[] { ModItems.ingot_chainsteel, ASBESTOS.ingot(), ModItems.gem_alexandrite }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:914",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item ingot_chainsteel",
-      "expression": "DictFrame.fromOne(ModItems.parts_legendary, EnumLegendaryType.TIER2), new Object[] { ModItems.ingot_chainsteel, ModItems.ingot_bismuth, ModItems.gem_alexandrite, ModItems.gem_alexandrite }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:916",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item ingot_chainsteel",
-      "expression": "DictFrame.fromOne(ModItems.parts_legendary, EnumLegendaryType.TIER3), new Object[] { ModItems.ingot_chainsteel, ModItems.ingot_smore, ModItems.gem_alexandrite, ModItems.gem_alexandrite, ModItems.gem_alexandrite }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:935",
@@ -11084,54 +11306,6 @@
       "expression": "new ItemStack(ModItems.jetpack_boost, 1), new Object[] { \"PCP\", \"DJD\", \"PAP\", 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ADVANCED), 'P', BIGMT.plate(), 'D', DESH.ingot(), 'J', ModItems.jetpack_vector, 'A', CU.plateCast() }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:126",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_helmet_red",
-      "expression": "new ItemStack(ModItems.hazmat_helmet_red, 1), new Object[] { \"EEE\", \"IEI\", \"EFE\", 'E', ModItems.hazmat_cloth_red, 'I', KEY_ANYPANE, 'F', IRON.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:127",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_plate_red",
-      "expression": "new ItemStack(ModItems.hazmat_plate_red, 1), new Object[] { \"E E\", \"EEE\", \"EEE\", 'E', ModItems.hazmat_cloth_red }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:128",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_legs_red",
-      "expression": "new ItemStack(ModItems.hazmat_legs_red, 1), new Object[] { \"EEE\", \"E E\", \"E E\", 'E', ModItems.hazmat_cloth_red }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:129",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_boots_red",
-      "expression": "new ItemStack(ModItems.hazmat_boots_red, 1), new Object[] { \"E E\", \"E E\", 'E', ModItems.hazmat_cloth_red }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:130",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_helmet_grey",
-      "expression": "new ItemStack(ModItems.hazmat_helmet_grey, 1), new Object[] { \"EEE\", \"IEI\", \"EFE\", 'E', ModItems.hazmat_cloth_grey, 'I', KEY_ANYPANE, 'F', IRON.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:131",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_plate_grey",
-      "expression": "new ItemStack(ModItems.hazmat_plate_grey, 1), new Object[] { \"E E\", \"EEE\", \"EEE\", 'E', ModItems.hazmat_cloth_grey }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:132",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_legs_grey",
-      "expression": "new ItemStack(ModItems.hazmat_legs_grey, 1), new Object[] { \"EEE\", \"E E\", \"E E\", 'E', ModItems.hazmat_cloth_grey }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:133",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_boots_grey",
-      "expression": "new ItemStack(ModItems.hazmat_boots_grey, 1), new Object[] { \"E E\", \"E E\", 'E', ModItems.hazmat_cloth_grey }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:134",
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item asbestos_helmet",
@@ -11504,54 +11678,6 @@
       "expression": "new ItemStack(ModItems.bottle2_fritz, 1), new Object[] { ModItems.bottle2_empty, Items.potionitem, Items.sugar, W.dust() }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:98",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item syringe_antidote",
-      "expression": "new ItemStack(ModItems.syringe_antidote, 6), new Object[] { \"SSS\", \"PMP\", \"SSS\", 'S', ModItems.syringe_empty, 'P', Items.pumpkin_seeds, 'M', Items.milk_bucket }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:99",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item syringe_antidote",
-      "expression": "new ItemStack(ModItems.syringe_antidote, 6), new Object[] { \"SPS\", \"SMS\", \"SPS\", 'S', ModItems.syringe_empty, 'P', Items.pumpkin_seeds, 'M', Items.milk_bucket }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:100",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item syringe_antidote",
-      "expression": "new ItemStack(ModItems.syringe_antidote, 6), new Object[] { \"SSS\", \"PMP\", \"SSS\", 'S', ModItems.syringe_empty, 'P', Items.pumpkin_seeds, 'M', Items.reeds }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:101",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item syringe_antidote",
-      "expression": "new ItemStack(ModItems.syringe_antidote, 6), new Object[] { \"SPS\", \"SMS\", \"SPS\", 'S', ModItems.syringe_empty, 'P', Items.pumpkin_seeds, 'M', Items.reeds }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:102",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item syringe_poison",
-      "expression": "new ItemStack(ModItems.syringe_poison, 1), new Object[] { \"SLS\", \"LCL\", \"SLS\", 'C', ModItems.syringe_empty, 'S', Items.spider_eye, 'L', PB.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:103",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item syringe_poison",
-      "expression": "new ItemStack(ModItems.syringe_poison, 1), new Object[] { \"SLS\", \"LCL\", \"SLS\", 'C', ModItems.syringe_empty, 'S', Items.spider_eye, 'L', ModItems.powder_poison }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:104",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item syringe_awesome",
-      "expression": "new ItemStack(ModItems.syringe_awesome, 1), new Object[] { \"SPS\", \"NCN\", \"SPS\", 'C', ModItems.syringe_empty, 'S', S.dust(), 'P', PU239.nugget(), 'N', PU238.nugget() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:105",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item syringe_awesome",
-      "expression": "new ItemStack(ModItems.syringe_awesome, 1), new Object[] { \"SNS\", \"PCP\", \"SNS\", 'C', ModItems.syringe_empty, 'S', S.dust(), 'P', PU239.nugget(), 'N', PU238.nugget() }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:112",
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
@@ -11618,12 +11744,6 @@
       "expression": "new ItemStack(ModItems.xanax, 1), new Object[] { COAL.dust(), KNO.dust(), BR.dust() }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:135",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item syringe_antidote",
-      "expression": "new ItemStack(ModItems.med_bag, 1), new Object[] { \"LLL\", \"SIS\", \"LLL\", 'L', Items.leather, 'S', ModItems.syringe_metal_stimpak, 'I', ModItems.syringe_antidote }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:138",
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
@@ -11648,28 +11768,16 @@
       "expression": "new ItemStack(ModItems.iv_empty, 4), new Object[] { \"S\", \"I\", \"S\", 'S', ANY_RUBBER.ingot(), 'I', IRON.plate() }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:144",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item iv_xp_empty",
-      "expression": "new ItemStack(ModItems.iv_xp_empty, 1), new Object[] { ModItems.iv_empty, ModItems.powder_magic }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:147",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item iv_blood",
+      "reason": "unresolved ore dictionary COAL.dust()",
       "expression": "new ItemStack(ModItems.radaway, 1), new Object[] { ModItems.iv_blood, COAL.dust(), Items.pumpkin_seeds }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:148",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item radaway_strong",
+      "reason": "unregistered/ambiguous source item mush",
       "expression": "new ItemStack(ModItems.radaway_strong, 1), new Object[] { ModItems.radaway, ModBlocks.mush }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:149",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item radaway_flush",
-      "expression": "new ItemStack(ModItems.radaway_flush, 1), new Object[] { ModItems.radaway_strong, I.dust() }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:152",
@@ -12208,7 +12316,7 @@
     {
       "source": "src/main/java/com/hbm/crafting/PowderRecipes.java:39",
       "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item ingot_steel_dusted",
+      "reason": "unresolved ore dictionary COAL.dust()",
       "expression": "new ItemStack(ModItems.ingot_steel_dusted, 1), new Object[] { STEEL.ingot(), COAL.dust() }"
     },
     {
@@ -12748,25 +12856,25 @@
     {
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:167",
       "callee": "GameRegistry.addSmelting",
-      "reason": "unregistered/ambiguous source item ingot_chainsteel",
+      "reason": "unsupported expression ItemHot.heatUp(new ItemStack(ModItems.ingot_chainsteel))",
       "expression": "ModItems.ingot_chainsteel, ItemHot.heatUp(new ItemStack(ModItems.ingot_chainsteel)), 0.0F"
     },
     {
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:168",
       "callee": "GameRegistry.addSmelting",
-      "reason": "unregistered/ambiguous source item ingot_meteorite",
+      "reason": "unsupported expression ItemHot.heatUp(new ItemStack(ModItems.ingot_meteorite))",
       "expression": "ModItems.ingot_meteorite, ItemHot.heatUp(new ItemStack(ModItems.ingot_meteorite)), 0.0F"
     },
     {
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:169",
       "callee": "GameRegistry.addSmelting",
-      "reason": "unregistered/ambiguous source item ingot_meteorite_forged",
+      "reason": "unsupported expression ItemHot.heatUp(new ItemStack(ModItems.ingot_meteorite_forged))",
       "expression": "ModItems.ingot_meteorite_forged, ItemHot.heatUp(new ItemStack(ModItems.ingot_meteorite_forged)), 0.0F"
     },
     {
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:170",
       "callee": "GameRegistry.addSmelting",
-      "reason": "unregistered/ambiguous source item blade_meteorite",
+      "reason": "unsupported expression ItemHot.heatUp(new ItemStack(ModItems.blade_meteorite))",
       "expression": "ModItems.blade_meteorite, ItemHot.heatUp(new ItemStack(ModItems.blade_meteorite)), 0.0F"
     },
     {
@@ -12982,32 +13090,20 @@
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:112",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item survey_scanner",
+      "reason": "unresolved ore dictionary ANY_PLASTIC.ingot()",
       "expression": "new ItemStack(ModItems.survey_scanner, 1), new Object[] { \"SWS\", \" G \", \"PCP\", 'W', GOLD.wireFine(), 'P', ANY_PLASTIC.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ADVANCED), 'S', STEEL.plate(), 'G', GOLD.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:113",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item geiger_counter",
+      "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
       "expression": "new ItemStack(ModItems.geiger_counter, 1), new Object[] { \"GPP\", \"WCS\", \"WBB\", 'W', GOLD.wireFine(), 'P', ANY_RUBBER.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BASIC), 'G', GOLD.ingot(), 'S', STEEL.plate(), 'B', BE.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:114",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item dosimeter",
-      "expression": "new ItemStack(ModItems.dosimeter, 1), new Object[] { \"WGW\", \"WCW\", \"WBW\", 'W', KEY_PLANKS, 'G', KEY_ANYPANE, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.VACUUM_TUBE), 'B', BE.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:115",
       "callee": "addShapelessAuto",
       "reason": "unregistered/ambiguous source item geiger",
       "expression": "new ItemStack(ModBlocks.geiger), new Object[] { ModItems.geiger_counter }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:116",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item digamma_diagnostic",
-      "expression": "new ItemStack(ModItems.digamma_diagnostic), new Object[] { ModItems.geiger_counter, PO210.billet(), ASBESTOS.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:117",
@@ -13060,20 +13156,8 @@
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:126",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item pipette",
+      "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
       "expression": "new ItemStack(ModItems.pipette, 1), new Object[] { \"  L\", \" G \", \"G  \", 'L', ANY_RUBBER.ingot(), 'G', KEY_CLEARGLASS}"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:127",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item pipette_boron",
-      "expression": "new ItemStack(ModItems.pipette_boron, 1), new Object[] { \"  P\", \" B \", \"B  \", 'P', RUBBER.ingot(), 'B', ModBlocks.glass_boron}"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:128",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item pipette_laboratory",
-      "expression": "new ItemStack(ModItems.pipette_laboratory, 1), new Object[] { \"  C\", \" R \", \"P  \", 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.CHIP), 'R', RUBBER.ingot(), 'P', ModItems.pipette_boron }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:130",

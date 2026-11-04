@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:syringe_antidote",
+    "count": 6
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SPS",
+    "SMS",
+    "SPS"
+  ],
+  "key": {
+    "S": "ntm:syringe_empty",
+    "P": "minecraft:pumpkin_seeds",
+    "M": "minecraft:sugar_cane"
+  }
+}

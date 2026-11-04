@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:parts_legendary__tier2",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:ingot_chainsteel",
+    "ntm:ingot_bismuth",
+    "ntm:gem_alexandrite",
+    "ntm:gem_alexandrite"
+  ]
+}

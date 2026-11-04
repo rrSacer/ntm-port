@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:mech_key",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MCM",
+    "MKM",
+    "MMM"
+  ],
+  "key": {
+    "M": "ntm:ingot_meteorite_forged",
+    "C": "ntm:coin_maskman",
+    "K": "ntm:key"
+  }
+}
