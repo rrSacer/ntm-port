@@ -219,6 +219,16 @@ impl Server {
         for p in &self.ready.world.prepared_retentions{let g=&p.source.guard;self.ready.world.generations.entry(g.key()).or_insert(g.generation);}
     }
 
+    /// Gives every queued batch that has none its serial (the counter is kept with the journal).
+    pub(super) fn name_batches(&mut self){
+        for i in 0..self.ready.world.machine_effects.len(){
+            if self.ready.world.machine_effects[i].serial==0{
+                self.ready.world.effect_serial+=1;
+                self.ready.world.machine_effects[i].serial=self.ready.world.effect_serial;
+            }
+        }
+    }
+
     pub(super) fn flush_machine_effects(&mut self, host: &mut impl ServerHost) {
         // External facts must invalidate old writes before the first retry.
         if !self.queued.is_empty(){self.native_record_events(host);}
@@ -235,6 +245,9 @@ impl Server {
         //     an explosion, or a block removal with retained drops. These pop from the journal
         //     before the next effect, as always.
         // Plain `Blocks` effects replay harmlessly: the guard compares the cell as it stands.
+        // Every queued batch is named before the first write of the call, so each write holds the serials: the ids
+        // of a batch's effects are the same on a replay, in whatever order the batches go out this time.
+        self.name_batches();
         let mut journaled=false;
         let mut repeatable=false;
         for _ in 0..batches {
@@ -243,12 +256,6 @@ impl Server {
                 let journal=effect.clone();
                 let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::EncodedItems{dim,..}|WorldEffect::PileExplosion{dim,..}=>dim};
                 if !host.pile_reachable(dim){self.ready.world.machine_effects.rotate_left(1);break;}
-                // Name the batch for good before anything is applied: its effects' ids must outlive a crash.
-                if self.ready.world.machine_effects.front().is_some_and(|b|b.serial==0){
-                    self.ready.world.effect_serial+=1;
-                    let serial=self.ready.world.effect_serial;
-                    self.ready.world.machine_effects.front_mut().unwrap().serial=serial;
-                }
                 let (effect_id,replayed)={let b=self.ready.world.machine_effects.front().unwrap();(crate::ledger::effect_id(b.serial,b.done),b.replayed)};
                 let mut wait=false;
                 let mut physical=false;
@@ -293,18 +300,11 @@ impl Server {
                 let unchanged=journaled&&!repeatable&&effect==journal;
                 #[cfg(test)]
                 let unchanged=unchanged&&!self.ready.strict_journal;
-                // Name the batch for good before anything is applied: its effects' ids must outlive a crash.
-                if self.ready.world.machine_effects.front().is_some_and(|b|b.serial==0){
-                    self.ready.world.effect_serial+=1;
-                    let serial=self.ready.world.effect_serial;
-                    self.ready.world.machine_effects.front_mut().unwrap().serial=serial;
-                }
-                let effect_id={let b=self.ready.world.machine_effects.front().unwrap();crate::ledger::effect_id(b.serial,b.done)};
                 self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect.clone();
                 if !unchanged{
                     if let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){host.log(&format!("pending machine effect: {e}"));return;}
                     journaled=true;repeatable=false;
-                if let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){host.log(&format!("pending machine effect: {e}"));return;}
+                }
                 if host.trace_effects(){
                     let b=self.ready.world.machine_effects.front().unwrap();
                     let kind=match &effect{WorldEffect::Blocks{blocks,..}=>format!("blocks {}",blocks.len()),WorldEffect::Items{pos,items,..}=>format!("items {pos:?} {items:?}"),WorldEffect::EncodedItems{pos,items,..}=>format!("encoded {pos:?} {}",items.len()),WorldEffect::PileExplosion{..}=>"explosion".into()};
@@ -517,6 +517,7 @@ impl Server {
                     tombstones: Vec::new(),
                     survivors,
                 ..Default::default()});
+            self.name_batches();
         }
         for (guards,effect) in staged.effects {
             if guards.iter().all(|g|self.current_guard(g)){effect(staged.host);}
@@ -801,6 +802,7 @@ impl Server {
                                 tombstones,
                                 survivors,
                             ..Default::default()});
+                        self.name_batches();
                     }
                     for (guards,effect) in staged.effects {
                         if guards.iter().all(|g|self.current_guard(g)){effect(staged.host);}
