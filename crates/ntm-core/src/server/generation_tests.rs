@@ -308,6 +308,51 @@ fn z(h: &Host) -> ntm_core::zirnox::Zirnox {
     let Data::Zirnox(z) = m.data else { panic!() };
     *z
 }
+
+#[test]
+fn a_receipts_read_only_origin_is_not_a_consumed_machine_after_reopen() {
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let key = (D.to_string(), P);
+    let old_json = h.saved[&P].clone();
+    let guard = super::CellGuard::machine(&key, &s.ready.world.machines[&key]);
+    // Coupled steps name every participant as an origin, including unchanged members. Only another
+    // member emitted an item here; this machine was neither removed nor rewritten by the receipt.
+    s.ready.world.applied_machine_effects.push_back(super::CommittedEffects {
+        origins: vec![guard], owners: vec![key.clone()],
+        effects: std::collections::VecDeque::from([super::WorldEffect::Items {
+            dim: D.into(), pos: [16, 64, 0], items: vec![("ntm:pile_rod__ra226be".into(), 1)],
+        }]), ..Default::default()
+    });
+    h.set(crate::persist::KEY, &s.ready.world.kept(0)).unwrap();
+    let mut reopened = Server::native(&mut h, 2);
+    assert!(reopened.native_adopt(D, P, &old_json));
+    reopened.native_tick(&mut h, 3);
+    assert_eq!(blockstate::id_of(&h.blocks[&P]), zirnox::BLOCK, "a read dependency cannot authorize deleting its BE");
+    assert!(reopened.native_has_machine(D, P));
+    assert_eq!(h.drops, vec![Stack::new("ntm:pile_rod__ra226be", 1)], "the actual effect still completes once");
+}
+
+#[test]
+fn a_newer_generations_receipt_does_not_freeze_an_unreferenced_older_chunk() {
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let key = (D.to_string(), P);
+    let saved = h.saved[&P].clone();
+    let old = s.ready.world.machines.remove(&key).unwrap();
+    let mut future = super::CellGuard::machine(&key, &old);
+    future.generation += 2;
+    s.ready.world.generations.insert(key.clone(), future.generation);
+    s.ready.world.applied_machine_effects.push_back(super::CommittedEffects {
+        origins: vec![future], owners: vec![key.clone()],
+        effects: std::collections::VecDeque::from([super::WorldEffect::Items {
+            dim: D.into(), pos: [16, 64, 0], items: vec![("ntm:pile_rod__ra226be".into(), 1)],
+        }]), ..Default::default()
+    });
+    assert!(s.native_adopt(D, P, &saved), "a reference to another generation is no reference to this BE");
+    assert!(s.native_has_machine(D, P));
+    assert_eq!(s.ready.world.generations[&key], old.generation);
+}
 fn conservation() {
     for (input, n, withdraw, water) in [
         ("minecraft:water_bucket", 1, true, 0),
@@ -794,12 +839,13 @@ fn a_machine_a_receipt_consumed_is_removed_from_an_older_chunk() {
     let key = (D.to_string(), P);
     let guard = super::CellGuard::machine(&key, &s.ready.world.machines[&key]);
     let saved = serde_json::to_string(&s.ready.world.machines[&key]).unwrap();
-    s.ready.world.machines.remove(&key);
+    let consumed = s.ready.world.machines.remove(&key).unwrap();
     s.ready.world.generations.insert(key.clone(), 1);
     s.ready.world.applied_machine_effects.push_back(CommittedEffects {
         serial: 4,
         origins: vec![guard],
         owners: vec![key.clone()],
+        tombstones: vec![(key.clone(), consumed)],
         effects: std::collections::VecDeque::from([WorldEffect::Items { dim: D.into(), pos: P, items: vec![("ntm:pile_rod__zr".into(), 1)] }]),
         ..Default::default()
     });

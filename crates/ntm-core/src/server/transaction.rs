@@ -35,10 +35,11 @@ pub struct CommittedEffects {
     #[serde(default)]
     pub done: u32,
     pub owners: Vec<(String, Pos)>,
+    /// Read guards of the step, including unchanged participants. These do not prove consumption.
     #[serde(default)]
     pub origins: Vec<CellGuard>,
     pub effects: std::collections::VecDeque<WorldEffect>,
-    /// Removed machines retain their contents here until every effect succeeds.
+    /// Proof of consumed model generations, retaining their contents through save confirmation.
     pub tombstones: Vec<((String, Pos), Machine)>,
     /// Runtime only: the batch came back from the storage of an earlier session, so the world's files may be
     /// older than it. Each chunk says by its ledger whether it already holds an effect.

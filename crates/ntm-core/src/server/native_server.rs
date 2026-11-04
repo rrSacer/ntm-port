@@ -193,9 +193,14 @@ impl Server {
         // What the storage's journal says this machine became in a step whose block entities may have reached the disk
         // in different chunks (the newest, if several steps named it).
         let journal = r.world.survivors.get(&key).filter(|s|s.generation==m.generation).cloned();
-        // A machine that an unconfirmed receipt consumed is not brought back by an older chunk: the break goes through.
-        if journal.is_none() && batches.clone().any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)) {
-            let taken = r.world.machine_effects.iter().any(|b|b.effects.iter().any(|e|matches!(e,WorldEffect::Blocks{expected,..} if expected.iter().any(|g|g.key()==key))));
+        // Origins are read dependencies, not evidence of consumption: a coupled step names unchanged members too.
+        // Only a removed model or an explicit replacement of this generation authorizes suppressing its old BE.
+        let rewrites = |b: &CommittedEffects| b.effects.iter().any(|e|matches!(e,
+            WorldEffect::Blocks{dim:target,blocks,expected,..} if target==dim
+                && expected.iter().any(|g|g.key()==key&&g.generation==m.generation)
+                && blocks.iter().any(|(at,state)|*at==pos&&blockstate::id_of(state)!=blockstate::id_of(&m.block))));
+        if journal.is_none() && batches.clone().any(|b|rewrites(b)||b.tombstones.iter().any(|(k,old)|*k==key&&old.generation==m.generation)) {
+            let taken = r.world.machine_effects.iter().any(rewrites);
             if !taken && !r.ghosts.iter().any(|(k,_)|*k==key) {
                 r.ghosts.push((key.clone(), CellGuard{dim:dim.to_string(),pos,generation:m.generation,state:m.block.clone()}));
             }
@@ -212,8 +217,10 @@ impl Server {
                 eprintln!("ntm: {dim} {pos:?}: the chunk is newer than the journal (rev {} > {}); the chunk's state is kept", m.rev, j.rev);
             }
         }
-        let named = batches.clone().any(|b|b.owners.contains(&key)||b.origins.iter().any(|g|g.key()==key)||b.effects.iter().any(|e|matches!(e,WorldEffect::Blocks{expected,..} if expected.iter().any(|g|g.key()==key))))
-            || r.world.removals.iter().any(|x|x.key==key);
+        let named = batches.clone().any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)
+            || b.tombstones.iter().any(|(k,old)|*k==key&&old.generation==m.generation)
+            || b.effects.iter().any(|e|matches!(e,WorldEffect::Blocks{expected,..} if expected.iter().any(|g|g.key()==key&&g.generation==m.generation))))
+            || r.world.removals.iter().any(|x|x.key==key&&x.machine.generation==m.generation);
         let current=r.world.generations.entry(key.clone()).or_insert(m.generation);
         if m.generation<*current {
             if named {return false;}
