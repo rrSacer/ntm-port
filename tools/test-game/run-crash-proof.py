@@ -99,6 +99,15 @@ def sweep(args, base, scratch, env):
         world.script('sweep')
         result['cost'] = evidence(folder, 'sweep').get('sweep_cost')
         world.quit()
+        for mode, key in [('verify', 'first_reopen'), ('again', 'second_reopen')]:
+            world.launch()
+            verified = world.script(mode, check=False)
+            result[key] = evidence(folder, mode).get('counted' + ('_again' if mode == 'again' else ''))
+            if verified:
+                raise AssertionError(key + ' failed after sweep; see counted evidence')
+            if mode == 'again':
+                world.script('drain')
+            world.quit()
         result['ok'] = True
     except Exception as error:
         result['error'] = repr(error)
