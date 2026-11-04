@@ -421,6 +421,9 @@ def medicine(g):
     # The antidote is `clearActivePotions`: the radaway potion goes with the effect list, so the dose stops falling.
     hold(g,'ntm:syringe_antidote',0);cleared=state(g);time.sleep(1.2);later=state(g)
     g.check('antidote_clears_the_radaway_treatment',cleared.get('radaway',0)==0 and later.get('radaway',0)==0 and later['dose']==cleared['dose'],{'treated':treated,'cleared':cleared,'later':later})
+    # Milk clears the ordinary potions too (`HbmPotion.radaway` has curative items): the treatment ends and the dose stays.
+    reset(g,dose=500000);hold(g,'ntm:radaway_flush',0);treated=state(g);give_hand(g,'minecraft:milk_bucket');use(g,2.2);cleared=state(g);time.sleep(1.2);later=state(g)
+    g.check('milk_ends_the_radaway_treatment',treated.get('radaway',0)>=400 and cleared.get('radaway',0)==0 and later.get('radaway',0)==0 and later['dose']==cleared['dose'],{'treated':treated,'cleared':cleared,'later':later})
     # IV bags: blood costs 5 health, then gives 5.
     reset(g);hold(g,'ntm:iv_empty',0);actual=counts(g)
     g.check('iv_empty_takes_five_health_and_fills',abs(health(g)-15)<.6 and actual.get('ntm:iv_blood')==1 and not actual.get('ntm:iv_empty'),{'health':health(g),'counts':actual})
@@ -768,8 +771,10 @@ def capture(g):
     g.check('canteen_cooldown_before_reopen',canteen is not None and 150<=canteen<=180,canteen)
     # The herbal pill's sickness has no curative items: milk leaves it. The pill's -100 RAD moves the dose,
     # so the invariant is read after it.
-    give_hand(g,'ntm:pill_herbal',1,3);use(g,.9);give_hand(g,'minecraft:milk_bucket',1,3);use(g,2.2);time.sleep(.6)
+    give_hand(g,'ntm:pill_herbal',1,3);use(g,.9);give_hand(g,'ntm:radaway_flush',1,3);use(g);treated=state(g).get('radaway',0)
+    give_hand(g,'minecraft:milk_bucket',1,3);use(g,2.2);time.sleep(.6)
     effects=effect_map(g);g.check('herbal_sickness_survives_milk_before_reopen','potion_sickness' in effects and 'weakness' not in effects,effects)
+    g.check('milk_ends_radaway_before_reopen',treated>=400 and state(g).get('radaway',0)==0,{'treated':treated,'after':state(g)})
     g.command('effect give @s ntm:radx 6000 0')
     current=state(g);invariant=current['dose']-1000*current.get('radaway',0)
     expected={'invariant':invariant,'dose':current['dose'],'radaway':current.get('radaway',0),'canteen':canteen}
@@ -788,7 +793,8 @@ def reopened(g):
     # The remembered sickness survived the reopen with its effect: milk still cannot take it away.
     give_hand(g,'minecraft:milk_bucket',1,3);use(g,2.2);time.sleep(.6);effects=effect_map(g)
     g.check('herbal_sickness_survives_milk_after_reopen','potion_sickness' in effects and 'radx' not in effects,effects)
-    g.check('antidote_clear_survives_the_reopen',current.get('radaway',0)<=expected['radaway'],{'before':expected,'after':current})
+    # No dose of RadAway was applied between clearing the counter (milk, with the antidote before it) and the reopen.
+    g.check('cleared_radaway_stays_zero_after_the_reopen',expected['radaway']==0 and current.get('radaway',0)==0 and current['dose']==expected['dose'],{'before':expected,'after':current})
     tag=inventory_tag(g)
     g.check('filter_wear_and_stack_charge_survive','777' in tag and '123456789' in tag and 'ntm_charge' in tag and 'hfrFilter' in tag,tag)
     g.check('armor_mods_survive','ntm_armor_mods' in tag and 'attachment_mask' in tag and 'hazmat_helmet' in tag,tag)

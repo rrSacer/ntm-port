@@ -10,6 +10,7 @@ hooks and is listed in docs/content-catalogo-k2.md.
 # from y = 198 down, as vanilla's inventory screen reads `198 + index / 8 * 18`.
 EFFECTS = [
     ('radx', 'radx', False, 0xBB4B00, (5, 0)),
+    ('radaway', 'radaway', False, 0xBB4B00, (7, 0)),
     ('stability', 'stability', False, 0xD0D0D0, (2, 1)),
     ('death', 'death', False, 0x111111, (4, 1)),
     ('potion_sickness', 'potionsickness', False, 0xFF8080, (3, 1)),

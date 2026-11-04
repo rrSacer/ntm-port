@@ -25,6 +25,11 @@ use ntm_core::{
 /// (or its own expiry) removed it.
 const SICKNESS: &str = "ntm:potion_sickness";
 
+/// `HbmPotion.radaway`: an ordinary, curable potion in the Java (milk and the
+/// antidote end it). The `radaway` counter in the attachment is the treatment;
+/// this effect is its flag, so whatever clears the effect list ends the treatment.
+const RADAWAY: &str = "ntm:radaway";
+
 fn lock<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
     m.lock().unwrap_or_else(|e| e.into_inner())
 }
@@ -616,9 +621,11 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     if let Some(ticks) = sick_ticks {
         set(&mut desired.state, "herbal", ticks);
     }
+    let mut radaway_effect = None;
     if spec.radaway > 0 {
         let remaining = number(&desired.state, "radaway").saturating_add(u64::from(spec.radaway));
         set(&mut desired.state, "radaway", remaining);
+        radaway_effect = Some((RADAWAY.to_string(), remaining.min(i32::MAX as u64) as i32, 0_u8));
     }
     if let Some(millirad) = dose {
         // `incrementRadiation` clamps the dose to 0..2500 RAD.
@@ -636,6 +643,7 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             .effects
             .iter()
             .map(|e| (e.id.clone(), e.ticks, e.amplifier))
+            .chain(radaway_effect)
             .collect(),
         cooldown: (spec.cooldown > 0).then(|| (stack.item.to_string(), spec.cooldown)),
         drops,
@@ -968,9 +976,16 @@ pub(super) fn tick(game: &mut Game<'_>) {
     init(&mut desired, seed);
     let remaining = number(&desired.state, "radaway");
     if remaining > 0 {
-        let dose = number(&desired.state, "dose").saturating_sub(1_000);
-        set(&mut desired.state, "dose", dose);
-        set(&mut desired.state, "radaway", remaining - 1);
+        if game.potions.effects.get(RADAWAY).is_none() && remaining > 2 {
+            // The effect list was cleared (milk, a command) with time left:
+            // the treatment ends with it. Within two ticks of the end the
+            // effect simply ran out.
+            set(&mut desired.state, "radaway", 0);
+        } else {
+            let dose = number(&desired.state, "dose").saturating_sub(1_000);
+            set(&mut desired.state, "dose", dose);
+            set(&mut desired.state, "radaway", remaining - 1);
+        }
     }
     let sickness = number(&desired.state, "sickness");
     if sickness > 0 {
