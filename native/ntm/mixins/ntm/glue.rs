@@ -285,8 +285,267 @@ pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mo
     false
 }
 
+// ----------------------------------------------------------------- the ledger
+// What machines owe the world is kept in the attachments of the chunk of the cell that owes it (see
+// `ntm_core::ledger`): written with the chunk, so it is on disk exactly as the block entity that paid it is.
+
+static LEDGER_TYPE: horizon_world::attachments::AttachmentType<String> = horizon_world::attachments::AttachmentType {
+    namespace: "ntm",
+    name: "ledger",
+    default: String::new,
+    codec: Some(horizon_world::attachments::AttachmentCodec {
+        encode: |v| Ok([("v".into(), Tag::String(JavaString::from(v.as_str())))].into()),
+        decode: |c| match c.get(&"v".into()) {
+            Some(Tag::String(s)) => Ok(s.to_string_lossy()),
+            _ => Err(horizon_world::attachments::AttachmentError::Decode),
+        },
+    }),
+    copy_on_death: false,
+    sync: false,
+};
+/// Names the effect an item entity belongs to, saved with the entity: how a reopened world recognises it.
+static EFFECT_TYPE: horizon_world::attachments::AttachmentType<String> = horizon_world::attachments::AttachmentType {
+    namespace: "ntm",
+    name: "effect",
+    default: String::new,
+    codec: Some(horizon_world::attachments::AttachmentCodec {
+        encode: |v| Ok([("v".into(), Tag::String(JavaString::from(v.as_str())))].into()),
+        decode: |c| match c.get(&"v".into()) {
+            Some(Tag::String(s)) => Ok(s.to_string_lossy()),
+            _ => Err(horizon_world::attachments::AttachmentError::Decode),
+        },
+    }),
+    copy_on_death: false,
+    sync: false,
+};
+
+type ChunkKey = (String, i32, i32);
+/// The ledgers of the loaded chunks that have one, as the chunks hold them.
+static LEDGERS: Mutex<std::collections::BTreeMap<ChunkKey, ntm_core::ledger::ChunkLedger>> = Mutex::new(std::collections::BTreeMap::new());
+/// The item entities of each spawned entry (dimension, effect id, stack index), with the chunk each was last seen in.
+static TRACKED: Mutex<std::collections::BTreeMap<(String, u64, u32), Vec<(u32, [i32; 2])>>> = Mutex::new(std::collections::BTreeMap::new());
+/// Chunks whose saved entities have joined the world.
+static ENTITIES_READY: Mutex<std::collections::BTreeSet<ChunkKey>> = Mutex::new(std::collections::BTreeSet::new());
+/// Chunks whose entities left the world to be saved since the last tick: an entity that is gone from there is not paid.
+static ENTITIES_UNLOADED: Mutex<std::collections::BTreeSet<ChunkKey>> = Mutex::new(std::collections::BTreeSet::new());
+
+fn chunk_key(dim: &str, chunk: [i32; 2]) -> ChunkKey {
+    (dim.to_string(), chunk[0], chunk[1])
+}
+
+/// The ledger the chunk's attachments hold. Read from their saved form, so that loading a chunk does not
+/// mark it to be saved again.
+fn ledger_load(g: &mut crate::game::Game<'_>, chunk: [i32; 2]) -> ntm_core::ledger::ChunkLedger {
+    let json = g
+        .world
+        .chunks
+        .get(&(chunk[0], chunk[1]))
+        .and_then(|c| c.saved.as_ref())
+        .map(|extras| extras.attachments.to_nbt())
+        .and_then(|nbt| match nbt.get(&JavaString::from("ntm"))? {
+            Tag::Compound(names) => match names.get(&JavaString::from("ledger"))? {
+                Tag::Compound(value) => match value.get(&JavaString::from("v"))? {
+                    Tag::String(text) => Some(text.to_string_lossy()),
+                    _ => None,
+                },
+                _ => None,
+            },
+            _ => None,
+        });
+    json.map(|j| ntm_core::ledger::ChunkLedger::from_json(&j)).unwrap_or_default()
+}
+
+/// Writes the ledger into the chunk's attachments (and keeps it for the ticks), on the level in place.
+fn ledger_store(g: &mut crate::game::Game<'_>, key: &ChunkKey, ledger: ntm_core::ledger::ChunkLedger) {
+    use horizon_client::mod_api::Holder;
+    if let Ok(map) = g.attachment_map_quiet(Holder::Chunk([key.1, key.2])) {
+        let _ = map.set(&LEDGER_TYPE, if ledger.is_empty() { String::new() } else { ledger.to_json() });
+    }
+    let mut ledgers = lock(&LEDGERS);
+    if ledger.is_empty() {
+        ledgers.remove(key);
+    } else {
+        ledgers.insert(key.clone(), ledger);
+    }
+}
+
+fn ledger_get(g: &mut crate::game::Game<'_>, key: &ChunkKey) -> ntm_core::ledger::ChunkLedger {
+    let cached = lock(&LEDGERS).get(key).cloned();
+    cached.unwrap_or_else(|| ledger_load(g, [key.1, key.2]))
+}
+
+/// Owes `items` (SNBT stacks) at `pos` for the effect `id`, on the level in place. True when the effect is
+/// owed now or was before; false when its chunk is not loaded (the effect is retried).
+fn ledger_add_here(g: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32; 3], items: Vec<String>) -> bool {
+    if !g.world.loaded(pos[0], pos[2]) {
+        return false;
+    }
+    let key = chunk_key(dim, [pos[0] >> 4, pos[2] >> 4]);
+    let mut ledger = ledger_get(g, &key);
+    if ledger.apply(id, pos, items) {
+        ledger_store(g, &key, ledger);
+    }
+    true
+}
+
+fn ledger_add(game: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32; 3], items: Vec<String>) -> bool {
+    in_place(game, dim, |g| ledger_add_here(g, dim, id, pos, items)).unwrap_or(false)
+}
+
+fn item_snbt(stack: &ItemStack) -> String {
+    horizon_world::snbt_text::to_snbt(&horizon_client::save::item_to_nbt(stack))
+}
+
+/// Forgets the paid ids the storage no longer names, in every loaded chunk that keeps some.
+fn ledger_prune(game: &mut crate::game::Game<'_>, live: &std::collections::BTreeSet<u64>) {
+    let keys: Vec<ChunkKey> = lock(&LEDGERS).iter().filter(|(_, l)| !l.applied.is_empty()).map(|(k, _)| k.clone()).collect();
+    for key in keys {
+        in_place(game, &key.0.clone(), |g| {
+            let mut ledger = ledger_get(g, &key);
+            if ledger.prune(live) {
+                ledger_store(g, &key, ledger);
+            }
+        });
+    }
+}
+
+/// The chunk whose position `p` is in.
+fn chunk_at(p: &horizon_core::geometry::Vec3) -> [i32; 2] {
+    [(p.x.floor() as i32) >> 4, (p.z.floor() as i32) >> 4]
+}
+
+/// The tag a loaded item entity was saved with, if it is one of ours.
+fn entity_effect(g: &mut crate::game::Game<'_>, entity: u32) -> Option<String> {
+    let uuid = *g.persist.uuids.get(&entity)?;
+    g.entity_attachments.get_mut(&uuid)?.get_existing(&EFFECT_TYPE).ok().flatten().filter(|t| !t.is_empty())
+}
+
+/// Every owed stack of one chunk: spawn what is pending, retire what was paid, find again after a reopen what
+/// was spawned, and spawn again what a reopened world proves never reached its files.
+fn ledger_chunk(g: &mut crate::game::Game<'_>, key: &ChunkKey, unloaded: &std::collections::BTreeSet<ChunkKey>) {
+    if !lock(&ENTITIES_READY).contains(key) || !g.world.loaded(key.1 * 16, key.2 * 16) {
+        return;
+    }
+    let mut ledger = ledger_get(g, key);
+    let mut changed = false;
+    for entry in ledger.entries.clone() {
+        let tkey = (key.0.clone(), entry.id, entry.idx);
+        let tag = ntm_core::ledger::entity_tag(entry.id, entry.idx);
+        let mut state = entry.state;
+        if state == ntm_core::ledger::State::Spawned {
+            let tracked = lock(&TRACKED).get(&tkey).cloned();
+            match tracked {
+                Some(list) => {
+                    let alive: Vec<(u32, [i32; 2])> = list
+                        .iter()
+                        .filter_map(|(id, _)| g.dropped.iter().find(|d| d.id == *id && d.stack.count > 0).map(|d| (d.id, chunk_at(&d.position))))
+                        .collect();
+                    if alive.is_empty() {
+                        // Gone: paid (picked up, merged, burnt) unless its chunk's entities were just put away to be saved.
+                        let put_away = list.iter().any(|(_, c)| unloaded.contains(&chunk_key(&key.0, *c)) || !g.world.loaded(c[0] * 16, c[1] * 16));
+                        lock(&TRACKED).remove(&tkey);
+                        if !put_away {
+                            ledger.retire(entry.id, entry.idx);
+                            changed = true;
+                        }
+                    } else {
+                        lock(&TRACKED).insert(tkey, alive);
+                    }
+                    continue;
+                }
+                None => {
+                    // After a reopen: its entity is in the world if its file got it.
+                    let ids: Vec<(u32, [i32; 2])> = g.dropped.iter().map(|d| (d.id, chunk_at(&d.position))).collect();
+                    let mut found: Vec<(u32, [i32; 2])> = Vec::new();
+                    for (id, chunk) in ids {
+                        if entity_effect(g, id).as_deref() == Some(tag.as_str()) {
+                            found.push((id, chunk));
+                        }
+                    }
+                    if !found.is_empty() {
+                        lock(&TRACKED).insert(tkey, found);
+                        continue;
+                    }
+                    // Not in the world: it never reached the files, unless it wandered to a chunk that has not loaded.
+                    let ready = lock(&ENTITIES_READY).clone();
+                    let around = (-1..=1).all(|dx| (-1..=1).all(|dz| {
+                        let (cx, cz) = (key.1 + dx, key.2 + dz);
+                        !g.world.loaded(cx * 16, cz * 16) || ready.contains(&(key.0.clone(), cx, cz))
+                    }));
+                    if !around {
+                        continue;
+                    }
+                    state = ntm_core::ledger::State::Pending;
+                }
+            }
+        }
+        if state == ntm_core::ledger::State::Pending {
+            let parsed = horizon_world::nbt::parse_snbt(&entry.item).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t));
+            let Some(stack) = parsed else {
+                eprintln!("ntm: invalid owed item NBT {:?}", entry.item);
+                continue;
+            };
+            let at = entry.at.map(|v| f64::from(v) + 0.5);
+            g.spawn_item(stack, at, crate::game::dispenser::new_item_motion(), 0);
+            let spawned = g.just_spawned_item().map(|d| (d.id, chunk_at(&d.position)));
+            if let Some((eid, chunk)) = spawned {
+                use horizon_client::mod_api::Holder;
+                if let Ok(map) = g.attachment_map_quiet(Holder::Entity(eid)) {
+                    let _ = map.set(&EFFECT_TYPE, tag);
+                }
+                lock(&TRACKED).insert(tkey, vec![(eid, chunk)]);
+            }
+            ledger.mark_spawned(entry.id, entry.idx);
+            changed = true;
+        }
+    }
+    if changed {
+        ledger_store(g, key, ledger);
+    }
+}
+
+fn ledger_tick(game: &mut crate::game::Game<'_>) {
+    let keys: Vec<ChunkKey> = lock(&LEDGERS).iter().filter(|(_, l)| !l.entries.is_empty()).map(|(k, _)| k.clone()).collect();
+    if keys.is_empty() {
+        return;
+    }
+    let unloaded = std::mem::take(&mut *lock(&ENTITIES_UNLOADED));
+    for key in keys {
+        in_place(game, &key.0.clone(), |g| ledger_chunk(g, &key, &unloaded));
+    }
+}
+
+/// A chunk loaded: its ledger, if it has one, is read and kept.
+pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2]) {
+    if dim_of(dim) != Some(game.dim) {
+        return;
+    }
+    let ledger = ledger_load(game, chunk);
+    if !ledger.is_empty() {
+        lock(&LEDGERS).insert(chunk_key(dim, chunk), ledger);
+    }
+}
+
+pub(super) fn chunk_unloaded(dim: &str, chunk: [i32; 2]) {
+    let key = chunk_key(dim, chunk);
+    lock(&LEDGERS).remove(&key);
+    lock(&ENTITIES_READY).remove(&key);
+    lock(&TRACKED).retain(|(d, _, _), v| !(d == dim && v.iter().all(|(_, c)| *c == chunk)));
+}
+
+pub(super) fn entities_loaded(dim: &str, chunk: [i32; 2]) {
+    lock(&ENTITIES_READY).insert(chunk_key(dim, chunk));
+}
+
+pub(super) fn entities_put_away(dim: &str, chunk: [i32; 2]) {
+    let key = chunk_key(dim, chunk);
+    lock(&ENTITIES_READY).remove(&key);
+    lock(&ENTITIES_UNLOADED).insert(key);
+}
+
 /// The end of a server tick: the server's phases.
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
+    ledger_tick(game);
     let mut retry=Vec::new();
     for (origin,expected) in std::mem::take(&mut *lock(&POST_SYNC)){
         // Any identity change since this committed sync makes it obsolete.
@@ -478,9 +737,9 @@ impl Host<'_, '_> {
             if self.game.native_loaded_block(&d.origin.dim,d.origin.pos).is_none(){return false;}
             let Some(dim)=dim_of(&d.origin.dim)else{return false};
             if self.game.visit_level(dim,|_|()).is_none(){return false;}
-            let items:Option<Vec<_>>=d.items.iter().map(|i|horizon_world::nbt::parse_snbt(i).ok().and_then(|(t,_)|horizon_client::save::item_from_nbt(&t))).collect();
-            let Some(items)=items else{return false};
-            spawn.push((dim,d.origin.pos,items));
+            let valid=d.items.iter().all(|i|horizon_world::nbt::parse_snbt(i).ok().and_then(|(t,_)|horizon_client::save::item_from_nbt(&t)).is_some());
+            if !valid{return false;}
+            spawn.push((dim,d.origin.dim.clone(),d.origin.pos,ntm_core::ledger::retained_id(&d.origin.dim,d.origin.pos,d.origin.generation),d.items.clone()));
         }
         let mut notify=Vec::new();
         let mut signals=Vec::new();
@@ -520,8 +779,10 @@ impl Host<'_, '_> {
             }).expect("preflight retains visited level");
         }
         // Retained contents publish in the same exclusive, infallible commit.
-        for (dim,pos,items) in spawn {
-            self.game.visit_level(dim,|g|for item in items{g.spawn_item(item,pos.map(|n|f64::from(n)+0.5),crate::game::dispenser::new_item_motion(),0);}).expect("retained drop level passed preflight");
+        // Owed in the chunk of the consumed cell, in the same step that took them out of it.
+        for (dim,dim_name,pos,id,items) in spawn {
+            let owed=self.game.visit_level(dim,|g|ledger_add_here(g,&dim_name,id,pos,items)).expect("retained drop level passed preflight");
+            assert!(owed,"the consumed cell's chunk is loaded");
         }
         // All BE and cell writes now exist. Notify through vanilla Sim only.
         // Failures after this boundary are diagnostics/sync retries; NEVER a
@@ -586,6 +847,16 @@ impl ServerHost for Host<'_, '_> {
             for (id,n) in items {g.spawn_item(ItemStack::new(id,*n),at,crate::game::dispenser::new_item_motion(),0);}
         }).is_some()
     }
+    fn apply_items(&mut self,id:u64,dim:&str,p:[i32;3],items:&[(String,u32)])->bool{
+        let stacks=items.iter().filter(|(_,n)|*n>0).map(|(i,n)|item_snbt(&ItemStack::new(i,*n))).collect();
+        ledger_add(self.game,dim,id,p,stacks)
+    }
+    fn apply_encoded_items(&mut self,id:u64,dim:&str,p:[i32;3],items:&[String])->bool{
+        let valid=items.iter().all(|i|horizon_world::nbt::parse_snbt(i).ok().and_then(|(t,_)|horizon_client::save::item_from_nbt(&t)).is_some());
+        if !valid{eprintln!("ntm: invalid retained item NBT at {dim} {p:?}");return false;}
+        ledger_add(self.game,dim,id,p,items.to_vec())
+    }
+    fn ledger_prune(&mut self,live:&std::collections::BTreeSet<u64>){ledger_prune(self.game,live);}
     fn pile_depletion(&mut self, stack: &Stack) -> f64 {
         stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
     }
