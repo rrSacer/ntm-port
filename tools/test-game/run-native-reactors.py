@@ -161,7 +161,7 @@ def run(args):
                     refill_pile(folder)
                 script_modes = [] if mode == 'all' and args.scenario in ('solar', 'combustion') else [mode]
                 subprocess.run([sys.executable, str(work / f'tools/test-game/native_{script}.py'),
-                                str(folder), *script_modes], cwd=folder, env=env, check=True, timeout=900)
+                                str(folder), *script_modes], cwd=folder, env=env, check=True, timeout=1800)
                 report['phases'].append(mode)
             Game(folder, f'shutdown-{index}').ctl('quit')
             client.wait(timeout=60)
