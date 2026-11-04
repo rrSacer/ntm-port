@@ -178,10 +178,10 @@ fn remove_filter(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     data.remove(&JavaString::from("hfrFilter"));
     held.data_mut()
         .set_other("minecraft:custom_data", Some(Tag::Compound(data)));
-    // `dropPlayerItemWithRandomChoice(filter, true)`.
+    // `dropPlayerItemWithRandomChoice(filter, true)`: 1.7.10 ignores the flag.
     let drops: Vec<_> = add_stack(game, &mut desired.inventory, filter, None)
         .into_iter()
-        .map(|d| NativeDrop::new(d, NativeDropMode::Random))
+        .map(|d| NativeDrop::new(d, NativeDropMode::Thrown))
         .collect();
     game.native_commit_player(
         &STATE,

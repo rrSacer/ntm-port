@@ -55,17 +55,30 @@ seu modo:
 
 | Modo | Java 1.7.10 | Posição, velocidade, delay | Quem usa |
 | --- | --- | --- | --- |
-| `Hand` | `dropPlayerItem` (`func_146097_a(stack, false, true)`): tecla de drop e clique THROW | o `player_drop` do motor: thrower, estatística de drop e balanço da mão | clique THROW na mesa |
-| `Thrown` | `dropPlayerItemWithRandomChoice(stack, false)` | olhos − 0,3; `-sin(yaw)·cos(pitch)·0,3`, `-sin(pitch)·0,3 + 0,1`, mais ruído `0,02·rand` num ângulo aleatório e `(rand−rand)·0,1` em Y; delay 40; sem thrower nem estatística de mão | `tryAddItem` (seringa, RadAway) e o fechamento da mesa (`onContainerClosed`) |
-| `Random` | `dropPlayerItemWithRandomChoice(stack, true)` | olhos − 0,3; `f = rand·0,5`, `a = rand·2π`, `(−sin a·f, 0,2, cos a·f)`; delay 40 | filtro tirado da máscara |
-| `World { delay }` | `new EntityItem(world, x, y, z, stack)` | no jogador com `y + eyeHeight`; o construtor dá `(float)(rand·0,2 − 0,1)` em X e Z e `0,2` em Y; delay é o do chamador | `giveHaz` não define delay, então vale o padrão do campo, 0 |
+| `Hand` | `func_146097_a(stack, false, true)`: tecla de drop e clique THROW | o `player_drop` do motor: thrower, estatística de drop e balanço da mão | clique THROW na mesa |
+| `Thrown` | `dropPlayerItemWithRandomChoice(stack, qualquer)`, que **ignora o flag** e chama `func_146097_a(stack, false, false)` | olhos − 0,3; `-sin(yaw)·cos(pitch)·0,3`, `-sin(pitch)·0,3 + 0,1`, mais `cos(a)·0,02·rand` em X, `sin(a)·0,02·rand` em Z (`a = rand·2π`) e `(rand−rand)·0,1` em Y; delay 40; sem thrower; estatística de drop contada uma vez, sem balanço | `tryAddItem` (seringa, RadAway), o filtro tirado da máscara e o fechamento da mesa |
+| `World { delay }` | `new EntityItem(world, x, y, z, stack)` | no jogador com `y + eyeHeight`; o construtor dá `(float)(rand·0,2 − 0,1)` em X e Z e `0,2` em Y; delay é o do chamador; sem estatística | `giveHaz` não define delay, então vale o campo, 0 |
 
-`Thrown` é o `throw_from_eyes(.., false)` que o motor já usava nos demais
-"não coube": a equivalência com `Player.drop(stack, false)` está na fórmula acima.
-As fórmulas de `Random` e `World` estão em `random_toss_velocity` e
-`world_item_velocity`, com teste unitário. O padrão 0 do delay do `EntityItem` e o
-salto do construtor vêm do 1.7.10 de memória: o fonte do Minecraft não está no
-repositório (só o do HBM), então ficam marcados para conferir no decompilado.
+`Thrown` é o `throw_from_eyes(.., false)` que o motor já usava nos demais "não coube",
+mais a estatística. O `Random` que eu havia previsto (`func_146097_a(.., true, ..)`:
+`f = rand·0,5`, `a = rand·2π`, `(−sin a·f, 0,2, cos a·f)`) só é alcançado pelos drops
+de morte do vanilla; nenhum fonte do HBM o chama (o `dropPlayerItemWithRandomChoice(filter,
+true)` da máscara não o alcança), então o modo não existe no port.
+
+Origem verificada: decompilado (CFR 0.152, lido como dado, nada executado) do
+`server.jar` oficial do 1.7.10 (sha1 `952438ac4e01b4d115c5fc38f891710c4941df29`, pelo
+manifest da Mojang). Nomes ofuscados do jar: `EntityItem` é `xk` e `EntityPlayer` é `yz`.
+
+| Fato | Onde (decompilado) |
+| --- | --- |
+| salto do construtor: `motionX = (float)(random·0,2 − 0,1)`, `motionY = 0,2f`, `motionZ` igual, yaw `random·360` | `xk` linhas 17 a 26 (construtor de 3 coordenadas; o de 5 só chama `setEntityItemStack`) |
+| `delayBeforeCanPickup` é o campo `public int b` de `xk`, sem inicializador: padrão 0; `onCollideWithPlayer` pega com `b == 0` | `xk` linha 11 |
+| `dropPlayerItemWithRandomChoice(stack, flag)` ignora o flag: `return func_146097_a(stack, false, false)` | `yz` linhas 411 a 413 |
+| posição `posY − 0,3 + eyeHeight`, delay 40, thrower só se o 3º argumento, estatística `stat.drop` em todos os modos | `yz` linhas 422 a 426 e 446 |
+| fórmula do ramo `false`: 0,3, `+0,1`, ruído `0,02·rand`, `(rand−rand)·0,1` | `yz` linhas 435 a 443 |
+
+Os números do salto e do delay 0 deixaram de ser de memória. O `giveHaz` não define
+delay nem thrower, então o `World { delay: 0 }` do kit é fiel.
 
 ## Uso e previsão
 
@@ -234,9 +247,8 @@ Limites desta aceitação:
 - Não há roteiro de dois clientes: o hóspede LAN é coberto pelo motor (o jogador
   local já entra como hóspede da instância integrada) e pelo teste do hub, não por
   um segundo cliente.
-- O delay 0 e o salto do `EntityItem` (kit) são do 1.7.10 de memória, a conferir no
-  decompilado. Um jogador com espaço recolhe de volta a peça trocada do kit na hora,
-  como no Java.
+- Um jogador com espaço recolhe de volta a peça trocada do kit na hora, como no Java
+  (delay 0, conferido no decompilado do 1.7.10).
 - `/ntmitem charge` prova o `patch_stack` num `minecraft:stick`. Nenhum item elétrico
   real está portado (as baterias de item são só identidades), então o teste com
   bateria real fica como pendência da família de baterias de item.
