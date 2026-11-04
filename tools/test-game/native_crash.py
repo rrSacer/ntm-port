@@ -8,7 +8,8 @@ Modes (the runner, run-crash-proof.py, owns the game process and the kill):
   verify   after a reopen: wait until the ledger settles, then count every rod the world holds
   again    verify once more after a second clean reopen (nothing must spawn again)
   drain    remove every rod entity and check that what was owed is retired
-Rods: 10 = 5 + 5 `ntm:pile_rod__ra226be`, in channels, loaders, item entities or owed by the ledger.
+Rods: 10 = 5 + 5 `ntm:pile_rod__ra226be` in the pile, plus 2 plain ones on the ground where they fall: 12, in channels,
+loaders, item entities or owed by the ledger.
 """
 import json
 import re
@@ -21,7 +22,9 @@ CORE = (47, 102, 8)
 CHANNELS = [(46, 102, 8), (48, 102, 8)]
 LOADERS = [(46, 102, 7), (48, 102, 7)]
 ROD = 'ntm:pile_rod__ra226be'
-TOTAL = 10
+PILE = 10
+COMMON = 2  # plain rods lying where the pile's rods fall, for the merge cases
+TOTAL = PILE + COMMON
 
 
 def ledger(g):
@@ -105,8 +108,11 @@ def prepare(g):
             interact(g, p, 'north', (p[0] + .5, 101, p[2] - 2.5))
             interact(g, p, 'north')
             time.sleep(1.6)
+    for x in (46.5, 48.5):
+        g.command(f'summon minecraft:item {x} 103 13.5 {{Item:{{id:"{ROD}",count:1}}}}')
+    time.sleep(2)
     base = count(g)
-    g.check('ten_rods_in_the_pile', base['channels'] + base['loaders'] == TOTAL and base['entities'] == 0, base)
+    g.check('ten_rods_in_the_pile', base['channels'] + base['loaders'] == PILE and base['entities'] == COMMON, base)
     g.command('clear @s')
     g.evidence['base'] = base
     g.ctl('save')
@@ -116,7 +122,7 @@ def undo(g):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
     before = count(g)
-    g.check('start_from_ten_in_the_pile', before['channels'] + before['loaders'] == TOTAL, before)
+    g.check('start_from_ten_in_the_pile', before['channels'] + before['loaders'] == PILE and before['entities'] == COMMON, before)
     tool(g)
     for p in LOADERS:
         interact(g, p, 'north', (p[0] + .5, 101, p[2] - 3.5))

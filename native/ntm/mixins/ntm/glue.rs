@@ -77,6 +77,7 @@ pub(super) fn world(open: bool) {
 /// A flushed world save makes already applied item/block effects durable.
 pub(super) fn world_saved(game:&mut crate::game::Game<'_>,wait:bool){
     let changes=std::mem::take(&mut *lock(&CHANGES));
+    if wait{ledger_confirm(game);}
     if let Some((server,_))=lock(&SERVER).as_mut(){
         let mut host=Host{game,buttons:Vec::new()};
         for (dim,pos,old,new) in changes {
@@ -441,7 +442,7 @@ fn ledger_chunk(g: &mut crate::game::Game<'_>, key: &ChunkKey, unloaded: &std::c
     let mut changed = false;
     for entry in ledger.entries.clone() {
         let tkey = (key.0.clone(), entry.id, entry.idx);
-        let tag = ntm_core::ledger::entity_tag(entry.id, entry.idx);
+        let tag = ntm_core::ledger::entity_tag(entry.id, entry.idx, [key.1, key.2]);
         let mut state = entry.state;
         if state == ntm_core::ledger::State::Spawned {
             let tracked = lock(&TRACKED).get(&tkey).cloned();
@@ -477,6 +478,9 @@ fn ledger_chunk(g: &mut crate::game::Game<'_>, key: &ChunkKey, unloaded: &std::c
                         }
                     }
                     if !found.is_empty() {
+                        for d in g.dropped.iter_mut().filter(|d| found.iter().any(|(id, _)| *id == d.id)) {
+                            d.merge_key = ntm_core::ledger::merge_key([key.1, key.2]);
+                        }
                         // The entities may be older than the record (a crash between their files): what the
                         // record says is owed is what the world must hold.
                         let owed = if entry.live > 0 { entry.live } else { item_count(&entry.item) };
@@ -515,7 +519,10 @@ fn ledger_chunk(g: &mut crate::game::Game<'_>, key: &ChunkKey, unloaded: &std::c
             }
             let at = entry.at.map(|v| f64::from(v) + 0.5);
             g.spawn_item(stack, at, crate::game::dispenser::new_item_motion(), 0);
-            let spawned = g.just_spawned_item().map(|d| (d.id, chunk_at(&d.position)));
+            let spawned = g.just_spawned_item().map(|d| {
+                d.merge_key = ntm_core::ledger::merge_key([key.1, key.2]);
+                (d.id, chunk_at(&d.position))
+            });
             if let Some((eid, chunk)) = spawned {
                 use horizon_client::mod_api::Holder;
                 if let Ok(map) = g.attachment_map_quiet(Holder::Entity(eid)) {
@@ -536,11 +543,11 @@ fn item_count(item: &str) -> u32 {
     horizon_world::nbt::parse_snbt(item).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t)).map_or(0, |s| s.count)
 }
 
-/// Item entities that carry the tag of a stack the ledger has paid are older copies of it (the entity files
+/// Item entities that carry the tag of a stack the ledger has seen go are older copies of it (the entity files
 /// lag the chunk record after a crash, and the stack has merged or been taken since): they go.
 fn ledger_stale(game: &mut crate::game::Game<'_>) {
-    let paid: std::collections::BTreeSet<u64> = lock(&LEDGERS).values().flat_map(|l| l.applied.iter().copied()).collect();
-    if paid.is_empty() {
+    let any_gone = lock(&LEDGERS).values().any(|l| !l.gone.is_empty());
+    if !any_gone {
         return;
     }
     let ready = lock(&ENTITIES_READY).clone();
@@ -551,11 +558,54 @@ fn ledger_stale(game: &mut crate::game::Game<'_>) {
             continue;
         }
         let Some(tag) = entity_effect(game, id) else { continue };
-        let Some((effect, idx)) = ntm_core::ledger::parse_tag(&tag) else { continue };
-        let owed = lock(&LEDGERS).values().any(|l| l.entries.iter().any(|e| e.id == effect && e.idx == idx));
-        if paid.contains(&effect) && !owed && let Some(i) = game.dropped.iter().position(|d| d.id == id) {
+        let Some((effect, idx, _)) = ntm_core::ledger::parse_tag(&tag) else { continue };
+        let (gone, owed) = {
+            let ledgers = lock(&LEDGERS);
+            (ledgers.values().any(|l| l.is_gone(effect, idx)), ledgers.values().any(|l| l.entries.iter().any(|e| e.id == effect && e.idx == idx)))
+        };
+        if gone && !owed && let Some(i) = game.dropped.iter().position(|d| d.id == id) {
             game.remove_dropped(i);
         }
+    }
+}
+
+/// A confirmed world save (`wait`: `entities/` and `region/` are on disk) keeps every item entity the ledger
+/// follows: from here the world's own files hold them as they hold any drop, and the ledger lets go. They
+/// merge as vanilla's do again.
+fn ledger_confirm(game: &mut crate::game::Game<'_>) {
+    let keys: Vec<ChunkKey> = lock(&LEDGERS).iter().filter(|(_, l)| l.entries.iter().any(|e| e.state == ntm_core::ledger::State::Spawned)).map(|(k, _)| k.clone()).collect();
+    for key in keys {
+        in_place(game, &key.0.clone(), |g| {
+            let mut ledger = ledger_get(g, &key);
+            let mut changed = false;
+            for entry in ledger.entries.clone() {
+                if entry.state != ntm_core::ledger::State::Spawned {
+                    continue;
+                }
+                let tkey = (key.0.clone(), entry.id, entry.idx);
+                let Some(list) = lock(&TRACKED).get(&tkey).cloned() else { continue };
+                let alive: Vec<u32> = list.iter().filter(|(id, _)| g.dropped.iter().any(|d| d.id == *id && d.stack.count > 0)).map(|(id, _)| *id).collect();
+                // Only entities whose chunk is loaded and ready were part of this save.
+                if alive.is_empty() || alive.len() != list.len() {
+                    continue;
+                }
+                for id in &alive {
+                    if let Some(d) = g.dropped.iter_mut().find(|d| d.id == *id) {
+                        d.merge_key = 0;
+                    }
+                    use horizon_client::mod_api::Holder;
+                    if let Ok(map) = g.attachment_map_quiet(Holder::Entity(*id)) {
+                        let _ = map.set(&EFFECT_TYPE, String::new());
+                    }
+                }
+                lock(&TRACKED).remove(&tkey);
+                ledger.release(entry.id, entry.idx);
+                changed = true;
+            }
+            if changed {
+                ledger_store(g, &key, ledger);
+            }
+        });
     }
 }
 
@@ -603,6 +653,7 @@ fn ledger_tick(game: &mut crate::game::Game<'_>) {
     }
     let keys: Vec<ChunkKey> = lock(&LEDGERS).iter().filter(|(_, l)| !l.entries.is_empty()).map(|(k, _)| k.clone()).collect();
     if keys.is_empty() {
+        ledger_stale(game);
         return;
     }
     let unloaded = std::mem::take(&mut *lock(&ENTITIES_UNLOADED));
@@ -632,8 +683,19 @@ pub(super) fn chunk_unloaded(dim: &str, chunk: [i32; 2]) {
     lock(&TRACKED).retain(|(d, _, _), v| !(d == dim && v.iter().all(|(_, c)| *c == chunk)));
 }
 
-pub(super) fn entities_loaded(dim: &str, chunk: [i32; 2]) {
+pub(super) fn entities_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2]) {
     lock(&ENTITIES_READY).insert(chunk_key(dim, chunk));
+    if dim_of(dim) != Some(game.dim) {
+        return;
+    }
+    // Drops a ledger followed come back marked, before any of them can merge.
+    let ids: Vec<u32> = game.dropped.iter().filter(|d| chunk_at(&d.position) == chunk).map(|d| d.id).collect();
+    for id in ids {
+        let Some((_, _, origin)) = entity_effect(game, id).and_then(|t| ntm_core::ledger::parse_tag(&t)) else { continue };
+        if let Some(d) = game.dropped.iter_mut().find(|d| d.id == id) {
+            d.merge_key = ntm_core::ledger::merge_key(origin);
+        }
+    }
 }
 
 pub(super) fn entities_put_away(dim: &str, chunk: [i32; 2]) {

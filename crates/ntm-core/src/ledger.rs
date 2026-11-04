@@ -74,15 +74,23 @@ fn is_zero(n: &u32) -> bool {
     *n == 0
 }
 
-/// The entry an entity tag names.
-pub fn parse_tag(tag: &str) -> Option<(u64, u32)> {
-    let (id, idx) = tag.split_once(':')?;
-    Some((u64::from_str_radix(id, 16).ok()?, idx.parse().ok()?))
+/// The entry an entity tag names, and the chunk whose ledger owns it.
+pub fn parse_tag(tag: &str) -> Option<(u64, u32, [i32; 2])> {
+    let (stack, chunk) = tag.split_once('@')?;
+    let (id, idx) = stack.split_once(':')?;
+    let (cx, cz) = chunk.split_once(',')?;
+    Some((u64::from_str_radix(id, 16).ok()?, idx.parse().ok()?, [cx.parse().ok()?, cz.parse().ok()?]))
 }
 
-/// The name an item entity carries for its entry: `<id>:<idx>`.
-pub fn entity_tag(id: u64, idx: u32) -> String {
-    format!("{id:016x}:{idx}")
+/// The name an item entity carries for its entry: `<id>:<idx>@<chunk x>,<chunk z>`.
+pub fn entity_tag(id: u64, idx: u32, chunk: [i32; 2]) -> String {
+    format!("{id:016x}:{idx}@{},{}", chunk[0], chunk[1])
+}
+
+/// What the entities of a chunk's ledger carry as `ItemEntity.merge_key` while it follows them: items of
+/// one ledger fold into each other (one record keeps the count), never into other items.
+pub fn merge_key(chunk: [i32; 2]) -> u64 {
+    fnv(&[b"merge", &chunk[0].to_le_bytes(), &chunk[1].to_le_bytes()]) | 1
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -92,11 +100,15 @@ pub struct ChunkLedger {
     /// Ids whose effect was applied and is paid, kept until the host's storage forgets the effect.
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty", with = "hex_set")]
     pub applied: BTreeSet<u64>,
+    /// Stacks whose entities are gone (picked up, merged away, burnt) and whose effect is still named by the
+    /// host's storage: an entity file older than this record may still show them, and they must not come back.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty", with = "stack_set")]
+    pub gone: BTreeSet<(u64, u32)>,
 }
 
 impl ChunkLedger {
     pub fn is_empty(&self) -> bool {
-        self.entries.is_empty() && self.applied.is_empty()
+        self.entries.is_empty() && self.applied.is_empty() && self.gone.is_empty()
     }
     pub fn knows(&self, id: u64) -> bool {
         self.applied.contains(&id) || self.entries.iter().any(|e| e.id == id)
@@ -140,15 +152,32 @@ impl ChunkLedger {
             return;
         };
         self.entries.remove(i);
+        self.gone.insert((id, idx));
         if !self.entries.iter().any(|e| e.id == id) {
             self.applied.insert(id);
         }
     }
+    /// The stack's entities were saved with the world (confirmed): the world's own files keep them from here,
+    /// and the ledger stops following them. Unlike `retire`, the entities live on, so they are not `gone`.
+    pub fn release(&mut self, id: u64, idx: u32) {
+        let Some(i) = self.entries.iter().position(|e| e.id == id && e.idx == idx) else {
+            return;
+        };
+        self.entries.remove(i);
+        if !self.entries.iter().any(|e| e.id == id) {
+            self.applied.insert(id);
+        }
+    }
+    pub fn is_gone(&self, id: u64, idx: u32) -> bool {
+        self.gone.contains(&(id, idx))
+    }
     /// Forgets the paid ids the host's storage no longer names. Returns whether any went.
     pub fn prune(&mut self, live: &BTreeSet<u64>) -> bool {
         let before = self.applied.len();
+        let gone = self.gone.len();
         self.applied.retain(|id| live.contains(id));
-        self.applied.len() != before
+        self.gone.retain(|(id, _)| live.contains(id));
+        self.applied.len() != before || self.gone.len() != gone
     }
     pub fn to_json(&self) -> String {
         serde_json::to_string(self).unwrap_or_default()
@@ -166,6 +195,23 @@ mod hex {
     pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<u64, D::Error> {
         let text = String::deserialize(d)?;
         u64::from_str_radix(&text, 16).map_err(serde::de::Error::custom)
+    }
+}
+
+mod stack_set {
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+    use std::collections::BTreeSet;
+    pub fn serialize<S: Serializer>(v: &BTreeSet<(u64, u32)>, s: S) -> Result<S::Ok, S::Error> {
+        v.iter().map(|(id, idx)| format!("{id:016x}:{idx}")).collect::<Vec<_>>().serialize(s)
+    }
+    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<BTreeSet<(u64, u32)>, D::Error> {
+        Vec::<String>::deserialize(d)?
+            .into_iter()
+            .map(|t| {
+                let (id, idx) = t.split_once(':').ok_or_else(|| serde::de::Error::custom("stack"))?;
+                Ok((u64::from_str_radix(id, 16).map_err(serde::de::Error::custom)?, idx.parse().map_err(serde::de::Error::custom)?))
+            })
+            .collect()
     }
 }
 
@@ -221,7 +267,12 @@ mod tests {
         let back = ChunkLedger::from_json(&ledger.to_json());
         assert_eq!(back.entries[0].live, 2);
         assert!(back.is_paid(b) && !back.is_paid(a));
-        assert_eq!(parse_tag(&entity_tag(a, 0)), Some((a, 0)));
+        assert_eq!(parse_tag(&entity_tag(a, 0, [-3, 7])), Some((a, 0, [-3, 7])));
+        assert!(back.is_gone(b, 0) && !back.is_gone(a, 0));
+        // Released: followed no more, and not gone.
+        let mut released = back.clone();
+        released.release(a, 0);
+        assert!(released.entries.is_empty() && released.applied.contains(&a) && !released.is_gone(a, 0));
     }
 
     #[test]
@@ -231,7 +282,9 @@ mod tests {
         assert_eq!(retained_id("minecraft:overworld", [3, 64, -4], 5), retained_id("minecraft:overworld", [3, 64, -4], 5));
         assert_ne!(retained_id("minecraft:overworld", [3, 64, -4], 5), retained_id("minecraft:overworld", [3, 64, -4], 6));
         assert_ne!(retained_id("minecraft:overworld", [3, 64, -4], 5), retained_id("minecraft:the_nether", [3, 64, -4], 5));
-        assert_ne!(entity_tag(1, 0), entity_tag(1, 1));
+        assert_ne!(entity_tag(1, 0, [0, 0]), entity_tag(1, 1, [0, 0]));
+        assert_ne!(merge_key([0, 0]), merge_key([0, 1]));
+        assert_ne!(merge_key([0, 0]), 0);
     }
 
     #[test]
