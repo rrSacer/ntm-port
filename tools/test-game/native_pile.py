@@ -18,6 +18,17 @@ VENT=(37,101,10)
 BARREL=(34,101,10)
 
 
+def tick_cost(g):
+    """The engine's actual last 100 tick durations: its P99 index is 99, hence the maximum of this window."""
+    text = ' '.join(g.command('tick query').get('chat', []))
+    mean = re.search(r'Average time per tick: ([\d.]+)ms', text)
+    worst = re.search(r'P99: ([\d.]+)ms', text)
+    size = re.search(r'Sample: (\d+)', text)
+    if not mean or not worst or not size or int(size[1]) != 100:
+        raise AssertionError('tick timing window unavailable: ' + text)
+    return {'mean_ms': float(mean[1]), 'worst_ms': float(worst[1]), 'samples': 100}
+
+
 def machine(g,p):
     text=machine_state(g,p)
     return json.JSONDecoder().raw_decode(text[text.index('{'):])[0]
@@ -208,9 +219,11 @@ def setup(g):
     g.check('lever_loads_rod',fuel(c,1)['rods'][0]['kind']==3 and machine(g,LOADERS[1])['data']['Loader']['slots'][0] is None,{'rods':fuel(c,1)['rods'],'loader':machine(g,LOADERS[1])['data']})
     g.command(f'setblock {LOADERS[1][0]-1} {LOADERS[1][1]} {LOADERS[1][2]} minecraft:air')
     # Undo a fuel channel using the drill through its loader: real item ejection.
+    g.evidence['tick_cost_before_undo'] = tick_cost(g)
     tool(g)
     interact(g,LOADERS[0],'north',(39.5,101,4.5))
     g.check('loader_drill_undo',len([x for x in pile(g)['channels'] if x['kind']=='Fuel'])==1,pile(g)['channels'])
+    g.evidence['tick_cost_after_undo'] = tick_cost(g)
     g.evidence['core']=CORE
     g.evidence['positions']=[CORE,*LOADERS,*CONTROLS,VENT,BARREL]
     g.snapshot('pile')
@@ -389,6 +402,8 @@ def meltdown_probe(g,rounds=4):
         # Freeze the server and step it five ticks at a time until the core reverts, then one at a time
         # until no `ntm:pile_block__*` stands: the sweep is counted in ticks, not in a heavy tick's seconds.
         g.command('tick freeze')
+        before_steps = tick_cost(g)
+        step_costs = []
         def now():
             # The blast's tick can keep the server busy for several seconds: ask again until it answers.
             deadline=time.monotonic()+90
@@ -400,9 +415,12 @@ def meltdown_probe(g,rounds=4):
                     if time.monotonic()>deadline:raise
                     time.sleep(1)
         def step(n):
+            started = time.monotonic()
             start=now();g.command('tick step %d'%n)
             deadline=time.monotonic()+60
             while now()<start+n and time.monotonic()<deadline:time.sleep(.1)
+            wall = time.monotonic() - started
+            step_costs.append({'advanced': n, 'wall_seconds': wall, **tick_cost(g)})
         melted_at=None;ticks=0
         while ticks<2400 and block(g,CORE_B)=='ntm:pile_block__core':
             step(5);ticks+=5
@@ -415,7 +433,8 @@ def meltdown_probe(g,rounds=4):
             samples.append((steps,len(left)))
         detail=[(c,block(g,c),g.command('data get block %d %d %d ntm'%c).get('chat',[''])[0][:160]) for c in left[:6]] if left else []
         g.command('tick unfreeze')
-        rounds_out.append({'round':n,'samples':samples,'cleared_after_ticks':steps if not left else None,'left':detail})
+        rounds_out.append({'round':n,'samples':samples,'cleared_after_ticks':steps if not left else None,'left':detail,
+                           'tick_cost_before_steps': before_steps, 'step_costs': step_costs})
         g.evidence['meltdown_probe']=rounds_out;g.save()
     g.check('every_meltdown_cleared',all(r['cleared_after_ticks'] is not None and r['cleared_after_ticks']<=3 for r in rounds_out),rounds_out)
 
