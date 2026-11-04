@@ -63,12 +63,95 @@ fn is_machine(block: &str) -> bool {
 
 // ------------------------------------------------------------ the world
 
+/// An authorized player break, until the same exclusive level operation spills its container.
+/// This only recognizes existing vanilla spawns; it never clears slots or rolls new drops.
+struct PlayerSpill {
+    block: String,
+    generation: u64,
+    items: Vec<ItemStack>,
+    remaining: Vec<u32>,
+    next: u32,
+}
+impl PlayerSpill {
+    fn take(&mut self, item: &ItemStack) -> Option<u32> {
+        if item.count==0{return None;}
+        let slot=self.items.iter().enumerate().position(|(i,s)|self.remaining[i]>=item.count&&s.same_item_same_components(item))?;
+        self.remaining[slot]-=item.count;
+        let idx=self.next;self.next+=1;
+        Some(idx)
+    }
+}
+static PLAYER_SPILLS: Mutex<std::collections::BTreeMap<(String,[i32;3]),PlayerSpill>> = Mutex::new(std::collections::BTreeMap::new());
+
+/// Existing API 14, after every mod had its say on cancellation. No world change occurs here.
+pub(super) fn player_break(game:&mut crate::game::Game<'_>,pos:[i32;3],state:horizon_world::registry::BlockStateId,canceled:bool) {
+    lock(&PLAYER_SPILLS).remove(&(game.dim.id().to_string(),pos));
+    if canceled{return;}
+    let block=game.res.facts().get(state).name.clone();
+    if !is_machine(&block){return;}
+    let Some(horizon_client::containers::BlockEntity::Mod(m))=game.world.block_entities.get(&(pos[0],pos[1],pos[2])) else{return};
+    let Some(Tag::String(json))=m.nbt.get(&JavaString::from(STATE)) else{return};
+    let Ok(model)=serde_json::from_str::<ntm_core::machine::Machine>(&json.to_string_lossy()) else{return};
+    let items:Vec<_>=m.items.iter().flatten().filter(|s|s.count>0).cloned().collect();
+    if items.is_empty(){return;}
+    let remaining=items.iter().map(|s|s.count).collect();
+    lock(&PLAYER_SPILLS).insert((game.dim.id().to_string(),pos),PlayerSpill{block:block.to_string(),generation:model.generation,items,remaining,next:0});
+}
+
+/// Existing API 234. The level removed the BE and `with_level` flushes its spawns before returning,
+/// so no save can observe the removed block before these debts enter that chunk's record.
+pub(super) fn player_spill_spawn(game:&mut crate::game::Game<'_>,entity:u32,pos:[f64;3]) {
+    let at=pos.map(|v|v.floor() as i32);
+    let dim=game.dim.id().to_string();let key=(dim.clone(),at);
+    let mut pending=lock(&PLAYER_SPILLS);
+    let Some(spill)=pending.get_mut(&key) else{return};
+    if game.res.facts().get(game.world.block(at[0],at[1],at[2])).name.as_ref()==spill.block{return;}
+    let Some(stack)=game.dropped.iter().find(|d|d.id==entity).map(|d|d.stack.clone()) else{return};
+    let Some(idx)=spill.take(&stack) else{return};
+    let id=ntm_core::ledger::retained_id(&dim,at,spill.generation);
+    if spill.remaining.iter().all(|n|*n==0){pending.remove(&key);}
+    drop(pending);
+    let chunk=[at[0]>>4,at[2]>>4];
+    let tag=ntm_core::ledger::entity_tag(id,idx,chunk);
+    use horizon_client::mod_api::Holder;
+    let Ok(map)=game.attachment_map_quiet(Holder::Entity(entity)) else{return};
+    if map.set(&EFFECT_TYPE,tag).is_err(){return;}
+    if let Some(d)=game.dropped.iter_mut().find(|d|d.id==entity){d.merge_key=ntm_core::ledger::merge_key(chunk);}
+    lock(&TRACKED).insert((dim.clone(),id,idx),vec![(entity,chunk)]);
+    let owner=chunk_key(&dim,chunk);let mut ledger=ledger_get(game,&owner);
+    ledger.entries.push(ntm_core::ledger::Entry{id,idx,at,item:item_snbt(&stack),state:ntm_core::ledger::State::Spawned,live:stack.count,last:Some(chunk)});
+    ledger_store(game,&owner,ledger);
+}
+
+#[cfg(test)]
+mod player_spill_tests {
+    use super::*;
+    #[test]
+    fn split_container_drops_are_claimed_once_with_their_exact_components() {
+        let mut source=ItemStack::new("ntm:niter",64);
+        source.data_mut().set_other("minecraft:custom_name",Some(Tag::String("Retido".into())));
+        let mut spill=PlayerSpill{block:"ntm:machine_mixer".into(),generation:1,items:vec![source.clone()],remaining:vec![64],next:0};
+        let mut piece=source.clone();piece.count=23;
+        assert_eq!(spill.take(&ItemStack::new("ntm:niter",23)),None);
+        assert_eq!(spill.take(&piece),Some(0));
+        piece.count=24;assert_eq!(spill.take(&piece),Some(1));
+        piece.count=18;assert_eq!(spill.take(&piece),None);
+        piece.count=17;assert_eq!(spill.take(&piece),Some(2));
+        assert_eq!(spill.take(&piece),None);assert_eq!(spill.remaining,vec![0]);
+        let encoded=item_snbt(&piece);
+        let (tag,_)=horizon_world::nbt::parse_snbt(&encoded).unwrap();
+        let decoded=horizon_client::save::item_from_nbt(&tag).unwrap();
+        assert!(decoded.same_item_same_components(&source));assert_eq!(decoded.count,17);
+    }
+}
+
 /// A world opened or closed: a new server for it, or none.
 pub(super) fn world(open: bool) {
     *lock(&SERVER) = None;
     lock(&CHANGES).clear();
     lock(&BUTTONS).clear();
     lock(&POST_SYNC).clear();
+    lock(&PLAYER_SPILLS).clear();
     if !open {
         // The close/failure hook follows the final save. These are session caches, not facts of the next world.
         lock(&LEDGERS).clear();
@@ -811,6 +894,8 @@ pub(super) fn entities_put_away(dim: &str, chunk: [i32; 2]) {
 
 /// The end of a server tick: the server's phases.
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
+    // A declined/unsuccessful break must not claim an unrelated later item.
+    lock(&PLAYER_SPILLS).clear();
     ledger_tick(game);
     let mut retry=Vec::new();
     for (origin,expected) in std::mem::take(&mut *lock(&POST_SYNC)){

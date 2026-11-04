@@ -369,6 +369,18 @@ def break_prepare(g):
     g.ctl('save')
 
 
+
+def vanilla_break_prepare(g):
+    g.ctl('wait-ready 120');g.close()
+    x,y,z=MIXER;g.ground(x-3,y,z,width=8)
+    g.command('clear @s')
+    g.command(f'setblock {x} {y} {z} minecraft:chest')
+    g.command(f'item replace block {x} {y} {z} container.0 with ntm:niter {NITER}')
+    g.evidence['core']=list(MIXER)
+    g.check('vanilla_contents_before_break',mixer_items(g,MIXER)==NITER,mixer_items(g,MIXER))
+    g.ctl('save')
+
+
 def break_act(g):
     g.ctl('wait-ready 120')
     g.command('gamemode survival @s')
@@ -401,7 +413,7 @@ def break_verify(g, again=False):
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     led = quiet(g, 12)
     state = g.ctl('block %d %d %d' % core).get('state', '')
-    inside = mixer_items(g, core) if state.startswith('ntm:machine_mixer') else 0
+    inside = mixer_items(g, core) if state.startswith(('ntm:machine_mixer','minecraft:chest')) else 0
     total = inside + entities(g, 'ntm:niter') + inventory(g, 'ntm:niter')
     detail = {'block': state, 'inside': inside, 'entities': entities(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'total': total, 'expected': NITER, 'ledger': led,
               'machine': machine_present(g, core)}
@@ -433,6 +445,7 @@ STEPS = {
     'crossing': (crossing_prepare, crossing_act, crossing_verify),
     'save-quit': (crossing_prepare, save_quit_act, save_quit_verify),
     'mining': (mining_prepare, mining_act, mining_verify),
+    'vanilla-break': (vanilla_break_prepare, break_act, break_verify),
     'break': (break_prepare, break_act, break_verify),
     'replace': (break_prepare, break_act, break_verify),
 }
