@@ -37,6 +37,9 @@ struct Host {
     crash_before_commit: bool,
     crash_after_commit: bool,
     refuse_preparation: bool,
+    /// The ids of the effects the host's ledger already holds: it survives a "crash" of the server.
+    ledger: BTreeSet<u64>,
+    pruned: usize,
 }
 impl Kv for Host {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -228,6 +231,15 @@ impl ServerHost for Host {
         self.drops
             .extend(i.iter().map(|(id, n)| Stack::new(id, *n)));
         true
+    }
+    fn apply_items(&mut self, id: u64, d: &str, p: Pos, i: &[(String, u32)]) -> bool {
+        // As the chunk ledger does: an effect already known adds nothing.
+        !self.ledger.insert(id) || self.drop_items(d, p, i)
+    }
+    fn ledger_prune(&mut self, live: &BTreeSet<u64>) {
+        let before = self.ledger.len();
+        self.ledger.retain(|id| live.contains(id));
+        self.pruned += before - self.ledger.len();
     }
     fn zirnox_explode(&mut self, _: &str, _: [f64; 3]) -> bool {
         true
@@ -729,7 +741,7 @@ fn receipt_replay_checks_its_cell_generation_and_keeps_old_drops_separate() {
                 blocks: vec![(P, zirnox::DESTROYED.into())],
                 expected: vec![old],
             }]),
-        });
+        ..Default::default()});
     s.ready.world.generations.insert((D.into(), P), 10);
     let mut fresh = Machine::new(Kind::Zirnox, zirnox::BLOCK, None);
     fresh.generation = 10;
@@ -749,7 +761,7 @@ fn receipt_replay_checks_its_cell_generation_and_keeps_old_drops_separate() {
             pos: P,
             items: vec![("ntm:pile_rod__zr".into(), 1)],
         }]),
-    });
+    ..Default::default()});
     h.set(ntm_core::persist::KEY, &s.ready.world.kept(0))
         .unwrap();
     let mut reopened = Server::native(&mut h, 1);
@@ -1194,4 +1206,41 @@ fn radgen_back_port_is_exact_and_follows_all_four_facings() {
         s.native_tick(&mut h,3);
         let Data::Battery(b)=&s.ready.world.machines[&(D.into(),bp)].data else{panic!()};assert!(b.power>0,"{face}");
     }
+}
+
+/// Item effects carry ids that survive a crash: two identical effects in one batch both apply, a replay
+/// of either after the server forgot it applies nothing, and a retired id goes once storage stops naming it.
+#[test]
+fn item_effects_apply_once_across_a_replay_and_identical_ones_both_apply() {
+    use super::{CommittedEffects, WorldEffect};
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let rod = || WorldEffect::Items { dim: D.into(), pos: P, items: vec![("ntm:pile_rod__zr".into(), 1)] };
+    s.ready.world.machine_effects.push_back(CommittedEffects {
+        origins: vec![],
+        owners: vec![(D.into(), P)],
+        effects: std::collections::VecDeque::from([rod(), rod()]),
+        ..Default::default()
+    });
+    for t in 2..6 {
+        s.native_tick(&mut h, t);
+    }
+    assert_eq!(h.drops.len(), 2, "both identical effects were applied");
+    assert_eq!(h.ledger.len(), 2);
+    // The crash: storage still names both (receipts waiting for a flushed save), the server forgets them.
+    let kept = s.ready.world.kept(0);
+    assert!(!s.ready.world.applied_machine_effects.is_empty());
+    h.set(ntm_core::persist::KEY, &kept).unwrap();
+    let mut reopened = Server::native(&mut h, 3);
+    let saved = h.saved[&P].clone();
+    assert!(reopened.native_adopt(D, P, &saved));
+    for t in 4..8 {
+        reopened.native_tick(&mut h, t);
+    }
+    assert!(reopened.ready.world.machine_effects.is_empty(), "the replay ran");
+    assert_eq!(h.drops.len(), 2, "the replay found both ids and added nothing");
+    // A flushed save acknowledges the receipts; storage stops naming the ids and the ledger forgets them.
+    reopened.native_world_saved(&mut h, true);
+    assert_eq!(h.pruned, 2);
+    assert!(h.ledger.is_empty());
 }
