@@ -508,8 +508,9 @@ Validação (binário `e57ab62508c8c7c9bbdf5283fc3794882b462b0d9654c23e8aefc9a8f
 
 Branch `wave0-save`, motor `ddd954eed` sobre `ntm-current` `0615f5db0`: failpoints do save,
 `ItemEntity.merge_key` e segunda gravação do que o hook de save confirmado sujou.
-**Estado: correções da revisão implementadas; provas finais em andamento.** A prova anterior exercitava somente
-uma pilha desfeita e não cobria os cinco P1 encontrados pela revisão independente.
+**Estado: C4 concluído e entregue para revisão independente, sem merge.** Runtime NTM `f4a7c7fe`;
+commits posteriores ajustam roteiros e documentação. A revisão anterior encontrou cinco P1;
+a bateria abaixo cobre cada falha, além dos 14 casos originais.
 
 **Regra de autoridade.** Todo estado que precisa bater com um chunk vive no registro desse chunk ou é derivado
 dele na reabertura. Os arquivos `region/`, `entities/`, `level.dat`, jogadores e KV continuam sem commit global.
@@ -521,21 +522,28 @@ O KV guarda intenções e reconciliação de passos entre chunks; sozinho, um co
 | Quebra de container NTM pelo jogador | Slots e geração do BE capturados no hook autorizado; dívida no chunk da máquina | Adota os fragmentos vanilla já criados, com seus componentes, sem alterar loot ou movimento. O nível entrega os spawns antes de retornar, antes de outro save. Não envolve containers vanilla nem inventa geração para BE sem modelo NTM. |
 | Materialização | Dívida publicada junto do consumo, entidades criadas no mesmo passo exclusivo | Entidade marcada `ntm:effect`, nunca o item. Pending procura tag já existente antes de spawnar. |
 | Item que atravessa chunks | Contagem viva (`live`), último chunk observado na entrada e rastreio dos destinos ausentes | Descarregar destino não equivale a pickup. Só se recria quando o último chunk observado está carregado e com suas entidades prontas, sem portador da tag. |
-| Fusão no chão | `ItemEntity.merge_key` em runtime | Itens rastreados fundem dentro do mesmo chunk de origem. Todos os níveis com ledger são visitados para reconciliar entidades e contar o diagnóstico. |
+| Fusão no chão | `ItemEntity.merge_key` em runtime | Itens rastreados fundem dentro do mesmo chunk de origem. Todos os níveis abertos com ledger são visitados para reconciliar entidades e contar o diagnóstico. |
 | Fim do rastreio | Primeiro `world_saved(wait=true)` após o spawn | Libera entrada, tag e chave em memória, poda ids e regrava chunks sujos/entidades antes de concluir o save. Poda também quando o KV não mudou. Autosave sem espera mantém o rastreio. |
 | Efeito de bloco reaberto | Id no ledger de cada chunk-alvo, gravado junto dos blocos | Só recebe o efeito quem ainda não guarda seu id. Retenções são filtradas pelas guardas ainda válidas a cada tentativa, inclusive após esperar outro chunk. |
 | Máquinas sobreviventes | `Machine.rev` no BE e diário **por mundo**, com o último sobrevivente por posição/geração | Ativado por efeitos devidos ou mudanças em mais de um chunk, inclusive Loader→Core sem ejeção. Revisão do BE menor restaura modelo, slots e bridge; igual preserva BE; maior é registrada e preservada. |
 | Máquina consumida / geração adiantada | BE do chunk + referência de recibo ou remoção ainda pendente | Tombstone ou substituição explícita da mesma geração prova o consumo: a máquina vira fantasma e seu bloco é removido. Origem usada só como guarda de leitura não prova consumo. Sem referência pendente à mesma geração, contador adiantado do KV recua para a geração do BE salvo. |
 
-**Provas exigidas.** `run-crash-more.py`: Save & Quit com pending/spawned/applied/keyed/tagged zerados;
-drop cruzando chunk que descarrega sem queda; baú com 7 diamantes minerado; Loader→Core nas duas posições e
-com/sem ejeção; quebra e recolocação de misturador com 16 niter. Cada cenário deve falhar no B1 (`41bd4596`)
-antes da aceitação no binário corrigido. Save & Quit e cada queda exigem duas reaberturas e contagem exata.
+**Provas concluídas.** 57/57 casos no C4, todos com duas reaberturas e contagem exata:
 
-`run-crash-proof.py` conserva os 14 casos originais: controle; `save_begin`; `region_record:1/2/3`;
-`chunks_written`; `entities_written`; `level_saved`; `parked_saved`; `level_dat_written`;
-`metadata_saved`; `players_saved`; `world_saved`; lote grande. Pilha de 125 células cruzando x=48,
-10 hastes nos canais mais 2 comuns no chão. A segunda reabertura também deve provar a liberação do rastreio.
+| Grupo | Casos | Resultado |
+| --- | ---: | --- |
+| Quebra/recolocação de misturador | 10 | 16 niter preservados; máquina viva quando o bloco permanece. |
+| Quebra com fragmentação | 2 | 64 niter preservados nos cortes `chunks_written` e `entities_written`. |
+| Save & Quit / descarga de destino | 2 | 12 hastes exatas; saída com Nether ativo limpa ledger, tags e merge keys. Descarga comprovada sem recriar cópia. |
+| Loader→Core, duas geometrias, com/sem ejeção | 16 | Oito cortes reais `.mca`, nas duas ordens; mais controles limpos/antes do save. 1 ou 6 hastes exatas, conforme o cenário. |
+| Baú minerado | 13 | 7 diamantes e mineradora viva em todas as reaberturas. |
+| Casos originais | 14 | Controle; `save_begin`; `region_record:1/2/3`; `chunks_written`; `entities_written`; `level_saved`; `parked_saved`; `level_dat_written`; `metadata_saved`; `players_saved`; `world_saved`; lote grande. |
+
+B1 é NTM `41bd4596`/motor `4b3e48286`; reproduz saída suja, descarga duplicada,
+baú minerado duplicado e máquina não adotada na quebra/recolocação. B2 usa a mesma base com **somente**
+o diagnóstico de chunk vivo: reproduz perda/duplicação Loader→Core. O leitor `.mca` reprova se os dois
+chunks estiverem antigos ou novos; ordinais de chunks vivos/protos não contam como prova desse corte.
+P3-2 foi reaberto: filtrar retenções pelas guardas ainda válidas tem teste que falha antes e passa depois.
 
 **Caminho quente.** `name_batches` nomeia todos os lotes antes da primeira gravação. Omitir uma gravação antes
 de um efeito simples só deixa cursor menor no KV: o replay usa os mesmos ids e pula os chunks que já os guardam.
@@ -546,8 +554,43 @@ Itens, explosões e retenções mantêm a barreira de gravação. O ledger só a
 Autosave sem espera prolonga a restrição de fusão até um save confirmado. Chunks de dimensões estacionadas têm
 seus anexos lidos quando o nível é visitado. Esses limites não autorizam duplicação adicional atribuível ao NTM.
 
-**Custo e regressões.** Medidas antigas (antes das correções da revisão) não são aceitação deste HEAD. Repetir
-média/pior tick e desfazer canal, mais `pile-meltdown`, e a bateria completa no mesmo binário final.
+**Validação C4.** Binário `horizon-client.C4` SHA256 `78ed1504af21ec45ca4ff3c52ac9c0769a3c9c9e8cc4100a3478a1deb84f8066`;
+pacote `3fbcad5823f75e54fd3e944780eaeec2e59f016bb7691a6e76c74919bfb3ca53`. NTM: 413 unitários + 26 integrações; teste de glue da fragmentação/componentes
+passou. Clippy do workspace NTM e do cliente transformado (`-p horizon-client`), todos os alvos, `-D warnings`, sem isenções.
+Um benchmark ignorado na suíte padrão foi executado separadamente; dois doctests continuam ignorados.
+
+Regressão no mesmo binário: 24 execuções, 26 mundos e 1117 checks registrados sem falhas:
+items (5×58), mining (6×18), bombs 49, zirnox 136, pile 85, pile-meltdown 32, dims 14,
+idle 2, idle-clean 1, inventory-proxy 12, radioisotopes 67, solar 36, combustion 15,
+catalog 251, comparator 9, stations 5 e recipes 5 no JSON final; montadora e bigorna foram executadas.
+
+**Custo do núcleo (`Host` de teste, `MemKv`).** Cinco pares B1/final, após aquecimento, CPU fixada, sem outro build/jogo:
+mediana da média do tick 0.627723 → 0.653549 ms;
+mediana do pior tick 0.752730 → 0.791754 ms;
+maior tick observado 0.876245 → 0.889549 ms;
+desfazer médio do canal no núcleo 0.948644 → 0.952809 ms.
+Na amostra nativa, o maior tick observado aumentou de 260.7
+para 687.6 ms, com piora nos três máximos por rodada. A causa desse pico não foi isolada nesta bateria;
+é um risco de desempenho a avaliar na revisão. A comparação nativa `pile-meltdown` tem três rodadas por versão;
+os números por janela/rodada estão no
+artifact `zirnox-efeitos-save` e em `C4-perf-game.json`. São amostras do host, não um limite de latência.
+
+**Resíduo comprovado.** No próprio C4, baú vanilla com 16 itens perde o conteúdo em `chunks_written`
+e preserva 16 em `entities_written`. Máquinas NTM já inicializadas ficam melhores que esse controle:
+os fragmentos são retidos no chunk pelos hooks existentes. BE NTM sem modelo/geração inicializada
+continua no caminho vanilla. Não há novo contrato de motor para essa melhoria.
+
+Ambiente pós-reboot: `7.2.14-zen1-1-zen`. O Xvfb manteve OpenGL/llvmpipe,
+LLVM 23.1.4 e Mesa 26.2.6; o log da atualização não registra upgrade de Mesa/loader Vulkan/Xvfb.
+As primeiras 14 execuções e os 57 casos ocorreram antes do reboot; as dez restantes e ambos os lados
+do comparativo de desempenho ocorreram depois. `inventory-proxy` usa a fixture declarada de forma/portas:
+a comparação dos ZIPs confirmou que só `multiblock` mudou no JSON da máquina, com política/itens/menus preservados.
+
+Evidência local: `wave0/crash-reports/C4-final-validation.json`, relatórios de queda/regressão,
+`C4-vanilla-parity.json`, `C4-timing-core.json` e `C4-perf-game.json`. Mundos aprovados são apagados
+após guardar logs e números. Medidas de posição/tempo corrigiram a leitura tardia do drop de mineração;
+evidência adiada para depois de soltar o botão eliminou prolongamento de uso de comida pelo roteiro;
+solar espera o item chegar à hotbar sincronizada. A aceitação usa cenários completos, sem sondas parciais.
 
 ## Hooks de item — extensões locais
 
