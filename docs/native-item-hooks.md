@@ -161,6 +161,27 @@ o consumo nem reinicia o tratamento.
 `iv_empty` tem identidade/recipiente neste lote; seu uso para coleta de sangue
 continua explicitamente como lacuna. Os demais consumíveis não foram ativados.
 
+## Tabela de uso das famílias (onda 1)
+
+`ntm_core::consumables` generaliza o lote de prova: `use_spec(id)` devolve uma
+`UseSpec` carregada de `data/consumables.json` e `data/kits.json` (ver
+`docs/content-catalogo-k2.md`). O glue `complete` aplica o spec numa única
+transação do jogador e `after_commit` faz o que o commit não cobre (remover
+efeitos, XP, perda direta de vida, dano, explosão).
+
+| Campo | Significado no Java |
+|---|---|
+| `ticks`, `animation`, `gate` | `getMaxItemUseDuration`, `getItemUseAction`, a condição de `onItemRightClick` (`canEat`, cantil esfriado, abridor no inventário, enjoo de poção) |
+| `consume`, `set_damage` | `stackSize--` sempre (`ItemFood`, `ItemSyringe`), só fora do criativo (`ItemEnergy`, BDCL), ou o dano-cooldown do cantil |
+| `gives` (`replace`, `overflow`, `creative`) | o que o item devolve: no próprio slot se era o último, senão `addItemStackToInventory` com o resultado ignorado (`lost`) ou `tryAddItem` (`thrown`) |
+| `food`, `heal`, `effects`, `cure`, `dose`, `radaway`, `hurt`, `hp_cost`, `xp_cost`, `xp_gain` | os efeitos, na ordem em que o Java os aplica |
+| `loot` | caixa de loot: peso = chance de aceitação por raridade de `ItemLootCrate.choose` |
+| `unported` | itens do Java que a linha entregaria e o port não tem: nome do Java, nada é inventado |
+
+Mudanças de regra que o lote de prova ganhou: o criativo do 1.7.10 não come
+`ItemFood`; o Rad-X soma 0,2 à resistência do fator `10^(-soma)`; o enjoo de
+poção bloqueia o uso enquanto o efeito estiver ativo.
+
 ## Diagnóstico e aceitação
 
 Comandos de operador nível 2 usam a mesma API do jogo:
