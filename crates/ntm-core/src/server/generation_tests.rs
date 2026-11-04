@@ -924,6 +924,45 @@ fn a_replacement_survivor_is_restored_even_when_its_predecessor_had_a_higher_rev
 }
 
 #[test]
+fn an_adopted_loader_survivor_overwrites_old_be_slots_and_saved_control_state() {
+    use crate::pile::Pile;
+    let mut h = Host::default();
+    let mut s = install(&mut h, "ntm:pile_device__loader", 1);
+    let key = (D.to_string(), P);
+    let mut old = s.ready.world.machines[&key].clone();
+    let Data::Pile(p) = &mut old.data else { panic!() };
+    let Pile::Loader(l) = &mut **p else { panic!() };
+    l.slots[0] = Some(Stack::new("ntm:pile_rod__ra226be", 1));
+    l.loading = true;
+    l.delay = 5;
+    let (slots, data) = Server::machine_output(&mut old, &vec![None]);
+    h.slots.insert(P, slots);
+    h.data.insert(P, data);
+    let old_json = serde_json::to_string(&old).unwrap();
+    h.saved.insert(P, old_json.clone());
+    let mut survived = old.clone();
+    let Data::Pile(p) = &mut survived.data else { panic!() };
+    let Pile::Loader(l) = &mut **p else { panic!() };
+    l.slots[0] = None;
+    l.loading = false;
+    l.delay = 0;
+    survived.rev += 1;
+    s.journal_survivor(super::Survivor {
+        dim: D.into(), pos: P, generation: survived.generation, rev: survived.rev,
+        json: serde_json::to_string(&survived).unwrap(),
+    });
+    h.set(crate::persist::KEY, &s.ready.world.kept(0)).unwrap();
+    let mut reopened = Server::native(&mut h, 2);
+    assert!(reopened.native_adopt(D, P, &old_json));
+    reopened.native_tick(&mut h, 3);
+    assert!(h.slots[&P][0].is_none(), "old BE inventory cannot put the transferred rod back");
+    let saved: Machine = serde_json::from_str(&h.saved[&P]).unwrap();
+    let Data::Pile(p) = saved.data else { panic!() };
+    let Pile::Loader(l) = *p else { panic!() };
+    assert!(!l.loading && l.delay == 0, "the old bridge payload cannot restart the old stroke");
+}
+
+#[test]
 fn a_chunk_that_holds_the_effect_is_not_given_it_twice() {
     let (h, _) = old_chunk_replay(true);
     assert_eq!(blockstate::id_of(&h.blocks[&P]), zirnox::BLOCK, "untouched");

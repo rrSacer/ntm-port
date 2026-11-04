@@ -69,6 +69,15 @@ pub(super) fn world(open: bool) {
     lock(&CHANGES).clear();
     lock(&BUTTONS).clear();
     lock(&POST_SYNC).clear();
+    if !open {
+        // The close/failure hook follows the final save. These are session caches, not facts of the next world.
+        lock(&LEDGERS).clear();
+        lock(&TRACKED).clear();
+        lock(&AWAY).clear();
+        lock(&ENTITIES_READY).clear();
+        lock(&CHUNKS_FRESH).clear();
+        lock(&ENTITIES_UNLOADED).clear();
+    }
     if open {
         eprintln!("ntm native: {} machine blocks", ntm_core::registry::machine_ids().count());
     }
