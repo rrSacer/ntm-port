@@ -45,9 +45,27 @@ da validação, sem duplicar nem perder):
 | `hazmat_plate` | `ItemArmor` equipa pelo clique, sem recipiente | motor |
 
 Em criativo, `addItemStackToInventory` descarta o que não cabe (retorna `true`) e
-nada cai no chão; o port reproduz isso. O drop usa `player_drop` do motor (lançado
-dos olhos, com as estatísticas de drop); o Java do kit solta a entidade parada na
-posição dos olhos e o dos demais usa `dropPlayerItemWithRandomChoice`.
+nada cai no chão; o port reproduz isso.
+
+### Modos de drop
+
+`NativePlayerBenefits.drops` é uma lista de `NativeDrop { stack, mode }`, publicada
+pelo motor depois da validação (`Game::native_drop_item`). Cada fonte Java usa o
+seu modo:
+
+| Modo | Java 1.7.10 | Posição, velocidade, delay | Quem usa |
+| --- | --- | --- | --- |
+| `Hand` | `dropPlayerItem` (`func_146097_a(stack, false, true)`): tecla de drop e clique THROW | o `player_drop` do motor: thrower, estatística de drop e balanço da mão | clique THROW na mesa |
+| `Thrown` | `dropPlayerItemWithRandomChoice(stack, false)` | olhos − 0,3; `-sin(yaw)·cos(pitch)·0,3`, `-sin(pitch)·0,3 + 0,1`, mais ruído `0,02·rand` num ângulo aleatório e `(rand−rand)·0,1` em Y; delay 40; sem thrower nem estatística de mão | `tryAddItem` (seringa, RadAway) e o fechamento da mesa (`onContainerClosed`) |
+| `Random` | `dropPlayerItemWithRandomChoice(stack, true)` | olhos − 0,3; `f = rand·0,5`, `a = rand·2π`, `(−sin a·f, 0,2, cos a·f)`; delay 40 | filtro tirado da máscara |
+| `World { delay }` | `new EntityItem(world, x, y, z, stack)` | no jogador com `y + eyeHeight`; o construtor dá `(float)(rand·0,2 − 0,1)` em X e Z e `0,2` em Y; delay é o do chamador | `giveHaz` não define delay, então vale o padrão do campo, 0 |
+
+`Thrown` é o `throw_from_eyes(.., false)` que o motor já usava nos demais
+"não coube": a equivalência com `Player.drop(stack, false)` está na fórmula acima.
+As fórmulas de `Random` e `World` estão em `random_toss_velocity` e
+`world_item_velocity`, com teste unitário. O padrão 0 do delay do `EntityItem` e o
+salto do construtor vêm do 1.7.10 de memória: o fonte do Minecraft não está no
+repositório (só o do HBM), então ficam marcados para conferir no decompilado.
 
 ## Uso e previsão
 
@@ -200,5 +218,9 @@ Limites desta aceitação:
 - Não há roteiro de dois clientes: o hóspede LAN é coberto pelo motor (o jogador
   local já entra como hóspede da instância integrada) e pelo teste do hub, não por
   um segundo cliente.
-- O drop de inventário cheio usa a física de lançamento do motor (`player_drop`), não
-  a velocidade exata de `dropPlayerItemWithRandomChoice` nem a entidade parada do kit.
+- O delay 0 e o salto do `EntityItem` (kit) são do 1.7.10 de memória, a conferir no
+  decompilado. Um jogador com espaço recolhe de volta a peça trocada do kit na hora,
+  como no Java.
+- `/ntmitem charge` prova o `patch_stack` num `minecraft:stick`. Nenhum item elétrico
+  real está portado (as baterias de item são só identidades), então o teste com
+  bateria real fica como pendência da família de baterias de item.

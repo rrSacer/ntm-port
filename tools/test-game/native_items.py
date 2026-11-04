@@ -21,7 +21,12 @@ def state(g):
 
 def use(g,seconds=0):
     g.close();g.ctl('look-at 20 160 8')
-    g.ctl('mouse right down');time.sleep(seconds or .12);g.ctl('mouse right up');time.sleep(.4)
+    if seconds:
+        g.ctl('mouse right down');time.sleep(seconds);g.ctl('mouse right up')
+    else:
+        # One click: a held button repeats the use of an instant item on a slow frame.
+        g.ctl('mouse right click')
+    time.sleep(.4)
 
 
 def give_hand(g,item,count=1,slot=0):
@@ -170,11 +175,15 @@ def full_inventory(g):
     g.check('creative_full_radaway_discards_container',not actual.get('ntm:iv_empty') and not dropped(g),{'counts':actual,'dropped':dropped(g)})
     # ItemStarterKit.giveHaz: the kit never refuses; replaced armor is dropped.
     full(g,'ntm:hazmat_kit',armor={'head':'ntm:gas_mask_m65','chest':'minecraft:iron_chestplate'});use(g);actual=counts(g);away=dropped(g)
-    g.check('full_kit_equips_and_drops_replaced_armor',all(actual.get('ntm:hazmat_'+p)==1 for p in ['helmet','plate','legs','boots']) and not actual.get('ntm:hazmat_kit') and away.get('ntm:gas_mask_m65')==1 and away.get('minecraft:iron_chestplate')==1 and actual.get('minecraft:stone')==2240,{'counts':actual,'dropped':away})
+    # The kit's own slot is empty now and the pieces have no pickup delay, so
+    # one of the two returns to it at once; the other stays on the ground.
+    time.sleep(.8);actual=counts(g);away=dropped(g)
+    pieces=lambda c:c.get('ntm:gas_mask_m65',0)+c.get('minecraft:iron_chestplate',0)
+    g.check('full_kit_equips_and_drops_replaced_armor',all(actual.get('ntm:hazmat_'+p)==1 for p in ['helmet','plate','legs','boots']) and not actual.get('ntm:hazmat_kit') and pieces(actual)==1 and pieces(away)==1 and actual.get('minecraft:stone')==2240,{'counts':actual,'dropped':away})
     # giveHaz's EntityItem sets no delay (the field's 0): a freed slot takes one
     # of the replaced pieces back at once.
     g.command('item replace entity @s inventory.26 with minecraft:air');time.sleep(1.2);back=counts(g);left=dropped(g)
-    g.check('world_drop_has_no_pickup_delay',back.get('ntm:gas_mask_m65',0)+back.get('minecraft:iron_chestplate',0)==1 and left.get('ntm:gas_mask_m65',0)+left.get('minecraft:iron_chestplate',0)==1,{'counts':back,'dropped':left})
+    g.check('world_drop_has_no_pickup_delay',pieces(back)==2 and pieces(left)==0,{'counts':back,'dropped':left})
     # ItemFilter: installing swaps the held stack, so a full inventory is fine.
     full(g,'ntm:gas_mask_filter',armor={'head':'ntm:gas_mask_m65'});use(g)
     g.command('item replace entity @s hotbar.0 with ntm:gas_mask_filter[minecraft:damage=500] 1');time.sleep(.3);use(g)
