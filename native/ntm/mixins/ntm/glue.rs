@@ -190,6 +190,7 @@ pub(super) fn world(open: bool) {
         lock(&LEDGER_WRITES).clear();
         lock(&RECORDS_DUE).clear();
     }
+    *lock(&SAVE_MARK) = None;
     if open {
         eprintln!("ntm native: {} machine blocks", ntm_core::registry::machine_ids().count());
     }
@@ -215,7 +216,15 @@ fn world_saved_timed(game:&mut crate::game::Game<'_>,wait:bool){
         // contents. Record tombstones only; do not tick or emit after saving.
         server.native_record_events(&mut host);
         server.native_world_saved(&mut host,wait);
+        // A waiting save confirmed everything; one that did not is confirmed once its writes are done.
+        *lock(&SAVE_MARK)=(!wait).then(||server.native_save_mark());
     }
+}
+
+/// Whether every open level's writer has written all it was given, with its syncs: then what an earlier save that did
+/// not wait queued is on disk as after a waiting one.
+fn saves_done(game:&mut crate::game::Game<'_>)->bool{
+    ["minecraft:overworld","minecraft:the_nether","minecraft:the_end"].into_iter().all(|dim|in_place(game,dim,|g|matches!(g.save.writes_finished(),Ok(true))).unwrap_or(true))
 }
 
 /// A battery, a fluid tank and a barrel give a comparator a signal (`hasComparatorInputOverride`).
@@ -440,6 +449,8 @@ static KV_BYTES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::ne
 /// are not (one sync of a meltdown's journal costs tens of milliseconds): they are durable against the process
 /// dying, as the page cache keeps them, and become durable against a power loss at the next confirmed save.
 static KV_DURABLE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+/// What the last save that did not wait held of the journal, until its writes are on disk (`saves_done`).
+static SAVE_MARK: Mutex<Option<ntm_core::server::SaveMark>> = Mutex::new(None);
 
 type ChunkKey = (String, i32, i32);
 /// A stack of a ledger: dimension, effect id, stack index.
@@ -1217,6 +1228,14 @@ pub(super) fn entities_put_away(dim: &str, chunk: [i32; 2]) {
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
     // A declined/unsuccessful break must not claim an unrelated later item.
     lock(&PLAYER_SPILLS).clear();
+    // Before this tick queues anything: the last save that did not wait is on disk once its writers are idle.
+    if lock(&SAVE_MARK).is_some() && saves_done(game) {
+        let mark = lock(&SAVE_MARK).take();
+        if let (Some(mark), Some((server, _))) = (mark, lock(&SERVER).as_mut()) {
+            let mut host = Host { game: &mut *game, buttons: Vec::new() };
+            server.native_marked_saved(&mut host, &mark);
+        }
+    }
     horizon_client::spans::time("ntm_ledger_tick", || ledger_tick(game));
     let mut retry=Vec::new();
     for (origin,expected) in std::mem::take(&mut *lock(&POST_SYNC)){
@@ -1533,6 +1552,8 @@ impl Host<'_, '_> {
 
 impl ServerHost for Host<'_, '_> {
     fn trace_effects(&self)->bool{trace_effects()}
+    /// Items and retained contents go to the ledger of their chunk under the effect's id.
+    fn replays_by_id(&self)->bool{true}
     fn cell_snapshot(&mut self,dim:&str,pos:[i32;3])->Option<ntm_core::server::CellSnapshot>{cell_snapshot(self.game,dim,pos)}
     fn drop_encoded_items(&mut self,dim:&str,pos:[i32;3],items:&[String])->bool{
         if self.game.native_loaded_block(dim,pos).is_none(){return false;}

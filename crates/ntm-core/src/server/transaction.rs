@@ -62,6 +62,15 @@ pub struct Survivor {
     pub json: String,
 }
 
+/// What a save that did not wait for its writes holds of the journal: its receipts (by place in their batch) and
+/// the journaled machines (by revision). Once the host has those writes on disk, with the same sync as a waiting
+/// save, they are confirmed as a waiting save confirms them (`Server::native_marked_saved`).
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct SaveMark {
+    receipts: Vec<(u64, u32)>,
+    survivors: Vec<((String, Pos), u64, u64)>,
+}
+
 /// A lossless retention journal written before consuming a BE's cell.
 /// Recovery can prove the original source is still intact and discard it.
 #[derive(Clone,Debug,PartialEq,serde::Serialize,serde::Deserialize)]
@@ -207,16 +216,41 @@ impl Server {
             let _ = (actual, &prepared);
         }
         if self.ready.world.prepared_retentions==before.prepared_retentions && self.ready.world.machine_effects==before.machine_effects{return true;}
-        match host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){
-            Ok(())=>{self.ready.kept=self.ready.world.kept(0);true}
-            Err(e)=>{self.ready.world.prepared_retentions=before.prepared_retentions;self.ready.world.machine_effects=before.machine_effects;host.log(&format!("retention recovery checkpoint: {e}"));false}
+        match self.write_world(host){
+            Ok(())=>true,
+            Err(e)=>{*self.ready.world.prepared_retentions=(*before.prepared_retentions).clone();*self.ready.world.machine_effects=(*before.machine_effects).clone();host.log(&format!("retention recovery checkpoint: {e}"));false}
         }
+    }
+
+    /// Whether the kept world changed since it was last written: a part's stamp moved. Debug builds hold the answer
+    /// against the whole state serialized: a change that left the stamps behind would leave the storage behind the
+    /// world.
+    pub(super) fn world_changed(&self) -> bool {
+        let moved = self.ready.kept_rev != Some(self.ready.world.stamps());
+        #[cfg(debug_assertions)]
+        if !moved {
+            assert!(self.ready.world.kept(0) == self.ready.kept, "the kept world changed without moving its stamps");
+        }
+        moved
+    }
+
+    /// The kept world to the host's storage, with its clock.
+    pub(super) fn write_world(&mut self, host: &mut impl ServerHost) -> Result<(), String> {
+        host.set(crate::persist::KEY, &self.ready.world.kept(self.ready.world.ticks))?;
+        self.ready.kept_rev = Some(self.ready.world.stamps());
+        #[cfg(debug_assertions)]
+        {
+            self.ready.kept = self.ready.world.kept(0);
+        }
+        Ok(())
     }
 
     pub(super) fn track_effect_cells(&mut self) {
         let guards:Vec<_>=self.ready.world.machine_effects.iter().chain(&self.ready.world.applied_machine_effects).flat_map(|b|b.origins.iter().chain(b.effects.iter().flat_map(|e|match e{WorldEffect::Blocks{expected,..}=>expected.as_slice(),_=>&[]}))).cloned().collect();
-        for g in guards{self.ready.world.generations.entry(g.key()).or_insert(g.generation);}
-        for p in &self.ready.world.prepared_retentions{let g=&p.source.guard;self.ready.world.generations.entry(g.key()).or_insert(g.generation);}
+        // Only the cells not named yet: an entry the map already has would stamp it every tick for nothing.
+        let mut new:Vec<_>=guards.iter().filter(|g|!self.ready.world.generations.contains_key(&g.key())).map(|g|(g.key(),g.generation)).collect();
+        new.extend(self.ready.world.prepared_retentions.iter().map(|p|&p.source.guard).filter(|g|!self.ready.world.generations.contains_key(&g.key())).map(|g|(g.key(),g.generation)));
+        for (k,generation) in new{self.ready.world.generations.entry(k).or_insert(generation);}
     }
 
     /// Keeps the state a machine was left in by a journaled step: the one of the highest revision.
@@ -229,8 +263,8 @@ impl Server {
     pub(super) fn name_batches(&mut self){
         for i in 0..self.ready.world.machine_effects.len(){
             if self.ready.world.machine_effects[i].serial==0{
-                self.ready.world.effect_serial+=1;
-                self.ready.world.machine_effects[i].serial=self.ready.world.effect_serial;
+                *self.ready.world.effect_serial+=1;
+                self.ready.world.machine_effects[i].serial= *self.ready.world.effect_serial;
             }
         }
     }
@@ -317,13 +351,14 @@ impl Server {
                     physical=true;
                 }
                 if wait{self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect;self.ready.world.machine_effects.rotate_left(1);break;}
-                let replays=matches!(&effect,WorldEffect::Blocks{retained,..} if retained.is_empty());
+                let replays=matches!(&effect,WorldEffect::Blocks{retained,..} if retained.is_empty())
+                    || host.replays_by_id()&&!matches!(&effect,WorldEffect::PileExplosion{..});
                 let unchanged=journaled&&!repeatable&&effect==journal;
                 #[cfg(test)]
                 let unchanged=unchanged&&!self.ready.strict_journal;
                 self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect.clone();
                 if !unchanged{
-                    if let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){host.log(&format!("pending machine effect: {e}"));return;}
+                    if let Err(e)=self.write_world(host){host.log(&format!("pending machine effect: {e}"));return;}
                     journaled=true;repeatable=false;
                 }
                 if host.trace_effects(){
@@ -364,7 +399,7 @@ impl Server {
                 }
             }
         }
-        if host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)).is_ok(){self.ready.kept=self.ready.world.kept(0);self.prune_ledger(host);}else{self.ready.kept=Vec::new();}
+        if self.write_world(host).is_ok(){self.prune_ledger(host);}else{self.ready.kept_rev=None;}
     }
 
     /// Every effect id the stored state still names: batches waiting, receipts waiting for a flushed save,
@@ -382,30 +417,68 @@ impl Server {
 
     pub(super) fn prune_ledger(&self,host:&mut impl ServerHost){host.ledger_prune(&self.live_effect_ids());}
 
+    /// What this save holds, when it does not wait for its writes.
+    pub fn native_save_mark(&self) -> SaveMark {
+        SaveMark {
+            receipts: self.ready.world.applied_machine_effects.iter().map(|b| (b.serial, b.done)).collect(),
+            survivors: self.ready.world.survivors.iter().map(|(k, s)| (k.clone(), s.generation, s.rev)).collect(),
+        }
+    }
+
+    /// The writes of the save that left `mark` are on disk: what it held is confirmed, as by a waiting save. Receipts
+    /// and journaled machines that came after it stay. A mark the journal no longer starts with (a waiting save
+    /// confirmed it since) confirms nothing.
+    pub fn native_marked_saved(&mut self, host: &mut impl ServerHost, mark: &SaveMark) {
+        let held = &self.ready.world.applied_machine_effects;
+        if mark.receipts.is_empty() && mark.survivors.is_empty()
+            || held.len() < mark.receipts.len()
+            || !held.iter().zip(&mark.receipts).all(|(b, m)| (b.serial, b.done) == *m)
+        {
+            return;
+        }
+        let stale: Vec<(String, Pos)> = mark
+            .survivors
+            .iter()
+            .filter(|(k, generation, rev)| self.ready.world.survivors.get(k).is_some_and(|s| s.generation == *generation && s.rev == *rev))
+            .map(|(k, _, _)| k.clone())
+            .collect();
+        let receipts: Vec<CommittedEffects> = self.ready.world.applied_machine_effects.drain(..mark.receipts.len()).collect();
+        let survivors: Vec<Survivor> = stale.iter().filter_map(|k| self.ready.world.survivors.remove(k)).collect();
+        if let Err(e) = self.write_world(host) {
+            for (i, b) in receipts.into_iter().enumerate() {
+                self.ready.world.applied_machine_effects.insert(i, b);
+            }
+            for s in survivors {
+                self.ready.world.survivors.insert((s.dim.clone(), s.pos), s);
+            }
+            host.log(&format!("receipts of a finished save: {e}"));
+        } else {
+            self.prune_ledger(host);
+        }
+    }
+
     /// The existing engine hook reports whether world/entity writes have
     /// actually flushed. Until then replay after a crash may duplicate an
     /// effect, but must never acknowledge an entity not yet saved by the world.
     pub fn native_world_saved(&mut self, host: &mut impl ServerHost, wait: bool) {
-        let applied = wait.then(|| std::mem::take(&mut self.ready.world.applied_machine_effects));
-        let survivors = wait.then(|| std::mem::take(&mut self.ready.world.survivors));
-        if self.ready.world.kept(0) == self.ready.kept {
+        let applied = wait.then(|| std::mem::take(&mut *self.ready.world.applied_machine_effects));
+        let survivors = wait.then(|| std::mem::take(&mut *self.ready.world.survivors));
+        if !self.world_changed() {
             // Nothing to write, but a confirmed save is when the ledgers forget what the storage no longer names.
             if wait {
                 self.prune_ledger(host);
             }
             return;
         }
-        let kept = self.ready.world.kept(self.ready.world.ticks);
-        if let Err(e) = host.set(crate::persist::KEY, &kept) {
+        if let Err(e) = self.write_world(host) {
             if let Some(applied) = applied {
-                self.ready.world.applied_machine_effects = applied;
+                *self.ready.world.applied_machine_effects = applied;
             }
             if let Some(survivors) = survivors {
-                self.ready.world.survivors = survivors;
+                *self.ready.world.survivors = survivors;
             }
             host.log(&format!("machine effect receipts/removals: {e}"));
         } else {
-            self.ready.kept = self.ready.world.kept(0);
             self.prune_ledger(host);
         }
     }
@@ -463,7 +536,7 @@ impl Server {
             critical: std::collections::VecDeque::new(),
             cells:before.world.machines.iter().map(|(k,m)|(k.clone(),CellGuard::machine(k,m))).collect(),
             vacant:before.broken.keys().cloned().collect(),
-            generations:before.world.generations.clone(),
+            generations:(*before.world.generations).clone(),
             origins:before.world.machines.iter().filter(|(k,_)|k.0==dim).map(|(k,m)|CellGuard::machine(k,m)).collect(),
             valid:true,
             resource:false,world_writes:Vec::new(),
@@ -649,7 +722,7 @@ impl Server {
                     critical: std::collections::VecDeque::new(),
                     cells:before.world.machines.iter().map(|(k,m)|(k.clone(),CellGuard::machine(k,m))).collect(),
             vacant:before.broken.keys().cloned().collect(),
-            generations:before.world.generations.clone(),
+            generations:(*before.world.generations).clone(),
                     origins:before.world.machines.iter().map(|(k,m)|CellGuard::machine(k,m)).collect(),
                     valid:true,
                     resource:before.world.machines.values().any(|m|matches!(m.data,crate::machine::Data::Excavator(_)|crate::machine::Data::Drill(_))),world_writes:Vec::new(),
@@ -784,12 +857,14 @@ impl Server {
                 if accepted {
                     for s in survivors{self.journal_survivor(s);}
                     for w in &staged.world_writes {
-                        if w.desired!=w.expected.state{self.ready.world.generations.entry(w.guard.key()).or_insert(w.guard.generation);}
+                        if w.desired!=w.expected.state&&!self.ready.world.generations.contains_key(&w.guard.key()){self.ready.world.generations.insert(w.guard.key(),w.guard.generation);}
                     }
                     buttons.retain(|i| !keys.contains(&i.guard.key()));
                     for k in &keys {
                         self.ready.broken.remove(k);
-                        self.ready.world.removals.retain(|r| &r.key != k);
+                        if self.ready.world.removals.iter().any(|r| &r.key == k) {
+                            self.ready.world.removals.retain(|r| &r.key != k);
+                        }
                         if !self.ready.world.machines.contains_key(k) {
                             self.slots_gone(k);
                             self.ready.native_saved.remove(k);
