@@ -5,7 +5,11 @@
     "explosion_resistance": 10.0,
     "requires_tool": true,
     "sounds": "minecraft:stone",
-    "light": 0
+    "light": 0,
+    "door_sounds": {
+      "open": "ntm:block.opendoor",
+      "close": "ntm:block.opendoor"
+    }
   },
   "item": true
 }

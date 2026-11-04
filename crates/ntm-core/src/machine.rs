@@ -199,6 +199,9 @@ pub struct Machine {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub facing: Option<String>,
     pub data: Data,
+    /// Audio of the last confirmed server step, carried by the existing TE snapshot.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub audio: Vec<crate::sounds::Loop>,
 }
 
 impl Machine {
@@ -275,6 +278,7 @@ impl Machine {
         };
         Self {
             generation: 0,
+            audio: Vec::new(),
             block: block_id.into(),
             facing,
             data,

@@ -6,7 +6,7 @@ priority = 100
 # Current upstream plus reusable model, multiblock and container extensions.
 # Keep the exact integration pin: official API alone lacks those extensions.
 [compatibility]
-horizon_revision = "0615f5db08625db18ba52b0f53fc78b5072d7df3"
+horizon_revision = "424e69a9b9ef2fbb18b3d7e76bf95463b48404d1"
 
 # The logic, plain Rust (cargo test against the fake world): copied into
 # this folder by tools/package-native.sh, never kept here.
@@ -21,6 +21,7 @@ hook_version = 1
 kind = "HEAD"
 helper = "lifecycle.rs"
 bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "phase", ty = "crate::game::native_lifecycle::WorldPhase", value = "phase" },
 ]
 
@@ -521,4 +522,30 @@ bindings = [
  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
  { name = "uuid", ty = "u128", value = "uuid" },
  { name = "window", ty = "i32", value = "window" },
+]
+
+[[module]]
+id = "sounds"
+file = "crates/horizon-client/src/game.rs"
+name = "ntm_sounds"
+source = "sounds.rs"
+
+[[injection]]
+id = "sound-frame"
+hook = "frame"
+hook_version = 1
+kind = "HEAD"
+helper = "sound_frame.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
+
+[[injection]]
+id = "sound-receive"
+hook = "net_from_server"
+hook_version = 1
+kind = "HEAD"
+helper = "sound_receive.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "channel", ty = "&str", value = "channel" },
+  { name = "data", ty = "&[u8]", value = "data" },
 ]

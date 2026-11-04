@@ -89,7 +89,7 @@ fn the_fracker_takes_bedrock_oil_with_its_solution() {
 #[test]
 fn inert_batch_d_drills_load_as_drills() {
     for block in ["ntm:machine_well", "ntm:machine_pumpjack", "ntm:machine_fracking_tower"] {
-        let m = Machine { generation: 0, block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
+        let m = Machine { generation: 0, audio: Vec::new(), block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
         assert_eq!(m.upgraded().kind(), Kind::Drill, "{block}");
     }
 }

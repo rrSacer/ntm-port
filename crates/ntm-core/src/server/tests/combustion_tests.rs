@@ -178,7 +178,7 @@ fn inert_combustion_machines_load_as_their_kinds() {
         "ntm:machine_turbofan",
         "ntm:machine_turbinegas",
     ] {
-        let m = Machine { generation: 0,
+        let m = Machine { generation: 0, audio: Vec::new(),
             block: block.into(),
             facing: Some("north".into()),
             data: Data::Inert { name: block.into() },

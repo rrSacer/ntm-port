@@ -257,6 +257,8 @@ pub struct Crafter {
     pub tout: Vec<Tank>,
     pub power: u64,
     pub progress: u32,
+    #[serde(skip)]
+    pub running: bool,
     /// Recipes done (the chance outputs' dice).
     #[serde(default)]
     pub done: u64,
@@ -302,6 +304,7 @@ impl Crafter {
             tout: (0..o).map(|_| Tank::new(cap)).collect(),
             power: 0,
             progress: 0,
+            running: false,
             done: 0,
             screen: Screen::Machine,
         };
@@ -568,6 +571,7 @@ impl FluidNode for Crafter {
 
 impl Logic for Crafter {
     fn tick(&mut self) -> bool {
+        self.running = false;
         if let Some(o) = self.switch_to(self.station.recipes()) {
             // The tick of the switch doesn't process.
             self.set_recipe(o);
@@ -588,6 +592,7 @@ impl Logic for Crafter {
             }
             return false;
         }
+        self.running = true;
         self.power -= r.power;
         self.progress += 1;
         // The crystallizer finishes past its duration (`progress >

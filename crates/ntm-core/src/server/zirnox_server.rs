@@ -134,6 +134,15 @@ impl Server {
             host.log(&format!("zirnox failure: {e}"));
             return false;
         }
+        // ZirnoxDestroyed.onBlockAdded: each new ruined cell can hiss as it
+        // appears, before the dedicated reactor explosion event.
+        for (pos,state) in &blocks {
+            if !matches!(blockstate::id_of(state),"ntm:zirnox_destroyed"|"ntm:dummy_zirnox_destroyed"){continue;}
+            let mut random=crate::bedrock::JavaRandom::new(seed(&key.0,*pos,self.ready.world.ticks) as i64);
+            if random.next_int(4)==0 {
+                host.show(&key.0,&Show::Sound{id:"minecraft:block.fire.ambient",source:"block",at:pos.map(|n|f64::from(n)+0.5),volume:1.+random.next_float(),pitch:random.next_float()*0.7+0.3});
+            }
+        }
         let at = [
             f64::from(key.1[0]),
             f64::from(key.1[1]) + 3.,
@@ -144,9 +153,9 @@ impl Server {
         host.show(
             &key.0,
             &Show::Sound {
-                id: "minecraft:entity.generic.explode",
+                id: "ntm:block.rbmk_explosion",
                 source: "block",
-                at,
+                at: [at[0],at[1]-1.,at[2]],
                 volume: 10.,
                 pitch: 1.,
             },
@@ -222,14 +231,15 @@ impl Server {
                 [center[0], center[1] + 1.25, center[2]],
                 12,
             );
+            let mut sound_random=crate::bedrock::JavaRandom::new(seed(&key.0,key.1,self.ready.world.ticks) as i64);
             host.show(
                 &key.0,
                 &Show::Sound {
                     id: "minecraft:block.fire.ambient",
                     source: "block",
                     at: center,
-                    volume: 1.,
-                    pitch: 0.65,
+                    volume: 1.+sound_random.next_float(),
+                    pitch: sound_random.next_float()*0.7+0.3,
                 },
             );
         }

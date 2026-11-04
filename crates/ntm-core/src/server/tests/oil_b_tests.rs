@@ -94,7 +94,7 @@ fn the_mixer_makes_coolant_from_the_recipe_picked() {
 #[test]
 fn inert_batch_b_machines_load_as_their_kinds() {
     for (block, kind) in [("ntm:machine_refinery", Kind::Refinery), ("ntm:machine_fraction_tower", Kind::FractionTower), ("ntm:machine_mixer", Kind::Crafter)] {
-        let m = Machine { generation: 0, block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
+        let m = Machine { generation: 0, audio: Vec::new(), block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
         assert_eq!(m.upgraded().kind(), kind, "{block}");
     }
 }

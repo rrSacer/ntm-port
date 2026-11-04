@@ -40,6 +40,10 @@ impl JavaRandom {
         }
     }
 
+    pub fn next_float(&mut self) -> f32 {
+        self.next(24) as f32 / (1u32 << 24) as f32
+    }
+
     pub fn next_double(&mut self) -> f64 {
         let hi = i64::from(self.next(26)) << 27;
         (hi + i64::from(self.next(27))) as f64 * (1.0 / (1u64 << 53) as f64)

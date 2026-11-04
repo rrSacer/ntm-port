@@ -99,6 +99,7 @@ impl Server {
         self.ready.bridge.last.insert(key.clone(),expected);
         self.ready.bridge.data.insert(key.clone(),data);
         self.ready.native_saved.insert(key,json);
+        host.show(dim,&crate::blast::visuals::Show::Sound{id:"ntm:item.upgradeplug",source:"player",at:core.map(|n|f64::from(n)+0.5),volume:1.5,pitch:0.75});
         true
     }
 }

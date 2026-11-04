@@ -194,6 +194,7 @@ struct Ready {
     topo_dirty: bool,
     /// Chunk loaded, as last checked.
     loaded: BTreeMap<Key, bool>,
+    sound_marks: BTreeMap<Key, crate::sounds::Mark>,
     frozen: BTreeSet<Key>,
     facts_pending:bool,
     facts_dirty:bool,

@@ -139,7 +139,7 @@ fn work(d: &mut Drill, host: &mut impl ServerHost, key: &Key) -> Vec<(Pos, Strin
         let id = blockstate::id_of(&b).to_string();
         if id != oil_drill::PIPE {
             let p = [x, y, z];
-            let sucked = d.shape.sucks(&id) && (!d.can_pump() || suck(d, host, &key.0, p, &mut writes));
+            let sucked = d.shape.sucks(&id) && (!d.can_pump() || suck(d, host, &key.0, key.1, p, &mut writes));
             if !sucked {
                 if drillable(&id) {
                     writes.push((p, oil_drill::PIPE.to_string()));
@@ -160,7 +160,7 @@ fn work(d: &mut Drill, host: &mut impl ServerHost, key: &Key) -> Vec<(Pos, Strin
 /// `suckRec` from `start`: the first oil (or, for the fracker, bedrock oil)
 /// through emptied deposits, 64 steps deep; its yield taken. False when
 /// there is none.
-fn suck(d: &mut Drill, host: &mut impl ServerHost, dim: &str, start: Pos, writes: &mut Vec<(Pos, String)>) -> bool {
+fn suck(d: &mut Drill, host: &mut impl ServerHost, dim: &str, core:Pos, start: Pos, writes: &mut Vec<(Pos, String)>) -> bool {
     let mut seen: BTreeSet<Pos> = BTreeSet::new();
     let mut stack = vec![(start, 0u32)];
     while let Some((p, layer)) = stack.pop() {
@@ -172,6 +172,9 @@ fn suck(d: &mut Drill, host: &mut impl ServerHost, dim: &str, start: Pos, writes
         if id == oil_drill::OIL || id == oil_drill::BEDROCK_OIL {
             // A well over bedrock oil finds it and takes nothing (`doSuck`).
             if id == oil_drill::OIL || d.shape == Shape::Fracker {
+                if d.shape!=Shape::Fracker {
+                    host.show(dim,&crate::blast::visuals::Show::Sound{id:"minecraft:entity.generic.splash",source:"neutral",at:core.map(f64::from),volume:2.,pitch:0.5});
+                }
                 if d.suck(id) {
                     writes.push((p, oil_drill::EMPTY.to_string()));
                 }

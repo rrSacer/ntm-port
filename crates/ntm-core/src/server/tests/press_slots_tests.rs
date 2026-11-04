@@ -70,6 +70,8 @@ fn a_burner_press_works_from_its_slots_and_wears_the_stamp() {
     let s = slots(&g);
     assert_eq!(count(&s, "minecraft:iron_ingot"), 0, "não terminou: {s:?}");
     assert_eq!(s[slot::STAMP].as_ref().map(|x| x.damage), Some(18));
+    let impacts=g.world.borrow().shown.iter().filter(|(_,show)|matches!(show,crate::blast::visuals::Show::Sound{id:"ntm:block.pressoperate",volume:1.5,pitch:1.,..})).count();
+    assert_eq!(impacts,8,"one HBM impact for each completed pressing, including while output is taken");
 }
 
 /// The stamp taken out and put back: the wear comes back with it; a worn

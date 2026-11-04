@@ -322,6 +322,7 @@ impl Server {
                         self.ready.bridge.last.insert(key.clone(),c.desired);
                         self.ready.bridge.data.insert(key.clone(),c.data);
                         self.ready.native_saved.insert(key,c.json);
+                        host.show(dim,&crate::blast::visuals::Show::Sound{id:"ntm:item.upgradeplug",source:"player",at:at.map(|v|f64::from(v)+0.5),volume:1.,pitch:1.});
                         return Some(PileUse::ConsumeRod);
                     }
                     return Some(PileUse::Handled);

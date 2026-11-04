@@ -89,6 +89,8 @@ def run(args):
         env[key] = str(folder / sub)
     env.update(HORIZON_NO_AUDIO='1', HORIZON_LAUNCHER_NO_SELF_UPDATE='1',
                HORIZON_NO_UPDATE_CHECK='1', WAYLAND_DISPLAY='')
+    if args.scenario == 'sounds':
+        env['HORIZON_TRACE_SOUNDS'] = 'ntm:'
     (folder / 'options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nmaxFps:30\nenableVsync:false\nguiScale:2\ntutorialStep:none\n')
     # Prevent a physical controller on the host from steering this test window.
     # This file belongs exclusively to the newly created disposable directory.
@@ -102,7 +104,7 @@ def run(args):
     os.close(writer)
     with os.fdopen(reader) as pipe:
         env['DISPLAY'] = ':' + pipe.readline().strip()
-    phases = {'items': [('setup','capture-state'),('check-state',)], 'zirnox': [('setup', 'inactive', 'convert', 'capture-state'),
+    phases = {'sounds': [('setup',)], 'items': [('setup','capture-state'),('check-state',)], 'zirnox': [('setup', 'inactive', 'convert', 'capture-state'),
                          ('check-state', 'automation', 'failure', 'soils')],
               'pile': [('setup', 'capture-state'), ('check-state', 'destroy')],
               'dims': [('setup', 'capture-state'), ('check-state',)],
@@ -192,7 +194,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['items', 'zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'comparator', 'pile-meltdown', 'stations', 'recipes'])
+    parser.add_argument('scenario', choices=['sounds', 'items', 'zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'comparator', 'pile-meltdown', 'stations', 'recipes'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)

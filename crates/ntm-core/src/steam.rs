@@ -50,11 +50,18 @@ pub struct SteamEngine {
     pub output: Tank,
     #[serde(skip)]
     pub buffer: u64,
+    /// The Java engine saves acceleration, while its rotor starts anew on load.
+    #[serde(default)]
+    pub acceleration:f32,
+    #[serde(skip)]
+    pub rotor:f32,
+    #[serde(skip)]
+    pub sound_hit:bool,
 }
 
 impl Default for SteamEngine {
     fn default() -> Self {
-        Self { slots: Slots::new(), input: Tank::typed("steam", 2_000), output: Tank::typed("spentsteam", 20), buffer: 0 }
+        Self { slots: Slots::new(), input: Tank::typed("steam", 2_000), output: Tank::typed("spentsteam", 20), buffer: 0,acceleration:0.,rotor:0.,sound_hit:false }
     }
 }
 
@@ -63,6 +70,7 @@ impl SteamEngine {
     /// `ops · heat · 0.85` HE this tick.
     pub fn step(&mut self) -> bool {
         self.buffer = 0;
+        self.sound_hit=false;
         self.input.set_type("steam");
         self.output.set_type("spentsteam");
         let Some(c) = turbine_coolable("steam") else { return false };
@@ -70,6 +78,9 @@ impl SteamEngine {
         self.input.drain(ops * c.in_mb);
         self.output.fill("spentsteam", ops * c.out_mb);
         self.buffer = (f64::from(ops * c.heat) * c.turbine * ENGINE_EFFICIENCY) as u64;
+        self.acceleration=(self.acceleration+if ops>0{0.1}else{-0.1}).clamp(0.,40.);
+        self.rotor+=self.acceleration;
+        if self.rotor>=360.{self.rotor-=360.;self.sound_hit=true;}
         ops > 0
     }
 }
@@ -545,5 +556,22 @@ mod tests {
         p.tick();
         let Steam::Condenser(pc) = &p else { unreachable!() };
         assert_eq!((pc.output.mb, pc.power), (1_000, 0), "5 % de tolerância");
+    }
+}
+
+#[cfg(test)]
+mod audio_tests {
+    use super::*;
+    #[test]
+    fn a_steam_engine_hits_once_per_rotor_revolution_and_saves_only_acceleration() {
+        let mut e=SteamEngine::default();
+        for tick in 1..=85 {
+            e.input.mb=1000;e.output.mb=0;e.step();
+            assert_eq!(e.sound_hit,tick==85,"Java acceleration ramps by .1 and the first turn finishes at tick 85");
+        }
+        let loaded:SteamEngine=serde_json::from_str(&serde_json::to_string(&e).unwrap()).unwrap();
+        assert_eq!(loaded.acceleration,e.acceleration);
+        assert_eq!(loaded.rotor,0.);
+        assert!(!loaded.sound_hit);
     }
 }

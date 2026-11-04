@@ -492,6 +492,7 @@ impl Host<'_, '_> {
                 assert_eq!(e.items.len(),c.desired.len());
                 let sent=match e.nbt.get(&JavaString::from(DATA)) {Some(Tag::IntArray(v))=>Some(v.clone()),_=>None};
                 let before_signal=comparator_of(&e.id,match e.nbt.get(&JavaString::from(STATE)){Some(Tag::String(j))=>Some(j),_=>None});
+                let before_audio=match e.nbt.get(&JavaString::from(STATE)){Some(Tag::String(j))=>ntm_core::sounds::snapshot(&j.to_string_lossy()),_=>Vec::new()};
                 for (cell,new) in e.items.iter_mut().zip(&c.desired) {
                     *cell=item(new.as_ref(),cell.take());
                 }
@@ -499,7 +500,7 @@ impl Host<'_, '_> {
                 e.nbt.insert(JavaString::from(DATA),Tag::IntArray(c.data.clone()));
                 e.nbt.insert(JavaString::from(STATE),Tag::String(JavaString::from(c.json.as_str())));
                 let after_signal=comparator_of(&e.id,match e.nbt.get(&JavaString::from(STATE)){Some(Tag::String(j))=>Some(j),_=>None});
-                (ntm_core::native::sync_changed(sent.as_deref(),&c.data,&synced),before_signal!=after_signal)
+                (ntm_core::native::sync_changed(sent.as_deref(),&c.data,&synced)||before_audio!=ntm_core::sounds::snapshot(&c.json),before_signal!=after_signal)
             }).expect("atomic preflight retains entity during exclusive Game access");
             if changed.0 {notify.push((c.dim.clone(),c.pos));}
             if changed.1 {signals.push((c.dim.clone(),c.pos));}
@@ -758,6 +759,16 @@ fn show_in_place(game: &mut crate::game::Game<'_>, show: &ntm_core::blast::visua
             let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| s == source) else { return };
             (id, game.with_level(|_, level, _| level.native_play_sound(id, *at, source, *volume, *pitch)))
         }
+        Show::NuclearSound { at } => {
+            let data=serde_json::to_vec(&ntm_core::sounds::NuclearCue{dimension:format!("{:?}",game.dim),at:*at}).expect("finite explosion position");
+            for player in game.native_players().into_iter().filter(|p|dim_of(&p.dimension)==Some(game.dim)).collect::<Vec<_>>() {
+                if let Ok(uuid)=u128::from_str_radix(&player.uuid.replace('-',""),16)
+                    && let Err(error)=game.native_net_send_to_player(uuid,"ntm:nuclear_sound",&data) {
+                    eprintln!("ntm nuclear audio: {error}");
+                }
+            }
+            return;
+        }
         Show::Effect { .. } => return,
     };
     if !sent {
@@ -849,6 +860,13 @@ pub(super) fn update_tag(id: &str, nbt: &Compound, tag: &mut Option<Compound>) {
             t.insert(JavaString::from(key), v.clone());
         }
     }
+    // Keep the update tag compact: the server already computed these loops
+    // from transient processing flags before committing the TE snapshot.
+    let audio = match nbt.get(&JavaString::from(STATE)) {
+        Some(Tag::String(json))=>ntm_core::sounds::snapshot(&json.to_string_lossy()),
+        _=>Vec::new(),
+    };
+    t.insert(JavaString::from("ntm_audio"),Tag::String(JavaString::from(serde_json::to_string(&audio).expect("finite audio state").as_str())));
     *tag = Some(t);
 }
 

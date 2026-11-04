@@ -6,6 +6,8 @@ use crate::{Pos, bomb::Blast, server::PlayerInfo};
 /// A blast, as the visuals see it.
 pub struct Shot<'a> {
     pub dim: &'a str,
+    pub name: &'a str,
+    pub sound_seed:i64,
     pub pos: Pos,
     pub blast: Blast,
     /// Players in the blast's dimension.
@@ -21,6 +23,8 @@ pub enum Show {
     /// A vanilla sound event from a vanilla source (`block`, `weather`...),
     /// heard to 16·volume blocks.
     Sound { id: &'static str, source: &'static str, at: [f64; 3], volume: f32, pitch: f32 },
+    /// Torex audio reaches each client when its expanding wave arrives.
+    NuclearSound { at: [f64;3] },
     /// A status effect on a player (by id).
     Effect { player: String, id: &'static str, seconds: u32, amplifier: u8 },
 }
@@ -42,11 +46,12 @@ impl Optimized {
         }
         let at = center(s.pos);
         let n = cfg.particles as i32;
+        let mut random=crate::bedrock::JavaRandom::new(s.sound_seed);
         let mut out = Vec::new();
         match s.blast {
             Blast::Conventional { power } => {
-                let v = (power / 4.0).max(1.0);
-                out.push(Show::Sound { id: "minecraft:entity.generic.explode", source: "block", at, volume: v, pitch: 0.7 });
+                let pitch=(1.+(random.next_float()-random.next_float())*0.2)*0.7;
+                out.push(Show::Sound { id: "minecraft:entity.generic.explode", source: "block", at, volume: 4., pitch });
                 if n > 0 {
                     let spread = f64::from((power / 4.0).max(1.0));
                     out.push(Show::Particles { id: "minecraft:explosion_emitter", color: WHITE, at, spread: [spread; 3], speed: 0.0, count: (n / 8).max(1) });
@@ -54,10 +59,11 @@ impl Optimized {
             }
             Blast::Nuke { radius, .. } | Blast::Balefire { radius } => {
                 let r = radius as f32;
-                // Heard to 16·volume blocks.
-                let v = (r / 8.0).clamp(4.0, 64.0);
-                out.push(Show::Sound { id: "minecraft:entity.generic.explode", source: "master", at, volume: v, pitch: 0.5 });
-                out.push(Show::Sound { id: "minecraft:entity.lightning_bolt.thunder", source: "weather", at, volume: v, pitch: 0.5 });
+                if matches!(s.blast,Blast::Nuke{..}) {
+                    out.push(Show::Sound{id:"minecraft:entity.generic.explode",source:"block",at:s.pos.map(f64::from),volume:1.,pitch:random.next_float()*0.1+0.9});
+                }
+                let torex=if s.name=="ntm:nuke_boy"{[at[0],f64::from(s.pos[1])+1.,at[2]]}else{at};
+                out.push(Show::NuclearSound { at:torex });
                 if n > 0 {
                     let flash = if matches!(s.blast, Blast::Balefire { .. }) { [0.3, 1.0, 0.3, 1.0] } else { WHITE };
                     out.push(Show::Particles { id: "minecraft:flash", color: flash, at, spread: [0.0; 3], speed: 0.0, count: 1 });
@@ -105,13 +111,13 @@ mod tests {
     fn a_nuke_shows_its_flash_cloud_and_shock() {
         let cfg = Config::default();
         let p = PlayerInfo { id: "p".into(), name: "P".into(), dim: "d".into(), pos: [3.0, 0.0, 0.0], creative: false };
-        let shot = Shot { dim: "d", pos: [0, 0, 0], blast: Blast::Nuke { radius: 40, fallout: true }, players: std::slice::from_ref(&p) };
+        let shot = Shot { dim: "d",name:"ntm:nuke_boy",sound_seed:1, pos: [0, 0, 0], blast: Blast::Nuke { radius: 40, fallout: true }, players: std::slice::from_ref(&p) };
         let shows = Optimized.detonation(&cfg, &shot);
         let ids: Vec<&str> = shows.iter().filter_map(|s| if let Show::Particles { id, .. } = s { Some(*id) } else { None }).collect();
         if cfg.particles > 0 {
             assert_eq!(ids, ["minecraft:flash", "minecraft:explosion_emitter", "minecraft:campfire_signal_smoke", "minecraft:large_smoke"]);
         }
-        assert!(shows.iter().any(|s| matches!(s, Show::Sound { id: "minecraft:entity.lightning_bolt.thunder", .. })));
+        assert!(shows.iter().any(|s| matches!(s, Show::NuclearSound { .. })));
         assert!(shows.contains(&Show::Effect { player: "p".into(), id: "nausea", seconds: 8, amplifier: 0 }));
         let off = Config { effects: false, ..cfg };
         assert!(Optimized.detonation(&off, &shot).is_empty());

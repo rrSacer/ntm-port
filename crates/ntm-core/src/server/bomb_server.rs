@@ -326,7 +326,7 @@ impl Server {
             b => b,
         };
         let vis = visuals::Optimized;
-        show(host, &dim, vis.detonation(&cfg, &visuals::Shot { dim: &dim, pos, blast, players: &players }));
+        show(host, &dim, vis.detonation(&cfg, &visuals::Shot { dim: &dim,name:&name,sound_seed:crate::hash::mix(now ^ q.n) as i64, pos, blast, players: &players }));
         let c = center(pos);
         match blast {
             Blast::Conventional { power } => {

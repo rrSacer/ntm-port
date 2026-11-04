@@ -670,6 +670,25 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     };
     let applied = game.native_commit_player(&STATE, &expected, desired, benefits);
     if applied {
+        let java = match &*stack.item {
+            "ntm:syringe_metal_medx" => Some("hbm:item.syringe"),
+            "ntm:radaway" => Some("hbm:item.radaway"),
+            "ntm:hazmat_kit" => Some("hbm:item.unpack"),
+            _ => None,
+        };
+        if let Some(java)=java {crate::game::ntm_sounds::player(game,java,1.,1.);}
+        if &*stack.item=="ntm:cotton_candy" {
+            use horizon_core::random::RandomSource;
+            if let Some(p)=game.player.as_ref(){
+                let at=[p.position.x,p.position.y,p.position.z];
+                game.with_level(|_,level,_|{
+                    let Some(random)=level.native_level_random() else{return};
+                    let pitch=random.next_float()*0.1+0.9;
+                    level.native_play_sound("minecraft:entity.player.burp",at,7,0.5,pitch);
+                });
+            }
+        }
+
         trace(game, "use", &stack.item);
         // `contaminate` feeds `radEnv` (the next `radBuf` window) whatever its
         // gates decide; the direct `incrementRadiation` of a pill does not.
@@ -1196,7 +1215,7 @@ fn install_filter(game: &mut Game<'_>, filter: &ItemStack) -> bool {
         return false;
     }
     *slot = previous;
-    game.native_commit_player(
+    let applied=game.native_commit_player(
         &STATE,
         &expected,
         desired,
@@ -1204,7 +1223,9 @@ fn install_filter(game: &mut Game<'_>, filter: &ItemStack) -> bool {
             silent_equipment: true,
             ..Default::default()
         },
-    )
+    );
+    if applied {crate::game::ntm_sounds::player(game,"hbm:item.gasmaskScrew",1.,1.);}
+    applied
 }
 
 /// Exposure-specific filter wear, in the same CAS as protection state. Gamma

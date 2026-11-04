@@ -66,6 +66,13 @@ impl Server {
             let loaded=host.get_block(&key.0,key.1).is_some_and(|b|blockstate::id_of(&b)==m.block);
             self.ready.loaded.insert(key.clone(),loaded);
         }
+        for (key,m) in &self.ready.world.machines {
+            self.ready.sound_marks.entry(key.clone()).or_insert_with(||{
+                let mut mark=crate::sounds::mark(m);
+                if crate::sounds::upgrade_slots(&m.block).is_some() && let Some(slots)=host.machine_slots(&key.0,key.1){crate::sounds::with_slots(&mut mark,&m.block,&slots);}
+                mark
+            });
+        }
         self.native_find_cables(host);
         self.native_redstone(host);
         self.local_steps(host);
@@ -322,22 +329,38 @@ impl Server {
     /// The loaded machines whose state changed since it was last kept: kept
     /// with their block entities.
     pub(super) fn native_save(&mut self, host: &mut impl ServerHost) {
+        let tick=self.tick;
         let Some(r) = self.ready() else { return };
-        for (key, m) in &r.world.machines {
+        for (key, m) in &mut r.world.machines {
             if r.loaded.get(key) != Some(&true) || m.generation==u64::MAX || r.world.generations.get(key).copied().unwrap_or(0)!=m.generation || !host.get_block(&key.0,key.1).is_some_and(|s|blockstate::id_of(&s)==m.block) {
                 continue;
             }
-            let Ok(json) = serde_json::to_string(m) else { continue };
+            m.audio = crate::sounds::machine(m);
+            let Ok(json) = serde_json::to_string(&*m) else { continue };
             if r.native_saved.get(key) != Some(&json) {
                 // Marked kept only once written: an unreachable block entity
                 // (its dimension not available now) is written again later.
                 let Some(expected)=host.machine_slots(&key.0,key.1).or_else(|| container_bridge::layout(&m.block).is_none().then(Vec::new)) else{continue};
                 let data=Self::machine_screen(&mut m.clone());
-                if host.commit_machine(&MachineCommit{cells:Vec::new(),guard:CellGuard::machine(key,m),expected_saved:r.native_saved.contains_key(key),dim:key.0.clone(),pos:key.1,desired:expected.clone(),expected,data,json:json.clone()}) {
-                    r.native_saved.insert(key.clone(), json);
+                if !host.commit_machine(&MachineCommit{cells:Vec::new(),guard:CellGuard::machine(key,m),expected_saved:r.native_saved.contains_key(key),dim:key.0.clone(),pos:key.1,desired:expected.clone(),expected,data,json:json.clone()}) {continue;}
+                r.native_saved.insert(key.clone(), json);
+            }
+            let seed=crate::hash::mix(crate::hash::fnv64(format!("{:?}:{}",key,tick).as_bytes())) as i64;
+            for cue in crate::sounds::ambient(m,seed) {
+                host.show(&key.0,&crate::blast::visuals::Show::Sound{id:cue.event,source:crate::sounds::category(cue.event).unwrap_or("block"),at:[0,1,2].map(|i|f64::from(key.1[i])+cue.offset[i]),volume:cue.volume,pitch:cue.pitch});
+            }
+            let mut now=crate::sounds::mark(m);
+            if crate::sounds::upgrade_slots(&m.block).is_some() && let Some(slots)=host.machine_slots(&key.0,key.1){crate::sounds::with_slots(&mut now,&m.block,&slots);}
+            if let Some(before)=r.sound_marks.insert(key.clone(),now.clone()) {
+                for cue in crate::sounds::changed(&before,&now) {
+                    host.show(&key.0,&crate::blast::visuals::Show::Sound {
+                        id:cue.event, source:crate::sounds::category(cue.event).unwrap_or("block"),
+                        at:[0,1,2].map(|i|f64::from(key.1[i])+cue.offset[i]),volume:cue.volume,pitch:cue.pitch,
+                    });
                 }
             }
         }
+        r.sound_marks.retain(|k,_|r.world.machines.contains_key(k));
         r.native_saved.retain(|k, _| r.world.machines.contains_key(k));
     }
 }
