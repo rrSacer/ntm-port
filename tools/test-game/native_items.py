@@ -21,7 +21,7 @@ def counts(g):
 
 def state(g):
     text=' '.join(g.command('ntmitem inspect').get('chat',[]))
-    result={key:int(value) for key,value in re.findall(r'(dose|radaway|sickness):\s*(\d+)[lL]?',text)}
+    result={key:int(value) for key,value in re.findall(r'(dose|radaway|sickness|herbal):\s*(\d+)[lL]?',text)}
     if 'dose' not in result:raise AssertionError(text)
     return result
 
@@ -275,7 +275,7 @@ def energy(g):
     """Family 1: ItemEnergy cans and bottles, the canteen, the mango, the BDCL
     and the chocolate milk, in the Java order: use, effects, container and
     cap, full inventory, creative, then the cooldown across a reopen."""
-    g.close();g.command('gamemode survival @s');g.command('clear @s');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
+    g.close();g.command('gamemode survival @s');g.command('clear @s');g.command('ntmitem cure');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
     g.command('ntmitem dose 0');g.command('tp @s 20.5 101 11.5');time.sleep(.5)
     give_hand(g,'ntm:can_smart',2)
     g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.5)
@@ -384,7 +384,13 @@ def health(g):
 
 
 def medicine(g):
-    """Family 2: ItemSyringe, ItemSimpleConsumable, ItemPill."""
+    """Family 2: ItemSyringe, ItemSimpleConsumable, ItemPill.
+
+    Cases: stimpak/psycho/super/med_bag/taint/antidote/awesome effects and containers; the
+    RadAway family (strong total, flush counter, the antidote clearing it); IV blood and XP;
+    Rad-X, iodine and the herbal pill (dose, effects, sickness refusing the next pill, milk
+    leaving the sickness alone); fmn, chocolate, plan C and the poison syringe (Resistance V
+    absorbs the euthanasia, a survival player without it dies)."""
     reset(g)
     g.command('damage @s 10 minecraft:generic');time.sleep(.4);before=health(g)
     hold(g,'ntm:syringe_metal_stimpak',0,2);actual=counts(g)
@@ -412,6 +418,9 @@ def medicine(g):
     # The counter is the Java potion duration; the strong one has run out, so it starts from zero.
     reset(g,dose=500000);before=state(g).get('radaway',0);hold(g,'ntm:radaway_flush',0);treated=state(g)
     g.check('radaway_flush_is_five_hundred_ticks',480<=treated.get('radaway',0)-before<=500 and counts(g).get('ntm:iv_empty')==1,{'before':before,'state':treated,'counts':counts(g)})
+    # The antidote is `clearActivePotions`: the radaway potion goes with the effect list, so the dose stops falling.
+    hold(g,'ntm:syringe_antidote',0);cleared=state(g);time.sleep(1.2);later=state(g)
+    g.check('antidote_clears_the_radaway_treatment',cleared.get('radaway',0)==0 and later.get('radaway',0)==0 and later['dose']==cleared['dose'],{'treated':treated,'cleared':cleared,'later':later})
     # IV bags: blood costs 5 health, then gives 5.
     reset(g);hold(g,'ntm:iv_empty',0);actual=counts(g)
     g.check('iv_empty_takes_five_health_and_fills',abs(health(g)-15)<.6 and actual.get('ntm:iv_blood')==1 and not actual.get('ntm:iv_empty'),{'health':health(g),'counts':actual})
@@ -431,7 +440,10 @@ def medicine(g):
     g.check('iodine_cures_poison','poison' not in effect_map(g),effect_map(g))
     reset(g,dose=500000);hold(g,'ntm:pill_herbal',.9,2);effects=effect_map(g)
     g.check('herbal_lowers_the_dose_and_applies_its_effects',state(g)['dose']==400000 and has_effects(effects,{'weakness':(2,12000),'mining_fatigue':(2,12000),'potion_sickness':(0,12000)}),{'state':state(g),'effects':effects})
-    g.check('potion_sickness_blocks_the_next_pill',refused(g,'ntm:pill_herbal',1) or True,counts(g))
+    g.check('potion_sickness_blocks_the_next_pill',refused(g,'ntm:pill_herbal',1),counts(g))
+    # `HbmPotion.potionsickness` has no curative items: milk clears the other effects and leaves it running.
+    reset(g);hold(g,'ntm:pill_herbal',.9,1);give_hand(g,'minecraft:milk_bucket');use(g,2.2);time.sleep(.6);effects=effect_map(g)
+    g.check('milk_does_not_cure_the_herbal_sickness','potion_sickness' in effects and effects['potion_sickness'][1]>11000 and 'weakness' not in effects and 'mining_fatigue' not in effects,effects)
     reset(g);g.command('effect give @s ntm:potion_sickness 30 0');time.sleep(.3)
     g.check('sick_player_cannot_drink_a_can',refused(g,'ntm:can_smart',1),counts(g))
     g.command('effect clear @s')
@@ -446,6 +458,11 @@ def medicine(g):
     # plan C kills a survival player; creative is immune but the pill is still eaten.
     reset(g,'creative');g.command('effect give @s minecraft:instant_health 1 10 true');time.sleep(.8);before=health(g);hold(g,'ntm:plan_c',.9)
     g.check('plan_c_cannot_hurt_creative_but_is_eaten',health(g)>=before-.01 and before>19 and not counts(g),{'before':before,'health':health(g),'counts':counts(g)})
+    # `euthanizedSelf` only bypasses armor: Resistance V (amplifier 4) absorbs all of it, the syringe and the pill alike.
+    reset(g);g.command('effect give @s minecraft:resistance 120 4 true');hold(g,'ntm:syringe_poison',0);time.sleep(.6);alive=g.ctl('state')['player']
+    g.check('resistance_absorbs_the_euthanasia_syringe',alive.get('death_time') is None and alive['health']>=19.9 and counts(g).get('ntm:syringe_empty')==1,{'player':alive,'counts':counts(g)})
+    reset(g);g.command('effect give @s minecraft:resistance 120 4 true');hold(g,'ntm:plan_c',.9);time.sleep(1.2);alive=g.ctl('state')['player']
+    g.check('resistance_absorbs_plan_c',alive.get('death_time') is None and alive['health']>=19.9 and not counts(g),{'player':alive,'counts':counts(g)})
     reset(g);hold(g,'ntm:plan_c',.9);time.sleep(1.5);dead=g.ctl('state')['player']
     g.check('plan_c_kills_a_survival_player',dead.get('death_time') is not None or dead['health']<=0,dead)
     g.ctl('respawn');g.ctl('wait-ready 60');g.close();reset(g,'creative')
@@ -525,7 +542,11 @@ def kits(g):
 
 def other_filters(g):
     """ArmorUtil.register: each ItemFilter stops its own hazard classes; the
-    M65's blacklist still refuses blistering gas."""
+    M65's blacklist still refuses blistering gas, the hazmat hoods' empty one does not.
+
+    Cases: mono/combo/rag/piss on the M65 (install, then wear or ignore per hazard class);
+    the three hazmat hoods (install, blistering and lung gas wear the filter, sneak-use
+    returns it). Ambient sources are not connected: only `ntmitem expose` calls the exposure."""
     cases={'gas_mask_filter_mono':(('co',True),('lung',False)),
            'gas_mask_filter_combo':(('co',True),('bacteria',True),('blister',False)),
            'gas_mask_filter_rag':(('coarse',True),('fine',False)),
@@ -536,6 +557,19 @@ def other_filters(g):
         for kind,wears in checks:
             before=inventory_tag(g);g.command(f'ntmitem expose {kind} 50');after=inventory_tag(g)
             g.check(f'{item}_{kind}_'+('wears_it' if wears else 'is_ignored'),(after!=before)==wears,{'before':before,'after':after})
+    # `ArmorHazmatMask implements IGasMask` with an empty blacklist: every hood takes a filter,
+    # wears it, lets it stop blistering gas (the M65 refuses) and gives it back when sneak-used in hand.
+    for hood in ('hazmat_helmet','hazmat_helmet_red','hazmat_helmet_grey'):
+        reset(g,'creative');g.command(f'item replace entity @s armor.head with ntm:{hood}');give_hand(g,'ntm:gas_mask_filter_combo');use(g)
+        g.check(f'{hood}_takes_a_filter',not counts(g).get('ntm:gas_mask_filter_combo') and 'hfrFilter' in inventory_tag(g),inventory_tag(g))
+        before=inventory_tag(g);g.command('ntmitem expose blister 40');after=inventory_tag(g)
+        g.check(f'{hood}_filter_stops_blistering_gas',after!=before,{'before':before,'after':after})
+        before=after;g.command('ntmitem expose lung 40')
+        g.check(f'{hood}_filter_stops_lung_gas',inventory_tag(g)!=before,inventory_tag(g))
+        g.command('item replace entity @s hotbar.3 from entity @s armor.head');g.command('item replace entity @s armor.head with minecraft:air')
+        g.command('item replace entity @s hotbar.0 from entity @s hotbar.3');g.command('item replace entity @s hotbar.3 with minecraft:air');g.ctl('select 1');time.sleep(.3)
+        g.ctl('key shift down');time.sleep(.4);use(g);g.ctl('key shift up');time.sleep(.3)
+        g.check(f'{hood}_gives_the_filter_back_when_sneak_used',counts(g).get('ntm:gas_mask_filter_combo')==1 and 'hfrFilter' not in inventory_tag(g),{'counts':counts(g),'tag':inventory_tag(g)})
     reset(g,'creative')
 
 
@@ -565,6 +599,22 @@ def instruments(g):
     hold(g,'ntm:survey_scanner',0);text=chat_lines(g)
     g.check('survey_scanner_finds_ported_ores','Found OIL!' in text and 'Found SCHIST!' in text and 'COLTAN' not in text,text)
     g.command('setblock 25 100 11 minecraft:air');g.command('setblock 20 100 16 minecraft:air')
+    # radBuf (radEnv -> radBuf once a second): a bottle's point `contaminate` joins the continuous
+    # source in the same reading, once, while Rad-X and an active RadAway change nothing in it;
+    # coffee_radium's direct `incrementRadiation` never enters it.
+    def radbuf_window(seconds=3.4):
+        seen=[];end=time.monotonic()+seconds
+        while time.monotonic()<end:
+            seen.append(int(' '.join(g.command('ntmitem radbuf').get('chat',[]))));time.sleep(.1)
+        return seen
+    reset(g,'creative',dose=300000);g.command('give @s ntm:ingot_uranium 8');g.command('give @s ntm:bottle_opener 1');time.sleep(.5)
+    base=max(radbuf_window(2.6));g.check('continuous_source_reads_in_the_buffer',base>0,base)
+    g.command('effect give @s ntm:radx 600 0');hold(g,'ntm:radaway_flush',0)
+    hold(g,'ntm:bottle_nuka',2.2,1,1);seen=radbuf_window()
+    g.check('bottle_contaminate_joins_the_buffer_once',max(seen)==base+5000 and seen.count(base+5000)>=1 and seen[-1]==base,{'base':base,'seen':sorted(set(seen)),'last':seen[-1]})
+    hold(g,'ntm:coffee_radium',1.2,1,2);seen=radbuf_window(2.6)
+    g.check('direct_increment_stays_out_of_the_buffer',max(seen)==base,{'base':base,'seen':sorted(set(seen))})
+    g.command('clear @s')
     # Pipette: an empty one steps its capacity by 50 (sneaking lowers it); the laboratory one by 1.
     reset(g);give_hand(g,'ntm:pipette',1);g.ctl('key shift down');time.sleep(.5);use(g);g.ctl('key shift up');time.sleep(.3)
     text=chat_lines(g);tag=components(g,'ntm:pipette') or ''
@@ -602,11 +652,24 @@ def on_blocks(g):
     # Nothing to grow: the fertilizer stays.
     g.ctl('interact 19 100 9 up');time.sleep(.8)
     g.check('fertilizer_stays_when_nothing_grows',counts(g).get('ntm:powder_fertilizer')==2,counts(g))
-    # The AMS lens: the control socket cannot read a tooltip (its line is a unit test), so the
-    # scene proves the item exists with its `damage` long, which the tooltip reads.
-    reset(g,'creative');g.command('give @s ntm:ams_lens[minecraft:custom_data={damage:108000000L}] 1');time.sleep(.5)
+    # The clicked cell grows by force (ItemFertilizer `force`), not by the 45% sapling roll: every trial
+    # must turn the sapling into a tree and spend one fertilizer.
+    grown=0
+    for trial in range(6):
+        reset(g);g.command('fill 17 101 6 27 118 10 minecraft:air');g.command('setblock 22 100 8 minecraft:grass_block');g.command('setblock 22 101 8 minecraft:oak_sapling[stage=0]');time.sleep(.4)
+        give_hand(g,'ntm:powder_fertilizer',2);g.close();g.ctl('interact 22 101 8 up');time.sleep(.9)
+        grown+='sapling' not in g.ctl('block 22 101 8').get('state','sapling') and counts(g).get('ntm:powder_fertilizer')==1
+    g.check('fertilizer_forces_the_clicked_cell',grown==6,{'grown_of_6':grown})
+    g.command('fill 17 101 6 27 118 10 minecraft:air')
+    # The AMS lens: the tooltip line comes from the lens stack's `damage` long, read through the same
+    # function as `ntmitem lens`; the socket cannot read a tooltip, the function is what it draws.
+    reset(g,'creative');g.command('give @s ntm:ams_lens[minecraft:custom_data={damage:108000000L}] 1');g.ctl('select 1');time.sleep(.5)
     tag=components(g,'ntm:ams_lens') or ''
-    g.check('ams_lens_keeps_its_damage_tag','108000000' in tag and counts(g).get('ntm:ams_lens')==1,tag)
+    line=' '.join(g.command('ntmitem lens').get('chat',[]))
+    g.check('ams_lens_tooltip_reads_its_damage_tag','108000000' in tag and 'Durability: 324000000/432000000 (75%)' in line,{'tag':tag,'line':line})
+    g.command('clear @s');g.command('give @s ntm:ams_lens 1');g.ctl('select 1');time.sleep(.4)
+    line=' '.join(g.command('ntmitem lens').get('chat',[]))
+    g.check('fresh_ams_lens_is_at_full_durability','Durability: 432000000/432000000 (100%)' in line,line)
     g.ground(20,101,8,width=12,height=8);reset(g,'creative')
 
 

@@ -1242,6 +1242,26 @@ pub(super) fn command(game: &mut Game<'_>, line: &str) -> bool {
                 reply = horizon_world::snbt_text::to_snbt(&Tag::Compound(snapshot.state));
             }
         }
+        // The operator's way to end the herbal sickness the tick would restore
+        // after an `/effect clear`; the effect list itself is `/effect clear`'s.
+        [_, "cure"] => {
+            if let Some(expected) = game.native_player_snapshot(&STATE) {
+                let mut desired = expected.clone();
+                if number(&desired.state, "herbal") > 0 {
+                    set(&mut desired.state, "herbal", 0);
+                }
+                reply = (desired == expected
+                    || game.native_commit_player(&STATE, &expected, desired, Default::default()))
+                .to_string();
+            }
+        }
+        // The reading the instruments use (`radBuf`, milliRAD/s).
+        [_, "radbuf"] => reply = rad_buffer(game).to_string(),
+        [_, "lens"] => {
+            if let Some(line) = game.held().and_then(lens_tooltip) {
+                reply = line;
+            }
+        }
         [_, "dose", value] => {
             if let Ok(value) = value.parse::<u64>()
                 && value <= ntm_core::radiation::MAX_DOSE
@@ -1295,6 +1315,23 @@ pub(super) fn equipped(game: &Game<'_>, slot: &str, new: Option<&ItemStack>) {
             new.map_or("minecraft:air", |s| s.item.as_ref())
         ),
     );
+}
+
+/// The line `ItemLens.addInformation` adds to an AMS lens tooltip: its
+/// `damage` long (0 without one) against the full durability. The client
+/// tooltip and `ntmitem lens` both read it here.
+pub(super) fn lens_tooltip(stack: &ItemStack) -> Option<String> {
+    if &*stack.item != "ntm:ams_lens" {
+        return None;
+    }
+    let damage = match custom(stack).and_then(|d| d.get(&JavaString::from("damage")).cloned()) {
+        Some(Tag::Long(n)) => n,
+        _ => 0,
+    };
+    Some(ntm_core::consumables::lens_line(
+        ntm_core::consumables::AMS_LENS_MAX,
+        damage,
+    ))
 }
 
 fn custom(stack: &ItemStack) -> Option<Compound> {
