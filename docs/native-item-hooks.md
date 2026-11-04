@@ -194,7 +194,7 @@ motor inclui também o cursor e os drops pós-publicação necessários aos menu
 
 ## Aceitação
 
-Binário `b656b04ed528…` e pacote `3fbcad5823f7…`, motor `24ddb0137` (sobre `ntm-current` `d5eb69a33`), NTM sobre `main` `05e51050`, no mesmo par para
+Binário `40b1dffa8cd7…` e pacote `3fbcad5823f7…`, motor `0615f5db0` (sobre `ntm-current` `d5eb69a33`), NTM sobre `main` `05e51050`, no mesmo par para
 todos os cenários (hashes iguais antes e depois). Cada fase grava a própria
 evidência (`native-items-setup.json`, `-capture-state.json`, `-check-state.json`).
 
@@ -216,14 +216,15 @@ de filtro devolve o antigo na mão; sneak com a máscara na mão derruba o filtr
 Regressão no mesmo binário (`mining` 18 checks, `bombs` 49, `zirnox` 136, `pile` 85,
 `dims` 14 com `dims-idle` 2 e `dims-idle-clean` 1, `inventory-proxy` 12,
 `radioisotopes` 67, `solar` 36, `combustion` 15, `catalog` 251, `comparator` 9,
-`stations` 5 e `pile-meltdown` 32): todas passaram. Os roteiros novos da onda 0
+`stations` 5 e `pile-meltdown` 32): todas passaram. `bombs`, `combustion` e `pile-meltdown`
+falharam numa rodada por disco cheio (a máquina é compartilhada) e carga alta (`control
+socket`, `No space left on device`); repetidos depois, no mesmo binário, passaram. Os roteiros novos da onda 0
 rodaram no binário do item-hooks sobre o motor e o NTM rebaseados.
 
 Verificação estática no HEAD final: NTM 421 testes passaram (2 doctests herdados
 ignorados), Clippy `-D warnings` do workspace e da cópia transformada do motor sem
 isenções; motor 1.565 testes de `horizon-client-lib` e 767 de `horizon-client`, Clippy
-e `cargo fmt --check` limpos. Testes novos desta rodada: `random_toss_ignores_the_view…`,
-`world_item_hop_is_the_entity_constructors`, `drops_name_their_java_mode`,
+e `cargo fmt --check` limpos. Testes novos desta rodada: `world_item_hop_is_the_entity_constructors`, `drops_name_their_java_mode`,
 `a_native_menu_click_is_answered_with_the_state_after_the_mod` e
 `container_placement_follows_each_java_item`.
 
