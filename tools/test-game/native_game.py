@@ -57,11 +57,11 @@ class Game:
         time.sleep(.3)  # Commands travel through the integrated server.
         return result
 
-    def ground(self, x, y, z, width=12, height=6):
-        self.command(f'forceload add {x-2} {z-2} {x+width} {z+4}')
+    def ground(self, x, y, z, width=12, height=6, depth=4):
+        self.command(f'forceload add {x-2} {z-2} {x+width} {z+depth}')
         time.sleep(2)
-        self.command(f'fill {x-2} {y} {z-2} {x+width} {y+height} {z+4} minecraft:air')
-        self.command(f'fill {x-2} {y-1} {z-2} {x+width} {y-1} {z+4} minecraft:stone')
+        self.command(f'fill {x-2} {y} {z-2} {x+width} {y+height} {z+depth} minecraft:air')
+        self.command(f'fill {x-2} {y-1} {z-2} {x+width} {y-1} {z+depth} minecraft:stone')
         self.command(f'tp @s {x+.5} {y} {z+3.5}')
         time.sleep(2)
 

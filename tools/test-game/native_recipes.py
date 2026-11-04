@@ -103,7 +103,9 @@ def montadora(game, keys):
     game.evidence['phase'] = 'montadora'
     x, y, z = 80, 100, 8
     game.close()
-    game.ground(x, y, z, width=6)
+    # The menu is opened from the core's south cell and `Game.open` stands 3.5 blocks south of it
+    # (z = 13.5), past the default floor (z + 4): the player would fall out of reach.
+    game.ground(x, y, z, width=6, depth=6)
     game.command('clear @s')
     game.command('give @s ntm:machine_assembly_machine 1')
     game.ctl(f'place {x} {y} {z} --item ntm:machine_assembly_machine')

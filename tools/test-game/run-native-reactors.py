@@ -114,7 +114,7 @@ def run(args):
               'catalog': [('setup',)],
               'comparator': [('setup',)],
               'pile-meltdown': [('meltdown',)],
-              'stations': [('misturador',)], 'recipes': [('montadora',)],
+              'stations': [('misturador',)], 'recipes': [('montadora', 'bigorna')],
               'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
     if getattr(args, 'manual_only', False):
         phases['radioisotopes'] = [('setup', 'decay', 'capture-state'), ('check-state',)]
