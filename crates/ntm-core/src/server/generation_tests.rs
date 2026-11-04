@@ -790,6 +790,40 @@ fn a_chunk_older_than_the_storage_gets_the_effect_it_missed() {
     assert!(h.blocks_done.contains(&(ntm_core::ledger::effect_id(7, 0), P)), "and the chunk now records it");
 }
 
+/// A machine that outlives a receipt's step comes back in the state the journal gives it when its chunk is older.
+fn journal_adopt(chunk_rev: u64, journal_rev: u64) -> Option<String> {
+    use super::{CommittedEffects, Survivor, WorldEffect};
+    let mut h = Host::default();
+    let s = install(&mut h, zirnox::BLOCK, 28);
+    let key = (D.to_string(), P);
+    let mut chunk = s.ready.world.machines[&key].clone();
+    chunk.rev = chunk_rev;
+    chunk.facing = Some("north".into());
+    let mut journaled = chunk.clone();
+    journaled.rev = journal_rev;
+    journaled.facing = Some("south".into());
+    let guard = super::CellGuard::machine(&key, &chunk);
+    let mut s = s;
+    s.ready.world.machines.remove(&key);
+    s.ready.world.applied_machine_effects.push_back(CommittedEffects {
+        serial: 9,
+        origins: vec![guard.clone()],
+        owners: vec![key.clone()],
+        effects: std::collections::VecDeque::from([WorldEffect::Blocks { retained: Vec::new(), dim: D.into(), blocks: vec![(P, zirnox::BLOCK.into())], expected: vec![guard] }]),
+        survivors: vec![Survivor { dim: D.into(), pos: P, generation: chunk.generation, rev: journal_rev, json: serde_json::to_string(&journaled).unwrap() }],
+        ..Default::default()
+    });
+    assert!(s.native_adopt(D, P, &serde_json::to_string(&chunk).unwrap()));
+    s.ready.world.machines.get(&key).and_then(|m| m.facing.clone())
+}
+
+#[test]
+fn a_surviving_machine_in_an_older_chunk_gets_the_state_the_journal_gives_it() {
+    assert_eq!(journal_adopt(0, 1).as_deref(), Some("south"), "the chunk is older: the journal's state");
+    assert_eq!(journal_adopt(1, 1).as_deref(), Some("north"), "the same revision: nothing to do");
+    assert_eq!(journal_adopt(2, 1).as_deref(), Some("north"), "a chunk newer than the journal is kept");
+}
+
 #[test]
 fn a_chunk_that_holds_the_effect_is_not_given_it_twice() {
     let (h, _) = old_chunk_replay(true);

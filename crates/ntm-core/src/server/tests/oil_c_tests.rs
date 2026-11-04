@@ -83,7 +83,7 @@ fn inert_batch_c_machines_load_as_their_kinds() {
         ("ntm:machine_hydrotreater", Kind::Processor),
         ("ntm:machine_vacuum_distill", Kind::Processor),
     ] {
-        let m = Machine { generation: 0, block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
+        let m = Machine { generation: 0, rev: 0, block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
         assert_eq!(m.upgraded().kind(), kind, "{block}");
     }
 }

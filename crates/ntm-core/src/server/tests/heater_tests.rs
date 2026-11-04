@@ -150,7 +150,7 @@ fn inert_heaters_load_as_their_kinds() {
         ("ntm:heater_electric", Kind::Heater),
         ("ntm:heater_heatex", Kind::Heater),
     ] {
-        let m = Machine { generation: 0, block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
+        let m = Machine { generation: 0, rev: 0, block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
         let m = m.upgraded();
         assert_eq!(m.kind(), kind, "{block}");
         if let Data::Firebox(f) = &m.data {
