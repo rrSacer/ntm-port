@@ -322,7 +322,9 @@ fn pipette(game: &mut Game<'_>, stack: &ItemStack, say: impl Fn(&mut Game<'_>, &
 
 /// A held item used on a block, `onItemUse`: the match and the fertilizer.
 /// Only the server edits stacks and blocks; a client claims the click so the
-/// item is not placed or used as its template.
+/// item is not placed or used as its template. The stack is checked against
+/// the snapshot before the world is touched, and the match is spent in the
+/// commit that comes before its fire, so a refused commit leaves both alone.
 pub(super) fn use_on_block(
     game: &mut Game<'_>,
     stack: &ItemStack,
@@ -337,9 +339,24 @@ pub(super) fn use_on_block(
     };
     let creative = game.creative;
     let dim = game.dim.id().to_string();
-    let used = if &*stack.item == "ntm:matchstick" {
+    let held_slot = game.held_slot();
+    let mut desired = expected.clone();
+    match held(&mut desired, held_slot) {
+        Some(slot) if slot.as_ref() == Some(stack) => {
+            if !creative {
+                let mut rest = stack.clone();
+                rest.count -= 1;
+                *slot = (rest.count > 0).then_some(rest);
+            }
+        }
+        _ => return true,
+    }
+    if &*stack.item == "ntm:matchstick" {
         // ItemMatch: the cell beside the clicked face; fire if it is air, and
         // the match goes either way (not in creative).
+        if !creative && !game.native_commit_player(&STATE, &expected, desired, Default::default()) {
+            return true;
+        }
         let at = [pos[0] + face[0], pos[1] + face[1], pos[2] + face[2]];
         if game
             .native_loaded_block(&dim, at)
@@ -354,34 +371,53 @@ pub(super) fn use_on_block(
                 });
             }
         }
-        true
-    } else {
-        // ItemFertilizer: bone meal on the 3x3x3 around the click; it is spent
-        // only if something grew.
-        let mut grew = false;
-        for dx in -1..=1 {
-            for dy in -1..=1 {
-                for dz in -1..=1 {
-                    let cell = horizon_core::position::BlockPos::new(pos[0] + dx, pos[1] + dy, pos[2] + dz);
-                    grew |= game.with_level(|b, level, ticks| {
-                        b.use_bone_meal(level, ticks, cell, horizon_core::geometry::Direction::Up)
-                    });
+        return true;
+    }
+    // ItemFertilizer: `fertilize` on the 3x3x3 around the click; it is spent
+    // only if some cell was a growable target.
+    let mut grew = false;
+    for dx in -1..=1 {
+        for dy in -1..=1 {
+            for dz in -1..=1 {
+                let cell = [pos[0] + dx, pos[1] + dy, pos[2] + dz];
+                if fertilize(game, &dim, cell, dx == 0 && dy == 0 && dz == 0) {
+                    grew = true;
+                    // `world.playAuxSFX(2005, ...)`: the growth particles.
+                    game.level_event_at(1505, cell, 15);
                 }
             }
         }
-        let _ = game.process_level_events();
-        grew
-    };
-    if used && !creative {
-        let held_slot = game.held_slot();
-        let mut desired = expected.clone();
-        if let Some(slot) = held(&mut desired, held_slot)
-            && slot.as_ref() == Some(stack)
-        {
-            let mut rest = stack.clone();
-            rest.count -= 1;
-            *slot = (rest.count > 0).then_some(rest);
-            game.native_commit_player(&STATE, &expected, desired, Default::default());
+    }
+    if grew && !creative {
+        game.native_commit_player(&STATE, &expected, desired, Default::default());
+    }
+    true
+}
+
+/// `ItemFertilizer.fertilize` on one cell: a growable block is grown when
+/// `force` (the clicked cell) or its own success roll allows it, and either way
+/// it counts as fertilized. The engine's `growCrop` makes that roll itself and
+/// has no forced form, so the clicked cell repeats it, for the plants whose
+/// roll can fail (saplings, azaleas, propagules, mushrooms and fungi), until
+/// the block changes: the forced growth Java does, within a bounded number of
+/// rolls. Everything else is answered by a single call.
+fn fertilize(game: &mut Game<'_>, dim: &str, cell: [i32; 3], force: bool) -> bool {
+    let at = horizon_core::position::BlockPos::new(cell[0], cell[1], cell[2]);
+    let roll = |game: &mut Game<'_>| game.with_level(|b, level, ticks| b.grow_crop(level, ticks, at));
+    let first = game.native_loaded_block(dim, cell);
+    if !roll(game) {
+        return false;
+    }
+    let rolls_can_fail = first.as_deref().is_some_and(|name| {
+        ["sapling", "propagule", "azalea", "mushroom", "fungus"]
+            .iter()
+            .any(|plant| name.contains(plant))
+    });
+    if force && rolls_can_fail {
+        for _ in 0..63 {
+            if game.native_loaded_block(dim, cell) != first || !roll(game) {
+                break;
+            }
         }
     }
     true
