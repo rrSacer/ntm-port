@@ -301,11 +301,11 @@ Limites desta aceitação:
 - A regra de dose do Rad-X (+0,2 no expoente) e os cliques do Geiger são provados por teste de unidade;
   em jogo foi provado o efeito de conteúdo e o relatório.
 - Sons e partículas são os vanilla listados em `docs/content-catalogo-k2.md`.
-- O crescimento forçado da célula clicada do `powder_fertilizer` não está provado em jogo: o mundo de
-  teste não cresce mudas nem com bone meal vanilla (0 de 10), e o JSON de evidência traz a nota
-  `fertilizer_forced_cell_not_proven_in_game`. Dependência nominal: API de crescimento forçado no
-  motor, na próxima frente de motor (com dano em entidades e tick de `ItemEntity`).
-- Um `/effect clear` também é desfeito para o enjoo herbal (o tick o restaura); `/ntmitem cure` o encerra.
+- O crescimento forçado da célula clicada do `powder_fertilizer` é a repetição do `growCrop` do motor
+  (que sorteia por dentro): em jogo a muda mudou nas 6 tentativas (avanço de estágio, 0 árvores) e
+  gastou uma pilha cada, contra 5 de 10 do bone meal vanilla (3 árvores). Dependência nominal: API de
+  crescimento forçado no motor, na próxima frente de motor (com dano em entidades e tick de `ItemEntity`).
+- Um `/effect clear` também é desfeito para o enjoo herbal (o tick o restaura); `/ntmitem cure` o encerra. O RadAway, ao contrário, é uma poção curável: o leite, o antídoto e o `/effect clear` o encerram.
 
 Regressão completa no mesmo par binário e pacote (os hashes conferem antes e depois), sem falha:
 `mining` 18, `bombs` 49, `zirnox` 136, `pile` 85, `pile-meltdown` 32, `dims` 14 com `dims-idle` 2 e
