@@ -248,7 +248,8 @@ def crossing_verify(g, again=False):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
     if SCENARIO == 'crossing-kill' and not again:
-        holder_away_then_save(g, ROD, (133, 99, 13), (53.5, 101, 15.5), 'forceload remove 128 0 143 15')
+        # Far from both, as in the action: the forced source stays, the destination can go.
+        holder_away_then_save(g, ROD, (133, 99, 13), (-250.5, 101, 5.5), 'forceload remove 128 0 143 15')
     g.command('tp @s 133.5 101 15.5' if SCENARIO == 'crossing' else 'tp @s 53.5 101 15.5')
     led = quiet(g, 10)
     held = entities(g, ROD) + inventory(g, ROD)
