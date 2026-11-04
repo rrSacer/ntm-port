@@ -70,6 +70,11 @@ pub trait ServerHost: Kv {
     /// Puts the items of the effect `id` into the world exactly once: the host's ledger remembers the id, so
     /// applying the same effect again (a replay after a crash) adds nothing. Hosts without a ledger just drop.
     fn apply_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[(String,u32)])->bool{self.drop_items(dim,pos,items)}
+    /// Whether `apply_items`, `apply_encoded_items` and the retained drops of a structural commit are kept under the
+    /// effect's id in the record of the chunk that receives them, written with that chunk: a replay finds the id in
+    /// any record that holds the items and adds nothing, as a block effect finds its own. Then items need no journal
+    /// write before the next effect; only an explosion does.
+    fn replays_by_id(&self)->bool{false}
     /// `apply_items` for lossless item NBT.
     fn apply_encoded_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[String])->bool{self.drop_encoded_items(dim,pos,items)}
     /// The generation of the machine the cell's block entity was saved with (None: no such block entity).
@@ -238,7 +243,10 @@ struct Ready {
     /// The redstone signal batteries and bombs received this tick.
     native_signal: BTreeMap<Key, u8>,
     zirnox_radiation_rate: BTreeMap<String,u32>,
-    /// The world's state as last kept ([`crate::persist`]).
+    /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
+    kept_rev: Option<[u64; 10]>,
+    /// What was last kept, without the clock: debug builds check every skipped write against it.
+    #[cfg(debug_assertions)]
     kept: Vec<u8>,
 }
 
@@ -542,7 +550,7 @@ mod zirnox_server;
 mod transaction;
 mod generation;
 pub use generation::CellGuard;
-pub use transaction::{CommittedEffects,Survivor,WorldEffect,PreparedRetention};
+pub use transaction::{CommittedEffects,SaveMark,Survivor,WorldEffect,PreparedRetention};
 
 #[cfg(test)]
 mod generation_tests;

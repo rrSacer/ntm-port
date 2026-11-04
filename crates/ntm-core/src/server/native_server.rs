@@ -25,6 +25,8 @@ impl Server {
     pub fn native(host: &mut impl ServerHost, tick: u64) -> Self {
         crate::radiation::warm();
         let world = WorldState::load(host);
+        let kept_rev = Some(world.stamps());
+        #[cfg(debug_assertions)]
         let kept = world.kept(0);
         let broken=world.removals.iter().map(|r|(r.key.clone(),r.machine.block.clone())).collect();
         let mut bridge=container_bridge::Bridge::default();
@@ -42,6 +44,8 @@ impl Server {
                 broken,
                 bridge,
                 topo_dirty: true,
+                kept_rev,
+                #[cfg(debug_assertions)]
                 kept,
                 ..Ready::default()
             },
@@ -132,13 +136,10 @@ impl Server {
     fn keep_world(&mut self, host: &mut impl ServerHost) {
         let r = &mut self.ready;
         r.world.ticks += 1;
-        // Compared without the clock, which changes every tick.
-        let now = r.world.kept(0);
-        if now != r.kept || r.world.ticks.is_multiple_of(crate::persist::TICKS_EVERY) {
-            match host.set(crate::persist::KEY, &r.world.kept(r.world.ticks)) {
-                Ok(()) => r.kept = now,
-                Err(e) => host.log(&format!("world state: {e}")),
-            }
+        // Without the clock, which changes every tick.
+        let clock = r.world.ticks.is_multiple_of(crate::persist::TICKS_EVERY);
+        if (self.world_changed() || clock) && let Err(e) = self.write_world(host) {
+            host.log(&format!("world state: {e}"));
         }
     }
 
@@ -214,14 +215,14 @@ impl Server {
             || b.tombstones.iter().any(|(k,old)|*k==key&&old.generation==m.generation)
             || b.effects.iter().any(|e|matches!(e,WorldEffect::Blocks{expected,..} if expected.iter().any(|g|g.key()==key&&g.generation==m.generation))))
             || r.world.removals.iter().any(|x|x.key==key&&x.machine.generation==m.generation);
-        let current=r.world.generations.entry(key.clone()).or_insert(m.generation);
-        if m.generation<*current {
+        let current=r.world.generations.get(&key).copied().unwrap_or(m.generation);
+        if m.generation<current {
             if named {return false;}
             // The storage is ahead of this chunk: the break (or the replacement) that advanced the generation was never
             // saved with it, nothing was released for it, and the machine of the chunk is the one the world has.
             eprintln!("ntm: {dim} {pos:?}: the chunk predates a break that never reached it; generation {} is the machine's again", m.generation);
         }
-        *current=m.generation;
+        if r.world.generations.get(&key)!=Some(&m.generation){r.world.generations.insert(key.clone(),m.generation);}
         for cell in container_bridge::energy_port_cells(&m.block,pos,m.facing.as_deref()) { r.native_scan.push_back((dim.to_string(),cell)); }
         r.world.machines.insert(key.clone(), m);
         r.seen.insert(key.clone());

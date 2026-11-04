@@ -584,6 +584,8 @@ mod tests {
         sweep_sets:u64,
         /// For each journal write, how many `Items` effects it still held pending.
         pending_items_at_sets:Vec<usize>,
+        /// Items applied by id once (`replays_by_id`), as the native host's ledger does.
+        by_id:Option<BTreeSet<u64>>,
     }
     impl Kv for Host {
         fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -652,6 +654,13 @@ mod tests {
         fn log(&mut self, _: &str) {}
         fn machine_slots(&mut self, _: &str, p: Pos) -> Option<Vec<Option<Stack>>> {
             self.slots.get(&p).cloned()
+        }
+        fn replays_by_id(&self)->bool{self.by_id.is_some()}
+        fn apply_items(&mut self,id:u64,dim:&str,p:Pos,items:&[(String,u32)])->bool{
+            if self.by_id.as_ref().is_some_and(|ids|ids.contains(&id)){return true;}
+            let done=self.drop_items(dim,p,items);
+            if done && let Some(ids)=&mut self.by_id{ids.insert(id);}
+            done
         }
         fn drop_items(&mut self,_:&str,p:Pos,items:&[(String,u32)])->bool{
             if self.refuse_items{return false;}
@@ -1003,7 +1012,15 @@ mod tests {
     /// The meltdown of `formed()`'s pile, its blast tick and then its sweep tick, journaled before
     /// every effect (`strict`) or as the server does. What the world ends as, and the writes it took.
     fn melt(strict: bool, items_first: bool) -> Host {
+        melt_on(strict, usize::from(items_first), false)
+    }
+    /// `melt` with `items` effects ahead of the sweep, on a host that keeps items by id or not.
+    fn melt_on(strict: bool, items: usize, by_id: bool) -> Host {
+        let items_first = items > 0;
         let (mut s, mut h) = formed();
+        if by_id {
+            h.by_id = Some(BTreeSet::new());
+        }
         s.ready.strict_journal = strict;
         drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
         let c = core(&mut s);
@@ -1017,7 +1034,7 @@ mod tests {
                 origins: vec![],
                 owners: vec![],
                 tombstones: vec![],
-                effects: std::collections::VecDeque::from([WorldEffect::Items { dim: DIM.into(), pos: [0, 70, 0], items: vec![("ntm:pile_rod__zr".into(), 1)] }]),
+                effects: (0..items).map(|_| WorldEffect::Items { dim: DIM.into(), pos: [0, 70, 0], items: vec![("ntm:pile_rod__zr".into(), 1)] }).collect(),
                 ..Default::default()
             });
         }
@@ -1042,6 +1059,21 @@ mod tests {
         assert!(strict.sweep_sets > 100, "{}", strict.sweep_sets);
         assert!(fast.sweep_sets <= 3, "{}", fast.sweep_sets);
         assert!(fast.kv.written * 20 < strict.kv.written, "{} against {} bytes", fast.kv.written, strict.kv.written);
+    }
+    #[test]
+    fn items_kept_by_id_in_their_chunk_need_no_journal_write_of_their_own() {
+        let strict = melt_on(true, 10, true);
+        let fast = melt_on(false, 10, true);
+        let barriers = melt_on(false, 10, false);
+        assert_eq!(fast.blocks, strict.blocks);
+        assert_eq!(fast.drops, strict.drops);
+        assert_eq!(fast.drops, barriers.drops);
+        assert_eq!(fast.drops.iter().filter(|d| d.1 == "ntm:pile_rod__zr").count(), 10);
+        assert_eq!(fast.kv.map["world"], strict.kv.map["world"]);
+        // A host without ids writes the whole journal again after each of the ten; one with ids, as for blocks alone.
+        assert!(barriers.sweep_sets > 10, "{}", barriers.sweep_sets);
+        assert!(fast.sweep_sets <= 4, "{}", fast.sweep_sets);
+        assert_eq!(fast.pending_items_at_sets.first(), Some(&10), "{:?}", fast.pending_items_at_sets);
     }
     #[test]
     fn an_effect_that_must_not_repeat_is_journaled_before_the_next_one_goes_out() {

@@ -41,6 +41,8 @@ struct Host {
     ledger: BTreeSet<u64>,
     blocks_done: BTreeSet<(u64, Pos)>,
     pruned: usize,
+    /// Writes of the world's state.
+    world_writes: usize,
 }
 impl Kv for Host {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -54,6 +56,7 @@ impl Kv for Host {
         {
             return Err("refused retention journal".into());
         }
+        self.world_writes += usize::from(k == crate::persist::KEY);
         self.kv.set(k, v)
     }
     fn delete(&mut self, k: &str) {
@@ -61,6 +64,10 @@ impl Kv for Host {
     }
 }
 impl ServerHost for Host {
+    // Its items are kept by id (`ledger`), as the native host's are.
+    fn replays_by_id(&self) -> bool {
+        true
+    }
     fn get_block(&mut self, _: &str, p: Pos) -> Option<String> {
         (!self.unloaded.contains(&p)).then(|| {
             self.blocks
@@ -886,7 +893,7 @@ fn old_chunk_replay(seen: bool) -> (Host, Server) {
     let old = super::CellGuard::machine(&key, &s.ready.world.machines[&key]);
     h.saved.insert(P, serde_json::to_string(&s.ready.world.machines[&key]).unwrap());
     s.ready.world.machines.remove(&key);
-    s.ready.world.effect_serial = 7;
+    *s.ready.world.effect_serial = 7;
     s.ready.world.generations.insert(key, old.generation + 3);
     s.ready.world.applied_machine_effects.push_back(CommittedEffects {
         serial: 7,
@@ -1521,4 +1528,88 @@ fn item_effects_apply_once_across_a_replay_and_identical_ones_both_apply() {
     reopened.native_world_saved(&mut h, true);
     assert_eq!(h.pruned, 2);
     assert!(h.ledger.is_empty());
+}
+
+#[test]
+fn a_world_that_does_not_change_is_not_written_again() {
+    let mut h = Host::default();
+    let mut s = install(&mut h, "ntm:machine_battery", 2);
+    for t in 2..10 {
+        s.native_tick(&mut h, t);
+    }
+    let before = h.world_writes;
+    for t in 10..200 {
+        s.native_tick(&mut h, t);
+    }
+    assert_eq!(h.world_writes, before, "nothing kept changed: no tick may write it");
+    // A receipt waiting for a confirmed save names its cells every tick: still nothing to write after the first.
+    let guard = super::CellGuard::machine(&(D.to_string(), P), &s.ready.world.machines[&(D.to_string(), P)]);
+    s.ready.world.applied_machine_effects.push_back(super::CommittedEffects {
+        serial: 1,
+        origins: vec![guard.clone()],
+        effects: std::collections::VecDeque::from([super::WorldEffect::Blocks { dim: D.into(), blocks: vec![(P, "minecraft:air".into())], expected: vec![guard], retained: vec![] }]),
+        ..Default::default()
+    });
+    s.native_tick(&mut h, 200);
+    let before = h.world_writes;
+    assert!(before > 0);
+    for t in 201..290 {
+        s.native_tick(&mut h, t);
+    }
+    assert_eq!(h.world_writes, before, "a waiting receipt is no change");
+    // A real change is written by the next keep, and only once.
+    s.ready.world.generations.insert((D.into(), [9, 64, 9]), 4);
+    s.native_tick(&mut h, 300);
+    s.native_tick(&mut h, 301);
+    assert_eq!(h.world_writes, before + 1);
+    let back = WorldState::load(&mut h);
+    assert_eq!(back.generations.get(&(D.into(), [9, 64, 9])), Some(&4));
+}
+
+#[test]
+#[cfg(debug_assertions)]
+#[should_panic(expected = "changed without moving its stamps")]
+fn a_change_that_leaves_the_revision_behind_is_caught() {
+    let mut h = Host::default();
+    let mut s = install(&mut h, "ntm:machine_battery", 2);
+    let mut other = s.ready.world.clone();
+    other.generations.insert((D.into(), [9, 64, 9]), 4);
+    s.native_tick(&mut h, 2);
+    // A whole world put in place by assignment touches no kept part through `DerefMut`; its copied stamps still
+    // differ from those kept. Only a change that keeps the stamps (none in this crate) can reach the check.
+    s.ready.world = other;
+    assert!(s.world_changed());
+    let kept = s.ready.world.stamps();
+    s.ready.kept_rev = Some(kept);
+    let _ = s.world_changed();
+}
+
+#[test]
+fn a_save_that_did_not_wait_confirms_what_it_held_once_its_writes_are_done() {
+    use super::{CommittedEffects, Survivor};
+    let mut h = Host::default();
+    let mut s = install(&mut h, "ntm:machine_battery", 2);
+    let receipt = |serial: u64| CommittedEffects { serial, ..Default::default() };
+    let survivor = |x: i32, rev: u64| Survivor { dim: D.into(), pos: [x, 64, 0], generation: 0, rev, json: "{}".into() };
+    s.ready.world.applied_machine_effects.push_back(receipt(1));
+    s.ready.world.applied_machine_effects.push_back(receipt(2));
+    s.journal_survivor(survivor(1, 1));
+    s.journal_survivor(survivor(2, 1));
+    s.native_world_saved(&mut h, false);
+    let mark = s.native_save_mark();
+    // After the save: another receipt, and one of the machines journaled again.
+    s.ready.world.applied_machine_effects.push_back(receipt(3));
+    s.journal_survivor(survivor(2, 2));
+    s.native_marked_saved(&mut h, &mark);
+    let serials: Vec<u64> = s.ready.world.applied_machine_effects.iter().map(|b| b.serial).collect();
+    assert_eq!(serials, vec![3], "what the save held is confirmed, what came after is not");
+    assert_eq!(s.ready.world.survivors.values().map(|v| (v.pos[0], v.rev)).collect::<Vec<_>>(), vec![(2, 2)]);
+    let back = WorldState::load(&mut h);
+    assert_eq!(back.machine_effects.iter().map(|b| b.serial).collect::<Vec<_>>(), vec![3], "the storage says so");
+    // A mark a waiting save overtook confirms nothing more.
+    let old = s.native_save_mark();
+    s.native_world_saved(&mut h, true);
+    s.ready.world.applied_machine_effects.push_back(receipt(4));
+    s.native_marked_saved(&mut h, &old);
+    assert_eq!(s.ready.world.applied_machine_effects.len(), 1);
 }

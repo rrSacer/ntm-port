@@ -175,7 +175,9 @@ impl Server {
             && let Some(r) = self.ready()
         {
             let now = r.world.ticks;
-            r.world.bombs.zones.retain(|z| !z.spent(now));
+            if r.world.bombs.zones.iter().any(|z| z.spent(now)) {
+                r.world.bombs.zones.retain(|z| !z.spent(now));
+            }
         }
     }
 

@@ -14,6 +14,77 @@ pub const KEY: &str = "world";
 /// Ticks between keeps of the clock alone: a crash sets it back at most this.
 pub const TICKS_EVERY: u64 = 600;
 
+/// Stamps of changes, unique in the process: a part changed since it was kept when its stamp differs.
+static STAMPS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+
+fn stamp() -> u64 {
+    STAMPS.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+}
+
+/// A kept part of the world with the stamp of its last change. Reading it is free; every mutable access stamps it
+/// anew, so no path that changes it can be left out of the next keep. A copy keeps the stamp of what it copied: one
+/// put back in place still differs from what was kept after it changed.
+#[derive(Clone, Debug)]
+pub struct Tracked<T> {
+    value: T,
+    stamp: u64,
+}
+
+impl<T> Tracked<T> {
+    pub fn new(value: T) -> Self {
+        Tracked { value, stamp: stamp() }
+    }
+    /// The stamp of the part's last change.
+    pub fn stamp(this: &Self) -> u64 {
+        this.stamp
+    }
+}
+
+/// A new part, as `std::mem::take` leaves in place of the one it takes: a change.
+impl<T: Default> Default for Tracked<T> {
+    fn default() -> Self {
+        Tracked::new(T::default())
+    }
+}
+
+/// The same content, whatever the stamps.
+impl<T: PartialEq> PartialEq for Tracked<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.value == other.value
+    }
+}
+
+impl<T> std::ops::Deref for Tracked<T> {
+    type Target = T;
+    fn deref(&self) -> &T {
+        &self.value
+    }
+}
+
+impl<T> std::ops::DerefMut for Tracked<T> {
+    fn deref_mut(&mut self) -> &mut T {
+        self.stamp = stamp();
+        &mut self.value
+    }
+}
+
+impl<'a, T> IntoIterator for &'a Tracked<T>
+where
+    &'a T: IntoIterator,
+{
+    type Item = <&'a T as IntoIterator>::Item;
+    type IntoIter = <&'a T as IntoIterator>::IntoIter;
+    fn into_iter(self) -> Self::IntoIter {
+        (&self.value).into_iter()
+    }
+}
+
+impl<T> From<T> for Tracked<T> {
+    fn from(value: T) -> Self {
+        Tracked::new(value)
+    }
+}
+
 /// A confirmed removal may outlive its BE. Remember which inventory the
 /// engine already owns/drops, so reopening cannot emit those slots again.
 #[derive(Clone,Debug,PartialEq,Serialize,Deserialize)]
@@ -56,23 +127,24 @@ fn is_zero(n: &u64) -> bool {
     *n == 0
 }
 
+/// The kept parts are [`Tracked`]: whether they changed since the last keep is known without serializing them.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct WorldState {
     /// Ticks played in this world.
     pub ticks: u64,
-    pub effect_serial: u64,
-    pub removals:Vec<Removal>,
-    pub generations:BTreeMap<(String,Pos),u64>,
-    pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
-    pub applied_machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
-    pub prepared_retentions:std::collections::VecDeque<crate::server::PreparedRetention>,
+    pub effect_serial: Tracked<u64>,
+    pub removals:Tracked<Vec<Removal>>,
+    pub generations:Tracked<BTreeMap<(String,Pos),u64>>,
+    pub machine_effects:Tracked<std::collections::VecDeque<crate::server::CommittedEffects>>,
+    pub applied_machine_effects:Tracked<std::collections::VecDeque<crate::server::CommittedEffects>>,
+    pub prepared_retentions:Tracked<std::collections::VecDeque<crate::server::PreparedRetention>>,
     /// The newest journaled state of each machine (the one of the highest revision), until a save is confirmed.
-    pub survivors:BTreeMap<(String,Pos),crate::server::Survivor>,
-    pub radiation: BTreeMap<String, crate::radiation::Dose>,
+    pub survivors:Tracked<BTreeMap<(String,Pos),crate::server::Survivor>>,
+    pub radiation: Tracked<BTreeMap<String, crate::radiation::Dose>>,
     pub machines: BTreeMap<(String, Pos), Machine>,
     pub cables: BTreeSet<(String, Pos)>,
-    pub bombs: crate::blast::BombWorld,
-    pub zirnox: crate::zirnox::Remnants,
+    pub bombs: Tracked<crate::blast::BombWorld>,
+    pub zirnox: Tracked<crate::zirnox::Remnants>,
 }
 
 impl WorldState {
@@ -86,34 +158,73 @@ impl WorldState {
         let machines=kept.removals.iter().map(|r|(r.key.clone(),r.machine.clone())).collect();
         WorldState {
             machines,
-            removals:kept.removals,
-            prepared_retentions:kept.prepared_retentions,
-            survivors:kept.survivors.into_iter().map(|s|((s.dim.clone(),s.pos),s)).collect(),
-            generations:kept.generations.into_iter().collect(),
-            radiation: kept.radiation,
-            bombs: kept.bombs,
-            zirnox: kept.zirnox,
+            removals:kept.removals.into(),
+            prepared_retentions:kept.prepared_retentions.into(),
+            survivors:Tracked::new(kept.survivors.into_iter().map(|s|((s.dim.clone(),s.pos),s)).collect()),
+            generations:Tracked::new(kept.generations.into_iter().collect()),
+            radiation: kept.radiation.into(),
+            bombs: kept.bombs.into(),
+            zirnox: kept.zirnox.into(),
             ticks: kept.ticks,
-            effect_serial: kept.effect_serial,
-            machine_effects,
+            effect_serial: kept.effect_serial.into(),
+            machine_effects:machine_effects.into(),
             ..WorldState::default()
         }
     }
 
+    /// The stamps of the kept parts: equal to those of the last keep, the parts are as kept.
+    pub fn stamps(&self) -> [u64; 10] {
+        [
+            Tracked::stamp(&self.effect_serial),
+            Tracked::stamp(&self.removals),
+            Tracked::stamp(&self.generations),
+            Tracked::stamp(&self.machine_effects),
+            Tracked::stamp(&self.applied_machine_effects),
+            Tracked::stamp(&self.prepared_retentions),
+            Tracked::stamp(&self.survivors),
+            Tracked::stamp(&self.radiation),
+            Tracked::stamp(&self.bombs),
+            Tracked::stamp(&self.zirnox),
+        ]
+    }
+
     /// What [`WorldState::load`] reads back, the clock at `ticks`.
     pub fn kept(&self, ticks: u64) -> Vec<u8> {
-        let kept = Kept {
-            radiation: self.radiation.clone(),
-            bombs: self.bombs.clone(),
-            zirnox: self.zirnox.clone(),
+        // Borrowed, not copied: this is the size of every journal write.
+        #[derive(Serialize)]
+        struct KeptRef<'a> {
+            #[serde(skip_serializing_if = "BTreeMap::is_empty")]
+            radiation: &'a BTreeMap<String, crate::radiation::Dose>,
+            bombs: &'a crate::blast::BombWorld,
+            zirnox: &'a crate::zirnox::Remnants,
+            ticks: u64,
+            #[serde(skip_serializing_if = "is_zero")]
+            effect_serial: &'a u64,
+            #[serde(skip_serializing_if = "Vec::is_empty")]
+            removals: &'a Vec<Removal>,
+            #[serde(skip_serializing_if = "Vec::is_empty")]
+            generations: Vec<(&'a (String, Pos), &'a u64)>,
+            #[serde(skip_serializing_if = "std::collections::VecDeque::is_empty")]
+            machine_effects: &'a std::collections::VecDeque<crate::server::CommittedEffects>,
+            #[serde(skip_serializing_if = "std::collections::VecDeque::is_empty")]
+            applied_machine_effects: &'a std::collections::VecDeque<crate::server::CommittedEffects>,
+            #[serde(skip_serializing_if = "std::collections::VecDeque::is_empty")]
+            prepared_retentions: &'a std::collections::VecDeque<crate::server::PreparedRetention>,
+            #[serde(skip_serializing_if = "Vec::is_empty")]
+            survivors: Vec<&'a crate::server::Survivor>,
+        }
+        let kept = KeptRef {
+            radiation: &self.radiation,
+            bombs: &self.bombs,
+            zirnox: &self.zirnox,
             ticks,
-            effect_serial: self.effect_serial,
-            removals:self.removals.clone(),
-            generations:self.generations.iter().map(|(k,g)|(k.clone(),*g)).collect(),
-            machine_effects:self.machine_effects.clone(),
-            applied_machine_effects:self.applied_machine_effects.clone(),
-            prepared_retentions:self.prepared_retentions.clone(),
-            survivors:self.survivors.values().cloned().collect(),
+            effect_serial: &self.effect_serial,
+            removals: &self.removals,
+            generations: self.generations.iter().collect(),
+            machine_effects: &self.machine_effects,
+            applied_machine_effects: &self.applied_machine_effects,
+            prepared_retentions: &self.prepared_retentions,
+            survivors: self.survivors.values().collect(),
         };
         serde_json::to_vec(&kept).unwrap_or_default()
     }
