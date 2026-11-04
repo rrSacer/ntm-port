@@ -85,16 +85,19 @@ def excavator(g):
     wait(g, 'real_ore_removed', lambda: state(g, target), lambda s: s.startswith('minecraft:air'))
     wait(g, 'chest_removed_without_second_loot', lambda: state(g, chest), lambda s: s.startswith('minecraft:air'))
     sample('chest_observed_removed')
+    # Count while the retained stack is still near its source. Opening the inventory first lets a vanilla
+    # falling item leave the 32-block query sphere, even though the same entity still holds all seven diamonds.
+    wait(g, 'mined_be_contents_retained_once', lambda: g.ctl('entities')['entities'],
+         lambda es: sum((e.get('item') or {}).get('count', 0) for e in es
+                        if (e.get('item') or {}).get('item') == 'minecraft:diamond') == 7, timeout=3)
     open_excavator(g, core)
     actual = g.slots()
     raw = sum(s.get('count', 0) for s in actual if s.get('item') == 'minecraft:iron_ore')
     g.check('real_ore_credited_once', raw == 8, actual)
     g.close()
-    items = g.ctl('entities')['entities']
-    diamonds = sum((e.get('item') or {}).get('count', 0) for e in items
-                   if (e.get('item') or {}).get('item') == 'minecraft:diamond')
-    sample('original_radius_check')
-    g.check('mined_be_contents_retained_once', diamonds == 7, items)
+    if delay := os.environ.get('NTM_MINING_MEASURE_DELAY'):
+        time.sleep(float(delay))
+    sample('after_inventory_ui')
     g.evidence['excavator_core'] = core
 
 
@@ -132,10 +135,14 @@ def main():
     g = Game(sys.argv[1], 'mining')
     g.command('gamemode creative')
     excavator(g)
-    oil(g)
-    oil(g, True)
+    if os.environ.get('NTM_MINING_PROBE_ONLY'):
+        g.evidence['scope'] = 'excavator-only timing diagnostic; excludes well/fracker'
+    else:
+        oil(g)
+        oil(g, True)
     g.command('forceload remove all')
-    g.snapshot('mining-final')
+    if not os.environ.get('NTM_MINING_PROBE_ONLY'):
+        g.snapshot('mining-final')
     g.evidence['ok'] = True
     g.save()
 

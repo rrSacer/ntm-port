@@ -9,6 +9,7 @@ ends inside the save asked for after the undo), reopened without it, verified, r
 finally drained. `none` runs the same without a failpoint.
 """
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -23,6 +24,21 @@ from native_game import Game
 POINTS = ['none', 'save_begin', 'region_record:1', 'region_record:2', 'region_record:3', 'chunks_written',
           'entities_written', 'level_saved', 'parked_saved', 'level_dat_written', 'metadata_saved',
           'players_saved', 'world_saved']
+
+
+def digest(path):
+    with path.open('rb') as source:
+        return hashlib.file_digest(source, 'sha256').hexdigest()
+
+
+def clone_world(base, folder, ignore):
+    """Copy mutable world/player files; reuse only the generated cache of the identical content bundle."""
+    def skip(path, names):
+        return set(ignore(path, names)) | {'.horizon-cache'}
+    shutil.copytree(base, folder, ignore=skip)
+    cache = base / '.horizon-cache'
+    if cache.exists():
+        (folder / '.horizon-cache').symlink_to(cache.resolve(), target_is_directory=True)
 
 
 class World:
@@ -75,7 +91,7 @@ def evidence(folder, mode):
 def sweep(args, base, scratch, env):
     """A big batch (the orphan sweep of a pile whose core went away): storage writes and bytes, rods kept."""
     folder = scratch / 'point-sweep'
-    shutil.copytree(base, folder, ignore=shutil.ignore_patterns('control.sock', 'native-crash-*.json'))
+    clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-crash-*.json'))
     world = World(args, folder, env)
     result = {'point': 'sweep', 'folder': str(folder), 'ok': False}
     try:
@@ -93,7 +109,7 @@ def sweep(args, base, scratch, env):
 
 def play(args, base, scratch, env, point):
     folder = scratch / ('point-' + point.replace(':', '-'))
-    shutil.copytree(base, folder, ignore=shutil.ignore_patterns('control.sock', 'native-crash-*.json'))
+    clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-crash-*.json'))
     world = World(args, folder, env)
     result = {'point': point, 'folder': str(folder), 'ok': False}
     try:
@@ -130,6 +146,8 @@ def play(args, base, scratch, env, point):
 
 
 def main():
+    import resource
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('points', nargs='*')
     parser.add_argument('--binary', type=Path, required=True)
@@ -160,7 +178,8 @@ def main():
     os.close(writer)
     with os.fdopen(reader) as pipe:
         env['DISPLAY'] = ':' + pipe.readline().strip()
-    report = {'ok': False, 'binary': str(args.binary), 'points': []}
+    report = {'ok': False, 'binary': str(args.binary), 'binary_sha256': digest(args.binary),
+              'bundle_sha256': digest(args.bundle), 'points': []}
     try:
         world = World(args, base, env)
         world.launch()
