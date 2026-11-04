@@ -395,7 +395,6 @@ pub fn bdcl_gulps() -> Vec<u32> {
         .map(|(tick, _)| tick as u32)
         .collect()
 }
-}
 
 #[cfg(test)]
 mod tests {
