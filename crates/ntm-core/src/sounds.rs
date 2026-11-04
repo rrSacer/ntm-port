@@ -93,9 +93,9 @@ pub fn machine(m: &Machine) -> Vec<Loop> {
                 Station::Assembly => ("hbm:block.motor", 0.5, 0.75, 15.),
                 Station::PyroOven => ("hbm:block.pyroOperate", 1., 1., 15.),
                 Station::Centrifuge => ("hbm:block.centrifugeOperate", 1., 1., 10.),
-                Station::ChemicalPlant => ("hbm:block.chemplantOperate", 1., 1., 15.),
+                Station::ChemicalPlant => ("hbm:block.chemicalPlant", 1., 1., 15.),
                 Station::Purex | Station::Crystallizer => {
-                    ("hbm:block.chemplantOperate", 1., 0.75, 15.)
+                    ("hbm:block.chemicalPlant", 1., 0.75, 15.)
                 }
                 _ => return vec![],
             };
@@ -144,7 +144,7 @@ pub fn machine(m: &Machine) -> Vec<Loop> {
         }),
         Data::Combustion(c) => match &**c {
             Combustion::Diesel(d) if d.was_on => {
-                Some(sound("hbm:block.dieselOperate", 1., 1., 10.))
+                Some(sound("hbm:block.engine", 1., 1., 10.))
             }
             Combustion::Engine(e) if e.was_on => {
                 Some(sound("hbm:block.igeneratorOperate", 1., 1., 10.))
@@ -173,7 +173,11 @@ pub fn machine(m: &Machine) -> Vec<Loop> {
             Heater::Electric(e) if e.on => Some(sound("hbm:block.electricHum", 1., 1., 7.5)),
             _ => None,
         },
-        Data::Boiler(b) if b.on => Some(sound("hbm:block.boiler", 1., 1., 10.)),
+        Data::Boiler(b) => {
+            let mut s = sound("hbm:block.boiler", if b.on { 1. } else { 0. }, 1., 10.);
+            s.envelope = Envelope::Refinery;
+            Some(s)
+        }
         Data::Steam(s) => match &**s {
             Steam::Turbine(t) if t.on || t.flywheel > 0 || t.shape == Shape::Chungus => {
                 match t.shape {
@@ -219,6 +223,30 @@ pub fn gain(volume: f32, range: f32, distance: f32) -> f32 {
 mod tests {
     use super::*;
     use crate::machine::Kind;
+    #[test]
+    fn java_constant_events_and_boiler_coast_are_preserved() {
+        let mut diesel = Machine::new(Kind::Combustion, "ntm:machine_diesel", None);
+        let Data::Combustion(c) = &mut diesel.data else { panic!() };
+        let Combustion::Diesel(d) = &mut **c else { panic!() };
+        d.was_on = true;
+        assert_eq!(machine(&diesel)[0].event, "ntm:block.engine");
+        let mut chemical = Machine::new(Kind::Crafter, "ntm:machine_chemical_plant", None);
+        let Data::Crafter(c) = &mut chemical.data else { panic!() };
+        c.station = Station::ChemicalPlant;
+        c.running = true;
+        assert_eq!(machine(&chemical)[0].event, "ntm:block.chemicalplant");
+        // HeatBoiler keeps audioTime=20 after losing its heating precondition.
+        let mut boiler = Machine::new(Kind::Boiler, "ntm:heat_boiler", None);
+        let Data::Boiler(b) = &mut boiler.data else { panic!() };
+        b.on = true;
+        let mut motion = Motion::new(1);
+        assert_eq!(motion.step(&machine(&boiler)[0]).0, 1.);
+        let Data::Boiler(b) = &mut boiler.data else { panic!() };
+        b.on = false;
+        let stopped = machine(&boiler).remove(0);
+        for _ in 0..19 { assert_eq!(motion.step(&stopped).0, 1.); }
+        assert_eq!(motion.step(&stopped).0, 0.);
+    }
     #[test]
     fn combustion_snapshot_starts_updates_and_stops_the_java_loop() {
         let mut m = Machine::new(Kind::Combustion, "ntm:machine_combustion_engine", None);

@@ -368,10 +368,10 @@ Fonte `4f5924e2b9e1e49cee61787674d2658acb3d559b`. 1165 chamadas ativas, incluind
 | src/main/java/com/hbm/items/armor/JetpackBreak.java:75 | playSoundEffect | hbm:weapon.flamethrowerShoot | 0.25F | 1.5F | not_ported |
 | src/main/java/com/hbm/items/armor/JetpackRegular.java:52 | playSoundEffect | hbm:weapon.flamethrowerShoot | 0.25F | 1.5F | not_ported |
 | src/main/java/com/hbm/items/armor/JetpackVectorized.java:64 | playSoundEffect | hbm:weapon.flamethrowerShoot | 0.25F | 1.5F | not_ported |
-| src/main/java/com/hbm/items/food/ItemBDCL.java:39 | playSound | hbm:player.gulp | 1F | 1F | consumiveis-k2 (not integrated; generic event map only) |
-| src/main/java/com/hbm/items/food/ItemBDCL.java:46 | playSound | hbm:player.groan | 1F | 1F | consumiveis-k2 (not integrated; generic event map only) |
+| src/main/java/com/hbm/items/food/ItemBDCL.java:39 | playSound | hbm:player.gulp | 1F | 1F | native/ntm/mixins/ntm/item_hooks.rs, crates/ntm-core/src/consumables.rs |
+| src/main/java/com/hbm/items/food/ItemBDCL.java:46 | playSound | hbm:player.groan | 1F | 1F | native/ntm/mixins/ntm/item_hooks.rs, crates/ntm-core/src/consumables.rs |
 | src/main/java/com/hbm/items/food/ItemConserve.java:35 | playSoundAtEntity | random.burp | 0.5F | world.rand.nextFloat() * 0.1F + 0.9F | not_ported |
-| src/main/java/com/hbm/items/food/ItemLemon.java:104 | playSoundEffect | hbm:entity.vomit | 1.0F | 1.0F | consumiveis-k2 (not integrated; generic event map only) |
+| src/main/java/com/hbm/items/food/ItemLemon.java:104 | playSoundEffect | hbm:entity.vomit | 1.0F | 1.0F | native/ntm/mixins/ntm/item_hooks.rs, crates/ntm-core/src/consumables.rs |
 | src/main/java/com/hbm/items/machine/ItemFluidDuct.java:128 | playSoundEffect | ModBlocks.fluid_duct_neo.stepSound.func_150496_b() | (ModBlocks.fluid_duct_neo.stepSound.getVolume() + 1.0F) / 2.0F | ModBlocks.fluid_duct_neo.stepSound.getPitch() * 0.8F | not_ported |
 | src/main/java/com/hbm/items/machine/ItemFluidIDMulti.java:55 | playSoundAtEntity | random.orb | 0.25F | 1.25F | not_ported |
 | src/main/java/com/hbm/items/machine/ItemMuffler.java:22 | playSoundAtEntity | hbm:item.upgradePlug | 1.0F | 1.0F | not_ported |
@@ -380,7 +380,7 @@ Fonte `4f5924e2b9e1e49cee61787674d2658acb3d559b`. 1165 chamadas ativas, incluind
 | src/main/java/com/hbm/items/machine/ItemRTGPellet.java:132 | playSoundAtEntity | random.orb | 1.0F | 1.0F | not_ported |
 | src/main/java/com/hbm/items/machine/ItemReactorSensor.java:40 | playSoundAtEntity | hbm:item.techBoop | 1.0F | 1.0F | not_ported |
 | src/main/java/com/hbm/items/machine/ItemTurretBiometry.java:31 | playSoundAtEntity | hbm:item.techBleep | 1.0F | 1.0F | not_ported |
-| src/main/java/com/hbm/items/special/ItemCigarette.java:65 | playSoundEffect | hbm:player.cough | 1.0F | 1.0F | consumiveis-k2 (not integrated; generic event map only) |
+| src/main/java/com/hbm/items/special/ItemCigarette.java:65 | playSoundEffect | hbm:player.cough | 1.0F | 1.0F | native/ntm/mixins/ntm/item_hooks.rs, crates/ntm-core/src/consumables.rs |
 | src/main/java/com/hbm/items/special/ItemDrop.java:98 | playSoundEffect | random.explode | 100.0F | entityItem.worldObj.rand.nextFloat() * 0.1F + 0.9F | not_ported |
 | src/main/java/com/hbm/items/special/ItemDrop.java:254 | playSoundAtEntity | hbm:item.techBoop | 2.0F | 1.0F | not_ported |
 | src/main/java/com/hbm/items/special/ItemKitNBT.java:49 | playSoundAtEntity | hbm:item.unpack | 1.0F | 1.0F | not_ported |
@@ -445,8 +445,8 @@ Fonte `4f5924e2b9e1e49cee61787674d2658acb3d559b`. 1165 chamadas ativas, incluind
 | src/main/java/com/hbm/items/tool/ItemMultiDetonator.java:121 | playSoundAtEntity | hbm:item.techBoop | 2.0F | 1.0F | not_ported |
 | src/main/java/com/hbm/items/tool/ItemOilDetector.java:93 | playSoundAtEntity | hbm:item.techBleep | 1.0F | 1.0F | not_ported |
 | src/main/java/com/hbm/items/tool/ItemRadarLinker.java:29 | playSoundAtEntity | hbm:item.techBleep | 1.0F | 1.0F | not_ported |
-| src/main/java/com/hbm/items/tool/ItemRepairKit.java:47 | playSoundAtEntity | hbm:item.spray | 1.0F | 1.0F | consumiveis-k2 (not integrated; generic event map only) |
-| src/main/java/com/hbm/items/tool/ItemRepairKit.java:48 | playSoundAtEntity | hbm:item.repair | 1.0F | 1.0F | consumiveis-k2 (not integrated; generic event map only) |
+| src/main/java/com/hbm/items/tool/ItemRepairKit.java:47 | playSoundAtEntity | hbm:item.spray | 1.0F | 1.0F | not_ported |
+| src/main/java/com/hbm/items/tool/ItemRepairKit.java:48 | playSoundAtEntity | hbm:item.repair | 1.0F | 1.0F | not_ported |
 | src/main/java/com/hbm/items/tool/ItemSwordAbility.java:57 | playSoundAtEntity | hbm:weapon.whack | 3.0F | 1.F | not_ported |
 | src/main/java/com/hbm/items/tool/ItemToolAbility.java:603 | playSoundAtEntity | random.orb | 0.25F | config.getActivePreset().isNone() ? 0.75F : 1.25F | not_ported |
 | src/main/java/com/hbm/items/tool/ItemToolingWeapon.java:39 | playSoundAtEntity | random.anvil_land | 3.0F | 0.75F | not_ported |
@@ -1048,7 +1048,7 @@ Fonte `4f5924e2b9e1e49cee61787674d2658acb3d559b`. 1165 chamadas ativas, incluind
 | src/main/java/com/hbm/tileentity/machine/TileEntityMachineHephaestus.java:99 | getLoopedSound | hbm:block.hephaestusRunning | 0.75F | 1.0F | not_ported |
 | src/main/java/com/hbm/tileentity/machine/TileEntityMachineIndustrialTurbine.java:117 | getLoopedSound | hbm:block.largeTurbineRunning | volume | pitch | crates/ntm-core/src/steam.rs, crates/ntm-core/src/sounds.rs, crates/ntm-core/src/server/container_bridge.rs |
 | src/main/java/com/hbm/tileentity/machine/TileEntityMachineIntake.java:85 | getLoopedSound | hbm:block.motor | 0.25F | 1.0F | not_ported |
-| src/main/java/com/hbm/tileentity/machine/TileEntityMachineLargeTurbine.java:140 | getLoopedSound | hbm:block.largeTurbineRunning | 1.0F | 1.0F | crates/ntm-core/src/steam.rs, crates/ntm-core/src/sounds.rs |
+| src/main/java/com/hbm/tileentity/machine/TileEntityMachineLargeTurbine.java:140 | getLoopedSound | hbm:block.largeTurbineRunning | 1.0F | 1.0F | not_ported |
 | src/main/java/com/hbm/tileentity/machine/TileEntityMachineMiningLaser.java:335 | playSoundEffect | hbm:block.screm | 2000.0F | 1.0F | not_ported |
 | src/main/java/com/hbm/tileentity/machine/TileEntityMachineMiningLaser.java:576 | playSoundEffect | hbm:item.upgradePlug | 1.0F | 1.0F | not_ported |
 | src/main/java/com/hbm/tileentity/machine/TileEntityMachineMissileAssembly.java:304 | playSoundEffect | hbm:block.missileAssembly2 | 1F | 1F | not_ported |

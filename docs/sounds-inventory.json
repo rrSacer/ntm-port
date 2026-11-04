@@ -6009,7 +6009,8 @@
     "volume": "1F",
     "pitch": "1F",
     "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
+      "native/ntm/mixins/ntm/item_hooks.rs",
+      "crates/ntm-core/src/consumables.rs"
     ],
     "status": "ported"
   },
@@ -6027,7 +6028,8 @@
     "volume": "1F",
     "pitch": "1F",
     "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
+      "native/ntm/mixins/ntm/item_hooks.rs",
+      "crates/ntm-core/src/consumables.rs"
     ],
     "status": "ported"
   },
@@ -6065,7 +6067,8 @@
     "volume": "1.0F",
     "pitch": "1.0F",
     "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
+      "native/ntm/mixins/ntm/item_hooks.rs",
+      "crates/ntm-core/src/consumables.rs"
     ],
     "status": "ported"
   },
@@ -6228,7 +6231,8 @@
     "volume": "1.0F",
     "pitch": "1.0F",
     "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
+      "native/ntm/mixins/ntm/item_hooks.rs",
+      "crates/ntm-core/src/consumables.rs"
     ],
     "status": "ported"
   },
@@ -7400,10 +7404,8 @@
     "event": "hbm:item.spray",
     "volume": "1.0F",
     "pitch": "1.0F",
-    "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
-    ],
-    "status": "ported"
+    "port": [],
+    "status": "not_ported"
   },
   {
     "java": "src/main/java/com/hbm/items/tool/ItemRepairKit.java",
@@ -7419,10 +7421,8 @@
     "event": "hbm:item.repair",
     "volume": "1.0F",
     "pitch": "1.0F",
-    "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
-    ],
-    "status": "ported"
+    "port": [],
+    "status": "not_ported"
   },
   {
     "java": "src/main/java/com/hbm/items/tool/ItemSwordAbility.java",
@@ -18105,11 +18105,8 @@
     "event": "hbm:block.largeTurbineRunning",
     "volume": "1.0F",
     "pitch": "1.0F",
-    "port": [
-      "crates/ntm-core/src/steam.rs",
-      "crates/ntm-core/src/sounds.rs"
-    ],
-    "status": "ported"
+    "port": [],
+    "status": "not_ported"
   },
   {
     "java": "src/main/java/com/hbm/tileentity/machine/TileEntityMachineMiningLaser.java",

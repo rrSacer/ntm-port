@@ -117,10 +117,7 @@
     "crates/ntm-core/src/boiler.rs",
     "crates/ntm-core/src/sounds.rs"
   ],
-  "TileEntityMachineLargeTurbine": [
-    "crates/ntm-core/src/steam.rs",
-    "crates/ntm-core/src/sounds.rs"
-  ],
+  "TileEntityMachineLargeTurbine": [],
   "TileEntityMachineIndustrialTurbine": [
     "crates/ntm-core/src/steam.rs",
     "crates/ntm-core/src/sounds.rs"
@@ -192,29 +189,31 @@
     "crates/ntm-core/src/sounds.rs"
   ],
   "ItemPill": [
-    "consumiveis-k2 (not integrated; generic event map only)"
+    "native/ntm/mixins/ntm/item_hooks.rs",
+    "crates/ntm-core/src/consumables.rs"
   ],
   "ItemLemon": [
-    "consumiveis-k2 (not integrated; generic event map only)"
+    "native/ntm/mixins/ntm/item_hooks.rs",
+    "crates/ntm-core/src/consumables.rs"
   ],
   "ItemMuchoMango": [
-    "consumiveis-k2 (not integrated; generic event map only)"
+    "native/ntm/mixins/ntm/item_hooks.rs",
+    "crates/ntm-core/src/consumables.rs"
   ],
   "ItemCigarette": [
-    "consumiveis-k2 (not integrated; generic event map only)"
+    "native/ntm/mixins/ntm/item_hooks.rs",
+    "crates/ntm-core/src/consumables.rs"
   ],
   "ItemBDCL": [
-    "consumiveis-k2 (not integrated; generic event map only)"
+    "native/ntm/mixins/ntm/item_hooks.rs",
+    "crates/ntm-core/src/consumables.rs"
   ],
-  "ItemRepairKit": [
-    "consumiveis-k2 (not integrated; generic event map only)"
-  ],
+  "ItemRepairKit": [],
   "ItemLootCrate": [
-    "consumiveis-k2 (not integrated; generic event map only)"
+    "native/ntm/mixins/ntm/item_hooks.rs",
+    "crates/ntm-core/src/consumables.rs"
   ],
-  "ItemCounterfeitKeys": [
-    "consumiveis-k2 (not integrated; generic event map only)"
-  ],
+  "ItemCounterfeitKeys": [],
   "TileEntityMachineArcFurnaceLarge": [
     "crates/ntm-core/src/arc_furnace.rs",
     "crates/ntm-core/src/sounds.rs"

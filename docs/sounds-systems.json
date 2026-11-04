@@ -129,14 +129,16 @@
     "class": "ItemBDCL",
     "source_exists": true,
     "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
+      "native/ntm/mixins/ntm/item_hooks.rs",
+      "crates/ntm-core/src/consumables.rs"
     ]
   },
   {
     "class": "ItemCigarette",
     "source_exists": true,
     "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
+      "native/ntm/mixins/ntm/item_hooks.rs",
+      "crates/ntm-core/src/consumables.rs"
     ]
   },
   {
@@ -149,9 +151,7 @@
   {
     "class": "ItemCounterfeitKeys",
     "source_exists": true,
-    "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
-    ]
+    "port": []
   },
   {
     "class": "ItemDosimeter",
@@ -178,36 +178,38 @@
     "class": "ItemLemon",
     "source_exists": true,
     "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
+      "native/ntm/mixins/ntm/item_hooks.rs",
+      "crates/ntm-core/src/consumables.rs"
     ]
   },
   {
     "class": "ItemLootCrate",
     "source_exists": true,
     "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
+      "native/ntm/mixins/ntm/item_hooks.rs",
+      "crates/ntm-core/src/consumables.rs"
     ]
   },
   {
     "class": "ItemMuchoMango",
     "source_exists": true,
     "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
+      "native/ntm/mixins/ntm/item_hooks.rs",
+      "crates/ntm-core/src/consumables.rs"
     ]
   },
   {
     "class": "ItemPill",
     "source_exists": true,
     "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
+      "native/ntm/mixins/ntm/item_hooks.rs",
+      "crates/ntm-core/src/consumables.rs"
     ]
   },
   {
     "class": "ItemRepairKit",
     "source_exists": true,
-    "port": [
-      "consumiveis-k2 (not integrated; generic event map only)"
-    ]
+    "port": []
   },
   {
     "class": "ItemSimpleConsumable",
@@ -619,10 +621,7 @@
   {
     "class": "TileEntityMachineLargeTurbine",
     "source_exists": true,
-    "port": [
-      "crates/ntm-core/src/steam.rs",
-      "crates/ntm-core/src/sounds.rs"
-    ]
+    "port": []
   },
   {
     "class": "TileEntityMachineLiquefactor",

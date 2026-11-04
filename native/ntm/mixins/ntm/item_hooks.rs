@@ -899,11 +899,11 @@ fn explode(game: &mut Game<'_>, blast: &Blast) {
     }
     trace(game, "blast-removed", &format!("{} blocks", air.len()));
     // `ExplosionCreator.composeEffectStandard` is a client particle show; the
-    // vanilla explosion sound and emitter stand for it.
+    // emitter represents it; the sound is the literal ExplosionNukeSmall event.
     crate::game::ntm_glue::in_place(game, dim, |game| {
         if let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| *s == "block") {
             game.with_level(|_, level, _| {
-                level.native_play_sound("minecraft:entity.generic.explode", *center, source, 4.0, 0.7)
+                level.native_play_sound("ntm:weapon.mukeexplosion", *center, source, 15.0, 1.0)
             });
         }
         if let Some(kind) = horizon_client::particles::ParticleType::from_name("minecraft:explosion_emitter") {

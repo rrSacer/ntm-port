@@ -48,7 +48,7 @@ A branch foi rebaseada sobre `main` `9f11740a`, integrando o runtime K2. O helpe
 
 `hbm:entity.vomit` é um bug do original: `ItemLemon.java:104` chama esse nome, que **não está no sounds.json**; o evento existente é `hbm:player.vomit`. No Java fica em silêncio e no port também. Não foi criado alias. `event("hbm:entity.vomit")` retorna `None`.
 
-Fora do runtime atual ficam os timers fstbmbStart/Ping da Balefire, as portas complexas/fechaduras, os efeitos de dano/giblets dos rotores e slopper, a corrosão de barril plástico e os ramos de inserção direta de barras/detector da pile que o port ainda não implementa. O inventário conserva essas chamadas como referência; nenhum desses ramos foi substituído por outro som.
+Fora do runtime atual ficam a turbina antiga `TileEntityMachineLargeTurbine` (distinta da industrial/Leviathan portadas), os reparadores de veículos e chaves falsas, os timers fstbmbStart/Ping da Balefire, as portas complexas/fechaduras, os efeitos de dano/giblets dos rotores e slopper, a corrosão de barril plástico e os ramos de inserção direta de barras/detector da pile que o port ainda não implementa. O inventário conserva essas chamadas como referência; nenhum desses ramos foi substituído por outro som.
 
 ## Verificação
 

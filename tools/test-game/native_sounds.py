@@ -59,7 +59,7 @@ def setup(g):
     # loop in the window, independently of the server's transient `was_on`.
     offset = len(log_lines(g))
     diesel(g)
-    lines = resolved(g, 'ntm:block.dieseloperate', offset)
+    lines = resolved(g, 'ntm:block.engine', offset)
     g.check('machine_loop_resolved', bool(lines), lines)
     before = g.ctl('status')['sounds']['instances']
     g.command('setblock 260 100 8 minecraft:air')
