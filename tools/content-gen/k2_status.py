@@ -20,7 +20,7 @@ NEEDS = {
     'ntm:coffee_radium': 'conquista `achRadium` (sistema de conquistas)',
     'ntm:chocolate_milk': 'mobs e itens soltos do raio 100 não levam dano nem empurrão (sem API de dano a mobs); `ExplosionCreator.composeEffectStandard` é um show de partículas do cliente, substituído por som e emissor vanilla; os raios usam o acaso por hash de posição do `ntm-core`, não o `world.rand`',
     'ntm:syringe_metal_stimpak': HIT, 'ntm:syringe_metal_medx': HIT, 'ntm:syringe_metal_psycho': HIT, 'ntm:syringe_metal_super': HIT,
-    'ntm:syringe_taint': HIT + '; `HbmPotion.taint.performEffect` (1 de dano a cada ~40 ticks e trilha de blocos taint) não tem tick de efeito de conteúdo: o efeito `ntm:taint` existe, passivo',
+    'ntm:syringe_taint': HIT + '; `HbmPotion.taint.performEffect` (a cada 2 ticks, com chance 1/40 por tentativa: `(amplificador + 1)` de dano `taint`, exceto em `EntityCreeperTainted` e `EntityTaintCrab`; mais a trilha de blocos taint sob `ENTITY_TAINT_TRAILS`) não tem tick de efeito de conteúdo: o efeito `ntm:taint` existe, passivo',
     'ntm:syringe_antidote': HIT, 'ntm:syringe_poison': HIT, 'ntm:syringe_awesome': HIT,
     'ntm:med_bag': '`HbmPotion.radiation` (efeito que contamina) não existe: a dose vive no attachment do jogador',
     'ntm:pill_iodine': '`HbmPotion.radiation` não existe (idem med_bag)',
@@ -43,6 +43,13 @@ NEEDS = {
     'ntm:loot_10': 'a lista `list10` do Java é vazia (nenhuma fuselagem de 10 chama `setRarity`): `rand.nextInt(0)` lança lá e aqui nada acontece',
     'ntm:loot_15': 'a lista `list15` do Java é vazia: idem loot_10',
     'ntm:apple_euphemium': '',
+}
+FILTER_DEP = ('instalar, retirar (agachado) e o desgaste estão portados nas máscaras `gas_mask_m65`, `attachment_mask` e nos três capuzes `hazmat_helmet*` (`ArmorHazmatMask`, sem lista negra), mas só o comando `/ntmitem expose` chama `filter_exposure`: '
+              'as fontes ambientes que o Java liga ao filtro (monóxido, gás pulmonar e de bolhas, bactérias, partículas finas e grossas) não existem no port, então nada gasta o filtro durante o jogo')
+INERT_GIVES = {
+    'ntm:inf_water': '`FluidLoaderInfinite`', 'ntm:inf_water_mk2': '`FluidLoaderInfinite`',
+    'ntm:fluid_barrel_infinite': '`FluidLoaderInfinite`', 'ntm:chlorine_pinwheel': '`FluidLoaderInfinite`',
+    'ntm:gun_kit_1': 'onda de armas (`ItemRepairKit`)', 'ntm:gun_kit_2': 'onda de armas (`ItemRepairKit`)',
 }
 FILTERS = {'ntm:gas_mask_filter', 'ntm:gas_mask_filter_mono', 'ntm:gas_mask_filter_combo', 'ntm:gas_mask_filter_rag', 'ntm:gas_mask_filter_piss'}
 DROP = '`onEntityItemUpdate` (efeito ao cair no chão): sem gancho de tick de item solto (`ItemEntity.tick`, `onGround`, remover/trocar) no motor fixado; '
@@ -70,7 +77,7 @@ NOTHING = {
 DONE = {
     'ntm:ams_lens': ('parcial', '`ItemLens.addInformation`', 'a barra de durabilidade (`showDurabilityBar`) não é desenhada: o gancho `native_item_bar` não está injetado; o tooltip está portado'),
     'ntm:matchstick': ('ativo', '`ItemMatch.onItemUse`', ''),
-    'ntm:powder_fertilizer': ('ativo', '`ItemFertilizer.onItemUse`', 'o bone meal do motor decide cada célula; o Java força a central e sorteia as outras (`func_149852_a`)'),
+    'ntm:powder_fertilizer': ('ativo', '`ItemFertilizer.onItemUse`', 'a célula clicada cresce sempre e as outras sorteiam o seu próprio sucesso, como `fertilize(..., force)`; o motor só expõe `growCrop` (com o sorteio dentro), então a central o repete até a planta mudar (mudas, azaleias, propágulos, cogumelos e fungos), no máximo 64 vezes; o sorteio do crescimento usa o acaso do nível, não o de `world.rand`'),
 }
 
 
@@ -81,7 +88,7 @@ def state(item):
         s, origin, dep = DONE[item]
         return s, origin, dep
     if item in FILTERS:
-        return 'ativo', 'ItemFilter + ArmorUtil.register', ''
+        return 'parcial', 'ItemFilter + ArmorUtil.register', FILTER_DEP
     row = TABLE.get(item)
     if not row:
         return 'dependente', None, 'sem comportamento portado'
@@ -90,6 +97,10 @@ def state(item):
         deps.append(NEEDS[item])
     if row.get('unported'):
         deps.append('itens Java ausentes do port: ' + ', '.join(f'`{u}`' for u in row['unported']))
+    inert = sorted({g['item'] for g in row.get('gives', []) if g['item'] in INERT_GIVES})
+    if inert:
+        needs = sorted({INERT_GIVES[i] for i in inert})
+        deps.append('entrega ' + ', '.join(f'`{i}`' for i in inert) + ' só com identidade: o uso real depende de ' + ' e '.join(needs))
     if row.get('requires'):
         deps.append('exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`)')
     status = 'parcial' if deps and item not in ('ntm:radaway_flush',) else 'ativo'

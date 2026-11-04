@@ -41,7 +41,7 @@ da validação, sem duplicar nem perder):
 | `radaway` | `giveSoundAndDecrement` + `tryAddItem`: o slot esvaziado ainda está ocupado, então até o último RadAway derruba o `iv_empty` sem espaço | idem (`reserved`) |
 | `hazmat_kit` | `giveHaz` nunca recusa; a armadura trocada vira entidade no mundo | a armadura trocada vira drop |
 | `gas_mask_filter` | `ItemFilter` troca a pilha da mão pelo filtro antigo | idem, sem inventário |
-| `gas_mask_m65`, `attachment_mask` | com sneak, tira o filtro: inventário ou drop | idem |
+| `gas_mask_m65`, `attachment_mask`, `hazmat_helmet`, `hazmat_helmet_red`, `hazmat_helmet_grey` (`IGasMask`) | com sneak, tira o filtro: inventário ou drop | idem |
 | `hazmat_plate` | `ItemArmor` equipa pelo clique, sem recipiente | motor |
 
 Em criativo, `addItemStackToInventory` descarta o que não cabe (retorna `true`) e
@@ -127,8 +127,9 @@ O multiplicador executado no Java é `10^(-soma das resistências)`, apesar de u
 comentário antigo citar 5. O filtro não modifica esse fator gama.
 
 `filter_exposure(game, hazard, wear)` aplica proteção de partículas/gás e desgaste
-num único commit. A M65 bloqueia as classes do filtro comum, exceto gás vesicante
-(o blacklist da máscara prevalece). Depois de dano > 20000, o filtro é removido,
+num único commit. Cada `IGasMask` tem a sua lista negra (`getBlacklist`): a M65 e a
+`attachment_mask` recusam gás vesicante; os três capuzes `hazmat_helmet*`
+(`ArmorHazmatMask`) não têm restrição e deixam o filtro cobri-lo. Depois de dano > 20000, o filtro é removido,
 como `ArmorUtil`. Sem filtro válido não há proteção. A integração das demais
 fontes ambientais/gases permanece para suas famílias na onda 1.
 
