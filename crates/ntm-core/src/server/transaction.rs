@@ -44,6 +44,20 @@ pub struct CommittedEffects {
     /// older than it. Each chunk says by its ledger whether it already holds an effect.
     #[serde(skip)]
     pub replayed: bool,
+    /// The states the machines that outlive the batch were given by the step that made it, with their revisions: a
+    /// chunk saved before that step still has them older, and the storage's journal brings them back.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub survivors: Vec<Survivor>,
+}
+
+/// A machine's state as a batch of world effects left it.
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct Survivor {
+    pub dim: String,
+    pub pos: Pos,
+    pub generation: u64,
+    pub rev: u64,
+    pub json: String,
 }
 
 /// A lossless retention journal written before consuming a BE's cell.
@@ -319,7 +333,7 @@ impl Server {
                 batch.done+=1;
                 if physical {
                     // The receipt keeps the effect's place in its batch, so a replay derives the same id.
-                    let receipt=CommittedEffects{serial,done,origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect]),replayed:false};
+                    let receipt=CommittedEffects{serial,done,origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect]),replayed:false,survivors:batch.survivors.clone()};
                     if matches!(receipt.effects.front(),Some(WorldEffect::Blocks{..})){
                         for g in &receipt.origins {
                             if self.ready.world.machines.get(&g.key()).is_some_and(|m|m.generation==g.generation){self.ready.native_saved.remove(&g.key());}
@@ -662,6 +676,9 @@ impl Server {
                 self.drill_tick(&mut staged);
                 self.bombs_triggers(&mut staged);
                 let mut commits = Vec::new();
+                // A step that leaves world effects owing journals what it leaves in the machines that outlive it.
+                let journal=!staged.critical.is_empty();
+                let mut survivors=Vec::new();
                 for k in &keys {
                     let last = &observed[k];
                     if before.broken.contains_key(k)
@@ -686,14 +703,19 @@ impl Server {
                                 .expect("machine serialization"),
                         )
                     };
+                    let changed=last != &want
+                        || self.ready.native_saved.get(k) != Some(&json)
+                        || self.ready.bridge.data.get(k) != Some(&data);
+                    let mut json=json;
+                    if journal && changed && let Some(m)=self.ready.world.machines.get_mut(k){
+                        m.rev+=1;
+                        json=serde_json::to_string(m).expect("machine serialization");
+                        survivors.push(Survivor{dim:k.0.clone(),pos:k.1,generation:m.generation,rev:m.rev,json:json.clone()});
+                    }
                     // Static pile members need not rewrite their BE every
                     // tick. Keep at least one accessible member in a no-op
                     // group, so an unsupported atomic host still freezes it.
-                    if commits.is_empty()
-                        || last != &want
-                        || self.ready.native_saved.get(k) != Some(&json)
-                        || self.ready.bridge.data.get(k) != Some(&data)
-                    {
+                    if commits.is_empty() || changed {
                         commits.push(MachineCommit {
                 cells: Vec::new(),
                             guard:CellGuard::machine(k,&before.world.machines[k]),
@@ -767,6 +789,7 @@ impl Server {
                                 owners: keys.clone(),
                                 effects: staged.critical,
                                 tombstones,
+                                survivors,
                             ..Default::default()});
                     }
                     for (guards,effect) in staged.effects {

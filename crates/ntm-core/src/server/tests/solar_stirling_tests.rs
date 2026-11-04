@@ -59,7 +59,7 @@ fn a_stirling_takes_heat_below_and_offers_the_previous_buffer_through_its_side()
             if shape == Shape::Creative { 199 } else { 99 }
         );
         let saved = g.machine(core);
-        let again = Machine { generation: 0,
+        let again = Machine { generation: 0, rev: 0,
             data: Data::Inert {
                 name: saved.block.clone(),
             },

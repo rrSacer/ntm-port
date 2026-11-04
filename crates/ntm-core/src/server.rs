@@ -537,7 +537,7 @@ mod zirnox_server;
 mod transaction;
 mod generation;
 pub use generation::CellGuard;
-pub use transaction::{CommittedEffects,WorldEffect,PreparedRetention};
+pub use transaction::{CommittedEffects,Survivor,WorldEffect,PreparedRetention};
 
 #[cfg(test)]
 mod generation_tests;

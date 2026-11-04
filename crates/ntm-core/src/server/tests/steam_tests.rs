@@ -87,7 +87,7 @@ fn steam_machines_give_power_at_their_ports() {
 #[test]
 fn inert_steam_machines_load_as_their_kinds() {
     for block in ["ntm:machine_steam_engine", "ntm:machine_industrial_turbine", "ntm:machine_chungus", "ntm:machine_condenser", "ntm:machine_condenser_powered"] {
-        let m = Machine { generation: 0, block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
+        let m = Machine { generation: 0, rev: 0, block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
         assert_eq!(m.upgraded().kind(), Kind::Steam, "{block}");
     }
 }
