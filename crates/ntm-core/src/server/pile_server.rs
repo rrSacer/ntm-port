@@ -882,6 +882,35 @@ mod tests {
         assert!(c.channels.is_empty(), "the journal holds the state the step left: the channel is gone");
         assert_eq!(s.ready.native_saved.get(&(DIM.into(), AT)), Some(&journaled.json), "and the block entity got the same");
     }
+    /// Cost of a pile step with and without the journal (run with `--ignored --nocapture`, in release).
+    #[test]
+    #[ignore = "timing, not a check"]
+    fn timing_of_pile_steps_and_of_an_undo() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        let mut worst = std::time::Duration::ZERO;
+        let all = std::time::Instant::now();
+        for t in 0..300 {
+            let one = std::time::Instant::now();
+            s.native_tick(&mut h, 10 + t);
+            worst = worst.max(one.elapsed());
+        }
+        let mean = all.elapsed() / 300;
+        let mut undo = std::time::Duration::ZERO;
+        for n in 0..20 {
+            if core(&mut s).channels.is_empty() {
+                drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+            }
+            core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__nu", 40.).unwrap());
+            let tool = Stack::new("ntm:hand_drill_desh", 1);
+            let one = std::time::Instant::now();
+            s.native_pile_use(&mut h, DIM, [-1, 64, 0], [0, 0, -1], Some(&tool), 0., "p");
+            undo += one.elapsed();
+            s.native_world_saved(&mut h, true);
+            let _ = n;
+        }
+        eprintln!("TIMING tick mean {:?} worst {:?}; undo mean {:?}", mean, worst, undo / 20);
+    }
     #[test]
     fn native_player_core_break_restores_its_cell_and_every_member() {
         let (mut s, mut h) = formed();
