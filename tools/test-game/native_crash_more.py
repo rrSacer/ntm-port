@@ -249,8 +249,11 @@ def crossing_verify(g, again=False):
     g.command('gamemode creative @s')
     if SCENARIO == 'crossing-kill' and not again:
         # Far from both, as in the action: the forced source stays, the destination can go.
-        holder_away_then_save(g, ROD, (133, 99, 13), (-250.5, 101, 5.5), 'forceload remove 128 0 143 15')
-    g.command('tp @s 133.5 101 15.5' if SCENARIO == 'crossing' else 'tp @s 53.5 101 15.5')
+        holder_away_then_save(g, ROD, (133, 99, 13), (-250.5, 101, 5.5), 'forceload remove 48 0 64 24', 'forceload remove 128 0 143 15')
+    if SCENARIO == 'crossing-kill':
+        g.command('forceload add 30 0 64 24')
+        g.command('forceload add 128 0 143 15')
+    g.command('tp @s 133.5 101 15.5' if SCENARIO in ('crossing', 'crossing-kill') else 'tp @s 53.5 101 15.5')
     led = quiet(g, 10)
     held = entities(g, ROD) + inventory(g, ROD)
     detail = {'entities': entities(g, ROD), 'inventory': inventory(g, ROD), 'total': held, 'expected': 12, 'ledger': led}
@@ -454,11 +457,12 @@ def unloaded(g, p):
         time.sleep(1)
 
 
-def holder_away_then_save(g, item, holder, stay, release):
+def holder_away_then_save(g, item, holder, stay, *release):
     """After a reopen: the chunk whose entity file holds the stack stays unloaded while the world settles, a confirmed
     save follows, and only then does the chunk come back. A stack spawned again meanwhile would be released by that
     save and meet its older copy as a second stack."""
-    g.command(release)
+    for line in release:
+        g.command(line)
     g.command('tp @s %s %s %s' % stay)
     g.check('holder_chunk_unloaded_on_reopen', unloaded(g, holder), holder)
     led = quiet(g, 8)
