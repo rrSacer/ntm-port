@@ -78,10 +78,12 @@ def saved_coupled(folder, scenario):
             d = m.get('data', {})
             if 'Core' in d:
                 machines.append({'role': 'core', 'rev': m.get('rev', 0),
-                                 'rods': sum(bool(r) for c in d['Core']['channels'] if c['kind'] == 'Fuel' for r in c['rods'])})
+                                 'rods': sum(bool(r) for c in d['Core']['channels'] if c['kind'] == 'Fuel' for r in c['rods']),
+                                 'rod_kinds': [r['kind'] for c in d['Core']['channels'] if c['kind'] == 'Fuel' for r in c['rods'] if r]})
             elif 'Loader' in d:
                 machines.append({'role': 'loader', 'rev': m.get('rev', 0),
-                                 'rods': sum(s['count'] for s in d['Loader']['slots'] if s)})
+                                 'rods': sum(s['count'] for s in d['Loader']['slots'] if s),
+                                 'items': [s['id'] if s else None for s in d['Loader']['slots']]})
         states[str(cx)] = sorted(machines, key=lambda m: m['role'])
     return states
 
