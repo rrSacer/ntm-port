@@ -9,7 +9,7 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
 - Upstream incorporado: `fc02103818c212920fd24aa34a2b2f91ba49e56f` (snapshot congelado de 03/11/2026).
-- Motor de integração (pin): `0615f5db08625db18ba52b0f53fc78b5072d7df3`.
+- Motor de integração (pin): `424e69a9b9ef2fbb18b3d7e76bf95463b48404d1`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
   `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
@@ -571,3 +571,31 @@ Sem mudança no motor (pin `0615f5db0`). O que o NTM ganhou e onde está documen
 | `Server::rad_buf`, `note_contamination` e `zone_rate` | A `radBuf` por jogador vem da mesma leitura que move a dose (sem caminho paralelo), na janela de um segundo, com os `contaminate` pontuais somados à taxa contínua: Geiger, dosímetro. |
 | Mob effects de conteúdo `ntm:radx`, `radaway`, `stability`, `death`, `potion_sickness`, `taint` | Estados passivos que o Java lê com `isPotionActive`; o motor não tem tick para efeitos de conteúdo. |
 
+
+
+## Sons próprios do HBM — 04/11/2026
+
+Base NTM rebaseada sobre `main` `9f11740a` (inclui consumíveis K2). Motor local
+`424e69a9b9ef2fbb18b3d7e76bf95463b48404d1`, derivado de `0615f5db0`;
+upstream congelado `fc0210381`, sem mudança do protocolo. Pins em
+`compatibility.json` e `horizon-mixin.toml` atualizados juntos.
+
+| Extensão local | Suporte oficial reaproveitado | Razão da extensão |
+| --- | --- | --- |
+| `Ticking::External` no `SoundEngine` | `Sounds`, handles posicionais e atualização de volume/pitch/posição já existem | Manter instância atualizada pelo dono cliente, derivada do snapshot de BE, até stop/release explícito; não adicionar protocolo de loops. |
+| `BlockProperties::door_sounds` | Loader de conteúdo e templates de `SetType` | Escolher eventos de interação open/close para uma porta declarada por um mod; validação de namespace e restrição a portas. |
+| Categoria por caminho de qualquer namespace em `settings::sound_source` | Canais/categorias oficiais do áudio | O teste anterior só removia o prefixo minecraft e tratava `ntm:block.*` como master. |
+| `HORIZON_TRACE_SOUNDS` opt-in, com filtro de namespace | `SoundRegistry` e decoder Ogg oficiais | Provar no log resolução para arquivo real do mod e decodificação, sem mudar o RNG normal. |
+
+Carregamento de `assets/ntm/sounds.json`, Ogg, pesos, variantes, referências,
+volume/pitch, stream, atenuação e subtitles já é oficial; não foi criado outro
+registry. `native_play_sound` aceita nomes de mod por `Holder.direct`.
+Os loops usam o update tag oficial dos BEs; a onda nuclear inicia por mod messages
+oficiais. Detalhes, inventário Java gerado, licenças e limites em
+[sons-hbm.md](sons-hbm.md). Quatro eventos excluídos por aviso Sound Dogs; CC0 de
+qubodup creditado no próprio pacote. `entity.vomit` permanece silencioso como no
+original, sem alias para player.vomit.
+
+Validação final deste lote registrada no artifact `sons-hbm`; suíte NTM após K2:
+446 unidades + 26 testes de integração = 472 aprovados, 2 doctests ignorados;
+Clippy workspace/all-targets com `-D warnings`, sem isenções.
