@@ -8,6 +8,7 @@ second reopen. Scenarios:
                                  one rod pushed in: nothing is ejected, so no effect is owed
   coupled-ea / coupled-eb        the same with a full channel: the push ejects a rod
   crossing                       no crash: drops of a pile move into a chunk that then unloads
+  save-quit                      released ledgers and merge keys survive a clean quit
   mining                         an excavator mines a chest of diamonds
   break / replace                a mixer with items is broken (and, in replace, another put in its place)
 """
@@ -163,6 +164,8 @@ def crossing_prepare(g):
     for side in ('L', 'R'):
         for _ in range(5):
             load_rod(g, geo[side][0])
+    for x in (46.5, 48.5):
+        g.command(f'summon minecraft:item {x} 103 13.5 {{Item:{{id:"{ROD}",count:1}}}}')
     g.command('clear @s')
     g.ctl('save')
 
@@ -196,6 +199,29 @@ def crossing_verify(g, again=False):
     detail = {'entities': entities(g, ROD), 'ledger': led}
     g.evidence['counted' + ('_again' if again else '')] = detail
     g.check('no_rod_duplicated_by_a_chunk_that_unloaded', held == 12, detail)
+
+
+# ------------------------------------------------------------------------------------------------------ save & quit
+
+
+def save_quit_act(g):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    tool(g)
+    for side in ('L', 'R'):
+        p = geometry(47)[side][0]
+        interact(g, p, 'north', (p[0] + .5, 101, p[2] - 3.5))
+    led = quiet(g, 4)
+    g.evidence['after_act'] = {'entities': entities(g, ROD), 'ledger': led}
+    g.check('tracked_rods_before_quit', led['spawned'] > 0 and entities(g, ROD) == 12, g.evidence['after_act'])
+    # The runner's quit is the first confirmed save after the undo.
+
+
+def save_quit_verify(g, again=False):
+    crossing_verify(g, again)
+    led = ledger(g)
+    g.check('save_and_quit_releases_the_ledger',
+            all(led.get(k, -1) == 0 for k in ('pending', 'spawned', 'applied', 'keyed', 'tagged')), led)
 
 
 # ---------------------------------------------------------------------------------------------------------- mining
@@ -359,6 +385,7 @@ def drain(g):
 STEPS = {
     'coupled': (coupled_prepare, coupled_act, coupled_verify),
     'crossing': (crossing_prepare, crossing_act, crossing_verify),
+    'save-quit': (crossing_prepare, save_quit_act, save_quit_verify),
     'mining': (mining_prepare, mining_act, mining_verify),
     'break': (break_prepare, break_act, break_verify),
     'replace': (break_prepare, break_act, break_verify),
