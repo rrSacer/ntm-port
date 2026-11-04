@@ -47,6 +47,9 @@ pub struct Kept {
     pub applied_machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     #[serde(default, skip_serializing_if = "std::collections::VecDeque::is_empty")]
     pub prepared_retentions:std::collections::VecDeque<crate::server::PreparedRetention>,
+    /// What machines became in steps whose block entities may reach the disk in different chunk records.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub survivors:Vec<crate::server::Survivor>,
 }
 
 fn is_zero(n: &u64) -> bool {
@@ -63,6 +66,8 @@ pub struct WorldState {
     pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     pub applied_machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
     pub prepared_retentions:std::collections::VecDeque<crate::server::PreparedRetention>,
+    /// The newest journaled state of each machine (the one of the highest revision), until a save is confirmed.
+    pub survivors:BTreeMap<(String,Pos),crate::server::Survivor>,
     pub radiation: BTreeMap<String, crate::radiation::Dose>,
     pub machines: BTreeMap<(String, Pos), Machine>,
     pub cables: BTreeSet<(String, Pos)>,
@@ -83,6 +88,7 @@ impl WorldState {
             machines,
             removals:kept.removals,
             prepared_retentions:kept.prepared_retentions,
+            survivors:kept.survivors.into_iter().map(|s|((s.dim.clone(),s.pos),s)).collect(),
             generations:kept.generations.into_iter().collect(),
             radiation: kept.radiation,
             bombs: kept.bombs,
@@ -107,6 +113,7 @@ impl WorldState {
             machine_effects:self.machine_effects.clone(),
             applied_machine_effects:self.applied_machine_effects.clone(),
             prepared_retentions:self.prepared_retentions.clone(),
+            survivors:self.survivors.values().cloned().collect(),
         };
         serde_json::to_vec(&kept).unwrap_or_default()
     }

@@ -44,10 +44,11 @@ pub struct CommittedEffects {
     /// older than it. Each chunk says by its ledger whether it already holds an effect.
     #[serde(skip)]
     pub replayed: bool,
-    /// The states the machines that outlive the batch were given by the step that made it, with their revisions: a
-    /// chunk saved before that step still has them older, and the storage's journal brings them back.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub survivors: Vec<Survivor>,
+}
+
+/// The chunks a set of cells is in.
+pub(super) fn chunks_of<'a>(keys:impl Iterator<Item=&'a Key>)->BTreeSet<(String,i32,i32)>{
+    keys.map(|k|(k.0.clone(),k.1[0]>>4,k.1[2]>>4)).collect()
 }
 
 /// A machine's state as a batch of world effects left it.
@@ -200,11 +201,9 @@ impl Server {
             let g=&prepared.source.guard;
             if g.generation==u64::MAX{self.ready.world.prepared_retentions.push_back(prepared);continue;}
             let Some(actual)=host.cell_snapshot(&g.dim,g.pos)else{self.ready.world.prepared_retentions.push_back(prepared);continue};
-            if !(self.current_guard(g)&&actual==prepared.source.expected){
-                // Consumed or genuinely ambiguous: keep the old physical
-                // retention. An intact source still owns its items, so emits none.
-                self.ready.world.machine_effects.push_back(prepared.receipt);
-            }
+            // Whatever the cell became, its contents are not this journal's to put in the world: the step that
+            // consumes a cell puts them in the ledger of its chunk in the same record, and an intact cell still owns them.
+            let _ = (actual, &prepared);
         }
         if self.ready.world.prepared_retentions==before.prepared_retentions && self.ready.world.machine_effects==before.machine_effects{return true;}
         match host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){
@@ -219,6 +218,12 @@ impl Server {
         for p in &self.ready.world.prepared_retentions{let g=&p.source.guard;self.ready.world.generations.entry(g.key()).or_insert(g.generation);}
     }
 
+    /// Keeps the state a machine was left in by a journaled step: the one of the highest revision.
+    pub(super) fn journal_survivor(&mut self,s:Survivor){
+        let key=(s.dim.clone(),s.pos);
+        if self.ready.world.survivors.get(&key).is_none_or(|old|old.rev<=s.rev){self.ready.world.survivors.insert(key,s);}
+    }
+
     /// Gives every queued batch that has none its serial (the counter is kept with the journal).
     pub(super) fn name_batches(&mut self){
         for i in 0..self.ready.world.machine_effects.len(){
@@ -226,6 +231,18 @@ impl Server {
                 self.ready.world.effect_serial+=1;
                 self.ready.world.machine_effects[i].serial=self.ready.world.effect_serial;
             }
+        }
+    }
+
+    /// Machines an older chunk showed although a receipt consumed them: the break is carried through, the block and
+    /// its block entity go and nothing is released (the receipt did that).
+    pub(super) fn settle_ghosts(&mut self, host: &mut impl ServerHost) {
+        for (key,g) in std::mem::take(&mut self.ready.ghosts) {
+            let Some(actual)=host.get_block(&key.0,key.1) else{self.ready.ghosts.push((key,g));continue};
+            if blockstate::id_of(&actual)!=blockstate::id_of(&g.state){continue;}
+            let Some(snapshot)=host.cell_snapshot(&key.0,key.1) else{self.ready.ghosts.push((key,g));continue};
+            let cell=CellWrite{notify:false,initial:None,guard:g.clone(),expected:snapshot,desired:"minecraft:air".into(),destroy:true};
+            if !host.commit_structural(&[cell],&[],std::slice::from_ref(&key)){self.ready.ghosts.push((key,g));}
         }
     }
 
@@ -333,7 +350,7 @@ impl Server {
                 batch.done+=1;
                 if physical {
                     // The receipt keeps the effect's place in its batch, so a replay derives the same id.
-                    let receipt=CommittedEffects{serial,done,origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect]),replayed:false,survivors:batch.survivors.clone()};
+                    let receipt=CommittedEffects{serial,done,origins:batch.origins.clone(),owners:batch.owners.clone(),tombstones:Vec::new(),effects:std::collections::VecDeque::from([effect]),replayed:false};
                     if matches!(receipt.effects.front(),Some(WorldEffect::Blocks{..})){
                         for g in &receipt.origins {
                             if self.ready.world.machines.get(&g.key()).is_some_and(|m|m.generation==g.generation){self.ready.native_saved.remove(&g.key());}
@@ -366,13 +383,21 @@ impl Server {
     /// effect, but must never acknowledge an entity not yet saved by the world.
     pub fn native_world_saved(&mut self, host: &mut impl ServerHost, wait: bool) {
         let applied = wait.then(|| std::mem::take(&mut self.ready.world.applied_machine_effects));
+        let survivors = wait.then(|| std::mem::take(&mut self.ready.world.survivors));
         if self.ready.world.kept(0) == self.ready.kept {
+            // Nothing to write, but a confirmed save is when the ledgers forget what the storage no longer names.
+            if wait {
+                self.prune_ledger(host);
+            }
             return;
         }
         let kept = self.ready.world.kept(self.ready.world.ticks);
         if let Err(e) = host.set(crate::persist::KEY, &kept) {
             if let Some(applied) = applied {
                 self.ready.world.applied_machine_effects = applied;
+            }
+            if let Some(survivors) = survivors {
+                self.ready.world.survivors = survivors;
             }
             host.log(&format!("machine effect receipts/removals: {e}"));
         } else {
@@ -468,8 +493,9 @@ impl Server {
             return Some(PileUse::Handled);
         }
         let mut commits = Vec::new();
-        // A tool use that leaves world effects owing journals what it leaves in the machines that outlive it.
-        let journal=!staged.critical.is_empty();
+        // A tool use that leaves world effects owing, or changes machines of more than one chunk, journals what it
+        // leaves in them: their block entities reach the disk in records of their own chunks.
+        let journal=!staged.critical.is_empty()||chunks_of(keys.iter()).len()>1;
         let mut survivors=Vec::new();
         for k in &keys {
             let Some(expected) = observed.get(k) else {
@@ -515,10 +541,10 @@ impl Server {
                     owners: keys,
                     effects: staged.critical,
                     tombstones: Vec::new(),
-                    survivors,
                 ..Default::default()});
             self.name_batches();
         }
+        for s in survivors{self.journal_survivor(s);}
         for (guards,effect) in staged.effects {
             if guards.iter().all(|g|self.current_guard(g)){effect(staged.host);}
         }
@@ -611,7 +637,6 @@ impl Server {
                 }
             });
             let mut accepted = false;
-            let mut journaled=false;
             if accessible {
                 let mut staged = Deferred {
                     host,
@@ -687,9 +712,7 @@ impl Server {
                 self.drill_tick(&mut staged);
                 self.bombs_triggers(&mut staged);
                 let mut commits = Vec::new();
-                // A step that leaves world effects owing journals what it leaves in the machines that outlive it.
-                let journal=!staged.critical.is_empty();
-                let mut survivors=Vec::new();
+                let mut changed_keys:Vec<Key>=Vec::new();
                 for k in &keys {
                     let last = &observed[k];
                     if before.broken.contains_key(k)
@@ -717,12 +740,7 @@ impl Server {
                     let changed=last != &want
                         || self.ready.native_saved.get(k) != Some(&json)
                         || self.ready.bridge.data.get(k) != Some(&data);
-                    let mut json=json;
-                    if journal && changed && let Some(m)=self.ready.world.machines.get_mut(k){
-                        m.rev+=1;
-                        json=serde_json::to_string(m).expect("machine serialization");
-                        survivors.push(Survivor{dim:k.0.clone(),pos:k.1,generation:m.generation,rev:m.rev,json:json.clone()});
-                    }
+                    if changed{changed_keys.push(k.clone());}
                     // Static pile members need not rewrite their BE every
                     // tick. Keep at least one accessible member in a no-op
                     // group, so an unsupported atomic host still freezes it.
@@ -743,27 +761,24 @@ impl Server {
                 if !staged.world_writes.is_empty(){
                     if let Some(c)=commits.first_mut(){c.cells=staged.world_writes.clone();}else{staged.valid=false;}
                 }
-                let preparations:Vec<_>=staged.world_writes.iter().filter(|w|blockstate::id_of(&w.expected.state)!=blockstate::id_of(&w.desired)&&!w.expected.items.is_empty()).map(|w|{
-                    let mut origins=staged.origins.clone();origins.push(w.guard.clone());
-                    PreparedRetention{source:w.clone(),receipt:CommittedEffects{owners:keys.clone(),origins,tombstones:Vec::new(),effects:std::collections::VecDeque::from([WorldEffect::EncodedItems{dim:w.guard.dim.clone(),pos:w.guard.pos,items:w.expected.items.clone()}]),..Default::default()}}
-                }).collect();
-                if staged.valid && !preparations.is_empty(){
-                    // Only confirmed world state is journaled. The speculative
-                    // machine's new state belongs solely to its atomic BE commit.
-                    let mut durable=before.world.clone();
-                    for p in &preparations{durable.generations.entry(p.source.guard.key()).or_insert(p.source.guard.generation);}
-                    durable.prepared_retentions.extend(preparations.clone());
-                    match staged.host.set(crate::persist::KEY,&durable.kept(durable.ticks)){
-                        Ok(())=>{journaled=true;self.ready.world.prepared_retentions.extend(preparations.clone());}
-                        Err(e)=>{staged.valid=false;staged.host.log(&format!("retention preparation: {e}"));}
+                // A step that leaves world effects owing, or changes machines of more than one chunk, journals what it
+                // leaves in the machines that changed: their block entities reach the disk in records of their own chunks,
+                // and a save can end between two of them. The consumed cells' contents need no journal of their own:
+                // the host puts them in the ledger of their chunk in the very step that consumes the cell.
+                let mut survivors=Vec::new();
+                if !staged.critical.is_empty()||chunks_of(changed_keys.iter()).len()>1{
+                    for c in &mut commits{
+                        let k=(c.dim.clone(),c.pos);
+                        if changed_keys.contains(&k)&&let Some(m)=self.ready.world.machines.get_mut(&k){
+                            m.rev+=1;
+                            c.json=serde_json::to_string(m).expect("machine serialization");
+                            survivors.push(Survivor{dim:k.0.clone(),pos:k.1,generation:m.generation,rev:m.rev,json:c.json.clone()});
+                        }
                     }
                 }
                 accepted = staged.valid && staged.host.commit_machines(&commits);
                 if accepted {
-                    for p in &preparations{
-                        self.ready.world.prepared_retentions.retain(|other|other!=p);
-                        self.ready.world.applied_machine_effects.push_back(p.receipt.clone());
-                    }
+                    for s in survivors{self.journal_survivor(s);}
                     for w in &staged.world_writes {
                         if w.desired!=w.expected.state{self.ready.world.generations.entry(w.guard.key()).or_insert(w.guard.generation);}
                     }
@@ -800,7 +815,6 @@ impl Server {
                                 owners: keys.clone(),
                                 effects: staged.critical,
                                 tombstones,
-                                survivors,
                             ..Default::default()});
                         self.name_batches();
                     }
@@ -812,9 +826,6 @@ impl Server {
             if !accepted {
                 self.ready = before;
                 self.blasts.lit = lit_before;
-                if journaled && let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){
-                    self.ready.facts_pending=true;host.log(&format!("discard refused retention preparation: {e}"));
-                }
                 // No simulation or network exchange while the BE is missing
                 // or its atomic host rejects the step. A future tick retries.
                 for k in &keys {

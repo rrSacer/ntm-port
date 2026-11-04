@@ -733,6 +733,47 @@ fn a_refused_zirnox_ruin_write_preserves_a_new_zirnox_inventory() {
     assert!(!z(&h).destroyed);
 }
 
+/// The break reached the storage but not the chunk, and nothing was released for it: the machine of the chunk is the
+/// world's again, with the generation it has.
+#[test]
+fn a_break_that_never_reached_the_chunk_leaves_the_machine_of_the_chunk_alive() {
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let key = (D.to_string(), P);
+    let saved = serde_json::to_string(&s.ready.world.machines[&key]).unwrap();
+    let generation = s.ready.world.machines[&key].generation;
+    s.ready.world.machines.remove(&key);
+    s.ready.world.generations.insert(key.clone(), generation + 2);
+    assert!(s.native_adopt(D, P, &saved));
+    assert!(s.native_has_machine(D, P), "alive");
+    assert_eq!(s.ready.world.generations[&key], generation, "the generation of the chunk");
+}
+
+/// The break reached the storage with its receipt (the contents were released), not the chunk: the block goes.
+#[test]
+fn a_machine_a_receipt_consumed_is_removed_from_an_older_chunk() {
+    use super::{CommittedEffects, WorldEffect};
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let key = (D.to_string(), P);
+    let guard = super::CellGuard::machine(&key, &s.ready.world.machines[&key]);
+    let saved = serde_json::to_string(&s.ready.world.machines[&key]).unwrap();
+    s.ready.world.machines.remove(&key);
+    s.ready.world.generations.insert(key.clone(), 1);
+    s.ready.world.applied_machine_effects.push_back(CommittedEffects {
+        serial: 4,
+        origins: vec![guard],
+        owners: vec![key.clone()],
+        effects: std::collections::VecDeque::from([WorldEffect::Items { dim: D.into(), pos: P, items: vec![("ntm:pile_rod__zr".into(), 1)] }]),
+        ..Default::default()
+    });
+    assert!(s.native_adopt(D, P, &saved), "told as handled");
+    assert!(!s.native_has_machine(D, P));
+    s.native_tick(&mut h, 2);
+    assert_eq!(blockstate::id_of(&h.blocks[&P]), "minecraft:air", "the break is carried through");
+    assert!(h.retained.is_empty(), "and releases nothing: the receipt did that");
+}
+
 #[test]
 fn an_older_chunk_does_not_bring_back_a_machine_a_receipt_consumed() {
     use super::{CommittedEffects, WorldEffect};
@@ -792,7 +833,7 @@ fn a_chunk_older_than_the_storage_gets_the_effect_it_missed() {
 
 /// A machine that outlives a receipt's step comes back in the state the journal gives it when its chunk is older.
 fn journal_adopt(chunk_rev: u64, journal_rev: u64) -> Option<String> {
-    use super::{CommittedEffects, Survivor, WorldEffect};
+    use super::Survivor;
     let mut h = Host::default();
     let s = install(&mut h, zirnox::BLOCK, 28);
     let key = (D.to_string(), P);
@@ -805,14 +846,8 @@ fn journal_adopt(chunk_rev: u64, journal_rev: u64) -> Option<String> {
     let guard = super::CellGuard::machine(&key, &chunk);
     let mut s = s;
     s.ready.world.machines.remove(&key);
-    s.ready.world.applied_machine_effects.push_back(CommittedEffects {
-        serial: 9,
-        origins: vec![guard.clone()],
-        owners: vec![key.clone()],
-        effects: std::collections::VecDeque::from([WorldEffect::Blocks { retained: Vec::new(), dim: D.into(), blocks: vec![(P, zirnox::BLOCK.into())], expected: vec![guard] }]),
-        survivors: vec![Survivor { dim: D.into(), pos: P, generation: chunk.generation, rev: journal_rev, json: serde_json::to_string(&journaled).unwrap() }],
-        ..Default::default()
-    });
+    let _ = guard;
+    s.ready.world.survivors.insert(key.clone(), Survivor { dim: D.into(), pos: P, generation: chunk.generation, rev: journal_rev, json: serde_json::to_string(&journaled).unwrap() });
     assert!(s.native_adopt(D, P, &serde_json::to_string(&chunk).unwrap()));
     s.ready.world.machines.get(&key).and_then(|m| m.facing.clone())
 }
@@ -1158,15 +1193,17 @@ fn retained_excavator() -> (Host, Server, Pos) {
         .insert(target, vec!["{id:'minecraft:diamond',count:7}".into()]);
     (h, s, target)
 }
+/// A cell's contents leave in the very publication that consumes the cell (the host's ledger holds them in the
+/// record of its chunk), so no journal of the storage waits for them and none brings them back.
 #[test]
-fn prepared_retention_is_discarded_after_a_crash_when_its_original_cell_and_be_are_intact() {
+fn a_crash_before_the_atomic_commit_leaves_the_cell_and_the_miner_as_they_were() {
     let (mut h, mut s, target) = retained_excavator();
     h.crash_before_commit = true;
     assert!(
         std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| s.native_tick(&mut h, 2)))
             .is_err()
     );
-    assert_eq!(WorldState::load(&mut h).prepared_retentions.len(), 1);
+    assert!(WorldState::load(&mut h).prepared_retentions.is_empty(), "no journal of the contents");
     assert_eq!(h.blocks[&target], "minecraft:chest");
     assert!(h.retained.is_empty());
     h.crash_before_commit = false;
@@ -1174,13 +1211,12 @@ fn prepared_retention_is_discarded_after_a_crash_when_its_original_cell_and_be_a
     for (at, json) in h.saved.clone() {
         reopened.native_adopt(D, at, &json);
     }
+    assert!(reopened.native_has_machine(D, P), "the miner is back");
     reopened.native_tick(&mut h, 11);
-    assert_eq!(h.blocks[&target], "minecraft:chest");
-    assert!(h.retained.is_empty());
-    assert!(WorldState::load(&mut h).prepared_retentions.is_empty());
+    assert!(h.retained.len() <= 1, "mined again at most once");
 }
 #[test]
-fn prepared_retention_replays_a_consumed_cell_once_when_its_atomic_spawn_was_not_saved() {
+fn a_crash_after_the_atomic_commit_does_not_put_the_contents_in_the_world_twice() {
     let (mut h, mut s, target) = retained_excavator();
     h.crash_after_commit = true;
     assert!(
@@ -1188,19 +1224,19 @@ fn prepared_retention_replays_a_consumed_cell_once_when_its_atomic_spawn_was_not
             .is_err()
     );
     assert_eq!(h.blocks[&target], "minecraft:air");
+    // The host's record of the chunk holds the contents (`retained`); the storage never names them.
     assert_eq!(h.retained.len(), 1);
-    assert_eq!(WorldState::load(&mut h).prepared_retentions.len(), 1);
-    // Simulated torn world save: consumed cell/BE persisted, item entity did not.
-    h.retained.clear();
+    assert!(WorldState::load(&mut h).prepared_retentions.is_empty());
+    assert!(WorldState::load(&mut h).applied_machine_effects.iter().all(|b| b.effects.iter().all(|e| !matches!(e, super::WorldEffect::EncodedItems { .. }))));
     h.crash_after_commit = false;
     let mut reopened = Server::native(&mut h, 10);
     for (at, json) in h.saved.clone() {
         reopened.native_adopt(D, at, &json);
     }
+    assert!(reopened.native_has_machine(D, P), "the miner is back");
     reopened.native_tick(&mut h, 11);
     reopened.native_tick(&mut h, 12);
-    assert_eq!(h.retained.len(), 1);
-    assert!(WorldState::load(&mut h).prepared_retentions.is_empty());
+    assert_eq!(h.retained.len(), 1, "no replay");
     reopened.native_world_saved(&mut h, true);
     let mut clean = Server::native(&mut h, 20);
     for (at, json) in h.saved.clone() {
@@ -1218,21 +1254,6 @@ fn refusing_the_atomic_mining_commit_discards_preparation_without_a_spawn() {
     assert_eq!(h.blocks[&target], "minecraft:chest");
     assert!(WorldState::load(&mut h).prepared_retentions.is_empty());
     assert_eq!(h.encoded[&target].len(), 1);
-}
-
-#[test]
-fn refusing_the_retention_journal_prevents_resource_consumption_and_spawn() {
-    let (mut h, mut s, target) = retained_excavator();
-    h.refuse_preparation = true;
-    s.native_tick(&mut h, 2);
-    assert_eq!(h.blocks[&target], "minecraft:chest");
-    assert!(h.retained.is_empty());
-    assert_eq!(resource_total(&s, &h), 0);
-    assert!(WorldState::load(&mut h).prepared_retentions.is_empty());
-    h.refuse_preparation = false;
-    s.native_tick(&mut h, 3);
-    assert_eq!(h.blocks[&target], "minecraft:air");
-    assert_eq!(h.retained.len(), 1);
 }
 
 fn isotope(h: &Host) -> crate::radioisotopes::Radioisotope {
