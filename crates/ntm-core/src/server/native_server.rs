@@ -183,7 +183,8 @@ impl Server {
         }
         let Ok(m) = serde_json::from_str::<Machine>(json) else { return false };
         let m = m.upgraded();
-        if r.world.machine_effects.iter().chain(r.world.prepared_retentions.iter().map(|p|&p.receipt)).any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)){return true;}
+        // A machine that an unconfirmed receipt already consumed (replayed or not) is not brought back by an older chunk.
+        if r.world.machine_effects.iter().chain(&r.world.applied_machine_effects).chain(r.world.prepared_retentions.iter().map(|p|&p.receipt)).any(|b|b.origins.iter().any(|g|g.key()==key&&g.generation==m.generation)){return true;}
         let current=r.world.generations.entry(key.clone()).or_insert(m.generation);
         if m.generation<*current{return false;}
         *current=m.generation;

@@ -273,6 +273,11 @@ impl Server {
                 if !unchanged{
                     if let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){host.log(&format!("pending machine effect: {e}"));return;}
                     journaled=true;repeatable=false;
+                if let Err(e)=host.set(crate::persist::KEY,&self.ready.world.kept(self.ready.world.ticks)){host.log(&format!("pending machine effect: {e}"));return;}
+                if host.trace_effects(){
+                    let b=self.ready.world.machine_effects.front().unwrap();
+                    let kind=match &effect{WorldEffect::Blocks{blocks,..}=>format!("blocks {}",blocks.len()),WorldEffect::Items{pos,items,..}=>format!("items {pos:?} {items:?}"),WorldEffect::EncodedItems{pos,items,..}=>format!("encoded {pos:?} {}",items.len()),WorldEffect::PileExplosion{..}=>"explosion".into()};
+                    host.log(&format!("effect {}.{} {kind} owners={} origins={}",b.serial,b.done,b.owners.len(),b.origins.len()));
                 }
                 let done=match &effect {
                     WorldEffect::Blocks{retained,..}=>cells.is_empty()&&retained.is_empty()||host.commit_structural(&cells,retained,&self.ready.world.machine_effects.front().unwrap().owners),
@@ -726,12 +731,13 @@ impl Server {
                         self.ready.bridge.data.insert(k.clone(), c.data);
                         self.ready.native_saved.insert(k, c.json);
                     }
-                    let tombstones = keys
+                    let tombstones: Vec<_> = keys
                         .iter()
                         .filter(|k| !self.ready.world.machines.contains_key(*k))
                         .map(|k| (k.clone(), before.world.machines[k].clone()))
                         .collect();
                     if !staged.critical.is_empty() {
+                        if staged.host.trace_effects(){staged.host.log(&format!("batch created owners={} origins={} critical={} tombstones={}",keys.len(),staged.origins.len(),staged.critical.len(),tombstones.len()));}
                         self.ready
                             .world
                             .machine_effects
