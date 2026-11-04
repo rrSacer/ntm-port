@@ -142,6 +142,191 @@
       "max_stack_size": 1,
       "max_damage": 20000,
       "behavior": "ItemFilter: native installation and exposure wear"
+    },
+    {
+      "id": "can_smart",
+      "source_variable": "can_smart",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "can_creature",
+      "source_variable": "can_creature",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "can_redbomb",
+      "source_variable": "can_redbomb",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "can_mrsugar",
+      "source_variable": "can_mrsugar",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "can_overcharge",
+      "source_variable": "can_overcharge",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "can_luna",
+      "source_variable": "can_luna",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "can_bepis",
+      "source_variable": "can_bepis",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "can_breen",
+      "source_variable": "can_breen",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "can_mug",
+      "source_variable": "can_mug",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bottle_nuka",
+      "source_variable": "bottle_nuka",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bottle_cherry",
+      "source_variable": "bottle_cherry",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bottle_quantum",
+      "source_variable": "bottle_quantum",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bottle_sparkle",
+      "source_variable": "bottle_sparkle",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bottle_rad",
+      "source_variable": "bottle_rad",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bottle2_korl",
+      "source_variable": "bottle2_korl",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bottle2_fritz",
+      "source_variable": "bottle2_fritz",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "chocolate_milk",
+      "source_variable": "chocolate_milk",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "coffee",
+      "source_variable": "coffee",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "coffee_radium",
+      "source_variable": "coffee_radium",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "canteen_vodka",
+      "source_variable": "canteen_vodka",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null,
+      "max_damage": 180
+    },
+    {
+      "id": "mucho_mango",
+      "source_variable": "mucho_mango",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bdcl",
+      "source_variable": "bdcl",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "cotton_candy",
+      "source_variable": "cotton_candy",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "syringe_metal_medx",
+      "source_variable": "syringe_metal_medx",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "hazmat_kit",
+      "source_variable": "hazmat_kit",
+      "type": "item",
+      "behavior": "native item_hooks: consumables.json",
+      "behavior_gap": null
+    },
+    {
+      "id": "bottle_opener",
+      "source_variable": "bottle_opener",
+      "type": "item",
+      "category": "consumable",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior_gap": "WeaponSpecial melee and ability hooks wait for the weapons wave; the item exists so the ItemEnergy bottles can test for it (inventory.hasItem)"
     }
   ]
 }

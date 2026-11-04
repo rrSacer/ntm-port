@@ -371,6 +371,9 @@ def main():
      if previous:
       if previous['type']!=spec['type']:raise ValueError('Cross-kind public ID collision: '+spec['id'])
       previous.update(spec)
+      # A null in an override row removes the field (a gap the hooks closed).
+      for key,value in spec.items():
+       if value is None:previous.pop(key,None)
      else:manifest['entries'].append(spec)
    else:manifest['entries'] += [e for e in bulk['entries'] if e['id'] not in original_ids]
  rows=catalog(args.source,manifest)

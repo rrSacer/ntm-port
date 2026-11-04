@@ -7796,6 +7796,15 @@
       }
     },
     {
+      "id": "ntm:bulk__24befdd4e4a62b4d9c",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:88",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:bottle_opener",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__c0c2a3993277e6c7e4",
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:89",
       "type": "minecraft:crafting_shaped",
@@ -8120,7 +8129,7 @@
       }
     }
   ],
-  "generated_count": 902,
+  "generated_count": 903,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -12897,12 +12906,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item crowbar",
       "expression": "new ItemStack(ModItems.crowbar, 1), new Object[] { \"II\", \" I\", \" I\", 'I', STEEL.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:88",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item bottle_opener",
-      "expression": "new ItemStack(ModItems.bottle_opener, 1), new Object[] { \"S\", \"P\", 'S', STEEL.plate(), 'P', KEY_PLANKS }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:96",

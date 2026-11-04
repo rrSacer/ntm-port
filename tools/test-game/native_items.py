@@ -66,11 +66,15 @@ def setup(g):
     probe=g.command('ntmitem transaction-check');g.check('native_cas_refusal_replay_and_restore',any('true' in line for line in probe.get('chat',[])),probe)
     # The cotton candy is always edible and carries the five Java effects.
     give_hand(g,'ntm:cotton_candy',2)
+    # EntityPlayer.canEat is `!capabilities.disableDamage`: 1.7.10 creative cannot eat.
     g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.45)
+    refused=g.ctl('state');g.ctl('mouse right up');time.sleep(.2)
+    g.check('creative_cannot_eat_item_food',refused.get('using') is None,refused)
+    g.command('gamemode survival @s')
+    g.ctl('mouse right down');time.sleep(.45)
     active=g.ctl('state');g.check('real_eating_started',active.get('using') is not None,active)
     g.ctl('mouse right up');time.sleep(.4)
     g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,counts(g))
-    g.command('gamemode survival @s')
     g.command('effect give @s minecraft:hunger 1 255 true');time.sleep(1.6)
     before=g.ctl('state')['player'];use(g,1.8)
     after=g.ctl('state')['player']
@@ -116,6 +120,7 @@ def setup(g):
     filter_destruction(g)
     armor_table(g)
     death_resets_dose(g)
+    energy(g)
 
 
 def dropped(g):
@@ -226,6 +231,98 @@ def death_resets_dose(g):
     g.check('death_resets_dose_for_the_next_radiation_tick',after==0,after)
     time.sleep(3);again=state(g)['dose'];g.check('dose_stays_zero_after_more_ticks',again==0,again)
     g.command('gamemode creative @s')
+
+
+def effect_map(g):
+    return {e['id'].split(':')[-1]:(e['amplifier'],e['duration_ticks']) for e in g.ctl('state')['player']['effects']}
+
+
+def has_effects(effects,expected):
+    """Amplifier exact; the duration is the Java one minus the ticks since."""
+    return all(k in effects and effects[k][0]==amp and ticks-80<=effects[k][1]<=ticks for k,(amp,ticks) in expected.items())
+
+
+def stack_damage(g,item):
+    """The `minecraft:damage` component of the first stack of `item`."""
+    inv=g.ctl('inventory')
+    for group in ('hotbar','main','armor'):
+        for stack in inv.get(group,[]):
+            if stack.get('item')==item:
+                found=re.search(r'"minecraft:damage":(\d+)',stack.get('components') or '')
+                return int(found.group(1)) if found else 0
+    return None
+
+
+def energy(g):
+    """Family 1: ItemEnergy cans and bottles, the canteen, the mango, the BDCL
+    and the chocolate milk, in the Java order: use, effects, container and
+    cap, full inventory, creative, then the cooldown across a reopen."""
+    g.close();g.command('gamemode survival @s');g.command('clear @s');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
+    g.command('ntmitem dose 0');g.command('tp @s 20.5 101 11.5');time.sleep(.5)
+    give_hand(g,'ntm:can_smart',2)
+    g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.5)
+    active=g.ctl('state');g.check('can_drink_animation_runs',active.get('using') is not None,active)
+    g.ctl('mouse right up');time.sleep(.3)
+    g.check('can_cancel_keeps_it',counts(g).get('ntm:can_smart')==2 and not counts(g).get('ntm:ring_pull'),counts(g))
+    use(g,1.8);actual=counts(g);effects=effect_map(g)
+    g.check('can_leaves_ring_pull_and_empty_can',actual.get('ntm:can_smart')==1 and actual.get('ntm:can_empty')==1 and actual.get('ntm:ring_pull')==1,actual)
+    g.check('can_smart_java_effects',has_effects(effects,{'speed':(1,600),'resistance':(2,600),'strength':(0,600)}),effects)
+    g.command('effect clear @s');g.command('clear @s')
+    # The last can becomes the empty can in its own slot; the ring pull is added.
+    give_hand(g,'ntm:can_mug',1);use(g,1.8);actual=counts(g);effects=effect_map(g)
+    g.check('last_can_becomes_empty_can',actual.get('ntm:can_empty')==1 and actual.get('ntm:ring_pull')==1 and not actual.get('ntm:can_mug'),actual)
+    g.check('can_mug_java_effects',has_effects(effects,{'resistance':(2,3600),'regeneration':(2,1200)}),effects)
+    g.command('effect clear @s')
+    # Full inventory: `addItemStackToInventory` without a fallback, so the cap is lost, not dropped.
+    full(g,'ntm:can_smart',1);use(g,1.8);actual=counts(g)
+    g.check('full_last_can_is_replaced_and_the_ring_pull_is_lost',actual.get('ntm:can_empty')==1 and not actual.get('ntm:ring_pull') and actual.get('minecraft:stone')==2240 and not dropped(g),{'counts':actual,'dropped':dropped(g)})
+    full(g,'ntm:can_smart',2);use(g,1.8);actual=counts(g)
+    g.check('full_stacked_can_loses_both_returns',actual.get('ntm:can_smart')==1 and not actual.get('ntm:can_empty') and not actual.get('ntm:ring_pull') and not dropped(g),{'counts':actual,'dropped':dropped(g)})
+    g.command('effect clear @s')
+    # Creative: nothing is consumed and nothing is returned.
+    full(g,'ntm:can_smart',1,mode='creative');use(g,1.8);actual=counts(g)
+    g.check('creative_drinks_without_consuming',actual.get('ntm:can_smart')==1 and not actual.get('ntm:can_empty') and not actual.get('ntm:ring_pull'),actual)
+    g.command('gamemode survival @s');g.command('clear @s');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
+    # A bottle needs the opener in the inventory.
+    g.command('ntmitem dose 0');g.command('damage @s 8 minecraft:generic');time.sleep(.4)
+    give_hand(g,'ntm:bottle_nuka',1);g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.5)
+    blocked=g.ctl('state');g.ctl('mouse right up');time.sleep(.2)
+    g.check('bottle_needs_the_opener',blocked.get('using') is None and counts(g).get('ntm:bottle_nuka')==1,blocked)
+    g.command('give @s ntm:bottle_opener 1');time.sleep(.3)
+    hurt=g.ctl('state')['player']['health'];use(g,1.8);after=g.ctl('state')['player'];actual=counts(g);effects=effect_map(g)
+    g.check('bottle_drinks_with_the_opener',not actual.get('ntm:bottle_nuka') and actual.get('ntm:bottle_empty')==1 and actual.get('ntm:cap_nuka')==1 and actual.get('ntm:bottle_opener')==1,actual)
+    g.check('bottle_nuka_heals_four_and_adds_five_rad',after['health']>=hurt+4.0-.01 and state(g)['dose']==5000,{'before':hurt,'after':after['health'],'dose':state(g)})
+    g.check('bottle_nuka_java_effects',has_effects(effects,{'speed':(1,600),'haste':(1,600)}),effects)
+    g.command('effect clear @s')
+    # coffee_radium raises the dose by 500 RAD directly, creative included.
+    g.command('gamemode creative @s');g.command('ntmitem dose 0');give_hand(g,'ntm:coffee_radium',1);use(g,1.8)
+    g.check('coffee_radium_adds_five_hundred_rad',state(g)['dose']==500000,state(g))
+    g.command('ntmitem dose 0');g.command('effect clear @s')
+    # The canteen: 10 ticks of drinking, then 180 seconds of cooldown as damage; it stays.
+    g.command('gamemode survival @s');g.command('clear @s');give_hand(g,'ntm:canteen_vodka',1);use(g,.8)
+    first=stack_damage(g,'ntm:canteen_vodka');effects=effect_map(g)
+    g.check('canteen_sets_its_cooldown_and_stays',first is not None and 175<=first<=180 and counts(g).get('ntm:canteen_vodka')==1,{'damage':first,'counts':counts(g)})
+    g.check('canteen_java_effects',has_effects(effects,{'nausea':(0,200),'strength':(2,600)}),effects)
+    g.ctl('mouse right down');time.sleep(.5);again=g.ctl('state');g.ctl('mouse right up')
+    g.check('canteen_refuses_while_cooling',again.get('using') is None,again)
+    time.sleep(6);later=stack_damage(g,'ntm:canteen_vodka')
+    g.check('canteen_cools_one_per_second',later is not None and later<=first-3,{'first':first,'later':later})
+    g.command('effect clear @s')
+    # The mango: 200 ticks, ItemFood stats, speed 200 ticks.
+    g.command('clear @s');g.command('effect give @s minecraft:hunger 1 255 true');time.sleep(1.6)
+    give_hand(g,'ntm:mucho_mango',1);before=g.ctl('state')['player'];use(g,10.6);after=g.ctl('state')['player'];effects=effect_map(g)
+    g.check('mango_feeds_and_is_consumed',after['food']>before['food'] and not counts(g).get('ntm:mucho_mango'),{'before':before['food'],'after':after['food'],'counts':counts(g)})
+    g.check('mango_speed_two_hundred_ticks',has_effects(effects,{'speed':(0,200)}),effects)
+    g.command('effect clear @s')
+    # The BDCL drinks in 34 ticks (its onUsingTick skips the count) and leaves nothing.
+    g.command('clear @s');give_hand(g,'ntm:bdcl',2);use(g,2.1)
+    g.check('bdcl_is_consumed_without_a_container',counts(g).get('ntm:bdcl')==1 and len(counts(g))==1,counts(g))
+    # The chocolate milk is the last: its blast removes the floor around the player.
+    g.command('gamemode creative @s');g.command('clear @s');give_hand(g,'ntm:chocolate_milk',1)
+    floor=g.ctl('block 20 100 8').get('state','');use(g,1.8);time.sleep(1.5)
+    after=g.ctl('block 20 100 8').get('state','')
+    g.check('chocolate_milk_blast_breaks_the_floor','stone' in floor and 'air' in after,{'before':floor,'after':after})
+    g.ground(20,101,8,width=12,height=8);g.command('clear @s')
 
 
 def table_slot(screen,n):

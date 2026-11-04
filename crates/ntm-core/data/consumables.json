@@ -1,0 +1,234 @@
+{
+  "schema": 1,
+  "entries": {
+    "ntm:cotton_candy": {
+      "origin": "ItemCottonCandy(5, false), ModItems.java:3613; alwaysEdible; ItemFood.onEaten",
+      "ticks": 32,
+      "animation": "eat",
+      "gate": "food_always",
+      "consume": "always",
+      "food": [5, 0.6],
+      "effects": [["poison", 300, 0], ["wither", 100, 0], ["weakness", 500, 2], ["speed", 500, 2], ["resistance", 600, 4]],
+      "sound": "random.burp"
+    },
+    "ntm:syringe_metal_medx": {
+      "origin": "ItemSyringe.onItemRightClick syringe_metal_medx, ModItems.java:2821",
+      "consume": "always",
+      "effects": [["resistance", 4800, 2]],
+      "gives": [{"item": "ntm:syringe_metal_empty", "replace": true, "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.syringe"
+    },
+    "ntm:radaway": {
+      "origin": "ItemSimpleConsumable.doRadaway(140), ModItems registration via init()",
+      "consume": "always",
+      "radaway": 140,
+      "gives": [{"item": "ntm:iv_empty", "overflow": "thrown", "creative": true}],
+      "sound": "hbm:item.radaway"
+    },
+    "ntm:hazmat_kit": {
+      "origin": "ItemStarterKit.giveHaz(0), ModItems.java:3797",
+      "consume": "always",
+      "special": "hazmat_kit"
+    },
+
+    "ntm:can_smart": {
+      "origin": "ItemEnergy.makeCan, ModItems.java:2925",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "effects": [["speed", 600, 1], ["resistance", 600, 2], ["strength", 600, 0]],
+      "gives": [
+        {"item": "ntm:ring_pull", "overflow": "lost", "creative": false},
+        {"item": "ntm:can_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:can_creature": {
+      "origin": "ItemEnergy.makeCan, ModItems.java:2926",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "effects": [["speed", 600, 0], ["resistance", 600, 2], ["regeneration", 600, 1]],
+      "gives": [
+        {"item": "ntm:ring_pull", "overflow": "lost", "creative": false},
+        {"item": "ntm:can_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:can_redbomb": {
+      "origin": "ItemEnergy.makeCan, ModItems.java:2927",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "effects": [["speed", 600, 0], ["absorption", 600, 2], ["jump_boost", 600, 1]],
+      "gives": [
+        {"item": "ntm:ring_pull", "overflow": "lost", "creative": false},
+        {"item": "ntm:can_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:can_mrsugar": {
+      "origin": "ItemEnergy.makeCan, ModItems.java:2928",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "effects": [["speed", 600, 0], ["haste", 600, 1], ["jump_boost", 600, 2]],
+      "gives": [
+        {"item": "ntm:ring_pull", "overflow": "lost", "creative": false},
+        {"item": "ntm:can_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:can_overcharge": {
+      "origin": "ItemEnergy.makeCan, ModItems.java:2929",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "effects": [["speed", 600, 1], ["resistance", 600, 2], ["strength", 600, 0]],
+      "gives": [
+        {"item": "ntm:ring_pull", "overflow": "lost", "creative": false},
+        {"item": "ntm:can_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:can_luna": {
+      "origin": "ItemEnergy.makeCan, ModItems.java:2930",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "effects": [["speed", 600, 1], ["resistance", 600, 2], ["strength", 600, 1], ["regeneration", 600, 2]],
+      "gives": [
+        {"item": "ntm:ring_pull", "overflow": "lost", "creative": false},
+        {"item": "ntm:can_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:can_bepis": {
+      "origin": "ItemEnergy.makeCan, ModItems.java:2931",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "effects": [["speed", 600, 3], ["resistance", 600, 3]],
+      "gives": [
+        {"item": "ntm:ring_pull", "overflow": "lost", "creative": false},
+        {"item": "ntm:can_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:can_breen": {
+      "origin": "ItemEnergy.makeCan, ModItems.java:2932",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "effects": [["nausea", 600, 0]],
+      "gives": [
+        {"item": "ntm:ring_pull", "overflow": "lost", "creative": false},
+        {"item": "ntm:can_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:can_mug": {
+      "origin": "ItemEnergy.makeCan, ModItems.java:2933",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "effects": [["resistance", 3600, 2], ["regeneration", 1200, 2]],
+      "gives": [
+        {"item": "ntm:ring_pull", "overflow": "lost", "creative": false},
+        {"item": "ntm:can_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:bottle_nuka": {
+      "origin": "ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2935",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "requires": "ntm:bottle_opener",
+      "heal": 4,
+      "effects": [["speed", 600, 1], ["haste", 600, 1]],
+      "dose": {"millirad": 5000},
+      "gives": [
+        {"item": "ntm:cap_nuka", "overflow": "lost", "creative": false},
+        {"item": "ntm:bottle_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:bottle_cherry": {
+      "origin": "ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2936",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "requires": "ntm:bottle_opener",
+      "heal": 6,
+      "effects": [["speed", 600, 0], ["jump_boost", 600, 2]],
+      "dose": {"millirad": 5000},
+      "gives": [
+        {"item": "ntm:cap_nuka", "overflow": "lost", "creative": false},
+        {"item": "ntm:bottle_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:bottle_quantum": {
+      "origin": "ItemEnergy.makeBottle(bottle_empty, cap_quantum), ModItems.java:2937",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "requires": "ntm:bottle_opener",
+      "heal": 10,
+      "effects": [["speed", 600, 1], ["resistance", 600, 2], ["strength", 600, 1]],
+      "dose": {"millirad": 15000},
+      "gives": [
+        {"item": "ntm:cap_quantum", "overflow": "lost", "creative": false},
+        {"item": "ntm:bottle_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:bottle_sparkle": {
+      "origin": "ItemEnergy.makeBottle(bottle_empty, cap_sparkle), ModItems.java:2938",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "requires": "ntm:bottle_opener",
+      "heal": 10,
+      "effects": [["speed", 2400, 1], ["resistance", 2400, 2], ["strength", 2400, 2], ["haste", 2400, 1]],
+      "dose": {"millirad": 5000},
+      "gives": [
+        {"item": "ntm:cap_sparkle", "overflow": "lost", "creative": false},
+        {"item": "ntm:bottle_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:bottle_rad": {
+      "origin": "ItemEnergy.makeBottle(bottle_empty, cap_rad), ModItems.java:2939",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "requires": "ntm:bottle_opener",
+      "heal": 10,
+      "effects": [["speed", 2400, 1], ["resistance", 2400, 2], ["fire_resistance", 2400, 0], ["strength", 2400, 4], ["haste", 2400, 1]],
+      "dose": {"millirad": 15000},
+      "gives": [
+        {"item": "ntm:cap_rad", "overflow": "lost", "creative": false},
+        {"item": "ntm:bottle_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:bottle2_korl": {
+      "origin": "ItemEnergy.makeBottle(bottle2_empty, cap_korl), ModItems.java:2941",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "requires": "ntm:bottle_opener",
+      "heal": 6,
+      "effects": [["speed", 600, 1], ["haste", 600, 2], ["strength", 600, 2]],
+      "gives": [
+        {"item": "ntm:cap_korl", "overflow": "lost", "creative": false},
+        {"item": "ntm:bottle2_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:bottle2_fritz": {
+      "origin": "ItemEnergy.makeBottle(bottle2_empty, cap_fritz), ModItems.java:2942",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "requires": "ntm:bottle_opener",
+      "heal": 6,
+      "effects": [["speed", 600, 1], ["resistance", 600, 2], ["jump_boost", 600, 2]],
+      "gives": [
+        {"item": "ntm:cap_fritz", "overflow": "lost", "creative": false},
+        {"item": "ntm:bottle2_empty", "replace": true, "overflow": "lost", "creative": false}
+      ]
+    },
+    "ntm:chocolate_milk": {
+      "origin": "ItemEnergy, ModItems.java:2944",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "special": "chocolate_milk_blast"
+    },
+    "ntm:coffee": {
+      "origin": "ItemEnergy, ModItems.java:2945",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "heal": 10,
+      "effects": [["speed", 1200, 2]]
+    },
+    "ntm:coffee_radium": {
+      "origin": "ItemEnergy, ModItems.java:2946",
+      "ticks": 32, "animation": "drink", "consume": "unless_creative",
+      "heal": 10,
+      "effects": [["speed", 1200, 2]],
+      "dose": {"millirad": 500000, "creative": true}
+    },
+
+    "ntm:canteen_vodka": {
+      "origin": "ItemCanteen(3 * 60), ModItems.java:3632",
+      "ticks": 10, "animation": "drink", "gate": "cooled", "consume": "set_damage", "set_damage": 180,
+      "effects": [["nausea", 200, 0], ["strength", 600, 2]]
+    },
+    "ntm:mucho_mango": {
+      "origin": "ItemMuchoMango(10), ModItems.java:3639; alwaysEdible, right click unconditional",
+      "ticks": 200, "animation": "drink", "consume": "always",
+      "food": [10, 0.6],
+      "effects": [["speed", 200, 0]],
+      "sound": "random.burp"
+    },
+    "ntm:bdcl": {
+      "origin": "ItemBDCL, ModItems.java:2849; getMaxItemUseDuration 40, onUsingTick skips ticks (see consumables.rs)",
+      "ticks": 34, "animation": "drink", "consume": "unless_creative",
+      "sound": "hbm:player.groan"
+    }
+  }
+}

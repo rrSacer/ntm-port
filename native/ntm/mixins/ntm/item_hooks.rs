@@ -105,18 +105,33 @@ pub(super) fn duration(stack: &ItemStack, value: &mut i32) {
     }
 }
 pub(super) fn animation(stack: &ItemStack, value: &mut horizon_world::consumable::UseAnimation) {
+    use horizon_world::consumable::UseAnimation as U;
     if let Some(spec) = item_hooks::use_spec(&stack.item) {
         *value = match spec.animation {
-            Animation::Eat => horizon_world::consumable::UseAnimation::Eat,
-            Animation::Drink | Animation::Inject | Animation::Smoke => {
-                horizon_world::consumable::UseAnimation::Drink
-            }
-            Animation::None => horizon_world::consumable::UseAnimation::None,
+            Animation::Eat => U::Eat,
+            Animation::Drink => U::Drink,
+            Animation::Bow => U::Bow,
+            Animation::None => U::None,
         };
     }
 }
+/// `onItemRightClick`'s condition for `setItemInUse`: `canEat`, the canteen's
+/// cooldown, the bottle opener. A client runs the same test to predict the
+/// pose; only the server edits items.
 pub(super) fn start(game: &mut Game<'_>, stack: &ItemStack, canceled: &mut bool) {
-    if item_hooks::use_spec(&stack.item).is_none() {
+    let Some(spec) = item_hooks::use_spec(&stack.item) else {
+        return;
+    };
+    let food = game.player.as_ref().map_or(20, |p| p.health.food.food);
+    let has_required = spec.requires.as_deref().is_none_or(|id| {
+        game.inventory
+            .iter()
+            .chain(game.armor.iter())
+            .flatten()
+            .any(|s| &*s.item == id)
+    });
+    if !spec.may_start(game.creative, food, stack.damage, has_required) {
+        *canceled = true;
         return;
     }
     // Prediction only starts a pose. Inventory/effects commit on the server.
@@ -210,11 +225,17 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     let Some(expected) = game.native_player_snapshot(&STATE) else {
         return false;
     };
+    let creative = game.creative;
     let mut desired = expected.clone();
     // Only what touches the dose or the sickness timer needs the dose seed of
     // the legacy mirror (the server exists after its first tick); food, effects
     // and equipment do not wait for it.
-    if spec.radaway > 0 || spec.cooldown > 0 {
+    let dose = spec
+        .dose
+        .as_ref()
+        .filter(|d| d.creative || !creative)
+        .map(|d| d.millirad);
+    if spec.radaway > 0 || spec.cooldown > 0 || dose.is_some() {
         let Some(seed) = legacy(game) else {
             return false;
         };
@@ -231,26 +252,43 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     if slot.as_ref() != Some(stack) {
         return false;
     }
-    let mut rest = stack.clone();
-    rest.count -= 1;
-    *slot = (rest.count > 0).then_some(rest);
-    let emptied = slot.is_none();
-    if let Some(id) = spec.container {
-        let container = ItemStack::new(id, 1);
-        if emptied && spec.container_in_place {
-            *slot = Some(container);
-        } else {
-            // Java drops what does not fit; the emptied slot is still taken.
-            let reserved = (emptied && held_slot != crate::game::shield::OFFHAND_SLOT)
-                .then_some(held_slot);
-            // `tryAddItem`: `dropPlayerItemWithRandomChoice(container, false)`.
-            drops.extend(
-                add_stack(game, &mut desired.inventory, container, reserved)
-                    .map(|d| NativeDrop::new(d, NativeDropMode::Thrown)),
-            );
+    let mut emptied = false;
+    if spec.consumes(creative) {
+        let mut rest = stack.clone();
+        rest.count -= 1;
+        *slot = (rest.count > 0).then_some(rest);
+        emptied = slot.is_none();
+    } else if spec.consume == item_hooks::Consume::SetDamage {
+        if let Some(s) = slot.as_mut() {
+            s.damage = spec.set_damage;
         }
     }
-    if &*stack.item == "ntm:hazmat_kit" {
+    // Returned items, in the order the Java adds them. A replaced slot is the
+    // used-up stack's own; otherwise the emptied slot is still taken while
+    // the item runs, so it is not free for the next one.
+    let mut replaced = false;
+    for give in &spec.gives {
+        if creative && !give.creative {
+            continue;
+        }
+        let item = ItemStack::new(&give.item, give.count);
+        if give.replace && emptied && !replaced {
+            let Some(slot) = held(&mut desired, held_slot) else {
+                return false;
+            };
+            *slot = Some(item);
+            replaced = true;
+            continue;
+        }
+        let reserved = (emptied && !replaced && held_slot != crate::game::shield::OFFHAND_SLOT)
+            .then_some(held_slot);
+        if let Some(rest) = add_stack(game, &mut desired.inventory, item, reserved)
+            && give.overflow == item_hooks::Overflow::Thrown
+        {
+            drops.push(NativeDrop::new(rest, NativeDropMode::Thrown));
+        }
+    }
+    if spec.special.as_deref() == Some("hazmat_kit") {
         // ItemStarterKit.giveHaz: `world.spawnEntityInWorld(new EntityItem(world,
         // posX, posY + eyeHeight, posZ, armor))`. It sets no pickup delay, so the
         // field's default of 0 stands, and no thrower.
@@ -275,15 +313,22 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         let remaining = number(&desired.state, "radaway").saturating_add(u64::from(spec.radaway));
         set(&mut desired.state, "radaway", remaining);
     }
+    if let Some(millirad) = dose {
+        // `incrementRadiation` clamps the dose to 0..2500 RAD.
+        let now = number(&desired.state, "dose") as i64;
+        let next = now.saturating_add(millirad).clamp(0, ntm_core::radiation::MAX_DOSE as i64);
+        set(&mut desired.state, "dose", next as u64);
+    }
     if spec.cooldown > 0 {
         set(&mut desired.state, "sickness", spec.cooldown as u64);
     }
     let benefits = NativePlayerBenefits {
-        food: spec.food,
+        food: spec.food_stats(),
+        heal: spec.heal,
         effects: spec
             .effects
             .iter()
-            .map(|e| (e.id.into(), e.ticks, e.amplifier))
+            .map(|e| (e.id.clone(), e.ticks, e.amplifier))
             .collect(),
         cooldown: (spec.cooldown > 0).then(|| (stack.item.to_string(), spec.cooldown)),
         drops,
@@ -292,8 +337,70 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     let applied = game.native_commit_player(&STATE, &expected, desired, benefits);
     if applied {
         trace(game, "use", &stack.item);
+        if let Some(sound) = spec.sound.as_deref() {
+            play(game, sound);
+        }
+        if spec.special.as_deref() == Some("chocolate_milk_blast") {
+            chocolate_milk_blast(game);
+        }
     }
     applied
+}
+
+/// Plays the vanilla event that stands for a Java sound, at the player, as
+/// `playSoundAtEntity` does.
+fn play(game: &mut Game<'_>, java: &str) {
+    let Some(sound) = ntm_core::consumables::sound(java) else {
+        return;
+    };
+    let Some(p) = game.player.as_ref() else {
+        return;
+    };
+    let at = [p.position.x, p.position.y, p.position.z];
+    let Some(source) = horizon_client::settings::SOUND_SOURCES
+        .iter()
+        .position(|s| *s == "player")
+    else {
+        return;
+    };
+    let pitch = sound.pitch + random(game) * sound.spread;
+    game.with_level(|_, level, _| level.native_play_sound(sound.event, at, source, sound.volume, pitch));
+}
+
+/// A uniform number in `[0, 1)` (`Random.nextFloat`) from a splitmix of the
+/// clock and the world tick: the items need chance, not a reproducible stream.
+fn random(game: &Game<'_>) -> f32 {
+    use std::sync::atomic::{AtomicU64, Ordering};
+    static COUNTER: AtomicU64 = AtomicU64::new(0x9E37_79B9_7F4A_7C15);
+    let nanos = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_or(0, |d| d.subsec_nanos() as u64);
+    let mut z = COUNTER
+        .fetch_add(0x9E37_79B9_7F4A_7C15, Ordering::Relaxed)
+        .wrapping_add(nanos ^ (game.world.game_time as u64).rotate_left(32));
+    z = (z ^ (z >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
+    z = (z ^ (z >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
+    z ^= z >> 31;
+    (z >> 40) as f32 / (1u64 << 24) as f32
+}
+
+/// `ItemEnergy.onEaten` for chocolate milk: `ExplosionVNT(50)` at the
+/// player's middle. The engine's blast stops at radius 32
+/// (`NATIVE_EXPLOSION_MAX_RADIUS`) and has no VNT block/entity processors,
+/// so this is the vanilla-rule blast at the cap; see docs/content-catalogo-k2.md.
+fn chocolate_milk_blast(game: &mut Game<'_>) {
+    let Some(p) = game.player.as_ref() else {
+        return;
+    };
+    let center = [p.position.x, p.position.y + f64::from(p.dimensions.height) / 2.0, p.position.z];
+    let dimension = game.dim.id();
+    game.native_explode(
+        dimension,
+        center,
+        32.0,
+        false,
+        crate::game::native_explosions::NativeBlast::Block,
+    );
 }
 
 pub(super) fn tick(game: &mut Game<'_>) {
@@ -314,6 +421,18 @@ pub(super) fn tick(game: &mut Game<'_>) {
     let sickness = number(&desired.state, "sickness");
     if sickness > 0 {
         set(&mut desired.state, "sickness", sickness - 1);
+    }
+    // `ItemCanteen.onUpdate`: every second its damage (the cooldown) drops by
+    // one, for each canteen in the main inventory.
+    if game.world.game_time % 20 == 0 {
+        for s in desired.inventory.iter_mut().flatten() {
+            if s.damage > 0
+                && item_hooks::use_spec(&s.item)
+                    .is_some_and(|u| u.consume == item_hooks::Consume::SetDamage)
+            {
+                s.damage -= 1;
+            }
+        }
     }
     if desired != expected {
         game.native_commit_player(&STATE, &expected, desired, Default::default());

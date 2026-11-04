@@ -1,99 +1,7 @@
-//! Item-family contracts, independent of the native host. Values are from
-//! ItemCottonCandy, ItemSyringe, ItemStarterKit and HazmatRegistry in Java.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Animation {
-    Eat,
-    Drink,
-    Inject,
-    Smoke,
-    None,
-}
-#[derive(Clone, Copy, Debug)]
-pub struct Effect {
-    pub id: &'static str,
-    pub ticks: i32,
-    pub amplifier: u8,
-}
-#[derive(Clone, Debug)]
-pub struct UseSpec {
-    pub ticks: i32,
-    pub animation: Animation,
-    pub food: Option<(i32, f32)>,
-    pub effects: &'static [Effect],
-    pub container: Option<&'static str>,
-    /// ItemSyringe returns the container as the used-up stack itself; the
-    /// others add it to the inventory while the emptied slot is still taken.
-    pub container_in_place: bool,
-    pub radaway: u32,
-    pub cooldown: i32,
-}
-
-/// A missing definition is inert; the rest of K2 remains for wave 1.
-pub fn use_spec(id: &str) -> Option<UseSpec> {
-    let mut spec = UseSpec {
-        ticks: 0,
-        animation: Animation::None,
-        food: None,
-        effects: &[],
-        container: None,
-        container_in_place: false,
-        radaway: 0,
-        cooldown: 0,
-    };
-    match id {
-        "ntm:cotton_candy" => {
-            spec.ticks = 32;
-            spec.animation = Animation::Eat;
-            spec.food = Some((5, 0.6));
-            spec.effects = &[
-                Effect {
-                    id: "poison",
-                    ticks: 300,
-                    amplifier: 0,
-                },
-                Effect {
-                    id: "wither",
-                    ticks: 100,
-                    amplifier: 0,
-                },
-                Effect {
-                    id: "weakness",
-                    ticks: 500,
-                    amplifier: 2,
-                },
-                Effect {
-                    id: "speed",
-                    ticks: 500,
-                    amplifier: 2,
-                },
-                Effect {
-                    id: "resistance",
-                    ticks: 600,
-                    amplifier: 4,
-                },
-            ];
-        }
-        "ntm:syringe_metal_medx" => {
-            // Java injects immediately. Duration is a per-family API choice,
-            // not a fabricated animation added to this Java item.
-            spec.effects = &[Effect {
-                id: "resistance",
-                ticks: 4800,
-                amplifier: 2,
-            }];
-            spec.container = Some("ntm:syringe_metal_empty");
-            spec.container_in_place = true;
-            // PotionConfig defaults to OFF; do not invent potion sickness.
-        }
-        "ntm:radaway" => {
-            spec.radaway = 140;
-            spec.container = Some("ntm:iv_empty");
-        }
-        "ntm:hazmat_kit" => {}
-        _ => return None,
-    }
-    Some(spec)
-}
+//! Item-family contracts, independent of the native host. The use table is
+//! `consumables`; the hazard and gas-mask rules (HazmatRegistry, ArmorUtil)
+//! are here.
+pub use crate::consumables::{Animation, Consume, Effect, Gate, Give, Overflow, UseSpec, use_spec};
 
 /// All stack hazards use one endpoint interpolation. Reject non-finite state
 /// rather than allowing NaN to erase a hazard. Values outside the life range
@@ -164,19 +72,6 @@ pub fn filter_protects(mask: &str, filter: &str, hazard: Hazard) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    /// ItemSyringe hands back its container as the used-up stack; RadAway
-    /// adds the container to the inventory while the emptied slot is taken.
-    #[test]
-    fn container_placement_follows_each_java_item() {
-        let medx = use_spec("ntm:syringe_metal_medx").unwrap();
-        assert_eq!(medx.container, Some("ntm:syringe_metal_empty"));
-        assert!(medx.container_in_place);
-        let radaway = use_spec("ntm:radaway").unwrap();
-        assert_eq!(radaway.container, Some("ntm:iv_empty"));
-        assert!(!radaway.container_in_place);
-        assert_eq!(use_spec("ntm:cotton_candy").unwrap().container, None);
-        assert_eq!(use_spec("ntm:hazmat_kit").unwrap().container, None);
-    }
     #[test]
     fn life_endpoints_and_invalid_state() {
         assert_eq!(interpolate(20., 4., 100., 100.), Some(20.));
