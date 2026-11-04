@@ -67,6 +67,13 @@ pub trait ServerHost: Kv {
     /// Atomic structural publication plus retained, lossless old-BE drops.
     /// Unsupported hosts refuse; there is no partial setter fallback.
     fn commit_structural(&mut self,_cells:&[CellWrite],_drops:&[RetainedDrop],_owners:&[(String,Pos)])->bool{false}
+    /// Puts the items of the effect `id` into the world exactly once: the host's ledger remembers the id, so
+    /// applying the same effect again (a replay after a crash) adds nothing. Hosts without a ledger just drop.
+    fn apply_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[(String,u32)])->bool{self.drop_items(dim,pos,items)}
+    /// `apply_items` for lossless item NBT.
+    fn apply_encoded_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[String])->bool{self.drop_encoded_items(dim,pos,items)}
+    /// The ids of every effect the storage still names: a ledger may forget the retired ones not listed.
+    fn ledger_prune(&mut self,_live:&std::collections::BTreeSet<u64>){}
     /// A pile's formation: the cells' new block entities with their first state,
     /// and the held drill's wear when `wear_held`, published in one step. Refusal
     /// changes nothing, the tool included. Defaults to the structural commit,

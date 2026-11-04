@@ -34,6 +34,9 @@ pub struct Kept {
     pub zirnox: crate::zirnox::Remnants,
     #[serde(default)]
     pub ticks: u64,
+    /// Batches of effects named so far (`CommittedEffects::serial`).
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub effect_serial: u64,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub removals:Vec<Removal>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -46,10 +49,15 @@ pub struct Kept {
     pub prepared_retentions:std::collections::VecDeque<crate::server::PreparedRetention>,
 }
 
+fn is_zero(n: &u64) -> bool {
+    *n == 0
+}
+
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct WorldState {
     /// Ticks played in this world.
     pub ticks: u64,
+    pub effect_serial: u64,
     pub removals:Vec<Removal>,
     pub generations:BTreeMap<(String,Pos),u64>,
     pub machine_effects:std::collections::VecDeque<crate::server::CommittedEffects>,
@@ -79,6 +87,7 @@ impl WorldState {
             bombs: kept.bombs,
             zirnox: kept.zirnox,
             ticks: kept.ticks,
+            effect_serial: kept.effect_serial,
             machine_effects,
             ..WorldState::default()
         }
@@ -91,6 +100,7 @@ impl WorldState {
             bombs: self.bombs.clone(),
             zirnox: self.zirnox.clone(),
             ticks,
+            effect_serial: self.effect_serial,
             removals:self.removals.clone(),
             generations:self.generations.iter().map(|(k,g)|(k.clone(),*g)).collect(),
             machine_effects:self.machine_effects.clone(),

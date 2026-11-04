@@ -1,0 +1,193 @@
+//! The ledger of what machines owe the world, kept in the record of the chunk of the cell that owes it.
+//!
+//! An effect that puts items into the world (a pile's ejected rods, a consumed block entity's retained
+//! contents) used to wait in the host's separate storage until a world save was confirmed, so a crash
+//! between the two files could drop it twice or never. The items now move, in the very step that takes
+//! them out of the machine, into the ledger of the chunk the machine stands in. That chunk's record is
+//! written whole, so the block entity and the debt are always written together.
+//!
+//! Each entry has an `id` that never changes: the id of the effect that created it. Applying an effect
+//! twice, as a replay after a crash does, finds the id and adds nothing. Spawning an entry's items
+//! makes it `Spawned`; it is retired when its item entities are gone (picked up, merged, burnt), in the
+//! same step as the world sees that. The retired id stays in `applied` until the host's storage no
+//! longer names the effect, because only then can no replay bring it back.
+
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeSet;
+
+/// FNV-1a over 64 bits: the ids are derived, never drawn.
+pub fn fnv(parts: &[&[u8]]) -> u64 {
+    let mut h: u64 = 0xcbf2_9ce4_8422_2325;
+    for part in parts {
+        for b in part.iter().chain(&[0xffu8]) {
+            h ^= u64::from(*b);
+            h = h.wrapping_mul(0x0000_0100_0000_01b3);
+        }
+    }
+    h
+}
+
+/// The id of the `done`-th effect of the batch named `serial`.
+pub fn effect_id(serial: u64, done: u32) -> u64 {
+    fnv(&[b"effect", &serial.to_le_bytes(), &done.to_le_bytes()])
+}
+
+/// The id of the contents retained from the cell `(dim, pos)` as it stood in `generation`: a cell is
+/// consumed once per generation, so this names that one retention for ever.
+pub fn retained_id(dim: &str, pos: [i32; 3], generation: u64) -> u64 {
+    let mut p = Vec::new();
+    for v in pos {
+        p.extend_from_slice(&v.to_le_bytes());
+    }
+    fnv(&[b"retained", dim.as_bytes(), &p, &generation.to_le_bytes()])
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum State {
+    /// Owed, not yet in the world.
+    #[default]
+    Pending,
+    /// Its item entities were created; they are the debt now.
+    Spawned,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Entry {
+    #[serde(with = "hex")]
+    pub id: u64,
+    /// Where the items appear (a cell of the chunk).
+    pub at: [i32; 3],
+    /// The item stacks as SNBT, lossless.
+    pub items: Vec<String>,
+    #[serde(default)]
+    pub state: State,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ChunkLedger {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub entries: Vec<Entry>,
+    /// Ids whose effect was applied and is retired, kept until the host's storage forgets the effect.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty", with = "hex_set")]
+    pub applied: BTreeSet<u64>,
+}
+
+impl ChunkLedger {
+    pub fn is_empty(&self) -> bool {
+        self.entries.is_empty() && self.applied.is_empty()
+    }
+    pub fn knows(&self, id: u64) -> bool {
+        self.applied.contains(&id) || self.entries.iter().any(|e| e.id == id)
+    }
+    /// Owes `items` at `at` for the effect `id`; false (nothing added) when the effect is already here,
+    /// pending, spawned or retired.
+    pub fn apply(&mut self, id: u64, at: [i32; 3], items: Vec<String>) -> bool {
+        if self.knows(id) {
+            return false;
+        }
+        if !items.is_empty() {
+            self.entries.push(Entry { id, at, items, state: State::Pending });
+        } else {
+            self.applied.insert(id);
+        }
+        true
+    }
+    pub fn mark_spawned(&mut self, id: u64) {
+        if let Some(e) = self.entries.iter_mut().find(|e| e.id == id) {
+            e.state = State::Spawned;
+        }
+    }
+    /// The entry is paid: its id moves to `applied`.
+    pub fn retire(&mut self, id: u64) {
+        if let Some(i) = self.entries.iter().position(|e| e.id == id) {
+            self.entries.remove(i);
+            self.applied.insert(id);
+        }
+    }
+    /// Forgets the retired ids the host's storage no longer names. Returns whether any went.
+    pub fn prune(&mut self, live: &BTreeSet<u64>) -> bool {
+        let before = self.applied.len();
+        self.applied.retain(|id| live.contains(id));
+        self.applied.len() != before
+    }
+    pub fn to_json(&self) -> String {
+        serde_json::to_string(self).unwrap_or_default()
+    }
+    pub fn from_json(text: &str) -> Self {
+        serde_json::from_str(text).unwrap_or_default()
+    }
+}
+
+mod hex {
+    use serde::{Deserialize, Deserializer, Serializer};
+    pub fn serialize<S: Serializer>(v: &u64, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_str(&format!("{v:016x}"))
+    }
+    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<u64, D::Error> {
+        let text = String::deserialize(d)?;
+        u64::from_str_radix(&text, 16).map_err(serde::de::Error::custom)
+    }
+}
+
+mod hex_set {
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+    use std::collections::BTreeSet;
+    pub fn serialize<S: Serializer>(v: &BTreeSet<u64>, s: S) -> Result<S::Ok, S::Error> {
+        v.iter().map(|v| format!("{v:016x}")).collect::<Vec<_>>().serialize(s)
+    }
+    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<BTreeSet<u64>, D::Error> {
+        Vec::<String>::deserialize(d)?
+            .into_iter()
+            .map(|t| u64::from_str_radix(&t, 16).map_err(serde::de::Error::custom))
+            .collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn an_effect_applied_twice_is_owed_once() {
+        let mut ledger = ChunkLedger::default();
+        let id = effect_id(7, 0);
+        assert!(ledger.apply(id, [1, 64, 2], vec!["{id:\"a\",count:1}".into()]));
+        // A replay after a crash finds it pending, then spawned, then retired.
+        assert!(!ledger.apply(id, [1, 64, 2], vec!["{id:\"a\",count:1}".into()]));
+        ledger.mark_spawned(id);
+        assert!(!ledger.apply(id, [1, 64, 2], vec!["x".into()]));
+        ledger.retire(id);
+        assert!(ledger.entries.is_empty() && ledger.applied.contains(&id));
+        assert!(!ledger.apply(id, [1, 64, 2], vec!["x".into()]));
+        assert!(ledger.entries.is_empty(), "nothing came back");
+    }
+
+    #[test]
+    fn identical_effects_of_one_batch_have_their_own_ids_and_a_source_has_one() {
+        let ids: BTreeSet<u64> = (0..50u32).map(|n| effect_id(1, n)).chain((0..50u32).map(|n| effect_id(2, n))).collect();
+        assert_eq!(ids.len(), 100);
+        assert_eq!(retained_id("minecraft:overworld", [3, 64, -4], 5), retained_id("minecraft:overworld", [3, 64, -4], 5));
+        assert_ne!(retained_id("minecraft:overworld", [3, 64, -4], 5), retained_id("minecraft:overworld", [3, 64, -4], 6));
+        assert_ne!(retained_id("minecraft:overworld", [3, 64, -4], 5), retained_id("minecraft:the_nether", [3, 64, -4], 5));
+    }
+
+    #[test]
+    fn the_ledger_round_trips_and_forgets_only_what_storage_no_longer_names() {
+        let mut ledger = ChunkLedger::default();
+        let (a, b, c) = (effect_id(1, 0), effect_id(1, 1), effect_id(1, 2));
+        ledger.apply(a, [0, 0, 0], vec!["a".into()]);
+        ledger.apply(b, [0, 0, 0], vec!["b".into()]);
+        ledger.apply(c, [0, 0, 0], vec![]);
+        ledger.mark_spawned(a);
+        ledger.retire(b);
+        let back = ChunkLedger::from_json(&ledger.to_json());
+        assert_eq!(back, ledger);
+        assert_eq!(back.entries.len(), 1);
+        assert_eq!(back.entries[0].state, State::Spawned);
+        let mut pruned = back;
+        assert!(pruned.prune(&BTreeSet::from([b])));
+        assert_eq!(pruned.applied, BTreeSet::from([b]));
+        assert!(!pruned.prune(&BTreeSet::from([b])));
+        assert_eq!(ChunkLedger::from_json("not json"), ChunkLedger::default());
+    }
+}
