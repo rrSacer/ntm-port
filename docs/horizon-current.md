@@ -550,7 +550,7 @@ A explosão (`native_explode`, potência 15) custa pouco. O tick ficava em 8 a 1
 | Servidor bloqueado em `rename` | 22,7 s | 1,9 s |
 | Gravações no tick da varredura (teste de unidade) | 125 (134,8 MB) | ≤ 3 |
 
-Limite: ficam ~12 gravações por meltdown vindas de outros caminhos (`checkpoint_facts`, `keep_world`); a CPU restante (~0,2 s no tick do estouro) não foi comparada com uma explosão vanilla de mesma potência.
+Limite: ficam ~12 gravações por meltdown vindas de outros caminhos do diário, não investigados; a CPU restante (~0,2 s no tick do estouro) não foi comparada com uma explosão vanilla de mesma potência.
 
 ### Validação
 
