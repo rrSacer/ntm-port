@@ -9,7 +9,7 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
 - Upstream incorporado: `fc02103818c212920fd24aa34a2b2f91ba49e56f` (snapshot congelado de 03/11/2026).
-- Motor de integração (pin): `424e69a9b9ef2fbb18b3d7e76bf95463b48404d1`.
+- Motor de integração (pin): `f22df7b8127ae90f2cbd66dcfe5f58be70a9032b`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
   `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
@@ -576,7 +576,7 @@ Sem mudança no motor (pin `0615f5db0`). O que o NTM ganhou e onde está documen
 ## Sons próprios do HBM — 04/11/2026
 
 Base NTM rebaseada sobre `main` `9f11740a` (inclui consumíveis K2). Motor local
-`424e69a9b9ef2fbb18b3d7e76bf95463b48404d1`, derivado de `0615f5db0`;
+`f22df7b8127ae90f2cbd66dcfe5f58be70a9032b`, derivado de `0615f5db0`;
 upstream congelado `fc0210381`, sem mudança do protocolo. Pins em
 `compatibility.json` e `horizon-mixin.toml` atualizados juntos.
 
@@ -586,6 +586,7 @@ upstream congelado `fc0210381`, sem mudança do protocolo. Pins em
 | `BlockProperties::door_sounds` | Loader de conteúdo e templates de `SetType` | Escolher eventos de interação open/close para uma porta declarada por um mod; validação de namespace e restrição a portas. |
 | Categoria por caminho de qualquer namespace em `settings::sound_source` | Canais/categorias oficiais do áudio | O teste anterior só removia o prefixo minecraft e tratava `ntm:block.*` como master. |
 | `HORIZON_TRACE_SOUNDS` opt-in, com filtro de namespace | `SoundRegistry` e decoder Ogg oficiais | Provar no log resolução para arquivo real do mod e decodificação, sem mudar o RNG normal. |
+| `HORIZON_AUDIO_TEST_MIXER=1` opt-in | Mixer/decoder e control socket oficiais | Exercitar canais e PCM reais sem hardware; expor cursores, ganho/pitch e histórico de ciclo de vida só no modo diagnóstico. |
 
 Carregamento de `assets/ntm/sounds.json`, Ogg, pesos, variantes, referências,
 volume/pitch, stream, atenuação e subtitles já é oficial; não foi criado outro
@@ -596,16 +597,26 @@ oficiais. Detalhes, inventário Java gerado, licenças e limites em
 qubodup creditado no próprio pacote. `entity.vomit` permanece silencioso como no
 original, sem alias para player.vomit.
 
-Validação final deste lote registrada no artifact `sons-hbm`; suíte NTM após K2:
-450 unidades + 26 testes de integração = 476 aprovados, 2 doctests ignorados;
-Clippy workspace/all-targets com `-D warnings`, sem isenções.
+Validação após revisão: 452 unidades + 26 integrações = 478 aprovados, 2 doctests
+ignorados; Clippy NTM workspace/all-targets com `-D warnings`, sem isenções.
+Python: 258 contratos de conteúdo + 8 do conversor/guarda de áudio. Motor: 19
+testes de backend + 8 SoundEngine; Clippy do motor/bundle lib/bins/tests passou.
+O limite preexistente do exemplo no all-targets adicional continua documentado.
 
-Regressão final dos sons: 18/18 relatórios aprovados, 954 verificações registradas,
-incluindo items/K2 e dims com idle/idle-clean. Código NTM validado `c3cc9c35`;
-binário SHA-256 `d47faef42b372d51ef998f266fabc0b8fcc77dabcfbf588b312b8f9e7f2b9199`;
+R1/R2/R4/R5: splash exclusivo do Well, ID de upgrade `machine_well`, spin industrial
+anterior ao débito e guarda de licença por todos os campos corrigidos. A guarda
+recusa negações/conflitos e só excepciona o aviso conhecido do próprio GoldWave.
+
+`HORIZON_AUDIO_TEST_MIXER=1` mantém o mixer/decoder reais ativos sem abrir hardware,
+com canais, PCM, cursor, ganho, pitch e histórico stop/destroy no status. Esse é um
+modo diagnóstico opt-in; `HORIZON_NO_AUDIO=1` permanece nos testes. A prova pelo
+dono NTM passou 68 verificações. O handle nuclear agora para e libera ao fechar ou
+trocar o mundo. A porta produz 2 traces de resolução, mas 1 canal da janela e 1
+transição por interação; o teste distingue essas cardinalidades. LAN com dois
+clientes continua na onda 7.
+
+Release de aceitação: código NTM `4771ab2b`, motor `f22df7b81`;
+binário SHA-256 `aac79a3bec5e21a40eba1139b075abbc3bdb109dbea6a2659b1132201e51bc76`;
 pacote SHA-256 `9ab18eacc7e9e1573d18439d3d675191eb9aaaa43a949300bd7dfe36a3cee0aa`.
-A retomada após queda de energia preservou apenas os cinco cenários concluídos,
-conferiu os hashes e executou o restante no mesmo release. Inventory-proxy usa a
-fixture oficial com o mesmo binário. Python: 258 contratos de conteúdo + 5 de áudio;
-motor: 148 testes. Clippy do motor/bundle lib/bins/tests com `-D warnings` passou;
-o limite do exemplo preexistente no all-targets adicional está em [sons-hbm.md](sons-hbm.md).
+A nova regressão integral ainda está em andamento em `proofs-review-v4`; os jogos
+e a prova ativa usam o mesmo release. Detalhes em [sons-hbm.md](sons-hbm.md).
