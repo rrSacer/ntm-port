@@ -56,6 +56,33 @@ NTM: 450 unidades + 26 integrações = 476 aprovados (2 doctests ignorados); Cli
 
 Release congelado para a aceitação: código NTM `c3cc9c35b9c69d7fd8783a58f483d7976d6fa84e`, motor `424e69a9b9ef2fbb18b3d7e76bf95463b48404d1`. Binário SHA-256 `d47faef42b372d51ef998f266fabc0b8fcc77dabcfbf588b312b8f9e7f2b9199`; pacote `9ab18eacc7e9e1573d18439d3d675191eb9aaaa43a949300bd7dfe36a3cee0aa` (15.233.481 bytes). A suíte, o Clippy e o build release terminaram com sucesso antes de iniciar essa rodada. Nenhuma reconstrução ocorre durante a regressão.
 
-A rodada final em `.agent-tmp/sons/proofs-final-v2` ainda está em andamento. A prova de áudio passou com 13 verificações: explosão, prensa, Geiger 1/6, explosão nuclear com `stream=true`, abertura/fechamento de porta e loop real de motor diesel. O log registra `sound resolved ... file=.../assets/ntm/sounds/... decoded=Some(...)`; a remoção da máquina reduz suas instâncias de 1 para 0. `items` passou com 204 verificações (187 setup, 10 captura, 7 reabertura), incluindo os sons K2. O resumo de aceitação e os relatórios individuais registram os hashes; o cenário inventory-proxy usa sua fixture de conteúdo oficial, mantendo o mesmo binário.
+A rodada final em `.agent-tmp/sons/proofs-final-v2` terminou com **18/18 relatórios aprovados e 954 verificações registradas**. O driver executou os 16 cenários CLI com exit code 0; dimensões também gera os dois relatórios idle em mundos próprios. `accepted-regression.json` confere o hash do binário em todos os relatórios e o pacote NTM em 17 deles. Inventory-proxy usa sua fixture oficial (`cde4e002e3acece9417d207217799937fd490f7b7ec29895fb8c75613093cd1e`) com o mesmo binário.
 
-Os jogos são descartáveis e usam `HORIZON_NO_AUDIO=1`; a prova comprova resolução e decodificação, sem alegar escuta física em um dispositivo. O ambiente gráfico registra aviso de indisponibilidade de antialiasing temporal, independente das verificações de áudio. A regressão integral só será declarada aprovada depois dos 18 relatórios finais.
+| Cenário | Verificações registradas |
+| --- | ---: |
+| sounds | 13 |
+| items | 204 |
+| mining | 18 |
+| bombs | 49 |
+| zirnox | 136 |
+| pile | 85 |
+| pile-meltdown | 32 |
+| dims | 14 |
+| dims-idle | 2 |
+| dims-idle-clean | 1 |
+| inventory-proxy | 12 |
+| radioisotopes | 67 |
+| solar | 36 |
+| combustion | 15 |
+| catalog | 251 |
+| comparator | 9 |
+| stations | 5 |
+| recipes | 5 |
+
+Em recipes, o JSON final contém as cinco verificações da bigorna; a fase anterior da montadora também terminou com sucesso no mesmo roteiro. As 954 verificações são a soma dos JSONs finais preservados.
+
+A prova de áudio passou com 13 verificações: explosão, prensa, Geiger 1/6, explosão nuclear com `stream=true`, abertura/fechamento de porta e loop real de motor diesel. O log registra `sound resolved ... file=.../assets/ntm/sounds/... decoded=Some(...)`; a remoção da máquina reduz suas instâncias de 1 para 0. `items` passou com 204 verificações (187 setup, 10 captura, 7 reabertura), incluindo os sons K2. Os logs, JSONs e capturas ficam junto de cada `report.json` na raiz de evidências.
+
+A queda de energia interrompeu a fila antes da criação do mundo da pile. Após o reinício, os hashes integrais foram conferidos; somente sounds, items, mining, bombs e ZIRNOX, com relatórios e JSONs completos e aprovados, foram conservados. O log de fila interrompido foi separado em `power-loss-pile-queued.log`, e a decisão ficou em `power-loss.json`. A retomada começou da pile, em mundo novo, e conferiu os hashes antes de cada cenário restante, sem reconstruir o release. Não há relatório falho ou parcial aceito na rodada final.
+
+Os jogos são descartáveis e usam `HORIZON_NO_AUDIO=1`; a prova comprova resolução e decodificação, sem alegar escuta física em um dispositivo. O ambiente gráfico registra aviso de indisponibilidade de antialiasing temporal, independente das verificações de áudio.

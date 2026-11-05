@@ -599,3 +599,13 @@ original, sem alias para player.vomit.
 Validação final deste lote registrada no artifact `sons-hbm`; suíte NTM após K2:
 450 unidades + 26 testes de integração = 476 aprovados, 2 doctests ignorados;
 Clippy workspace/all-targets com `-D warnings`, sem isenções.
+
+Regressão final dos sons: 18/18 relatórios aprovados, 954 verificações registradas,
+incluindo items/K2 e dims com idle/idle-clean. Código NTM validado `c3cc9c35`;
+binário SHA-256 `d47faef42b372d51ef998f266fabc0b8fcc77dabcfbf588b312b8f9e7f2b9199`;
+pacote SHA-256 `9ab18eacc7e9e1573d18439d3d675191eb9aaaa43a949300bd7dfe36a3cee0aa`.
+A retomada após queda de energia preservou apenas os cinco cenários concluídos,
+conferiu os hashes e executou o restante no mesmo release. Inventory-proxy usa a
+fixture oficial com o mesmo binário. Python: 258 contratos de conteúdo + 5 de áudio;
+motor: 148 testes. Clippy do motor/bundle lib/bins/tests com `-D warnings` passou;
+o limite do exemplo preexistente no all-targets adicional está em [sons-hbm.md](sons-hbm.md).
