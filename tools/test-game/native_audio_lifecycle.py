@@ -157,12 +157,15 @@ def door(g):
     g.command('clear @s'); g.command('tp @s 22.5 100 11.5')
     for action, state in [('open', 'true'), ('close', 'false')]:
         before = max((e['seq'] for e in audio(g)['audit']), default=0)
+        log_offset = len((g.folder/'client-first.log').read_text(errors='replace'))
         g.ctl('interact 20 100 8')
         def starts():
             return [e for e in audio(g)['audit'] if e['seq'] > before and e['action'] == 'start' and (e['file'] or '').startswith('ntm:sounds/block/door_open_')]
-        wait(g, 'two_channels_per_' + action, lambda v: len(v) == 2, starts)
+        wait(g, 'one_active_channel_per_' + action, lambda v: len(v) == 1, starts)
         time.sleep(.5)
-        g.check('exactly_two_requests_per_' + action, len(starts()) == 2, starts())
+        g.check('exactly_one_backend_start_per_' + action, len(starts()) == 1, starts())
+        traces = [line for line in (g.folder/'client-first.log').read_text(errors='replace')[log_offset:].splitlines() if 'sound resolved event=ntm:block.opendoor ' in line]
+        g.check('two_resolution_traces_are_not_two_channels_' + action, len(traces) == 2 and len(starts()) == 1, {'traces': traces, 'starts': starts()})
         block = g.ctl('block 20 100 8')
         g.check('one_state_transition_per_' + action, f'open={state}' in block.get('state', ''), block)
         await_destroy(g, {e['channel'] for e in starts()}, 'door_channels_finish_' + action)
