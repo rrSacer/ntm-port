@@ -1,5 +1,6 @@
 """T00: replay real Java, verify provenance, numerical boundaries and catalog conservation."""
 import json
+from collections import Counter
 import os
 from pathlib import Path
 import re
@@ -112,11 +113,46 @@ class ExecutableRbmkOracle(unittest.TestCase):
         for rod in self.exported['rods']:
             observed = next(r for r in self.live['rods'] if r['variable'] == rod['variable'])
             self.assertTrue(all(observed[k] == v for k, v in rod.items() if k != 'pellet_item'))
-        for exported, observed in (('silex_recipes', 'silex_registered'), ('outgasser_recipes', 'outgasser_defaults')):
+        for exported, observed in (('silex_recipes', 'silex_registered'), ('silex_aliases', 'silex_aliases'), ('outgasser_recipes', 'outgasser_defaults')):
             self.assertEqual(self.exported[exported], self.live['recipes'][observed])
         self.assertEqual(self.exported['burn_formulas']['LOG_TEN'], 'Math.log10(flux + 1) * 0.5D * reactivity')
         self.assertEqual(self.exported['burn_formulas']['LINEAR'], 'flux / 100D * reactivity')
         self.assertEqual(self.exported['burn_formulas']['QUADRATIC'], 'flux * flux / 10000D * reactivity')
+
+    def test_silex_translation_maps_and_real_alias_probes(self):
+        aliases = self.live['recipes']['silex_aliases']
+        translations = {(r['from']['stack']['item'], r['from']['stack']['meta']):
+                        (r['to']['stack']['item'], r['to']['stack']['meta']) for r in aliases['item_translation']}
+        self.assertEqual(translations, {
+            ('fluid_icon', 29): ('ingot_uranium', 0),
+            ('fluid_icon', 30): ('ingot_plutonium', 0),
+            ('powder_australium', 0): ('ingot_australium', 0),
+            ('powder_lapis', 0): ('minecraft_1_7_10:dye', 4)})
+        self.assertEqual({r['from']: r['to'] for r in aliases['dict_translation']},
+                         {'dustUranium': 'ingotUranium', 'dustPlutonium': 'ingotPlutonium'})
+        self.assertEqual(aliases['all_ingredients_count'], 301)
+        expected = [r['input'] for r in self.live['recipes']['silex_registered']]
+        expected += [r['from'] for r in aliases['item_translation']]
+        expected += [{'ore': r['from']} for r in aliases['dict_translation']]
+        key = lambda value: json.dumps(value, sort_keys=True)
+        self.assertEqual(Counter(map(key, aliases['all_ingredients'])), Counter(map(key, expected)))
+        self.assertEqual(len(aliases['item_alias_probes']), 4)
+        for probe in aliases['item_alias_probes']:
+            input_key = (probe['input']['item'], probe['input']['meta'])
+            target = probe['translated']['stack']
+            self.assertEqual((target['item'], target['meta']), translations[input_key])
+            self.assertTrue(probe['same_nonnull_recipe_instance'])
+            self.assertIsNotNone(probe['recipe'])
+        self.assertEqual({p['input']: p['translated'] for p in aliases['dict_alias_probes']},
+                         {'dustUranium': 'ingotUranium', 'dustPlutonium': 'ingotPlutonium'})
+        for probe in aliases['dict_alias_probes']:
+            self.assertTrue(probe['same_nonnull_recipe_instance'])
+            self.assertIsNotNone(probe['recipe'])
+            self.assertTrue(probe['carrier']['item'].startswith('oracle_probe:'))
+        self.assertEqual(len(aliases['ore_membership_fixture']), 4)
+        self.assertEqual(aliases['ore_memberships_after_probe'], 0)
+        self.assertTrue(aliases['canonical_uranium_lookup_without_fixture_is_null'])
+        self.assertFalse(aliases['general_oredict_exercised'])
 
     def test_conditional_recipes_are_nominally_enumerated(self):
         manifest = self.exported['crafting_manifest']
@@ -128,6 +164,39 @@ class ExecutableRbmkOracle(unittest.TestCase):
             self.assertTrue(row['guards'])
         self.assertTrue(any('inputItemsEx' in r['arguments_java'] for r in manifest))
 
+    def test_helper_templates_are_separate_and_overloads_are_bound(self):
+        templates = {r['id']: r for r in self.exported['crafting_templates']}
+        self.assertEqual(len(templates), 2)
+        self.assertEqual({r['registration_call']['source_line'] for r in templates.values()}, {243, 246})
+        self.assertTrue(all('enabled_default_profile' not in r for r in templates.values()))
+        sites = self.exported['crafting_manifest']
+        self.assertFalse(any(r['source'].endswith('RodRecipes.java') and r['source_line'] in (243, 246) for r in sites))
+        bindings = [r for r in sites if r['kind'] == 'helper_invocation']
+        self.assertEqual(len(bindings), 31)
+        by_type = Counter()
+        for site in bindings:
+            template = templates[site['template_id']]
+            self.assertEqual(set(site['bindings']), {p['name'] for p in template['parameters']})
+            self.assertTrue(site['bindings']['out'].startswith('ModItems.rbmk_fuel_'))
+            first = template['parameters'][0]
+            self.assertEqual(site['bindings'][first['name']].startswith('ModItems.'), first['type'] == 'Item')
+            by_type[first['type']] += 1
+        self.assertEqual(by_type, {'DictFrame': 10, 'Item': 21})
+        self.assertEqual(self.exported['crafting_manifest_counts'], {
+            'lexical_call_sites': 89, 'helper_templates': 2, 'concrete_registration_sites': 87,
+            'helper_invocations': 31, 'direct_registration_sites': 56})
+        per_file = Counter(Path(r['source']).name for r in sites)
+        self.assertEqual(per_file, {'CraftingManager.java': 38, 'RodRecipes.java': 33,
+                                    'AssemblyMachineRecipes.java': 2, 'AnvilRecipes.java': 14})
+
+    def test_decorative_rbmk_chain_is_fully_included(self):
+        rows = [r for r in self.exported['crafting_manifest'] if 'deco_rbmk' in r['arguments_java']]
+        self.assertEqual({r['source_line'] for r in rows}, {788, 789, 790, 791, 989, 990})
+        smooth = next(r for r in rows if r['source_line'] == 789)
+        self.assertEqual(smooth['arguments_java'],
+            'new ItemStack(ModBlocks.deco_rbmk_smooth, 1), new Object[] { "R", \'R\', ModBlocks.deco_rbmk }')
+        self.assertTrue(smooth['enabled_default_profile'])
+
     def test_catalog_identity_stack_and_previous_content_are_unchanged(self):
         for relative in ('content/ids.json', 'tools/content-gen/rbmk_catalog.py'):
             before = subprocess.check_output(['git', 'show', '81a210d4:' + relative], cwd=ROOT)
@@ -137,6 +206,16 @@ class ExecutableRbmkOracle(unittest.TestCase):
             entry = next(r for r in entries if r['id'] == rod['item'])
             self.assertEqual(entry['max_stack_size'], rod['max_stack_size'])
         self.assertEqual(len({r['item'] for r in self.exported['rods']}), 33)
+
+    def test_review_fixes_preserve_all_previous_java_observations_and_regenerate_export(self):
+        before = json.loads(subprocess.check_output(
+            ['git', 'show', '797ed7f6:tools/rbmk-oracle/fixtures/java.json'], cwd=ROOT))
+        self.assertEqual(before['provenance']['sources_sha256'], self.live['provenance']['sources_sha256'])
+        self.assertEqual({k: v for k, v in before.items() if k not in ('provenance', 'recipes')},
+                         {k: v for k, v in self.live.items() if k not in ('provenance', 'recipes')})
+        self.assertEqual(before['recipes'],
+                         {k: v for k, v in self.live['recipes'].items() if k != 'silex_aliases'})
+        self.assertEqual(self.exported, json.loads((ROOT / 'content/machine-recipes/reactors_rbmk.json').read_text()))
 
 
 if __name__ == '__main__':

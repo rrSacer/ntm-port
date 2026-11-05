@@ -4,7 +4,7 @@ import json
 import re
 from pathlib import Path
 from bedrock_processing_common import BASE, write
-from bulk_recipes import calls, clean
+from bulk_recipes import calls, clean, split
 from rbmk_catalog import item_variables
 
 ORACLE = Path(__file__).resolve().parents[1] / 'rbmk-oracle'
@@ -73,6 +73,25 @@ def condition_ranges(text):
 
 def recipe_manifest(source):
     result = []
+    templates = []
+    rod_source = BASE + 'crafting/RodRecipes.java'
+    rod_text = clean((source / rod_source).read_text())
+    helper_ranges = []
+    for match in re.finditer(r'public static void addRBMKRod\(([^)]+)\)\s*\{', rod_text):
+        params = [dict(zip(('type', 'name'), p.strip().split())) for p in split(match[1])]
+        opening = match.end() - 1
+        depth, end = 1, opening + 1
+        while depth:
+            depth += (rod_text[end] == '{') - (rod_text[end] == '}')
+            end += 1
+        helper_ranges.append((opening, end, {
+            'id': 'com.hbm.crafting.RodRecipes#addRBMKRod(' + ','.join(p['type'] for p in params) + ')',
+            'source': rod_source, 'declaration_line': rod_text[:match.start()].count('\n') + 1,
+            'parameters': params}))
+    if len(helper_ranges) != 2:
+        raise ValueError('RBMK helper overload drift')
+    item_text = clean((source / (BASE + 'items/ModItems.java')).read_text())
+    dict_text = clean((source / (BASE + 'inventory/OreDictManager.java')).read_text())
     files = ('main/CraftingManager.java', 'crafting/RodRecipes.java',
              'inventory/recipes/AssemblyMachineRecipes.java', 'inventory/recipes/anvil/AnvilRecipes.java')
     pattern = r'\b(?:addRecipeAuto|addShapelessAuto|addRBMKRod|this\.register|constructionRecipes\.add)'
@@ -80,7 +99,14 @@ def recipe_manifest(source):
         text = clean((source / (BASE + filename)).read_text())
         ranges = condition_ranges(text)
         for pos, args, callee in calls(text, pattern):
-            if not re.search(r'\b(?:rbmk_|pribris)\w*', args): continue
+            if not re.search(r'\b(?:rbmk_|pribris|deco_rbmk)\w*', args): continue
+            scope = next((h for lo, hi, h in helper_ranges if filename == 'crafting/RodRecipes.java' and lo < pos < hi), None)
+            if scope is not None:
+                templates.append({**scope,
+                    'registration_call': {'source_line': text[:pos].count('\n') + 1,
+                                          'callee': callee, 'arguments_java': ' '.join(args.split())},
+                    'evidence': 'parameterized helper body; not a concrete registration'})
+                continue
             guards = [{'expression': c, 'branch': b} for lo, hi, c, b in ranges if lo < pos < hi]
             profile = True
             for guard in guards:
@@ -90,11 +116,32 @@ def recipe_manifest(source):
                 else:
                     profile = None
                     break
-            result.append({'source': BASE + filename, 'source_line': text[:pos].count('\n') + 1,
+            row = {'source': BASE + filename, 'source_line': text[:pos].count('\n') + 1,
                            'callee': callee, 'arguments_java': ' '.join(args.split()), 'guards': guards,
                            'enabled_default_profile': profile, 'profile': 'enable528=false; external mods absent',
-                           'evidence': 'lexical registry inventory, not executed crafting'})
-    return result
+                           'kind': 'direct_registration',
+                           'evidence': 'concrete lexical call site, not executed crafting'}
+            if callee == 'addRBMKRod':
+                arguments = split(args)
+                first = arguments[0].strip()
+                item = re.fullmatch(r'ModItems\.(\w+)', first)
+                if item and re.search(r'public\s+static\s+Item\s+' + item[1] + r'\s*;', item_text):
+                    first_type = 'Item'
+                elif re.fullmatch(r'\w+', first) and re.search(r'public\s+static\s+final\s+DictFrame\s+' + first + r'\s*=', dict_text):
+                    first_type = 'DictFrame'
+                else:
+                    raise ValueError('unresolved RBMK overload argument: ' + first)
+                helper = next(h for _, _, h in helper_ranges if h['parameters'][0]['type'] == first_type)
+                if len(arguments) != len(helper['parameters']):
+                    raise ValueError('RBMK helper arity drift')
+                row.update(kind='helper_invocation', template_id=helper['id'],
+                           bindings={p['name']: a.strip() for p, a in zip(helper['parameters'], arguments)})
+            result.append(row)
+    return {'registrations': result, 'templates': templates,
+            'counts': {'lexical_call_sites': len(result) + len(templates),
+                       'helper_templates': len(templates), 'concrete_registration_sites': len(result),
+                       'helper_invocations': sum(r['kind'] == 'helper_invocation' for r in result),
+                       'direct_registration_sites': sum(r['kind'] == 'direct_registration' for r in result)}}
 
 
 def rod_table(source, rod_vars, pellet_vars):
@@ -149,6 +196,8 @@ def export(source, output, rows):
     dials = [{k: d[k] for k in ('key', 'game_rule', 'default', 'default_java_type', 'cached_effective')}
              for d in oracle['dials']]
     recipes = oracle['recipes']
+    crafting = recipe_manifest(source)
+    aliases = recipes['silex_aliases']
     return write(output, 'reactors_rbmk', {
         'schema': 2, 'recipes': [], 'skipped': [], 'rods': rods,
         'java_manifest': class_manifest(source, oracle),
@@ -175,12 +224,17 @@ def export(source, output, rows):
         'rod_to_pellet': 'RBMKFuelCraftingHandler: cold core/hull<50, enrichment<=0.99; 8 pellets + container casing; meta=4-clamp(ceil(e*5-1),0,4), +5 if poison>=0.5; runtime pending',
         'dials': dials, 'dial_special_cases': oracle['dial_special_cases'],
         'silex_recipes': recipes['silex_registered'], 'silex_tiny_lookup': recipes['silex_tiny_lookup'],
+        'silex_aliases': aliases,
         'silex_missing_pellet_states': recipes['silex_missing_pellet_states'],
-        'outgasser_recipes': recipes['outgasser_defaults'], 'crafting_manifest': recipe_manifest(source),
+        'outgasser_recipes': recipes['outgasser_defaults'], 'crafting_manifest': crafting['registrations'],
+        'crafting_templates': crafting['templates'], 'crafting_manifest_counts': crafting['counts'],
         'runtime_gaps': ['All 33 RBMK machines remain Inert. Rod simulation, dynamic tooltip/hazard, pellet state, disassembly, SILEX/fuel pool and meltdown are later tickets. T00 only fixes data and supplies executable Java fixtures.',
                          'D8: leverStop blocked pending user licensing decision; no substitute or asset imported.'],
         'coverage': {'rods': len(rods), 'pellet_rods': sum(r['pellet'] is not None for r in rods),
                      'dials': len(dials), 'burn_functions': len(formulas), 'depletion_functions': len(depletions),
                      'silex_registered': len(recipes['silex_registered']),
+                     'silex_item_translations': len(aliases['item_translation']),
+                     'silex_dict_translations': len(aliases['dict_translation']),
+                     'silex_all_ingredients': aliases['all_ingredients_count'],
                      'silex_rbmk_pellet_states': sum(r['input'].get('stack', {}).get('item', '').startswith('rbmk_pellet_') for r in recipes['silex_registered']),
                      'outgasser_defaults': len(recipes['outgasser_defaults'])}})

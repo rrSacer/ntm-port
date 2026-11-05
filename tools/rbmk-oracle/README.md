@@ -65,6 +65,14 @@ entries come from the actual `getOutput` lookup. Missing pellet states are
 explicit. Recipe output ordering in JSON is sorted only for registry-map
 enumeration; each recipe's output list remains in Java order.
 
+The actual private `itemTranslation` (four entries) and `dictTranslation` (two
+entries) maps are also exported, with all **301** inputs returned by the real
+`getAllIngredients()` (295 direct recipes plus six alias inputs). Real
+`translateItem`, `translateDict` and `getOutput` probes cover UF6@29, PUF6@30,
+`powder_australium`, `powder_lapis`, `dustUranium` and `dustPlutonium`. Each
+lookup must return a **nonnull** recipe and the same recipe instance as its
+canonical target. This avoids treating two null lookups as alias equivalence.
+
 ## Controlled host surface and limits
 
 `stubs.py` supplies MC/Forge data containers, item/block identity, the standard
@@ -78,16 +86,32 @@ registry lookups exercised here. Vanilla source identities use the explicit
 `minecraft_1_7_10:` audit namespace (for example `dye` with metadata), so they
 cannot be mistaken for executable 26.3 recipe references. Translating those
 legacy references to the current registry belongs to the consuming runtime.
-OreDict membership enumeration returns no
-external entries: recipes registered by ore key retain the real key in the
-fixture, while arbitrary mod-dependent ore resolution is outside this oracle.
+OreDict membership enumeration is empty by default. Only the alias probes
+temporarily install four explicit singular, exact-metadata memberships:
+canonical uranium/plutonium ingots under their ingot keys, and two synthetic
+`oracle_probe:` carriers under the dust keys. This is controlled host input,
+not a reconstruction of HBM/Forge's internal or external OreDict. Memberships
+are exported and cleared in `finally`; a real uranium lookup after clearing
+returns null and is recorded. General OreDict resolution, alias ordering,
+wildcards and arbitrary mod membership remain **unexercised**. The six HBM
+translation records themselves come from real `register()`, not these inputs.
 
 The Gson/SerializableRecipe APIs exist only so the whole Outgasser class can
 compile. Their unexercised JSON read/write methods throw; no config override
 is silently accepted. Waste entities, rendering and world simulation are not
 executed. Crafting/assembly/anvil **conditionals are a lexical inventory**, with
 guards, source lines and exact arguments, clearly separate from executable
-SILEX/Outgasser evidence. This is not a Forge/MC integration test.
+SILEX/Outgasser evidence. The inventory now separates **87 concrete registration
+call sites** from **two helper-body templates** (89 lexical call sites total).
+Of the 87 concrete sites, 31 call `addRBMKRod`: ten bind the `(DictFrame,Item)`
+overload and 21 bind `(Item,Item)`; the remaining 56 register directly. Template
+IDs, parameters, source declaration/body lines and concrete argument bindings
+are exported separately. Templates do not receive an enabled-profile flag and
+are not counted again as concrete recipes. All `deco_rbmk*` references in the
+four inventoried registries are included, notably `deco_rbmk` to
+`deco_rbmk_smooth` at `CraftingManager.java:789`. These are counts of source
+call sites, not a claim that all guarded recipes run in the default profile or
+that crafting was executed. This is not a Forge/MC integration test.
 
 Two dial quirks are retained: client `getSurgeMod` reads passive cooling;
 `createDials(force)` refreshes before resetting raw rules, leaving the old

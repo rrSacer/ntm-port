@@ -184,7 +184,7 @@ public class RecipesCommon {
   public ComparableStack(ItemStack s){this(s.getItem(),s.stackSize,s.getItemDamage());}
   public ComparableStack makeSingular(){stacksize=1;return this;}
   public ItemStack toStack(){return new ItemStack(item,stacksize,meta);}
-  public String[] getDictKeys(){return new String[0];}
+  public String[] getDictKeys(){return net.minecraftforge.oredict.OreDictionary.probeKeys(toStack());}
   public int hashCode(){return java.util.Objects.hash(item,stacksize,meta);}
   public boolean equals(Object o){if(!(o instanceof ComparableStack))return false;ComparableStack c=(ComparableStack)o;return item==c.item&&stacksize==c.stacksize&&meta==c.meta;}
  }
@@ -197,7 +197,21 @@ public class RecipesCommon {
 ''',
     'net/minecraftforge/oredict/OreDictionary.java': '''
 package net.minecraftforge.oredict;
-public class OreDictionary {public static java.util.List<net.minecraft.item.ItemStack> getOres(String s){return new java.util.ArrayList<>();}}
+import java.util.*;import net.minecraft.item.ItemStack;
+public class OreDictionary {
+ // Empty by default. Only the four singular, exact-meta carriers explicitly
+ // installed by the SILEX alias probe have memberships. No general OreDict.
+ private static final Map<String,List<ItemStack>> probes=new LinkedHashMap<>();
+ public static void addProbe(String key,ItemStack stack){probes.computeIfAbsent(key,k->new ArrayList<>()).add(stack.copy());}
+ public static void clearProbes(){probes.clear();}
+ public static String[] probeKeys(ItemStack stack){
+  List<String> keys=new ArrayList<>();
+  for(Map.Entry<String,List<ItemStack>> e:probes.entrySet())for(ItemStack candidate:e.getValue())
+   if(candidate.getItem()==stack.getItem()&&candidate.getItemDamage()==stack.getItemDamage()){keys.add(e.getKey());break;}
+  return keys.toArray(new String[0]);
+ }
+ public static List<ItemStack> getOres(String key){return new ArrayList<>(probes.getOrDefault(key,Collections.emptyList()));}
+}
 ''',
     'com/hbm/inventory/fluid/FluidType.java': '''
 package com.hbm.inventory.fluid;

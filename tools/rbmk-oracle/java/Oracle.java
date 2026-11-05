@@ -17,6 +17,7 @@ import com.hbm.util.WeightedRandomObject;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 /** Calls the real HBM classes; no replacement RBMK equations live here. */
 public final class Oracle {
@@ -195,6 +196,54 @@ public final class Oracle {
         if(k instanceof OreDictStack)return obj("ore",((OreDictStack)k).ore);
         return obj("ore",k.toString());
     }
+    static Map<String,Object> silexAliases(Map<Object,SILEXRecipe> registered)throws Exception {
+        Field itemField=SILEXRecipes.class.getDeclaredField("itemTranslation");itemField.setAccessible(true);
+        Field dictField=SILEXRecipes.class.getDeclaredField("dictTranslation");dictField.setAccessible(true);
+        Map<ComparableStack,ComparableStack> items=(Map<ComparableStack,ComparableStack>)itemField.get(null);
+        Map<String,String> dicts=(Map<String,String>)dictField.get(null);
+        List<Object> itemMap=new ArrayList<>(),dictMap=new ArrayList<>(),all=new ArrayList<>();
+        List<Object> itemProbes=new ArrayList<>(),dictProbes=new ArrayList<>(),memberships=new ArrayList<>();
+        for(Map.Entry<ComparableStack,ComparableStack> e:items.entrySet())
+            itemMap.add(obj("from",ingredient(e.getKey()),"to",ingredient(e.getValue())));
+        for(Map.Entry<String,String> e:dicts.entrySet())dictMap.add(obj("from",e.getKey(),"to",e.getValue()));
+        for(Object key:SILEXRecipes.getAllIngredients())all.add(ingredient(key));
+        // Four explicit environment inputs, not a simulated HBM/Forge OreDict.
+        // Canonical ingots need their keys for UF6/PUF6 to reach an ore recipe;
+        // the two synthetic carriers exercise translateDict inside getOutput.
+        OreDictionary.clearProbes();
+        try {
+            ItemStack uranium=new ItemStack(ModItems.ingot_uranium),plutonium=new ItemStack(ModItems.ingot_plutonium);
+            Map<String,ItemStack> canonical=new TreeMap<>();
+            canonical.put(com.hbm.inventory.OreDictManager.U.ingot(),uranium);
+            canonical.put(com.hbm.inventory.OreDictManager.PU.ingot(),plutonium);
+            for(Map.Entry<String,ItemStack> e:canonical.entrySet()) {
+                OreDictionary.addProbe(e.getKey(),e.getValue());
+                memberships.add(obj("ore",e.getKey(),"carrier",stack(e.getValue())));
+            }
+            for(Map.Entry<ComparableStack,ComparableStack> e:items.entrySet()) {
+                ItemStack input=e.getKey().toStack();ComparableStack translated=SILEXRecipes.translateItem(input);
+                SILEXRecipe result=SILEXRecipes.getOutput(input),target=SILEXRecipes.getOutput(e.getValue().toStack());
+                itemProbes.add(obj("input",stack(input),"translated",ingredient(translated),
+                    "recipe",result==null?null:silex(result),"same_nonnull_recipe_instance",result!=null&&result==target));
+            }
+            for(Map.Entry<String,String> e:dicts.entrySet()) {
+                ItemStack carrier=new ItemStack(new Item("oracle_probe:"+e.getKey()));
+                OreDictionary.addProbe(e.getKey(),carrier);
+                memberships.add(obj("ore",e.getKey(),"carrier",stack(carrier)));
+                String translated=SILEXRecipes.translateDict(e.getKey());
+                SILEXRecipe result=SILEXRecipes.getOutput(carrier),target=registered.get(e.getValue());
+                dictProbes.add(obj("input",e.getKey(),"translated",translated,"carrier",stack(carrier),
+                    "recipe",result==null?null:silex(result),"same_nonnull_recipe_instance",result!=null&&result==target));
+            }
+        } finally {OreDictionary.clearProbes();}
+        Comparator<Object> order=Comparator.comparing(Oracle::json);
+        for(List<Object> list:Arrays.asList(itemMap,dictMap,all,itemProbes,dictProbes,memberships))list.sort(order);
+        return obj("item_translation",itemMap,"dict_translation",dictMap,"all_ingredients",all,
+            "all_ingredients_count",SILEXRecipes.getAllIngredients().size(),"item_alias_probes",itemProbes,
+            "dict_alias_probes",dictProbes,"ore_membership_fixture",memberships,
+            "general_oredict_exercised",false,"ore_memberships_after_probe",OreDictionary.probeKeys(new ItemStack(ModItems.ingot_uranium)).length,
+            "canonical_uranium_lookup_without_fixture_is_null",SILEXRecipes.getOutput(new ItemStack(ModItems.ingot_uranium))==null);
+    }
     static Map<String,Object> recipes()throws Exception {
         SILEXRecipes.register();new OutgasserRecipes().registerDefaults();
         Field field=SILEXRecipes.class.getDeclaredField("recipes");field.setAccessible(true);
@@ -222,7 +271,8 @@ public final class Oracle {
             for(int meta=0;meta<10;meta++)if(SILEXRecipes.getOutput(new ItemStack(item,1,meta))==null)absent.add(meta);
             if(!absent.isEmpty())missing.add(obj("pellet",item.id,"metadata",absent));
         }
-        return obj("silex_registered",silex,"silex_tiny_lookup",tiny,"silex_missing_pellet_states",missing,"outgasser_defaults",outgasser);
+        return obj("silex_registered",silex,"silex_tiny_lookup",tiny,"silex_missing_pellet_states",missing,
+            "silex_aliases",silexAliases(registered),"outgasser_defaults",outgasser);
     }
     static String json(Object o) {
         if(o==null)return "null";

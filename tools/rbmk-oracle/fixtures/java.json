@@ -31808,6 +31808,2801 @@
         ]
       }
     ],
+    "silex_aliases": {
+      "item_translation": [
+        {
+          "from": {
+            "stack": {
+              "item": "fluid_icon",
+              "count": 1,
+              "meta": 29,
+              "nbt": null
+            }
+          },
+          "to": {
+            "stack": {
+              "item": "ingot_uranium",
+              "count": 1,
+              "meta": 0,
+              "nbt": null
+            }
+          }
+        },
+        {
+          "from": {
+            "stack": {
+              "item": "fluid_icon",
+              "count": 1,
+              "meta": 30,
+              "nbt": null
+            }
+          },
+          "to": {
+            "stack": {
+              "item": "ingot_plutonium",
+              "count": 1,
+              "meta": 0,
+              "nbt": null
+            }
+          }
+        },
+        {
+          "from": {
+            "stack": {
+              "item": "powder_australium",
+              "count": 1,
+              "meta": 0,
+              "nbt": null
+            }
+          },
+          "to": {
+            "stack": {
+              "item": "ingot_australium",
+              "count": 1,
+              "meta": 0,
+              "nbt": null
+            }
+          }
+        },
+        {
+          "from": {
+            "stack": {
+              "item": "powder_lapis",
+              "count": 1,
+              "meta": 0,
+              "nbt": null
+            }
+          },
+          "to": {
+            "stack": {
+              "item": "minecraft_1_7_10:dye",
+              "count": 1,
+              "meta": 4,
+              "nbt": null
+            }
+          }
+        }
+      ],
+      "dict_translation": [
+        {
+          "from": "dustPlutonium",
+          "to": "ingotPlutonium"
+        },
+        {
+          "from": "dustUranium",
+          "to": "ingotUranium"
+        }
+      ],
+      "all_ingredients": [
+        {
+          "ore": "dustPlutonium"
+        },
+        {
+          "ore": "dustUranium"
+        },
+        {
+          "ore": "ingotPlutonium"
+        },
+        {
+          "ore": "ingotUranium"
+        },
+        {
+          "stack": {
+            "item": "crystal_schraranium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "crystal_trixite",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "fallout",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "fluid_icon",
+            "count": 1,
+            "meta": 113,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "fluid_icon",
+            "count": 1,
+            "meta": 130,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "fluid_icon",
+            "count": 1,
+            "meta": 140,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "fluid_icon",
+            "count": 1,
+            "meta": 29,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "fluid_icon",
+            "count": 1,
+            "meta": 30,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "fluid_icon",
+            "count": 1,
+            "meta": 58,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "ingot_am_mix",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "ingot_australium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "ingot_pu_mix",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "ingot_schraranium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "minecraft_1_7_10:dye",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "minecraft_1_7_10:gravel",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_long",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_long",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_long",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_long",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_long",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_long_depleted",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_long_depleted",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_long_depleted",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_long_depleted",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_long_depleted",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short_depleted",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short_depleted",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short_depleted",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short_depleted",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short_depleted",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short_depleted",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "nuclear_waste_short_depleted",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "ore_tikite",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "powder_australium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "powder_lapis",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_balefire",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_balefire",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_balefire",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_balefire",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_balefire",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_balefire_gold",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_balefire_gold",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_balefire_gold",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_balefire_gold",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_balefire_gold",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_drx",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_drx",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_drx",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_drx",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_drx",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_drx",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_drx",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_drx",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_drx",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_drx",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_flashlead",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_flashlead",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_flashlead",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_flashlead",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_flashlead",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heaus",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heaus",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heaus",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heaus",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heaus",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heaus",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heaus",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heaus",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heaus",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heaus",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hen",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hen",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hen",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hen",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hen",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hen",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hen",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hen",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hen",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hen",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep239",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep239",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep239",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep239",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep239",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep239",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep239",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep239",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep239",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep239",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep241",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep241",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep241",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep241",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep241",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep241",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep241",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep241",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep241",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hep241",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hes",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hes",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hes",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hes",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hes",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hes",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hes",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hes",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hes",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_hes",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu233",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu233",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu233",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu233",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu233",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu233",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu233",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu233",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu233",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu233",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu235",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu235",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu235",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu235",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu235",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu235",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu235",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu235",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu235",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_heu235",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_leaus",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_leaus",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_leaus",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_leaus",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_leaus",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_leaus",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_leaus",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_leaus",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_leaus",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_leaus",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_lep",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_lep",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_lep",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_lep",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_lep",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_lep",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_lep",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_lep",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_lep",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_lep",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_les",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_les",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_les",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_les",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_les",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_les",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_les",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_les",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_les",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_les",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_men",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_men",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_men",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_men",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_men",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_men",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_men",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_men",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_men",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_men",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mep",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mep",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mep",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mep",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mep",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mep",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mep",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mep",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mep",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mep",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mes",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mes",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mes",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mes",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mes",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mes",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mes",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mes",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mes",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mes",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_meu",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_meu",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_meu",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_meu",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_meu",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_meu",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_meu",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_meu",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_meu",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_meu",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mox",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mox",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mox",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mox",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mox",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mox",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mox",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mox",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mox",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_mox",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_po210be",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_po210be",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_po210be",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_po210be",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_po210be",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_pu238be",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_pu238be",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_pu238be",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_pu238be",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_pu238be",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_pu238be",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_pu238be",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_pu238be",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_pu238be",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_pu238be",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ra226be",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ra226be",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ra226be",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ra226be",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ra226be",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_thmeu",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_thmeu",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_thmeu",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_thmeu",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_thmeu",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_thmeu",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_thmeu",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_thmeu",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_thmeu",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_thmeu",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ueu",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ueu",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ueu",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ueu",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ueu",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ueu",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ueu",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ueu",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ueu",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_ueu",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_uzh",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_uzh",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_uzh",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_uzh",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_uzh",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_uzh",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_uzh",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_uzh",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_uzh",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_uzh",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_am_mix",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_am_mix",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_am_mix",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_am_mix",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_am_mix",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_am_mix",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_am_mix",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_am_mix",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_am_mix",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_am_mix",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_bismuth",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_bismuth",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_bismuth",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_bismuth",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_bismuth",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_bismuth",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_bismuth",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_bismuth",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_bismuth",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_bismuth",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_pu241",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_pu241",
+            "count": 1,
+            "meta": 1,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_pu241",
+            "count": 1,
+            "meta": 2,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_pu241",
+            "count": 1,
+            "meta": 3,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_pu241",
+            "count": 1,
+            "meta": 4,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_pu241",
+            "count": 1,
+            "meta": 5,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_pu241",
+            "count": 1,
+            "meta": 6,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_pu241",
+            "count": 1,
+            "meta": 7,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_pu241",
+            "count": 1,
+            "meta": 8,
+            "nbt": null
+          }
+        },
+        {
+          "stack": {
+            "item": "rbmk_pellet_zfb_pu241",
+            "count": 1,
+            "meta": 9,
+            "nbt": null
+          }
+        }
+      ],
+      "all_ingredients_count": 301,
+      "item_alias_probes": [
+        {
+          "input": {
+            "item": "fluid_icon",
+            "count": 1,
+            "meta": 29,
+            "nbt": null
+          },
+          "translated": {
+            "stack": {
+              "item": "ingot_uranium",
+              "count": 1,
+              "meta": 0,
+              "nbt": null
+            }
+          },
+          "recipe": {
+            "fluid_produced": 900,
+            "fluid_consumed": 100,
+            "laser_strength": "VISIBLE",
+            "laser_index": 2,
+            "outputs": [
+              {
+                "stack": {
+                  "item": "nugget_u235",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 1
+              },
+              {
+                "stack": {
+                  "item": "nugget_u238",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 11
+              }
+            ]
+          },
+          "same_nonnull_recipe_instance": true
+        },
+        {
+          "input": {
+            "item": "fluid_icon",
+            "count": 1,
+            "meta": 30,
+            "nbt": null
+          },
+          "translated": {
+            "stack": {
+              "item": "ingot_plutonium",
+              "count": 1,
+              "meta": 0,
+              "nbt": null
+            }
+          },
+          "recipe": {
+            "fluid_produced": 900,
+            "fluid_consumed": 100,
+            "laser_strength": "VISIBLE",
+            "laser_index": 2,
+            "outputs": [
+              {
+                "stack": {
+                  "item": "nugget_pu238",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 3
+              },
+              {
+                "stack": {
+                  "item": "nugget_pu239",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 4
+              },
+              {
+                "stack": {
+                  "item": "nugget_pu240",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 2
+              }
+            ]
+          },
+          "same_nonnull_recipe_instance": true
+        },
+        {
+          "input": {
+            "item": "powder_australium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          },
+          "translated": {
+            "stack": {
+              "item": "ingot_australium",
+              "count": 1,
+              "meta": 0,
+              "nbt": null
+            }
+          },
+          "recipe": {
+            "fluid_produced": 900,
+            "fluid_consumed": 100,
+            "laser_strength": "VISIBLE",
+            "laser_index": 2,
+            "outputs": [
+              {
+                "stack": {
+                  "item": "nugget_australium_lesser",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 5
+              },
+              {
+                "stack": {
+                  "item": "nugget_australium_greater",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 1
+              }
+            ]
+          },
+          "same_nonnull_recipe_instance": true
+        },
+        {
+          "input": {
+            "item": "powder_lapis",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          },
+          "translated": {
+            "stack": {
+              "item": "minecraft_1_7_10:dye",
+              "count": 1,
+              "meta": 4,
+              "nbt": null
+            }
+          },
+          "recipe": {
+            "fluid_produced": 100,
+            "fluid_consumed": 100,
+            "laser_strength": "IR",
+            "laser_index": 1,
+            "outputs": [
+              {
+                "stack": {
+                  "item": "sulfur",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 4
+              },
+              {
+                "stack": {
+                  "item": "powder_aluminium",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 3
+              },
+              {
+                "stack": {
+                  "item": "powder_cobalt",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 3
+              }
+            ]
+          },
+          "same_nonnull_recipe_instance": true
+        }
+      ],
+      "dict_alias_probes": [
+        {
+          "input": "dustPlutonium",
+          "translated": "ingotPlutonium",
+          "carrier": {
+            "item": "oracle_probe:dustPlutonium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          },
+          "recipe": {
+            "fluid_produced": 900,
+            "fluid_consumed": 100,
+            "laser_strength": "VISIBLE",
+            "laser_index": 2,
+            "outputs": [
+              {
+                "stack": {
+                  "item": "nugget_pu238",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 3
+              },
+              {
+                "stack": {
+                  "item": "nugget_pu239",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 4
+              },
+              {
+                "stack": {
+                  "item": "nugget_pu240",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 2
+              }
+            ]
+          },
+          "same_nonnull_recipe_instance": true
+        },
+        {
+          "input": "dustUranium",
+          "translated": "ingotUranium",
+          "carrier": {
+            "item": "oracle_probe:dustUranium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          },
+          "recipe": {
+            "fluid_produced": 900,
+            "fluid_consumed": 100,
+            "laser_strength": "VISIBLE",
+            "laser_index": 2,
+            "outputs": [
+              {
+                "stack": {
+                  "item": "nugget_u235",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 1
+              },
+              {
+                "stack": {
+                  "item": "nugget_u238",
+                  "count": 1,
+                  "meta": 0,
+                  "nbt": null
+                },
+                "weight": 11
+              }
+            ]
+          },
+          "same_nonnull_recipe_instance": true
+        }
+      ],
+      "ore_membership_fixture": [
+        {
+          "ore": "dustPlutonium",
+          "carrier": {
+            "item": "oracle_probe:dustPlutonium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "ore": "dustUranium",
+          "carrier": {
+            "item": "oracle_probe:dustUranium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "ore": "ingotPlutonium",
+          "carrier": {
+            "item": "ingot_plutonium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        },
+        {
+          "ore": "ingotUranium",
+          "carrier": {
+            "item": "ingot_uranium",
+            "count": 1,
+            "meta": 0,
+            "nbt": null
+          }
+        }
+      ],
+      "general_oredict_exercised": false,
+      "ore_memberships_after_probe": 0,
+      "canonical_uranium_lookup_without_fixture_is_null": true
+    },
     "outgasser_defaults": [
       {
         "input": {
@@ -32114,8 +34909,8 @@
     },
     "harness_sha256": {
       "run.py": "2197479986b980d6ed4748ae8da4b8837fa71ba5cacb0fa733893eb0a97d036d",
-      "stubs.py": "a3fefa7134bec6ab3d05c62defb168d25d8972b785ddad3c75d201ae45ef340a",
-      "java/Oracle.java": "caa8fbfcfd2fee9ac81a5686a31a2f8f16ab22249437e8688dc50ff98b2aaee9"
+      "stubs.py": "42a05da382ac47715240533b662d338a495df3b309963e18523dc9914d9bd932",
+      "java/Oracle.java": "b87d0f5f03b1feb8a840a88586a0a57dd80eb0d9413cd917ab7c1173c7af5da3"
     },
     "whole_classes": [
       "items/machine/ItemRBMKRod.java",
