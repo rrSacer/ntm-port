@@ -597,5 +597,5 @@ qubodup creditado no próprio pacote. `entity.vomit` permanece silencioso como n
 original, sem alias para player.vomit.
 
 Validação final deste lote registrada no artifact `sons-hbm`; suíte NTM após K2:
-447 unidades + 26 testes de integração = 473 aprovados, 2 doctests ignorados;
+450 unidades + 26 testes de integração = 476 aprovados, 2 doctests ignorados;
 Clippy workspace/all-targets com `-D warnings`, sem isenções.
