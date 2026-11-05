@@ -11,7 +11,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-SCENARIOS = ['sounds', 'items', 'mining', 'bombs', 'zirnox', 'pile',
+SCENARIOS = ['sounds', 'audio-lifecycle', 'items', 'mining', 'bombs', 'zirnox', 'pile',
              'pile-meltdown', 'dims', 'inventory-proxy', 'radioisotopes',
              'solar', 'combustion', 'catalog', 'comparator', 'stations', 'recipes']
 

@@ -54,8 +54,9 @@ def setup(g):
     for action in ['open', 'close']:
         offset = len(log_lines(g))
         g.ctl('interact 20 100 8')
+        time.sleep(.5)  # client prediction plus the server's unguarded Java cue
         lines = resolved(g, 'ntm:block.opendoor', offset)
-        g.check('door_' + action, bool(lines) and all('source=4' in line for line in lines), lines)
+        g.check('door_' + action, len(lines) == 2 and all('source=4' in line for line in lines), lines)
     # The regular diesel acceptance fills it through its real slots and turns
     # its ignition through the real menu. The resulting TE audio tag drives the
     # loop in the window, independently of the server's transient `was_on`.

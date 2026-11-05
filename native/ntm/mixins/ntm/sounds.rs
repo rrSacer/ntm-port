@@ -29,8 +29,13 @@ struct Client {
 }
 static CLIENTS: LazyLock<Mutex<HashMap<[i32; 4], Client>>> = LazyLock::new(Default::default);
 
+fn diagnostic() -> bool {
+    std::env::var("HORIZON_AUDIO_TEST_MIXER").as_deref() == Ok("1")
+}
+
 fn stop(game: &mut crate::game::Game<'_>, p: &mut Playing) {
     if let Some(id) = p.id.take() {
+        if diagnostic() { eprintln!("ntm audio release instance={id} channel={:?} event={}", game.audio.engine().channel(id), p.event); }
         game.audio.stop_and_release(id);
     }
 }
@@ -96,6 +101,7 @@ fn tick(game: &mut crate::game::Game<'_>, client: &mut Client) {
             .sum::<f64>()
             .sqrt();
         if ntm_core::sounds::nuclear_arrived(*age, distance) {
+            if diagnostic() { eprintln!("ntm nuclear arrived age={age} distance={distance} at={position:?}"); }
             game.audio.play_on(
                 4,
                 "ntm:weapon.nuclearexplosion",
@@ -193,6 +199,7 @@ fn tick(game: &mut crate::game::Game<'_>, client: &mut Client) {
             instance.ticking = Ticking::External;
             instance.can_start_silent = true;
             p.id = Some(game.audio.play_instance(instance, true).0);
+            if diagnostic() { eprintln!("ntm audio owner key={key:?} instance={:?} event={}", p.id, p.event); }
             p.retry = 20;
         }
     }
@@ -258,4 +265,5 @@ pub(super) fn receive(game: &mut crate::game::Game<'_>, channel: &str, data: &[u
     let client = clients.entry(owner).or_default();
     client.dimension = dimension;
     client.pending.push((0, cue.at));
+    if diagnostic() { eprintln!("ntm nuclear received dimension={} at={:?}", cue.dimension, cue.at); }
 }
