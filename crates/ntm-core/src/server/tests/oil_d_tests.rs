@@ -104,3 +104,27 @@ fn inert_batch_d_drills_load_as_drills() {
         assert_eq!(m.upgraded().kind(), Kind::Drill, "{block}");
     }
 }
+
+#[test]
+fn well_upgrade_insertions_beep_once_but_loading_installed_slots_is_silent() {
+    let mut g = game();
+    let at = [4, 70, 4];
+    g.place(at, "ntm:machine_well[facing=north,honey_level=0]");
+    g.world.borrow_mut().engine.insert((OW.into(), at), (vec![None; oil_drill::slot::COUNT], vec![]));
+    g.run(2);
+    for slot in 5..8 {
+        g.world.borrow_mut().shown.clear();
+        g.world.borrow_mut().engine.get_mut(&(OW.into(), at)).unwrap().0[slot] = Some(Stack::new("ntm:upgrade_speed_1", 1));
+        g.run(2);
+        let cues: Vec<_> = g.world.borrow().shown.iter().filter_map(|(_, s)| {
+            matches!(s, crate::blast::visuals::Show::Sound { id: "ntm:item.upgradeplug", .. }).then(|| s.clone())
+        }).collect();
+        assert_eq!(cues, vec![crate::blast::visuals::Show::Sound { id: "ntm:item.upgradeplug", source: "player", at: [4.5, 71.5, 4.5], volume: 1., pitch: 1. }], "slot {slot}");
+    }
+    let world = g.world.clone();
+    drop(g);
+    world.borrow_mut().shown.clear();
+    let mut reopened = Game::new(world);
+    reopened.run(3);
+    assert!(!reopened.world.borrow().shown.iter().any(|(_, s)| matches!(s, crate::blast::visuals::Show::Sound { id: "ntm:item.upgradeplug", .. })));
+}

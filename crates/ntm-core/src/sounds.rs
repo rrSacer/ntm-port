@@ -546,7 +546,7 @@ pub fn upgrade_slots(block: &str) -> Option<(std::ops::Range<usize>, [f64; 3])> 
         "ntm:machine_arc_furnace_large" => Some((4..5, [0.5; 3])),
         "ntm:machine_crystallizer" => Some((5..7, [0.5; 3])),
         "ntm:machine_pyrooven" => Some((4..6, [0.5; 3])),
-        "ntm:machine_oil_well" | "ntm:machine_pumpjack" | "ntm:machine_fracking_tower" => {
+        "ntm:machine_well" | "ntm:machine_pumpjack" | "ntm:machine_fracking_tower" => {
             Some((5..8, [0.5, 1.5, 0.5]))
         }
         _ => None,
