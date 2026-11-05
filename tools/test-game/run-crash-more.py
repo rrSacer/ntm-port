@@ -37,6 +37,8 @@ DEFAULT_POINTS = {
     'origin-vanish': ['none'],
     'origin-kill': ['kill'],
     'crossing-kill': ['kill'],
+    'merge-stale': ['kill'],
+    'pickup-merge': ['kill'],
     'save-quit': ['none'],
     'mining': crash_proof.POINTS,
     'break': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],

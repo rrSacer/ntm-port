@@ -13,6 +13,9 @@ second reopen. Scenarios:
                                  is unloaded (and, in -away, it stays unloaded until the save)
   origin-merge / origin-vanish   its fragments fold into one stack / are killed there instead
   origin-kill                    they reach another chunk that unloads, and the process dies before any save
+  merge-stale                    a stack whose older copy stays in an unloaded file folds into another; the process
+                                 dies, and the file comes back only after a confirmed save
+  pickup-merge                   with a file that lags them, one stack is picked up while two others fold
   save-quit                      released ledgers and merge keys survive a clean quit
   mining                         an excavator mines a chest of diamonds
   break / replace                a mixer with items is broken (and, in replace, another put in its place)
@@ -363,7 +366,15 @@ def mining_verify(g, again=False):
 MIXER = (140, 100, 8)
 # origin-merge's second mixer, in the same chunk (one ledger, one merge key) and far enough not to fold with the first.
 MIXER2 = (134, 100, 8)
+MIXER3 = (130, 100, 8)
 NITER = int(os.environ.get('NTM_CRASH_NITER', '16'))
+# The mixers of a scenario (all in chunk (8,0): one ledger) and the niter each holds.
+MIXERS = {'origin-merge': [(MIXER2, NITER // 2), (MIXER, NITER // 2)],
+          'merge-stale': [(MIXER2, 32), (MIXER, 32)],
+          'pickup-merge': [(MIXER3, 16), (MIXER2, 32), (MIXER, 32)]}
+# Two far destinations: forced tickets keep two rings of neighbours, these unload on their own.
+DEST_B, DEST_C = (503.5, 100, 8.5), (803.5, 100, 8.5)
+FORCE_B, FORCE_C = '496 0 511 15', '800 0 815 15'
 
 
 def mixer_items(g, p):
@@ -376,14 +387,12 @@ def break_prepare(g):
     from native_recipes import core_of
     g.ctl('wait-ready 120')
     g.close()
-    mixers = [MIXER2, MIXER] if SCENARIO == 'origin-merge' else [MIXER]
-    each = NITER // len(mixers)
     cores = []
-    for x, y, z in mixers:
+    for (x, y, z), each in MIXERS.get(SCENARIO, [(MIXER, NITER)]):
         g.ground(x - 3, y, z, width=8)
         g.command('clear @s')
         g.command('give @s ntm:machine_mixer 1')
-        if SCENARIO.startswith('origin'):
+        if SCENARIO.startswith('origin') or SCENARIO in MIXERS:
             g.command(f'tp @s {x + .5} {y} {z + 3.5}')
         g.ctl(f'place {x} {y} {z} --item ntm:machine_mixer')
         g.command('clear @s')
@@ -533,6 +542,91 @@ def origin_kill_verify(g, again=False):
     g.check('niter_exactly_once', detail['total'] == NITER, detail)
 
 
+def take_to(g, c, spot):
+    """The drops of the mixer whose core is `c` to `spot`."""
+    g.command('tp @e[type=minecraft:item,x=%d,y=%d,z=%d,distance=..5] %s %s %s' % (c[0], c[1], c[2], *spot))
+
+
+def away_and_back(g, force, at):
+    """The chunk is let go (its entities go to its file), then forced back: that file now lags its entities."""
+    g.command('forceload remove ' + force)
+    g.check('holder_unloaded', unloaded(g, at), at)
+    time.sleep(4)
+    g.command('forceload add ' + force)
+    time.sleep(6)
+
+
+def stale_act(g):
+    """merge-stale: X was in B, whose file keeps it, then folds into Y in C. pickup-merge: N, D1 and D2 were in a
+    file that lags them; then, in one stepped stretch, N is picked up and D1 folds into D2. Both die with no save."""
+    g.ctl('wait-ready 120')
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    cores = prep['cores']
+    g.command('gamemode survival @s')
+    g.command('give @s minecraft:diamond_pickaxe 1')
+    g.ctl('select minecraft:diamond_pickaxe')
+    for force in (FORCE_B, FORCE_C):
+        g.command('forceload add ' + force)
+    time.sleep(2)
+    g.command('fill 496 99 0 511 99 15 minecraft:stone')
+    g.command('fill 800 99 0 815 99 15 minecraft:stone')
+    if SCENARIO == 'merge-stale':
+        spots = [DEST_B, (DEST_C[0], 100, 3.5)]
+    else:
+        spots = [(DEST_C[0], 100, 3.5), (DEST_C[0] + 6, 100, 3.5), (DEST_C[0] + 6, 100, 12.5)]
+    for c, spot in zip(cores, spots):
+        g.command('tp @s %d %d %d' % (c[0], c[1], c[2] + 4))
+        g.ctl('break %d %d %d --timeout 30' % tuple(c))
+        take_to(g, c, spot)
+        time.sleep(.5)
+    g.command('gamemode creative @s')
+    g.command('tp @s %d %d %d' % (cores[-1][0] + 3, cores[-1][1], cores[-1][2] + 6))
+    g.check('broken_contents_are_tracked', ledger(g)['spawned'] == len(cores), ledger(g))
+    if SCENARIO == 'merge-stale':
+        away_and_back(g, FORCE_B, (503, 99, 8))
+        g.check('x_back_from_its_file', item_stacks(g, 'ntm:niter') == 2, item_stacks(g, 'ntm:niter'))
+        take_to(g, (503, 100, 8), spots[1])
+        time.sleep(4)
+    else:
+        away_and_back(g, FORCE_C, (803, 99, 8))
+        g.check('all_back_from_their_file', item_stacks(g, 'ntm:niter') == 3, item_stacks(g, 'ntm:niter'))
+        g.command('tick freeze')
+        take_to(g, (809, 100, 3), spots[2])
+        g.command('tp @s %s %s %s' % spots[0])
+        g.command('tick step 60')
+        time.sleep(5)
+        g.command('tick unfreeze')
+        g.check('n_picked_up', inventory(g, 'ntm:niter') == 16, inventory(g, 'ntm:niter'))
+    folded = {'stacks': item_stacks(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter')}
+    g.check('d_folded_into_one_stack_of_64', folded['stacks'] == 1 and folded['entities'] == 64, folded)
+    time.sleep(3)
+    g.evidence['after_act'] = {**folded, 'ledger': ledger(g)}
+    g.save()
+
+
+def stale_verify(g, again=False):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = prep['cores'][-1]
+    g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
+    if SCENARIO == 'merge-stale' and not again:
+        # B (whose file shows X) stays away while the world settles and a confirmed save prunes the ledger.
+        g.command('forceload remove ' + FORCE_B)
+        g.check('older_holder_away_on_reopen', unloaded(g, (503, 99, 8)), 'B')
+        led = quiet(g, 8)
+        g.evidence['holder_away'] = {'entities': world_items(g, 'ntm:niter'), 'ledger': led}
+        g.ctl('save')
+    for force in (FORCE_B, FORCE_C):
+        g.command('forceload add ' + force)
+    led = quiet(g, 12)
+    detail = {'entities': world_items(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'ledger': led}
+    detail['total'] = detail['entities'] + detail['inventory']
+    detail['expected'] = 64 if SCENARIO == 'merge-stale' else 80
+    g.evidence['counted' + ('_again' if again else '')] = detail
+    g.check('niter_exactly_once', detail['total'] == detail['expected'], detail)
+
+
 def origin_expected():
     return 0 if SCENARIO == 'origin-vanish' else NITER
 
@@ -640,6 +734,8 @@ STEPS = {
     'origin-vanish': (break_prepare, origin_pickup_act, origin_pickup_verify),
     'origin-kill': (break_prepare, origin_kill_act, origin_kill_verify),
     'crossing-kill': (crossing_prepare, crossing_act, crossing_verify),
+    'merge-stale': (break_prepare, stale_act, stale_verify),
+    'pickup-merge': (break_prepare, stale_act, stale_verify),
     'save-quit': (crossing_prepare, save_quit_act, save_quit_verify),
     'mining': (mining_prepare, mining_act, mining_verify),
     'vanilla-break': (vanilla_break_prepare, break_act, break_verify),
