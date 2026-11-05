@@ -37,7 +37,7 @@ def classify_tags(tags):
                for k, v in values]
     text = ' '.join(v for _, v in cleaned).lower()
     # A dedication elsewhere cannot cancel a contradictory rights notice.
-    if re.search(r'all rights reserved|proprietary|(?:not|non|no)[\s-]+(?:licensed[\s-]+(?:under[\s-]+)?)?(?:cc0|lgpl)|(?:cc0|lgpl)[^.;,]{0,20}\b(?:denied|not granted)\b', text):
+    if re.search(r'all\s+rights(?:\s+are)?\s+reserved|proprietary|\bcc[- ]by\b|no permission|permission[^.;,]{0,20}not granted|\bnot\b[^.;,]{0,40}\b(?:cc0|lgpl|public domain)\b|(?:not|non|no)[\s-]*(?:licensed[\s-]+(?:under[\s-]+)?)?(?:cc0|lgpl)|(?:cc0|lgpl)[^.;,]{0,20}\b(?:denied|not granted)\b', text):
         raise ValueError('Conflicting audio copyright notice: ' + original)
     licenses = set()
     for key, value in cleaned:
