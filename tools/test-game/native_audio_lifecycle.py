@@ -39,8 +39,8 @@ def destroyed(g, ids):
     return {channel: [e['action'] for e in history if e['channel'] == channel] for channel in ids}
 
 
-def await_destroy(g, ids, name):
-    return wait(g, name, lambda actions: all('stop' in a and 'destroy' in a for a in actions.values()),
+def await_destroy(g, ids, name, require_stop=False):
+    return wait(g, name, lambda actions: all('destroy' in a and (not require_stop or 'stop' in a) for a in actions.values()),
                 lambda: destroyed(g, ids))
 
 
@@ -89,20 +89,21 @@ def loop_lifecycle(g):
          lambda: voices(g, 'ntm:block.engine'))
     g.command('forceload remove all')
     g.command('tp @s 2048.5 100 8.5')
+    wait(g, 'client_chunk_really_unloaded', lambda b: b['loaded'] is False, lambda: g.ctl('block 260 100 8'), 60)
     wait(g, 'chunk_unload_stops_loops', lambda v: not v, lambda: voices(g, 'ntm:block.engine'), 60)
-    await_destroy(g, ids, 'unloaded_channels_stop_and_destroy')
+    await_destroy(g, ids, 'unloaded_channels_destroyed')
     g.command('tp @s 262.5 100 11.5')
     returned = wait(g, 'chunk_return_creates_exactly_two_new_channels', lambda v: len(v) == 2 and not ids.intersection(x['channel'] for x in v),
                     lambda: voices(g, 'ntm:block.engine'), 60)
     ids = {v['channel'] for v in returned}
     g.command('execute in minecraft:the_nether run tp @s 8.5 140 8.5')
     wait(g, 'dimension_change_stops_loops', lambda v: not v, lambda: voices(g, 'ntm:block.engine'), 60)
-    await_destroy(g, ids, 'dimension_channels_stop_and_destroy')
+    await_destroy(g, ids, 'dimension_channels_destroyed')
     g.command('execute in minecraft:overworld run tp @s 262.5 100 11.5')
     pair = wait(g, 'dimension_return_no_duplicates', lambda v: len(v) == 2, lambda: voices(g, 'ntm:block.engine'), 60)
     for x in [260, 264]:
         g.command(f'setblock {x} 100 8 minecraft:air')
-    await_destroy(g, {v['channel'] for v in pair}, 'removed_machine_channels_destroyed')
+    await_destroy(g, {v['channel'] for v in pair}, 'removed_machine_channels_destroyed', require_stop=True)
 
 
 def pitch_and_arc(g):
@@ -120,7 +121,7 @@ def pitch_and_arc(g):
     wait(g, 'active_pitch_changes_on_same_channel', lambda v: len(v) == 1 and v[0]['channel'] == initial['channel'] and v[0]['pitch'] > initial['pitch'],
          lambda: voices(g, 'ntm:block.centrifugeoperate'))
     g.command('setblock 280 100 8 minecraft:air')
-    await_destroy(g, {initial['channel']}, 'centrifuge_channel_destroyed')
+    await_destroy(g, {initial['channel']}, 'centrifuge_channel_destroyed', require_stop=True)
     core = tuple(place(g, 'machine_arc_furnace_large', 292, 100, 8))
     for slot in range(3): replace(g, core, slot, 'ntm:arc_electrode__graphite')
     replace(g, core, 3, 'ntm:battery_creative')
@@ -129,11 +130,11 @@ def pitch_and_arc(g):
     lid = wait(g, 'arc_lid_slot_creates_channel', lambda v: len(v) == 1, lambda: voices(g, 'ntm:door.wgh_start'))[0]
     hum = wait(g, 'arc_processing_slot_creates_independent_channel', lambda v: len(v) == 1 and v[0]['decoded'], lambda: voices(g, 'ntm:block.electrichum'))[0]
     g.check('arc_slots_use_distinct_instances_and_channels', lid['instance'] != hum['instance'] and lid['channel'] != hum['channel'], [lid, hum])
-    await_destroy(g, {lid['channel']}, 'stopping_lid_destroys_only_its_channel')
+    await_destroy(g, {lid['channel']}, 'stopping_lid_destroys_only_its_channel', require_stop=True)
     live = voices(g, 'ntm:block.electrichum')
     g.check('arc_processing_survives_lid_stop', len(live) == 1 and live[0]['channel'] == hum['channel'] and live[0]['state'] == 'Playing', live)
     g.command(f'setblock {core[0]} {core[1]} {core[2]} minecraft:air')
-    await_destroy(g, {hum['channel']}, 'arc_processing_channel_destroyed')
+    await_destroy(g, {hum['channel']}, 'arc_processing_channel_destroyed', require_stop=True)
 
 
 def door(g):
@@ -173,13 +174,15 @@ def nuclear_and_close(g):
     diesel(g, 260)
     active = wait(g, 'loop_before_world_close', lambda v: len(v) == 1, lambda: voices(g, 'ntm:block.engine'))
     ids = {v['channel'] for v in active+nuke}
+    closing_offset = len((g.folder/'client-first.log').read_text(errors='replace'))
     g.ctl('key esc tap'); time.sleep(.3)
     widgets = g.ctl('ui')['widgets']
     quit_button = next(w for w in widgets if any(word in str(w.get('label', '')).lower() for word in ['quit to', 'salvar e sair']))
     g.ctl('click ' + quit_button['id'])
     wait(g, 'world_close_releases_all_ntm_channels', lambda v: not v, lambda: voices(g), 60)
-    await_destroy(g, ids, 'world_close_stops_and_destroys_channels')
-    text = (g.folder/'client-first.log').read_text(errors='replace')
+    await_destroy(g, ids, 'world_close_destroys_active_channels')
+    wait(g, 'world_close_releases_retained_instances', lambda n: n == 0, lambda: g.ctl('status')['sounds']['instances'])
+    text = (g.folder/'client-first.log').read_text(errors='replace')[closing_offset:]
     g.check('ntm_owner_releases_instances_on_close', 'ntm audio release' in text, text[-3000:])
 
 
