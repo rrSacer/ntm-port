@@ -596,3 +596,31 @@ bindings = [
   { name = "channel", ty = "&str", value = "channel" },
   { name = "data", ty = "&[u8]", value = "data" },
 ]
+
+# Existing APIs: preserve the normal player break and its drops, attach chunk-owned debt to those entities.
+[[injection]]
+id = "player-container-retention"
+hook = "destroy_block"
+hook_version = 1
+kind = "RETURN"
+helper = "player_break.rs"
+bindings = [
+  { name = "_value", ty = "()", value = "$value" },
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "state", ty = "horizon_world::registry::BlockStateId", value = "state" },
+  { name = "canceled", ty = "bool", value = "*canceled" },
+]
+
+[[injection]]
+id = "player-container-spawn"
+hook = "item_spawn"
+hook_version = 1
+kind = "RETURN"
+helper = "player_spill_spawn.rs"
+bindings = [
+  { name = "_value", ty = "()", value = "$value" },
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "entity", ty = "u32", value = "entity" },
+  { name = "pos", ty = "[f64; 3]", value = "pos" },
+]
