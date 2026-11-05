@@ -98,6 +98,37 @@ def saved_coupled(folder, scenario):
     return states
 
 
+def record(folder, kind, cx, cz):
+    """The decompressed record of chunk (cx, cz) in `kind` (region/entities) of the test world, or b''."""
+    path = folder / f'saves/CrashTest/dimensions/minecraft/overworld/{kind}/r.{cx >> 5}.{cz >> 5}.mca'
+    if not path.exists():
+        return b''
+    data = path.read_bytes()
+    i = ((cx & 31) + (cz & 31) * 32) * 4
+    offset = int.from_bytes(data[i:i + 3], 'big') * 4096
+    if offset == 0:
+        return b''
+    length = int.from_bytes(data[offset:offset + 4], 'big')
+    return zlib.decompress(data[offset + 5:offset + 4 + length])
+
+
+def stale_disk(folder, scenario):
+    """What the files say before the reopen, for the scenarios built on an entity file that lags: tagged niter
+    entities in each holder's file, and the folded markers of the origin's ledger."""
+    if scenario not in ('merge-stale', 'pickup-merge'):
+        return None
+    import re
+    tag = rb'[0-9a-f]{16}:\d+@-?\d+,-?\d+'
+    out = {}
+    for name, (cx, cz) in {'A': (8, 0), 'B': (31, 0), 'C': (50, 0)}.items():
+        raw = record(folder, 'entities', cx, cz)
+        out[name] = {'niter_entities': raw.count(b'ntm:niter'), 'tags': [t.decode() for t in re.findall(tag, raw)]}
+    ledger = record(folder, 'region', 8, 0)
+    found = re.search(rb'\{"entries".*?\}(?=\x00|$)', ledger, re.S) or re.search(rb'\{"(applied|gone)".*?\}(?=\x00|$)', ledger, re.S)
+    out['origin_ledger'] = found.group(0).decode(errors='replace')[:3000] if found else None
+    return out
+
+
 def play(args, base, scratch, env, scenario, point):
     folder = scratch / ('point-' + point.replace(':', '-'))
     crash_proof.clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-crash-more-act.json',
@@ -134,7 +165,7 @@ def play(args, base, scratch, env, scenario, point):
             if not result['killed_at_the_point']:
                 raise AssertionError('client exited without reaching ' + point)
             (folder / 'control.sock').unlink(missing_ok=True)
-        result['disk_before_reopen'] = saved_coupled(folder, scenario)
+        result['disk_before_reopen'] = saved_coupled(folder, scenario) or stale_disk(folder, scenario)
         if scenario.startswith('coupled') and point.startswith(('live_chunk:', 'region_record:')):
             before, after = saved_coupled(base, scenario), result['disk_before_reopen']
             changed = [c for c in ('2', '3') if before[c] != after[c]]

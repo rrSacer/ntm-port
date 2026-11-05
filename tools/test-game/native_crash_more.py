@@ -366,12 +366,13 @@ def mining_verify(g, again=False):
 MIXER = (140, 100, 8)
 # origin-merge's second mixer, in the same chunk (one ledger, one merge key) and far enough not to fold with the first.
 MIXER2 = (134, 100, 8)
-MIXER3 = (130, 100, 8)
+MIXER3 = (128, 100, 8)
 NITER = int(os.environ.get('NTM_CRASH_NITER', '16'))
 # The mixers of a scenario (all in chunk (8,0): one ledger) and the niter each holds.
 MIXERS = {'origin-merge': [(MIXER2, NITER // 2), (MIXER, NITER // 2)],
-          'merge-stale': [(MIXER2, 32), (MIXER, 32)],
-          'pickup-merge': [(MIXER3, 16), (MIXER2, 32), (MIXER, 32)]}
+          # The smaller folds into the larger: the stack whose older copy stays in B is the one that goes.
+          'merge-stale': [(MIXER2, 16), (MIXER, 48)],
+          'pickup-merge': [(MIXER3, 16), (MIXER2, 24), (MIXER, 40)]}
 # Two far destinations: forced tickets keep two rings of neighbours, these unload on their own.
 DEST_B, DEST_C = (503.5, 100, 8.5), (803.5, 100, 8.5)
 FORCE_B, FORCE_C = '496 0 511 15', '800 0 815 15'
@@ -388,8 +389,11 @@ def break_prepare(g):
     g.ctl('wait-ready 120')
     g.close()
     cores = []
-    for (x, y, z), each in MIXERS.get(SCENARIO, [(MIXER, NITER)]):
+    mixers = MIXERS.get(SCENARIO, [(MIXER, NITER)])
+    # The ground of all of them first: preparing one's ground clears what stands beside it.
+    for (x, y, z), _ in mixers:
         g.ground(x - 3, y, z, width=8)
+    for (x, y, z), each in mixers:
         g.command('clear @s')
         g.command('give @s ntm:machine_mixer 1')
         if SCENARIO.startswith('origin') or SCENARIO in MIXERS:
