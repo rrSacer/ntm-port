@@ -83,6 +83,8 @@ class SoundsTest(unittest.TestCase):
             {'LICENSE': 'CC0', 'COMMENT': 'Not licensed as CC0'},
             {'LICENSE': 'CC0', 'COMMENT': 'License: CC-BY-NC'},
             {'COMMENT': 'NotCC0'},
+            {'Copyright': 'Example Studio'},
+            {'Rights': 'Example Studio'},
         ]:
             with self.subTest(tags=tags), self.assertRaises(ValueError):
                 classify_tags([tags])

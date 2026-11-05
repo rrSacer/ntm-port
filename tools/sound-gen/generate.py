@@ -35,7 +35,7 @@ def classify_tags(tags):
         raise ValueError('Incompatible audio copyright notice: ' + original)
     cleaned = [(k, ENCODER_NOTICE.sub('', v) if k in ('software', 'encoder', 'encoded_by') else v)
                for k, v in values]
-    text = ' '.join(v for _, v in cleaned).lower()
+    text = ' '.join(k + ': ' + v for k, v in cleaned if v.strip()).lower()
     # A dedication elsewhere cannot cancel a contradictory rights notice.
     if re.search(r'all\s+rights(?:\s+are)?\s+reserved|proprietary|\bcc[- ]by\b|no permission|permission[^.;,]{0,20}not granted|\bnot\b[^.;,]{0,40}\b(?:cc0|lgpl|public domain)\b|(?:not|non|no)[\s-]*(?:licensed[\s-]+(?:under[\s-]+)?)?(?:cc0|lgpl)|(?:cc0|lgpl)[^.;,]{0,20}\b(?:denied|not granted)\b', text):
         raise ValueError('Conflicting audio copyright notice: ' + original)
@@ -56,7 +56,7 @@ def classify_tags(tags):
         licenses.update(declared)
     if len(licenses) > 1:
         raise ValueError('Conflicting audio copyright notice: ' + original)
-    if not licenses and re.search(r'copyright|©|\bcc0\b|\blgpl\b|\blicen[cs]e[ds]?\b', text):
+    if not licenses and re.search(r'copyright|©|\brights\b|\bcc0\b|\blgpl\b|\blicen[cs]e[ds]?\b', text):
         raise ValueError('Incompatible or unspecified audio copyright notice: ' + original)
     return next(iter(licenses), 'LGPL-3.0-only')
 
