@@ -23,6 +23,7 @@ struct Playing {
 #[derive(Default)]
 struct Client {
     pending: Vec<(u32, [f64; 3])>,
+    nuclear: Vec<InstanceId>,
     dimension: String,
     last: Option<Instant>,
     playing: HashMap<Key, Playing>,
@@ -39,6 +40,12 @@ fn stop(game: &mut crate::game::Game<'_>, p: &mut Playing) {
         game.audio.stop_and_release(id);
     }
 }
+fn stop_nuclear(game: &mut crate::game::Game<'_>, client: &mut Client) {
+    for id in client.nuclear.drain(..) {
+        if diagnostic() { eprintln!("ntm nuclear release instance={id} channel={:?}", game.audio.engine().channel(id)); }
+        game.audio.stop_and_release(id);
+    }
+}
 pub(super) fn clear(game: &mut crate::game::Game<'_>) {
     if !game.native_window() {
         return;
@@ -52,6 +59,7 @@ pub(super) fn clear(game: &mut crate::game::Game<'_>) {
         for p in client.playing.values_mut() {
             stop(game, p);
         }
+        stop_nuclear(game, &mut client);
     }
 }
 pub(super) fn frame(game: &mut crate::game::Game<'_>) {
@@ -70,6 +78,7 @@ pub(super) fn frame(game: &mut crate::game::Game<'_>) {
         for p in client.playing.values_mut() {
             stop(game, p);
         }
+        stop_nuclear(game, client);
         client.playing.clear();
         client.pending.clear();
         client.dimension = dimension;
@@ -94,6 +103,10 @@ fn tick(game: &mut crate::game::Game<'_>, client: &mut Client) {
         return;
     };
     let at = [player.position.x, player.position.y, player.position.z];
+    client.nuclear.retain(|id| {
+        if game.audio.is_active(*id) { true } else { game.audio.release(*id); false }
+    });
+    let nuclear = &mut client.nuclear;
     client.pending.retain_mut(|(age, position)| {
         *age += 1;
         let distance = (0..3)
@@ -102,13 +115,12 @@ fn tick(game: &mut crate::game::Game<'_>, client: &mut Client) {
             .sqrt();
         if ntm_core::sounds::nuclear_arrived(*age, distance) {
             if diagnostic() { eprintln!("ntm nuclear arrived age={age} distance={distance} at={position:?}"); }
-            game.audio.play_on(
-                4,
-                "ntm:weapon.nuclearexplosion",
-                Some(*position),
-                10_000.,
-                1.,
-            );
+            // A long one-shot belongs to this world too: retain its handle
+            // until completion or owner teardown, just like the machine loops.
+            let event = "ntm:weapon.nuclearexplosion";
+            let sound = SoundInstance::at(event, 4, 10_000., 1., SoundEngine::unseeded(), *position);
+            *game.audio.heard.entry(event.into()).or_default() += 1;
+            nuclear.push(game.audio.play_instance(sound, true).0);
             false
         } else {
             *age < 149
