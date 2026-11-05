@@ -618,5 +618,7 @@ clientes continua na onda 7.
 Release de aceitação: código NTM `4771ab2b`, motor `f22df7b81`;
 binário SHA-256 `aac79a3bec5e21a40eba1139b075abbc3bdb109dbea6a2659b1132201e51bc76`;
 pacote SHA-256 `9ab18eacc7e9e1573d18439d3d675191eb9aaaa43a949300bd7dfe36a3cee0aa`.
-A nova regressão integral ainda está em andamento em `proofs-review-v4`; os jogos
-e a prova ativa usam o mesmo release. Detalhes em [sons-hbm.md](sons-hbm.md).
+A nova regressão integral concluiu 19/19 relatórios e 1.022 verificações em
+`proofs-review-v4`: 68 da prova ativa, 13 de resolução/decoder e 941 gerais.
+Os 17 cenários CLI retornaram 0; dims inclui idle e idle-clean. Todos usam o mesmo
+binário; inventory-proxy usa sua fixture oficial, e os outros 18 usam o pacote NTM. Detalhes em [sons-hbm.md](sons-hbm.md).

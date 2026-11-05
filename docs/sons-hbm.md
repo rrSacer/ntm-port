@@ -62,6 +62,34 @@ Release congelado para a nova aceitação: código NTM `4771ab2b17578edb590c28ba
 
 A nova prova `audio-lifecycle` passou com 68 verificações, usando o backend ativo sem hardware e o dono NTM em jogo. Mede dois diesels sem duplicação, PCM não nulo, ganho, pausa/resume com cursor preservado e IDs estáveis, chunk realmente descarregado/reentrada, dimensão, remoção, pitch de centrífuga em canal ativo e slots independentes do arco. O nuclear percorre componentes reais e mensagem oficial até o gate de idade/distância e a alocação no pool de streaming; sair do mundo para/destroi esse canal e os loops e zera as instâncias retidas. A porta verifica dois traces, um canal e uma transição em cada interação. A prova anterior de resolução/decoder foi conservada e também passou (13 verificações).
 
-A regressão completa em `.agent-tmp/sons/proofs-review-v4` ainda está em andamento; não há declaração de aceite integral enquanto não houver 19 relatórios aprovados. `release-review-v4.json` registra os hashes; `accepted-regression.json` confere todos os relatórios. Inventory-proxy usa sua fixture oficial com o mesmo binário. Os ensaios anteriores em proofs-review-v3 são diagnósticos: corrigiram a preparação de menus/plataforma do harness e revelaram o canal nuclear que continuava na tela de título, corrigido antes deste release.
+A regressão completa em `.agent-tmp/sons/proofs-review-v4` terminou com **19/19 relatórios aprovados e 1.022 verificações registradas**: 68 da prova ativa, 13 de resolução/decoder e 941 da regressão geral. Os 17 cenários CLI retornaram 0; dims gera também os dois relatórios idle em mundos próprios. Não há relatório parcial/falho aceito, nota de pendência ou cenário omitido na rodada final. Os hashes foram conferidos novamente após seu término.
+
+| Cenário | Verificações registradas |
+| --- | ---: |
+| sounds | 13 |
+| audio-lifecycle | 68 |
+| items | 204 |
+| mining | 18 |
+| bombs | 49 |
+| zirnox | 136 |
+| pile | 85 |
+| pile-meltdown | 32 |
+| dims | 14 |
+| dims-idle | 2 |
+| dims-idle-clean | 1 |
+| inventory-proxy | 12 |
+| radioisotopes | 67 |
+| solar | 36 |
+| combustion | 15 |
+| catalog | 251 |
+| comparator | 9 |
+| stations | 5 |
+| recipes | 5 |
+
+Recipes executou montadora e bigorna; o JSON final preserva as cinco verificações da bigorna. A soma acima conta os JSONs finais preservados, sem duplicar fases sobrescritas pelo roteiro.
+
+`release-review-v4.json` registra binário, pacote e revisões; `accepted-regression.json` confere o hash do binário nos 19 relatórios e o pacote NTM em 18. Inventory-proxy usa sua fixture oficial (`cde4e002e3acece9417d207217799937fd490f7b7ec29895fb8c75613093cd1e`) com o mesmo binário. Logs, JSONs de controle e capturas estão junto de cada report.json. A prova ativa aceita está em `audio-lifecycle-0armsl2z`.
+
+Os ensaios anteriores em proofs-review-v3 são diagnósticos: corrigiram preparação de menus/plataforma do harness e revelaram o canal nuclear que continuava Playing na tela de título, corrigido antes deste release. Nenhum resultado desses ensaios substitui a aceitação integral de proofs-review-v4.
 
 Os mundos são descartáveis e ficam no SSD. A saída física permanece desativada: a prova atual mede canais e PCM reais do mixer, além da resolução e decodificação; não afirma escuta em hardware. LAN com dois clientes permanece para a onda 7. O ambiente gráfico registra aviso de antialiasing temporal indisponível, independente dos checks de áudio.
