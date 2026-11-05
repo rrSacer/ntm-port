@@ -172,7 +172,7 @@ fn suck(d: &mut Drill, host: &mut impl ServerHost, dim: &str, core:Pos, start: P
         if id == oil_drill::OIL || id == oil_drill::BEDROCK_OIL {
             // A well over bedrock oil finds it and takes nothing (`doSuck`).
             if id == oil_drill::OIL || d.shape == Shape::Fracker {
-                if d.shape!=Shape::Fracker {
+                if d.shape == Shape::Well {
                     host.show(dim,&crate::blast::visuals::Show::Sound{id:"minecraft:entity.generic.splash",source:"neutral",at:core.map(f64::from),volume:2.,pitch:0.5});
                 }
                 if d.suck(id) {

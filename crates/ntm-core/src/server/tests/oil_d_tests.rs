@@ -27,6 +27,12 @@ fn block(g: &Game, p: Pos) -> String {
     g.world.borrow().get(OW, p)
 }
 
+fn splashes(g: &Game) -> Vec<crate::blast::visuals::Show> {
+    g.world.borrow().shown.iter().filter_map(|(_, show)| {
+        matches!(show, crate::blast::visuals::Show::Sound { id: "minecraft:entity.generic.splash", .. }).then(|| show.clone())
+    }).collect()
+}
+
 /// The pumpjack's pipe goes down through the air to the deposit and sucks
 /// it: 750 mB of oil and some gas each time.
 #[test]
@@ -43,6 +49,7 @@ fn a_pumpjack_pipes_down_to_a_deposit_and_pumps_it() {
     assert!(d.tanks[0].mb >= 750 && d.tanks[0].mb.is_multiple_of(750), "{:?}", d.tanks);
     assert!(d.tanks[1].mb > 0);
     assert!(d.fluid_offer("oil") > 0);
+    assert!(splashes(&g).is_empty(), "Pumpjack overrides onSuck without splash");
 }
 
 /// An emptied deposit under the pipe leads to the oil beside it.
@@ -60,6 +67,9 @@ fn an_emptied_deposit_leads_to_more_oil() {
     g.run(60);
     assert!(state(&mut g, at).tanks[0].mb >= 500);
     assert_eq!(block(&g, [10, 69, 4]), oil_drill::EMPTY, "não perfura o depósito vazio que leva ao petróleo");
+    let sounds = splashes(&g);
+    assert!(!sounds.is_empty());
+    assert!(sounds.iter().all(|s| matches!(s, crate::blast::visuals::Show::Sound { source: "neutral", at: [10., 70., 4.], volume: 2., pitch: 0.5, .. })));
 }
 
 /// The fracker reaches the bedrock oil (the 26.3 floor) and spends 10 mB of
@@ -83,6 +93,7 @@ fn the_fracker_takes_bedrock_oil_with_its_solution() {
     assert!(d.tanks[0].mb >= 100 && d.tanks[0].mb.is_multiple_of(100), "{:?}", d.tanks);
     assert_eq!(1_000 - d.tanks[2].mb, d.tanks[0].mb / 10, "10 mB por 100 de petróleo");
     assert_eq!(block(&g, [16, -63, 4]), oil_drill::BEDROCK_OIL, "não se esgota");
+    assert!(splashes(&g).is_empty(), "Fracker has no splash");
 }
 
 /// Saved inert, they load as drills.
