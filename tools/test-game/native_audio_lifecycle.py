@@ -12,6 +12,7 @@ import time
 from native_game import Game
 from native_recipes import screen_json
 from native_solar_stirling import place
+from native_combustion import facing_of, FACING
 from native_bombs import assemble, lever
 
 
@@ -45,7 +46,16 @@ def await_destroy(g, ids, name, require_stop=False):
 
 
 def replace(g, at, slot, item, count=1):
-    g.command(f'item replace block {at[0]} {at[1]} {at[2]} container.{slot} with {item} {count}')
+    if getattr(g, 'audio_arc_core', None) == at:
+        fx, _, fz = FACING[facing_of(g, at)]
+        g.close()
+        g.command(f'tp @s {at[0]-4*fx+.5} {at[1]} {at[2]-4*fz+.5}')
+        g.ctl(f'interact {at[0]-2*fx} {at[1]} {at[2]-2*fz}')
+        time.sleep(.3)
+    else:
+        g.open(*at)
+    g.put(item, count, slot)
+    g.close()
 
 
 def diesel(g, x):
@@ -123,6 +133,7 @@ def pitch_and_arc(g):
     g.command('setblock 280 100 8 minecraft:air')
     await_destroy(g, {initial['channel']}, 'centrifuge_channel_destroyed', require_stop=True)
     core = tuple(place(g, 'machine_arc_furnace_large', 292, 100, 8))
+    g.audio_arc_core = core
     for slot in range(3): replace(g, core, slot, 'ntm:arc_electrode__graphite')
     replace(g, core, 3, 'ntm:battery_creative')
     g.command(f'tp @s {core[0]+.5} {core[1]} {core[2]+4.5}')
