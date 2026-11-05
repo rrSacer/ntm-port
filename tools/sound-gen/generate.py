@@ -23,12 +23,42 @@ TOKEN = re.compile(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\n]*|/\*.*?\*/',
 EXCLUDED_FILES = {'tool/boltgun.ogg', 'block/leverStop.ogg', 'block/reactorStart.ogg', 'block/door_close_2.ogg'}
 
 
+# Only this encoder's own notice was audited in the imported files. Remove
+# the exact notice, not its field: an appended audio copyright still fails.
+ENCODER_NOTICE = re.compile(r'File created by GoldWave\.\s+GoldWave copyright \(C\) Chris Craig', re.I)
+
+
 def classify_tags(tags):
-    text = ' '.join(str(k) + ': ' + str(v) for group in tags for k, v in group.items() if k.lower() not in ('software', 'encoder', 'encoded_by'))
-    lower = text.lower()
-    if 'sound dogs' in lower or ('copyright' in lower and not any(license in lower for license in ('cc0', 'lgpl'))):
-        raise ValueError('Incompatible or unspecified audio copyright notice: ' + text)
-    return 'CC0-1.0' if 'cc0' in lower else 'LGPL-3.0-only'
+    values = [(str(k).lower(), str(v)) for group in tags for k, v in group.items()]
+    original = ' '.join(k + ': ' + v for k, v in values)
+    if 'sound dogs' in original.lower():
+        raise ValueError('Incompatible audio copyright notice: ' + original)
+    cleaned = [(k, ENCODER_NOTICE.sub('', v) if k in ('software', 'encoder', 'encoded_by') else v)
+               for k, v in values]
+    text = ' '.join(v for _, v in cleaned).lower()
+    # A dedication elsewhere cannot cancel a contradictory rights notice.
+    if re.search(r'all rights reserved|proprietary|(?:not|non|no)[\s-]+(?:licensed[\s-]+(?:under[\s-]+)?)?(?:cc0|lgpl)|(?:cc0|lgpl)[^.;,]{0,20}\b(?:denied|not granted)\b', text):
+        raise ValueError('Conflicting audio copyright notice: ' + original)
+    licenses = set()
+    for key, value in cleaned:
+        value = value.strip()
+        declared = set()
+        # Recognize affirmative audio declarations, never e.g. "Edited with
+        # LGPL tools" or a license name in an encoder's technical description.
+        if key in ('software', 'encoder', 'encoded_by'):
+            continue
+        if re.fullmatch(r'(?:Licensed under\s+)?CC0(?:-1\.0|\s+1\.0)?[.!]?', value, re.I) or re.match(r'^CC0,\s*mix of CC0 sounds\b', value, re.I) or re.fullmatch(r'https?://creativecommons\.org/publicdomain/zero/1\.0/?', value, re.I):
+            declared.add('CC0-1.0')
+        if re.fullmatch(r'(?:Licensed under\s+)?(?:LGPL(?:-3\.0-only|v?3(?:\.0)?)|GNU Lesser General Public License(?: version)? 3(?:\.0)?)[.!]?', value, re.I):
+            declared.add('LGPL-3.0-only')
+        if key in ('license', 'licence') and not declared:
+            raise ValueError('Unrecognized audio copyright notice: ' + original)
+        licenses.update(declared)
+    if len(licenses) > 1:
+        raise ValueError('Conflicting audio copyright notice: ' + original)
+    if not licenses and re.search(r'copyright|©|\bcc0\b|\blgpl\b|\blicen[cs]e[ds]?\b', text):
+        raise ValueError('Incompatible or unspecified audio copyright notice: ' + original)
+    return next(iter(licenses), 'LGPL-3.0-only')
 
 
 def audio_tags(path):
