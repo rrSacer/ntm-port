@@ -89,11 +89,15 @@ pub struct Shredder {
     pub slots: Slots,
     pub power: u64,
     pub progress: u32,
+    #[serde(skip)]
+    pub sound_cycle: u8,
+    #[serde(skip)]
+    pub sound_hit: bool,
 }
 
 impl Default for Shredder {
     fn default() -> Self {
-        Self { slots: vec![None; SLOTS], power: 0, progress: 0 }
+        Self { slots: vec![None; SLOTS], power: 0, progress: 0, sound_cycle: 0, sound_hit: false }
     }
 }
 
@@ -165,6 +169,9 @@ impl Shredder {
 
     /// One tick (`updateEntity`); true when its items changed.
     pub fn step(&mut self, r: &Recipes) -> bool {
+        self.sound_hit = false;
+        if self.progress == 0 { self.sound_cycle = 0; }
+        let mut processed = false;
         if self.power > 0 && self.can_process(r) {
             self.progress += 1;
             self.power = self.power.saturating_sub(HE_PER_TICK);
@@ -178,12 +185,14 @@ impl Shredder {
                 }
                 self.progress = 0;
                 self.process(r);
-                return true;
+                processed = true;
             }
+            self.sound_hit = self.sound_cycle == 0;
+            self.sound_cycle = (self.sound_cycle + 1) % 50;
         } else {
             self.progress = 0;
         }
-        false
+        processed
     }
 }
 

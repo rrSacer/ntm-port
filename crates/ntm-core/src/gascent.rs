@@ -99,6 +99,9 @@ pub struct GasCent {
     pub output: (Pseudo, u32),
     pub power: u64,
     pub progress: u32,
+    /// Java isProgressing, including a successful tick that resets progress.
+    #[serde(skip)]
+    pub running: bool,
     /// The 4 output slots, as (item, count).
     #[serde(default)]
     pub out: Vec<(String, u32)>,
@@ -119,6 +122,7 @@ impl Default for GasCent {
             output: (Pseudo::Leuf6, 0),
             power: 0,
             progress: 0,
+            running: false,
             out: Vec::new(),
             upgrade: false,
             slots: Vec::new(),
@@ -220,7 +224,8 @@ impl Logic for GasCent {
             self.tank.drain(n);
             self.input.1 += n;
         }
-        if self.can_enrich() {
+        self.running = self.can_enrich();
+        if self.running {
             self.progress += 1;
             let cost = if self.upgrade { 300 } else { 200 };
             if self.power < cost {

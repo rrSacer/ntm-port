@@ -29,6 +29,7 @@ pub fn event(java: &str) -> Option<&'static str> {
     events().events.get(java).map(String::as_str)
 }
 pub fn category(event: &str) -> Option<&'static str> {
+    if event == "minecraft:entity.minecart.riding" { return Some("neutral"); }
     events().categories.get(event).map(String::as_str)
 }
 
@@ -40,6 +41,7 @@ pub enum Envelope {
     Leviathan,
     Industrial,
     Assembler,
+    /// Read older audio snapshots; new shredders emit server-owned one-shots.
     Shredder,
     Refinery,
     ArcLid,
@@ -115,7 +117,7 @@ pub fn machine(m: &Machine) -> Vec<Loop> {
         Data::GasCent(c) => {
             let mut s = sound(
                 "hbm:block.centrifugeOperate",
-                if c.progress > 0 { 1. } else { 0. },
+                if c.running { 1. } else { 0. },
                 1.,
                 10.,
             );
@@ -132,16 +134,6 @@ pub fn machine(m: &Machine) -> Vec<Loop> {
             s.envelope = Envelope::Refinery;
             Some(s)
         }
-        Data::Shredder(shredder) => Some(Loop {
-            slot: 0,
-            value: 0.,
-            event: "minecraft:entity.minecart.riding".into(),
-            volume: if shredder.progress > 0 { 1. } else { 0. },
-            pitch: 0.75,
-            range: 16.,
-            envelope: Envelope::Shredder,
-            offset: [0.; 3],
-        }),
         Data::Combustion(c) => match &**c {
             Combustion::Diesel(d) if d.was_on => {
                 Some(sound("hbm:block.engine", 1., 1., 10.))
@@ -223,6 +215,50 @@ pub fn gain(volume: f32, range: f32, distance: f32) -> f32 {
 mod tests {
     use super::*;
     use crate::machine::Kind;
+    #[test]
+    fn a_gas_recipe_completion_keeps_the_java_progressing_flag() {
+        use crate::machine::Logic;
+        let mut m = Machine::new(Kind::GasCent, "ntm:machine_gascent", None);
+        let Data::GasCent(c) = &mut m.data else { panic!() };
+        c.input = (crate::gascent::Pseudo::Nuf6, 400);
+        c.power = crate::gascent::MAX_POWER;
+        for _ in 0..crate::gascent::SPEED { c.tick(); }
+        assert_eq!(c.progress, 0);
+        assert_eq!(c.input.1, 0);
+        assert!(c.running);
+        assert_eq!(machine(&m)[0].volume, 1.);
+        let Data::GasCent(c) = &mut m.data else { panic!() };
+        c.tick();
+        assert!(!c.running);
+        assert_eq!(machine(&m)[0].volume, 0.);
+    }
+    #[test]
+    fn shredder_cues_follow_the_server_cycle_and_reset_between_recipes() {
+        use crate::server::container_bridge::Stack;
+        let mut m = Machine::new(Kind::Shredder, "ntm:machine_shredder", None);
+        let Data::Shredder(s) = &mut m.data else { panic!() };
+        s.power = crate::shredder::MAX_POWER;
+        s.slots[0] = Some(Stack::new("minecraft:iron_ingot", 2));
+        for slot in crate::shredder::BLADES { s.slots[slot] = Some(Stack::new("ntm:blades_desh", 1)); }
+        let mut before = mark(&m);
+        let mut heard = Vec::new();
+        for tick in 1..=130 {
+            let Data::Shredder(s) = &mut m.data else { panic!() };
+            s.step(crate::shredder::Recipes::ntm());
+            let after = mark(&m);
+            // Other machines can publish several transactions in this tick.
+            // Those saves must not replay this pulse before the completed tick.
+            for _ in 0..3 { assert!(changed(&before, &after, false).is_empty()); }
+            let cues = changed(&before, &after, true);
+            if !cues.is_empty() {
+                assert_eq!((cues[0].event, cues[0].volume, cues[0].pitch), ("minecraft:entity.minecart.riding", 1., 0.75));
+                heard.push(tick);
+            }
+            before = after;
+        }
+        assert_eq!(heard, [1, 51, 61, 111]);
+        assert!(machine(&m).is_empty());
+    }
     #[test]
     fn java_constant_events_and_boiler_coast_are_preserved() {
         let mut diesel = Machine::new(Kind::Combustion, "ntm:machine_diesel", None);
@@ -312,16 +348,16 @@ mod tests {
             1,
         ));
         with_slots(&mut before, &m.block, &slots);
-        assert!(changed(&before, &before).is_empty());
+        assert!(changed(&before, &before, true).is_empty());
         slots[4] = Some(crate::server::container_bridge::Stack::new(
             "ntm:upgrade_speed_2",
             1,
         ));
         let mut after = mark(&m);
         with_slots(&mut after, &m.block, &slots);
-        assert_eq!(changed(&before, &after)[0].event, "ntm:item.upgradeplug");
+        assert_eq!(changed(&before, &after, true)[0].event, "ntm:item.upgradeplug");
         after.generation = 1;
-        assert!(changed(&before, &after).is_empty());
+        assert!(changed(&before, &after, true).is_empty());
     }
     #[test]
     fn audio_dynamic_range_does_not_scale_with_volume() {
@@ -358,6 +394,7 @@ pub struct Mark {
     warning: u32,
     loader: Option<f64>,
     steam_hit: Option<f32>,
+    shredder_hit: bool,
     upgrades: Vec<Option<crate::server::container_bridge::Stack>>,
     upgrade_offset: [f64; 3],
 }
@@ -393,13 +430,17 @@ pub fn mark(machine: &Machine) -> Mark {
     {
         mark.steam_hit = Some(0.5 + e.acceleration / 80.);
     }
+    if let Data::Shredder(s) = &machine.data { mark.shredder_hit = s.sound_hit; }
     mark
 }
-pub fn changed(before: &Mark, after: &Mark) -> Vec<Cue> {
+pub fn changed(before: &Mark, after: &Mark, completed_tick: bool) -> Vec<Cue> {
     if before.generation != after.generation {
         return vec![];
     }
     let mut out = Vec::new();
+    if completed_tick && after.shredder_hit {
+        out.push(Cue { event: "minecraft:entity.minecart.riding", volume: 1., pitch: 0.75, offset: [0.; 3] });
+    }
     for (old, new) in before.upgrades.iter().zip(&after.upgrades) {
         if old != new
             && new
@@ -409,7 +450,9 @@ pub fn changed(before: &Mark, after: &Mark) -> Vec<Cue> {
             out.push(cue("hbm:item.upgradePlug", 1., 1., after.upgrade_offset));
         }
     }
-    if let Some(pitch) = after.steam_hit {
+    if let Some(pitch) = after.steam_hit
+        && completed_tick
+    {
         out.push(cue("hbm:block.steamEngineOperate", 1., pitch, [0.; 3]));
     }
     if let (Some((old, old_input)), Some((new, new_input))) = (&before.press, &after.press)

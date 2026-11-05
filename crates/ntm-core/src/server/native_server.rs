@@ -100,7 +100,7 @@ impl Server {
         self.radiation_tick(host);
         if !frozen.is_empty(){self.ready.topo_dirty=true;self.ready.world.machines.append(&mut frozen);}
         self.zirnox_effects(host);
-        self.native_save(host);
+        self.native_save(host, true);
         self.keep_world(host);
     }
 
@@ -328,14 +328,16 @@ impl Server {
 
     /// The loaded machines whose state changed since it was last kept: kept
     /// with their block entities.
-    pub(super) fn native_save(&mut self, host: &mut impl ServerHost) {
+    pub(super) fn native_save(&mut self, host: &mut impl ServerHost, completed_tick: bool) {
         let tick=self.tick;
         let Some(r) = self.ready() else { return };
         for (key, m) in &mut r.world.machines {
             if r.loaded.get(key) != Some(&true) || m.generation==u64::MAX || r.world.generations.get(key).copied().unwrap_or(0)!=m.generation || !host.get_block(&key.0,key.1).is_some_and(|s|blockstate::id_of(&s)==m.block) {
                 continue;
             }
-            m.audio = crate::sounds::machine(m);
+            // Intermediate local transactions also save every machine. Publish
+            // loop state and tick pulses only after all simulation stages finish.
+            if completed_tick { m.audio = crate::sounds::machine(m); }
             let Ok(json) = serde_json::to_string(&*m) else { continue };
             if r.native_saved.get(key) != Some(&json) {
                 // Marked kept only once written: an unreachable block entity
@@ -346,13 +348,13 @@ impl Server {
                 r.native_saved.insert(key.clone(), json);
             }
             let seed=crate::hash::mix(crate::hash::fnv64(format!("{:?}:{}",key,tick).as_bytes())) as i64;
-            for cue in crate::sounds::ambient(m,seed) {
+            for cue in if completed_tick { crate::sounds::ambient(m,seed) } else { Vec::new() } {
                 host.show(&key.0,&crate::blast::visuals::Show::Sound{id:cue.event,source:crate::sounds::category(cue.event).unwrap_or("block"),at:[0,1,2].map(|i|f64::from(key.1[i])+cue.offset[i]),volume:cue.volume,pitch:cue.pitch});
             }
             let mut now=crate::sounds::mark(m);
             if crate::sounds::upgrade_slots(&m.block).is_some() && let Some(slots)=host.machine_slots(&key.0,key.1){crate::sounds::with_slots(&mut now,&m.block,&slots);}
             if let Some(before)=r.sound_marks.insert(key.clone(),now.clone()) {
-                for cue in crate::sounds::changed(&before,&now) {
+                for cue in crate::sounds::changed(&before,&now,completed_tick) {
                     host.show(&key.0,&crate::blast::visuals::Show::Sound {
                         id:cue.event, source:crate::sounds::category(cue.event).unwrap_or("block"),
                         at:[0,1,2].map(|i|f64::from(key.1[i])+cue.offset[i]),volume:cue.volume,pitch:cue.pitch,
@@ -391,6 +393,7 @@ mod tests {
         emitted:Vec<Stack>,
         signal: BTreeMap<Pos, u8>,
         buttons: Vec<(String, String, Pos, u32)>,
+        shown: Vec<crate::blast::visuals::Show>,
         kv: crate::kv::MemKv,
     }
 
@@ -407,6 +410,7 @@ mod tests {
     }
 
     impl ServerHost for World {
+        fn show(&mut self, _: &str, effect: &crate::blast::visuals::Show) { self.shown.push(effect.clone()); }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
             if !drops.is_empty(){return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
@@ -765,6 +769,31 @@ mod tests {
     /// A firebox put in the world burns the coal in its block entity's slot,
     /// shows it, and keeps its state there; a server that opens the world
     /// again takes the machine back from it.
+    #[test]
+    fn intermediate_machine_publications_do_not_replay_tick_audio() {
+        let block = "ntm:machine_shredder";
+        let mut w = World::default();
+        w.blocks.insert(AT, block.into());
+        let mut slots = vec![None; crate::shredder::SLOTS];
+        slots[0] = Some(Stack::new("minecraft:iron_ingot", 2));
+        for slot in crate::shredder::BLADES { slots[slot] = Some(Stack::new("ntm:blades_desh", 1)); }
+        w.slots.insert(AT, slots);
+        let mut m = Machine::new(Kind::Shredder, block, None);
+        let Data::Shredder(shredder) = &mut m.data else { panic!() };
+        shredder.power = crate::shredder::MAX_POWER;
+        let mut server = Server::native(&mut w, 0);
+        assert!(server.native_adopt(OW, AT, &serde_json::to_string(&m).unwrap()));
+        server.native_tick(&mut w, 1);
+        let hits = |w: &World| w.shown.iter().filter(|effect| matches!(effect,
+            crate::blast::visuals::Show::Sound { id: "minecraft:entity.minecart.riding", source: "neutral", .. }
+        )).count();
+        assert_eq!(hits(&w), 1);
+        for _ in 0..4 { server.native_save(&mut w, false); }
+        assert_eq!(hits(&w), 1);
+        server.native_tick(&mut w, 2);
+        assert_eq!(hits(&w), 1);
+    }
+
     #[test]
     fn a_native_machine_runs_on_its_block_entity_and_comes_back() {
         let mut w = World::default();

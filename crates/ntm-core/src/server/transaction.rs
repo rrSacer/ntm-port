@@ -441,7 +441,7 @@ impl Server {
         }
         self.track_effect_cells();
         self.flush_machine_effects(staged.host);
-        self.native_save(staged.host);
+        self.native_save(staged.host, false);
         outcome
     }
 
