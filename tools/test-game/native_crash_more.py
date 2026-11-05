@@ -188,7 +188,9 @@ def crossing_prepare(g):
     for side in ('L', 'R'):
         for _ in range(5):
             load_rod(g, geo[side][0])
-    for x in (46.5, 48.5):
+    # Two plain rods beside the pile's. Not in crossing-kill: moved and then killed before any save, a plain item
+    # is in both entity files, as in vanilla; only the ledger's rods are this scenario's to count.
+    for x in (46.5, 48.5) if SCENARIO != 'crossing-kill' else ():
         g.command(f'summon minecraft:item {x} 103 13.5 {{Item:{{id:"{ROD}",count:1}}}}')
     if SCENARIO in ('crossing', 'crossing-kill'):
         # Forced tickets keep two full neighbour rings. An adjacent destination cannot unload while the
@@ -256,9 +258,10 @@ def crossing_verify(g, again=False):
     g.command('tp @s 133.5 101 15.5' if SCENARIO in ('crossing', 'crossing-kill') else 'tp @s 53.5 101 15.5')
     led = quiet(g, 10)
     held = entities(g, ROD) + inventory(g, ROD)
-    detail = {'entities': entities(g, ROD), 'inventory': inventory(g, ROD), 'total': held, 'expected': 12, 'ledger': led}
+    expected = 10 if SCENARIO == 'crossing-kill' else 12
+    detail = {'entities': entities(g, ROD), 'inventory': inventory(g, ROD), 'total': held, 'expected': expected, 'ledger': led}
     g.evidence['counted' + ('_again' if again else '')] = detail
-    g.check('no_rod_duplicated_by_a_chunk_that_unloaded', held == 12, detail)
+    g.check('no_rod_duplicated_by_a_chunk_that_unloaded', held == expected, detail)
 
 
 # ------------------------------------------------------------------------------------------------------ save & quit
