@@ -18,7 +18,7 @@
 //! decides that a stack never reached one.
 
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 /// FNV-1a over 64 bits: the ids are derived, never drawn.
 pub fn fnv(parts: &[&[u8]]) -> u64 {
@@ -136,10 +136,12 @@ pub struct ChunkLedger {
     /// Ids whose effect was applied and is paid, kept until the host's storage forgets the effect.
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty", with = "hex_set")]
     pub applied: BTreeSet<u64>,
-    /// Stacks whose entities are gone (picked up, merged away, burnt) and whose effect is still named by the
-    /// host's storage: an entity file older than this record may still show them, and they must not come back.
-    #[serde(default, skip_serializing_if = "BTreeSet::is_empty", with = "stack_set")]
-    pub gone: BTreeSet<(u64, u32)>,
+    /// Stacks that folded into another stack of this ledger, with the chunks their entities were seen in: an
+    /// entity file of one of those chunks older than this record may still show them, and they must not come
+    /// back. Kept until every one of those files is known not to (`forget_gone`); one read from a record of
+    /// before the chunks were kept has none, and goes when the host's storage stops naming its effect.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty", with = "stack_set")]
+    pub gone: BTreeMap<(u64, u32), Vec<[i32; 2]>>,
 }
 
 impl ChunkLedger {
@@ -202,8 +204,8 @@ impl ChunkLedger {
         let Some(i) = self.entries.iter().position(|e| e.id == id && e.idx == idx) else {
             return;
         };
-        self.entries.remove(i);
-        self.gone.insert((id, idx));
+        let holders = self.entries.remove(i).holders();
+        self.gone.insert((id, idx), holders);
         if !self.entries.iter().any(|e| e.id == id) {
             self.applied.insert(id);
         }
@@ -221,14 +223,35 @@ impl ChunkLedger {
         }
     }
     pub fn is_gone(&self, id: u64, idx: u32) -> bool {
-        self.gone.contains(&(id, idx))
+        self.gone.contains_key(&(id, idx))
+    }
+    /// Forgets the folded stacks whose every holder is `clean` (its entity file cannot show the stack again).
+    /// Returns whether any went.
+    pub fn forget_gone(&mut self, mut clean: impl FnMut(u64, u32, [i32; 2]) -> bool) -> bool {
+        let before = self.gone.len();
+        self.gone.retain(|(id, idx), holders| holders.is_empty() || !holders.iter().all(|c| clean(*id, *idx, *c)));
+        self.gone.len() != before
+    }
+    /// The stacks whose entities all left the world in one pass, with the ids of those entities, settled: one
+    /// whose entity a merge emptied into another (`folded`, as the engine tells) folded (`retire`); any other was
+    /// taken out of the world (`release`). The engine merges only identical items of one ledger; telling the
+    /// two apart by what the other stacks gained would credit a pickup with a fold of other items.
+    pub fn settle(&mut self, departed: &[(u64, u32, Vec<u32>)], folded: &BTreeSet<u32>) {
+        for (id, idx, entities) in departed {
+            if entities.iter().any(|e| folded.contains(e)) {
+                self.retire(*id, *idx);
+            } else {
+                self.release(*id, *idx);
+            }
+        }
     }
     /// Forgets the paid ids the host's storage no longer names. Returns whether any went.
     pub fn prune(&mut self, live: &BTreeSet<u64>) -> bool {
         let before = self.applied.len();
         let gone = self.gone.len();
         self.applied.retain(|id| live.contains(id));
-        self.gone.retain(|(id, _)| live.contains(id));
+        // Only markers without their holders: the others wait for their files (`forget_gone`).
+        self.gone.retain(|(id, _), holders| !holders.is_empty() || live.contains(id));
         self.applied.len() != before || self.gone.len() != gone
     }
     pub fn to_json(&self) -> String {
@@ -250,18 +273,37 @@ mod hex {
     }
 }
 
+/// `<id>:<idx>`, then `@x,z;x,z` for the holders when there are any (records of before the holders were kept have
+/// none).
 mod stack_set {
     use serde::{Deserialize, Deserializer, Serialize, Serializer};
-    use std::collections::BTreeSet;
-    pub fn serialize<S: Serializer>(v: &BTreeSet<(u64, u32)>, s: S) -> Result<S::Ok, S::Error> {
-        v.iter().map(|(id, idx)| format!("{id:016x}:{idx}")).collect::<Vec<_>>().serialize(s)
+    use std::collections::BTreeMap;
+    type Gone = BTreeMap<(u64, u32), Vec<[i32; 2]>>;
+    pub fn serialize<S: Serializer>(v: &Gone, s: S) -> Result<S::Ok, S::Error> {
+        v.iter()
+            .map(|((id, idx), holders)| {
+                let at: Vec<String> = holders.iter().map(|c| format!("{},{}", c[0], c[1])).collect();
+                if at.is_empty() { format!("{id:016x}:{idx}") } else { format!("{id:016x}:{idx}@{}", at.join(";")) }
+            })
+            .collect::<Vec<_>>()
+            .serialize(s)
     }
-    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<BTreeSet<(u64, u32)>, D::Error> {
+    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<Gone, D::Error> {
+        let bad = || serde::de::Error::custom("stack");
         Vec::<String>::deserialize(d)?
             .into_iter()
             .map(|t| {
-                let (id, idx) = t.split_once(':').ok_or_else(|| serde::de::Error::custom("stack"))?;
-                Ok((u64::from_str_radix(id, 16).map_err(serde::de::Error::custom)?, idx.parse().map_err(serde::de::Error::custom)?))
+                let (stack, at) = t.split_once('@').unwrap_or((t.as_str(), ""));
+                let (id, idx) = stack.split_once(':').ok_or_else(bad)?;
+                let holders = at
+                    .split(';')
+                    .filter(|c| !c.is_empty())
+                    .map(|c| {
+                        let (x, z) = c.split_once(',').ok_or_else(bad)?;
+                        Ok([x.parse().map_err(|_| bad())?, z.parse().map_err(|_| bad())?])
+                    })
+                    .collect::<Result<Vec<[i32; 2]>, D::Error>>()?;
+                Ok(((u64::from_str_radix(id, 16).map_err(serde::de::Error::custom)?, idx.parse().map_err(serde::de::Error::custom)?), holders))
             })
             .collect()
     }
