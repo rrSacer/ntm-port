@@ -2,9 +2,12 @@
 import hashlib
 import json
 from pathlib import Path
+import subprocess
+import tempfile
 import unittest
 
 from generate import ROOT, HERE, convert, inventory, split_args, classify_tags
+from validate import validate_tree
 
 
 class SoundsTest(unittest.TestCase):
@@ -98,6 +101,34 @@ class SoundsTest(unittest.TestCase):
         for suffix in [';Sounds Copyrighted by Sound Dogs.', ';Copyright Studio', ';All rights reserved']:
             with self.subTest(suffix=suffix), self.assertRaises(ValueError):
                 classify_tags([{'Software': notice + suffix}])
+
+    def test_allowed_license_cannot_mask_another_values_declaration(self):
+        for value in [
+            'CC0 does not apply to this recording.',
+            'CC0 is not the license of this sound.',
+            'Licensed under GPL-3.0-only',
+            'License: unknown custom terms',
+            'CC0, mix of CC0 sounds https://freesound.org/example but CC0 does not apply.',
+        ]:
+            for field in ['COMMENT', 'COMMENTS', 'TITLE', 'Software', 'Encoder', 'Encoded_by']:
+                for allowed in [[], [{'LICENSE': 'CC0'}], [{'LICENSE': 'LGPL-3.0-only'}]]:
+                    for groups in [allowed + [{field: value}], [{field: value}] + allowed]:
+                        with self.subTest(groups=groups), self.assertRaises(ValueError):
+                            classify_tags(groups)
+
+    def test_remuxed_ogg_with_contradictory_tags_is_rejected_by_tree_guard(self):
+        source = ROOT / 'content/assets/ntm/sounds/block/steamengineoperate.ogg'
+        with tempfile.TemporaryDirectory(prefix='sound-license-contract-', dir=ROOT.parent) as scratch:
+            root = Path(scratch)
+            target = root / 'contradictory.ogg'
+            for comment in ['CC0 does not apply to this recording.',
+                            'CC0 is not the license of this sound.',
+                            'Licensed under GPL-3.0-only']:
+                subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(source),
+                                '-map_metadata', '-1', '-c', 'copy', '-metadata', 'LICENSE=CC0',
+                                '-metadata', 'COMMENT=' + comment, str(target)], check=True)
+                with self.subTest(comment=comment), self.assertRaises(ValueError):
+                    validate_tree(root)
 
     def test_java_arguments_include_nested_random_expressions_and_strings(self):
         self.assertEqual(split_args('x, y, z, "hbm:test", getVolume(1F), .5F + rand.nextFloat() * .25F);'),

@@ -26,6 +26,7 @@ EXCLUDED_FILES = {'tool/boltgun.ogg', 'block/leverStop.ogg', 'block/reactorStart
 # Only this encoder's own notice was audited in the imported files. Remove
 # the exact notice, not its field: an appended audio copyright still fails.
 ENCODER_NOTICE = re.compile(r'File created by GoldWave\.\s+GoldWave copyright \(C\) Chris Craig', re.I)
+LICENSE_NOTICE = re.compile(r'\b(?:cc0|a?gpl|lgpl|gfdl|licen[cs](?:e[ds]?|ing)|public domain)\b', re.I)
 
 
 def classify_tags(tags):
@@ -45,13 +46,15 @@ def classify_tags(tags):
         declared = set()
         # Recognize affirmative audio declarations, never e.g. "Edited with
         # LGPL tools" or a license name in an encoder's technical description.
-        if key in ('software', 'encoder', 'encoded_by'):
-            continue
-        if re.fullmatch(r'(?:Licensed under\s+)?CC0(?:-1\.0|\s+1\.0)?[.!]?', value, re.I) or re.match(r'^CC0,\s*mix of CC0 sounds\b', value, re.I) or re.fullmatch(r'https?://creativecommons\.org/publicdomain/zero/1\.0/?', value, re.I):
-            declared.add('CC0-1.0')
-        if re.fullmatch(r'(?:Licensed under\s+)?(?:LGPL(?:-3\.0-only|v?3(?:\.0)?)|GNU Lesser General Public License(?: version)? 3(?:\.0)?)[.!]?', value, re.I):
-            declared.add('LGPL-3.0-only')
-        if key in ('license', 'licence') and not declared:
+        if key not in ('software', 'encoder', 'encoded_by'):
+            if re.fullmatch(r'(?:Licensed under\s+)?CC0(?:-1\.0|\s+1\.0)?[.!]?', value, re.I) or re.fullmatch(r'CC0,\s*mix of CC0 sounds\s+https?://\S+(?:\s+and\s+https?://\S+)*', value, re.I) or re.fullmatch(r'https?://creativecommons\.org/publicdomain/zero/1\.0/?', value, re.I):
+                declared.add('CC0-1.0')
+            if re.fullmatch(r'(?:Licensed under\s+)?(?:LGPL(?:-3\.0-only|v?3(?:\.0)?)|GNU Lesser General Public License(?: version)? 3(?:\.0)?)[.!]?', value, re.I):
+                declared.add('LGPL-3.0-only')
+        # Validate each declaration in full, even if another field has already
+        # supplied an allowed license. Encoder fields cannot license the audio,
+        # but their remaining text must still pass this check.
+        if (key in ('license', 'licence') or LICENSE_NOTICE.search(value)) and not declared:
             raise ValueError('Unrecognized audio copyright notice: ' + original)
         licenses.update(declared)
     if len(licenses) > 1:
