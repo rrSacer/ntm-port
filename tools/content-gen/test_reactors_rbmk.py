@@ -52,7 +52,7 @@ class RbmkContent(unittest.TestCase):
     def test_enums_and_dials(self):
         self.assertEqual(len(self.data['burn_functions']),9)
         self.assertEqual(self.data['depletion_functions'],['LINEAR','RAISING_SLOPE','BOOSTED_SLOPE','GENTLE_SLOPE','STATIC'])
-        self.assertEqual(self.data['burn_formulas']['LOG_TEN'],'log10(x + 1) * reactivity * 50')
+        self.assertEqual(self.data['burn_formulas']['LOG_TEN'],'Math.log10(flux + 1) * 0.5D * reactivity')
         dials={d['key']:d['default'] for d in self.data['dials']}
         self.assertEqual(len(dials),25);self.assertEqual(dials['KEY_COLUMN_HEIGHT'],4);self.assertIs(dials['KEY_REASIM_BOILERS'],False)
 

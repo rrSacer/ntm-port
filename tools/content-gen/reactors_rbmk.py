@@ -1,71 +1,186 @@
-"""RBMK fuel-rod, enum and dial snapshot; no runtime. Columns/console stay native work."""
+"""RBMK T00: executable Java evidence and verbatim executable source, no runtime."""
+import hashlib
+import json
 import re
-from bulk_recipes import clean, split
+from pathlib import Path
 from bedrock_processing_common import BASE, write
+from bulk_recipes import calls, clean
 from rbmk_catalog import item_variables
 
-TINT=re.compile(r'int (tint\w+) = (0x[0-9A-Fa-f]+);')
-CALL=re.compile(r'\.(set\w+)\(((?:[^()]|\([^()]*\))*)\)')
+ORACLE = Path(__file__).resolve().parents[1] / 'rbmk-oracle'
 
 
-def num(text):
-    return float(re.sub(r'[dDfF]$','',text.strip().replace('_','')))
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def rod_table(source,rod_vars,pellet_vars):
-    text=clean((source/(BASE+'items/ModItems.java')).read_text())
-    tints={m[1]:int(m[2],16) for m in TINT.finditer(text)}
-    rods=[]
+def load_oracle(source):
+    data = json.loads((ORACLE / 'fixtures/java.json').read_text())
+    for relative, expected in data['provenance']['sources_sha256'].items():
+        if digest(source / relative) != expected:
+            raise ValueError('RBMK Java source drift; regenerate oracle: ' + relative)
+    for relative, expected in data['provenance']['harness_sha256'].items():
+        if digest(ORACLE / relative) != expected:
+            raise ValueError('RBMK harness drift; regenerate oracle: ' + relative)
+    return data
+
+
+def method_body(text, name):
+    match = re.search(r'public\s+(?:static\s+)?\w+\s+' + name + r'\([^)]*\)\s*\{', text)
+    if not match:
+        raise ValueError('method not found: ' + name)
+    start = match.end()
+    depth = 1
+    for end in range(start, len(text)):
+        depth += (text[end] == '{') - (text[end] == '}')
+        if not depth:
+            return text[start:end].strip()
+    raise ValueError('unbalanced method: ' + name)
+
+
+def expressions(body):
+    # Enum comments are deliberately excluded. These returns are compiled by the oracle.
+    return {m[1]: ' '.join(m[2].split()) for m in
+            re.finditer(r'case\s+(\w+)\s*:\s*return\s+([^;]+);', body)}
+
+
+def condition_ranges(text):
+    """Lexical if/else containment; unknown guards remain explicit."""
+    def end_block(opening, left, right):
+        depth, end = 1, opening + 1
+        while depth:
+            depth += (text[end] == left) - (text[end] == right)
+            end += 1
+        return end
+    result = []
+    # Hide string contents while retaining offsets (recipe patterns contain braces).
+    masked = re.sub(r'"(?:\\.|[^"\\])*"', lambda m: ' ' * len(m[0]), text)
+    original, text = text, masked
+    for match in re.finditer(r'\bif\s*\(', text):
+        end = end_block(match.end() - 1, '(', ')')
+        condition = ' '.join(original[match.end():end - 1].split())
+        opening = end
+        while opening < len(text) and text[opening].isspace(): opening += 1
+        if text[opening:opening + 1] != '{': continue
+        closing = end_block(opening, '{', '}')
+        result.append((opening, closing, condition, True))
+        other = re.match(r'\s*else\s*\{', text[closing:])
+        if other:
+            lo = closing + other.end() - 1
+            result.append((lo, end_block(lo, '{', '}'), condition, False))
+    return result
+
+
+def recipe_manifest(source):
+    result = []
+    files = ('main/CraftingManager.java', 'crafting/RodRecipes.java',
+             'inventory/recipes/AssemblyMachineRecipes.java', 'inventory/recipes/anvil/AnvilRecipes.java')
+    pattern = r'\b(?:addRecipeAuto|addShapelessAuto|addRBMKRod|this\.register|constructionRecipes\.add)'
+    for filename in files:
+        text = clean((source / (BASE + filename)).read_text())
+        ranges = condition_ranges(text)
+        for pos, args, callee in calls(text, pattern):
+            if not re.search(r'\b(?:rbmk_|pribris)\w*', args): continue
+            guards = [{'expression': c, 'branch': b} for lo, hi, c, b in ranges if lo < pos < hi]
+            profile = True
+            for guard in guards:
+                c = guard['expression'].replace(' ', '')
+                if c in ('GeneralConfig.enable528', '!GeneralConfig.enable528'):
+                    profile &= c.startswith('!') == guard['branch']
+                else:
+                    profile = None
+                    break
+            result.append({'source': BASE + filename, 'source_line': text[:pos].count('\n') + 1,
+                           'callee': callee, 'arguments_java': ' '.join(args.split()), 'guards': guards,
+                           'enabled_default_profile': profile, 'profile': 'enable528=false; external mods absent',
+                           'evidence': 'lexical registry inventory, not executed crafting'})
+    return result
+
+
+def rod_table(source, rod_vars, pellet_vars):
+    byvar = {r['variable']: r for r in load_oracle(source)['rods']}
+    rows = []
     for var in rod_vars:
-        m=re.search(rf'^\s*{var}\s*=\s*\(ItemRBMKRod\)\s*new ItemRBMKRod\(([^)]*)\)(.*?)\.setTextureName',text,re.M|re.S)
-        if not m:raise ValueError('RBMK rod chain drift: '+var)
-        row={'variable':var,'pellet':m[1] if m[1] in pellet_vars else None,'full_name':None if m[1] in pellet_vars else m[1].strip('"')}
-        for name,args in CALL.findall(m[2]):
-            parts=split(args)
-            if name=='setUnlocalizedName':continue
-            if name=='setYield':row['yield']=num(parts[0])
-            elif name=='setStats':row['func_end']=num(parts[0]);row['self_rate']=num(parts[1]) if len(parts)>1 else 0.0
-            elif name=='setFunction':row['function']=parts[0].split('.')[-1]
-            elif name=='setDepletionFunction':row['depletion_function']=parts[0].split('.')[-1]
-            elif name=='setHeat':row['heat_per_flux']=num(parts[0])
-            elif name=='setMeltingPoint':row['melting_point']=num(parts[0])
-            elif name=='setDiffusion':row['diffusion']=num(parts[0])
-            elif name=='setXenon':row['xenon_generation']=num(parts[0]);row['xenon_burn_divisor']=num(parts[1])
-            elif name=='setHeatCoeff':row['heat_coefficient']={'start':num(parts[0]),'length':num(parts[1])}
-            elif name=='setNeutronTypes':row['neutron_types']={'absorbs':parts[0].split('.')[-1],'releases':parts[1].split('.')[-1]}
-            elif name=='setTint':row['tint']=tints[parts[0]] if parts[0] in tints else int(parts[0],16)
-            else:raise ValueError('Unmodeled RBMK rod call '+name+' on '+var)
-        rods.append(row)
-    return rods
+        rod = byvar[var]
+        row = {k: v for k, v in rod.items() if k not in (
+            'fresh_stack', 'used_stack', 'fresh_tooltip_keys', 'used_tooltip_keys',
+            'fresh_function_description', 'fresh_durability', 'burn_heat_trace')}
+        if row['pellet'] is not None and row['pellet'] not in pellet_vars:
+            raise ValueError('unknown pellet ' + row['pellet'])
+        if row['pellet']: row['pellet_item'] = 'ntm:' + row['pellet']
+        rows.append(row)
+    return rows
 
 
-def export(source,output,rows):
-    known={r['id'] for r in rows}
-    rod_vars,pellet_vars=item_variables(source)
-    rods=rod_table(source,rod_vars,set(pellet_vars))
+def class_manifest(source, oracle):
+    java = source / BASE
+    files = set(java.rglob('*RBMK*.java')) | set((java / 'tileentity/machine/rbmk').glob('*.java'))
+    files |= {java / p for p in (
+        'render/tileentity/RenderCraneConsole.java', 'handler/neutron/NeutronHandler.java',
+        'handler/neutron/NeutronStream.java', 'handler/neutron/NeutronNode.java',
+        'handler/neutron/NeutronNodeWorld.java', 'tileentity/network/RTTYSystem.java',
+        'items/tool/ItemRTTYDesignator.java', 'tileentity/machine/TileEntityWasteDrum.java',
+        'tileentity/machine/TileEntitySILEX.java', 'inventory/recipes/FuelPoolRecipes.java',
+        'inventory/recipes/SILEXRecipes.java', 'inventory/recipes/OutgasserRecipes.java')}
+    result = []
+    for path in sorted(files):
+        text = clean(path.read_text())
+        relative = str(path.relative_to(java))
+        declaration = re.search(r'public\s+(?:(?:abstract|final)\s+)?(?:class|interface)\s+[^\{]+', text)
+        result.append({'source': str(path.relative_to(source)), 'sha256': digest(path),
+                       'declaration': ' '.join(declaration[0].split()) if declaration else None,
+                       'oracle_whole_class': relative in oracle['provenance']['whole_classes'],
+                       'runtime': 'absent RBMK; catalog/partial presentation only, see rbmk-plano'})
+    return result
+
+
+def export(source, output, rows):
+    oracle = load_oracle(source)
+    rod_vars, pellet_vars = item_variables(source)
+    rods = rod_table(source, rod_vars, set(pellet_vars))
+    known = {r['id'] for r in rows}
     for r in rods:
-        r['item']='ntm:'+r['variable'].replace('rbmk_fuel_hep239','rbmk_fuel_hep')
-        if r['item'] not in known:raise ValueError('Missing rod id '+r['item'])
-        if r['pellet']:
-            r['pellet_item']='ntm:'+r['pellet']
-            if r['pellet_item'] not in known:raise ValueError('Missing pellet id '+r['pellet'])
-    rod=clean((source/(BASE+'items/machine/ItemRBMKRod.java')).read_text())
-    burn=re.search(r'enum EnumBurnFunc \{(.*?);',rod,re.S)[1];deplete=re.search(r'enum EnumDepleteFunc \{(.*?);',rod,re.S)[1]
-    raw=(source/(BASE+'items/machine/ItemRBMKRod.java')).read_text()
-    formulas={m[1]:m[2].strip() for m in re.finditer(r'^\s*(\w+)\(EnumChatFormatting[^\n]*\),?;?\s*//(.*)$',raw.split('enum EnumBurnFunc {',1)[1].split(';\n\n',1)[0],re.M)}
-    dials=[]
-    dial_text=clean((source/(BASE+'tileentity/machine/rbmk/RBMKDials.java')).read_text()).split('enum RBMKKeys {',1)[1].split(';',1)[0]
-    for m in re.finditer(r'(\w+)\("(\w+)",\s*([^)]+)\)',dial_text):
-        v=m[3].strip();dials.append({'key':m[1],'game_rule':m[2],'default':True if v=='true' else False if v=='false' else num(v) if re.fullmatch(r'[\d.]+',v) else v})
-    return write(output,'reactors_rbmk',{'recipes':[],'skipped':[],
-        'rods':rods,'burn_functions':[b.strip().split('(')[0] for b in burn.split('\n') if '(' in b],'burn_formulas':formulas,
-        'depletion_functions':[d.strip().rstrip(',').split('//')[0].strip().rstrip(',') for d in deplete.split('\n') if d.strip()],
-        'enrichment_formulas':{'LINEAR':'x','STATIC':'1','BOOSTED_SLOPE':'x+sin((x-1)^2*pi)','RAISING_SLOPE':'x+sin(x*pi)/2','GENTLE_SLOPE':'x+sin(x*pi)/3'},
-        'xenon':{'generation':'flux*xGen (default 0.5)','burn':'flux^2/xBurn (default 50)'},
-        'rod_nbt':{'yield':'double, remaining potential influx','xenon':'double [0,100]','core_heat':'double','hull_heat':'double','enrichment':'yield/rod.yield [0,1]'},
-        'pellet_state':{'metadata':'0..9: grade=meta%5 (0 brand new..4 fully depleted), xenon poisoned when meta>=5; five pellet types have xenon disabled (0..4 only)',
-                        'ported_as':'one item id per pellet type; the 10-state metadata is native item data'},
-        'rod_to_pellet':'RBMKFuelCraftingHandler: a cold (core/hull heat <50) rod alone in the grid yields 8 pellets of its type; meta=4-clamp(ceil(enrichment*5-1),0,4) plus 5 when poison>=0.5; none above 0.99 enrichment. Dynamic: native logic.',
-        'dials':dials,
-        'runtime_gaps':['Columns, console, crane console, autoloader, panels, boiler/heater/cooler/outgasser/storage logic, flux (RBMKNeutronHandler), heat and meltdown/debris, rod disassembly (RBMKRodDisassemblyHandler), SILEX/fuel pool pellet tables and the dynamic hazard modifiers are native work.'],
-        'coverage':{'rods':len(rods),'pellet_rods':sum(1 for r in rods if r['pellet']),'dials':len(dials)}})
+        for ident in (r['item'], r.get('pellet_item')):
+            if ident and ident not in known: raise ValueError('Missing RBMK id ' + ident)
+    text = clean((source / (BASE + 'items/machine/ItemRBMKRod.java')).read_text())
+    formulas = expressions(method_body(text, 'reactivityFunc'))
+    depletions = expressions(method_body(text, 'reactivityModByEnrichment'))
+    if (len(formulas), len(depletions)) != (9, 5): raise ValueError('RBMK switch drift')
+    dials = [{k: d[k] for k in ('key', 'game_rule', 'default', 'default_java_type', 'cached_effective')}
+             for d in oracle['dials']]
+    recipes = oracle['recipes']
+    return write(output, 'reactors_rbmk', {
+        'schema': 2, 'recipes': [], 'skipped': [], 'rods': rods,
+        'java_manifest': class_manifest(source, oracle),
+        'oracle': {'fixture': 'tools/rbmk-oracle/fixtures/java.json',
+                   'fixture_sha256': digest(ORACLE / 'fixtures/java.json'), **oracle['provenance']},
+        'burn_functions': list(formulas), 'burn_formulas': formulas,
+        'depletion_functions': list(dict.fromkeys(p['function'] for p in oracle['functions']['depletion'])),
+        'enrichment_formulas': depletions,
+        'formula_inputs': {'flux': 'in * reactivityModByEnrichment(enrichment)',
+                           'reactivity': 'rod.reactivity', 'selfRate': 'rod.selfRate',
+                           'notation': 'Verbatim Java return expressions; descriptive, not a runtime evaluator'},
+        'executable_methods': {name: method_body(text, name) for name in (
+            'reactivityFunc', 'reactivityModByEnrichment', 'burn', 'xenonGenFunc', 'xenonBurnFunc',
+            'updateHeat', 'provideHeat', 'getEnrichment', 'getDouble', 'setDouble')},
+        'rod_defaults': oracle['defaults']['rod'],
+        'rod_nbt': {'yield': 'double, remaining potential influx', 'xenon': 'double [0,100] after burn clamp',
+                    'core': 'double', 'hull': 'double'},
+        'rod_derived': {'enrichment': 'getYield(stack) / rod.yield; no clamp in this getter',
+                        'poison_level': 'getPoison(stack) / 100D'},
+        'nbt_initialization': {k: v for k, v in oracle['defaults'].items() if k.startswith('nbt_')},
+        'pellet_state': {'metadata': 'rectify=abs(meta)%10; grade=meta%5; poison when meta>=5',
+                         'ported_as': 'one ID per type; 0..9 custom_data codec deferred to T03/T14',
+                         'types': oracle['pellets']},
+        'rod_to_pellet': 'RBMKFuelCraftingHandler: cold core/hull<50, enrichment<=0.99; 8 pellets + container casing; meta=4-clamp(ceil(e*5-1),0,4), +5 if poison>=0.5; runtime pending',
+        'dials': dials, 'dial_special_cases': oracle['dial_special_cases'],
+        'silex_recipes': recipes['silex_registered'], 'silex_tiny_lookup': recipes['silex_tiny_lookup'],
+        'silex_missing_pellet_states': recipes['silex_missing_pellet_states'],
+        'outgasser_recipes': recipes['outgasser_defaults'], 'crafting_manifest': recipe_manifest(source),
+        'runtime_gaps': ['All 33 RBMK machines remain Inert. Rod simulation, dynamic tooltip/hazard, pellet state, disassembly, SILEX/fuel pool and meltdown are later tickets. T00 only fixes data and supplies executable Java fixtures.',
+                         'D8: leverStop blocked pending user licensing decision; no substitute or asset imported.'],
+        'coverage': {'rods': len(rods), 'pellet_rods': sum(r['pellet'] is not None for r in rods),
+                     'dials': len(dials), 'burn_functions': len(formulas), 'depletion_functions': len(depletions),
+                     'silex_registered': len(recipes['silex_registered']),
+                     'silex_rbmk_pellet_states': sum(r['input'].get('stack', {}).get('item', '').startswith('rbmk_pellet_') for r in recipes['silex_registered']),
+                     'outgasser_defaults': len(recipes['outgasser_defaults'])}})
