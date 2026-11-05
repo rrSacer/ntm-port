@@ -183,6 +183,9 @@ def nuclear_and_close(g):
     age, distance = re.search(r'ntm nuclear arrived age=(\d+) distance=([\d.eE+-]+)', text).groups()
     g.check('nuclear_distance_and_age_gate', 0 < int(age) < 150 and float(distance) < (int(age)*1.5+1)*1.5, [age, distance])
     nuke = wait(g, 'message_creates_decoded_stream_channel', lambda v: len(v) == 1 and v[0]['decoded'] and v[0]['state'] == 'Playing', lambda: voices(g, 'ntm:weapon.nuclearexplosion'))
+    used = g.ctl('status')['sounds']['used']
+    g.check('nuclear_uses_real_streaming_pool', used[1] >= 1, used)
+    g.check('message_receipt_precedes_nuclear_playback', text.index('ntm nuclear received') < text.index('ntm nuclear arrived') < text.index('sound resolved event=ntm:weapon.nuclearexplosion'), text[-2500:])
     g.check('nuclear_not_a_playsound_shortcut', not any('playsound' in step['command'] for step in g.evidence['steps']), core)
     # Keep a real NTM-owned loop alive while leaving the world, too.
     g.ground(256, 100, 8, width=20)
