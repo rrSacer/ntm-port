@@ -171,7 +171,7 @@ pub fn machine(m: &Machine) -> Vec<Loop> {
             Some(s)
         }
         Data::Steam(s) => match &**s {
-            Steam::Turbine(t) if t.on || t.flywheel > 0 || t.shape == Shape::Chungus => {
+            Steam::Turbine(t) if t.spin > 0. || t.shape == Shape::Chungus => {
                 match t.shape {
                     Shape::Chungus => {
                         let mut s = sound(
@@ -184,7 +184,7 @@ pub fn machine(m: &Machine) -> Vec<Loop> {
                         Some(s)
                     }
                     Shape::Industrial => {
-                        let spin = (t.flywheel as f64 / crate::steam::FLYWHEEL * 2.).min(1.) as f32;
+                        let spin = (t.spin * 2.).min(1.) as f32;
                         {
                             let mut s = sound(
                                 "hbm:block.largeTurbineRunning",
@@ -215,6 +215,28 @@ pub fn gain(volume: f32, range: f32, distance: f32) -> f32 {
 mod tests {
     use super::*;
     use crate::machine::Kind;
+    #[test]
+    fn industrial_audio_uses_spin_before_debit_including_the_last_coast_tick() {
+        for max_power in [1_000_000, 50_000_000] {
+            let mut m = Machine::new(Kind::Steam, "ntm:machine_industrial_turbine", None);
+            let Data::Steam(steam) = &mut m.data else { panic!() };
+            let Steam::Turbine(t) = &mut **steam else { panic!() };
+            t.flywheel = 12_500_000;
+            t.max_power = max_power;
+            t.step();
+            assert_eq!(t.spin, 0.25);
+            assert_eq!(t.flywheel, if max_power == 1_000_000 { 12_250_000 } else { 0 });
+            let audio = machine(&m);
+            assert_eq!(audio.len(), 1);
+            assert_eq!((audio[0].volume, audio[0].pitch), (0.625, 0.75));
+            if max_power == 50_000_000 {
+                let Data::Steam(steam) = &mut m.data else { panic!() };
+                let Steam::Turbine(t) = &mut **steam else { panic!() };
+                t.step();
+                assert!(machine(&m).is_empty(), "silence starts after the final coast tick");
+            }
+        }
+    }
     #[test]
     fn a_gas_recipe_completion_keeps_the_java_progressing_flag() {
         use crate::machine::Logic;

@@ -129,6 +129,9 @@ pub struct Turbine {
     pub input: Tank,
     pub output: Tank,
     pub flywheel: i64,
+    /// Java publishes spin before the current tick's flywheel debit.
+    #[serde(skip)]
+    pub spin: f64,
     pub max_power: i64,
     #[serde(skip)]
     pub buffer: i64,
@@ -139,7 +142,7 @@ pub struct Turbine {
 impl Turbine {
     pub fn new(shape: Shape) -> Self {
         let (i, o) = shape.caps();
-        Self { slots: Slots::new(), shape, input: Tank::typed("steam", i), output: Tank::typed("spentsteam", o), flywheel: 0, max_power: 0, buffer: 0, on: false }
+        Self { slots: Slots::new(), shape, input: Tank::typed("steam", i), output: Tank::typed("spentsteam", o), flywheel: 0, spin: 0., max_power: 0, buffer: 0, on: false }
     }
 
     /// `updateEntity`: the operations a fifth (or all) of the input and the
@@ -190,8 +193,8 @@ impl Turbine {
     /// `onServerTick`: the spin is the flywheel over its mass; it gives
     /// `max(spin, 5 %)` of the top output, at most what it holds.
     fn flywheel_tick(&mut self) {
-        let spin = self.flywheel as f64 / FLYWHEEL;
-        let target = ((spin.max(0.05) * self.max_power as f64) as i64).min(self.flywheel);
+        self.spin = self.flywheel as f64 / FLYWHEEL;
+        let target = ((self.spin.max(0.05) * self.max_power as f64) as i64).min(self.flywheel);
         self.flywheel -= target;
         self.buffer = target;
     }
