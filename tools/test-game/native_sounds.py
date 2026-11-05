@@ -49,9 +49,11 @@ def setup(g):
     g.command('give @s ntm:door_metal 1')
     g.ctl('place 20 100 8 --item ntm:door_metal')
     time.sleep(1)
+    g.command('clear @s')
+    g.command('tp @s 22.5 100 11.5')
     for action in ['open', 'close']:
         offset = len(log_lines(g))
-        g.ctl('interact 20 100 8 south')
+        g.ctl('interact 20 100 8')
         lines = resolved(g, 'ntm:block.opendoor', offset)
         g.check('door_' + action, bool(lines) and all('source=4' in line for line in lines), lines)
     # The regular diesel acceptance fills it through its real slots and turns
