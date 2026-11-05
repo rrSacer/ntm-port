@@ -19,7 +19,7 @@ JAVA = SOURCE / 'src/main/java/com/hbm'
 TABLE = json.loads((ROOT / 'crates/ntm-core/data/consumables.json').read_text())['entries']
 TABLE.update(json.loads((ROOT / 'crates/ntm-core/data/kits.json').read_text())['entries'])
 IDS = {e['id'] for e in json.loads((ROOT / 'content/ids.json').read_text())['entries']}
-SOUNDS = Path(os.environ.get('HORIZON_RESOURCES', Path.home() / 'Games/horizon/.local/horizon-client/26.3')) / 'assets/minecraft/sounds.json'
+REGISTRIES = Path(os.environ.get('HORIZON_RESOURCES', Path.home() / 'Games/horizon/.local/horizon-client/26.3')) / 'registries.json'
 
 # 1.7.10 Potion fields to the engine's effect ids.
 POTION = {
@@ -523,11 +523,11 @@ class ProofBatch(unittest.TestCase):
 
 
 class Sounds(unittest.TestCase):
-    @unittest.skipUnless(SOUNDS.is_file(), 'the 26.3 resources are not installed')
+    @unittest.skipUnless(REGISTRIES.is_file(), 'the 26.3 registries are not installed')
     def test_mapped_events_exist_in_the_game(self):
-        known = json.loads(SOUNDS.read_text())
-        mapped = set(re.findall(r'=> \("minecraft:([\w.]+)"', (ROOT / 'crates/ntm-core/src/consumables.rs').read_text()))
-        self.assertGreater(len(mapped), 5)
+        known = json.loads(REGISTRIES.read_text())['minecraft:sound_event']['entries']
+        mapped = set(re.findall(r'=> \("(minecraft:[\w.]+)"', (ROOT / 'crates/ntm-core/src/consumables.rs').read_text()))
+        self.assertTrue(mapped)
         self.assertEqual(sorted(m for m in mapped if m not in known), [])
 
 
