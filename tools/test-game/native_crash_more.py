@@ -361,6 +361,8 @@ def mining_verify(g, again=False):
 # ------------------------------------------------------------------------------------------------- break / replace
 
 MIXER = (140, 100, 8)
+# origin-merge's second mixer, in the same chunk (one ledger, one merge key) and far enough not to fold with the first.
+MIXER2 = (134, 100, 8)
 NITER = int(os.environ.get('NTM_CRASH_NITER', '16'))
 
 
@@ -374,20 +376,25 @@ def break_prepare(g):
     from native_recipes import core_of
     g.ctl('wait-ready 120')
     g.close()
-    x, y, z = MIXER
-    g.ground(x - 3, y, z, width=8)
-    g.command('clear @s')
-    g.command('give @s ntm:machine_mixer 1')
-    if SCENARIO.startswith('origin'):
-        g.command(f'tp @s {x + .5} {y} {z + 3.5}')
-    g.ctl(f'place {x} {y} {z} --item ntm:machine_mixer')
-    g.command('clear @s')
-    open_machine(g, x, y, z)
-    core = core_of(g, 'ntm:machine_mixer', x, y, z)
-    g.put('ntm:niter', NITER, 1)
-    g.close()
-    g.evidence['core'] = core
-    g.check('niter_inside', mixer_items(g, core) == NITER, mixer_items(g, core))
+    mixers = [MIXER2, MIXER] if SCENARIO == 'origin-merge' else [MIXER]
+    each = NITER // len(mixers)
+    cores = []
+    for x, y, z in mixers:
+        g.ground(x - 3, y, z, width=8)
+        g.command('clear @s')
+        g.command('give @s ntm:machine_mixer 1')
+        if SCENARIO.startswith('origin'):
+            g.command(f'tp @s {x + .5} {y} {z + 3.5}')
+        g.ctl(f'place {x} {y} {z} --item ntm:machine_mixer')
+        g.command('clear @s')
+        open_machine(g, x, y, z)
+        core = core_of(g, 'ntm:machine_mixer', x, y, z)
+        g.put('ntm:niter', each, 1)
+        g.close()
+        g.check('niter_inside', mixer_items(g, core) == each, mixer_items(g, core))
+        cores.append(core)
+    g.evidence['core'] = cores[-1]
+    g.evidence['cores'] = cores
     g.ctl('save')
 
 
@@ -481,16 +488,6 @@ def item_stacks(g, item):
     return sum(1 for line in lines if item in line)
 
 
-def origin_spread(g, core):
-    """The contents' entities apart in the destination, so that they cannot fold before the source is away."""
-    for k in range(8):
-        near = '@e[type=minecraft:item,x=%d,y=%d,z=%d,distance=..12,limit=1]' % core
-        if not g.command(f'execute if entity {near} run say NTM_LEFT').get('chat'):
-            break
-        g.command(f'tp {near} {497.5 + 2 * k} 100 3.5')
-        time.sleep(.3)
-
-
 def origin_kill_act(g):
     g.ctl('wait-ready 120')
     prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
@@ -548,16 +545,25 @@ def origin_pickup_act(g):
     g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 4))
     g.command('give @s minecraft:diamond_pickaxe 1')
     g.ctl('select minecraft:diamond_pickaxe')
-    g.ctl('break %d %d %d --timeout 30' % core)
-    time.sleep(1)
-    g.check('broken_contents_are_tracked', ledger(g)['spawned'] > 0, ledger(g))
-    g.command('forceload add 496 0 511 15')
-    time.sleep(2)
-    g.command('fill 496 99 0 511 99 15 minecraft:stone')
     if SCENARIO == 'origin-merge':
-        origin_spread(g, core)
+        # Each mixer's contents to its own spot in the destination, right after its break: two stacks of one ledger.
+        g.command('forceload add 496 0 511 15')
+        time.sleep(2)
+        g.command('fill 496 99 0 511 99 15 minecraft:stone')
+        for c, spot in zip(prep['cores'], (498.5, 508.5)):
+            g.command('tp @s %d %d %d' % (c[0], c[1], c[2] + 4))
+            g.ctl('break %d %d %d --timeout 30' % tuple(c))
+            g.command('tp @e[type=minecraft:item,x=%d,y=%d,z=%d,distance=..5] %s 100 3.5' % (c[0], c[1], c[2], spot))
+            time.sleep(.5)
+        g.check('broken_contents_are_tracked', ledger(g)['spawned'] > 1, ledger(g))
         g.evidence['spread'] = item_stacks(g, 'ntm:niter')
     else:
+        g.ctl('break %d %d %d --timeout 30' % core)
+        time.sleep(1)
+        g.check('broken_contents_are_tracked', ledger(g)['spawned'] > 0, ledger(g))
+        g.command('forceload add 496 0 511 15')
+        time.sleep(2)
+        g.command('fill 496 99 0 511 99 15 minecraft:stone')
         g.command('tp @e[type=minecraft:item] 503.5 100 8.5')
     time.sleep(1)
     g.command('forceload remove all')
