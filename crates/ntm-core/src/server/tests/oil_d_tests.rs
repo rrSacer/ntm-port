@@ -28,9 +28,7 @@ fn block(g: &Game, p: Pos) -> String {
 }
 
 fn splashes(g: &Game) -> Vec<crate::blast::visuals::Show> {
-    g.world.borrow().shown.iter().filter_map(|(_, show)| {
-        matches!(show, crate::blast::visuals::Show::Sound { id: "minecraft:entity.generic.splash", .. }).then(|| show.clone())
-    }).collect()
+    g.world.borrow().shown.iter().filter(|(_, show)| matches!(show, crate::blast::visuals::Show::Sound { id: "minecraft:entity.generic.splash", .. })).map(|(_, show)| show.clone()).collect()
 }
 
 /// The pumpjack's pipe goes down through the air to the deposit and sucks
@@ -116,9 +114,7 @@ fn well_upgrade_insertions_beep_once_but_loading_installed_slots_is_silent() {
         g.world.borrow_mut().shown.clear();
         g.world.borrow_mut().engine.get_mut(&(OW.into(), at)).unwrap().0[slot] = Some(Stack::new("ntm:upgrade_speed_1", 1));
         g.run(2);
-        let cues: Vec<_> = g.world.borrow().shown.iter().filter_map(|(_, s)| {
-            matches!(s, crate::blast::visuals::Show::Sound { id: "ntm:item.upgradeplug", .. }).then(|| s.clone())
-        }).collect();
+        let cues: Vec<_> = g.world.borrow().shown.iter().filter(|(_, s)| matches!(s, crate::blast::visuals::Show::Sound { id: "ntm:item.upgradeplug", .. })).map(|(_, s)| s.clone()).collect();
         assert_eq!(cues, vec![crate::blast::visuals::Show::Sound { id: "ntm:item.upgradeplug", source: "player", at: [4.5, 71.5, 4.5], volume: 1., pitch: 1. }], "slot {slot}");
     }
     let world = g.world.clone();
