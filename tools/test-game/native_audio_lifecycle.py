@@ -49,6 +49,7 @@ def replace(g, at, slot, item, count=1):
     if getattr(g, 'audio_arc_core', None) == at:
         fx, _, fz = FACING[facing_of(g, at)]
         g.close()
+        g.command(f'setblock {at[0]-4*fx} {at[1]-1} {at[2]-4*fz} minecraft:stone')
         g.command(f'tp @s {at[0]-4*fx+.5} {at[1]} {at[2]-4*fz+.5}')
         g.ctl(f'interact {at[0]-2*fx} {at[1]} {at[2]-2*fz}')
         time.sleep(.3)
