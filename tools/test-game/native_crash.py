@@ -11,9 +11,11 @@ Modes (the runner, run-crash-proof.py, owns the game process and the kill):
 Rods: 10 = 5 + 5 `ntm:pile_rod__ra226be` in the pile, plus 2 plain ones on the ground where they fall: 12, in channels,
 loaders, item entities or owed by the ledger.
 
-With NTM_CRASH_VANILLA=1 the same world is the vanilla control: no pile, the two plain rods, and a vanilla dropper with
-5 rods where each loader stands, saved with the world; the undo fires them, as the pile ejects. After a death a dropper
-comes back with the stock of the last save, as the pile does. NTM_CRASH_NO_SAVE=1: the undo asks for no save (the runner
+With NTM_CRASH_VANILLA=1 the same world is the vanilla control: no pile, the two plain rods, and two vanilla droppers
+with 5 rods each, saved with the world; the undo fires them, as the pile ejects. They stand in the core's chunk, where
+the pile holds its rods, and shoot into the chunks its channels eject into: a cut that writes one chunk and not the other
+finds the same rods on each side in both worlds. After a death a dropper comes back with the stock of the last save, as
+the pile does. NTM_CRASH_NO_SAVE=1: the undo asks for no save (the runner
 kills the game outside any save).
 """
 import os
@@ -27,6 +29,9 @@ from native_pile import interact, machine, tool, block
 CORE = (47, 102, 8)
 CHANNELS = [(46, 102, 8), (48, 102, 8)]
 LOADERS = [(46, 102, 7), (48, 102, 7)]
+# The control's droppers: in the core's chunk (2,0), shooting into (2,0) and (3,0) as the channels at x=46 and x=48 eject;
+# a block apart, so the redstone block that fires one does not fire the other.
+DROPPERS = [((45, 102, 12), 'west'), ((47, 102, 12), 'east')]
 ROD = 'ntm:pile_rod__ra226be'
 VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
@@ -92,6 +97,7 @@ def rods_in_machines(g):
         if block(g, p) == 'ntm:pile_device__loader':
             slots = machine(g, p)['data']['Loader']['slots']
             loaders += sum(s['count'] for s in slots if s)
+    for p, _ in DROPPERS:
         loaders += held_by_dropper(g, p, ROD)
     return channels, loaders
 
@@ -137,8 +143,8 @@ def prepare(g):
         g.command('tp @s 47.5 101 1.5')
         for x in (46.5, 48.5):
             g.command(f'summon minecraft:item {x} 103 13.5 {{Item:{{id:"{ROD}",count:1}}}}')
-        for p in LOADERS:
-            dropper(g, p, ROD, PILE // 2)
+        for p, facing in DROPPERS:
+            dropper(g, p, ROD, PILE // 2, facing)
         time.sleep(2)
         g.evidence['base'] = count(g)
         g.ctl('save')
@@ -193,7 +199,7 @@ def undo(g):
     before = count(g)
     if VANILLA:
         g.check('start_from_the_droppers', before['loaders'] == PILE and before['entities'] == COMMON, before)
-        for p in LOADERS:
+        for p, _ in DROPPERS:
             fire(g, p, PILE // 2)
         # The chunks the pile's save writes change too, so that every cut has its records.
         for x, z in ((40, 4), (50, 4), (50, 20)):

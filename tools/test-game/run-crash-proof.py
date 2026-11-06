@@ -137,26 +137,61 @@ TOTAL = 12
 
 def emission_verdict(outcome, control, expected, control_expected, exact=False):
     """An emission against the files and the vanilla control: both reopens count what the files held before them, nothing
-    is held more often than in the control, and no more is lost than the control loses at the same cut."""
+    is held more often than in the control, and no more is lost than the control loses at the same cut. The same cut is
+    the one that wrote the same chunks holding the items (`cut`; how the items spread among them is the game's): a cut
+    by the index of a record lands on other chunks when the two worlds' batches differ, and is then compared with the
+    control's play that wrote the same chunks (`match_cuts`). A play with no cut (`none`, `kill`) has its own criteria."""
     total = lambda o, r: (o.get(r) or {}).get('total')
     first, again, disk = total(outcome, 'first_reopen'), total(outcome, 'second_reopen'), (outcome.get('disk') or {}).get('total')
-    lost, control_lost = None, None
-    if first is not None and total(control, 'first_reopen') is not None:
-        lost, control_lost = expected - first, control_expected - total(control, 'first_reopen')
-    verdict = {'disk': disk, 'first': first, 'second': again, 'expected': expected, 'lost': lost, 'control_lost': control_lost,
-               'control_disk': (control.get('disk') or {}).get('total')}
+    verdict = {'disk': disk, 'first': first, 'second': again, 'expected': expected, 'control_expected': control_expected,
+               'control_disk': (control.get('disk') or {}).get('total'), 'parts_ok': outcome['ok'] and control['ok']}
     verdict['as_the_files'] = first is not None and disk is not None and first == disk and again == first
     control_first = total(control, 'first_reopen')
     verdict['no_duplicate'] = first is not None and first <= max(expected, control_first or 0)
-    verdict['no_worse_than_vanilla'] = lost is not None and lost <= control_lost
-    # The chunks each world wrote before its cut: the same cut writes the same chunks in both.
-    verdict['same_cut'] = outcome.get('written') is not None and outcome.get('written') == control.get('written')
-    ok = outcome['ok'] and control['ok'] and verdict['as_the_files'] and verdict['no_duplicate'] and verdict['no_worse_than_vanilla']
+    verdict['same_cut'] = outcome['point'] in ('none', 'kill') or (cut(outcome) is not None and cut(outcome) == cut(control))
+    compare(verdict, control_first)
     if exact:
         # A death outside any save: both worlds are the last save, exactly.
-        verdict['as_the_last_save'] = first == expected and total(control, 'first_reopen') == control_expected
-        ok = ok and verdict['as_the_last_save']
-    return {**outcome, 'control': control, 'verdict': verdict, 'ok': ok}
+        verdict['as_the_last_save'] = first == expected and control_first == control_expected
+    result = {**outcome, 'control': control, 'verdict': verdict}
+    result['ok'] = judge(result)
+    return result
+
+
+def cut(play):
+    """The chunks holding the items that a play wrote before its cut, per folder."""
+    written = play.get('written')
+    return None if written is None else {k: sorted((x, z) for x, z, *_ in v) for k, v in written.items()}
+
+
+def compare(verdict, control_first):
+    """The loss against the control's at the same cut."""
+    first = verdict['first']
+    verdict['lost'] = None if first is None else verdict['expected'] - first
+    verdict['control_lost'] = None if control_first is None else verdict['control_expected'] - control_first
+    verdict['no_worse_than_vanilla'] = None not in (verdict['lost'], verdict['control_lost']) and verdict['lost'] <= verdict['control_lost']
+
+
+def judge(outcome):
+    v = outcome['verdict']
+    return bool(v['parts_ok'] and v['as_the_files'] and v['no_duplicate'] and v['no_worse_than_vanilla']
+                and (v['same_cut'] or v.get('matched')) and v.get('as_the_last_save', True) and v.get('as_the_control', True))
+
+
+def match_cuts(points):
+    """A cut whose chunks the control did not write alike is compared with the control's play that wrote the same
+    chunks with the same items (a cut at that chunk, `live_chunk`, or at a stage), when the scenario played one. Without
+    one the cut is not compared, and fails."""
+    for o in points:
+        v = o.get('verdict')
+        if not v or v['same_cut'] or o.get('written') is None:
+            continue
+        twin = next((p for p in points if p is not o and p['point'] not in ('none', 'kill')
+                     and cut(p.get('control') or {}) == cut(o)), None)
+        v['matched'] = twin and twin['point']
+        if twin:
+            compare(v, (twin['control'].get('first_reopen') or {}).get('total'))
+        o['ok'] = judge(o)
 
 
 def point_folder(scratch, point, control):
@@ -265,7 +300,8 @@ def main():
             world.launch()
             world.script('prepare')
             world.quit()
-        for point in args.points or [*POINTS, 'sweep']:
+        # The pile's two chunks, each first: the pairs of a cut by record index that wrote one in one world only.
+        for point in args.points or [*POINTS, 'live_chunk:2,0', 'live_chunk:3,0', 'sweep']:
             # Each copy is played by the same binary; HORIZON_HOME is inside the copy's own folder.
             if point == 'sweep':
                 outcome = sweep(args, base, scratch, homed(scratch / 'point-sweep', False))
@@ -279,6 +315,11 @@ def main():
                     shutil.rmtree(point_folder(scratch, point, c), ignore_errors=True)
             print(json.dumps(outcome), flush=True)
             (scratch / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
+        match_cuts(report['points'])
+        for outcome in report['points']:
+            if outcome['ok'] and outcome['point'] != 'sweep':
+                for c in (False, True):
+                    shutil.rmtree(point_folder(scratch, outcome['point'], c), ignore_errors=True)
         report['ok'] = all(p['ok'] for p in report['points'])
     finally:
         xvfb.terminate()

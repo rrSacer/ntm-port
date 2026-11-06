@@ -64,7 +64,8 @@ DEFAULT_POINTS = {
     'origin-away': ['kill'],
     'pickup-merge': ['kill'],
     'save-quit': ['none', 'kill'],
-    'mining': crash_proof.POINTS,
+    # The chest's chunk first, as the pair of a cut by record index that wrote it in one world only.
+    'mining': [*crash_proof.POINTS, 'live_chunk:1,0'],
     # The mixer's chunk first (`live_chunk`): a cut after the first record of a batch hits another chunk in the control.
     'break': ['none', 'kill', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'replace': ['none', 'kill', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
@@ -313,7 +314,7 @@ def main():
                     # write, in both worlds, so both reopens hold what the control's hold, exactly.
                     same = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
                     outcome['verdict']['as_the_control'] = all(a is not None and a == b for a, b in same.values())
-                    outcome['ok'] = outcome['ok'] and outcome['verdict']['as_the_control']
+                    outcome['ok'] = crash_proof.judge(outcome)
             else:
                 outcome = against_control(outcomes[False], outcomes[True]) if controlled else outcomes[False]
                 if exact and controlled:
@@ -328,6 +329,11 @@ def main():
                 for control in bases:
                     shutil.rmtree(point_folder(scratch, point, control), ignore_errors=True)
             (scratch / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
+        crash_proof.match_cuts(report['points'])
+        for outcome in report['points']:
+            if outcome['ok']:
+                for control in bases:
+                    shutil.rmtree(point_folder(scratch, outcome['point'], control), ignore_errors=True)
         report['ok'] = all(p['ok'] for p in report['points'])
     finally:
         xvfb.terminate()
