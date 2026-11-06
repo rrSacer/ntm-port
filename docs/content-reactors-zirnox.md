@@ -132,14 +132,13 @@ Quebra confirmada por evento `Broken` ou bloco diferente em chunk acessível ger
 um tombstone; inacessibilidade nunca equivale a quebra. O tombstone conserva o
 estado completo no KV mesmo se o BE já sumiu e a dimensão fechar antes da ejeção.
 
-Efeitos de blocos, drops e explosão da pilha ficam numa fila persistida. Recusas
-mantêm o cursor; efeitos aceitos não se repetem em memória. Recibos dos efeitos
-aplicados permanecem no KV até o hook existente `world_saved(wait=true)` confirmar
-o save de chunks e entidades. Reabertura limpa após essa confirmação não repete
-a ejeção. Desde o item 5 da onda 0, o id de cada efeito aplicado vive no
-registro do chunk que o consumo alterou (ledger, ver `docs/horizon-current.md`, "Onda 0 — item 5"), gravado junto com o BE; os
-itens são drops vanilla, e um replay que acha o id não derruba de novo. Passos que mudam mais de um chunk mantêm
-um diário por mundo dos modelos sobreviventes, reconciliado com os BEs por geração e revisão.
+Efeitos de blocos, drops e explosão da pilha ficam numa fila em memória. Recusas
+mantêm o cursor; efeitos aceitos não se repetem. Desde o item 5 da onda 0 (ver
+`docs/horizon-current.md`, "Onda 0 — item 5"), o armazenamento do NTM (KV) fica em memória e vai ao disco inteiro no
+fim de cada save, depois de `native_world_saved(true)` confirmar recibos e sobreviventes: o KV no disco nunca guarda um
+recibo pendente, e uma morte fora de um save traz o mundo de volta como o último save o deixou, como no vanilla. Os itens
+de um efeito são drops vanilla no mesmo passo; se o chunk do drop não está carregado, ficam devidos no registro de um
+chunk dono carregado (o slot de saída da máquina) e saem quando ele carrega.
 
 Redes de energia, calor e fluidos rodam depois dos passos confirmados. Uma recusa
 de save dessas trocas conserva o estado em memória para regravar. Solar/caldeira
@@ -190,7 +189,7 @@ ou remoção pendente que referencie a mesma geração. Tombstone ou substituiç
 o consumo; uma origem usada apenas como guarda de leitura não o prova. A máquina consumida
 vira fantasma, com remoção do bloco antigo. Uma nova geração também inicia seu próprio histórico de revisões do sobrevivente.
 O limite `u64::MAX` congela a célula em vez de permitir ABA por overflow.
-Uma ausência positiva grava a `Removal` no KV antes de testar disponibilidade do
+Uma ausência positiva registra a `Removal` no KV (em disco no save seguinte) antes de testar disponibilidade do
 resto do grupo. `None` significa inacessível e conserva o estado, sem ejeção.
 
 | Tipo / produtor | Precondição | Geração diferente / retry |
@@ -207,25 +206,22 @@ resto do grupo. `None` significa inacessível e conserva o estado, sem ejeção.
 | Edição manual da pilha / reparo Stirling | Reconciliação dos fatos antes do clique, geração e commit do grupo/BE | Não edita uma geração quebrada; mão só é debitada depois da confirmação. |
 | Efeitos transitórios locais (`tell`, `log`, `hurt`, `effect`, `show`) | Guardas das origens confirmadas; liberação síncrona depois do commit | Não sobrevivem como escrita tardia; guardas obsoletas impedem a liberação. |
 | Sync de BE e retry pós-publicação | Estado/JSON da geração publicada; snapshot completo da célula para retry | Nunca repete crédito ou remoção. Nova quebra/recolocação cancela o sync; snapshot divergente é descartado. |
-| `Removal` / tombstone | Geração removida confirmada, conteúdo e indicador de slots já pertencentes ao motor | Persistência imediata fora do rollback e do `all()` do grupo. Ocupante novo não substitui conteúdo antigo; inacessibilidade apenas espera. |
-| Retenção na mineração | Snapshot completo no preflight; id no ledger do mesmo chunk que perde o BE | Consumo, estado da mineradora e drops publicados juntos. Reabrir registro anterior restaura fonte intacta sem replay de KV; registro novo já contém o id estável. |
+| `Removal` / tombstone | Geração removida confirmada, conteúdo e indicador de slots já pertencentes ao motor | Registrada fora do rollback e do `all()` do grupo; vai ao disco com o save, junto com o registro do chunk. Ocupante novo não substitui conteúdo antigo; inacessibilidade apenas espera. |
+| Retenção na mineração | Snapshot completo no preflight | Consumo, estado da mineradora e drops publicados juntos, no mesmo passo. Reabrir um registro anterior restaura a fonte intacta, como o baú vanilla no mesmo corte. |
 | Quebra de container NTM pelo jogador | Nenhum estado do NTM | Derrame vanilla, igual a um baú, inclusive numa queda. |
-| Recibo aplicado / `world_saved` | Origem e efeito confirmados, com a mesma guarda de célula quando é uma escrita | Reabertura limpa não repete efeito confirmado. Replay de escrita obsoleta é descartado; replay físico conserva o conteúdo antigo. |
+| Recibo aplicado / `world_saved` | Origem e efeito confirmados, com a mesma guarda de célula quando é uma escrita | Confirmado em todo save antes de o KV ir ao disco: nenhum recibo chega ao disco. Os de um save antigo ainda são lidos; o `applied` do registro de cada chunk impede que derrubem de novo. |
 
-A retenção de inventários minerados fica no ledger do registro do chunk da célula consumida, com
-`retained_id(dim,pos,generation)`. BE, célula e id são publicados sob o mesmo acesso exclusivo ao mundo, e os
-itens viram drops no mesmo passo. Uma recusa não publica nada nem consome a célula. Se o registro antigo volta
-após queda, volta também o BE intacto. Não se criam preparações nem recibos de retenção no KV; o leitor de
-preparações antigas permanece para migração.
+A retenção de inventários minerados publica BE e célula sob o mesmo acesso exclusivo ao mundo, e os itens viram drops
+no mesmo passo. Uma recusa não publica nada nem consome a célula. Se o registro antigo volta após queda, volta também o BE
+intacto. Não se criam preparações nem recibos de retenção no KV; o leitor de preparações antigas permanece para migração.
 
 A quebra pelo jogador é o derrame vanilla: o NTM não acompanha os fragmentos.
 
-Passos que mudam máquinas em mais de um chunk, inclusive Loader→Core sem ejeção, mantêm um diário por mundo
-dos sobreviventes de maior revisão por posição/geração. A adoção de um BE antigo restaura também slots e bridge.
-Save & Quit confirma, poda e regrava chunks/entidades alterados pelo hook antes de terminar. A revisão encontrou
-cinco P1 na entrega anterior. As contraprovas B1/B2 e a validação C4 foram concluídas: 57 casos,
-duas reaberturas por caso, oito cortes reais entre chunks e regressão completa no mesmo binário.
-A entrega aguarda revisão independente (ver `docs/horizon-current.md`, "Onda 0 — item 5").
+Passos que mudam máquinas em mais de um chunk, inclusive Loader→Core sem ejeção, guardam o estado de cada máquina no
+seu BE: um corte entre os dois registros fica rasgado como um funil vanilla na borda (provas `coupled-*`, iguais ao
+controle em cada corte). O diário de sobreviventes não guarda nada pendente no disco, porque todo save o confirma antes
+de gravar o KV; ele só é lido em saves antigos. Uma pilha que reabre formada de um lado só se desmonta (núcleo) ou volta a
+tijolo (membros). A entrega aguarda revisão independente (ver `docs/horizon-current.md`, "Onda 0 — item 5").
 
 A fronteira de publicação das células é explícita. Primeiro são validados todos
 os BEs e todas as células, inclusive mudanças externas entre a leitura e o commit.
@@ -277,7 +273,7 @@ limitação no pacote em trânsito entre quebra e recolocação do mesmo ID.
 | `waste` em chunks descarregados | A API existente acessa somente blocos carregados; esses pontos são ignorados, sem carregar/gerar chunks para o efeito. A transformação das posições carregadas segue o limite/ordem da fonte. |
 | `WasteEarth.updateTick`: cogumelo→`mush` | Exclusão de catálogo K4 aceita pelo coordenador; `mush` não está declarado e possui regras próprias fora do ZIRNOX. Escurecimento está implementado; `cleanupDeadDirt=false` segue o padrão Java. |
 | `WasteEarth.canSustainPlant` | Blocos de terra usam o suporte a plantas do template vanilla; falta a restrição Java a plantas Cave. |
-| Crash/I/O entre `spawn_item`/save do mundo e cursor KV | Item 5: ids por efeito no registro do chunk, paridade vanilla verificada por execução (verificador até N=11 e provas com controle vanilla); resíduos do vanilla listados em `docs/horizon-current.md`. Aguardando revisão independente. |
+| Crash/I/O entre `spawn_item`/save do mundo e cursor KV | Item 5: o KV vai ao disco com o save do mundo, os drops são vanilla e o devido fica no registro do dono; paridade vanilla verificada por execução (verificador até N=11 e 84 provas com controle vanilla, todas com morte fora de um save); resíduos do vanilla listados em `docs/horizon-current.md`. Aguardando revisão independente. |
 | Salvamento do nível estacionado/comparadores | Valem as limitações gerais já documentadas em `docs/host-dimensoes.md`. |
 
 ## Diagnóstico da cerca e isolamento do teste de waste
