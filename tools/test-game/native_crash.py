@@ -11,8 +11,10 @@ Modes (the runner, run-crash-proof.py, owns the game process and the kill):
 Rods: 10 = 5 + 5 `ntm:pile_rod__ra226be` in the pile, plus 2 plain ones on the ground where they fall: 12, in channels,
 loaders, item entities or owed by the ledger.
 
-With NTM_CRASH_VANILLA=1 the same world is the vanilla control: no pile, the two plain rods, and the undo puts 5 + 5
-loose rods on the ground on both sides of the border instead of ejecting them; the runner compares its losses.
+With NTM_CRASH_VANILLA=1 the same world is the vanilla control: no pile, the two plain rods, and a vanilla dropper with
+5 rods where each loader stands, saved with the world; the undo fires them, as the pile ejects. After a death a dropper
+comes back with the stock of the last save, as the pile does. NTM_CRASH_NO_SAVE=1: the undo asks for no save (the runner
+kills the game outside any save).
 """
 import os
 import json
@@ -27,8 +29,7 @@ CHANNELS = [(46, 102, 8), (48, 102, 8)]
 LOADERS = [(46, 102, 7), (48, 102, 7)]
 ROD = 'ntm:pile_rod__ra226be'
 VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
-# Where the control's loose rods are put, one side of the border each.
-LOOSE = (46.5, 48.5)
+NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 PILE = 10
 COMMON = 2  # plain rods lying where the pile's rods fall, for the merge cases
 TOTAL = PILE + COMMON
@@ -48,8 +49,31 @@ def rod_entities(g):
     return sum(e['item']['count'] for e in items if e.get('kind') == 'item' and e['item']['item'] == ROD)
 
 
+def dropper(g, p, item, n, facing='north'):
+    """The control's machine: a vanilla dropper at `p` holding `n` of `item`."""
+    g.command('setblock %d %d %d minecraft:dropper[facing=%s]' % (*p, facing))
+    g.command('item replace block %d %d %d container.0 with %s %d' % (*p, item, n))
+
+
+def fire(g, p, times):
+    """The dropper at `p` fires `times` shots, one per rising edge of a redstone block above it."""
+    for _ in range(times):
+        g.command('setblock %d %d %d minecraft:redstone_block' % (p[0], p[1] + 1, p[2]))
+        time.sleep(.35)
+        g.command('setblock %d %d %d minecraft:air' % (p[0], p[1] + 1, p[2]))
+        time.sleep(.35)
+
+
+def held_by_dropper(g, p, item):
+    """What the dropper at `p` holds of `item` (0 when none stands there)."""
+    if not block(g, p).startswith('minecraft:dropper'):
+        return 0
+    text = ' '.join(g.command('data get block %d %d %d Items' % p).get('chat', []))
+    return sum(int(n) for n in re.findall(r'(?:count|Count): ?(\d+)', text)) if item in text else 0
+
+
 def rods_in_machines(g):
-    """Rods inside the pile (channels) and in the loaders, as the machines say."""
+    """Rods inside the pile (channels) and in the loaders (the control's droppers), as the machines say."""
     channels = loaders = 0
     if block(g, CORE) == 'ntm:pile_block__core':
         core = machine(g, CORE)['data']['Core']
@@ -58,6 +82,7 @@ def rods_in_machines(g):
         if block(g, p) == 'ntm:pile_device__loader':
             slots = machine(g, p)['data']['Loader']['slots']
             loaders += sum(s['count'] for s in slots if s)
+        loaders += held_by_dropper(g, p, ROD)
     return channels, loaders
 
 
@@ -102,6 +127,8 @@ def prepare(g):
         g.command('tp @s 47.5 101 1.5')
         for x in (46.5, 48.5):
             g.command(f'summon minecraft:item {x} 103 13.5 {{Item:{{id:"{ROD}",count:1}}}}')
+        for p in LOADERS:
+            dropper(g, p, ROD, PILE // 2)
         time.sleep(2)
         g.evidence['base'] = count(g)
         g.ctl('save')
@@ -155,10 +182,9 @@ def undo(g):
     g.command('gamemode creative @s')
     before = count(g)
     if VANILLA:
-        g.check('start_from_the_plain_rods', before['entities'] == COMMON, before)
-        for x in LOOSE:
-            for _ in range(PILE // 2):
-                g.command(f'summon minecraft:item {x} 103 9.5 {{Item:{{id:"{ROD}",count:1}}}}')
+        g.check('start_from_the_droppers', before['loaders'] == PILE and before['entities'] == COMMON, before)
+        for p in LOADERS:
+            fire(g, p, PILE // 2)
         # The chunks the pile's save writes change too, so that every cut has its records.
         for x, z in ((40, 4), (50, 4), (50, 20)):
             g.command(f'setblock {x} 99 {z} minecraft:cobblestone')
@@ -171,6 +197,8 @@ def undo(g):
     after = count(g)
     g.evidence['after_undo'] = after
     g.save()
+    if NO_SAVE:
+        return
     try:
         g.ctl('save')
         g.evidence['survived_save'] = True

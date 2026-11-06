@@ -33,6 +33,10 @@ spec.loader.exec_module(crash_proof)
 INCOMING = 'ntm:pile_rod__zr'
 BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
+# The scenarios whose action writes files itself (a chunk it unloads): after a death outside a save they hold what those
+# files hold, not the last save.
+WRITES_IN_ACT = ('crossing', 'crossing-kill', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish',
+                 'origin-kill', 'merge-stale', 'origin-away', 'pickup-merge')
 # scenario -> (items counted, what the mod's world holds, what the control's holds)
 EMITTING = {'coupled-ea': (('ntm:pile_rod',), 6, 1), 'coupled-eb': (('ntm:pile_rod',), 6, 1),
             'crossing': (('ntm:pile_rod',), 12, 12), 'crossing-kill': (('ntm:pile_rod',), 10, 10),
@@ -43,26 +47,26 @@ def items_of(scenario):
     return EMITTING[scenario][0] if scenario in EMITTING else ('ntm:niter',) if scenario in BROKEN else ('ntm:pile_rod',)
 
 DEFAULT_POINTS = {
-    'vanilla-break': ['chunks_written', 'entities_written'],
-    'coupled-a': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
-    'coupled-b': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
-    'coupled-ea': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
-    'coupled-eb': ['none', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
-    'crossing': ['none'],
-    'origin-pickup': ['none'],
-    'origin-pickup-away': ['none'],
-    'origin-merge': ['none'],
-    'origin-vanish': ['none'],
+    'vanilla-break': ['kill', 'chunks_written', 'entities_written'],
+    'coupled-a': ['none', 'kill', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'coupled-b': ['none', 'kill', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'coupled-ea': ['none', 'kill', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'coupled-eb': ['none', 'kill', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'crossing': ['none', 'kill'],
+    'origin-pickup': ['none', 'kill'],
+    'origin-pickup-away': ['none', 'kill'],
+    'origin-merge': ['none', 'kill'],
+    'origin-vanish': ['none', 'kill'],
     'origin-kill': ['kill'],
     'crossing-kill': ['kill'],
     'merge-stale': ['kill'],
     'origin-away': ['kill'],
     'pickup-merge': ['kill'],
-    'save-quit': ['none'],
+    'save-quit': ['none', 'kill'],
     'mining': crash_proof.POINTS,
     # The mixer's chunk first (`live_chunk`): a cut after the first record of a batch hits another chunk in the control.
-    'break': ['none', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
-    'replace': ['none', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'break': ['none', 'kill', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'replace': ['none', 'kill', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
 }
 
 
@@ -71,8 +75,8 @@ class More(crash_proof.World):
         super().__init__(args, folder, env)
         self.scenario = scenario
 
-    def script(self, mode, check=True):
-        env = dict(self.env, NTM_CRASH_SCENARIO=self.scenario)
+    def script(self, mode, check=True, extra=None):
+        env = dict(self.env, NTM_CRASH_SCENARIO=self.scenario, **(extra or {}))
         return subprocess.run([sys.executable, str(here / 'native_crash_more.py'), str(self.folder), mode],
                               cwd=self.folder, env=env, check=check, timeout=1200).returncode
 
@@ -160,8 +164,9 @@ def play(args, base, scratch, env, scenario, point, control=False):
     world = More(args, folder, env, scenario)
     result = {'scenario': scenario, 'point': point, 'folder': str(folder), 'ok': False, 'vanilla_control': control}
     try:
-        world.launch(point)
-        acted = world.script('act', check=False)
+        world.launch(None if point == 'kill' else point)
+        # `kill`: the action asks for no save, and the process dies where it left the world.
+        acted = world.script('act', check=False, extra={'NTM_CRASH_NO_SAVE': '1'} if point == 'kill' else None)
         act = evidence(folder, 'act')
         result['act'] = act.get('after_act') or act.get('after_undo')
         result['while_away'] = act.get('while_away')
@@ -304,11 +309,18 @@ def main():
                                  ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
                     copy_env[key] = str(folder / sub)
                 outcomes[control] = play(args, where, scratch, copy_env, args.scenario, point, control)
+            exact = point == 'kill' and args.scenario not in WRITES_IN_ACT
             if args.scenario in EMITTING:
                 _, expected, control_expected = EMITTING[args.scenario]
-                outcome = crash_proof.emission_verdict(outcomes[False], outcomes[True], expected, control_expected)
+                outcome = crash_proof.emission_verdict(outcomes[False], outcomes[True], expected, control_expected, exact)
             else:
                 outcome = against_control(outcomes[False], outcomes[True]) if controlled else outcomes[False]
+                if exact and controlled:
+                    # A death outside any save: both worlds are the last save, exactly (the break never happened).
+                    niter = int(os.environ.get('NTM_CRASH_NITER', '16'))
+                    last = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
+                    outcome['as_the_last_save'] = all(v == (niter, niter) for v in last.values())
+                    outcome['ok'] = outcome['ok'] and outcome['as_the_last_save']
             report['points'].append(outcome)
             print(json.dumps(outcome), flush=True)
             if outcome['ok']:

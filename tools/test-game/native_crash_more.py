@@ -25,9 +25,11 @@ second reopen. Scenarios:
 A player's break of a machine spills its contents as a vanilla chest does: the scenarios built on one (`BROKEN`) run
 again with a chest in the mixers' place (NTM_CRASH_VANILLA=1), and the count must be the chest's at the same cut, not a
 number (run-crash-more.py compares them). The pile's, the mining's and the ejection's items are effects of the mod
-(`EMITTING`): their control has loose items put on the ground where the effect drops them (a chest broken in place of the
-mined one), and the runner checks that the reopens count what the files held, that nothing is held twice, and that no
-more is lost than the control loses at the same cut. The transfers without an ejection are counted exactly.
+(`EMITTING`): their control is a vanilla dropper holding the same rods where the effect drops them, saved with the world
+and fired by the action (a chest broken by hand in place of the mined one); after a death it comes back with the stock of
+the last save, as the machine does. The runner checks that the reopens count what the files held, that nothing is held
+twice, and that no more is lost than the control loses at the same cut. The transfers without an ejection are counted
+exactly. `kill` is a death outside any save (NTM_CRASH_NO_SAVE=1).
 """
 import json
 import os
@@ -36,11 +38,12 @@ import sys
 import time
 from native_game import Game
 from native_pile import interact, machine, tool, block
-from native_crash import ledger
+from native_crash import ledger, dropper, fire, held_by_dropper
 
 SCENARIO = os.environ.get('NTM_CRASH_SCENARIO', 'coupled-a')
 # A chest in each mixer's place: the vanilla control of a scenario of `BROKEN`.
 VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
+NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The scenarios whose items an effect of the mod drops, with the items counted.
@@ -140,13 +143,9 @@ def pile_rods(g, cx):
         p = geo[side][0]
         if block(g, p) == 'ntm:pile_device__loader':
             loaders += sum(s['count'] for s in machine(g, p)['data']['Loader']['slots'] if s)
+    # The control's droppers stand where the core and the loaders do.
+    loaders += sum(held_by_dropper(g, p, r) for p in (geo['core'], geo['L'][0], geo['R'][0]) for r in (ROD, INCOMING))
     return channels, loaders
-
-
-def loose(g, item, n, at):
-    """The control's part of an effect: `n` loose items of `item` put on the ground at `at`."""
-    for _ in range(n):
-        g.command('summon minecraft:item %s %s %s {Item:{id:"%s",count:1}}' % (*at, item))
 
 
 def touch(g, *cells):
@@ -164,6 +163,8 @@ def coupled_prepare(g):
         time.sleep(3)
         g.command('fill 40 99 3 56 108 18 minecraft:air')
         g.command('fill 40 99 3 56 99 18 minecraft:stone')
+        # The rod the full channel ejects, in a dropper where the core stands.
+        dropper(g, geometry(cx)['core'], ROD, 1)
         g.ctl('save')
         return
     geo = build_pile(g, cx)
@@ -190,8 +191,8 @@ def coupled_act(g):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
     if VANILLA and full:
-        # The ejected rod, loose by the core; the loader's and the core's chunks changed.
-        loose(g, ROD, 1, (cx + .5, 103, 9.5))
+        # The dropper fires the rod the core ejects; the loader's and the core's chunks changed.
+        fire(g, geometry(cx)['core'], 1)
         touch(g, (40, 4), (50, 4))
         time.sleep(1.8)
         g.evidence['after_act'] = {'entities': entities(g, ROD)}
@@ -242,8 +243,10 @@ def crossing_prepare(g):
         time.sleep(3)
         g.command('fill 40 99 3 56 108 18 minecraft:air')
         g.command('fill 40 99 3 56 99 18 minecraft:stone')
-        # Near the pile, as the mod's world leaves its player, out of reach of the loose rods.
+        # Near the pile, as the mod's world leaves its player, out of reach of the rods.
         g.command('tp @s 47.5 101 1.5')
+        for side in ('L', 'R'):
+            dropper(g, geometry(cx)[side][0], ROD, 5)
     else:
         geo = build_pile(g, cx)
         for side in ('L', 'R'):
@@ -267,11 +270,11 @@ def crossing_prepare(g):
 
 
 def eject(g):
-    """The pile gives up both channels through its loaders; in the control, as many loose rods by each loader."""
+    """The pile gives up both channels through its loaders; in the control, the dropper at each loader fires its five."""
     for side in ('L', 'R'):
         p = geometry(47)[side][0]
         if VANILLA:
-            loose(g, ROD, 5, (p[0] + .5, 102, p[2] - 1.5))
+            fire(g, p, 5)
         else:
             interact(g, p, 'north', (p[0] + .5, 101, p[2] - 3.5))
 
@@ -326,9 +329,11 @@ def crossing_verify(g, again=False):
         g.command('forceload add 128 0 143 15')
     g.command('tp @s 133.5 101 15.5' if SCENARIO in ('crossing', 'crossing-kill') else 'tp @s 53.5 101 15.5')
     led = quiet(g, 10)
-    held = entities(g, ROD) + inventory(g, ROD)
+    # In the pile (or the control's droppers) after a death outside a save, on the ground or carried otherwise.
+    machines = sum(pile_rods(g, 47))
+    held = machines + entities(g, ROD) + inventory(g, ROD)
     expected = 10 if SCENARIO == 'crossing-kill' else 12
-    detail = {'entities': entities(g, ROD), 'inventory': inventory(g, ROD), 'total': held, 'expected': expected, 'ledger': led}
+    detail = {'machines': machines, 'entities': entities(g, ROD), 'inventory': inventory(g, ROD), 'total': held, 'expected': expected, 'ledger': led}
     counted(g, 'no_rod_duplicated_by_a_chunk_that_unloaded', detail, again)
 
 
@@ -827,6 +832,10 @@ def counted(g, name, detail, again):
 
 
 def save_expecting_death(g):
+    if NO_SAVE:
+        # `kill`: no save at all; the runner ends the process where the action left the world.
+        g.save()
+        return
     try:
         g.ctl('save')
         g.evidence['survived_save'] = True

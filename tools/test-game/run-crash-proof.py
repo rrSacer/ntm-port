@@ -27,7 +27,7 @@ import time
 from native_game import Game
 import disk_count
 
-POINTS = ['none', 'save_begin', 'region_record:1', 'region_record:2', 'region_record:3', 'chunks_written',
+POINTS = ['none', 'kill', 'save_begin', 'region_record:1', 'region_record:2', 'region_record:3', 'chunks_written',
           'entities_written', 'level_saved', 'parked_saved', 'level_dat_written', 'metadata_saved',
           'players_saved', 'world_saved']
 
@@ -72,9 +72,9 @@ class World:
                 raise TimeoutError('control socket')
             time.sleep(.25)
 
-    def script(self, mode, check=True):
+    def script(self, mode, check=True, extra=None):
         return subprocess.run([sys.executable, str(Path(__file__).with_name('native_crash.py')), str(self.folder), mode],
-                              cwd=self.folder, env=self.env, check=check, timeout=900).returncode
+                              cwd=self.folder, env=dict(self.env, **(extra or {})), check=check, timeout=900).returncode
 
     def quit(self):
         Game(self.folder, 'shutdown').ctl('quit')
@@ -135,7 +135,7 @@ ROD = 'ntm:pile_rod'
 TOTAL = 12
 
 
-def emission_verdict(outcome, control, expected, control_expected):
+def emission_verdict(outcome, control, expected, control_expected, exact=False):
     """An emission against the files and the vanilla control: both reopens count what the files held before them (less
     only the items the files hold twice, a transfer between two chunks of which one record reached the disk, which the
     world's journal of survivors settles: `held_twice`), nothing is held twice, and no more is lost than the control
@@ -152,6 +152,10 @@ def emission_verdict(outcome, control, expected, control_expected):
     verdict['no_duplicate'] = first is not None and first <= expected
     verdict['no_worse_than_vanilla'] = lost is not None and lost <= control_lost
     ok = outcome['ok'] and control['ok'] and verdict['as_the_files'] and verdict['no_duplicate'] and verdict['no_worse_than_vanilla']
+    if exact:
+        # A death outside any save: both worlds are the last save, exactly.
+        verdict['as_the_last_save'] = first == expected and total(control, 'first_reopen') == control_expected
+        ok = ok and verdict['as_the_last_save']
     return {**outcome, 'control': control, 'verdict': verdict, 'ok': ok}
 
 
@@ -165,8 +169,8 @@ def play(args, base, scratch, env, point, control=False, items=(ROD,)):
     world = World(args, folder, env)
     result = {'point': point, 'folder': str(folder), 'ok': False, 'vanilla_control': control}
     try:
-        world.launch(point)
-        acted = world.script('undo', check=False)
+        world.launch(None if point == 'kill' else point)
+        acted = world.script('undo', check=False, extra={'NTM_CRASH_NO_SAVE': '1'} if point == 'kill' else None)
         result['after_undo'] = evidence(folder, 'undo').get('after_undo')
         result['died_in_act'] = bool(acted) and died_in_act(world, point)
         if acted and not result['died_in_act']:
@@ -174,6 +178,11 @@ def play(args, base, scratch, env, point, control=False, items=(ROD,)):
         if point == 'none':
             result['exit'] = 'survived'
             world.quit()
+        elif point == 'kill':
+            # No save at all: the process dies where the undo left it.
+            world.client.kill()
+            result['exit'] = world.client.wait()
+            (folder / 'control.sock').unlink(missing_ok=True)
         else:
             code = world.died()
             result['exit'] = code
@@ -261,7 +270,7 @@ def main():
                 outcome = sweep(args, base, scratch, homed(scratch / 'point-sweep', False))
             else:
                 played = {c: play(args, where, scratch, homed(point_folder(scratch, point, c), c), point, c) for c, where in bases.items()}
-                outcome = emission_verdict(played[False], played[True], TOTAL, TOTAL)
+                outcome = emission_verdict(played[False], played[True], TOTAL, TOTAL, exact=point == 'kill')
             report['points'].append(outcome)
             if outcome['ok']:
                 # Each copy of the world is large: a point that passed leaves only its numbers.
