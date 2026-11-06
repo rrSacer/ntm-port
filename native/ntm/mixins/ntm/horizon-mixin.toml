@@ -6,7 +6,7 @@ priority = 100
 # Current upstream plus reusable model, multiblock and container extensions.
 # Keep the exact integration pin: official API alone lacks those extensions.
 [compatibility]
-horizon_revision = "1d48f96aa6ea29fbab7477c0a7fc215797a9bd9c"
+horizon_revision = "d07e7117a2b2c039d2a409ff999665cb8a3c8921"
 
 # The logic, plain Rust (cargo test against the fake world): copied into
 # this folder by tools/package-native.sh, never kept here.
@@ -143,8 +143,7 @@ bindings = [
   { name = "phase", ty = "crate::game::native_lifecycle::ServerTickPhase", value = "phase" },
 ]
 
-# The ledger of the effects applied to a chunk lives in its record: it follows their loading, and a record still
-# due goes to the writer before a chunk that may hold its effect's items unloads.
+# What a chunk's record keeps of the machines' effects (stacks owed while their drop waits) follows its loading.
 [[injection]]
 id = "ledger-chunk-load"
 hook = "chunk_load"
@@ -164,23 +163,8 @@ hook_version = 1
 kind = "HEAD"
 helper = "ledger_chunk_unload.rs"
 bindings = [
-  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "dimension", ty = "&str", value = "dimension" },
   { name = "chunk", ty = "[i32; 2]", value = "chunk" },
-]
-
-# A pickup the mods let go ahead (API 40): a stack the ledger follows went to the player, not into another stack.
-[[injection]]
-id = "ledger-item-picked-up"
-hook = "item_picked_up"
-hook_version = 1
-kind = "RETURN"
-helper = "ledger_item_picked_up.rs"
-bindings = [
-  { name = "_value", ty = "()", value = "$value" },
-  { name = "item", ty = "&str", value = "item" },
-  { name = "count", ty = "u32", value = "count" },
-  { name = "canceled", ty = "bool", value = "*canceled" },
 ]
 
 # Comparators read the charge of a battery and the fill of a tank or a barrel (API 64).

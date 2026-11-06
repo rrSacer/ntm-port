@@ -1583,33 +1583,3 @@ fn a_change_that_leaves_the_revision_behind_is_caught() {
     s.ready.kept_rev = Some(kept);
     let _ = s.world_changed();
 }
-
-#[test]
-fn a_save_that_did_not_wait_confirms_what_it_held_once_its_writes_are_done() {
-    use super::{CommittedEffects, Survivor};
-    let mut h = Host::default();
-    let mut s = install(&mut h, "ntm:machine_battery", 2);
-    let receipt = |serial: u64| CommittedEffects { serial, ..Default::default() };
-    let survivor = |x: i32, rev: u64| Survivor { dim: D.into(), pos: [x, 64, 0], generation: 0, rev, json: "{}".into() };
-    s.ready.world.applied_machine_effects.push_back(receipt(1));
-    s.ready.world.applied_machine_effects.push_back(receipt(2));
-    s.journal_survivor(survivor(1, 1));
-    s.journal_survivor(survivor(2, 1));
-    s.native_world_saved(&mut h, false);
-    let mark = s.native_save_mark();
-    // After the save: another receipt, and one of the machines journaled again.
-    s.ready.world.applied_machine_effects.push_back(receipt(3));
-    s.journal_survivor(survivor(2, 2));
-    s.native_marked_saved(&mut h, &mark);
-    let serials: Vec<u64> = s.ready.world.applied_machine_effects.iter().map(|b| b.serial).collect();
-    assert_eq!(serials, vec![3], "what the save held is confirmed, what came after is not");
-    assert_eq!(s.ready.world.survivors.values().map(|v| (v.pos[0], v.rev)).collect::<Vec<_>>(), vec![(2, 2)]);
-    let back = WorldState::load(&mut h);
-    assert_eq!(back.machine_effects.iter().map(|b| b.serial).collect::<Vec<_>>(), vec![3], "the storage says so");
-    // A mark a waiting save overtook confirms nothing more.
-    let old = s.native_save_mark();
-    s.native_world_saved(&mut h, true);
-    s.ready.world.applied_machine_effects.push_back(receipt(4));
-    s.native_marked_saved(&mut h, &old);
-    assert_eq!(s.ready.world.applied_machine_effects.len(), 1);
-}

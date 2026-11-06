@@ -62,15 +62,6 @@ pub struct Survivor {
     pub json: String,
 }
 
-/// What a save that did not wait for its writes holds of the journal: its receipts (by place in their batch) and
-/// the journaled machines (by revision). Once the host has those writes on disk, with the same sync as a waiting
-/// save, they are confirmed as a waiting save confirms them (`Server::native_marked_saved`).
-#[derive(Clone, Debug, Default, PartialEq)]
-pub struct SaveMark {
-    receipts: Vec<(u64, u32)>,
-    survivors: Vec<((String, Pos), u64, u64)>,
-}
-
 /// A lossless retention journal written before consuming a BE's cell.
 /// Recovery can prove the original source is still intact and discard it.
 #[derive(Clone,Debug,PartialEq,serde::Serialize,serde::Deserialize)]
@@ -416,46 +407,6 @@ impl Server {
     }
 
     pub(super) fn prune_ledger(&self,host:&mut impl ServerHost){host.ledger_prune(&self.live_effect_ids());}
-
-    /// What this save holds, when it does not wait for its writes.
-    pub fn native_save_mark(&self) -> SaveMark {
-        SaveMark {
-            receipts: self.ready.world.applied_machine_effects.iter().map(|b| (b.serial, b.done)).collect(),
-            survivors: self.ready.world.survivors.iter().map(|(k, s)| (k.clone(), s.generation, s.rev)).collect(),
-        }
-    }
-
-    /// The writes of the save that left `mark` are on disk: what it held is confirmed, as by a waiting save. Receipts
-    /// and journaled machines that came after it stay. A mark the journal no longer starts with (a waiting save
-    /// confirmed it since) confirms nothing.
-    pub fn native_marked_saved(&mut self, host: &mut impl ServerHost, mark: &SaveMark) {
-        let held = &self.ready.world.applied_machine_effects;
-        if mark.receipts.is_empty() && mark.survivors.is_empty()
-            || held.len() < mark.receipts.len()
-            || !held.iter().zip(&mark.receipts).all(|(b, m)| (b.serial, b.done) == *m)
-        {
-            return;
-        }
-        let stale: Vec<(String, Pos)> = mark
-            .survivors
-            .iter()
-            .filter(|(k, generation, rev)| self.ready.world.survivors.get(k).is_some_and(|s| s.generation == *generation && s.rev == *rev))
-            .map(|(k, _, _)| k.clone())
-            .collect();
-        let receipts: Vec<CommittedEffects> = self.ready.world.applied_machine_effects.drain(..mark.receipts.len()).collect();
-        let survivors: Vec<Survivor> = stale.iter().filter_map(|k| self.ready.world.survivors.remove(k)).collect();
-        if let Err(e) = self.write_world(host) {
-            for (i, b) in receipts.into_iter().enumerate() {
-                self.ready.world.applied_machine_effects.insert(i, b);
-            }
-            for s in survivors {
-                self.ready.world.survivors.insert((s.dim.clone(), s.pos), s);
-            }
-            host.log(&format!("receipts of a finished save: {e}"));
-        } else {
-            self.prune_ledger(host);
-        }
-    }
 
     /// The existing engine hook reports whether world/entity writes have
     /// actually flushed. Until then replay after a crash may duplicate an

@@ -72,26 +72,22 @@ pub(super) fn world(open: bool) {
     if !open {
         // The close/failure hook follows the final save. These are session caches, not facts of the next world.
         lock(&LEDGERS).clear();
-        lock(&LEGACY).clear();
-        lock(&DUE).clear();
-        lock(&PICKUPS).clear();
+        lock(&OWING).clear();
+        lock(&LOADED_AT).clear();
     }
-    *lock(&SAVE_MARK) = None;
+    // The next world's storage is read from its own folder.
+    *lock(&STORE) = None;
     if open {
         eprintln!("ntm native: {} machine blocks", ntm_core::registry::machine_ids().count());
     }
 }
 
-/// A flushed world save makes already applied item/block effects durable.
+/// The world's save: the storage is written with it, as the state of this instant (vanilla's `level.dat` and saved
+/// data are, while the regions may still be queued).
 pub(super) fn world_saved(game:&mut crate::game::Game<'_>,wait:bool){
-    KV_DURABLE.store(wait, std::sync::atomic::Ordering::Relaxed);
     horizon_client::spans::time("ntm_world_saved", || world_saved_timed(game, wait));
-    KV_DURABLE.store(false, std::sync::atomic::Ordering::Relaxed);
 }
 fn world_saved_timed(game:&mut crate::game::Game<'_>,wait:bool){
-    // The save wrote every due record with its region, ahead of the entities, and every entity: nothing is due.
-    lock(&DUE).clear();
-    lock(&PICKUPS).clear();
     let changes=std::mem::take(&mut *lock(&CHANGES));
     if let Some((server,_))=lock(&SERVER).as_mut(){
         let mut host=Host{game,buttons:Vec::new()};
@@ -102,16 +98,10 @@ fn world_saved_timed(game:&mut crate::game::Game<'_>,wait:bool){
         // A quit/save between ticks must not forget a removed core's hidden
         // contents. Record tombstones only; do not tick or emit after saving.
         server.native_record_events(&mut host);
-        server.native_world_saved(&mut host,wait);
-        // A waiting save confirmed everything; one that did not is confirmed once its writes are done.
-        *lock(&SAVE_MARK)=(!wait).then(||server.native_save_mark());
+        // Everything the world did up to this save is in this save: no receipt is pending past it.
+        server.native_world_saved(&mut host,true);
     }
-}
-
-/// Whether every open level's writer has written all it was given, with its syncs: then what an earlier save that did
-/// not wait queued is on disk as after a waiting one.
-fn saves_done(game:&mut crate::game::Game<'_>)->bool{
-    ["minecraft:overworld","minecraft:the_nether","minecraft:the_end"].into_iter().all(|dim|in_place(game,dim,|g|matches!(g.save.writes_finished(),Ok(true))).unwrap_or(true))
+    store_commit(game,wait);
 }
 
 /// A battery, a fluid tank and a barrel give a comparator a signal (`hasComparatorInputOverride`).
@@ -314,8 +304,8 @@ pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mo
 }
 
 // ----------------------------------------------------------------- the ledger
-// The ids of the effects applied to a chunk are kept in the attachments of that chunk (see `ntm_core::ledger`):
-// written with the chunk, so they are on disk exactly as the block entity that paid is.
+// What a chunk's record keeps of the machines' effects (see `ntm_core::ledger`): the stacks an effect owes while it
+// cannot drop them yet, written with the block entity that paid them; and what records of earlier versions held.
 
 static LEDGER_TYPE: horizon_world::attachments::AttachmentType<String> = horizon_world::attachments::AttachmentType {
     namespace: "ntm",
@@ -331,49 +321,155 @@ static LEDGER_TYPE: horizon_world::attachments::AttachmentType<String> = horizon
     copy_on_death: false,
     sync: false,
 };
+/// The stack an item entity of an earlier version belonged to (`ntm_core::ledger::entity_tag`): read to settle that
+/// version's records once.
+static EFFECT_TYPE: horizon_world::attachments::AttachmentType<String> = horizon_world::attachments::AttachmentType {
+    namespace: "ntm",
+    name: "effect",
+    default: String::new,
+    codec: Some(horizon_world::attachments::AttachmentCodec {
+        encode: |v| Ok([("v".into(), Tag::String(JavaString::from(v.as_str())))].into()),
+        decode: |c| match c.get(&"v".into()) {
+            Some(Tag::String(s)) => Ok(s.to_string_lossy()),
+            _ => Err(horizon_world::attachments::AttachmentError::Decode),
+        },
+    }),
+    copy_on_death: false,
+    sync: false,
+};
 
 /// Writes of the host's storage and their bytes, for `/ntmledger`: a batch of effects must not cost one write each.
 static KV_WRITES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
 static KV_BYTES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
-/// Set while a confirmed save is told: the storage's writes are synced to the disk (file and folder). A tick's writes
-/// are not (one sync of a meltdown's journal costs tens of milliseconds): they are durable against the process
-/// dying, as the page cache keeps them, and become durable against a power loss at the next confirmed save.
-static KV_DURABLE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
-/// What the last save that did not wait held of the journal, until its writes are on disk (`saves_done`).
-static SAVE_MARK: Mutex<Option<ntm_core::server::SaveMark>> = Mutex::new(None);
+
+/// The host's storage of the world open, in memory until the world's save writes it (`store_commit`).
+struct Store {
+    dir: std::path::PathBuf,
+    keys: std::collections::BTreeMap<String, Vec<u8>>,
+    /// A key changed since the last write.
+    changed: bool,
+    /// The files of the earlier form, one per key and written every tick: removed once the one file holds them.
+    legacy: Vec<std::path::PathBuf>,
+}
+static STORE: Mutex<Option<Store>> = Mutex::new(None);
+/// The one file of the storage, and how it starts.
+const STORE_FILE: &str = "state";
+const STORE_MAGIC: &[u8] = b"ntm-store 1\n";
+
+/// The storage in `dir`: its one file, else (a world of an earlier version) the file of each key.
+fn store_read(dir: &std::path::Path) -> Store {
+    let mut store = Store { dir: dir.to_path_buf(), keys: std::collections::BTreeMap::new(), changed: false, legacy: Vec::new() };
+    let files: Vec<std::path::PathBuf> = std::fs::read_dir(dir).into_iter().flatten().flatten().map(|e| e.path()).filter(|p| p.is_file()).collect();
+    let one = dir.join(STORE_FILE);
+    let others = files.into_iter().filter(|p| *p != one && p.extension().is_none_or(|x| x != "tmp"));
+    match std::fs::read(&one) {
+        Ok(bytes) => {
+            store.keys = store_decode(&bytes).unwrap_or_else(|| {
+                eprintln!("ntm: storage {} unreadable", one.display());
+                Default::default()
+            });
+            // Left from a write that died before removing them: the one file already holds what they held.
+            store.legacy = others.collect();
+        }
+        Err(_) => {
+            for path in others {
+                if let (Some(name), Ok(value)) = (path.file_name().and_then(|n| n.to_str()).map(str::to_string), std::fs::read(&path)) {
+                    store.keys.insert(name, value);
+                    store.legacy.push(path);
+                }
+            }
+            store.changed = !store.keys.is_empty();
+        }
+    }
+    store
+}
+
+fn store_encode(keys: &std::collections::BTreeMap<String, Vec<u8>>) -> Vec<u8> {
+    let mut out = STORE_MAGIC.to_vec();
+    for (k, v) in keys {
+        out.extend_from_slice(&(k.len() as u32).to_le_bytes());
+        out.extend_from_slice(k.as_bytes());
+        out.extend_from_slice(&(v.len() as u32).to_le_bytes());
+        out.extend_from_slice(v);
+    }
+    out
+}
+
+fn store_decode(bytes: &[u8]) -> Option<std::collections::BTreeMap<String, Vec<u8>>> {
+    let mut rest = bytes.strip_prefix(STORE_MAGIC)?;
+    let mut keys = std::collections::BTreeMap::new();
+    let take = |rest: &mut &[u8]| -> Option<Vec<u8>> {
+        let n = u32::from_le_bytes(rest.get(..4)?.try_into().ok()?) as usize;
+        let v = rest.get(4..4 + n)?.to_vec();
+        *rest = &rest[4 + n..];
+        Some(v)
+    };
+    while !rest.is_empty() {
+        let k = String::from_utf8(take(&mut rest)?).ok()?;
+        let v = take(&mut rest)?;
+        keys.insert(k, v);
+    }
+    Some(keys)
+}
+
+fn with_store<R>(dir: &std::path::Path, f: impl FnOnce(&mut Store) -> R) -> R {
+    let mut guard = lock(&STORE);
+    if guard.as_ref().is_none_or(|s| s.dir != dir) {
+        *guard = Some(store_read(dir));
+    }
+    f(guard.as_mut().expect("just read"))
+}
+
+/// The storage as it stands now, written whole: a new file renamed over the old, so a death leaves one or the other.
+/// A save that waits syncs it (file and folder) after the regions; one that does not leaves it to the page cache, as
+/// vanilla leaves its `level.dat`.
+fn store_commit(game: &mut crate::game::Game<'_>, wait: bool) {
+    horizon_client::spans::time("ntm_kv_commit", || {
+        let mut guard = lock(&STORE);
+        let Some(store) = guard.as_mut() else { return };
+        if !store.changed && store.legacy.is_empty() {
+            return;
+        }
+        let started = std::time::Instant::now();
+        let bytes = store_encode(&store.keys);
+        let (tmp, file) = (store.dir.join(format!("{STORE_FILE}.tmp")), store.dir.join(STORE_FILE));
+        let written = (|| {
+            use std::io::Write;
+            std::fs::create_dir_all(&store.dir)?;
+            let mut out = std::fs::File::create(&tmp)?;
+            out.write_all(&bytes)?;
+            if wait {
+                out.sync_all()?;
+            }
+            std::fs::rename(&tmp, &file)?;
+            if wait {
+                std::fs::File::open(&store.dir)?.sync_all()?;
+            }
+            Ok::<(), std::io::Error>(())
+        })();
+        match written {
+            Ok(()) => {
+                store.changed = false;
+                for path in std::mem::take(&mut store.legacy) {
+                    let _ = std::fs::remove_file(path);
+                }
+            }
+            Err(e) => eprintln!("ntm: storage {}: {e}", file.display()),
+        }
+        if std::env::var_os("NTM_TRACE_PHASES").is_some() {
+            eprintln!("ntm: storage written at tick {}: {} bytes in {:.1} ms (wait={wait})", game.ticks, bytes.len(), started.elapsed().as_secs_f64() * 1000.0);
+        }
+    });
+}
 
 type ChunkKey = (String, i32, i32);
 /// The session's copy of the ledgers of the loaded chunks that were looked at (an empty one says the chunk has
 /// none). The chunk's attachments are the authority; this copy is never behind them.
 static LEDGERS: Mutex<std::collections::BTreeMap<ChunkKey, ntm_core::ledger::ChunkLedger>> = Mutex::new(std::collections::BTreeMap::new());
-/// Loaded chunks whose record, of an earlier version, still owes stacks: settled at the next server tick.
-static LEGACY: Mutex<std::collections::BTreeSet<ChunkKey>> = Mutex::new(std::collections::BTreeSet::new());
-/// A stack an effect dropped, as last seen: its chunk, item and count.
-struct Dropped {
-    chunk: [i32; 2],
-    item: String,
-    count: u32,
-}
-/// What a loaded chunk whose ledger gained an id since its record was last queued may have put elsewhere: the stacks
-/// the effect dropped, followed while they lie, and the chunks that may hold some of their items otherwise (a stack
-/// they folded into, a hopper that took them).
-#[derive(Default)]
-struct Due {
-    /// The other chunks whose records hold what the same effect consumed: written with this one.
-    with: std::collections::BTreeSet<[i32; 2]>,
-    drops: std::collections::BTreeMap<u32, Dropped>,
-    holders: std::collections::BTreeSet<[i32; 2]>,
-    /// Some went through a player's inventory, whose file only a save writes: the record waits for that save, as
-    /// vanilla's (written earlier, it would lose what the player holds where vanilla keeps it in the machine).
-    picked: bool,
-}
-/// The chunks whose record is due. Like the region it is in, the record is written by the next save, ahead of the
-/// entities; it goes to the writer before that only when a chunk that may hold the effect's items unloads
-/// (`flush_origin`), followed by those chunks' records and entities: no entity file or other record on disk holds the
-/// items before the record that names their effect, and a death keeps them where vanilla's world keeps them.
-static DUE: Mutex<std::collections::BTreeMap<ChunkKey, Due>> = Mutex::new(std::collections::BTreeMap::new());
-/// The pickups since the last look at the dropped stacks (API 40): item and count.
-static PICKUPS: Mutex<Vec<(String, u32)>> = Mutex::new(Vec::new());
+/// Loaded chunks whose ledger owes stacks, or holds an earlier version's to settle: looked at every server tick.
+static OWING: Mutex<std::collections::BTreeSet<ChunkKey>> = Mutex::new(std::collections::BTreeSet::new());
+/// When each loaded chunk came in (in game ticks): its saved entities have joined the world two ticks after.
+static LOADED_AT: Mutex<std::collections::BTreeMap<ChunkKey, u64>> = Mutex::new(std::collections::BTreeMap::new());
 
 fn chunk_key(dim: &str, chunk: [i32; 2]) -> ChunkKey {
     (dim.to_string(), chunk[0], chunk[1])
@@ -406,23 +502,21 @@ fn ledger_load(g: &mut crate::game::Game<'_>, chunk: [i32; 2]) -> ntm_core::ledg
 }
 
 /// Writes the ledger into the attachments of its loaded chunk, for the chunk's next save, and keeps it for the ticks.
-/// With `due` (it gained an id), the record is also due (`DUE`). A chunk that is not loaded has nothing to write: the
-/// ledgers kept are those of loaded chunks.
-fn ledger_store(g: &mut crate::game::Game<'_>, key: &ChunkKey, ledger: ntm_core::ledger::ChunkLedger, due: bool) {
-    horizon_client::spans::time("ntm_ledger_store", || {
-        use horizon_client::mod_api::Holder;
-        if !g.world.loaded(key.1 * 16, key.2 * 16) {
-            return;
-        }
-        let value = if ledger.is_empty() { String::new() } else { ledger.to_json() };
-        if g.attachment_map_quiet(Holder::Chunk([key.1, key.2])).is_ok_and(|map| map.set(&LEDGER_TYPE, value).is_ok()) {
-            g.world.modified.insert((key.1, key.2));
-            if due {
-                lock(&DUE).entry(key.clone()).or_default();
-            }
-        }
-        lock(&LEDGERS).insert(key.clone(), ledger);
-    });
+fn ledger_store(g: &mut crate::game::Game<'_>, key: &ChunkKey, ledger: ntm_core::ledger::ChunkLedger) {
+    use horizon_client::mod_api::Holder;
+    if !g.world.loaded(key.1 * 16, key.2 * 16) {
+        return;
+    }
+    let value = if ledger.is_empty() { String::new() } else { ledger.to_json() };
+    if g.attachment_map_quiet(Holder::Chunk([key.1, key.2])).is_ok_and(|map| map.set(&LEDGER_TYPE, value).is_ok()) {
+        g.world.modified.insert((key.1, key.2));
+    }
+    if ledger.owed.is_empty() {
+        lock(&OWING).remove(key);
+    } else {
+        lock(&OWING).insert(key.clone());
+    }
+    lock(&LEDGERS).insert(key.clone(), ledger);
 }
 
 fn ledger_get(g: &mut crate::game::Game<'_>, key: &ChunkKey) -> ntm_core::ledger::ChunkLedger {
@@ -441,173 +535,57 @@ fn ledger_knows(g: &mut crate::game::Game<'_>, key: &ChunkKey, id: u64) -> bool 
     known
 }
 
-/// The chunk `c` and the eight around it: where a stack that left `c` without a pickup may have gone (a merge reaches
-/// less than a block, a hopper takes what lies over it).
-fn around(c: [i32; 2]) -> impl Iterator<Item = [i32; 2]> {
-    (-1..=1).flat_map(move |dx| (-1..=1).map(move |dz| [c[0] + dx, c[1] + dz]))
-}
-
-/// A look at the stacks the due effects dropped: where they lie now, and what left them. A pickup of as many of the item
-/// took it to the player (whose file only a save writes: the record then waits for the save); anything else left it in
-/// a stack or a container around where it was, and those chunks may hold it.
-fn due_refresh(game: &mut crate::game::Game<'_>) {
-    let mut pickups = std::mem::take(&mut *lock(&PICKUPS));
-    let dims: std::collections::BTreeSet<String> = lock(&DUE).iter().filter(|(_, d)| !d.drops.is_empty()).map(|(k, _)| k.0.clone()).collect();
-    for dim in dims {
-        in_place(game, &dim.clone(), |g| {
-            let mut due = lock(&DUE);
-            for (_, entry) in due.iter_mut().filter(|(k, _)| k.0 == dim) {
-                let mut gone = Vec::new();
-                for (id, drop) in &mut entry.drops {
-                    let now = g.dropped.iter().find(|d| d.id == *id && d.stack.count > 0).map(|d| (chunk_at(&d.position), d.stack.count));
-                    let left = match now {
-                        Some((chunk, count)) => {
-                            let left = drop.count.saturating_sub(count);
-                            (drop.chunk, drop.count) = (chunk, count);
-                            left
-                        }
-                        None => {
-                            gone.push(*id);
-                            drop.count
-                        }
-                    };
-                    if left == 0 {
-                        continue;
-                    }
-                    match pickups.iter().position(|(item, n)| *item == drop.item && *n == left) {
-                        Some(i) => {
-                            pickups.remove(i);
-                            entry.picked = true;
-                        }
-                        None => entry.holders.extend(around(drop.chunk)),
-                    }
-                }
-                for id in gone {
-                    entry.drops.remove(&id);
-                }
-            }
-        });
-    }
-}
-
-/// The due record of `key` (on the level in place) to the writer, then the records of the other loaded chunks that may
-/// hold what its effect dropped, then the entities of all of them. Nothing of it is due any more.
-fn flush_origin(g: &mut crate::game::Game<'_>, key: &ChunkKey) {
-    let Some(entry) = lock(&DUE).remove(key) else { return };
-    // The records that hold what the effect consumed first, then the other chunks that may hold its items.
-    let mut first: Vec<(i32, i32)> = vec![(key.1, key.2)];
-    first.extend(entry.with.iter().map(|c| (c[0], c[1])));
-    first.retain(|k| g.world.chunks.contains_key(k));
-    let mut holding: std::collections::BTreeSet<(i32, i32)> = entry.holders.iter().chain(entry.drops.values().map(|d| &d.chunk)).map(|c| (c[0], c[1])).collect();
-    holding.extend(first.iter().copied());
-    holding.retain(|k| g.world.chunks.contains_key(k));
-    horizon_client::spans::time("ntm_records_flush", || {
-        let others: Vec<(i32, i32)> = holding.iter().copied().filter(|k| !first.contains(k)).collect();
-        for batch in [first.clone(), others] {
-            let records = g.with_entities(batch.iter().filter_map(|k| g.world.chunks.get(k)));
-            if records.is_empty() {
-                continue;
-            }
-            for c in &records {
-                g.world.modified.remove(&(c.x, c.z));
-            }
-            if let Err(e) = g.save.save_later(&records, g.pack.assets.registry, world_biomes!(g)) {
-                eprintln!("ntm: ledger records {}: {e}", key.0);
-                for c in &records {
-                    g.world.modified.insert((c.x, c.z));
-                }
-            }
-        }
-        g.spawn_loaded_entities();
-        let keys: std::collections::HashSet<(i32, i32)> = holding.iter().copied().collect();
-        let entities = g.entity_chunks(&keys, false);
-        if let Err(e) = g.save.save_entities_later(entities) {
-            eprintln!("ntm: ledger entities {}: {e}", key.0);
-        }
-    });
-}
-
-/// Drops `items` (SNBT stacks) at `pos` for the effect `id`, on the level in place, and notes the id in the
-/// ledgers of the chunks whose records hold what the effect consumed, in the same step: those of the machines whose
-/// step put the items out (`owners`), else (a retention) the chunk of `pos`, whose cell was consumed. True when the
-/// effect is applied now or was before; false when a chunk is not loaded (the effect is retried).
+/// Drops `items` (SNBT stacks) at `pos` for the effect `id`, on the level in place, in the same step as the machines
+/// whose step put them out (`owners`) paid them. When the chunk of `pos` is not loaded, the stacks are owed in the
+/// record of a loaded owner's chunk, as a dropper keeps its stock, and dropped once `pos` is in. A known id (owed, or
+/// applied by an earlier version) adds nothing. False when neither can take them (the effect is retried).
 fn ledger_add_here(g: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32; 3], items: Vec<String>, owners: &[(String, [i32; 3])]) -> bool {
     horizon_client::spans::time("ntm_ledger_add", || {
         let here = [pos[0] >> 4, pos[2] >> 4];
-        let mut chunks: Vec<[i32; 2]> = Vec::new();
+        let mut chunks: Vec<[i32; 2]> = vec![here];
         for (d, p) in owners {
             let c = [p[0] >> 4, p[2] >> 4];
             if d == dim && !chunks.contains(&c) {
                 chunks.push(c);
             }
         }
-        if chunks.is_empty() {
-            chunks.push(here);
-        }
-        if !g.world.loaded(pos[0], pos[2]) || chunks.iter().any(|c| !g.world.loaded(c[0] * 16, c[1] * 16)) {
-            return false;
-        }
-        // A record of before the owners kept it holds the id in the chunk of `pos`.
-        if chunks.iter().chain([&here]).any(|c| ledger_knows(g, &chunk_key(dim, *c), id)) {
+        let loaded: Vec<[i32; 2]> = chunks.iter().copied().filter(|c| g.world.loaded(c[0] * 16, c[1] * 16)).collect();
+        if loaded.iter().any(|c| ledger_knows(g, &chunk_key(dim, *c), id)) {
             return true;
         }
-        let drops = spawn_items(g, pos, &items);
-        for c in &chunks {
-            let key = chunk_key(dim, *c);
-            let mut ledger = ledger_get(g, &key);
-            ledger.note_applied(id);
-            ledger_store(g, &key, ledger, true);
+        if loaded.contains(&here) {
+            spawn_items(g, pos, &items);
+            return true;
         }
-        let key = chunk_key(dim, chunks[0]);
-        if let Some(entry) = lock(&DUE).get_mut(&key) {
-            entry.with.extend(chunks[1..].iter().copied());
-        }
-        follow(&key, drops);
+        let Some(owner) = loaded.first().copied() else { return false };
+        let key = chunk_key(dim, owner);
+        let mut ledger = ledger_get(g, &key);
+        ledger.owe(id, pos, items);
+        ledger_store(g, &key, ledger);
         true
     })
-}
-
-/// The stacks an effect of the due record of `key` just dropped.
-fn follow(key: &ChunkKey, drops: Vec<(u32, Dropped)>) {
-    if let Some(entry) = lock(&DUE).get_mut(key) {
-        entry.drops.extend(drops);
-    }
 }
 
 fn ledger_add(game: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32; 3], items: Vec<String>, owners: &[(String, [i32; 3])]) -> bool {
     in_place(game, dim, |g| ledger_add_here(g, dim, id, pos, items, owners)).unwrap_or(false)
 }
 
-/// The stacks (SNBT) as vanilla drops at the cell `pos`, with the item entities they became.
-fn spawn_items(g: &mut crate::game::Game<'_>, pos: [i32; 3], items: &[String]) -> Vec<(u32, Dropped)> {
-    let mut out = Vec::new();
+/// The stacks (SNBT) as vanilla drops at the cell `pos`.
+fn spawn_items(g: &mut crate::game::Game<'_>, pos: [i32; 3], items: &[String]) {
     for item in items {
         match horizon_world::nbt::parse_snbt(item).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t)) {
-            Some(stack) => {
-                let kind = stack.item.to_string();
-                g.spawn_item(stack, pos.map(|v| f64::from(v) + 0.5), crate::game::dispenser::new_item_motion(), 0);
-                if let Some(d) = g.just_spawned_item() {
-                    out.push((d.id, Dropped { chunk: chunk_at(&d.position), item: kind, count: d.stack.count }));
-                }
-            }
+            Some(stack) => g.spawn_item(stack, pos.map(|v| f64::from(v) + 0.5), crate::game::dispenser::new_item_motion(), 0),
             None => eprintln!("ntm: invalid owed item NBT {item:?}"),
         }
     }
-    out
-}
-
-/// The chunk whose position `p` is in.
-fn chunk_at(p: &horizon_core::geometry::Vec3) -> [i32; 2] {
-    [(p.x.floor() as i32) >> 4, (p.z.floor() as i32) >> 4]
 }
 
 fn item_snbt(stack: &ItemStack) -> String {
     horizon_world::snbt_text::to_snbt(&horizon_client::save::item_to_nbt(stack))
 }
 
-/// Forgets the ids the storage no longer names, in every chunk kept that holds some.
+/// Forgets the applied ids the storage no longer names, in every chunk kept that holds some.
 fn ledger_prune(game: &mut crate::game::Game<'_>, live: &std::collections::BTreeSet<u64>) {
-    // Pruned in place; only a ledger that lost an id is written again.
     let mut changed: Vec<(ChunkKey, ntm_core::ledger::ChunkLedger)> = Vec::new();
     for (key, ledger) in lock(&LEDGERS).iter_mut() {
         if !ledger.applied.is_empty() && ledger.prune(live) {
@@ -615,7 +593,7 @@ fn ledger_prune(game: &mut crate::game::Game<'_>, live: &std::collections::BTree
         }
     }
     for (key, ledger) in changed {
-        in_place(game, &key.0.clone(), |g| ledger_store(g, &key, ledger, false));
+        in_place(game, &key.0.clone(), |g| ledger_store(g, &key, ledger));
     }
 }
 
@@ -632,30 +610,88 @@ fn ledger_report(game: &mut crate::game::Game<'_>, words: &[&str]) -> String {
     let ledgers = lock(&LEDGERS);
     let chunks = ledgers.values().filter(|l| !l.is_empty()).count();
     let applied: usize = ledgers.values().map(|l| l.applied.len()).sum();
-    let pending: usize = ledgers.values().map(|l| l.owed.iter().filter(|e| e.pending()).count()).sum();
+    let pending: usize = ledgers.values().map(|l| l.owed.len()).sum();
     format!("ntmledger chunks={chunks} applied={applied} pending={pending} kv_writes={} kv_bytes={}", KV_WRITES.load(std::sync::atomic::Ordering::Relaxed), KV_BYTES.load(std::sync::atomic::Ordering::Relaxed))
 }
 
-/// The chunks loaded with a record of an earlier version settle what it owed: the stacks it never put into the world
-/// are dropped now, and every effect it named is applied. That version wrote a stack's record as spawned before any
-/// entity file could hold it, so a stack still pending there is in no file.
+/// The stack name a loaded item entity of an earlier version carries.
+fn entity_effect(g: &mut crate::game::Game<'_>, entity: u32) -> Option<String> {
+    let uuid = *g.persist.uuids.get(&entity)?;
+    g.entity_attachments.get_mut(&uuid)?.get_existing(&EFFECT_TYPE).ok().flatten().filter(|t| !t.is_empty())
+}
+
+/// The stack name a saved item entity of an earlier version carries.
+fn saved_effect(entity: &Tag) -> Option<String> {
+    let Ok(Some(data)) = horizon_world::attachments::attachment_compound(entity.get(horizon_world::attachments::ATTACHMENTS_KEY)) else {
+        return None;
+    };
+    horizon_world::attachments::Attachments::from_nbt(data.clone()).get_existing(&EFFECT_TYPE).ok().flatten().filter(|t| !t.is_empty())
+}
+
+/// An earlier version's record of the chunk `key` (on the level in place) settled, once every loaded chunk that may hold
+/// its stacks has its saved entities in: a folded stack's copies are removed from the world and from the entity files
+/// of its unloaded holders, and a spawned stack no entity shows (loaded, or in an unloaded holder's file) is owed again
+/// with what it held. False while a holder's entities are not in yet.
+fn settle_legacy(g: &mut crate::game::Game<'_>, key: &ChunkKey, ledger: &mut ntm_core::ledger::ChunkLedger) -> bool {
+    let now = g.ticks;
+    let ready = |g: &crate::game::Game<'_>, c: [i32; 2]| -> bool {
+        !g.world.loaded(c[0] * 16, c[1] * 16) || lock(&LOADED_AT).get(&chunk_key(&key.0, c)).is_some_and(|t| now >= t + 2)
+    };
+    let mut holders: Vec<[i32; 2]> = ledger.owed.iter().filter(|e| !e.pending()).flat_map(|e| e.holders()).collect();
+    holders.extend(ledger.gone.values().flatten().copied());
+    holders.push([key.1, key.2]);
+    if !holders.iter().all(|c| ready(g, *c)) {
+        return false;
+    }
+    let ids: Vec<u32> = g.dropped.iter().map(|d| d.id).collect();
+    let loaded_tags: Vec<(u32, String)> = ids.into_iter().filter_map(|id| entity_effect(g, id).map(|t| (id, t))).collect();
+    let in_file = |g: &crate::game::Game<'_>, c: [i32; 2], tag: &str| -> bool {
+        !g.world.loaded(c[0] * 16, c[1] * 16) && g.save.load_entities(c[0], c[1]).iter().any(|e| saved_effect(e).as_deref() == Some(tag))
+    };
+    let copies = ledger.legacy(|e| {
+        let tag = e.tag();
+        loaded_tags.iter().any(|(_, t)| *t == tag) || e.holders().into_iter().any(|c| in_file(g, c, &tag))
+    });
+    for ((id, idx), holders) in copies {
+        let tag = ntm_core::ledger::entity_tag(id, idx, [key.1, key.2]);
+        for (eid, _) in loaded_tags.iter().filter(|(_, t)| *t == tag) {
+            if let Some(i) = g.dropped.iter().position(|d| d.id == *eid) {
+                g.remove_dropped(i);
+            }
+        }
+        for c in holders.into_iter().chain([[key.1, key.2]]) {
+            if !g.world.loaded(c[0] * 16, c[1] * 16) {
+                let entities = g.save.load_entities(c[0], c[1]);
+                let kept: Vec<Tag> = entities.iter().filter(|e| saved_effect(e).as_deref() != Some(tag.as_str())).cloned().collect();
+                if kept.len() != entities.len() && let Err(e) = g.save.save_entities_later(vec![((c[0], c[1]), kept)]) {
+                    eprintln!("ntm: settling an earlier record's copies in {c:?}: {e}");
+                }
+            }
+        }
+    }
+    true
+}
+
+/// The chunks that owe stacks drop those whose cell is loaded now; an earlier version's record is settled first.
 fn ledger_tick(game: &mut crate::game::Game<'_>) {
-    let legacy = std::mem::take(&mut *lock(&LEGACY));
-    for key in legacy {
+    let owing: Vec<ChunkKey> = lock(&OWING).iter().cloned().collect();
+    for key in owing {
         in_place(game, &key.0.clone(), |g| {
             if !g.world.loaded(key.1 * 16, key.2 * 16) {
+                lock(&OWING).remove(&key);
                 return;
             }
             let mut ledger = ledger_get(g, &key);
-            let mut drops = Vec::new();
-            for (at, item) in ledger.take_owed() {
-                drops.extend(spawn_items(g, at, &[item]));
+            if ledger.has_legacy() && !settle_legacy(g, &key, &mut ledger) {
+                return;
             }
-            ledger_store(g, &key, ledger, true);
-            follow(&key, drops);
+            let drops = ledger.take_owed(|e| g.world.loaded(e.at[0], e.at[2]));
+            for (at, item) in drops {
+                spawn_items(g, at, &[item]);
+            }
+            ledger_store(g, &key, ledger);
         });
     }
-    due_refresh(game);
 }
 
 /// A chunk loaded: its ledger, if it has one, is read and kept.
@@ -664,51 +700,26 @@ pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [
         return;
     }
     let key = chunk_key(dim, chunk);
+    lock(&LOADED_AT).insert(key.clone(), game.ticks);
     let ledger = ledger_load(game, chunk);
-    if !ledger.owed.is_empty() {
-        lock(&LEGACY).insert(key.clone());
+    if !ledger.owed.is_empty() || ledger.has_legacy() {
+        lock(&OWING).insert(key.clone());
     }
     if !ledger.is_empty() {
         lock(&LEDGERS).insert(key, ledger);
     }
 }
 
-/// A chunk is about to leave, before the engine queues its entities and its record: every due record whose effect's
-/// items it may hold goes to the writer first (`flush_origin`). Its own ledger stays in its record.
-pub(super) fn chunk_unloaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2]) {
-    if !lock(&DUE).is_empty() {
-        due_refresh(game);
-        let holding: Vec<ChunkKey> = lock(&DUE)
-            .iter()
-            .filter(|(k, d)| k.0 == dim && !d.picked && ([k.1, k.2] == chunk || d.with.contains(&chunk) || d.holders.contains(&chunk) || d.drops.values().any(|x| x.chunk == chunk)))
-            .map(|(k, _)| k.clone())
-            .collect();
-        for key in holding {
-            in_place(game, dim, |g| flush_origin(g, &key));
-        }
-    }
+/// A chunk left, its ledger in its record.
+pub(super) fn chunk_unloaded(dim: &str, chunk: [i32; 2]) {
     let key = chunk_key(dim, chunk);
-    lock(&LEGACY).remove(&key);
+    lock(&OWING).remove(&key);
+    lock(&LOADED_AT).remove(&key);
     lock(&LEDGERS).remove(&key);
-}
-
-/// API 40, after every mod had its say: a pickup that went ahead, for `due_refresh` to tell from a fold.
-pub(super) fn item_picked_up(item: &str, count: u32, canceled: bool) {
-    if !canceled && !lock(&DUE).is_empty() {
-        lock(&PICKUPS).push((item.to_string(), count));
-    }
 }
 
 /// The end of a server tick: the server's phases.
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
-    // Before this tick queues anything: the last save that did not wait is on disk once its writers are idle.
-    if lock(&SAVE_MARK).is_some() && saves_done(game) {
-        let mark = lock(&SAVE_MARK).take();
-        if let (Some(mark), Some((server, _))) = (mark, lock(&SERVER).as_mut()) {
-            let mut host = Host { game: &mut *game, buttons: Vec::new() };
-            server.native_marked_saved(&mut host, &mark);
-        }
-    }
     horizon_client::spans::time("ntm_ledger_tick", || ledger_tick(game));
     let mut retry=Vec::new();
     for (origin,expected) in std::mem::take(&mut *lock(&POST_SYNC)){
@@ -746,56 +757,39 @@ struct Host<'a, 'g> {
     buttons: Vec<(String, String, [i32; 3], u32)>,
 }
 
-/// The world's state outside its blocks (`ntm_core::persist`, the
-/// explosions in progress, the bombs' settings): a file per key in the
-/// world's folder, `<world>/data/ntm/<key>`, each written whole.
+/// The world's state outside its blocks (`ntm_core::persist`, the explosions in progress, the bombs' settings): kept in
+/// memory while the world plays and written with its save, all keys in one file, `<world>/data/ntm/state`
+/// (`store_commit`). A death outside a save brings it back as that save left it, with the regions and entities.
 impl Kv for Host<'_, '_> {
     fn get(&mut self, key: &str) -> Option<Vec<u8>> {
-        std::fs::read(self.store(key)?).ok()
+        let dir = self.store_dir(key)?;
+        with_store(&dir, |s| s.keys.get(key).cloned())
     }
     fn set(&mut self, key: &str, value: &[u8]) -> Result<(), String> {
-        horizon_client::spans::time("ntm_kv_set", || self.set_timed(key, value))
-    }
-    fn delete(&mut self, key: &str) {
-        if let Some(p) = self.store(key) {
-            let _ = std::fs::remove_file(p);
-        }
-    }
-}
-
-impl Host<'_, '_> {
-    fn set_timed(&mut self, key: &str, value: &[u8]) -> Result<(), String> {
-        let path = self.store(key).ok_or_else(|| format!("key {key}"))?;
-        let dir = path.parent().expect("under the world");
-        std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
-        // A new file renamed over the old: a crash leaves one or the other.
-        let tmp = dir.join(format!("{key}.tmp"));
+        let dir = self.store_dir(key).ok_or_else(|| format!("key {key}"))?;
         KV_WRITES.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         KV_BYTES.fetch_add(value.len() as u64, std::sync::atomic::Ordering::Relaxed);
-        if !KV_DURABLE.load(std::sync::atomic::Ordering::Relaxed) {
-            return std::fs::write(&tmp, value).and_then(|()| std::fs::rename(&tmp, &path)).map_err(|e| e.to_string());
+        with_store(&dir, |s| {
+            if s.keys.get(key).is_none_or(|v| v != value) {
+                s.keys.insert(key.to_string(), value.to_vec());
+                s.changed = true;
+            }
+        });
+        Ok(())
+    }
+    fn delete(&mut self, key: &str) {
+        if let Some(dir) = self.store_dir(key) {
+            with_store(&dir, |s| s.changed |= s.keys.remove(key).is_some());
         }
-        // In a confirmed save the world's files were synced first; the storage follows them to the disk, file and
-        // name, so a power loss cannot leave it ahead of them.
-        (|| {
-            use std::io::Write;
-            let mut file = std::fs::File::create(&tmp)?;
-            file.write_all(value)?;
-            file.sync_all()?;
-            std::fs::rename(&tmp, &path)?;
-            std::fs::File::open(dir)?.sync_all()
-        })()
-        .map_err(|e: std::io::Error| e.to_string())
     }
 }
 
 impl Host<'_, '_> {
-    /// The file of storage key `key` (letters, digits, `.`, `_`, `-`); none
-    /// without a world.
-    fn store(&self, key: &str) -> Option<std::path::PathBuf> {
+    /// The storage folder of the world open, for key `key` (letters, digits, `.`, `_`, `-`); none without a world.
+    fn store_dir(&self, key: &str) -> Option<std::path::PathBuf> {
         let plain = !key.starts_with('.') && key.bytes().all(|b| b.is_ascii_alphanumeric() || b".-_".contains(&b));
         let world = self.game.native_world_dir().filter(|_| plain && !key.is_empty())?;
-        Some(world.join("data").join("ntm").join(key))
+        Some(world.join("data").join("ntm"))
     }
 
     /// The machine block entity at `pos` of `dim`, in whichever level it is.
@@ -1062,21 +1056,6 @@ impl ServerHost for Host<'_, '_> {
             let key=chunk_key(dim,[pos[0]>>4,pos[2]>>4]);
             g.world.loaded(pos[0],pos[2])&&ledger_knows(g,&key,id)
         }).unwrap_or(false)
-    }
-    fn effect_applied(&mut self,id:u64,cells:&[(String,[i32;3])]){
-        // The marker is the chunk's: once per chunk the effect changed, however many of its cells. Its record is due:
-        // what the changed blocks dropped lies in it and around it.
-        let chunks:std::collections::BTreeSet<ChunkKey>=cells.iter().map(|(dim,pos)|chunk_key(dim,[pos[0]>>4,pos[2]>>4])).collect();
-        horizon_client::spans::time("ntm_effect_applied",||for key in chunks{
-            in_place(self.game,&key.0.clone(),|g|{
-                if lock(&LEDGERS).get(&key).is_some_and(|l|l.applied.contains(&id)){return;}
-                let mut ledger=ledger_get(g,&key);
-                if ledger.note_applied(id){
-                    ledger_store(g,&key,ledger,true);
-                    if let Some(due)=lock(&DUE).get_mut(&key){due.holders.extend(around([key.1,key.2]));}
-                }
-            });
-        });
     }
     fn pile_depletion(&mut self, stack: &Stack) -> f64 {
         stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
