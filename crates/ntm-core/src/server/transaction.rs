@@ -372,8 +372,8 @@ impl Server {
                         if applied{let at:Vec<_>=cells.iter().map(|c|(c.guard.dim.clone(),c.guard.pos)).collect();host.effect_applied(effect_id,&at);}
                         applied
                     },
-                    WorldEffect::Items{dim,pos,items}=>host.apply_items(effect_id,dim,*pos,items),
-                    WorldEffect::EncodedItems{dim,pos,items}=>host.apply_encoded_items(effect_id,dim,*pos,items),
+                    WorldEffect::Items{dim,pos,items}=>host.apply_items(effect_id,dim,*pos,items,&self.ready.world.machine_effects.front().unwrap().owners),
+                    WorldEffect::EncodedItems{dim,pos,items}=>host.apply_encoded_items(effect_id,dim,*pos,items,&self.ready.world.machine_effects.front().unwrap().owners),
                     WorldEffect::PileExplosion{dim,pos}=>host.pile_explode(dim,*pos),
                 };
                 if !done{

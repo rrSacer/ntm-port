@@ -250,7 +250,7 @@ impl ServerHost for Host {
             .extend(i.iter().map(|(id, n)| Stack::new(id, *n)));
         true
     }
-    fn apply_items(&mut self, id: u64, d: &str, p: Pos, i: &[(String, u32)]) -> bool {
+    fn apply_items(&mut self, id: u64, d: &str, p: Pos, i: &[(String, u32)], _: &[(String, Pos)]) -> bool {
         // As the chunk ledger does: an effect already known adds nothing.
         !self.ledger.insert(id) || self.drop_items(d, p, i)
     }

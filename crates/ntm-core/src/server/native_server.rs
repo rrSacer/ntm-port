@@ -4,6 +4,37 @@
 //! from the blocks, the tick's phases.
 use super::*;
 
+/// How long each phase of a tick took, logged when the tick took 50 ms or more (`ServerHost::trace_phases`).
+struct Phases {
+    on: bool,
+    start: std::time::Instant,
+    last: std::time::Instant,
+    done: Vec<(&'static str, u128)>,
+}
+
+impl Phases {
+    fn new(on: bool) -> Self {
+        let now = std::time::Instant::now();
+        Phases { on, start: now, last: now, done: Vec::new() }
+    }
+    fn mark(&mut self, phase: &'static str) {
+        if self.on {
+            let now = std::time::Instant::now();
+            self.done.push((phase, now.duration_since(self.last).as_micros()));
+            self.last = now;
+        }
+    }
+    fn report(self, host: &mut impl ServerHost) {
+        let total = self.start.elapsed().as_micros();
+        if self.on && total >= 50_000 {
+            let mut slow: Vec<_> = self.done.into_iter().filter(|(_, us)| *us >= 1_000).collect();
+            slow.sort_by_key(|p| std::cmp::Reverse(p.1));
+            let parts: Vec<String> = slow.iter().map(|(p, us)| format!("{p} {:.1}", *us as f64 / 1000.0)).collect();
+            host.log(&format!("slow tick phases {:.1} ms: {}", total as f64 / 1000.0, parts.join(", ")));
+        }
+    }
+}
+
 /// The fluid identifier (`ItemFluidIDMulti`; its type in `custom_data`
 /// `ntm_fluid`).
 pub const IDENTIFIER: &str = "ntm:fluid_identifier_multi";
@@ -56,15 +87,18 @@ impl Server {
     /// the machines and networks, the slots and states back.
     pub fn native_tick(&mut self, host: &mut impl ServerHost, tick: u64) {
         self.tick = tick;
+        let mut phases = Phases::new(host.trace_phases());
         self.ready.frozen.clear();
         self.ready.zirnox_radiation_rate.clear();
         if let Some(players) = host.players() {
             self.players = players;
         }
         self.native_record_events(host);
+        phases.mark("events");
         if self.ready.facts_pending{self.keep_world(host);return;}
         self.flush_machine_effects(host);
         self.settle_ghosts(host);
+        phases.mark("effects");
         // Check accessibility every tick: a refused local step must be able to
         // recover, but must never simulate while its BE remains inaccessible.
         for (key,m) in &self.ready.world.machines {
@@ -79,9 +113,13 @@ impl Server {
             });
         }
         self.native_find_cables(host);
+        phases.mark("cables");
         self.native_redstone(host);
+        phases.mark("redstone");
         self.local_steps(host);
+        phases.mark("local_steps");
         self.flush_machine_effects(host);
+        phases.mark("effects_after");
         for k in self.ready.world.machines.keys() {if self.ready.loaded.get(k)!=Some(&true){self.ready.frozen.insert(k.clone());}}
         for batch in self.ready.world.machine_effects.iter().chain(self.ready.world.prepared_retentions.iter().map(|p|&p.receipt)) {
             for g in &batch.origins{let k=g.key();if self.ready.world.machines.get(&k).is_some_and(|m|m.generation==g.generation){self.ready.loaded.insert(k.clone(),false);self.ready.frozen.insert(k);}}
@@ -92,21 +130,33 @@ impl Server {
         for k in &self.ready.frozen{if let Some(m)=self.ready.world.machines.remove(k){frozen.insert(k.clone(),m);}}
         if !frozen.is_empty(){self.ready.topo_dirty=true;}
         self.heat_tick();
+        phases.mark("heat");
         self.solar_tick(host);
+        phases.mark("solar");
         self.simulate(host);
+        phases.mark("simulate");
         self.stirling_finish();
         for m in self.ready.world.machines.values_mut() {
             if let crate::machine::Data::Radioisotope(r) = &mut m.data { r.finish(); }
         }
         self.fluids_tick();
+        phases.mark("fluids");
         self.fraction_tick();
+        phases.mark("fraction");
         self.foundry_tick(host);
+        phases.mark("foundry");
         self.bombs_tick(host);
+        phases.mark("bombs");
         self.radiation_tick(host);
+        phases.mark("radiation");
         if !frozen.is_empty(){self.ready.topo_dirty=true;self.ready.world.machines.append(&mut frozen);}
         self.zirnox_effects(host);
+        phases.mark("zirnox");
         self.native_save(host, true);
+        phases.mark("save");
         self.keep_world(host);
+        phases.mark("keep_world");
+        phases.report(host);
     }
 
     /// Match the engine's native_block_claim: a client may send another

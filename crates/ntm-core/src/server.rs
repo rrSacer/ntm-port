@@ -34,6 +34,8 @@ pub trait ServerHost: Kv {
     fn log(&mut self, text: &str);
     /// Read-only diagnostic logging; never changes simulation or RNG.
     fn trace_effects(&self)->bool{false}
+    /// Whether a slow tick logs how long each of its phases took (`Server::native_tick`).
+    fn trace_phases(&self)->bool{false}
     /// Saved sky light, weather/time subtraction, and visibility at y+1.
     /// Pile rod ejection deliberately removes depletion, as the Java does.
     fn pile_drop(&mut self, dim: &str, p: Pos, item: &str) -> bool { self.drop_items(dim,p,&[(item.into(),1)]) }
@@ -68,15 +70,17 @@ pub trait ServerHost: Kv {
     /// Unsupported hosts refuse; there is no partial setter fallback.
     fn commit_structural(&mut self,_cells:&[CellWrite],_drops:&[RetainedDrop],_owners:&[(String,Pos)])->bool{false}
     /// Puts the items of the effect `id` into the world exactly once: the host's ledger remembers the id, so
-    /// applying the same effect again (a replay after a crash) adds nothing. Hosts without a ledger just drop.
-    fn apply_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[(String,u32)])->bool{self.drop_items(dim,pos,items)}
+    /// applying the same effect again (a replay after a crash) adds nothing. `owners` are the machines whose step
+    /// put them out, whose records hold what the step consumed: the id belongs with them. Hosts without a ledger
+    /// just drop.
+    fn apply_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[(String,u32)],_owners:&[(String,Pos)])->bool{self.drop_items(dim,pos,items)}
     /// Whether `apply_items`, `apply_encoded_items` and the retained drops of a structural commit are kept under the
     /// effect's id in the record of the chunk that receives them, written with that chunk: a replay finds the id in
     /// any record that holds the items and adds nothing, as a block effect finds its own. Then items need no journal
     /// write before the next effect; only an explosion does.
     fn replays_by_id(&self)->bool{false}
     /// `apply_items` for lossless item NBT.
-    fn apply_encoded_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[String])->bool{self.drop_encoded_items(dim,pos,items)}
+    fn apply_encoded_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[String],_owners:&[(String,Pos)])->bool{self.drop_encoded_items(dim,pos,items)}
     /// The generation of the machine the cell's block entity was saved with (None: no such block entity).
     fn cell_generation(&mut self,_dim:&str,_pos:Pos)->Option<u64>{None}
     /// Whether the chunk of `pos` already holds the effect `id` (it was saved after the effect was applied).

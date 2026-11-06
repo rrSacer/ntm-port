@@ -6,7 +6,7 @@ priority = 100
 # Current upstream plus reusable model, multiblock and container extensions.
 # Keep the exact integration pin: official API alone lacks those extensions.
 [compatibility]
-horizon_revision = "dc01204c17f708d1891e463299daa1ee521aceac"
+horizon_revision = "1d48f96aa6ea29fbab7477c0a7fc215797a9bd9c"
 
 # The logic, plain Rust (cargo test against the fake world): copied into
 # this folder by tools/package-native.sh, never kept here.
@@ -143,7 +143,8 @@ bindings = [
   { name = "phase", ty = "crate::game::native_lifecycle::ServerTickPhase", value = "phase" },
 ]
 
-# The ledger of what machines owe the world lives in the chunk records: it follows their loading.
+# The ledger of the effects applied to a chunk lives in its record: it follows their loading, and a record still
+# due goes to the writer before a chunk that may hold its effect's items unloads.
 [[injection]]
 id = "ledger-chunk-load"
 hook = "chunk_load"
@@ -163,31 +164,23 @@ hook_version = 1
 kind = "HEAD"
 helper = "ledger_chunk_unload.rs"
 bindings = [
-  { name = "dimension", ty = "&str", value = "dimension" },
-  { name = "chunk", ty = "[i32; 2]", value = "chunk" },
-]
-
-[[injection]]
-id = "ledger-entities-load"
-hook = "entities_load"
-hook_version = 1
-kind = "HEAD"
-helper = "ledger_entities_load.rs"
-bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "dimension", ty = "&str", value = "dimension" },
   { name = "chunk", ty = "[i32; 2]", value = "chunk" },
 ]
 
+# A pickup the mods let go ahead (API 40): a stack the ledger follows went to the player, not into another stack.
 [[injection]]
-id = "ledger-entities-unload"
-hook = "entities_unload"
+id = "ledger-item-picked-up"
+hook = "item_picked_up"
 hook_version = 1
-kind = "HEAD"
-helper = "ledger_entities_unload.rs"
+kind = "RETURN"
+helper = "ledger_item_picked_up.rs"
 bindings = [
-  { name = "dimension", ty = "&str", value = "dimension" },
-  { name = "chunk", ty = "[i32; 2]", value = "chunk" },
+  { name = "_value", ty = "()", value = "$value" },
+  { name = "item", ty = "&str", value = "item" },
+  { name = "count", ty = "u32", value = "count" },
+  { name = "canceled", ty = "bool", value = "*canceled" },
 ]
 
 # Comparators read the charge of a battery and the fill of a tank or a barrel (API 64).
@@ -595,32 +588,4 @@ bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "channel", ty = "&str", value = "channel" },
   { name = "data", ty = "&[u8]", value = "data" },
-]
-
-# Existing APIs: preserve the normal player break and its drops, attach chunk-owned debt to those entities.
-[[injection]]
-id = "player-container-retention"
-hook = "destroy_block"
-hook_version = 1
-kind = "RETURN"
-helper = "player_break.rs"
-bindings = [
-  { name = "_value", ty = "()", value = "$value" },
-  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
-  { name = "pos", ty = "[i32; 3]", value = "pos" },
-  { name = "state", ty = "horizon_world::registry::BlockStateId", value = "state" },
-  { name = "canceled", ty = "bool", value = "*canceled" },
-]
-
-[[injection]]
-id = "player-container-spawn"
-hook = "item_spawn"
-hook_version = 1
-kind = "RETURN"
-helper = "player_spill_spawn.rs"
-bindings = [
-  { name = "_value", ty = "()", value = "$value" },
-  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
-  { name = "entity", ty = "u32", value = "entity" },
-  { name = "pos", ty = "[f64; 3]", value = "pos" },
 ]

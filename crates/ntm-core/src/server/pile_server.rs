@@ -657,7 +657,7 @@ mod tests {
             self.slots.get(&p).cloned()
         }
         fn replays_by_id(&self)->bool{self.by_id.is_some()}
-        fn apply_items(&mut self,id:u64,dim:&str,p:Pos,items:&[(String,u32)])->bool{
+        fn apply_items(&mut self,id:u64,dim:&str,p:Pos,items:&[(String,u32)],_:&[(String,Pos)])->bool{
             if self.by_id.as_ref().is_some_and(|ids|ids.contains(&id)){return true;}
             let done=self.drop_items(dim,p,items);
             if done && let Some(ids)=&mut self.by_id{ids.insert(id);}
