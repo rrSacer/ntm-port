@@ -30,6 +30,7 @@ here = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location('crash_proof', here / 'run-crash-proof.py')
 crash_proof = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crash_proof)
+INCOMING = 'ntm:pile_rod__zr'
 BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # scenario -> (items counted, what the mod's world holds, what the control's holds)
@@ -190,6 +191,13 @@ def play(args, base, scratch, env, scenario, point, control=False):
             (folder / 'control.sock').unlink(missing_ok=True)
         result['disk_before_reopen'] = saved_coupled(folder, scenario) or stale_disk(folder, scenario)
         result['disk'] = crash_proof.disk_count.count(folder, items_of(scenario))
+        if scenario in ('coupled-ea', 'coupled-eb') and not control:
+            # The incoming rod in both records: the core's (new, the rod in a channel, kind 2) and the loader's (old).
+            states = result['disk_before_reopen'] or {}
+            machines = [m for c in states.values() for m in c]
+            in_core = sum(k == 2 for m in machines if m['role'] == 'core' for k in m['rod_kinds'])
+            in_loader = sum(i == INCOMING for m in machines if m['role'] == 'loader' for i in m['items'])
+            result['held_twice'] = min(in_core, in_loader)
         if scenario.startswith('coupled') and point.startswith(('live_chunk:', 'region_record:')) and not control:
             before, after = saved_coupled(base, scenario), result['disk_before_reopen']
             changed = [c for c in ('2', '3') if before[c] != after[c]]

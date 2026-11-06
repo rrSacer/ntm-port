@@ -506,118 +506,124 @@ Validação (binário `e57ab62508c8c7c9bbdf5283fc3794882b462b0d9654c23e8aefc9a8f
 
 ## Onda 0 — item 5 (save atômico)
 
-Branch `wave0-save`, rebaseada sobre `main` `85d06d9c` (K2, sons e RBMK T00); motor `wave0-save` `dc01204c1` sobre `ntm-current`
-`f22df7b81`, com os seis commits do save: failpoints do save, `ItemEntity.merge_key`, segunda gravação do que o hook de save
-confirmado sujou, ordem registro → entidades no escritor e o aviso de fusão de itens com chave de mod.
-**Estado: entregue para revisão independente, sem merge.** A segunda revisão (artifact `revisao-save-atomico`)
-achou R2-1 (P1), R2-2 (P3) e as suspeitas R2-S1/R2-S2; o pior tick do meltdown bloqueava o merge. A terceira achou R3-1
-(marcador de fusão podado com a cópia antiga ainda num arquivo), R3-2 (o escritor descartava um registro anterior a um lote de
-entidades) e R3-3 (pickup creditado como fusão). Este marco fecha todos e o desempenho. Backups: NTM `wave0-save-pre-rebase` (`cce8dc68`, antes de qualquer rebase) e `wave0-save-r1` (`17dbcbb7`,
-sobre `9f11740a`); motor `wave0-save-pre-rebase` (`ddd954eed`).
+Branch `wave0-save` sobre `main` `85d06d9c`; motor `wave0-save` `1d48f96aa` sobre `ntm-current` `f22df7b81`: failpoints do save,
+teste do registro vivo por coordenadas, época do escritor (R3-2), o mais novo por (chunk, época) (R4-3) e registros de entidades
+sempre gravados. **Estado: entregue para revisão independente, sem merge.** A quarta revisão (artifact `revisao-save-atomico`)
+reprovou o ledger rastreado: R4-1 (P1, uma cópia antiga recolhida no detentor volta como segunda), R4-2, R4-3 e os picos do
+meltdown. Este marco troca o desenho pelo mínimo com paridade vanilla, aprovado pelo coordenador. Backups: NTM
+`wave0-save-pre-rebase` (`cce8dc68`), `wave0-save-r1` (`17dbcbb7`); motor `wave0-save-r3` (`dc01204c1`, o rastreado),
+`wave0-save-entity-epochs` (`f0aea8035`, a primeira forma da regra de entidades), `wave0-save-pre-rebase` (`ddd954eed`).
 
-**Regra de autoridade.** Todo estado que precisa bater com um chunk vive no registro desse chunk ou é derivado
-dele na reabertura. Os arquivos `region/`, `entities/`, `level.dat`, jogadores e KV continuam sem commit global.
-O KV guarda intenções e reconciliação de passos entre chunks; sozinho, um contador do KV não invalida o BE salvo.
-**Ordem dos registros:** o escritor do motor é um só, FIFO, com `sync` por arquivo de região ao fim de cada lote. Toda mudança do
-ledger de um chunk carregado enfileira o registro desse chunk ao fim do tick do servidor (`records_flush`), antes de qualquer
-descarga ou save; o de um chunk descarregado é regravado na hora (registro mais novo, só o anexo trocado). O escritor grava cada
-chunk uma vez pelo registro mais novo, **exceto** quando um lote de entidades entrou na fila entre os dois: cada lote leva a
-época (lotes de entidades já enfileirados) e um registro só é descartado por outro da mesma época. Assim nenhum arquivo de
-entidades no disco é mais novo que o registro do ledger a que suas entidades pertencem; um teste com o escritor retido grava
-L1/E/L2 nessa ordem e falha com a regra anterior (E antes de qualquer registro do chunk).
+**Critério (quarta revisão).** Cada execução é comparada com o vanilla no mesmo roteiro: (L) nada some que o vanilla
+guarde; (D) nenhum item fica com mais cópias que no vanilla; (I) nenhum arquivo de entidades e nenhum registro de outro
+chunk guarda itens de uma emissão do NTM antes de o registro da origem estar no disco com o `applied` e o consumo. As
+garantias além do vanilla deixaram de ser requisito. Ficam fora de I, com (L) e (D) checados, o arquivo do jogador e as
+emissões das quais parte passou pelo inventário do jogador (ver resíduos).
 
-| Parte | Onde vive | Reconciliação implementada |
+**Desenho.**
+
+| Parte | Como fica |
+| --- | --- |
+| Ledger (`ntm_core::ledger`, anexo `ntm:ledger` do chunk) | Só o conjunto `applied` (`effect_id(serial, done)`, `retained_id(dim, pos, generation)`), gravado com os blocos e BEs do chunk. O replay do KV encontra o id e não acrescenta nada. Sai quando o armazenamento não nomeia mais o efeito (poda num save confirmado, gravada no save seguinte). |
+| Emissão (ejeção, retenção, mineração, efeito do KV) | Os itens viram drops vanilla no mesmo passo exclusivo que os tira da máquina. O id entra no `applied` dos registros que guardam o consumo: os das máquinas do passo (`owners`; numa pilha, o núcleo e o loader), ou o da célula consumida numa retenção. O replay procura o id ali. |
+| Registro devido | O chunk que ganhou um id fica devido: marcado como modificado, vai no próximo save, que grava as regiões antes das entidades. Antes disso só quando descarrega um chunk que pode guardar os itens: a origem, um chunk onde está uma pilha da emissão, ou um dos 3×3 em volta de onde uma pilha sumiu sem pickup (fusão, funil) ou de onde a explosão derrubou blocos. Então o registro da origem vai ao escritor, seguido dos outros registros do mesmo consumo e dos registros e entidades de todos esses chunks carregados (`entity_chunks`/`save_entities_later`), antes de o motor enfileirar a descarga. |
+| Pickup | O gancho `item_picked_up` (item, quantidade) separa um pickup de uma fusão. Uma emissão com pickup espera o save, como o vanilla: gravado antes, o registro perderia o que o jogador carrega (o arquivo do jogador só sai num save) onde o vanilla o guarda na máquina. |
+| Escritor (motor) | Um registro de região só é pulado por um mais novo do mesmo chunk e da mesma época (lotes de entidades já enfileirados); o mais novo por (chunk, época) decide. Um registro de entidades é sempre gravado: um registro de região gravado antes dele pode depender das entidades que ele guarda. |
+| Quebra de máquina pelo jogador | Derrame vanilla, igual a um baú. Sem gancho do NTM. |
+| Saves antigos | O JSON do ledger rastreado ainda é lido: uma entrada `Pending` (nunca spawnada) é derrubada uma vez quando o chunk carrega, e todo id que ele nomeia entra no `applied`; `Spawned`, `gone`, `seen` e `last` são ignorados. Teste: `crates/ntm-core/tests/ledger_persistence.rs`. |
+| Mantido | Commit atômico de BE (`publish_atomic`), diário por mundo dos sobreviventes, `Tracked`, `SaveMark`, `replays_by_id`, fsync do KV no save confirmado. |
+
+Saíram do NTM: o rastreamento (respawn, `gone`, `adopt`/`release`, `seen`, tags `ntm:effect`, `merge_key`), o sweep e a
+confirmação, a escrita do ledger em chunk descarregado, os ganchos de entidades e os da quebra pelo jogador. Saíram do
+motor: `ItemEntity.merge_key`, o aviso de fusão por chave e a segunda gravação do save confirmado.
+
+
+**Verificador** (`crates/ntm-core/tests/save_model.rs`). Modela o registro da origem, o chunk de um funil, os arquivos de
+entidades, o do jogador (gravado na hora por um save sem espera, fora da fila), o KV e o escritor ordenado do motor, com as
+duas regras. Cada sequência roda nos dois mundos, a política e o vanilla (sem ledger nem replay; a máquina, de volta com o que
+tinha, roda o passo de novo), com os escritores no mesmo passo; a cada estado: (I), (L) e (D) contra o vanilla, e a sanidade do
+modelo (nenhum par de nomes de pilha em relação de prefixo).
+
+| Política | Resultado |
+| --- | --- |
+| Rastreamento (R3) | Acha o R4-1 sozinho em 8,1 M estados: `[Emit, Split, Move…, Fold, Move, Unload(A), Save(true), Kill, Load(B), Pickup, Load(A)]`, um átomo com as gerações 1 e 101 (recriado). |
+| Registro no fim do tick | Acusado em 236 estados: `[Emit, Split, Write, Kill]` perde a emissão, que o vanilla guarda na máquina. |
+| Registro tardio (o entregue), N=9 | 31,2 M estados visitados, 2,69 M distintos, 702 M sequências completas; zero violações fora das categorias abaixo. |
+| N=10 | 182,9 M visitados, 15,6 M distintos, 7,36 bilhões de sequências; zero. |
+| **N=11** | **1,07 bilhão visitados, 90,6 M distintos, 77,3 bilhões de sequências; zero.** 10.182 s. |
+| Passeios aleatórios | 6 milhões de até 40 operações (239 M operações); zero. |
+
+Os contraexemplos que o verificador achou no caminho fixaram o desenho: a metade de uma emissão que ficava só na memória de A
+quando a outra saía com C (daí gravar também as entidades e registros de quem pode guardar os itens); o E da origem descartado
+por um E mais novo da descarga seguinte (daí "entidades sempre gravadas"); o item recolhido quando a outra parte saía com outro
+chunk (daí a espera pelo save após um pickup). Lacuna achada em jogo e fechada: o modelo põe o consumo e o `applied` num só
+registro, e o glue punha o id no chunk do drop (na pilha, o do loader) enquanto o consumo é do núcleo; um corte entre os dois
+fazia o replay derrubar de novo. O id passou para os registros dos `owners`, como o modelo supõe.
+
+**Resíduos (categorias do vanilla, contadas pelo verificador em N=11, com (L) e (D) checados):**
+
+| Categoria | Estados | O que é |
 | --- | --- | --- |
-| Itens devidos (ejeção e conteúdo de BE consumido) | Anexo `ntm:ledger` do chunk da origem, junto de blocos e BEs; entrada por pilha, `Pending → Spawned → paga` | Id por efeito (`serial.done`) ou `retained_id(dim,pos,generation)` para retenção. Reaplicação do mesmo id não acrescenta dívida. |
-| Quebra de container NTM pelo jogador | Slots e geração do BE capturados no hook autorizado; dívida no chunk da máquina | Adota os fragmentos vanilla já criados, com seus componentes, sem alterar loot ou movimento. |
-| Materialização | Dívida publicada junto do consumo; só as pilhas novas viram entidades no mesmo passo exclusivo | Entidade marcada `ntm:effect`, nunca o item. Uma reaplicação procura a tag antes de spawnar. |
-| Item que atravessa chunks | `seen`: todo chunk em que suas entidades foram vistas, no registro da origem, antes de qualquer arquivo de entidades | Só se recria uma pilha quando **nenhum** desses chunks a guarda: carregado com entidades prontas e sem a tag, ou descarregado com o arquivo de entidades (fila ou disco) sem ela. Senão espera o chunk voltar. |
-| Origem descarregada | O ledger da origem continua acompanhado enquanto uma pilha dela vive em outro chunk | Pickup, fusão e perda vistos no destino vão para o registro da origem mesmo descarregada; na recarga, a cópia da sessão prevalece sobre um carregamento já em curso. |
-| Pagamento | `release` (pickup, desaparecimento) ou `retire`/`gone` (fusão) | O motor diz qual item de chave de mod uma fusão esvaziou e em qual (`take_keyed_merges`): só essa pilha é `gone` (a cópia antiga num arquivo de entidades seria um segundo estoque); o que foi pego ou se perdeu deixa a cópia antiga como item comum, como no vanilla. Antes, o saldo ganho pelas outras pilhas creditava a um pickup a fusão de outros itens. |
-| Marcador de fusão (`gone`) | No ledger, com os chunks em que a pilha esteve | Não vai embora com o recibo do KV (a quebra pelo jogador não tem recibo): só num save confirmado em que cada um desses chunks está limpo, carregado e varrido, ou descarregado sem entidade da tag no arquivo. Marcadores de registros antigos, sem chunks, seguem a regra anterior. |
-| Fusão no chão | `ItemEntity.merge_key` em runtime | Itens rastreados fundem dentro do mesmo chunk de origem; a pilha que recebe passa a dever o que guarda. |
-| Fim do rastreio | Primeiro `world_saved(wait=true)` após o spawn | Libera entrada, tag e chave, poda ids e regrava chunks sujos/entidades. Não libera uma pilha que um chunk descarregado ainda mostra numa cópia antiga: ela é removida quando o chunk volta. |
-| Efeito de bloco reaberto | Id no ledger de cada chunk-alvo, gravado junto dos blocos | Marcado uma vez por chunk. Retenções são filtradas pelas guardas ainda válidas a cada tentativa. |
-| Máquinas sobreviventes | `Machine.rev` no BE e diário **por mundo**, com o último sobrevivente por posição/geração | Ativado por efeitos devidos ou mudanças em mais de um chunk, inclusive Loader→Core sem ejeção. |
-| Máquina consumida / geração adiantada | BE do chunk + referência de recibo ou remoção ainda pendente | Tombstone ou substituição explícita da mesma geração prova o consumo; sem referência pendente, contador adiantado do KV recua. |
-| Recibos e sobreviventes no KV | Até os registros que os contêm estarem no disco | Save confirmado, ou save sem espera cujos escritores (todos os níveis abertos) terminaram: confirma o prefixo marcado naquele save (`SaveMark`); o que veio depois fica. |
+| Arquivo do jogador à frente do registro | 89.793.571 | Um save sem espera grava o jogador antes das regiões; é a divisão vanilla de um pickup entre o arquivo do jogador e o da entidade. Fora de I. |
+| Emissão com pickup | 202.222 | Parte de uma emissão foi recolhida: o registro espera o save, como o vanilla (gravado antes, perderia o que o jogador carrega). Fora de I. |
+| Janela entre duas escritas de um save ou descarga | 3.949 (perda), 79.595 (ordem), 59 (cópias) | Uma morte entre o registro e as entidades da mesma operação, como a do vanilla entre regiões e entidades; inclui o funil de outro chunk num lote de regiões em qualquer ordem. |
+| Cópias de uma geração | 1 | Uma entidade que atravessou chunks lida de novo de um arquivo antigo, como no vanilla. |
 
-**Diário do KV.** As partes mantidas do mundo são `Tracked`: todo acesso mutável carimba a parte com um valor único, e um
-save do KV só serializa quando um carimbo mudou. Em debug, toda gravação evitada é conferida contra a serialização completa;
-um teste falha quando uma mudança escapa do carimbo, outro garante que um mundo parado (também com recibo pendente) não é
-regravado. Itens e retenções ficam no ledger do chunk por id (`replays_by_id`): só uma explosão ainda exige o diário gravado
-antes do próximo efeito.
+Fronteira do verificador: ele modela a emissão e o registro que a consumiu; uma transferência entre máquinas de dois chunks
+(Loader→Core) não é emissão, é o diário de sobreviventes do KV, provado em jogo pelos `coupled-*` com o corte em cada registro.
+Também: a quebra de uma máquina do NTM pelo jogador segue a semântica vanilla de um baú numa queda (a contagem é a do baú no
+mesmo corte); um item emitido que atravessa um portal antes do save, ou um hóspede LAN que sai (seu arquivo é gravado fora de
+um save), ficam na regra do jogador e do vanilla; corte físico de energia não foi provado (o KV é sincronizado no save
+confirmado, depois das regiões).
 
-**Provas.** **65/65** no binário final, duas reaberturas e contagem exata em cada um: quebra/recolocação 10, fragmentação 2,
-Save & Quit e descarga do destino 2, Loader→Core 16 (duas geometrias, com/sem ejeção), baú minerado 13, casos originais 14 e os
-oito novos abaixo. Seis cortes `region_record:k` caíram durante a ação (`died_in_act`: `break`, `replace`, `mining`, três do
-`original`) e dois cortes `coupled` foram antecipados (`cut_preempted`); todos contados como os demais.
+**Saves antigos.** `ledger_persistence.rs`: um registro do ledger rastreado carrega; as pilhas `Pending` são derrubadas uma vez
+com os componentes exatos e todo id dele entra no `applied`; gravado de novo, não volta nada do formato antigo.
 
-| Cenário novo | C4 | Final |
+**Provas em jogo.** **66/66** no binário final, duas reaberturas, cada ponto jogado também no controle vanilla do mesmo corte
+(`tools/test-game/run-crash-more.py`, `run-crash-proof.py`). Uma quebra conta o que o baú conta. Uma emissão conta o que seus
+arquivos guardavam antes da reabertura (`disk_count.py`), não duplica nada e não perde mais que o controle (itens soltos, ou um
+baú quebrado à mão na mineração). Nos `coupled-e*`, um corte entre o registro do núcleo e o do loader deixa a haste transferida
+nos dois arquivos; o diário de sobreviventes a mantém uma vez, e a conta desconta exatamente essa cópia (`held_twice`).
+
+| Grupo | Casos | NTM × controle |
 | --- | --- | --- |
-| `origin-pickup`: origem descarregada, pickup no destino, origem recarregada | 16 → **32** no próprio ato | 16, duas reaberturas |
-| `origin-pickup-away`: idem, origem ausente até o save | **32** na reabertura | 16 |
-| `origin-merge`: duas pilhas de um ledger (dois misturadores do chunk, 32 cada), fundidas no destino com a origem ausente | **96** (variante de um misturador: 82) | 64 |
-| `origin-vanish`: destruídos no destino com a origem ausente | recria **16** | 0 |
-| `origin-kill` (R2-S2): destino grava as entidades na descarga, SIGKILL sem save | **32** (16 no misturador + 16 no destino) | 16 |
-| `crossing-kill` (R2-S2, ejeção da pilha): idem, reabertura com o destino ausente e save confirmado antes de ele voltar | recria **10** hastes na origem | nenhuma; 10 quando o destino volta |
+| `original` (pilha, 12 hastes, todos os cortes do save) | 14 | 12 em `none`, `save_begin`, `region_record:1` e de `entities_written` em diante; 2 em `region_record:2/3` e `chunks_written` (o registro da origem no disco, as entidades não), contra perda de 10 do controle nos mesmos cortes, que também perde em `save_begin` e `region_record:1`; sweep 12 |
+| `mining` (13 cortes) | 13 | 7, exceto `chunks_written` (0, como o baú quebrado do controle) |
+| `coupled-a/b/ea/eb` | 16 | exatos sem ejeção; com ejeção, perda ≤ controle (a haste ejetada antes das entidades) |
+| `break`/`replace`/`break64` | 12 | iguais ao baú: 0 em `chunks_written` e `live_chunk:8,0`, 16 (64) nos demais |
+| `crossing`, `crossing-kill`, `save-quit` | 3 | 12, 10, 12 = controle |
+| `origin-pickup`/`-away`/`-merge`/`-vanish` | 4 | 16, 16, 64, 0 = controle |
+| `origin-kill`, `merge-stale`, `pickup-merge`, `origin-away` (R4-1) | 4 | 32, 80, 160, 80 = controle: a duplicação vanilla do registro de A não salvo com o arquivo do destino gravado (a quebra é vanilla) |
 
-| Cenário da terceira revisão | Entrega anterior | Final |
-| --- | --- | --- |
-| `merge-stale` (R3-1): X=16 passa por B (seu arquivo o guarda) e funde em Y=48 em C; SIGKILL; B volta só depois de um save confirmado. Antes da reabertura, o disco mostra B com a tag de X e o ledger com X em `gone` | **80** (o marcador foi podado com o save) | 64 |
-| `pickup-merge` (R3-3): N=16, D1=24 e D2=40 num arquivo que fica antigo; com o tick congelado, N é recolhido enquanto D1 funde em D2; SIGKILL | 80 | 80 |
-| R3-2: escritor retido com L1(A), E(B), L2(A) na fila (teste do motor) | E gravado antes de qualquer registro de A | L1, E, L2 |
+O `origin-away` dava 80 no rastreado por recriar a pilha fundida; agora dá o mesmo que o baú, pelo motivo do vanilla. O corte
+`region_record:1` das quebras passou a `live_chunk:8,0` (o chunk do misturador primeiro): o primeiro registro de um lote não é
+o mesmo chunk nos dois mundos.
 
-No jogo, o motor tenta fundir itens parados a cada 40 ticks: o `pickup-merge` não garante pickup e fusão **no mesmo passe**, e a
-entrega anterior passa nele. O mesmo passe é provado pelos testes de `crates/ntm-core/tests/ledger_persistence.rs`, que
-reproduzem a regra anterior do saldo (crédito a N, que foi recolhido) e a nova (a pilha que a fusão esvaziou), junto do cenário
-do revisor para R3-1 (96 → 64).
-
-R2-2: o B1-mining recontado (baú + chão + inventário, verificador atual) dá **14 diamantes em 11 dos 13 cortes**, com a
-escavadeira ausente; só `none` e `world_saved` dão 7 (`crash-reports/B1m-mining.json`).
-Cortes `coupled-ea/eb`: com ejeção, a dívida da haste fica no ledger do chunk do loader, cujo registro vai ao escritor no fim do
-passo; o corte "só o core novo" deixou de ser alcançável nessa ordem (`cut_preempted`) e a reabertura conta igual.
-Cortes `region_record:k`: o k-ésimo registro de região da sessão pode ser o registro ordenado do ledger, durante a ação
-(`died_in_act`); o processo morre entre registros de região do mesmo jeito.
-
-**Desempenho do meltdown** (`pile-meltdown`, seis rodadas no mesmo mundo, `HORIZON_SPIKES`, pior tick por rodada em ms):
+**Desempenho do meltdown** (seis rodadas no mesmo mundo, `HORIZON_SPIKES`, pior tick por rodada em ms; fases com
+`NTM_TRACE_PHASES`):
 
 | Binário | Rodadas |
 | --- | --- |
 | B1 (4 execuções) | 34/152/236/392/1691/674 · 38/166/246/546/472/758 · 21/93/761/739/813/1555 · 22/180/565/766/1092/2273 |
-| C4 | 47/150/213/327/455/670 |
-| R1, antes do último rebase (2 execuções) | 11/38/56/14/390/65 · 11/37/58/14/48/98 |
-| Entrega anterior (R2) | 15/48/63/14/49/83 · 11/483/137/13/147/74 (em sequência com a terceira do final) |
-| Final (3 execuções) | 14/60/150/24/116/87 · 12/45/68/24/113/156 · 20/40/236/23/108/73 |
+| R3 (3) | 14/60/150/24/116/87 · 12/45/68/24/113/156 · 20/40/236/23/108/73 |
+| Final (3) | 10/41/359/309/114/150 · 13/38/161/13/80/166 · 11/39/67/11/36/66 |
 
-O "260,7 → 687,6 ms" do C4 vinha de três rodadas; com seis, C4 ≈ B1 e os dois crescem por rodada. Os spans `ntm_*` mostraram
-o pico em `ntm_native_tick`, com `ntm_kv_set` esperando o disco (parede ≫ CPU) e o ledger em 1–7 ms: o diário inteiro (com os
-recibos da explosão, que só esvaziavam num save confirmado) era serializado a cada tick para comparar e regravado antes de cada
-efeito com itens. Carimbos, itens por id e confirmação após save sem espera tiram as três causas; o final não cresce por rodada. Os picos acima de 100 ms do final e da entrega anterior são espera do disco compartilhado em
-`ntm_kv_set` (no A/B em sequência, 420 ms de parede no anterior e 175 ms no final, contra 4–5 ms de CPU); a CPU máxima de
-`ntm_native_tick` é a mesma (72,6 e 71,7 ms). Um tick de 186 ms de CPU numa das execuções do final não se repetiu.
+Os picos são espera do disco na gravação do diário do KV (escrita e `rename`, sem `fsync` fora do save confirmado), não CPU: no
+de 359 ms o tick gasta 34,2 ms de CPU, a fase `effects_after` 344,6 ms de parede e `ntm_kv_set` 327,1 ms de parede com 2,5 de
+CPU; no de 355 ms, 8,0 de CPU, `events` 350,9, `ntm_kv_set` 347,2/0,7; no de 309 ms, 4,8 de CPU, `effects_after` 306,2,
+`ntm_kv_set` 304,8/0,4. A maior CPU de um tick com o NTM nas três execuções é 68,9 ms; os 186 ms de CPU vistos no R3 não se
+repetiram. Nenhuma rodada cresce com as anteriores, ao contrário do B1.
 
-**Limites do formato.** Pickup continua dividido entre arquivo do jogador e arquivo da entidade, como no vanilla. Uma entidade
-comum que atravessa chunks e é morta antes de um save fica nos dois arquivos de entidades, como no vanilla (o ledger não a
-acompanha). Autosave sem espera prolonga a restrição de fusão até um save confirmado. Chunks de dimensões estacionadas têm
-seus anexos lidos quando o nível é visitado. **Energia:** gravações do KV durante um save confirmado são sincronizadas
-(arquivo e pasta) depois do `flush` das regiões; as do tick não (um `fsync` do diário de um meltdown mede 1,3–66 ms neste
-SSD): são duráveis contra a morte do processo e ficam duráveis contra queda de energia no próximo save confirmado. O escritor
-de regiões sincroniza cada lote; a ordem registro do ledger → arquivo de entidades vale também nesse caso. Corte físico de
-energia não foi provado.
+**Validação final.** Motor `1d48f96aa`; binário `horizon-client` SHA256 `cee93cc9aa9b59c15ebab6832ef0dac7b01cb6d7c35c8c53a390b91e4b425494`;
+pacote `9ab18eacc7e9e1573d18439d3d675191eb9aaaa43a949300bd7dfe36a3cee0aa`. NTM: 500 testes (3 ignorados), com o verificador
+em release; motor: 111 testes de `save::`/`entities::`; Clippy do workspace NTM, do `horizon-client-lib` e do cliente transformado,
+sem isenções. Regressão no mesmo binário: 28 execuções, 30 mundos, **1931 checks, nenhuma falha** (items 5× com
+`NTM_TRACE_ITEMS=1`, mining 6×, bombs, zirnox, pile, pile-meltdown, dims, idle, idle-clean, sounds, audio-lifecycle,
+inventory-proxy, radioisotopes, solar, combustion, catalog, comparator, stations e recipes).
 
-**Validação final.** Binário `horizon-client` SHA256 `f42cbfaf60ce0bab939a6d429666c9e161ea0d5484dd84cb25d0ba860cd2cb7b`; pacote
-`9ab18eacc7e9e1573d18439d3d675191eb9aaaa43a949300bd7dfe36a3cee0aa` (o mesmo da entrega anterior). NTM: 503 testes, nenhuma
-falha; motor: 112 testes de `save::`/`entities::` (com os dois novos); Clippy do workspace NTM, do `horizon-client-lib` e do
-cliente transformado (`-p horizon-client`, todos os alvos, `-D warnings`), sem isenções. Manifesto com 45 injeções.
-Regressão no mesmo binário: 28 execuções, 30 mundos, **1931 checks, nenhuma falha**: items 5× (1020, com `NTM_TRACE_ITEMS=1`, que
-o check do BDCL lê), mining 6× (108), bombs 49, zirnox 136, pile 85, pile-meltdown 32, dims 17, idle 2, idle-clean 1,
-sounds 13, audio-lifecycle 68, inventory-proxy 12, radioisotopes 67, solar 36, combustion 15, catalog 251, comparator 9,
-stations 5 e recipes 5. Antes da terceira revisão (R2) as quedas e a regressão deram os mesmos 63/63 e 1931. No R1 (sobre `9f11740a`) as quedas passaram 62/63 (o `origin-merge` de um misturador não chegou a espalhar os fragmentos, o que motivou a variante de dois) e a regressão teve uma falha de temporização em `items` (1 de 5, `thrown_container_waits_its_pickup_delay`), que não se repetiu no final.
-
-Evidência local: `wave0/crash-reports/` (`R3-proof-summary.json`, `R3-regression-summary.json`, `R2x-*` (contraprovas da
-terceira revisão), `R2-*`, `R1-*`, `opus/R3-2-before.log`, `opus/R3-1-reviewer-test-after.log`, `P-*.json` com os spans em
-`P-*-evidence/`, `C4r2-*`, `C4m-*`, `D1r2-*`, `D2r2-*`, `B1m-mining.json`). Mundos aprovados são apagados após guardar logs e números.
+Evidência local: `wave0/crash-reports/` (`R4c-proof-summary.json`, `R4d-proof-summary.json`, `R4c-regression-summary.json`,
+`P-R4c-*.json` com spans e fases em `P-R4c-*-evidence/`; histórico `R4*`, `R3-*`, `R2*`), `wave0/opus/model-late-{9,10,11}.log`.
+Mundos aprovados são apagados após guardar logs e números.
 
 ## Hooks de item — extensões locais
 
