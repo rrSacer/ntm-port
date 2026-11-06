@@ -12,6 +12,7 @@ from native_game import Game
 from native_solar_stirling import place
 from native_zirnox import machine, pos_text
 from native_pile import block
+import ntm_store
 
 PARTS = ['boy_shielding', 'boy_target', 'boy_bullet', 'boy_propellant', 'boy_igniter']
 
@@ -149,8 +150,9 @@ def main():
     charge(g, 240, False)
     g.command('forceload remove all')
     g.snapshot('bombs-final')
-    worlds = list(g.folder.glob('**/data/ntm/world'))
-    saved = json.loads(worlds[0].read_text())
+    # The storage is on disk as of a save: ask for one (it waits, storage included), then read what it wrote.
+    g.ctl('save')
+    saved = ntm_store.value(g.folder)
     g.check('four_confirmed_detonations', saved['bombs']['next'] == 4, saved['bombs']['next'])
     g.evidence['ok'] = True
     g.save()

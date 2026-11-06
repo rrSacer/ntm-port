@@ -11,6 +11,7 @@ import sys
 import time
 from collections import Counter
 from native_game import Game
+import ntm_store
 from native_combustion import machine_state
 from native_solar_stirling import place
 
@@ -406,8 +407,7 @@ def failure(g):
     g.check('cold_uncooled_loaded',state(g,core)['heat']==0,state(g,core))
     def remnants():
         g.ctl('save')
-        path=next(g.folder.glob('saves/*/data/ntm/world'))
-        return json.loads(path.read_text())['zirnox']
+        return ntm_store.value(g.folder/'saves')['zirnox']
     baseline=remnants()
     g.button([144,35,14,14],[203,256]);g.close();time.sleep(2)
     b=block(g,core);a=state(g,core)

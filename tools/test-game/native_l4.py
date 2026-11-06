@@ -15,6 +15,7 @@ Grava <pasta>/native-l4.json.
 """
 import json, subprocess, sys, time
 from pathlib import Path
+import ntm_store
 
 game = Path(sys.argv[1])
 world = sys.argv[2]
@@ -40,8 +41,11 @@ def cmd(c):
 
 
 def kept():
-    f = game / 'saves' / world / 'data' / 'ntm' / 'world'
-    return json.loads(f.read_text()) if f.exists() else {}
+    # The storage is on disk as of a save: ask for one (it waits, storage included), then read what it wrote.
+    ctl('save')
+    f = game / 'saves' / world / 'data' / 'ntm'
+    raw = ntm_store.keys(f).get('world')
+    return json.loads(raw) if raw else {}
 
 
 def log_lines(word):
