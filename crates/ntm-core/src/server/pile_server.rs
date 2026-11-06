@@ -1355,4 +1355,41 @@ mod tests {
         assert!(h.slots[&loader][0].is_none());
         assert!(h.drops.is_empty());
     }
+    /// A pile across a chunk border, saved formed on one side only (a death between the two chunks' records, or a
+    /// chunk written before the formation): reopened, it neither holds a half formed pile nor stops the tick. The core
+    /// with a brick among its cells dismantles, its rod dropped once; members whose core is a brick revert.
+    #[test]
+    fn a_pile_saved_formed_on_one_side_of_a_border_reopens_whole_or_as_bricks() {
+        let other_side = |p: &Pos| p[0] >= 1;
+        for core_side_written in [true, false] {
+            let (mut s, mut h) = formed();
+            drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+            core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__nu", 0.).unwrap());
+            s.native_tick(&mut h, 6);
+            s.native_world_saved(&mut h, true);
+            let core_json = h.saved[&AT].clone();
+            assert!(core_json.contains(r#""rods":[{"kind":3"#), "the rod is in the core's saved state: {core_json}");
+            let written = |p: &Pos| other_side(p) != core_side_written;
+            for (p, _) in h.saved.clone() {
+                if !written(&p) {
+                    h.blocks.insert(p, pile::BRICK.into());
+                }
+            }
+            h.drops.clear();
+            let mut reopened = Server::native(&mut h, 0);
+            for (p, json) in h.saved.clone() {
+                if written(&p) {
+                    assert!(reopened.native_adopt(DIM, p, &json));
+                }
+            }
+            for tick in 10..14 {
+                reopened.native_tick(&mut h, tick);
+                replay(&mut reopened, &mut h);
+            }
+            assert!(reopened.ready.world.machines.is_empty(), "core side written: {core_side_written}");
+            assert!(h.saved.keys().all(|p| h.blocks[p] == pile::BRICK), "every cell is a brick again");
+            let rods = if core_side_written { 1 } else { 0 };
+            assert_eq!(h.drops.len(), rods, "the core's rod, once, only where the core was written");
+        }
+    }
 }
