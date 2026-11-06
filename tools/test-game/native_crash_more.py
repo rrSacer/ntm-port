@@ -15,10 +15,19 @@ second reopen. Scenarios:
   origin-kill                    they reach another chunk that unloads, and the process dies before any save
   merge-stale                    a stack whose older copy stays in an unloaded file folds into another; the process
                                  dies, and the file comes back only after a confirmed save
+  origin-away                    merge-stale reopened in that older holder, its copy picked up before the origin loads
+                                 (R4-1 of the fourth review)
   pickup-merge                   with a file that lags them, one stack is picked up while two others fold
-  save-quit                      released ledgers and merge keys survive a clean quit
+  save-quit                      the ejected rods survive a clean quit
   mining                         an excavator mines a chest of diamonds
   break / replace                a mixer with items is broken (and, in replace, another put in its place)
+
+A player's break of a machine spills its contents as a vanilla chest does: the scenarios built on one (`BROKEN`) run
+again with a chest in the mixers' place (NTM_CRASH_VANILLA=1), and the count must be the chest's at the same cut, not a
+number (run-crash-more.py compares them). The pile's, the mining's and the ejection's items are effects of the mod
+(`EMITTING`): their control has loose items put on the ground where the effect drops them (a chest broken in place of the
+mined one), and the runner checks that the reopens count what the files held, that nothing is held twice, and that no
+more is lost than the control loses at the same cut. The transfers without an ejection are counted exactly.
 """
 import json
 import os
@@ -30,6 +39,15 @@ from native_pile import interact, machine, tool, block
 from native_crash import ledger
 
 SCENARIO = os.environ.get('NTM_CRASH_SCENARIO', 'coupled-a')
+# A chest in each mixer's place: the vanilla control of a scenario of `BROKEN`.
+VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
+BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+          'merge-stale', 'origin-away', 'pickup-merge')
+# The scenarios whose items an effect of the mod drops, with the items counted.
+EMITTING = {'coupled-ea': ('ntm:pile_rod',), 'coupled-eb': ('ntm:pile_rod',), 'crossing': ('ntm:pile_rod',),
+            'crossing-kill': ('ntm:pile_rod',), 'save-quit': ('ntm:pile_rod',), 'mining': ('minecraft:diamond',)}
+# The scenarios built on an entity file that lags its stacks.
+STALE = ('merge-stale', 'origin-away')
 ROD = 'ntm:pile_rod__ra226be'
 INCOMING = 'ntm:pile_rod__zr'
 
@@ -55,13 +73,13 @@ def machine_present(g, p):
 
 
 def quiet(g, seconds=8):
-    """Let the server tick: block entities are rewritten from the models and pending drops appear."""
+    """Let the server tick: block entities are rewritten from the models and what an older record owes is dropped."""
     time.sleep(seconds)
     deadline = time.monotonic() + 60
     last = None
     while time.monotonic() < deadline:
         led = ledger(g)
-        key = (led['pending'], led['spawned'], led['tagged'])
+        key = (led['pending'], led['applied'])
         if led['pending'] == 0 and key == last:
             return led
         last = key
@@ -125,8 +143,29 @@ def pile_rods(g, cx):
     return channels, loaders
 
 
+def loose(g, item, n, at):
+    """The control's part of an effect: `n` loose items of `item` put on the ground at `at`."""
+    for _ in range(n):
+        g.command('summon minecraft:item %s %s %s {Item:{id:"%s",count:1}}' % (*at, item))
+
+
+def touch(g, *cells):
+    """The control changes a block in each chunk the effect's save would write, so that the cut has its records."""
+    for x, z in cells:
+        g.command(f'setblock {x} 99 {z} minecraft:cobblestone')
+
+
 def coupled_prepare(g):
     cx, side, full = COUPLED[SCENARIO]
+    if VANILLA and full:
+        g.close()
+        g.command('gamemode creative @s')
+        g.command('forceload add 30 0 64 24')
+        time.sleep(3)
+        g.command('fill 40 99 3 56 108 18 minecraft:air')
+        g.command('fill 40 99 3 56 99 18 minecraft:stone')
+        g.ctl('save')
+        return
     geo = build_pile(g, cx)
     loader = geo[side][0]
     if full:
@@ -150,6 +189,14 @@ def coupled_act(g):
     cx, side, full = COUPLED[SCENARIO]
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
+    if VANILLA and full:
+        # The ejected rod, loose by the core; the loader's and the core's chunks changed.
+        loose(g, ROD, 1, (cx + .5, 103, 9.5))
+        touch(g, (40, 4), (50, 4))
+        time.sleep(1.8)
+        g.evidence['after_act'] = {'entities': entities(g, ROD)}
+        save_expecting_death(g)
+        return
     loader = geometry(cx)[side][0]
     g.command('clear @s')
     g.check('saved_rod_starts_in_the_loader', pile_rods(g, cx) == (5 if full else 0, 1), pile_rods(g, cx))
@@ -174,10 +221,11 @@ def coupled_verify(g, again=False):
     outside = entities(g, ROD) + entities(g, INCOMING)
     carried = inventory(g, ROD) + inventory(g, INCOMING)
     held = channels + loaders + outside + carried
-    expected = 6 if full else 1
+    expected = (1 if VANILLA else 6) if full else 1
     detail = {'channels': channels, 'loaders': loaders, 'entities': outside, 'inventory': carried, 'total': held, 'expected': expected, 'ledger': led}
-    g.evidence['counted' + ('_again' if again else '')] = detail
-    g.check('no_rod_lost_or_duplicated', held == expected, detail)
+    counted(g, 'no_rod_lost_or_duplicated', detail, again)
+    if VANILLA:
+        return
     core = geometry(cx)['core']
     g.check('the_core_is_alive', machine_present(g, core), 'core machine missing')
 
@@ -187,10 +235,20 @@ def coupled_verify(g, again=False):
 def crossing_prepare(g):
     # The pile of the main scenario, its drops in the lower chunk and the upper one.
     cx = 47
-    geo = build_pile(g, cx)
-    for side in ('L', 'R'):
-        for _ in range(5):
-            load_rod(g, geo[side][0])
+    if VANILLA:
+        g.close()
+        g.command('gamemode creative @s')
+        g.command('forceload add 30 0 64 24')
+        time.sleep(3)
+        g.command('fill 40 99 3 56 108 18 minecraft:air')
+        g.command('fill 40 99 3 56 99 18 minecraft:stone')
+        # Near the pile, as the mod's world leaves its player, out of reach of the loose rods.
+        g.command('tp @s 47.5 101 1.5')
+    else:
+        geo = build_pile(g, cx)
+        for side in ('L', 'R'):
+            for _ in range(5):
+                load_rod(g, geo[side][0])
     # Two plain rods beside the pile's. Not in crossing-kill: moved and then killed before any save, a plain item
     # is in both entity files, as in vanilla; only the ledger's rods are this scenario's to count.
     for x in (46.5, 48.5) if SCENARIO != 'crossing-kill' else ():
@@ -208,13 +266,21 @@ def crossing_prepare(g):
     g.ctl('save')
 
 
+def eject(g):
+    """The pile gives up both channels through its loaders; in the control, as many loose rods by each loader."""
+    for side in ('L', 'R'):
+        p = geometry(47)[side][0]
+        if VANILLA:
+            loose(g, ROD, 5, (p[0] + .5, 102, p[2] - 1.5))
+        else:
+            interact(g, p, 'north', (p[0] + .5, 101, p[2] - 3.5))
+
+
 def crossing_act(g):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
     tool(g)
-    for side in ('L', 'R'):
-        p = geometry(47)[side][0]
-        interact(g, p, 'north', (p[0] + .5, 101, p[2] - 3.5))
+    eject(g)
     led = quiet(g, 4)
     g.evidence['after_undo'] = {'entities': entities(g, ROD), 'ledger': led}
     # Every drop goes to the upper chunk; then that chunk is let go while the lower one stays.
@@ -263,8 +329,7 @@ def crossing_verify(g, again=False):
     held = entities(g, ROD) + inventory(g, ROD)
     expected = 10 if SCENARIO == 'crossing-kill' else 12
     detail = {'entities': entities(g, ROD), 'inventory': inventory(g, ROD), 'total': held, 'expected': expected, 'ledger': led}
-    g.evidence['counted' + ('_again' if again else '')] = detail
-    g.check('no_rod_duplicated_by_a_chunk_that_unloaded', held == expected, detail)
+    counted(g, 'no_rod_duplicated_by_a_chunk_that_unloaded', detail, again)
 
 
 # ------------------------------------------------------------------------------------------------------ save & quit
@@ -274,20 +339,17 @@ def save_quit_act(g):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
     tool(g)
-    for side in ('L', 'R'):
-        p = geometry(47)[side][0]
-        interact(g, p, 'north', (p[0] + .5, 101, p[2] - 3.5))
+    eject(g)
     led = quiet(g, 4)
     g.evidence['after_act'] = {'entities': entities(g, ROD), 'ledger': led}
-    g.check('tracked_rods_before_quit', led['spawned'] > 0 and entities(g, ROD) == 12, g.evidence['after_act'])
+    g.check('rods_ejected_before_quit', (VANILLA or led['applied'] > 0) and entities(g, ROD) == 12, g.evidence['after_act'])
     # The runner's quit is the first confirmed save after the undo.
 
 
 def save_quit_verify(g, again=False):
     crossing_verify(g, again)
     led = ledger(g)
-    g.check('save_and_quit_releases_the_ledger',
-            all(led.get(k, -1) == 0 for k in ('pending', 'spawned', 'applied', 'keyed', 'tagged')), led)
+    g.check('save_and_quit_leaves_nothing_owed', led.get('pending', -1) == 0, led)
 
 
 # ---------------------------------------------------------------------------------------------------------- mining
@@ -309,7 +371,8 @@ def mining_prepare(g):
     g.close()
     x, y, z = MINE
     g.ground(x - 4, y, z - 4, width=12, height=18)
-    core = place_machine(g, 'machine_excavator', x, y, z)
+    # The control: the excavator's core where it would stand, as a plain block; the chest it mines, broken by hand.
+    core = (x, y, z) if VANILLA else place_machine(g, 'machine_excavator', x, y, z)
     cx, cy, cz = core
     g.command(f'fill {cx - 1} {cy - 4} {cz - 1} {cx + 1} {cy - 4} {cz + 1} minecraft:iron_ore')
     chest = (cx + 1, cy - 4, cz)
@@ -328,6 +391,13 @@ def mining_act(g):
     g.command('gamemode creative @s')
     prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
     core, chest = prep['core'], tuple(prep['chest'])
+    if VANILLA:
+        g.command('setblock %d %d %d minecraft:air destroy' % chest)
+        touch(g, (chest[0] - 2, chest[2] - 2), (chest[0] + 18, chest[2]), (chest[0] - 18, chest[2]))
+        time.sleep(1.5)
+        g.evidence['chest_gone'] = g.ctl('block %d %d %d' % chest).get('state', '')
+        save_expecting_death(g)
+        return
     open_excavator(g, core)
     g.put('ntm:battery_creative', 1, 0)
     g.put('ntm:drillbit__ferro', 1, 4)
@@ -356,15 +426,15 @@ def mining_verify(g, again=False):
     total = chest_count(g, chest) + entities(g, 'minecraft:diamond') + inventory(g, 'minecraft:diamond')
     detail = {'chest': chest_count(g, chest), 'entities': entities(g, 'minecraft:diamond'), 'inventory': inventory(g, 'minecraft:diamond'), 'total': total, 'expected': DIAMONDS, 'ledger': led,
               'machine': machine_present(g, core)}
-    g.evidence['counted' + ('_again' if again else '')] = detail
-    g.check('diamonds_exactly_once', total == DIAMONDS, detail)
-    g.check('the_excavator_is_alive', machine_present(g, core), detail)
+    counted(g, 'diamonds_exactly_once', detail, again)
+    if not VANILLA:
+        g.check('the_excavator_is_alive', machine_present(g, core), detail)
 
 
 # ------------------------------------------------------------------------------------------------- break / replace
 
 MIXER = (140, 100, 8)
-# origin-merge's second mixer, in the same chunk (one ledger, one merge key) and far enough not to fold with the first.
+# origin-merge's second mixer, in the same chunk and far enough not to fold with the first.
 MIXER2 = (134, 100, 8)
 MIXER3 = (128, 100, 8)
 NITER = int(os.environ.get('NTM_CRASH_NITER', '16'))
@@ -372,6 +442,7 @@ NITER = int(os.environ.get('NTM_CRASH_NITER', '16'))
 MIXERS = {'origin-merge': [(MIXER2, NITER // 2), (MIXER, NITER // 2)],
           # The smaller folds into the larger: the stack whose older copy stays in B is the one that goes.
           'merge-stale': [(MIXER2, 16), (MIXER, 48)],
+          'origin-away': [(MIXER2, 16), (MIXER, 48)],
           'pickup-merge': [(MIXER3, 16), (MIXER2, 24), (MIXER, 40)]}
 # Two far destinations: forced tickets keep two rings of neighbours, these unload on their own.
 DEST_B, DEST_C = (503.5, 100, 8.5), (803.5, 100, 8.5)
@@ -395,20 +466,32 @@ def break_prepare(g):
         g.ground(x - 3, y, z, width=8)
     for (x, y, z), each in mixers:
         g.command('clear @s')
-        g.command('give @s ntm:machine_mixer 1')
-        if SCENARIO.startswith('origin') or SCENARIO in MIXERS:
-            g.command(f'tp @s {x + .5} {y} {z + 3.5}')
-        g.ctl(f'place {x} {y} {z} --item ntm:machine_mixer')
-        g.command('clear @s')
-        open_machine(g, x, y, z)
-        core = core_of(g, 'ntm:machine_mixer', x, y, z)
-        g.put('ntm:niter', each, 1)
-        g.close()
+        if VANILLA:
+            g.command(f'setblock {x} {y} {z} minecraft:chest')
+            g.command(f'item replace block {x} {y} {z} container.0 with ntm:niter {each}')
+            core = (x, y, z)
+        else:
+            g.command('give @s ntm:machine_mixer 1')
+            if SCENARIO.startswith('origin') or SCENARIO in MIXERS:
+                g.command(f'tp @s {x + .5} {y} {z + 3.5}')
+            g.ctl(f'place {x} {y} {z} --item ntm:machine_mixer')
+            g.command('clear @s')
+            open_machine(g, x, y, z)
+            core = core_of(g, 'ntm:machine_mixer', x, y, z)
+            g.put('ntm:niter', each, 1)
+            g.close()
         g.check('niter_inside', mixer_items(g, core) == each, mixer_items(g, core))
         cores.append(core)
     g.evidence['core'] = cores[-1]
     g.evidence['cores'] = cores
     g.ctl('save')
+    if SCENARIO == 'origin-away':
+        # The base is saved with the player at B and the origin unloaded: the reopen after the death starts there.
+        g.command('forceload remove all')
+        g.command('gamemode creative @s')
+        g.command('tp @s 503.5 102 13.5')
+        g.check('source_unloaded_before_base_save', unloaded(g, (140, 100, 8)), 'A')
+        g.ctl('save')
 
 
 
@@ -435,11 +518,14 @@ def break_act(g):
     time.sleep(1.5)
     if SCENARIO == 'replace':
         g.command('clear @s')
-        g.command('give @s ntm:machine_mixer 1')
         g.command('gamemode creative @s')
         g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 3))
         time.sleep(.5)
-        g.ctl('place %d %d %d --item ntm:machine_mixer' % core)
+        if VANILLA:
+            g.command('setblock %d %d %d minecraft:chest' % core)
+        else:
+            g.command('give @s ntm:machine_mixer 1')
+            g.ctl('place %d %d %d --item ntm:machine_mixer' % core)
         time.sleep(1)
     g.evidence['after_act'] = {'block': g.ctl('block %d %d %d' % core).get('state', ''),
                                'entities': entities(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'),
@@ -459,10 +545,18 @@ def break_verify(g, again=False):
     total = inside + entities(g, 'ntm:niter') + inventory(g, 'ntm:niter')
     detail = {'block': state, 'inside': inside, 'entities': entities(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'total': total, 'expected': NITER, 'ledger': led,
               'machine': machine_present(g, core)}
-    g.evidence['counted' + ('_again' if again else '')] = detail
-    g.check('niter_exactly_once', total == NITER, detail)
+    counted(g, 'niter_exactly_once', detail, again)
     if state.startswith('ntm:machine_mixer'):
         g.check('a_standing_mixer_is_a_live_machine', machine_present(g, core), detail)
+
+
+def inside(g, cores):
+    """What the mixers (or the control's chests) standing at `cores` hold."""
+    total = 0
+    for c in cores:
+        if g.ctl('block %d %d %d' % tuple(c)).get('state', '').startswith(('ntm:machine_mixer', 'minecraft:chest')):
+            total += mixer_items(g, tuple(c))
+    return total
 
 
 def world_items(g, item):
@@ -511,7 +605,7 @@ def origin_kill_act(g):
     g.ctl('select minecraft:diamond_pickaxe')
     g.ctl('break %d %d %d --timeout 30' % core)
     time.sleep(1)
-    g.check('broken_contents_are_tracked', ledger(g)['spawned'] > 0, ledger(g))
+    g.check('broken_contents_dropped', world_items(g, 'ntm:niter') == NITER, world_items(g, 'ntm:niter'))
     g.command('gamemode creative @s')
     g.command('forceload add 496 0 511 15')
     time.sleep(2)
@@ -539,11 +633,9 @@ def origin_kill_verify(g, again=False):
     g.command('forceload add %d %d' % (core[0], core[2]))
     led = quiet(g, 10)
     state = g.ctl('block %d %d %d' % core).get('state', '')
-    inside = mixer_items(g, core) if state.startswith('ntm:machine_mixer') else 0
-    detail = {'block': state, 'inside': inside, 'entities': world_items(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'ledger': led}
+    detail = {'block': state, 'inside': inside(g, [core]), 'entities': world_items(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'ledger': led}
     detail['total'] = detail['inside'] + detail['entities'] + detail['inventory']
-    g.evidence['counted' + ('_again' if again else '')] = detail
-    g.check('niter_exactly_once', detail['total'] == NITER, detail)
+    counted(g, 'niter_exactly_once', detail, again)
 
 
 def take_to(g, c, spot):
@@ -574,7 +666,7 @@ def stale_act(g):
     time.sleep(2)
     g.command('fill 496 99 0 511 99 15 minecraft:stone')
     g.command('fill 800 99 0 815 99 15 minecraft:stone')
-    if SCENARIO == 'merge-stale':
+    if SCENARIO in STALE:
         spots = [DEST_B, (DEST_C[0], 100, 3.5)]
     else:
         spots = [(DEST_C[0], 100, 3.5), (DEST_C[0] + 6, 100, 3.5), (DEST_C[0] + 6, 100, 12.5)]
@@ -585,8 +677,9 @@ def stale_act(g):
         time.sleep(.5)
     g.command('gamemode creative @s')
     g.command('tp @s %d %d %d' % (cores[-1][0] + 3, cores[-1][1], cores[-1][2] + 6))
-    g.check('broken_contents_are_tracked', ledger(g)['spawned'] == len(cores), ledger(g))
-    if SCENARIO == 'merge-stale':
+    each = sum(n for _, n in MIXERS[SCENARIO])
+    g.check('broken_contents_dropped', world_items(g, 'ntm:niter') == each, world_items(g, 'ntm:niter'))
+    if SCENARIO in STALE:
         away_and_back(g, FORCE_B, (503, 99, 8))
         g.check('x_back_from_its_file', item_stacks(g, 'ntm:niter') == 2, item_stacks(g, 'ntm:niter'))
         take_to(g, (503, 100, 8), spots[1])
@@ -613,6 +706,13 @@ def stale_verify(g, again=False):
     g.command('gamemode creative @s')
     prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
     core = prep['cores'][-1]
+    if SCENARIO == 'origin-away' and not again:
+        # Reopened at B, where the base save left the player, with the origin away: B's older copy is picked up first.
+        g.check('origin_away_on_reopen', unloaded(g, (140, 100, 8)), 'A')
+        g.command('tp @s 503.5 100 8.5')
+        time.sleep(4)
+        g.evidence['picked_old_copy'] = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'),
+                                         'origin_away': unloaded(g, (140, 100, 8)), 'ledger': ledger(g)}
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     if SCENARIO == 'merge-stale' and not again:
         # B (whose file shows X) stays away while the world settles and a confirmed save prunes the ledger.
@@ -624,11 +724,9 @@ def stale_verify(g, again=False):
     for force in (FORCE_B, FORCE_C):
         g.command('forceload add ' + force)
     led = quiet(g, 12)
-    detail = {'entities': world_items(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'ledger': led}
-    detail['total'] = detail['entities'] + detail['inventory']
-    detail['expected'] = 64 if SCENARIO == 'merge-stale' else 80
-    g.evidence['counted' + ('_again' if again else '')] = detail
-    g.check('niter_exactly_once', detail['total'] == detail['expected'], detail)
+    detail = {'inside': inside(g, prep['cores']), 'entities': world_items(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'ledger': led}
+    detail['total'] = detail['inside'] + detail['entities'] + detail['inventory']
+    counted(g, 'niter_exactly_once', detail, again)
 
 
 def origin_expected():
@@ -653,12 +751,12 @@ def origin_pickup_act(g):
             g.ctl('break %d %d %d --timeout 30' % tuple(c))
             g.command('tp @e[type=minecraft:item,x=%d,y=%d,z=%d,distance=..5] %s 100 3.5' % (c[0], c[1], c[2], spot))
             time.sleep(.5)
-        g.check('broken_contents_are_tracked', ledger(g)['spawned'] > 1, ledger(g))
+        g.check('broken_contents_dropped', world_items(g, 'ntm:niter') == NITER, world_items(g, 'ntm:niter'))
         g.evidence['spread'] = item_stacks(g, 'ntm:niter')
     else:
         g.ctl('break %d %d %d --timeout 30' % core)
         time.sleep(1)
-        g.check('broken_contents_are_tracked', ledger(g)['spawned'] > 0, ledger(g))
+        g.check('broken_contents_dropped', world_items(g, 'ntm:niter') == NITER, world_items(g, 'ntm:niter'))
         g.command('forceload add 496 0 511 15')
         time.sleep(2)
         g.command('fill 496 99 0 511 99 15 minecraft:stone')
@@ -706,13 +804,27 @@ def origin_pickup_verify(g, again=False):
     g.command('forceload add 128 0 143 15')
     g.command('forceload add 496 0 511 15')
     led = quiet(g)
-    detail = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'), 'ledger': led}
-    detail['total'] = detail['inventory'] + detail['entities']
-    g.evidence['counted' + ('_again' if again else '')] = detail
-    g.check('picked_up_contents_remain_exactly_once', detail['total'] == origin_expected(), detail)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    detail = {'inside': inside(g, prep['cores']), 'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'), 'ledger': led}
+    detail['total'] = detail['inside'] + detail['inventory'] + detail['entities']
+    detail['expected'] = origin_expected()
+    counted(g, 'picked_up_contents_remain_exactly_once', detail, again)
 
 
 # ------------------------------------------------------------------------------------------------------------ common
+
+def counted(g, name, detail, again):
+    """The count after a reopen. For a break only recorded: the reference is the vanilla chest at the same cut. For an
+    emission never more than there was; the files and the control are the runner's to compare. Else exactly `expected`."""
+    g.evidence['counted' + ('_again' if again else '')] = detail
+    if SCENARIO in BROKEN:
+        detail.pop('expected', None)
+        return
+    if SCENARIO in EMITTING:
+        g.check(name.replace('lost_or_', '').replace('exactly_once', 'never_twice'), detail['total'] <= detail['expected'], detail)
+        return
+    g.check(name, detail['total'] == detail['expected'], detail)
+
 
 def save_expecting_death(g):
     try:
@@ -739,6 +851,7 @@ STEPS = {
     'origin-kill': (break_prepare, origin_kill_act, origin_kill_verify),
     'crossing-kill': (crossing_prepare, crossing_act, crossing_verify),
     'merge-stale': (break_prepare, stale_act, stale_verify),
+    'origin-away': (break_prepare, stale_act, stale_verify),
     'pickup-merge': (break_prepare, stale_act, stale_verify),
     'save-quit': (crossing_prepare, save_quit_act, save_quit_verify),
     'mining': (mining_prepare, mining_act, mining_verify),

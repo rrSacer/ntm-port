@@ -4,8 +4,15 @@
   python3 tools/test-game/run-crash-more.py --binary B --resources R --scratch-root S SCENARIO [POINT ...]
 
 SCENARIO: coupled-a coupled-b coupled-ea coupled-eb crossing crossing-kill mining break replace origin-pickup
-origin-pickup-away origin-merge origin-vanish origin-kill. Points default to the ones that matter for the scenario;
-`kill` ends the process with SIGKILL after the action, outside any save. A world that passed is deleted; the report keeps the numbers.
+origin-pickup-away origin-merge origin-vanish origin-kill merge-stale origin-away pickup-merge. Points default to the
+ones that matter for the scenario; `kill` ends the process with SIGKILL after the action, outside any save. A world that
+passed is deleted; the report keeps the numbers.
+
+A scenario built on a player's break (`BROKEN` of native_crash_more.py) is played twice at each point, with the mixers
+and with vanilla chests in their place, from bases prepared the same way: it passes when both reopens count what the
+chests count. A scenario of an effect of the mod (`EMITTING`) is played with its vanilla control too (loose items, or a
+chest broken by hand): it passes when both reopens count what the files held before them (disk_count.py), nothing is
+held twice and no more is lost than the control loses (`emission_verdict` of run-crash-proof.py).
 """
 import argparse
 import importlib.util
@@ -23,6 +30,16 @@ here = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location('crash_proof', here / 'run-crash-proof.py')
 crash_proof = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crash_proof)
+BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+          'merge-stale', 'origin-away', 'pickup-merge')
+# scenario -> (items counted, what the mod's world holds, what the control's holds)
+EMITTING = {'coupled-ea': (('ntm:pile_rod',), 6, 1), 'coupled-eb': (('ntm:pile_rod',), 6, 1),
+            'crossing': (('ntm:pile_rod',), 12, 12), 'crossing-kill': (('ntm:pile_rod',), 10, 10),
+            'save-quit': (('ntm:pile_rod',), 12, 12), 'mining': (('minecraft:diamond',), 7, 7)}
+
+
+def items_of(scenario):
+    return EMITTING[scenario][0] if scenario in EMITTING else ('ntm:niter',) if scenario in BROKEN else ('ntm:pile_rod',)
 
 DEFAULT_POINTS = {
     'vanilla-break': ['chunks_written', 'entities_written'],
@@ -38,11 +55,13 @@ DEFAULT_POINTS = {
     'origin-kill': ['kill'],
     'crossing-kill': ['kill'],
     'merge-stale': ['kill'],
+    'origin-away': ['kill'],
     'pickup-merge': ['kill'],
     'save-quit': ['none'],
     'mining': crash_proof.POINTS,
-    'break': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],
-    'replace': ['none', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written'],
+    # The mixer's chunk first (`live_chunk`): a cut after the first record of a batch hits another chunk in the control.
+    'break': ['none', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'replace': ['none', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
 }
 
 
@@ -115,7 +134,7 @@ def record(folder, kind, cx, cz):
 def stale_disk(folder, scenario):
     """What the files say before the reopen, for the scenarios built on an entity file that lags: tagged niter
     entities in each holder's file, and the folded markers of the origin's ledger."""
-    if scenario not in ('merge-stale', 'pickup-merge'):
+    if scenario not in ('merge-stale', 'origin-away', 'pickup-merge'):
         return None
     import re
     tag = rb'[0-9a-f]{16}:\d+@-?\d+,-?\d+'
@@ -129,12 +148,16 @@ def stale_disk(folder, scenario):
     return out
 
 
-def play(args, base, scratch, env, scenario, point):
-    folder = scratch / ('point-' + point.replace(':', '-'))
+def point_folder(scratch, point, control):
+    return scratch / ('point-' + point.replace(':', '-') + ('-vanilla' if control else ''))
+
+
+def play(args, base, scratch, env, scenario, point, control=False):
+    folder = point_folder(scratch, point, control)
     crash_proof.clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-crash-more-act.json',
                                                                  'native-crash-more-verify.json', 'native-crash-more-again.json'))
     world = More(args, folder, env, scenario)
-    result = {'scenario': scenario, 'point': point, 'folder': str(folder), 'ok': False}
+    result = {'scenario': scenario, 'point': point, 'folder': str(folder), 'ok': False, 'vanilla_control': control}
     try:
         world.launch(point)
         acted = world.script('act', check=False)
@@ -166,7 +189,8 @@ def play(args, base, scratch, env, scenario, point):
                 raise AssertionError('client exited without reaching ' + point)
             (folder / 'control.sock').unlink(missing_ok=True)
         result['disk_before_reopen'] = saved_coupled(folder, scenario) or stale_disk(folder, scenario)
-        if scenario.startswith('coupled') and point.startswith(('live_chunk:', 'region_record:')):
+        result['disk'] = crash_proof.disk_count.count(folder, items_of(scenario))
+        if scenario.startswith('coupled') and point.startswith(('live_chunk:', 'region_record:')) and not control:
             before, after = saved_coupled(base, scenario), result['disk_before_reopen']
             changed = [c for c in ('2', '3') if before[c] != after[c]]
             result['disk_base'] = before
@@ -199,6 +223,17 @@ def play(args, base, scratch, env, scenario, point):
             world.client.kill()
             world.client.wait()
     return result
+
+
+def total(outcome, reopen):
+    return (outcome.get(reopen) or {}).get('total')
+
+
+def against_control(outcome, control):
+    """The mod's break counts what the chest counts at the same cut, at both reopens."""
+    same = {r: (total(outcome, r), total(control, r)) for r in ('first_reopen', 'second_reopen')}
+    equal = all(a is not None and a == b for a, b in same.values())
+    return {**outcome, 'control': control, 'against_control': same, 'ok': outcome['ok'] and control['ok'] and equal}
 
 
 def main():
@@ -237,22 +272,40 @@ def main():
     report = {'ok': False, 'scenario': args.scenario, 'binary': str(args.binary),
               'binary_sha256': crash_proof.digest(args.binary), 'bundle_sha256': crash_proof.digest(args.bundle),
               'points': []}
+    controlled = args.scenario in BROKEN or args.scenario in EMITTING
     try:
-        world = More(args, base, env, args.scenario)
-        world.launch()
-        world.script('prepare')
-        world.quit()
-        for point in args.points or DEFAULT_POINTS[args.scenario]:
-            copy_env = dict(env)
-            folder = scratch / ('point-' + point.replace(':', '-'))
+        bases = {False: base}
+        if controlled:
+            bases[True] = scratch / 'base-vanilla'
+            shutil.copytree(base, bases[True])
+        for control, where in bases.items():
+            prepare_env = dict(env, NTM_CRASH_VANILLA='1' if control else '0')
             for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'),
                              ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
-                copy_env[key] = str(folder / sub)
-            outcome = play(args, base, scratch, copy_env, args.scenario, point)
+                prepare_env[key] = str(where / sub)
+            world = More(args, where, prepare_env, args.scenario)
+            world.launch()
+            world.script('prepare')
+            world.quit()
+        for point in args.points or DEFAULT_POINTS[args.scenario]:
+            outcomes = {}
+            for control, where in bases.items():
+                copy_env = dict(env, NTM_CRASH_VANILLA='1' if control else '0')
+                folder = point_folder(scratch, point, control)
+                for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'),
+                                 ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
+                    copy_env[key] = str(folder / sub)
+                outcomes[control] = play(args, where, scratch, copy_env, args.scenario, point, control)
+            if args.scenario in EMITTING:
+                _, expected, control_expected = EMITTING[args.scenario]
+                outcome = crash_proof.emission_verdict(outcomes[False], outcomes[True], expected, control_expected)
+            else:
+                outcome = against_control(outcomes[False], outcomes[True]) if controlled else outcomes[False]
             report['points'].append(outcome)
             print(json.dumps(outcome), flush=True)
             if outcome['ok']:
-                shutil.rmtree(folder, ignore_errors=True)
+                for control in bases:
+                    shutil.rmtree(point_folder(scratch, point, control), ignore_errors=True)
             (scratch / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
         report['ok'] = all(p['ok'] for p in report['points'])
     finally:

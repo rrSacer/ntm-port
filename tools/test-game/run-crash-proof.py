@@ -7,6 +7,11 @@ Example (wrap in agent-run env QUEUE=game):
 One base world is prepared and copied for every point; a copy is played with HORIZON_FAILPOINT=POINT (the game
 ends inside the save asked for after the undo), reopened without it, verified, reopened again and verified, and
 finally drained. `none` runs the same without a failpoint.
+
+Each point is played twice from bases prepared the same way: with the pile, and as the vanilla control (loose rods put on
+the ground instead of ejected, NTM_CRASH_VANILLA=1). Before each reopen the runner counts what the files hold
+(disk_count.py). A point passes when both reopens count what the files held, nothing is duplicated, and the pile loses
+no more than the control loses at the same cut.
 """
 import argparse
 import hashlib
@@ -20,6 +25,7 @@ import tempfile
 import time
 
 from native_game import Game
+import disk_count
 
 POINTS = ['none', 'save_begin', 'region_record:1', 'region_record:2', 'region_record:3', 'chunks_written',
           'entities_written', 'level_saved', 'parked_saved', 'level_dat_written', 'metadata_saved',
@@ -125,11 +131,36 @@ def died_in_act(world, point):
     return 'HORIZON_FAILPOINT' in world.log.read_text(errors='replace')
 
 
-def play(args, base, scratch, env, point):
-    folder = scratch / ('point-' + point.replace(':', '-'))
+ROD = 'ntm:pile_rod'
+TOTAL = 12
+
+
+def emission_verdict(outcome, control, expected, control_expected):
+    """An emission against the files and the vanilla control: both reopens count what the files held before them,
+    nothing is held twice, and no more is lost than the control loses at the same cut."""
+    total = lambda o, r: (o.get(r) or {}).get('total')
+    first, again, disk = total(outcome, 'first_reopen'), total(outcome, 'second_reopen'), (outcome.get('disk') or {}).get('total')
+    lost, control_lost = None, None
+    if first is not None and total(control, 'first_reopen') is not None:
+        lost, control_lost = expected - first, control_expected - total(control, 'first_reopen')
+    verdict = {'disk': disk, 'first': first, 'second': again, 'expected': expected, 'lost': lost, 'control_lost': control_lost,
+               'control_disk': (control.get('disk') or {}).get('total')}
+    verdict['as_the_files'] = first is not None and first == disk and again == first
+    verdict['no_duplicate'] = first is not None and first <= expected
+    verdict['no_worse_than_vanilla'] = lost is not None and lost <= control_lost
+    ok = outcome['ok'] and control['ok'] and verdict['as_the_files'] and verdict['no_duplicate'] and verdict['no_worse_than_vanilla']
+    return {**outcome, 'control': control, 'verdict': verdict, 'ok': ok}
+
+
+def point_folder(scratch, point, control):
+    return scratch / ('point-' + point.replace(':', '-') + ('-vanilla' if control else ''))
+
+
+def play(args, base, scratch, env, point, control=False, items=(ROD,)):
+    folder = point_folder(scratch, point, control)
     clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-crash-*.json'))
     world = World(args, folder, env)
-    result = {'point': point, 'folder': str(folder), 'ok': False}
+    result = {'point': point, 'folder': str(folder), 'ok': False, 'vanilla_control': control}
     try:
         world.launch(point)
         acted = world.script('undo', check=False)
@@ -150,6 +181,7 @@ def play(args, base, scratch, env, point):
             if not result['killed_at_the_point']:
                 raise AssertionError('client exited without reaching ' + point)
             (folder / 'control.sock').unlink(missing_ok=True)
+        result['disk'] = disk_count.count(folder, items)
         world.launch()
         verified = world.script('verify', check=False)
         result['first_reopen'] = evidence(folder, 'verify').get('counted')
@@ -206,23 +238,32 @@ def main():
         env['DISPLAY'] = ':' + pipe.readline().strip()
     report = {'ok': False, 'binary': str(args.binary), 'binary_sha256': digest(args.binary),
               'bundle_sha256': digest(args.bundle), 'points': []}
+    def homed(folder, control):
+        copy_env = dict(env, NTM_CRASH_VANILLA='1' if control else '0')
+        for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'),
+                         ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
+            copy_env[key] = str(folder / sub)
+        return copy_env
     try:
-        world = World(args, base, env)
-        world.launch()
-        world.script('prepare')
-        world.quit()
+        bases = {False: base, True: scratch / 'base-vanilla'}
+        shutil.copytree(base, bases[True])
+        for control, where in bases.items():
+            world = World(args, where, homed(where, control))
+            world.launch()
+            world.script('prepare')
+            world.quit()
         for point in args.points or [*POINTS, 'sweep']:
             # Each copy is played by the same binary; HORIZON_HOME is inside the copy's own folder.
-            copy_env = dict(env)
-            folder = scratch / ('point-' + point.replace(':', '-'))
-            for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'),
-                             ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
-                copy_env[key] = str(folder / sub)
-            outcome = (sweep if point == 'sweep' else play)(*((args, base, scratch, copy_env) + (() if point == 'sweep' else (point,))))
+            if point == 'sweep':
+                outcome = sweep(args, base, scratch, homed(scratch / 'point-sweep', False))
+            else:
+                played = {c: play(args, where, scratch, homed(point_folder(scratch, point, c), c), point, c) for c, where in bases.items()}
+                outcome = emission_verdict(played[False], played[True], TOTAL, TOTAL)
             report['points'].append(outcome)
             if outcome['ok']:
                 # Each copy of the world is large: a point that passed leaves only its numbers.
-                shutil.rmtree(folder, ignore_errors=True)
+                for c in (False, True):
+                    shutil.rmtree(point_folder(scratch, point, c), ignore_errors=True)
             print(json.dumps(outcome), flush=True)
             (scratch / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
         report['ok'] = all(p['ok'] for p in report['points'])

@@ -10,7 +10,11 @@ Modes (the runner, run-crash-proof.py, owns the game process and the kill):
   drain    remove every rod entity and check that what was owed is retired
 Rods: 10 = 5 + 5 `ntm:pile_rod__ra226be` in the pile, plus 2 plain ones on the ground where they fall: 12, in channels,
 loaders, item entities or owed by the ledger.
+
+With NTM_CRASH_VANILLA=1 the same world is the vanilla control: no pile, the two plain rods, and the undo puts 5 + 5
+loose rods on the ground on both sides of the border instead of ejecting them; the runner compares its losses.
 """
+import os
 import json
 import re
 import sys
@@ -22,13 +26,16 @@ CORE = (47, 102, 8)
 CHANNELS = [(46, 102, 8), (48, 102, 8)]
 LOADERS = [(46, 102, 7), (48, 102, 7)]
 ROD = 'ntm:pile_rod__ra226be'
+VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
+# Where the control's loose rods are put, one side of the border each.
+LOOSE = (46.5, 48.5)
 PILE = 10
 COMMON = 2  # plain rods lying where the pile's rods fall, for the merge cases
 TOTAL = PILE + COMMON
 
 
 def ledger(g):
-    """`/ntmledger` of the server: what the loaded chunks owe and the entities that carry it."""
+    """`/ntmledger` of the server: the effects the loaded chunks hold applied, and what an older record still owes."""
     text = ' '.join(g.command('ntmledger').get('chat', []))
     found = dict(re.findall(r'(\w+)=(\d+)', text))
     if not found:
@@ -69,12 +76,12 @@ def count(g):
 
 
 def settled(g, timeout=90):
-    """The ledger has nothing pending and nothing changed for two readings."""
+    """Nothing is owed and nothing changed for two readings."""
     deadline = time.monotonic() + timeout
     previous = None
     while time.monotonic() < deadline:
         now = count(g)
-        key = (now['ledger']['pending'], now['ledger']['spawned'], now['entities'], now['ledger']['tagged'])
+        key = (now['ledger']['pending'], now['entities'])
         if now['ledger']['pending'] == 0 and key == previous:
             return now
         previous = key
@@ -90,6 +97,15 @@ def prepare(g):
     time.sleep(3)
     g.command('fill 40 99 3 56 108 18 minecraft:air')
     g.command('fill 40 99 3 56 99 18 minecraft:stone')
+    if VANILLA:
+        # Near the pile, as the mod's world leaves its player, out of reach of the rods.
+        g.command('tp @s 47.5 101 1.5')
+        for x in (46.5, 48.5):
+            g.command(f'summon minecraft:item {x} 103 13.5 {{Item:{{id:"{ROD}",count:1}}}}')
+        time.sleep(2)
+        g.evidence['base'] = count(g)
+        g.ctl('save')
+        return
     g.command('fill 45 100 8 49 104 12 ntm:pile_brick')
     tool(g)
     interact(g, CORE, 'north', (47.5, 101, 5.5))
@@ -138,10 +154,19 @@ def undo(g):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
     before = count(g)
-    g.check('start_from_ten_in_the_pile', before['channels'] + before['loaders'] == PILE and before['entities'] == COMMON, before)
-    tool(g)
-    for p in LOADERS:
-        interact(g, p, 'north', (p[0] + .5, 101, p[2] - 3.5))
+    if VANILLA:
+        g.check('start_from_the_plain_rods', before['entities'] == COMMON, before)
+        for x in LOOSE:
+            for _ in range(PILE // 2):
+                g.command(f'summon minecraft:item {x} 103 9.5 {{Item:{{id:"{ROD}",count:1}}}}')
+        # The chunks the pile's save writes change too, so that every cut has its records.
+        for x, z in ((40, 4), (50, 4), (50, 20)):
+            g.command(f'setblock {x} 99 {z} minecraft:cobblestone')
+    else:
+        g.check('start_from_ten_in_the_pile', before['channels'] + before['loaders'] == PILE and before['entities'] == COMMON, before)
+        tool(g)
+        for p in LOADERS:
+            interact(g, p, 'north', (p[0] + .5, 101, p[2] - 3.5))
     time.sleep(2)
     after = count(g)
     g.evidence['after_undo'] = after
@@ -160,16 +185,15 @@ def verify(g, again=False):
     g.command('gamemode creative @s')
     g.command('tp @s 53.5 101 15.5')
     now = settled(g)
-    g.evidence['counted' + ('_again' if again else '')] = now
     held = now['channels'] + now['loaders'] + now['entities'] + now['inventory']
+    now['total'] = held
+    g.evidence['counted' + ('_again' if again else '')] = now
     led = now['ledger']
-    g.check('no_rod_lost_or_duplicated', held == TOTAL, now)
+    # What the files held and the vanilla control at the same cut are the runner's to compare; never more than there was.
+    g.check('no_rod_duplicated', held <= TOTAL, now)
     g.check('nothing_left_to_spawn', led['pending'] == 0, led)
-    g.check('one_carrier_per_owed_stack', led['tagged_items'] == led['owed_items'], led)
-    g.check('every_stack_has_its_one_entity', now['entities'] >= led['tagged_items'], now)
-    if again:
-        g.check('confirmed_save_persisted_the_release',
-                all(led.get(k, -1) == 0 for k in ('pending', 'spawned', 'applied', 'gone', 'tagged', 'keyed')), led)
+    if VANILLA:
+        return
     # The pile's cells: whole, or all reverted — never half.
     cells = [(x, y, z) for x in range(45, 50) for y in range(100, 105) for z in range(8, 13)]
     names = {block(g, c) for c in cells}
@@ -182,13 +206,8 @@ def drain(g):
     g.ctl('wait-ready 120')
     g.command('kill @e[type=minecraft:item]')
     time.sleep(1.5)
-    deadline = time.monotonic() + 60
-    while time.monotonic() < deadline:
-        led = ledger(g)
-        if led['spawned'] == 0 and led['pending'] == 0:
-            break
-        time.sleep(2)
-    g.check('owed_stacks_retired_when_the_items_are_gone', led['spawned'] == 0 and led['pending'] == 0, led)
+    led = ledger(g)
+    g.check('nothing_owed_when_the_items_are_gone', led['pending'] == 0, led)
     g.ctl('save')
 
 
