@@ -38,7 +38,7 @@ import sys
 import time
 from native_game import Game
 from native_pile import interact, machine, tool, block
-from native_crash import ledger, dropper, fire, held_by_dropper
+from native_crash import ledger, dropper, fire, held
 
 SCENARIO = os.environ.get('NTM_CRASH_SCENARIO', 'coupled-a')
 # A chest in each mixer's place: the vanilla control of a scenario of `BROKEN`.
@@ -46,8 +46,11 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
+# The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
+# the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
+TRANSFERS = ('coupled-a', 'coupled-b', 'coupled-ea', 'coupled-eb')
 # The scenarios whose items an effect of the mod drops, with the items counted.
-EMITTING = {'coupled-ea': ('ntm:pile_rod',), 'coupled-eb': ('ntm:pile_rod',), 'crossing': ('ntm:pile_rod',),
+EMITTING = {'crossing': ('ntm:pile_rod',),
             'crossing-kill': ('ntm:pile_rod',), 'save-quit': ('ntm:pile_rod',), 'mining': ('minecraft:diamond',)}
 # The scenarios built on an entity file that lags its stacks.
 STALE = ('merge-stale', 'origin-away')
@@ -143,9 +146,21 @@ def pile_rods(g, cx):
         p = geo[side][0]
         if block(g, p) == 'ntm:pile_device__loader':
             loaders += sum(s['count'] for s in machine(g, p)['data']['Loader']['slots'] if s)
-    # The control's droppers stand where the core and the loaders do.
-    loaders += sum(held_by_dropper(g, p, r) for p in (geo['core'], geo['L'][0], geo['R'][0]) for r in (ROD, INCOMING))
+    # The control's containers stand where the core and the loaders do, and beside the core (its hopper, its dropper).
+    spots = {geo['core'], geo['L'][0], geo['R'][0], hopper_at(cx), shooter_at(cx)}
+    loaders += sum(held(g, p, '') for p in spots)
     return channels, loaders
+
+
+def hopper_at(cx):
+    """The control's hopper: beside the core across the chunk border, where the loader feeds it."""
+    side = 'R' if COUPLED.get(SCENARIO, (47, 'R'))[1] == 'R' else 'L'
+    return (cx + 1 if side == 'R' else cx - 1, 102, 8)
+
+
+def shooter_at(cx):
+    """The control's dropper for the core's ejection, in the core's chunk."""
+    return (cx, 102, 10)
 
 
 def touch(g, *cells):
@@ -156,15 +171,25 @@ def touch(g, *cells):
 
 def coupled_prepare(g):
     cx, side, full = COUPLED[SCENARIO]
-    if VANILLA and full:
+    if VANILLA:
+        # A hopper (locked by a redstone block under it) holds the rod the loader pushes, across the chunk border from a
+        # chest where the core stands; with a full channel the chest holds the four the core keeps and a dropper the rod
+        # it ejects.
         g.close()
         g.command('gamemode creative @s')
         g.command('forceload add 30 0 64 24')
         time.sleep(3)
         g.command('fill 40 99 3 56 108 18 minecraft:air')
         g.command('fill 40 99 3 56 99 18 minecraft:stone')
-        # The rod the full channel ejects, in a dropper where the core stands.
-        dropper(g, geometry(cx)['core'], ROD, 1)
+        hx = hopper_at(cx)
+        facing = 'west' if hx[0] > cx else 'east'
+        g.command('setblock %d %d %d minecraft:redstone_block' % (hx[0], hx[1] - 1, hx[2]))
+        g.command('setblock %d %d %d minecraft:hopper[facing=%s]' % (*hx, facing))
+        g.command('item replace block %d %d %d container.0 with %s 1' % (*hx, INCOMING if full else ROD))
+        g.command('setblock %d %d %d minecraft:chest' % geometry(cx)['core'])
+        if full:
+            g.command('item replace block %d %d %d container.0 with %s 4' % (*geometry(cx)['core'], ROD))
+            dropper(g, shooter_at(cx), ROD, 1, 'south')
         g.ctl('save')
         return
     geo = build_pile(g, cx)
@@ -190,12 +215,20 @@ def coupled_act(g):
     cx, side, full = COUPLED[SCENARIO]
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
-    if VANILLA and full:
-        # The dropper fires the rod the core ejects; the loader's and the core's chunks changed.
-        fire(g, geometry(cx)['core'], 1)
+    if VANILLA:
+        # The hopper is let go and pushes its rod into the chest (the loader into the core); with a full channel the
+        # dropper fires the rod the core ejects. The loader's and the core's chunks changed.
+        hx = hopper_at(cx)
+        g.command('setblock %d %d %d minecraft:stone' % (hx[0], hx[1] - 1, hx[2]))
+        deadline = time.monotonic() + 10
+        while held(g, hx, '') and time.monotonic() < deadline:
+            time.sleep(.2)
+        if full:
+            fire(g, shooter_at(cx), 1)
         touch(g, (40, 4), (50, 4))
         time.sleep(1.8)
-        g.evidence['after_act'] = {'entities': entities(g, ROD)}
+        g.evidence['after_act'] = {'rods': pile_rods(g, cx), 'entities': entities(g, ROD)}
+        g.check('transfer_completed_before_the_cut', held(g, hx, '') == 0, g.evidence['after_act'])
         save_expecting_death(g)
         return
     loader = geometry(cx)[side][0]
@@ -222,7 +255,7 @@ def coupled_verify(g, again=False):
     outside = entities(g, ROD) + entities(g, INCOMING)
     carried = inventory(g, ROD) + inventory(g, INCOMING)
     held = channels + loaders + outside + carried
-    expected = (1 if VANILLA else 6) if full else 1
+    expected = 6 if full else 1
     detail = {'channels': channels, 'loaders': loaders, 'entities': outside, 'inventory': carried, 'total': held, 'expected': expected, 'ledger': led}
     counted(g, 'no_rod_lost_or_duplicated', detail, again)
     if VANILLA:
@@ -243,8 +276,8 @@ def crossing_prepare(g):
         time.sleep(3)
         g.command('fill 40 99 3 56 108 18 minecraft:air')
         g.command('fill 40 99 3 56 99 18 minecraft:stone')
-        # Near the pile, as the mod's world leaves its player, out of reach of the rods.
-        g.command('tp @s 47.5 101 1.5')
+        # Near the pile, out of reach of what the droppers fire.
+        g.command('tp @s 47.5 101 -8.5')
         for side in ('L', 'R'):
             dropper(g, geometry(cx)[side][0], ROD, 5)
     else:
@@ -324,16 +357,25 @@ def crossing_verify(g, again=False):
     if SCENARIO == 'crossing-kill' and not again:
         # Far from both, as in the action: the forced source stays, the destination can go.
         holder_away_then_save(g, ROD, (133, 99, 13), (-250.5, 101, 5.5), 'forceload remove 48 0 64 24', 'forceload remove 128 0 143 15')
-    if SCENARIO == 'crossing-kill':
-        g.command('forceload add 30 0 64 24')
-        g.command('forceload add 128 0 143 15')
-    g.command('tp @s 133.5 101 15.5' if SCENARIO in ('crossing', 'crossing-kill') else 'tp @s 53.5 101 15.5')
+    # The pile's area and the destination, both loaded to count (the action let them go).
+    g.command('forceload add 30 0 64 24')
+    g.command('forceload add 128 0 143 15')
+    # Counted where each part is, with the player there (a block or an entity is seen only near the player): at the pile,
+    # its rods (or the control's droppers') and what lies around it; at the destination, what lies there.
+    g.command('tp @s 53.5 101 15.5')
     led = quiet(g, 10)
-    # In the pile (or the control's droppers) after a death outside a save, on the ground or carried otherwise.
     machines = sum(pile_rods(g, 47))
-    held = machines + entities(g, ROD) + inventory(g, ROD)
+    at_pile = entities(g, ROD, 40)
+    at_destination = 0
+    if SCENARIO in ('crossing', 'crossing-kill'):
+        g.command('tp @s 133.5 101 15.5')
+        time.sleep(4)
+        at_destination = entities(g, ROD, 40)
+    carried = inventory(g, ROD)
+    held = machines + at_pile + at_destination + carried
     expected = 10 if SCENARIO == 'crossing-kill' else 12
-    detail = {'machines': machines, 'entities': entities(g, ROD), 'inventory': inventory(g, ROD), 'total': held, 'expected': expected, 'ledger': led}
+    detail = {'machines': machines, 'entities': at_pile + at_destination, 'at_pile': at_pile, 'at_destination': at_destination,
+              'inventory': carried, 'total': held, 'expected': expected, 'ledger': led}
     counted(g, 'no_rod_duplicated_by_a_chunk_that_unloaded', detail, again)
 
 
@@ -347,7 +389,8 @@ def save_quit_act(g):
     eject(g)
     led = quiet(g, 4)
     g.evidence['after_act'] = {'entities': entities(g, ROD), 'ledger': led}
-    g.check('rods_ejected_before_quit', (VANILLA or led['applied'] > 0) and entities(g, ROD) == 12, g.evidence['after_act'])
+    g.evidence['after_act']['inventory'] = inventory(g, ROD)
+    g.check('rods_ejected_before_quit', entities(g, ROD) + inventory(g, ROD) == 12 and sum(pile_rods(g, 47)) == 0, g.evidence['after_act'])
     # The runner's quit is the first confirmed save after the undo.
 
 
@@ -819,14 +862,14 @@ def origin_pickup_verify(g, again=False):
 # ------------------------------------------------------------------------------------------------------------ common
 
 def counted(g, name, detail, again):
-    """The count after a reopen. For a break only recorded: the reference is the vanilla chest at the same cut. For an
-    emission never more than there was; the files and the control are the runner's to compare. Else exactly `expected`."""
+    """The count after a reopen. For a break and a transfer only recorded: the reference is the vanilla control at the
+    same cut. For an emission too: the runner compares it with the files and the control (a chunk the action unloaded
+    holds what it held then, in both worlds). Else exactly `expected`."""
     g.evidence['counted' + ('_again' if again else '')] = detail
-    if SCENARIO in BROKEN:
+    if SCENARIO in BROKEN or SCENARIO in TRANSFERS:
         detail.pop('expected', None)
         return
     if SCENARIO in EMITTING:
-        g.check(name.replace('lost_or_', '').replace('exactly_once', 'never_twice'), detail['total'] <= detail['expected'], detail)
         return
     g.check(name, detail['total'] == detail['expected'], detail)
 

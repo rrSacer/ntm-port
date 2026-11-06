@@ -56,20 +56,30 @@ def dropper(g, p, item, n, facing='north'):
 
 
 def fire(g, p, times):
-    """The dropper at `p` fires `times` shots, one per rising edge of a redstone block above it."""
-    for _ in range(times):
+    """The dropper at `p` fires `times` shots, one per rising edge of a redstone block above it (pulses until it has fired
+    them all: a slow tick can swallow an edge)."""
+    start = held(g, p, '')
+    for _ in range(times * 3):
+        if start - held(g, p, '') >= times:
+            break
         g.command('setblock %d %d %d minecraft:redstone_block' % (p[0], p[1] + 1, p[2]))
-        time.sleep(.35)
+        time.sleep(.6)
         g.command('setblock %d %d %d minecraft:air' % (p[0], p[1] + 1, p[2]))
-        time.sleep(.35)
+        time.sleep(.6)
 
 
-def held_by_dropper(g, p, item):
-    """What the dropper at `p` holds of `item` (0 when none stands there)."""
-    if not block(g, p).startswith('minecraft:dropper'):
+def held(g, p, item):
+    """What the vanilla container (dropper, hopper, chest) at `p` holds of `item` (any item when ''; 0 when none stands
+    there)."""
+    if not block(g, p).startswith(('minecraft:dropper', 'minecraft:hopper', 'minecraft:chest')):
         return 0
     text = ' '.join(g.command('data get block %d %d %d Items' % p).get('chat', []))
-    return sum(int(n) for n in re.findall(r'(?:count|Count): ?(\d+)', text)) if item in text else 0
+    if item and item not in text:
+        return 0
+    return sum(int(n) for n in re.findall(r'(?:count|Count): ?(\d+)', text))
+
+
+held_by_dropper = held
 
 
 def rods_in_machines(g):

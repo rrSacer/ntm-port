@@ -38,8 +38,9 @@ BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-mer
 WRITES_IN_ACT = ('crossing', 'crossing-kill', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish',
                  'origin-kill', 'merge-stale', 'origin-away', 'pickup-merge')
 # scenario -> (items counted, what the mod's world holds, what the control's holds)
-EMITTING = {'coupled-ea': (('ntm:pile_rod',), 6, 1), 'coupled-eb': (('ntm:pile_rod',), 6, 1),
-            'crossing': (('ntm:pile_rod',), 12, 12), 'crossing-kill': (('ntm:pile_rod',), 10, 10),
+# The transfers between two chunks, with what both worlds hold: counted equal to the control, as a break is.
+TRANSFERS = {'coupled-a': 1, 'coupled-b': 1, 'coupled-ea': 6, 'coupled-eb': 6}
+EMITTING = {'crossing': (('ntm:pile_rod',), 12, 12), 'crossing-kill': (('ntm:pile_rod',), 10, 10),
             'save-quit': (('ntm:pile_rod',), 12, 12), 'mining': (('minecraft:diamond',), 7, 7)}
 
 
@@ -196,13 +197,7 @@ def play(args, base, scratch, env, scenario, point, control=False):
             (folder / 'control.sock').unlink(missing_ok=True)
         result['disk_before_reopen'] = saved_coupled(folder, scenario) or stale_disk(folder, scenario)
         result['disk'] = crash_proof.disk_count.count(folder, items_of(scenario))
-        if scenario in ('coupled-ea', 'coupled-eb') and not control:
-            # The incoming rod in both records: the core's (new, the rod in a channel, kind 2) and the loader's (old).
-            states = result['disk_before_reopen'] or {}
-            machines = [m for c in states.values() for m in c]
-            in_core = sum(k == 2 for m in machines if m['role'] == 'core' for k in m['rod_kinds'])
-            in_loader = sum(i == INCOMING for m in machines if m['role'] == 'loader' for i in m['items'])
-            result['held_twice'] = min(in_core, in_loader)
+        result['written'] = crash_proof.disk_count.written(base, folder, items_of(scenario))
         if scenario.startswith('coupled') and point.startswith(('live_chunk:', 'region_record:')) and not control:
             before, after = saved_coupled(base, scenario), result['disk_before_reopen']
             changed = [c for c in ('2', '3') if before[c] != after[c]]
@@ -285,7 +280,7 @@ def main():
     report = {'ok': False, 'scenario': args.scenario, 'binary': str(args.binary),
               'binary_sha256': crash_proof.digest(args.binary), 'bundle_sha256': crash_proof.digest(args.bundle),
               'points': []}
-    controlled = args.scenario in BROKEN or args.scenario in EMITTING
+    controlled = args.scenario in BROKEN or args.scenario in EMITTING or args.scenario in TRANSFERS
     try:
         bases = {False: base}
         if controlled:
@@ -313,13 +308,19 @@ def main():
             if args.scenario in EMITTING:
                 _, expected, control_expected = EMITTING[args.scenario]
                 outcome = crash_proof.emission_verdict(outcomes[False], outcomes[True], expected, control_expected, exact)
+                if point == 'kill' and not exact:
+                    # A death outside a save after the action wrote a chunk (unloaded it): each chunk is its last
+                    # write, in both worlds, so both reopens hold what the control's hold, exactly.
+                    same = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
+                    outcome['verdict']['as_the_control'] = all(a is not None and a == b for a, b in same.values())
+                    outcome['ok'] = outcome['ok'] and outcome['verdict']['as_the_control']
             else:
                 outcome = against_control(outcomes[False], outcomes[True]) if controlled else outcomes[False]
                 if exact and controlled:
-                    # A death outside any save: both worlds are the last save, exactly (the break never happened).
-                    niter = int(os.environ.get('NTM_CRASH_NITER', '16'))
+                    # A death outside any save: both worlds are the last save, exactly (the break, the transfer never happened).
+                    base = TRANSFERS.get(args.scenario) or int(os.environ.get('NTM_CRASH_NITER', '16'))
                     last = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
-                    outcome['as_the_last_save'] = all(v == (niter, niter) for v in last.values())
+                    outcome['as_the_last_save'] = all(v == (base, base) for v in last.values())
                     outcome['ok'] = outcome['ok'] and outcome['as_the_last_save']
             report['points'].append(outcome)
             print(json.dumps(outcome), flush=True)

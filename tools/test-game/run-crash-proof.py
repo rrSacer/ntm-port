@@ -136,10 +136,8 @@ TOTAL = 12
 
 
 def emission_verdict(outcome, control, expected, control_expected, exact=False):
-    """An emission against the files and the vanilla control: both reopens count what the files held before them (less
-    only the items the files hold twice, a transfer between two chunks of which one record reached the disk, which the
-    world's journal of survivors settles: `held_twice`), nothing is held twice, and no more is lost than the control
-    loses at the same cut."""
+    """An emission against the files and the vanilla control: both reopens count what the files held before them, nothing
+    is held more often than in the control, and no more is lost than the control loses at the same cut."""
     total = lambda o, r: (o.get(r) or {}).get('total')
     first, again, disk = total(outcome, 'first_reopen'), total(outcome, 'second_reopen'), (outcome.get('disk') or {}).get('total')
     lost, control_lost = None, None
@@ -147,10 +145,12 @@ def emission_verdict(outcome, control, expected, control_expected, exact=False):
         lost, control_lost = expected - first, control_expected - total(control, 'first_reopen')
     verdict = {'disk': disk, 'first': first, 'second': again, 'expected': expected, 'lost': lost, 'control_lost': control_lost,
                'control_disk': (control.get('disk') or {}).get('total')}
-    verdict['held_twice'] = outcome.get('held_twice', 0)
-    verdict['as_the_files'] = first is not None and disk is not None and first == disk - verdict['held_twice'] and again == first
-    verdict['no_duplicate'] = first is not None and first <= expected
+    verdict['as_the_files'] = first is not None and disk is not None and first == disk and again == first
+    control_first = total(control, 'first_reopen')
+    verdict['no_duplicate'] = first is not None and first <= max(expected, control_first or 0)
     verdict['no_worse_than_vanilla'] = lost is not None and lost <= control_lost
+    # The chunks each world wrote before its cut: the same cut writes the same chunks in both.
+    verdict['same_cut'] = outcome.get('written') is not None and outcome.get('written') == control.get('written')
     ok = outcome['ok'] and control['ok'] and verdict['as_the_files'] and verdict['no_duplicate'] and verdict['no_worse_than_vanilla']
     if exact:
         # A death outside any save: both worlds are the last save, exactly.
@@ -194,6 +194,7 @@ def play(args, base, scratch, env, point, control=False, items=(ROD,)):
                 raise AssertionError('client exited without reaching ' + point)
             (folder / 'control.sock').unlink(missing_ok=True)
         result['disk'] = disk_count.count(folder, items)
+        result['written'] = disk_count.written(base, folder, items)
         world.launch()
         verified = world.script('verify', check=False)
         result['first_reopen'] = evidence(folder, 'verify').get('counted')

@@ -62,8 +62,8 @@ def parse(data):
     return _nbt(data, 3 + n, 10)[0]
 
 
-def records(path):
-    """Every chunk record of a region file, parsed."""
+def raw_records(path):
+    """Every chunk record of a region file, decompressed, by its index in the region."""
     data = path.read_bytes()
     for i in range(1024):
         offset = int.from_bytes(data[i * 4:i * 4 + 3], 'big') * 4096
@@ -77,7 +77,49 @@ def records(path):
             raw = gzip.decompress(raw)
         elif method != 3:
             continue
+        yield i, raw
+
+
+def records(path):
+    """Every chunk record of a region file, parsed."""
+    for _, raw in raw_records(path):
         yield parse(raw)
+
+
+def _held(folder, chunk, prefixes):
+    if folder == 'entities':
+        return sum(_stack(e.get('Item'), prefixes) for e in chunk.get('Entities', []) or [] if e.get('id') == 'minecraft:item')
+    total = 0
+    for be in chunk.get('block_entities', []) or []:
+        items = sum(_stack(s, prefixes) for s in be.get('Items', []) or [])
+        model = _model(be['ntm'], prefixes) if isinstance(be.get('ntm'), str) else 0
+        total += max(model, items)
+    return total
+
+
+def written(before, after, prefixes):
+    """The chunks holding the counted items (before or after) whose record differs between two copies of the world, per
+    folder (`region`, `entities`), with what they held before and after: what the play wrote of them, so two worlds cut
+    at the same point can be told to have written the same of their items or not."""
+    prefixes = tuple(prefixes)
+    out = {}
+    for folder in ('region', 'entities'):
+        chunks = {}
+        for side, root in (('before', before), ('after', after)):
+            dim = Path(root) / 'saves' / 'CrashTest' / 'dimensions' / 'minecraft' / 'overworld' / folder
+            for path in sorted(dim.glob('r.*.mca')):
+                rx, rz = (int(v) for v in path.name.split('.')[1:3])
+                for i, raw in raw_records(path):
+                    chunks.setdefault((rx * 32 + i % 32, rz * 32 + i // 32), {})[side] = raw
+        rows = []
+        for (x, z), sides in sorted(chunks.items()):
+            if sides.get('before') == sides.get('after'):
+                continue
+            held = [_held(folder, parse(sides[s]), prefixes) if s in sides else 0 for s in ('before', 'after')]
+            if any(held):
+                rows.append([x, z, *held])
+        out[folder] = rows
+    return out
 
 
 def _stack(s, prefixes):
