@@ -17,6 +17,9 @@
 //! * (D) no atom is held more often than vanilla's world holds it.
 //!
 //! There are no exceptions: a loss or a copy vanilla also has is vanilla's in the very same play, and not one otherwise.
+//!
+//! The check is not empty: a mod that kept what an effect owes in its storage instead of the machine's record
+//! (`InStorage`, a design kept here only to be caught) is caught within a few operations.
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 type Atom = u8;
@@ -41,6 +44,8 @@ enum Policy {
     Vanilla,
     /// The mod: its machine's effects, what an effect owes in the machine's record, its storage written at each save.
     Committed,
+    /// A wrong mod, to show the check finds it: what an effect owes is kept in its storage, written at each save.
+    InStorage,
 }
 
 const A: usize = 0;
@@ -87,10 +92,12 @@ struct Queued {
 }
 
 /// The mod's storage: what its server keeps outside the blocks. It holds no item (the storage of every suite's world
-/// holds none); the count of emissions stands for it, a save ahead of the regions or behind them.
+/// holds none); the count of emissions stands for it, a save ahead of the regions or behind them. Only `InStorage`'s
+/// holds what an effect owes.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Default)]
 struct Storage {
     emissions: u8,
+    owed: Vec<(usize, Vec<Unit>)>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
@@ -203,16 +210,23 @@ impl World {
         r.items.retain(|u| u.0 > 1);
         if self.loaded[into] {
             self.ents.push(Ent { id: (u16::from(generation), 0, 0), chunk: into, units });
+        } else if self.policy == Policy::InStorage {
+            self.storage.owed.push((into, units));
         } else {
             r.owed.push((into, units));
         }
     }
     /// What waits in A's record for a chunk that is loaded now, put out.
     fn pay(&mut self) {
-        let Some(r) = self.records[A].as_mut().filter(|_| self.loaded[A]) else { return };
         let loaded = self.loaded;
-        let (due, kept): (Vec<_>, Vec<_>) = std::mem::take(&mut r.owed).into_iter().partition(|(c, _)| loaded[*c]);
-        r.owed = kept;
+        let owed = if self.policy == Policy::InStorage {
+            &mut self.storage.owed
+        } else {
+            let Some(r) = self.records[A].as_mut().filter(|_| loaded[A]) else { return };
+            &mut r.owed
+        };
+        let (due, kept): (Vec<_>, Vec<_>) = std::mem::take(owed).into_iter().partition(|(c, _)| loaded[*c]);
+        *owed = kept;
         for (c, units) in due {
             self.join(Ent { id: (u16::from(units[0].1), 0, 0), chunk: c, units });
         }
@@ -292,7 +306,7 @@ impl World {
             }
         }
         self.disk.player = self.player.clone();
-        if self.policy == Policy::Committed {
+        if self.policy != Policy::Vanilla {
             self.disk.storage = self.storage.clone();
         }
     }
@@ -326,6 +340,7 @@ impl World {
             out.extend(r.items);
             out.extend(r.owed.into_iter().flat_map(|(_, u)| u));
         }
+        out.extend(self.storage.owed.iter().flat_map(|(_, u)| u.iter().copied()));
         out
     }
     fn copies(&self) -> BTreeMap<Atom, usize> {
@@ -519,7 +534,7 @@ fn fingerprint(w: &World) -> u128 {
 
 /// Every sequence of `depth` operations: the first violation, else how many complete sequences were covered. States
 /// already explored with as many operations left are not explored again: the sequences through them are counted.
-fn explore(depth: usize) -> (Result<u128, (Vec<Op>, String)>, Search) {
+fn explore(policy: Policy, depth: usize) -> (Result<u128, (Vec<Op>, String)>, Search) {
     fn go(w: &World, left: usize, path: &mut Vec<Op>, s: &mut Search) -> Result<u128, (Vec<Op>, String)> {
         s.states += 1;
         let key = (fingerprint(w), left);
@@ -544,7 +559,7 @@ fn explore(depth: usize) -> (Result<u128, (Vec<Op>, String)>, Search) {
         Ok(n)
     }
     let mut s = Search { seen: HashMap::new(), states: 0 };
-    let found = go(&initial(Policy::Committed), depth, &mut Vec::new(), &mut s);
+    let found = go(&initial(policy), depth, &mut Vec::new(), &mut s);
     (found, s)
 }
 
@@ -555,7 +570,7 @@ fn depth(default: usize) -> usize {
 #[test]
 fn the_mods_world_saved_with_its_storage_holds_what_vanillas_holds() {
     let n = depth(9);
-    let (found, s) = explore(n);
+    let (found, s) = explore(Policy::Committed, n);
     match found {
         Ok(sequences) => println!("committed: depth {n}: {} states visited, {} distinct, {sequences} complete sequences", s.states, s.seen.len()),
         Err((path, why)) => panic!("{why}\n  {path:?}"),
@@ -605,4 +620,14 @@ fn a_death_outside_a_save_brings_back_the_last_save_in_both_worlds() {
     let vanilla = w.shadow.as_ref().unwrap();
     assert_eq!(w.copies(), vanilla.copies());
     assert_eq!(w.records[A].as_ref().unwrap().items, (0..ATOMS).map(|a| (a, 0)).collect::<Vec<_>>(), "the machine holds its stock again");
+}
+
+#[test]
+fn a_mod_that_keeps_what_it_owes_in_its_storage_is_caught() {
+    // Its storage is written at the save's instant, the machine's record later by the writer: a death between the two
+    // finds the owed shot in the storage and the stock it was taken from in the record.
+    let (found, s) = explore(Policy::InStorage, 6);
+    let (path, why) = found.expect_err("a storage that holds items must be caught");
+    println!("in storage: caught after {} states: {why}\n  {path:?}", s.states);
+    assert!(why.starts_with("duplicate") || why.starts_with("lost"), "{why}");
 }
