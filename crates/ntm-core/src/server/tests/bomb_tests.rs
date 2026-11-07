@@ -202,22 +202,52 @@ fn breaking_a_bomb_leaves_its_parts_to_its_slots() {
     assert!(bomb_data(&mut g, at).is_none());
 }
 
-#[test]
-fn an_explosion_resumes_after_a_restart() {
+/// The world is closed while a bomb's crater is dug, then opened again.
+fn restart_during(blast: &str, until: impl Fn(&Game) -> bool) -> (Rc<RefCell<World>>, Game) {
     let w = Rc::new(RefCell::new(World::new()));
     let mut g = Game::new(w.clone());
     g.run(10);
     floor(&mut g, 24);
     let who = player();
     g.server.bomb_command(&mut g.sh, Some(&who), "config mundo raiomax 14").unwrap();
-    g.server.bomb_command(&mut g.sh, Some(&who), "teste 14").unwrap();
-    g.run(2);
-    assert!(!g.server.blasts.nukes.is_empty());
+    g.server.bomb_command(&mut g.sh, Some(&who), &format!("teste 14{blast}")).unwrap();
+    let mut reached = false;
+    for _ in 0..400 {
+        g.run(1);
+        if until(&g) {
+            reached = true;
+            break;
+        }
+    }
+    assert!(reached, "the explosion never got there");
     assert!(w.borrow().kv.map.keys().any(|k| k.starts_with("nx.")), "sem diário");
     drop(g);
-    // Back in the same world: the explosion (in the fallout already) comes
-    // back from the storage and finishes.
-    let mut g = Game::new(w.clone());
+    let g = Game::new(w.clone());
+    (w, g)
+}
+fn in_crater(g: &Game) -> bool {
+    g.server.blasts.nukes.active().any(|p| !matches!(p.phase, crate::explosion::Phase::Fallout))
+}
+fn in_fallout(g: &Game) -> bool {
+    g.server.blasts.nukes.active().any(|p| matches!(p.phase, crate::explosion::Phase::Fallout))
+}
+
+/// HBM 1.7.10: `EntityNukeExplosionMK5.writeEntityToNBT` keeps `ticksExisted` alone; read back, its `strength` is 0 and
+/// the entity dies on its first update. A nuke's crater stops with the world, its damage with it: the quirk is followed.
+#[test]
+fn a_nukes_crater_stops_with_the_world_as_the_mk5_entity_does() {
+    let (w, mut g) = restart_during("", in_crater);
+    for _ in 0..60 {
+        g.run(1);
+        assert!(g.server.blasts.nukes.is_empty(), "the crater does not come back");
+    }
+    assert!(w.borrow().kv.map.keys().all(|k| !k.starts_with("nx.")), "its plan is gone");
+}
+
+/// `EntityFalloutRain` writes its `scale`: a nuke's fallout, once begun, comes back and finishes.
+#[test]
+fn a_nukes_fallout_comes_back_after_a_restart() {
+    let (w, mut g) = restart_during("", in_fallout);
     let mut resumed = false;
     for _ in 0..200 {
         g.run(1);
@@ -228,8 +258,29 @@ fn an_explosion_resumes_after_a_restart() {
     }
     assert!(resumed, "não retomou");
     until_quiet(&mut g, 3000);
-    assert!((60..70).filter(|&y| w.borrow().get(OW, [0, y, 0]) == "minecraft:air").count() >= 3);
     assert!(w.borrow().kv.map.keys().all(|k| !k.starts_with("nx.")));
+}
+
+/// `EntityBalefire` writes `age`, `destructionRange`, `speed` and its explosion (`exp_*`), and deals damage every update
+/// until the crater is done: both come back with the world.
+#[test]
+fn a_balefire_comes_back_with_its_damage_after_a_restart() {
+    let (w, mut g) = restart_during(" balefire", in_crater);
+    assert!(!g.server.ready.world.bombs.balefires.is_empty() && !g.server.ready.world.bombs.pulses.is_empty(), "kept with the world");
+    let mut p = player();
+    p.creative = false;
+    p.pos = [3.5, 70.0, 0.5];
+    g.server.set_players(vec![p]);
+    w.borrow_mut().hurts.clear();
+    let mut resumed = false;
+    for _ in 0..40 {
+        g.run(1);
+        resumed |= !g.server.blasts.nukes.is_empty();
+    }
+    assert!(resumed, "the balefire's crater comes back");
+    assert!(w.borrow().hurts.iter().any(|h| h.2 == "minecraft:explosion"), "and its damage: {:?}", w.borrow().hurts);
+    until_quiet(&mut g, 3000);
+    assert!(g.server.ready.world.bombs.balefires.is_empty(), "done, it is forgotten");
 }
 
 #[test]

@@ -1820,6 +1820,27 @@ impl Explosions {
         out
     }
 
+    /// Descarta as retomadas ainda na cratera (fase `crater`; o fallout, `fallout` ou `linger`, é de uma
+    /// `EntityFalloutRain`, que guarda seu `scale`) cujo id `keep` não aceita: o que uma entidade que não guarda seu
+    /// estado deixa (`EntityNukeExplosionMK5`). Devolve os ids descartados.
+    pub fn drop_craters(&mut self, store: &mut dyn Store, keep: impl Fn(&str) -> bool) -> Vec<String> {
+        let mut out = Vec::new();
+        let mut kept = VecDeque::new();
+        for start in std::mem::take(&mut self.starts) {
+            if let Start::Resume(id) = &start
+                && !keep(id)
+                && load(store, &persist::prefix(id)).is_ok_and(|l| l.state.header.phase == "crater")
+            {
+                purge(store, &persist::prefix(id), id, MAX_DATA_KEYS);
+                out.push(id.clone());
+                continue;
+            }
+            kept.push_back(start);
+        }
+        self.starts = kept;
+        out
+    }
+
     /// O que todas ocupam no storage (bytes, chaves), com o índice.
     pub fn stored(&self) -> (u64, usize) {
         let mut b = 0;

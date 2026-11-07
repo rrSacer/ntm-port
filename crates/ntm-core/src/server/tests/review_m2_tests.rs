@@ -61,11 +61,12 @@ fn p1_2_charges_ending_together_go_off_within_the_tick_budget() {
     }
 }
 
-/// P1-6: the server stops right after the tick a nuke went off. The
-/// detonation is in the world's save with the bomb's removal, so it still
-/// happens after the restart.
+/// P1-6 (M2 review), revised to follow HBM 1.7.10: the server stops right after the tick a nuke went off. The bomb is
+/// spent and its explosion is in the world's save; read back, `EntityNukeExplosionMK5` keeps only `ticksExisted`
+/// (`writeEntityToNBT`), its `strength` is 0 and it dies on its first update: the crater does not go on after the
+/// restart, and the bomb does not come back either.
 #[test]
-fn p1_6_a_detonation_survives_a_crash_in_its_tick() {
+fn p1_6_a_nuke_set_off_before_a_restart_stops_with_it_as_the_mk5_entity_does() {
     let w = Rc::new(RefCell::new(World::new()));
     let mut g = bomb_game_on(w.clone(), 8);
     let at = [0, 70, 0];
@@ -80,11 +81,13 @@ fn p1_6_a_detonation_survives_a_crash_in_its_tick() {
         }
     }
     assert!(bomb_at(&mut g, at).is_none(), "não detonou");
+    let before = dug(&w.borrow(), at);
     drop(g);
     let mut g = Game::new(w.clone());
     g.run(30);
     until_quiet(&mut g, 3000);
-    assert!(dug(&w.borrow(), at) > 0, "a explosão se perdeu na queda");
+    assert_eq!(dug(&w.borrow(), at), before, "the crater stops with the world");
+    assert!(bomb_at(&mut g, at).is_none(), "the bomb was spent");
     assert!(w.borrow().kv.map.keys().all(|k| !k.starts_with("nx.")), "{:?}", w.borrow().kv.map.keys());
 }
 

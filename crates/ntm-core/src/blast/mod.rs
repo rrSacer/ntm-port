@@ -69,6 +69,15 @@ pub struct BombWorld {
     /// They go off a few per tick, within the tick's fuel.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub queue: Vec<Queued>,
+    /// The balefires whose crater is being dug: they come back with the world, as `EntityBalefire` does (it writes
+    /// `age`, `destructionRange`, `speed` and its explosion's `exp_*`), and their damage with them. A nuke's
+    /// (`EntityNukeExplosionMK5`) does not: its `writeEntityToNBT` keeps `ticksExisted` alone, so the entity read back
+    /// has `strength` 0 and dies on its first update, crater and damage stopped; the HBM 1.7.10 quirk is followed.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub balefires: Vec<String>,
+    /// The balefires' damage while their craters are dug, on the world's clock.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub pulses: Vec<Pulse>,
 }
 
 /// A bomb set off, waiting its turn (`BombWorld.queue`).
@@ -108,8 +117,9 @@ impl Queued {
 
 /// Blast damage a nuke deals while its crater is dug (`ExplosionNukeGeneric
 /// .dealDamage`, every tick of `EntityNukeExplosionMK5` in the NTM; here
-/// every [`PULSE_EVERY`] ticks for [`PULSE_TICKS`]).
-#[derive(Clone, Debug)]
+/// every [`PULSE_EVERY`] ticks for [`PULSE_TICKS`]). `next` and `until` are on
+/// the world's clock (`WorldState.ticks`), kept with the world.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Pulse {
     pub dim: String,
     pub center: [f64; 3],
@@ -133,6 +143,7 @@ pub struct Runtime {
     /// The `lit` each bomb showed last (redstone sets bombs off on its
     /// rising edge, as `onNeighborBlockChange` does).
     pub lit: BTreeMap<(String, Pos), bool>,
+    /// The nukes' damage: not kept, as `EntityNukeExplosionMK5` keeps none (`BombWorld.balefires`).
     pub pulses: Vec<Pulse>,
     /// The global settings, read once from the folder.
     pub global: Option<Config>,

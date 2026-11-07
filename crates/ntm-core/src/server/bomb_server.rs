@@ -135,6 +135,16 @@ impl Server {
             for r in resumed {
                 host.log(&format!("explosion resumed: {r:?}"));
             }
+            // A nuke's crater does not come back (`BombWorld.balefires`); its fallout, once begun, does
+            // (`EntityFalloutRain` writes its `scale`).
+            let balefires = self.ready().map(|r| r.world.bombs.balefires.clone()).unwrap_or_default();
+            let dropped = {
+                let engine = Engine { host: RefCell::new(&mut *host), players: &[] };
+                self.blasts.nukes.drop_craters(&mut &engine, |id| balefires.iter().any(|b| b == id))
+            };
+            for id in dropped {
+                host.log(&format!("{id}: a nuke's crater stops with the world, as EntityNukeExplosionMK5 does"));
+            }
         }
         for p in &self.players {
             self.blasts.entered.entry(p.id.clone()).or_insert(tick);
@@ -159,7 +169,12 @@ impl Server {
         }
         for (id, e) in rec.0 {
             match e {
-                crate::explosion::Event::CraterDone { tick } => host.log(&format!("{id}: crater done after {tick} ticks")),
+                crate::explosion::Event::CraterDone { tick } => {
+                    host.log(&format!("{id}: crater done after {tick} ticks"));
+                    if let Some(r) = self.ready() && r.world.bombs.balefires.contains(&id) {
+                        r.world.bombs.balefires.retain(|b| *b != id);
+                    }
+                }
                 crate::explosion::Event::FalloutStart { tick } => host.log(&format!("{id}: fallout starts after {tick} ticks")),
                 crate::explosion::Event::ResumeFailed { reason } => host.log(&format!("{id}: not resumed ({reason}); its keys were removed")),
                 crate::explosion::Event::PersistFailed { reason } => {
@@ -274,7 +289,12 @@ impl Server {
             if q.started {
                 if !self.blasts.nukes.durable(&id) {
                     if !self.blasts.nukes.contains(&id) {
-                        // Lost with a restart before it was in the folder.
+                        // Lost with a restart before it was in the folder. A balefire's entity is kept with the world
+                        // and goes on; a nuke's dies read back (`BombWorld.balefires`), its crater with it.
+                        if matches!(q.blast, Blast::Nuke { .. }) {
+                            host.log(&format!("{id}: a nuke's crater stops with the world, as EntityNukeExplosionMK5 does"));
+                            continue;
+                        }
                         self.hand_to_engine(host, &q, &id);
                     }
                     keep.push(q);
@@ -360,8 +380,14 @@ impl Server {
             Blast::Nuke { radius, .. } | Blast::Balefire { radius } => {
                 self.hand_to_engine(host, q, id);
                 let fallout = matches!(blast, Blast::Nuke { fallout: true, .. });
-                if cfg.damage {
-                    self.blasts.pulses.push(Pulse { dim: dim.clone(), center: c, reach: 2.0 * f64::from(radius), next: tick, until: tick + PULSE_TICKS });
+                let pulse = Pulse { dim: dim.clone(), center: c, reach: 2.0 * f64::from(radius), next: now, until: now + PULSE_TICKS };
+                if let (Blast::Balefire { .. }, Some(r)) = (blast, self.ready()) {
+                    r.world.bombs.balefires.push(id.to_string());
+                    if cfg.damage {
+                        r.world.bombs.pulses.push(pulse);
+                    }
+                } else if cfg.damage {
+                    self.blasts.pulses.push(pulse);
                 }
                 let radioactive = fallout || matches!(blast, Blast::Balefire { .. });
                 if cfg.radiation && radioactive {
@@ -409,13 +435,19 @@ impl Server {
 
     /// Blast damage while the craters are dug.
     fn bomb_pulses(&mut self, host: &mut impl ServerHost) {
-        let tick = self.tick;
-        self.blasts.pulses.retain(|p| tick < p.until);
-        let due: Vec<Pulse> = self.blasts.pulses.iter().filter(|p| tick >= p.next).cloned().collect();
-        for p in &mut self.blasts.pulses {
-            if tick >= p.next {
+        let tick = self.ready.world.ticks;
+        let step = |pulses: &mut Vec<Pulse>| {
+            pulses.retain(|p| tick < p.until);
+            let due: Vec<Pulse> = pulses.iter().filter(|p| tick >= p.next).cloned().collect();
+            for p in pulses.iter_mut().filter(|p| tick >= p.next) {
                 p.next = tick + PULSE_EVERY;
             }
+            due
+        };
+        let mut due = step(&mut self.blasts.pulses);
+        // The kept ones change only when one is due or ends: no keep of the world for nothing.
+        if self.ready.world.bombs.pulses.iter().any(|p| tick >= p.next || tick >= p.until) {
+            due.extend(step(&mut self.ready.world.bombs.pulses));
         }
         for p in due {
             for pl in self.players.iter().filter(|x| x.dim == p.dim && !x.creative).cloned().collect::<Vec<_>>() {
@@ -662,6 +694,8 @@ impl Server {
                 self.blasts.pulses.clear();
                 if let Some(r) = self.ready() {
                     r.world.bombs.queue.clear();
+                    r.world.bombs.balefires.clear();
+                    r.world.bombs.pulses.clear();
                 }
                 Ok(format!("{} explosão(ões) cancelada(s)", ids.len()))
             }
