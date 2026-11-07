@@ -53,7 +53,12 @@ class World:
 
     def launch(self, failpoint=None):
         env = dict(self.env)
-        if failpoint and failpoint != 'none':
+        if failpoint == 'kv_committed':
+            # The cut of a save that does not wait: its storage is written, its records stay queued (the region writer
+            # holds from that save on), and the process dies right after the storage (`NTM_FAILPOINT`).
+            env['HORIZON_WRITER_HOLD'] = '1'
+            env['NTM_FAILPOINT'] = 'kv_committed'
+        elif failpoint and failpoint != 'none':
             env['HORIZON_FAILPOINT'] = failpoint
         (self.folder / 'control.sock').unlink(missing_ok=True)
         command = [str(self.args.binary), '--resources', str(self.args.resources.resolve()),
@@ -122,6 +127,24 @@ def sweep(args, base, scratch, env):
     return result
 
 
+# The deaths outside a save's own stages: no save at all (`kill`), or a save without wait whose storage reached the disk
+# and none of its records (`kv_committed`). Both bring back the last save, as vanilla does.
+KILLS = ('kill', 'kv_committed')
+
+
+def reached(world, point):
+    """The log shows the death at `point`: the failpoint, or the storage written with the writer held."""
+    text = world.log.read_text(errors='replace')
+    if point == 'kv_committed':
+        return 'NTM_FAILPOINT kv_committed' in text and 'HORIZON_WRITER_HOLD held' in text
+    return 'HORIZON_FAILPOINT' in text
+
+
+def act_extra(point):
+    """What the action is told of the cut: no save (`kill`), or a save that does not wait (`kv_committed`: the pause)."""
+    return {'kill': {'NTM_CRASH_NO_SAVE': '1'}, 'kv_committed': {'NTM_CRASH_PAUSE_SAVE': '1'}}.get(point)
+
+
 def died_in_act(world, point):
     """A region record point may be reached before the save the action asks for: the ledger writes its chunk's record
     as soon as the action changes it, and the k-th region record of the session is then that one. The process died
@@ -135,6 +158,17 @@ ROD = 'ntm:pile_rod'
 TOTAL = 12
 
 
+def item_checks(verdict, outcome, control):
+    """Item by item (R6-3): what each world holds after its first reopen, against what its base held and what the
+    control holds at the same cut; and that the storage of each world keeps nothing a chunk owes (`kv_items`)."""
+    mine, theirs = outcome.get('items_after') or {}, control.get('items_after') or {}
+    base, their_base = outcome.get('base_items') or {}, control.get('base_items') or {}
+    ids = set(mine) | set(theirs) | set(base) | set(their_base)
+    verdict['items'] = {'mine': mine, 'control': theirs, 'base': base, 'control_base': their_base}
+    verdict['no_duplicate_item'] = bool(ids) and all(mine.get(i, 0) <= max(base.get(i, 0), theirs.get(i, 0)) for i in ids)
+    verdict['no_worse_item'] = bool(ids) and all(base.get(i, 0) - mine.get(i, 0) <= their_base.get(i, 0) - theirs.get(i, 0) for i in ids)
+
+
 def emission_verdict(outcome, control, expected, control_expected, exact=False):
     """An emission against the files and the vanilla control: both reopens count what the files held before them, nothing
     is held more often than in the control, and no more is lost than the control loses at the same cut. The same cut is
@@ -146,13 +180,17 @@ def emission_verdict(outcome, control, expected, control_expected, exact=False):
     verdict = {'disk': disk, 'first': first, 'second': again, 'expected': expected, 'control_expected': control_expected,
                'control_disk': (control.get('disk') or {}).get('total'), 'parts_ok': outcome['ok'] and control['ok']}
     verdict['as_the_files'] = first is not None and disk is not None and first == disk and again == first
+    # The reopen holds what the files held, item by item; neither world's storage keeps what a chunk owes.
+    verdict['as_the_files_items'] = outcome.get('items') is not None and outcome.get('items') == outcome.get('items_after')
+    verdict['storage_clean'] = all(o.get(k) == 0 for o in (outcome, control) for k in ('kv_items', 'kv_items_after'))
     control_first = total(control, 'first_reopen')
-    verdict['no_duplicate'] = first is not None and first <= max(expected, control_first or 0)
-    verdict['same_cut'] = outcome['point'] in ('none', 'kill') or (cut(outcome) is not None and cut(outcome) == cut(control))
-    compare(verdict, control_first)
+    verdict['same_cut'] = outcome['point'] in ('none', *KILLS) or (cut(outcome) is not None and cut(outcome) == cut(control))
+    compare(verdict, outcome, control)
     if exact:
-        # A death outside any save: both worlds are the last save, exactly.
-        verdict['as_the_last_save'] = first == expected and control_first == control_expected
+        # A death outside any save's records: both worlds are the last save, exactly, item by item.
+        verdict['as_the_last_save'] = (first == expected and control_first == control_expected
+                                       and outcome.get('items_after') == outcome.get('base_items')
+                                       and control.get('items_after') == control.get('base_items'))
     result = {**outcome, 'control': control, 'verdict': verdict}
     result['ok'] = judge(result)
     return result
@@ -164,17 +202,24 @@ def cut(play):
     return None if written is None else {k: sorted((x, z) for x, z, *_ in v) for k, v in written.items()}
 
 
-def compare(verdict, control_first):
-    """The loss against the control's at the same cut."""
+def compare(verdict, outcome, control):
+    """Every condition against the control at the same cut (its own, or the one `match_cuts` paired): copies, loss,
+    and item by item. The control compared is recorded (F5 of the fresh review)."""
     first = verdict['first']
+    control_first = (control.get('first_reopen') or {}).get('total')
+    verdict['compared_with'] = control.get('point')
+    verdict['control_first'] = control_first
+    verdict['no_duplicate'] = first is not None and first <= max(verdict['expected'], control_first or 0)
     verdict['lost'] = None if first is None else verdict['expected'] - first
     verdict['control_lost'] = None if control_first is None else verdict['control_expected'] - control_first
     verdict['no_worse_than_vanilla'] = None not in (verdict['lost'], verdict['control_lost']) and verdict['lost'] <= verdict['control_lost']
+    item_checks(verdict, outcome, control)
 
 
 def judge(outcome):
     v = outcome['verdict']
     return bool(v['parts_ok'] and v['as_the_files'] and v['no_duplicate'] and v['no_worse_than_vanilla']
+                and v['as_the_files_items'] and v['storage_clean'] and v['no_duplicate_item'] and v['no_worse_item']
                 and (v['same_cut'] or v.get('matched')) and v.get('as_the_last_save', True) and v.get('as_the_control', True))
 
 
@@ -186,11 +231,11 @@ def match_cuts(points):
         v = o.get('verdict')
         if not v or v['same_cut'] or o.get('written') is None:
             continue
-        twin = next((p for p in points if p is not o and p['point'] not in ('none', 'kill')
+        twin = next((p for p in points if p is not o and p['point'] not in ('none', *KILLS)
                      and cut(p.get('control') or {}) == cut(o)), None)
         v['matched'] = twin and twin['point']
         if twin:
-            compare(v, (twin['control'].get('first_reopen') or {}).get('total'))
+            compare(v, o, twin['control'])
         o['ok'] = judge(o)
 
 
@@ -203,9 +248,10 @@ def play(args, base, scratch, env, point, control=False, items=(ROD,)):
     clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-crash-*.json'))
     world = World(args, folder, env)
     result = {'point': point, 'folder': str(folder), 'ok': False, 'vanilla_control': control}
+    result['base_items'] = disk_count.items(base, items)
     try:
         world.launch(None if point == 'kill' else point)
-        acted = world.script('undo', check=False, extra={'NTM_CRASH_NO_SAVE': '1'} if point == 'kill' else None)
+        acted = world.script('undo', check=False, extra=act_extra(point))
         result['after_undo'] = evidence(folder, 'undo').get('after_undo')
         result['died_in_act'] = bool(acted) and died_in_act(world, point)
         if acted and not result['died_in_act']:
@@ -221,7 +267,7 @@ def play(args, base, scratch, env, point, control=False, items=(ROD,)):
         else:
             code = world.died()
             result['exit'] = code
-            result['killed_at_the_point'] = 'HORIZON_FAILPOINT' in world.log.read_text(errors='replace')
+            result['killed_at_the_point'] = reached(world, point)
             if code is None:
                 world.client.kill(); world.client.wait()
                 raise AssertionError('the game was not killed at ' + point)
@@ -229,6 +275,8 @@ def play(args, base, scratch, env, point, control=False, items=(ROD,)):
                 raise AssertionError('client exited without reaching ' + point)
             (folder / 'control.sock').unlink(missing_ok=True)
         result['disk'] = disk_count.count(folder, items)
+        result['items'] = disk_count.items(folder, items)
+        result['kv_items'] = disk_count.kv_items(folder)
         result['written'] = disk_count.written(base, folder, items)
         world.launch()
         verified = world.script('verify', check=False)
@@ -236,6 +284,9 @@ def play(args, base, scratch, env, point, control=False, items=(ROD,)):
         if verified:
             raise AssertionError('first reopen failed; see counted evidence')
         world.quit()
+        # What the world holds once reopened and saved again, item by item, and what its storage keeps.
+        result['items_after'] = disk_count.items(folder, items)
+        result['kv_items_after'] = disk_count.kv_items(folder)
         world.launch()
         verified = world.script('again', check=False)
         result['second_reopen'] = evidence(folder, 'again').get('counted_again')
@@ -301,13 +352,13 @@ def main():
             world.script('prepare')
             world.quit()
         # The pile's two chunks, each first: the pairs of a cut by record index that wrote one in one world only.
-        for point in args.points or [*POINTS, 'live_chunk:2,0', 'live_chunk:3,0', 'sweep']:
+        for point in args.points or [*POINTS, 'kv_committed', 'live_chunk:2,0', 'live_chunk:3,0', 'sweep']:
             # Each copy is played by the same binary; HORIZON_HOME is inside the copy's own folder.
             if point == 'sweep':
                 outcome = sweep(args, base, scratch, homed(scratch / 'point-sweep', False))
             else:
                 played = {c: play(args, where, scratch, homed(point_folder(scratch, point, c), c), point, c) for c, where in bases.items()}
-                outcome = emission_verdict(played[False], played[True], TOTAL, TOTAL, exact=point == 'kill')
+                outcome = emission_verdict(played[False], played[True], TOTAL, TOTAL, exact=point in KILLS)
             report['points'].append(outcome)
             if outcome['ok']:
                 # Each copy of the world is large: a point that passed leaves only its numbers.

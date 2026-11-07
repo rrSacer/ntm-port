@@ -35,6 +35,8 @@ DROPPERS = [((45, 102, 12), 'west'), ((47, 102, 12), 'east')]
 ROD = 'ntm:pile_rod__ra226be'
 VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
+# `kv_committed`: the undo saves by pausing the game, a save that does not wait; the process dies after its storage.
+PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
 PILE = 10
 COMMON = 2  # plain rods lying where the pile's rods fall, for the merge cases
 TOTAL = PILE + COMMON
@@ -214,6 +216,21 @@ def undo(g):
     g.evidence['after_undo'] = after
     g.save()
     if NO_SAVE:
+        return
+    if PAUSE_SAVE:
+        g.evidence['pause_save'] = True
+        g.save()
+        try:
+            g.ctl('pause')
+        except Exception:
+            return
+        deadline = time.monotonic() + 90
+        while time.monotonic() < deadline:
+            try:
+                g.ctl('status')
+            except Exception:
+                return
+            time.sleep(.5)
         return
     try:
         g.ctl('save')

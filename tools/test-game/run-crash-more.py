@@ -36,39 +36,45 @@ BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-mer
 # The scenarios whose action writes files itself (a chunk it unloads): after a death outside a save they hold what those
 # files hold, not the last save.
 WRITES_IN_ACT = ('crossing', 'crossing-kill', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish',
-                 'origin-kill', 'merge-stale', 'origin-away', 'pickup-merge')
+                 'origin-kill', 'merge-stale', 'origin-away', 'pickup-merge',
+                 # The loader's chunk leaves before the break, its record and entities written.
+                 'coupled-break')
 # scenario -> (items counted, what the mod's world holds, what the control's holds)
 # The transfers between two chunks, with what both worlds hold: counted equal to the control, as a break is.
 TRANSFERS = {'coupled-a': 1, 'coupled-b': 1, 'coupled-ea': 6, 'coupled-eb': 6}
 EMITTING = {'crossing': (('ntm:pile_rod',), 12, 12), 'crossing-kill': (('ntm:pile_rod',), 10, 10),
-            'save-quit': (('ntm:pile_rod',), 12, 12), 'mining': (('minecraft:diamond',), 7, 7)}
+            'save-quit': (('ntm:pile_rod',), 12, 12), 'mining': (('minecraft:diamond',), 7, 7),
+            # R6-2: the transfer of a Zr into a full channel of five Ra-226Be, then the core broken while a member's
+            # chunk is out: its rods go out (owed in the core's record while their chunk is out).
+            'coupled-break': (('ntm:pile_rod',), 6, 6)}
 
 
 def items_of(scenario):
     return EMITTING[scenario][0] if scenario in EMITTING else ('ntm:niter',) if scenario in BROKEN else ('ntm:pile_rod',)
 
 DEFAULT_POINTS = {
-    'vanilla-break': ['kill', 'chunks_written', 'entities_written'],
-    'coupled-a': ['none', 'kill', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
-    'coupled-b': ['none', 'kill', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
-    'coupled-ea': ['none', 'kill', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
-    'coupled-eb': ['none', 'kill', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
-    'crossing': ['none', 'kill'],
-    'origin-pickup': ['none', 'kill'],
-    'origin-pickup-away': ['none', 'kill'],
-    'origin-merge': ['none', 'kill'],
-    'origin-vanish': ['none', 'kill'],
-    'origin-kill': ['kill'],
-    'crossing-kill': ['kill'],
-    'merge-stale': ['kill'],
-    'origin-away': ['kill'],
-    'pickup-merge': ['kill'],
-    'save-quit': ['none', 'kill'],
+    'vanilla-break': ['kill', 'kv_committed', 'chunks_written', 'entities_written'],
+    'coupled-a': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'coupled-b': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'coupled-ea': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'coupled-eb': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:2,0', 'live_chunk:3,0'],
+    'crossing': ['none', 'kill', 'kv_committed'],
+    'origin-pickup': ['none', 'kill', 'kv_committed'],
+    'origin-pickup-away': ['none', 'kill', 'kv_committed'],
+    'origin-merge': ['none', 'kill', 'kv_committed'],
+    'origin-vanish': ['none', 'kill', 'kv_committed'],
+    'origin-kill': ['kill', 'kv_committed'],
+    'crossing-kill': ['kill', 'kv_committed'],
+    'merge-stale': ['kill', 'kv_committed'],
+    'origin-away': ['kill', 'kv_committed'],
+    'pickup-merge': ['kill', 'kv_committed'],
+    'save-quit': ['none', 'kill', 'kv_committed'],
+    'coupled-break': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written'],
     # The chest's chunk first, as the pair of a cut by record index that wrote it in one world only.
-    'mining': [*crash_proof.POINTS, 'live_chunk:1,0'],
+    'mining': [*crash_proof.POINTS, 'kv_committed', 'live_chunk:1,0'],
     # The mixer's chunk first (`live_chunk`): a cut after the first record of a batch hits another chunk in the control.
-    'break': ['none', 'kill', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
-    'replace': ['none', 'kill', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'replace': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
 }
 
 
@@ -165,10 +171,12 @@ def play(args, base, scratch, env, scenario, point, control=False):
                                                                  'native-crash-more-verify.json', 'native-crash-more-again.json'))
     world = More(args, folder, env, scenario)
     result = {'scenario': scenario, 'point': point, 'folder': str(folder), 'ok': False, 'vanilla_control': control}
+    result['base_items'] = crash_proof.disk_count.items(base, items_of(scenario))
     try:
         world.launch(None if point == 'kill' else point)
-        # `kill`: the action asks for no save, and the process dies where it left the world.
-        acted = world.script('act', check=False, extra={'NTM_CRASH_NO_SAVE': '1'} if point == 'kill' else None)
+        # `kill`: the action asks for no save, and the process dies where it left the world; `kv_committed`: its save
+        # does not wait (the pause).
+        acted = world.script('act', check=False, extra=crash_proof.act_extra(point))
         act = evidence(folder, 'act')
         result['act'] = act.get('after_act') or act.get('after_undo')
         result['while_away'] = act.get('while_away')
@@ -188,7 +196,7 @@ def play(args, base, scratch, env, scenario, point, control=False):
         else:
             code = world.died()
             result['exit'] = code
-            result['killed_at_the_point'] = 'HORIZON_FAILPOINT' in world.log.read_text(errors='replace')
+            result['killed_at_the_point'] = crash_proof.reached(world, point)
             if code is None:
                 world.client.kill()
                 world.client.wait()
@@ -198,6 +206,8 @@ def play(args, base, scratch, env, scenario, point, control=False):
             (folder / 'control.sock').unlink(missing_ok=True)
         result['disk_before_reopen'] = saved_coupled(folder, scenario) or stale_disk(folder, scenario)
         result['disk'] = crash_proof.disk_count.count(folder, items_of(scenario))
+        result['items'] = crash_proof.disk_count.items(folder, items_of(scenario))
+        result['kv_items'] = crash_proof.disk_count.kv_items(folder)
         result['written'] = crash_proof.disk_count.written(base, folder, items_of(scenario))
         if scenario.startswith('coupled') and point.startswith(('live_chunk:', 'region_record:')) and not control:
             before, after = saved_coupled(base, scenario), result['disk_before_reopen']
@@ -219,6 +229,8 @@ def play(args, base, scratch, env, scenario, point, control=False):
         if verified:
             raise AssertionError('first reopen failed; see counted evidence')
         world.quit()
+        result['items_after'] = crash_proof.disk_count.items(folder, items_of(scenario))
+        result['kv_items_after'] = crash_proof.disk_count.kv_items(folder)
         world.launch()
         verified = world.script('again', check=False)
         result['second_reopen'] = evidence(folder, 'again').get('counted_again')
@@ -239,10 +251,17 @@ def total(outcome, reopen):
 
 
 def against_control(outcome, control):
-    """The mod's break counts what the chest counts at the same cut, at both reopens."""
+    """The mod's break counts what the chest counts at the same cut, at both reopens, item by item (R6-3); the reopen
+    holds what the files held; neither world's storage keeps what a chunk owes."""
     same = {r: (total(outcome, r), total(control, r)) for r in ('first_reopen', 'second_reopen')}
     equal = all(a is not None and a == b for a, b in same.values())
-    return {**outcome, 'control': control, 'against_control': same, 'ok': outcome['ok'] and control['ok'] and equal}
+    checks = {
+        'same_items': outcome.get('items_after') is not None and outcome.get('items_after') == control.get('items_after'),
+        'as_the_files_items': all(o.get('items') is not None and o.get('items') == o.get('items_after') for o in (outcome, control)),
+        'storage_clean': all(o.get(k) == 0 for o in (outcome, control) for k in ('kv_items', 'kv_items_after')),
+    }
+    ok = outcome['ok'] and control['ok'] and equal and all(checks.values())
+    return {**outcome, 'control': control, 'against_control': same, 'item_checks': checks, 'ok': ok}
 
 
 def main():
@@ -305,15 +324,16 @@ def main():
                                  ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
                     copy_env[key] = str(folder / sub)
                 outcomes[control] = play(args, where, scratch, copy_env, args.scenario, point, control)
-            exact = point == 'kill' and args.scenario not in WRITES_IN_ACT
+            exact = point in crash_proof.KILLS and args.scenario not in WRITES_IN_ACT
             if args.scenario in EMITTING:
                 _, expected, control_expected = EMITTING[args.scenario]
                 outcome = crash_proof.emission_verdict(outcomes[False], outcomes[True], expected, control_expected, exact)
-                if point == 'kill' and not exact:
+                if point in crash_proof.KILLS and not exact:
                     # A death outside a save after the action wrote a chunk (unloaded it): each chunk is its last
-                    # write, in both worlds, so both reopens hold what the control's hold, exactly.
+                    # write, in both worlds, so both reopens hold what the control's hold, exactly, item by item.
                     same = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
-                    outcome['verdict']['as_the_control'] = all(a is not None and a == b for a, b in same.values())
+                    outcome['verdict']['as_the_control'] = (all(a is not None and a == b for a, b in same.values())
+                                                            and outcomes[False].get('items_after') == outcomes[True].get('items_after'))
                     outcome['ok'] = crash_proof.judge(outcome)
             else:
                 outcome = against_control(outcomes[False], outcomes[True]) if controlled else outcomes[False]
@@ -321,7 +341,8 @@ def main():
                     # A death outside any save: both worlds are the last save, exactly (the break, the transfer never happened).
                     base = TRANSFERS.get(args.scenario) or int(os.environ.get('NTM_CRASH_NITER', '16'))
                     last = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
-                    outcome['as_the_last_save'] = all(v == (base, base) for v in last.values())
+                    outcome['as_the_last_save'] = all(v == (base, base) for v in last.values()) and all(
+                        o.get('items_after') == o.get('base_items') for o in outcomes.values())
                     outcome['ok'] = outcome['ok'] and outcome['as_the_last_save']
             report['points'].append(outcome)
             print(json.dumps(outcome), flush=True)

@@ -44,13 +44,15 @@ SCENARIO = os.environ.get('NTM_CRASH_SCENARIO', 'coupled-a')
 # A chest in each mixer's place: the vanilla control of a scenario of `BROKEN`.
 VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
+# `kv_committed`: the action saves by pausing the game, a save that does not wait; the process dies after its storage.
+PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
 BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
 # the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
 TRANSFERS = ('coupled-a', 'coupled-b', 'coupled-ea', 'coupled-eb')
 # The scenarios whose items an effect of the mod drops, with the items counted.
-EMITTING = {'crossing': ('ntm:pile_rod',),
+EMITTING = {'crossing': ('ntm:pile_rod',), 'coupled-break': ('ntm:pile_rod',),
             'crossing-kill': ('ntm:pile_rod',), 'save-quit': ('ntm:pile_rod',), 'mining': ('minecraft:diamond',)}
 # The scenarios built on an entity file that lags its stacks.
 STALE = ('merge-stale', 'origin-away')
@@ -59,7 +61,7 @@ INCOMING = 'ntm:pile_rod__zr'
 
 # scenario -> (core x, which loader, a full channel first)
 COUPLED = {'coupled-a': (47, 'R', False), 'coupled-b': (48, 'L', False),
-           'coupled-ea': (47, 'R', True), 'coupled-eb': (48, 'L', True)}
+           'coupled-ea': (47, 'R', True), 'coupled-eb': (48, 'L', True), 'coupled-break': (47, 'R', True)}
 
 
 def entities(g, item, radius=150):
@@ -159,8 +161,13 @@ def hopper_at(cx):
 
 
 def shooter_at(cx):
-    """The control's dropper for the core's ejection, in the core's chunk."""
-    return (cx, 102, 10)
+    """The control's dropper for the core's ejection, in the core's chunk. In `coupled-break` it shoots into (3,0), as
+    the core's channel at x=48 ejects: that chunk's unload writes the rod in both worlds alike."""
+    return (cx, 102, 12) if SCENARIO == 'coupled-break' else (cx, 102, 10)
+
+
+def shooter_facing():
+    return 'east' if SCENARIO == 'coupled-break' else 'south'
 
 
 def touch(g, *cells):
@@ -189,7 +196,7 @@ def coupled_prepare(g):
         g.command('setblock %d %d %d minecraft:chest' % geometry(cx)['core'])
         if full:
             g.command('item replace block %d %d %d container.0 with %s 4' % (*geometry(cx)['core'], ROD))
-            dropper(g, shooter_at(cx), ROD, 1, 'south')
+            dropper(g, shooter_at(cx), ROD, 1, shooter_facing())
         g.ctl('save')
         return
     geo = build_pile(g, cx)
@@ -212,6 +219,13 @@ def coupled_prepare(g):
 
 
 def coupled_act(g):
+    coupled_transfer(g)
+    save_expecting_death(g)
+
+
+def coupled_transfer(g):
+    """The loader pushes its rod into the core (the control's hopper into its chest); with a full channel the core
+    ejects one (the control's dropper fires)."""
     cx, side, full = COUPLED[SCENARIO]
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
@@ -229,7 +243,6 @@ def coupled_act(g):
         time.sleep(1.8)
         g.evidence['after_act'] = {'rods': pile_rods(g, cx), 'entities': entities(g, ROD)}
         g.check('transfer_completed_before_the_cut', held(g, hx, '') == 0, g.evidence['after_act'])
-        save_expecting_death(g)
         return
     loader = geometry(cx)[side][0]
     g.command('clear @s')
@@ -242,7 +255,6 @@ def coupled_act(g):
         time.sleep(.2)
     g.evidence['after_act'] = {'rods': pile_rods(g, cx), 'entities': entities(g, ROD) + entities(g, INCOMING)}
     g.check('transfer_completed_before_the_cut', tuple(g.evidence['after_act']['rods']) == expected, g.evidence['after_act'])
-    save_expecting_death(g)
 
 
 def coupled_verify(g, again=False):
@@ -262,6 +274,53 @@ def coupled_verify(g, again=False):
         return
     core = geometry(cx)['core']
     g.check('the_core_is_alive', machine_present(g, core), 'core machine missing')
+
+
+def is_loaded(g, p):
+    lines = g.command('execute if loaded %d %d %d run say NTM_LOADED' % tuple(p)).get('chat', [])
+    return any('NTM_LOADED' in s for s in lines)
+
+
+def coupled_break_act(g):
+    """R6-2 of the sixth review: the transfer of `coupled-ea` (a Zr into a full channel, a Ra-226Be out), then the core
+    broken while the loader's chunk (3,0) is out and the core's (2,0) in; then the save. No chunk is forced: a forced
+    chunk keeps its neighbours loaded, so the player walks west until (3,0) leaves the loaded area and (2,0) is its edge."""
+    cx, side, full = COUPLED[SCENARIO]
+    core, member = geometry(cx)['core'], (49, 102, 10)
+    coupled_transfer(g)
+    g.command('forceload remove all')
+    found = None
+    for px in range(-8, -200, -16):
+        g.command(f'tp @s {px + .5} 101 8.5')
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline and is_loaded(g, member):
+            time.sleep(1)
+        if not is_loaded(g, member):
+            found = px if is_loaded(g, core) else None
+            break
+    g.evidence['player_x'] = found
+    g.check('member_chunk_out_core_chunk_in', found is not None and is_loaded(g, core) and not is_loaded(g, member), found)
+    g.command('setblock %d %d %d minecraft:air%s' % (*core, ' destroy' if VANILLA else ''))
+    time.sleep(3)
+    g.evidence['after_break'] = {'ledger': ledger(g), 'core': block(g, core)}
+    if not VANILLA:
+        g.check('the_core_is_gone', not machine_present(g, core), g.evidence['after_break'])
+    save_expecting_death(g)
+
+
+def coupled_break_verify(g, again=False):
+    cx, side, full = COUPLED[SCENARIO]
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('forceload add 30 0 64 24')
+    g.command('tp @s 53.5 101 15.5')
+    led = quiet(g, 12)
+    channels, loaders = pile_rods(g, cx)
+    outside = entities(g, ROD) + entities(g, INCOMING)
+    carried = inventory(g, ROD) + inventory(g, INCOMING)
+    detail = {'channels': channels, 'loaders': loaders, 'entities': outside, 'inventory': carried,
+              'total': channels + loaders + outside + carried, 'ledger': led}
+    counted(g, 'no_rod_lost_or_duplicated', detail, again)
 
 
 # -------------------------------------------------------------------------------------------------------- crossing
@@ -874,7 +933,28 @@ def counted(g, name, detail, again):
     g.check(name, detail['total'] == detail['expected'], detail)
 
 
+def pause_expecting_death(g):
+    """`kv_committed`: the pause saves without waiting; the process dies right after that save's storage, its records
+    still queued. The evidence is written first."""
+    g.evidence['pause_save'] = True
+    g.save()
+    try:
+        g.ctl('pause')
+    except Exception:
+        return
+    deadline = time.monotonic() + 90
+    while time.monotonic() < deadline:
+        try:
+            g.ctl('status')
+        except Exception:
+            return
+        time.sleep(.5)
+
+
 def save_expecting_death(g):
+    if PAUSE_SAVE:
+        pause_expecting_death(g)
+        return
     if NO_SAVE:
         # `kill`: no save at all; the runner ends the process where the action left the world.
         g.save()
@@ -895,6 +975,7 @@ def drain(g):
 
 STEPS = {
     'coupled': (coupled_prepare, coupled_act, coupled_verify),
+    'coupled-break': (coupled_prepare, coupled_break_act, coupled_break_verify),
     'crossing': (crossing_prepare, crossing_act, crossing_verify),
     'origin-pickup': (break_prepare, origin_pickup_act, origin_pickup_verify),
     'origin-pickup-away': (break_prepare, origin_pickup_act, origin_pickup_verify),
@@ -914,9 +995,12 @@ STEPS = {
 
 if __name__ == '__main__':
     mode = sys.argv[2]
-    kind = 'coupled' if SCENARIO.startswith('coupled') else SCENARIO
+    kind = SCENARIO if SCENARIO in STEPS else 'coupled' if SCENARIO.startswith('coupled') else SCENARIO
     g = Game(sys.argv[1], 'crash-more-' + mode)
     prepare, act, verify = STEPS[kind]
     {'prepare': prepare, 'act': act, 'verify': verify, 'again': lambda g: verify(g, True), 'drain': drain}[mode](g)
+    # `kv_committed`: an action that ends without a save of its own (the runner's quit saves it) ends with the pause's.
+    if mode == 'act' and PAUSE_SAVE and not g.evidence.get('pause_save'):
+        pause_expecting_death(g)
     g.evidence['ok'] = True
     g.save()
