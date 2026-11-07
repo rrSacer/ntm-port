@@ -137,7 +137,7 @@ def charge(g, x, manual):
 
 
 # A nuke (EntityNukeExplosionMK5) and a balefire (EntityBalefire), set off and left digging when the world closes.
-RESTART = {'nuke': (400, ''), 'balefire': (560, ' balefire')}
+RESTART = {'nuke': (400, ''), 'balefire': (720, ' balefire')}
 
 
 def explosion_id(text, x):
@@ -152,27 +152,30 @@ def dug(g, x):
 
 
 def restart_arm(g):
-    """The second session's start: a nuke and a balefire of radius 40 set off, their craters still being dug when the
-    world is saved and closed (the runner quits)."""
+    """The second session's start: a nuke and a balefire of radius 80 set off, their craters still being dug when the
+    world is saved and closed (the runner quits): the least fuel a tick allows makes them last minutes."""
     g.evidence['phase'] = 'restart-arm'
     g.command('gamemode creative')
-    g.command('ntmbomba config mundo raiomax 40')
+    g.command('ntmbomba config mundo raiomax 80')
+    g.command('ntmbomba config mundo fuel 4')
     start = len(log(g))
     for kind, (x, suffix) in RESTART.items():
         g.ground(x, 100, 0, width=4, height=4)
         g.command(f'forceload add {x-80} -80 {x+80} 80')
         time.sleep(3)
         g.command(f'tp @s {x + .5} 100 0.5')
-        result = g.command('ntmbomba teste 40' + suffix)
+        result = g.command('ntmbomba teste 80' + suffix)
         g.check(f'{kind}_set_off', any('detonada' in line for line in result.get('chat', [])), result)
     wait(g, 'both_handed_to_the_engine', lambda: all(explosion_id(log(g)[start:], x) for x, _ in RESTART.values()),
          lambda: [l for l in log(g)[start:].splitlines() if '(teste)' in l], 60)
-    time.sleep(2)
     ids = {kind: explosion_id(log(g)[start:], x) for kind, (x, _) in RESTART.items()}
-    status = ' '.join(g.command('ntmbomba status').get('chat', []))
-    g.evidence['restart_arm'] = {'ids': ids, 'status': status, 'dug': {k: dug(g, x) for k, (x, _) in RESTART.items()}}
-    g.check('both_still_digging', all(i in status for i in ids.values()), g.evidence['restart_arm'])
+    digging = lambda: ' '.join(g.command('ntmbomba status').get('chat', []))
+    wait(g, 'both_digging', lambda: all(i in digging() for i in ids.values()), digging, 30)
     g.ctl('save')
+    # The save holds both digging: they are still at it once it is done.
+    status = digging()
+    g.evidence['restart_arm'] = {'ids': ids, 'status': status, 'dug': {k: dug(g, x) for k, (x, _) in RESTART.items()}}
+    g.check('both_still_digging_after_the_save', all(i in status for i in ids.values()), g.evidence['restart_arm'])
     (g.folder / 'bombs-restart.json').write_text(json.dumps(g.evidence['restart_arm']))
 
 
@@ -197,6 +200,7 @@ def restart_check(g):
     g.check('the_balefire_dug_on', dug(g, RESTART['balefire'][0]) >= armed['dug']['balefire'], {'armed': armed['dug'], 'now': dug(g, RESTART['balefire'][0])})
     status = ' '.join(g.command('ntmbomba status').get('chat', []))
     g.check('nothing_left_digging', ids['nuke'] not in status and ids['balefire'] not in status, status)
+    g.command('ntmbomba config mundo fuel 22')
     g.ctl('save')
     saved = ntm_store.value(g.folder)
     g.check('the_balefire_is_forgotten', not saved['bombs'].get('balefires'), saved['bombs'].get('balefires'))
