@@ -18,14 +18,21 @@
 //!
 //! There are no exceptions: a loss or a copy vanilla also has is vanilla's in the very same play, and not one otherwise.
 //!
-//! The check is not empty: a mod that kept what an effect owes in its storage instead of the machine's record
-//! (`InStorage`, a design kept here only to be caught) is caught within a few operations.
+//! The machine can also be broken: vanilla's dropper spills its stock at once, and so does the mod's (a pile's core
+//! puts its rods out at once, as Java's `breakBlock` does, whatever members are out). And an owed shot paid leaves its
+//! name in the machine's record, where a later shot of the same name would be taken for it and not put out: the mod
+//! names its shots anew in every session.
+//!
+//! The check is not empty: three wrong mods, kept here only to be caught, are caught within a few operations: one that
+//! keeps what an effect owes in its storage (`InStorage`), one that keeps a removal there (`RemovalInStorage`), one
+//! that names its shots by a count kept with the storage, which a death sets back (`CounterIds`).
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 type Atom = u8;
 /// An atom as some copy holds it: (atom, generation of the emission that put it out: 0 for the machine's own).
 type Unit = (Atom, u8);
-const ATOMS: u8 = 3;
+/// The machine's stock: two shots of two atoms each (a session fires once, so the second shot is a later session's).
+const ATOMS: u8 = 4;
 /// A stack's name: the root it was put out as (the emission's generation, a copy read again from a file), then its
 /// path down the splits since (their count, and which side of each it took). A split names both halves anew, so a name
 /// is never given twice, and both worlds name one stack alike.
@@ -46,6 +53,11 @@ enum Policy {
     Committed,
     /// A wrong mod, to show the check finds it: what an effect owes is kept in its storage, written at each save.
     InStorage,
+    /// A wrong mod: a removal waits for its group (the hopper's chunk, a member, loaded), kept in its storage (R6-2,
+    /// F1 of the reviews).
+    RemovalInStorage,
+    /// A wrong mod: a shot is named by the storage's count of emissions, which a death sets back (R6-1).
+    CounterIds,
 }
 
 const A: usize = 0;
@@ -65,8 +77,10 @@ struct Ent {
 struct Record {
     /// The machine's items in its block entity (A), or the hopper's (HOPPER).
     items: Vec<Unit>,
-    /// A: the stacks an effect owes while the chunk it drops into is not loaded, with that chunk.
-    owed: Vec<(usize, Vec<Unit>)>,
+    /// A: the stacks an effect owes while the chunk it drops into is not loaded, with that chunk and the shot's name.
+    owed: Vec<(usize, Vec<Unit>, u8)>,
+    /// A: the names of the owed shots paid (the ledger's `applied`): a shot of the same name is taken for one of them.
+    paid: Vec<u8>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
@@ -97,7 +111,9 @@ struct Queued {
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Default)]
 struct Storage {
     emissions: u8,
-    owed: Vec<(usize, Vec<Unit>)>,
+    owed: Vec<(usize, Vec<Unit>, u8)>,
+    /// `RemovalInStorage`'s removal.
+    removed: Option<Vec<Unit>>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
@@ -127,7 +143,7 @@ struct World {
 }
 
 fn initial(policy: Policy) -> World {
-    let machine = Record { items: (0..ATOMS).map(|a| (a, 0)).collect(), owed: Vec::new() };
+    let machine = Record { items: (0..ATOMS).map(|a| (a, 0)).collect(), ..Default::default() };
     let mut region: [Record; CHUNKS] = Default::default();
     region[A] = machine.clone();
     World {
@@ -195,39 +211,68 @@ impl World {
     /// The machine fires: two atoms out of its block entity into `into`. While that chunk is not loaded they wait in A's
     /// record (the mod's effect owes them; vanilla's machine holds them in its output), and go out once it is.
     fn fire(&mut self, into: usize) {
-        if !self.records[A].as_ref().is_some_and(|r| r.items.iter().any(|u| u.0 <= 1)) {
+        if !self.records[A].as_ref().is_some_and(|r| !r.items.is_empty()) {
             return;
         }
         self.fired = true;
         self.generation += 1;
         self.storage.emissions = self.storage.emissions.wrapping_add(1);
-        self.put_out(into, self.generation);
+        // The mod draws a nonce each session: its names never come back (`generation` stands for them, never set back).
+        let name = if self.policy == Policy::CounterIds { self.storage.emissions } else { self.generation };
+        self.put_out(into, self.generation, name);
     }
-    /// The shot of generation `generation` out of the block entity: into `into` if it is loaded, else owed in A's record.
-    fn put_out(&mut self, into: usize, generation: u8) {
-        let units = vec![(0, generation), (1, generation)];
+    /// The shot of generation `generation`, named `name`, out of the block entity: into `into` if it is loaded, else
+    /// owed in A's record. A name A's record knows as paid is taken for that one: nothing goes out.
+    fn put_out(&mut self, into: usize, generation: u8, name: u8) {
         let r = self.records[A].as_mut().unwrap();
-        r.items.retain(|u| u.0 > 1);
+        // The two lowest atoms of the stock go out: (0, 1), then (2, 3).
+        let mut shot: Vec<Atom> = r.items.iter().map(|u| u.0).collect();
+        shot.sort_unstable();
+        shot.truncate(2);
+        r.items.retain(|u| !shot.contains(&u.0));
+        let units: Vec<Unit> = shot.iter().map(|a| (*a, generation)).collect();
+        if r.paid.contains(&name) {
+            return;
+        }
         if self.loaded[into] {
             self.ents.push(Ent { id: (u16::from(generation), 0, 0), chunk: into, units });
         } else if self.policy == Policy::InStorage {
-            self.storage.owed.push((into, units));
+            self.storage.owed.push((into, units, name));
         } else {
-            r.owed.push((into, units));
+            r.owed.push((into, units, name));
+        }
+    }
+    /// The machine is broken: its stock spills in its chunk at once, vanilla's and the mod's alike
+    /// (`RemovalInStorage`'s removal waits for its group in the storage, `pay`).
+    fn break_machine(&mut self) {
+        let r = self.records[A].as_mut().unwrap();
+        let items = std::mem::take(&mut r.items);
+        if self.policy == Policy::RemovalInStorage {
+            self.storage.removed = Some(items);
+        } else {
+            self.join(Ent { id: (0xB000, 0, 0), chunk: A, units: items });
         }
     }
     /// What waits in A's record for a chunk that is loaded now, put out.
     fn pay(&mut self) {
         let loaded = self.loaded;
+        // `RemovalInStorage`: a removal whose group is in (the hopper's chunk, a member) spills in its chunk.
+        if loaded[A] && loaded[HOPPER] && let Some(units) = self.storage.removed.take().filter(|u| !u.is_empty()) {
+            self.join(Ent { id: (0xB000, 0, 0), chunk: A, units });
+        }
         let owed = if self.policy == Policy::InStorage {
             &mut self.storage.owed
         } else {
             let Some(r) = self.records[A].as_mut().filter(|_| loaded[A]) else { return };
             &mut r.owed
         };
-        let (due, kept): (Vec<_>, Vec<_>) = std::mem::take(owed).into_iter().partition(|(c, _)| loaded[*c]);
+        let (due, kept): (Vec<_>, Vec<_>) = std::mem::take(owed).into_iter().partition(|(c, ..)| loaded[*c]);
         *owed = kept;
-        for (c, units) in due {
+        for (c, units, name) in due {
+            // The ledger keeps the name of what it paid (`ChunkLedger::take_owed`), in A's record.
+            if self.policy != Policy::InStorage && let Some(r) = self.records[A].as_mut() && !r.paid.contains(&name) {
+                r.paid.push(name);
+            }
             self.join(Ent { id: (u16::from(units[0].1), 0, 0), chunk: c, units });
         }
     }
@@ -338,9 +383,10 @@ impl World {
                 _ => self.read_region(c),
             };
             out.extend(r.items);
-            out.extend(r.owed.into_iter().flat_map(|(_, u)| u));
+            out.extend(r.owed.into_iter().flat_map(|(_, u, _)| u));
         }
-        out.extend(self.storage.owed.iter().flat_map(|(_, u)| u.iter().copied()));
+        out.extend(self.storage.owed.iter().flat_map(|(_, u, _)| u.iter().copied()));
+        out.extend(self.storage.removed.iter().flatten().copied());
         out
     }
     fn copies(&self) -> BTreeMap<Atom, usize> {
@@ -376,6 +422,7 @@ impl World {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 enum Op {
     Fire(usize),
+    Break,
     Split(Id),
     Move(Id, usize),
     Fold(Id, Id),
@@ -393,6 +440,9 @@ fn ops(w: &World) -> Vec<Op> {
     if !w.fired && w.loaded[A] {
         out.push(Op::Fire(A));
         out.push(Op::Fire(C));
+    }
+    if breakable(w) {
+        out.push(Op::Break);
     }
     for e in &w.ents {
         if e.units.len() > 1 {
@@ -428,12 +478,18 @@ fn ops(w: &World) -> Vec<Op> {
     out
 }
 
+/// Whether the machine stands with a stock to spill.
+fn breakable(w: &World) -> bool {
+    w.loaded[A] && w.storage.removed.is_none() && w.records[A].as_ref().is_some_and(|r| !r.items.is_empty())
+}
+
 /// Whether `op` (chosen in the mod's world) can be played in `w`: vanilla's world skips what concerns a stack only the
 /// mod's has.
 fn playable(w: &World, op: Op) -> bool {
     let at = |id: Id| w.ent(id).map(|i| &w.ents[i]);
     match op {
         Op::Fire(_) => !w.fired && w.loaded[A],
+        Op::Break => breakable(w),
         Op::Split(id) => at(id).is_some_and(|e| e.units.len() > 1),
         Op::Move(id, c) => at(id).is_some_and(|e| e.chunk != c) && w.loaded[c],
         Op::Fold(i, j) => i != j && at(i).zip(at(j)).is_some_and(|(e, f)| e.chunk == f.chunk),
@@ -449,6 +505,7 @@ fn playable(w: &World, op: Op) -> bool {
 fn play(w: &mut World, op: Op) {
     match op {
         Op::Fire(c) => w.fire(c),
+        Op::Break => w.break_machine(),
         Op::Split(id) => w.split(id),
         Op::Move(id, c) => {
             let i = w.ent(id).unwrap();
@@ -535,6 +592,11 @@ fn fingerprint(w: &World) -> u128 {
 /// Every sequence of `depth` operations: the first violation, else how many complete sequences were covered. States
 /// already explored with as many operations left are not explored again: the sequences through them are counted.
 fn explore(policy: Policy, depth: usize) -> (Result<u128, (Vec<Op>, String)>, Search) {
+    explore_from(initial(policy), depth)
+}
+
+/// `explore` from `start`.
+fn explore_from(start: World, depth: usize) -> (Result<u128, (Vec<Op>, String)>, Search) {
     fn go(w: &World, left: usize, path: &mut Vec<Op>, s: &mut Search) -> Result<u128, (Vec<Op>, String)> {
         s.states += 1;
         let key = (fingerprint(w), left);
@@ -559,7 +621,7 @@ fn explore(policy: Policy, depth: usize) -> (Result<u128, (Vec<Op>, String)>, Se
         Ok(n)
     }
     let mut s = Search { seen: HashMap::new(), states: 0 };
-    let found = go(&initial(policy), depth, &mut Vec::new(), &mut s);
+    let found = go(&start, depth, &mut Vec::new(), &mut s);
     (found, s)
 }
 
@@ -629,5 +691,33 @@ fn a_mod_that_keeps_what_it_owes_in_its_storage_is_caught() {
     let (found, s) = explore(Policy::InStorage, 6);
     let (path, why) = found.expect_err("a storage that holds items must be caught");
     println!("in storage: caught after {} states: {why}\n  {path:?}", s.states);
+    assert!(why.starts_with("duplicate") || why.starts_with("lost"), "{why}");
+}
+
+#[test]
+fn a_mod_that_keeps_a_removal_in_its_storage_is_caught() {
+    // R6-2 / F1: the storage is written at the save's instant, the machine's record later; a death between the two finds
+    // the removal with its stock in the storage and the machine whole in the record.
+    let (found, s) = explore(Policy::RemovalInStorage, 7);
+    let (path, why) = found.expect_err("a removal kept in the storage must be caught");
+    println!("removal in storage: caught after {} states: {why}\n  {path:?}", s.states);
+    assert!(why.starts_with("duplicate") || why.starts_with("lost"), "{why}");
+}
+
+#[test]
+fn a_mod_whose_shot_names_go_back_with_its_storage_is_caught() {
+    // R6-1: a shot paid from what A owed leaves its name in A's record; the storage goes back with a death, and the
+    // next shot gets that name again: taken for the paid one, it is not put out.
+    // The world opens with C out of reach. The shot owed in A; C in, paid, its name in A's record; A's record written
+    // by its unload (its entities, then its record); a death sets the storage's count back; the next session's shot
+    // takes that name and is not put out: 8 operations.
+    let mut start = initial(Policy::CounterIds);
+    start.loaded[C] = false;
+    if let Some(vanilla) = start.shadow.as_mut() {
+        vanilla.loaded[C] = false;
+    }
+    let (found, s) = explore_from(start, 9);
+    let (path, why) = found.expect_err("names that go back with the storage must be caught");
+    println!("counter ids: caught after {} states: {why}\n  {path:?}", s.states);
     assert!(why.starts_with("duplicate") || why.starts_with("lost"), "{why}");
 }
