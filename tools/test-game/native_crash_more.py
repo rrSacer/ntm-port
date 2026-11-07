@@ -288,6 +288,10 @@ def coupled_break_act(g):
     cx, side, full = COUPLED[SCENARIO]
     core, member = geometry(cx)['core'], (49, 102, 10)
     coupled_transfer(g)
+    # The rod the core ejected (the control's dropper fired) lies in (3,0) in both worlds: an item's flight could take
+    # it across the border, into the other chunk's entities.
+    g.command('tp @e[type=minecraft:item] 52.5 100.5 12.5')
+    time.sleep(2)
     g.command('forceload remove all')
     found = None
     for px in range(-8, -200, -16):

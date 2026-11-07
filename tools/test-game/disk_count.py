@@ -171,7 +171,7 @@ def count(folder, prefixes):
     prefixes = tuple(prefixes)
     world = Path(folder) / 'saves' / 'CrashTest'
     dim = world / 'dimensions' / 'minecraft' / 'overworld'
-    out = {'entities': 0, 'blocks': 0, 'machines': 0, 'player': 0}
+    out = {'entities': 0, 'blocks': 0, 'machines': 0, 'owed': 0, 'player': 0}
     for path in sorted((dim / 'entities').glob('r.*.mca')):
         for chunk in records(path):
             for e in chunk.get('Entities', []) or []:
@@ -187,6 +187,10 @@ def count(folder, prefixes):
                     out['machines'] += max(model, items)
                 else:
                     out['blocks'] += items
+            # What the chunk's record owes the world (its ledger): items a reopen puts out.
+            owed = {}
+            _owed_items(_ledger(chunk), prefixes, owed)
+            out['owed'] += sum(owed.values())
     # The owner's file: `players/data/<singleplayer_uuid>.dat` (older worlds: level.dat's Player, or playerdata/).
     level = world / 'level.dat'
     data = parse(gzip.decompress(level.read_bytes())).get('Data', {}) if level.exists() else {}
