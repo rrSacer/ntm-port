@@ -158,15 +158,28 @@ ROD = 'ntm:pile_rod'
 TOTAL = 12
 
 
+REOPENS = ('items_after', 'items_again')
+KV_ITEMS = ('kv_items', 'kv_items_after', 'kv_items_again')
+
+
 def item_checks(verdict, outcome, control):
-    """Item by item (R6-3): what each world holds after its first reopen, against what its base held and what the
-    control holds at the same cut; and that the storage of each world keeps nothing a chunk owes (`kv_items`)."""
-    mine, theirs = outcome.get('items_after') or {}, control.get('items_after') or {}
+    """Item by item (R6-3, R7-4): what each world holds after each reopen, against what its base held and what the
+    control holds at the same cut after the same reopen; and that the storage of each world keeps nothing a chunk owes
+    (`kv_items`)."""
     base, their_base = outcome.get('base_items') or {}, control.get('base_items') or {}
-    ids = set(mine) | set(theirs) | set(base) | set(their_base)
-    verdict['items'] = {'mine': mine, 'control': theirs, 'base': base, 'control_base': their_base}
-    verdict['no_duplicate_item'] = bool(ids) and all(mine.get(i, 0) <= max(base.get(i, 0), theirs.get(i, 0)) for i in ids)
-    verdict['no_worse_item'] = bool(ids) and all(base.get(i, 0) - mine.get(i, 0) <= their_base.get(i, 0) - theirs.get(i, 0) for i in ids)
+    verdict['items'] = {'base': base, 'control_base': their_base}
+    duplicate, worse = [], []
+    for reopen in REOPENS:
+        mine, theirs = outcome.get(reopen), control.get(reopen)
+        verdict['items'][reopen] = {'mine': mine, 'control': theirs}
+        if mine is None or theirs is None:
+            duplicate.append(False); worse.append(False)
+            continue
+        ids = set(mine) | set(theirs) | set(base) | set(their_base)
+        duplicate.append(bool(ids) and all(mine.get(i, 0) <= max(base.get(i, 0), theirs.get(i, 0)) for i in ids))
+        worse.append(bool(ids) and all(base.get(i, 0) - mine.get(i, 0) <= their_base.get(i, 0) - theirs.get(i, 0) for i in ids))
+    verdict['no_duplicate_item'] = all(duplicate)
+    verdict['no_worse_item'] = all(worse)
 
 
 def emission_verdict(outcome, control, expected, control_expected, exact=False):
@@ -180,17 +193,16 @@ def emission_verdict(outcome, control, expected, control_expected, exact=False):
     verdict = {'disk': disk, 'first': first, 'second': again, 'expected': expected, 'control_expected': control_expected,
                'control_disk': (control.get('disk') or {}).get('total'), 'parts_ok': outcome['ok'] and control['ok']}
     verdict['as_the_files'] = first is not None and disk is not None and first == disk and again == first
-    # The reopen holds what the files held, item by item; neither world's storage keeps what a chunk owes.
-    verdict['as_the_files_items'] = outcome.get('items') is not None and outcome.get('items') == outcome.get('items_after')
-    verdict['storage_clean'] = all(o.get(k) == 0 for o in (outcome, control) for k in ('kv_items', 'kv_items_after'))
+    # Both reopens hold what the files held, item by item; neither world's storage keeps what a chunk owes.
+    verdict['as_the_files_items'] = outcome.get('items') is not None and all(outcome.get(r) == outcome.get('items') for r in REOPENS)
+    verdict['storage_clean'] = all(o.get(k) == 0 for o in (outcome, control) for k in KV_ITEMS)
     control_first = total(control, 'first_reopen')
     verdict['same_cut'] = outcome['point'] in ('none', *KILLS) or (cut(outcome) is not None and cut(outcome) == cut(control))
     compare(verdict, outcome, control)
     if exact:
         # A death outside any save's records: both worlds are the last save, exactly, item by item.
         verdict['as_the_last_save'] = (first == expected and control_first == control_expected
-                                       and outcome.get('items_after') == outcome.get('base_items')
-                                       and control.get('items_after') == control.get('base_items'))
+                                       and all(o.get(r) == o.get('base_items') for o in (outcome, control) for r in REOPENS))
     result = {**outcome, 'control': control, 'verdict': verdict}
     result['ok'] = judge(result)
     return result
@@ -292,6 +304,11 @@ def play(args, base, scratch, env, point, control=False, items=(ROD,)):
         result['second_reopen'] = evidence(folder, 'again').get('counted_again')
         if verified:
             raise AssertionError('second reopen failed; see counted evidence')
+        world.quit()
+        # The same after the second reopen, before anything is drained (R7-4).
+        result['items_again'] = disk_count.items(folder, items)
+        result['kv_items_again'] = disk_count.kv_items(folder)
+        world.launch()
         world.script('drain')
         world.quit()
         result['ok'] = True

@@ -237,6 +237,9 @@ def play(args, base, scratch, env, scenario, point, control=False):
         if verified:
             raise AssertionError('second reopen failed; see counted evidence')
         world.quit()
+        # The same after the second reopen (R7-4).
+        result['items_again'] = crash_proof.disk_count.items(folder, items_of(scenario))
+        result['kv_items_again'] = crash_proof.disk_count.kv_items(folder)
         result['ok'] = True
     except Exception as error:
         result['error'] = repr(error)
@@ -256,9 +259,10 @@ def against_control(outcome, control):
     same = {r: (total(outcome, r), total(control, r)) for r in ('first_reopen', 'second_reopen')}
     equal = all(a is not None and a == b for a, b in same.values())
     checks = {
-        'same_items': outcome.get('items_after') is not None and outcome.get('items_after') == control.get('items_after'),
-        'as_the_files_items': all(o.get('items') is not None and o.get('items') == o.get('items_after') for o in (outcome, control)),
-        'storage_clean': all(o.get(k) == 0 for o in (outcome, control) for k in ('kv_items', 'kv_items_after')),
+        'same_items': all(outcome.get(r) is not None and outcome.get(r) == control.get(r) for r in crash_proof.REOPENS),
+        'as_the_files_items': all(o.get('items') is not None and all(o.get(r) == o.get('items') for r in crash_proof.REOPENS)
+                                  for o in (outcome, control)),
+        'storage_clean': all(o.get(k) == 0 for o in (outcome, control) for k in crash_proof.KV_ITEMS),
     }
     ok = outcome['ok'] and control['ok'] and equal and all(checks.values())
     return {**outcome, 'control': control, 'against_control': same, 'item_checks': checks, 'ok': ok}
@@ -333,7 +337,8 @@ def main():
                     # write, in both worlds, so both reopens hold what the control's hold, exactly, item by item.
                     same = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
                     outcome['verdict']['as_the_control'] = (all(a is not None and a == b for a, b in same.values())
-                                                            and outcomes[False].get('items_after') == outcomes[True].get('items_after'))
+                                                            and all(outcomes[False].get(r) == outcomes[True].get(r)
+                                                                    for r in crash_proof.REOPENS))
                     outcome['ok'] = crash_proof.judge(outcome)
             else:
                 outcome = against_control(outcomes[False], outcomes[True]) if controlled else outcomes[False]
@@ -342,7 +347,7 @@ def main():
                     base = TRANSFERS.get(args.scenario) or int(os.environ.get('NTM_CRASH_NITER', '16'))
                     last = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
                     outcome['as_the_last_save'] = all(v == (base, base) for v in last.values()) and all(
-                        o.get('items_after') == o.get('base_items') for o in outcomes.values())
+                        o.get(r) == o.get('base_items') for o in outcomes.values() for r in crash_proof.REOPENS)
                     outcome['ok'] = outcome['ok'] and outcome['as_the_last_save']
             report['points'].append(outcome)
             print(json.dumps(outcome), flush=True)
