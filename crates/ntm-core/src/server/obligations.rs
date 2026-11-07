@@ -216,10 +216,13 @@ impl Server {
     pub fn native_settle(&mut self, host: &mut impl ServerHost) {
         self.native_record_events(host);
         self.read_legacy(host);
-        if !self.ready.facts_pending {
+        // Heard at every chunk that leaves: with no machine gone and no batch in flight there is nothing to take.
+        if !self.ready.facts_pending && (!self.ready.broken.is_empty() || !self.ready.world.machine_effects.is_empty()) {
             self.flush_machine_effects(host);
-            self.removal_steps(host);
-            self.flush_machine_effects(host);
+            if !self.ready.broken.is_empty() {
+                self.removal_steps(host);
+                self.flush_machine_effects(host);
+            }
         }
         self.sync_obligations(host);
     }
