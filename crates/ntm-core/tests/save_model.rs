@@ -171,8 +171,9 @@ struct World {
     /// The machine fired since the world opened: both worlds' machines run their step again only from what they hold
     /// after a reopen.
     fired: bool,
-    /// A command's break the mod has not taken yet: the stock, in memory only.
-    pending: Option<Vec<Unit>>,
+    /// A command's break the mod has not taken yet: the stock, in memory only, with the name its stack takes, given at
+    /// the command as vanilla's spill gets it then (a name the model's two worlds play their operations by).
+    pending: Option<(Id, Vec<Unit>)>,
     /// A's record was read for the earlier version's obligation this session.
     read: bool,
     /// The marker was given to A's record this session (in memory, or written by its unload).
@@ -327,8 +328,9 @@ impl World {
         if self.policy == Policy::Vanilla {
             return self.break_machine();
         }
-        let r = self.records[A].as_mut().unwrap();
-        self.pending = Some(std::mem::take(&mut r.items));
+        let units = std::mem::take(&mut self.records[A].as_mut().unwrap().items);
+        let id = self.free_name((0xB000, 0, 0));
+        self.pending = Some((id, units));
     }
     /// What the mod has not taken yet, taken as the end of a tick takes it: A's record read for the earlier version's
     /// obligation (taken up, or retired when the record took it), and a command's break spilled while A is in.
@@ -363,8 +365,8 @@ impl World {
                 }
             }
         }
-        if let Some(units) = self.pending.take() {
-            self.join(Ent { id: (0xB000, 0, 0), chunk: A, units });
+        if let Some((id, units)) = self.pending.take() {
+            self.ents.push(Ent { id, chunk: A, units });
         }
     }
     /// The machine is broken: its stock spills in its chunk at once, vanilla's and the mod's alike
@@ -405,10 +407,15 @@ impl World {
     /// A stack joins the world; a copy of one already here, or of one that split since (read again from a file or
     /// a record older than the stack's move), is a stack of its own.
     fn join(&mut self, mut e: Ent) {
-        while self.ents.iter().any(|x| related(x.id, e.id)) {
-            e.id.0 = e.id.0.wrapping_add(0x1000);
-        }
+        e.id = self.free_name(e.id);
         self.ents.push(e);
+    }
+    /// `id`, or the next root no stack here has, nor the one a command's break holds for its spill.
+    fn free_name(&self, mut id: Id) -> Id {
+        while self.ents.iter().map(|x| x.id).chain(self.pending.as_ref().map(|p| p.0)).any(|x| related(x, id)) {
+            id.0 = id.0.wrapping_add(0x1000);
+        }
+        id
     }
     fn split(&mut self, id: Id) {
         let i = self.ent(id).unwrap();
@@ -536,7 +543,7 @@ impl World {
         }
         out.extend(self.storage.owed.iter().flat_map(|(_, u, _)| u.iter().copied()));
         out.extend(self.storage.removed.iter().flatten().copied());
-        out.extend(self.pending.iter().flatten().copied());
+        out.extend(self.pending.iter().flat_map(|p| p.1.iter().copied()));
         // The earlier version's obligation, while A's record is not read: taken up then unless the record took it.
         let took = match &self.records[A] {
             Some(r) if self.loaded[A] => r.migrated,
@@ -813,7 +820,7 @@ fn the_mods_world_saved_with_its_storage_holds_what_vanillas_holds() {
 fn long_random_plays_hold_what_vanillas_holds() {
     let walks: usize = std::env::var("NTM_SAVE_MODEL_WALKS").ok().and_then(|n| n.parse().ok()).unwrap_or(2_000);
     let length: usize = std::env::var("NTM_SAVE_MODEL_WALK").ok().and_then(|n| n.parse().ok()).unwrap_or(30);
-    let mut seed: u64 = 0x9e37_79b9_7f4a_7c15;
+    let mut seed: u64 = std::env::var("NTM_SAVE_MODEL_SEED").ok().and_then(|n| n.parse().ok()).unwrap_or(0x9e37_79b9_7f4a_7c15);
     let mut random = move || {
         seed ^= seed << 13;
         seed ^= seed >> 7;
