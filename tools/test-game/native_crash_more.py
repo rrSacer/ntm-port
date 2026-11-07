@@ -46,7 +46,7 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 # `kv_committed`: the action saves by pausing the game, a save that does not wait; the process dies after its storage.
 PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
-BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
 # the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
@@ -461,6 +461,81 @@ def save_quit_verify(g, again=False):
     crossing_verify(g, again)
     led = ledger(g)
     g.check('save_and_quit_leaves_nothing_owed', led.get('pending', -1) == 0, led)
+
+
+# ---------------------------------------------------------------------------------------------------- frozen break
+# N1 of the fresh review: the core holding ten rods is broken by a command with the ticks frozen, and the save comes
+# with no tick between: the save takes the chunks only once the rods are out. The control is a chest in the core's place
+# holding the same ten; two loose rods lie beside both.
+
+def frozen_break_prepare(g):
+    cx = 47
+    core = geometry(cx)['core']
+    if VANILLA:
+        g.close()
+        g.command('gamemode creative @s')
+        g.command('forceload add 30 0 64 24')
+        time.sleep(3)
+        g.command('fill 40 99 3 56 108 18 minecraft:air')
+        g.command('fill 40 99 3 56 99 18 minecraft:stone')
+        g.command('setblock %d %d %d minecraft:chest' % core)
+        for slot in range(10):
+            g.command('item replace block %d %d %d container.%d with %s 1' % (*core, slot, ROD))
+    else:
+        geo = build_pile(g, cx)
+        for side in ('L', 'R'):
+            for _ in range(5):
+                load_rod(g, geo[side][0])
+    for x in (46.5, 48.5):
+        g.command(f'summon minecraft:item {x} 103 13.5 {{Item:{{id:"{ROD}",count:1}}}}')
+    g.command('clear @s')
+    g.command('tp @s 53.5 101 15.5')
+    time.sleep(2)
+    channels, loaders = pile_rods(g, cx)
+    g.check('ten_rods_in_the_core_or_chest', channels + loaders == 10, {'channels': channels, 'containers': loaders})
+    g.ctl('save')
+
+
+def frozen_break_act(g):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    core = geometry(47)['core']
+    # No tick between the break and the save: the mod sees the break only in the save's hook before its capture.
+    g.command('tick freeze')
+    g.command('setblock %d %d %d minecraft:air destroy' % core)
+    g.evidence['after_act'] = {'block': block(g, core), 'entities': entities(g, ROD), 'ledger': ledger(g)}
+    save_expecting_death(g)
+
+
+def frozen_unload_act(g):
+    """R7-2: the break is not taken by a tick (frozen), and the core's chunk leaves: the mod takes it in the unload hook,
+    with the chunk still in place, so the rods leave with that chunk's entities as the chest's spilled items do."""
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    core = geometry(47)['core']
+    g.command('tick freeze')
+    g.command('setblock %d %d %d minecraft:air destroy' % core)
+    g.command('forceload remove 30 0 64 24')
+    g.command('tp @s -250.5 101 5.5')
+    g.check('core_chunk_unloaded', unloaded(g, core), core)
+    time.sleep(4)
+    g.evidence['after_act'] = {'ledger': ledger(g)}
+    save_expecting_death(g)
+
+
+def frozen_break_verify(g, again=False):
+    g.ctl('wait-ready 120')
+    g.command('tick unfreeze')
+    g.command('gamemode creative @s')
+    g.command('forceload add 30 0 64 24')
+    g.command('tp @s 53.5 101 15.5')
+    led = quiet(g, 10)
+    machines = sum(pile_rods(g, 47))
+    loose = entities(g, ROD, 40)
+    carried = inventory(g, ROD)
+    detail = {'machines': machines, 'entities': loose, 'inventory': carried, 'total': machines + loose + carried,
+              'ledger': led}
+    counted(g, 'no_rod_lost_or_duplicated', detail, again)
 
 
 # ---------------------------------------------------------------------------------------------------------- mining
@@ -999,6 +1074,8 @@ STEPS = {
     'mining': (mining_prepare, mining_act, mining_verify),
     'vanilla-break': (vanilla_break_prepare, break_act, break_verify),
     'break': (break_prepare, break_act, break_verify),
+    'frozen-break': (frozen_break_prepare, frozen_break_act, frozen_break_verify),
+    'frozen-unload': (frozen_break_prepare, frozen_unload_act, frozen_break_verify),
     'replace': (break_prepare, break_act, break_verify),
 }
 

@@ -3,7 +3,7 @@
 
   python3 tools/test-game/run-crash-more.py --binary B --resources R --scratch-root S SCENARIO [POINT ...]
 
-SCENARIO: coupled-a coupled-b coupled-ea coupled-eb crossing crossing-kill mining break replace origin-pickup
+SCENARIO: coupled-a coupled-b coupled-ea coupled-eb crossing crossing-kill mining break replace frozen-break frozen-unload origin-pickup
 origin-pickup-away origin-merge origin-vanish origin-kill merge-stale origin-away pickup-merge. Points default to the
 ones that matter for the scenario; `kill` ends the process with SIGKILL after the action, outside any save. A world that
 passed is deleted; the report keeps the numbers.
@@ -31,14 +31,16 @@ spec = importlib.util.spec_from_file_location('crash_proof', here / 'run-crash-p
 crash_proof = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crash_proof)
 INCOMING = 'ntm:pile_rod__zr'
-BROKEN = ('break', 'replace', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The scenarios whose action writes files itself (a chunk it unloads): after a death outside a save they hold what those
 # files hold, not the last save.
 WRITES_IN_ACT = ('crossing', 'crossing-kill', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish',
                  'origin-kill', 'merge-stale', 'origin-away', 'pickup-merge',
                  # The loader's chunk leaves before the break, its record and entities written.
-                 'coupled-break')
+                 'coupled-break',
+                 # The core's chunk leaves after the break, its record and entities written.
+                 'frozen-unload')
 # scenario -> (items counted, what the mod's world holds, what the control's holds)
 # The transfers between two chunks, with what both worlds hold: counted equal to the control, as a break is.
 TRANSFERS = {'coupled-a': 1, 'coupled-b': 1, 'coupled-ea': 6, 'coupled-eb': 6}
@@ -49,8 +51,14 @@ EMITTING = {'crossing': (('ntm:pile_rod',), 12, 12), 'crossing-kill': (('ntm:pil
             'coupled-break': (('ntm:pile_rod',), 6, 6)}
 
 
+# Breaks of a machine holding rods (its hidden contents), with what both worlds hold before: counted equal to the control.
+HIDDEN = {'frozen-break': 12, 'frozen-unload': 12}
+
+
 def items_of(scenario):
-    return EMITTING[scenario][0] if scenario in EMITTING else ('ntm:niter',) if scenario in BROKEN else ('ntm:pile_rod',)
+    if scenario in EMITTING:
+        return EMITTING[scenario][0]
+    return ('ntm:niter',) if scenario in BROKEN and scenario not in HIDDEN else ('ntm:pile_rod',)
 
 DEFAULT_POINTS = {
     'vanilla-break': ['kill', 'kv_committed', 'chunks_written', 'entities_written'],
@@ -75,6 +83,8 @@ DEFAULT_POINTS = {
     # The mixer's chunk first (`live_chunk`): a cut after the first record of a batch hits another chunk in the control.
     'break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'replace': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'frozen-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:2,0', 'chunks_written', 'entities_written'],
+    'frozen-unload': ['none', 'kill', 'kv_committed'],
 }
 
 
@@ -344,7 +354,7 @@ def main():
                 outcome = against_control(outcomes[False], outcomes[True]) if controlled else outcomes[False]
                 if exact and controlled:
                     # A death outside any save: both worlds are the last save, exactly (the break, the transfer never happened).
-                    base = TRANSFERS.get(args.scenario) or int(os.environ.get('NTM_CRASH_NITER', '16'))
+                    base = TRANSFERS.get(args.scenario) or HIDDEN.get(args.scenario) or int(os.environ.get('NTM_CRASH_NITER', '16'))
                     last = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
                     outcome['as_the_last_save'] = all(v == (base, base) for v in last.values()) and all(
                         o.get(r) == o.get('base_items') for o in outcomes.values() for r in crash_proof.REOPENS)
