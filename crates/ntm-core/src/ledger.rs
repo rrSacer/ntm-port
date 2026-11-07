@@ -1,5 +1,6 @@
 //! What a chunk's record keeps of the machines' effects: the stacks an effect owes the world while it cannot drop them
-//! yet, as a dropper keeps its stock; and what records of earlier versions held, read once to settle it.
+//! yet, as a dropper keeps its stock; the removals and batches of effects whose home this chunk is
+//! (`server::obligations`); and what records of earlier versions held, read once to settle it.
 //!
 //! The host's storage is written with the world's save, so after a death the machines, their effects in flight and the
 //! world all come back as the last save left them, as vanilla's do. An effect drops its items in the very step that
@@ -62,10 +63,11 @@ pub struct Owed {
     /// How many items its entities held then (0: as `item` says).
     #[serde(default, skip_serializing_if = "is_zero")]
     pub live: u32,
-    /// The chunks its entities were last and ever seen in (earlier versions only).
-    #[serde(default, skip_serializing)]
+    /// The chunks its entities were last and ever seen in (earlier versions only). Written back as long as the stack is
+    /// not settled: a record saved before its settling still says where to look.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last: Option<[i32; 2]>,
-    #[serde(default, skip_serializing)]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub seen: Vec<[i32; 2]>,
 }
 
@@ -107,7 +109,7 @@ impl Owed {
 /// A folded stack of an earlier version (its effect and place in it) and the chunks it was seen in.
 pub type Folded = ((u64, u32), Vec<[i32; 2]>);
 
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct ChunkLedger {
     /// The stacks owed by effects whose drop waits.
     #[serde(default, rename = "entries", skip_serializing_if = "Vec::is_empty")]
@@ -117,14 +119,20 @@ pub struct ChunkLedger {
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty", with = "hex_set")]
     pub applied: BTreeSet<u64>,
     /// An earlier version's stacks that folded into another, with the chunks they were seen in: an entity file of one
-    /// of those still showing them shows a copy (`ChunkLedger::legacy`). Read only.
-    #[serde(default, skip_serializing, with = "stack_set")]
+    /// of those still showing them shows a copy (`ChunkLedger::legacy`). Written back until settled.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty", with = "stack_set")]
     pub gone: BTreeMap<(u64, u32), Vec<[i32; 2]>>,
+    /// Machines of this chunk removed whose group has not taken them yet, with what they held.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub removals: Vec<crate::persist::Removal>,
+    /// Batches of effects of machines of this chunk still in flight.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub batches: Vec<crate::server::CommittedEffects>,
 }
 
 impl ChunkLedger {
     pub fn is_empty(&self) -> bool {
-        self.owed.is_empty() && self.applied.is_empty() && self.gone.is_empty()
+        self.owed.is_empty() && self.applied.is_empty() && self.gone.is_empty() && self.removals.is_empty() && self.batches.is_empty()
     }
     pub fn knows(&self, id: u64) -> bool {
         self.applied.contains(&id) || self.owed.iter().any(|e| e.id == id)
@@ -184,8 +192,12 @@ impl ChunkLedger {
         self.owed = kept;
         copies
     }
-    /// Forgets the applied ids the host's storage no longer names. Returns whether any went.
+    /// Forgets the applied ids the host's storage no longer names. Returns whether any went. A record still to settle
+    /// is left as it is: its ids say what its stacks were (F2 of the fresh review).
     pub fn prune(&mut self, live: &BTreeSet<u64>) -> bool {
+        if self.has_legacy() {
+            return false;
+        }
         let before = self.applied.len();
         self.applied.retain(|id| live.contains(id) || self.owed.iter().any(|e| e.id == *id));
         self.applied.len() != before
@@ -198,27 +210,13 @@ impl ChunkLedger {
     }
 }
 
-/// The SNBT stack `item` with its count set to `count`.
+/// The SNBT stack `item` with its count set to `count`, read by the SNBT parser (a `count:` or a brace inside a quoted
+/// component is text, not structure). A stack that does not read is kept as it is.
 fn with_count(item: &str, count: u32) -> String {
-    let mut out = String::new();
-    let mut rest = item;
-    let mut done = false;
-    while let Some(i) = rest.find("count:") {
-        let before = &rest[..i];
-        // A top-level key only: the one at the stack's own depth.
-        let depth = out.chars().chain(before.chars()).fold(0i32, |d, c| d + i32::from(c == '{') - i32::from(c == '}'));
-        out.push_str(before);
-        out.push_str("count:");
-        rest = &rest[i + 6..];
-        if depth == 1 && !done {
-            let digits = rest.find(|c: char| !c.is_ascii_digit()).unwrap_or(rest.len());
-            out.push_str(&count.to_string());
-            rest = &rest[digits..];
-            done = true;
-        }
+    if crate::snbt::fields(item).is_none() {
+        return item.to_string();
     }
-    out.push_str(rest);
-    out
+    crate::snbt::with_field(Some(item), "count", &count.to_string())
 }
 
 mod hex {
@@ -248,9 +246,18 @@ mod hex_set {
 
 /// `<id>:<idx>`, then `@x,z;x,z` for the holders when there are any.
 mod stack_set {
-    use serde::{Deserialize, Deserializer};
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
     use std::collections::BTreeMap;
     type Gone = BTreeMap<(u64, u32), Vec<[i32; 2]>>;
+    pub fn serialize<S: Serializer>(v: &Gone, s: S) -> Result<S::Ok, S::Error> {
+        v.iter()
+            .map(|((id, idx), holders)| {
+                let at: Vec<String> = holders.iter().map(|c| format!("{},{}", c[0], c[1])).collect();
+                if at.is_empty() { format!("{id:016x}:{idx}") } else { format!("{id:016x}:{idx}@{}", at.join(";")) }
+            })
+            .collect::<Vec<_>>()
+            .serialize(s)
+    }
     pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<Gone, D::Error> {
         let bad = || serde::de::Error::custom("stack");
         Vec::<String>::deserialize(d)?
@@ -299,11 +306,16 @@ mod tests {
 
     #[test]
     fn a_count_is_set_at_the_stacks_own_depth() {
-        assert_eq!(with_count("{id:'ntm:niter',count:16}", 64), "{id:'ntm:niter',count:64}");
-        assert_eq!(
-            with_count("{components:{'minecraft:bundle_contents':[{id:'a',count:2}]},count:1,id:'b'}", 9),
-            "{components:{'minecraft:bundle_contents':[{id:'a',count:2}]},count:9,id:'b'}"
-        );
+        let count = |item: &str| crate::snbt::fields(item).unwrap()["count"].clone();
+        let set = with_count("{id:'ntm:niter',count:16}", 64);
+        assert_eq!((count(&set), crate::snbt::fields(&set).unwrap()["id"].as_str()), ("64".into(), "\"ntm:niter\""));
+        let nested = with_count("{components:{'minecraft:bundle_contents':[{id:'a',count:2}]},count:1,id:'b'}", 9);
+        assert_eq!(count(&nested), "9");
+        assert!(nested.contains("{count:2,id:\"a\"}"), "{nested}");
+        // F3 of the fresh review: a brace and a `count:` inside a quoted component are text.
+        let quoted = with_count("{components:{'minecraft:custom_data':{note:'{',n:'count:3'}},count:16,id:'ntm:niter'}", 64);
+        assert_eq!(count(&quoted), "64", "{quoted}");
+        assert!(quoted.contains("note:\"{\"") && quoted.contains("n:\"count:3\""), "{quoted}");
     }
 
     #[test]

@@ -4,6 +4,11 @@
 //! zones, the detonators' links, the players' doses, the ticks played (the
 //! zones' clock). That goes to the host's [`Kv`] under [`KEY`] whenever it
 //! changes, and every [`TICKS_EVERY`] ticks for the clock alone.
+//!
+//! What a machine's removal or step still owes the world (a removal waiting for its group, a batch of effects in
+//! flight) is not kept here: it lives in the record of its chunk (`server::obligations`), written with the block
+//! entities it follows, so a save never pairs it with records it does not belong to. Only an earlier version's storage
+//! still holds some (`WorldState::legacy`), until they reach their chunks.
 
 use crate::{Pos, kv::Kv, machine::Machine};
 use serde::{Deserialize, Serialize};
@@ -127,6 +132,19 @@ fn is_zero(n: &u64) -> bool {
     *n == 0
 }
 
+/// A removal or a batch of effects, by what names it for good.
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub enum Obligation {
+    Removal((String, Pos), u64),
+    Batch(u64),
+}
+
+impl Removal {
+    pub fn obligation(&self) -> Obligation {
+        Obligation::Removal(self.key.clone(), self.machine.generation)
+    }
+}
+
 /// The kept parts are [`Tracked`]: whether they changed since the last keep is known without serializing them.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct WorldState {
@@ -145,6 +163,9 @@ pub struct WorldState {
     pub cables: BTreeSet<(String, Pos)>,
     pub bombs: Tracked<crate::blast::BombWorld>,
     pub zirnox: Tracked<crate::zirnox::Remnants>,
+    /// The removals and batches an earlier version's storage held, still kept here: until their chunk has them and a
+    /// waited save wrote that chunk before this storage.
+    pub legacy: Tracked<BTreeSet<Obligation>>,
 }
 
 impl WorldState {
@@ -172,20 +193,38 @@ impl WorldState {
         }
     }
 
-    /// The stamps of the kept parts: equal to those of the last keep, the parts are as kept.
+    /// The stamps of the kept parts: equal to those of the last keep, the parts are as kept. Removals and batches
+    /// count only while some are an earlier version's (`legacy`): the others are kept with their chunks.
     pub fn stamps(&self) -> [u64; 10] {
+        let legacy = !self.legacy.is_empty();
+        let only = |stamp: u64| if legacy { stamp } else { 0 };
         [
             Tracked::stamp(&self.effect_serial),
-            Tracked::stamp(&self.removals),
+            only(Tracked::stamp(&self.removals)) ^ Tracked::stamp(&self.legacy),
             Tracked::stamp(&self.generations),
-            Tracked::stamp(&self.machine_effects),
-            Tracked::stamp(&self.applied_machine_effects),
+            only(Tracked::stamp(&self.machine_effects)),
+            0,
             Tracked::stamp(&self.prepared_retentions),
-            Tracked::stamp(&self.survivors),
+            0,
             Tracked::stamp(&self.radiation),
             Tracked::stamp(&self.bombs),
             Tracked::stamp(&self.zirnox),
         ]
+    }
+
+    /// The removals and batches the storage keeps: an earlier version's not yet in their chunks.
+    fn kept_removals(&self) -> Vec<&Removal> {
+        self.removals.iter().filter(|r| self.legacy.contains(&r.obligation())).collect()
+    }
+    fn kept_batches(&self) -> std::collections::VecDeque<&crate::server::CommittedEffects> {
+        self.machine_effects.iter().filter(|b| self.legacy.contains(&Obligation::Batch(b.serial))).collect()
+    }
+
+    /// The entries the storage would keep that can hold items or decide what a chunk holds: removals, batches and
+    /// prepared retentions. Zero in a world of this version at every save (an earlier version's, until they reach
+    /// their chunks).
+    pub fn kept_items(&self) -> usize {
+        self.kept_removals().len() + self.kept_batches().len() + self.prepared_retentions.len()
     }
 
     /// What [`WorldState::load`] reads back, the clock at `ticks`.
@@ -201,17 +240,13 @@ impl WorldState {
             #[serde(skip_serializing_if = "is_zero")]
             effect_serial: &'a u64,
             #[serde(skip_serializing_if = "Vec::is_empty")]
-            removals: &'a Vec<Removal>,
+            removals: Vec<&'a Removal>,
             #[serde(skip_serializing_if = "Vec::is_empty")]
             generations: Vec<(&'a (String, Pos), &'a u64)>,
             #[serde(skip_serializing_if = "std::collections::VecDeque::is_empty")]
-            machine_effects: &'a std::collections::VecDeque<crate::server::CommittedEffects>,
-            #[serde(skip_serializing_if = "std::collections::VecDeque::is_empty")]
-            applied_machine_effects: &'a std::collections::VecDeque<crate::server::CommittedEffects>,
+            machine_effects: std::collections::VecDeque<&'a crate::server::CommittedEffects>,
             #[serde(skip_serializing_if = "std::collections::VecDeque::is_empty")]
             prepared_retentions: &'a std::collections::VecDeque<crate::server::PreparedRetention>,
-            #[serde(skip_serializing_if = "Vec::is_empty")]
-            survivors: Vec<&'a crate::server::Survivor>,
         }
         let kept = KeptRef {
             radiation: &self.radiation,
@@ -219,12 +254,32 @@ impl WorldState {
             zirnox: &self.zirnox,
             ticks,
             effect_serial: &self.effect_serial,
-            removals: &self.removals,
+            // Receipts and survivors are the session's: every save confirms them before the storage is written.
+            removals: self.kept_removals(),
             generations: self.generations.iter().collect(),
-            machine_effects: &self.machine_effects,
-            applied_machine_effects: &self.applied_machine_effects,
+            machine_effects: self.kept_batches(),
             prepared_retentions: &self.prepared_retentions,
-            survivors: self.survivors.values().collect(),
+        };
+        serde_json::to_vec(&kept).unwrap_or_default()
+    }
+}
+
+#[cfg(test)]
+impl WorldState {
+    /// The storage as an earlier version wrote it: removals, batches, receipts and survivors with the rest.
+    pub fn kept_as_an_earlier_version(&self, ticks: u64) -> Vec<u8> {
+        let kept = Kept {
+            radiation: (*self.radiation).clone(),
+            bombs: (*self.bombs).clone(),
+            zirnox: (*self.zirnox).clone(),
+            ticks,
+            effect_serial: *self.effect_serial,
+            removals: (*self.removals).clone(),
+            generations: self.generations.iter().map(|(k, v)| (k.clone(), *v)).collect(),
+            machine_effects: (*self.machine_effects).clone(),
+            applied_machine_effects: (*self.applied_machine_effects).clone(),
+            prepared_retentions: (*self.prepared_retentions).clone(),
+            survivors: self.survivors.values().cloned().collect(),
         };
         serde_json::to_vec(&kept).unwrap_or_default()
     }

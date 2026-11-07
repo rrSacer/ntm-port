@@ -37,7 +37,7 @@ fn a_followed_stack_no_file_shows_comes_back_with_what_it_held() {
     assert_eq!(asked, vec![(entity_tag(spawned, 0, [8, 0]), vec![[8, 0], [31, 0], [50, 0]])], "every chunk it was seen in is looked at");
     assert_eq!(copies, vec![((folded, 0), vec![[31, 0]])], "the folded stack's copies are the host's to remove");
     let dropped = ledger.take_owed(|_| true);
-    assert_eq!(dropped, vec![([130, 100, 8], "{id:'ntm:niter',count:32}".to_string()), ([131, 100, 9], "{id:'ntm:niter',count:64}".to_string())]);
+    assert_eq!(dropped, vec![([130, 100, 8], "{id:'ntm:niter',count:32}".to_string()), ([131, 100, 9], "{count:64,id:\"ntm:niter\"}".to_string())]);
     assert!(ledger.knows(pending) && ledger.knows(spawned) && ledger.knows(paid), "a replay of any of its effects adds nothing");
 }
 
@@ -83,4 +83,34 @@ fn records_of_the_versions_since_read_as_they_are() {
     let empty: BTreeSet<u64> = BTreeSet::new();
     r2.prune(&empty);
     assert!(r2.is_empty());
+}
+
+#[test]
+fn a_record_pruned_and_written_before_it_is_settled_still_says_where_its_stacks_are() {
+    // F2 of the fresh review: saves before the settling must not drop `seen`/`last`/`gone`.
+    let (json, ..) = r3_record();
+    let mut ledger = ChunkLedger::from_json(&json);
+    assert!(!ledger.prune(&BTreeSet::new()), "a record still to settle is not pruned");
+    let written = ledger.to_json();
+    assert!(written.contains("seen") && written.contains("last") && written.contains("gone"), "{written}");
+    let mut back = ChunkLedger::from_json(&written);
+    let mut before = ChunkLedger::from_json(&json);
+    // The 64 items are in holder C=(50,0), far from the origin.
+    let shown = |e: &ntm_core::ledger::Owed| e.holders().contains(&[50, 0]);
+    assert_eq!(back.legacy(shown), before.legacy(shown), "the same copies to remove");
+    assert_eq!(back.take_owed(|_| true), before.take_owed(|_| true), "and only the pending stack is owed");
+    assert_eq!(back.take_owed(|_| true).len(), 0);
+}
+
+#[test]
+fn a_legacy_count_is_set_by_the_snbt_parser() {
+    // F3 of the fresh review: a brace inside a quoted component is text.
+    let json = r#"{"entries":[{"id":"0000000000000001","at":[0,64,0],"item":"{components:{'minecraft:custom_data':{note:'{'}},count:16,id:'ntm:niter'}","state":"Spawned","live":64}]}"#;
+    let mut l = ChunkLedger::from_json(json);
+    l.legacy(|_| false);
+    let items = l.take_owed(|_| true);
+    assert_eq!(items.len(), 1);
+    let fields = ntm_core::snbt::fields(&items[0].1).unwrap();
+    assert_eq!(fields["count"], "64", "{:?}", items);
+    assert!(items[0].1.contains("note:\"{\""), "{:?}", items);
 }

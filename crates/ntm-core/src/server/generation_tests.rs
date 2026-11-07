@@ -43,6 +43,21 @@ struct Host {
     pruned: usize,
     /// Writes of the world's state.
     world_writes: usize,
+    /// What each chunk's record owes (`store_obligations`), as the native host's chunk attachments hold it.
+    homes: BTreeMap<[i32; 2], (Vec<crate::persist::Removal>, Vec<crate::server::CommittedEffects>)>,
+}
+/// The removals and batches the chunks' records owe.
+fn owed(h: &Host) -> (usize, usize) {
+    h.homes.values().fold((0, 0), |(r, b), (rs, bs)| (r + rs.len(), b + bs.len()))
+}
+/// The world opened again from the host's records: the storage, then what each chunk's record owes (given when the
+/// chunk loads, before its block entities are adopted).
+fn reopen(h: &mut Host, tick: u64) -> Server {
+    let mut s = Server::native(h, tick);
+    for (chunk, (removals, batches)) in h.homes.clone() {
+        s.native_obligations_loaded(D, chunk, removals, batches);
+    }
+    s
 }
 impl Kv for Host {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -64,6 +79,14 @@ impl Kv for Host {
     }
 }
 impl ServerHost for Host {
+    fn store_obligations(&mut self, _: &str, chunk: [i32; 2], removals: &[crate::persist::Removal], batches: &[crate::server::CommittedEffects]) -> bool {
+        if removals.is_empty() && batches.is_empty() {
+            self.homes.remove(&chunk);
+        } else {
+            self.homes.insert(chunk, (removals.to_vec(), batches.to_vec()));
+        }
+        true
+    }
     // Its items are kept by id (`ledger`), as the native host's are.
     fn replays_by_id(&self) -> bool {
         true
@@ -279,7 +302,7 @@ fn install(h: &mut Host, block: &str, n: usize) -> Server {
 fn a_waiting_structural_effect_does_not_release_contents_of_a_source_consumed_elsewhere() {
     use super::{CellGuard, CommittedEffects, WorldEffect};
     let mut h = Host::default();
-    let mut s = Server::native(&mut h, 0);
+    let mut s = reopen(&mut h, 0);
     let other = [16, 64, 0];
     h.blocks.insert(P, "minecraft:chest".into());
     h.blocks.insert(other, "minecraft:stone".into());
@@ -331,8 +354,8 @@ fn a_receipts_read_only_origin_is_not_a_consumed_machine_after_reopen() {
             dim: D.into(), pos: [16, 64, 0], items: vec![("ntm:pile_rod__ra226be".into(), 1)],
         }]), ..Default::default()
     });
-    h.set(crate::persist::KEY, &s.ready.world.kept(0)).unwrap();
-    let mut reopened = Server::native(&mut h, 2);
+    h.set(crate::persist::KEY, &s.ready.world.kept_as_an_earlier_version(0)).unwrap();
+    let mut reopened = reopen(&mut h, 2);
     assert!(reopened.native_adopt(D, P, &old_json));
     reopened.native_tick(&mut h, 3);
     assert_eq!(blockstate::id_of(&h.blocks[&P]), zirnox::BLOCK, "a read dependency cannot authorize deleting its BE");
@@ -491,7 +514,7 @@ fn delayed_block_effect() {
 fn missing_core_tombstone() {
     use ntm_core::pile::{Core, Pile, Rod, Shape};
     let mut h = Host::default();
-    let mut s = Server::native(&mut h, 0);
+    let mut s = reopen(&mut h, 0);
     let shape = Shape {
         at: P,
         inward: [0, 0, 1],
@@ -525,19 +548,17 @@ fn missing_core_tombstone() {
     h.unloaded.insert([1, 65, 3]);
     s.native_tick(&mut h, 2);
     s.native_world_saved(&mut h, true);
-    let kept = WorldState::load(&mut h);
+    let (removals, batches) = owed(&h);
     println!(
-        "missing loaded core + inaccessible member: tombstones={}, pending_effects={}, runtime_has_core={}",
-        kept.removals.len(),
-        kept.machine_effects.len(),
+        "missing loaded core + inaccessible member: tombstones={removals}, pending_effects={batches}, runtime_has_core={}",
         s.native_has(D, P)
     );
-    assert_eq!(
-        kept.removals.len(),
-        1,
-        "R9: absence must be durable before group availability"
-    );
-    let mut reopened = Server::native(&mut h, 3);
+    // R9, as Java's `breakBlock` does it: the core's absence is acted on at once, its rod out from its chunk; no removal
+    // waits for the member out of reach (it turns back to brick when it comes in).
+    assert_eq!(h.drops.len(), 1, "the core's rod is out");
+    assert_eq!((removals, batches), (0, 0), "nothing waits");
+    assert!(!s.native_has(D, P));
+    let mut reopened = reopen(&mut h, 3);
     for (at, j) in h.saved.clone() {
         reopened.native_adopt(D, at, &j);
     }
@@ -550,12 +571,14 @@ fn missing_core_tombstone() {
         reopened.native_has(D, P),
         h.drops.len()
     );
+    assert_eq!(h.drops.len(), 1, "the reopen puts nothing out again");
+    assert_eq!(h.blocks[&[1, 65, 3]], ntm_core::pile::BRICK, "the member out of reach turned back to brick");
 }
 
 fn deferred_pile_edit_overwrites_replacement() {
     use ntm_core::pile::{Core, Pile, Rod, Shape};
     let mut h = Host::default();
-    let mut s = Server::native(&mut h, 0);
+    let mut s = reopen(&mut h, 0);
     let shape = Shape {
         at: P,
         inward: [0, 0, 1],
@@ -594,7 +617,7 @@ fn deferred_pile_edit_overwrites_replacement() {
         "p",
     );
     assert!(action.is_some());
-    assert_eq!(WorldState::load(&mut h).machine_effects.len(), 1);
+    assert_eq!(owed(&h).1, 1, "the waiting batch is in its chunk's record");
     h.blocks.insert(at, zirnox::BLOCK.into());
     let mut slots = vec![None; 28];
     slots[25] = Some(Stack::new("minecraft:water_bucket", 1));
@@ -624,7 +647,7 @@ fn deferred_pile_edit_overwrites_replacement() {
 fn network_does_not_publish_refused_input() {
     use ntm_core::fluidbox::Mode;
     let mut h = Host::default();
-    let mut s = Server::native(&mut h, 0);
+    let mut s = reopen(&mut h, 0);
     let target = [1, 64, 0];
     for (at, mode) in [(P, Mode::Output), (target, Mode::Input)] {
         let mut m = Machine::new(Kind::FluidStore, "ntm:barrel_steel", Some("north".into()));
@@ -905,8 +928,8 @@ fn old_chunk_replay(seen: bool) -> (Host, Server) {
     if seen {
         h.blocks_done.insert((ntm_core::ledger::effect_id(7, 0), P));
     }
-    h.set(ntm_core::persist::KEY, &s.ready.world.kept(0)).unwrap();
-    let mut reopened = Server::native(&mut h, 1);
+    h.set(ntm_core::persist::KEY, &s.ready.world.kept_as_an_earlier_version(0)).unwrap();
+    let mut reopened = reopen(&mut h, 1);
     assert!(reopened.native_adopt(D, P, &h.saved[&P].clone()));
     reopened.native_tick(&mut h, 2);
     reopened.native_tick(&mut h, 3);
@@ -1004,8 +1027,8 @@ fn an_adopted_loader_survivor_overwrites_old_be_slots_and_saved_control_state() 
         dim: D.into(), pos: P, generation: survived.generation, rev: survived.rev,
         json: serde_json::to_string(&survived).unwrap(),
     });
-    h.set(crate::persist::KEY, &s.ready.world.kept(0)).unwrap();
-    let mut reopened = Server::native(&mut h, 2);
+    h.set(crate::persist::KEY, &s.ready.world.kept_as_an_earlier_version(0)).unwrap();
+    let mut reopened = reopen(&mut h, 2);
     assert!(reopened.native_adopt(D, P, &old_json));
     reopened.native_tick(&mut h, 3);
     assert!(h.slots[&P][0].is_none(), "old BE inventory cannot put the transferred rod back");
@@ -1061,16 +1084,16 @@ fn receipt_replay_checks_its_cell_generation_and_keeps_old_drops_separate() {
             items: vec![("ntm:pile_rod__zr".into(), 1)],
         }]),
     ..Default::default()});
-    h.set(ntm_core::persist::KEY, &s.ready.world.kept(0))
+    h.set(ntm_core::persist::KEY, &s.ready.world.kept_as_an_earlier_version(0))
         .unwrap();
-    let mut reopened = Server::native(&mut h, 1);
+    let mut reopened = reopen(&mut h, 1);
     assert!(reopened.native_adopt(D, P, &h.saved[&P]));
     reopened.native_tick(&mut h, 2);
     assert_eq!(blockstate::id_of(&h.blocks[&P]), zirnox::BLOCK);
     assert_eq!(z(&h).water.mb, 1000);
     assert_eq!(h.drops, vec![Stack::new("ntm:pile_rod__zr", 1)]);
     reopened.native_world_saved(&mut h, true);
-    let mut again = Server::native(&mut h, 3);
+    let mut again = reopen(&mut h, 3);
     again.native_tick(&mut h, 4);
     assert_eq!(h.drops.len(), 1);
 }
@@ -1286,7 +1309,7 @@ fn late_screen_and_hopper_inputs_are_retained_atomically_when_a_condemned_be_is_
                 .all(|i| i.id != "minecraft:water_bucket")
         );
         s.native_world_saved(&mut h, true);
-        let mut reopened = Server::native(&mut h, 20);
+        let mut reopened = reopen(&mut h, 20);
         for (at, json) in h.saved.clone() {
             reopened.native_adopt(D, at, &json);
         }
@@ -1326,7 +1349,7 @@ fn a_refused_structural_capture_does_not_duplicate_a_withdrawn_item_on_retry() {
     // Clean reopen while the refused generation still owns its real input.
     s.native_world_saved(&mut h, true);
     let player = h.slots.get_mut(&P).unwrap()[25].take().unwrap();
-    let mut reopened = Server::native(&mut h, 10);
+    let mut reopened = reopen(&mut h, 10);
     h.refuse_blocks = false;
     for t in 11..15 {
         reopened.native_tick(&mut h, t);
@@ -1363,7 +1386,7 @@ fn a_crash_before_the_atomic_commit_leaves_the_cell_and_the_miner_as_they_were()
     assert_eq!(h.blocks[&target], "minecraft:chest");
     assert!(h.retained.is_empty());
     h.crash_before_commit = false;
-    let mut reopened = Server::native(&mut h, 10);
+    let mut reopened = reopen(&mut h, 10);
     for (at, json) in h.saved.clone() {
         reopened.native_adopt(D, at, &json);
     }
@@ -1385,7 +1408,7 @@ fn a_crash_after_the_atomic_commit_does_not_put_the_contents_in_the_world_twice(
     assert!(WorldState::load(&mut h).prepared_retentions.is_empty());
     assert!(WorldState::load(&mut h).applied_machine_effects.iter().all(|b| b.effects.iter().all(|e| !matches!(e, super::WorldEffect::EncodedItems { .. }))));
     h.crash_after_commit = false;
-    let mut reopened = Server::native(&mut h, 10);
+    let mut reopened = reopen(&mut h, 10);
     for (at, json) in h.saved.clone() {
         reopened.native_adopt(D, at, &json);
     }
@@ -1394,7 +1417,7 @@ fn a_crash_after_the_atomic_commit_does_not_put_the_contents_in_the_world_twice(
     reopened.native_tick(&mut h, 12);
     assert_eq!(h.retained.len(), 1, "no replay");
     reopened.native_world_saved(&mut h, true);
-    let mut clean = Server::native(&mut h, 20);
+    let mut clean = reopen(&mut h, 20);
     for (at, json) in h.saved.clone() {
         clean.native_adopt(D, at, &json);
     }
@@ -1458,7 +1481,7 @@ fn isotope_conflict_in_expected_rolls_back_and_clean_reopen_resumes_strictly() {
         match isotope(&h) {Radioisotope::Rtg(r)=>assert_eq!(r.power,0),Radioisotope::Radgen(r)=>assert_eq!(r.power,0)}
         s.native_tick(&mut h,3);s.native_tick(&mut h,4);
         let before=isotope(&h);let slots=h.slots[&P].clone();let json=h.saved[&P].clone();
-        let mut reopened=Server::native(&mut h,4);assert!(reopened.native_adopt(D,P,&json));
+        let mut reopened=reopen(&mut h, 4);assert!(reopened.native_adopt(D,P,&json));
         assert_eq!(h.slots[&P],slots);reopened.native_tick(&mut h,5);
         match (before,isotope(&h)) {
             (Radioisotope::Rtg(a),Radioisotope::Rtg(b))=>{
@@ -1516,7 +1539,7 @@ fn item_effects_apply_once_across_a_replay_and_identical_ones_both_apply() {
     let kept = s.ready.world.kept(0);
     assert!(!s.ready.world.applied_machine_effects.is_empty());
     h.set(ntm_core::persist::KEY, &kept).unwrap();
-    let mut reopened = Server::native(&mut h, 3);
+    let mut reopened = reopen(&mut h, 3);
     let saved = h.saved[&P].clone();
     assert!(reopened.native_adopt(D, P, &saved));
     for t in 4..8 {

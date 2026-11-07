@@ -89,6 +89,11 @@ pub trait ServerHost: Kv {
     fn effect_applied(&mut self,_id:u64,_cells:&[(String,Pos)]){}
     /// The ids of every effect the storage still names: a ledger may forget the retired ones not listed.
     fn ledger_prune(&mut self,_live:&std::collections::BTreeSet<u64>){}
+    /// Puts what the chunk `chunk` of `dim` owes the world (`server::obligations`) in its record, in place of what it
+    /// held: written with the chunk's block entities at its next save. False when the chunk is not loaded.
+    fn store_obligations(&mut self,_dim:&str,_chunk:[i32;2],_removals:&[crate::persist::Removal],_batches:&[CommittedEffects])->bool{true}
+    /// Whether the chunk `chunk` of `dim` is loaded: what it owes is played only then, as a block entity ticks.
+    fn home_loaded(&mut self,_dim:&str,_chunk:[i32;2])->bool{true}
     /// A pile's formation: the cells' new block entities with their first state,
     /// and the held drill's wear when `wear_held`, published in one step. Refusal
     /// changes nothing, the tool included. Defaults to the structural commit,
@@ -209,9 +214,6 @@ type Key = (String, Pos);
 #[derive(Clone, Debug, Default)]
 struct Ready {
     world: WorldState,
-    /// Tests: journal before every effect, as the server did before it skipped the repeats.
-    #[cfg(test)]
-    strict_journal: bool,
     topo: BTreeMap<String, Topology>,
     topo_dirty: bool,
     /// Chunk loaded, as last checked.
@@ -270,6 +272,13 @@ pub struct Server {
     radiation_env: BTreeMap<String, i64>,
     queued: Vec<(BlockEvent,u64)>,
     ready: Ready,
+    /// What each chunk's record was last given of what it owes (a digest; `server::obligations`).
+    homes: BTreeMap<obligations::Home, u64>,
+    /// An earlier version's removals and batches that their chunk now holds.
+    in_home: BTreeSet<crate::persist::Obligation>,
+    /// Drawn when the server starts: the names of the batches it puts out are its own, whatever an older storage or
+    /// a newer chunk record names (a storage set back by a death names no batch twice).
+    nonce: u64,
 }
 
 impl Server {
@@ -553,6 +562,7 @@ pub use pile_server::PileUse;
 
 mod zirnox_server;
 mod transaction;
+pub mod obligations;
 mod generation;
 pub use generation::CellGuard;
 pub use transaction::{CommittedEffects,Survivor,WorldEffect,PreparedRetention};

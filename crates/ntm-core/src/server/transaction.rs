@@ -254,8 +254,10 @@ impl Server {
     pub(super) fn name_batches(&mut self){
         for i in 0..self.ready.world.machine_effects.len(){
             if self.ready.world.machine_effects[i].serial==0{
-                *self.ready.world.effect_serial+=1;
-                self.ready.world.machine_effects[i].serial= *self.ready.world.effect_serial;
+                // A count kept with the storage may go back with it while a chunk's record still names a batch: the
+                // server's nonce keeps every name its own (R6-1 of the sixth review).
+                let serial=self.batch_serial();
+                self.ready.world.machine_effects[i].serial=serial;
             }
         }
     }
@@ -278,25 +280,15 @@ impl Server {
         if self.ready.facts_pending || !self.recover_retentions(host){return;}
         let batches=self.ready.world.machine_effects.len();
         if batches==0{return;}
-        // Journal write-ahead, and when it may be skipped. `set` rewrites the whole journal, so one
-        // before each of n queued effects costs n times its size (a meltdown's sweep: 125 writes of
-        // 2 MB, the server blocked in `rename` for seconds). A write may be left out before an effect
-        // only when all of this hold, so a crash replays to the same world as before:
-        //  1. a write in this call already holds every queued batch (`journaled`);
-        //  2. the effect, refreshed against the world, is equal to what that write holds;
-        //  3. nothing that a replay would repeat went out since that write (`repeatable`): items,
-        //     an explosion, or a block removal with retained drops. These pop from the journal
-        //     before the next effect, as always.
-        // Plain `Blocks` effects replay harmlessly: the guard compares the cell as it stands.
-        // Every queued batch is named before the first write of the call, so each write holds the serials: the ids
-        // of a batch's effects are the same on a replay, in whatever order the batches go out this time.
+        // No journal is written ahead of an effect: a batch is in its home chunk's record (`obligations`), given it
+        // within the tick, and no save comes between two effects of a tick. Every queued batch is named first, so the
+        // ids of a batch's effects are the same in whatever order the batches go out.
         self.name_batches();
-        let mut journaled=false;
-        let mut repeatable=false;
         for _ in 0..batches {
             while let Some(batch)=self.ready.world.machine_effects.front() {
+                // What a chunk owes is played only while it is loaded: its record then follows every step.
+                if let Some(h)=batch.home()&&!host.home_loaded(&h.0,[h.1,h.2]){self.ready.world.machine_effects.rotate_left(1);break;}
                 let Some(mut effect)=batch.effects.front().cloned() else{self.ready.world.machine_effects.pop_front();break};
-                let journal=effect.clone();
                 let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::EncodedItems{dim,..}|WorldEffect::PileExplosion{dim,..}=>dim};
                 if !host.pile_reachable(dim){self.ready.world.machine_effects.rotate_left(1);break;}
                 let (effect_id,replayed)={let b=self.ready.world.machine_effects.front().unwrap();(crate::ledger::effect_id(b.serial,b.done),b.replayed)};
@@ -342,16 +334,7 @@ impl Server {
                     physical=true;
                 }
                 if wait{self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect;self.ready.world.machine_effects.rotate_left(1);break;}
-                let replays=matches!(&effect,WorldEffect::Blocks{retained,..} if retained.is_empty())
-                    || host.replays_by_id()&&!matches!(&effect,WorldEffect::PileExplosion{..});
-                let unchanged=journaled&&!repeatable&&effect==journal;
-                #[cfg(test)]
-                let unchanged=unchanged&&!self.ready.strict_journal;
                 self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect.clone();
-                if !unchanged{
-                    if let Err(e)=self.write_world(host){host.log(&format!("pending machine effect: {e}"));return;}
-                    journaled=true;repeatable=false;
-                }
                 if host.trace_effects(){
                     let b=self.ready.world.machine_effects.front().unwrap();
                     let kind=match &effect{WorldEffect::Blocks{blocks,..}=>format!("blocks {}",blocks.len()),WorldEffect::Items{pos,items,..}=>format!("items {pos:?} {items:?}"),WorldEffect::EncodedItems{pos,items,..}=>format!("encoded {pos:?} {}",items.len()),WorldEffect::PileExplosion{..}=>"explosion".into()};
@@ -373,7 +356,6 @@ impl Server {
                     if let Some(WorldEffect::Blocks{retained,..})=self.ready.world.machine_effects.front_mut().and_then(|b|b.effects.front_mut()){retained.clear();}
                     self.ready.world.machine_effects.rotate_left(1);break;
                 }
-                repeatable|=!replays;
                 let batch=self.ready.world.machine_effects.front_mut().unwrap();
                 let effect=batch.effects.pop_front().unwrap();
                 let (serial,done)=(batch.serial,batch.done);
@@ -412,15 +394,16 @@ impl Server {
     /// actually flushed. Until then replay after a crash may duplicate an
     /// effect, but must never acknowledge an entity not yet saved by the world.
     pub fn native_world_saved(&mut self, host: &mut impl ServerHost, wait: bool) {
+        // What each chunk owes is in its record before the storage is written; a waited save wrote those records
+        // first, so an earlier version's removals and batches their chunks hold need not be kept any longer.
+        self.sync_obligations(host);
+        if wait {
+            self.retire_legacy();
+        }
         let applied = wait.then(|| std::mem::take(&mut *self.ready.world.applied_machine_effects));
         let survivors = wait.then(|| std::mem::take(&mut *self.ready.world.survivors));
-        if !self.world_changed() {
-            // Nothing to write, but a confirmed save is when the ledgers forget what the storage no longer names.
-            if wait {
-                self.prune_ledger(host);
-            }
-            return;
-        }
+        // Written at every save, the clock with it: what runs on it (a balefire's damage, the zones) comes back as of
+        // this save, not as of the last keep of the clock alone.
         if let Err(e) = self.write_world(host) {
             if let Some(applied) = applied {
                 *self.ready.world.applied_machine_effects = applied;
@@ -561,12 +544,13 @@ impl Server {
             self.ready.native_saved.insert(k, c.json);
         }
         if !staged.critical.is_empty() {
+            let owners=self.owners_home_first(keys,&before.world.machines);
             self.ready
                 .world
                 .machine_effects
                 .push_back(CommittedEffects {
                     origins:staged.origins.clone(),
-                    owners: keys,
+                    owners,
                     effects: staged.critical,
                     tombstones: Vec::new(),
                 ..Default::default()});
@@ -579,6 +563,8 @@ impl Server {
         self.track_effect_cells();
         self.flush_machine_effects(staged.host);
         self.native_save(staged.host, false);
+        // A tool use comes outside the tick: what it leaves owing is in its chunk's record at once.
+        self.sync_obligations(staged.host);
         outcome
     }
 
@@ -626,7 +612,20 @@ impl Server {
             }
         }
         groups.extend(piles.into_values());
-        for keys in groups {
+        for mut keys in groups {
+            // A pile whose core is broken goes at once, as Java's `breakBlock` does: the core's rods leave from the
+            // core's chunk now, as a vanilla container's items spill. Members out of reach stay out of the step and turn
+            // back to bricks once they come in (the orphan sweep): no removal waits holding the rods.
+            let core_broken = keys.iter().any(|k| {
+                self.ready.broken.contains_key(k)
+                    && host.get_block(&k.0, k.1).is_some()
+                    && self.ready.world.machines.get(k).is_some_and(|m| {
+                        matches!(&m.data, crate::machine::Data::Pile(p) if matches!(&**p, crate::pile::Pile::Core(_)))
+                    })
+            });
+            if core_broken {
+                keys.retain(|k| host.get_block(&k.0, k.1).is_some());
+            }
             // Isolate a coupled group. World lookups still go to the host;
             // inter-machine energy/heat/fluid exchanges run afterwards.
             let mut outside = std::mem::take(&mut self.ready.world.machines);
@@ -837,12 +836,13 @@ impl Server {
                         .collect();
                     if !staged.critical.is_empty() {
                         if staged.host.trace_effects(){staged.host.log(&format!("batch created owners={} origins={} critical={} tombstones={}",keys.len(),staged.origins.len(),staged.critical.len(),tombstones.len()));}
+                        let owners=self.owners_home_first(keys.clone(),&before.world.machines);
                         self.ready
                             .world
                             .machine_effects
                             .push_back(CommittedEffects {
                                 origins:staged.origins.clone(),
-                                owners: keys.clone(),
+                                owners,
                                 effects: staged.critical,
                                 tombstones,
                             ..Default::default()});

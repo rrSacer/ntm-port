@@ -587,7 +587,22 @@ mod tests {
         pending_items_at_sets:Vec<usize>,
         /// Items applied by id once (`replays_by_id`), as the native host's ledger does.
         by_id:Option<BTreeSet<u64>>,
+        /// What each chunk's record owes (`store_obligations`), as the native host's chunk attachments hold it.
+        homes:BTreeMap<[i32;2],(Vec<crate::persist::Removal>,Vec<CommittedEffects>)>,
     }
+    /// The world opened again from the host's records: the storage, then what each chunk's record owes, as the
+    /// native host gives it when the chunk loads (before its block entities are adopted).
+    fn reopen(h:&mut Host,tick:u64)->Server{
+        let mut s=Server::native(h,tick);
+        for (chunk,(removals,batches)) in h.homes.clone(){s.native_obligations_loaded(DIM,chunk,removals,batches);}
+        s
+    }
+    /// The removals, batches and prepared retentions the storage holds, as written.
+    fn stored(h:&Host)->usize{
+        h.kv.map.get(crate::persist::KEY).and_then(|v|serde_json::from_slice::<crate::persist::Kept>(v).ok()).map_or(0,|k|k.removals.len()+k.machine_effects.len()+k.prepared_retentions.len())
+    }
+    /// How many of the pending entries a record holds (removals and batches).
+    fn owed_in_records(h:&Host)->usize{h.homes.values().map(|(r,b)|r.len()+b.len()).sum()}
     impl Kv for Host {
         fn get(&mut self, k: &str) -> Option<Vec<u8>> {
             self.kv.get(k)
@@ -606,6 +621,11 @@ mod tests {
         }
     }
     impl ServerHost for Host {
+        fn store_obligations(&mut self,_:&str,chunk:[i32;2],removals:&[crate::persist::Removal],batches:&[CommittedEffects])->bool{
+            if removals.is_empty()&&batches.is_empty(){self.homes.remove(&chunk);}else{self.homes.insert(chunk,(removals.to_vec(),batches.to_vec()));}
+            true
+        }
+        fn home_loaded(&mut self,dim:&str,_:[i32;2])->bool{!self.inactive.contains(dim)}
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
             if !drops.is_empty(){return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
@@ -1010,19 +1030,14 @@ mod tests {
         assert_eq!(h.drops.len(), 1);
         assert_eq!(h.blasts.len(), 1);
     }
-    /// The meltdown of `formed()`'s pile, its blast tick and then its sweep tick, journaled before
-    /// every effect (`strict`) or as the server does. What the world ends as, and the writes it took.
-    fn melt(strict: bool, items_first: bool) -> Host {
-        melt_on(strict, usize::from(items_first), false)
-    }
-    /// `melt` with `items` effects ahead of the sweep, on a host that keeps items by id or not.
-    fn melt_on(strict: bool, items: usize, by_id: bool) -> Host {
+    /// The meltdown of `formed()`'s pile, its blast tick and then its sweep tick, with `items` effects ahead of the
+    /// sweep, on a host that keeps items by id or not. What the world ends as, and the storage writes it took.
+    fn melt_on(items: usize, by_id: bool) -> Host {
         let items_first = items > 0;
         let (mut s, mut h) = formed();
         if by_id {
             h.by_id = Some(BTreeSet::new());
         }
-        s.ready.strict_journal = strict;
         drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
         let c = core(&mut s);
         c.channels[0].load(Rod::of("ntm:pile_rod__waste", 0.).unwrap());
@@ -1033,7 +1048,7 @@ mod tests {
             // An effect that must not repeat, ahead of the sweep's.
             s.ready.world.machine_effects.push_front(CommittedEffects {
                 origins: vec![],
-                owners: vec![],
+                owners: vec![(DIM.into(), AT)],
                 tombstones: vec![],
                 effects: (0..items).map(|_| WorldEffect::Items { dim: DIM.into(), pos: [0, 70, 0], items: vec![("ntm:pile_rod__zr".into(), 1)] }).collect(),
                 ..Default::default()
@@ -1047,48 +1062,24 @@ mod tests {
         h.sweep_sets = h.kv.sets - before;
         h
     }
+    /// R6-2 / F1: what a meltdown owes (the rods, the sweep of its 124 members) is in its chunk's record within the
+    /// tick, never in the storage, whatever effects wait ahead of it; the storage is written a bounded number of times.
     #[test]
-    fn the_meltdown_sweep_journals_once_and_ends_as_a_write_per_effect() {
-        let strict = melt(true, false);
-        let fast = melt(false, false);
-        // The same world: blocks, drops, blast, and the journal the server ends with.
-        assert_eq!(fast.blocks, strict.blocks);
-        assert_eq!(fast.drops, strict.drops);
-        assert_eq!(fast.blasts, strict.blasts);
-        assert_eq!(fast.kv.map["world"], strict.kv.map["world"]);
-        // 124 members: a write before each of them, against one before the first and one at the end.
-        assert!(strict.sweep_sets > 100, "{}", strict.sweep_sets);
-        assert!(fast.sweep_sets <= 3, "{}", fast.sweep_sets);
-        assert!(fast.kv.written * 20 < strict.kv.written, "{} against {} bytes", fast.kv.written, strict.kv.written);
-    }
-    #[test]
-    fn items_kept_by_id_in_their_chunk_need_no_journal_write_of_their_own() {
-        let strict = melt_on(true, 10, true);
-        let fast = melt_on(false, 10, true);
-        let barriers = melt_on(false, 10, false);
-        assert_eq!(fast.blocks, strict.blocks);
-        assert_eq!(fast.drops, strict.drops);
-        assert_eq!(fast.drops, barriers.drops);
-        assert_eq!(fast.drops.iter().filter(|d| d.1 == "ntm:pile_rod__zr").count(), 10);
-        assert_eq!(fast.kv.map["world"], strict.kv.map["world"]);
-        // A host without ids writes the whole journal again after each of the ten; one with ids, as for blocks alone.
-        assert!(barriers.sweep_sets > 10, "{}", barriers.sweep_sets);
-        assert!(fast.sweep_sets <= 4, "{}", fast.sweep_sets);
-        assert_eq!(fast.pending_items_at_sets.first(), Some(&10), "{:?}", fast.pending_items_at_sets);
-    }
-    #[test]
-    fn an_effect_that_must_not_repeat_is_journaled_before_the_next_one_goes_out() {
-        let strict = melt(true, true);
-        let fast = melt(false, true);
-        assert_eq!(fast.blocks, strict.blocks);
-        assert_eq!(fast.drops, strict.drops);
-        assert_eq!(fast.kv.map["world"], strict.kv.map["world"]);
-        assert_eq!(fast.drops.iter().filter(|d| d.1 == "ntm:pile_rod__zr").count(), 1);
-        // Items (write, final), then the first block after them (write, because the drop went out), then the final.
-        assert!(fast.sweep_sets <= 5, "{}", fast.sweep_sets);
-        // Only the first write still holds the items; every later one, the first block's included, has them done.
-        assert_eq!(fast.pending_items_at_sets.first(), Some(&1), "{:?}", fast.pending_items_at_sets);
-        assert!(fast.pending_items_at_sets.iter().skip(1).all(|n| *n == 0), "{:?}", fast.pending_items_at_sets);
+    fn a_meltdown_keeps_what_it_owes_in_its_chunks_record_never_in_the_storage() {
+        let plain = melt_on(0, false);
+        let ahead = melt_on(10, false);
+        let by_id = melt_on(10, true);
+        assert_eq!(plain.drops.len(), 1);
+        assert_eq!(ahead.drops.iter().filter(|d| d.1 == "ntm:pile_rod__zr").count(), 10);
+        assert_eq!(ahead.drops, by_id.drops, "a host keeping items by id ends the same");
+        assert_eq!(ahead.blocks, plain.blocks);
+        for h in [&plain, &ahead, &by_id] {
+            assert!(h.pending_items_at_sets.iter().all(|n| *n == 0), "{:?}", h.pending_items_at_sets);
+            assert!(h.sweep_sets <= 3, "{}", h.sweep_sets);
+            assert_eq!(owed_in_records(h), 0, "all paid: the records owe nothing");
+            let kept: crate::persist::Kept = serde_json::from_slice(&h.kv.map[crate::persist::KEY]).unwrap();
+            assert!(kept.machine_effects.is_empty() && kept.removals.is_empty());
+        }
     }
     #[test]
     fn native_loader_reads_the_signal_of_its_own_cell_only() {
@@ -1183,26 +1174,30 @@ mod tests {
         let pending:usize=s.ready.world.machine_effects.iter().flat_map(|b|&b.effects).map(|e|match e{WorldEffect::Items{items,..}=>items.iter().map(|i|i.1 as usize).sum(),_=>0}).sum();
         assert_eq!(pending+h.drops.len(),2,"remaining intents plus world items conserve both rods");
         s.native_world_saved(&mut h,true);
-        let mut reopened=Server::native(&mut h,5);reopened.native_tick(&mut h,6);
+        assert_eq!(owed_in_records(&h),1,"the rest of the batch is in the core's record");
+        assert_eq!(stored(&h),0,"and not in the storage");
+        let mut reopened=reopen(&mut h,5);reopened.native_tick(&mut h,6);
         assert_eq!(h.drops.len(),1);
         h.drop_budget=None;for t in 7..11{reopened.native_tick(&mut h,t);}
         assert_eq!(h.drops,vec![([-1,64,5],"ntm:pile_rod__zr".into()),([-1,64,5],"ntm:pile_rod__nu".into())]);
         assert!(reopened.ready.world.machine_effects.is_empty());
     }
+    /// A batch lives in its home chunk's record while it owes, leaves it when paid, and the storage holds it at no
+    /// point: an unsaved spawn is the chunk's, as a dropper's shot is.
     #[test]
-    fn effect_receipts_clear_only_after_a_flushed_world_save() {
+    fn a_batch_is_in_its_chunks_record_until_paid_and_never_in_the_storage() {
         let mut h=Host::default();let mut s=Server::native(&mut h,0);
-        s.ready.world.machine_effects.push_back(CommittedEffects{origins:vec![],owners:vec![],tombstones:vec![],effects:std::collections::VecDeque::from([WorldEffect::Items{dim:DIM.into(),pos:AT,items:vec![("ntm:pile_rod__zr".into(),1)]}]),..Default::default()});
-        s.flush_machine_effects(&mut h);assert_eq!(h.drops.len(),1);
-        s.flush_machine_effects(&mut h);assert_eq!(h.drops.len(),1,"no repeat in memory");
+        s.ready.world.machine_effects.push_back(CommittedEffects{origins:vec![],owners:vec![(DIM.into(),AT)],tombstones:vec![],effects:std::collections::VecDeque::from([WorldEffect::Items{dim:DIM.into(),pos:AT,items:vec![("ntm:pile_rod__zr".into(),1)]}]),..Default::default()});
+        h.refuse_items=true;s.native_tick(&mut h,1);
+        assert_eq!(owed_in_records(&h),1,"waiting, the batch is in the record of its owner's chunk");
         s.native_world_saved(&mut h,false);
-        let unflushed=WorldState::load(&mut h);assert_eq!(unflushed.machine_effects.len(),1,"unflushed effects replay rather than lose an unsaved spawn");
-        h.kv.refuse.insert(crate::persist::KEY.into());s.native_world_saved(&mut h,true);
-        assert!(!s.ready.world.applied_machine_effects.is_empty(),"failed receipt write remains retryable");
-        h.kv.refuse.clear();s.native_world_saved(&mut h,true);
-        assert!(WorldState::load(&mut h).machine_effects.is_empty());
-        let mut reopened=Server::native(&mut h,0);reopened.native_tick(&mut h,1);
-        assert_eq!(h.drops.len(),1,"clean reopen cannot eject again");
+        assert_eq!(stored(&h),0,"the storage holds nothing of it");
+        h.refuse_items=false;s.native_tick(&mut h,2);assert_eq!(h.drops.len(),1);
+        s.flush_machine_effects(&mut h);assert_eq!(h.drops.len(),1,"no repeat in memory");
+        s.native_world_saved(&mut h,true);
+        assert_eq!(owed_in_records(&h),0,"paid, the record owes nothing");
+        let mut reopened=reopen(&mut h,0);reopened.native_tick(&mut h,1);
+        assert_eq!(h.drops.len(),1,"a reopen cannot eject again");
     }
     #[test]
     fn a_confirmed_core_tombstone_retries_without_duplicate_rods_even_after_reopening() {
@@ -1213,10 +1208,11 @@ mod tests {
         assert!(h.drops.is_empty());assert_eq!(core(&mut s).channels[0].rods.iter().flatten().count(),1);
         h.refuse_commit=false;h.refuse_items=true;s.native_tick(&mut h,2);
         assert!(h.drops.is_empty());
-        let pending=WorldState::load(&mut h);assert!(!pending.machine_effects.is_empty());
-        let rods:usize=pending.machine_effects.iter().flat_map(|b|&b.tombstones).filter_map(|(_,m)|match &m.data{Data::Pile(p)=>match &**p{Pile::Core(Some(c))=>Some(c.channels.iter().map(|c|c.rods.iter().flatten().count()).sum::<usize>()),_=>None},_=>None}).sum();
+        assert_eq!(stored(&h),0,"the storage holds nothing of the core");
+        let pending:Vec<CommittedEffects>=h.homes.values().flat_map(|(_,b)|b.clone()).collect();assert!(!pending.is_empty());
+        let rods:usize=pending.iter().flat_map(|b|&b.tombstones).filter_map(|(_,m)|match &m.data{Data::Pile(p)=>match &**p{Pile::Core(Some(c))=>Some(c.channels.iter().map(|c|c.rods.iter().flatten().count()).sum::<usize>()),_=>None},_=>None}).sum();
         assert_eq!(rods,1,"the pending tombstone retains every rod");
-        let mut again=Server::native(&mut h,2);
+        let mut again=reopen(&mut h,2);
         for (p,json) in h.saved.clone(){assert!(again.native_adopt(DIM,p,&json));}
         for t in 3..6{again.native_tick(&mut h,t);}assert!(h.drops.is_empty());
         h.refuse_items=false;for t in 6..10{again.native_tick(&mut h,t);}
@@ -1229,8 +1225,9 @@ mod tests {
         core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__zr",0.).unwrap());
         h.inactive.insert(DIM.into());h.blocks.insert(AT,"minecraft:air".into());
         s.native_block_changed(DIM,AT,pile::CORE,"minecraft:air");s.native_tick(&mut h,5);
-        assert!(h.drops.is_empty());assert_eq!(WorldState::load(&mut h).removals.len(),1);
-        let mut reopened=Server::native(&mut h,5);assert_eq!(core(&mut reopened).channels[0].rods.iter().flatten().count(),1);
+        assert!(h.drops.is_empty());assert_eq!(stored(&h),0);
+        assert_eq!(h.homes.values().map(|(r,_)|r.len()).sum::<usize>(),1,"the removal is in the core's record");
+        let mut reopened=reopen(&mut h,5);assert_eq!(core(&mut reopened).channels[0].rods.iter().flatten().count(),1);
         reopened.native_tick(&mut h,6);assert!(h.drops.is_empty());
         h.inactive.clear();for t in 7..10{reopened.native_tick(&mut h,t);}
         assert_eq!(h.drops.len(),1);assert!(reopened.ready.world.removals.is_empty());
@@ -1392,4 +1389,161 @@ mod tests {
             assert_eq!(h.drops.len(), rods, "the core's rod, once, only where the core was written");
         }
     }
+    /// Every rod of the world by kind: dropped, in slots, in the cores the server holds.
+    fn rods_by_kind(s: &Server, h: &Host) -> BTreeMap<String, usize> {
+        let mut counts = BTreeMap::<String, usize>::new();
+        for (_, id) in &h.drops {
+            *counts.entry(id.clone()).or_default() += 1;
+        }
+        for i in h.slots.values().flatten().flatten() {
+            *counts.entry(i.id.clone()).or_default() += i.count as usize;
+        }
+        for m in s.ready.world.machines.values() {
+            if let Data::Pile(p) = &m.data && let Pile::Core(Some(c)) = &**p {
+                for r in c.channels.iter().flat_map(|c| c.rods.iter().flatten()) {
+                    *counts.entry(r.id()).or_default() += 1;
+                }
+            }
+        }
+        counts
+    }
+    /// R6-2 of the sixth review: a core broken while a member's chunk is out puts its rods out at once, as Java's
+    /// `breakBlock` does; nothing waits holding them, neither in a record nor in the storage.
+    #[test]
+    fn a_break_with_a_member_out_puts_the_rods_out_at_once() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__zr", 0.).unwrap());
+        s.native_tick(&mut h, 5);
+        h.unloaded.insert([2, 66, 4]);
+        h.blocks.insert(AT, "minecraft:air".into());
+        s.native_block_changed(DIM, AT, pile::CORE, "minecraft:air");
+        s.native_tick(&mut h, 6);
+        s.native_world_saved(&mut h, true);
+        assert_eq!(h.drops, vec![([-1, 64, 5], "ntm:pile_rod__zr".to_string())], "the rod is out");
+        assert_eq!((stored(&h), owed_in_records(&h)), (0, 0), "nothing waits");
+        // The member comes in: it turns back to brick, nothing more goes out.
+        h.unloaded.clear();
+        for t in 7..10 {
+            s.native_tick(&mut h, t);
+            replay(&mut s, &mut h);
+        }
+        assert_eq!(h.blocks[&[2, 66, 4]], pile::BRICK);
+        assert_eq!(h.drops.len(), 1);
+    }
+    /// R6-2: a transfer, then a break with a member out, then a save whose storage is written while no region is: the
+    /// world opened again is the old records', whichever storage it finds, as vanilla's would be (5 Ra-226Be + 1 Zr).
+    fn removal_stock(new_store: bool) {
+        let (mut s, mut h) = formed();
+        h.by_id = Some(BTreeSet::new());
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        for _ in 0..5 {
+            core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__ra226be", 0.).unwrap());
+        }
+        let loader = [-1, 64, -1];
+        device(&mut s, &mut h, loader, "ntm:pile_device__loader", "north");
+        let incoming = Stack::new("ntm:pile_rod__zr", 1);
+        assert_eq!(s.native_pile_use(&mut h, DIM, loader, [0, 0, -1], Some(&incoming), 0., "p"), Some(PileUse::ConsumeRod));
+        s.native_tick(&mut h, 5);
+        s.native_world_saved(&mut h, true);
+        // The save-base: its records (block entities, chunk records) and its storage.
+        let (old_kv, old_blocks, old_slots, old_saved, old_homes) = (h.kv.clone(), h.blocks.clone(), h.slots.clone(), h.saved.clone(), h.homes.clone());
+        s.native_pile_use(&mut h, DIM, loader, [0, 0, -1], None, 0., "p");
+        for t in 10..30 {
+            s.native_tick(&mut h, t);
+        }
+        assert_eq!(h.drops.len(), 1, "first the full channel ejects its old rod");
+        h.blocks.insert(AT, "minecraft:air".into());
+        s.native_block_changed(DIM, AT, pile::CORE, "minecraft:air");
+        h.unloaded.insert([2, 66, 4]);
+        s.native_tick(&mut h, 31);
+        s.native_world_saved(&mut h, false);
+        assert_eq!(stored(&h), 0, "the storage of this save holds no removal");
+        // The death: no record of this save reached the disk; the storage did, or not.
+        h.blocks = old_blocks;
+        h.slots = old_slots;
+        h.saved = old_saved;
+        h.homes = old_homes;
+        h.drops.clear();
+        h.unloaded.clear();
+        h.changes.clear();
+        h.by_id = Some(BTreeSet::new());
+        if !new_store {
+            h.kv = old_kv;
+        }
+        let mut reopened = reopen(&mut h, 0);
+        for (p, json) in h.saved.clone() {
+            reopened.native_adopt(DIM, p, &json);
+        }
+        for t in 40..45 {
+            reopened.native_tick(&mut h, t);
+            replay(&mut reopened, &mut h);
+        }
+        assert_eq!(
+            rods_by_kind(&reopened, &h),
+            BTreeMap::from([("ntm:pile_rod__ra226be".into(), 5), ("ntm:pile_rod__zr".into(), 1)]),
+            "new storage: {new_store}"
+        );
+        assert!(h.drops.is_empty(), "nothing is put out for a break the records never saw");
+    }
+    #[test]
+    fn an_old_storage_with_old_records_is_the_save_base() {
+        removal_stock(false);
+    }
+    #[test]
+    fn a_new_storage_with_old_records_is_the_save_base_too() {
+        removal_stock(true);
+    }
+    /// F1 of the fresh review: a removal saved pending, paid after that save, then a save whose records and entities
+    /// reach the disk and whose storage does not: the rod is out once, as vanilla's spilled chest is.
+    #[test]
+    fn a_removal_paid_after_its_save_is_not_paid_again_with_the_older_storage() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__nu", 100.).unwrap());
+        s.native_tick(&mut h, 3);
+        h.blocks.insert(AT, "minecraft:air".into());
+        s.native_block_changed(DIM, AT, pile::CORE, "minecraft:air");
+        // A save between the break and the next tick: the removal is owed, in the core's record.
+        s.native_record_events(&mut h);
+        s.native_world_saved(&mut h, true);
+        assert_eq!(owed_in_records(&h), 1);
+        let old_kv = h.kv.clone();
+        for tick in 5..9 {
+            s.native_tick(&mut h, tick);
+            replay(&mut s, &mut h);
+        }
+        assert_eq!(h.drops.len(), 1);
+        assert_eq!(owed_in_records(&h), 0, "paid: the record owes nothing");
+        // The next save's records and entities reach the disk, its storage does not.
+        h.kv = old_kv;
+        let mut reopened = reopen(&mut h, 0);
+        for (p, json) in h.saved.clone() {
+            if h.blocks.get(&p).is_some_and(|b| b.starts_with("ntm:pile_block__")) {
+                reopened.native_adopt(DIM, p, &json);
+            }
+        }
+        for tick in 1..5 {
+            reopened.native_tick(&mut h, tick);
+            replay(&mut reopened, &mut h);
+        }
+        assert_eq!(h.drops.len(), 1, "the older storage names no removal: the rod is out once");
+    }
+    /// R6-1 of the sixth review: the storage set back by a death, while a chunk's record still names a batch the
+    /// newer session paid; a server opened from that storage names its batches anew, never as the count alone says.
+    #[test]
+    fn a_server_opened_from_a_storage_that_went_back_names_its_batches_anew() {
+        let mut h = Host::default();
+        let first = |h: &mut Host| {
+            let mut s = Server::native(h, 0);
+            s.ready.world.machine_effects.push_back(CommittedEffects { owners: vec![(DIM.into(), AT)], ..Default::default() });
+            s.name_batches();
+            s.ready.world.machine_effects[0].serial
+        };
+        let (a, b) = (first(&mut h), first(&mut h));
+        assert_eq!(*Server::native(&mut h, 0).ready.world.effect_serial, 0, "the same storage, the same count");
+        assert_ne!(a, b, "yet the names differ: the record's paid id is never taken for a new one");
+        assert!(a != 0 && b != 0);
+    }
+
 }

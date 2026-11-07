@@ -6,7 +6,7 @@ priority = 100
 # Current upstream plus reusable model, multiblock and container extensions.
 # Keep the exact integration pin: official API alone lacks those extensions.
 [compatibility]
-horizon_revision = "d07e7117a2b2c039d2a409ff999665cb8a3c8921"
+horizon_revision = "0f21c07f05f48d895b2c924202adc7eeaf9884f3"
 
 # The logic, plain Rust (cargo test against the fake world): copied into
 # this folder by tools/package-native.sh, never kept here.
@@ -163,6 +163,7 @@ hook_version = 1
 kind = "HEAD"
 helper = "ledger_chunk_unload.rs"
 bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "dimension", ty = "&str", value = "dimension" },
   { name = "chunk", ty = "[i32; 2]", value = "chunk" },
 ]
