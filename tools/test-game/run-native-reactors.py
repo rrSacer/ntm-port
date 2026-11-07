@@ -112,7 +112,8 @@ def run(args):
                          ('check-state', 'automation', 'failure', 'soils')],
               'pile': [('setup', 'capture-state'), ('check-state', 'destroy')],
               'dims': [('setup', 'capture-state'), ('check-state',)],
-              'bombs': [('setup',)], 'mining': [('setup',)],
+              # A nuke's and a balefire's craters left digging, the world closed and opened again (HBM 1.7.10).
+              'bombs': [('setup', 'restart-arm'), ('restart-check',)], 'mining': [('setup',)],
               'inventory-proxy': [('setup',)],
               'radioisotopes': [('setup', 'decay', 'capture-state'), ('check-state', 'automation')],
               'solar': [('all', 'capture-state'), ('check-state',)],

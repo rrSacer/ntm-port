@@ -136,7 +136,80 @@ def charge(g, x, manual):
                 [l for l in log(g)[start:].splitlines() if 'Pavio aceso.' in l])
 
 
+# A nuke (EntityNukeExplosionMK5) and a balefire (EntityBalefire), set off and left digging when the world closes.
+RESTART = {'nuke': (400, ''), 'balefire': (560, ' balefire')}
+
+
+def explosion_id(text, x):
+    """The id of the explosion the test command set off at x (`... at [x, y, z] (teste): explosion <id>, radius R`)."""
+    found = re.findall(r'at \[%d, \d+, -?\d+\] \(teste\): explosion (\S+), radius' % x, text)
+    return found[-1] if found else None
+
+
+def dug(g, x):
+    """Air under the blast's centre, a column down from y=99: how far its crater got."""
+    return sum(block(g, (x, y, 0)) in ('minecraft:air', 'minecraft:fire') for y in range(60, 100))
+
+
+def restart_arm(g):
+    """The second session's start: a nuke and a balefire of radius 40 set off, their craters still being dug when the
+    world is saved and closed (the runner quits)."""
+    g.evidence['phase'] = 'restart-arm'
+    g.command('gamemode creative')
+    g.command('ntmbomba config mundo raiomax 40')
+    start = len(log(g))
+    for kind, (x, suffix) in RESTART.items():
+        g.ground(x, 100, 0, width=4, height=4)
+        g.command(f'forceload add {x-80} -80 {x+80} 80')
+        time.sleep(3)
+        g.command(f'tp @s {x + .5} 100 0.5')
+        result = g.command('ntmbomba teste 40' + suffix)
+        g.check(f'{kind}_set_off', any('detonada' in line for line in result.get('chat', [])), result)
+    wait(g, 'both_handed_to_the_engine', lambda: all(explosion_id(log(g)[start:], x) for x, _ in RESTART.values()),
+         lambda: [l for l in log(g)[start:].splitlines() if '(teste)' in l], 60)
+    time.sleep(2)
+    ids = {kind: explosion_id(log(g)[start:], x) for kind, (x, _) in RESTART.items()}
+    status = ' '.join(g.command('ntmbomba status').get('chat', []))
+    g.evidence['restart_arm'] = {'ids': ids, 'status': status, 'dug': {k: dug(g, x) for k, (x, _) in RESTART.items()}}
+    g.check('both_still_digging', all(i in status for i in ids.values()), g.evidence['restart_arm'])
+    g.ctl('save')
+    (g.folder / 'bombs-restart.json').write_text(json.dumps(g.evidence['restart_arm']))
+
+
+def restart_check(g):
+    """Reopened: the nuke's crater stops with the world (`EntityNukeExplosionMK5` keeps `ticksExisted` alone and dies
+    read back); the balefire's comes back and is finished (`EntityBalefire` keeps its state)."""
+    g.evidence['phase'] = 'restart-check'
+    g.ctl('wait-ready 120')
+    armed = json.loads((g.folder / 'bombs-restart.json').read_text())
+    ids = armed['ids']
+    for x, _ in RESTART.values():
+        g.command(f'forceload add {x-80} -80 {x+80} 80')
+    text = lambda: (g.folder / 'client-reopen.log').read_text(errors='replace')
+    wait(g, 'the_nukes_crater_stops_with_the_world',
+         lambda: f"{ids['nuke']}: a nuke's crater stops with the world" in text(), lambda: [l for l in text().splitlines() if ids['nuke'] in l], 60)
+    wait(g, 'the_balefire_comes_back', lambda: f'explosion resumed: Ok("{ids["balefire"]}")' in text(),
+         lambda: [l for l in text().splitlines() if ids['balefire'] in l], 60)
+    nuke_dug = dug(g, RESTART['nuke'][0])
+    wait(g, 'the_balefire_is_finished', lambda: f'explosion done: {ids["balefire"]}' in text(),
+         lambda: [l for l in text().splitlines() if ids['balefire'] in l][-3:], 600)
+    g.check('the_nukes_crater_did_not_go_on', dug(g, RESTART['nuke'][0]) == nuke_dug, {'then': nuke_dug, 'now': dug(g, RESTART['nuke'][0])})
+    g.check('the_balefire_dug_on', dug(g, RESTART['balefire'][0]) >= armed['dug']['balefire'], {'armed': armed['dug'], 'now': dug(g, RESTART['balefire'][0])})
+    status = ' '.join(g.command('ntmbomba status').get('chat', []))
+    g.check('nothing_left_digging', ids['nuke'] not in status and ids['balefire'] not in status, status)
+    g.ctl('save')
+    saved = ntm_store.value(g.folder)
+    g.check('the_balefire_is_forgotten', not saved['bombs'].get('balefires'), saved['bombs'].get('balefires'))
+
+
 def main():
+    mode = sys.argv[2] if len(sys.argv) > 2 else 'setup'
+    if mode != 'setup':
+        g = Game(sys.argv[1], 'bombs-' + mode)
+        {'restart-arm': restart_arm, 'restart-check': restart_check}[mode](g)
+        g.evidence['ok'] = True
+        g.save()
+        return
     g = Game(sys.argv[1], 'bombs')
     g.command('gamemode creative')
     result = g.command('ntmbomba config mundo raiomax 12')
