@@ -11,9 +11,16 @@
 //!
 //! What a chunk owes is played only while it is loaded (`ServerHost::home_loaded`), as a block entity ticks only
 //! then; when it comes back its record says what it still owes (`Server::native_obligations_loaded`).
+//!
+//! An earlier version's storage held removals and batches itself. Each moves to its chunk's record once: none is played
+//! before that record is read (`ServerHost::home_migrated`). A record that took it already (`migrated: X`, kept with
+//! the record) says what is left of it, and the storage's copy adds nothing; otherwise the server takes it up and the
+//! record says so from then on. The storage keeps the copy, as it read it, until the record that took it is on the disk:
+//! a waited save wrote it before the storage (`native_world_saving`, `native_world_saved`), or it was read back from the
+//! disk with the marker. A save that does not wait retires none.
 
 use super::*;
-use crate::persist::{Obligation, Removal};
+use crate::persist::{Legacy, Obligation, Removal};
 
 /// A chunk: its dimension and coordinates.
 pub type Home = (String, i32, i32);
@@ -34,13 +41,26 @@ impl CommittedEffects {
     pub fn home(&self) -> Option<Home> {
         self.owners.first().map(home_of)
     }
+    /// The home of an earlier version's batch: its first owner's chunk, or that of the first cell it read or consumed.
+    fn legacy_home(&self) -> Option<Home> {
+        self.home()
+            .or_else(|| self.origins.first().map(|g| home_of(&g.key())))
+            .or_else(|| self.tombstones.first().map(|(k, _)| home_of(k)))
+    }
+}
+
+/// The chunks whose records an earlier version's removals and batches wait for. A batch with no cell at all has none:
+/// it stays in the storage, unplayed (no version puts one out).
+pub(super) fn legacy_homes(legacy: &Legacy) -> BTreeSet<Home> {
+    legacy.removals.iter().map(Removal::home).chain(legacy.batches.iter().filter_map(|(_, b)| b.legacy_home())).collect()
 }
 
 /// The digest of what a record is given: written again only when it changes.
-fn digest(removals: &[Removal], batches: &[CommittedEffects]) -> u64 {
+fn digest(removals: &[Removal], batches: &[CommittedEffects], migrated: &BTreeSet<Obligation>) -> u64 {
     let r = serde_json::to_vec(removals).unwrap_or_default();
     let b = serde_json::to_vec(batches).unwrap_or_default();
-    crate::ledger::fnv(&[&r, &b])
+    let m = serde_json::to_vec(migrated).unwrap_or_default();
+    crate::ledger::fnv(&[&r, &b, &m])
 }
 
 impl Server {
@@ -58,7 +78,8 @@ impl Server {
         keys
     }
 
-    /// Gives each chunk's record what it owes now, where that changed since it was last given.
+    /// Gives each chunk's record what it owes now, where that changed since it was last given. A record not read yet
+    /// for an earlier version's storage is left alone: what it took is not known.
     pub(super) fn sync_obligations(&mut self, host: &mut impl ServerHost) {
         let mut by: BTreeMap<Home, (Vec<Removal>, Vec<CommittedEffects>)> = BTreeMap::new();
         for r in self.ready.world.removals.iter() {
@@ -69,15 +90,20 @@ impl Server {
                 by.entry(h).or_default().1.push(b.clone());
             }
         }
-        let homes: BTreeSet<Home> = by.keys().cloned().chain(self.homes.keys().cloned()).collect();
+        let homes: BTreeSet<Home> =
+            by.keys().cloned().chain(self.homes.keys().cloned()).chain(self.markers.keys().cloned()).collect();
         for home in homes {
+            if self.unread.contains(&home) {
+                continue;
+            }
             let (removals, batches) = by.remove(&home).unwrap_or_default();
-            let d = digest(&removals, &batches);
-            let empty = removals.is_empty() && batches.is_empty();
+            let migrated = self.markers.get(&home).cloned().unwrap_or_default();
+            let d = digest(&removals, &batches, &migrated);
+            let empty = removals.is_empty() && batches.is_empty() && migrated.is_empty();
             if self.homes.get(&home) == Some(&d) || empty && !self.homes.contains_key(&home) {
                 continue;
             }
-            if !host.store_obligations(&home.0, [home.1, home.2], &removals, &batches) {
+            if !host.store_obligations(&home.0, [home.1, home.2], &removals, &batches, &migrated) {
                 continue;
             }
             if empty {
@@ -85,57 +111,131 @@ impl Server {
             } else {
                 self.homes.insert(home, d);
             }
-            self.in_home.extend(removals.iter().map(Removal::obligation));
-            self.in_home.extend(batches.iter().map(|b| Obligation::Batch(b.serial)));
+            self.marked.extend(migrated);
         }
     }
 
     /// The record of the chunk `chunk` of `dim`, loaded, owes `removals` and `batches`: those the server does not
-    /// hold are played again from it. A world opened again finds them only there.
-    pub fn native_obligations_loaded(&mut self, dim: &str, chunk: [i32; 2], removals: Vec<Removal>, batches: Vec<CommittedEffects>) {
+    /// hold are played again from it. A world opened again finds them only there. A marker of an earlier version's
+    /// storage that the storage read with the world no longer names goes with the record's next write.
+    pub fn native_obligations_loaded(
+        &mut self,
+        dim: &str,
+        chunk: [i32; 2],
+        removals: Vec<Removal>,
+        batches: Vec<CommittedEffects>,
+        migrated: BTreeSet<Obligation>,
+    ) {
         let home: Home = (dim.to_string(), chunk[0], chunk[1]);
-        let d = digest(&removals, &batches);
         for r in removals {
-            let id = r.obligation();
-            self.in_home.insert(id.clone());
-            if self.ready.world.removals.iter().any(|x| x.obligation() == id) {
+            if self.ready.world.removals.iter().any(|x| x.obligation() == r.obligation()) {
                 continue;
             }
-            // An earlier version's storage may have brought the same one: the chunk's record is the authority.
-            self.ready.broken.insert(r.key.clone(), r.machine.block.clone());
-            if r.engine_slots {
-                self.ready.bridge.last.insert(r.key.clone(), Vec::new());
-            }
-            let past = r.machine.generation.saturating_add(1);
-            if self.ready.world.generations.get(&r.key).is_none_or(|g| *g < past) {
-                self.ready.world.generations.insert(r.key.clone(), past);
-            }
-            self.ready.world.machines.entry(r.key.clone()).or_insert_with(|| r.machine.clone());
-            self.ready.world.removals.push(r);
+            self.take_up_removal(r);
         }
         for mut b in batches {
-            self.in_home.insert(Obligation::Batch(b.serial));
-            if let Some(i) = self.ready.world.machine_effects.iter().position(|x| x.serial == b.serial) {
+            if self.ready.world.machine_effects.iter().any(|x| x.serial == b.serial) {
                 // Held already: the server's copy is the record's, played since only while the chunk was loaded.
-                // One an earlier version's storage brought gives way to the record's.
-                if self.ready.world.legacy.contains(&Obligation::Batch(b.serial)) {
-                    b.replayed = true;
-                    self.ready.world.machine_effects[i] = b;
-                }
                 continue;
             }
             // Its effects reach other chunks, whose records may be older or newer than this one.
             b.replayed = true;
             self.ready.world.machine_effects.push_back(b);
         }
-        self.homes.insert(home, d);
+        if self.unread.contains(&home) || self.markers.contains_key(&home) {
+            return;
+        }
+        if migrated.iter().any(|m| !self.legacy_read.contains(m)) {
+            // Given again, without them (an empty record is then written too).
+            self.homes.insert(home, 0);
+        }
+    }
+
+    /// A removal the server holds from now on: the machine taken up as broken, with what it held.
+    fn take_up_removal(&mut self, r: Removal) {
+        self.ready.broken.insert(r.key.clone(), r.machine.block.clone());
+        if r.engine_slots {
+            self.ready.bridge.last.insert(r.key.clone(), Vec::new());
+        }
+        let past = r.machine.generation.saturating_add(1);
+        if self.ready.world.generations.get(&r.key).is_none_or(|g| *g < past) {
+            self.ready.world.generations.insert(r.key.clone(), past);
+        }
+        self.ready.world.machines.entry(r.key.clone()).or_insert_with(|| r.machine.clone());
+        self.ready.world.removals.push(r);
+    }
+
+    /// The records of the loaded chunks an earlier version's removals and batches wait for, read once: what a record
+    /// took already leaves the storage (that record came from the disk); the rest is taken up now, the record saying
+    /// so from its next write on.
+    pub(super) fn read_legacy(&mut self, host: &mut impl ServerHost) {
+        if self.unread.is_empty() {
+            return;
+        }
+        for home in self.unread.clone() {
+            let Some(on_record) = host.home_migrated(&home.0, [home.1, home.2]) else {
+                continue;
+            };
+            self.unread.remove(&home);
+            let legacy = &self.ready.world.legacy;
+            let removals: Vec<Removal> =
+                legacy.removals.iter().filter(|r| r.home() == home && !on_record.contains(&r.obligation())).cloned().collect();
+            let batches: Vec<(u64, CommittedEffects)> = legacy
+                .batches
+                .iter()
+                .filter(|(n, b)| b.legacy_home().as_ref() == Some(&home) && !on_record.contains(&Obligation::Batch(*n)))
+                .cloned()
+                .collect();
+            let taken: BTreeSet<Obligation> = legacy.ids().intersection(&on_record).cloned().collect();
+            if !taken.is_empty() {
+                self.ready.world.legacy.retain(|o| !taken.contains(o));
+            }
+            let mut markers: BTreeSet<Obligation> = on_record.into_iter().filter(|m| self.legacy_read.contains(m)).collect();
+            for r in removals {
+                markers.insert(r.obligation());
+                self.take_up_removal(r);
+            }
+            for (name, mut b) in batches {
+                markers.insert(Obligation::Batch(name));
+                b.serial = name;
+                b.replayed = true;
+                self.ready.world.machine_effects.push_back(b);
+            }
+            if !markers.is_empty() {
+                self.markers.insert(home.clone(), markers);
+            }
+            // Given at the next sync, with its markers.
+            self.homes.remove(&home);
+        }
+    }
+
+    /// The block changes not taken yet, as the end of a tick takes them: a removed machine's contents put out and what
+    /// each chunk owes in its record. Before a save takes its chunks (`native_world_saving`) and while chunks leaving
+    /// are still in place (`native_chunk_unloading`): a vanilla container's items are out the instant its block goes.
+    /// No machine runs a step but those whose block went.
+    pub fn native_settle(&mut self, host: &mut impl ServerHost) {
+        self.native_record_events(host);
+        self.read_legacy(host);
+        if !self.ready.facts_pending {
+            self.flush_machine_effects(host);
+            self.removal_steps(host);
+            self.flush_machine_effects(host);
+        }
+        self.sync_obligations(host);
+    }
+
+    /// A save is about to take the chunks: everything up to now is in them. The earlier version's removals and
+    /// batches whose records it takes with their markers are noted: a waited save writes those before the storage.
+    pub fn native_world_saving(&mut self, host: &mut impl ServerHost) {
+        self.native_settle(host);
+        let legacy = self.ready.world.legacy.ids();
+        self.captured = Some(self.marked.intersection(&legacy).cloned().collect());
     }
 
     /// What the record of the chunk `chunk` of `dim` must hold before it leaves: the block changes not yet seen, then
     /// what each chunk owes.
     pub fn native_chunk_unloading(&mut self, host: &mut impl ServerHost) {
-        self.native_record_events(host);
-        self.sync_obligations(host);
+        self.native_settle(host);
     }
 
     /// The entries the host's storage would keep that can hold items or decide what a chunk holds: zero in a world of
@@ -144,25 +244,14 @@ impl Server {
         self.ready.world.kept_items()
     }
 
-    /// An earlier version's removals and batches that their chunk holds and a waited save wrote: the storage need
-    /// not keep them any longer.
-    pub(super) fn retire_legacy(&mut self) {
-        if self.ready.world.legacy.is_empty() {
+    /// After a save: when it waited, the records it took with their markers are on the disk, so the storage written
+    /// now need not keep the earlier version's removals and batches they took.
+    pub(super) fn retire_legacy(&mut self, wait: bool) {
+        let Some(captured) = self.captured.take() else {
             return;
-        }
-        let held: BTreeSet<Obligation> = self
-            .ready
-            .world
-            .removals
-            .iter()
-            .map(Removal::obligation)
-            .chain(self.ready.world.machine_effects.iter().map(|b| Obligation::Batch(b.serial)))
-            .collect();
-        let in_home = &self.in_home;
-        let keep: BTreeSet<Obligation> =
-            self.ready.world.legacy.iter().filter(|o| held.contains(o) && !in_home.contains(o)).cloned().collect();
-        if keep != *self.ready.world.legacy {
-            *self.ready.world.legacy = keep;
+        };
+        if wait && !captured.is_empty() {
+            self.ready.world.legacy.retain(|o| !captured.contains(o));
         }
     }
 

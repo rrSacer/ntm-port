@@ -90,8 +90,12 @@ pub trait ServerHost: Kv {
     /// The ids of every effect the storage still names: a ledger may forget the retired ones not listed.
     fn ledger_prune(&mut self,_live:&std::collections::BTreeSet<u64>){}
     /// Puts what the chunk `chunk` of `dim` owes the world (`server::obligations`) in its record, in place of what it
-    /// held: written with the chunk's block entities at its next save. False when the chunk is not loaded.
-    fn store_obligations(&mut self,_dim:&str,_chunk:[i32;2],_removals:&[crate::persist::Removal],_batches:&[CommittedEffects])->bool{true}
+    /// held, with the earlier version's ones it took (`migrated`): written with the chunk's block entities at its next
+    /// save. False when the chunk is not loaded.
+    fn store_obligations(&mut self,_dim:&str,_chunk:[i32;2],_removals:&[crate::persist::Removal],_batches:&[CommittedEffects],_migrated:&BTreeSet<crate::persist::Obligation>)->bool{true}
+    /// The earlier version's removals and batches the record of the loaded chunk `chunk` of `dim` took (`migrated`),
+    /// as the record holds them now; None when the chunk is not loaded.
+    fn home_migrated(&mut self,_dim:&str,_chunk:[i32;2])->Option<BTreeSet<crate::persist::Obligation>>{Some(BTreeSet::new())}
     /// Whether the chunk `chunk` of `dim` is loaded: what it owes is played only then, as a block entity ticks.
     fn home_loaded(&mut self,_dim:&str,_chunk:[i32;2])->bool{true}
     /// A pile's formation: the cells' new block entities with their first state,
@@ -274,8 +278,17 @@ pub struct Server {
     ready: Ready,
     /// What each chunk's record was last given of what it owes (a digest; `server::obligations`).
     homes: BTreeMap<obligations::Home, u64>,
-    /// An earlier version's removals and batches that their chunk now holds.
-    in_home: BTreeSet<crate::persist::Obligation>,
+    /// The earlier version's removals and batches whose chunk's record the server has not read yet: none of them is
+    /// played before (`server::obligations`).
+    unread: BTreeSet<obligations::Home>,
+    /// What each chunk's record must say it took of an earlier version's storage (`ChunkLedger::migrated`).
+    markers: BTreeMap<obligations::Home, BTreeSet<crate::persist::Obligation>>,
+    /// Of those, the ones given to a loaded chunk's record: a save writes them with it.
+    marked: BTreeSet<crate::persist::Obligation>,
+    /// The earlier version's storage as the world was opened: a record's marker it does not name is of no use.
+    legacy_read: BTreeSet<crate::persist::Obligation>,
+    /// The marked ones as a save took its chunks (`native_world_saving`): a waited save wrote them before its storage.
+    captured: Option<BTreeSet<crate::persist::Obligation>>,
     /// Drawn when the server starts: the names of the batches it puts out are its own, whatever an older storage or
     /// a newer chunk record names (a storage set back by a death names no batch twice).
     nonce: u64,

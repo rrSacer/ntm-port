@@ -128,11 +128,21 @@ pub struct ChunkLedger {
     /// Batches of effects of machines of this chunk still in flight.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub batches: Vec<crate::server::CommittedEffects>,
+    /// An earlier version's removals and batches this record took from that version's storage (`migrated: X`): from
+    /// then on the record says what is left of them, and a storage that comes back still holding one adds nothing.
+    /// Kept while the storage read with the world may still hold them (`server::obligations`).
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub migrated: BTreeSet<crate::persist::Obligation>,
 }
 
 impl ChunkLedger {
     pub fn is_empty(&self) -> bool {
-        self.owed.is_empty() && self.applied.is_empty() && self.gone.is_empty() && self.removals.is_empty() && self.batches.is_empty()
+        self.owed.is_empty()
+            && self.applied.is_empty()
+            && self.gone.is_empty()
+            && self.removals.is_empty()
+            && self.batches.is_empty()
+            && self.migrated.is_empty()
     }
     pub fn knows(&self, id: u64) -> bool {
         self.applied.contains(&id) || self.owed.iter().any(|e| e.id == id)

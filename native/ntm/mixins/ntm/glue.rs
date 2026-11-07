@@ -74,7 +74,6 @@ pub(super) fn world(open: bool) {
         lock(&LEDGERS).clear();
         lock(&OWING).clear();
         lock(&ARRIVED).clear();
-        *lock(&LATE) = None;
         KV_ITEMS.store(0, std::sync::atomic::Ordering::Relaxed);
         lock(&LOADED_AT).clear();
     }
@@ -85,35 +84,44 @@ pub(super) fn world(open: bool) {
     }
 }
 
+/// The block changes recorded since the server last took them, and the records loaded since, given to the server (it
+/// then takes them as the end of a tick does, `Server::native_settle`).
+fn feed_changes(server:&mut Server,host:&mut Host<'_,'_>){
+    let changes=std::mem::take(&mut *lock(&CHANGES));
+    arrived(server);
+    for (dim,pos,old,new) in changes {
+        let now=ntm_core::server::native_server::native_change_state(&new,host.game.native_loaded_block(&dim,pos));
+        server.native_block_changed(&dim,pos,&old,&now);
+    }
+}
+
+/// A save is about to take the chunks (`world_saving`, a local extension of the engine): a block changed since the
+/// last tick (a command, a frozen tick) has its machine's contents out and what it owes in its chunk's record first,
+/// as a vanilla container's items are out the instant its block goes (N1 of the fresh review).
+pub(super) fn world_saving(game:&mut crate::game::Game<'_>,_wait:bool){
+    horizon_client::spans::time("ntm_world_saving", || {
+        if let Some((server,_))=lock(&SERVER).as_mut(){
+            let mut host=Host{game,buttons:Vec::new()};
+            feed_changes(server,&mut host);
+            server.native_world_saving(&mut host);
+        }
+    });
+}
+
 /// The world's save: the storage is written with it, as the state of this instant (vanilla's `level.dat` and saved
 /// data are, while the regions may still be queued).
 pub(super) fn world_saved(game:&mut crate::game::Game<'_>,wait:bool){
     horizon_client::spans::time("ntm_world_saved", || world_saved_timed(game, wait));
 }
 fn world_saved_timed(game:&mut crate::game::Game<'_>,wait:bool){
-    let changes=std::mem::take(&mut *lock(&CHANGES));
-    *lock(&LATE)=Some(Vec::new());
     if let Some((server,_))=lock(&SERVER).as_mut(){
         let mut host=Host{game,buttons:Vec::new()};
-        arrived(server);
-        for (dim,pos,old,new) in changes {
-            let now=ntm_core::server::native_server::native_change_state(&new,host.game.native_loaded_block(&dim,pos));
-            server.native_block_changed(&dim,pos,&old,&now);
-        }
-        // A quit/save between ticks must not forget a removed core's hidden
-        // contents. Record tombstones only; do not tick or emit after saving.
-        server.native_record_events(&mut host);
-        // Everything the world did up to this save is in this save: no receipt is pending past it. What each chunk
-        // owes is given to its record first.
-        server.native_world_saved(&mut host,true);
+        // Everything the world did up to this save is in its chunks (`world_saving`): no receipt is pending past it,
+        // and nothing is given to a record past it. Only a save that waited wrote them before the storage.
+        server.native_world_saved(&mut host,wait);
         KV_ITEMS.store(server.native_kept_items() as u64,std::sync::atomic::Ordering::Relaxed);
         if server.native_kept_items()>0{eprintln!("ntm: the storage keeps {} removals/batches of an earlier version",server.native_kept_items());}
     }
-    // A chunk whose record was given what it owes within this hook (a block changed between the last tick and the save,
-    // by a command): its record of this save was queued before, so it is written again now, after the regions, as a
-    // spilled chest's items are in the entity files written after them.
-    let late=lock(&LATE).take().unwrap_or_default();
-    if !late.is_empty(){write_records(game,&late,wait);}
     store_commit(game,wait);
     // `NTM_FAILPOINT=kv_committed` (tests): the process dies right after the storage of a save that does not wait is
     // written, its records still queued (with `HORIZON_WRITER_HOLD`, none of them is written). Off by default.
@@ -123,25 +131,9 @@ fn world_saved_timed(game:&mut crate::game::Game<'_>,wait:bool){
     }
 }
 
-/// Chunks whose records were given what they owe during the save hook.
-static LATE: Mutex<Option<Vec<ChunkKey>>> = Mutex::new(None);
 /// The entries the storage written by the last save keeps that can hold items (`/ntmledger kv_items`): zero but for an
 /// earlier version's.
 static KV_ITEMS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
-
-/// Queues the records of `chunks` (of the level in place) for the region writer, and waits for it when `wait`.
-fn write_records(g:&mut crate::game::Game<'_>,chunks:&[ChunkKey],wait:bool){
-    let here:Vec<(i32,i32)>=chunks.iter().filter(|k|dim_of(&k.0)==Some(g.dim)).map(|k|(k.1,k.2)).filter(|k|g.world.chunks.contains_key(k)).collect();
-    let records=g.with_entities(here.iter().filter_map(|k|g.world.chunks.get(k)));
-    if records.is_empty(){return;}
-    for c in &records{g.world.modified.remove(&(c.x,c.z));}
-    if let Err(e)=g.save.save_later(&records,g.pack.assets.registry,world_biomes!(g)){
-        eprintln!("ntm: records of what chunks owe: {e}");
-        for c in &records{g.world.modified.insert((c.x,c.z));}
-        return;
-    }
-    if wait&&let Err(e)=g.save.flush(){eprintln!("ntm: records of what chunks owe: {e}");}
-}
 
 /// A battery, a fluid tank and a barrel give a comparator a signal (`hasComparatorInputOverride`).
 pub(super) fn has_analog_output(level: &crate::game::GameLevel<'_>, state: horizon_world::registry::BlockStateId, output: &mut bool) {
@@ -653,7 +645,9 @@ fn ledger_report(game: &mut crate::game::Game<'_>, words: &[&str]) -> String {
     // What the loaded chunks' records owe (removals and batches), and what the storage the last save wrote keeps that
     // can hold items: zero in a world of this version (`kv_items`).
     let obligations: usize = ledgers.values().map(|l| l.removals.len() + l.batches.len()).sum();
-    format!("ntmledger chunks={chunks} applied={applied} pending={pending} obligations={obligations} kv_items={} kv_writes={} kv_bytes={}", KV_ITEMS.load(std::sync::atomic::Ordering::Relaxed), KV_WRITES.load(std::sync::atomic::Ordering::Relaxed), KV_BYTES.load(std::sync::atomic::Ordering::Relaxed))
+    // What the loaded chunks' records took of an earlier version's storage (`migrated: X`).
+    let migrated: usize = ledgers.values().map(|l| l.migrated.len()).sum();
+    format!("ntmledger chunks={chunks} applied={applied} pending={pending} obligations={obligations} migrated={migrated} kv_items={} kv_writes={} kv_bytes={}", KV_ITEMS.load(std::sync::atomic::Ordering::Relaxed), KV_WRITES.load(std::sync::atomic::Ordering::Relaxed), KV_BYTES.load(std::sync::atomic::Ordering::Relaxed))
 }
 
 /// The stack name a loaded item entity of an earlier version carries.
@@ -738,7 +732,7 @@ fn ledger_tick(game: &mut crate::game::Game<'_>) {
 
 /// What a chunk owes (`ntm_core::server::obligations`) put in its ledger, written with its record. False when it is not
 /// loaded.
-fn store_obligations(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2], removals: &[ntm_core::persist::Removal], batches: &[ntm_core::server::CommittedEffects]) -> bool {
+fn store_obligations(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2], removals: &[ntm_core::persist::Removal], batches: &[ntm_core::server::CommittedEffects], migrated: &std::collections::BTreeSet<ntm_core::persist::Obligation>) -> bool {
     in_place(game, dim, |g| {
         if !g.world.loaded(chunk[0] * 16, chunk[1] * 16) {
             return false;
@@ -747,22 +741,22 @@ fn store_obligations(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2
         let mut ledger = ledger_get(g, &key);
         ledger.removals = removals.to_vec();
         ledger.batches = batches.to_vec();
+        ledger.migrated = migrated.clone();
         ledger_store(g, &key, ledger);
-        if let Some(late) = lock(&LATE).as_mut() {
-            late.push(key);
-        }
         true
     })
     .unwrap_or(false)
 }
 
-/// Chunks loaded whose records owe removals or batches, for the server to take before their block entities are adopted.
-static ARRIVED: Mutex<Vec<(String, [i32; 2], Vec<ntm_core::persist::Removal>, Vec<ntm_core::server::CommittedEffects>)>> = Mutex::new(Vec::new());
+/// What the records of chunks loaded owe (removals and batches) and took of an earlier version's storage, for the
+/// server to take before their block entities are adopted.
+type Arrived = (String, [i32; 2], Vec<ntm_core::persist::Removal>, Vec<ntm_core::server::CommittedEffects>, std::collections::BTreeSet<ntm_core::persist::Obligation>);
+static ARRIVED: Mutex<Vec<Arrived>> = Mutex::new(Vec::new());
 
 /// What the chunks loaded since owe, given to the server.
 fn arrived(server: &mut Server) {
-    for (dim, chunk, removals, batches) in std::mem::take(&mut *lock(&ARRIVED)) {
-        server.native_obligations_loaded(&dim, chunk, removals, batches);
+    for (dim, chunk, removals, batches, migrated) in std::mem::take(&mut *lock(&ARRIVED)) {
+        server.native_obligations_loaded(&dim, chunk, removals, batches, migrated);
     }
 }
 
@@ -777,25 +771,21 @@ pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [
     if !ledger.owed.is_empty() || ledger.has_legacy() {
         lock(&OWING).insert(key.clone());
     }
-    if !ledger.removals.is_empty() || !ledger.batches.is_empty() {
-        lock(&ARRIVED).push((dim.to_string(), chunk, ledger.removals.clone(), ledger.batches.clone()));
+    if !ledger.removals.is_empty() || !ledger.batches.is_empty() || !ledger.migrated.is_empty() {
+        lock(&ARRIVED).push((dim.to_string(), chunk, ledger.removals.clone(), ledger.batches.clone(), ledger.migrated.clone()));
     }
     if !ledger.is_empty() {
         lock(&LEDGERS).insert(key, ledger);
     }
 }
 
-/// A chunk left, its ledger in its record: what each chunk owes is given to its record first, block changes not yet
-/// seen included.
+/// A chunk leaves, still in place (the engine's unload order, a local extension): the block changes not yet taken are,
+/// a removed machine's contents out into the entities that leave with it, and what each chunk owes is in its record
+/// before that record is written (R7-2).
 pub(super) fn chunk_unloaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2]) {
     if let Ok(mut guard) = SERVER.try_lock() && let Some((server, _)) = guard.as_mut() {
-        let changes = std::mem::take(&mut *lock(&CHANGES));
         let mut host = Host { game, buttons: Vec::new() };
-        arrived(server);
-        for (d, pos, old, new) in changes {
-            let now = ntm_core::server::native_server::native_change_state(&new, host.game.native_loaded_block(&d, pos));
-            server.native_block_changed(&d, pos, &old, &now);
-        }
+        feed_changes(server, &mut host);
         server.native_chunk_unloading(&mut host);
     }
     let key = chunk_key(dim, chunk);
@@ -1132,8 +1122,14 @@ impl ServerHost for Host<'_, '_> {
         ledger_add(self.game,dim,id,p,items.to_vec(),owners)
     }
     fn ledger_prune(&mut self,live:&std::collections::BTreeSet<u64>){ledger_prune(self.game,live);}
-    fn store_obligations(&mut self,dim:&str,chunk:[i32;2],removals:&[ntm_core::persist::Removal],batches:&[ntm_core::server::CommittedEffects])->bool{
-        store_obligations(self.game,dim,chunk,removals,batches)
+    fn store_obligations(&mut self,dim:&str,chunk:[i32;2],removals:&[ntm_core::persist::Removal],batches:&[ntm_core::server::CommittedEffects],migrated:&std::collections::BTreeSet<ntm_core::persist::Obligation>)->bool{
+        store_obligations(self.game,dim,chunk,removals,batches,migrated)
+    }
+    fn home_migrated(&mut self,dim:&str,chunk:[i32;2])->Option<std::collections::BTreeSet<ntm_core::persist::Obligation>>{
+        in_place(self.game,dim,|g|{
+            if !g.world.loaded(chunk[0]*16,chunk[1]*16){return None;}
+            Some(ledger_get(g,&chunk_key(dim,chunk)).migrated)
+        }).flatten()
     }
     fn home_loaded(&mut self,dim:&str,chunk:[i32;2])->bool{in_place(self.game,dim,|g|g.world.loaded(chunk[0]*16,chunk[1]*16)).unwrap_or(false)}
     fn cell_generation(&mut self,dim:&str,pos:[i32;3])->Option<u64>{

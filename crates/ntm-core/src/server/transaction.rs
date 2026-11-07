@@ -394,12 +394,10 @@ impl Server {
     /// actually flushed. Until then replay after a crash may duplicate an
     /// effect, but must never acknowledge an entity not yet saved by the world.
     pub fn native_world_saved(&mut self, host: &mut impl ServerHost, wait: bool) {
-        // What each chunk owes is in its record before the storage is written; a waited save wrote those records
-        // first, so an earlier version's removals and batches their chunks hold need not be kept any longer.
-        self.sync_obligations(host);
-        if wait {
-            self.retire_legacy();
-        }
+        // What each chunk owes was in its record before the save took the chunks (`native_world_saving`); nothing is
+        // given to a record past that. A waited save wrote those records first: the earlier version's removals and
+        // batches they took need not be kept any longer.
+        self.retire_legacy(wait);
         let applied = wait.then(|| std::mem::take(&mut *self.ready.world.applied_machine_effects));
         let survivors = wait.then(|| std::mem::take(&mut *self.ready.world.survivors));
         // Written at every save, the clock with it: what runs on it (a balefire's damage, the zones) comes back as of
@@ -569,7 +567,29 @@ impl Server {
     }
 
     pub(super) fn local_steps(&mut self, host: &mut impl ServerHost) {
-        self.validate_detonations(host);
+        self.steps(host, false);
+    }
+
+    /// The steps of the groups whose machine, or pile's core, went (`native_settle`): their contents put out now.
+    pub(super) fn removal_steps(&mut self, host: &mut impl ServerHost) {
+        self.steps(host, true);
+    }
+
+    /// A group whose machine, or pile's core, went: the step that puts its contents out.
+    fn group_removed(&self, keys: &[Key]) -> bool {
+        keys.iter().any(|k| {
+            self.ready.broken.contains_key(k)
+                && (keys.len() == 1
+                    || self.ready.world.machines.get(k).is_some_and(|m| {
+                        matches!(&m.data, crate::machine::Data::Pile(p) if matches!(&**p, crate::pile::Pile::Core(_)))
+                    }))
+        })
+    }
+
+    fn steps(&mut self, host: &mut impl ServerHost, removed_only: bool) {
+        if !removed_only {
+            self.validate_detonations(host);
+        }
         let mut buttons = std::mem::take(&mut self.ready.pending_buttons);
         for (player,dim,pos,button) in host.machine_buttons(){
             if let Some(m)=self.ready.world.machines.get(&(dim.clone(),pos)){
@@ -612,6 +632,9 @@ impl Server {
             }
         }
         groups.extend(piles.into_values());
+        if removed_only {
+            groups.retain(|keys| self.group_removed(keys));
+        }
         for mut keys in groups {
             // A pile whose core is broken goes at once, as Java's `breakBlock` does: the core's rods leave from the
             // core's chunk now, as a vanilla container's items spill. Members out of reach stay out of the step and turn

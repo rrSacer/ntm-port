@@ -6,7 +6,7 @@ priority = 100
 # Current upstream plus reusable model, multiblock and container extensions.
 # Keep the exact integration pin: official API alone lacks those extensions.
 [compatibility]
-horizon_revision = "0f21c07f05f48d895b2c924202adc7eeaf9884f3"
+horizon_revision = "a31497f38bf2afa518596b9030e93d091a622838"
 
 # The logic, plain Rust (cargo test against the fake world): copied into
 # this folder by tools/package-native.sh, never kept here.
@@ -32,6 +32,19 @@ hook = "world_saved"
 hook_version = 1
 kind = "HEAD"
 helper = "world_saved.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "wait", ty = "bool", value = "wait" },
+]
+
+# A local extension of the engine (`world_saving`, docs/horizon-current.md): before a save takes the chunks, a block
+# changed since the last tick has its machine's contents out and what it owes in its chunk's record.
+[[injection]]
+id = "world-save-settle"
+hook = "world_saving"
+hook_version = 1
+kind = "HEAD"
+helper = "world_saving.rs"
 bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "wait", ty = "bool", value = "wait" },

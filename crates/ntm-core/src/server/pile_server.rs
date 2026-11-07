@@ -589,12 +589,18 @@ mod tests {
         by_id:Option<BTreeSet<u64>>,
         /// What each chunk's record owes (`store_obligations`), as the native host's chunk attachments hold it.
         homes:BTreeMap<[i32;2],(Vec<crate::persist::Removal>,Vec<CommittedEffects>)>,
+        /// What each chunk's record took of an earlier version's storage (`migrated`).
+        marks:BTreeMap<[i32;2],BTreeSet<crate::persist::Obligation>>,
     }
     /// The world opened again from the host's records: the storage, then what each chunk's record owes, as the
     /// native host gives it when the chunk loads (before its block entities are adopted).
     fn reopen(h:&mut Host,tick:u64)->Server{
         let mut s=Server::native(h,tick);
-        for (chunk,(removals,batches)) in h.homes.clone(){s.native_obligations_loaded(DIM,chunk,removals,batches);}
+        let chunks:BTreeSet<[i32;2]>=h.homes.keys().chain(h.marks.keys()).copied().collect();
+        for chunk in chunks{
+            let (removals,batches)=h.homes.get(&chunk).cloned().unwrap_or_default();
+            s.native_obligations_loaded(DIM,chunk,removals,batches,h.marks.get(&chunk).cloned().unwrap_or_default());
+        }
         s
     }
     /// The removals, batches and prepared retentions the storage holds, as written.
@@ -621,11 +627,15 @@ mod tests {
         }
     }
     impl ServerHost for Host {
-        fn store_obligations(&mut self,_:&str,chunk:[i32;2],removals:&[crate::persist::Removal],batches:&[CommittedEffects])->bool{
+        fn store_obligations(&mut self,_:&str,chunk:[i32;2],removals:&[crate::persist::Removal],batches:&[CommittedEffects],migrated:&BTreeSet<crate::persist::Obligation>)->bool{
             if removals.is_empty()&&batches.is_empty(){self.homes.remove(&chunk);}else{self.homes.insert(chunk,(removals.to_vec(),batches.to_vec()));}
+            if migrated.is_empty(){self.marks.remove(&chunk);}else{self.marks.insert(chunk,migrated.clone());}
             true
         }
         fn home_loaded(&mut self,dim:&str,_:[i32;2])->bool{!self.inactive.contains(dim)}
+        fn home_migrated(&mut self,dim:&str,chunk:[i32;2])->Option<BTreeSet<crate::persist::Obligation>>{
+            (!self.inactive.contains(dim)).then(||self.marks.get(&chunk).cloned().unwrap_or_default())
+        }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
             if !drops.is_empty(){return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
@@ -1504,10 +1514,11 @@ mod tests {
         s.native_tick(&mut h, 3);
         h.blocks.insert(AT, "minecraft:air".into());
         s.native_block_changed(DIM, AT, pile::CORE, "minecraft:air");
-        // A save between the break and the next tick: the removal is owed, in the core's record.
-        s.native_record_events(&mut h);
+        // A save between the break and the next tick: the rod is out before it takes the chunks (N1 of the fresh
+        // review), as a vanilla container's items are.
+        s.native_world_saving(&mut h);
         s.native_world_saved(&mut h, true);
-        assert_eq!(owed_in_records(&h), 1);
+        assert_eq!((h.drops.len(), owed_in_records(&h)), (1, 0));
         let old_kv = h.kv.clone();
         for tick in 5..9 {
             s.native_tick(&mut h, tick);
@@ -1546,4 +1557,245 @@ mod tests {
         assert!(a != 0 && b != 0);
     }
 
+
+    /// Where a death cuts the first save of a world opened from an earlier version's storage.
+    #[derive(Clone, Copy, Debug)]
+    enum Cut {
+        /// A save that does not wait, its storage written while none of its records is (`HORIZON_WRITER_HOLD`,
+        /// `kv_committed`): new storage, old records.
+        StorageOnly,
+        /// A save whose records and entities reach the disk and whose storage does not: old storage, new records.
+        RecordsOnly,
+        /// A waited save, all of it.
+        Whole,
+    }
+    /// What the host's disk holds of the world: the records (blocks, block entities, what each chunk owes and took),
+    /// the entities put out, the storage.
+    #[derive(Clone)]
+    struct Disk {
+        blocks: BTreeMap<Pos, String>,
+        saved: BTreeMap<Pos, String>,
+        homes: BTreeMap<[i32; 2], (Vec<crate::persist::Removal>, Vec<CommittedEffects>)>,
+        marks: BTreeMap<[i32; 2], BTreeSet<crate::persist::Obligation>>,
+        drops: Vec<(Pos, String)>,
+        kv: MemKv,
+    }
+    fn disk(h: &Host) -> Disk {
+        Disk { blocks: h.blocks.clone(), saved: h.saved.clone(), homes: h.homes.clone(), marks: h.marks.clone(), drops: h.drops.clone(), kv: h.kv.clone() }
+    }
+    /// A death: the host holds what its disk holds.
+    fn die(h: &mut Host, d: &Disk) {
+        (h.blocks, h.saved, h.homes, h.marks, h.drops, h.kv) =
+            (d.blocks.clone(), d.saved.clone(), d.homes.clone(), d.marks.clone(), d.drops.clone(), d.kv.clone());
+        h.changes.clear();
+    }
+    /// The world opened from the disk, its pile's block entities adopted, played until nothing is left to put out:
+    /// every rod by kind, and what the storage holds.
+    fn opened(h: &mut Host) -> (BTreeMap<String, usize>, usize) {
+        h.refuse_items = false;
+        let mut s = reopen(h, 0);
+        for (p, json) in h.saved.clone() {
+            if h.blocks.get(&p).is_some_and(|b| b.starts_with("ntm:pile_block__")) {
+                s.native_adopt(DIM, p, &json);
+            }
+        }
+        for t in 1..8 {
+            s.native_tick(h, t);
+            replay(&mut s, h);
+        }
+        (rods_by_kind(&s, h), stored(h))
+    }
+    /// The world as an earlier version left it: a storage holding a batch that puts out one Zr rod at the core.
+    fn legacy_batch() -> Host {
+        let mut h = Host::default();
+        let mut old = WorldState::default();
+        old.machine_effects.push_back(CommittedEffects {
+            serial: 77,
+            owners: vec![(DIM.into(), AT)],
+            effects: std::collections::VecDeque::from([WorldEffect::Items { dim: DIM.into(), pos: AT, items: vec![("ntm:pile_rod__zr".into(), 1)] }]),
+            ..Default::default()
+        });
+        h.kv.set(crate::persist::KEY, &old.kept_as_an_earlier_version(0)).unwrap();
+        h
+    }
+    /// The world as an earlier version left it: a pile whose core, holding one Zr rod, was broken, its removal still
+    /// in the storage (the format R5 wrote).
+    fn legacy_removal() -> Host {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__zr", 0.).unwrap());
+        s.native_tick(&mut h, 3);
+        let machine = s.ready.world.machines[&(DIM.to_string(), AT)].clone();
+        let mut old = WorldState::default();
+        old.removals.push(crate::persist::Removal { key: (DIM.into(), AT), machine, engine_slots: false });
+        h.blocks.insert(AT, "minecraft:air".into());
+        h.saved.remove(&AT);
+        h.homes.clear();
+        h.kv = MemKv::default();
+        h.kv.set(crate::persist::KEY, &old.kept_as_an_earlier_version(0)).unwrap();
+        h
+    }
+    /// R7-1 and N2 of the reviews: the world opened from `h`, its earlier version's obligation played (or held, when
+    /// `executed` is false: the drop is refused and the batch waits in the core's record), then a save cut by `cut`
+    /// and a death. Each of the next two openings holds one rod, as the earlier version's world did, and the storage
+    /// keeps the obligation only until a waited save wrote the record that took it.
+    fn migration(mut h: Host, executed: bool, cut: Cut) {
+        let before = disk(&h);
+        let mut s = reopen(&mut h, 0);
+        for (p, json) in h.saved.clone() {
+            if h.blocks.get(&p).is_some_and(|b| b.starts_with("ntm:pile_block__")) {
+                s.native_adopt(DIM, p, &json);
+            }
+        }
+        h.refuse_items = !executed;
+        for t in 1..4 {
+            s.native_tick(&mut h, t);
+            replay(&mut s, &mut h);
+        }
+        let zr = |h: &Host| h.drops.iter().filter(|(_, id)| id == "ntm:pile_rod__zr").count();
+        assert_eq!(zr(&h), usize::from(executed), "{cut:?}: played once, or held");
+        assert_eq!(stored(&h), 1, "{cut:?}: the storage keeps it until a waited save wrote its record");
+        assert!(h.marks.values().any(|m| !m.is_empty()), "{cut:?}: the record says it took it");
+        s.native_world_saving(&mut h);
+        s.native_world_saved(&mut h, matches!(cut, Cut::Whole | Cut::RecordsOnly));
+        let after = match cut {
+            Cut::StorageOnly => {
+                assert_eq!(stored(&h), 1, "a save that does not wait retires nothing");
+                Disk { kv: h.kv.clone(), ..before.clone() }
+            }
+            Cut::RecordsOnly => Disk { kv: before.kv.clone(), ..disk(&h) },
+            Cut::Whole => {
+                assert_eq!(stored(&h), 0, "the waited save wrote the record first");
+                disk(&h)
+            }
+        };
+        for opening in 0..2 {
+            die(&mut h, &after);
+            let (rods, _) = opened(&mut h);
+            assert_eq!(rods, BTreeMap::from([("ntm:pile_rod__zr".into(), 1)]), "{cut:?}, executed {executed}, opening {opening}");
+        }
+        // Opened once more and saved with waiting: the storage keeps none of it, and the world still holds one rod.
+        die(&mut h, &after);
+        h.refuse_items = false;
+        let mut s = reopen(&mut h, 0);
+        for (p, json) in h.saved.clone() {
+            if h.blocks.get(&p).is_some_and(|b| b.starts_with("ntm:pile_block__")) {
+                s.native_adopt(DIM, p, &json);
+            }
+        }
+        for t in 1..8 {
+            s.native_tick(&mut h, t);
+            replay(&mut s, &mut h);
+        }
+        s.native_world_saving(&mut h);
+        s.native_world_saved(&mut h, true);
+        assert_eq!(stored(&h), 0, "{cut:?}: retired once its record is on the disk");
+        let saved = disk(&h);
+        die(&mut h, &saved);
+        assert_eq!(opened(&mut h).0, BTreeMap::from([("ntm:pile_rod__zr".into(), 1)]), "{cut:?}: and after it");
+    }
+    #[test]
+    fn a_legacy_batch_still_held_survives_a_save_that_does_not_wait() {
+        migration(legacy_batch(), false, Cut::StorageOnly);
+    }
+    #[test]
+    fn a_legacy_batch_played_survives_a_save_that_does_not_wait() {
+        migration(legacy_batch(), true, Cut::StorageOnly);
+    }
+    #[test]
+    fn a_legacy_batch_held_or_played_is_not_played_again_with_its_old_storage() {
+        migration(legacy_batch(), false, Cut::RecordsOnly);
+        migration(legacy_batch(), true, Cut::RecordsOnly);
+    }
+    #[test]
+    fn a_legacy_batch_leaves_the_storage_with_a_waited_save() {
+        migration(legacy_batch(), false, Cut::Whole);
+        migration(legacy_batch(), true, Cut::Whole);
+    }
+    #[test]
+    fn a_legacy_removal_survives_a_save_that_does_not_wait() {
+        migration(legacy_removal(), true, Cut::StorageOnly);
+        migration(legacy_removal(), false, Cut::StorageOnly);
+    }
+    /// N2 of the fresh review: the removal paid, its records and entities on the disk, the storage the old one: one
+    /// rod, not two (the core's record says it took it).
+    #[test]
+    fn a_legacy_removal_paid_with_new_records_and_its_old_storage_is_paid_once() {
+        migration(legacy_removal(), true, Cut::RecordsOnly);
+        migration(legacy_removal(), false, Cut::RecordsOnly);
+    }
+    #[test]
+    fn a_legacy_removal_leaves_the_storage_with_a_waited_save() {
+        migration(legacy_removal(), true, Cut::Whole);
+        migration(legacy_removal(), false, Cut::Whole);
+    }
+    /// A record read back with its marker: the storage need not keep the obligation, even past a save that does not
+    /// wait; a marker the storage read with the world no longer names goes with the record's next write.
+    #[test]
+    fn a_marker_read_from_the_disk_retires_the_legacy_and_goes_once_the_storage_forgets_it() {
+        let mut h = legacy_batch();
+        let after = {
+            let mut s = reopen(&mut h, 0);
+            s.native_tick(&mut h, 1);
+            s.native_world_saving(&mut h);
+            s.native_world_saved(&mut h, true);
+            disk(&h)
+        };
+        // The storage of the old version comes back with the records written: the marker is read from the disk.
+        die(&mut h, &Disk { kv: legacy_batch().kv, ..after });
+        let mut s = reopen(&mut h, 0);
+        s.native_tick(&mut h, 1);
+        assert_eq!(h.drops.len(), 1, "not played again");
+        assert_eq!(s.ready.world.legacy.len(), 0, "the record read from the disk took it");
+        s.native_world_saving(&mut h);
+        s.native_world_saved(&mut h, false);
+        assert_eq!(stored(&h), 0, "retired even by a save that does not wait");
+        assert!(h.marks.values().any(|m| !m.is_empty()), "kept while the storage read with the world named it");
+        let mut s = reopen(&mut h, 0);
+        s.native_tick(&mut h, 1);
+        s.native_tick(&mut h, 2);
+        assert!(h.marks.values().all(BTreeSet::is_empty), "gone once the storage no longer names it");
+        assert_eq!(h.drops.len(), 1);
+    }
+    /// R7-2: a command's break the end of a tick has not taken, then the core's chunk unloads. The unload hook runs
+    /// with the chunk still in place (the engine's order, E2): the rod is out before the chunk's record and entities
+    /// are written, as vanilla's chest spilled.
+    #[test]
+    fn a_break_not_yet_taken_when_its_chunk_unloads_is_out_before_the_chunk_goes() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__zr", 0.).unwrap());
+        s.native_tick(&mut h, 5);
+        s.native_world_saving(&mut h);
+        s.native_world_saved(&mut h, true);
+        h.blocks.insert(AT, "minecraft:air".into());
+        h.saved.remove(&AT);
+        s.native_block_changed(DIM, AT, pile::CORE, "minecraft:air");
+        s.native_chunk_unloading(&mut h);
+        assert_eq!(h.drops.iter().filter(|(_, id)| id == "ntm:pile_rod__zr").count(), 1, "out in the unload hook");
+        assert!(s.ready.world.removals.is_empty() && owed_in_records(&h) == 0 && stored(&h) == 0);
+        // The unload wrote the chunk's record and its entities; the process dies.
+        let written = disk(&h);
+        die(&mut h, &written);
+        assert_eq!(opened(&mut h).0, BTreeMap::from([("ntm:pile_rod__zr".into(), 1)]));
+    }
+    /// N1 of the fresh review: a break with no tick before the save. The save's hook before it takes the chunks puts
+    /// the core's rods out; a death at any cut of it finds them where vanilla's spilled chest's items are.
+    #[test]
+    fn a_break_with_no_tick_before_the_save_is_out_before_the_save_takes_the_chunks() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        core(&mut s).channels[0].load(Rod::of("ntm:pile_rod__zr", 0.).unwrap());
+        s.native_tick(&mut h, 5);
+        h.blocks.insert(AT, "minecraft:air".into());
+        h.saved.remove(&AT);
+        s.native_block_changed(DIM, AT, pile::CORE, "minecraft:air");
+        s.native_world_saving(&mut h);
+        assert_eq!(h.drops.len(), 1, "out before the chunks are taken");
+        assert!(s.ready.world.removals.is_empty() && owed_in_records(&h) == 0);
+        s.native_world_saved(&mut h, false);
+        let written = disk(&h);
+        die(&mut h, &written);
+        assert_eq!(opened(&mut h).0, BTreeMap::from([("ntm:pile_rod__zr".into(), 1)]));
+    }
 }

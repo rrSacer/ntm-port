@@ -45,6 +45,8 @@ struct Host {
     world_writes: usize,
     /// What each chunk's record owes (`store_obligations`), as the native host's chunk attachments hold it.
     homes: BTreeMap<[i32; 2], (Vec<crate::persist::Removal>, Vec<crate::server::CommittedEffects>)>,
+    /// What each chunk's record took of an earlier version's storage (`migrated`).
+    marks: BTreeMap<[i32; 2], BTreeSet<crate::persist::Obligation>>,
 }
 /// The removals and batches the chunks' records owe.
 fn owed(h: &Host) -> (usize, usize) {
@@ -55,7 +57,7 @@ fn owed(h: &Host) -> (usize, usize) {
 fn reopen(h: &mut Host, tick: u64) -> Server {
     let mut s = Server::native(h, tick);
     for (chunk, (removals, batches)) in h.homes.clone() {
-        s.native_obligations_loaded(D, chunk, removals, batches);
+        s.native_obligations_loaded(D, chunk, removals, batches, h.marks.get(&chunk).cloned().unwrap_or_default());
     }
     s
 }
@@ -79,13 +81,21 @@ impl Kv for Host {
     }
 }
 impl ServerHost for Host {
-    fn store_obligations(&mut self, _: &str, chunk: [i32; 2], removals: &[crate::persist::Removal], batches: &[crate::server::CommittedEffects]) -> bool {
+    fn store_obligations(&mut self, _: &str, chunk: [i32; 2], removals: &[crate::persist::Removal], batches: &[crate::server::CommittedEffects], migrated: &BTreeSet<crate::persist::Obligation>) -> bool {
         if removals.is_empty() && batches.is_empty() {
             self.homes.remove(&chunk);
         } else {
             self.homes.insert(chunk, (removals.to_vec(), batches.to_vec()));
         }
+        if migrated.is_empty() {
+            self.marks.remove(&chunk);
+        } else {
+            self.marks.insert(chunk, migrated.clone());
+        }
         true
+    }
+    fn home_migrated(&mut self, _: &str, chunk: [i32; 2]) -> Option<BTreeSet<crate::persist::Obligation>> {
+        Some(self.marks.get(&chunk).cloned().unwrap_or_default())
     }
     // Its items are kept by id (`ledger`), as the native host's are.
     fn replays_by_id(&self) -> bool {

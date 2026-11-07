@@ -55,17 +55,10 @@ impl Server {
     /// A server for the native bundle, in its world.
     pub fn native(host: &mut impl ServerHost, tick: u64) -> Self {
         crate::radiation::warm();
-        let mut world = WorldState::load(host);
-        // What an earlier version's storage held of removals and batches stays there until their chunks hold it.
-        let legacy: BTreeSet<crate::persist::Obligation> = world
-            .removals
-            .iter()
-            .map(crate::persist::Removal::obligation)
-            .chain(world.machine_effects.iter().filter(|b| b.serial != 0).map(|b| crate::persist::Obligation::Batch(b.serial)))
-            .collect();
-        if !legacy.is_empty() {
-            *world.legacy = legacy;
-        }
+        let world = WorldState::load(host);
+        // What an earlier version's storage held of removals and batches waits for their chunks' records to be read.
+        let legacy_read = world.legacy.ids();
+        let unread = obligations::legacy_homes(&world.legacy);
         let kept_rev = Some(world.stamps());
         #[cfg(debug_assertions)]
         let kept = world.kept(0);
@@ -91,7 +84,11 @@ impl Server {
                 ..Ready::default()
             },
             homes: BTreeMap::new(),
-            in_home: BTreeSet::new(),
+            unread,
+            markers: BTreeMap::new(),
+            marked: BTreeSet::new(),
+            legacy_read,
+            captured: None,
             nonce: obligations::draw_nonce(),
         }
     }
@@ -107,6 +104,7 @@ impl Server {
             self.players = players;
         }
         self.native_record_events(host);
+        self.read_legacy(host);
         phases.mark("events");
         if self.ready.facts_pending{self.keep_world(host);self.sync_obligations(host);return;}
         self.flush_machine_effects(host);
@@ -506,13 +504,15 @@ mod tests {
         kv: crate::kv::MemKv,
         /// What each chunk's record owes (`store_obligations`).
         homes: BTreeMap<[i32; 2], (Vec<crate::persist::Removal>, Vec<CommittedEffects>)>,
+        /// What each chunk's record took of an earlier version's storage (`migrated`).
+        marks: BTreeMap<[i32; 2], BTreeSet<crate::persist::Obligation>>,
     }
 
     /// The world opened again: the storage, then what each chunk's record owes, given as its chunk loads.
     fn reopen(w: &mut World, tick: u64) -> Server {
         let mut s = Server::native(w, tick);
         for (chunk, (removals, batches)) in w.homes.clone() {
-            s.native_obligations_loaded(OW, chunk, removals, batches);
+            s.native_obligations_loaded(OW, chunk, removals, batches, w.marks.get(&chunk).cloned().unwrap_or_default());
         }
         s
     }
@@ -530,9 +530,13 @@ mod tests {
     }
 
     impl ServerHost for World {
-        fn store_obligations(&mut self, _: &str, chunk: [i32; 2], removals: &[crate::persist::Removal], batches: &[CommittedEffects]) -> bool {
+        fn store_obligations(&mut self, _: &str, chunk: [i32; 2], removals: &[crate::persist::Removal], batches: &[CommittedEffects], migrated: &BTreeSet<crate::persist::Obligation>) -> bool {
             if removals.is_empty() && batches.is_empty() { self.homes.remove(&chunk); } else { self.homes.insert(chunk, (removals.to_vec(), batches.to_vec())); }
+            if migrated.is_empty() { self.marks.remove(&chunk); } else { self.marks.insert(chunk, migrated.clone()); }
             true
+        }
+        fn home_migrated(&mut self, _: &str, chunk: [i32; 2]) -> Option<BTreeSet<crate::persist::Obligation>> {
+            Some(self.marks.get(&chunk).cloned().unwrap_or_default())
         }
         fn show(&mut self, _: &str, effect: &crate::blast::visuals::Show) { self.shown.push(effect.clone()); }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
@@ -853,14 +857,17 @@ mod tests {
         let Data::Crucible(c)=&mut m.data else{panic!()};c.waste_stack=vec![("iron".into(),144)];
         let mut s=Server::native(&mut w,0);assert!(s.native_adopt(OW,AT,&serde_json::to_string(&m).unwrap()));
         s.native_tick(&mut w,1);
-        // The engine spills physical slots, then reports Broken. Quit before
+        // The engine spills physical slots, then reports Broken. A save before
         // the next machine step: only the hidden molten metal is NTM's debt.
         let item=w.slots.remove(&AT).unwrap()[2].take().unwrap();w.player.push(item);
         w.saved.remove(&AT);w.blocks.insert(AT,"minecraft:air".into());
-        s.native_block_changed(OW,AT,block,"minecraft:air");s.native_record_events(&mut w);s.native_world_saved(&mut w,true);
-        assert!(s.ready.world.removals[0].engine_slots);assert!(w.emitted.is_empty());
-        // F1: the hidden metal is owed in the crucible's chunk record, the storage holds none of it.
-        assert_eq!(w.homes.values().map(|(r,_)|r.len()).sum::<usize>(),1);
+        s.native_block_changed(OW,AT,block,"minecraft:air");
+        // N1 of the fresh review: the save takes the chunks only once the hidden metal is out, as a vanilla
+        // container's items are out the instant its block goes.
+        s.native_world_saving(&mut w);
+        assert_eq!(w.emitted,vec![Stack::new("ntm:scraps__iron",2)],"put out before the save takes the chunks");
+        assert!(s.ready.world.removals.is_empty()&&w.homes.is_empty(),"nothing left owing");
+        s.native_world_saved(&mut w,true);
         let kept:crate::persist::Kept=serde_json::from_slice(&w.kv.map[crate::persist::KEY]).unwrap();assert!(kept.removals.is_empty());
         let mut reopened=reopen(&mut w,2);reopened.native_tick(&mut w,3);
         assert_eq!(w.player,vec![Stack::new("minecraft:iron_ingot",1)]);

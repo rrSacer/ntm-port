@@ -8,7 +8,8 @@
 //! What a machine's removal or step still owes the world (a removal waiting for its group, a batch of effects in
 //! flight) is not kept here: it lives in the record of its chunk (`server::obligations`), written with the block
 //! entities it follows, so a save never pairs it with records it does not belong to. Only an earlier version's storage
-//! still holds some (`WorldState::legacy`), until they reach their chunks.
+//! still holds some (`WorldState::legacy`), kept as it read them until a waited save wrote their chunk's record with
+//! them, or that record was read back with them (`server::obligations`).
 
 use crate::{Pos, kv::Kv, machine::Machine};
 use serde::{Deserialize, Serialize};
@@ -133,7 +134,7 @@ fn is_zero(n: &u64) -> bool {
 }
 
 /// A removal or a batch of effects, by what names it for good.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Obligation {
     Removal((String, Pos), u64),
     Batch(u64),
@@ -142,6 +143,44 @@ pub enum Obligation {
 impl Removal {
     pub fn obligation(&self) -> Obligation {
         Obligation::Removal(self.key.clone(), self.machine.generation)
+    }
+}
+
+/// An earlier version's removals and batches, as its storage held them. They are written back as they were read until
+/// they leave (`server::obligations`): what the world did with them since is in its chunks' records, not here.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Legacy {
+    pub removals: Vec<Removal>,
+    /// Each with the name it goes by: its own, or, for one an earlier version did not name, one derived from it, the
+    /// same at every read.
+    pub batches: Vec<(u64, crate::server::CommittedEffects)>,
+}
+
+impl Legacy {
+    fn read(removals: Vec<Removal>, batches: std::collections::VecDeque<crate::server::CommittedEffects>) -> Self {
+        let named = |b: crate::server::CommittedEffects| {
+            let name = if b.serial != 0 {
+                b.serial
+            } else {
+                crate::ledger::fnv(&[b"legacy batch", &serde_json::to_vec(&b).unwrap_or_default()]).max(1)
+            };
+            (name, b)
+        };
+        Legacy { removals, batches: batches.into_iter().map(named).collect() }
+    }
+    pub fn is_empty(&self) -> bool {
+        self.removals.is_empty() && self.batches.is_empty()
+    }
+    pub fn len(&self) -> usize {
+        self.removals.len() + self.batches.len()
+    }
+    pub fn ids(&self) -> BTreeSet<Obligation> {
+        self.removals.iter().map(Removal::obligation).chain(self.batches.iter().map(|(n, _)| Obligation::Batch(*n))).collect()
+    }
+    /// Keeps the ones `keep` names.
+    pub fn retain(&mut self, keep: impl Fn(&Obligation) -> bool) {
+        self.removals.retain(|r| keep(&r.obligation()));
+        self.batches.retain(|(n, _)| keep(&Obligation::Batch(*n)));
     }
 }
 
@@ -163,9 +202,9 @@ pub struct WorldState {
     pub cables: BTreeSet<(String, Pos)>,
     pub bombs: Tracked<crate::blast::BombWorld>,
     pub zirnox: Tracked<crate::zirnox::Remnants>,
-    /// The removals and batches an earlier version's storage held, still kept here: until their chunk has them and a
-    /// waited save wrote that chunk before this storage.
-    pub legacy: Tracked<BTreeSet<Obligation>>,
+    /// The removals and batches an earlier version's storage held, still kept here as it held them: until a waited
+    /// save wrote their chunk's record with them before this storage, or that record was read back with them.
+    pub legacy: Tracked<Legacy>,
 }
 
 impl WorldState {
@@ -173,13 +212,12 @@ impl WorldState {
     /// or none that reads).
     pub fn load(kv: &mut impl Kv) -> Self {
         let kept: Kept = kv.get(KEY).and_then(|b| serde_json::from_slice(&b).ok()).unwrap_or_default();
-        let mut machine_effects=kept.applied_machine_effects;
-        machine_effects.extend(kept.machine_effects);
-        for b in &mut machine_effects{b.replayed=true;}
-        let machines=kept.removals.iter().map(|r|(r.key.clone(),r.machine.clone())).collect();
+        // Removals and batches are an earlier version's: the server takes them up once their chunk's record says it
+        // does not hold them already (`server::obligations`).
+        let mut batches=kept.applied_machine_effects;
+        batches.extend(kept.machine_effects);
         WorldState {
-            machines,
-            removals:kept.removals.into(),
+            legacy:Legacy::read(kept.removals,batches).into(),
             prepared_retentions:kept.prepared_retentions.into(),
             survivors:Tracked::new(kept.survivors.into_iter().map(|s|((s.dim.clone(),s.pos),s)).collect()),
             generations:Tracked::new(kept.generations.into_iter().collect()),
@@ -188,21 +226,18 @@ impl WorldState {
             zirnox: kept.zirnox.into(),
             ticks: kept.ticks,
             effect_serial: kept.effect_serial.into(),
-            machine_effects:machine_effects.into(),
             ..WorldState::default()
         }
     }
 
-    /// The stamps of the kept parts: equal to those of the last keep, the parts are as kept. Removals and batches
-    /// count only while some are an earlier version's (`legacy`): the others are kept with their chunks.
+    /// The stamps of the kept parts: equal to those of the last keep, the parts are as kept. Of removals and batches
+    /// only an earlier version's are (`legacy`): the others are kept with their chunks.
     pub fn stamps(&self) -> [u64; 10] {
-        let legacy = !self.legacy.is_empty();
-        let only = |stamp: u64| if legacy { stamp } else { 0 };
         [
             Tracked::stamp(&self.effect_serial),
-            only(Tracked::stamp(&self.removals)) ^ Tracked::stamp(&self.legacy),
+            Tracked::stamp(&self.legacy),
             Tracked::stamp(&self.generations),
-            only(Tracked::stamp(&self.machine_effects)),
+            0,
             0,
             Tracked::stamp(&self.prepared_retentions),
             0,
@@ -212,19 +247,10 @@ impl WorldState {
         ]
     }
 
-    /// The removals and batches the storage keeps: an earlier version's not yet in their chunks.
-    fn kept_removals(&self) -> Vec<&Removal> {
-        self.removals.iter().filter(|r| self.legacy.contains(&r.obligation())).collect()
-    }
-    fn kept_batches(&self) -> std::collections::VecDeque<&crate::server::CommittedEffects> {
-        self.machine_effects.iter().filter(|b| self.legacy.contains(&Obligation::Batch(b.serial))).collect()
-    }
-
     /// The entries the storage would keep that can hold items or decide what a chunk holds: removals, batches and
-    /// prepared retentions. Zero in a world of this version at every save (an earlier version's, until they reach
-    /// their chunks).
+    /// prepared retentions. Zero in a world of this version at every save (an earlier version's, until they leave).
     pub fn kept_items(&self) -> usize {
-        self.kept_removals().len() + self.kept_batches().len() + self.prepared_retentions.len()
+        self.legacy.len() + self.prepared_retentions.len()
     }
 
     /// What [`WorldState::load`] reads back, the clock at `ticks`.
@@ -255,9 +281,9 @@ impl WorldState {
             ticks,
             effect_serial: &self.effect_serial,
             // Receipts and survivors are the session's: every save confirms them before the storage is written.
-            removals: self.kept_removals(),
+            removals: self.legacy.removals.iter().collect(),
             generations: self.generations.iter().collect(),
-            machine_effects: self.kept_batches(),
+            machine_effects: self.legacy.batches.iter().map(|(_, b)| b).collect(),
             prepared_retentions: &self.prepared_retentions,
         };
         serde_json::to_vec(&kept).unwrap_or_default()
