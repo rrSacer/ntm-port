@@ -139,10 +139,10 @@ mesma pasta do ntmlogic.
 | --- | --- | --- |
 | Nuke (`EntityNukeExplosionMK5`), cratera em andamento | `writeEntityToNBT` grava só `ticksExisted`; relida, `strength` é 0 e o `onUpdate` dá `setDead` no primeiro tick: a cratera para, o `dealDamage` também, e o fallout (que só nasce ao fim da cratera) não vem | A cratera é descartada na retomada (`Explosions::drop_craters`, fase `crater`), com seus pulsos; uma nuke disparada mas ainda não durável também não é entregue de novo. A bomba foi gasta |
 | Fallout de uma nuke já começado (`EntityFalloutRain`) | `writeEntityToNBT` grava `scale`: continua | Retomado (fases `fallout` e `linger`) |
-| Balefire (`EntityBalefire`) | grava `age`, `destructionRange`, `speed` e a explosão (`exp_*`): continua, com `dealDamage` a cada update até terminar | Retomado; os pulsos ficam no save do mundo (`BombWorld.pulses`, no relógio do mundo) e voltam com ele; o id sai de `BombWorld.balefires` quando a cratera termina |
+| Balefire (`EntityBalefire`) | grava `age`, `destructionRange`, `speed` e a explosão (`exp_*`): continua, com `dealDamage` a cada update até terminar | Retomado; os pulsos ficam no save do mundo (`BombWorld.pulses`, no relógio do mundo, com o id da cratera) e voltam com ele; o id sai de `BombWorld.balefires` e o pulso acaba quando a cratera termina |
 
 Testes: `a_nukes_crater_stops_with_the_world_as_the_mk5_entity_does`, `a_nukes_fallout_comes_back_after_a_restart`,
-`a_balefire_comes_back_with_its_damage_after_a_restart`, `p1_6_a_nuke_set_off_before_a_restart_stops_with_it_as_the_mk5_entity_does`
+`a_balefire_comes_back_with_its_damage_after_a_restart`, `a_short_balefires_damage_ends_with_its_crater`, `a_long_balefires_damage_lasts_until_its_crater_is_done`, `p1_6_a_nuke_set_off_before_a_restart_stops_with_it_as_the_mk5_entity_does`
 (revisão do P1-6 da M2) e, em jogo, a segunda sessão da suíte `bombs` (`restart-arm`/`restart-check`).
 
 Perfil de efeitos com os blocos do content mod: bordas expostas da cratera
@@ -223,10 +223,16 @@ Comandos novos aceitam apenas `modo otimizado`.
 
 ## Dano e radiação
 
-- **Dano da nuke:** `ExplosionNukeGeneric.dealDamage(…, 2R)` do NTM, a cada
-  tick do MK5: 250·(2R − d)/2R se a linha até o jogador não está obstruída.
-  Aqui: a cada 10 ticks, por 100 ticks, `damage <nome> <n> minecraft:explosion`;
-  obstrução por amostragem (24 pontos). Criativo não leva.
+- **Dano da nuke e do balefire:** `ExplosionNukeGeneric.dealDamage(…, 2R)` do
+  NTM: 250·(2R − d)/2R se a linha até o jogador não está obstruída. O MK5 dá
+  dano a cada tick até a explosão estar completa (`isComplete`); o
+  `EntityBalefire`, a cada tick em que `exp.update()` ainda não terminou
+  (`onUpdate`, `EntityBalefire.java:69`–`:79`). Aqui: a cada 10 ticks,
+  `damage <nome> <n> minecraft:explosion`, enquanto a cratera daquela explosão
+  é cavada (o pulso guarda o id dela), curta ou longa; acaba com ela, nunca
+  por prazo. O do balefire volta com o mundo, no relógio salvo; o da nuke não
+  (sua cratera para com o mundo, ver a tabela de reinício). Obstrução por amostragem
+  (24 pontos). Criativo não leva.
 - **Carga:** dano vanilla, `(i² + i)/2 · 7 · 2p + 1` com `i = (1 − d/2p) ×
   exposição`. A exposição é a de `Explosion.getSeenPercent`: a fração de 45
   raios (grade 3 × 5 × 3 sobre a caixa de 0,6 × 1,8 do jogador) que chegam ao
@@ -349,6 +355,7 @@ limpos. Testes novos:
 | `…a_nukes_crater_stops_with_the_world_as_the_mk5_entity_does` | reinício com a cratera de uma nuke no meio: para, como o MK5 relido |
 | `…a_nukes_fallout_comes_back_after_a_restart` | reinício no fallout: retoma e termina (`EntityFalloutRain`) |
 | `…a_balefire_comes_back_with_its_damage_after_a_restart` | reinício com a balefire no meio: cratera e dano voltam (`EntityBalefire`) |
+| `…a_short_balefires_damage_ends_with_its_crater` / `…a_long_balefires_damage_lasts_until_its_crater_is_done` | o dano dura exatamente a cratera: nenhum depois de uma curta, e até o fim de uma de mais de 150 ticks |
 | `…settings_are_global_or_per_world` | config global/mundo, `limpar`, valor inválido; modo aprimorado recusado |
 | `ntm_core::explosion` `fallout.rs` (5) | regras e limites por distância, retomada no meio do fallout com rollback, chunk pendente até um jogador chegar (e após reinício), persistência leve, cratera esperando chunk sem segurar fallout nem a fila |
 | `fallout::tests::rings_cover_the_annulus_once` | anéis cobrem o anel uma vez |

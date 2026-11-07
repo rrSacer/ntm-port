@@ -3,7 +3,7 @@
 //! radiation and effects, and `/ntmbomba`.
 use super::*;
 use crate::{
-    blast::{self, Config, PULSE_EVERY, PULSE_MAX, PULSE_TICKS, Pulse, Queued, Recorder, Zone, vanilla, visuals},
+    blast::{self, Config, PULSE_EVERY, PULSE_MAX, Pulse, Queued, Recorder, Zone, vanilla, visuals},
     bomb::{Blast, FUSE_TICKS},
     machine::Data,
     radiation,
@@ -380,7 +380,7 @@ impl Server {
             Blast::Nuke { radius, .. } | Blast::Balefire { radius } => {
                 self.hand_to_engine(host, q, id);
                 let fallout = matches!(blast, Blast::Nuke { fallout: true, .. });
-                let pulse = Pulse { dim: dim.clone(), center: c, reach: 2.0 * f64::from(radius), next: now, until: now + PULSE_TICKS };
+                let pulse = Pulse { id: id.to_string(), dim: dim.clone(), center: c, reach: 2.0 * f64::from(radius), next: now };
                 if let (Blast::Balefire { .. }, Some(r)) = (blast, self.ready()) {
                     r.world.bombs.balefires.push(id.to_string());
                     if cfg.damage {
@@ -433,11 +433,12 @@ impl Server {
         }
     }
 
-    /// Blast damage while the craters are dug.
+    /// Blast damage while the craters are dug: each pulse ends with its crater, as the entity's `dealDamage` does.
     fn bomb_pulses(&mut self, host: &mut impl ServerHost) {
         let tick = self.ready.world.ticks;
+        let nukes = &self.blasts.nukes;
         let step = |pulses: &mut Vec<Pulse>| {
-            pulses.retain(|p| tick < p.until);
+            pulses.retain(|p| nukes.digging(&p.id));
             let due: Vec<Pulse> = pulses.iter().filter(|p| tick >= p.next).cloned().collect();
             for p in pulses.iter_mut().filter(|p| tick >= p.next) {
                 p.next = tick + PULSE_EVERY;
@@ -446,7 +447,7 @@ impl Server {
         };
         let mut due = step(&mut self.blasts.pulses);
         // The kept ones change only when one is due or ends: no keep of the world for nothing.
-        if self.ready.world.bombs.pulses.iter().any(|p| tick >= p.next || tick >= p.until) {
+        if self.ready.world.bombs.pulses.iter().any(|p| tick >= p.next || !nukes.digging(&p.id)) {
             due.extend(step(&mut self.ready.world.bombs.pulses));
         }
         for p in due {

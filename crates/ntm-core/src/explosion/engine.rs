@@ -1781,6 +1781,15 @@ impl Explosions {
             })
     }
 
+    /// A cratera de `id` ainda está sendo cavada: na fila, retomando, ou ativa sem a cratera concluída.
+    pub fn digging(&self, id: &str) -> bool {
+        self.jobs.iter().any(|j| j.id == id && j.crater_done.is_none() && !j.done())
+            || self.starts.iter().any(|s| match s {
+                Start::New(d) => d.id == id,
+                Start::Resume(r) => r == id,
+            })
+    }
+
     /// Põe uma explosão na fila: o plano é montado num tick só para ele
     /// (no máximo um por tick), e o estado inicial é gravado nele.
     pub fn detonate(&mut self, det: Detonation, _tick: u64) -> Result<(), String> {

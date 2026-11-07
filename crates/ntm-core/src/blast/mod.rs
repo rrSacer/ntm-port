@@ -115,22 +115,23 @@ impl Queued {
     }
 }
 
-/// Blast damage a nuke deals while its crater is dug (`ExplosionNukeGeneric
-/// .dealDamage`, every tick of `EntityNukeExplosionMK5` in the NTM; here
-/// every [`PULSE_EVERY`] ticks for [`PULSE_TICKS`]). `next` and `until` are on
-/// the world's clock (`WorldState.ticks`), kept with the world.
+/// Blast damage a nuke or a balefire deals while its crater is dug (`ExplosionNukeGeneric.dealDamage`, every tick of
+/// `EntityNukeExplosionMK5` until its explosion `isComplete`, and of `EntityBalefire` while `exp.update()` has not
+/// finished; here every [`PULSE_EVERY`] ticks). It ends with the crater of `id`, however long that takes. `next` is
+/// on the world's clock (`WorldState.ticks`), kept with the world.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Pulse {
+    /// The explosion whose crater it lasts as long as.
+    #[serde(default)]
+    pub id: String,
     pub dim: String,
     pub center: [f64; 3],
     /// 2R: `dealDamage(…, length * 2)`.
     pub reach: f64,
     pub next: u64,
-    pub until: u64,
 }
 
 pub const PULSE_EVERY: u64 = 10;
-pub const PULSE_TICKS: u64 = 100;
 /// `dealDamage`'s maxDamage.
 pub const PULSE_MAX: f64 = 250.0;
 

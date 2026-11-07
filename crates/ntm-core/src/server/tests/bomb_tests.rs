@@ -204,13 +204,18 @@ fn breaking_a_bomb_leaves_its_parts_to_its_slots() {
 
 /// The world is closed while a bomb's crater is dug, then opened again.
 fn restart_during(blast: &str, until: impl Fn(&Game) -> bool) -> (Rc<RefCell<World>>, Game) {
+    restart_dug(14, 22, blast, until)
+}
+/// [`restart_during`] with radius `r` dug with `fuel`.
+fn restart_dug(r: i32, fuel: u32, blast: &str, until: impl Fn(&Game) -> bool) -> (Rc<RefCell<World>>, Game) {
     let w = Rc::new(RefCell::new(World::new()));
     let mut g = Game::new(w.clone());
     g.run(10);
     floor(&mut g, 24);
     let who = player();
-    g.server.bomb_command(&mut g.sh, Some(&who), "config mundo raiomax 14").unwrap();
-    g.server.bomb_command(&mut g.sh, Some(&who), &format!("teste 14{blast}")).unwrap();
+    g.server.bomb_command(&mut g.sh, Some(&who), &format!("config mundo raiomax {r}")).unwrap();
+    g.server.bomb_command(&mut g.sh, Some(&who), &format!("config mundo fuel {fuel}")).unwrap();
+    g.server.bomb_command(&mut g.sh, Some(&who), &format!("teste {r}{blast}")).unwrap();
     let mut reached = false;
     for _ in 0..400 {
         g.run(1);
@@ -265,7 +270,7 @@ fn a_nukes_fallout_comes_back_after_a_restart() {
 /// until the crater is done: both come back with the world.
 #[test]
 fn a_balefire_comes_back_with_its_damage_after_a_restart() {
-    let (w, mut g) = restart_during(" balefire", in_crater);
+    let (w, mut g) = restart_dug(60, 4, " balefire", in_crater);
     assert!(!g.server.ready.world.bombs.balefires.is_empty() && !g.server.ready.world.bombs.pulses.is_empty(), "kept with the world");
     let mut p = player();
     p.creative = false;
@@ -279,8 +284,64 @@ fn a_balefire_comes_back_with_its_damage_after_a_restart() {
     }
     assert!(resumed, "the balefire's crater comes back");
     assert!(w.borrow().hurts.iter().any(|h| h.2 == "minecraft:explosion"), "and its damage: {:?}", w.borrow().hurts);
+    let bombs = &g.server.ready.world.bombs;
+    assert!(bombs.pulses.iter().all(|p| bombs.balefires.contains(&p.id)), "the damage stays its crater's");
     until_quiet(&mut g, 3000);
     assert!(g.server.ready.world.bombs.balefires.is_empty(), "done, it is forgotten");
+    assert!(g.server.ready.world.bombs.pulses.is_empty(), "its damage with it");
+}
+
+/// A balefire of radius `r` dug with `fuel`, a player in reach: the tick its crater is done (its id leaves
+/// `balefires`), checking at each tick that the damage is kept exactly while it digs and dealt none after.
+fn balefire_damage_lasts_its_crater(r: i32, fuel: u32) -> u64 {
+    let w = Rc::new(RefCell::new(World::new()));
+    let mut g = Game::new(w.clone());
+    g.run(10);
+    floor(&mut g, 24);
+    let who = player();
+    g.server.bomb_command(&mut g.sh, Some(&who), &format!("config mundo raiomax {r}")).unwrap();
+    g.server.bomb_command(&mut g.sh, Some(&who), &format!("config mundo fuel {fuel}")).unwrap();
+    let mut p = player();
+    p.creative = false;
+    p.pos = [1.5, 70.0, 0.5];
+    g.server.set_players(vec![p]);
+    g.server.bomb_command(&mut g.sh, Some(&who), &format!("teste {r} balefire")).unwrap();
+    let start = g.server.ready.world.ticks;
+    let mut done = None;
+    for _ in 0..4000 {
+        g.run(1);
+        let bombs = &g.server.ready.world.bombs;
+        let digging = g.server.blasts.nukes.active().any(|p| p.crater_done.is_none());
+        match done {
+            None if bombs.balefires.is_empty() && bombs.queue.is_empty() => {
+                done = Some(g.server.ready.world.ticks - start);
+                w.borrow_mut().hurts.clear();
+            }
+            None if digging => assert_eq!(bombs.pulses.len(), 1, "the damage lasts while the crater is dug"),
+            None => {}
+            Some(_) => {
+                assert!(bombs.pulses.is_empty() && g.server.blasts.pulses.is_empty(), "the damage ends with the crater");
+                assert!(w.borrow().hurts.iter().all(|h| h.2 != "minecraft:explosion"), "and deals none after: {:?}", w.borrow().hurts);
+            }
+        }
+        if done.is_some_and(|d| g.server.ready.world.ticks - start > d + 120) {
+            break;
+        }
+    }
+    done.expect("the crater never finished")
+}
+
+/// `EntityBalefire.onUpdate` deals damage only while `exp.update()` has not finished: a short crater's damage stops
+/// when it is done, not a fixed time after.
+#[test]
+fn a_short_balefires_damage_ends_with_its_crater() {
+    assert!(balefire_damage_lasts_its_crater(3, 34) < 100);
+}
+
+/// And a crater dug longer than a hundred ticks keeps dealing it until its end.
+#[test]
+fn a_long_balefires_damage_lasts_until_its_crater_is_done() {
+    assert!(balefire_damage_lasts_its_crater(60, 4) > 150);
 }
 
 #[test]
