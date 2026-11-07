@@ -131,8 +131,19 @@ antes disso, ela é entregue de novo, sem repetir efeitos.
 
 Nukes usam o motor do `ntm_core::explosion`, uma por mundo: o id é `w<mundo>n<n>`,
 retomado só no mundo certo (`resume_matching`), e as chaves `nx.*` ficam na
-mesma pasta do ntmlogic. Ao sair do mundo, as explosões ficam no storage e
-continuam quando ele voltar.
+mesma pasta do ntmlogic.
+
+**Ao fechar e reabrir o mundo, segue-se o HBM 1.7.10, quirks incluídos** (comportamento intencional do original):
+
+| Explosão | No HBM 1.7.10 | Aqui |
+| --- | --- | --- |
+| Nuke (`EntityNukeExplosionMK5`), cratera em andamento | `writeEntityToNBT` grava só `ticksExisted`; relida, `strength` é 0 e o `onUpdate` dá `setDead` no primeiro tick: a cratera para, o `dealDamage` também, e o fallout (que só nasce ao fim da cratera) não vem | A cratera é descartada na retomada (`Explosions::drop_craters`, fase `crater`), com seus pulsos; uma nuke disparada mas ainda não durável também não é entregue de novo. A bomba foi gasta |
+| Fallout de uma nuke já começado (`EntityFalloutRain`) | `writeEntityToNBT` grava `scale`: continua | Retomado (fases `fallout` e `linger`) |
+| Balefire (`EntityBalefire`) | grava `age`, `destructionRange`, `speed` e a explosão (`exp_*`): continua, com `dealDamage` a cada update até terminar | Retomado; os pulsos ficam no save do mundo (`BombWorld.pulses`, no relógio do mundo) e voltam com ele; o id sai de `BombWorld.balefires` quando a cratera termina |
+
+Testes: `a_nukes_crater_stops_with_the_world_as_the_mk5_entity_does`, `a_nukes_fallout_comes_back_after_a_restart`,
+`a_balefire_comes_back_with_its_damage_after_a_restart`, `p1_6_a_nuke_set_off_before_a_restart_stops_with_it_as_the_mk5_entity_does`
+(revisão do P1-6 da M2) e, em jogo, a segunda sessão da suíte `bombs` (`restart-arm`/`restart-check`).
 
 Perfil de efeitos com os blocos do content mod: bordas expostas da cratera
 viram `ntm:sellafield_slaked` (o fallout do NTM escoria até 1,25R, a cratera
@@ -335,7 +346,9 @@ limpos. Testes novos:
 | `…a_charge_burns_its_fuse_then_digs_like_vanilla` | pavio de 80 ticks, som, explosão |
 | `…the_detonator_links_and_sets_off_a_ready_bomb` | sem vínculo, liga, "não está pronta", detona; N2 sem escória nem zona |
 | `…breaking_a_bomb_gives_its_components_back_once` | quebrar solta os componentes uma vez |
-| `…an_explosion_resumes_after_a_restart` | reinício com a explosão no meio: retoma e termina |
+| `…a_nukes_crater_stops_with_the_world_as_the_mk5_entity_does` | reinício com a cratera de uma nuke no meio: para, como o MK5 relido |
+| `…a_nukes_fallout_comes_back_after_a_restart` | reinício no fallout: retoma e termina (`EntityFalloutRain`) |
+| `…a_balefire_comes_back_with_its_damage_after_a_restart` | reinício com a balefire no meio: cratera e dano voltam (`EntityBalefire`) |
 | `…settings_are_global_or_per_world` | config global/mundo, `limpar`, valor inválido; modo aprimorado recusado |
 | `ntm_core::explosion` `fallout.rs` (5) | regras e limites por distância, retomada no meio do fallout com rollback, chunk pendente até um jogador chegar (e após reinício), persistência leve, cratera esperando chunk sem segurar fallout nem a fila |
 | `fallout::tests::rings_cover_the_annulus_once` | anéis cobrem o anel uma vez |
@@ -355,7 +368,7 @@ servidor, em `crates/ntm-core/src/server/tests/review_m2_tests.rs`.
 | P1-3: cada `Linger` com o fuel inteiro | os fallouts pendentes dividem fuel e escritas do tick, em rodízio | `p1_3_lingering_fallouts_share_the_tick` |
 | P1-4: um chunk pendente do fallout de uma vez (66 mil leituras) | cursor por coluna, dentro do fuel e das escritas de cada chamada | `p1_4_a_pending_chunk_is_done_in_pieces_within_budget` |
 | P1-5: detonar antes de conferir as transações dos componentes | nada dispara com transação em andamento ou ainda não conferida | `p1_5_no_detonation_before_the_components_are_confirmed` |
-| P1-6: explosão na fila some no reinício | fila no save do mundo, junto com a saída da bomba; estado inicial gravado na criação | `p1_6_a_detonation_survives_a_crash_in_its_tick`, `p1_6_queued_explosions_survive_a_restart` |
+| P1-6: explosão na fila some no reinício | fila no save do mundo, junto com a saída da bomba; estado inicial gravado na criação. Revisto no item 5 da onda 0: uma nuke já disparada para com o mundo, como o MK5 relido (`EntityNukeExplosionMK5.writeEntityToNBT`) | `p1_6_a_nuke_set_off_before_a_restart_stops_with_it_as_the_mk5_entity_does`, `p1_6_queued_explosions_survive_a_restart` |
 | P1-7: diário e cabeçalho sem proteção contra gravação rasgada | estado em dois slots com geração e checksum, blocos selados, linger gravado antes de apagar o diário | `p1_7_a_torn_write_never_loses_the_explosion` (rasga cada gravação), `p1_7_a_torn_linger_header_keeps_the_pending_fallout` |
 | P1-13: `teste 100 forca` alocava ~165 MiB | faixa conferida antes de tudo; força vanilla limitada a 20 | `p1_13_test_blasts_are_bounded`, `vanilla::power_is_held_to_the_maximum` |
 | P2-8: retomada leve no fallout descartava seções adiadas | `crater_left` no estado: a retomada refaz o plano e termina a cratera | `p2_8_lite_resume_in_fallout_keeps_deferred_crater` |
