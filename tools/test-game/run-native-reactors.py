@@ -155,7 +155,7 @@ def run(args):
                        '--height', '720', '--name', name, '--world', name, '--creative', '--seed', '1']
             with log_path.open('w') as log:
                 client = subprocess.Popen(command, cwd=folder, env=env, stdout=log, stderr=log)
-            deadline = time.monotonic() + 150
+            deadline = time.monotonic() + 600
             while not (folder / 'control.sock').exists():
                 if client.poll() is not None:
                     raise RuntimeError('client exited before opening its socket')
@@ -169,10 +169,10 @@ def run(args):
                     refill_pile(folder)
                 script_modes = [] if mode == 'all' and args.scenario in ('solar', 'combustion') else [mode]
                 subprocess.run([sys.executable, str(work / f'tools/test-game/native_{script}.py'),
-                                str(folder), *script_modes], cwd=folder, env=env, check=True, timeout=1800)
+                                str(folder), *script_modes], cwd=folder, env=env, check=True, timeout=5400)
                 report['phases'].append(mode)
             Game(folder, f'shutdown-{index}').ctl('quit')
-            client.wait(timeout=60)
+            client.wait(timeout=180)
             (folder / 'control.sock').unlink(missing_ok=True)
             lines = log_path.read_text(errors='replace').splitlines()
             report.setdefault('backend_warnings', []).extend(

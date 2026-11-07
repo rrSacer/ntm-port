@@ -390,7 +390,7 @@ def crossing_act(g):
     g.command('tp @s -250.5 101 5.5')
     # A reopen can deduplicate the two copies again and hide the in-game failure. Prove the actual unload
     # and inspect the source while the destination's entities are still on disk.
-    deadline = time.monotonic() + 90
+    deadline = time.monotonic() + 270
     while time.monotonic() < deadline:
         loaded = g.command('execute if loaded 133 99 13 run say NTM_DESTINATION_LOADED')
         if not any('NTM_DESTINATION_LOADED' in line for line in loaded.get('chat', [])):
@@ -592,7 +592,7 @@ def mining_act(g):
     g.button(button['rect'], screen['size'])
     time.sleep(.6)
     g.close()
-    deadline = time.monotonic() + 150
+    deadline = time.monotonic() + 450
     while time.monotonic() < deadline:
         state = g.ctl('block %d %d %d' % chest).get('state', '')
         if state.startswith('minecraft:air'):
@@ -751,7 +751,7 @@ def world_items(g, item):
 
 
 def unloaded(g, p):
-    deadline = time.monotonic() + 90
+    deadline = time.monotonic() + 270
     while True:
         loaded = g.command('execute if loaded %d %d %d run say NTM_CHUNK_LOADED' % tuple(p))
         here = any('NTM_CHUNK_LOADED' in s for s in loaded.get('chat', []))
@@ -956,7 +956,7 @@ def origin_pickup_act(g):
     g.command('forceload remove all')
     g.command('forceload add 496 0 511 15')
     g.command('tp @s 503.5 102 13.5')
-    deadline = time.monotonic() + 90
+    deadline = time.monotonic() + 270
     while True:
         loaded = g.command('execute if loaded %d %d %d run say NTM_SOURCE_LOADED' % core)
         source_loaded = any('NTM_SOURCE_LOADED' in s for s in loaded.get('chat', []))
@@ -1026,7 +1026,7 @@ def pause_expecting_death(g):
         g.ctl('pause')
     except Exception:
         return
-    deadline = time.monotonic() + 90
+    deadline = time.monotonic() + 270
     while time.monotonic() < deadline:
         try:
             g.ctl('status')

@@ -69,7 +69,7 @@ class World:
         self.log = self.folder / f'client-{n}.log'
         with self.log.open('w') as log:
             self.client = subprocess.Popen(command, cwd=self.folder, env=env, stdout=log, stderr=log)
-        deadline = time.monotonic() + 150
+        deadline = time.monotonic() + 600
         while not (self.folder / 'control.sock').exists():
             if self.client.poll() is not None:
                 raise RuntimeError('client exited before opening its socket')
@@ -79,14 +79,14 @@ class World:
 
     def script(self, mode, check=True, extra=None):
         return subprocess.run([sys.executable, str(Path(__file__).with_name('native_crash.py')), str(self.folder), mode],
-                              cwd=self.folder, env=dict(self.env, **(extra or {})), check=check, timeout=900).returncode
+                              cwd=self.folder, env=dict(self.env, **(extra or {})), check=check, timeout=2700).returncode
 
     def quit(self):
         Game(self.folder, 'shutdown').ctl('quit')
-        self.client.wait(timeout=90)
+        self.client.wait(timeout=270)
         (self.folder / 'control.sock').unlink(missing_ok=True)
 
-    def died(self, timeout=120):
+    def died(self, timeout=360):
         """The game ended by itself (the failpoint); how it ended."""
         try:
             return self.client.wait(timeout=timeout)

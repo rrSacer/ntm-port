@@ -224,7 +224,7 @@ def undo(g):
             g.ctl('pause')
         except Exception:
             return
-        deadline = time.monotonic() + 90
+        deadline = time.monotonic() + 270
         while time.monotonic() < deadline:
             try:
                 g.ctl('status')

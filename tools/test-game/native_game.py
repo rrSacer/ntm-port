@@ -21,7 +21,8 @@ class Game:
 
     def ctl(self, line, _retry=0):
         if line.startswith('wait-ready '):
-            deadline = time.monotonic() + float(line.split()[1])
+            # Pinned to one thread among up to ten games, a world loads slower: never less than 600 s.
+            deadline = time.monotonic() + max(float(line.split()[1]), float(os.environ.get('NTM_WAIT_READY_MIN', '600')))
             while time.monotonic() < deadline:
                 status = self.ctl('status')
                 if (status.get('player') is not None
@@ -32,7 +33,7 @@ class Game:
             raise TimeoutError('player/chunks not ready')
         started=time.monotonic()
         with socket.socket(socket.AF_UNIX) as sock:
-            sock.settimeout(120)
+            sock.settimeout(360)
             sock.connect(str(self.folder / 'control.sock'))
             sock.sendall((line + '\n').encode())
             with sock.makefile() as stream:
