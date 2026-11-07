@@ -819,7 +819,12 @@ def stale_verify(g, again=False):
     core = prep['cores'][-1]
     if SCENARIO == 'origin-away' and not again:
         # Reopened at B, where the base save left the player, with the origin away: B's older copy is picked up first.
-        g.check('origin_away_on_reopen', unloaded(g, (140, 100, 8)), 'A')
+        # After a save that does not wait (`kv_committed`) the player's file is that save's, as vanilla writes it, and
+        # the player opens where the action left them: the reopen is compared with the control's all the same.
+        paused = json.loads((g.folder / 'native-crash-more-act.json').read_text()).get('pause_save', False)
+        g.evidence['origin_away_on_reopen'] = unloaded(g, (140, 100, 8))
+        if not paused:
+            g.check('origin_away_on_reopen', g.evidence['origin_away_on_reopen'], 'A')
         g.command('tp @s 503.5 100 8.5')
         time.sleep(4)
         g.evidence['picked_old_copy'] = {'inventory': inventory(g, 'ntm:niter'), 'entities': world_items(g, 'ntm:niter'),
