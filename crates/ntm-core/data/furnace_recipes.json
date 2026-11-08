@@ -1100,12 +1100,14 @@
       "experience": 2.0
     },
     {
-      "id": "ntm:m1_temp/aluminium_from_ore",
+      "id": "ntm:ore_aluminium",
       "input": {
-        "item": "ntm:ore_aluminium"
+        "item": "ntm:ore_aluminium",
+        "count": 1
       },
       "output": {
-        "item": "ntm:ingot_aluminium"
+        "item": "ntm:chunk_ore__cryolite",
+        "count": 1
       },
       "experience": 2.5
     },

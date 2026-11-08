@@ -8,9 +8,9 @@
   ],
   "key": {
     "B": "ntm:ingot_beryllium",
-    "W": "ntm:plate_aluminium",
+    "W": "ntm:plate_cast__copper",
     "F": "minecraft:furnace",
-    "R": "ntm:wire_fine__tungsten"
+    "R": "ntm:coil_tungsten"
   },
   "result": {
     "id": "ntm:machine_electric_furnace_off",

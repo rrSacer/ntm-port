@@ -7,8 +7,8 @@
     "PPP"
   ],
   "key": {
-    "P": "ntm:plate_titanium",
-    "I": "minecraft:iron_ingot"
+    "P": "ntm:plate_steel",
+    "I": "ntm:ingot_steel"
   },
   "result": {
     "id": "ntm:wiring_red_copper",
