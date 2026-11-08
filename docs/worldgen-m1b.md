@@ -80,6 +80,34 @@ Conclusão atual: o excesso não vem do conteúdo (forma do veio igual a Java, s
 
 Os valores declarados de Java estão nos veios (`attempts_per_chunk` = tentativas de Java). A calibração de tentativas foi revertida, como pedido.
 
+## Experimento decisivo: execuções por chunk e blocos por execução (pacote descartável)
+
+Pacote de teste sem conteúdo ntm (namespace `probe`), construído com o empacotador do fork e apagado ao final. Mesma cadeia de estrutura dos veios (`structure_set → jigsaw → feature_pool_element → placed_feature`), origem `in_square` + `offset 8`, altura 60, 81 chunks centrais, cliente do fork.
+
+1. **Execuções por chunk.** Marcador `simple_block` (`emerald_block`, `count 1`):
+   - Overworld: 77 marcadores em 81 chunks.
+   - Nether: 80 marcadores em 81 chunks.
+   - Por chunk, 0 a 3 marcadores: a origem cai em faixa de 16 blocos começando em +8, então parte dos marcadores cai no chunk vizinho. O total é ~81, uma execução por start. **O motor não roda a feature mais de uma vez por chunk.**
+
+2. **Blocos por execução**, `ore` com `count 1` sobre netherrack, origens nas mesmas posições, mesma janela. Modelo com o port de 26.3 (`vein_yield_oracle.py`) e com o `WorldGenMinable` de 1.7.10:
+
+| Tamanho | Medido em jogo | Modelo 26.3 | Modelo Java | Medido / 26.3 |
+| ---: | ---: | ---: | ---: | ---: |
+| 6 | 2,75 | 1,81 | 1,94 | 1,52× |
+| 12 | 8,26 | 4,89 | 4,69 | 1,69× |
+| 32 | 77,4 | 30,5 | 29,9 | 2,54× |
+
+   O excesso cresce com o tamanho. Isso indica diferença na geometria do veio, não contagem de execuções.
+
+**Conclusão.** A causa é o **rendimento por execução do motor** para veios de minério, não o número de execuções, nem a duplicação por bioma, nem o modelo do 26.3 (que bate com o Java dentro de 15%). Não calibrei tentativas: a conversão seria mascarar esse defeito.
+
+**Motor, arquivo:linha:**
+- Caminho de produção: `crates/horizon-world/src/worldgen/feature_graph.rs:562` chama `OreFeature` (`ore_feature.rs`).
+- Geometria do veio: `ore_feature.rs:148–300` (`place`, `do_place`). Suspeito: cálculo do raio e dos passos em `do_place`, ou a máscara `tested`, a ser confirmado com um teste de cruzamento contra o `WorldGenMinable` de 1.7.10.
+- **Não é paridade validada:** `docs/feature-placement.md:306–311` declara que veios de minério comuns usam um caminho de seção em massa "pending" e que "no vein geometry parity is claimed". Portanto a premissa de paridade por harness não vale para veios.
+
+**Para o coordenador:** o defeito está no motor. Antes de qualquer contorno no conteúdo, decidir: corrigir o `ore_feature.rs` (com teste de paridade contra o `WorldGenMinable`) ou aceitar a lacuna. Os veios do M1 permanecem com as tentativas de Java.
+
 ## Lacunas
 
 - **Estrato de gnaisse:** ver seção acima.
