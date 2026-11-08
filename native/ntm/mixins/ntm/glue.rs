@@ -814,6 +814,10 @@ pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
     let mut host = Host { game: &mut *game, buttons };
     let (server, tick) = guard.get_or_insert_with(|| (Server::native(&mut host, 0), 0));
     *tick += 1;
+    // Everything the region writer was given is on the disk: the last save that did not wait is confirmed.
+    if host.game.save.writes_finished().unwrap_or(false) {
+        server.native_writes_finished();
+    }
     arrived(server);
     for (dim, pos, old, new) in changes {
         // Preserve each break; enrich placement properties only while the

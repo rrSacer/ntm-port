@@ -1798,4 +1798,29 @@ mod tests {
         die(&mut h, &written);
         assert_eq!(opened(&mut h).0, BTreeMap::from([("ntm:pile_rod__zr".into(), 1)]));
     }
+
+    /// A session saved only by saves that do not wait keeps no receipt for ever: those a save took are confirmed once
+    /// the region writer has put everything on the disk, and those applied after it stay for the next save.
+    #[test]
+    fn a_save_that_does_not_wait_confirms_its_receipts_once_the_writer_is_done() {
+        let mut h = legacy_batch();
+        let mut s = reopen(&mut h, 0);
+        s.native_tick(&mut h, 1);
+        assert_eq!(h.drops.len(), 1);
+        let receipts = |s: &Server| s.ready.world.applied_machine_effects.len();
+        assert_eq!(receipts(&s), 1, "the drop's receipt");
+        s.native_world_saving(&mut h);
+        s.native_world_saved(&mut h, false);
+        assert_eq!(receipts(&s), 1, "kept while the save's writes may still be queued");
+        // A receipt of after the save.
+        s.ready.world.applied_machine_effects.push_back(CommittedEffects { serial: 9, ..Default::default() });
+        s.native_writes_finished();
+        assert_eq!(receipts(&s), 1, "the save's is confirmed, the later one stays");
+        assert_eq!(s.ready.world.applied_machine_effects[0].serial, 9);
+        s.native_writes_finished();
+        assert_eq!(receipts(&s), 1, "nothing more to confirm before another save");
+        s.native_world_saving(&mut h);
+        s.native_world_saved(&mut h, true);
+        assert_eq!(receipts(&s), 0, "a waited save confirms at once");
+    }
 }

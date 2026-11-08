@@ -62,6 +62,14 @@ pub struct Survivor {
     pub json: String,
 }
 
+/// What a save took with its chunks of the session's receipts and survivors: the first `receipts` receipts, and each
+/// survivor as it stood.
+#[derive(Clone, Debug, Default)]
+pub(super) struct Taken {
+    receipts: usize,
+    survivors: Vec<((String, Pos), u64, u64)>,
+}
+
 /// A lossless retention journal written before consuming a BE's cell.
 /// Recovery can prove the original source is still intact and discard it.
 #[derive(Clone,Debug,PartialEq,serde::Serialize,serde::Deserialize)]
@@ -398,20 +406,54 @@ impl Server {
         // given to a record past that. A waited save wrote those records first: the earlier version's removals and
         // batches they took need not be kept any longer.
         self.retire_legacy(wait);
-        let applied = wait.then(|| std::mem::take(&mut *self.ready.world.applied_machine_effects));
-        let survivors = wait.then(|| std::mem::take(&mut *self.ready.world.survivors));
+        // The receipts and survivors the save took are confirmed once its writes are on the disk: now when it waited,
+        // else when the writer is done with them (`native_writes_finished`). A save without the hook before it takes
+        // all of them.
+        let taken = self.taken.take().unwrap_or_else(|| self.taking());
         // Written at every save, the clock with it: what runs on it (a balefire's damage, the zones) comes back as of
         // this save, not as of the last keep of the clock alone.
         if let Err(e) = self.write_world(host) {
-            if let Some(applied) = applied {
-                *self.ready.world.applied_machine_effects = applied;
-            }
-            if let Some(survivors) = survivors {
-                *self.ready.world.survivors = survivors;
-            }
             host.log(&format!("machine effect receipts/removals: {e}"));
+            return;
+        }
+        if wait {
+            self.confirm(&taken);
+            self.awaiting = None;
         } else {
-            self.prune_ledger(host);
+            self.awaiting = Some(taken);
+        }
+        self.prune_ledger(host);
+    }
+
+    /// The session's receipts and survivors as they stand: what a save about to take the chunks takes with them.
+    pub(super) fn taking(&self) -> Taken {
+        Taken {
+            receipts: self.ready.world.applied_machine_effects.len(),
+            survivors: self.ready.world.survivors.iter().map(|(k, s)| (k.clone(), s.generation, s.rev)).collect(),
+        }
+    }
+
+    /// The region writer has put on the disk everything queued so far: the last save that did not wait is as good as
+    /// one that did for the receipts and survivors it took (the earlier version's storage keeps its own rule,
+    /// `retire_legacy`). Without that, a session saved only by autosaves would keep every receipt.
+    pub fn native_writes_finished(&mut self) {
+        if let Some(taken) = self.awaiting.take() {
+            self.confirm(&taken);
+        }
+    }
+
+    fn confirm(&mut self, taken: &Taken) {
+        if taken.receipts > 0 {
+            let n = taken.receipts.min(self.ready.world.applied_machine_effects.len());
+            self.ready.world.applied_machine_effects.drain(..n);
+        }
+        if !taken.survivors.is_empty() {
+            let survivors = &mut self.ready.world.survivors;
+            for (key, generation, rev) in &taken.survivors {
+                if survivors.get(key).is_some_and(|s| s.generation == *generation && s.rev == *rev) {
+                    survivors.remove(key);
+                }
+            }
         }
     }
 

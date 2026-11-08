@@ -289,6 +289,10 @@ pub struct Server {
     legacy_read: BTreeSet<crate::persist::Obligation>,
     /// The marked ones as a save took its chunks (`native_world_saving`): a waited save wrote them before its storage.
     captured: Option<BTreeSet<crate::persist::Obligation>>,
+    /// The receipts and survivors a save took with its chunks (`native_world_saving`), and those of the last save that
+    /// did not wait, confirmed once the writer has put everything it queued on the disk (`native_writes_finished`).
+    taken: Option<transaction::Taken>,
+    awaiting: Option<transaction::Taken>,
     /// Drawn when the server starts: the names of the batches it puts out are its own, whatever an older storage or
     /// a newer chunk record names (a storage set back by a death names no batch twice).
     nonce: u64,

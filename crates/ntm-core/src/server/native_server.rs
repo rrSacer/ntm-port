@@ -89,6 +89,8 @@ impl Server {
             marked: BTreeSet::new(),
             legacy_read,
             captured: None,
+            taken: None,
+            awaiting: None,
             nonce: obligations::draw_nonce(),
         }
     }
