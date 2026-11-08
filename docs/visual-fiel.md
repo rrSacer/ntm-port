@@ -1038,10 +1038,13 @@ fica pronto e parado.
   em `machine_autosaw`, `tesla`, `machine_forcefield`) também os deixa de fora, até a rotação ser lida.
   Multiblocos `Inert` sem modelo (33 RBMK, K3 grandes) dependem de multiblocos no `visual.json` (ver `visual-gen`).
   Testes: `tools/visual-gen/test_visual.py`.
-  Captura (T5, `/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/f-visual/captures/`): `tank-before.png` mostra os dois
-  tanques lado a lado com a parede no meio. `tank-after.png` e `rbmk-panel-after.png` NÃO mostram o tanque nem o
-  painel renderizados no build da branch; a causa não está confirmada (ver PRONTO T5). Captura do jato com
-  partícula: pendente (a inserção de carvão e ferro no cadinho não foi possível pelo `horizon-ctl`).
+  Captura (T5, `/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/f-visual/captures/`): `tank-before.png` (base 85d06d9c)
+  e `tank-after2.png` (branch, depois de c5d0e673) mostram os tanques; o da direita é o tanque sozinho, e o do centro
+  são dois tanques conectados. `rbmk-panel-after2.png` mostra o `rbmk_gauge` como painel pequeno.
+  Causa do tanque invisível (corrigida em c5d0e673): o tanque tinha `horizon_liquid` e `horizon_model`, e o motor
+  guarda os dois pelo nome do bloco, então o arquivo de líquido escondia o OBJ. Agora o líquido vai dentro do modelo,
+  como no canal. `tools/visual-gen/test_visual.py` checa isso.
+  Captura do jato com partícula: pendente (a inserção de carvão e ferro no cadinho não foi possível pelo `horizon-ctl`).
 - **Fluidos:** só a energia passa pelo anel do multibloco. As portas de fluido continuam no núcleo.
 - **Explosões e comandos:** uma explosão, um `/fill` ou um `set-blocks` que tira uma célula não tira o resto.
 - **Interface:**
