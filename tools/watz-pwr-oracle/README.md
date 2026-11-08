@@ -37,7 +37,10 @@ closed until the fixture is regenerated.
   differently by up to 1 ulp) and is compared at 1e-12 relative.
 
 Scenarios (inputs are in the fixture, so the Rust test mirrors nothing by hand): 12 pellet types,
-stacked columns, mud overflow, pump/power gating; 16 PWR structures including the facing quirks
-and the 4096 limit; 15 fuels, 9 coolants, unloaded chunks, auto-loading, depletion into the output
-slot, meltdown; 45 Hephaestus runs over 15 fluids and 3 lava fields; the flare for all 156 fluids
-(vent and burn) plus upgrade, tilt, empty and cap cases; 62 Watz core structures.
+stacked columns, mud overflow, pump/power gating (19 Watz runs); the Watz core structure at each
+of its 110 positions (remove, wrong metadata, foreign block) and at 9 world times; 28 PWR
+structures including the facing quirks, fuel lines of range 14 to 18 and the 4096 limit; 46 PWR
+tick runs (15 fuels, 9 coolants, rods up and down, 13 to 17 heatsinks, unloaded chunks,
+auto-loading, depletion into the output slot, 3 meltdowns); 45 Hephaestus runs over 15 fluids and
+3 lava fields; the flare for all 156 fluids (vent and burn) plus upgrade, tilt, empty and cap cases
+(365 runs).
