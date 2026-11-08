@@ -72,7 +72,9 @@ public class Oracle {
 	}
 	static Map<String, Object> stk(String kind, Integer damage, Long charge) { return o("kind", kind, "damage", damage, "charge", charge); }
 
-	static PowerNetMK2 newNet() { PowerNetMK2 n = new PowerNetMK2(); UniNodespace.testNet = n; UniNodespace.nodes.clear(); return n; }
+	/** NodeNet keeps its entries in a HashSet, whose order follows identity hash codes (random in the game).
+	 *  The oracle swaps in LinkedHashSets so the order is the insertion order, which is what the Rust port takes. */
+	static PowerNetMK2 newNet() { PowerNetMK2 n = new PowerNetMK2(); n.providerEntries = new LinkedHashSet<>(); n.receiverEntries = new LinkedHashSet<>(); UniNodespace.testNet = n; UniNodespace.nodes.clear(); return n; }
 	static void addTo(PowerNetMK2 net, Object e, boolean prov, boolean rec) {
 		if (prov) net.providerEntries.add((IEnergyProviderMK2) e);
 		if (rec) net.receiverEntries.add((IEnergyReceiverMK2) e);
@@ -328,10 +330,21 @@ public class Oracle {
 		return out;
 	}
 
+	static List<Object> randoms() {
+		List<Object> out = new ArrayList<>();
+		int[] bounds = {1, 2, 3, 5, 7, 10, 16, 100, 1000, 1 << 20, (1 << 30) + 1, Integer.MAX_VALUE};
+		for (long seed : new long[]{0, 1, 42, -7, 123456789L, Long.MAX_VALUE, Long.MIN_VALUE}) {
+			Random r = new Random(seed); List<Object> draws = new ArrayList<>();
+			for (int i = 0; i < 48; i++) { int b = bounds[i % bounds.length]; draws.add(l(b, r.nextInt(b))); }
+			out.add(o("seed", seed, "draws", draws));
+		}
+		return out;
+	}
+
 	public static void main(String[] a) {
 		StringBuilder b = new StringBuilder();
 		js(b, o("schema", 1, "packs", packs(), "net_cases", netCases(), "redd_cases", reddCases(), "socket_cases", socketCases(), "control_cases", controlCases(),
-			"geometry", geometry(), "wires", wireCases(), "links", linkCases(), "switches", switches()));
+			"geometry", geometry(), "wires", wireCases(), "links", linkCases(), "switches", switches(), "randoms", randoms()));
 		System.out.println(b);
 	}
 }
