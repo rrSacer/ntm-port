@@ -255,11 +255,19 @@ Estas lacunas não se fecham agora porque o ponto de ligação está em arquivos
 
 ## Prova em jogo: os 7 bottles (T2)
 
-Roteiro: `tools/test-game/run_k2_closure.py`, com o build compartilhado do fork (`horizon-client`) e o pacote `ntm.hmod` gerado por `tools/build-content.sh` com `HORIZON_MOD` no empacotador compartilhado. Um mundo novo de sobrevivência por modo, porque o criativo não consome nem dá a tampa (`Give.creative`), e um jogador morto ou irradiado não usa o bottle.
+Roteiro: `tools/test-game/run_k2_closure.py`. Build: o `horizon-client` compartilhado do fork (`/home/sacer/.cache/ntm-native-main/target/release/`), com o pacote de conteúdo `ntm.hmod` gerado por `tools/build-content.sh` com o empacotador compartilhado (`HORIZON_MOD`), carregado por `--dev-mod`. Um mundo novo de sobrevivência por execução: no criativo o bottle não consome e a tampa não sai (`Give.creative`), e um jogador morto ou irradiado não usa o bottle.
 
-- Sem o abridor: 7 de 7 recusados. O bottle continua no inventário, sem `bottle_empty` e sem tampa (9 de 9 checagens, incluindo o modo sobrevivência).
-- Com o abridor: 7 de 7 usados. O bottle vira o vazio (`bottle_empty` ou `bottle2_empty`) no mesmo slot, a tampa entra (`cap_*`), e o abridor não é consumido (23 de 23 checagens).
+Evidência: `docs/evidence/k2-closure/native-k2-closure-bottles.json` (57 checagens, 57 passam) e `docs/evidence/k2-closure/native-k2-closure-cherry-probe.json` (2 checagens, 2 passam).
 
-Divergência observada: uma sonda anterior viu `ntm:bottle_nuka` no lugar de `ntm:bottle_cherry` no relatório de inventário, mas numa sessão limpa o id saiu certo. O chat do jogo diz "Bottle of Nuka Cherry" e a tampa é `cap_nuka`, como no Java.
+Cada bottle é testado na mesma sessão e no mesmo estado, em duas etapas:
 
-Lacuna: o ataque do abridor em mobs (`WeaponSpecial`) não foi testado e continua fora, porque não há API de dano a mobs.
+1. **Sem o abridor** (3 checagens por bottle): a tentativa é recusada. O bottle continua no inventário, sem vazio e sem tampa; os efeitos não mudam; a dose não muda.
+2. **Com o abridor** (5 checagens por bottle): o uso é aceito. O bottle vira o vazio (`bottle_empty` ou `bottle2_empty`) no mesmo slot, a tampa entra, o abridor não é consumido, os efeitos da tabela estão no jogador com o amplificador da tabela, e a dose sobe pelo `millirad` da tabela (0 nos `bottle2_*`, que não têm dose na tabela).
+
+Total: 1 checagem de modo sobrevivência + 7 × 8 = **57**. A contagem anterior (9/9 e 23/23) estava errada: o roteiro dava o mesmo nome a uma checagem de cada bottle, e o dicionário de evidência sobrescrevia, então contava uma só. Agora cada checagem tem nome próprio.
+
+**Cherry:** a dúvida "nuka no lugar de cherry" não se reproduziu em mundo limpo. A sonda (`cherry-probe`) deu o chat "Bottle of Nuka Cherry" e o inventário `ntm:bottle_cherry` (1). A sonda anterior, que mostrou `ntm:bottle_nuka`, rodava num mundo com sobras de bottles de rodadas antigas; a evidência daquela rodada não foi preservada. Sem causa estática: a tampa do cherry é `cap_nuka` no Java e na tabela.
+
+**Lacunas de prova:** o ataque do abridor em mobs (`WeaponSpecial`) não foi testado: não há API de dano a mobs. A cura (`heal`) não é lida em jogo: o roteiro não força dano antes do uso; ela fica coberta pelos testes Rust da tabela.
+
+**Divergência documentada (`complete()`):** `native/ntm/mixins/ntm/item_hooks.rs:516` recusa o fim do uso se `spec.sickness_gate` e o jogador estiver com `ntm:potion_sickness`. O Java `onEaten` não confere isso de novo; só o `onItemRightClick` confere. O efeito só aparece com o `potionSickness` ligado (padrão desligado; ver `docs/content-catalogo-k2.md:52`), e o port não suporta essa opção ligada. Por isso não altero o código agora: a divergência fica registrada e só vira defeito se a opção for suportada.
