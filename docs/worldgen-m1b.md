@@ -108,6 +108,10 @@ Pacote de teste sem conteúdo ntm (namespace `probe`), construído com o empacot
 
 **Para o coordenador:** o defeito está no motor. Antes de qualquer contorno no conteúdo, decidir: corrigir o `ore_feature.rs` (com teste de paridade contra o `WorldGenMinable`) ou aceitar a lacuna. Os veios do M1 permanecem com as tentativas de Java.
 
+## Convenções de posicionamento
+
+- `offset 8,0,8` com `in_square` põe a origem numa faixa de 16 blocos que começa em +8. Parte das origens cai no chunk vizinho. O total por janela não muda, só a atribuição por chunk. Vale para os veios do Nether e do overworld, e deve ser lembrado em medições de fronteira. O Java 1.7.10 usa a origem do chunk; a diferença é de janela, não de rendimento.
+
 ## Lacunas
 
 - **Estrato de gnaisse:** ver seção acima.
