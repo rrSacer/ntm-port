@@ -108,5 +108,7 @@ pub fn warm_tables() {
 pub mod pile;
 
 pub mod zirnox;
+pub mod watz_pwr;
+pub mod petroleo_e;
 
 pub mod sounds;

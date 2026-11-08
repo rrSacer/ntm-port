@@ -146,6 +146,16 @@ def gen(src, out):
     (s / 'TileEntityMachineHephaestus.java').write_text('import java.util.*;\nclass TileEntityMachineHephaestus extends TileEntityLoadedBase {\n' + hb
         + '\tint[] heatDump() { return heat; }\n\tlong fissureDump() { return fissureScanTime; }\n}\n')
 
+    # Watz structure core, casing conversion and break drops
+    ws = rd('tileentity/machine/TileEntityWatzStruct.java')
+    (s / 'TileEntityWatzStruct.java').write_text('class TileEntityWatzStruct extends TileEntity {\n' + cut(ws, 'public void updateEntity()') + cut(ws, 'private Block gbr(')
+        + cut(ws, 'private int gmr(') + cut(ws, 'private boolean cbr(Block b, int x, int y, int z)') + cut(ws, 'private boolean cbr(Block b, int meta, int x, int y, int z)') + '}\n')
+    tc = rd('blocks/generic/BlockToolConversion.java')
+    conv = next(l for l in tc.splitlines(True) if 'ModBlocks.watz_end, 0' in l)
+    (s / 'BlockToolConversion.java').write_text('import java.util.*;\nclass BlockToolConversion {\n\tstatic HashMap<Pair, Pair> conversions = new HashMap();\n\tstatic void reg() {\n' + conv + '\t}\n}\n')
+    wz = rd('blocks/machine/Watz.java')
+    (s / 'WatzBlock.java').write_text('import java.util.*;\nclass WatzBlock extends Block {\n\tWatzBlock() { super("watz_drops"); }\n' + lines(wz, *span(wz, 'public static boolean drop', 'public static boolean drop'))
+        + cut(wz, 'public void breakBlock(') + '}\n')
     # Flare
     f = rd('tileentity/machine/oil/TileEntityMachineGasFlare.java')
     fb = (lines(f, *span(f, 'public long power;', 'public UpgradeManagerNT upgradeManager = new UpgradeManagerNT();')) + 'List<String> releases = new ArrayList<>();\n'

@@ -18,6 +18,8 @@ public class Driver {
 		List<String> top = new ArrayList<>();
 		top.add("\"functions\":" + functions());
 		top.add("\"watz\":" + watzAll());
+		top.add("\"watz_extra\":" + watzExtra());
+		top.add("\"fluids\":" + fluids());
 		top.add("\"pwr_structure\":" + pwrStructures());
 		top.add("\"pwr_fission\":" + pwrFission());
 		top.add("\"hephaestus\":" + hephaestus());
@@ -165,6 +167,97 @@ public class Driver {
 			segs[0].slots[0] = pellet(2, 5e8); segs[1].slots[0] = pellet(3, 5e8);
 		}));
 		return arr(l);
+	}
+
+	static String fluids() {
+		List<String> l = new ArrayList<>();
+		HeatingType[] ht = {HeatingType.BOILER, HeatingType.HEATEXCHANGER, HeatingType.PWR};
+		for(java.lang.reflect.Field f : Fluids.class.getDeclaredFields()) {
+			try {
+				FluidType t = (FluidType) f.get(null);
+				FT_Heatable h = t.getTrait(FT_Heatable.class);
+				if(h == null) continue;
+				HeatingStep st = h.getFirstStep();
+				FT_PWRModerator m = t.getTrait(FT_PWRModerator.class);
+				l.add(obj("name", s(t.name), "hot", s(st.typeProduced.name), "heat_req", st.heatReq, "amount_req", st.amountReq, "amount_produced", st.amountProduced,
+						"eff_boiler", d(h.getEfficiency(ht[0])), "eff_heatexchanger", d(h.getEfficiency(ht[1])), "eff_pwr", d(h.getEfficiency(ht[2])),
+						"moderator", m == null ? "null" : d(m.getMultiplier())));
+			} catch(Exception e) { throw new RuntimeException(e); }
+		}
+		return arr(l);
+	}
+
+	static String watzExtra() {
+		World w0 = new World();
+		TileEntityWatz tw = new TileEntityWatz();
+		tw.xCoord = 100; tw.yCoord = 50; tw.zCoord = 70; tw.worldObj = w0;
+		List<String> ports = new ArrayList<>();
+		for(PortDef p : tw.getPorts()) ports.add(ints(p.pos[0] - 100, p.pos[1] - 50, p.pos[2] - 70, p.dir));
+		TileEntityMachineHephaestus th = new TileEntityMachineHephaestus();
+		th.xCoord = 100; th.yCoord = 50; th.zCoord = 70; th.worldObj = w0;
+		List<String> hports = new ArrayList<>();
+		for(PortDef p : th.getPorts()) hports.add(ints(p.pos[0] - 100, p.pos[1] - 50, p.pos[2] - 70));
+		BlockToolConversion.reg();
+		List<String> conv = new ArrayList<>();
+		for(Object o : BlockToolConversion.conversions.entrySet()) {
+			Map.Entry<Pair, Pair> e = (Map.Entry<Pair, Pair>) o;
+			Pair<ToolType, MetaBlock> k = e.getKey(); Pair<AStack[], MetaBlock> v = e.getValue();
+			OreDictStack req = (OreDictStack) v.key[0];
+			conv.add(obj("tool", s(k.key.n), "block", s(k.value.block.name), "meta", k.value.meta, "ore", s(req.ore), "count", req.n, "to_block", s(v.value.block.name), "to_meta", v.value.meta));
+		}
+		World w = new World();
+		WatzBlock wb = new WatzBlock();
+		w.log.clear();
+		wb.breakBlock(w, 1, 2, 3, wb, 12);
+		List<String> drops = new ArrayList<>();
+		for(String e : w.log) drops.add(s(e));
+		w.log.clear();
+		wb.breakBlock(w, 1, 2, 3, wb, 11);
+		List<String> noDrops = new ArrayList<>();
+		for(String e : w.log) noDrops.add(s(e));
+		// structure core
+		List<String> structs = new ArrayList<>();
+		structs.add(structure(0, -1, -1, 40));
+		structs.add(structure(100, -1, -1, 43));
+		structs.add(structure(101, -1, -1, 60));
+		for(int k = 0; k < 60; k++) structs.add(structure(k + 1, k % 7, k, 40 + (k % 2) * 3));
+		return obj("ports", arr(ports), "heph_ports", arr(hports), "conversions", arr(conv), "break_drops", arr(drops), "break_no_drops", arr(noDrops), "structures", arr(structs));
+	}
+
+	/** Complete Watz shell around a core at the origin; `mode` damages it, `hit` picks the cell. */
+	static String structure(int id, int mode, int hit, long time) {
+		World w = new World();
+		w.time = time;
+		put(w, 0, 1, 0, ModBlocks.watz_cooler); put(w, 0, 2, 0, ModBlocks.watz_cooler);
+		int[][] el = {{1, 0}, {2, 0}, {0, 1}, {0, 2}, {-1, 0}, {-2, 0}, {0, -1}, {0, -2}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+		int[][] co = {{2, 1}, {2, -1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {1, -2}, {-1, -2}};
+		List<int[]> cells = new ArrayList<>();
+		for(int i = 0; i < 3; i++) {
+			for(int[] e : el) { put(w, e[0], i, e[1], ModBlocks.watz_element); }
+			for(int[] e : co) { put(w, e[0], i, e[1], ModBlocks.watz_cooler); }
+			for(int j = -1; j < 2; j++) { cells.add(new int[] {3, i, j}); cells.add(new int[] {j, i, 3}); cells.add(new int[] {-3, i, j}); cells.add(new int[] {j, i, -3}); }
+			cells.add(new int[] {2, i, 2}); cells.add(new int[] {2, i, -2}); cells.add(new int[] {-2, i, 2}); cells.add(new int[] {-2, i, -2});
+		}
+		for(int[] c : cells) { put(w, c[0], c[1], c[2], ModBlocks.watz_end); w.metaAt.put(c[0] + "," + c[1] + "," + c[2], 1); }
+		if(mode >= 0) {
+			int[] c = cells.get(hit % cells.size());
+			String key = c[0] + "," + c[1] + "," + c[2];
+			if(mode % 3 == 0) w.blocks.remove(key); else if(mode % 3 == 1) w.metaAt.put(key, 0); else w.blocks.put(key, STONE);
+			if(mode == 5) { w.blocks.remove("0,1,0"); }
+			if(mode == 6) { w.blocks.put("1,2,0", ModBlocks.watz_cooler); }
+		}
+		TileEntityWatzStruct t = new TileEntityWatzStruct();
+		t.worldObj = w; t.xCoord = 0; t.yCoord = 0; t.zCoord = 0;
+		t.updateEntity();
+		List<String> lg = new ArrayList<>();
+		for(String e : w.log) lg.add(s(e));
+		return obj("id", id, "mode", mode, "hit", hit, "time", time, "blocks", arr(blockList(w)), "metas", arr(metaList(w)), "log", arr(lg));
+	}
+
+	static List<String> metaList(World w) {
+		List<String> l = new ArrayList<>();
+		for(Map.Entry<String, Integer> e : new TreeMap<>(w.metaAt).entrySet()) l.add("[" + e.getKey() + "," + e.getValue() + "]");
+		return l;
 	}
 
 	/* ---------------- PWR structure ---------------- */
@@ -316,7 +409,7 @@ public class Driver {
 		}
 		List<String> rods = new ArrayList<>();
 		for(BlockPos p : c.rods) rods.add(ints(p.getX(), p.getY(), p.getZ()));
-		return obj("name", s(name), "initial", initial, "setup", obj("rod_count", c.rodCount, "connections", c.connections, "connections_controlled", c.connectionsControlled,
+		return obj("name", s(name), "chunks_loaded", w.chunksLoaded, "initial", initial, "setup", obj("rod_count", c.rodCount, "connections", c.connections, "connections_controlled", c.connectionsControlled,
 				"heatex", c.heatexCount, "channel", c.channelCount, "heatsink", c.heatsinkCount, "source", c.sourceCount, "core_heat_capacity", c.coreHeatCapacity, "rods", arr(rods)),
 				"ticks", arr(tl));
 	}

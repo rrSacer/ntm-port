@@ -17,6 +17,7 @@ class NBTTagCompound {
 
 class ItemStack {
 	Item item; int meta; int stackSize; NBTTagCompound stackTagCompound;
+	ItemStack(Block b, int s) { item = new Item(b.name); stackSize = s; }
 	ItemStack(Item i, int s, int m) { item = i; stackSize = s; meta = m; }
 	Item getItem() { return item; }
 	int getItemDamage() { return meta; }
@@ -27,6 +28,7 @@ class ItemStack {
 }
 
 class ModItems {
+	static Item bolt = new Item("bolt");
 	static Item watz_pellet = new Item("watz_pellet"), watz_pellet_depleted = new Item("watz_pellet_depleted");
 	static Item pwr_fuel = new Item("pwr_fuel"), pwr_fuel_hot = new Item("pwr_fuel_hot");
 }
@@ -36,7 +38,7 @@ class Blocks { static Block lava = new Block("lava"), flowing_lava = new Block("
 class ModBlocks {
 	static Block volcanic_lava_block = new Block("volcanic_lava_block"), ore_volcano = new Block("ore_volcano");
 	static Block watz_pump = new Block("watz_pump"), mud_block = new Block("mud_block"), corium_block = new Block("corium_block");
-	static Block watz_element = new Block("watz_element"), watz_cooler = new Block("watz_cooler"), watz_end = new Block("watz_end");
+	static Block struct_watz_core = new Block("struct_watz_core"), watz = new Watz(), watz_element = new Block("watz_element"), watz_cooler = new Block("watz_cooler"), watz_end = new Block("watz_end");
 	static Block pwr_controller = new MachinePWRController(), pwr_block = new Block("pwr_block"), pwr_fuel = new Block("pwr_fuel");
 	static Block pwr_control = new Block("pwr_control"), pwr_channel = new Block("pwr_channel"), pwr_heatex = new Block("pwr_heatex");
 	static Block pwr_heatsink = new Block("pwr_heatsink"), pwr_neutron_source = new Block("pwr_neutron_source");
@@ -62,7 +64,7 @@ class BlockPos {
 	@Override public boolean equals(Object o) { return o instanceof BlockPos && ((BlockPos) o).x == x && ((BlockPos) o).y == y && ((BlockPos) o).z == z; }
 	@Override public int hashCode() { return (y + z * 31) * 31 + x; }
 }
-class PortDef { int[] pos; static PortDef make(int x, int y, int z, ForgeDirection... d) { PortDef p = new PortDef(); p.pos = new int[] {x, y, z}; return p; } }
+class PortDef { int[] pos; int dir; static PortDef make(int x, int y, int z, ForgeDirection... d) { PortDef p = new PortDef(); p.pos = new int[] {x, y, z}; p.dir = d.length == 1 ? d[0].ordinal() : -1; return p; } }
 
 class AudioWrapper { void startSound() {} boolean isPlaying() { return true; } void updateVolume(float v) {} void keepAlive() {} void stopSound() {} }
 class TileEntity { int xCoord, yCoord, zCoord; World worldObj; }
@@ -113,6 +115,7 @@ class World {
 	void newExplosion(Object e, double x, double y, double z, float s, boolean a, boolean b) { log.add("explode " + x + " " + y + " " + z + " " + s); }
 	void spawnParticle(String s, double a, double b, double c, double d, double e, double f) {}
 	void playSoundEffect(double x, double y, double z, String s, float v, float p) {}
+	void spawnEntityInWorld(Object e) {}
 	void markTileEntityChunkModified(int x, int y, int z, Object t) {}
 	List<Entity> getEntitiesWithinAABB(Class<?> c, AxisAlignedBB bb) { return new ArrayList<>(); }
 }
@@ -139,7 +142,7 @@ class UpgradeManagerNT {
 class FluidTrait {
 	static void onRelease(World w, int x, int y, int z, FluidType t, FluidTank tank, FluidReleaseType r, int amount) { w.log.add((r == FluidReleaseType.BURN ? "burn " : "spill ") + t.name + " " + amount); }
 }
-class HeatingType { static final HeatingType BOILER = new HeatingType(), HEATEXCHANGER = new HeatingType(), PWR = new HeatingType(), ICF = new HeatingType(), PA = new HeatingType(); }
+class HeatingType { String name; HeatingType(String n) { name = n; } static final HeatingType BOILER = new HeatingType("boiler"), HEATEXCHANGER = new HeatingType("heatexchanger"), PWR = new HeatingType("pwr"), ICF = new HeatingType("icf"), PA = new HeatingType("pa"); }
 class HeatingStep {
 	final int amountReq, heatReq, amountProduced; final FluidType typeProduced;
 	HeatingStep(int req, int heat, FluidType type, int prod) { amountReq = req; heatReq = heat; typeProduced = type; amountProduced = prod; }
@@ -183,3 +186,15 @@ class FluidTank {
 }
 class ByteBuf { void writeInt(int i) {} void release() {} }
 class Unpooled { static ByteBuf buffer() { return new ByteBuf(); } }
+
+class Watz extends Block { Watz() { super("watz"); } int getOffset() { return 3; } void fillSpace(World w, int x, int y, int z, ForgeDirection d, int o) { w.log.add("fill " + x + " " + y + " " + z + " " + o); } }
+class BlockDummyable { static boolean safeRem; }
+class Pair<K, V> { K key; V value; Pair(K k, V v) { key = k; value = v; } }
+class ToolType { String n; ToolType(String n) { this.n = n; } static ToolType BOLT = new ToolType("bolt"), TORCH = new ToolType("torch"); }
+class MetaBlock { Block block; int meta; MetaBlock(Block b, int m) { block = b; meta = m; } }
+class AStack {}
+class OreDictStack extends AStack { String ore; int n; OreDictStack(String o, int n) { ore = o; this.n = n; } }
+class Dura { String bolt() { return "bolt_dura"; } }
+class OreDictManager { static Dura DURA = new Dura(); }
+class EntityItem { EntityItem(World w, double x, double y, double z, ItemStack s) { w.log.add("drop " + s.item.name + " " + s.stackSize); } }
+class Mats { static class Mat { ItemStack make(Item i, int n) { return new ItemStack(new Item("bolt_dura"), n, 0); } } static Mat MAT_DURA = new Mat(); }
