@@ -15,21 +15,33 @@ import sys
 import time
 from native_game import Game
 
-# (bottle, cap it leaves) as in consumables.json (`gives`, `requires`).
+# (bottle, empty container it becomes, cap it leaves): ItemEnergy.makeBottle(empty, cap)
+# gives the cap and replaces the bottle in its slot with the empty container.
 BOTTLES = [
-    ('ntm:bottle_nuka', 'ntm:cap_nuka'),
-    ('ntm:bottle_cherry', 'ntm:cap_nuka'),
-    ('ntm:bottle_quantum', 'ntm:cap_quantum'),
-    ('ntm:bottle_rad', 'ntm:cap_rad'),
-    ('ntm:bottle_sparkle', 'ntm:cap_sparkle'),
-    ('ntm:bottle2_korl', 'ntm:cap_korl'),
-    ('ntm:bottle2_fritz', 'ntm:cap_fritz'),
+    ('ntm:bottle_nuka', 'ntm:bottle_empty', 'ntm:cap_nuka'),
+    ('ntm:bottle_cherry', 'ntm:bottle_empty', 'ntm:cap_nuka'),
+    ('ntm:bottle_quantum', 'ntm:bottle_empty', 'ntm:cap_quantum'),
+    ('ntm:bottle_rad', 'ntm:bottle_empty', 'ntm:cap_rad'),
+    ('ntm:bottle_sparkle', 'ntm:bottle_empty', 'ntm:cap_sparkle'),
+    ('ntm:bottle2_korl', 'ntm:bottle2_empty', 'ntm:cap_korl'),
+    ('ntm:bottle2_fritz', 'ntm:bottle2_empty', 'ntm:cap_fritz'),
 ]
 OPENER = 'ntm:bottle_opener'
+# A drink takes 32 ticks (1.6 s); the hold is longer because a click reaches the server late.
+HOLD = 3.0
 
 
 def counts(g):
     return g.ctl('inventory')['counts']
+
+
+def clear_hotbar(g):
+    # `clear @s` without an item leaves the stacks in place: empty every hotbar slot instead.
+    for slot in range(9):
+        g.command(f'item replace entity @s hotbar.{slot} with minecraft:air')
+    time.sleep(.5)
+    left = counts(g)
+    g.check('hotbar_empty', not left, left)
 
 
 def give_hand(g, item, count=1, slot=0):
@@ -51,42 +63,40 @@ def use(g, seconds=0):
                 raise
     else:
         g.ctl('mouse right click')
-    time.sleep(.8)
+    time.sleep(1.5)
 
 
 def without_opener(g):
-    """The use is refused: the bottle stays, no cap, and the refusal is in chat."""
-    for bottle, cap in BOTTLES:
-        g.command(f'clear @s {OPENER}')
-        give_hand(g, bottle, 1)
+    """The use is refused: the bottle stays, no empty container, no cap."""
+    for bottle, empty, cap in BOTTLES:
+        clear_hotbar(g)
+        give_hand(g, bottle, 1, slot=0)
         before = counts(g)
-        use(g, 2.2)
+        use(g, HOLD)
         after = counts(g)
         g.check(f'refused_without_opener_{bottle}',
-                after.get(bottle, 0) == before.get(bottle, 0) and after.get(cap, 0) == before.get(cap, 0),
+                after.get(bottle, 0) == 1 and after.get(empty, 0) == 0 and after.get(cap, 0) == 0,
                 {'before': before, 'after': after})
-        g.command(f'clear @s {bottle}')
 
 
 def with_opener(g):
-    """The use is accepted: one bottle less, its cap, and the opener stays."""
-    for bottle, cap in BOTTLES:
+    """The use is accepted: the bottle becomes the empty container, the cap is given, the opener stays."""
+    for bottle, empty, cap in BOTTLES:
+        clear_hotbar(g)
         give_hand(g, OPENER, 1, slot=1)
         give_hand(g, bottle, 1, slot=0)
         before = counts(g)
-        use(g, 2.2)
+        use(g, HOLD)
         after = counts(g)
-        g.check(f'consumed_with_opener_{bottle}',
-                after.get(bottle, 0) == before.get(bottle, 0) - 1,
+        g.check(f'bottle_used_{bottle}',
+                after.get(bottle, 0) == 0 and after.get(empty, 0) == 1,
                 {'before': before, 'after': after})
         g.check(f'cap_given_{bottle}',
-                after.get(cap, 0) == before.get(cap, 0) + 1,
+                after.get(cap, 0) == 1,
                 {'cap': cap, 'before': before, 'after': after})
         g.check(f'opener_not_consumed_{bottle}',
-                after.get(OPENER, 0) == before.get(OPENER, 0),
+                after.get(OPENER, 0) == 1,
                 {'before': before, 'after': after})
-        g.command(f'clear @s {OPENER}')
-        g.command(f'clear @s {cap}')
 
 
 if __name__ == '__main__':
@@ -94,6 +104,8 @@ if __name__ == '__main__':
     g = Game(sys.argv[1], 'k2-closure-' + mode)
     g.evidence['phase'] = mode
     g.ctl('wait-ready 120')
+    # ItemEnergy consumes and gives the cap only outside creative mode.
+    g.check('survival_world', g.ctl('status').get('creative') is False, g.ctl('status').get('creative'))
     without_opener(g) if mode == 'without-opener' else with_opener(g)
     g.evidence['ok'] = True
     g.save()

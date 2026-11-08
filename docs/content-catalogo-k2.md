@@ -252,3 +252,14 @@ Estas lacunas não se fecham agora porque o ponto de ligação está em arquivos
 
 
 <!-- k2-status:end -->
+
+## Prova em jogo: os 7 bottles (T2)
+
+Roteiro: `tools/test-game/run_k2_closure.py`, com o build compartilhado do fork (`horizon-client`) e o pacote `ntm.hmod` gerado por `tools/build-content.sh` com `HORIZON_MOD` no empacotador compartilhado. Um mundo novo de sobrevivência por modo, porque o criativo não consome nem dá a tampa (`Give.creative`), e um jogador morto ou irradiado não usa o bottle.
+
+- Sem o abridor: 7 de 7 recusados. O bottle continua no inventário, sem `bottle_empty` e sem tampa (9 de 9 checagens, incluindo o modo sobrevivência).
+- Com o abridor: 7 de 7 usados. O bottle vira o vazio (`bottle_empty` ou `bottle2_empty`) no mesmo slot, a tampa entra (`cap_*`), e o abridor não é consumido (23 de 23 checagens).
+
+Divergência observada: uma sonda anterior viu `ntm:bottle_nuka` no lugar de `ntm:bottle_cherry` no relatório de inventário, mas numa sessão limpa o id saiu certo. O chat do jogo diz "Bottle of Nuka Cherry" e a tampa é `cap_nuka`, como no Java.
+
+Lacuna: o ataque do abridor em mobs (`WeaponSpecial`) não foi testado e continua fora, porque não há API de dano a mobs.
