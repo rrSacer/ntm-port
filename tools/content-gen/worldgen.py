@@ -7,15 +7,13 @@ GNEISS={'biomes':'#minecraft:is_overworld','targets':['ntm:stone_gneiss']}
 
 # HbmWorldGen.generateNether and the gneiss calls in HbmWorldGen.generateSurface, with WorldConfig counts.
 # nextInt(127) makes the Nether origin range inclusive 0..126; cobalt uses minHeight 100 + nextInt(26).
-# attempts_per_chunk is calibrated: java_attempts x Java yield per attempt / measured in-game yield per attempt
-# (docs/worldgen-m1b.md, section "Calibração do rendimento"). The vein shape matches Java; the in-game excess does not.
 EXTRA=[
- dict(material='nether_uranium',block='ntm:ore_nether_uranium',java_attempts=8,attempts_per_chunk=6,size=6,min_y=0,max_y=126,salt=2167187,**NETHER),
- dict(material='nether_tungsten',block='ntm:ore_nether_tungsten',java_attempts=10,attempts_per_chunk=6,size=10,min_y=0,max_y=126,salt=2167204,**NETHER),
- dict(material='nether_sulfur',block='ntm:ore_nether_sulfur',java_attempts=26,attempts_per_chunk=17,size=12,min_y=0,max_y=126,salt=2167221,**NETHER),
- dict(material='nether_fire',block='ntm:ore_nether_fire',java_attempts=24,attempts_per_chunk=17,size=6,min_y=0,max_y=126,salt=2167238,**NETHER),
- dict(material='nether_cobalt',block='ntm:ore_nether_cobalt',java_attempts=2,attempts_per_chunk=1,size=6,min_y=100,max_y=125,salt=2167255,**NETHER),
- dict(material='nether_coal',block='ntm:ore_nether_coal',java_attempts=8,attempts_per_chunk=4,size=32,min_y=16,max_y=111,salt=2167340,**NETHER),
+ dict(material='nether_uranium',block='ntm:ore_nether_uranium',attempts_per_chunk=8,size=6,min_y=0,max_y=126,salt=2167187,**NETHER),
+ dict(material='nether_tungsten',block='ntm:ore_nether_tungsten',attempts_per_chunk=10,size=10,min_y=0,max_y=126,salt=2167204,**NETHER),
+ dict(material='nether_sulfur',block='ntm:ore_nether_sulfur',attempts_per_chunk=26,size=12,min_y=0,max_y=126,salt=2167221,**NETHER),
+ dict(material='nether_fire',block='ntm:ore_nether_fire',attempts_per_chunk=24,size=6,min_y=0,max_y=126,salt=2167238,**NETHER),
+ dict(material='nether_cobalt',block='ntm:ore_nether_cobalt',attempts_per_chunk=2,size=6,min_y=100,max_y=125,salt=2167255,**NETHER),
+ dict(material='nether_coal',block='ntm:ore_nether_coal',attempts_per_chunk=8,size=32,min_y=16,max_y=111,salt=2167340,**NETHER),
  dict(material='gneiss_uranium',block='ntm:ore_gneiss_uranium',attempts_per_chunk=21,size=6,min_y=30,max_y=39,salt=2167272,**GNEISS),
  dict(material='gneiss_copper',block='ntm:ore_gneiss_copper',attempts_per_chunk=36,size=6,min_y=30,max_y=39,salt=2167289,**GNEISS),
  dict(material='gneiss_asbestos',block='ntm:ore_gneiss_asbestos',attempts_per_chunk=6,size=6,min_y=30,max_y=39,salt=2167306,**GNEISS),
