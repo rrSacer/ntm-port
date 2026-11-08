@@ -28,4 +28,7 @@ for r in d["rods"]:
     out.append("        n_type: NType::%s, r_type: NType::%s, tint: %d," % (CAMEL(nt["absorbs"]), CAMEL(nt["releases"]), r["tint"]))
     out.append("    },")
 out.append("];")
-(root / "crates/ntm-core/src/rbmk/rods_data.rs").write_text("\n".join(out) + "\n")
+target = root / "crates/ntm-core/src/rbmk/rods_data.rs"
+target.write_text("\n".join(out) + "\n")
+import subprocess
+subprocess.run(["rustfmt", "--edition", "2021", str(target)], check=True)  # the repo is rustfmt-clean

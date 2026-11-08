@@ -12,7 +12,11 @@ pub struct Tank {
 
 impl Tank {
     pub const fn new(fluid: &'static str, max: i32) -> Tank {
-        Tank { fluid, fill: 0, max }
+        Tank {
+            fluid,
+            fill: 0,
+            max,
+        }
     }
 }
 

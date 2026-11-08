@@ -30,40 +30,134 @@ pub struct Key {
 }
 
 const fn k(name: &'static str, rule: &'static str, default: DefaultValue) -> Key {
-    Key { name, rule, default }
+    Key {
+        name,
+        rule,
+        default,
+    }
 }
 
 /// The 25 keys, in `RBMKKeys` order.
 pub const KEYS: [Key; 25] = [
     k("KEY_SAVE_DIALS", "dialSaveDials", DefaultValue::Bool(true)),
-    k("KEY_PASSIVE_COOLING", "dialPassiveCooling", DefaultValue::Double(2.5)),
-    k("KEY_PASSIVE_COOLING_INNER", "dialPassiveCoolingInner", DefaultValue::Double(0.1)),
-    k("KEY_COLUMN_HEAT_FLOW", "dialColumnHeatFlow", DefaultValue::Double(0.2)),
-    k("KEY_FUEL_DIFFUSION_MOD", "dialDiffusionMod", DefaultValue::Double(1.0)),
-    k("KEY_HEAT_PROVISION", "dialHeatProvision", DefaultValue::Double(0.2)),
-    k("KEY_COLUMN_HEIGHT", "dialColumnHeight", DefaultValue::Int(4)),
-    k("KEY_PERMANENT_SCRAP", "dialEnablePermaScrap", DefaultValue::Bool(true)),
-    k("KEY_BOILER_HEAT_CONSUMPTION", "dialBoilerHeatConsumption", DefaultValue::Double(0.1)),
-    k("KEY_CONTROL_SPEED_MOD", "dialControlSpeed", DefaultValue::Double(1.0)),
-    k("KEY_REACTIVITY_MOD", "dialReactivityMod", DefaultValue::Double(1.0)),
-    k("KEY_OUTGASSER_MOD", "dialOutgasserSpeedMod", DefaultValue::Double(1.0)),
-    k("KEY_SURGE_MOD", "dialControlSurgeMod", DefaultValue::Double(1.0)),
+    k(
+        "KEY_PASSIVE_COOLING",
+        "dialPassiveCooling",
+        DefaultValue::Double(2.5),
+    ),
+    k(
+        "KEY_PASSIVE_COOLING_INNER",
+        "dialPassiveCoolingInner",
+        DefaultValue::Double(0.1),
+    ),
+    k(
+        "KEY_COLUMN_HEAT_FLOW",
+        "dialColumnHeatFlow",
+        DefaultValue::Double(0.2),
+    ),
+    k(
+        "KEY_FUEL_DIFFUSION_MOD",
+        "dialDiffusionMod",
+        DefaultValue::Double(1.0),
+    ),
+    k(
+        "KEY_HEAT_PROVISION",
+        "dialHeatProvision",
+        DefaultValue::Double(0.2),
+    ),
+    k(
+        "KEY_COLUMN_HEIGHT",
+        "dialColumnHeight",
+        DefaultValue::Int(4),
+    ),
+    k(
+        "KEY_PERMANENT_SCRAP",
+        "dialEnablePermaScrap",
+        DefaultValue::Bool(true),
+    ),
+    k(
+        "KEY_BOILER_HEAT_CONSUMPTION",
+        "dialBoilerHeatConsumption",
+        DefaultValue::Double(0.1),
+    ),
+    k(
+        "KEY_CONTROL_SPEED_MOD",
+        "dialControlSpeed",
+        DefaultValue::Double(1.0),
+    ),
+    k(
+        "KEY_REACTIVITY_MOD",
+        "dialReactivityMod",
+        DefaultValue::Double(1.0),
+    ),
+    k(
+        "KEY_OUTGASSER_MOD",
+        "dialOutgasserSpeedMod",
+        DefaultValue::Double(1.0),
+    ),
+    k(
+        "KEY_SURGE_MOD",
+        "dialControlSurgeMod",
+        DefaultValue::Double(1.0),
+    ),
     k("KEY_FLUX_RANGE", "dialFluxRange", DefaultValue::Int(5)),
     k("KEY_REASIM_RANGE", "dialReasimRange", DefaultValue::Int(10)),
-    k("KEY_REASIM_BOILERS", "dialReasimBoilers", DefaultValue::Bool(false)),
-    k("KEY_REASIM_BOILER_SPEED", "dialReasimBoilerSpeed", DefaultValue::Double(0.05)),
-    k("KEY_DISABLE_MELTDOWNS", "dialDisableMeltdowns", DefaultValue::Bool(false)),
-    k("KEY_ENABLE_MELTDOWN_OVERPRESSURE", "dialEnableMeltdownOverpressure", DefaultValue::Bool(false)),
-    k("KEY_MODERATOR_EFFICIENCY", "dialModeratorEfficiency", DefaultValue::Double(1.0)),
-    k("KEY_ABSORBER_EFFICIENCY", "dialAbsorberEfficiency", DefaultValue::Double(1.0)),
-    k("KEY_REFLECTOR_EFFICIENCY", "dialReflectorEfficiency", DefaultValue::Double(1.0)),
-    k("KEY_DISABLE_DEPLETION", "dialDisableDepletion", DefaultValue::Bool(false)),
-    k("KEY_DISABLE_XENON", "dialDisableXenon", DefaultValue::Bool(false)),
-    k("KEY_ABSORBER_HEAT_CONVERSION", "dialAbsorberHeatConversion", DefaultValue::Double(0.05)),
+    k(
+        "KEY_REASIM_BOILERS",
+        "dialReasimBoilers",
+        DefaultValue::Bool(false),
+    ),
+    k(
+        "KEY_REASIM_BOILER_SPEED",
+        "dialReasimBoilerSpeed",
+        DefaultValue::Double(0.05),
+    ),
+    k(
+        "KEY_DISABLE_MELTDOWNS",
+        "dialDisableMeltdowns",
+        DefaultValue::Bool(false),
+    ),
+    k(
+        "KEY_ENABLE_MELTDOWN_OVERPRESSURE",
+        "dialEnableMeltdownOverpressure",
+        DefaultValue::Bool(false),
+    ),
+    k(
+        "KEY_MODERATOR_EFFICIENCY",
+        "dialModeratorEfficiency",
+        DefaultValue::Double(1.0),
+    ),
+    k(
+        "KEY_ABSORBER_EFFICIENCY",
+        "dialAbsorberEfficiency",
+        DefaultValue::Double(1.0),
+    ),
+    k(
+        "KEY_REFLECTOR_EFFICIENCY",
+        "dialReflectorEfficiency",
+        DefaultValue::Double(1.0),
+    ),
+    k(
+        "KEY_DISABLE_DEPLETION",
+        "dialDisableDepletion",
+        DefaultValue::Bool(false),
+    ),
+    k(
+        "KEY_DISABLE_XENON",
+        "dialDisableXenon",
+        DefaultValue::Bool(false),
+    ),
+    k(
+        "KEY_ABSORBER_HEAT_CONVERSION",
+        "dialAbsorberHeatConversion",
+        DefaultValue::Double(0.05),
+    ),
 ];
 
 pub fn key(name: &str) -> &'static Key {
-    KEYS.iter().find(|k| k.name == name).expect("unknown RBMK dial key")
+    KEYS.iter()
+        .find(|k| k.name == name)
+        .expect("unknown RBMK dial key")
 }
 
 /// The world's string game rules (`GameRules`): a missing rule reads as `""`.
@@ -104,7 +198,8 @@ pub fn parse_double(s: &str) -> Option<f64> {
             }
             let b = body.strip_suffix(['d', 'D', 'f', 'F']).unwrap_or(body);
             let ok = !b.is_empty()
-                && b.bytes().all(|c| c.is_ascii_digit() || matches!(c, b'.' | b'e' | b'E' | b'+' | b'-'))
+                && b.bytes()
+                    .all(|c| c.is_ascii_digit() || matches!(c, b'.' | b'e' | b'E' | b'+' | b'-'))
                 && b.bytes().any(|c| c.is_ascii_digit());
             if !ok {
                 return None;
@@ -146,19 +241,27 @@ fn clamp_i(v: i32, lo: i32, hi: i32) -> i32 {
 }
 
 fn double_of(r: &GameRules, key: &Key) -> f64 {
-    let DefaultValue::Double(def) = key.default else { unreachable!() };
+    let DefaultValue::Double(def) = key.default else {
+        unreachable!()
+    };
     parse_double(r.string(key.rule)).unwrap_or(def)
 }
 
 fn int_of(r: &GameRules, key: &Key) -> i32 {
-    let DefaultValue::Int(def) = key.default else { unreachable!() };
+    let DefaultValue::Int(def) = key.default else {
+        unreachable!()
+    };
     parse_int(r.string(key.rule)).unwrap_or(def)
 }
 
 /// `GameRuleHelper.getDoubleMinimum`: `Math.max` (NaN wins).
 fn at_least(r: &GameRules, name: &str, min: f64) -> f64 {
     let v = double_of(r, key(name));
-    if v.is_nan() { v } else { v.max(min) }
+    if v.is_nan() {
+        v
+    } else {
+        v.max(min)
+    }
 }
 
 fn clamped(r: &GameRules, name: &str, lo: f64, hi: f64) -> f64 {

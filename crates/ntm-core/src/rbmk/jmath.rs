@@ -20,26 +20,48 @@ struct Dd {
     lo: f64,
 }
 
-const LN2: Dd = Dd { hi: 0.6931471805599453, lo: 2.3190468138462996e-17 };
-const LN10: Dd = Dd { hi: 2.302585092994046, lo: -2.1707562233822494e-16 };
+const LN2: Dd = Dd {
+    hi: std::f64::consts::LN_2,
+    lo: 2.3190468138462996e-17,
+};
+const LN10: Dd = Dd {
+    hi: std::f64::consts::LN_10,
+    lo: -2.1707562233822494e-16,
+};
 /// `ln(Math.E)` with `Math.E` the double 2.718281828459045.
-const LN_E: Dd = Dd { hi: 1.0, lo: -5.318237706605891e-17 };
-const PIO2: [f64; 3] = [1.5707963267948966, 6.123233995736766e-17, -1.4973849048591698e-33];
+const LN_E: Dd = Dd {
+    hi: 1.0,
+    lo: -5.318237706605891e-17,
+};
+const PIO2: [f64; 3] = [
+    std::f64::consts::FRAC_PI_2,
+    6.123233995736766e-17,
+    -1.4973849048591698e-33,
+];
 
 fn two_sum(a: f64, b: f64) -> Dd {
     let s = a + b;
     let bb = s - a;
-    Dd { hi: s, lo: (a - (s - bb)) + (b - bb) }
+    Dd {
+        hi: s,
+        lo: (a - (s - bb)) + (b - bb),
+    }
 }
 
 fn quick_two_sum(a: f64, b: f64) -> Dd {
     let s = a + b;
-    Dd { hi: s, lo: b - (s - a) }
+    Dd {
+        hi: s,
+        lo: b - (s - a),
+    }
 }
 
 fn two_prod(a: f64, b: f64) -> Dd {
     let p = a * b;
-    Dd { hi: p, lo: a.mul_add(b, -p) }
+    Dd {
+        hi: p,
+        lo: a.mul_add(b, -p),
+    }
 }
 
 impl Dd {
@@ -55,7 +77,10 @@ impl Dd {
     }
 
     fn neg(self) -> Dd {
-        Dd { hi: -self.hi, lo: -self.lo }
+        Dd {
+            hi: -self.hi,
+            lo: -self.lo,
+        }
     }
 
     fn sub(self, b: Dd) -> Dd {
@@ -85,7 +110,10 @@ impl Dd {
     /// Exact scaling by 2^k.
     fn scale(self, k: i32) -> Dd {
         let f = 2f64.powi(k);
-        Dd { hi: self.hi * f, lo: self.lo * f }
+        Dd {
+            hi: self.hi * f,
+            lo: self.lo * f,
+        }
     }
 }
 
@@ -164,7 +192,10 @@ fn sincos_dd(x: f64) -> Option<(Dd, Dd)> {
     let mut s = Dd::from(1.0);
     let mut c = Dd::from(1.0);
     for k in (1..=15).rev() {
-        let (a, b) = (f64::from(2 * k * (2 * k + 1)), f64::from((2 * k - 1) * (2 * k)));
+        let (a, b) = (
+            f64::from(2 * k * (2 * k + 1)),
+            f64::from((2 * k - 1) * (2 * k)),
+        );
         s = Dd::from(1.0).sub(r2.mul(s).div(Dd::from(a)));
         c = Dd::from(1.0).sub(r2.mul(c).div(Dd::from(b)));
     }

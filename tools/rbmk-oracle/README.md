@@ -125,3 +125,20 @@ dynamic rod tooltip/hazards/physics belong to later tickets. In-game T00
 acceptance links delivered IDs/custom data and captured current tooltips to
 the fixture, and labels those runtime gaps. D8 `leverStop` remains blocked;
 this harness neither imports its asset nor replaces its sound.
+
+## T04 flux oracle (`run_flux.py`)
+
+A second harness compiles the pinned tile entities and neutron handler whole
+(see `docs/rbmk-core.md`) and runs `flux_scenarios.json` tick by tick:
+
+```sh
+python3 tools/rbmk-oracle/gen_flux_scenarios.py        # scenarios (input)
+python3 tools/rbmk-oracle/run_flux.py \
+  --scratch /mnt/ssd120/sacer/horizon-ntm/.agent-tmp/rbmk/oracle-flux       # fixtures/flux.json
+python3 tools/rbmk-oracle/run_flux.py --scratch <dir> --check               # must be identical
+cargo test -p ntm-core --test rbmk_flux_parity --test rbmk_oracle_parity
+```
+
+`stubs_flux.py` supplies only identity, a block grid, tanks and presentation
+dependencies; `java/MathProbe.java` records the HotSpot `Math` bits that
+`jmath` is checked against (`fixtures/jmath.txt`).

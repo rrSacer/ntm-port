@@ -71,6 +71,12 @@ def main():
     out.append('];')
     text = '\n'.join(out) + '\n'
     path = ROOT / 'crates/ntm-core/src/rbmk/tables_data.rs'
+    import subprocess, tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        scratch = pathlib.Path(tmp) / 'tables_data.rs'
+        scratch.write_text(text)
+        subprocess.run(['rustfmt', '--edition', '2021', str(scratch)], check=True)  # the repo is rustfmt-clean
+        text = scratch.read_text()
     if '--check' in sys.argv:
         assert path.read_text() == text, 'tables_data.rs is stale'
     else:

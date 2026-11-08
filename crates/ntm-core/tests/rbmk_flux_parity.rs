@@ -13,7 +13,10 @@ use serde_json::Value;
 const Y: i32 = 10;
 
 fn fixture() -> Value {
-    serde_json::from_str(include_str!("../../../tools/rbmk-oracle/fixtures/flux.json")).unwrap()
+    serde_json::from_str(include_str!(
+        "../../../tools/rbmk-oracle/fixtures/flux.json"
+    ))
+    .unwrap()
 }
 
 fn num(c: &Value, k: &str, def: f64) -> f64 {
@@ -48,7 +51,12 @@ fn stack(v: &Value) -> Option<Stack> {
     if v.is_null() {
         return None;
     }
-    Some(Stack { item: v["item"].as_str().unwrap().to_string(), count: num(v, "count", 1.0) as i32, meta: num(v, "meta", 0.0) as i32, max_stack: 64 })
+    Some(Stack {
+        item: v["item"].as_str().unwrap().to_string(),
+        count: num(v, "count", 1.0) as i32,
+        meta: num(v, "meta", 0.0) as i32,
+        max_stack: 64,
+    })
 }
 
 fn set_tank(t: &mut ntm_core::rbmk::fluids::Tank, v: Option<&Value>) {
@@ -94,8 +102,10 @@ fn build(sc: &Value) -> Reactor {
         let mut col = Column::new(k, num(c, "x", 0.0) as i32, num(c, "z", 0.0) as i32);
         col.moderated = c.get("moderated").is_some_and(|v| v.as_bool().unwrap());
         // control rods have no removable lid
-        col.lid = matches!(k, Kind::Control | Kind::ControlReaSim | Kind::ControlAuto | Kind::ControlReaSimAuto)
-            || c.get("lid").is_none_or(|v| v.as_bool().unwrap());
+        col.lid = matches!(
+            k,
+            Kind::Control | Kind::ControlReaSim | Kind::ControlAuto | Kind::ControlReaSimAuto
+        ) || c.get("lid").is_none_or(|v| v.as_bool().unwrap());
         col.heat = num(c, "heat", 20.0);
         col.reasim_water = num(c, "water", 0.0) as i32;
         col.reasim_steam = num(c, "steam", 0.0) as i32;
@@ -118,7 +128,13 @@ fn build(sc: &Value) -> Reactor {
             cc.heat_lower = num(c, "heat_lower", 0.0);
             cc.heat_upper = num(c, "heat_upper", 0.0);
             if cc.function.is_some() {
-                cc.function = Some([AutoFunction::Linear, AutoFunction::QuadUp, AutoFunction::QuadDown][num(c, "function", 0.0) as usize]);
+                cc.function = Some(
+                    [
+                        AutoFunction::Linear,
+                        AutoFunction::QuadUp,
+                        AutoFunction::QuadDown,
+                    ][num(c, "function", 0.0) as usize],
+                );
             }
         }
         match &mut col.data {
@@ -148,10 +164,19 @@ fn build(sc: &Value) -> Reactor {
         }
     }
     for p in sc.get("probes").map_or(&vec![], |v| v.as_array().unwrap()) {
-        r.ore_names.entry((p["item"].as_str().unwrap().to_string(), num(p, "meta", 0.0) as i32)).or_default().push(p["ore"].as_str().unwrap().to_string());
+        r.ore_names
+            .entry((
+                p["item"].as_str().unwrap().to_string(),
+                num(p, "meta", 0.0) as i32,
+            ))
+            .or_default()
+            .push(p["ore"].as_str().unwrap().to_string());
     }
     let height = r.dials.column_height + 1;
-    for o in sc.get("obstacles").map_or(&vec![], |v| v.as_array().unwrap()) {
+    for o in sc
+        .get("obstacles")
+        .map_or(&vec![], |v| v.as_array().unwrap())
+    {
         let (x, z) = (num(o, "x", 0.0) as i32, num(o, "z", 0.0) as i32);
         let from = num(o, "from", 0.0) as i32;
         for h in 0..num(o, "height", f64::from(height)) as i32 {
@@ -172,16 +197,30 @@ fn same(got: f64, want: &Value, what: &str) {
         }
         return;
     }
-    assert_eq!(got.to_bits(), bits(want), "{what}: got {got:?}, want {want}");
+    assert_eq!(
+        got.to_bits(),
+        bits(want),
+        "{what}: got {got:?}, want {want}"
+    );
 }
 
 fn same_stack(got: &RodStack, want: &Value, what: &str) {
     let nbt = want["nbt"].as_object().unwrap();
     let mut n = 0;
-    for (k, v) in [("yield", got.yield_), ("xenon", got.xenon), ("core", got.core), ("hull", got.hull)] {
+    for (k, v) in [
+        ("yield", got.yield_),
+        ("xenon", got.xenon),
+        ("core", got.core),
+        ("hull", got.hull),
+    ] {
         if let Some(v) = v {
             n += 1;
-            same(v, nbt.get(k).unwrap_or_else(|| panic!("{what}: extra key {k}")), &format!("{what}.{k}"));
+            same(
+                v,
+                nbt.get(k)
+                    .unwrap_or_else(|| panic!("{what}: extra key {k}")),
+                &format!("{what}.{k}"),
+            );
         }
     }
     assert_eq!(n, nbt.len(), "{what}: key sets differ");
@@ -190,15 +229,43 @@ fn same_stack(got: &RodStack, want: &Value, what: &str) {
 fn compare(r: &Reactor, i: usize, want: &Value, what: &str) {
     let c = &r.columns[i];
     same(c.heat, &want["heat"], &format!("{what} heat"));
-    assert_eq!(i64::from(c.reasim_water), want["water"].as_i64().unwrap(), "{what} water");
-    assert_eq!(i64::from(c.reasim_steam), want["steam"].as_i64().unwrap(), "{what} steam");
-    assert_eq!(i64::from(c.crane_indicator), want["crane"].as_i64().unwrap(), "{what} crane");
+    assert_eq!(
+        i64::from(c.reasim_water),
+        want["water"].as_i64().unwrap(),
+        "{what} water"
+    );
+    assert_eq!(
+        i64::from(c.reasim_steam),
+        want["steam"].as_i64().unwrap(),
+        "{what} steam"
+    );
+    assert_eq!(
+        i64::from(c.crane_indicator),
+        want["crane"].as_i64().unwrap(),
+        "{what} crane"
+    );
     if let Some(rc) = c.rod() {
-        assert_eq!(rc.has_rod, want["has_rod"].as_bool().unwrap(), "{what} has_rod");
+        assert_eq!(
+            rc.has_rod,
+            want["has_rod"].as_bool().unwrap(),
+            "{what} has_rod"
+        );
         same(rc.flux_quantity, &want["flux_q"], &format!("{what} flux_q"));
-        same(rc.flux_fast_ratio, &want["flux_r"], &format!("{what} flux_r"));
-        same(rc.last_flux_quantity, &want["last_q"], &format!("{what} last_q"));
-        same(rc.last_flux_ratio, &want["last_r"], &format!("{what} last_r"));
+        same(
+            rc.flux_fast_ratio,
+            &want["flux_r"],
+            &format!("{what} flux_r"),
+        );
+        same(
+            rc.last_flux_quantity,
+            &want["last_q"],
+            &format!("{what} last_q"),
+        );
+        same(
+            rc.last_flux_ratio,
+            &want["last_r"],
+            &format!("{what} last_r"),
+        );
         match (&rc.fuel, want["stack"].is_null()) {
             (Some((_, s)), false) => same_stack(s, &want["stack"], &format!("{what} stack")),
             (None, true) => {}
@@ -208,12 +275,23 @@ fn compare(r: &Reactor, i: usize, want: &Value, what: &str) {
     match &c.data {
         Data::Outgasser(o) => {
             same(o.progress, &want["progress"], &format!("{what} progress"));
-            assert_eq!((o.gas.fluid, i64::from(o.gas.fill)), (want["gas_type"].as_str().unwrap(), want["gas"].as_i64().unwrap()), "{what} gas");
+            assert_eq!(
+                (o.gas.fluid, i64::from(o.gas.fill)),
+                (
+                    want["gas_type"].as_str().unwrap(),
+                    want["gas"].as_i64().unwrap()
+                ),
+                "{what} gas"
+            );
             for (k, got) in [("in", &o.input), ("out", &o.output)] {
                 match (got, want[k].is_null()) {
                     (Some(g), false) => assert_eq!(
                         (g.item.as_str(), i64::from(g.count), i64::from(g.meta)),
-                        (want[k]["item"].as_str().unwrap(), want[k]["count"].as_i64().unwrap(), want[k]["meta"].as_i64().unwrap()),
+                        (
+                            want[k]["item"].as_str().unwrap(),
+                            want[k]["count"].as_i64().unwrap(),
+                            want[k]["meta"].as_i64().unwrap()
+                        ),
                         "{what} {k}"
                     ),
                     (None, true) => {}
@@ -223,34 +301,79 @@ fn compare(r: &Reactor, i: usize, want: &Value, what: &str) {
         }
         Data::Boiler(b) => {
             for (k, t) in [("feed", &b.feed), ("steam_tank", &b.steam)] {
-                assert_eq!((t.fluid, i64::from(t.fill)), (want[k]["fluid"].as_str().unwrap(), want[k]["fill"].as_i64().unwrap()), "{what} {k}");
+                assert_eq!(
+                    (t.fluid, i64::from(t.fill)),
+                    (
+                        want[k]["fluid"].as_str().unwrap(),
+                        want[k]["fill"].as_i64().unwrap()
+                    ),
+                    "{what} {k}"
+                );
             }
             assert_eq!(
-                (i64::from(b.consumption), i64::from(b.output), i64::from(b.vent_delay)),
-                (want["consumption"].as_i64().unwrap(), want["output"].as_i64().unwrap(), want["vent_delay"].as_i64().unwrap()),
+                (
+                    i64::from(b.consumption),
+                    i64::from(b.output),
+                    i64::from(b.vent_delay)
+                ),
+                (
+                    want["consumption"].as_i64().unwrap(),
+                    want["output"].as_i64().unwrap(),
+                    want["vent_delay"].as_i64().unwrap()
+                ),
                 "{what} boiler counters"
             );
         }
         Data::Heater(h) => {
             for (k, t) in [("feed", &h.feed), ("steam_tank", &h.steam)] {
-                assert_eq!((t.fluid, i64::from(t.fill)), (want[k]["fluid"].as_str().unwrap(), want[k]["fill"].as_i64().unwrap()), "{what} {k}");
+                assert_eq!(
+                    (t.fluid, i64::from(t.fill)),
+                    (
+                        want[k]["fluid"].as_str().unwrap(),
+                        want[k]["fill"].as_i64().unwrap()
+                    ),
+                    "{what} {k}"
+                );
             }
         }
         Data::Cooler(k) => {
-            assert_eq!(i64::from(k.timer), want["timer"].as_i64().unwrap(), "{what} timer");
+            assert_eq!(
+                i64::from(k.timer),
+                want["timer"].as_i64().unwrap(),
+                "{what} timer"
+            );
             for (n, t) in [("cold", &k.cold), ("hot", &k.hot)] {
-                assert_eq!((t.fluid, i64::from(t.fill)), (want[n]["fluid"].as_str().unwrap(), want[n]["fill"].as_i64().unwrap()), "{what} {n}");
+                assert_eq!(
+                    (t.fluid, i64::from(t.fill)),
+                    (
+                        want[n]["fluid"].as_str().unwrap(),
+                        want[n]["fill"].as_i64().unwrap()
+                    ),
+                    "{what} {n}"
+                );
             }
         }
         _ => {}
     }
     if let Some(cc) = c.control() {
         same(cc.level, &want["level"], &format!("{what} level"));
-        same(cc.last_level, &want["last_level"], &format!("{what} last_level"));
+        same(
+            cc.last_level,
+            &want["last_level"],
+            &format!("{what} last_level"),
+        );
         same(cc.target_level, &want["target"], &format!("{what} target"));
-        assert_eq!(cc.has_power, want["has_power"].as_bool().unwrap(), "{what} has_power");
+        assert_eq!(
+            cc.has_power,
+            want["has_power"].as_bool().unwrap(),
+            "{what} has_power"
+        );
         assert_eq!(cc.power, want["power"].as_i64().unwrap(), "{what} power");
-        same(c.control_mult(&r.dials), &want["mult"], &format!("{what} mult"));
+        same(
+            c.control_mult(&r.dials),
+            &want["mult"],
+            &format!("{what} mult"),
+        );
         if let Some(s) = want.get("starting") {
             same(cc.starting_level, s, &format!("{what} starting"));
         }
@@ -268,10 +391,15 @@ fn every_scenario_matches_the_java_oracle_tick_by_tick() {
         let mut r = build(sc);
         let melt = res["meltdown_tick"].as_u64();
         let no_actions = Vec::new();
-        let actions = sc.get("actions").map_or(&no_actions, |a| a.as_array().unwrap());
+        let actions = sc
+            .get("actions")
+            .map_or(&no_actions, |a| a.as_array().unwrap());
         for t in res["trace"].as_array().unwrap() {
             let tick = t["tick"].as_u64().unwrap();
-            for a in actions.iter().filter(|a| a["tick"].as_f64() == Some(tick as f64)) {
+            for a in actions
+                .iter()
+                .filter(|a| a["tick"].as_f64() == Some(tick as f64))
+            {
                 let i = a["column"].as_f64().unwrap() as usize;
                 if let Some(v) = a.get("target") {
                     r.columns[i].set_target(v.as_f64().unwrap());
@@ -292,10 +420,8 @@ fn every_scenario_matches_the_java_oracle_tick_by_tick() {
                         r.identifiers.insert(i, leak(v));
                     }
                 }
-                if let Some(v) = a.get("in") {
-                    if let Data::Outgasser(o) = &mut r.columns[i].data {
-                        o.input = stack(v);
-                    }
+                if let (Some(v), Data::Outgasser(o)) = (a.get("in"), &mut r.columns[i].data) {
+                    o.input = stack(v);
                 }
                 if let Some(t) = a.get("set_tanks") {
                     match &mut r.columns[i].data {
@@ -321,20 +447,47 @@ fn every_scenario_matches_the_java_oracle_tick_by_tick() {
             let rad = t["rad"].as_array().unwrap();
             assert_eq!(r.rad.len(), rad.len(), "{at}: radiation event count");
             for (k, (g, w)) in r.rad.iter().zip(rad).enumerate() {
-                assert_eq!((g.x, g.z), (w[0].as_i64().unwrap() as i32, w[1].as_i64().unwrap() as i32), "{at}: rad #{k} position");
-                assert_eq!(format!("{:08x}", g.amount.to_bits()), w[2].as_str().unwrap(), "{at}: rad #{k} amount");
+                assert_eq!(
+                    (g.x, g.z),
+                    (w[0].as_i64().unwrap() as i32, w[1].as_i64().unwrap() as i32),
+                    "{at}: rad #{k} position"
+                );
+                assert_eq!(
+                    format!("{:08x}", g.amount.to_bits()),
+                    w[2].as_str().unwrap(),
+                    "{at}: rad #{k} amount"
+                );
             }
             // effects: all particles first, then the sounds (the oracle logs them apart)
             let fx = t["fx"].as_array().unwrap();
             let skip_fx = Some(tick) == melt; // the meltdown's own sound and particle belong to the engine
-            let vents: Vec<_> = r.effects.iter().map(|Effect::SteamVent { column, x_offset, z_offset, pitch }| (*column, *x_offset, *z_offset, *pitch)).collect();
+            let vents: Vec<_> = r
+                .effects
+                .iter()
+                .map(
+                    |Effect::SteamVent {
+                         column,
+                         x_offset,
+                         z_offset,
+                         pitch,
+                     }| (*column, *x_offset, *z_offset, *pitch),
+                )
+                .collect();
             assert!(skip_fx || fx.len() == vents.len() * 2, "{at}: effect count");
             for (k, (col, xo, zo, pitch)) in vents.iter().enumerate().filter(|_| !skip_fx) {
                 let c = &r.columns[*col];
                 let p = &fx[k];
                 assert_eq!(p[0], "particle", "{at}");
-                assert_eq!((p[1].as_f64().unwrap(), p[2].as_f64().unwrap()), (f64::from(c.x) + xo, f64::from(c.z) + zo), "{at}: vent position");
-                assert_eq!(fx[vents.len() + k][4].as_str().unwrap(), format!("{:08x}", pitch.to_bits()), "{at}: vent pitch");
+                assert_eq!(
+                    (p[1].as_f64().unwrap(), p[2].as_f64().unwrap()),
+                    (f64::from(c.x) + xo, f64::from(c.z) + zo),
+                    "{at}: vent position"
+                );
+                assert_eq!(
+                    fx[vents.len() + k][4].as_str().unwrap(),
+                    format!("{:08x}", pitch.to_bits()),
+                    "{at}: vent pitch"
+                );
             }
             if Some(tick) == melt {
                 assert!(!r.meltdowns.is_empty(), "{at}: Java melted down here");

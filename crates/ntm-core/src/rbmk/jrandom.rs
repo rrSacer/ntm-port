@@ -11,7 +11,10 @@ impl JavaRandom {
     const MASK: u64 = (1 << 48) - 1;
 
     pub fn new(seed: i64) -> Self {
-        Self { seed: (seed as u64 ^ Self::MUL) & Self::MASK, next_next_gaussian: None }
+        Self {
+            seed: (seed as u64 ^ Self::MUL) & Self::MASK,
+            next_next_gaussian: None,
+        }
     }
 
     /// The raw state, for saving.
@@ -20,7 +23,10 @@ impl JavaRandom {
     }
 
     pub fn from_state(seed: u64, next_next_gaussian: Option<f64>) -> Self {
-        Self { seed: seed & Self::MASK, next_next_gaussian }
+        Self {
+            seed: seed & Self::MASK,
+            next_next_gaussian,
+        }
     }
 
     fn next(&mut self, bits: u32) -> i32 {

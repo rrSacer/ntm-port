@@ -33,11 +33,17 @@ pub struct Stack {
 /// `OutgasserRecipes.getOutput`: the exact item first, then its ore-dictionary
 /// names in the order the host gives them.
 pub fn recipe_for(item: &str, meta: i32, ore_names: &[String]) -> Option<&'static OutgasserRecipe> {
-    if let Some(r) = OUTGASSER.iter().find(|r| matches!(r.input, OutgasserInput::Stack(i, m) if i == item && m == meta)) {
+    if let Some(r) = OUTGASSER
+        .iter()
+        .find(|r| matches!(r.input, OutgasserInput::Stack(i, m) if i == item && m == meta))
+    {
         return Some(r);
     }
     for key in ore_names {
-        if let Some(r) = OUTGASSER.iter().find(|r| matches!(r.input, OutgasserInput::Ore(k) if k == key)) {
+        if let Some(r) = OUTGASSER
+            .iter()
+            .find(|r| matches!(r.input, OutgasserInput::Ore(k) if k == key))
+        {
             return Some(r);
         }
     }

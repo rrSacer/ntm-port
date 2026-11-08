@@ -14,9 +14,9 @@
 
 use super::dials::Dials;
 use super::fluids::{self, Tank};
-use super::outgasser::{self, Stack};
 use super::jmath;
 use super::jrandom::JavaRandom;
+use super::outgasser::{self, Stack};
 use super::rods::{NType, RodStack, RodType};
 use std::collections::{HashMap, HashSet};
 use std::f64::consts::PI;
@@ -66,7 +66,9 @@ impl Kind {
     pub fn rbmk_type(self) -> RbmkType {
         match self {
             Kind::Rod | Kind::RodReaSim => RbmkType::Rod,
-            Kind::Control | Kind::ControlReaSim | Kind::ControlAuto | Kind::ControlReaSimAuto => RbmkType::ControlRod,
+            Kind::Control | Kind::ControlReaSim | Kind::ControlAuto | Kind::ControlReaSimAuto => {
+                RbmkType::ControlRod
+            }
             Kind::Moderator => RbmkType::Moderator,
             Kind::Reflector => RbmkType::Reflector,
             Kind::Absorber => RbmkType::Absorber,
@@ -131,6 +133,7 @@ pub struct ControlCol {
 }
 
 #[derive(Clone, Debug)]
+#[allow(clippy::large_enum_variant)] // one value per column; boxing would only add indirection
 pub enum Data {
     Passive,
     Rod(RodCol),
@@ -151,7 +154,12 @@ pub struct OutgasserCol {
 
 impl Default for OutgasserCol {
     fn default() -> Self {
-        OutgasserCol { input: None, output: None, gas: Tank::new("TRITIUM", outgasser::GAS_MAX), progress: 0.0 }
+        OutgasserCol {
+            input: None,
+            output: None,
+            gas: Tank::new("TRITIUM", outgasser::GAS_MAX),
+            progress: 0.0,
+        }
     }
 }
 
@@ -166,7 +174,13 @@ pub struct BoilerCol {
 
 impl Default for BoilerCol {
     fn default() -> Self {
-        BoilerCol { feed: Tank::new("WATER", 10_000), steam: Tank::new("STEAM", 1_000_000), consumption: 0, output: 0, vent_delay: 0 }
+        BoilerCol {
+            feed: Tank::new("WATER", 10_000),
+            steam: Tank::new("STEAM", 1_000_000),
+            consumption: 0,
+            output: 0,
+            vent_delay: 0,
+        }
     }
 }
 
@@ -178,7 +192,10 @@ pub struct HeaterCol {
 
 impl Default for HeaterCol {
     fn default() -> Self {
-        HeaterCol { feed: Tank::new("COOLANT", 16_000), steam: Tank::new("COOLANT_HOT", 16_000) }
+        HeaterCol {
+            feed: Tank::new("COOLANT", 16_000),
+            steam: Tank::new("COOLANT_HOT", 16_000),
+        }
     }
 }
 
@@ -193,7 +210,12 @@ pub struct CoolerCol {
 
 impl Default for CoolerCol {
     fn default() -> Self {
-        CoolerCol { timer: 0, cold: Tank::new("PERFLUOROMETHYL_COLD", 4_000), hot: Tank::new("PERFLUOROMETHYL", 4_000), neighbors: [None; 25] }
+        CoolerCol {
+            timer: 0,
+            cold: Tank::new("PERFLUOROMETHYL_COLD", 4_000),
+            hot: Tank::new("PERFLUOROMETHYL", 4_000),
+            neighbors: [None; 25],
+        }
     }
 }
 
@@ -365,7 +387,12 @@ pub struct Reactor {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Effect {
     /// A boiler's steam vent: particle offsets (x, z) and the sound's pitch.
-    SteamVent { column: usize, x_offset: f64, z_offset: f64, pitch: f32 },
+    SteamVent {
+        column: usize,
+        x_offset: f64,
+        z_offset: f64,
+        pitch: f32,
+    },
 }
 
 fn java_floor(v: f64) -> i32 {
@@ -425,7 +452,12 @@ impl Reactor {
     }
 
     fn add_rad(&mut self, x: i32, z: i32, amount: f32) {
-        self.rad.push(RadEvent { x, y: self.y, z, amount });
+        self.rad.push(RadEvent {
+            x,
+            y: self.y,
+            z,
+            amount,
+        });
     }
 
     /// One server tick.
@@ -445,7 +477,8 @@ impl Reactor {
     // ---- neutron streams
 
     fn irradiate_hits(&mut self, flux: f64, x: i32, z: i32, hits: i32) {
-        let amount = (flux * rad_scale() * (1.0 - f64::from(hits) / f64::from(self.height()))) as f32;
+        let amount =
+            (flux * rad_scale() * (1.0 - f64::from(hits) / f64::from(self.height()))) as f32;
         self.add_rad(x, z, amount);
     }
 
@@ -461,7 +494,10 @@ impl Reactor {
 
         for i in 1..=range {
             let fi = f64::from(i);
-            let (px, pz) = (ox + java_floor(0.5 + s.vx * fi), oz + java_floor(0.5 + s.vz * fi));
+            let (px, pz) = (
+                ox + java_floor(0.5 + s.vx * fi),
+                oz + java_floor(0.5 + s.vz * fi),
+            );
             if s.flux_quantity == 0.0 {
                 return;
             }
@@ -532,9 +568,15 @@ impl Reactor {
         }
 
         // The last cell of the path decides what happens to what is left.
-        let (lx, lz) = (ox + java_floor(0.5 + s.vx * f64::from(range)), oz + java_floor(0.5 + s.vz * f64::from(range)));
+        let (lx, lz) = (
+            ox + java_floor(0.5 + s.vx * f64::from(range)),
+            oz + java_floor(0.5 + s.vz * f64::from(range)),
+        );
         let Some(last) = self.at(lx, lz) else {
-            let (ax, az) = (java_floor(f64::from(ox) + s.vx), java_floor(f64::from(oz) + s.vz));
+            let (ax, az) = (
+                java_floor(f64::from(ox) + s.vx),
+                java_floor(f64::from(oz) + s.vz),
+            );
             let hits = self.hits(ax, az);
             self.irradiate_hits(s.flux_quantity, ax, az, hits);
             return;
@@ -592,26 +634,25 @@ impl Reactor {
             } else {
                 match c.function {
                     Some(AutoFunction::Linear) => {
-                        (heat - c.heat_lower) * ((c.level_upper - c.level_lower) / (c.heat_upper - c.heat_lower)) + c.level_lower
+                        (heat - c.heat_lower)
+                            * ((c.level_upper - c.level_lower) / (c.heat_upper - c.heat_lower))
+                            + c.level_lower
                     }
                     Some(AutoFunction::QuadUp) => {
-                        jmath::pow((heat - c.heat_lower) / (c.heat_upper - c.heat_lower), 2.0) * (c.level_upper - c.level_lower)
+                        jmath::pow((heat - c.heat_lower) / (c.heat_upper - c.heat_lower), 2.0)
+                            * (c.level_upper - c.level_lower)
                             + c.level_lower
                     }
                     Some(AutoFunction::QuadDown) => {
-                        jmath::pow((heat - c.heat_upper) / (c.heat_lower - c.heat_upper), 2.0) * (c.level_lower - c.level_upper)
+                        jmath::pow((heat - c.heat_upper) / (c.heat_lower - c.heat_upper), 2.0)
+                            * (c.level_lower - c.level_upper)
                             + c.level_upper
                     }
                     None => 0.0,
                 }
             };
-            let mut target = faux * 0.01;
-            // MathHelper.clamp_double lets NaN through
-            if target < 0.0 {
-                target = 0.0;
-            } else if target > 1.0 {
-                target = 1.0;
-            }
+            // MathHelper.clamp_double lets NaN through, as f64::clamp does
+            let target = (faux * 0.01).clamp(0.0, 1.0);
             self.columns[i].control_mut().unwrap().target_level = target;
         }
 
@@ -647,7 +688,11 @@ impl Reactor {
     /// did not fit.
     pub fn transfer_power(&mut self, i: usize, power: i64) -> i64 {
         let kind = self.columns[i].kind;
-        let max = if kind.is_powered() { CONTROL_MAX_POWER } else { 0 };
+        let max = if kind.is_powered() {
+            CONTROL_MAX_POWER
+        } else {
+            0
+        };
         let c = self.columns[i].control_mut().expect("control column");
         if power + c.power <= max {
             c.power += power;
@@ -733,12 +778,24 @@ impl Reactor {
             };
             rot(&mut vx, &mut vz, f64::from(self.rng.next_int(4)) * 9.0);
             for _ in 0..8 {
-                self.streams.push(Stream { origin: i, vx, vz, flux_quantity: flux * 0.75, flux_ratio: ratio });
+                self.streams.push(Stream {
+                    origin: i,
+                    vx,
+                    vz,
+                    flux_quantity: flux * 0.75,
+                    flux_ratio: ratio,
+                });
                 rot(&mut vx, &mut vz, 45.0);
             }
         } else {
             for (vx, vz) in [(0.0, -1.0), (1.0, 0.0), (0.0, 1.0), (-1.0, 0.0)] {
-                self.streams.push(Stream { origin: i, vx, vz, flux_quantity: flux, flux_ratio: ratio });
+                self.streams.push(Stream {
+                    origin: i,
+                    vx,
+                    vz,
+                    flux_quantity: flux,
+                    flux_ratio: ratio,
+                });
             }
         }
     }
@@ -840,11 +897,16 @@ impl Reactor {
         let names = {
             let o = self.columns[i].outgasser().unwrap();
             let Some(input) = &o.input else { return false };
-            self.ore_names.get(&(input.item.clone(), input.meta)).cloned().unwrap_or_default()
+            self.ore_names
+                .get(&(input.item.clone(), input.meta))
+                .cloned()
+                .unwrap_or_default()
         };
         let o = self.columns[i].outgasser_mut().unwrap();
         let Some(input) = &o.input else { return false };
-        let Some(recipe) = outgasser::recipe_for(&input.item, input.meta, &names) else { return false };
+        let Some(recipe) = outgasser::recipe_for(&input.item, input.meta, &names) else {
+            return false;
+        };
         if recipe.fusion_only {
             return false;
         }
@@ -859,7 +921,9 @@ impl Reactor {
         }
         match (&o.output, recipe.solid) {
             (None, _) | (_, None) => true,
-            (Some(out), Some((item, count, meta))) => out.item == item && out.meta == meta && out.count + count <= out.max_stack,
+            (Some(out), Some((item, count, meta))) => {
+                out.item == item && out.meta == meta && out.count + count <= out.max_stack
+            }
         }
     }
 
@@ -876,7 +940,10 @@ impl Reactor {
     fn process_outgasser(&mut self, i: usize) {
         let names = {
             let input = self.columns[i].outgasser().unwrap().input.as_ref().unwrap();
-            self.ore_names.get(&(input.item.clone(), input.meta)).cloned().unwrap_or_default()
+            self.ore_names
+                .get(&(input.item.clone(), input.meta))
+                .cloned()
+                .unwrap_or_default()
         };
         let o = self.columns[i].outgasser_mut().unwrap();
         let input = o.input.as_mut().unwrap();
@@ -891,7 +958,14 @@ impl Reactor {
         }
         if let Some((item, count, meta)) = recipe.solid {
             match &mut o.output {
-                None => o.output = Some(Stack { item: item.to_string(), count, meta, max_stack: 64 }),
+                None => {
+                    o.output = Some(Stack {
+                        item: item.to_string(),
+                        count,
+                        meta,
+                        max_stack: 64,
+                    })
+                }
                 Some(out) => out.count += count,
             }
         }
@@ -902,7 +976,9 @@ impl Reactor {
     fn update_boiler(&mut self, i: usize) {
         let consumption = self.dials.boiler_heat_consumption;
         let heat = self.columns[i].heat;
-        let Data::Boiler(b) = &mut self.columns[i].data else { unreachable!() };
+        let Data::Boiler(b) = &mut self.columns[i].data else {
+            unreachable!()
+        };
         b.consumption = 0;
         b.output = 0;
         if b.vent_delay > 0 {
@@ -944,9 +1020,16 @@ impl Reactor {
             let z_offset = 0.25 + f64::from(self.rng.next_int(2)) * 0.5;
             let delay = 20 + self.rng.next_int(10);
             let pitch = 1.0_f32 + self.rng.next_float() * 0.25_f32;
-            let Data::Boiler(b) = &mut self.columns[i].data else { unreachable!() };
+            let Data::Boiler(b) = &mut self.columns[i].data else {
+                unreachable!()
+            };
             b.vent_delay = delay;
-            self.effects.push(Effect::SteamVent { column: i, x_offset, z_offset, pitch });
+            self.effects.push(Effect::SteamVent {
+                column: i,
+                x_offset,
+                z_offset,
+                pitch,
+            });
         }
         if let Some(h) = used_heat {
             self.columns[i].heat -= h;
@@ -957,7 +1040,9 @@ impl Reactor {
     /// `cyceCompressor`: steps the boiler's steam grade (only when it is cold or dry).
     pub fn boiler_compress(&mut self, i: usize) {
         let heat = self.columns[i].heat;
-        let Data::Boiler(b) = &mut self.columns[i].data else { panic!("not a boiler") };
+        let Data::Boiler(b) = &mut self.columns[i].data else {
+            panic!("not a boiler")
+        };
         if heat > 50.0 && b.feed.fill > 0 {
             return;
         }
@@ -985,14 +1070,14 @@ impl Reactor {
     fn update_heater(&mut self, i: usize) {
         let identifier = self.identifiers.get(&i).copied();
         let heat = self.columns[i].heat;
-        let Data::Heater(h) = &mut self.columns[i].data else { unreachable!() };
+        let Data::Heater(h) = &mut self.columns[i].data else {
+            unreachable!()
+        };
         if heat <= 50.0 || h.feed.fill <= 0 {
             // FluidTank.setType: the identifier in the slot retypes (and empties) the tank
-            if let Some(f) = identifier {
-                if h.feed.fluid != f {
-                    h.feed.fluid = f;
-                    h.feed.fill = 0;
-                }
+            if let Some(f) = identifier.filter(|f| h.feed.fluid != *f) {
+                h.feed.fluid = f;
+                h.feed.fill = 0;
             }
         }
         let mut cooled = 0.0;
@@ -1005,7 +1090,8 @@ impl Reactor {
                     let tu_per_degree = 2_000.0 * eff;
                     let input_ops = h.feed.fill / step.amount_req;
                     let output_ops = (h.steam.max - h.steam.fill) / step.amount_produced;
-                    let temp_ops = ((temp_range * tu_per_degree) / f64::from(step.heat_req)).floor() as i32;
+                    let temp_ops =
+                        ((temp_range * tu_per_degree) / f64::from(step.heat_req)).floor() as i32;
                     let ops = input_ops.min(output_ops.min(temp_ops));
                     h.feed.fill -= step.amount_req * ops;
                     h.steam.fill += step.amount_produced * ops;
@@ -1028,7 +1114,9 @@ impl Reactor {
     fn update_cooler(&mut self, i: usize) {
         let (x, z) = (self.columns[i].x, self.columns[i].z);
         let refresh = {
-            let Data::Cooler(c) = &mut self.columns[i].data else { unreachable!() };
+            let Data::Cooler(c) = &mut self.columns[i].data else {
+                unreachable!()
+            };
             if c.timer <= 0 {
                 c.timer = 60;
                 true
@@ -1042,10 +1130,14 @@ impl Reactor {
             for (k, slot) in n.iter_mut().enumerate() {
                 *slot = self.at(x - 2 + (k / 5) as i32, z - 2 + (k % 5) as i32);
             }
-            let Data::Cooler(c) = &mut self.columns[i].data else { unreachable!() };
+            let Data::Cooler(c) = &mut self.columns[i].data else {
+                unreachable!()
+            };
             c.neighbors = n;
         }
-        let Data::Cooler(c) = &mut self.columns[i].data else { unreachable!() };
+        let Data::Cooler(c) = &mut self.columns[i].data else {
+            unreachable!()
+        };
         if c.cold.fill >= 50 && c.hot.max - c.hot.fill >= 50 {
             c.cold.fill -= 50;
             c.hot.fill += 50;

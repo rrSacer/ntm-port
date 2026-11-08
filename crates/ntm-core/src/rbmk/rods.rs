@@ -136,7 +136,11 @@ pub fn java_max(a: f64, b: f64) -> f64 {
     if a.is_nan() || b.is_nan() {
         f64::NAN
     } else if a == 0.0 && b == 0.0 {
-        if a.is_sign_negative() { b } else { a }
+        if a.is_sign_negative() {
+            b
+        } else {
+            a
+        }
     } else if a >= b {
         a
     } else {
@@ -181,7 +185,13 @@ impl RodStack {
     }
 
     fn set_defaults(&mut self, rod: &RodType) {
-        *self = Self { has_tag: true, yield_: Some(rod.yield_), core: Some(20.0), hull: Some(20.0), ..Self::default() };
+        *self = Self {
+            has_tag: true,
+            yield_: Some(rod.yield_),
+            core: Some(20.0),
+            hull: Some(20.0),
+            ..Self::default()
+        };
     }
 
     fn ensure(&mut self, rod: &RodType) {
@@ -255,12 +265,7 @@ impl RodStack {
             xenon -= rod.xenon_burn(in_flux);
             in_flux *= 1.0 - self.poison_level(rod);
             xenon += rod.xenon_gen(in_flux);
-            if xenon < 0.0 {
-                xenon = 0.0;
-            }
-            if xenon > 100.0 {
-                xenon = 100.0;
-            }
+            xenon = xenon.clamp(0.0, 100.0); // NaN passes through, as in Java
             self.set_poison(rod, xenon);
         }
 
@@ -275,7 +280,8 @@ impl RodStack {
             mult = jmath::sin((prog * PI + PI) / 2.0);
         }
 
-        let out_flux = rod.reactivity_func(in_flux, self.enrichment(rod) * mult) * dials.reactivity_mod;
+        let out_flux =
+            rod.reactivity_func(in_flux, self.enrichment(rod) * mult) * dials.reactivity_mod;
 
         if dials.depletion() {
             let mut y = self.yield_(rod);
