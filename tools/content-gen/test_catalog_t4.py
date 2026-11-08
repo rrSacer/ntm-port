@@ -30,6 +30,19 @@ class SpentFuelIdentities(unittest.TestCase):
         self.assertEqual(purex['coverage']['skipped_source_calls'], 5)
 
 
+class ShapedBlockIdentities(unittest.TestCase):
+    def test_non_cube_blocks_are_declared_with_their_gap(self):
+        import catalog_t4
+        entries = {r['source_variable']: r for r in json.loads((ROOT / 'content/ids.json').read_text())['entries']
+                   if r.get('source_variable')}
+        for var, template, gap in catalog_t4.SHAPED_BLOCKS:
+            row = entries[var]
+            self.assertEqual(row['template'], template, var)
+            self.assertEqual(row['behavior_gap'], gap, var)
+        self.assertEqual(sum(v.startswith('deco_pipe') for v, _, _ in catalog_t4.SHAPED_BLOCKS), 24)
+        self.assertTrue(all(entries[v]['template'] == 'minecraft:ladder' for v in entries if v.startswith('ladder_')))
+
+
 class MetadataZeroLookup(unittest.TestCase):
     def test_single_plain_identity_answers_metadata_zero_only(self):
         resolver = Resolver.__new__(Resolver)

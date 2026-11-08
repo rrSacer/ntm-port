@@ -7,13 +7,52 @@ from generate import lang, registration
 BASE = 'src/main/java/com/hbm/'
 
 
+# Non-cube block classes declared as static blocks with the closest vanilla template.
+# Layered blocks (BlockLayering) are not here: their height steps need a per-layer model set.
+# The geometry, connections, climbing, damage, layers and fluid storage are not reproduced;
+# each row says so in behavior_gap. Ladders keep the vanilla ladder template (climbable).
+SHAPED_BLOCKS = [
+    *[(v, 'minecraft:iron_bars', 'Pipe geometry and connections approximated by vanilla iron bars; decorative only')
+      for v in ['deco_pipe', 'deco_pipe_rusted', 'deco_pipe_green', 'deco_pipe_green_rusted', 'deco_pipe_red',
+                'deco_pipe_marked', 'deco_pipe_rim', 'deco_pipe_rim_rusted', 'deco_pipe_rim_green',
+                'deco_pipe_rim_green_rusted', 'deco_pipe_rim_red', 'deco_pipe_rim_marked', 'deco_pipe_framed',
+                'deco_pipe_framed_rusted', 'deco_pipe_framed_green', 'deco_pipe_framed_green_rusted',
+                'deco_pipe_framed_red', 'deco_pipe_framed_marked', 'deco_pipe_quad', 'deco_pipe_quad_rusted',
+                'deco_pipe_quad_green', 'deco_pipe_quad_green_rusted', 'deco_pipe_quad_red', 'deco_pipe_quad_marked']],
+    *[(v, 'minecraft:ladder', 'Climbing is vanilla; source ladder model and tier speed are not reproduced')
+      for v in ['ladder_sturdy', 'ladder_gold', 'ladder_copper', 'ladder_titanium', 'ladder_steel']],
+    *[(v, 'minecraft:iron_bars', 'Wire geometry approximated by vanilla iron bars; source contact damage and effects are not reproduced')
+      for v in ['barbed_wire', 'barbed_wire_fire', 'barbed_wire_poison', 'barbed_wire_acid', 'barbed_wire_wither', 'barbed_wire_ultradeath']],
+    *[(v, 'minecraft:iron_block', 'Full-cube approximation; the source barrel fluid contents and interaction are not reproduced')
+      for v in ['red_barrel', 'pink_barrel', 'yellow_barrel', 'vitrified_barrel', 'lox_barrel', 'taint_barrel']],
+    # cm_block, cm_sheet, cm_engine, cm_circuit and cm_tank are EnumCMMaterials variants (lang keys per material): not declared here.
+    *[(v, 'minecraft:iron_block', 'Full-cube approximation; custom machine (CM) structure is not reproduced')
+      for v in ['cm_flux', 'cm_heat']],
+]
+
+
+def shaped_blocks(source, tr):
+    blocks = (source / (BASE + 'blocks/ModBlocks.java')).read_text()
+    rows = []
+    for var, template, gap in SHAPED_BLOCKS:
+        name, texture = registration(blocks, var, 'block')
+        # Barbed wire's registered texture is its 3D model skin (*_model); the icon is the block name.
+        if var.startswith('barbed_wire'): texture = name
+        rows.append({'id': name, 'type': 'block', 'category': 'decorative', 'source_variable': var,
+                     'template': template,
+                     'source_texture': f'src/main/resources/assets/hbm/textures/blocks/{texture or name}.png',
+                     'names': {loc: loc_tr[f'tile.{name}.name'] for loc, loc_tr in tr.items()},
+                     'behavior_gap': gap})
+    return rows
+
+
 def build(source):
     items = (source / (BASE + 'items/ModItems.java')).read_text()
     tr = {loc: lang(source / f'src/main/resources/assets/hbm/lang/{old}.lang')
           for loc, old in [('en_us','en_US'),('pt_br','pt_BR')]}
     variables = re.findall(r'^\s*(waste_\w+)\s*=\s*new ItemDepletedFuel\(\)', clean(items), re.M)
     if len(variables) != 16: raise ValueError('Depleted fuel declarations drift: %d' % len(variables))
-    rows = []
+    rows = shaped_blocks(source, tr)
     for var in variables:
         name, texture = registration(items, var, 'item')
         rows.append({'id': name, 'type': 'item', 'category': 'component', 'source_variable': var,

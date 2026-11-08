@@ -1,48 +1,63 @@
-# T4 — catálogo estático restante e receitas `skipped` (parcial)
+# T4 — catálogo estático restante e receitas `skipped`
 
 Branch `front-catalog`, a partir de `main @ 85d06d9c`.
 
 ## O que entrou
 
-- **16 itens de combustível gasto** (`ItemDepletedFuel`) como identidades estáticas, em `tools/content-gen/catalog_t4.py` (ligado em `m3_catalog.py`): `ntm:waste_natural_uranium`, `waste_uranium`, `waste_thorium`, `waste_mox`, `waste_plutonium`, `waste_u233`, `waste_u235`, `waste_schrabidium`, `waste_zfb_mox` e as 7 `waste_plate_*`. Nome e textura vêm do Java e do `.lang`; a lógica de consumo e decaimento fica como `behavior_gap`.
-- **Metadata 0 em blocos sem subtipo** (`bulk_recipes.py`, `Resolver.row`): um bloco com uma única identidade é `ItemStack(x, n, 0)` no Java. Antes, essas receitas caíam em `missing subtype`.
+- **16 itens de combustível gasto** (`ItemDepletedFuel`) como identidades estáticas (`tools/content-gen/catalog_t4.py`): `waste_natural_uranium`, `waste_uranium`, `waste_thorium`, `waste_mox`, `waste_plutonium`, `waste_u233`, `waste_u235`, `waste_schrabidium`, `waste_zfb_mox` e as 7 `waste_plate_*`. Consumo e decaimento ficam como `behavior_gap`.
+- **43 blocos de forma não cúbica** com o template vanilla mais próximo, cada um com `behavior_gap` dizendo o que não é reproduzido:
+  - 24 `deco_pipe*` (`minecraft:iron_bars`);
+  - 5 `ladder_*` (`minecraft:ladder`, escalada vanilla);
+  - 6 `barbed_wire*` (`minecraft:iron_bars`, textura do ícone, sem dano por contato);
+  - 6 barris `red_barrel`, `pink_barrel`, `yellow_barrel`, `vitrified_barrel`, `lox_barrel`, `taint_barrel` (cubo de ferro);
+  - `cm_flux`, `cm_heat` (cubo de ferro);
+  - não entram: `cm_block`, `cm_sheet`, `cm_engine`, `cm_circuit`, `cm_tank` (variantes `EnumCMMaterials`), `foam_layer`, `sand_boron_layer`, `leaves_layer`, `oil_spill` (camadas, ver lacunas).
+- **Metadata 0 em blocos sem subtipo** (`bulk_recipes.py`, `Resolver.row`): um bloco com identidade única é `ItemStack(x, n, 0)` no Java.
+- **Shredder: pó sem registro de origem** (`shredder_recipes.py`): `getDustByName` retorna scrap, e `putIfValid` não roda para scrap. Esses 147 casos viram `no_output` com o motivo, em vez de `skipped`.
+- **Auditoria do bulk** (`bulk.py`): o conjunto `claimed` agora tem só `m3.json` e `bombs.json`. `item_hooks.json` só sobrescreve linhas-base. Variáveis cobertas por essas declarações saem da lista de lacunas e entram em `claimed_elsewhere`.
 
-## Contagens (antes → depois)
+## Contagens (main `85d06d9c` → esta branch)
 
 | Medida | Antes | Depois |
 |---|---|---|
-| `ids.json` entradas | 3333 | 3349 (+16) |
-| `anvil` `skipped` | 118 | 116 |
-| `purex` `skipped` (fontes) | 22 | 5 (receitas 37 → 54) |
-| `shredder` `skipped` | 193 | 192 (receitas 734 → 735) |
-| `bulk-recipe-coverage` receitas geradas | 931 | 1115 (+184, ver nota) |
-| `bulk-recipe-coverage` `gaps` | 1025 | 1024 |
-| `bulk-coverage.json` `gaps` | 944 | 944 (não regenerado, ver abaixo) |
+| `ids.json` entradas | 3333 | 3392 (+59: 16 combustíveis e 43 blocos) |
+| `anvil` construções: emitidas / puladas | 161 / 96 (fonte: 118 pulados no total) | 167 / 90 (total pulado 112) |
+| `purex` fontes puladas | 22 | 5 |
+| `purex` receitas | 37 | 54 |
+| `assembly` receitas / puladas | 500 / 131 | 502 / 129 |
+| `shredder` receitas / puladas / `no_output` | 734 / 193 / 0 | 759 / 21 / 147 |
+| `bulk-recipe-coverage` receitas / gaps | 931 / 1025 | 1151 / 988 |
+| `bulk-coverage` gaps / `claimed_elsewhere` | 944 / — | 689 / 255 |
 
-Nota: as 184 receitas novas são `data/ntm/recipe/bulk__*.json`, em `content/data/ntm/recipe/`, território da T3. Não foram copiadas para esta branch; o `generate.py` do merge as cria.
+A queda de `bulk-coverage` tem duas causas. Uma é a regra de `claimed_elsewhere`, que não é conteúdo novo. A outra são os 59 itens declarados nesta frente.
+
+Notas sobre `bulk-recipe-coverage`: as 220 receitas novas (`data/ntm/recipe/bulk__*.json`) estão em `content/data/ntm/recipe/`, território da T3, e não foram copiadas. O `generate.py` do merge cria esses arquivos.
 
 ## Provas
 
-- `tools/content-gen`: 272 testes rodaram. Os contratos de `anvil` e `purex` foram atualizados para as novas contagens. O teste `test_purex` de Naquadria deixou de injetar uma linha sintética de `waste_schrabidium`, porque o item real agora existe. Novo `test_catalog_t4.py` (3 testes) cobre os 16 itens e o lookup de metadata 0.
-- Pacote: `cargo-horizon-mod build` e `check` do build compartilhado (`ntm-native-main`) geraram `ntm.hmod` (15 251 276 bytes), sem erro. Carregamento no cliente compartilhado: pacote lido, `content from 1 mod(s)`, sem `reject` nem `panic`. O processo do cliente saiu com código 1 logo após entrar no mundo; a causa não foi investigada.
+- `tools/content-gen`: 275 testes rodaram e passaram. Contratos de `anvil`, `purex` e `shredder` atualizados. `test_catalog_t4.py` (4 testes) cobre os 16 itens, os 43 blocos e o lookup de metadata 0. `test_rbmk_oracle` passou a exigir só que as entradas do T00 continuem idênticas e na mesma ordem relativa.
+- Estabilidade: `bulk.py` rodado duas vezes dá o mesmo resultado; `bulk.py` seguido de `generate.py --ids-only` deixa `ids.json` e `machines_backlog.json` iguais ao HEAD.
+- Pacote: `cargo-horizon-mod build` e `check` com o build compartilhado geram `ntm.hmod`. O cliente compartilhado carrega o pacote, entra no mundo, e o log não tem `reject` nem `panic`. Antes do ajuste final, o log acusou modelos ausentes nas camadas (removidas) e texturas ausentes nos barris e no arame farpado (corrigidas).
 
 ## Lacunas
 
-- **Falha conhecida fora desta frente:** `test_rbmk_oracle.test_catalog_identity_stack_and_previous_content_are_unchanged` compara `content/ids.json` byte a byte com `81a210d4`. Esta frente adiciona 16 IDs, então esse teste falha. Decisão para o coordenador: atualizar o contrato do RBMK ou congelar o `ids.json` no merge.
-- **`bulk.py` não é idempotente nesta branch.** Rodá-lo reescreve `bulk.json` (−~1100 linhas), `machines_backlog.json` e `bulk-coverage.json`. Por isso não foi rodado e o `bulk-coverage.json` não reflete os 16 itens novos. Revertido.
-- `sand_mix` (purex, 3 fontes): a fonte Java não declara textura, e não existe `sand_mix.png` no `ntm-src`.
-- `anvil`: `siren_track:1..15`, `machine_stirling:1`, `machine_stirling_steel:1` precisam de subtipos de metadata; não portados.
-- `anvil`: 18 `AnvilSmithingHotRecipe` e demais receitas com NBT por item.
-- `shredder`: 147 entradas `getDustByName returns scrap` precisam do registro de pó; não portado.
+- **Falha da T1 resolvida:** o contrato de `test_rbmk_oracle` foi relaxado, como acima.
+- `stamp_book` (`ItemStampBook`): páginas em NBT. Requer lógica de item.
+- Camadas (`foam_layer`, `sand_boron_layer`, `leaves_layer`, `oil_spill`): a altura vem do metadata. Precisa de um conjunto de modelos por camada, que o gerador ainda não produz. Sem isso, o cliente cai no modelo ausente.
+- `cm_block`, `cm_sheet`, `cm_engine`, `cm_circuit`, `cm_tank`: subtipos `EnumCMMaterials`, um nome de idioma por material. Precisam de subtipos de metadata.
+- `cm_anchor` (`custom_machine_anchor`): textura e modelo próprios, sem declaração direta.
+- `sand_mix` (purex, 3 fontes): a fonte não declara textura, e não existe `sand_mix.png` no `ntm-src`.
+- `anvil`: `siren_track:1..15`, `machine_stirling:1`, `machine_stirling_steel:1` (subtipos de metadata); receitas com NBT por item (`AnvilSmithingHotRecipe` etc.).
+- `shredder`: 21 pulados restantes, de `EnumDriveType` dinâmico, `boxcar`/`steel_*`/`crate_*` ambíguos e `sellafield` com subtipo.
 - `centrifuge` (23): laços dinâmicos sobre `BedrockOreType`/`EnumBedrockOre`.
 - `chemical_plant` (15): inteiros não literais (`GeneralConfig`) e fluidos condicionais.
-- `stamp_book`, `BlockPipe` (variantes), `BarbedWire`, escadas, barris, `BlockLayering`, `BlockCM`: não tratados nesta rodada.
-- Fechaduras (`seal_controller`, `stone_keyhole`, `stone_keyhole_meta`, `brick_forgotten_lock`, `key`, `key_red`, `key_kit`, `pin`): já estão em `ids.json`. Nada a acrescentar.
 
 ## Como reproduzir
 
 ```sh
-HORIZON_RESOURCES=/home/sacer/Games/horizon/.local/horizon-client/26.3 \
-  python3 tools/content-gen/generate.py --output <pasta_scratch>
-cd tools/content-gen && HORIZON_RESOURCES=... python3 -m unittest test_catalog_t4 test_purex test_anvil
+cd tools/content-gen
+python3 bulk.py                       # auditoria (idempotente)
+python3 generate.py --ids-only        # ids, machines_backlog (m3 anota)
+HORIZON_RESOURCES=/home/sacer/Games/horizon/.local/horizon-client/26.3 python3 generate.py --output <pasta_scratch>
+HORIZON_RESOURCES=... python3 -m unittest discover -s . -p 'test_*.py'
 ```
