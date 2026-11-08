@@ -694,6 +694,12 @@ impl PowerNet {
 // ---------------------------------------------------------------- batteries
 
 /// The slot's item, as far as the energy code can tell.
+///
+/// Closed on purpose: the Java accepts any `IBatteryItem` (cube_power, potato
+/// battery, memory, `battery_sc`, fusion core, powered tools and armour...), but
+/// none of those is in the catalog yet, so only the 12 packs and the creative
+/// battery exist here. When one enters the catalog this becomes a spec
+/// (capacity, rates, charge) or a trait.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum SlotItem {
     /// `battery_pack` with this metadata (`EnumUtil.grabEnumSafely` picks the

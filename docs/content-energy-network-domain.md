@@ -29,7 +29,7 @@ Prova: `tools/energy-net-oracle/` (Java real compilado, README próprio) e
 
 ## Contagens da prova
 
-Oráculo: 416 casos de rede (16 manuais, 400 aleatórios com até 40 nós, transbordo de `long`, nós não carregados, REDD misturado), 70 sequências do REDD (10 ops cada), 612 combinações de soquete, 48 de botões, 144 estados de fios, 1.500 validações de link, 7 fluxos de `Random`, 25 `toByteArray`, 12 geometrias. Testes: 22 em `energy_network_tests`; os 452 testes de unidade e os de explosão do `ntm-core` seguem verdes; `clippy -D warnings` limpo.
+Oráculo: 421 casos de rede (21 manuais, 400 aleatórios com até 40 nós; entre os manuais, 4 em que as somas de demanda/oferta estouram `long` e dão a volta, e 1 com 200 provedores de 1 HE que esgota as 100 sorteios da compensação; nós não carregados; REDD misturado), 70 sequências do REDD (10 ops cada), 612 combinações de soquete, 48 de botões, 144 estados de fios, 1.504 validações de link (4 na borda do arredondamento a `float`), 7 fluxos de `Random`, 25 `toByteArray`, 12 geometrias. Testes: 24 em `energy_network_tests`, e um deles garante que a fixture contém o estouro e o teto; mutações verificadas: trocar `wrapping_add` por `saturating_add` em `power_available`, `demand[p]`, `total_demand` ou `energy_used`, baixar o teto 100→99 e tirar o arredondamento a `float` da distância quebram os testes; os 452 testes de unidade e os de explosão do `ntm-core` seguem verdes; `clippy -D warnings` limpo.
 
 ## Lacunas nominais (não portado) e por quê
 
@@ -37,7 +37,12 @@ Oráculo: 416 casos de rede (16 manuais, 400 aleatórios com até 40 nós, trans
 - **Acessórios SC (`battery_sc`)**: multiplicador de flutuação `scPowerMult`, descarga em raio e dano. `getPower` do soquete ignora o multiplicador (item fora dos 12 packs).
 - **Metadado de orientação de seis faces dos conectores** e sua colocação (`onBlockPlaced` devolve a face), pintura/cor, `disconnectAll`, item de fio (`ItemWiring`) que chama `canConnect` e `addConnection`.
 - **Sinal de comparador/redstone de saída**, `markDirty` das portas quando o comparador muda, sincronização de rede (`networkPackNT`), GUIs, OpenComputers/ROR, som `fensuHum`, interface `ICopiable` (copiar/colar configurações).
-- O Java usa `HashSet` (ordem por hash de identidade, aleatória): a ordem de provedores só afeta quem sofre a compensação aleatória; o port usa ordem de inserção.
+- **Itens `IBatteryItem` fora do catálogo:** o Java aceita qualquer item que implemente a interface no soquete e no REDD (`cube_power`, bateria de batata, `memory`, `battery_sc`, núcleo de fusão, ferramentas e armaduras energizadas). `SlotItem` é fechado (12 packs + criativo + "outro"); ao entrarem no catálogo vira especificação de capacidade/taxas ou trait.
+- **`updateEntity` do soquete:** a média móvel `log[20]`/`delta` (GUI e ROR) e o ramo do SC não foram portados; só o REDD tem `log`/`delta`.
+- **`IPersistentNBT` do REDD:** `writeNBT/readNBT` (`power` e `muffled` ao recolher o bloco) não portado; `to_java_bytes` cobre o formato do `power`.
+- **`isBadLink` / `isInvalid`:** o Java também descarta `TileEntity.isInvalid()`. O port só tem `is_loaded`; a integração deve mapear "bloco removido" para `is_loaded == false`.
+- **Velocidade do rotor:** a comparação é do `float` final (70 sequências); `ln`/`powf` da libm podem diferir 1 ulp do `Math.log/pow` no `double` intermediário. Só animação.
+- O Java usa `HashSet` (ordem por hash de identidade, aleatória): a ordem de provedores só afeta quem sofre a compensação aleatória (o total retirado não muda); o port usa ordem de inserção. Cuidado na integração: `remove` + `add` põe a entrada no fim da lista (o `HashSet` não faria isso) e o fio do tick deve manter uma ordem estável.
 
 ## O que falta ligar depois da Onda 0
 

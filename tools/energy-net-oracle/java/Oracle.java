@@ -137,6 +137,18 @@ public class Oracle {
 		cs.add(netCase(11, 1, many));
 		cs.add(netCase(12, 1, l(plain(0, Long.MAX_VALUE, Long.MAX_VALUE, -1, -1, 2, true, false), plain(1, 0, Long.MAX_VALUE, -1, -1, 2, false, true))));
 		cs.add(netCase(13, 1, l(plain(0, 10, 10, -1, -1, 2, true, false), plain(1, -50, 100, -1, -1, 2, false, true), plain(2, 0, 100, 0, 0, 2, false, true))));
+		// long overflow in the demand/supply sums (sums wrap to 0 or negative; weights become NaN/Infinity)
+		long p62 = 1L << 62;
+		cs.add(netCase(9001, 2, l(plain(0, Long.MAX_VALUE / 2, Long.MAX_VALUE / 2, -1, -1, 2, true, false), plain(1, 0, p62, -1, -1, 2, false, true), plain(2, 0, p62, -1, -1, 2, false, true))));
+		cs.add(netCase(9002, 2, l(plain(0, Long.MAX_VALUE / 2, Long.MAX_VALUE / 2, -1, -1, 2, true, false), plain(1, 0, p62, -1, -1, 2, false, true), plain(2, 0, p62, -1, -1, 2, false, true), plain(3, 0, p62, -1, -1, 2, false, true), plain(4, 0, p62, -1, -1, 2, false, true))));
+		cs.add(netCase(9003, 2, l(plain(0, p62, p62, -1, -1, 2, true, false), plain(1, p62, p62, -1, -1, 2, true, false), plain(2, p62, p62, -1, -1, 2, true, false), plain(3, 0, Long.MAX_VALUE, -1, -1, 2, false, true))));
+		cs.add(netCase(9004, 2, l(plain(0, p62, p62, -1, -1, 2, true, false), plain(1, p62, p62, -1, -1, 2, true, false), plain(2, p62, p62, -1, -1, 2, true, false), plain(3, p62, p62, -1, -1, 2, true, false), plain(4, 0, p62, -1, -1, 3, false, true), plain(5, 0, p62, -1, -1, 3, false, true), plain(6, 0, p62, -1, -1, 1, false, true))));
+		// 200 providers of 1 HE and a 199 HE receiver: every share truncates to 0, leaving 199 HE of
+		// "rounding error" that needs more than the 100 compensation draws
+		List<Map<String, Object>> cap = new ArrayList<>();
+		for (int i = 0; i < 200; i++) cap.add(plain(i, 1, 1, -1, -1, 2, true, false));
+		cap.add(plain(200, 0, 199, -1, -1, 2, false, true));
+		cs.add(netCase(9005, 1, cap));
 		// REDD in a net (its transferPower never clamps; its getPower caps at max/2)
 		cs.add(netCase(14, 3, l(o("kind", "redd", "id", 0, "power", "123456789012345678901234567890", "provider", true, "receiver", false, "loaded", true), plain(1, 0, 1000000, -1, -1, 2, false, true), plain(2, 0, big, -1, -1, 3, false, true))));
 		cs.add(netCase(15, 3, l(o("kind", "redd", "id", 0, "power", "50", "provider", true, "receiver", true, "loaded", true), plain(1, 100, 1000, -1, -1, 2, true, false))));
@@ -301,6 +313,13 @@ public class Oracle {
 		String[] kinds = {"connector", "connector_super", "pylon", "medium", "large"};
 		Random r = new Random(77);
 		int[] dist = {0, 1, 5, 10, 11, 24, 25, 26, 44, 45, 46, 99, 100, 101, 150};
+		// float rounding of the distance: two large pylons whose true distance is 100.0000033 (> 100) but
+		// whose float-rounded length is exactly 100, so the original accepts the wire
+		int[][] edge = {{12, 15, -50, -76, -31}, {12, 15, -50, 76, -31}, {15, 12, 50, -76, 31}, {15, 12, 50, 76, 31}};
+		for (int[] e : edge) {
+			TileEntityPylonBase a = mk("large", 0, 100, 0, e[0], 0), b = mk("large", e[2], 100 + e[3], e[4], e[1], 0);
+			out.add(o("a", o("kind", "large", "pos", l(0, 100, 0), "meta", e[0]), "b", o("kind", "large", "pos", l(e[2], 100 + e[3], e[4]), "meta", e[1]), "same", false, "code", TileEntityPylonBase.canConnect(a, b), "float_edge", true));
+		}
 		for (int c = 0; c < 1500; c++) {
 			String ka = kinds[r.nextInt(5)], kb = kinds[r.nextInt(5)];
 			int ma = r.nextInt(16), mb = r.nextInt(16);

@@ -6,14 +6,22 @@ REDD, the battery socket and the wire endpoints, and records every output in
 the Rust port (`energy_network.rs`) with it exactly (doubles by bits).
 
 ```sh
+export ENERGY_NET_HBM_SRC=/path/to/ntm-src          # HBM checkout at pin 4f5924e
+export ENERGY_NET_MC_SRC=/path/to/minecraft-src     # has net/minecraft/util/{Vec3,MathHelper}.java
+export ENERGY_NET_FORGE_SRC=/path/to/forge-src      # has net/minecraftforge/common/util/ForgeDirection.java
 python3 tools/energy-net-oracle/run.py --scratch /path/outside/git/scratch        # rewrite fixture
 python3 tools/energy-net-oracle/run.py --scratch /path/outside/git/scratch --check # fail on drift
 ```
 
+The two decompiled trees come from a Forge 1.7.10 dev setup (ForgeGradle/RetroFuturaGradle
+`minecraft-src`, or the `unpacked/src/main/java` of the `forge-1.7.10-10.13.4.1614` cache).
+The SHA-256 of the three files used are in `fixtures/java.json` (`provenance`); any tree
+whose files hash the same reproduces the fixture. The flags `--source/--mc-src/--forge-src`
+override the variables.
+
 Needs OpenJDK `javac`/`java` (compiled `--release 8`), `git`, the HBM tree at
 pin `4f5924e` (`--source`, default `/mnt/ssd120/sacer/horizon-ntm/ntm-src`) and
-a decompiled 1.7.10 Minecraft/Forge for `Vec3`, `MathHelper`, `ForgeDirection`
-(`--mc-src`, `--forge-src`; their SHA-256 are recorded). No jar is used.
+a decompiled 1.7.10 Minecraft/Forge for `Vec3`, `MathHelper`, `ForgeDirection`. No jar is used.
 
 What is executed:
 

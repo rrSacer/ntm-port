@@ -7,7 +7,7 @@ MathHelper). Tile entities and ItemBatteryPack drag in the whole game, so for th
 method bodies are *sliced verbatim* out of the real file into a generated class
 (`slice_*` below); nothing is retyped. Hand-written stubs live in java/stubs.
 """
-import argparse, hashlib, json, re, shutil, subprocess, sys
+import argparse, hashlib, json, os, re, shutil, subprocess, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -194,12 +194,15 @@ public class {name} extends {base} {{
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--source', default='/mnt/ssd120/sacer/horizon-ntm/ntm-src')
-    ap.add_argument('--mc-src', default='/home/sacer/.minecraft/modpacks/CONFIDENCIAL/_dev/ConfidencialCombat/build/rfg/minecraft-src/java')
-    ap.add_argument('--forge-src', default='/home/sacer/.gradle/caches/minecraft/net/minecraftforge/forge/1.7.10-10.13.4.1614-1.7.10/unpacked/src/main/java')
+    ap.add_argument('--source', default=os.environ.get('ENERGY_NET_HBM_SRC'), help='HBM checkout at the pin (or $ENERGY_NET_HBM_SRC)')
+    ap.add_argument('--mc-src', default=os.environ.get('ENERGY_NET_MC_SRC'), help='root with net/minecraft/util/{Vec3,MathHelper}.java, a decompiled 1.7.10 (or $ENERGY_NET_MC_SRC)')
+    ap.add_argument('--forge-src', default=os.environ.get('ENERGY_NET_FORGE_SRC'), help='root with net/minecraftforge/common/util/ForgeDirection.java (or $ENERGY_NET_FORGE_SRC)')
     ap.add_argument('--scratch', required=True)
     ap.add_argument('--check', action='store_true', help='fail if the output differs from the committed fixture')
     a = ap.parse_args()
+    for name in ('source', 'mc_src', 'forge_src'):
+        if not getattr(a, name):
+            sys.exit(f'--{name.replace("_", "-")} (or its environment variable) is required; see README.md')
     src = Path(a.source); scratch = Path(a.scratch)
     head = subprocess.run(['git', '-C', str(src), 'rev-parse', 'HEAD'], capture_output=True, text=True).stdout.strip()
     if not head.startswith(PIN):

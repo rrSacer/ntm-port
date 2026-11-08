@@ -707,7 +707,7 @@ fn both_plain_pylons_are_the_same_endpoint_class() {
 fn links_match_java_validation() {
     let fx = fixture();
     let links = arr(&fx, "links");
-    assert_eq!(links.len(), 1500);
+    assert_eq!(links.len(), 1504);
     let mut seen = [0usize; 4];
     for l in links {
         let end = |e: &Value| WireEnd {
@@ -771,7 +771,92 @@ fn wire_ranges_and_types_match_the_content_table() {
 }
 
 #[test]
-fn link_distance_is_measured_after_float_rounding() {
+fn link_length_is_rounded_to_float_before_the_range_check() {
+    // Two large pylons whose true distance is 100.0000033 blocks: the original
+    // rounds the length to float (exactly 100) and accepts the wire.
+    let fx = fixture();
+    let edges: Vec<&Value> = arr(&fx, "links")
+        .iter()
+        .filter(|l| l["float_edge"] == true)
+        .collect();
+    assert_eq!(edges.len(), 4);
+    for l in edges {
+        let end = |e: &Value| WireEnd {
+            kind: WireKind::Large,
+            pos: [
+                i(&e["pos"][0]) as i32,
+                i(&e["pos"][1]) as i32,
+                i(&e["pos"][2]) as i32,
+            ],
+            meta: i(&e["meta"]) as i32,
+        };
+        let (a, b) = (end(&l["a"]), end(&l["b"]));
+        let (pa, pb) = (
+            a.kind.connection_point(a.pos, a.meta),
+            b.kind.connection_point(b.pos, b.meta),
+        );
+        let sq: f64 = (0..3).map(|k| (pb[k] - pa[k]).powi(2)).sum();
+        assert!(sq > 10_000.0 && (sq.sqrt() as f32) as f64 <= 100.0, "{sq}");
+        assert_eq!(can_connect_wires(&a, &b), LinkCheck::Ok);
+        assert_eq!(i(&l["code"]), 0);
+    }
+}
+
+#[test]
+fn fixture_exercises_long_overflow_and_the_compensation_cap() {
+    let fx = fixture();
+    let mut overflowing = 0;
+    let mut capped = 0;
+    for case in arr(&fx, "net_cases") {
+        // does any priority group (or the supply) sum past Long.MAX in exact arithmetic?
+        let mut demand = [0i128; 5];
+        let mut supply = 0i128;
+        for n in arr(case, "nodes")
+            .iter()
+            .filter(|n| n["kind"] == "plain" && n["loaded"] == true)
+        {
+            let (power, max) = (i(&n["power"]) as i128, i(&n["max"]) as i128);
+            if n["receiver"] == true {
+                let speed = if i(&n["rec"]) < 0 {
+                    max
+                } else {
+                    i(&n["rec"]) as i128
+                };
+                let rec = (max - power).min(speed);
+                if rec > 0 {
+                    demand[i(&n["pri"]) as usize] += rec;
+                }
+            }
+            if n["provider"] == true {
+                let speed = if i(&n["prov"]) < 0 {
+                    max
+                } else {
+                    i(&n["prov"]) as i128
+                };
+                supply += power.min(speed).max(0);
+            }
+        }
+        if supply > i64::MAX as i128 || demand.iter().any(|&d| d > i64::MAX as i128) {
+            overflowing += 1;
+        }
+        // 100 compensation draws were needed: more providers than the cap, all tiny
+        let providers = arr(case, "nodes")
+            .iter()
+            .filter(|n| n["provider"] == true)
+            .count();
+        if providers > 150 && i(&case["seed"]) == 9005 {
+            capped += 1;
+        }
+    }
+    assert!(
+        overflowing >= 4,
+        "overflow cases in the fixture: {overflowing}"
+    );
+    assert_eq!(capped, 1);
+}
+
+#[test]
+fn link_range_is_inclusive_and_takes_the_smaller_limit() {
     // Two connectors 10 blocks apart in a line: exactly the range.
     let a = WireEnd {
         kind: WireKind::Connector,
