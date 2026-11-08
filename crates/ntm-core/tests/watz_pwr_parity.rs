@@ -198,7 +198,7 @@ fn watz_extras_match_java() {
     assert_eq!(bolt_casing(1), None);
     let drops: Vec<String> = BREAK_DROPS
         .iter()
-        .flat_map(|(n, c)| std::iter::repeat((*n, *c)).take(if *n == "bolt_dura" { BREAK_BOLT_STACKS as usize } else { 1 }))
+        .flat_map(|(n, c)| std::iter::repeat_n((*n, *c), if *n == "bolt_dura" { BREAK_BOLT_STACKS as usize } else { 1 }))
         .map(|(n, c)| format!("drop {n} {c}"))
         .collect();
     let java: Vec<String> = arr(&x["break_drops"]).iter().map(|l| s(l).to_string()).filter(|l| l.starts_with("drop ")).collect();
@@ -409,7 +409,7 @@ fn hephaestus_matches_java_tick_by_tick() {
             output_fill: i(&ini["output"][0]) as i32,
             ..Default::default()
         };
-        let mut time = i(&case["time"]);
+        let time0 = i(&case["time"]);
         let at = |x: i32, y: i32, z: i32| match blocks.get(&(x, y, z)).map(String::as_str) {
             Some("lava") | Some("flowing_lava") => HeatBlock::Lava,
             Some("volcanic_lava_block") => HeatBlock::VolcanicLava,
@@ -417,6 +417,7 @@ fn hephaestus_matches_java_tick_by_tick() {
             _ => HeatBlock::Other,
         };
         for (k, want) in arr(&case["ticks"]).iter().enumerate() {
+            let time = time0 + k as i64;
             m.tick(*pos, time, &|x, y, z| at(x, y, z));
             assert_eq!(m.input_fill as i64, i(&want["input"][0]), "{name} tick {k} input");
             assert_eq!(m.output_fill as i64, i(&want["output"][0]), "{name} tick {k} output");
@@ -428,7 +429,6 @@ fn hephaestus_matches_java_tick_by_tick() {
             if k == 29 && m.output_fill > 0 && m.input_type == "water" {
                 triples += 1;
             }
-            time += 1;
         }
     }
     assert!(triples >= 3);
@@ -449,8 +449,9 @@ fn flare_matches_java_tick_by_tick() {
         // "gas" in the default-tank case is the plain GAS fluid; every row also exists in the table
         let traits = *table.get(fluid).unwrap_or_else(|| panic!("no traits for {fluid}"));
         let mut f = Flare { power: i(&case["power"]), fill: i(&case["fill"]) as i32, is_on: case["on"].as_bool().unwrap(), does_burn: case["burn"].as_bool().unwrap() };
-        let mut time = i(&case["time"]);
+        let time0 = i(&case["time"]);
         for (k, want) in arr(&case["ticks"]).iter().enumerate() {
+            let time = time0 + k as i64;
             let out = f.tick(traits, i(&case["speed"]) as i32, i(&case["effect"]) as i32, case["tilted"].as_bool().unwrap(), time);
             assert_eq!(f.fill as i64, i(&want["fill"]), "{name} tick {k} fill");
             assert_eq!(f.power, i(&want["power"]), "{name} tick {k} power");
@@ -470,7 +471,6 @@ fn flare_matches_java_tick_by_tick() {
             ours.sort();
             java.sort();
             assert_eq!(ours, java, "{name} tick {k} events");
-            time += 1;
         }
         cases += 1;
     }

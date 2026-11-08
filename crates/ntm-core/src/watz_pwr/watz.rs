@@ -201,10 +201,12 @@ impl WatzSegment {
         }
 
         for slot in self.slots.iter_mut() {
-            if let Some(s) = slot {
-                if !s.depleted && s.enrichment() <= 0.0 {
-                    *slot = Some(PelletStack::depleted(s.meta));
-                }
+            let spent = match slot {
+                Some(s) if !s.depleted => s.enrichment() <= 0.0,
+                _ => false,
+            };
+            if spent {
+                *slot = Some(PelletStack::depleted(slot.unwrap().meta));
             }
         }
 
@@ -238,8 +240,8 @@ pub fn tick_stack(segments: &mut [WatzSegment], pump_present: bool, power_level:
     let shared_max = [TANK_CAPACITY * n; 3];
     let mut shared = [0i32; 3];
     for seg in segments.iter() {
-        for j in 0..3 {
-            shared[j] = shared[j].wrapping_add(seg.tanks[j]);
+        for (sh, t) in shared.iter_mut().zip(seg.tanks) {
+            *sh = sh.wrapping_add(t);
         }
     }
 
@@ -262,10 +264,10 @@ pub fn tick_stack(segments: &mut [WatzSegment], pump_present: bool, power_level:
     }
 
     for seg in segments.iter_mut().rev() {
-        for j in 0..3 {
-            let min = TANK_CAPACITY.min(shared[j]);
-            shared[j] = shared[j].wrapping_sub(min);
-            seg.tanks[j] = min;
+        for (sh, t) in shared.iter_mut().zip(seg.tanks.iter_mut()) {
+            let min = TANK_CAPACITY.min(*sh);
+            *sh = sh.wrapping_sub(min);
+            *t = min;
         }
     }
 

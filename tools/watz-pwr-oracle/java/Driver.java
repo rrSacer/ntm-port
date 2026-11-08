@@ -289,6 +289,8 @@ public class Driver {
 		if(dir.offsetX > 0) cx = ox; if(dir.offsetX < 0) cx = ox + sx - 1;
 		if(dir.offsetZ > 0) cz = oz; if(dir.offsetZ < 0) cz = oz + sz - 1;
 		put(w, cx, cy, cz, ModBlocks.pwr_controller);
+		if(mode == 5 || mode == 6) for(int x = 1; x < sx - 1; x++) for(int y = 1; y < sy - 1; y++) for(int z = 1; z < sz - 1; z++) if(r.nextInt(8) == 0) // casing / reflector / port parts inside the core
+			put(w, ox + x, oy + y, oz + z, mode == 5 ? ModBlocks.pwr_casing : (r.nextBoolean() ? ModBlocks.pwr_reflector : ModBlocks.pwr_port));
 		if(mode == 1) { for(int x = 1; x < sx - 1; x++) for(int y = 1; y < sy - 1; y++) for(int z = 1; z < sz - 1; z++) if(w.getBlock(ox + x, oy + y, oz + z) == ModBlocks.pwr_fuel) put(w, ox + x, oy + y, oz + z, ModBlocks.pwr_control); } // no fuel
 		if(mode == 2) { for(int x = 1; x < sx - 1; x++) for(int y = 1; y < sy - 1; y++) for(int z = 1; z < sz - 1; z++) if(w.getBlock(ox + x, oy + y, oz + z) == ModBlocks.pwr_neutron_source) put(w, ox + x, oy + y, oz + z, ModBlocks.pwr_heatsink); } // no source
 		if(mode == 3) put(w, ox + sx / 2, oy + sy / 2, oz + sz / 2, STONE); // foreign block inside
@@ -350,6 +352,7 @@ public class Driver {
 		l.add(structure("no_fuel", 13, 7, 6, 7, 3, 1, 0));
 		l.add(structure("no_source", 14, 7, 6, 7, 4, 2, 0));
 		l.add(structure("foreign_block", 15, 7, 6, 7, 5, 3, 0));
+		for(int q = 0; q < 3; q++) { l.add(structure("casing_inside" + q, 300 + q, 8, 7, 9, metas[q], 5, 0)); l.add(structure("reflector_port_inside" + q, 400 + q, 8, 7, 9, metas[q + 1], 6, 0)); }
 		l.add(structure("open_shell", 16, 7, 6, 7, 5, 4, 0));
 		// oversize: a long control column, one fuel at the end and one source
 		World w = new World();
@@ -395,6 +398,7 @@ public class Driver {
 		c.coreHeatCapacity = 10_000_000 + 12 * 500_000L;
 		c.tanks[0].setTankType(Fluids.COOLANT);
 		init.run(c, w);
+		if(!name.startsWith("meltdown")) c.coreHeatCapacity = Long.MAX_VALUE / 4; // only the meltdown scenarios may melt
 		String initial = pwrState(c);
 		List<String> tl = new ArrayList<>();
 		int melted = 0;
@@ -458,6 +462,11 @@ public class Driver {
 			load(c, 11, 60); c.flux = 50000; c.coreHeat = c.coreHeatCapacity - 10; c.hullHeat = c.coreHeatCapacity - 10; c.rodTarget = 0; c.rodLevel = 0;
 			c.rods.add(new BlockPos(1, 2, 3)); c.rods.add(new BlockPos(4, 2, 3)); c.rods.add(new BlockPos(1, 7, 9)); c.rods.add(new BlockPos(-3, 5, 2));
 		}));
+		l.add(pwrRun("meltdown_many_rods", 4, (c, w) -> {
+			load(c, 0, 60); c.flux = 80000; c.coreHeat = c.coreHeatCapacity + 5; c.rodTarget = 0; c.rodLevel = 0;
+			for(int q = 0; q < 37; q++) c.rods.add(new BlockPos(q * 3 - 20, 64 + q % 5, 7 * q - 90));
+		}));
+		l.add(pwrRun("meltdown_no_rods", 3, (c, w) -> { load(c, 0, 60); c.flux = 80000; c.coreHeat = c.coreHeatCapacity + 5; }));
 		l.add(pwrRun("zero_rods", 4, (c, w) -> { c.rodCount = 0; load(c, 0, 0); c.flux = 100; }));
 		l.add(pwrRun("not_assembled", 4, (c, w) -> { c.assembled = false; load(c, 0, 5); c.flux = 100; c.coreHeat = 99; }));
 		l.add(pwrRun("overfull_load", 4, (c, w) -> { load(c, 2, 200); c.flux = 100; }));

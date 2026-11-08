@@ -176,18 +176,12 @@ pub struct FlareTick {
     pub events: Vec<FlareEvent>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct Flare {
     pub power: i64,
     pub fill: i32,
     pub is_on: bool,
     pub does_burn: bool,
-}
-
-impl Default for Flare {
-    fn default() -> Self {
-        Flare { power: 0, fill: 0, is_on: false, does_burn: false }
-    }
 }
 
 impl Flare {

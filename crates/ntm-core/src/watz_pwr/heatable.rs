@@ -20,6 +20,7 @@ pub struct Heatable {
     pub moderator: Option<f64>,
 }
 
+#[allow(clippy::too_many_arguments)]
 const fn h(
     name: &'static str, hot: &'static str, heat_req: i32, amount_req: i32, amount_produced: i32,
     eff_boiler: f64, eff_heatexchanger: f64, eff_pwr: f64, moderator: Option<f64>,
