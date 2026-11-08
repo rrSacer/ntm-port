@@ -243,4 +243,12 @@ Resumo dos 116 itens: 59 ativo, 19 dependente, 38 parcial.
 | `ntm:bdcl` | `hbm:player.groan` | `ntm:player.groan` | 1.0 / 1.0 |
 | `ntm:bdcl` (nos ticks 0, 5, 10, 15, 19 e 26 do uso: `count % 5 == 0 && count >= 10`) | `hbm:player.gulp` | `ntm:player.gulp` | 1.0 / 1.0 |
 
+### Pendências pós-Onda 0
+
+Estas lacunas não se fecham agora porque o ponto de ligação está em arquivos da Onda 0 (`native/ntm/mixins/ntm/horizon-mixin.toml`, zona intocável). O motor já tem o que falta, sem mudança nele, no pin `f22df7b81`:
+
+- Itens no chão (`beta`, `rag` na água, e as lacunas de `ItemDrop` que só precisam de remover ou trocar o item): `native_entity_tick_listened`, `native_entity_tick_pre` e `native_entity_tick_post` (API 146, sobre `minecraft:item`), e `native_set_item_entity` (API 42) para remover ou trocar a pilha. Ligar como injeções `HEAD` no `horizon-mixin.toml`.
+- Pipetas (`ItemPipette`) e fluidos infinitos (`ItemInfiniteFluid`): encher e esvaziar precisam do slot de fluido das máquinas (`IFillableItem`, `FluidLoaderInfinite`). Ligar ao `FluidStore` e a `machine.rs` depois do merge da Onda 0.
+
+
 <!-- k2-status:end -->
