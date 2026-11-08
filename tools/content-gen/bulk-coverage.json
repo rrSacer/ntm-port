@@ -57,24 +57,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "ingot_schraranium",
-      "type": "item",
-      "source_variable": "ingot_schraranium",
-      "source_class": "ItemSchraranium",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2161",
-      "category": "ingot",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "ingot_semtex",
-      "type": "item",
-      "source_variable": "ingot_semtex",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2169",
-      "category": "ingot",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "item_expensive",
       "type": "item",
       "source_variable": "item_expensive",
@@ -84,38 +66,11 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "chemical_dye",
-      "type": "item",
-      "source_variable": "chemical_dye",
-      "source_class": "ItemChemicalDye",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2196",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "crayon",
       "type": "item",
       "source_variable": "crayon",
       "source_class": "ItemCrayon",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2197",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "ingot_starmetal",
-      "type": "item",
-      "source_variable": "ingot_starmetal",
-      "source_class": "ItemStarmetal",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2268",
-      "category": "ingot",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "bedrock_ore_base",
-      "type": "item",
-      "source_variable": "bedrock_ore_base",
-      "source_class": "ItemBedrockOreBase",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2304",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -174,38 +129,11 @@
       "reason": "hidden/technical source item"
     },
     {
-      "id": "powder_cement",
-      "type": "item",
-      "source_variable": "powder_cement",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2341",
-      "category": "powder",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "bio_wafer",
-      "type": "item",
-      "source_variable": "bio_wafer",
-      "source_class": "ItemLemon",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2553",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "chlorine_pinwheel",
       "type": "item",
       "source_variable": "chlorine_pinwheel",
       "source_class": "ItemInfiniteFluid",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:2569",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "gear_large",
-      "type": "item",
-      "source_variable": "gear_large",
-      "source_class": "ItemGear",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2575",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -246,123 +174,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "pellet_rtg_depleted",
-      "type": "item",
-      "source_variable": "pellet_rtg_depleted",
-      "source_class": "ItemRTGPelletDepleted",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2644",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_rtg_radium",
-      "type": "item",
-      "source_variable": "pellet_rtg_radium",
-      "source_class": "ItemRTGPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2646",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_rtg_weak",
-      "type": "item",
-      "source_variable": "pellet_rtg_weak",
-      "source_class": "ItemRTGPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2648",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_rtg",
-      "type": "item",
-      "source_variable": "pellet_rtg",
-      "source_class": "ItemRTGPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2649",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_rtg_strontium",
-      "type": "item",
-      "source_variable": "pellet_rtg_strontium",
-      "source_class": "ItemRTGPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2650",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_rtg_cobalt",
-      "type": "item",
-      "source_variable": "pellet_rtg_cobalt",
-      "source_class": "ItemRTGPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2651",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_rtg_actinium",
-      "type": "item",
-      "source_variable": "pellet_rtg_actinium",
-      "source_class": "ItemRTGPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2652",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_rtg_americium",
-      "type": "item",
-      "source_variable": "pellet_rtg_americium",
-      "source_class": "ItemRTGPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2653",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_rtg_polonium",
-      "type": "item",
-      "source_variable": "pellet_rtg_polonium",
-      "source_class": "ItemRTGPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2654",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_rtg_gold",
-      "type": "item",
-      "source_variable": "pellet_rtg_gold",
-      "source_class": "ItemRTGPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2655",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pellet_rtg_lead",
-      "type": "item",
-      "source_variable": "pellet_rtg_lead",
-      "source_class": "ItemRTGPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2656",
-      "category": "pellet",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "piston_set",
-      "type": "item",
-      "source_variable": "piston_set",
-      "source_class": "ItemPistons",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2659",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "drillbit",
-      "type": "item",
-      "source_variable": "drillbit",
-      "source_class": "ItemDrillbit",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2660",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "pa_coil",
       "type": "item",
       "source_variable": "pa_coil",
@@ -381,33 +192,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "mold",
-      "type": "item",
-      "source_variable": "mold",
-      "source_class": "ItemMold",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2764",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "canister_full",
-      "type": "item",
-      "source_variable": "canister_full",
-      "source_class": "ItemCanister",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2810",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "gas_full",
-      "type": "item",
-      "source_variable": "gas_full",
-      "source_class": "ItemGasTank",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2813",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "syringe_mkunicorn",
       "type": "item",
       "source_variable": "syringe_mkunicorn",
@@ -417,15 +201,6 @@
       "behavior_gap": "Inert item: source hooks not implemented (onItemRightClick, hitEntity, addInformation)",
       "source_form": "generic inert item class (use hooks only)",
       "reason": "hidden/technical source item"
-    },
-    {
-      "id": "pill_herbal",
-      "type": "item",
-      "source_variable": "pill_herbal",
-      "source_class": "ItemPill",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2830",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
       "id": "jetpack_tank",
@@ -1114,159 +889,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "rod_zirnox",
-      "type": "item",
-      "source_variable": "rod_zirnox",
-      "source_class": "ItemZirnoxRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2972",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_natural_uranium",
-      "type": "item",
-      "source_variable": "waste_natural_uranium",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2983",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_uranium",
-      "type": "item",
-      "source_variable": "waste_uranium",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2985",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_thorium",
-      "type": "item",
-      "source_variable": "waste_thorium",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2986",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_mox",
-      "type": "item",
-      "source_variable": "waste_mox",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2987",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_plutonium",
-      "type": "item",
-      "source_variable": "waste_plutonium",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2988",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_u233",
-      "type": "item",
-      "source_variable": "waste_u233",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2989",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_u235",
-      "type": "item",
-      "source_variable": "waste_u235",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2990",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_schrabidium",
-      "type": "item",
-      "source_variable": "waste_schrabidium",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2991",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_zfb_mox",
-      "type": "item",
-      "source_variable": "waste_zfb_mox",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2992",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_plate_u233",
-      "type": "item",
-      "source_variable": "waste_plate_u233",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2993",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_plate_u235",
-      "type": "item",
-      "source_variable": "waste_plate_u235",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2995",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_plate_mox",
-      "type": "item",
-      "source_variable": "waste_plate_mox",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2996",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_plate_pu239",
-      "type": "item",
-      "source_variable": "waste_plate_pu239",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2997",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_plate_sa326",
-      "type": "item",
-      "source_variable": "waste_plate_sa326",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2998",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_plate_ra226be",
-      "type": "item",
-      "source_variable": "waste_plate_ra226be",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:2999",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "waste_plate_pu238be",
-      "type": "item",
-      "source_variable": "waste_plate_pu238be",
-      "source_class": "ItemDepletedFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3000",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "pile_rod_uranium",
       "type": "item",
       "source_variable": "pile_rod_uranium",
@@ -1326,15 +948,6 @@
       "source_variable": "pile_rod_detector",
       "source_class": "ItemPileRod",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3008",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pile_rod",
-      "type": "item",
-      "source_variable": "pile_rod",
-      "source_class": "ItemPileRodMK2",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3009",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -1402,732 +1015,12 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "pwr_fuel",
-      "type": "item",
-      "source_variable": "pwr_fuel",
-      "source_class": "ItemPWRFuel",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3019",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "pwr_printer",
-      "type": "item",
-      "source_variable": "pwr_printer",
-      "source_class": "ItemPWRPrinter",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3023",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_lid",
-      "type": "item",
-      "source_variable": "rbmk_lid",
-      "source_class": "ItemRBMKLid",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3024",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_lid_glass",
-      "type": "item",
-      "source_variable": "rbmk_lid_glass",
-      "source_class": "ItemRBMKLid",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3026",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_ueu",
-      "type": "item",
-      "source_variable": "rbmk_pellet_ueu",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3027",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_meu",
-      "type": "item",
-      "source_variable": "rbmk_pellet_meu",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3029",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_heu233",
-      "type": "item",
-      "source_variable": "rbmk_pellet_heu233",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3030",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_heu235",
-      "type": "item",
-      "source_variable": "rbmk_pellet_heu235",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3031",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_uzh",
-      "type": "item",
-      "source_variable": "rbmk_pellet_uzh",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3032",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_thmeu",
-      "type": "item",
-      "source_variable": "rbmk_pellet_thmeu",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3033",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_lep",
-      "type": "item",
-      "source_variable": "rbmk_pellet_lep",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3034",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_mep",
-      "type": "item",
-      "source_variable": "rbmk_pellet_mep",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3035",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_hep239",
-      "type": "item",
-      "source_variable": "rbmk_pellet_hep239",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3036",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_hep241",
-      "type": "item",
-      "source_variable": "rbmk_pellet_hep241",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3037",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_lea",
-      "type": "item",
-      "source_variable": "rbmk_pellet_lea",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3038",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_mea",
-      "type": "item",
-      "source_variable": "rbmk_pellet_mea",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3039",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_hea241",
-      "type": "item",
-      "source_variable": "rbmk_pellet_hea241",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3040",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_hea242",
-      "type": "item",
-      "source_variable": "rbmk_pellet_hea242",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3041",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_men",
-      "type": "item",
-      "source_variable": "rbmk_pellet_men",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3042",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_hen",
-      "type": "item",
-      "source_variable": "rbmk_pellet_hen",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3043",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_mox",
-      "type": "item",
-      "source_variable": "rbmk_pellet_mox",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3044",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_les",
-      "type": "item",
-      "source_variable": "rbmk_pellet_les",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3045",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_mes",
-      "type": "item",
-      "source_variable": "rbmk_pellet_mes",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3046",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_hes",
-      "type": "item",
-      "source_variable": "rbmk_pellet_hes",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3047",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_leaus",
-      "type": "item",
-      "source_variable": "rbmk_pellet_leaus",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3048",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_heaus",
-      "type": "item",
-      "source_variable": "rbmk_pellet_heaus",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3049",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_po210be",
-      "type": "item",
-      "source_variable": "rbmk_pellet_po210be",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3050",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_ra226be",
-      "type": "item",
-      "source_variable": "rbmk_pellet_ra226be",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3051",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_pu238be",
-      "type": "item",
-      "source_variable": "rbmk_pellet_pu238be",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3052",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_balefire_gold",
-      "type": "item",
-      "source_variable": "rbmk_pellet_balefire_gold",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3053",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_flashlead",
-      "type": "item",
-      "source_variable": "rbmk_pellet_flashlead",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3054",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_balefire",
-      "type": "item",
-      "source_variable": "rbmk_pellet_balefire",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3055",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_zfb_bismuth",
-      "type": "item",
-      "source_variable": "rbmk_pellet_zfb_bismuth",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3056",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_zfb_pu241",
-      "type": "item",
-      "source_variable": "rbmk_pellet_zfb_pu241",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3057",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_zfb_am_mix",
-      "type": "item",
-      "source_variable": "rbmk_pellet_zfb_am_mix",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3058",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_pellet_drx",
-      "type": "item",
-      "source_variable": "rbmk_pellet_drx",
-      "source_class": "ItemRBMKPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3059",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_ueu",
-      "type": "item",
-      "source_variable": "rbmk_fuel_ueu",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3077",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_meu",
-      "type": "item",
-      "source_variable": "rbmk_fuel_meu",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3085",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_heu233",
-      "type": "item",
-      "source_variable": "rbmk_fuel_heu233",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3093",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_heu235",
-      "type": "item",
-      "source_variable": "rbmk_fuel_heu235",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3100",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_uzh",
-      "type": "item",
-      "source_variable": "rbmk_fuel_uzh",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3106",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_thmeu",
-      "type": "item",
-      "source_variable": "rbmk_fuel_thmeu",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3116",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_lep",
-      "type": "item",
-      "source_variable": "rbmk_fuel_lep",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3124",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_mep",
-      "type": "item",
-      "source_variable": "rbmk_fuel_mep",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3132",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_hep",
-      "type": "item",
-      "source_variable": "rbmk_fuel_hep239",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3138",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_hep241",
-      "type": "item",
-      "source_variable": "rbmk_fuel_hep241",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3145",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_lea",
-      "type": "item",
-      "source_variable": "rbmk_fuel_lea",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3152",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_mea",
-      "type": "item",
-      "source_variable": "rbmk_fuel_mea",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3160",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_hea241",
-      "type": "item",
-      "source_variable": "rbmk_fuel_hea241",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3167",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_hea242",
-      "type": "item",
-      "source_variable": "rbmk_fuel_hea242",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3175",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_men",
-      "type": "item",
-      "source_variable": "rbmk_fuel_men",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3182",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_hen",
-      "type": "item",
-      "source_variable": "rbmk_fuel_hen",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3191",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_mox",
-      "type": "item",
-      "source_variable": "rbmk_fuel_mox",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3198",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_les",
-      "type": "item",
-      "source_variable": "rbmk_fuel_les",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3205",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_mes",
-      "type": "item",
-      "source_variable": "rbmk_fuel_mes",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3213",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_hes",
-      "type": "item",
-      "source_variable": "rbmk_fuel_hes",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3220",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_leaus",
-      "type": "item",
-      "source_variable": "rbmk_fuel_leaus",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3228",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_heaus",
-      "type": "item",
-      "source_variable": "rbmk_fuel_heaus",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3236",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_po210be",
-      "type": "item",
-      "source_variable": "rbmk_fuel_po210be",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3243",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_ra226be",
-      "type": "item",
-      "source_variable": "rbmk_fuel_ra226be",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3254",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_pu238be",
-      "type": "item",
-      "source_variable": "rbmk_fuel_pu238be",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3265",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_balefire_gold",
-      "type": "item",
-      "source_variable": "rbmk_fuel_balefire_gold",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3274",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_flashlead",
-      "type": "item",
-      "source_variable": "rbmk_fuel_flashlead",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3282",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_balefire",
-      "type": "item",
-      "source_variable": "rbmk_fuel_balefire",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3290",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_zfb_bismuth",
-      "type": "item",
-      "source_variable": "rbmk_fuel_zfb_bismuth",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3298",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_zfb_pu241",
-      "type": "item",
-      "source_variable": "rbmk_fuel_zfb_pu241",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3305",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_zfb_am_mix",
-      "type": "item",
-      "source_variable": "rbmk_fuel_zfb_am_mix",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3311",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_drx",
-      "type": "item",
-      "source_variable": "rbmk_fuel_drx",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3318",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_fuel_test",
-      "type": "item",
-      "source_variable": "rbmk_fuel_test",
-      "source_class": "ItemRBMKRod",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3325",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "watz_pellet",
-      "type": "item",
-      "source_variable": "watz_pellet",
-      "source_class": "ItemWatzPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3332",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "watz_pellet_depleted",
-      "type": "item",
-      "source_variable": "watz_pellet_depleted",
-      "source_class": "ItemWatzPellet",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3334",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "icf_pellet",
       "type": "item",
       "source_variable": "icf_pellet",
       "source_class": "ItemICFPellet",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3337",
       "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuclear_waste_long",
-      "type": "item",
-      "source_variable": "nuclear_waste_long",
-      "source_class": "ItemWasteLong",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3341",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuclear_waste_long_tiny",
-      "type": "item",
-      "source_variable": "nuclear_waste_long_tiny",
-      "source_class": "ItemWasteLong",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3342",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuclear_waste_short",
-      "type": "item",
-      "source_variable": "nuclear_waste_short",
-      "source_class": "ItemWasteShort",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3343",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuclear_waste_short_tiny",
-      "type": "item",
-      "source_variable": "nuclear_waste_short_tiny",
-      "source_class": "ItemWasteShort",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3344",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuclear_waste_long_depleted",
-      "type": "item",
-      "source_variable": "nuclear_waste_long_depleted",
-      "source_class": "ItemWasteLong",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3345",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuclear_waste_long_depleted_tiny",
-      "type": "item",
-      "source_variable": "nuclear_waste_long_depleted_tiny",
-      "source_class": "ItemWasteLong",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3346",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuclear_waste_short_depleted",
-      "type": "item",
-      "source_variable": "nuclear_waste_short_depleted",
-      "source_class": "ItemWasteShort",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3347",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "nuclear_waste_short_depleted_tiny",
-      "type": "item",
-      "source_variable": "nuclear_waste_short_depleted_tiny",
-      "source_class": "ItemWasteShort",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3348",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "scrap_plastic",
-      "type": "item",
-      "source_variable": "scrap_plastic",
-      "source_class": "ItemPlasticScrap",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3353",
-      "category": "scrap",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
@@ -3260,24 +2153,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "battery_pack",
-      "type": "item",
-      "source_variable": "battery_pack",
-      "source_class": "ItemBatteryPack",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3697",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "battery_creative",
-      "type": "item",
-      "source_variable": "battery_creative",
-      "source_class": "ItemBatteryCreative",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3699",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "cube_power",
       "type": "item",
       "source_variable": "cube_power",
@@ -3350,24 +2225,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "hand_drill",
-      "type": "item",
-      "source_variable": "hand_drill",
-      "source_class": "ItemTooling",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3711",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "hand_drill_desh",
-      "type": "item",
-      "source_variable": "hand_drill_desh",
-      "source_class": "ItemTooling",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3712",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "wrench_archineer",
       "type": "item",
       "source_variable": "wrench_archineer",
@@ -3429,24 +2286,6 @@
       "source_form": "generic inert item class (use hooks only)",
       "max_stack_size": 1,
       "reason": "custom texture/model; no direct texture declaration"
-    },
-    {
-      "id": "arc_electrode",
-      "type": "item",
-      "source_variable": "arc_electrode",
-      "source_class": "ItemArcElectrode",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3719",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "arc_electrode_burnt",
-      "type": "item",
-      "source_variable": "arc_electrode_burnt",
-      "source_class": "ItemArcElectrodeBurnt",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3720",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
       "id": "ams_core_thingy",
@@ -3658,15 +2497,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "detonator",
-      "type": "item",
-      "source_variable": "detonator",
-      "source_class": "ItemDetonator",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3815",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "detonator_multi",
       "type": "item",
       "source_variable": "detonator_multi",
@@ -3856,24 +2686,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "mirror_tool",
-      "type": "item",
-      "source_variable": "mirror_tool",
-      "source_class": "ItemMirrorTool",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3837",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "rbmk_tool",
-      "type": "item",
-      "source_variable": "rbmk_tool",
-      "source_class": "ItemRBMKTool",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3838",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "coltan_tool",
       "type": "item",
       "source_variable": "coltan_tool",
@@ -3955,87 +2767,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "key",
-      "type": "item",
-      "source_variable": "key",
-      "source_class": "ItemKey",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3848",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "key_red",
-      "type": "item",
-      "source_variable": "key_red",
-      "source_class": "ItemCustomLore",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3850",
-      "category": "component",
-      "reason": "hidden/technical source item"
-    },
-    {
-      "id": "key_red_cracked",
-      "type": "item",
-      "source_variable": "key_red_cracked",
-      "source_class": "ItemCustomLore",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3851",
-      "category": "component",
-      "reason": "hidden/technical source item"
-    },
-    {
-      "id": "key_fake",
-      "type": "item",
-      "source_variable": "key_fake",
-      "source_class": "ItemKey",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3853",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "padlock_rusty",
-      "type": "item",
-      "source_variable": "padlock_rusty",
-      "source_class": "ItemLock",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3855",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "padlock",
-      "type": "item",
-      "source_variable": "padlock",
-      "source_class": "ItemLock",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3856",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "padlock_reinforced",
-      "type": "item",
-      "source_variable": "padlock_reinforced",
-      "source_class": "ItemLock",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3857",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "padlock_unbreakable",
-      "type": "item",
-      "source_variable": "padlock_unbreakable",
-      "source_class": "ItemLock",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3858",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "mech_key",
-      "type": "item",
-      "source_variable": "mech_key",
-      "source_class": "ItemCustomLore",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3859",
-      "category": "component",
-      "reason": "hidden/technical source item"
-    },
-    {
       "id": "blueprints",
       "type": "item",
       "source_variable": "blueprints",
@@ -4054,15 +2785,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "fluid_identifier_multi",
-      "type": "item",
-      "source_variable": "fluid_identifier_multi",
-      "source_class": "ItemFluidIDMulti",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3864",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "fluid_icon",
       "type": "item",
       "source_variable": "fluid_icon",
@@ -4072,47 +2794,11 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "fluid_tank_full",
-      "type": "item",
-      "source_variable": "fluid_tank_full",
-      "source_class": "ItemFluidTank",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3867",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "fluid_tank_lead_full",
-      "type": "item",
-      "source_variable": "fluid_tank_lead_full",
-      "source_class": "ItemFluidTank",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3869",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "fluid_barrel_full",
-      "type": "item",
-      "source_variable": "fluid_barrel_full",
-      "source_class": "ItemFluidTank",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3871",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "fluid_barrel_infinite",
       "type": "item",
       "source_variable": "fluid_barrel_infinite",
       "source_class": "ItemInfiniteFluid",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:3872",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "fluid_pack_full",
-      "type": "item",
-      "source_variable": "fluid_pack_full",
-      "source_class": "ItemFluidTank",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3874",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -4713,24 +3399,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "meteorite_sword_treated",
-      "type": "item",
-      "source_variable": "meteorite_sword_treated",
-      "source_class": "ItemSwordMeteorite",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:4244",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "meteorite_sword_etched",
-      "type": "item",
-      "source_variable": "meteorite_sword_etched",
-      "source_class": "ItemSwordMeteorite",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:4245",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "meteorite_sword_bred",
       "type": "item",
       "source_variable": "meteorite_sword_bred",
@@ -5200,42 +3868,6 @@
       "source_variable": "bucket_sulfuric_acid",
       "source_class": "ItemModBucket",
       "source_location": "src/main/java/com/hbm/items/ModItems.java:4323",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "door_metal",
-      "type": "item",
-      "source_variable": "door_metal",
-      "source_class": "ItemModDoor",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:4324",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "door_office",
-      "type": "item",
-      "source_variable": "door_office",
-      "source_class": "ItemModDoor",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:4326",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "door_bunker",
-      "type": "item",
-      "source_variable": "door_bunker",
-      "source_class": "ItemModDoor",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:4327",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "door_red",
-      "type": "item",
-      "source_variable": "door_red",
-      "source_class": "ItemModDoor",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:4328",
       "category": "component",
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
@@ -6404,24 +5036,6 @@
       "reason": "dynamic resource extraction/fire logic required"
     },
     {
-      "id": "stone_keyhole",
-      "type": "block",
-      "source_variable": "stone_keyhole",
-      "source_class": "BlockKeyhole",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1295",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "stone_keyhole_meta",
-      "type": "block",
-      "source_variable": "stone_keyhole_meta",
-      "source_class": "BlockRedBrickKeyhole",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1297",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
       "id": "stalagmite",
       "type": "block",
       "source_variable": "stalagmite",
@@ -6440,42 +5054,6 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     },
     {
-      "id": "ore_oil",
-      "type": "block",
-      "source_variable": "ore_oil",
-      "source_class": "BlockOre",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1329",
-      "category": "ore",
-      "reason": "dynamic resource extraction/fire logic required"
-    },
-    {
-      "id": "ore_oil_empty",
-      "type": "block",
-      "source_variable": "ore_oil_empty",
-      "source_class": "BlockGeneric",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1331",
-      "category": "ore",
-      "reason": "dynamic resource extraction/fire logic required"
-    },
-    {
-      "id": "ore_oil_sand",
-      "type": "block",
-      "source_variable": "ore_oil_sand",
-      "source_class": "BlockFalling",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1332",
-      "category": "ore",
-      "reason": "dynamic resource extraction/fire logic required"
-    },
-    {
-      "id": "ore_bedrock_oil",
-      "type": "block",
-      "source_variable": "ore_bedrock_oil",
-      "source_class": "BlockGeneric",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1333",
-      "category": "ore",
-      "reason": "dynamic resource extraction/fire logic required"
-    },
-    {
       "id": "block_niobium",
       "type": "block",
       "source_variable": "block_niobium",
@@ -6483,15 +5061,6 @@
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1370",
       "category": "resource_block",
       "reason": "custom texture/model; no direct texture declaration"
-    },
-    {
-      "id": "block_graphite",
-      "type": "block",
-      "source_variable": "block_graphite",
-      "source_class": "BlockGraphite",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1410",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
     },
     {
       "id": "block_graphite_drilled",
@@ -6658,15 +5227,6 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     },
     {
-      "id": "brick_forgotten_lock",
-      "type": "block",
-      "source_variable": "brick_forgotten_lock",
-      "source_class": "BlockForgottenLock",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1526",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
       "source_variable": "stones_slab",
       "class": "BlockMultiSlabMeta",
       "reason": "not registered by supported source helper"
@@ -6759,24 +5319,6 @@
       "source_variable": "pole_top",
       "source_class": "DecoPoleTop",
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1598",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "steel_scaffold",
-      "type": "block",
-      "source_variable": "steel_scaffold",
-      "source_class": "BlockScaffold",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1604",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "steel_grate",
-      "type": "block",
-      "source_variable": "steel_grate",
-      "source_class": "BlockGrate",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1605",
       "category": "decorative",
       "reason": "custom block behavior/model or unsupported block subclass"
     },
@@ -7072,15 +5614,6 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     },
     {
-      "id": "plant_flower",
-      "type": "block",
-      "source_variable": "plant_flower",
-      "source_class": "BlockNTMFlower",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1656",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
       "id": "plant_tall",
       "type": "block",
       "source_variable": "plant_tall",
@@ -7117,60 +5650,6 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     },
     {
-      "id": "waste_earth",
-      "type": "block",
-      "source_variable": "waste_earth",
-      "source_class": "WasteEarth",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1662",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "waste_mycelium",
-      "type": "block",
-      "source_variable": "waste_mycelium",
-      "source_class": "WasteEarth",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1664",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "waste_trinitite",
-      "type": "block",
-      "source_variable": "waste_trinitite",
-      "source_class": "BlockTrinitite",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1665",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "waste_log",
-      "type": "block",
-      "source_variable": "waste_log",
-      "source_class": "WasteLog",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1667",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "waste_leaves",
-      "type": "block",
-      "source_variable": "waste_leaves",
-      "source_class": "WasteLeaves",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1668",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "waste_planks",
-      "type": "block",
-      "source_variable": "waste_planks",
-      "source_class": "BlockOre",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1669",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
       "id": "frozen_grass",
       "type": "block",
       "source_variable": "frozen_grass",
@@ -7189,15 +5668,6 @@
       "behavior_gap": "Source hooks not implemented by the static block (getItemDropped, quantityDropped); full-cube surface only",
       "source_form": "generic full-cube class (no shape override in ancestry)",
       "reason": "custom texture/model; no direct texture declaration"
-    },
-    {
-      "id": "fallout",
-      "type": "block",
-      "source_variable": "fallout",
-      "source_class": "BlockFallout",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1674",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
     },
     {
       "id": "foam_layer",
@@ -7241,15 +5711,6 @@
       "source_variable": "burning_earth",
       "source_class": "WasteEarth",
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1679",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "sellafield_slaked",
-      "type": "block",
-      "source_variable": "sellafield_slaked",
-      "source_class": "BlockSellafieldSlaked",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1689",
       "category": "decorative",
       "reason": "custom block behavior/model or unsupported block subclass"
     },
@@ -7385,42 +5846,6 @@
       "source_variable": "taint_barrel",
       "source_class": "RedBarrel",
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1730",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "dynamite",
-      "type": "block",
-      "source_variable": "dynamite",
-      "source_class": "BlockDynamite",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1742",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "tnt_ntm",
-      "type": "block",
-      "source_variable": "tnt",
-      "source_class": "BlockTNT",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1743",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "semtex",
-      "type": "block",
-      "source_variable": "semtex",
-      "source_class": "BlockSemtex",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1744",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "c4",
-      "type": "block",
-      "source_variable": "c4",
-      "source_class": "BlockC4",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1745",
       "category": "decorative",
       "reason": "custom block behavior/model or unsupported block subclass"
     },
@@ -7569,24 +5994,6 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     },
     {
-      "id": "teleanchor",
-      "type": "block",
-      "source_variable": "teleanchor",
-      "source_class": "MachineTeleanchor",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1852",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "field_disturber",
-      "type": "block",
-      "source_variable": "field_disturber",
-      "source_class": "MachineFieldDisturber",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1853",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
       "id": "conveyor",
       "type": "block",
       "source_variable": "conveyor",
@@ -7695,42 +6102,6 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     },
     {
-      "id": "trapdoor_steel",
-      "type": "block",
-      "source_variable": "trapdoor_steel",
-      "source_class": "BlockNTMTrapdoor",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1943",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "machine_transformer",
-      "type": "block",
-      "source_variable": "machine_transformer",
-      "source_class": "MachineTransformer",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1951",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "machine_armor_table",
-      "type": "block",
-      "source_variable": "machine_armor_table",
-      "source_class": "BlockArmorTable",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1958",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "machine_weapon_table",
-      "type": "block",
-      "source_variable": "machine_weapon_table",
-      "source_class": "BlockWeaponTable",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1959",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
       "id": "cm_block",
       "type": "block",
       "source_variable": "cm_block",
@@ -7810,42 +6181,6 @@
       "reason": "custom texture/model; no direct texture declaration"
     },
     {
-      "id": "pile_brick",
-      "type": "block",
-      "source_variable": "pile_brick",
-      "source_class": "BlockPileBrick",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1983",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "pwr_fuel",
-      "type": "block",
-      "source_variable": "pwr_fuel",
-      "source_class": "BlockPillarPWR",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1987",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "pwr_control",
-      "type": "block",
-      "source_variable": "pwr_control",
-      "source_class": "BlockPillarPWR",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1989",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "pwr_channel",
-      "type": "block",
-      "source_variable": "pwr_channel",
-      "source_class": "BlockPillarPWR",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:1990",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
       "id": "fusion_hatch",
       "type": "block",
       "source_variable": "fusion_hatch",
@@ -7882,15 +6217,6 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     },
     {
-      "id": "watz_end",
-      "type": "block",
-      "source_variable": "watz_end",
-      "source_class": "BlockToolConversion",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2023",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
       "id": "balefire",
       "type": "block",
       "source_variable": "balefire",
@@ -7914,51 +6240,6 @@
       "source_variable": "digamma_matter",
       "source_class": "DigammaMatter",
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2029",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "seal_controller",
-      "type": "block",
-      "source_variable": "seal_controller",
-      "source_class": "BlockSeal",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2041",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "door_metal",
-      "type": "block",
-      "source_variable": "door_metal",
-      "source_class": "BlockModDoor",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2062",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "door_office",
-      "type": "block",
-      "source_variable": "door_office",
-      "source_class": "BlockModDoor",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2064",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "door_bunker",
-      "type": "block",
-      "source_variable": "door_bunker",
-      "source_class": "BlockModDoor",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2065",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "door_red",
-      "type": "block",
-      "source_variable": "door_red",
-      "source_class": "BlockModDoor",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2066",
       "category": "decorative",
       "reason": "custom block behavior/model or unsupported block subclass"
     },
@@ -8022,51 +6303,6 @@
       "source_variable": "spikes",
       "source_class": "Spikes",
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2074",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "rbmk_loader",
-      "type": "block",
-      "source_variable": "rbmk_loader",
-      "source_class": "RBMKLoader",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2143",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "pribris",
-      "type": "block",
-      "source_variable": "pribris",
-      "source_class": "RBMKDebris",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2146",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "pribris_burning",
-      "type": "block",
-      "source_variable": "pribris_burning",
-      "source_class": "RBMKDebrisBurning",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2147",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "pribris_radiating",
-      "type": "block",
-      "source_variable": "pribris_radiating",
-      "source_class": "RBMKDebrisRadiating",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2148",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "pribris_digamma",
-      "type": "block",
-      "source_variable": "pribris_digamma",
-      "source_class": "RBMKDebrisDigamma",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2149",
       "category": "decorative",
       "reason": "custom block behavior/model or unsupported block subclass"
     },
@@ -8164,150 +6400,6 @@
       "source_variable": "mass_storage",
       "class": "BlockMassStorage",
       "reason": "not registered by supported source helper"
-    },
-    {
-      "id": "oil_pipe",
-      "type": "block",
-      "source_variable": "oil_pipe",
-      "source_class": "BlockNoDrop",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2190",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "barricade",
-      "type": "block",
-      "source_variable": "barricade",
-      "source_class": "BlockNoDrop",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2210",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "press_preheater",
-      "type": "block",
-      "source_variable": "press_preheater",
-      "source_class": "BlockBase",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2228",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "machine_boiler_off",
-      "type": "block",
-      "source_variable": "machine_boiler_off",
-      "source_class": "MachineBoiler",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2237",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_iron",
-      "type": "block",
-      "source_variable": "anvil_iron",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2262",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_lead",
-      "type": "block",
-      "source_variable": "anvil_lead",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2264",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_steel",
-      "type": "block",
-      "source_variable": "anvil_steel",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2265",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_desh",
-      "type": "block",
-      "source_variable": "anvil_desh",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2266",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_ferrouranium",
-      "type": "block",
-      "source_variable": "anvil_ferrouranium",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2267",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_saturnite",
-      "type": "block",
-      "source_variable": "anvil_saturnite",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2268",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_bismuth_bronze",
-      "type": "block",
-      "source_variable": "anvil_bismuth_bronze",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2269",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_arsenic_bronze",
-      "type": "block",
-      "source_variable": "anvil_arsenic_bronze",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2270",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_schrabidate",
-      "type": "block",
-      "source_variable": "anvil_schrabidate",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2271",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_dnt",
-      "type": "block",
-      "source_variable": "anvil_dnt",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2272",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_osmiridium",
-      "type": "block",
-      "source_variable": "anvil_osmiridium",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2273",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
-    },
-    {
-      "id": "anvil_murky",
-      "type": "block",
-      "source_variable": "anvil_murky",
-      "source_class": "NTMAnvil",
-      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2274",
-      "category": "decorative",
-      "reason": "custom block behavior/model or unsupported block subclass"
     },
     {
       "id": "crystal_virus",
@@ -8600,6 +6692,7 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     }
   ],
+  "claimed_elsewhere": 212,
   "unresolved_registrations": [
     {
       "type": "item",
