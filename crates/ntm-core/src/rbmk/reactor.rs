@@ -75,7 +75,9 @@ impl Kind {
             Kind::Reflector => RbmkType::Reflector,
             Kind::Absorber => RbmkType::Absorber,
             Kind::Outgasser => RbmkType::Outgasser,
-            Kind::Blank | Kind::Storage | Kind::Boiler | Kind::Heater | Kind::Cooler => RbmkType::Other,
+            Kind::Blank | Kind::Storage | Kind::Boiler | Kind::Heater | Kind::Cooler => {
+                RbmkType::Other
+            }
         }
     }
 
@@ -453,9 +455,18 @@ impl Reactor {
                 s.origin -= 1;
             }
         }
-        self.index = self.columns.iter().enumerate().map(|(k, c)| ((c.x, c.z), k)).collect();
+        self.index = self
+            .columns
+            .iter()
+            .enumerate()
+            .map(|(k, c)| ((c.x, c.z), k))
+            .collect();
         let shift = |k: usize| if k > i { k - 1 } else { k };
-        self.identifiers = std::mem::take(&mut self.identifiers).into_iter().filter(|(k, _)| *k != i).map(|(k, v)| (shift(k), v)).collect();
+        self.identifiers = std::mem::take(&mut self.identifiers)
+            .into_iter()
+            .filter(|(k, _)| *k != i)
+            .map(|(k, v)| (shift(k), v))
+            .collect();
         for c in &mut self.columns {
             if let Data::Cooler(k) = &mut c.data {
                 for n in &mut k.neighbors {
@@ -469,7 +480,10 @@ impl Reactor {
             }
         }
         let melt = !self.dials.meltdowns_disabled
-            && gone.rod().and_then(|r| r.fuel.as_ref()).is_some_and(|(_, stack)| stack.hull.unwrap_or(0.0) >= 1500.0);
+            && gone
+                .rod()
+                .and_then(|r| r.fuel.as_ref())
+                .is_some_and(|(_, stack)| stack.hull.unwrap_or(0.0) >= 1500.0);
         melt.then_some(gone)
     }
 
