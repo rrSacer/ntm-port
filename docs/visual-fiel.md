@@ -1015,8 +1015,9 @@ fica pronto e parado.
     agente das bombas, são 2 slots num painel simples.
   - **Jatos (feito, 7109d0ca):** os jatos ficam `JET_HOLD` = 8 ticks após a última queda (`crucible.rs`). **Partículas
     (feito, T5):** cada tick em que um cadinho despeja, o bloco de baixo mostra `minecraft:falling_lava` no ponto de
-    queda (`foundry_server.rs`). É a partícula vanilla no lugar do `ParticleFoundry`: a cor do metal não aparece nela, e
-    a sprite de lava cinza não é a do Java.
+    queda (`foundry_server.rs`). PROVISÓRIO: `minecraft:falling_lava` é a partícula vanilla no lugar do `ParticleFoundry`
+    (`ParticleFoundry.java`). Falta a cor do metal (a partícula vanilla ignora a cor aqui) e a sprite `lava_gray.png`
+    do Java.
   - **Fornalha acesa (feito):** `show` e `glow` no modelo (motor). O `InnerBurning` aparece com luz cheia enquanto
     o `honey_level` não é 0, e o `InnerEmpty` quando ela está fria, como no `RenderFirebox`. As duas partes ficam atrás
     da porta: no NTM ela só abre enquanto um jogador está com a tela aberta (`playersUsing`), e aqui ela ainda não
