@@ -566,7 +566,7 @@ public class Driver {
 		l.add(flareRun("tilted", flareFluid(gas), true, true, 0, 0, 2500, 10, true, 5, 3));
 		l.add(flareRun("empty", flareFluid(gas), true, true, 0, 0, 0, 10, false, 5, 3));
 		l.add(flareRun("drain", flareFluid(gas), true, true, 0, 0, 25, 99_999, false, 5, 6));
-		l.add(flareRun("default_tank", Fluids.GAS, true, false, 0, 0, 64000, 0, false, 6, 3));
+		for(Object[] row : rows) if(row[0].equals("gas")) l.add(flareRun("default_tank", flareFluid(row), true, false, 0, 0, 64000, 0, false, 6, 3));
 		return arr(l);
 	}
 }
