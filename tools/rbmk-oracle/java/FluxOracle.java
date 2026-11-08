@@ -279,11 +279,37 @@ public final class FluxOracle {
         return obj("name", sc.get("name"), "meltdown_tick", melt, "trace", trace);
     }
 
+    static String hex(double v) { return String.format(Locale.ROOT, "%016x", Double.doubleToRawLongBits(v)); }
+
+    /** Many-point sweeps of the two call sites whose Math results the scenarios cannot discriminate. */
+    static Map<String, Object> sweeps() throws Exception {
+        Random r = new Random(5150);
+        Map<String, Object> dep = new LinkedHashMap<>();
+        for (ItemRBMKRod.EnumDepleteFunc f : new ItemRBMKRod.EnumDepleteFunc[]{ItemRBMKRod.EnumDepleteFunc.RAISING_SLOPE, ItemRBMKRod.EnumDepleteFunc.BOOSTED_SLOPE, ItemRBMKRod.EnumDepleteFunc.GENTLE_SLOPE}) {
+            ItemRBMKRod rod = new ItemRBMKRod("sweep").setDepletionFunction(f);
+            List<Object> rows = new ArrayList<>();
+            for (int i = 0; i < 3000; i++) { double e = r.nextDouble(); rows.add(Arrays.asList(hex(e), hex(rod.reactivityModByEnrichment(e)))); }
+            dep.put(f.name(), rows);
+        }
+        World w = new World();
+        w.getGameRules().setOrCreateGameRule("dialSaveDials", "true");
+        w.getGameRules().setOrCreateGameRule("dialControlSurgeMod", "1.7");
+        RBMKDials.createDials(w);
+        List<Object> surge = new ArrayList<>();
+        for (int i = 0; i < 3000; i++) {
+            TileEntityRBMKControlManual t = new TileEntityRBMKControlManual();
+            w.addTile(t, 0, Y, 0, new RBMKControl("rbmk_control", false), RBMKBase.DIR_NORMAL_LID.ordinal() + RBMKBase.offset);
+            t.level = r.nextDouble(); t.startingLevel = r.nextDouble(); t.targetLevel = r.nextDouble() * 0.5;
+            surge.add(Arrays.asList(hex(t.level), hex(t.startingLevel), hex(t.targetLevel), hex(t.getMult())));
+        }
+        return obj("depletion", dep, "surge", surge);
+    }
+
     public static void main(String[] args) throws Exception {
         Object root = new P(new String(Files.readAllBytes(Paths.get(args[0])), "UTF-8")).v();
         new com.hbm.inventory.recipes.OutgasserRecipes().registerDefaults();
         List<Object> out = new ArrayList<>();
         for (Object sc : l(m(root).get("scenarios"))) out.add(run(m(sc)));
-        System.out.println(Oracle.json(obj("schema", 1, "scenarios", m(root).get("scenarios"), "results", out)));
+        System.out.println(Oracle.json(obj("schema", 1, "scenarios", m(root).get("scenarios"), "results", out, "sweeps", sweeps())));
     }
 }

@@ -7,7 +7,7 @@ use ntm_core::rbmk::dials::{Dials, GameRules};
 use ntm_core::rbmk::jrandom::JavaRandom;
 use ntm_core::rbmk::outgasser::Stack;
 use ntm_core::rbmk::reactor::{AutoFunction, Column, Data, Effect, Kind, Reactor};
-use ntm_core::rbmk::rods::{RodStack, RodType};
+use ntm_core::rbmk::rods::{DepleteFunc, RodStack, RodType};
 use serde_json::Value;
 
 const Y: i32 = 10;
@@ -544,3 +544,56 @@ fn every_scenario_matches_the_java_oracle_tick_by_tick() {
         }
     }
 }
+
+fn unhex(v: &Value) -> f64 {
+    f64::from_bits(u64::from_str_radix(v.as_str().unwrap(), 16).unwrap())
+}
+
+/// Thousands of points through the depletion curves' `sin` and the control surge's
+/// `pow(1 - level, 15)`, which the scenarios alone cannot tell from the platform libm.
+#[test]
+fn depletion_and_surge_sweeps_match_java_bits() {
+    let fx = fixture();
+    let sweeps = &fx["sweeps"];
+    let (mut misses, mut total) = ([0usize; 2], 0usize);
+    for (name, depletion) in [
+        ("RAISING_SLOPE", DepleteFunc::RaisingSlope),
+        ("BOOSTED_SLOPE", DepleteFunc::BoostedSlope),
+        ("GENTLE_SLOPE", DepleteFunc::GentleSlope),
+    ] {
+        let mut rod = RodType::blank();
+        rod.depletion = depletion;
+        for row in sweeps["depletion"][name].as_array().unwrap() {
+            let (e, want) = (unhex(&row[0]), unhex(&row[1]));
+            misses[0] +=
+                usize::from(rod.reactivity_mod_by_enrichment(e).to_bits() != want.to_bits());
+            total += 1;
+        }
+    }
+    let mut rules = GameRules::default();
+    rules.set("dialControlSurgeMod", "1.7");
+    let mut r = Reactor::new(Dials::refresh(&rules, false), JavaRandom::new(1), Y);
+    let i = r.add(Column::new(Kind::Control, 0, 0));
+    for row in sweeps["surge"].as_array().unwrap() {
+        let c = r.columns[i].control_mut().unwrap();
+        c.level = unhex(&row[0]);
+        c.starting_level = unhex(&row[1]);
+        c.target_level = unhex(&row[2]);
+        let want = unhex(&row[3]);
+        misses[1] += usize::from(r.columns[i].control_mult(&r.dials).to_bits() != want.to_bits());
+    }
+    eprintln!(
+        "sweep misses: depletion {} of {total}, surge {} of 3000",
+        misses[0], misses[1]
+    );
+    // pinned one-ulp residual of the HotSpot stubs (see jmath)
+    assert!(misses[1] <= SURGE_MISSES, "surge misses {}", misses[1]);
+    assert!(
+        misses[0] <= DEPLETION_SIN_MISSES,
+        "depletion misses {} of {total}",
+        misses[0]
+    );
+}
+
+const DEPLETION_SIN_MISSES: usize = 6; // of 9000, measured
+const SURGE_MISSES: usize = 1; // of 3000, measured
