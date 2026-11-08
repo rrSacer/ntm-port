@@ -36138,7 +36138,8 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:fan": {
-      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
+      "source": "Inert fan: HBM's RenderFan turns about x and z by metadata, which the extractor does not read; no model until it does (gap)",
+      "auto": false
     },
     "ntm:machine_keyforge": {
       "auto": false,

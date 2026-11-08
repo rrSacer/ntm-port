@@ -88,9 +88,14 @@ class LoaderResolves(unittest.TestCase):
 
 class ExtractorGate(unittest.TestCase):
     def test_single_cell_panels_have_models(self):
-        for name in ('rbmk_gauge', 'rbmk_terminal', 'fan', 'machine_microwave'):
+        for name in ('rbmk_gauge', 'rbmk_terminal', 'machine_thresher', 'machine_microwave'):
             model = json.loads((CONTENT / f'assets/ntm/horizon_model/{name}.json').read_text())
             self.assertTrue(model['obj'].startswith('ntm:models/obj/'), name)
+
+    def test_fan_stays_out_until_its_turns_are_read(self):
+        # RenderFan turns about x and z by metadata; the extractor reads only y.
+        self.assertIs(spec_blocks()['ntm:fan'].get('auto'), False)
+        self.assertFalse((CONTENT / 'assets/ntm/horizon_model/fan.json').exists())
 
     def test_multiblocks_stay_hand_only(self):
         # A multiblock's model in one cell would be wrong: no extracted model for them.
