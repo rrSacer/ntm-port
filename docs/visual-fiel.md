@@ -1037,6 +1037,17 @@ fica pronto e parado.
   Multiblocos seguem com `auto:false`, porque o modelo de um só cubo ficaria errado; `unread` (`no metadata switch`
   em `machine_autosaw`, `tesla`, `machine_forcefield`) também os deixa de fora, até a rotação ser lida.
   Multiblocos `Inert` sem modelo (33 RBMK, K3 grandes) dependem de multiblocos no `visual.json` (ver `visual-gen`).
+  Lacunas de animação dos blocos extraídos (T5, todos estáticos; os blocos são `Inert`, sem lógica):
+  - `rbmk_gauge`: o Java translada cada um dos 4 medidores (`translate 0.25...`) e gira o ponteiro `Needle` pelo valor;
+    aqui as peças saem paradas, sem deslocamento nem ponteiro.
+  - `machine_thresher`: o Java anima braço, roda e motor por `angle`/`spin`/`isOn`; aqui sai parado.
+  - `fan`: fora do extrator (rotação em X e Z por metadata, `RenderFan.java`), `auto:false` até essa leitura; as
+    `Blades` não giram em nenhum caso.
+  - Os painéis RBMK (`rbmk_key_pad`, `rbmk_numitron`, `rbmk_graph`, `rbmk_lever`, `rbmk_indicator`, `rbmk_terminal`)
+    não têm animação de estado: o que muda com o valor do reator fica para quando houver lógica.
+  Pontas das paredes do tanque: a face `inner` que o Java desenha nas pontas de cada parede (`if(conPosZ)...`) não
+  entra no modelo; sobra um vão pequeno no canto onde duas paredes se encontram.
+  Metal dentro do tanque: a captura com metal não foi feita (precisa do cadinho despejando, ver abaixo).
   Testes: `tools/visual-gen/test_visual.py`.
   Captura (T5, `/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/f-visual/captures/`): `tank-before.png` (base 85d06d9c)
   e `tank-after2.png` (branch, depois de c5d0e673) mostram os tanques; o da direita é o tanque sozinho, e o do centro
