@@ -652,10 +652,11 @@ impl Door {
         }
     }
 
-    /// `BlockDoorGeneric.onBlockActivated`: in ultra LARP mode only doors that
-    /// never need redstone answer a player.
-    pub fn player_can_click(&self, ultra_larp: bool) -> bool {
-        !ultra_larp || self.spec.never_demand_redstone
+    /// `BlockDoorGeneric.onBlockActivated`: whether a click reaches `try_toggle`.
+    /// A sneaking player never does. In ultra LARP mode only doors that never
+    /// need redstone do. (Java still consumes the other clicks, returning `!sneaking`.)
+    pub fn player_can_click(&self, ultra_larp: bool, sneaking: bool) -> bool {
+        !sneaking && (!ultra_larp || self.spec.never_demand_redstone)
     }
 
     /// `BlockDoorGeneric.explode`: a bomb toggles only the remote-controllable kinds.
@@ -819,6 +820,21 @@ impl BlastDoorGroup {
         }
     }
 
+    /// `BlastDoor.explode` (a bomb or remote trigger): an unlocked door toggles
+    /// (`tryToggle()`, no access check) and reports TRIGGERED; a locked one
+    /// reports ERROR_INCOMPATIBLE. Returns `true` for TRIGGERED. A missing door
+    /// is UNDEFINED in Java, and `false` here.
+    pub fn bomb_trigger(&mut self, pos: Cell) -> bool {
+        let Some(d) = self.doors.get(&pos) else {
+            return false;
+        };
+        if d.lock.locked {
+            return false;
+        }
+        self.toggle(pos);
+        true
+    }
+
     /// A click (`onBlockActivated`). A lock tool in hand does nothing here (the
     /// item takes it). Returns whether the click was used.
     pub fn click(&mut self, pos: Cell, holding: Holding, lock_tool: bool, sneaking: bool) -> bool {
@@ -926,6 +942,79 @@ impl BlastDoorGroup {
     }
 }
 
+/// What a cell holds when a blast door wants a dummy there.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Space {
+    /// Air or another replaceable block.
+    Replaceable,
+    /// A `dummy_block_blast` of this or another door.
+    Dummy,
+    /// Anything else that is not replaceable.
+    Blocked,
+}
+
+/// Outcome of `TileEntityBlastDoor.placeDummy`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Placed {
+    /// The cell was free, or already a dummy.
+    Yes,
+    /// `force` broke a block that was in the way (`func_147480_a`).
+    YesAfterBreaking,
+    /// Not placed (`force == false` and the cell is not replaceable).
+    No,
+}
+
+/// `TileEntityBlastDoor.placeDummy(x, y, z, force)`. A dummy is not replaceable,
+/// so without `force` a dummy cell refuses too. With `force` a dummy is
+/// overwritten silently, and any other blocked cell is broken first.
+pub fn place_dummy(space: Space, force: bool) -> Placed {
+    match space {
+        Space::Replaceable => Placed::Yes,
+        Space::Dummy if force => Placed::Yes,
+        Space::Blocked if force => Placed::YesAfterBreaking,
+        Space::Dummy | Space::Blocked => Placed::No,
+    }
+}
+
+/// `TileEntityBlastDoor.removeDummy`: only a dummy is taken away.
+pub fn remove_dummy(space: Space) -> bool {
+    space == Space::Dummy
+}
+
+/// Result of `BlastDoor.onBlockPlacedBy`: the dummies that were set (the ones
+/// before the first refusal stay in the world), and whether the controller
+/// was destroyed.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct BlastPlacement {
+    pub placed: Vec<Cell>,
+    pub controller_destroyed: bool,
+}
+
+/// `BlastDoor.onBlockPlacedBy`: six dummies above the controller, `force == false`,
+/// stopping at the first refusal (Java's `&&` chain). A refusal breaks the
+/// controller (`func_147480_a(x, y, z, true)`), but the dummies placed before
+/// it are not undone.
+pub fn blast_door_place(controller: Cell, space: impl Fn(Cell) -> Space) -> BlastPlacement {
+    let (x, y, z) = controller;
+    let mut placed = Vec::new();
+    for dy in 1..=6 {
+        let cell = (x, y + dy, z);
+        match place_dummy(space(cell), false) {
+            Placed::Yes => placed.push(cell),
+            _ => {
+                return BlastPlacement {
+                    placed,
+                    controller_destroyed: true,
+                };
+            }
+        }
+    }
+    BlastPlacement {
+        placed,
+        controller_destroyed: false,
+    }
+}
+
 /// Seal (`BlockSeal`): the controller's frame, and the hatches in its square.
 /// The controller's metadata gives the facing (`meta % 4`); bit 4 is the latched
 /// redstone.
@@ -1012,6 +1101,33 @@ pub fn seal_is_closed(
     seal_interior(controller, meta, size)
         .into_iter()
         .any(is_hatch)
+}
+
+/// What a seal does when it is toggled: open its hatches, or close the square.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum SealAction {
+    Open,
+    Close,
+}
+
+/// `BlockSeal.explode` (a bomb): with a complete frame, the seal toggles
+/// (open if closed, close if open) and reports TRIGGERED; with no frame it is
+/// ERROR_INCOMPATIBLE, `None` here.
+pub fn seal_explode(
+    controller: Cell,
+    meta: u8,
+    is_frame: impl Fn(Cell) -> bool,
+    is_hatch: impl Fn(Cell) -> bool,
+) -> Option<SealAction> {
+    let size = frame_size(controller, meta, is_frame);
+    if size == 0 {
+        return None;
+    }
+    Some(if seal_is_closed(controller, meta, size, &is_hatch) {
+        SealAction::Open
+    } else {
+        SealAction::Close
+    })
 }
 
 /// What a seal's neighbour redstone change does (`BlockSeal.onNeighborBlockChange`).

@@ -5,202 +5,6 @@
 use ntm_core::doors_security::*;
 use std::collections::BTreeSet;
 
-/// One row per `DoorDecl`, as written in the Java: id, `timeToOpen`, the
-/// ranges, `getDimensions`, `getExtraDimensions` (count), `getBlockOffset`,
-/// `remoteControllable`, `neverDemandRedstone`.
-#[test]
-fn every_door_decl_matches_the_java_numbers() {
-    type Row = (
-        DoorKind,
-        &'static str,
-        u32,
-        &'static [[i32; 6]],
-        [i32; 6],
-        usize,
-        i32,
-        bool,
-        bool,
-    );
-    let rows: [Row; 14] = [
-        (
-            DoorKind::TransitionSeal,
-            "ntm:transition_seal",
-            480,
-            &[[-9, 2, 0, 20, 20, 1]],
-            [23, 0, 0, 0, 13, 12],
-            0,
-            0,
-            false,
-            false,
-        ),
-        (
-            DoorKind::VaultDoor,
-            "ntm:vault_door",
-            120,
-            &[[-1, 1, 0, 3, 3, 2]],
-            [4, 0, 0, 0, 2, 2],
-            1,
-            0,
-            false,
-            false,
-        ),
-        (
-            DoorKind::FireDoor,
-            "ntm:fire_door",
-            160,
-            &[[-1, 0, 0, 3, 4, 1]],
-            [2, 0, 0, 0, 2, 1],
-            0,
-            0,
-            false,
-            false,
-        ),
-        (
-            DoorKind::SlidingBlastDoor,
-            "ntm:sliding_blast_door",
-            24,
-            &[[-2, 0, 0, 4, 5, 1]],
-            [3, 0, 0, 0, 3, 3],
-            0,
-            0,
-            false,
-            false,
-        ),
-        (
-            DoorKind::SlidingSealDoor,
-            "ntm:sliding_seal_door",
-            20,
-            &[[0, 0, 0, 1, 2, 2]],
-            [1, 0, 0, 0, 0, 0],
-            0,
-            0,
-            false,
-            false,
-        ),
-        (
-            DoorKind::SecureAccessDoor,
-            "ntm:secure_access_door",
-            120,
-            &[[-2, 1, 0, 4, 5, 1]],
-            [4, 0, 0, 0, 2, 2],
-            0,
-            0,
-            false,
-            false,
-        ),
-        (
-            DoorKind::RoundAirlockDoor,
-            "ntm:round_airlock_door",
-            60,
-            &[[0, 0, 0, -2, 4, 2], [0, 0, 0, 3, 4, 2]],
-            [3, 0, 0, 0, 2, 1],
-            0,
-            0,
-            false,
-            false,
-        ),
-        (
-            DoorKind::QeSlidingDoor,
-            "ntm:qe_sliding_door",
-            10,
-            &[[0, 0, 0, 2, 2, 2]],
-            [1, 0, 0, 0, 1, 0],
-            0,
-            0,
-            false,
-            false,
-        ),
-        (
-            DoorKind::QeContainment,
-            "ntm:qe_containment",
-            160,
-            &[[-1, 0, 0, 3, 3, 1]],
-            [2, 0, 0, 0, 1, 1],
-            0,
-            0,
-            false,
-            false,
-        ),
-        (
-            DoorKind::WaterDoor,
-            "ntm:water_door",
-            60,
-            &[[1, 0, 0, -3, 3, 2]],
-            [2, 0, 0, 0, 1, 1],
-            0,
-            0,
-            false,
-            true,
-        ),
-        (
-            DoorKind::SiloHatch,
-            "ntm:silo_hatch",
-            60,
-            &[
-                [1, 0, 1, -3, 3, 0],
-                [0, 0, 1, -3, 3, 0],
-                [-1, 0, 1, -3, 3, 0],
-            ],
-            [0, 0, 2, 2, 2, 2],
-            0,
-            2,
-            true,
-            false,
-        ),
-        (
-            DoorKind::SiloHatchLarge,
-            "ntm:silo_hatch_large",
-            60,
-            &[
-                [2, 0, 1, -3, 3, 0],
-                [1, 0, 2, -5, 3, 0],
-                [0, 0, 2, -5, 3, 0],
-                [-1, 0, 2, -5, 3, 0],
-                [-2, 0, 1, -3, 3, 0],
-            ],
-            [0, 0, 3, 3, 3, 3],
-            0,
-            3,
-            true,
-            false,
-        ),
-        (
-            DoorKind::LargeVehicleDoor,
-            "ntm:large_vehicle_door",
-            60,
-            &[[0, 0, 0, -4, 6, 2], [0, 0, 0, 4, 6, 2]],
-            [5, 0, 0, 0, 3, 3],
-            0,
-            0,
-            false,
-            false,
-        ),
-        (
-            DoorKind::CargoDoor,
-            "ntm:cargo_door",
-            60,
-            &[[-1, -1, 0, 3, 3, 1]],
-            [2, 0, 0, 0, 1, 1],
-            0,
-            0,
-            false,
-            false,
-        ),
-    ];
-    for (kind, id, time, ranges, dims, extra, offset, remote, never) in rows {
-        let s = spec(kind);
-        assert_eq!(s.kind, kind, "{id}");
-        assert_eq!(s.id, id);
-        assert_eq!(s.time_to_open, time, "{id} timeToOpen");
-        assert_eq!(s.open_ranges, ranges, "{id} open ranges");
-        assert_eq!(s.dimensions, dims, "{id} dimensions");
-        assert_eq!(s.extra_dimensions.len(), extra, "{id} extra dimensions");
-        assert_eq!(s.block_offset, offset, "{id} block offset");
-        assert_eq!(s.remote_controllable, remote, "{id} remote");
-        assert_eq!(s.never_demand_redstone, never, "{id} never demand redstone");
-    }
-}
-
 #[test]
 fn vault_extra_box_is_a_pocket_one_row_in_front() {
     let vault = spec(DoorKind::VaultDoor);
@@ -450,9 +254,9 @@ fn only_remote_kinds_take_a_bomb() {
 
 #[test]
 fn ultra_larp_mode_only_lets_water_door_answer_players() {
-    assert!(!Door::new(spec(DoorKind::VaultDoor)).player_can_click(true));
-    assert!(Door::new(spec(DoorKind::WaterDoor)).player_can_click(true));
-    assert!(Door::new(spec(DoorKind::VaultDoor)).player_can_click(false));
+    assert!(!Door::new(spec(DoorKind::VaultDoor)).player_can_click(true, false));
+    assert!(Door::new(spec(DoorKind::WaterDoor)).player_can_click(true, false));
+    assert!(Door::new(spec(DoorKind::VaultDoor)).player_can_click(false, false));
 }
 
 #[test]
@@ -670,4 +474,206 @@ fn keyhole_orientation_by_side() {
     assert_eq!(keyhole_orientation(4), Some(0));
     assert_eq!(keyhole_orientation(0), None);
     assert_eq!(keyhole_orientation(1), None);
+}
+
+const DOORDECL_FIXTURE: &str = include_str!("fixtures/doordecl.json");
+
+const ALL_KINDS: [DoorKind; 14] = [
+    DoorKind::TransitionSeal,
+    DoorKind::VaultDoor,
+    DoorKind::FireDoor,
+    DoorKind::SlidingBlastDoor,
+    DoorKind::SlidingSealDoor,
+    DoorKind::SecureAccessDoor,
+    DoorKind::RoundAirlockDoor,
+    DoorKind::QeSlidingDoor,
+    DoorKind::QeContainment,
+    DoorKind::WaterDoor,
+    DoorKind::SiloHatch,
+    DoorKind::SiloHatchLarge,
+    DoorKind::LargeVehicleDoor,
+    DoorKind::CargoDoor,
+];
+
+fn arr6(v: &serde_json::Value) -> [i32; 6] {
+    let n: Vec<i32> = v
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|x| x.as_i64().unwrap() as i32)
+        .collect();
+    n.try_into().unwrap()
+}
+
+fn rows_of(v: &serde_json::Value) -> Vec<[i32; 6]> {
+    v.as_array().unwrap().iter().map(arr6).collect()
+}
+
+/// Every `DoorDecl` number, read from `fixtures/doordecl.json` (generated from
+/// `DoorDecl.java` by `tools/doors-oracle/extract.py`), against `spec`.
+#[test]
+fn every_door_matches_the_java_fixture() {
+    let data: serde_json::Value = serde_json::from_str(DOORDECL_FIXTURE).unwrap();
+    let doors = data["doors"].as_array().unwrap();
+    assert_eq!(doors.len(), ALL_KINDS.len());
+    for door in doors {
+        let java = door["java"].as_str().unwrap();
+        let id = format!("ntm:{}", door["block_name"].as_str().unwrap());
+        let s = ALL_KINDS
+            .iter()
+            .map(|k| spec(*k))
+            .find(|s| s.id == id)
+            .unwrap_or_else(|| panic!("{java}: no spec for {id}"));
+        assert_eq!(
+            s.time_to_open as i64,
+            door["time_to_open"].as_i64().unwrap(),
+            "{java} timeToOpen"
+        );
+        assert_eq!(
+            s.open_ranges.to_vec(),
+            rows_of(&door["open_ranges"]),
+            "{java} ranges"
+        );
+        assert_eq!(s.dimensions, arr6(&door["dimensions"]), "{java} dimensions");
+        assert_eq!(
+            s.extra_dimensions.to_vec(),
+            rows_of(&door["extra_dimensions"]),
+            "{java} extra dimensions"
+        );
+        assert_eq!(
+            s.block_offset as i64,
+            door["block_offset"].as_i64().unwrap(),
+            "{java} block offset"
+        );
+        assert_eq!(
+            s.remote_controllable,
+            door["remote_controllable"].as_bool().unwrap(),
+            "{java} remote"
+        );
+        assert_eq!(
+            s.never_demand_redstone,
+            door["never_demand_redstone"].as_bool().unwrap(),
+            "{java} never demand redstone"
+        );
+
+        // getDoorRangeOpenTime: the Java window, or the whole timeToOpen by default.
+        let (a, b) = match door["time_window"].as_array() {
+            Some(w) => (w[0].as_f64().unwrap() as f32, w[1].as_f64().unwrap() as f32),
+            None => (0.0, s.time_to_open as f32),
+        };
+        for t in 0..=s.time_to_open as i32 {
+            let want = ((t as f32 - a) / (b - a)).clamp(0.0, 1.0);
+            let got = range_time(s, t);
+            assert!(
+                got == want || (got.is_nan() && want.is_nan()),
+                "{java} at {t} ticks: {got} vs {want}"
+            );
+        }
+    }
+}
+
+#[test]
+fn blast_bomb_needs_the_door_unlocked() {
+    let mut group = BlastDoorGroup::new();
+    group.add((0, 0, 0));
+    group.apply_padlock((0, 0, 0), 3, 0.1);
+    assert!(
+        !group.bomb_trigger((0, 0, 0)),
+        "a locked blast door refuses the bomb"
+    );
+    assert_eq!(group.doors[&(0, 0, 0)].state, BlastState::Closed);
+    group.doors.get_mut(&(0, 0, 0)).unwrap().lock.locked = false;
+    assert!(group.bomb_trigger((0, 0, 0)));
+    assert_eq!(group.doors[&(0, 0, 0)].state, BlastState::Moving);
+    assert!(!group.bomb_trigger((9, 9, 9)), "no door there");
+}
+
+#[test]
+fn seal_explode_toggles_only_a_complete_frame() {
+    let mut ring: BTreeSet<Cell> = BTreeSet::new();
+    for x in 0..=2 {
+        ring.insert((x, 0, -1));
+        ring.insert((x, 0, 1));
+    }
+    for z in -1..=1 {
+        ring.insert((0, 0, z));
+        ring.insert((2, 0, z));
+    }
+    assert_eq!(
+        seal_explode((0, 0, 0), 0, |c| ring.contains(&c), |_| false),
+        Some(SealAction::Close)
+    );
+    assert_eq!(
+        seal_explode((0, 0, 0), 0, |c| ring.contains(&c), |c| c == (1, 0, 0)),
+        Some(SealAction::Open)
+    );
+    assert_eq!(seal_explode((0, 0, 0), 0, |_| false, |_| false), None);
+}
+
+#[test]
+fn dummy_placement_refuses_or_breaks_like_place_dummy() {
+    assert_eq!(place_dummy(Space::Replaceable, false), Placed::Yes);
+    assert_eq!(place_dummy(Space::Blocked, false), Placed::No);
+    assert_eq!(place_dummy(Space::Blocked, true), Placed::YesAfterBreaking);
+    assert_eq!(
+        place_dummy(Space::Dummy, false),
+        Placed::No,
+        "a dummy is not replaceable"
+    );
+    assert_eq!(
+        place_dummy(Space::Dummy, true),
+        Placed::Yes,
+        "force overwrites a dummy without breaking it"
+    );
+    assert!(remove_dummy(Space::Dummy));
+    assert!(!remove_dummy(Space::Blocked));
+}
+
+#[test]
+fn blast_door_placement_needs_six_free_cells_above() {
+    let all_free = blast_door_place((0, 0, 0), |_| Space::Replaceable);
+    assert!(!all_free.controller_destroyed);
+    assert_eq!(
+        all_free.placed,
+        (1..=6).map(|dy| (0, dy, 0)).collect::<Vec<Cell>>()
+    );
+
+    // Java's && chain stops at the first refusal, keeps the dummies before it, and breaks the controller.
+    let blocked = blast_door_place((0, 0, 0), |c| {
+        if c == (0, 3, 0) {
+            Space::Blocked
+        } else {
+            Space::Replaceable
+        }
+    });
+    assert!(blocked.controller_destroyed);
+    assert_eq!(blocked.placed, vec![(0, 1, 0), (0, 2, 0)]);
+
+    // Another door's dummy in the way counts as a refusal too (not replaceable, no force).
+    let neighbour = blast_door_place((0, 0, 0), |c| {
+        if c == (0, 2, 0) {
+            Space::Dummy
+        } else {
+            Space::Replaceable
+        }
+    });
+    assert!(neighbour.controller_destroyed);
+    assert_eq!(neighbour.placed, vec![(0, 1, 0)]);
+}
+
+#[test]
+fn sneaking_and_larp_block_the_door_click() {
+    let vault = Door::new(spec(DoorKind::VaultDoor));
+    let water = Door::new(spec(DoorKind::WaterDoor));
+    assert!(
+        !vault.player_can_click(false, true),
+        "sneaking never reaches the door"
+    );
+    assert!(vault.player_can_click(false, false));
+    assert!(
+        !vault.player_can_click(true, false),
+        "LARP: a door that needs redstone ignores the player"
+    );
+    assert!(water.player_can_click(true, false));
+    assert!(!water.player_can_click(true, true));
 }

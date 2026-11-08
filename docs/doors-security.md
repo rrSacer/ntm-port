@@ -1,7 +1,9 @@
 # Portas, comportas e fechaduras K3: domínio puro (T6)
 
 Frente T6 do port NTM → Horizon. Módulo: `crates/ntm-core/src/doors_security.rs`.
-Testes: `crates/ntm-core/tests/doors_security_tests.rs` (29 testes, todos verdes).
+Testes: `crates/ntm-core/tests/doors_security_tests.rs` (34 testes, todos verdes).
+Oráculo dos números: `tools/doors-oracle/extract.py` lê `DoorDecl.java` e `ModBlocks.java`
+e gera `crates/ntm-core/tests/fixtures/doordecl.json`; `--check` falha se o JSON estiver defasado.
 
 ## Fontes Java (`ntm-src/src/main/java/com/hbm/`)
 
@@ -33,12 +35,21 @@ Testes: `crates/ntm-core/tests/doors_security_tests.rs` (29 testes, todos verdes
 - **Selo**: `frame_size` (anel de 1 a 6), interior, `close`/`open`/`is_closed`,
   redstone com o bit 4 do `meta`, sobrevivência da escotilha.
 - **Buraco de fechadura**: `keyhole_orientation` por lado.
+- **Bomba**: `BlastDoorGroup::bomb_trigger` (destrancada: alterna, TRIGGERED;
+  trancada: recusa) e `seal_explode` (com moldura: abre ou fecha; sem: nada).
+- **Colocação da porta blindada**: `place_dummy` (`placeDummy`, com e sem `force`)
+  e `blast_door_place` (`onBlockPlacedBy`: 6 dummies acima, para na primeira recusa,
+  destrói o controlador, e os dummies já postos ficam).
+- **Clique**: `player_can_click(larp, sneaking)`: agachado nunca chega à porta.
 
 ## Números conferidos porta por porta
 
-O teste `every_door_decl_matches_the_java_numbers` confere, para cada um dos 14
-tipos: id, `timeToOpen`, faixas, dimensões, extra, offset, controle remoto e
-`neverDemandRedstone`. Os números foram lidos do `DoorDecl.java`.
+O teste `every_door_matches_the_java_fixture` confere, para cada um dos 14 tipos
+(via `fixtures/doordecl.json`, gerado do `DoorDecl.java` e do registro em
+`ModBlocks.java`): id, `timeToOpen`, faixas, dimensões, extra, offset, controle
+remoto, `neverDemandRedstone` e a janela de `getDoorRangeOpenTime` em todos os
+ticks. A tabela escrita à mão foi removida: não há mais números digitados duas vezes.
+A tabela abaixo é um resumo do fixture.
 
 | Porta | Ticks | Dimensões | Offset | Remoto |
 |---|---|---|---|---|
@@ -79,6 +90,22 @@ Outros números com teste:
 
 ## Lacunas nominais (não portadas nesta frente)
 
+- **Sala vermelha e porta vermelha** (`BlockKeyhole.generateRoom`,
+  `BlockRedBrickKeyhole`, `ItemModDoor.placeDoorBlock`): o buraco de fechadura
+  gera uma sala de tijolo vermelho e coloca `door_red`. Só a orientação por lado
+  foi portada (`keyhole_orientation`).
+- **`onScrew`** (troca de skin com a chave de fenda agachado, `getSkinCount`):
+  skins são de aparência; não portado. `BlastDoor` e `Door` não têm skin no
+  núcleo.
+- **Verificação de espaço e preenchimento** do multibloco (`BlockDoorGeneric.checkRequirement`
+  e `fillSpace`, que chamam `MultiblockHandlerXR.checkSpace`/`fillSpace`):
+  `footprint` dá as células; a checagem de "há bloco ocupando" e o preenchimento
+  com o bloco-fantasma dependem do mundo e ficam para o motor.
+- **Orientação ao colocar** (`BlockSeal.onBlockPlacedBy`, `BlastDoor.onBlockPlacedBy`
+  seta `meta` pelo yaw): não portado; o facing vem do chamador.
+- **Dummies no mundo**: `place_dummy` e `remove_dummy` decidem, mas o bloco
+  `dummy_block_blast` e o `TileEntityDummy` (alvo do núcleo) não existem no port.
+
 - **Colisão dinâmica**: `getBlockBound` (a caixa de colisão de cada célula, aberta
   ou fechada) **não foi portado**. O motor aceita formas de colisão por bloco
   (`collision_shapes` em `horizon-client/src/mod_content.rs`), então um par
@@ -91,6 +118,12 @@ Outros números com teste:
   `getClippingPlanes`): do cliente, fora do escopo.
 - **Itens com efeito de tooltip** (`ItemKeyPin.addInformation`, `canTransfer`):
   apresentação; ficam para a camada de itens.
+
+## Oráculo e mutações
+
+- `python3 tools/doors-oracle/extract.py --check` deve dizer "matches".
+- Mutações feitas à mão nos números e nas regras, com os testes pegando cada uma,
+  estão no relatório da frente.
 
 ## IDs cobertos e o que falta ligar (depois da Onda 0)
 
