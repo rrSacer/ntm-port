@@ -1,9 +1,9 @@
 {
   "catalog_items": 3333,
-  "vanilla_recipe_count": 245,
+  "vanilla_recipe_count": 243,
   "temporary_count": 4,
   "press_count": 47,
-  "furnace_count": 255,
+  "furnace_count": 254,
   "recipes": [
     {
       "id": "ntm:block_aluminium_from_ingot_aluminium",
@@ -1201,16 +1201,6 @@
       "temporary": false
     },
     {
-      "id": "ntm:powder_red_copper",
-      "source": "crafting/PowderRecipes.java:79",
-      "temporary": false
-    },
-    {
-      "id": "ntm:chunk_ore__cryolite_from_smelting_ore_aluminium",
-      "source": "crafting/SmeltingRecipes.java:40",
-      "temporary": false
-    },
-    {
       "id": "ntm:m1_temp__machine_epress",
       "source": "inventory/recipes/AssemblyMachineRecipes.java:354-356 (assembly machine, not ported; its part_generic/item_expensive inputs have no catalog IDs); temporary crafting bridge",
       "temporary": true
@@ -1862,6 +1852,7 @@
     "ntm:chlorine_pinwheel",
     "ntm:chocolate",
     "ntm:chocolate_milk",
+    "ntm:chunk_ore__cryolite",
     "ntm:chunk_ore__ilmenite",
     "ntm:chunk_ore__malachite",
     "ntm:chunk_ore__moonstone",
@@ -3833,6 +3824,7 @@
     "ntm:powder_power",
     "ntm:powder_quartz",
     "ntm:powder_ra226",
+    "ntm:powder_red_copper",
     "ntm:powder_sawdust",
     "ntm:powder_schrabidate",
     "ntm:powder_schrabidium",

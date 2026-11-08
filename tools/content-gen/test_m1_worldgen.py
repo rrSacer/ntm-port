@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """Check Nether and gneiss ore distributions against HbmWorldGen and WorldConfig defaults."""
+import json
 import unittest
+from pathlib import Path
 from worldgen import EXTRA, generate
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
 
 
 class M1Worldgen(unittest.TestCase):
@@ -67,6 +72,76 @@ class M1Worldgen(unittest.TestCase):
     def test_unknown_block_is_refused(self):
         with self.assertRaises(ValueError):
             generate(lambda p, v: None, [], [dict(material='x', block='ntm:missing', salt=1, attempts_per_chunk=1, size=1, min_y=0, max_y=1)])
+
+
+JAVA = Path(__file__).resolve().parents[2].parent / 'ntm-src/src/main/java/com/hbm'
+CALL = 'DungeonToolbox.generateOre(world, rand, i, j,'
+
+
+def config_default(name):
+    """Default of a WorldConfig int: the last argument of its createConfigInt call, else its field initializer."""
+    text = (JAVA / 'config/WorldConfig.java').read_text()
+    for line in text.split('\n'):
+        if line.strip().startswith(f'{name} = CommonConfig.createConfigInt'):
+            return int(line.rstrip().rstrip(');').split(',')[-1].strip())
+    import re
+    m = re.search(rf'public static int {name} = (\d+);', text)
+    return int(m.group(1))
+
+
+def java_value(expr):
+    parts = [p.strip() for p in expr.split('*')]
+    value = 1
+    for part in parts:
+        value *= config_default(part.split('.')[-1]) if part.startswith('WorldConfig.') else int(part)
+    return value
+
+
+def java_calls(lines):
+    """(attempts, size, min_y, max_y, ore, target) for each plain generateOre call in the given line range."""
+    import re
+    out = []
+    for line in lines:
+        if CALL not in line or 'lutonium' in line:
+            continue
+        m = re.search(r'generateOre\(world, rand, i, j, (.+?), (\d+), (\d+), (\d+), ModBlocks\.(\w+), ([\w.]+)\);', line)
+        if not m:
+            continue
+        count, size, low, variance, ore, target = m.groups()
+        out.append((java_value(count), int(size), int(low), int(low) + int(variance) - 1, 'ntm:' + ore, target))
+    return out
+
+
+class JavaValues(unittest.TestCase):
+    def test_nether_veins_match_generateNether(self):
+        lines = (JAVA / 'lib/HbmWorldGen.java').read_text().split('\n')[500:515]
+        expected = {ore: (a, s, lo, hi) for a, s, lo, hi, ore, _ in java_calls(lines)}
+        self.assertTrue(expected, 'no generateOre calls found in generateNether')
+        ours = {s['block']: (s['attempts_per_chunk'], s['size'], s['min_y'], s['max_y']) for s in EXTRA if s['material'].startswith('nether_')}
+        for ore, value in expected.items():
+            if ore in ours:
+                self.assertEqual(ours[ore], value, ore)
+        self.assertEqual(set(ours), {o for o in expected if o in ours})
+
+    def test_gneiss_veins_match_generateSurface(self):
+        lines = (JAVA / 'lib/HbmWorldGen.java').read_text().split('\n')[109:117]
+        expected = {ore: (a, s, lo, hi) for a, s, lo, hi, ore, _ in java_calls(lines)}
+        ours = {s['block']: (s['attempts_per_chunk'], s['size'], s['min_y'], s['max_y']) for s in EXTRA if s['material'].startswith('gneiss_')}
+        for ore, value in expected.items():
+            if ore in ours:
+                self.assertEqual(ours[ore], value, ore)
+        self.assertEqual(set(ours), {o for o in expected if o in ours})
+
+    def test_emitted_files_match_generator(self):
+        rows = json.loads((Path(__file__).resolve().parents[2] / 'content/ids.json').read_text())['entries']
+        distributions = json.loads((HERE / 'm1.json').read_text())['worldgen']
+        out = {}
+        generate(out.__setitem__, rows, distributions)
+        for path, value in out.items():
+            if '/m1_' not in path:
+                continue
+            on_disk = json.loads((ROOT / 'content' / path).read_text())
+            self.assertEqual(on_disk, value, path)
 
 
 if __name__ == '__main__':

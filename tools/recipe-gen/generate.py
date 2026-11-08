@@ -95,11 +95,6 @@ shaped('machine_wood_burner','machine_wood_burner',['PPP','CFC','I I'],{'P':'pla
 shaped('red_cable','red_cable',[' W ','RRR',' W '],{'W':'plate_polymer','R':'wire_fine__red_copper'},16,'main/CraftingManager.java:239')
 shaped('machine_electric_furnace','machine_electric_furnace_off',['BBB','WFW','RRR'],{'B':'ingot_beryllium','W':'plate_cast__copper','F':'minecraft:furnace','R':'coil_tungsten'},source='main/CraftingManager.java:230')
 shaped('wiring_red_copper','wiring_red_copper',['PPP','PIP','PPP'],{'P':'plate_steel','I':'ingot_steel'},source='main/CraftingManager.java:539')
-# Red copper alloy: powder from redstone + copper dust; its furnace smelting is already parsed from SmeltingRecipes.java:88.
-shapeless('powder_red_copper','powder_red_copper',['minecraft:redstone','powder_copper'],2,'crafting/PowderRecipes.java:79')
-# Aluminium ore smelts into cryolite, as in Java; the ingot route needs the unported cryolite chain.
-add('chunk_ore__cryolite_from_smelting_ore_aluminium',{'type':'minecraft:smelting','category':'misc','ingredient':ni('ore_aluminium'),'result':{'id':ni('chunk_ore__cryolite'),'count':1},'experience':2.5,'cookingtime':200},'crafting/SmeltingRecipes.java:40')
-furnace.append({'id':'ntm:ore_aluminium','input':{'item':ni('ore_aluminium'),'count':1},'output':{'item':ni('chunk_ore__cryolite'),'count':1},'experience':2.5})
 
 # Remaining temporary M1 bridges: each has no Java recipe that M1 can register (see source note).
 shaped('machine_epress','machine_epress',['PPP','RMR','WCW'],{'P':'plate_titanium','R':'minecraft:piston','M':'machine_press','W':'wire_fine__red_copper','C':'minecraft:redstone'},source='inventory/recipes/AssemblyMachineRecipes.java:354-356 (assembly machine, not ported; its part_generic/item_expensive inputs have no catalog IDs); temporary crafting bridge',temporary=True)

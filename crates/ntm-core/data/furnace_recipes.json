@@ -1100,18 +1100,6 @@
       "experience": 2.0
     },
     {
-      "id": "ntm:ore_aluminium",
-      "input": {
-        "item": "ntm:ore_aluminium",
-        "count": 1
-      },
-      "output": {
-        "item": "ntm:chunk_ore__cryolite",
-        "count": 1
-      },
-      "experience": 2.5
-    },
-    {
       "id": "minecraft:baked_potato/potato",
       "input": {
         "item": "minecraft:potato",

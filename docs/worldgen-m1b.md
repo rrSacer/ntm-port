@@ -27,7 +27,7 @@ Gnaisse (dimensão overworld, alvo `ntm:stone_gneiss`, Y 30–39, contagens como
 | `ore_gneiss_gold` | 10 | 6 | literal em `HbmWorldGen` |
 | `ore_gneiss_rare` | 6 | 6 | `rareSpawn` |
 
-Cada veio usa a mesma cadeia já provada para o overworld: `structure_set → jigsaw → feature_pool_element → placed_feature → ore`. Os salts são únicos (2167187–2167323).
+Cada veio usa a mesma cadeia já provada para o overworld: `structure_set → jigsaw → feature_pool_element → placed_feature → ore`. Os salts são únicos e vão de 2167187 a 2167408 (veios do Nether e do gnaisse, incluindo coal, iron, gold e rare).
 
 ## Pontes `m1_temp__` (10 → 4)
 
@@ -37,8 +37,8 @@ Substituídas pela receita Java, com os mesmos IDs de entrada (todos já no cat�
 - `machine_electric_furnace_off`: placa de cobre fundido (`plate_cast__copper`) e bobina de tungstênio (`coil_tungsten`).
 - `red_cable`: polímero (`plate_polymer`) e fio de liga vermelha, sem couro.
 - `wiring_red_copper`: aço, sem titânio.
-- Liga de cobre vermelho: `powder_red_copper` (redstone + pó de cobre) e fundição já extraída de `SmeltingRecipes.java:88`.
-- Minério de alumínio: fundição para `chunk_ore__cryolite`, como no Java, em vez de lingote direto.
+- Liga de cobre vermelho: a rota padrão é o alto-forno (`BlastFurnaceRecipes.java:54`, cobre + redstone → 2 lingotes), já presente no conteúdo. A receita `powder_red_copper` (`PowderRecipes.java:79`) foi **removida**: só existe com `enableLBSM && enableLBSMSimpleCrafting`, falso por padrão.
+- Minério de alumínio: a fundição para `chunk_ore__cryolite` já vem da `bulk` da `main` (`bulk__6def5b8b4c15ff0227.json`). A ponte antiga `m1_temp/aluminium_from_ore` (minério → lingote) foi **removida**; a entrada correspondente em `furnace_recipes.json` também saiu, o que é a única diferença desse arquivo em relação à `main` (aviso à T4).
 
 Continuam temporárias, cada uma com o motivo em `tools/recipe-gen/coverage.json`:
 
@@ -66,7 +66,7 @@ Por isso os veios de gnaisse estão corretos e registrados, mas geram 0 blocos e
 
 Medido com o cliente e o empacotador do fork (`/home/sacer/.cache/ntm-native-main`), pacote completo, 81 chunks centrais, janela 9×9 (`tools/content-gen/yield_probe.py`).
 
-O port do algoritmo de veio de 26.3 (`horizon-world/src/worldgen/ore_feature.rs`) e o `WorldGenMinable` de 1.7.10 dão rendimentos por tentativa iguais, dentro de 15% (`tools/content-gen/vein_yield_oracle.py`). Em jogo, todos os veios saem acima de Java: Nether de 1,4× a 2,2×, overworld de 1,2× a 2,0×.
+O port do algoritmo de veio de 26.3 (`horizon-world/src/worldgen/ore_feature.rs`) e o `WorldGenMinable` de 1.7.10 dão rendimentos por tentativa iguais, dentro de 15% (`tools/content-gen/vein_yield_oracle.py`). Em jogo, todos os veios saem acima de Java: Nether de 1,4× a 2,2×, overworld de 1,2× a 2,0×. **Atenção:** o oráculo compara dois modelos reimplementados em Python por esta frente (um do algoritmo de 26.3, outro do `WorldGenMinable`). Não roda o Java nem o motor, então não é paridade validada com o Java; é evidência de investigação. O próprio fork declara que a geometria dos veios não tem paridade (`docs/feature-placement.md:306–311`).
 
 | Hipótese | Resultado |
 | --- | --- |
@@ -111,6 +111,9 @@ Pacote de teste sem conteúdo ntm (namespace `probe`), construído com o empacot
 ## Lacunas
 
 - **Estrato de gnaisse:** ver seção acima.
+- **Nether sem nome no doc (revisão):** `ore_nether_smoldering` (`HbmWorldGen.generateNether`, 30 tentativas por chunk, na superfície do netherrack com ar acima) não tem id em `ids.json`. E o minério de bedrock do Nether (`BedrockOre.generate`, 1 em 10 chunks), que pertence ao sistema de bedrock.
+- **Alumínio sem rota de lingote:** o minério de alumínio agora rende só `chunk_ore__cryolite`. O lingote vem de cristal ou pó de alumínio (sete produtores no conteúdo), e essas receitas dependem do criolito, que não está portado. Impacto de progressão: sem o criolito, o alumínio não sai do minério em sobrevivência. `plate_aluminium` não tem produtor no conteúdo.
+- **Consumo de placa de alumínio:** a bobina da fornalha elétrica agora usa cobre fundido, como no Java; a ponte antiga consumia `plate_aluminium`.
 - **Nether fora desta frente:** `ore_nether_plutonium` (`GeneralConfig.enablePlutoniumOre = false` por padrão, veio de 8 por chunk) e os demais de `generateNether` que não são minérios (depósitos de profundidade `ore_depth_nether_neodymium`, geysers, escoria).
 - **Gnaisse sem ID:** `ore_gneiss_gas` (`gassshaleSpawn * 3`) existe no Java, mas não há ID em `content/ids.json`.
 - **Gnaisse sem geração no Java:** `ore_gneiss_schrabidium` e `ore_gneiss_uranium_scorched` não aparecem em `HbmWorldGen`.
