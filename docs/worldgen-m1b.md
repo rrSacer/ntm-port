@@ -4,7 +4,7 @@ Frente T3. Fonte Java: `ntm-src` (1.7.10). Tabela de valores: [ore-distribution.
 
 ## O que entrou
 
-Nether (`worldgen.py`, `EXTRA`, dimensão `#minecraft:is_nether`, alvo `minecraft:netherrack`):
+Nether (`worldgen.py`, `EXTRA`, dimensão `#minecraft:is_nether`, alvo `minecraft:netherrack`), todos os veios de `generateNether` cujos IDs existem, exceto plutônio (desligado por padrão no Java):
 
 | Minério | Tentativas/chunk | Tamanho | Y (inclusivo) | Origem Java |
 | --- | ---: | ---: | --- | --- |
@@ -13,8 +13,9 @@ Nether (`worldgen.py`, `EXTRA`, dimensão `#minecraft:is_nether`, alvo `minecraf
 | `ore_nether_sulfur` | 26 | 12 | 0–126 | `netherSulfurSpawn` |
 | `ore_nether_fire` | 24 | 6 | 0–126 | `netherPhosphorusSpawn` |
 | `ore_nether_cobalt` | 2 | 6 | 100–125 | `netherCobaltSpawn`, `minHeight 100 + nextInt(26)` |
+| `ore_nether_coal` | 8 | 32 | 16–111 | `netherCoalSpawn`, `minHeight 16 + nextInt(96)` |
 
-Gnaisse (dimensão overworld, alvo `ntm:stone_gneiss`, Y 30–39, contagens ×3 como no Java):
+Gnaisse (dimensão overworld, alvo `ntm:stone_gneiss`, Y 30–39, contagens como no Java):
 
 | Minério | Tentativas/chunk | Tamanho | Origem Java |
 | --- | ---: | ---: | --- |
@@ -22,6 +23,9 @@ Gnaisse (dimensão overworld, alvo `ntm:stone_gneiss`, Y 30–39, contagens ×3 
 | `ore_gneiss_copper` | 36 (12×3) | 6 | `copperSpawn * 3` |
 | `ore_gneiss_asbestos` | 6 (2×3) | 6 | `asbestosSpawn * 3` |
 | `ore_gneiss_lithium` | 6 | 6 | `lithiumSpawn` |
+| `ore_gneiss_iron` | 25 | 6 | literal em `HbmWorldGen` |
+| `ore_gneiss_gold` | 10 | 6 | literal em `HbmWorldGen` |
+| `ore_gneiss_rare` | 6 | 6 | `rareSpawn` |
 
 Cada veio usa a mesma cadeia já provada para o overworld: `structure_set → jigsaw → feature_pool_element → placed_feature → ore`. Os salts são únicos (2167187–2167323).
 
@@ -44,18 +48,37 @@ Continuam temporárias, cada uma com o motivo em `tools/recipe-gen/coverage.json
 | `machine_battery` | Não há receita de fabricação no Java 1.7.10 (`MachineBattery` só é registrado). |
 | `stamp_iron_plate`, `stamp_iron_wire` | Construção na bigorna (`AnvilRecipes.java:588-589`); a bigorna não é portada (T4). |
 
+## Estrato de gnaisse: bloqueado fora do conteúdo
+
+O `SchistStratum` troca pedra por `stone_gneiss` onde um Perlin de 4 oitavas (`NoiseGeneratorPerlin`, escala 0,01) passa de 5. A espessura é `int((n-5)*3)`, dobrada para `8 - range` acima de 4, em torno de y=30. Verificado no fonte decompilado de 1.7.10: a soma de oitavas tem amplitude 1, 2, 4, 8, então o limiar é alcançável.
+
+Tentativa feita e desfeita: uma material rule nova em `data/minecraft/worldgen/material_rule/overworld.json`, com nove faixas de ruído, inserida antes de `overworld/underground`. O empacotador recusa:
+
+- `crates/horizon-mods/src/content.rs:289`: "a mod adds files in its own namespaces ... or to vanilla and convention (c) tags". Só tags de `minecraft` e `c` são aceitas.
+- `docs/mods.md`, "The fence": "Tags are the only `minecraft` files a mod may hold".
+- Não há hook de conteúdo para material rule ou noise. O único gancho é `horizon:add_to`, para sets e pools.
+
+Logo, o estrato só sai com mudança de API de conteúdo (um hook de material rule ou permissão de override) ou de motor. Decisão de escopo para o coordenador.
+
+Por isso os veios de gnaisse estão corretos e registrados, mas geram 0 blocos em jogo. Comportamento de Java sem o estrato: também geram 0, porque o substrato é o estrato.
+
 ## Lacunas
 
-- **Estrato de gnaisse não portado.** No Java, `SchistStratum` troca pedra por `stone_gneiss` em uma faixa em torno de y=30, com largura dada por ruído Perlin (escala 0,01). Uma feature de JSON não reproduz esse ruído. Sem o estrato, os veios de gnaisse não encontram substrato e não geram blocos. Porta exige material rule em `noise_settings` ou sistema de terreno: decisão de escopo, não feita aqui.
-- **`ore_nether_schrabidium` sem geração natural.** No 1.7.10 ele só aparece em `ExplosionNukeGeneric` e no mapa de fundição. Não há veio para portar.
-- **Nether fora da lista da T3:** `ore_nether_plutonium` e `ore_nether_coal` (veios próprios no Java), além dos veios de `HbmWorldGen.generateNether` (scorched uranium, depth deposits, geysers) ficam para outras frentes.
-- **Gnaisse fora da lista da T3:** `ore_gneiss_iron`, `ore_gneiss_gold`, `ore_gneiss_rare` e `ore_gneiss_gas` existem no Java e não foram geradas.
-- **`m1.json` `worldgen_gaps.lithium`** ainda diz que o lítio não tem substituição. O texto continua válido, mas é um arquivo do catálogo fora da posse desta frente.
+- **Estrato de gnaisse:** ver seção acima.
+- **Nether fora desta frente:** `ore_nether_plutonium` (`GeneralConfig.enablePlutoniumOre = false` por padrão, veio de 8 por chunk) e os demais de `generateNether` que não são minérios (depósitos de profundidade `ore_depth_nether_neodymium`, geysers, escoria).
+- **Gnaisse sem ID:** `ore_gneiss_gas` (`gassshaleSpawn * 3`) existe no Java, mas não há ID em `content/ids.json`.
+- **Gnaisse sem geração no Java:** `ore_gneiss_schrabidium` e `ore_gneiss_uranium_scorched` não aparecem em `HbmWorldGen`.
+- **`ore_nether_schrabidium` sem geração natural:** só `ExplosionNukeGeneric` e a tabela de fundição o usam.
+- **`m1.json` `worldgen_gaps.lithium`:** atualizado para o estado atual.
 
 ## Provas
 
-- `python3 -m unittest test_m1_worldgen` em `tools/content-gen/`: 6 testes, OK. Confere contagens, tamanhos, alturas, biomas, alvos, salts únicos e a emissão de 5 arquivos por veio.
-- `python3 -m unittest discover -s tools/recipe-gen -p test_m1_bridges.py`: 3 testes, OK. Confere que só as 4 pontes restantes são temporárias e que cada uma cita o Java.
-- `tools/recipe-gen/generate.py` com `--source ntm-src`: `temporary_count` 10 → 4, `furnace_count` 255, `vanilla_recipe_count` 245.
-- Arquivos de worldgen do overworld: regenerados e idênticos aos commitados.
-- Não rodado nesta frente: `test_ownership.py` (2 testes com erro de caminho: `ntm-src` precisa estar ao lado da worktree) e a conferência em chunks reais do Nether/overworld com `verify-worldgen.py` (requer pacote e servidores dedicados; pendente).
+- `python3 -m unittest test_m1_worldgen test_ownership` em `tools/content-gen/`: OK. O `test_ownership` passa com o link `ntm-src` criado pelo coordenador.
+- `python3 -m unittest test_m1_bridges` em `tools/recipe-gen/`: OK.
+- `cargo test -p ntm-core` (agent-run): exit 0, todas as suítes OK.
+- `cargo clippy -p ntm-core -- -D warnings`: limpo.
+- Pacote de verificação: o `main` não empacota (`cargo-horizon-mod build` recusa `data/ntm/horizon/menu`, `mob_effect` e blocos com `door_sounds`, de outras frentes). A verificação usou uma cópia em `f-worldgen-m1b/verify-content`, sem essas pastas e sem 6 blocos de porta e resíduos, que não são minérios.
+- Conferência em jogo (`verify-worldgen.py --dimension`, 81 chunks centrais, seed 1768123):
+  - Nether: 6 veios presentes, Y dentro da faixa declarada (+ tolerância de tamanho). Blocos/chunk: uranium 20,8; tungstênio 52,3; enxofre 190,1; fogo 61,4; cobalto 5,8; carvão 508,0.
+  - Overworld: 11 veios originais presentes, Y dentro da faixa. Gnaisse: 0 em todos os 7, como esperado sem estrato.
+  - Anomalia aberta: carvão do Nether dá 508/chunk, acima do teto de 8 tentativas × tamanho 32 = 256. Não há segundo gerador de carvão no pacote. Suspeita: semântica de tamanho do `ore` em 26.3 ou sobreposição de veios de chunks vizinhos. Não resolvido.
