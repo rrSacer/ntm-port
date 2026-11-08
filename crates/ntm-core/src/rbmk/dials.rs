@@ -1,0 +1,293 @@
+//! `RBMKDials`: the 25 game-rule dials, with the Java parsing and clamping.
+
+use std::collections::BTreeMap;
+
+/// Default of a dial, with the Java type it was declared with.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum DefaultValue {
+    Bool(bool),
+    Double(f64),
+    Int(i32),
+}
+
+impl DefaultValue {
+    /// `String.valueOf(defValue)`.
+    pub fn java_string(self) -> String {
+        match self {
+            DefaultValue::Bool(b) => b.to_string(),
+            DefaultValue::Double(d) => format!("{d:?}"),
+            DefaultValue::Int(i) => i.to_string(),
+        }
+    }
+}
+
+/// One `RBMKKeys` entry: Java name, game-rule name and default.
+#[derive(Clone, Copy, Debug)]
+pub struct Key {
+    pub name: &'static str,
+    pub rule: &'static str,
+    pub default: DefaultValue,
+}
+
+const fn k(name: &'static str, rule: &'static str, default: DefaultValue) -> Key {
+    Key { name, rule, default }
+}
+
+/// The 25 keys, in `RBMKKeys` order.
+pub const KEYS: [Key; 25] = [
+    k("KEY_SAVE_DIALS", "dialSaveDials", DefaultValue::Bool(true)),
+    k("KEY_PASSIVE_COOLING", "dialPassiveCooling", DefaultValue::Double(2.5)),
+    k("KEY_PASSIVE_COOLING_INNER", "dialPassiveCoolingInner", DefaultValue::Double(0.1)),
+    k("KEY_COLUMN_HEAT_FLOW", "dialColumnHeatFlow", DefaultValue::Double(0.2)),
+    k("KEY_FUEL_DIFFUSION_MOD", "dialDiffusionMod", DefaultValue::Double(1.0)),
+    k("KEY_HEAT_PROVISION", "dialHeatProvision", DefaultValue::Double(0.2)),
+    k("KEY_COLUMN_HEIGHT", "dialColumnHeight", DefaultValue::Int(4)),
+    k("KEY_PERMANENT_SCRAP", "dialEnablePermaScrap", DefaultValue::Bool(true)),
+    k("KEY_BOILER_HEAT_CONSUMPTION", "dialBoilerHeatConsumption", DefaultValue::Double(0.1)),
+    k("KEY_CONTROL_SPEED_MOD", "dialControlSpeed", DefaultValue::Double(1.0)),
+    k("KEY_REACTIVITY_MOD", "dialReactivityMod", DefaultValue::Double(1.0)),
+    k("KEY_OUTGASSER_MOD", "dialOutgasserSpeedMod", DefaultValue::Double(1.0)),
+    k("KEY_SURGE_MOD", "dialControlSurgeMod", DefaultValue::Double(1.0)),
+    k("KEY_FLUX_RANGE", "dialFluxRange", DefaultValue::Int(5)),
+    k("KEY_REASIM_RANGE", "dialReasimRange", DefaultValue::Int(10)),
+    k("KEY_REASIM_BOILERS", "dialReasimBoilers", DefaultValue::Bool(false)),
+    k("KEY_REASIM_BOILER_SPEED", "dialReasimBoilerSpeed", DefaultValue::Double(0.05)),
+    k("KEY_DISABLE_MELTDOWNS", "dialDisableMeltdowns", DefaultValue::Bool(false)),
+    k("KEY_ENABLE_MELTDOWN_OVERPRESSURE", "dialEnableMeltdownOverpressure", DefaultValue::Bool(false)),
+    k("KEY_MODERATOR_EFFICIENCY", "dialModeratorEfficiency", DefaultValue::Double(1.0)),
+    k("KEY_ABSORBER_EFFICIENCY", "dialAbsorberEfficiency", DefaultValue::Double(1.0)),
+    k("KEY_REFLECTOR_EFFICIENCY", "dialReflectorEfficiency", DefaultValue::Double(1.0)),
+    k("KEY_DISABLE_DEPLETION", "dialDisableDepletion", DefaultValue::Bool(false)),
+    k("KEY_DISABLE_XENON", "dialDisableXenon", DefaultValue::Bool(false)),
+    k("KEY_ABSORBER_HEAT_CONVERSION", "dialAbsorberHeatConversion", DefaultValue::Double(0.05)),
+];
+
+pub fn key(name: &str) -> &'static Key {
+    KEYS.iter().find(|k| k.name == name).expect("unknown RBMK dial key")
+}
+
+/// The world's string game rules (`GameRules`): a missing rule reads as `""`.
+#[derive(Clone, Debug, Default)]
+pub struct GameRules(BTreeMap<String, String>);
+
+impl GameRules {
+    pub fn set(&mut self, rule: &str, value: &str) {
+        self.0.insert(rule.to_string(), value.to_string());
+    }
+
+    pub fn string(&self, rule: &str) -> &str {
+        self.0.get(rule).map_or("", String::as_str)
+    }
+
+    /// `Boolean.parseBoolean`: only `true`, ignoring case.
+    pub fn boolean(&self, rule: &str) -> bool {
+        self.string(rule).eq_ignore_ascii_case("true")
+    }
+}
+
+/// `Double.parseDouble` (decimal forms, `NaN`, `Infinity`, `d`/`f` suffix,
+/// surrounding whitespace). Hexadecimal floating literals are not accepted
+/// (they read as the default), a gap with no way to type them in a rule.
+pub fn parse_double(s: &str) -> Option<f64> {
+    let t = s.trim_matches(|c: char| c <= ' ');
+    let (neg, body) = match t.as_bytes().first() {
+        Some(b'-') => (true, &t[1..]),
+        Some(b'+') => (false, &t[1..]),
+        _ => (false, t),
+    };
+    let v = match body {
+        "NaN" => return Some(f64::NAN),
+        "Infinity" => f64::INFINITY,
+        _ => {
+            if body.starts_with(['+', '-']) {
+                return None;
+            }
+            let b = body.strip_suffix(['d', 'D', 'f', 'F']).unwrap_or(body);
+            let ok = !b.is_empty()
+                && b.bytes().all(|c| c.is_ascii_digit() || matches!(c, b'.' | b'e' | b'E' | b'+' | b'-'))
+                && b.bytes().any(|c| c.is_ascii_digit());
+            if !ok {
+                return None;
+            }
+            b.parse::<f64>().ok()?
+        }
+    };
+    Some(if neg { -v } else { v })
+}
+
+/// `Integer.parseInt`.
+pub fn parse_int(s: &str) -> Option<i32> {
+    let digits = s.strip_prefix(['-', '+']).unwrap_or(s);
+    if digits.is_empty() || !digits.bytes().all(|c| c.is_ascii_digit()) {
+        return None;
+    }
+    s.strip_prefix('+').unwrap_or(s).parse::<i32>().ok()
+}
+
+fn clamp_d(v: f64, lo: f64, hi: f64) -> f64 {
+    // MathHelper.clamp_double: NaN passes through.
+    if v < lo {
+        lo
+    } else if v > hi {
+        hi
+    } else {
+        v
+    }
+}
+
+fn clamp_i(v: i32, lo: i32, hi: i32) -> i32 {
+    if v < lo {
+        lo
+    } else if v > hi {
+        hi
+    } else {
+        v
+    }
+}
+
+fn double_of(r: &GameRules, key: &Key) -> f64 {
+    let DefaultValue::Double(def) = key.default else { unreachable!() };
+    parse_double(r.string(key.rule)).unwrap_or(def)
+}
+
+fn int_of(r: &GameRules, key: &Key) -> i32 {
+    let DefaultValue::Int(def) = key.default else { unreachable!() };
+    parse_int(r.string(key.rule)).unwrap_or(def)
+}
+
+/// `GameRuleHelper.getDoubleMinimum`: `Math.max` (NaN wins).
+fn at_least(r: &GameRules, name: &str, min: f64) -> f64 {
+    let v = double_of(r, key(name));
+    if v.is_nan() { v } else { v.max(min) }
+}
+
+fn clamped(r: &GameRules, name: &str, lo: f64, hi: f64) -> f64 {
+    clamp_d(double_of(r, key(name)), lo, hi)
+}
+
+/// The cache `RBMKDials.refresh` builds: the effective value of every dial.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Dials {
+    pub passive_cooling: f64,
+    pub passive_cooling_inner: f64,
+    pub column_heat_flow: f64,
+    pub fuel_diffusion_mod: f64,
+    pub heat_provision: f64,
+    /// Already `clamp(rule, 2, 16) - 1`, as `getColumnHeight`.
+    pub column_height: i32,
+    pub permanent_scrap: bool,
+    pub boiler_heat_consumption: f64,
+    pub control_speed: f64,
+    pub reactivity_mod: f64,
+    pub outgasser_mod: f64,
+    pub surge_mod: f64,
+    pub flux_range: i32,
+    pub reasim_range: i32,
+    pub reasim_boilers: bool,
+    pub reasim_boiler_speed: f64,
+    pub meltdowns_disabled: bool,
+    pub overpressure: bool,
+    pub moderator_efficiency: f64,
+    pub absorber_efficiency: f64,
+    pub reflector_efficiency: f64,
+    pub depletion_disabled: bool,
+    pub xenon_disabled: bool,
+    pub absorber_heat_conversion: f64,
+}
+
+impl Dials {
+    /// `RBMKDials.refresh`; `config_528_reasim` is `GeneralConfig.enable528ReasimBoilers`.
+    pub fn refresh(r: &GameRules, config_528_reasim: bool) -> Self {
+        Dials {
+            passive_cooling: at_least(r, "KEY_PASSIVE_COOLING", 0.0),
+            passive_cooling_inner: at_least(r, "KEY_PASSIVE_COOLING_INNER", 0.0),
+            column_heat_flow: clamped(r, "KEY_COLUMN_HEAT_FLOW", 0.0, 1.0),
+            fuel_diffusion_mod: at_least(r, "KEY_FUEL_DIFFUSION_MOD", 0.0),
+            heat_provision: clamped(r, "KEY_HEAT_PROVISION", 0.0, 1.0),
+            column_height: clamp_i(int_of(r, key("KEY_COLUMN_HEIGHT")), 2, 16) - 1,
+            permanent_scrap: r.boolean("dialEnablePermaScrap"),
+            boiler_heat_consumption: at_least(r, "KEY_BOILER_HEAT_CONSUMPTION", 0.0),
+            control_speed: at_least(r, "KEY_CONTROL_SPEED_MOD", 0.0),
+            reactivity_mod: at_least(r, "KEY_REACTIVITY_MOD", 0.0),
+            outgasser_mod: at_least(r, "KEY_OUTGASSER_MOD", 0.0),
+            surge_mod: at_least(r, "KEY_SURGE_MOD", 0.0),
+            flux_range: clamp_i(int_of(r, key("KEY_FLUX_RANGE")), 1, 100),
+            reasim_range: clamp_i(int_of(r, key("KEY_REASIM_RANGE")), 1, 100),
+            reasim_boilers: r.boolean("dialReasimBoilers") || config_528_reasim,
+            reasim_boiler_speed: clamped(r, "KEY_REASIM_BOILER_SPEED", 0.0, 1.0),
+            meltdowns_disabled: r.boolean("dialDisableMeltdowns"),
+            overpressure: r.boolean("dialEnableMeltdownOverpressure"),
+            moderator_efficiency: clamped(r, "KEY_MODERATOR_EFFICIENCY", 0.0, 1.0),
+            absorber_efficiency: clamped(r, "KEY_ABSORBER_EFFICIENCY", 0.0, 1.0),
+            reflector_efficiency: clamped(r, "KEY_REFLECTOR_EFFICIENCY", 0.0, 1.0),
+            depletion_disabled: r.boolean("dialDisableDepletion"),
+            xenon_disabled: r.boolean("dialDisableXenon"),
+            absorber_heat_conversion: clamped(r, "KEY_ABSORBER_HEAT_CONVERSION", 0.0, 1.0),
+        }
+    }
+
+    /// `getDepletion`.
+    pub fn depletion(&self) -> bool {
+        !self.depletion_disabled
+    }
+
+    /// `getXenon`.
+    pub fn xenon(&self) -> bool {
+        !self.xenon_disabled
+    }
+
+    /// `getSurgeMod` on the client reads the *passive cooling* rule (a Java
+    /// slip kept on purpose: D2).
+    pub fn surge_mod_client(r: &GameRules) -> f64 {
+        at_least(r, "KEY_PASSIVE_COOLING", 0.0)
+    }
+
+    /// The server's cache is not available to the client: `getGameRule`
+    /// returns the declared default.
+    pub fn default_of(name: &str) -> DefaultValue {
+        key(name).default
+    }
+}
+
+/// The world's dial state: raw rules plus the cache `createDials`/`refresh`
+/// maintain (`None` before the first one).
+#[derive(Clone, Debug, Default)]
+pub struct DialState {
+    pub rules: GameRules,
+    cache: Option<Dials>,
+    pub config_528_reasim: bool,
+}
+
+impl DialState {
+    pub fn refresh(&mut self) {
+        self.cache = Some(Dials::refresh(&self.rules, self.config_528_reasim));
+    }
+
+    /// `createDials(world, force)`: the cache is rebuilt from the rules
+    /// *before* the defaults are written, so after a reset the old values
+    /// stay until the next `refresh` (kept: D2).
+    pub fn create(&mut self, force: bool) {
+        self.cache = None;
+        self.refresh();
+        if !self.rules.boolean(KEYS[0].rule) || force {
+            for key in &KEYS {
+                self.rules.set(key.rule, &key.default.java_string());
+            }
+        }
+    }
+
+    /// `getGameRule`: a missing cache writes the default of the asked dial and
+    /// refreshes (the Java `isIteration` retry).
+    pub fn get(&mut self, name: &str) -> &Dials {
+        if self.cache.is_none() {
+            let key = key(name);
+            self.rules.set(key.rule, &key.default.java_string());
+            self.refresh();
+        }
+        self.cache.as_ref().unwrap()
+    }
+
+    pub fn cached(&self) -> Option<&Dials> {
+        self.cache.as_ref()
+    }
+}

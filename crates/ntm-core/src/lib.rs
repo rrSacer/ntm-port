@@ -109,4 +109,6 @@ pub mod pile;
 
 pub mod zirnox;
 
+pub mod rbmk;
+
 pub mod sounds;
