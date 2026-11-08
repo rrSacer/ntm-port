@@ -4,7 +4,7 @@ import argparse,collections,hashlib,importlib.util,json,os,socket,subprocess,tem
 from pathlib import Path
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[1];E=ROOT/'content-gen-evidence/worldgen';E.mkdir(parents=True,exist_ok=True)
 spec=importlib.util.spec_from_file_location('scan',HERE/'world-scan.py');scan=importlib.util.module_from_spec(spec);spec.loader.exec_module(scan)
-PACKER='/home/sacer/Games/horizon/target/release/cargo-horizon-mod'
+PACKER=os.environ.get('HORIZON_MOD','/home/sacer/.cache/ntm-native-main/target/release/cargo-horizon-mod')
 def request(root,line,label):
  with socket.socket(socket.AF_UNIX) as sock:
   sock.settimeout(45);sock.connect(str(root/'ctl.sock'));sock.sendall((line+'\n').encode());reply=json.loads(sock.makefile().readline())
@@ -21,7 +21,7 @@ def server(label,package,dimension='overworld'):
  (root/'server.properties').write_text('online-mode=false\nserver-port=25731\nlevel-seed=1768123\nview-distance=2\nsimulation-distance=2\nspawn-chunk-radius=0\nhorizon-pregen=true\npause-when-empty-seconds=0\n')
  (E/(label+'-home.txt')).write_text(str(root)+'\n')
  env=os.environ|{'HORIZON_HOME':str(root/'game'),'HORIZON_LAUNCHER_HOME':str(root/'launcher'),'XDG_DATA_HOME':str(root/'data'),'XDG_CONFIG_HOME':str(root/'config'),'HORIZON_NO_AUDIO':'1','HORIZON_NO_UPDATE_CHECK':'1','HORIZON_LAUNCHER_NO_SELF_UPDATE':'1'}
- args=['/home/sacer/Games/horizon/target/release/horizon-client','--resources','/home/sacer/Games/horizon/.local/horizon-client/26.3','--dev-mod',str(package),'--control-socket',str(root/'ctl.sock'),'--dedicated','--nogui']
+ args=['/home/sacer/.cache/ntm-native-main/target/release/horizon-client','--resources','/home/sacer/Games/horizon/.local/horizon-client/26.3','--dev-mod',str(package),'--control-socket',str(root/'ctl.sock'),'--dedicated','--nogui']
  with (E/(label+'.log')).open('w') as log:
   process=subprocess.Popen(args,cwd=root,env=env,stdout=log,stderr=subprocess.STDOUT)
   try:
