@@ -37,6 +37,7 @@ Notas sobre `bulk-recipe-coverage`: as 220 receitas novas (`data/ntm/recipe/bulk
 
 - `tools/content-gen`: 275 testes rodaram e passaram. Contratos de `anvil`, `purex` e `shredder` atualizados. `test_catalog_t4.py` (4 testes) cobre os 16 itens, os 43 blocos e o lookup de metadata 0. `test_rbmk_oracle` passou a exigir só que as entradas do T00 continuem idênticas e na mesma ordem relativa.
 - Estabilidade: `bulk.py` rodado duas vezes dá o mesmo resultado; `bulk.py` seguido de `generate.py --ids-only` deixa `ids.json` e `machines_backlog.json` iguais ao HEAD.
+- Suíte: 280 testes OK (`tools/content-gen`), incluindo `test_bulk_idempotence` (≈70 s).
 - Pacote: `cargo-horizon-mod build` e `check` com o build compartilhado geram `ntm.hmod`. O cliente compartilhado carrega o pacote, entra no mundo, e o log não tem `reject` nem `panic`. Antes do ajuste final, o log acusou modelos ausentes nas camadas (removidas) e texturas ausentes nos barris e no arame farpado (corrigidas).
 
 ## Revisão independente (2026-11)
@@ -48,7 +49,7 @@ Revisão aprovada com ressalvas (sem P0/P1). Correções aplicadas:
 - **P3-1:** `test_catalog_t4.ShapedBlockIdentities` compara com o `ModBlocks.java` lido de novo pelo teste, sem usar `catalog_t4`.
 - **P3-2:** os 7 `waste_plate_*` têm `creative_hidden` por `setCreativeTab(null)` no Java.
 - **P3-3:** `cm_port` e `custom_machine` registrados como lacunas acima.
-- **P3-4:** captura dos 43 blocos no jogo: pendente, com a máquina em janela de medição.
+- **P3-4:** captura no jogo feita com o build compartilhado (`horizon-ctl`), em `.agent-tmp/f-catalog/captures/`: 4 imagens com os 43 blocos colocados em fileiras (24 canos, 5 escadas, 6 arames, 6 barris, `cm_flux`/`cm_heat`). Texturas aparecem, sem modelo ausente nem textura magenta. Observação: os canos (`iron_bars`) aparecem como cubos cheios, porque o template vanilla de grade não reproduz a geometria do cano. A colisão segue o template, e isso é lacuna registrada acima.
 
 ## Lacunas
 

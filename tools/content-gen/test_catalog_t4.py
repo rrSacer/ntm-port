@@ -39,12 +39,16 @@ class ShapedBlockIdentities(unittest.TestCase):
     def setUpClass(cls):
         import catalog_t4
         cls.java = (SOURCE / 'src/main/java/com/hbm/blocks/ModBlocks.java').read_text()
+        cls.java_items = (SOURCE / 'src/main/java/com/hbm/items/ModItems.java').read_text()
         cls.entries = {r['source_variable']: r for r in json.loads((ROOT / 'content/ids.json').read_text())['entries']
                        if r.get('source_variable')}
         cls.shaped = catalog_t4.SHAPED_BLOCKS
 
     def declaration(self, var):
-        return re.search(r'^\s*' + var + r'\s*=\s*new\s.*?;', self.java, re.M | re.S).group(0)
+        for text in (self.java, self.java_items):
+            found = re.search(r'^\s*' + var + r'\s*=\s*new\s.*?;', text, re.M | re.S)
+            if found: return found.group(0)
+        raise AssertionError(f'{var} is not declared in ModBlocks or ModItems')
 
     def test_every_shaped_block_is_declared_in_java_with_its_texture(self):
         for var, template, gap in self.shaped:
