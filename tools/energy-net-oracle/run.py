@@ -19,7 +19,7 @@ WHOLE = [
     'api/hbm/energymk2/IEnergyHandlerMK2.java', 'api/hbm/energymk2/IEnergyConnectorMK2.java',
     'api/hbm/energymk2/IBatteryItem.java', 'com/hbm/util/Tuple.java', 'com/hbm/util/EnumUtil.java',
     'com/hbm/util/fauxpointtwelve/BlockPos.java', 'com/hbm/util/fauxpointtwelve/DirPos.java',
-    'com/hbm/util/fauxpointtwelve/Rotation.java', 'com/hbm/interfaces/Spaghetti.java',
+    'com/hbm/util/fauxpointtwelve/Rotation.java', 'com/hbm/interfaces/Spaghetti.java', 'com/hbm/items/machine/ItemBatteryCreative.java',
 ]
 SLICED = [
     'com/hbm/lib/Library.java', 'com/hbm/items/machine/ItemBatteryPack.java',
@@ -154,10 +154,9 @@ import java.util.List;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
-public abstract class TileEntityPylonBase extends TileEntity {
+public abstract class TileEntityPylonBase extends TileEntity implements api.hbm.energymk2.IEnergyConnectorMK2 {
 	protected List<int[]> connected = new ArrayList<>();
 	public int color;
-	public boolean canConnect(ForgeDirection dir) { return true; }
 ''' + meth(P, r'public PowerNode createNode\(') + '\n' + meth(P, r'public static int canConnect\(') + '\n'
       + line(P, r'public abstract ConnectionType getConnectionType') + '\n' + line(P, r'public abstract Vec3\[\] getMountPos') + '\n' + line(P, r'public abstract double getMaxWireLength') + '\n'
       + meth(P, r'public Vec3 getConnectionPoint\(') + '\n' + meth(P, r'public List<int\[\]> getConnected\(') + '\n' + meth(P, r'public enum ConnectionType') + '\n}\n')
