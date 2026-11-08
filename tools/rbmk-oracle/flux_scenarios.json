@@ -1452,6 +1452,721 @@
    "rules": {
     "dialDisableMeltdowns": "true"
    }
+  },
+  {
+   "name": "boiler_grades",
+   "ticks": 40,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "boiler",
+     "x": 0,
+     "z": 0,
+     "heat": 700,
+     "feed": {
+      "fluid": "WATER",
+      "fill": 8000
+     }
+    },
+    {
+     "kind": "boiler",
+     "x": 10,
+     "z": 0,
+     "heat": 700,
+     "feed": {
+      "fluid": "WATER",
+      "fill": 8000
+     },
+     "steam_tank": {
+      "fluid": "HOTSTEAM",
+      "fill": 0
+     }
+    },
+    {
+     "kind": "boiler",
+     "x": 20,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "WATER",
+      "fill": 8000
+     },
+     "steam_tank": {
+      "fluid": "SUPERHOTSTEAM",
+      "fill": 0
+     }
+    },
+    {
+     "kind": "boiler",
+     "x": 30,
+     "z": 0,
+     "heat": 1400,
+     "feed": {
+      "fluid": "WATER",
+      "fill": 800
+     },
+     "steam_tank": {
+      "fluid": "ULTRAHOTSTEAM",
+      "fill": 5
+     }
+    },
+    {
+     "kind": "boiler",
+     "x": 40,
+     "z": 0,
+     "heat": 500,
+     "feed": {
+      "fluid": "WATER",
+      "fill": 30
+     },
+     "steam_tank": {
+      "fluid": "STEAM",
+      "fill": 0
+     }
+    }
+   ],
+   "rules": {
+    "dialBoilerHeatConsumption": "0.3"
+   }
+  },
+  {
+   "name": "boiler_vent_rng",
+   "ticks": 60,
+   "seed": 2468,
+   "columns": [
+    {
+     "kind": "boiler",
+     "x": 0,
+     "z": 0,
+     "heat": 1000,
+     "feed": {
+      "fluid": "WATER",
+      "fill": 10000
+     },
+     "steam_tank": {
+      "fluid": "STEAM",
+      "fill": 999900
+     }
+    },
+    {
+     "kind": "boiler",
+     "x": 5,
+     "z": 5,
+     "heat": 800,
+     "feed": {
+      "fluid": "WATER",
+      "fill": 10000
+     },
+     "steam_tank": {
+      "fluid": "STEAM",
+      "fill": 999990
+     }
+    }
+   ],
+   "rules": {
+    "dialPassiveCooling": "0.0",
+    "dialPassiveCoolingInner": "0.0"
+   }
+  },
+  {
+   "name": "boiler_compressor",
+   "ticks": 12,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "boiler",
+     "x": 0,
+     "z": 0,
+     "heat": 20,
+     "steam_tank": {
+      "fluid": "STEAM",
+      "fill": 900000
+     },
+     "feed": {
+      "fluid": "WATER",
+      "fill": 0
+     }
+    }
+   ],
+   "actions": [
+    {
+     "tick": 1,
+     "column": 0,
+     "compress": true
+    },
+    {
+     "tick": 2,
+     "column": 0,
+     "compress": true
+    },
+    {
+     "tick": 3,
+     "column": 0,
+     "compress": true
+    },
+    {
+     "tick": 4,
+     "column": 0,
+     "compress": true
+    },
+    {
+     "tick": 5,
+     "column": 0,
+     "compress": true
+    },
+    {
+     "tick": 6,
+     "column": 0,
+     "compress": true
+    },
+    {
+     "tick": 7,
+     "column": 0,
+     "compress": true
+    },
+    {
+     "tick": 9,
+     "column": 0,
+     "set_tanks": {
+      "feed": {
+       "fill": 100
+      }
+     }
+    },
+    {
+     "tick": 10,
+     "column": 0,
+     "compress": true
+    }
+   ]
+  },
+  {
+   "name": "heater_coolant",
+   "ticks": 50,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "heater",
+     "x": 0,
+     "z": 0,
+     "heat": 700
+    },
+    {
+     "kind": "heater",
+     "x": 8,
+     "z": 0,
+     "heat": 700,
+     "feed": {
+      "fluid": "WATER",
+      "fill": 16000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 16,
+     "z": 0,
+     "heat": 700,
+     "feed": {
+      "fluid": "OIL",
+      "fill": 3000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 24,
+     "z": 0,
+     "heat": 700,
+     "feed": {
+      "fluid": "PERFLUOROMETHYL",
+      "fill": 9000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 32,
+     "z": 0,
+     "heat": 700,
+     "feed": {
+      "fluid": "AIR",
+      "fill": 500
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 40,
+     "z": 0,
+     "heat": 700,
+     "feed": {
+      "fluid": "LAVA",
+      "fill": 500
+     }
+    }
+   ]
+  },
+  {
+   "name": "heater_identifier",
+   "ticks": 30,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "heater",
+     "x": 0,
+     "z": 0,
+     "heat": 400,
+     "identifier": "WATER",
+     "feed": {
+      "fluid": "COOLANT",
+      "fill": 100
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 8,
+     "z": 0,
+     "heat": 30,
+     "feed": {
+      "fluid": "COOLANT",
+      "fill": 100
+     },
+     "identifier": "OIL"
+    }
+   ],
+   "actions": [
+    {
+     "tick": 10,
+     "column": 0,
+     "identifier": "PERFLUOROMETHYL"
+    },
+    {
+     "tick": 20,
+     "column": 0,
+     "identifier": null
+    },
+    {
+     "tick": 22,
+     "column": 1,
+     "set_tanks": {
+      "feed": {
+       "fill": 0
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "cooler_window",
+   "ticks": 140,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "blank",
+     "x": 0,
+     "z": 0,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 0,
+     "z": 1,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 0,
+     "z": 2,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 0,
+     "z": 3,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 0,
+     "z": 4,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 1,
+     "z": 0,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 1,
+     "z": 1,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 1,
+     "z": 2,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 1,
+     "z": 3,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 1,
+     "z": 4,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 2,
+     "z": 0,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 2,
+     "z": 1,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 2,
+     "z": 3,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 2,
+     "z": 4,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 3,
+     "z": 0,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 3,
+     "z": 1,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 3,
+     "z": 2,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 3,
+     "z": 3,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 3,
+     "z": 4,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 4,
+     "z": 0,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 4,
+     "z": 1,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 4,
+     "z": 2,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 4,
+     "z": 3,
+     "heat": 600
+    },
+    {
+     "kind": "blank",
+     "x": 4,
+     "z": 4,
+     "heat": 600
+    },
+    {
+     "kind": "cooler",
+     "x": 2,
+     "z": 2,
+     "heat": 100,
+     "cold": {
+      "fill": 1000
+     },
+     "hot": {
+      "fill": 3500
+     }
+    }
+   ],
+   "actions": [
+    {
+     "tick": 100,
+     "column": 24,
+     "set_tanks": {
+      "cold": {
+       "fill": 400
+      },
+      "hot": {
+       "fill": 0
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "outgasser_recipes",
+   "ticks": 40,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "flux": [
+      3000,
+      0.2
+     ]
+    },
+    {
+     "kind": "outgasser",
+     "x": 1,
+     "z": 0,
+     "in": {
+      "item": "minecraft_1_7_10:brown_mushroom",
+      "count": 3,
+      "meta": 0
+     },
+     "progress": 9900
+    },
+    {
+     "kind": "rod",
+     "x": 5,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "flux": [
+      3000,
+      0.9
+     ]
+    },
+    {
+     "kind": "outgasser",
+     "x": 6,
+     "z": 0,
+     "in": {
+      "item": "oil_tar",
+      "count": 3,
+      "meta": 2
+     },
+     "progress": 9900
+    },
+    {
+     "kind": "rod",
+     "x": 10,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "flux": [
+      3000,
+      0.2
+     ]
+    },
+    {
+     "kind": "outgasser",
+     "x": 11,
+     "z": 0,
+     "in": {
+      "item": "oracle_probe:lithium",
+      "count": 3,
+      "meta": 0
+     },
+     "progress": 9900
+    },
+    {
+     "kind": "rod",
+     "x": 15,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "flux": [
+      3000,
+      0.2
+     ]
+    },
+    {
+     "kind": "outgasser",
+     "x": 16,
+     "z": 0,
+     "in": {
+      "item": "oracle_probe:coal_block",
+      "count": 3,
+      "meta": 0
+     },
+     "progress": 9900
+    },
+    {
+     "kind": "rod",
+     "x": 20,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "flux": [
+      3000,
+      0.2
+     ]
+    },
+    {
+     "kind": "outgasser",
+     "x": 21,
+     "z": 0,
+     "in": {
+      "item": "oracle_probe:lithium",
+      "count": 3,
+      "meta": 0
+     },
+     "progress": 9900,
+     "gas": {
+      "fluid": "SYNGAS",
+      "fill": 10
+     }
+    },
+    {
+     "kind": "rod",
+     "x": 25,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "flux": [
+      3000,
+      0.2
+     ]
+    },
+    {
+     "kind": "outgasser",
+     "x": 26,
+     "z": 0,
+     "in": {
+      "item": "oracle_probe:gold",
+      "count": 3,
+      "meta": 0
+     },
+     "progress": 9900,
+     "out": {
+      "item": "ingot_au198",
+      "count": 64,
+      "meta": 0
+     }
+    },
+    {
+     "kind": "rod",
+     "x": 30,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "flux": [
+      3000,
+      0.2
+     ]
+    },
+    {
+     "kind": "outgasser",
+     "x": 31,
+     "z": 0,
+     "in": {
+      "item": "oil_tar",
+      "count": 3,
+      "meta": 3
+     },
+     "progress": 9900
+    },
+    {
+     "kind": "rod",
+     "x": 35,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "flux": [
+      3000,
+      0.2
+     ]
+    },
+    {
+     "kind": "outgasser",
+     "x": 36,
+     "z": 0,
+     "in": {
+      "item": "oracle_probe:lithium",
+      "count": 3,
+      "meta": 0
+     },
+     "progress": 9900,
+     "gas": {
+      "fluid": "TRITIUM",
+      "fill": 63900
+     }
+    },
+    {
+     "kind": "rod",
+     "x": 40,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "flux": [
+      3000,
+      0.2
+     ]
+    },
+    {
+     "kind": "outgasser",
+     "x": 41,
+     "z": 0,
+     "in": {
+      "item": "oil_tar",
+      "count": 3,
+      "meta": 4
+     },
+     "progress": 0
+    }
+   ],
+   "rules": {
+    "dialDisableMeltdowns": "true",
+    "dialOutgasserSpeedMod": "1.5"
+   },
+   "actions": [
+    {
+     "tick": 15,
+     "column": 1,
+     "in": {
+      "item": "minecraft_1_7_10:mushroom_stew",
+      "count": 2,
+      "meta": 0
+     }
+    }
+   ],
+   "probes": [
+    {
+     "ore": "ingotLithium",
+     "item": "oracle_probe:lithium"
+    },
+    {
+     "ore": "blockCoal",
+     "item": "oracle_probe:coal_block"
+    },
+    {
+     "ore": "ingotGold",
+     "item": "oracle_probe:gold"
+    }
+   ]
   }
  ]
 }

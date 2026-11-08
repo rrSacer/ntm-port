@@ -10,7 +10,10 @@
 
 pub mod dials;
 pub mod jmath;
+pub mod fluids;
+pub mod outgasser;
 pub mod reactor;
+mod tables_data;
 pub mod jrandom;
 pub mod rods;
 mod rods_data;

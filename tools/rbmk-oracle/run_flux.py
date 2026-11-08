@@ -3,7 +3,7 @@
 with controlled host stubs (stubs_flux.py), and run the scenarios in
 java/FluxOracle.java. Reuses the T00 harness (run.py / stubs.py) for the item,
 dial and registry slices."""
-import argparse, hashlib, json, shutil, subprocess, sys
+import argparse, hashlib, json, re, shutil, subprocess, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -17,11 +17,38 @@ EXTRA = tuple(TILE + n + '.java' for n in (
     'TileEntityRBMKBase', 'TileEntityRBMKRod', 'TileEntityRBMKRodReaSim', 'TileEntityRBMKSlottedBase',
     'TileEntityRBMKControl', 'TileEntityRBMKControlManual', 'TileEntityRBMKControlAuto',
     'TileEntityRBMKAbsorber', 'TileEntityRBMKModerator', 'TileEntityRBMKReflector', 'TileEntityRBMKBlank',
-    'TileEntityRBMKActiveBase', 'TileEntityRBMKOutgasser', 'IRBMKLoadable')) + (
+    'TileEntityRBMKActiveBase', 'TileEntityRBMKOutgasser', 'TileEntityRBMKBoiler', 'TileEntityRBMKHeater', 'TileEntityRBMKCooler', 'IRBMKLoadable')) + (
     'handler/neutron/RBMKNeutronHandler.java', 'handler/neutron/NeutronStream.java',
     'handler/neutron/NeutronNode.java', 'handler/neutron/NeutronNodeWorld.java',
     'handler/neutron/NeutronHandler.java',
     'util/fauxpointtwelve/BlockPos.java', 'util/fauxpointtwelve/Rotation.java', 'util/Vec3NT.java')
+
+
+# fluids whose FT_Heatable statement is run verbatim from Fluids.java (the heater's inputs)
+HEATABLES = ('WATER', 'OIL', 'COOLANT', 'PERFLUOROMETHYL')
+
+
+def fluids_source(source):
+    """All fluid names with their ids (declaration order) and temperatures, and the
+    verbatim FT_Heatable statements of HEATABLES."""
+    text = (source / run.JAVA_ROOT / 'inventory/fluid/Fluids.java').read_text()
+    cleaned = run.clean(text)
+    decls = list(re.finditer(r'^\s*([A-Z0-9_]+)\s*=\s*new FluidType\((?:(\d+),\s*)?"([A-Z0-9_]+)"([^;]*);', cleaned, re.M))
+    fields = []
+    for fid, d in enumerate(decls):
+        temp = re.search(r'\.setTemp\((\d+)\)', d[4])
+        fields.append(f'public static final FluidType {d[1]}=new FluidType("{d[1]}",{fid})' + (f'.setTemp({temp[1]})' if temp else '') + ';')
+    statements = []
+    for name in HEATABLES:
+        start = cleaned.index(name + '.addTraits(new FT_Heatable()')
+        end = start + cleaned[start:].index(';\n')
+        statements.append(text[start:end + 1])
+    consts = re.findall(r'^\s*double eff_steam_\w+ = [^;]+;', text, re.M)
+    return ('package com.hbm.inventory.fluid; import com.hbm.inventory.fluid.trait.FT_Heatable; import com.hbm.inventory.fluid.trait.FT_Heatable.HeatingType;\n'
+            'public class Fluids {\n' + '\n'.join(fields) + '\npublic static FluidType fromName(String n){return null;}\nstatic {\n' + '\n'.join(consts + statements) + '\n}}\n')
+
+
+COPY_ONLY = ('inventory/fluid/trait/FT_Heatable.java',)  # not scanned for registry names
 
 
 def execute(source, scratch):
@@ -32,7 +59,7 @@ def execute(source, scratch):
         if folder.exists():
             shutil.rmtree(folder)
         folder.mkdir()
-    for name in run.CLASSES:
+    for name in (*run.CLASSES, *COPY_ONLY):
         dest = src / 'com/hbm' / name
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source / run.JAVA_ROOT / name, dest)
@@ -41,6 +68,7 @@ def execute(source, scratch):
     mb = 'com/hbm/blocks/ModBlocks.java'
     gen[mb] = gen[mb].replace('public static final Block rbmk_control_reasim=new Block("rbmk_control_reasim");',
         'public static final com.hbm.blocks.machine.rbmk.RBMKControl rbmk_control_reasim=new com.hbm.blocks.machine.rbmk.RBMKControl("rbmk_control_reasim",false);')
+    gen['com/hbm/inventory/fluid/Fluids.java'] = fluids_source(source)
     for name, text in {**stubs, **gen, **FLUX_STUBS}.items():
         dest = src / name
         dest.parent.mkdir(parents=True, exist_ok=True)

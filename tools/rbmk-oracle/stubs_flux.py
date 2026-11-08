@@ -60,7 +60,7 @@ public class World { public boolean isRemote=false; private final GameRules rule
  public void addTile(TileEntity t,int x,int y,int z,Block b,int meta){t.worldObj=this;t.xCoord=x;t.yCoord=y;t.zCoord=z;tiles.put(key(x,y,z),t);blocks.put(key(x,y,z),b);metas.put(key(x,y,z),meta);}
  public void markBlockForUpdate(int x,int y,int z){} public void markTileEntityChunkModified(int x,int y,int z,TileEntity t){}
  public long getTotalWorldTime(){return time;} public void spawnEntityInWorld(Entity e){log.add("spawn "+e.getClass().getSimpleName());}
- public void playSoundEffect(double x,double y,double z,String s,float v,float p){} public void newExplosion(Entity e,double x,double y,double z,float s,boolean a,boolean b){}
+ public final List<String> fx=new ArrayList<>(); public void playSoundEffect(double x,double y,double z,String s,float v,float p){fx.add("sound,"+x+","+z+","+s+","+String.format("%08x",Float.floatToRawIntBits(p)));} public void newExplosion(Entity e,double x,double y,double z,float s,boolean a,boolean b){}
  public <T> List<T> getEntitiesWithinAABB(Class<T> c,AxisAlignedBB bb){return new ArrayList<>();} }''')
 put('net/minecraft/util/AxisAlignedBB.java', '''package net.minecraft.util; public class AxisAlignedBB { public static AxisAlignedBB getBoundingBox(double a,double b,double c,double d,double e,double f){return new AxisAlignedBB();} public AxisAlignedBB expand(double a,double b,double c){return this;} }''')
 put('net/minecraft/util/Vec3.java', '''package net.minecraft.util; public class Vec3 { public double xCoord,yCoord,zCoord; protected Vec3(double x,double y,double z){xCoord=x;yCoord=y;zCoord=z;}
@@ -126,7 +126,7 @@ put('com/hbm/main/MainRegistry.java', '''package com.hbm.main; public class Main
  public static final Object achRBMKBoom=new Object(); public static final Proxy proxy=new Proxy();
  public static class Logger {public void error(String s,Object... o){} public void warn(String s,Object... o){}}
  public static class Proxy { public void effectNT(net.minecraft.nbt.NBTTagCompound d){} } }''')
-cls('com.hbm.packet.toclient', 'AuxParticlePacketNT', body='public AuxParticlePacketNT(net.minecraft.nbt.NBTTagCompound d,double x,double y,double z){}')
+cls('com.hbm.packet.toclient', 'AuxParticlePacketNT', body='public static final java.util.List<double[]> log=new java.util.ArrayList<>(); public AuxParticlePacketNT(net.minecraft.nbt.NBTTagCompound d,double x,double y,double z){log.add(new double[]{x,y,z});}')
 put('com/hbm/handler/threading/PacketThreading.java', '''package com.hbm.handler.threading; public class PacketThreading { public static void createAllAroundThreadedPacket(Object p,cpw.mods.fml.common.network.NetworkRegistry.TargetPoint t){} }''')
 cls('com.hbm.util', 'ParticleUtil', body='public static void spawnGasFlame(net.minecraft.world.World w,double x,double y,double z,double a,double b,double c){}')
 put('com/hbm/util/BufferUtil.java', '''package com.hbm.util; public class BufferUtil { public static void writeString(io.netty.buffer.ByteBuf b,String s){} public static String readString(io.netty.buffer.ByteBuf b){return "";} }''')
@@ -187,3 +187,39 @@ for n in ('ContainerRBMKOutgasser',):
 put('com/hbm/inventory/gui/GUIRBMKOutgasser.java', 'package com.hbm.inventory.gui; public class GUIRBMKOutgasser { public GUIRBMKOutgasser(Object inv,Object te){} }')
 
 put('com/hbm/inventory/fluid/FluidType.java', 'package com.hbm.inventory.fluid; public class FluidType {public final String name;private final int id;public FluidType(String n,int id){name=n;this.id=id;}public int getID(){return id;} public String getName(){return name;}}')
+
+# ---- boiler / heater / cooler surface
+put('com/hbm/inventory/fluid/FluidType.java', '''package com.hbm.inventory.fluid; import java.util.*; import com.hbm.inventory.fluid.trait.FluidTrait;
+public class FluidType { public final String name; private final int id; public int temperature=20; public final Map<Class<?>,FluidTrait> traits=new HashMap<>();
+ public FluidType(String n,int id){name=n;this.id=id;} public int getID(){return id;} public String getName(){return name;}
+ public FluidType setTemp(int t){temperature=t;return this;} public FluidType addTraits(FluidTrait... t){for(FluidTrait x:t)traits.put(x.getClass(),x);return this;}
+ public boolean hasTrait(Class<? extends FluidTrait> c){return traits.containsKey(c);} @SuppressWarnings("unchecked") public <T extends FluidTrait> T getTrait(Class<? extends T> c){return (T)traits.get(c);}
+ public Object getNetworkProvider(){return null;} }''')
+put('com/hbm/inventory/fluid/trait/FluidTrait.java', '''package com.hbm.inventory.fluid.trait; import java.util.List; import java.io.IOException; import com.google.gson.JsonObject; import com.google.gson.stream.JsonWriter;
+public abstract class FluidTrait { public void addInfo(List<String> i){} public void addInfoHidden(List<String> i){} public void serializeJSON(JsonWriter w) throws IOException {} public void deserializeJSON(JsonObject o){} }''')
+put('com/google/gson/JsonElement.java', 'package com.google.gson; public class JsonElement { public JsonArray getAsJsonArray(){return null;} public JsonObject getAsJsonObject(){return null;} public String getAsString(){return "";} public int getAsInt(){return 0;} public double getAsDouble(){return 0;} public boolean getAsBoolean(){return false;} }')
+put('com/google/gson/JsonObject.java', 'package com.google.gson; public class JsonObject extends JsonElement { public JsonElement get(String k){return null;} public boolean has(String k){return false;} }')
+put('com/google/gson/JsonArray.java', 'package com.google.gson; public class JsonArray extends JsonElement { public int size(){return 0;} public JsonElement get(int i){return null;} }')
+put('com/google/gson/stream/JsonWriter.java', '''package com.google.gson.stream; import java.io.IOException;
+public class JsonWriter { public JsonWriter name(String n) throws IOException {return this;} public JsonWriter value(String s) throws IOException {return this;} public JsonWriter value(long s) throws IOException {return this;} public JsonWriter value(double s) throws IOException {return this;} public JsonWriter value(boolean s) throws IOException {return this;}
+ public JsonWriter beginArray() throws IOException {return this;} public JsonWriter endArray() throws IOException {return this;} public JsonWriter beginObject() throws IOException {return this;} public JsonWriter endObject() throws IOException {return this;} }''')
+put('com/hbm/inventory/fluid/tank/FluidTank.java', '''package com.hbm.inventory.fluid.tank; import com.hbm.inventory.fluid.FluidType; import net.minecraft.nbt.NBTTagCompound; import net.minecraft.item.ItemStack; import io.netty.buffer.ByteBuf;
+public class FluidTank { private FluidType type; private int fill, max; public FluidTank(FluidType t,int max){type=t;this.max=max;}
+ public FluidType getTankType(){return type;} public void setTankType(FluidType t){type=t;} public int getFill(){return fill;} public void setFill(int f){fill=f;} public int getMaxFill(){return max;}
+ public boolean setType(int in, ItemStack[] slots){ if(slots[in]!=null && slots[in].getItem() instanceof com.hbm.items.machine.IItemFluidIdentifier){ FluidType n=((com.hbm.items.machine.IItemFluidIdentifier)slots[in].getItem()).getType(); if(type!=n){type=n;fill=0;return true;} } return false; }
+ public void readFromNBT(NBTTagCompound n,String k){fill=n.getInteger(k);} public void writeToNBT(NBTTagCompound n,String k){n.setInteger(k,fill);} public void serialize(ByteBuf b){} public void deserialize(ByteBuf b){} }''')
+put('com/hbm/items/machine/IItemFluidIdentifier.java', 'package com.hbm.items.machine; public interface IItemFluidIdentifier { com.hbm.inventory.fluid.FluidType getType(); }')
+put('com/hbm/items/machine/ItemFluidIdentifierStub.java', 'package com.hbm.items.machine; public class ItemFluidIdentifierStub extends net.minecraft.item.Item implements IItemFluidIdentifier { public com.hbm.inventory.fluid.FluidType type; public ItemFluidIdentifierStub(com.hbm.inventory.fluid.FluidType t){super("fluid_identifier");type=t;} public com.hbm.inventory.fluid.FluidType getType(){return type;} }')
+put('com/hbm/module/portmanager/ModulePortManFluidAdaptive.java', '''package com.hbm.module.portmanager; import com.hbm.inventory.fluid.tank.FluidTank; import com.hbm.tileentity.TilePort; import com.hbm.tileentity.TilePort.PortDef;
+public class ModulePortManFluidAdaptive { public TilePort[] outPorts; public ModulePortManFluidAdaptive(Object te){} public ModulePortManFluidAdaptive setInputTanks(FluidTank... t){return this;} public ModulePortManFluidAdaptive setOutputTanks(FluidTank... t){return this;} public void update(PortDef[] p){} }''')
+put('com/hbm/tileentity/TilePort.java', '''package com.hbm.tileentity; public class TilePort { public com.hbm.util.fauxpointtwelve.DirPos[] connections; public static class PortDef { public static PortDef make(int x,int y,int z,Object... d){return new PortDef();} } }''')
+put('com/hbm/util/fauxpointtwelve/DirPos.java', 'package com.hbm.util.fauxpointtwelve; public class DirPos extends BlockPos { public DirPos(int x,int y,int z,net.minecraftforge.common.util.ForgeDirection d){super(x,y,z);} }')
+put('com/hbm/uninos/UniNodespace.java', 'package com.hbm.uninos; public class UniNodespace { public static api.hbm.fluidmk2.FluidNode getNode(net.minecraft.world.World w,int x,int y,int z,Object provider){return null;} }')
+put('api/hbm/fluidmk2/IFluidStandardTransceiverMK2.java', '''package api.hbm.fluidmk2; import com.hbm.inventory.fluid.tank.FluidTank; public interface IFluidStandardTransceiverMK2 { FluidTank[] getAllTanks(); FluidTank[] getReceivingTanks(); FluidTank[] getSendingTanks(); }''')
+put('api/hbm/fluidmk2/FluidNode.java', '''package api.hbm.fluidmk2; public class FluidNode { public java.util.List<com.hbm.util.fauxpointtwelve.BlockPos> positions=new java.util.ArrayList<>(); public FluidNetMK2 net; public boolean hasValidNet(){return false;} }''')
+put('com/hbm/handler/CompatHandler.java', '''package com.hbm.handler; public class CompatHandler { public interface OCComponent {} public static Object[] steamTypeToInt(com.hbm.inventory.fluid.FluidType t){return new Object[]{0};} public static com.hbm.inventory.fluid.FluidType intToSteamType(int i){return null;} }''')
+put('com/hbm/util/CompatEnergyControl.java', '''package com.hbm.util; public class CompatEnergyControl { public static final String D_DEPLETION_PERCENT="a",D_XENON_PERCENT="b",D_SKIN_C="c",D_CORE_C="d",D_MELT_C="e",D_CONSUMPTION_MB="f",D_OUTPUT_MB="g"; }''')
+for n, o in (('ContainerRBMKGeneric', 'extends net.minecraft.inventory.Container'), ('ContainerRBMKHeater', 'extends net.minecraft.inventory.Container')):
+    put(f'com/hbm/inventory/container/{n}.java', f'package com.hbm.inventory.container; public class {n} {o} {{ public {n}(Object a){{}} public {n}(Object a,Object b){{}} public {n}(Object a,Object b,Object c){{}} }}')
+for n in ('GUIRBMKBoiler', 'GUIRBMKHeater'):
+    put(f'com/hbm/inventory/gui/{n}.java', f'package com.hbm.inventory.gui; public class {n} {{ public {n}(Object a,Object b){{}} }}')

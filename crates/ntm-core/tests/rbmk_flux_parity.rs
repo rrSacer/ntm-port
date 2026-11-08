@@ -5,7 +5,8 @@
 
 use ntm_core::rbmk::dials::{Dials, GameRules};
 use ntm_core::rbmk::jrandom::JavaRandom;
-use ntm_core::rbmk::reactor::{AutoFunction, Column, Kind, Reactor};
+use ntm_core::rbmk::outgasser::Stack;
+use ntm_core::rbmk::reactor::{AutoFunction, Column, Data, Effect, Kind, Reactor};
 use ntm_core::rbmk::rods::{RodStack, RodType};
 use serde_json::Value;
 
@@ -31,7 +32,33 @@ fn kind(s: &str) -> Kind {
         "reflector" => Kind::Reflector,
         "absorber" => Kind::Absorber,
         "blank" => Kind::Blank,
+        "outgasser" => Kind::Outgasser,
+        "boiler" => Kind::Boiler,
+        "heater" => Kind::Heater,
+        "cooler" => Kind::Cooler,
         _ => panic!("kind {s}"),
+    }
+}
+
+fn leak(v: &Value) -> &'static str {
+    Box::leak(v.as_str().unwrap().to_string().into_boxed_str())
+}
+
+fn stack(v: &Value) -> Option<Stack> {
+    if v.is_null() {
+        return None;
+    }
+    Some(Stack { item: v["item"].as_str().unwrap().to_string(), count: num(v, "count", 1.0) as i32, meta: num(v, "meta", 0.0) as i32, max_stack: 64 })
+}
+
+fn set_tank(t: &mut ntm_core::rbmk::fluids::Tank, v: Option<&Value>) {
+    if let Some(v) = v {
+        if let Some(f) = v.get("fluid") {
+            t.fluid = leak(f);
+        }
+        if let Some(n) = v.get("fill") {
+            t.fill = n.as_f64().unwrap() as i32;
+        }
     }
 }
 
@@ -94,7 +121,34 @@ fn build(sc: &Value) -> Reactor {
                 cc.function = Some([AutoFunction::Linear, AutoFunction::QuadUp, AutoFunction::QuadDown][num(c, "function", 0.0) as usize]);
             }
         }
-        r.add(col);
+        match &mut col.data {
+            Data::Outgasser(o) => {
+                o.progress = num(c, "progress", 0.0);
+                o.input = c.get("in").and_then(stack);
+                o.output = c.get("out").and_then(stack);
+                set_tank(&mut o.gas, c.get("gas"));
+            }
+            Data::Boiler(b) => {
+                set_tank(&mut b.feed, c.get("feed"));
+                set_tank(&mut b.steam, c.get("steam_tank"));
+            }
+            Data::Heater(h) => {
+                set_tank(&mut h.feed, c.get("feed"));
+                set_tank(&mut h.steam, c.get("steam_tank"));
+            }
+            Data::Cooler(k) => {
+                set_tank(&mut k.cold, c.get("cold"));
+                set_tank(&mut k.hot, c.get("hot"));
+            }
+            _ => {}
+        }
+        let i = r.add(col);
+        if let Some(id) = c.get("identifier").filter(|v| !v.is_null()) {
+            r.identifiers.insert(i, leak(id));
+        }
+    }
+    for p in sc.get("probes").map_or(&vec![], |v| v.as_array().unwrap()) {
+        r.ore_names.entry((p["item"].as_str().unwrap().to_string(), num(p, "meta", 0.0) as i32)).or_default().push(p["ore"].as_str().unwrap().to_string());
     }
     let height = r.dials.column_height + 1;
     for o in sc.get("obstacles").map_or(&vec![], |v| v.as_array().unwrap()) {
@@ -151,6 +205,45 @@ fn compare(r: &Reactor, i: usize, want: &Value, what: &str) {
             _ => panic!("{what}: fuel presence differs"),
         }
     }
+    match &c.data {
+        Data::Outgasser(o) => {
+            same(o.progress, &want["progress"], &format!("{what} progress"));
+            assert_eq!((o.gas.fluid, i64::from(o.gas.fill)), (want["gas_type"].as_str().unwrap(), want["gas"].as_i64().unwrap()), "{what} gas");
+            for (k, got) in [("in", &o.input), ("out", &o.output)] {
+                match (got, want[k].is_null()) {
+                    (Some(g), false) => assert_eq!(
+                        (g.item.as_str(), i64::from(g.count), i64::from(g.meta)),
+                        (want[k]["item"].as_str().unwrap(), want[k]["count"].as_i64().unwrap(), want[k]["meta"].as_i64().unwrap()),
+                        "{what} {k}"
+                    ),
+                    (None, true) => {}
+                    _ => panic!("{what}: {k} presence differs"),
+                }
+            }
+        }
+        Data::Boiler(b) => {
+            for (k, t) in [("feed", &b.feed), ("steam_tank", &b.steam)] {
+                assert_eq!((t.fluid, i64::from(t.fill)), (want[k]["fluid"].as_str().unwrap(), want[k]["fill"].as_i64().unwrap()), "{what} {k}");
+            }
+            assert_eq!(
+                (i64::from(b.consumption), i64::from(b.output), i64::from(b.vent_delay)),
+                (want["consumption"].as_i64().unwrap(), want["output"].as_i64().unwrap(), want["vent_delay"].as_i64().unwrap()),
+                "{what} boiler counters"
+            );
+        }
+        Data::Heater(h) => {
+            for (k, t) in [("feed", &h.feed), ("steam_tank", &h.steam)] {
+                assert_eq!((t.fluid, i64::from(t.fill)), (want[k]["fluid"].as_str().unwrap(), want[k]["fill"].as_i64().unwrap()), "{what} {k}");
+            }
+        }
+        Data::Cooler(k) => {
+            assert_eq!(i64::from(k.timer), want["timer"].as_i64().unwrap(), "{what} timer");
+            for (n, t) in [("cold", &k.cold), ("hot", &k.hot)] {
+                assert_eq!((t.fluid, i64::from(t.fill)), (want[n]["fluid"].as_str().unwrap(), want[n]["fill"].as_i64().unwrap()), "{what} {n}");
+            }
+        }
+        _ => {}
+    }
     if let Some(cc) = c.control() {
         same(cc.level, &want["level"], &format!("{what} level"));
         same(cc.last_level, &want["last_level"], &format!("{what} last_level"));
@@ -189,6 +282,35 @@ fn every_scenario_matches_the_java_oracle_tick_by_tick() {
                 if a.get("remove_rod").is_some() {
                     r.columns[i].rod_mut().unwrap().fuel = None;
                 }
+                if a.get("compress").is_some() {
+                    r.boiler_compress(i);
+                }
+                if let Some(v) = a.get("identifier") {
+                    if v.is_null() {
+                        r.identifiers.remove(&i);
+                    } else {
+                        r.identifiers.insert(i, leak(v));
+                    }
+                }
+                if let Some(v) = a.get("in") {
+                    if let Data::Outgasser(o) = &mut r.columns[i].data {
+                        o.input = stack(v);
+                    }
+                }
+                if let Some(t) = a.get("set_tanks") {
+                    match &mut r.columns[i].data {
+                        Data::Boiler(b) => {
+                            set_tank(&mut b.feed, t.get("feed"));
+                            set_tank(&mut b.steam, t.get("steam"));
+                        }
+                        Data::Heater(h) => set_tank(&mut h.feed, t.get("feed")),
+                        Data::Cooler(k) => {
+                            set_tank(&mut k.cold, t.get("cold"));
+                            set_tank(&mut k.hot, t.get("hot"));
+                        }
+                        _ => {}
+                    }
+                }
                 if let Some(v) = a.get("power") {
                     r.columns[i].control_mut().unwrap().power = v.as_f64().unwrap() as i64;
                 }
@@ -201,6 +323,18 @@ fn every_scenario_matches_the_java_oracle_tick_by_tick() {
             for (k, (g, w)) in r.rad.iter().zip(rad).enumerate() {
                 assert_eq!((g.x, g.z), (w[0].as_i64().unwrap() as i32, w[1].as_i64().unwrap() as i32), "{at}: rad #{k} position");
                 assert_eq!(format!("{:08x}", g.amount.to_bits()), w[2].as_str().unwrap(), "{at}: rad #{k} amount");
+            }
+            // effects: all particles first, then the sounds (the oracle logs them apart)
+            let fx = t["fx"].as_array().unwrap();
+            let skip_fx = Some(tick) == melt; // the meltdown's own sound and particle belong to the engine
+            let vents: Vec<_> = r.effects.iter().map(|Effect::SteamVent { column, x_offset, z_offset, pitch }| (*column, *x_offset, *z_offset, *pitch)).collect();
+            assert!(skip_fx || fx.len() == vents.len() * 2, "{at}: effect count");
+            for (k, (col, xo, zo, pitch)) in vents.iter().enumerate().filter(|_| !skip_fx) {
+                let c = &r.columns[*col];
+                let p = &fx[k];
+                assert_eq!(p[0], "particle", "{at}");
+                assert_eq!((p[1].as_f64().unwrap(), p[2].as_f64().unwrap()), (f64::from(c.x) + xo, f64::from(c.z) + zo), "{at}: vent position");
+                assert_eq!(fx[vents.len() + k][4].as_str().unwrap(), format!("{:08x}", pitch.to_bits()), "{at}: vent pitch");
             }
             if Some(tick) == melt {
                 assert!(!r.meltdowns.is_empty(), "{at}: Java melted down here");

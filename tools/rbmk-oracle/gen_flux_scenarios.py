@@ -14,11 +14,12 @@ def rod(x, z, var="rbmk_fuel_ueu", flux=None, **kw):
         c["flux"] = flux
     return c
 
-def scenario(name, ticks, columns, rules=None, obstacles=None, actions=None, seed=1):
+def scenario(name, ticks, columns, rules=None, obstacles=None, actions=None, seed=1, probes=None):
     s = {"name": name, "ticks": ticks, "seed": seed, "columns": columns}
     if rules: s["rules"] = rules
     if obstacles: s["obstacles"] = obstacles
     if actions: s["actions"] = actions
+    if probes: s["probes"] = probes
     S.append(s)
 
 # 1. rods and a moderator in a line, default dials
@@ -101,6 +102,44 @@ scenario("insert_remove_rod", 30, [col("rod", 0, 0, flux=[100, 0.5]), rod(2, 0, 
 scenario("dials_no_depletion_xenon_x2", 25, [rod(0, 0, flux=[300, 0.5], xenon=30, yield_fraction=0.6), rod(1, 0, "rbmk_fuel_hep239", flux=[300, 0.5])],
          rules={"dialDisableDepletion": "true", "dialDisableXenon": "true", "dialReactivityMod": "2.0", "dialDiffusionMod": "3", "dialHeatProvision": "0.5"})
 scenario("all_fuels_burn", 6, [rod(i, 0, v, flux=[150, 0.5]) for i, v in enumerate(json.load(open(pathlib.Path(__file__).parent / "fixtures/java.json"))["rods"] and [r["variable"] for r in json.load(open(pathlib.Path(__file__).parent / "fixtures/java.json"))["rods"]])] , rules={"dialDisableMeltdowns": "true"})
+
+
+# 12. boilers: every steam grade, venting, the compressor, running dry
+scenario("boiler_grades", 40, [col("boiler", 0, 0, heat=700, feed={"fluid": "WATER", "fill": 8000}),
+                               col("boiler", 10, 0, heat=700, feed={"fluid": "WATER", "fill": 8000}, steam_tank={"fluid": "HOTSTEAM", "fill": 0}),
+                               col("boiler", 20, 0, heat=900, feed={"fluid": "WATER", "fill": 8000}, steam_tank={"fluid": "SUPERHOTSTEAM", "fill": 0}),
+                               col("boiler", 30, 0, heat=1400, feed={"fluid": "WATER", "fill": 800}, steam_tank={"fluid": "ULTRAHOTSTEAM", "fill": 5}),
+                               col("boiler", 40, 0, heat=500, feed={"fluid": "WATER", "fill": 30}, steam_tank={"fluid": "STEAM", "fill": 0})],
+         rules={"dialBoilerHeatConsumption": "0.3"})
+scenario("boiler_vent_rng", 60, [col("boiler", 0, 0, heat=1000, feed={"fluid": "WATER", "fill": 10000}, steam_tank={"fluid": "STEAM", "fill": 999900}),
+                                 col("boiler", 5, 5, heat=800, feed={"fluid": "WATER", "fill": 10000}, steam_tank={"fluid": "STEAM", "fill": 999990})],
+         seed=2468, rules={"dialPassiveCooling": "0.0", "dialPassiveCoolingInner": "0.0"})
+scenario("boiler_compressor", 12, [col("boiler", 0, 0, heat=20, steam_tank={"fluid": "STEAM", "fill": 900000}, feed={"fluid": "WATER", "fill": 0})],
+         actions=[{"tick": t, "column": 0, "compress": True} for t in range(1, 8)] + [{"tick": 9, "column": 0, "set_tanks": {"feed": {"fill": 100}}}, {"tick": 10, "column": 0, "compress": True}])
+
+# 13. heat exchangers
+scenario("heater_coolant", 50, [col("heater", 0, 0, heat=700), col("heater", 8, 0, heat=700, feed={"fluid": "WATER", "fill": 16000}),
+                                col("heater", 16, 0, heat=700, feed={"fluid": "OIL", "fill": 3000}), col("heater", 24, 0, heat=700, feed={"fluid": "PERFLUOROMETHYL", "fill": 9000}),
+                                col("heater", 32, 0, heat=700, feed={"fluid": "AIR", "fill": 500}), col("heater", 40, 0, heat=700, feed={"fluid": "LAVA", "fill": 500})])
+scenario("heater_identifier", 30, [col("heater", 0, 0, heat=400, identifier="WATER", feed={"fluid": "COOLANT", "fill": 100}), col("heater", 8, 0, heat=30, feed={"fluid": "COOLANT", "fill": 100}, identifier="OIL")],
+         actions=[{"tick": 10, "column": 0, "identifier": "PERFLUOROMETHYL"}, {"tick": 20, "column": 0, "identifier": None}, {"tick": 22, "column": 1, "set_tanks": {"feed": {"fill": 0}}}])
+cool = [col("blank", x, z, heat=600) for x in range(5) for z in range(5) if (x, z) != (2, 2)]
+cool.append(col("cooler", 2, 2, heat=100, cold={"fill": 1000}, hot={"fill": 3500}))
+scenario("cooler_window", 140, cool, actions=[{"tick": 100, "column": len(cool) - 1, "set_tanks": {"cold": {"fill": 400}, "hot": {"fill": 0}}}])
+
+# 14. outgasser: both output kinds, gating, the progress threshold
+probes = [{"ore": "ingotLithium", "item": "oracle_probe:lithium"}, {"ore": "blockCoal", "item": "oracle_probe:coal_block"}, {"ore": "ingotGold", "item": "oracle_probe:gold"}]
+def outg(x, item, **kw):
+    return col("outgasser", x, 0, **{"in": {"item": item, "count": 3, "meta": kw.pop("meta", 0)}, "progress": 9900, **kw})
+scenario("outgasser_recipes", 40,
+         [rod(0, 0, "rbmk_fuel_balefire", flux=[3000, 0.2]), outg(1, "minecraft_1_7_10:brown_mushroom"), rod(5, 0, "rbmk_fuel_balefire", flux=[3000, 0.9]), outg(6, "oil_tar", meta=2),
+          rod(10, 0, "rbmk_fuel_balefire", flux=[3000, 0.2]), outg(11, "oracle_probe:lithium"), rod(15, 0, "rbmk_fuel_balefire", flux=[3000, 0.2]), outg(16, "oracle_probe:coal_block"),
+          rod(20, 0, "rbmk_fuel_balefire", flux=[3000, 0.2]), outg(21, "oracle_probe:lithium", gas={"fluid": "SYNGAS", "fill": 10}),
+          rod(25, 0, "rbmk_fuel_balefire", flux=[3000, 0.2]), outg(26, "oracle_probe:gold", out={"item": "ingot_au198", "count": 64, "meta": 0}),
+          rod(30, 0, "rbmk_fuel_balefire", flux=[3000, 0.2]), outg(31, "oil_tar", meta=3), rod(35, 0, "rbmk_fuel_balefire", flux=[3000, 0.2]), outg(36, "oracle_probe:lithium", gas={"fluid": "TRITIUM", "fill": 63900}),
+          rod(40, 0, "rbmk_fuel_balefire", flux=[3000, 0.2]), outg(41, "oil_tar", meta=4, progress=0)],
+         rules={"dialDisableMeltdowns": "true", "dialOutgasserSpeedMod": "1.5"}, probes=probes,
+         actions=[{"tick": 15, "column": 1, "in": {"item": "minecraft_1_7_10:mushroom_stew", "count": 2, "meta": 0}}])
 
 pathlib.Path(__file__).with_name("flux_scenarios.json").write_text(json.dumps({"scenarios": S}, indent=1) + "\n")
 print(len(S), "scenarios")

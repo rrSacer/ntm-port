@@ -13,6 +13,8 @@
 //! them.
 
 use super::dials::Dials;
+use super::fluids::{self, Tank};
+use super::outgasser::{self, Stack};
 use super::jmath;
 use super::jrandom::JavaRandom;
 use super::rods::{NType, RodStack, RodType};
@@ -42,6 +44,10 @@ pub enum Kind {
     Reflector,
     Absorber,
     Blank,
+    Outgasser,
+    Boiler,
+    Heater,
+    Cooler,
 }
 
 /// `RBMKNeutronHandler.RBMKType`.
@@ -52,6 +58,7 @@ pub enum RbmkType {
     ControlRod,
     Reflector,
     Absorber,
+    Outgasser,
     Other,
 }
 
@@ -63,7 +70,8 @@ impl Kind {
             Kind::Moderator => RbmkType::Moderator,
             Kind::Reflector => RbmkType::Reflector,
             Kind::Absorber => RbmkType::Absorber,
-            Kind::Blank => RbmkType::Other,
+            Kind::Outgasser => RbmkType::Outgasser,
+            Kind::Blank | Kind::Boiler | Kind::Heater | Kind::Cooler => RbmkType::Other,
         }
     }
 
@@ -127,6 +135,66 @@ pub enum Data {
     Passive,
     Rod(RodCol),
     Control(ControlCol),
+    Outgasser(OutgasserCol),
+    Boiler(BoilerCol),
+    Heater(HeaterCol),
+    Cooler(CoolerCol),
+}
+
+#[derive(Clone, Debug)]
+pub struct OutgasserCol {
+    pub input: Option<Stack>,
+    pub output: Option<Stack>,
+    pub gas: Tank,
+    pub progress: f64,
+}
+
+impl Default for OutgasserCol {
+    fn default() -> Self {
+        OutgasserCol { input: None, output: None, gas: Tank::new("TRITIUM", outgasser::GAS_MAX), progress: 0.0 }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct BoilerCol {
+    pub feed: Tank,
+    pub steam: Tank,
+    pub consumption: i32,
+    pub output: i32,
+    pub vent_delay: i32,
+}
+
+impl Default for BoilerCol {
+    fn default() -> Self {
+        BoilerCol { feed: Tank::new("WATER", 10_000), steam: Tank::new("STEAM", 1_000_000), consumption: 0, output: 0, vent_delay: 0 }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct HeaterCol {
+    pub feed: Tank,
+    pub steam: Tank,
+}
+
+impl Default for HeaterCol {
+    fn default() -> Self {
+        HeaterCol { feed: Tank::new("COOLANT", 16_000), steam: Tank::new("COOLANT_HOT", 16_000) }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct CoolerCol {
+    pub timer: i32,
+    pub cold: Tank,
+    pub hot: Tank,
+    /// The 5x5 neighbourhood as of the last refresh (column indices).
+    pub neighbors: [Option<usize>; 25],
+}
+
+impl Default for CoolerCol {
+    fn default() -> Self {
+        CoolerCol { timer: 0, cold: Tank::new("PERFLUOROMETHYL_COLD", 4_000), hot: Tank::new("PERFLUOROMETHYL", 4_000), neighbors: [None; 25] }
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -153,6 +221,10 @@ impl Column {
                 function: k.auto_function(),
                 ..ControlCol::default()
             }),
+            Kind::Outgasser => Data::Outgasser(OutgasserCol::default()),
+            Kind::Boiler => Data::Boiler(BoilerCol::default()),
+            Kind::Heater => Data::Heater(HeaterCol::default()),
+            Kind::Cooler => Data::Cooler(CoolerCol::default()),
             _ => Data::Passive,
         };
         Column {
@@ -179,6 +251,20 @@ impl Column {
     pub fn rod_mut(&mut self) -> Option<&mut RodCol> {
         match &mut self.data {
             Data::Rod(r) => Some(r),
+            _ => None,
+        }
+    }
+
+    pub fn outgasser(&self) -> Option<&OutgasserCol> {
+        match &self.data {
+            Data::Outgasser(o) => Some(o),
+            _ => None,
+        }
+    }
+
+    pub fn outgasser_mut(&mut self) -> Option<&mut OutgasserCol> {
+        match &mut self.data {
+            Data::Outgasser(o) => Some(o),
             _ => None,
         }
     }
@@ -267,6 +353,19 @@ pub struct Reactor {
     /// Columns whose heat passed the limit during the last step with meltdowns
     /// enabled; the engine runs the meltdown.
     pub meltdowns: Vec<usize>,
+    /// Side effects of the last step (boiler vents).
+    pub effects: Vec<Effect>,
+    /// Ore-dictionary names of an item `(item, metadata)`, as the host knows them.
+    pub ore_names: HashMap<(String, i32), Vec<String>>,
+    /// Fluid the identifier in the heater's slot selects, per column.
+    pub identifiers: HashMap<usize, &'static str>,
+}
+
+/// Something the engine must show or play.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum Effect {
+    /// A boiler's steam vent: particle offsets (x, z) and the sound's pitch.
+    SteamVent { column: usize, x_offset: f64, z_offset: f64, pitch: f32 },
 }
 
 fn java_floor(v: f64) -> i32 {
@@ -290,6 +389,9 @@ impl Reactor {
             streams: Vec::new(),
             rad: Vec::new(),
             meltdowns: Vec::new(),
+            effects: Vec::new(),
+            ore_names: HashMap::new(),
+            identifiers: HashMap::new(),
         }
     }
 
@@ -330,6 +432,7 @@ impl Reactor {
     pub fn step(&mut self) {
         self.rad.clear();
         self.meltdowns.clear();
+        self.effects.clear();
         let streams = std::mem::take(&mut self.streams);
         for mut s in streams {
             self.run_stream(&mut s);
@@ -391,6 +494,11 @@ impl Reactor {
                 // IRBMKFluxReceiver
                 if self.columns[t].rod().is_some_and(|r| r.has_rod) {
                     self.receive_flux(t, s);
+                    return;
+                }
+            } else if ty == RbmkType::Outgasser {
+                if self.can_process(t) {
+                    self.outgasser_receive(t, s);
                     return;
                 }
             } else if ty == RbmkType::ControlRod {
@@ -457,6 +565,15 @@ impl Reactor {
         match self.columns[i].kind {
             Kind::Rod | Kind::RodReaSim => self.update_rod(i),
             k if k.is_control() => self.update_control(i),
+            Kind::Outgasser => {
+                if !self.can_process(i) {
+                    self.columns[i].outgasser_mut().unwrap().progress = 0.0;
+                }
+                self.base_update(i);
+            }
+            Kind::Boiler => self.update_boiler(i),
+            Kind::Heater => self.update_heater(i),
+            Kind::Cooler => self.update_cooler(i),
             _ => self.base_update(i),
         }
     }
@@ -715,5 +832,232 @@ impl Reactor {
             c.heat = 20.0;
         }
     }
-}
 
+    // ---- outgasser
+
+    /// `canProcess` (it also types the gas tank for the recipe, as Java does).
+    pub fn can_process(&mut self, i: usize) -> bool {
+        let names = {
+            let o = self.columns[i].outgasser().unwrap();
+            let Some(input) = &o.input else { return false };
+            self.ore_names.get(&(input.item.clone(), input.meta)).cloned().unwrap_or_default()
+        };
+        let o = self.columns[i].outgasser_mut().unwrap();
+        let Some(input) = &o.input else { return false };
+        let Some(recipe) = outgasser::recipe_for(&input.item, input.meta, &names) else { return false };
+        if recipe.fusion_only {
+            return false;
+        }
+        if let Some((fluid, amount)) = recipe.fluid {
+            if o.gas.fluid != fluid && o.gas.fill > 0 {
+                return false;
+            }
+            o.gas.fluid = fluid;
+            if o.gas.fill + amount > o.gas.max {
+                return false;
+            }
+        }
+        match (&o.output, recipe.solid) {
+            (None, _) | (_, None) => true,
+            (Some(out), Some((item, count, meta))) => out.item == item && out.meta == meta && out.count + count <= out.max_stack,
+        }
+    }
+
+    fn outgasser_receive(&mut self, i: usize, s: &Stream) {
+        let efficiency = (1.0 - s.flux_ratio * 0.8).min(1.0);
+        let gain = s.flux_quantity * efficiency * self.dials.outgasser_mod;
+        let o = self.columns[i].outgasser_mut().unwrap();
+        o.progress += gain;
+        if o.progress > outgasser::DURATION {
+            self.process_outgasser(i);
+        }
+    }
+
+    fn process_outgasser(&mut self, i: usize) {
+        let names = {
+            let input = self.columns[i].outgasser().unwrap().input.as_ref().unwrap();
+            self.ore_names.get(&(input.item.clone(), input.meta)).cloned().unwrap_or_default()
+        };
+        let o = self.columns[i].outgasser_mut().unwrap();
+        let input = o.input.as_mut().unwrap();
+        let recipe = outgasser::recipe_for(&input.item, input.meta, &names).unwrap();
+        input.count -= 1;
+        if input.count <= 0 {
+            o.input = None;
+        }
+        o.progress = 0.0;
+        if let Some((_, amount)) = recipe.fluid {
+            o.gas.fill += amount;
+        }
+        if let Some((item, count, meta)) = recipe.solid {
+            match &mut o.output {
+                None => o.output = Some(Stack { item: item.to_string(), count, meta, max_stack: 64 }),
+                Some(out) => out.count += count,
+            }
+        }
+    }
+
+    // ---- boiler, heater, cooler
+
+    fn update_boiler(&mut self, i: usize) {
+        let consumption = self.dials.boiler_heat_consumption;
+        let heat = self.columns[i].heat;
+        let Data::Boiler(b) = &mut self.columns[i].data else { unreachable!() };
+        b.consumption = 0;
+        b.output = 0;
+        if b.vent_delay > 0 {
+            b.vent_delay -= 1;
+        }
+        let heat_cap = fluids::heat_from_steam(b.steam.fluid);
+        let provided = heat - heat_cap;
+        let mut used_heat = None;
+        let mut vent = false;
+        if provided > 0.0 {
+            let factor = fluids::factor_from_steam(b.steam.fluid);
+            let (water_used, steam_produced);
+            if b.steam.fluid == "ULTRAHOTSTEAM" {
+                let mut produced = ((provided / consumption) * 100.0 / factor).floor() as i32;
+                let mut used = (f64::from(produced) / 100.0 * factor).floor() as i32;
+                if b.feed.fill < used {
+                    produced = (f64::from(b.feed.fill) * 100.0 / factor).floor() as i32;
+                    used = (f64::from(produced) / 100.0 * factor).floor() as i32;
+                }
+                water_used = used;
+                steam_produced = produced;
+            } else {
+                let used = ((provided / consumption).floor() as i32).min(b.feed.fill);
+                water_used = used;
+                steam_produced = ((f64::from(used) * 100.0) / factor).floor() as i32;
+            }
+            b.consumption = water_used;
+            b.output = steam_produced;
+            b.feed.fill -= water_used;
+            b.steam.fill = b.steam.fill.wrapping_add(steam_produced);
+            if b.steam.fill > b.steam.max {
+                b.steam.fill = b.steam.max;
+                vent = b.vent_delay <= 0;
+            }
+            used_heat = Some(f64::from(water_used) * consumption);
+        }
+        if vent {
+            let x_offset = 0.25 + f64::from(self.rng.next_int(2)) * 0.5;
+            let z_offset = 0.25 + f64::from(self.rng.next_int(2)) * 0.5;
+            let delay = 20 + self.rng.next_int(10);
+            let pitch = 1.0_f32 + self.rng.next_float() * 0.25_f32;
+            let Data::Boiler(b) = &mut self.columns[i].data else { unreachable!() };
+            b.vent_delay = delay;
+            self.effects.push(Effect::SteamVent { column: i, x_offset, z_offset, pitch });
+        }
+        if let Some(h) = used_heat {
+            self.columns[i].heat -= h;
+        }
+        self.base_update(i);
+    }
+
+    /// `cyceCompressor`: steps the boiler's steam grade (only when it is cold or dry).
+    pub fn boiler_compress(&mut self, i: usize) {
+        let heat = self.columns[i].heat;
+        let Data::Boiler(b) = &mut self.columns[i].data else { panic!("not a boiler") };
+        if heat > 50.0 && b.feed.fill > 0 {
+            return;
+        }
+        match b.steam.fluid {
+            "STEAM" => {
+                b.steam.fluid = "HOTSTEAM";
+                b.steam.fill /= 10;
+            }
+            "HOTSTEAM" => {
+                b.steam.fluid = "SUPERHOTSTEAM";
+                b.steam.fill /= 10;
+            }
+            "SUPERHOTSTEAM" => {
+                b.steam.fluid = "ULTRAHOTSTEAM";
+                b.steam.fill /= 10;
+            }
+            "ULTRAHOTSTEAM" => {
+                b.steam.fluid = "STEAM";
+                b.steam.fill = b.steam.fill.wrapping_mul(1000).min(b.steam.max);
+            }
+            _ => {}
+        }
+    }
+
+    fn update_heater(&mut self, i: usize) {
+        let identifier = self.identifiers.get(&i).copied();
+        let heat = self.columns[i].heat;
+        let Data::Heater(h) = &mut self.columns[i].data else { unreachable!() };
+        if heat <= 50.0 || h.feed.fill <= 0 {
+            // FluidTank.setType: the identifier in the slot retypes (and empties) the tank
+            if let Some(f) = identifier {
+                if h.feed.fluid != f {
+                    h.feed.fluid = f;
+                    h.feed.fill = 0;
+                }
+            }
+        }
+        let mut cooled = 0.0;
+        match fluids::heatable(h.feed.fluid) {
+            Some(step) => {
+                h.steam.fluid = step.produced;
+                let temp_range = heat - f64::from(step.produced_temperature);
+                let eff = step.heat_exchanger_efficiency;
+                if temp_range > 0.0 && eff > 0.0 {
+                    let tu_per_degree = 2_000.0 * eff;
+                    let input_ops = h.feed.fill / step.amount_req;
+                    let output_ops = (h.steam.max - h.steam.fill) / step.amount_produced;
+                    let temp_ops = ((temp_range * tu_per_degree) / f64::from(step.heat_req)).floor() as i32;
+                    let ops = input_ops.min(output_ops.min(temp_ops));
+                    h.feed.fill -= step.amount_req * ops;
+                    h.steam.fill += step.amount_produced * ops;
+                    cooled = (f64::from(step.heat_req.wrapping_mul(ops)) / tu_per_degree) * eff;
+                }
+                if eff <= 0.0 {
+                    h.feed.fluid = "NONE";
+                    h.steam.fluid = "NONE";
+                }
+            }
+            None => {
+                h.feed.fluid = "NONE";
+                h.steam.fluid = "NONE";
+            }
+        }
+        self.columns[i].heat -= cooled;
+        self.base_update(i);
+    }
+
+    fn update_cooler(&mut self, i: usize) {
+        let (x, z) = (self.columns[i].x, self.columns[i].z);
+        let refresh = {
+            let Data::Cooler(c) = &mut self.columns[i].data else { unreachable!() };
+            if c.timer <= 0 {
+                c.timer = 60;
+                true
+            } else {
+                c.timer -= 1;
+                false
+            }
+        };
+        if refresh {
+            let mut n = [None; 25];
+            for (k, slot) in n.iter_mut().enumerate() {
+                *slot = self.at(x - 2 + (k / 5) as i32, z - 2 + (k % 5) as i32);
+            }
+            let Data::Cooler(c) = &mut self.columns[i].data else { unreachable!() };
+            c.neighbors = n;
+        }
+        let Data::Cooler(c) = &mut self.columns[i].data else { unreachable!() };
+        if c.cold.fill >= 50 && c.hot.max - c.hot.fill >= 50 {
+            c.cold.fill -= 50;
+            c.hot.fill += 50;
+            let neighbors = c.neighbors;
+            for n in neighbors.into_iter().flatten() {
+                let col = &mut self.columns[n];
+                col.heat -= 200.0;
+                if col.heat < 20.0 {
+                    col.heat = 20.0;
+                }
+            }
+        }
+        self.base_update(i);
+    }
+}
