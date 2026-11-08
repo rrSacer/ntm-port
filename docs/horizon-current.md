@@ -506,73 +506,94 @@ Validação (binário `e57ab62508c8c7c9bbdf5283fc3794882b462b0d9654c23e8aefc9a8f
 
 ## Onda 0 — item 5 (save atômico)
 
-Branch NTM `wave0-vanilla` sobre `main` `85d06d9c`; motor `wave0-vanilla` `0f21c07f0` sobre `ntm-current` `f22df7b81`, só
-com instrumentação de teste: os failpoints do save, o alvo `live_chunk` e `HORIZON_WRITER_HOLD` (2 arquivos, +148/−7).
-**Estado: entregue para revisão independente, sem merge.** A sexta revisão e uma revisão fresca reprovaram o R5 (R6-1 a
-R6-3, F1 a F5); nenhum achado atacou a paridade vanilla por construção, e todos foram fechados na raiz. Backups: NTM e
-motor `wave0-save-r4c` (`891d02f0`, `1d48f96aa`).
+Branch NTM `wave0-vanilla` sobre `main` `85d06d9c`; motor `wave0-vanilla` `a31497f38` sobre `ntm-current` `f22df7b81`:
+instrumentação de teste (os failpoints do save, o alvo `live_chunk`, `HORIZON_WRITER_HOLD`) e duas extensões locais
+(`world_saving` e a descarga com o chunk no lugar; seção seguinte). **Estado: entregue para revisão independente, sem
+merge.** A sétima revisão e a segunda rodada da revisão fresca reprovaram o R6 (R7-1 a R7-4, N1, N2); todos foram fechados
+na raiz. Backups: NTM e motor `wave0-save-r4c` (`891d02f0`, `1d48f96aa`).
 
 **Critério.** Cada execução é comparada com o vanilla no mesmo roteiro e no mesmo corte, **item por item**: (L) nada some
 que o vanilla guarde; (D) nenhum item fica com mais cópias que no vanilla. Nenhuma violação é dispensada por categoria.
 
-**Princípio: toda obrigação mora no registro do chunk que a originou, nunca no KV** (a semântica de um BE vanilla).
+**Princípio: toda obrigação mora no registro do chunk que a originou, nunca no KV** (a semântica de um BE vanilla). E nada
+é dado a um registro depois que um save o tomou.
 
 | Parte | Como fica |
 | --- | --- |
-| Armazenamento (KV, `data/ntm/state`) | Em memória; gravado inteiro no fim de cada save (`.tmp` e `rename`; `fsync` com espera), depois de `native_world_saved(true)`. Guarda só o que é do mundo e não decide o conteúdo de nenhum chunk: bombas, radiação, ticks, zirnox, gerações (o BE prevalece sobre um contador adiantado). **Nenhuma remoção, lote de efeitos, recibo ou sobrevivente**: `Kept` deixa de gravá-los (só os de um save antigo, até chegarem aos seus chunks). |
-| Obrigações no registro do chunk (`server::obligations`) | Uma remoção que espera seu grupo e um lote de efeitos em voo (com itens e as `tombstones`) moram no anexo `ntm:ledger` da sua casa: o chunk da máquina removida, ou o do primeiro dono do lote (o núcleo numa pilha). O servidor dá a cada registro o que ele deve no mesmo tick em que muda (`store_obligations`), e só joga o que uma casa carregada deve (`home_loaded`); quando ela carrega, o registro diz o que ainda deve (`native_obligations_loaded`). Mudanças entre ticks (comando) regravam o registro da casa dentro do próprio save, depois das regiões, como as entidades de um baú quebrado. |
-| Quebra de um núcleo | Solta as hastes na hora, do chunk do núcleo, como o `breakBlock` do Java; membros fora de alcance voltam a tijolo quando carregam (varredura de órfãos). Nenhuma remoção espera segurando itens (achado do próprio verificador, abaixo). |
+| Armazenamento (KV, `data/ntm/state`) | Em memória; gravado inteiro no fim de cada save (`.tmp` e `rename`; `fsync` com espera), depois de `native_world_saved(wait)` com o `wait` real do save (R7-1). Guarda só o que é do mundo e não decide o conteúdo de nenhum chunk: bombas, radiação, ticks, zirnox, gerações. **Nenhuma remoção, lote de efeitos, recibo ou sobrevivente** de uma versão nova. |
+| Obrigações no registro do chunk (`server::obligations`) | Uma remoção que espera seu grupo e um lote de efeitos em voo moram no anexo `ntm:ledger` da sua casa: o chunk da máquina removida, ou o do primeiro dono do lote (o núcleo numa pilha). O servidor dá a cada registro o que ele deve no mesmo tick em que muda (`store_obligations`), e só joga o que uma casa carregada deve (`home_loaded`); quando ela carrega, o registro diz o que ainda deve (`native_obligations_loaded`). |
+| Mudança entre ticks (N1, R7-2) | Um bloco mudado depois do último tick (um comando, um tick congelado) é tomado como o fim de um tick o toma (`native_settle`: eventos, só os passos dos grupos cuja máquina ou núcleo saiu, efeitos, obrigações): antes de o save tomar qualquer coisa (`world_saving`) e na descarga, com o chunk ainda no lugar. O conteúdo de uma máquina removida sai na hora, como o de um baú. A regravação tardia de registros depois das regiões foi removida. |
+| Quebra de um núcleo | Solta as hastes na hora, do chunk do núcleo, como o `breakBlock` do Java; membros fora de alcance voltam a tijolo quando carregam (varredura de órfãos). Nenhuma remoção espera segurando itens. |
 | Nomes dos lotes (R6-1) | Derivados de um nonce sorteado por sessão e de uma contagem: um KV que volta com uma morte não repete o nome que um registro ainda guarda como pago. |
 | Emissão | Chunk do drop carregado: drop vanilla no mesmo passo. Não carregado: devido no registro do dono (o slot de saída), pago quando o chunk entra. |
 | Multibloco rasgado | O núcleo com uma célula estranha se desmonta; membros sem núcleo voltam a tijolo (`a_pile_saved_formed_on_one_side_of_a_border_reopens_whole_or_as_bricks`). |
-| Diário antecipado do `flush` | Removido: o KV só vai ao disco no fim de um save, e nenhum save cai entre dois efeitos de um tick; cada efeito não regrava mais o `world`. |
-| Saves antigos | Migração única e idempotente do ledger rastreado (R5-1); um registro ainda não resolvido atravessa podas e saves inteiro (F2) e sua contagem é ajustada pelo parser SNBT (F3). Remoções e lotes de um KV antigo ficam nele até o chunk de casa os receber e um save com espera gravar esse chunk. |
-| Bombas (F4) | Fiel ao HBM 1.7.10, quirks incluídos: a cratera de uma nuke (`EntityNukeExplosionMK5`) para com o mundo e o balefire (`EntityBalefire`) continua com seu dano; ver `docs/bombas.md`. |
+| Saves antigos: o ledger | Migração única e idempotente do ledger rastreado (R5-1); um registro ainda não resolvido atravessa podas e saves inteiro (F2) e sua contagem é ajustada pelo parser SNBT (F3). |
+| Saves antigos: remoções e lotes do KV (R7-1, N2) | Ficam no KV **como foram lidos** (`WorldState::legacy`), não como a fila está, e nenhum é jogado antes de o registro da casa ser lido (`ServerHost::home_migrated`). Um registro que já o tomou (`migrated: X`, guardado com o registro) diz o que resta dele, e a cópia do KV não acrescenta nada. Senão o servidor o assume e o registro passa a dizer `migrated: X`. O KV o descarta só quando um save **com espera** gravou o registro com o marcador antes dele (capturado em `world_saving`), ou quando o registro foi lido do disco com o marcador. Um save sem espera não aposenta nada. O marcador sai quando o KV aberto com o mundo já não o nomeia. Um lote antigo sem nome recebe um derivado do seu conteúdo, igual em toda leitura. |
+| Recibos e sobreviventes da sessão | O que um save levou com os chunks é confirmado quando os registros estão no disco: na hora, num save com espera; num sem espera, no primeiro tick em que o escritor do motor diz que tudo o que recebeu está no disco (`writes_finished`). Achado do meltdown no R7b: confirmados só por save com espera, cresciam sem fim numa sessão de autosaves, e o passo de cada grupo os copiava (pior tick de 61 ms na sexta rodada). |
+| Bombas (F4, R7-3) | Fiel ao HBM 1.7.10, quirks incluídos: a cratera de uma nuke (`EntityNukeExplosionMK5`) para com o mundo, e o balefire (`EntityBalefire`) continua. O dano de cada uma dura exatamente a sua cratera (o pulso guarda o id da explosão), curta ou longa, sem prazo fixo; ver `docs/bombas.md`. |
 
-**Verificador** (`crates/ntm-core/tests/save_model.rs`). Chunk A da máquina (BE, devidos, nomes pagos), funil, um terceiro
-chunk, os arquivos de entidades, o jogador, o KV gravado no instante do save com as regiões ainda na fila, e o escritor do
-motor. A máquina atira duas vezes (em sessões diferentes), pode ser quebrada (espalha na hora, como o dropper vanilla) e
-um tiro devido pago deixa seu nome no registro de A. Cada sequência roda no mod e no vanilla, passo a passo; (L) e (D) por
-átomo a cada estado, sem exceções.
+**Verificador** (`crates/ntm-core/tests/save_model.rs`). Chunk A da máquina (BE, devidos, nomes pagos, marcador), funil,
+um terceiro chunk, os arquivos de entidades, o jogador, o KV gravado no instante do save com as regiões ainda na fila, e o
+escritor do motor. A máquina atira duas vezes (em sessões diferentes) e pode ser quebrada: por um jogador (espalha na hora,
+como o dropper vanilla) ou por um comando entre dois ticks (`Command`), que o mod só toma no fim do próximo tick, antes de
+um save tomar os chunks, ou numa descarga com o chunk no lugar. Um tiro devido pago deixa seu nome no registro de A. O
+mundo também abre de um KV antigo com uma remoção ou um lote. O análogo vanilla da remoção é um baú inteiro no registro de
+A, quebrado no instante em que o mundo lê esse registro; o do lote é a saída de um dropper. Cada sequência roda no mod e no
+vanilla, passo a passo; (L) e (D) por átomo a cada estado, sem exceções.
 
 | Execução | Resultado |
 | --- | --- |
-| N=9 | 180.635.136 estados visitados, 11.956.549 distintos, 5.619.910.223 sequências; zero violações. 1.394 s. |
-| **N=10** | **1.390.774.806 visitados, 89.701.793 distintos, 76.548.832.719 sequências; zero.** 11.151 s. N=11 não é viável com o estado maior (quebra, segundo tiro, nomes pagos). |
-| Passeios aleatórios | 6 milhões de até 40 operações (240 M operações); zero. |
+| N=9 | 188.661.834 estados visitados, 12.399.394 distintos, 8.361.560.872 sequências; zero violações. |
+| **N=10** | **1.437.623.114 visitados, 92.279.811 distintos, 116.107.959.595 sequências; zero.** 10.783 s. (O arquivo do log foi sobrescrito por uma segunda execução, interrompida; o resultado foi restaurado do log da shell monitorada, com nota.) |
+| KV antigo (remoção e lote) | Profundidade 9: remoção 137.589.262 visitados, 8.415.470 distintos, 9.804.079.312 sequências; lote 279.953.704 visitados, 17.630.320 distintos, 10.284.021.767 sequências; zero. |
+| Passeios aleatórios | 6 milhões de até 40 operações (240 M operações) e, com outra semente, 6 milhões de até 60 (360 M); zero. Os passeios acharam uma divergência do próprio modelo (o nome do derrame de um comando), minimizada por delta-debugging a 10 operações e corrigida no modelo. |
 | Morte fora de um save | Os dois mundos voltam ao último save, átomo por átomo. |
-| Mutante `InStorage` (devido no KV) | Pego em 118.205 estados: `[Fire(A), Kill, Load(A), Fire(C), Save(false), Kill]`. |
-| Mutante `RemovalInStorage` (R6-2, F1) | Pego em 310.661 estados: `[Fire(A), Break, Kill, Load(A), Break, Save(false), Kill]`. |
-| Mutante `CounterIds` (R6-1) | Pego em 41.223.262 estados (C fora de alcance na abertura): `[Fire(C), Unload(A), Load(A), Write, Write, Kill, Load(A), Load(C), Fire(A)]`: o nome pago volta e o tiro some. |
+| Mutante `InStorage` (devido no KV) | Pego em 129.834 estados. |
+| Mutante `RemovalInStorage` (R6-2, F1) | Pego em 310.728 estados. |
+| Mutante `CounterIds` (R6-1) | Pego em 43.155.679 estados. |
+| Mutante `PublishAfterCapture` (N1: publica depois da captura) | Pego em 357 estados: `[Fire(A), Command, Save(true), Kill]`. |
+| Mutante `UnloadWithoutHome` (R7-2: unload sem casa) | Pego em 33.775 estados: `[Fire(A), Command, Unload(A), Unload(funil), Save(true), Kill]`. |
+| Mutante `RetireEarly` (R7-1: migração aposenta antes) | Pego em 137 (remoção) e 138 (lote) estados: `[…, Save(false), Kill]`. |
+| Mutante `NoMarker` (N2: sem o marcador) | Pego em 6.606 estados: `[…, Pickup, Save(false), Write, Kill]`: o estoque sai duas vezes. |
 
-O verificador achou uma divergência real no caminho: com a remoção que esperava o grupo, o mod guardava as hastes no
-registro de A enquanto o vanilla as espalhava nas entidades; um corte entre regiões e entidades, somado ao arquivo do
-jogador à frente, dava ao mod duas cópias contra uma. Daí a quebra imediata. Os três mutantes ficam como testes
-permanentes.
+O verificador achou duas divergências reais no caminho. A primeira (R6): com a remoção que esperava o grupo, o mod
+guardava as hastes no registro de A, enquanto o vanilla as espalhava nas entidades. Daí a quebra imediata. A segunda (R7),
+no próprio desenho da migração: a primeira versão comparava a remoção antiga com hastes já espalhadas nas entidades de A, e
+a descarga (entidades, depois registro) dava duas cópias. O análogo certo é o baú inteiro quebrado na leitura, que tem o
+mesmo resíduo de ordem da descarga vanilla. Os sete mutantes ficam como testes permanentes. Os testes de unidade
+(`pile_server`: `a_legacy_*`, `a_marker_read_from_the_disk_*`, `a_break_not_yet_taken_when_its_chunk_unloads_*`,
+`a_break_with_no_tick_before_the_save_*`) cobrem cada corte com o código real, e cada um falha com a mutação
+correspondente aplicada ao código (aposentar sem espera, ignorar o marcador, não acomodar antes do save).
 
-**Provas em jogo.** **110/110** pontos em 21 cenários no binário final, duas reaberturas, cada um jogado também no
-controle vanilla. Todo cenário tem `kill` (morte fora de um save) e **`kv_committed`**: um save sem espera (a pausa) com o
-escritor de regiões parado (`HORIZON_WRITER_HOLD`) e o processo morto logo depois do KV (`NTM_FAILPOINT=kv_committed`), o
-corte "KV novo, regiões antigas". O oráculo compara o **multiconjunto** de itens por id (hastes por tipo, devidos e
-remoções dos anexos incluídos) no disco do corte, depois da reabertura e contra o controle, e exige `kv_items = 0` no
-disco dos dois mundos. Um corte por índice de registro é comparado com o controle que gravou os mesmos chunks, em todas as
-condições (F5).
+**Provas em jogo.** **129/129** pontos em 24 cenários no binário final, duas reaberturas, cada uma comparada **por
+item** (também a segunda, R7-4), cada cenário jogado também no controle vanilla. Todo cenário tem `kill` (morte fora de
+um save) e **`kv_committed`**: um save sem espera (a pausa) com o escritor de regiões parado (`HORIZON_WRITER_HOLD`) e o
+processo morto logo depois do KV (`NTM_FAILPOINT=kv_committed`), o corte "KV novo, regiões antigas". O oráculo compara o
+**multiconjunto** de itens por id (hastes por tipo, devidos e remoções dos anexos incluídos) no disco do corte, depois de
+cada reabertura e contra o controle, e exige `kv_items = 0` no disco dos dois mundos. Um corte por índice de registro é
+comparado com o controle que gravou os mesmos chunks, em todas as condições (F5).
 
 | Grupo | Pontos | NTM = controle |
 | --- | --- | --- |
-| `original` (todos os cortes, `kv_committed`, `live_chunk:2,0`/`3,0`) | 18 | 12, ou 2 quando o núcleo chegou sem as entidades (casado com o controle de mesmos chunks) |
+| `original` (todos os cortes, `kv_committed`, `live_chunk:2,0`/`3,0`, varredura) | 18 | 12, ou 2 quando o núcleo chegou sem as entidades (os mesmos chunks gravados no controle) |
 | `mining` (todos os cortes, `kv_committed`, `live_chunk:1,0`) | 16 | 7, ou 0 em `chunks_written`/`live_chunk:1,0`, como o baú |
+| **`frozen-break`** (N1: núcleo quebrado por comando com ticks congelados, save sem tick no meio) | 7 | 12 = baú em todos os cortes; 2 = 2 em `live_chunk:2,0`/`chunks_written` (as hastes nas entidades ainda não gravadas, como os itens do baú) |
+| **`frozen-unload`** (R7-2: a mesma quebra, e o chunk do núcleo descarrega antes de um tick) | 3 | 12 = baú |
+| **`legacy`** (R7-1 e N2: KV no formato R5 com um lote devido ou já entregue, cortado por `kv_committed`, por `players_saved`, regiões novas com KV antigo, ou inteiro) | 6 | 1 niter em cada uma das duas aberturas, por item, e depois de pago; o KV do corte o guarda (só um save com espera o aposenta) |
 | `coupled-a/b/ea/eb` | 24 | iguais ao funil em cada corte |
-| `coupled-break` (R6-2: transferência, quebra com o chunk do loader fora, save) | 6 | 6; em `kill`/`kv_committed` igual ao controle ({Ra-226Be: 6}: a transferência rasgada na borda); em `chunks_written` o mod guarda as hastes devidas no registro que o vanilla perde nas entidades não gravadas, sem cópia por item |
-| `break`/`replace`/`break64` | 18 | iguais ao baú |
+| `coupled-break` (R6-2) | 6 | 6; em `chunks_written`/`entities_written` o mod guarda as hastes devidas no registro que o vanilla perde nas entidades não gravadas (6 contra 1), sem cópia por item |
+| `break`/`replace`/`break64` | 21 | iguais ao baú (16 ou 64; 0 nos cortes que gravaram só o chunk do baú) |
 | `save-quit`, `crossing`, `crossing-kill` | 8 | 12; 24 e 20 = controle (entidade que atravessou para um chunk descarregado) |
 | `origin-*`, `merge-stale`, `pickup-merge`, `origin-away` | 20 | iguais ao controle; em `kv_committed`, 32 e 176: o arquivo do jogador gravado pela pausa à frente das regiões (resíduo vanilla) |
 
+Rodadas em paralelo (até 10 jogos), cada falha reexecutada sozinha antes de contar: 2 provas (`origin-pickup-away`,
+`origin-away`) falharam por tempo no paralelo e passaram sozinhas.
+
 **Resíduos, todos iguais ao vanilla na mesma execução:** o save rasgado entre chunks; o arquivo do jogador à frente das
 regiões; a transferência rasgada na borda; o devido que volta com o estoque depois de uma morte; a entidade que
-atravessou para um chunk descarregado. Uma mudança de bloco entre o último tick e o save (só por comando) tem seu
-registro regravado depois das regiões, com a janela das entidades vanilla. Obrigações de uma dimensão estacionada chegam
-quando ela volta a ser a ativa e o chunk recarrega.
+atravessou para um chunk descarregado; a descarga rasgada entre o arquivo de entidades e o registro (a do baú quebrado,
+também para a remoção de um KV antigo assumida na leitura). Obrigações de uma dimensão estacionada chegam quando ela volta
+a ser a ativa e o chunk recarrega.
 
 **Desempenho do meltdown** (seis rodadas, `HORIZON_SPIKES`, pior tick por rodada em ms):
 
@@ -581,23 +602,40 @@ quando ela volta a ser a ativa e o chunk recarrega.
 | B1 (base) | até 2.273 |
 | R4c | até 359 (espera do disco no KV por tick) |
 | R5f | 13/48/71/15/65/68 · 14/43/64/18/46/70 · 13/38/58/13/45/111 |
-| **R6f** | **8/19/28/7/19/33 · 5/18/24/6/14/25 · 6/14/22/6/17/26** |
+| R6f | 8/19/28/7/19/33 · 5/18/24/6/14/25 · 6/14/22/6/17/26 |
+| R7b | 7/17/31/43/53/61 · 7/18/25/38/48/59 · 8/18/28/42/47/61 (cresce a cada rodada: os recibos, corrigido no R7c) |
+| R6b, mesma janela | 5/14/25/6/15/24 · 8/20/29/7/22/32 |
+| **R7c**, intercalado com o R6b | **9/22/31/8/23/32 · 8/20/29/7/20/28** |
 
-O fim do diário antecipado tirou a serialização do `world` a cada efeito: o pior tick do meltdown caiu de 50–110 ms para
-até 32,5 ms. Gravação do KV: 0,1 ms no autosave (5,3 KB), 15,2/18,3/16,7 ms no save com espera (`fsync`).
+As medições de R6b e R7c da última linha foram intercaladas (R6b, R7c, R6b, R7c), numa janela em que a coordenação parou
+as outras frentes: nenhuma compilação nem outro jogo, carga média de 1 minuto entre 1,8 e 6,5 no início de cada uma (o
+próprio jogo largo, nas CPUs 0–4 e 6–10). Os números absolutos não se comparam com os do R6f, medido noutra configuração
+da máquina; o que decide é a tendência: o R7c cai a cada autosave (quarta rodada) como o R6b, e fica na faixa dele.
+Medições anteriores sob a carga de outras frentes (até 13,8, com compilações) deram picos nos dois binários, como um
+`keep_world` de 501 ms no R6b, e não entram na conclusão.
 
-**Validação final.** Motor `0f21c07f0`; binário `horizon-client.R6b` SHA256
-`4fdbaba551f26136171f399f33e0dd5e710b7ab9aea46e34052f84342f24d2c1`, construído de `a2003c95` (depois dele só testes,
-harness e docs). NTM: 509 testes em debug (3 ignorados; os do verificador só em release), verificador em release (6 testes);
-motor: 109 testes de `save::`/`entities::`; Clippy `-D warnings` do workspace NTM, do `horizon-client-lib` e do cliente
-transformado, sem isenções. Regressão no mesmo binário: 28 execuções, 30 mundos, **1.943 checks, nenhuma falha** (R6 e,
-para `bombs`, R6c: 61 checks com a segunda sessão de reinício). Código de produção NTM (`crates/ntm-core/src` e `native`,
-com os testes de unidade): contra `wave0-save-r4c` 15 arquivos, +1266/−575; contra o R5 (`9ce02758`) 17 arquivos,
-+912/−227.
+**Validação final.** Motor `a31497f38`; binário `horizon-client.R7c` SHA256
+`98a85002ec50c70a0ac860ea3ef60618e5ed2d8c6fa924cc83c0a5d517b24ed0`, construído de `9c4061a5`. NTM: 522 testes em debug
+(os do verificador só em release), verificador em release (11 testes); motor: 10 testes de `save::`/`entities::` e o da
+ordem do save, 3 de `world::` (o da descarga) e 4 de ganchos; Clippy `-D warnings` do workspace NTM, do
+`horizon-client-lib`, do render (lib e testes) e do cliente transformado. Regressão no mesmo binário: 28 execuções, 30
+mundos, **1.943 checks, nenhuma falha** (13 execuções falharam por tempo no paralelo e passaram sozinhas). Código de
+produção NTM (`crates/ntm-core/src` e `native`, com os testes de unidade): contra o R6b (`a2003c95`) 16 arquivos,
++800/−205; contra `wave0-save-r4c` 19 arquivos, +2010/−677. Motor contra `f22df7b81`: 7 arquivos, +278/−14.
 
-Evidência local: `wave0/crash-reports/` (`R6f-proof-summary.json`, `R6v-*`, `R6w-*`, `R6-regression-summary.json`,
-`R6c-regression-summary.json`, `P-R6f-*.json` com fases em `P-R6f-*-evidence/`), `wave0/opus/model-R6f-{quick,9,10}.log`.
-Mundos aprovados são apagados após guardar logs e números.
+Evidência local: `wave0/crash-reports/` (`R7cf-proof-summary.json`, `R7c-regression-summary.json`, `P-R7c-*`, `P-AB-*`,
+`P-R6b-ab`, `P-R7b-*`), `wave0/opus/model-R7b-{9,10,walks2}.log`. Mundos aprovados são apagados após guardar logs e números.
+
+## Onda 0 — item 5: extensões locais do motor
+
+Motor `a31497f38` sobre `f22df7b81` (`0f21c07f0` era só instrumentação). Ambas são candidatas a PR upstream. O estudo do
+upstream mostrou que `host-bridge` e `chunk-tickets` mexem perto delas: conferir esses dois na próxima atualização antes de
+reaplicá-las.
+
+| Extensão local | Razão e composição com o oficial |
+| --- | --- |
+| Gancho `world_saving(wait)` (`native_world_saving`, em `native-hooks.json`), na cabeça de `save_game_with`, antes de `save_level`, dos níveis estacionados, dos metadados e dos jogadores | O upstream só tem `world_saved` (API 306), depois de tudo tomado. Todo save (autosave, pausa, `save` do controle, `/save-all`, fechamento, dedicado) passa por `save_game_with`, e nada do motor roda entre um comando do controle e esse save; um tick congelado nem chama o `server_tick` do NTM. Sem o gancho, a quebra de uma máquina com conteúdo oculto ficava fora do save que a seguia (N1). Custo nulo sem mod: um despacho vazio por save. Testes: `a_save_is_heard_before_it_takes_anything` (ordem em `save_game_with`) e `world_saving_reaches_the_mods_with_its_wait` (despacho). O efeito ponta a ponta é a prova `frozen-break`. |
+| Descarga com o chunk no lugar: `native_chunks_changed` devolve a `world.chunks` as colunas que o `streaming.update` já tirou (`World::put_back`) durante o despacho de `chunk_unload` e as tira de novo, com o que os ganchos escreveram, para o `unloaded` que é gravado (`World::take_back`) | O upstream retira as colunas antes de avisar os mods, e o que um mod gravasse no chunk que sai não chegava ao registro gravado (R7-2). O `ChunkEvent.Unload` do NeoForge vem com o chunk ainda acessível, antes do save. Custo: duas operações de mapa por coluna descarregada. Teste `a_column_put_back_for_its_unload_leaves_with_what_was_written_into_it` (o anexo e o bloco escritos durante o gancho estão no chunk gravado). Prova em jogo `frozen-unload`. |
 
 ## Hooks de item — extensões locais
 
