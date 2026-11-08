@@ -62,6 +62,24 @@ Logo, o estrato só sai com mudança de API de conteúdo (um hook de material ru
 
 Por isso os veios de gnaisse estão corretos e registrados, mas geram 0 blocos em jogo. Comportamento de Java sem o estrato: também geram 0, porque o substrato é o estrato.
 
+## Excesso de rendimento em jogo: investigação (lacuna de motor, aberta)
+
+Medido com o cliente e o empacotador do fork (`/home/sacer/.cache/ntm-native-main`), pacote completo, 81 chunks centrais, janela 9×9 (`tools/content-gen/yield_probe.py`).
+
+O port do algoritmo de veio de 26.3 (`horizon-world/src/worldgen/ore_feature.rs`) e o `WorldGenMinable` de 1.7.10 dão rendimentos por tentativa iguais, dentro de 15% (`tools/content-gen/vein_yield_oracle.py`). Em jogo, todos os veios saem acima de Java: Nether de 1,4× a 2,2×, overworld de 1,2× a 2,0×.
+
+| Hipótese | Resultado |
+| --- | --- |
+| Duplicação por bioma (feature rodando uma vez por bioma no chunk) | **Refutada.** No Nether, os 81 chunks têm 1 bioma distinto e o excesso persiste (carvão: 514,7 por chunk contra 238 de Java). No overworld, o rendimento dos veios do ntm não sobe com o número de biomas: alumínio 19,2 / 16,5 / 19,6 para 2 / 3 / 4 biomas; urânio 14,9 / 12,2 / 10,6. |
+| Duplicação no código de decoração | Refutada por leitura. Features de bioma são deduplicadas por índice em `worldgen/decoration.rs:153–160` (`BTreeSet`). Peças de feature de jigsaw só rodam no chunk que contém o ponto da peça (`structure/start.rs:1391`, `structure/jigsaw.rs:274`). |
+| Método de medição | Não explica: o oráculo de Java medido com a mesma janela dá o mesmo rendimento. |
+| Controle vanilla no Nether (quartzo: 16 tentativas × 6,0 = 96 por chunk, alvo netherrack) | **Inflado**: 150,6 por chunk, 1,57× acima do teto. Como o quartzo vanilla também sai acima do teto com 1 bioma por chunk, o excesso não é do conteúdo ntm. |
+| Controle vanilla no overworld (carvão) | Não conclusivo: a previsão ignorou `ore_coal_upper` (30 tentativas). |
+
+Conclusão atual: o excesso não vem do conteúdo (forma do veio igual a Java, sem duplicação por bioma) e aparece também em veio vanilla no Nether. A causa provável está no motor, em como as features de decoração ou de estrutura são executadas por chunk. **Lacuna de motor, não corrigida.** Não há contorno no conteúdo.
+
+Os valores declarados de Java estão nos veios (`attempts_per_chunk` = tentativas de Java). A calibração de tentativas foi revertida, como pedido.
+
 ## Lacunas
 
 - **Estrato de gnaisse:** ver seção acima.
