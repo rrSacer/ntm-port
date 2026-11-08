@@ -341,10 +341,23 @@ public class Oracle {
 		return out;
 	}
 
+	static List<Object> bigBytes() {
+		List<Object> out = new ArrayList<>();
+		String[] vals = {"0", "1", "-1", "127", "128", "-128", "-129", "255", "256", "-255", "-256", "32767", "32768", "-32768", "-32769",
+			"92233720368547758", "9223372036854775807", "-9223372036854775808", "9223372036854775808", "18446744073709551615", "18446744073709551616",
+			"123456789012345678901234567890", "-123456789012345678901234567890", "340282366920938463463374607431768211456", "-340282366920938463463374607431768211456"};
+		for (String v : vals) {
+			byte[] b = new BigInteger(v).toByteArray(); StringBuilder h = new StringBuilder();
+			for (byte x : b) h.append(String.format("%02x", x));
+			out.add(l(v, h.toString()));
+		}
+		return out;
+	}
+
 	public static void main(String[] a) {
 		StringBuilder b = new StringBuilder();
 		js(b, o("schema", 1, "packs", packs(), "net_cases", netCases(), "redd_cases", reddCases(), "socket_cases", socketCases(), "control_cases", controlCases(),
-			"geometry", geometry(), "wires", wireCases(), "links", linkCases(), "switches", switches(), "randoms", randoms()));
+			"geometry", geometry(), "wires", wireCases(), "links", linkCases(), "switches", switches(), "randoms", randoms(), "big_bytes", bigBytes()));
 		System.out.println(b);
 	}
 }

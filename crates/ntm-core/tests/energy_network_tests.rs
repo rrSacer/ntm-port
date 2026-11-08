@@ -322,6 +322,25 @@ fn big_int_matches_i128() {
     assert_eq!(big.add(&big).half(), big);
 }
 
+#[test]
+fn big_int_bytes_match_java_to_byte_array() {
+    let fx = fixture();
+    for pair in arr(&fx, "big_bytes") {
+        let value = BigInt::parse(pair[0].as_str().unwrap()).unwrap();
+        let hex: String = value
+            .to_java_bytes()
+            .iter()
+            .map(|b| format!("{b:02x}"))
+            .collect();
+        assert_eq!(hex, pair[1].as_str().unwrap(), "{}", pair[0]);
+        let bytes: Vec<u8> = (0..hex.len() / 2)
+            .map(|k| u8::from_str_radix(&hex[2 * k..2 * k + 2], 16).unwrap())
+            .collect();
+        assert_eq!(BigInt::from_java_bytes(&bytes), Some(value));
+    }
+    assert_eq!(BigInt::from_java_bytes(&[]), None);
+}
+
 // ------------------------------------------------------------------ REDD, socket
 
 fn slot_of(spec: &Value) -> Option<ItemSlot> {

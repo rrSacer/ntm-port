@@ -165,6 +165,70 @@ impl BigInt {
         })
     }
 
+    /// `toByteArray()`: big-endian two's complement, the shortest that holds
+    /// the sign (this is how the REDD saves `power` in NBT).
+    pub fn to_java_bytes(&self) -> Vec<u8> {
+        let mut be: Vec<u8> = self
+            .mag
+            .iter()
+            .rev()
+            .flat_map(|l| l.to_be_bytes())
+            .collect();
+        let lead = be.iter().take_while(|&&b| b == 0).count();
+        be.drain(..lead);
+        if !self.neg {
+            if be.first().is_none_or(|b| b & 0x80 != 0) {
+                be.insert(0, 0);
+            }
+            return be;
+        }
+        // -m = !(m - 1)
+        let minus_one = BigInt {
+            neg: false,
+            mag: sub_mag(&self.mag, &[1]),
+        };
+        let mut out: Vec<u8> = minus_one
+            .mag
+            .iter()
+            .rev()
+            .flat_map(|l| l.to_be_bytes())
+            .collect();
+        let lead = out.iter().take_while(|&&b| b == 0).count();
+        out.drain(..lead);
+        for b in out.iter_mut() {
+            *b = !*b;
+        }
+        if out.first().is_none_or(|b| b & 0x80 == 0) {
+            out.insert(0, 0xFF);
+        }
+        out
+    }
+
+    /// `new BigInteger(byte[])`; `None` for an empty array (Java throws).
+    pub fn from_java_bytes(bytes: &[u8]) -> Option<BigInt> {
+        let first = *bytes.first()?;
+        let neg = first & 0x80 != 0;
+        let mut be: Vec<u8> = bytes.to_vec();
+        if neg {
+            for b in be.iter_mut() {
+                *b = !*b;
+            }
+        }
+        let mut mag: Vec<u32> = Vec::new();
+        for chunk in be.rchunks(4) {
+            let mut limb = [0u8; 4];
+            limb[4 - chunk.len()..].copy_from_slice(chunk);
+            mag.push(u32::from_be_bytes(limb));
+        }
+        trim(&mut mag);
+        let mut out = BigInt { neg: false, mag };
+        if neg {
+            out = out.add_long(1);
+            out.neg = !out.mag.is_empty();
+        }
+        Some(out)
+    }
+
     pub fn is_zero(&self) -> bool {
         self.mag.is_empty()
     }
