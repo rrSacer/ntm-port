@@ -51,7 +51,7 @@ public class World { public boolean isRemote=false; private final GameRules rule
  public static class Provider {public int dimensionId=0;}
  public final Map<Long,Block> blocks=new HashMap<>(); public final Map<Long,Integer> metas=new HashMap<>(); public final Map<Long,TileEntity> tiles=new HashMap<>();
  public final List<String> log=new ArrayList<>();
- static long key(int x,int y,int z){return ((long)(x+1000000)*4000000L+(z+1000000))*512L+(y+100);}
+ public static long key(int x,int y,int z){return ((long)(x+1000000)*4000000L+(z+1000000))*512L+(y+100);}
  public Block getBlock(int x,int y,int z){Block b=blocks.get(key(x,y,z));return b==null?Blocks.air:b;}
  public int getBlockMetadata(int x,int y,int z){return metas.getOrDefault(key(x,y,z),0);}
  public boolean setBlock(int x,int y,int z,Block b){log.add("setBlock "+x+","+y+","+z+" "+b.name);blocks.put(key(x,y,z),b);return true;}
@@ -131,7 +131,7 @@ put('com/hbm/handler/threading/PacketThreading.java', '''package com.hbm.handler
 cls('com.hbm.util', 'ParticleUtil', body='public static void spawnGasFlame(net.minecraft.world.World w,double x,double y,double z,double a,double b,double c){}')
 put('com/hbm/util/BufferUtil.java', '''package com.hbm.util; public class BufferUtil { public static void writeString(io.netty.buffer.ByteBuf b,String s){} public static String readString(io.netty.buffer.ByteBuf b){return "";} }''')
 put('com/hbm/util/EnumUtil.java', '''package com.hbm.util; public class EnumUtil { public static <T extends Enum<T>> T grabEnumSafely(Class<T> c,int i){T[] v=c.getEnumConstants();return v[Math.abs(i)%v.length];} }''')
-put('com/hbm/util/BobMathUtil.java', '''package com.hbm.util; public class BobMathUtil { public static double min(double... n){double m=n[0];for(double d:n)if(d<m)m=d;return m;} }''')
+put('com/hbm/util/BobMathUtil.java', '''package com.hbm.util; public class BobMathUtil { public static double min(double... nums){double smallest=Double.MAX_VALUE;for(double num:nums)if(num<smallest)smallest=num;return smallest;} }''')
 put('com/hbm/util/Compat.java', '''package com.hbm.util; import net.minecraft.world.World; import net.minecraft.tileentity.TileEntity; public class Compat { public static TileEntity getTileStandard(World w,int x,int y,int z){return w.getTileEntity(x,y,z);} }''')
 put('com/hbm/saveddata/satellites/SatelliteRayScan.java', '''package com.hbm.saveddata.satellites; public class SatelliteRayScan { public enum RayEvent {INFO_NUCLEAR} public static void reportEvent(net.minecraft.world.World w,int x,int y,int z,RayEvent e,int n){} }''')
 put('com/hbm/handler/radiation/ChunkRadiationManager.java', '''package com.hbm.handler.radiation; import java.util.*; import net.minecraft.world.World;

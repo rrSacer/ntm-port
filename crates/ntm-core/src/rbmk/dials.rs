@@ -166,7 +166,7 @@ fn clamped(r: &GameRules, name: &str, lo: f64, hi: f64) -> f64 {
 }
 
 /// The cache `RBMKDials.refresh` builds: the effective value of every dial.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Dials {
     pub passive_cooling: f64,
     pub passive_cooling_inner: f64,

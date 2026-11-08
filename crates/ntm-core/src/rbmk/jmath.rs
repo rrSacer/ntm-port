@@ -195,3 +195,26 @@ pub fn cos(x: f64) -> f64 {
         None => x.cos(),
     }
 }
+
+/// `Math.pow(x, y)` for the reactor's cases: `y == 2` is `x * x` (HotSpot
+/// special-cases it); a positive finite base goes through double-double; the
+/// rest falls back to the platform.
+pub fn pow(x: f64, y: f64) -> f64 {
+    if y == 2.0 {
+        return x * x;
+    }
+    if y == 0.0 {
+        return 1.0;
+    }
+    if x.is_finite() && x > 0.0 && y.is_finite() {
+        let t = ln_dd(x).mul_f(y);
+        if t.hi > -700.0 && t.hi < 700.0 {
+            let r = exp_dd(t);
+            return r.hi + r.lo;
+        }
+    }
+    if x == 0.0 && y > 0.0 {
+        return 0.0;
+    }
+    x.powf(y)
+}

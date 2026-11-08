@@ -10,6 +10,7 @@
 
 pub mod dials;
 pub mod jmath;
+pub mod reactor;
 pub mod jrandom;
 pub mod rods;
 mod rods_data;

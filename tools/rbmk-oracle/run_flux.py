@@ -37,22 +37,28 @@ def execute(source, scratch):
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source / run.JAVA_ROOT / name, dest)
     stubs = {k: v for k, v in STUBS.items() if k not in REMOVE}
-    for name, text in {**stubs, **run.generated(source), **FLUX_STUBS}.items():
+    gen = run.generated(source)
+    mb = 'com/hbm/blocks/ModBlocks.java'
+    gen[mb] = gen[mb].replace('public static final Block rbmk_control_reasim=new Block("rbmk_control_reasim");',
+        'public static final com.hbm.blocks.machine.rbmk.RBMKControl rbmk_control_reasim=new com.hbm.blocks.machine.rbmk.RBMKControl("rbmk_control_reasim",false);')
+    for name, text in {**stubs, **gen, **FLUX_STUBS}.items():
         dest = src / name
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(text)
     shutil.copyfile(HERE / 'java/FluxOracle.java', src / 'FluxOracle.java')
+    shutil.copyfile(HERE / 'java/Oracle.java', src / 'Oracle.java')
+    shutil.copyfile(HERE / 'flux_scenarios.json', scratch / 'scenarios.json')
     files = sorted(str(p) for p in src.rglob('*.java'))
     compiled = subprocess.run(['javac', '--release', '8', '-encoding', 'UTF-8', '-Xmaxerrs', '1000', '-d', str(classes), *files],
                               capture_output=True, text=True)
     (scratch / 'javac.log').write_text(compiled.stdout + compiled.stderr)
     if compiled.returncode:
         raise RuntimeError('javac failed; see ' + str(scratch / 'javac.log'))
-    result = subprocess.run(['java', '-cp', str(classes), 'FluxOracle'], check=True, capture_output=True, text=True)
+    result = subprocess.run(['java', '-cp', str(classes), 'FluxOracle', str(scratch / 'scenarios.json')], check=True, capture_output=True, text=True)
     (scratch / 'java.stderr.log').write_text(result.stderr)
     data = json.loads(result.stdout)
     data['provenance'] = {**run.manifest(source),
-                          'harness_sha256': {p: run.sha(HERE / p) for p in ('run.py', 'stubs.py', 'run_flux.py', 'stubs_flux.py', 'java/FluxOracle.java')},
+                          'harness_sha256': {p: run.sha(HERE / p) for p in ('run.py', 'stubs.py', 'run_flux.py', 'stubs_flux.py', 'java/FluxOracle.java', 'flux_scenarios.json')},
                           'flux_whole_classes': list(EXTRA)}
     return data
 
@@ -65,7 +71,7 @@ def main():
     p.add_argument('--check', action='store_true')
     a = p.parse_args()
     data = execute(a.source.resolve(), a.scratch.resolve())
-    enc = json.dumps(data, ensure_ascii=False, indent=1, allow_nan=False) + '\n'
+    enc = json.dumps(data, ensure_ascii=False, separators=(',', ':'), allow_nan=False) + '\n'
     if a.check:
         if a.output.read_text() != enc:
             raise SystemExit('flux fixture differs: regenerate and inspect')

@@ -1,0 +1,1457 @@
+{
+ "scenarios": [
+  {
+   "name": "rod_line_moderator",
+   "ticks": 40,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      100,
+      0.5
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      50,
+      0.2
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 0,
+     "rod": "rbmk_fuel_meu",
+     "flux": [
+      10,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "core_5x5",
+   "ticks": 60,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      200,
+      0.4
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 0,
+     "z": 1
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 2,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true,
+     "flux": [
+      20,
+      0.4
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 0,
+     "z": 3
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 4,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true,
+     "flux": [
+      20,
+      0.4
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 1,
+     "z": 1,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true
+    },
+    {
+     "kind": "control",
+     "x": 1,
+     "z": 2,
+     "level": 0.5,
+     "target": 0.5
+    },
+    {
+     "kind": "rod",
+     "x": 1,
+     "z": 3,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": 4
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true
+    },
+    {
+     "kind": "moderator",
+     "x": 2,
+     "z": 1
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": 2,
+     "rod": "rbmk_fuel_po210be",
+     "moderated": true
+    },
+    {
+     "kind": "moderator",
+     "x": 2,
+     "z": 3
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": 4,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true
+    },
+    {
+     "kind": "moderator",
+     "x": 3,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 1,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true
+    },
+    {
+     "kind": "moderator",
+     "x": 3,
+     "z": 2
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 3,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true
+    },
+    {
+     "kind": "moderator",
+     "x": 3,
+     "z": 4
+    },
+    {
+     "kind": "rod",
+     "x": 4,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true
+    },
+    {
+     "kind": "blank",
+     "x": 4,
+     "z": 1
+    },
+    {
+     "kind": "rod",
+     "x": 4,
+     "z": 2,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true
+    },
+    {
+     "kind": "blank",
+     "x": 4,
+     "z": 3
+    },
+    {
+     "kind": "rod",
+     "x": 4,
+     "z": 4,
+     "rod": "rbmk_fuel_ueu",
+     "moderated": true
+    }
+   ],
+   "actions": [
+    {
+     "tick": 10,
+     "column": 7,
+     "target": 0.1
+    }
+   ]
+  },
+  {
+   "name": "reflector_absorber_eff_1_0",
+   "ticks": 30,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "reflector",
+     "x": -1,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "lid": false,
+     "flux": [
+      300,
+      0.8
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": 0
+    },
+    {
+     "kind": "absorber",
+     "x": 2,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      80,
+      0.3
+     ]
+    },
+    {
+     "kind": "reflector",
+     "x": 3,
+     "z": -1
+    },
+    {
+     "kind": "absorber",
+     "x": 3,
+     "z": 1
+    }
+   ],
+   "rules": {
+    "dialReflectorEfficiency": "1.0",
+    "dialAbsorberEfficiency": "1.0",
+    "dialModeratorEfficiency": "1.0",
+    "dialAbsorberHeatConversion": "0.2"
+   }
+  },
+  {
+   "name": "reflector_absorber_eff_0_5",
+   "ticks": 30,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "reflector",
+     "x": -1,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "lid": false,
+     "flux": [
+      300,
+      0.8
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": 0
+    },
+    {
+     "kind": "absorber",
+     "x": 2,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      80,
+      0.3
+     ]
+    },
+    {
+     "kind": "reflector",
+     "x": 3,
+     "z": -1
+    },
+    {
+     "kind": "absorber",
+     "x": 3,
+     "z": 1
+    }
+   ],
+   "rules": {
+    "dialReflectorEfficiency": "0.5",
+    "dialAbsorberEfficiency": "0.5",
+    "dialModeratorEfficiency": "0.5",
+    "dialAbsorberHeatConversion": "0.2"
+   }
+  },
+  {
+   "name": "manual_control_surge",
+   "ticks": 90,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      400,
+      0.5
+     ]
+    },
+    {
+     "kind": "control",
+     "x": 1,
+     "z": 0,
+     "level": 0.9,
+     "target": 0.9,
+     "moderated": true
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      100,
+      0.1
+     ]
+    },
+    {
+     "kind": "control",
+     "x": 0,
+     "z": 1,
+     "level": 1.0,
+     "target": 1.0
+    }
+   ],
+   "rules": {
+    "dialControlSurgeMod": "2.0",
+    "dialControlSpeed": "3"
+   },
+   "actions": [
+    {
+     "tick": 3,
+     "column": 1,
+     "target": 0.2
+    },
+    {
+     "tick": 40,
+     "column": 3,
+     "target": 0.0
+    },
+    {
+     "tick": 60,
+     "column": 1,
+     "target": 1.0
+    }
+   ]
+  },
+  {
+   "name": "auto_control",
+   "ticks": 50,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "core": 300,
+     "hull": 300,
+     "flux": [
+      500,
+      0.6
+     ]
+    },
+    {
+     "kind": "control_auto",
+     "x": 1,
+     "z": 0,
+     "level": 0.5,
+     "target": 0.5,
+     "level_lower": 10,
+     "level_upper": 90,
+     "heat_lower": 20,
+     "heat_upper": 60,
+     "function": 0,
+     "heat": 40
+    },
+    {
+     "kind": "control_auto",
+     "x": 2,
+     "z": 0,
+     "level": 0.5,
+     "target": 0.5,
+     "level_lower": 10,
+     "level_upper": 90,
+     "heat_lower": 20,
+     "heat_upper": 60,
+     "function": 1,
+     "heat": 45
+    },
+    {
+     "kind": "control_auto",
+     "x": 3,
+     "z": 0,
+     "level": 0.5,
+     "target": 0.5,
+     "level_lower": 10,
+     "level_upper": 90,
+     "heat_lower": 20,
+     "heat_upper": 60,
+     "function": 2,
+     "heat": 50
+    },
+    {
+     "kind": "control_auto",
+     "x": 0,
+     "z": 1,
+     "level": 0.3,
+     "target": 0.3,
+     "level_lower": 0,
+     "level_upper": 100,
+     "heat_lower": 20,
+     "heat_upper": 20,
+     "function": 0,
+     "heat": 20
+    },
+    {
+     "kind": "control_auto",
+     "x": 0,
+     "z": 2,
+     "level": 0.3,
+     "target": 0.3,
+     "level_lower": 100,
+     "level_upper": 0,
+     "heat_lower": 100,
+     "heat_upper": 1,
+     "function": 1,
+     "heat": 10
+    }
+   ]
+  },
+  {
+   "name": "powered_controls",
+   "ticks": 80,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      300,
+      0.5
+     ]
+    },
+    {
+     "kind": "control_reasim",
+     "x": 1,
+     "z": 0,
+     "level": 0.0,
+     "target": 0.0,
+     "power": 12000
+    },
+    {
+     "kind": "control_reasim_auto",
+     "x": 2,
+     "z": 0,
+     "level": 0.0,
+     "target": 0.0,
+     "power": 30000,
+     "level_lower": 0,
+     "level_upper": 100,
+     "heat_lower": 20,
+     "heat_upper": 60,
+     "function": 0,
+     "heat": 50
+    }
+   ],
+   "actions": [
+    {
+     "tick": 2,
+     "column": 1,
+     "target": 1.0
+    },
+    {
+     "tick": 50,
+     "column": 1,
+     "power": 20000
+    }
+   ]
+  },
+  {
+   "name": "reasim_rod_angles",
+   "ticks": 30,
+   "seed": 424242,
+   "columns": [
+    {
+     "kind": "rod_reasim",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      200,
+      0.5
+     ],
+     "lid": false
+    },
+    {
+     "kind": "moderator",
+     "x": -3,
+     "z": -3
+    },
+    {
+     "kind": "rod",
+     "x": -3,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "moderator",
+     "x": -3,
+     "z": 3
+    },
+    {
+     "kind": "rod",
+     "x": -2,
+     "z": -1,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -2,
+     "z": 2,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -1,
+     "z": -2,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "moderator",
+     "x": -1,
+     "z": 1
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": -3,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 3,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": -1
+    },
+    {
+     "kind": "rod",
+     "x": 1,
+     "z": 2,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": -2,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": 1,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "moderator",
+     "x": 3,
+     "z": -3
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "moderator",
+     "x": 3,
+     "z": 3
+    }
+   ],
+   "rules": {
+    "dialFluxRange": "7"
+   }
+  },
+  {
+   "name": "reasim_two_rods_reflector",
+   "ticks": 30,
+   "seed": 99,
+   "columns": [
+    {
+     "kind": "rod_reasim",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_pu238be",
+     "flux": [
+      50,
+      0.5
+     ]
+    },
+    {
+     "kind": "reflector",
+     "x": 2,
+     "z": 0
+    },
+    {
+     "kind": "rod_reasim",
+     "x": -2,
+     "z": -1,
+     "rod": "rbmk_fuel_mox",
+     "flux": [
+      90,
+      0.5
+     ],
+     "moderated": true
+    },
+    {
+     "kind": "absorber",
+     "x": 0,
+     "z": 3
+    },
+    {
+     "kind": "control",
+     "x": -3,
+     "z": 0,
+     "level": 0.4,
+     "target": 0.4
+    }
+   ],
+   "rules": {
+    "dialFluxRange": "5"
+   }
+  },
+  {
+   "name": "obstacles_and_lids",
+   "ticks": 25,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "lid": false,
+     "flux": [
+      300,
+      0.5
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 2,
+     "z": 0,
+     "lid": false
+    },
+    {
+     "kind": "rod",
+     "x": 4,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      100,
+      0.5
+     ]
+    }
+   ],
+   "obstacles": [
+    {
+     "x": 1,
+     "z": 0,
+     "height": 2
+    },
+    {
+     "x": 3,
+     "z": 0,
+     "height": 4
+    },
+    {
+     "x": 0,
+     "z": 1,
+     "height": 1,
+     "from": 2
+    },
+    {
+     "x": 0,
+     "z": -2,
+     "height": 4
+    },
+    {
+     "x": 0,
+     "z": -3,
+     "height": 3
+    }
+   ]
+  },
+  {
+   "name": "tall_columns_wide_range",
+   "ticks": 20,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "lid": false,
+     "flux": [
+      250,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 9,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      100,
+      0.5
+     ]
+    }
+   ],
+   "rules": {
+    "dialColumnHeight": "9",
+    "dialFluxRange": "12"
+   },
+   "obstacles": [
+    {
+     "x": 0,
+     "z": 5,
+     "height": 5
+    },
+    {
+     "x": 5,
+     "z": 0,
+     "height": 9
+    },
+    {
+     "x": -4,
+     "z": 0,
+     "height": 3
+    }
+   ]
+  },
+  {
+   "name": "heat_flow_default",
+   "ticks": 40,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "blank",
+     "x": 0,
+     "z": 0,
+     "heat": 900
+    },
+    {
+     "kind": "blank",
+     "x": 1,
+     "z": 0,
+     "heat": 300,
+     "water": 1000,
+     "steam": 50
+    },
+    {
+     "kind": "moderator",
+     "x": 0,
+     "z": 1,
+     "heat": 100,
+     "water": 33,
+     "steam": 15990
+    },
+    {
+     "kind": "absorber",
+     "x": 1,
+     "z": 1,
+     "heat": 1200,
+     "water": 16000,
+     "steam": 0
+    },
+    {
+     "kind": "blank",
+     "x": 5,
+     "z": 5,
+     "heat": 500
+    }
+   ]
+  },
+  {
+   "name": "heat_flow_reasim_boilers",
+   "ticks": 60,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "blank",
+     "x": 0,
+     "z": 0,
+     "heat": 900
+    },
+    {
+     "kind": "blank",
+     "x": 1,
+     "z": 0,
+     "heat": 300,
+     "water": 1000,
+     "steam": 50
+    },
+    {
+     "kind": "moderator",
+     "x": 0,
+     "z": 1,
+     "heat": 100,
+     "water": 33,
+     "steam": 15990
+    },
+    {
+     "kind": "absorber",
+     "x": 1,
+     "z": 1,
+     "heat": 1200,
+     "water": 16000,
+     "steam": 0
+    },
+    {
+     "kind": "blank",
+     "x": 5,
+     "z": 5,
+     "heat": 500
+    }
+   ],
+   "rules": {
+    "dialReasimBoilers": "true",
+    "dialReasimBoilerSpeed": "0.5",
+    "dialBoilerHeatConsumption": "0.25",
+    "dialColumnHeatFlow": "0.7",
+    "dialPassiveCooling": "4",
+    "dialPassiveCoolingInner": "0.3"
+   }
+  },
+  {
+   "name": "heat_flow_zero_consumption",
+   "ticks": 10,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "blank",
+     "x": 0,
+     "z": 0,
+     "heat": 900
+    },
+    {
+     "kind": "blank",
+     "x": 1,
+     "z": 0,
+     "heat": 300,
+     "water": 1000,
+     "steam": 50
+    },
+    {
+     "kind": "moderator",
+     "x": 0,
+     "z": 1,
+     "heat": 100,
+     "water": 33,
+     "steam": 15990
+    },
+    {
+     "kind": "absorber",
+     "x": 1,
+     "z": 1,
+     "heat": 1200,
+     "water": 16000,
+     "steam": 0
+    },
+    {
+     "kind": "blank",
+     "x": 5,
+     "z": 5,
+     "heat": 500
+    }
+   ],
+   "rules": {
+    "dialReasimBoilers": "true",
+    "dialBoilerHeatConsumption": "0",
+    "dialReasimBoilerSpeed": "1"
+   }
+  },
+  {
+   "name": "overheat_meltdown",
+   "ticks": 30,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "core": 3000,
+     "hull": 2400,
+     "heat": 1495,
+     "flux": [
+      100,
+      0.5
+     ]
+    },
+    {
+     "kind": "blank",
+     "x": 1,
+     "z": 0,
+     "heat": 1000
+    }
+   ]
+  },
+  {
+   "name": "overheat_meltdown_disabled",
+   "ticks": 30,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "core": 3000,
+     "hull": 2400,
+     "heat": 1495,
+     "flux": [
+      100,
+      0.5
+     ]
+    },
+    {
+     "kind": "blank",
+     "x": 1,
+     "z": 0,
+     "heat": 1000
+    }
+   ],
+   "rules": {
+    "dialDisableMeltdowns": "true"
+   }
+  },
+  {
+   "name": "cap_10000",
+   "ticks": 12,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "core": 20000,
+     "hull": 900,
+     "heat": 1400,
+     "flux": [
+      2000,
+      0.5
+     ]
+    }
+   ],
+   "rules": {
+    "dialDisableMeltdowns": "true",
+    "dialColumnHeatFlow": "0.01"
+   }
+  },
+  {
+   "name": "insert_remove_rod",
+   "ticks": 30,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "flux": [
+      100,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      100,
+      0.5
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": 0
+    }
+   ],
+   "actions": [
+    {
+     "tick": 5,
+     "column": 0,
+     "insert_rod": "rbmk_fuel_ueu"
+    },
+    {
+     "tick": 15,
+     "column": 1,
+     "remove_rod": true
+    },
+    {
+     "tick": 20,
+     "column": 1,
+     "insert_rod": "rbmk_fuel_heu235",
+     "yield_fraction": 0.5,
+     "xenon": 40
+    }
+   ]
+  },
+  {
+   "name": "dials_no_depletion_xenon_x2",
+   "ticks": 25,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "xenon": 30,
+     "yield_fraction": 0.6,
+     "flux": [
+      300,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 1,
+     "z": 0,
+     "rod": "rbmk_fuel_hep239",
+     "flux": [
+      300,
+      0.5
+     ]
+    }
+   ],
+   "rules": {
+    "dialDisableDepletion": "true",
+    "dialDisableXenon": "true",
+    "dialReactivityMod": "2.0",
+    "dialDiffusionMod": "3",
+    "dialHeatProvision": "0.5"
+   }
+  },
+  {
+   "name": "all_fuels_burn",
+   "ticks": 6,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 1,
+     "z": 0,
+     "rod": "rbmk_fuel_balefire_gold",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": 0,
+     "rod": "rbmk_fuel_drx",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 0,
+     "rod": "rbmk_fuel_flashlead",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 4,
+     "z": 0,
+     "rod": "rbmk_fuel_hea241",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 5,
+     "z": 0,
+     "rod": "rbmk_fuel_hea242",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 6,
+     "z": 0,
+     "rod": "rbmk_fuel_heaus",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 7,
+     "z": 0,
+     "rod": "rbmk_fuel_hen",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 8,
+     "z": 0,
+     "rod": "rbmk_fuel_hep239",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 9,
+     "z": 0,
+     "rod": "rbmk_fuel_hep241",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 10,
+     "z": 0,
+     "rod": "rbmk_fuel_hes",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 11,
+     "z": 0,
+     "rod": "rbmk_fuel_heu233",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 12,
+     "z": 0,
+     "rod": "rbmk_fuel_heu235",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 13,
+     "z": 0,
+     "rod": "rbmk_fuel_lea",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 14,
+     "z": 0,
+     "rod": "rbmk_fuel_leaus",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 15,
+     "z": 0,
+     "rod": "rbmk_fuel_lep",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 16,
+     "z": 0,
+     "rod": "rbmk_fuel_les",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 17,
+     "z": 0,
+     "rod": "rbmk_fuel_mea",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 18,
+     "z": 0,
+     "rod": "rbmk_fuel_men",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 19,
+     "z": 0,
+     "rod": "rbmk_fuel_mep",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 20,
+     "z": 0,
+     "rod": "rbmk_fuel_mes",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 21,
+     "z": 0,
+     "rod": "rbmk_fuel_meu",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 22,
+     "z": 0,
+     "rod": "rbmk_fuel_mox",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 23,
+     "z": 0,
+     "rod": "rbmk_fuel_po210be",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 24,
+     "z": 0,
+     "rod": "rbmk_fuel_pu238be",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 25,
+     "z": 0,
+     "rod": "rbmk_fuel_ra226be",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 26,
+     "z": 0,
+     "rod": "rbmk_fuel_test",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 27,
+     "z": 0,
+     "rod": "rbmk_fuel_thmeu",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 28,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 29,
+     "z": 0,
+     "rod": "rbmk_fuel_uzh",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 30,
+     "z": 0,
+     "rod": "rbmk_fuel_zfb_am_mix",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 31,
+     "z": 0,
+     "rod": "rbmk_fuel_zfb_bismuth",
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "rod",
+     "x": 32,
+     "z": 0,
+     "rod": "rbmk_fuel_zfb_pu241",
+     "flux": [
+      150,
+      0.5
+     ]
+    }
+   ],
+   "rules": {
+    "dialDisableMeltdowns": "true"
+   }
+  }
+ ]
+}
