@@ -1047,7 +1047,10 @@ fica pronto e parado.
     não têm animação de estado: o que muda com o valor do reator fica para quando houver lógica.
   Pontas das paredes do tanque: a face `inner` que o Java desenha nas pontas de cada parede (`if(conPosZ)...`) não
   entra no modelo; sobra um vão pequeno no canto onde duas paredes se encontram.
-  Metal dentro do tanque: a captura com metal não foi feita (precisa do cadinho despejando, ver abaixo).
+  Metal dentro do tanque: `pour-after.png` mostra o tanque sob o fluxo do cadinho, com `honey_level=2` (metal
+  dentro, lido pelo `block`). O nível do metal aparece na caixa de líquido do modelo; a captura não deixa a superfície
+  do metal clara. Captura do jato com partícula: não confirmada. `pour-burst-*.png` não mostram o jato com clareza
+  (a coluna marrom é decoração do mundo). A partícula continua provada só pelo teste unitário.
   Testes: `tools/visual-gen/test_visual.py`.
   Captura (T5, `/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/f-visual/captures/`): `tank-before.png` (base 85d06d9c)
   e `tank-after2.png` (branch, depois de c5d0e673) mostram os tanques; o da direita é o tanque sozinho, e o do centro
@@ -1055,7 +1058,7 @@ fica pronto e parado.
   Causa do tanque invisível (corrigida em c5d0e673): o tanque tinha `horizon_liquid` e `horizon_model`, e o motor
   guarda os dois pelo nome do bloco, então o arquivo de líquido escondia o OBJ. Agora o líquido vai dentro do modelo,
   como no canal. `tools/visual-gen/test_visual.py` checa isso.
-  Captura do jato com partícula: pendente (a inserção de carvão e ferro no cadinho não foi possível pelo `horizon-ctl`).
+
 - **Fluidos:** só a energia passa pelo anel do multibloco. As portas de fluido continuam no núcleo.
 - **Explosões e comandos:** uma explosão, um `/fill` ou um `set-blocks` que tira uma célula não tira o resto.
 - **Interface:**
