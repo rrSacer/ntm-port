@@ -10,7 +10,7 @@ class M1Worldgen(unittest.TestCase):
 
     def test_nether_veins_match_java(self):
         nether = self.specs('nether_')
-        self.assertEqual(set(nether), {'nether_uranium', 'nether_tungsten', 'nether_sulfur', 'nether_fire', 'nether_cobalt'})
+        self.assertEqual(set(nether), {'nether_uranium', 'nether_tungsten', 'nether_sulfur', 'nether_fire', 'nether_cobalt', 'nether_coal'})
         # attempts, size, min_y, max_y: generateNether uses nextInt(127) for y 0..126; cobalt is 100 + nextInt(26).
         expected = {
             'nether_uranium': (8, 6, 0, 126),
@@ -18,6 +18,7 @@ class M1Worldgen(unittest.TestCase):
             'nether_sulfur': (26, 12, 0, 126),
             'nether_fire': (24, 6, 0, 126),
             'nether_cobalt': (2, 6, 100, 125),
+            'nether_coal': (8, 32, 16, 111),
         }
         for name, (count, size, low, high) in expected.items():
             s = nether[name]
@@ -36,6 +37,9 @@ class M1Worldgen(unittest.TestCase):
             'gneiss_copper': (36, 6),    # copperSpawn 12 x 3
             'gneiss_asbestos': (6, 6),   # asbestosSpawn 2 x 3
             'gneiss_lithium': (6, 6),    # lithiumSpawn 6
+            'gneiss_iron': (25, 6),      # literal 25 in HbmWorldGen
+            'gneiss_gold': (10, 6),      # literal 10
+            'gneiss_rare': (6, 6),       # rareSpawn 6
         }
         self.assertEqual(set(gneiss), set(expected))
         for name, (count, size) in expected.items():

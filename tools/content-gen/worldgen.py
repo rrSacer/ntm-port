@@ -13,15 +13,19 @@ EXTRA=[
  dict(material='nether_sulfur',block='ntm:ore_nether_sulfur',attempts_per_chunk=26,size=12,min_y=0,max_y=126,salt=2167221,**NETHER),
  dict(material='nether_fire',block='ntm:ore_nether_fire',attempts_per_chunk=24,size=6,min_y=0,max_y=126,salt=2167238,**NETHER),
  dict(material='nether_cobalt',block='ntm:ore_nether_cobalt',attempts_per_chunk=2,size=6,min_y=100,max_y=125,salt=2167255,**NETHER),
+ dict(material='nether_coal',block='ntm:ore_nether_coal',attempts_per_chunk=8,size=32,min_y=16,max_y=111,salt=2167340,**NETHER),
  dict(material='gneiss_uranium',block='ntm:ore_gneiss_uranium',attempts_per_chunk=21,size=6,min_y=30,max_y=39,salt=2167272,**GNEISS),
  dict(material='gneiss_copper',block='ntm:ore_gneiss_copper',attempts_per_chunk=36,size=6,min_y=30,max_y=39,salt=2167289,**GNEISS),
  dict(material='gneiss_asbestos',block='ntm:ore_gneiss_asbestos',attempts_per_chunk=6,size=6,min_y=30,max_y=39,salt=2167306,**GNEISS),
  dict(material='gneiss_lithium',block='ntm:ore_gneiss_lithium',attempts_per_chunk=6,size=6,min_y=30,max_y=39,salt=2167323,**GNEISS),
+ dict(material='gneiss_iron',block='ntm:ore_gneiss_iron',attempts_per_chunk=25,size=6,min_y=30,max_y=39,salt=2167374,**GNEISS),
+ dict(material='gneiss_gold',block='ntm:ore_gneiss_gold',attempts_per_chunk=10,size=6,min_y=30,max_y=39,salt=2167391,**GNEISS),
+ dict(material='gneiss_rare',block='ntm:ore_gneiss_rare',attempts_per_chunk=6,size=6,min_y=30,max_y=39,salt=2167408,**GNEISS),
 ]
 
 def generate(emit, rows, distributions):
  ids={row['id'] for row in rows}
- for spec in list(distributions)+EXTRA:
+ for spec in list(distributions)+[s for s in EXTRA if s['block'] in ids]:
   name=spec['material'];ore=spec['block'];salt=spec['salt'];biomes=spec.get('biomes',OVERWORLD['biomes'])
   if ore not in ids:raise ValueError(f'Worldgen block absent from catalog: {ore}')
   def put(kind,value):emit(f'data/ntm/worldgen/{kind}/m1_{name}.json',value)
