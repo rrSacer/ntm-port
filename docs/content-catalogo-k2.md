@@ -88,7 +88,7 @@ as provas históricas acima dizem respeito à importação do catálogo.
 
 <!-- k2-status:start -->
 
-Resumo dos 116 itens: 52 ativo, 19 dependente, 45 parcial.
+Resumo dos 116 itens: 59 ativo, 19 dependente, 38 parcial.
 
 | Item | Classe Java | Estado | Origem Java | Dependências nominais |
 |---|---|---|---|---|
@@ -103,13 +103,13 @@ Resumo dos 116 itens: 52 ativo, 19 dependente, 45 parcial.
 | `ntm:boat_rubber` | ItemBoatRubber | dependente | `ItemBoatRubber`, ModItems.java:2950 | `EntityBoat` do mod (bote de borracha) |
 | `ntm:bobmazon` | ItemCatalog | dependente | `ItemCatalog`, ModItems.java:3894 | `GUIScreenBobmazon` e `BobmazonOfferFactory` (loja do cliente) |
 | `ntm:bomb_waffle` | ItemWaffle | parcial | ItemWaffle(20, false), ModItems.java:3610: ExplosionNukeSmall.explode(PARAMS_MEDIUM) has no counterpart in the port | `ExplosionNukeSmall.explode(PARAMS_MEDIUM)`, o "muke", não tem contraparte no `ntm-core` |
-| `ntm:bottle2_fritz` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle2_empty, cap_fritz), ModItems.java:2942 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle2_korl` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle2_empty, cap_korl), ModItems.java:2941 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle_cherry` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2936 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle_nuka` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2935 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle_quantum` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle_empty, cap_quantum), ModItems.java:2937 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle_rad` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle_empty, cap_rad), ModItems.java:2939 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle_sparkle` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle_empty, cap_sparkle), ModItems.java:2938 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
+| `ntm:bottle2_fritz` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle2_empty, cap_fritz), ModItems.java:2942 | - |
+| `ntm:bottle2_korl` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle2_empty, cap_korl), ModItems.java:2941 | - |
+| `ntm:bottle_cherry` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2936 | - |
+| `ntm:bottle_nuka` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2935 | - |
+| `ntm:bottle_quantum` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle_empty, cap_quantum), ModItems.java:2937 | - |
+| `ntm:bottle_rad` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle_empty, cap_rad), ModItems.java:2939 | - |
+| `ntm:bottle_sparkle` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle_empty, cap_sparkle), ModItems.java:2938 | - |
 | `ntm:boy_kit` | ItemStarterKit | ativo | ItemStarterKit.onItemRightClick boy_kit, ModItems.java:3786 | - |
 | `ntm:can_bepis` | ItemEnergy | ativo | ItemEnergy.makeCan, ModItems.java:2931 | - |
 | `ntm:can_breen` | ItemEnergy | ativo | ItemEnergy.makeCan, ModItems.java:2932 | - |

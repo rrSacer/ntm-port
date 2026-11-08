@@ -101,8 +101,9 @@ def state(item):
     if inert:
         needs = sorted({INERT_GIVES[i] for i in inert})
         deps.append('entrega ' + ', '.join(f'`{i}`' for i in inert) + ' só com identidade: o uso real depende de ' + ' e '.join(needs))
-    if row.get('requires'):
-        deps.append('exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`)')
+    # `requires` is checked natively (`native/ntm/mixins/ntm/item_hooks.rs`,
+    # `start`): the opener must be in the inventory. The opener's own mob hit
+    # (`WeaponSpecial`) is not a bottle dependency, so it adds no gap here.
     status = 'parcial' if deps and item not in ('ntm:radaway_flush',) else 'ativo'
     return status, row['origin'], '; '.join(deps)
 
