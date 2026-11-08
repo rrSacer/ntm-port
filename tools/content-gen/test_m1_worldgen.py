@@ -20,9 +20,11 @@ class M1Worldgen(unittest.TestCase):
             'nether_cobalt': (2, 6, 100, 125),
             'nether_coal': (8, 32, 16, 111),
         }
+        calibrated = {'nether_uranium': 6, 'nether_tungsten': 6, 'nether_sulfur': 17, 'nether_fire': 17, 'nether_cobalt': 1, 'nether_coal': 4}
         for name, (count, size, low, high) in expected.items():
             s = nether[name]
-            self.assertEqual((s['attempts_per_chunk'], s['size'], s['min_y'], s['max_y']), (count, size, low, high), name)
+            self.assertEqual((s['java_attempts'], s['size'], s['min_y'], s['max_y']), (count, size, low, high), name)
+            self.assertEqual(s['attempts_per_chunk'], calibrated[name], name)
             self.assertEqual(s['biomes'], '#minecraft:is_nether', name)
             self.assertEqual(s['targets'], ['netherrack'], name)
 

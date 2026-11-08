@@ -4,7 +4,7 @@ Frente T3. Fonte Java: `ntm-src` (1.7.10). Tabela de valores: [ore-distribution.
 
 ## O que entrou
 
-Nether (`worldgen.py`, `EXTRA`, dimensão `#minecraft:is_nether`, alvo `minecraft:netherrack`), todos os veios de `generateNether` cujos IDs existem, exceto plutônio (desligado por padrão no Java):
+Nether (`worldgen.py`, `EXTRA`, dimensão `#minecraft:is_nether`, alvo `minecraft:netherrack`), todos os veios de `generateNether` cujos IDs existem, exceto plutônio (desligado por padrão no Java). `attempts_per_chunk` é o valor calibrado (ver seção de calibração); `java_attempts` é o valor de Java:
 
 | Minério | Tentativas/chunk | Tamanho | Y (inclusivo) | Origem Java |
 | --- | ---: | ---: | --- | --- |
@@ -48,6 +48,31 @@ Continuam temporárias, cada uma com o motivo em `tools/recipe-gen/coverage.json
 | `machine_battery` | Não há receita de fabricação no Java 1.7.10 (`MachineBattery` só é registrado). |
 | `stamp_iron_plate`, `stamp_iron_wire` | Construção na bigorna (`AnvilRecipes.java:588-589`); a bigorna não é portada (T4). |
 
+## Calibração do rendimento (Nether)
+
+Medido em jogo com o mesmo método (81 chunks centrais, janela 9×9), o Nether ficava 1,4–2,1× acima de Java por tentativa. O oráculo `tools/content-gen/vein_yield_oracle.py` separa as causas:
+
+| Vem de | Resultado |
+| --- | --- |
+| Forma do veio (Java `WorldGenMinable` contra port de `ore_feature.rs`, 26.3) | Iguais: size 6: 1,84 contra 1,63; size 10: 2,98 contra 2,87; size 12: 4,65 contra 4,32; size 32: 29,8 contra 29,4 blocos por tentativa. |
+| Método de medição (veios de chunks vizinhos dentro da janela) | Java medido do mesmo jeito dá 1,80 (size 6) e 29,8 (size 32). Não explica a diferença. |
+| Excesso em jogo | Não explicado. Ocorre em todos os veios do Nether e do overworld, de 1,2× a 2,1×. Mais tentativas efetivas por chunk do que as declaradas são o sintoma; a causa não foi isolada. |
+
+Calibração aplicada no Nether: `attempts = round(java_attempts × yield_Java / yield_medido)`. Resultado esperado por chunk contra Java:
+
+| Veio | Tentativas Java | Tentativas usadas | Blocos/chunk medido após calibração (estimado) | Java esperado |
+| --- | ---: | ---: | ---: | ---: |
+| uranium | 8 | 6 | 15,5 | 14,7 |
+| tungstênio | 10 | 6 | 31,4 | 29,8 |
+| enxofre | 26 | 17 | 124 | 121 |
+| fogo | 24 | 17 | 43,5 | 44,2 |
+| cobalto | 2 | 1 | 2,9 | 3,7 |
+| carvão | 8 | 4 | 254 | 238 |
+
+Os valores de "após calibração" são estimativa pela razão medida; não foram medidos de novo em jogo com a calibração. A conferência final é a da seção Provas.
+
+**Overworld não calibrado** (decisão pendente do coordenador): os onze veios do overworld também ficam acima de Java pela mesma razão (1,2× a 2,0×). Não mudei, porque o M1 já foi aceito com esses números.
+
 ## Estrato de gnaisse: bloqueado fora do conteúdo
 
 O `SchistStratum` troca pedra por `stone_gneiss` onde um Perlin de 4 oitavas (`NoiseGeneratorPerlin`, escala 0,01) passa de 5. A espessura é `int((n-5)*3)`, dobrada para `8 - range` acima de 4, em torno de y=30. Verificado no fonte decompilado de 1.7.10: a soma de oitavas tem amplitude 1, 2, 4, 8, então o limiar é alcançável.
@@ -58,7 +83,7 @@ Tentativa feita e desfeita: uma material rule nova em `data/minecraft/worldgen/m
 - `docs/mods.md`, "The fence": "Tags are the only `minecraft` files a mod may hold".
 - Não há hook de conteúdo para material rule ou noise. O único gancho é `horizon:add_to`, para sets e pools.
 
-Logo, o estrato só sai com mudança de API de conteúdo (um hook de material rule ou permissão de override) ou de motor. Decisão de escopo para o coordenador.
+Decisão do coordenador: lacuna de motor. A solução é um hook de material rule no motor, feito junto com a integração do upstream. Os 7 veios de gnaisse ficam prontos e geram 0 blocos até o estrato existir.
 
 Por isso os veios de gnaisse estão corretos e registrados, mas geram 0 blocos em jogo. Comportamento de Java sem o estrato: também geram 0, porque o substrato é o estrato.
 
