@@ -217,30 +217,43 @@ fn runs(v: &Value) -> HashMap<(i32, i32, i32), String> {
 }
 
 #[test]
-fn watz_structure_check_matches_java() {
-    let list = arr(&fx()["watz_extra"]["structures"]);
-    let (mut formed, mut broken) = (0, 0);
-    for sc in list {
-        let blocks = runs(&sc["blocks"]);
-        // metas are recorded as [x, y, z, meta]
-        let meta_of = |p: (i32, i32, i32)| -> i32 {
-            arr(&sc["metas"]).iter().find(|m| (i(&m[0]) as i32, i(&m[1]) as i32, i(&m[2]) as i32) == p).map_or(0, |m| i(&m[3]) as i32)
-        };
-        let at = |x: i32, y: i32, z: i32| match blocks.get(&(x, y, z)).map(String::as_str) {
+fn watz_structure_check_matches_java_for_every_position() {
+    let x = &fx()["watz_extra"]["structures"];
+    let base = runs(&x["base_blocks"]);
+    let metas: HashMap<(i32, i32, i32), i32> = arr(&x["base_metas"]).iter().map(|m| (p3(m), i(&m[3]) as i32)).collect();
+    assert_eq!(base.len(), 110, "2 coolers + 3 layers of 36");
+    let check = |blocks: &HashMap<(i32, i32, i32), String>, metas: &HashMap<(i32, i32, i32), i32>| {
+        structure_complete(&|x, y, z| match blocks.get(&(x, y, z)).map(String::as_str) {
             None => StructBlock::Air,
             Some("watz_cooler") => StructBlock::WatzCooler,
             Some("watz_element") => StructBlock::WatzElement,
-            Some("watz_end") => StructBlock::WatzEnd { meta: meta_of((x, y, z)) },
+            Some("watz_end") => StructBlock::WatzEnd { meta: metas.get(&(x, y, z)).copied().unwrap_or(0) },
             Some(_) => StructBlock::Other,
-        };
-        let time = i(&sc["time"]);
-        let java_formed = !arr(&sc["log"]).is_empty();
-        // the source only checks every 20 ticks
-        let ours = time % 20 == 0 && structure_complete(&at);
-        assert_eq!(ours, java_formed, "structure {} (mode {}, hit {})", sc["id"], sc["mode"], sc["hit"]);
-        if java_formed { formed += 1 } else { broken += 1 }
+        })
+    };
+    assert!(check(&base, &metas));
+    let cases = arr(&x["cases"]);
+    assert_eq!(cases.len(), 110 * 3);
+    let mut broken = 0;
+    for c in cases {
+        let pos = p3(c);
+        let (mut blocks, mut m) = (base.clone(), metas.clone());
+        match i(&c[3]) {
+            0 => { blocks.remove(&pos); }
+            1 => { m.insert(pos, 0); }
+            _ => { blocks.insert(pos, "stone".to_string()); }
+        }
+        let java = i(&c[4]) == 1;
+        assert_eq!(check(&blocks, &m), java, "position {pos:?} mode {}", c[3]);
+        if !java { broken += 1 }
     }
-    assert!(formed >= 1 && broken >= 40);
+    // every position breaks the reactor when removed or replaced; only the casing ends care about metadata
+    assert_eq!(broken, 110 * 2 + 48);
+    // the source only runs the check when the world time is a multiple of 20
+    for t in arr(&x["times"]) {
+        let (time, java) = (i(&t[0]), i(&t[1]) == 1);
+        assert_eq!(time % 20 == 0 && check(&base, &metas), java, "time {time}");
+    }
 }
 
 // ------------------------------------------------------------------ PWR
@@ -345,9 +358,10 @@ fn assert_pwr_eq(c: &PwrController, v: &Value, ctx: &str) {
     assert_eq!(c.hull_heat, i(&v["hull_heat"]), "{ctx} hull_heat");
     assert!(same(c.flux, bits(&v["flux"])), "{ctx} flux {} vs {}", c.flux, bits(&v["flux"]));
     // progress accumulates log10/pow results, which Java's intrinsics and libm round differently by
-    // up to an ulp; everything else is bit-exact
+    // a few ulp; everything else is bit-exact
     let (pa, pb) = (c.progress, bits(&v["progress"]));
-    assert!(same(pa, pb) || (pa - pb).abs() <= 1e-12 * pa.abs().max(pb.abs()), "{ctx} progress {pa} vs {pb}");
+    let ulps = (pa.to_bits() as i64 - pb.to_bits() as i64).unsigned_abs();
+    assert!(same(pa, pb) || (pa.is_sign_negative() == pb.is_sign_negative() && ulps <= 4), "{ctx} progress {pa} vs {pb} ({ulps} ulp)");
     assert!(same(c.process_time, bits(&v["process_time"])), "{ctx} process_time");
     assert!(same(c.rod_level, bits(&v["rod_level"])), "{ctx} rod_level");
     assert!(same(c.rod_target, bits(&v["rod_target"])), "{ctx} rod_target");
@@ -363,8 +377,9 @@ fn assert_pwr_eq(c: &PwrController, v: &Value, ctx: &str) {
 #[test]
 fn pwr_controller_ticks_match_java() {
     let scenarios = arr(&fx()["pwr_fission"]);
-    assert!(scenarios.len() >= 35);
+    assert_eq!(scenarios.len(), 46);
     let mut melts = 0;
+    let mut pings = 0;
     for sc in scenarios {
         let name = s(&sc["name"]);
         let chunks = sc["chunks_loaded"].as_bool().unwrap();
@@ -377,6 +392,8 @@ fn pwr_controller_ticks_match_java() {
             let log: Vec<&str> = arr(&tick["log"]).iter().map(s).collect();
             let explode = log.iter().find(|l| l.starts_with("explode "));
             assert_eq!(ev.meltdown.is_some(), explode.is_some(), "{name} tick {k} meltdown");
+            assert_eq!(ev.satellite_nuclear_ping, log.contains(&"ping"), "{name} tick {k} satellite ping");
+            pings += usize::from(ev.satellite_nuclear_ping);
             if let (Some(m), Some(line)) = (&ev.meltdown, explode) {
                 melts += 1;
                 let p: Vec<f64> = line.split(' ').skip(1).map(|t| t.parse().unwrap()).collect();
@@ -387,7 +404,7 @@ fn pwr_controller_ticks_match_java() {
             assert_pwr_eq(&c, &tick["state"], &format!("{name} tick {k}"));
         }
     }
-    assert!(melts >= 1);
+    assert!(melts >= 3 && pings >= 1);
 }
 
 // ------------------------------------------------------------------ Petroleum E
@@ -418,7 +435,7 @@ fn hephaestus_matches_java_tick_by_tick() {
         };
         for (k, want) in arr(&case["ticks"]).iter().enumerate() {
             let time = time0 + k as i64;
-            m.tick(*pos, time, &|x, y, z| at(x, y, z));
+            m.tick(*pos, time, JAVA_MIN_Y, &|x, y, z| at(x, y, z));
             assert_eq!(m.input_fill as i64, i(&want["input"][0]), "{name} tick {k} input");
             assert_eq!(m.output_fill as i64, i(&want["output"][0]), "{name} tick {k} output");
             assert_eq!((m.input_type, m.output_type), (s(&want["in_type"]), s(&want["out_type"])), "{name} tick {k}");
@@ -467,7 +484,11 @@ fn flare_matches_java_tick_by_tick() {
                     _ => None,
                 })
                 .collect();
-            let mut java: Vec<String> = arr(&want["events"]).iter().map(|e| s(e).to_string()).collect();
+            let all: Vec<&str> = arr(&want["events"]).iter().map(s).collect();
+            let count = |k: &str| all.iter().filter(|e| **e == k).count();
+            assert_eq!(out.events.iter().filter(|e| **e == FlareEvent::Sound).count(), count("sound"), "{name} tick {k} sound");
+            assert_eq!(out.events.iter().filter(|e| **e == FlareEvent::FireDamage).count(), count("fire"), "{name} tick {k} fire");
+            let mut java: Vec<String> = all.iter().filter(|e| **e != "sound" && **e != "fire").map(|e| e.to_string()).collect();
             ours.sort();
             java.sort();
             assert_eq!(ours, java, "{name} tick {k} events");
@@ -475,4 +496,17 @@ fn flare_matches_java_tick_by_tick() {
         cases += 1;
     }
     assert!(cases > 312);
+}
+
+#[test]
+fn hephaestus_min_y_is_a_parameter() {
+    // a machine near the floor: with the Java floor the layers below 0 are never read
+    let at = |_x: i32, y: i32, _z: i32| if y < 0 { HeatBlock::Lava } else { HeatBlock::Other };
+    let (mut java, mut modern) = (Hephaestus::default(), Hephaestus::default());
+    for t in 0..10 {
+        java.tick((0, 4, 0), t, JAVA_MIN_Y, &at);
+        modern.tick((0, 4, 0), t, -64, &at);
+    }
+    assert_eq!(java.total_heat(10), 0);
+    assert!(modern.total_heat(10) > 0);
 }

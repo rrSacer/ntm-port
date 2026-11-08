@@ -76,7 +76,7 @@ class MathHelper {
 	static int clamp_int(int v, int lo, int hi) { return v < lo ? lo : (v > hi ? hi : v); }
 	static double clamp_double(double v, double lo, double hi) { return v < lo ? lo : (v > hi ? hi : v); }
 }
-class SatelliteRayScan { static void reportEvent(World w, int x, int y, int z, Object e, int r) {} }
+class SatelliteRayScan { static void reportEvent(World w, int x, int y, int z, Object e, int r) { w.log.add("ping"); } }
 class RayEvent { static Object INFO_NUCLEAR = new Object(); }
 class ChunkProvider { World w; boolean chunkExists(int x, int z) { return w.chunksLoaded; } }
 class Provider { int dimensionId = 0; }
@@ -114,10 +114,10 @@ class World {
 	void func_147480_a(int x, int y, int z, boolean b) { log.add("break " + x + " " + y + " " + z); }
 	void newExplosion(Object e, double x, double y, double z, float s, boolean a, boolean b) { log.add("explode " + x + " " + y + " " + z + " " + s); }
 	void spawnParticle(String s, double a, double b, double c, double d, double e, double f) {}
-	void playSoundEffect(double x, double y, double z, String s, float v, float p) {}
+	void playSoundEffect(double x, double y, double z, String s, float v, float p) { log.add("sound"); }
 	void spawnEntityInWorld(Object e) {}
 	void markTileEntityChunkModified(int x, int y, int z, Object t) {}
-	List<Entity> getEntitiesWithinAABB(Class<?> c, AxisAlignedBB bb) { return new ArrayList<>(); }
+	List<Entity> getEntitiesWithinAABB(Class<?> c, AxisAlignedBB bb) { log.add("fire"); return new ArrayList<>(); }
 }
 
 class TileEntityMachineBase extends TileEntity {

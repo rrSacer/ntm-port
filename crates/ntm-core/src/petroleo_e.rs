@@ -11,6 +11,8 @@ use std::collections::HashMap;
 pub const HEPHAESTUS_TANK: i32 = 24_000;
 pub const SCAN_RANGE: i32 = 7;
 pub const SCAN_LAYERS: usize = 10;
+/// Lowest scanned layer in the original (`y >= 0`).
+pub const JAVA_MIN_Y: i32 = 0;
 
 /// What the thermal scan can tell apart. `Lava` covers both `lava` and `flowing_lava`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -64,13 +66,15 @@ impl Hephaestus {
     }
 
     /// One server tick. `pos` is the machine's block position; `block_at` reads the world.
-    /// The scan keeps the original `y >= 0` bound (no adaptation to the lower build limit).
-    pub fn tick(&mut self, pos: (i32, i32, i32), world_time: i64, block_at: &dyn Fn(i32, i32, i32) -> HeatBlock) {
+    /// `min_y` is the lowest layer the scan may read. The Java value is [`JAVA_MIN_Y`] (0, the
+    /// 1.7.10 world floor), which the parity tests use; wiring into the game must pass the real
+    /// minimum height of the world (the engine here builds down to negative y).
+    pub fn tick(&mut self, pos: (i32, i32, i32), world_time: i64, min_y: i32, block_at: &dyn Fn(i32, i32, i32) -> HeatBlock) {
         self.setup_tanks();
         let height = (world_time % 10) as usize;
         let y = pos.1 - 1 - height as i32;
         self.heat[height] = 0;
-        if y >= 0 {
+        if y >= min_y {
             for x in -SCAN_RANGE..=SCAN_RANGE {
                 for z in -SCAN_RANGE..=SCAN_RANGE {
                     let add = match block_at(pos.0 + x, y, pos.2 + z) {

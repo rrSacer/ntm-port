@@ -215,17 +215,21 @@ public class Driver {
 		wb.breakBlock(w, 1, 2, 3, wb, 11);
 		List<String> noDrops = new ArrayList<>();
 		for(String e : w.log) noDrops.add(s(e));
-		// structure core
-		List<String> structs = new ArrayList<>();
-		structs.add(structure(0, -1, -1, 40));
-		structs.add(structure(100, -1, -1, 43));
-		structs.add(structure(101, -1, -1, 60));
-		for(int k = 0; k < 60; k++) structs.add(structure(k + 1, k % 7, k, 40 + (k % 2) * 3));
-		return obj("ports", arr(ports), "heph_ports", arr(hports), "conversions", arr(conv), "break_drops", arr(drops), "break_no_drops", arr(noDrops), "structures", arr(structs));
+		// structure core: the base shell once, then one case per required position and damage mode
+		World base = watzBase(40);
+		List<String> keys = new ArrayList<>(new TreeSet<>(base.blocks.keySet()));
+		List<String> cases = new ArrayList<>();
+		for(String key : keys) {
+			String[] k = key.split(",");
+			for(int mode = 0; mode < 3; mode++) cases.add(arr(Arrays.asList(k[0], k[1], k[2], "" + mode, watzFormed(base, key, mode, 40) ? "1" : "0")));
+		}
+		List<String> times = new ArrayList<>();
+		for(long tm : new long[] {0, 1, 19, 20, 40, 43, 60, 99, 100}) times.add(arr(Arrays.asList("" + tm, watzFormed(base, null, 0, tm) ? "1" : "0")));
+		String structs = obj("base_blocks", arr(blockList(base)), "base_metas", arr(metaList(base)), "cases", arr(cases), "times", arr(times));
+		return obj("ports", arr(ports), "heph_ports", arr(hports), "conversions", arr(conv), "break_drops", arr(drops), "break_no_drops", arr(noDrops), "structures", structs);
 	}
 
-	/** Complete Watz shell around a core at the origin; `mode` damages it, `hit` picks the cell. */
-	static String structure(int id, int mode, int hit, long time) {
+	static World watzBase(long time) {
 		World w = new World();
 		w.time = time;
 		put(w, 0, 1, 0, ModBlocks.watz_cooler); put(w, 0, 2, 0, ModBlocks.watz_cooler);
@@ -233,25 +237,27 @@ public class Driver {
 		int[][] co = {{2, 1}, {2, -1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {1, -2}, {-1, -2}};
 		List<int[]> cells = new ArrayList<>();
 		for(int i = 0; i < 3; i++) {
-			for(int[] e : el) { put(w, e[0], i, e[1], ModBlocks.watz_element); }
-			for(int[] e : co) { put(w, e[0], i, e[1], ModBlocks.watz_cooler); }
+			for(int[] e : el) put(w, e[0], i, e[1], ModBlocks.watz_element);
+			for(int[] e : co) put(w, e[0], i, e[1], ModBlocks.watz_cooler);
 			for(int j = -1; j < 2; j++) { cells.add(new int[] {3, i, j}); cells.add(new int[] {j, i, 3}); cells.add(new int[] {-3, i, j}); cells.add(new int[] {j, i, -3}); }
 			cells.add(new int[] {2, i, 2}); cells.add(new int[] {2, i, -2}); cells.add(new int[] {-2, i, 2}); cells.add(new int[] {-2, i, -2});
 		}
 		for(int[] c : cells) { put(w, c[0], c[1], c[2], ModBlocks.watz_end); w.metaAt.put(c[0] + "," + c[1] + "," + c[2], 1); }
-		if(mode >= 0) {
-			int[] c = cells.get(hit % cells.size());
-			String key = c[0] + "," + c[1] + "," + c[2];
-			if(mode % 3 == 0) w.blocks.remove(key); else if(mode % 3 == 1) w.metaAt.put(key, 0); else w.blocks.put(key, STONE);
-			if(mode == 5) { w.blocks.remove("0,1,0"); }
-			if(mode == 6) { w.blocks.put("1,2,0", ModBlocks.watz_cooler); }
+		return w;
+	}
+
+	/** mode 0 removes the block, 1 sets its metadata to 0, 2 replaces it with stone; formed = the core placed the reactor. */
+	static boolean watzFormed(World base, String key, int mode, long time) {
+		World w = new World();
+		w.time = time;
+		w.blocks.putAll(base.blocks); w.metaAt.putAll(base.metaAt);
+		if(key != null) {
+			if(mode == 0) w.blocks.remove(key); else if(mode == 1) w.metaAt.put(key, 0); else w.blocks.put(key, STONE);
 		}
 		TileEntityWatzStruct t = new TileEntityWatzStruct();
 		t.worldObj = w; t.xCoord = 0; t.yCoord = 0; t.zCoord = 0;
 		t.updateEntity();
-		List<String> lg = new ArrayList<>();
-		for(String e : w.log) lg.add(s(e));
-		return obj("id", id, "mode", mode, "hit", hit, "time", time, "blocks", arr(blockList(w)), "metas", arr(metaList(w)), "log", arr(lg));
+		return !w.log.isEmpty();
 	}
 
 	static List<String> metaList(World w) {
@@ -342,6 +348,21 @@ public class Driver {
 		return out;
 	}
 
+	/** Interior of 1x1xn: a fuel rod at each end, control rods between, one neutron source in the middle. */
+	static String fuelLine(String name, int n) {
+		World w = new World();
+		int ox = 10, oy = 10, oz = 10, sx = n + 2;
+		for(int x = 0; x < sx; x++) for(int y = 0; y < 3; y++) for(int z = 0; z < 3; z++) {
+			boolean shell = x == 0 || x == sx - 1 || y != 1 || z != 1;
+			put(w, ox + x, oy + y, oz + z, shell ? ModBlocks.pwr_casing : ModBlocks.pwr_control);
+		}
+		put(w, ox + 1, oy + 1, oz + 1, ModBlocks.pwr_fuel); put(w, ox + n, oy + 1, oz + 1, ModBlocks.pwr_fuel);
+		put(w, ox + sx / 2, oy + 1, oz + 1, ModBlocks.pwr_neutron_source);
+		int cx = ox + sx / 2, cz = oz;
+		put(w, cx, oy + 1, cz, ModBlocks.pwr_controller); // flood direction +z, into the middle of the line
+		return runStructure(name, w, cx, oy + 1, cz, 2);
+	}
+
 	static String pwrStructures() {
 		List<String> l = new ArrayList<>();
 		int[] metas = {2, 3, 4, 5};
@@ -353,6 +374,7 @@ public class Driver {
 		l.add(structure("no_source", 14, 7, 6, 7, 4, 2, 0));
 		l.add(structure("foreign_block", 15, 7, 6, 7, 5, 3, 0));
 		for(int q = 0; q < 3; q++) { l.add(structure("casing_inside" + q, 300 + q, 8, 7, 9, metas[q], 5, 0)); l.add(structure("reflector_port_inside" + q, 400 + q, 8, 7, 9, metas[q + 1], 6, 0)); }
+		for(int n = 14; n <= 18; n++) l.add(fuelLine("fuel_line" + n, n));
 		l.add(structure("open_shell", 16, 7, 6, 7, 5, 4, 0));
 		// oversize: a long control column, one fuel at the end and one source
 		World w = new World();
@@ -409,7 +431,7 @@ public class Driver {
 			List<String> lg = new ArrayList<>();
 			for(String e : w.log) lg.add(s(e));
 			tl.add(obj("state", pwrState(c), "log", arr(lg)));
-			if(!w.log.isEmpty() && ++melted > 1) break;
+			if(w.log.stream().anyMatch(e -> e.startsWith("explode")) && ++melted > 1) break;
 		}
 		List<String> rods = new ArrayList<>();
 		for(BlockPos p : c.rods) rods.add(ints(p.getX(), p.getY(), p.getZ()));
@@ -457,16 +479,22 @@ public class Driver {
 			c.slots[1] = new ItemStack(ModItems.pwr_fuel_hot, 3, 8);
 		}));
 		l.add(pwrRun("rod_ramp", 140, (c, w) -> { load(c, 1, 60); c.flux = 100; c.rodLevel = 100; c.rodTarget = 0; }));
+		l.add(pwrRun("rod_ramp_up", 140, (c, w) -> { load(c, 1, 60); c.flux = 100; c.rodLevel = 0; c.rodTarget = 100; }));
+		l.add(pwrRun("rod_fractional_up", 12, (c, w) -> { load(c, 1, 60); c.flux = 100; c.rodLevel = 49.6; c.rodTarget = 50; }));
+		l.add(pwrRun("rod_partial_up", 12, (c, w) -> { load(c, 1, 60); c.flux = 100; c.rodLevel = 20.3; c.rodTarget = 24; }));
+		for(int hs : new int[] {13, 14, 15, 17}) l.add(pwrRun("heatsinks" + hs, 60, (c, w) -> {
+			load(c, 2, 60); c.flux = 8000; c.heatsinkCount = hs; c.channelCount = 40; c.tanks[0].setFill(90_000); c.coreHeat = 3_000_000; c.hullHeat = 3_000_000;
+		}));
 		l.add(pwrRun("rod_fractional", 12, (c, w) -> { load(c, 1, 60); c.flux = 100; c.rodLevel = 50.4; c.rodTarget = 50; }));
 		l.add(pwrRun("meltdown", 6, (c, w) -> {
 			load(c, 11, 60); c.flux = 50000; c.coreHeat = c.coreHeatCapacity - 10; c.hullHeat = c.coreHeatCapacity - 10; c.rodTarget = 0; c.rodLevel = 0;
 			c.rods.add(new BlockPos(1, 2, 3)); c.rods.add(new BlockPos(4, 2, 3)); c.rods.add(new BlockPos(1, 7, 9)); c.rods.add(new BlockPos(-3, 5, 2));
 		}));
 		l.add(pwrRun("meltdown_many_rods", 4, (c, w) -> {
-			load(c, 0, 60); c.flux = 80000; c.coreHeat = c.coreHeatCapacity + 5; c.rodTarget = 0; c.rodLevel = 0;
+			load(c, 0, 60); c.flux = 80000; c.coreHeat = c.coreHeatCapacity * 2; c.rodTarget = 0; c.rodLevel = 0;
 			for(int q = 0; q < 37; q++) c.rods.add(new BlockPos(q * 3 - 20, 64 + q % 5, 7 * q - 90));
 		}));
-		l.add(pwrRun("meltdown_no_rods", 3, (c, w) -> { load(c, 0, 60); c.flux = 80000; c.coreHeat = c.coreHeatCapacity + 5; }));
+		l.add(pwrRun("meltdown_no_rods", 3, (c, w) -> { load(c, 0, 60); c.flux = 80000; c.coreHeat = c.coreHeatCapacity * 2; }));
 		l.add(pwrRun("zero_rods", 4, (c, w) -> { c.rodCount = 0; load(c, 0, 0); c.flux = 100; }));
 		l.add(pwrRun("not_assembled", 4, (c, w) -> { c.assembled = false; load(c, 0, 5); c.flux = 100; c.coreHeat = 99; }));
 		l.add(pwrRun("overfull_load", 4, (c, w) -> { load(c, 2, 200); c.flux = 100; }));

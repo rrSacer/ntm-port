@@ -414,7 +414,7 @@ impl PwrController {
         let hot_cycles = (TANK_CAPACITY - self.hot_fill) / h.amount_produced;
         let heat_cycles = heat_to_use / h.heat_req;
         let cycles = cool_cycles.min(hot_cycles.min(heat_cycles));
-        self.hull_heat -= h.heat_req.wrapping_mul(cycles) as i64;
+        self.hull_heat = self.hull_heat.wrapping_sub(h.heat_req.wrapping_mul(cycles) as i64);
         self.cold_fill = self.cold_fill.wrapping_sub(h.amount_req.wrapping_mul(cycles));
         self.hot_fill = self.hot_fill.wrapping_add(h.amount_produced.wrapping_mul(cycles));
     }
@@ -515,9 +515,9 @@ impl PwrController {
 
         // core cooling
         let approach = get_x_over_e(self.heatex_count as f64 * 5.0 / self.rod_count_for_coolant() as f64, 2.0) / 2.0;
-        let average = (self.core_heat + self.hull_heat) / 2;
-        self.core_heat = (self.core_heat as f64 - (self.core_heat - average) as f64 * approach) as i64;
-        self.hull_heat = (self.hull_heat as f64 - (self.hull_heat - average) as f64 * approach) as i64;
+        let average = self.core_heat.wrapping_add(self.hull_heat) / 2;
+        self.core_heat = (self.core_heat as f64 - self.core_heat.wrapping_sub(average) as f64 * approach) as i64;
+        self.hull_heat = (self.hull_heat as f64 - self.hull_heat.wrapping_sub(average) as f64 * approach) as i64;
 
         self.update_coolant();
 
