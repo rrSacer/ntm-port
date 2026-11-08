@@ -3348,5 +3348,21 @@
   "itemGroup.ntm.bombs": "NTM Bombs",
   "itemGroup.ntm.missiles": "NTM Missiles and Satellites",
   "itemGroup.ntm.weapons": "NTM Weapons and Turrets",
-  "itemGroup.ntm.consumables": "NTM Consumables and Gear"
+  "itemGroup.ntm.consumables": "NTM Consumables and Gear",
+  "item.ntm.waste_natural_uranium": "Depleted Natural Uranium Fuel",
+  "item.ntm.waste_uranium": "Depleted Uranium Fuel",
+  "item.ntm.waste_thorium": "Depleted Thorium Fuel",
+  "item.ntm.waste_mox": "Depleted MOX Fuel",
+  "item.ntm.waste_plutonium": "Depleted Plutonium Fuel",
+  "item.ntm.waste_u233": "Depleted Uranium-233 Fuel",
+  "item.ntm.waste_u235": "Depleted Uranium-235 Fuel",
+  "item.ntm.waste_schrabidium": "Depleted Schrabidium Fuel",
+  "item.ntm.waste_zfb_mox": "Depleted ZFB MOX Fuel",
+  "item.ntm.waste_plate_u233": "Depleted HEU-233 Plate Fuel",
+  "item.ntm.waste_plate_u235": "Depleted HEU-235 Plate Fuel",
+  "item.ntm.waste_plate_mox": "Depleted MOX Plate Fuel",
+  "item.ntm.waste_plate_pu239": "Depleted HEP-239 Plate Fuel",
+  "item.ntm.waste_plate_sa326": "Depleted HES-326 Plate Fuel",
+  "item.ntm.waste_plate_ra226be": "Depleted Ra226Be Plate Fuel",
+  "item.ntm.waste_plate_pu238be": "Depleted Pu238Be Plate Fuel"
 }

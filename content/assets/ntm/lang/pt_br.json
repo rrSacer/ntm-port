@@ -3348,5 +3348,21 @@
   "itemGroup.ntm.bombs": "Bombas do NTM",
   "itemGroup.ntm.missiles": "Mísseis e Satélites do NTM",
   "itemGroup.ntm.weapons": "Armas e Torretas do NTM",
-  "itemGroup.ntm.consumables": "Consumíveis e Equipamentos do NTM"
+  "itemGroup.ntm.consumables": "Consumíveis e Equipamentos do NTM",
+  "item.ntm.waste_natural_uranium": "Combustível de Urânio Natural Esgotado",
+  "item.ntm.waste_uranium": "Combustível de Urânio Esgotado",
+  "item.ntm.waste_thorium": "Combustível de Tório Esgotado",
+  "item.ntm.waste_mox": "Combustível MOX Esgotado",
+  "item.ntm.waste_plutonium": "Combustível de Plutônio Esgotado",
+  "item.ntm.waste_u233": "Combustível de Urânio-233 Esgotado",
+  "item.ntm.waste_u235": "Combustível de Urânio-235 Esgotado",
+  "item.ntm.waste_schrabidium": "Combustível de Schrabídio Esgotado",
+  "item.ntm.waste_zfb_mox": "Combustível ZFB MOX Esgotado",
+  "item.ntm.waste_plate_u233": "Combustível de Placa HEU-233 Esgotado",
+  "item.ntm.waste_plate_u235": "Combustível de Placa HEU-235 Esgotado",
+  "item.ntm.waste_plate_mox": "Combustível de Placa MOX Esgotado",
+  "item.ntm.waste_plate_pu239": "Combustível de Placa HEP-239 Esgotado",
+  "item.ntm.waste_plate_sa326": "Combustível de Placa HES-326 Esgotado",
+  "item.ntm.waste_plate_ra226be": "Combustível de Placa Ra226Be Esgotado",
+  "item.ntm.waste_plate_pu238be": "Combustível de Placa Pu238Be Esgotado"
 }

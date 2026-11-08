@@ -89638,6 +89638,470 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:waste_natural_uranium",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_natural_uranium",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_uranium.png",
+      "names": {
+        "en_us": "Depleted Natural Uranium Fuel",
+        "pt_br": "Combustível de Urânio Natural Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_natural_uranium",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:27"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:92"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_uranium",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_uranium",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_uranium.png",
+      "names": {
+        "en_us": "Depleted Uranium Fuel",
+        "pt_br": "Combustível de Urânio Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_uranium",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:28"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:101"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_thorium",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_thorium",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_thorium.png",
+      "names": {
+        "en_us": "Depleted Thorium Fuel",
+        "pt_br": "Combustível de Tório Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_thorium",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:29"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:110"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_mox",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_mox",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_mox.png",
+      "names": {
+        "en_us": "Depleted MOX Fuel",
+        "pt_br": "Combustível MOX Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_mox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:30"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:119"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_plutonium",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_plutonium",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_plutonium.png",
+      "names": {
+        "en_us": "Depleted Plutonium Fuel",
+        "pt_br": "Combustível de Plutônio Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_plutonium",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:31"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:534"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_u233",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_u233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_uranium.png",
+      "names": {
+        "en_us": "Depleted Uranium-233 Fuel",
+        "pt_br": "Combustível de Urânio-233 Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_u233",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:32"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:136"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_u235",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_u235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_uranium.png",
+      "names": {
+        "en_us": "Depleted Uranium-235 Fuel",
+        "pt_br": "Combustível de Urânio-235 Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_u235",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:33"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:145"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_schrabidium",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_schrabidium",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_schrabidium.png",
+      "names": {
+        "en_us": "Depleted Schrabidium Fuel",
+        "pt_br": "Combustível de Schrabídio Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_schrabidium",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:34"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:154"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_zfb_mox",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_zfb_mox",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_zfb_mox.png",
+      "names": {
+        "en_us": "Depleted ZFB MOX Fuel",
+        "pt_br": "Combustível ZFB MOX Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_zfb_mox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:35"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:163"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_plate_u233",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_plate_u233",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_plate_uranium.png",
+      "names": {
+        "en_us": "Depleted HEU-233 Plate Fuel",
+        "pt_br": "Combustível de Placa HEU-233 Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_plate_u233",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:36"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:219"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_plate_u235",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_plate_u235",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_plate_uranium.png",
+      "names": {
+        "en_us": "Depleted HEU-235 Plate Fuel",
+        "pt_br": "Combustível de Placa HEU-235 Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_plate_u235",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:37"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:228"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_plate_mox",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_plate_mox",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_plate_mox.png",
+      "names": {
+        "en_us": "Depleted MOX Plate Fuel",
+        "pt_br": "Combustível de Placa MOX Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_plate_mox",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:38"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:174"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_plate_pu239",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_plate_pu239",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_plate_mox.png",
+      "names": {
+        "en_us": "Depleted HEP-239 Plate Fuel",
+        "pt_br": "Combustível de Placa HEP-239 Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_plate_pu239",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:39"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:192"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_plate_sa326",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_plate_sa326",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_plate_sa326.png",
+      "names": {
+        "en_us": "Depleted HES-326 Plate Fuel",
+        "pt_br": "Combustível de Placa HES-326 Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_plate_sa326",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:40"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:210"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_plate_ra226be",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_plate_ra226be",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_plate_ra226be.png",
+      "names": {
+        "en_us": "Depleted Ra226Be Plate Fuel",
+        "pt_br": "Combustível de Placa Ra226Be Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_plate_ra226be",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:41"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:201"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:waste_plate_pu238be",
+      "type": "item",
+      "category": "component",
+      "source_variable": "waste_plate_pu238be",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/waste_plate_pu238be.png",
+      "names": {
+        "en_us": "Depleted Pu238Be Plate Fuel",
+        "pt_br": "Combustível de Placa Pu238Be Esgotado"
+      },
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "source_registry": "hbm:item.waste_plate_pu238be",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "fuel_pool",
+          "source": "src/main/java/com/hbm/inventory/recipes/FuelPoolRecipes.java:42"
+        },
+        {
+          "machine": "p_u_r_e_x",
+          "source": "src/main/java/com/hbm/inventory/recipes/PUREXRecipes.java:183"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:machine_liquefactor",
       "source_variable": "machine_liquefactor",
       "type": "block",
