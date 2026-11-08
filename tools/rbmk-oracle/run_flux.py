@@ -25,7 +25,7 @@ EXTRA = tuple(TILE + n + '.java' for n in (
 
 
 # fluids whose FT_Heatable statement is run verbatim from Fluids.java (the heater's inputs)
-HEATABLES = ('WATER', 'OIL', 'COOLANT', 'PERFLUOROMETHYL')
+# (every fluid that has the trait is run: the names are read from the source)
 
 
 def fluids_source(source):
@@ -36,15 +36,15 @@ def fluids_source(source):
     decls = list(re.finditer(r'^\s*([A-Z0-9_]+)\s*=\s*new FluidType\((?:(\d+),\s*)?"([A-Z0-9_]+)"([^;]*);', cleaned, re.M))
     fields = []
     for fid, d in enumerate(decls):
-        temp = re.search(r'\.setTemp\((\d+)\)', d[4])
+        temp = re.search(r'\.setTemp\(([\d_]+)\)', d[4])
         fields.append(f'public static final FluidType {d[1]}=new FluidType("{d[1]}",{fid})' + (f'.setTemp({temp[1]})' if temp else '') + ';')
     statements = []
-    for name in HEATABLES:
+    for name in re.findall(r'^\s*([A-Z0-9_]+)\.addTraits\(new FT_Heatable\(\)', cleaned, re.M):
         start = cleaned.index(name + '.addTraits(new FT_Heatable()')
         end = start + cleaned[start:].index(';\n')
         statements.append(text[start:end + 1])
     consts = re.findall(r'^\s*double eff_steam_\w+ = [^;]+;', text, re.M)
-    return ('package com.hbm.inventory.fluid; import com.hbm.inventory.fluid.trait.FT_Heatable; import com.hbm.inventory.fluid.trait.FT_Heatable.HeatingType;\n'
+    return ('package com.hbm.inventory.fluid; import com.hbm.inventory.fluid.trait.FT_Heatable; import com.hbm.inventory.fluid.trait.FT_PWRModerator; import com.hbm.inventory.fluid.trait.FT_Heatable.HeatingType;\n'
             'public class Fluids {\n' + '\n'.join(fields) + '\npublic static FluidType fromName(String n){return null;}\nstatic {\n' + '\n'.join(consts + statements) + '\n}}\n')
 
 

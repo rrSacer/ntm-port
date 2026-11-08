@@ -44,6 +44,8 @@ pub enum Kind {
     Reflector,
     Absorber,
     Blank,
+    /// `TileEntityRBMKStorage`: a slotted column that only exchanges heat.
+    Storage,
     Outgasser,
     Boiler,
     Heater,
@@ -73,7 +75,7 @@ impl Kind {
             Kind::Reflector => RbmkType::Reflector,
             Kind::Absorber => RbmkType::Absorber,
             Kind::Outgasser => RbmkType::Outgasser,
-            Kind::Blank | Kind::Boiler | Kind::Heater | Kind::Cooler => RbmkType::Other,
+            Kind::Blank | Kind::Storage | Kind::Boiler | Kind::Heater | Kind::Cooler => RbmkType::Other,
         }
     }
 
@@ -381,6 +383,10 @@ pub struct Reactor {
     pub ore_names: HashMap<(String, i32), Vec<String>>,
     /// Fluid the identifier in the heater's slot selects, per column.
     pub identifiers: HashMap<usize, &'static str>,
+    /// World time in ticks (`getTotalWorldTime`), advanced at the end of each step.
+    pub time: i64,
+    /// Stack limit per item name, for the outgasser's output (64 when absent).
+    pub max_stack: HashMap<String, i32>,
 }
 
 /// Something the engine must show or play.
@@ -393,6 +399,8 @@ pub enum Effect {
         z_offset: f64,
         pitch: f32,
     },
+    /// `SatelliteRayScan.reportEvent(INFO_NUCLEAR, 300)` of a rod that took flux.
+    SatelliteScan { column: usize },
 }
 
 fn java_floor(v: f64) -> i32 {
@@ -419,6 +427,8 @@ impl Reactor {
             effects: Vec::new(),
             ore_names: HashMap::new(),
             identifiers: HashMap::new(),
+            time: 0,
+            max_stack: HashMap::new(),
         }
     }
 
@@ -428,6 +438,39 @@ impl Reactor {
         self.index.insert((column.x, column.z), i);
         self.columns.push(column);
         i
+    }
+
+    /// Removes a column (broken block, unloaded chunk), keeping the order of the
+    /// rest. Returns true when this is `TileEntityRBMKRod.invalidate()` finding
+    /// a hull at 1500 or more with meltdowns enabled: the engine must run the
+    /// meltdown (the column is already gone from `columns`; its position and
+    /// fuel are in the returned value).
+    pub fn remove(&mut self, i: usize) -> Option<Column> {
+        let gone = self.columns.remove(i);
+        self.streams.retain(|s| s.origin != i);
+        for s in &mut self.streams {
+            if s.origin > i {
+                s.origin -= 1;
+            }
+        }
+        self.index = self.columns.iter().enumerate().map(|(k, c)| ((c.x, c.z), k)).collect();
+        let shift = |k: usize| if k > i { k - 1 } else { k };
+        self.identifiers = std::mem::take(&mut self.identifiers).into_iter().filter(|(k, _)| *k != i).map(|(k, v)| (shift(k), v)).collect();
+        for c in &mut self.columns {
+            if let Data::Cooler(k) = &mut c.data {
+                for n in &mut k.neighbors {
+                    // a cooler keeps a stale reference in Java; cooling a dead tile has no effect
+                    *n = match *n {
+                        Some(m) if m == i => None,
+                        Some(m) => Some(shift(m)),
+                        None => None,
+                    };
+                }
+            }
+        }
+        let melt = !self.dials.meltdowns_disabled
+            && gone.rod().and_then(|r| r.fuel.as_ref()).is_some_and(|(_, stack)| stack.hull.unwrap_or(0.0) >= 1500.0);
+        melt.then_some(gone)
     }
 
     pub fn at(&self, x: i32, z: i32) -> Option<usize> {
@@ -472,6 +515,7 @@ impl Reactor {
         for i in 0..self.columns.len() {
             self.update(i);
         }
+        self.time += 1;
     }
 
     // ---- neutron streams
@@ -731,6 +775,9 @@ impl Reactor {
         let ratio_out = if rod.r_type == NType::Slow { 0.0 } else { 1.0 };
         let flux_in = Self::flux_from_type(r, rod.n_type);
         let flux_q = r.flux_quantity;
+        if flux_q > 0.0 && self.time % 200 == 0 {
+            self.effects.push(Effect::SatelliteScan { column: i });
+        }
         let flux_out = stack.burn(rod, &dials, flux_in);
         stack.update_heat(rod, &dials, 1.0);
         let heat = self.columns[i].heat;

@@ -4,7 +4,7 @@ use super::outgasser::{OutgasserInput, OutgasserRecipe};
 /// `(fluid, heat-exchanger efficiency, amountReq, heatReq, produced fluid, amountProduced, produced temperature)`
 /// of the first step of every `FT_Heatable`; efficiency 0 when the trait has no heat-exchanger value.
 pub const HEATABLES: [(&str, f64, i32, i32, &str, i32, i32); 15] = [
-    ("AIR", 0.0, 1, 5, "AIRBLAST", 1, 20),
+    ("AIR", 0.0, 1, 5, "AIRBLAST", 1, 1200),
     ("WATER", 0.25, 1, 200, "STEAM", 100, 100),
     ("OIL", 1.0, 1, 10, "HOTOIL", 1, 350),
     ("OIL_DS", 1.0, 1, 10, "HOTOIL_DS", 1, 350),

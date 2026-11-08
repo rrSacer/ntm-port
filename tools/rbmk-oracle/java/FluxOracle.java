@@ -270,6 +270,8 @@ public final class FluxOracle {
             for (double[] p : AuxParticlePacketNT.log) fx.add(Arrays.asList("particle", p[0], p[2]));
             AuxParticlePacketNT.log.clear();
             for (String f : w.fx) fx.add(Arrays.asList(f.split(",")));
+            for (int[] sc2 : com.hbm.saveddata.satellites.SatelliteRayScan.log) fx.add(Arrays.asList("scan", sc2[0], sc2[1], sc2[2]));
+            com.hbm.saveddata.satellites.SatelliteRayScan.log.clear();
             w.fx.clear();
             trace.add(obj("tick", tick, "cols", cols, "rad", rad, "fx", fx, "meltdown", meltdown));
             if (meltdown) { melt = tick; break; }

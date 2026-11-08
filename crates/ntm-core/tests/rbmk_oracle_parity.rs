@@ -469,6 +469,9 @@ fn jmath_matches_hotspot() {
             "powe" => jmath::pow_e(arg),
             "sin" => jmath::sin(arg),
             "cos" => jmath::cos(arg),
+            "pow15" => jmath::pow(arg, 15.0),
+            "pow2" => jmath::pow(arg, 2.0),
+            "sindep" => jmath::sin(arg),
             _ => panic!("{kind}"),
         };
         let e = miss.entry(kind).or_default();
@@ -476,21 +479,21 @@ fn jmath_matches_hotspot() {
         e.1 += u32::from(got.to_bits() != want);
     }
     eprintln!("jmath misses (total, mismatched): {miss:?}");
-    // log10 reproduces the stubs; pow(E, y), sin and cos have a known tiny residual
-    assert_eq!(miss["log10"].1, 0);
-    assert!(
-        miss["powe"].1 * 100 <= miss["powe"].0,
-        "powe {:?}",
-        miss["powe"]
-    );
-    assert!(
-        miss["sin"].1 * 100 <= miss["sin"].0,
-        "sin {:?}",
-        miss["sin"]
-    );
-    assert!(
-        miss["cos"].1 * 100 <= miss["cos"].0,
-        "cos {:?}",
-        miss["cos"]
-    );
+    // exact for log10 and the reactor's pow shapes; the measured one-ulp residual of the
+    // rest is pinned per function (the fixture is deterministic, so any change shows)
+    for (kind, max) in [
+        ("log10", 0),
+        ("pow15", 0),
+        ("pow2", 0),
+        ("powe", 2),
+        ("sin", 5),
+        ("sindep", 5),
+        ("cos", 6),
+    ] {
+        assert!(
+            miss[kind].1 <= max,
+            "{kind}: {:?} (allowed {max})",
+            miss[kind]
+        );
+    }
 }

@@ -223,3 +223,6 @@ for n, o in (('ContainerRBMKGeneric', 'extends net.minecraft.inventory.Container
     put(f'com/hbm/inventory/container/{n}.java', f'package com.hbm.inventory.container; public class {n} {o} {{ public {n}(Object a){{}} public {n}(Object a,Object b){{}} public {n}(Object a,Object b,Object c){{}} }}')
 for n in ('GUIRBMKBoiler', 'GUIRBMKHeater'):
     put(f'com/hbm/inventory/gui/{n}.java', f'package com.hbm.inventory.gui; public class {n} {{ public {n}(Object a,Object b){{}} }}')
+
+put('com/hbm/inventory/fluid/trait/FT_PWRModerator.java', 'package com.hbm.inventory.fluid.trait; public class FT_PWRModerator extends FluidTrait { public FT_PWRModerator(double d){} }')
+put('com/hbm/saveddata/satellites/SatelliteRayScan.java', 'package com.hbm.saveddata.satellites; public class SatelliteRayScan { public enum RayEvent {INFO_NUCLEAR} public static final java.util.List<int[]> log=new java.util.ArrayList<>(); public static void reportEvent(net.minecraft.world.World w,int x,int y,int z,RayEvent e,int n){log.add(new int[]{x,z,n});} }')

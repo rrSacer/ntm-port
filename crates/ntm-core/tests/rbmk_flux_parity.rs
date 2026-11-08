@@ -35,6 +35,7 @@ fn kind(s: &str) -> Kind {
         "reflector" => Kind::Reflector,
         "absorber" => Kind::Absorber,
         "blank" => Kind::Blank,
+        "storage" => Kind::Storage,
         "outgasser" => Kind::Outgasser,
         "boiler" => Kind::Boiler,
         "heater" => Kind::Heater,
@@ -224,6 +225,26 @@ fn same_stack(got: &RodStack, want: &Value, what: &str) {
         }
     }
     assert_eq!(n, nbt.len(), "{what}: key sets differ");
+}
+
+/// The heat and flux buffers at the tick a meltdown starts (the fuel itself is
+/// rewritten by `onMelt`, so the stack is not compared).
+fn compare_melted(r: &Reactor, i: usize, want: &Value, what: &str) {
+    let c = &r.columns[i];
+    same(c.heat, &want["heat"], &format!("{what} heat"));
+    if let Some(rc) = c.rod() {
+        same(rc.flux_quantity, &want["flux_q"], &format!("{what} flux_q"));
+        same(
+            rc.last_flux_quantity,
+            &want["last_q"],
+            &format!("{what} last_q"),
+        );
+        same(
+            rc.last_flux_ratio,
+            &want["last_r"],
+            &format!("{what} last_r"),
+        );
+    }
 }
 
 fn compare(r: &Reactor, i: usize, want: &Value, what: &str) {
@@ -461,19 +482,24 @@ fn every_scenario_matches_the_java_oracle_tick_by_tick() {
             // effects: all particles first, then the sounds (the oracle logs them apart)
             let fx = t["fx"].as_array().unwrap();
             let skip_fx = Some(tick) == melt; // the meltdown's own sound and particle belong to the engine
-            let vents: Vec<_> = r
-                .effects
-                .iter()
-                .map(
-                    |Effect::SteamVent {
-                         column,
-                         x_offset,
-                         z_offset,
-                         pitch,
-                     }| (*column, *x_offset, *z_offset, *pitch),
-                )
-                .collect();
-            assert!(skip_fx || fx.len() == vents.len() * 2, "{at}: effect count");
+            let mut vents = Vec::new();
+            let mut scans = Vec::new();
+            for e in &r.effects {
+                match *e {
+                    Effect::SteamVent {
+                        column,
+                        x_offset,
+                        z_offset,
+                        pitch,
+                    } => vents.push((column, x_offset, z_offset, pitch)),
+                    Effect::SatelliteScan { column } => scans.push(column),
+                }
+            }
+            // the oracle logs particles, then sounds, then satellite scans
+            assert!(
+                skip_fx || fx.len() == vents.len() * 2 + scans.len(),
+                "{at}: effect count"
+            );
             for (k, (col, xo, zo, pitch)) in vents.iter().enumerate().filter(|_| !skip_fx) {
                 let c = &r.columns[*col];
                 let p = &fx[k];
@@ -489,8 +515,26 @@ fn every_scenario_matches_the_java_oracle_tick_by_tick() {
                     "{at}: vent pitch"
                 );
             }
+            for (k, col) in scans.iter().enumerate().filter(|_| !skip_fx) {
+                let w = &fx[vents.len() * 2 + k];
+                let c = &r.columns[*col];
+                assert_eq!(
+                    (
+                        w[0].as_str().unwrap(),
+                        w[1].as_i64().unwrap(),
+                        w[2].as_i64().unwrap(),
+                        w[3].as_i64().unwrap()
+                    ),
+                    ("scan", i64::from(c.x), i64::from(c.z), 300),
+                    "{at}: scan"
+                );
+            }
             if Some(tick) == melt {
                 assert!(!r.meltdowns.is_empty(), "{at}: Java melted down here");
+                // the column state after the request: everything the meltdown does not rewrite
+                for (i, w) in t["cols"].as_array().unwrap().iter().enumerate() {
+                    compare_melted(&r, i, w, &format!("{at} col {i}"));
+                }
                 break;
             }
             assert!(r.meltdowns.is_empty(), "{at}: unexpected meltdown request");

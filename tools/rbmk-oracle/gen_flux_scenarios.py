@@ -42,7 +42,7 @@ for x in range(5):
 scenario("core_5x5", 60, grid, actions=[{"tick": 10, "column": [i for i, c in enumerate(grid) if c["kind"] == "control"][0], "target": 0.1}])
 
 # 3. reflector and absorber at efficiency 1 and below 1
-for eff in ("1.0", "0.5"):
+for eff in ("1.0", "0.5", "0.3", "0.8"):
     scenario("reflector_absorber_eff_" + eff.replace(".", "_"), 30,
              [col("reflector", -1, 0), rod(0, 0, flux=[300, 0.8], lid=False), col("moderator", 1, 0, ), col("absorber", 2, 0), rod(3, 0, flux=[80, 0.3]),
               col("reflector", 3, -1), col("absorber", 3, 1)],
@@ -140,6 +140,29 @@ scenario("outgasser_recipes", 40,
           rod(40, 0, "rbmk_fuel_balefire", flux=[3000, 0.2]), outg(41, "oil_tar", meta=4, progress=0)],
          rules={"dialDisableMeltdowns": "true", "dialOutgasserSpeedMod": "1.5"}, probes=probes,
          actions=[{"tick": 15, "column": 1, "in": {"item": "minecraft_1_7_10:mushroom_stew", "count": 2, "meta": 0}}])
+
+# 15. boundaries the plan names: outgasser `progress > 10000`, rod `heat > 1500`
+for tag, start in (("exact", 9950), ("below", 9949), ("above", 9950.5)):
+    scenario("outgasser_threshold_" + tag, 4, [rod(0, 0, "rbmk_fuel_po210be"), col("outgasser", 1, 0, **{"in": {"item": "minecraft_1_7_10:brown_mushroom", "count": 3, "meta": 0}, "progress": start})])
+for tag, h in (("below", 1499.9999999999998), ("exact", 1500.0), ("ulp_above", 1500.0000000000002), ("half_above", 1500.5)):
+    scenario("rod_heat_limit_" + tag, 3, [rod(0, 0, flux=[100, 0.5], heat=h)],
+             rules={"dialColumnHeatFlow": "0", "dialPassiveCooling": "0", "dialPassiveCoolingInner": "0"})
+
+# 16. ReaSim at long range: a ring of rods that only a 9 degree step reaches
+import math
+ring = [col("rod_reasim", 0, 0, rod="rbmk_fuel_pu238be", flux=[400, 0.5], lid=False)]
+seen = set()
+for a in range(0, 360, 3):
+    p = (round(40 * math.cos(math.radians(a))), round(40 * math.sin(math.radians(a))))
+    if p not in seen:
+        seen.add(p)
+        ring.append(rod(p[0], p[1], "rbmk_fuel_ueu"))
+scenario("reasim_long_ring", 6, ring, rules={"dialFluxRange": "60"}, seed=31337)
+
+# 17. every FT_Heatable fluid in a heater
+import re
+names = re.findall(r'^\s*\("([A-Z0-9_]+)", ', (pathlib.Path(__file__).resolve().parents[2] / "crates/ntm-core/src/rbmk/tables_data.rs").read_text(), re.M)
+scenario("heater_every_heatable", 20, [col("heater", 8 * i, 0, heat=900, feed={"fluid": n, "fill": 1000}) for i, n in enumerate(names)])
 
 pathlib.Path(__file__).with_name("flux_scenarios.json").write_text(json.dumps({"scenarios": S}, indent=1) + "\n")
 print(len(S), "scenarios")

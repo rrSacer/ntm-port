@@ -26,8 +26,8 @@ def heatables():
     c = clean(text)
     temps = {}
     for d in re.finditer(r'^\s*([A-Z0-9_]+)\s*=\s*new FluidType\(([^;]*);', c, re.M):
-        t = re.search(r'\.setTemp\((\d+)\)', d[2])
-        temps[d[1]] = int(t[1]) if t else 20
+        t = re.search(r'\.setTemp\(([\d_]+)\)', d[2])
+        temps[d[1]] = int(t[1].replace('_', '')) if t else 20
     consts = {m[1]: float(m[2]) for m in re.finditer(r'double (eff_\w+) = ([0-9.]+)D;', c)}
     rows = []
     for m in re.finditer(r'^\s*([A-Z0-9_]+)\.addTraits\(new FT_Heatable\(\)', c, re.M):

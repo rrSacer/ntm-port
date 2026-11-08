@@ -16,6 +16,15 @@ public class MathProbe {
             sb.append("sin ").append(Double.doubleToLongBits(c)).append(' ').append(Double.doubleToLongBits(Math.sin(c))).append('\n');
             sb.append("cos ").append(Double.doubleToLongBits(c)).append(' ').append(Double.doubleToLongBits(Math.cos(c))).append('\n');
         }
+        // the reactor's own call shapes: surge pow(1 - level, 15), pow(x, 2), the depletion curves' sin arguments
+        for (int i = 0; i < 1500; i++) {
+            double level = i < 750 ? r.nextDouble() : Math.min(1.0, i * 0.00277 % 1.0 + r.nextInt(2) * 0.0);
+            double x = 1.0 - level, e = r.nextDouble();
+            sb.append("pow15 ").append(Double.doubleToLongBits(x)).append(' ').append(Double.doubleToLongBits(Math.pow(x, 15))).append('\n');
+            sb.append("pow2 ").append(Double.doubleToLongBits(x)).append(' ').append(Double.doubleToLongBits(Math.pow(x, 2))).append('\n');
+            for (double ang : new double[]{(e - 1) * (e - 1) * Math.PI, e * Math.PI, (e * Math.PI + Math.PI) / 2})
+                sb.append("sindep ").append(Double.doubleToLongBits(ang)).append(" ").append(Double.doubleToLongBits(Math.sin(ang))).append('\n');
+        }
         System.out.print(sb);
     }
 }

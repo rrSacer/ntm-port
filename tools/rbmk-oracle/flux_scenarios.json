@@ -339,6 +339,124 @@
    }
   },
   {
+   "name": "reflector_absorber_eff_0_3",
+   "ticks": 30,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "reflector",
+     "x": -1,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "lid": false,
+     "flux": [
+      300,
+      0.8
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": 0
+    },
+    {
+     "kind": "absorber",
+     "x": 2,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      80,
+      0.3
+     ]
+    },
+    {
+     "kind": "reflector",
+     "x": 3,
+     "z": -1
+    },
+    {
+     "kind": "absorber",
+     "x": 3,
+     "z": 1
+    }
+   ],
+   "rules": {
+    "dialReflectorEfficiency": "0.3",
+    "dialAbsorberEfficiency": "0.3",
+    "dialModeratorEfficiency": "0.3",
+    "dialAbsorberHeatConversion": "0.2"
+   }
+  },
+  {
+   "name": "reflector_absorber_eff_0_8",
+   "ticks": 30,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "reflector",
+     "x": -1,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "lid": false,
+     "flux": [
+      300,
+      0.8
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": 0
+    },
+    {
+     "kind": "absorber",
+     "x": 2,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      80,
+      0.3
+     ]
+    },
+    {
+     "kind": "reflector",
+     "x": 3,
+     "z": -1
+    },
+    {
+     "kind": "absorber",
+     "x": 3,
+     "z": 1
+    }
+   ],
+   "rules": {
+    "dialReflectorEfficiency": "0.8",
+    "dialAbsorberEfficiency": "0.8",
+    "dialModeratorEfficiency": "0.8",
+    "dialAbsorberHeatConversion": "0.2"
+   }
+  },
+  {
    "name": "manual_control_surge",
    "ticks": 90,
    "seed": 1,
@@ -2165,6 +2283,1048 @@
     {
      "ore": "ingotGold",
      "item": "oracle_probe:gold"
+    }
+   ]
+  },
+  {
+   "name": "outgasser_threshold_exact",
+   "ticks": 4,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_po210be"
+    },
+    {
+     "kind": "outgasser",
+     "x": 1,
+     "z": 0,
+     "in": {
+      "item": "minecraft_1_7_10:brown_mushroom",
+      "count": 3,
+      "meta": 0
+     },
+     "progress": 9950
+    }
+   ]
+  },
+  {
+   "name": "outgasser_threshold_below",
+   "ticks": 4,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_po210be"
+    },
+    {
+     "kind": "outgasser",
+     "x": 1,
+     "z": 0,
+     "in": {
+      "item": "minecraft_1_7_10:brown_mushroom",
+      "count": 3,
+      "meta": 0
+     },
+     "progress": 9949
+    }
+   ]
+  },
+  {
+   "name": "outgasser_threshold_above",
+   "ticks": 4,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_po210be"
+    },
+    {
+     "kind": "outgasser",
+     "x": 1,
+     "z": 0,
+     "in": {
+      "item": "minecraft_1_7_10:brown_mushroom",
+      "count": 3,
+      "meta": 0
+     },
+     "progress": 9950.5
+    }
+   ]
+  },
+  {
+   "name": "rod_heat_limit_below",
+   "ticks": 3,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "heat": 1499.9999999999998,
+     "flux": [
+      100,
+      0.5
+     ]
+    }
+   ],
+   "rules": {
+    "dialColumnHeatFlow": "0",
+    "dialPassiveCooling": "0",
+    "dialPassiveCoolingInner": "0"
+   }
+  },
+  {
+   "name": "rod_heat_limit_exact",
+   "ticks": 3,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "heat": 1500.0,
+     "flux": [
+      100,
+      0.5
+     ]
+    }
+   ],
+   "rules": {
+    "dialColumnHeatFlow": "0",
+    "dialPassiveCooling": "0",
+    "dialPassiveCoolingInner": "0"
+   }
+  },
+  {
+   "name": "rod_heat_limit_ulp_above",
+   "ticks": 3,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "heat": 1500.0000000000002,
+     "flux": [
+      100,
+      0.5
+     ]
+    }
+   ],
+   "rules": {
+    "dialColumnHeatFlow": "0",
+    "dialPassiveCooling": "0",
+    "dialPassiveCoolingInner": "0"
+   }
+  },
+  {
+   "name": "rod_heat_limit_half_above",
+   "ticks": 3,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "heat": 1500.5,
+     "flux": [
+      100,
+      0.5
+     ]
+    }
+   ],
+   "rules": {
+    "dialColumnHeatFlow": "0",
+    "dialPassiveCooling": "0",
+    "dialPassiveCoolingInner": "0"
+   }
+  },
+  {
+   "name": "reasim_long_ring",
+   "ticks": 6,
+   "seed": 31337,
+   "columns": [
+    {
+     "kind": "rod_reasim",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_pu238be",
+     "flux": [
+      400,
+      0.5
+     ],
+     "lid": false
+    },
+    {
+     "kind": "rod",
+     "x": 40,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 40,
+     "z": 2,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 40,
+     "z": 4,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 40,
+     "z": 6,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 39,
+     "z": 8,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 39,
+     "z": 10,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 38,
+     "z": 12,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 37,
+     "z": 14,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 37,
+     "z": 16,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 36,
+     "z": 18,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 35,
+     "z": 20,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 34,
+     "z": 22,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 32,
+     "z": 24,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 31,
+     "z": 25,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 30,
+     "z": 27,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 28,
+     "z": 28,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 27,
+     "z": 30,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 25,
+     "z": 31,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 24,
+     "z": 32,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 22,
+     "z": 34,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 20,
+     "z": 35,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 18,
+     "z": 36,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 16,
+     "z": 37,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 14,
+     "z": 37,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 12,
+     "z": 38,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 10,
+     "z": 39,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 8,
+     "z": 39,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 6,
+     "z": 40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 4,
+     "z": 40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": 40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -2,
+     "z": 40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -4,
+     "z": 40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -6,
+     "z": 40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -8,
+     "z": 39,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -10,
+     "z": 39,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -12,
+     "z": 38,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -14,
+     "z": 37,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -16,
+     "z": 37,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -18,
+     "z": 36,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -20,
+     "z": 35,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -22,
+     "z": 34,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -24,
+     "z": 32,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -25,
+     "z": 31,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -27,
+     "z": 30,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -28,
+     "z": 28,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -30,
+     "z": 27,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -31,
+     "z": 25,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -32,
+     "z": 24,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -34,
+     "z": 22,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -35,
+     "z": 20,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -36,
+     "z": 18,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -37,
+     "z": 16,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -37,
+     "z": 14,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -38,
+     "z": 12,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -39,
+     "z": 10,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -39,
+     "z": 8,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -40,
+     "z": 6,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -40,
+     "z": 4,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -40,
+     "z": 2,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -40,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -40,
+     "z": -2,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -40,
+     "z": -4,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -40,
+     "z": -6,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -39,
+     "z": -8,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -39,
+     "z": -10,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -38,
+     "z": -12,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -37,
+     "z": -14,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -37,
+     "z": -16,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -36,
+     "z": -18,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -35,
+     "z": -20,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -34,
+     "z": -22,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -32,
+     "z": -24,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -31,
+     "z": -25,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -30,
+     "z": -27,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -28,
+     "z": -28,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -27,
+     "z": -30,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -25,
+     "z": -31,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -24,
+     "z": -32,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -22,
+     "z": -34,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -20,
+     "z": -35,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -18,
+     "z": -36,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -16,
+     "z": -37,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -14,
+     "z": -37,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -12,
+     "z": -38,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -10,
+     "z": -39,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -8,
+     "z": -39,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -6,
+     "z": -40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -4,
+     "z": -40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": -2,
+     "z": -40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": -40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": -40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 4,
+     "z": -40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 6,
+     "z": -40,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 8,
+     "z": -39,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 10,
+     "z": -39,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 12,
+     "z": -38,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 14,
+     "z": -37,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 16,
+     "z": -37,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 18,
+     "z": -36,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 20,
+     "z": -35,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 22,
+     "z": -34,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 24,
+     "z": -32,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 25,
+     "z": -31,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 27,
+     "z": -30,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 28,
+     "z": -28,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 30,
+     "z": -27,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 31,
+     "z": -25,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 32,
+     "z": -24,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 34,
+     "z": -22,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 35,
+     "z": -20,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 36,
+     "z": -18,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 37,
+     "z": -16,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 37,
+     "z": -14,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 38,
+     "z": -12,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 39,
+     "z": -10,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 39,
+     "z": -8,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 40,
+     "z": -6,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 40,
+     "z": -4,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 40,
+     "z": -2,
+     "rod": "rbmk_fuel_ueu"
+    }
+   ],
+   "rules": {
+    "dialFluxRange": "60"
+   }
+  },
+  {
+   "name": "heater_every_heatable",
+   "ticks": 20,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "heater",
+     "x": 0,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "AIR",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 8,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "WATER",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 16,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "OIL",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 24,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "OIL_DS",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 32,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "CRACKOIL",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 40,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "CRACKOIL_DS",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 48,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "COOLANT",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 56,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "MUG",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 64,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "BLOOD",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 72,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "HEAVYWATER",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 80,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "SODIUM",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 88,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "LEAD",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 96,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "THORIUM_SALT",
+      "fill": 1000
+     }
     }
    ]
   }
