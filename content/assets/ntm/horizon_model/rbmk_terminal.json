@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/terminal.obj",
+  "texture": "ntm:textures/models/network/terminal.png",
+  "rotation": 90.0,
+  "radius": 1.5
+}

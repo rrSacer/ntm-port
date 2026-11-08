@@ -1,0 +1,48 @@
+{
+  "obj": "ntm:models/obj/foundry_tank.obj",
+  "texture": "ntm:textures/models/machines/foundry_tank.png",
+  "rotation": 0,
+  "radius": 1.0,
+  "show": {
+    "WallNorth": {
+      "neighbor": [
+        0,
+        0,
+        -1
+      ],
+      "not_blocks": [
+        "ntm:foundry_tank"
+      ]
+    },
+    "WallSouth": {
+      "neighbor": [
+        0,
+        0,
+        1
+      ],
+      "not_blocks": [
+        "ntm:foundry_tank"
+      ]
+    },
+    "WallWest": {
+      "neighbor": [
+        -1,
+        0,
+        0
+      ],
+      "not_blocks": [
+        "ntm:foundry_tank"
+      ]
+    },
+    "WallEast": {
+      "neighbor": [
+        1,
+        0,
+        0
+      ],
+      "not_blocks": [
+        "ntm:foundry_tank"
+      ]
+    }
+  }
+}
