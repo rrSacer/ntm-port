@@ -60,6 +60,32 @@ class FoundryTank(unittest.TestCase):
             self.assertIn(f'o {bone}\n', out)
 
 
+class LoaderResolves(unittest.TestCase):
+    """The engine keys horizon_model and horizon_liquid by block name, and a
+    later file replaces an earlier one: a block with both draws only the
+    liquid (the foundry tank was invisible that way). And every reference in
+    the content must resolve to a file the package has."""
+
+    def test_a_block_has_one_horizon_model_file(self):
+        self.assertEqual([k for k, b in spec_blocks().items() if 'model' in b and 'liquid' in b], [])
+        models = {p.stem for p in (CONTENT / 'assets/ntm/horizon_model').glob('*.json')}
+        liquids = {p.stem for p in (CONTENT / 'assets/ntm/horizon_liquid').glob('*.json')}
+        self.assertEqual(sorted(models & liquids), [])
+
+    def test_model_refs_resolve(self):
+        for path in (CONTENT / 'assets/ntm/horizon_model').glob('*.json'):
+            m = json.loads(path.read_text())
+            for key in ('obj', 'texture'):
+                ref = m[key].split(':', 1)[1]
+                self.assertTrue((CONTENT / 'assets' / 'ntm' / ref).is_file(), f'{path.name}: {key} {ref}')
+
+    def test_blockstate_models_resolve(self):
+        for path in (CONTENT / 'assets/ntm/blockstates').glob('foundry_*.json'):
+            for variant in json.loads(path.read_text())['variants'].values():
+                ref = variant['model'].split(':', 1)[1]
+                self.assertTrue((CONTENT / 'assets/ntm/models' / (ref + '.json')).is_file(), f'{path.name}: {ref}')
+
+
 class ExtractorGate(unittest.TestCase):
     def test_single_cell_panels_have_models(self):
         for name in ('rbmk_gauge', 'rbmk_terminal', 'fan', 'machine_microwave'):
