@@ -19792,6 +19792,12 @@
         "en_us": "Steel Pipe",
         "pt_br": "Tubo de Aço"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -19804,6 +19810,12 @@
       "names": {
         "en_us": "Rusty Steel Pipe",
         "pt_br": "Tubo de Aço Enferrujado"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -19818,6 +19830,12 @@
         "en_us": "Green Steel Pipe",
         "pt_br": "Tubo de Aço Verde"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -19830,6 +19848,12 @@
       "names": {
         "en_us": "Rusty Green Steel Pipe",
         "pt_br": "Tubo de Aço Verde Enferrujado"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -19844,6 +19868,12 @@
         "en_us": "Red Steel Pipe",
         "pt_br": "Tubo de Aço Vermelho"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -19856,6 +19886,12 @@
       "names": {
         "en_us": "Gas Pipe",
         "pt_br": "Tubo de Gás"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -19870,6 +19906,12 @@
         "en_us": "Steel Pipe (Rimmed)",
         "pt_br": "Tubo de Aço (Com Borda)"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -19882,6 +19924,12 @@
       "names": {
         "en_us": "Rusty Steel Pipe (Rimmed)",
         "pt_br": "Tubo de Aço Enferrujado (Com Borda)"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -19896,6 +19944,12 @@
         "en_us": "Green Steel Pipe (Rimmed)",
         "pt_br": "Tubo de Aço Verde (Com Borda)"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -19908,6 +19962,12 @@
       "names": {
         "en_us": "Rusty Green Steel Pipe (Rimmed)",
         "pt_br": "Tubo de Aço Verde Enferrujado (Com Borda)"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -19922,6 +19982,12 @@
         "en_us": "Red Steel Pipe (Rimmed)",
         "pt_br": "Tubo de Aço Vermelho (Com Borda)"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -19934,6 +20000,12 @@
       "names": {
         "en_us": "Gas Pipe (Rimmed)",
         "pt_br": "Tubo de Gás (Com Borda)"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -19948,6 +20020,12 @@
         "en_us": "Steel Pipe (Framed)",
         "pt_br": "Tubo de Aço (Com Moldura)"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -19960,6 +20038,12 @@
       "names": {
         "en_us": "Rusty Steel Pipe (Framed)",
         "pt_br": "Tubo de Aço Enferrujado (Com Moldura)"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -19974,6 +20058,12 @@
         "en_us": "Green Steel Pipe (Framed)",
         "pt_br": "Tubo de Aço Verde (Com Moldura)"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -19986,6 +20076,12 @@
       "names": {
         "en_us": "Rusty Green Steel Pipe (Framed)",
         "pt_br": "Tubo de Aço Verde Enferrujado (Com Moldura)"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -20000,6 +20096,12 @@
         "en_us": "Red Steel Pipe (Framed)",
         "pt_br": "Tubo de Aço Vermelho (Com Moldura)"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -20012,6 +20114,12 @@
       "names": {
         "en_us": "Gas Pipe (Framed)",
         "pt_br": "Tubo de Gás (Com Moldura)"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -20026,6 +20134,12 @@
         "en_us": "Steel Pipes",
         "pt_br": "Tubos de Aço"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -20038,6 +20152,12 @@
       "names": {
         "en_us": "Rusty Steel Pipes",
         "pt_br": "Tubos de Aço Enferrujados"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -20052,6 +20172,12 @@
         "en_us": "Green Steel Pipes",
         "pt_br": "Tubos de Aço Verdes"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -20064,6 +20190,12 @@
       "names": {
         "en_us": "Rusty Green Steel Pipes",
         "pt_br": "Tubos de Aço Verdes Enferrujados"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -20078,6 +20210,12 @@
         "en_us": "Red Steel Pipes",
         "pt_br": "Tubos de Aço Vermelhos"
       },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
+      },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
     {
@@ -20090,6 +20228,12 @@
       "names": {
         "en_us": "Gas Pipes",
         "pt_br": "Tubos de Gás"
+      },
+      "block_properties": {
+        "hardness": 2.0,
+        "explosion_resistance": 5.0,
+        "requires_tool": true,
+        "sounds": "minecraft:iron_bars"
       },
       "behavior_gap": "Pipe geometry and connections approximated by vanilla iron bars; decorative only"
     },
@@ -20104,6 +20248,12 @@
         "en_us": "Sturdy Wooden Ladder",
         "pt_br": "Escada de Madeira Reforçada"
       },
+      "block_properties": {
+        "hardness": 0.25,
+        "explosion_resistance": 2.0,
+        "requires_tool": false,
+        "sounds": "minecraft:ladder"
+      },
       "behavior_gap": "Climbing is vanilla; source ladder model and tier speed are not reproduced"
     },
     {
@@ -20116,6 +20266,12 @@
       "names": {
         "en_us": "Golden Ladder",
         "pt_br": "Escada de Ouro"
+      },
+      "block_properties": {
+        "hardness": 0.25,
+        "explosion_resistance": 2.0,
+        "requires_tool": false,
+        "sounds": "minecraft:ladder"
       },
       "behavior_gap": "Climbing is vanilla; source ladder model and tier speed are not reproduced"
     },
@@ -20130,6 +20286,12 @@
         "en_us": "Copper Ladder",
         "pt_br": "Escada de Cobre"
       },
+      "block_properties": {
+        "hardness": 0.25,
+        "explosion_resistance": 2.0,
+        "requires_tool": false,
+        "sounds": "minecraft:ladder"
+      },
       "behavior_gap": "Climbing is vanilla; source ladder model and tier speed are not reproduced"
     },
     {
@@ -20142,6 +20304,12 @@
       "names": {
         "en_us": "Titanium Ladder",
         "pt_br": "Escada de Titânio"
+      },
+      "block_properties": {
+        "hardness": 0.25,
+        "explosion_resistance": 2.0,
+        "requires_tool": false,
+        "sounds": "minecraft:ladder"
       },
       "behavior_gap": "Climbing is vanilla; source ladder model and tier speed are not reproduced"
     },
@@ -20156,6 +20324,12 @@
         "en_us": "Steel Ladder",
         "pt_br": "Escada de Aço"
       },
+      "block_properties": {
+        "hardness": 0.25,
+        "explosion_resistance": 2.0,
+        "requires_tool": false,
+        "sounds": "minecraft:ladder"
+      },
       "behavior_gap": "Climbing is vanilla; source ladder model and tier speed are not reproduced"
     },
     {
@@ -20168,6 +20342,12 @@
       "names": {
         "en_us": "Barbed Wire",
         "pt_br": "Arame Farpado"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 10.0,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
       },
       "behavior_gap": "Wire geometry approximated by vanilla iron bars; source contact damage and effects are not reproduced"
     },
@@ -20182,6 +20362,12 @@
         "en_us": "Flaming Barbed Wire",
         "pt_br": "Arame Farpado em Chamas"
       },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 10.0,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
+      },
       "behavior_gap": "Wire geometry approximated by vanilla iron bars; source contact damage and effects are not reproduced"
     },
     {
@@ -20194,6 +20380,12 @@
       "names": {
         "en_us": "Poisoned Barbed Wire",
         "pt_br": "Arame Farpado Envenenado"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 10.0,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
       },
       "behavior_gap": "Wire geometry approximated by vanilla iron bars; source contact damage and effects are not reproduced"
     },
@@ -20208,6 +20400,12 @@
         "en_us": "Caustic Barbed Wire",
         "pt_br": "Arame Farpado Cáustico"
       },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 10.0,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
+      },
       "behavior_gap": "Wire geometry approximated by vanilla iron bars; source contact damage and effects are not reproduced"
     },
     {
@@ -20220,6 +20418,12 @@
       "names": {
         "en_us": "Withered Barbed Wire",
         "pt_br": "Arame Farpado Murchante"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 10.0,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
       },
       "behavior_gap": "Wire geometry approximated by vanilla iron bars; source contact damage and effects are not reproduced"
     },
@@ -20234,6 +20438,12 @@
         "en_us": "Radioactive Barbed Wire",
         "pt_br": "Arame Farpado Radioativo"
       },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 10.0,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
+      },
       "behavior_gap": "Wire geometry approximated by vanilla iron bars; source contact damage and effects are not reproduced"
     },
     {
@@ -20246,6 +20456,12 @@
       "names": {
         "en_us": "Explosive Barrel",
         "pt_br": "Barril Explosivo"
+      },
+      "block_properties": {
+        "hardness": 0.5,
+        "explosion_resistance": 2.5,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
       },
       "behavior_gap": "Full-cube approximation; the source barrel fluid contents and interaction are not reproduced"
     },
@@ -20260,6 +20476,12 @@
         "en_us": "Kerosene Barrel",
         "pt_br": "Barril de Querosene"
       },
+      "block_properties": {
+        "hardness": 0.5,
+        "explosion_resistance": 2.5,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
+      },
       "behavior_gap": "Full-cube approximation; the source barrel fluid contents and interaction are not reproduced"
     },
     {
@@ -20272,6 +20494,12 @@
       "names": {
         "en_us": "Radioactive Barrel",
         "pt_br": "Barril Radioativo"
+      },
+      "block_properties": {
+        "hardness": 0.5,
+        "explosion_resistance": 2.5,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
       },
       "behavior_gap": "Full-cube approximation; the source barrel fluid contents and interaction are not reproduced"
     },
@@ -20286,6 +20514,12 @@
         "en_us": "Vitrified Nuclear Waste Drum",
         "pt_br": "Tambor de Resíduos Nucleares Vitrificados"
       },
+      "block_properties": {
+        "hardness": 0.5,
+        "explosion_resistance": 2.5,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
+      },
       "behavior_gap": "Full-cube approximation; the source barrel fluid contents and interaction are not reproduced"
     },
     {
@@ -20298,6 +20532,12 @@
       "names": {
         "en_us": "LOX Barrel",
         "pt_br": "Barril de LOX"
+      },
+      "block_properties": {
+        "hardness": 0.5,
+        "explosion_resistance": 2.5,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
       },
       "behavior_gap": "Full-cube approximation; the source barrel fluid contents and interaction are not reproduced"
     },
@@ -20312,6 +20552,12 @@
         "en_us": "IMP Residue Barrel",
         "pt_br": "Barril de Resíduo IMP"
       },
+      "block_properties": {
+        "hardness": 0.5,
+        "explosion_resistance": 2.5,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
+      },
       "behavior_gap": "Full-cube approximation; the source barrel fluid contents and interaction are not reproduced"
     },
     {
@@ -20325,6 +20571,12 @@
         "en_us": "Neutron Flux Receiver",
         "pt_br": "Receptor de Fluxo de Nêutrons"
       },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 10.0,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
+      },
       "behavior_gap": "Full-cube approximation; custom machine (CM) structure is not reproduced"
     },
     {
@@ -20337,6 +20589,12 @@
       "names": {
         "en_us": "Heat Receiver",
         "pt_br": "Receptor de Calor"
+      },
+      "block_properties": {
+        "hardness": 5.0,
+        "explosion_resistance": 10.0,
+        "requires_tool": true,
+        "sounds": "minecraft:stone"
       },
       "behavior_gap": "Full-cube approximation; custom machine (CM) structure is not reproduced"
     },
@@ -20458,7 +20716,8 @@
         "en_us": "Depleted HEU-233 Plate Fuel",
         "pt_br": "Combustível de Placa HEU-233 Esgotado"
       },
-      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item"
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "creative_hidden": true
     },
     {
       "id": "waste_plate_u235",
@@ -20470,7 +20729,8 @@
         "en_us": "Depleted HEU-235 Plate Fuel",
         "pt_br": "Combustível de Placa HEU-235 Esgotado"
       },
-      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item"
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "creative_hidden": true
     },
     {
       "id": "waste_plate_mox",
@@ -20482,7 +20742,8 @@
         "en_us": "Depleted MOX Plate Fuel",
         "pt_br": "Combustível de Placa MOX Esgotado"
       },
-      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item"
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "creative_hidden": true
     },
     {
       "id": "waste_plate_pu239",
@@ -20494,7 +20755,8 @@
         "en_us": "Depleted HEP-239 Plate Fuel",
         "pt_br": "Combustível de Placa HEP-239 Esgotado"
       },
-      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item"
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "creative_hidden": true
     },
     {
       "id": "waste_plate_sa326",
@@ -20506,7 +20768,8 @@
         "en_us": "Depleted HES-326 Plate Fuel",
         "pt_br": "Combustível de Placa HES-326 Esgotado"
       },
-      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item"
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "creative_hidden": true
     },
     {
       "id": "waste_plate_ra226be",
@@ -20518,7 +20781,8 @@
         "en_us": "Depleted Ra226Be Plate Fuel",
         "pt_br": "Combustível de Placa Ra226Be Esgotado"
       },
-      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item"
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "creative_hidden": true
     },
     {
       "id": "waste_plate_pu238be",
@@ -20530,7 +20794,8 @@
         "en_us": "Depleted Pu238Be Plate Fuel",
         "pt_br": "Combustível de Placa Pu238Be Esgotado"
       },
-      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item"
+      "behavior_gap": "Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item",
+      "creative_hidden": true
     },
     {
       "id": "machine_liquefactor",

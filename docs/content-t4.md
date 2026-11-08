@@ -39,6 +39,17 @@ Notas sobre `bulk-recipe-coverage`: as 220 receitas novas (`data/ntm/recipe/bulk
 - Estabilidade: `bulk.py` rodado duas vezes dá o mesmo resultado; `bulk.py` seguido de `generate.py --ids-only` deixa `ids.json` e `machines_backlog.json` iguais ao HEAD.
 - Pacote: `cargo-horizon-mod build` e `check` com o build compartilhado geram `ntm.hmod`. O cliente compartilhado carrega o pacote, entra no mundo, e o log não tem `reject` nem `panic`. Antes do ajuste final, o log acusou modelos ausentes nas camadas (removidas) e texturas ausentes nos barris e no arame farpado (corrigidas).
 
+## Revisão independente (2026-11)
+
+Revisão aprovada com ressalvas (sem P0/P1). Correções aplicadas:
+
+- **P2-1:** `block_properties` vem do `ModBlocks.java` por bloco (`catalog_t4.java_block_properties`): dureza, resistência, som (`ModSoundTypes.grate` vira `minecraft:iron_bars`; escadas `minecraft:ladder`; o resto `minecraft:stone`) e `requires_tool` (escadas `false`, por `BlockLadder` usar `Material.circuits`; o resto `true`, por `Material.iron`).
+- **P2-2:** `test_bulk_idempotence.py` roda `bulk.py` em cópia, duas vezes, e exige bytes iguais aos commitados. Com `item_hooks.json` de volta em `claimed`, o teste falha (verificado).
+- **P3-1:** `test_catalog_t4.ShapedBlockIdentities` compara com o `ModBlocks.java` lido de novo pelo teste, sem usar `catalog_t4`.
+- **P3-2:** os 7 `waste_plate_*` têm `creative_hidden` por `setCreativeTab(null)` no Java.
+- **P3-3:** `cm_port` e `custom_machine` registrados como lacunas acima.
+- **P3-4:** captura dos 43 blocos no jogo: pendente, com a máquina em janela de medição.
+
 ## Lacunas
 
 - **Falha da T1 resolvida:** o contrato de `test_rbmk_oracle` foi relaxado, como acima.
@@ -46,6 +57,7 @@ Notas sobre `bulk-recipe-coverage`: as 220 receitas novas (`data/ntm/recipe/bulk
 - Camadas (`foam_layer`, `sand_boron_layer`, `leaves_layer`, `oil_spill`): a altura vem do metadata. Precisa de um conjunto de modelos por camada, que o gerador ainda não produz. Sem isso, o cliente cai no modelo ausente.
 - `cm_block`, `cm_sheet`, `cm_engine`, `cm_circuit`, `cm_tank`: subtipos `EnumCMMaterials`, um nome de idioma por material. Precisam de subtipos de metadata.
 - `cm_anchor` (`custom_machine_anchor`): textura e modelo próprios, sem declaração direta.
+- `cm_port` (`BlockCMPort`, com `EnumCMMaterials` como as outras variantes CM) e `custom_machine` (`BlockCustomMachine`, sem textura própria declarada): não declarados.
 - `sand_mix` (purex, 3 fontes): a fonte não declara textura, e não existe `sand_mix.png` no `ntm-src`.
 - `anvil`: `siren_track:1..15`, `machine_stirling:1`, `machine_stirling_steel:1` (subtipos de metadata); receitas com NBT por item (`AnvilSmithingHotRecipe` etc.).
 - `shredder`: 21 pulados restantes, de `EnumDriveType` dinâmico, `boxcar`/`steel_*`/`crate_*` ambíguos e `sellafield` com subtipo.

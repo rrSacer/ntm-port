@@ -31,17 +31,31 @@ SHAPED_BLOCKS = [
 ]
 
 
+def java_block_properties(stmt):
+    """Hardness, blast resistance, sound and tool rule of one ModBlocks declaration."""
+    hardness = float(re.search(r'setHardness\(([\d.]+)F?\)', stmt)[1])
+    resistance = float(re.search(r'setResistance\(([\d.]+)F?\)', stmt)[1])
+    cls = re.search(r'new (\w+)\(', stmt)[1]
+    step = re.search(r'setStepSound\(([\w.]+)\)', stmt)
+    # ModSoundTypes.grate is a metal grate; iron bars carry the same metal step sound.
+    sound = 'minecraft:iron_bars' if step and step[1] == 'ModSoundTypes.grate' else 'minecraft:ladder' if cls == 'BlockNTMLadder' else 'minecraft:stone'
+    # BlockLadder uses Material.circuits, which breaks without a tool; the iron-cased blocks need one.
+    return {'hardness': hardness, 'explosion_resistance': resistance, 'requires_tool': cls != 'BlockNTMLadder', 'sounds': sound}
+
+
 def shaped_blocks(source, tr):
     blocks = (source / (BASE + 'blocks/ModBlocks.java')).read_text()
     rows = []
     for var, template, gap in SHAPED_BLOCKS:
         name, texture = registration(blocks, var, 'block')
+        stmt = re.search(r'^\s*' + var + r'\s*=\s*new\s.*?;', blocks, re.M | re.S).group(0)
         # Barbed wire's registered texture is its 3D model skin (*_model); the icon is the block name.
         if var.startswith('barbed_wire'): texture = name
         rows.append({'id': name, 'type': 'block', 'category': 'decorative', 'source_variable': var,
                      'template': template,
                      'source_texture': f'src/main/resources/assets/hbm/textures/blocks/{texture or name}.png',
                      'names': {loc: loc_tr[f'tile.{name}.name'] for loc, loc_tr in tr.items()},
+                     'block_properties': java_block_properties(stmt),
                      'behavior_gap': gap})
     return rows
 
@@ -55,8 +69,12 @@ def build(source):
     rows = shaped_blocks(source, tr)
     for var in variables:
         name, texture = registration(items, var, 'item')
-        rows.append({'id': name, 'type': 'item', 'category': 'component', 'source_variable': var,
-                     'source_texture': f'src/main/resources/assets/hbm/textures/items/{texture or name}.png',
-                     'names': {loc: loc_tr[f'item.{name}.name'] for loc, loc_tr in tr.items()},
-                     'behavior_gap': 'Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item'})
+        stmt = re.search(r'^\s*' + var + r'\s*=\s*new ItemDepletedFuel\(\).*?;', clean(items), re.M | re.S).group(0)
+        row = {'id': name, 'type': 'item', 'category': 'component', 'source_variable': var,
+               'source_texture': f'src/main/resources/assets/hbm/textures/items/{texture or name}.png',
+               'names': {loc: loc_tr[f'item.{name}.name'] for loc, loc_tr in tr.items()},
+               'behavior_gap': 'Processing identity only; depletion, heat and radiation of the spent fuel are not reproduced by this item'}
+        # Java gives the plates setCreativeTab(null): they exist for recipes only.
+        if 'setCreativeTab(null)' in stmt: row['creative_hidden'] = True
+        rows.append(row)
     return rows
