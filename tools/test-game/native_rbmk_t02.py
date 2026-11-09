@@ -89,9 +89,9 @@ def place(g, p, item, side=(0, 3)):
     return r
 
 
-def interact(g, p, item, face='south', sneak=False):
-    """A use of `item` on the cell `p` of a column, standing on the floor 2 south of it."""
-    g.command(f'tp @s {p[0] + .5} {Y} {p[2] + 2.5}')
+def interact(g, p, item, face='south', sneak=False, away=2.5):
+    """A use of `item` on the cell `p` of a column, standing on the floor `away` south of it."""
+    g.command(f'tp @s {p[0] + .5} {Y} {p[2] + away}')
     time.sleep(.3)
     g.ctl(f'select {item}')
     if sneak:
@@ -331,9 +331,10 @@ def act(g):
     else:
         # Each use until the column shows it (a click sent before the client sees the cell reaches nothing); a repeat
         # is harmless: a column with a lid takes no other, one without gives nothing to the screwdriver.
+        # 4 away: the lid the screwdriver takes off falls out of the column's top, not into the player's reach.
         for p, item, sneak, want in [(A, LID, False, 'Standard'), (B, 'ntm:screwdriver', True, 'None')]:
             for attempt in range(4):
-                interact(g, (p[0], Y + 3 if not sneak else Y + 1, p[2]), item, sneak=sneak)
+                interact(g, (p[0], Y + 2 if not sneak else Y + 1, p[2]), item, sneak=sneak, away=4)
                 deadline = time.monotonic() + 3
                 while time.monotonic() < deadline and lid(g, p) != want:
                     time.sleep(.3)
