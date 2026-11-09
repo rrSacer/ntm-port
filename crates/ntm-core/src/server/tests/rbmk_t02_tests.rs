@@ -183,6 +183,8 @@ fn a_lid_goes_on_by_hand_and_comes_off_with_a_screwdriver_once() {
     assert_eq!((rbmk(&mut g, core).lid, in_hand(&g).map(|s| s.count)), (Lid::Standard, Some(1)));
     assert!(g.world.borrow().shown.iter().any(|(_, s)| *s == crate::blast::visuals::Show::Sound { id: "minecraft:block.stone.place", source: "block", at: [0.5, f64::from(Y + 3) + 0.5, 0.5], volume: 1., pitch: 0.8 }));
     assert!(rbmk(&mut g, core).has_lid("ntm:rbmk_rod"));
+    // The model shows it: the first value its block entity sends (`lid_cover`).
+    assert_eq!(g.world.borrow().engine[&(OW.to_string(), core)].1[0], 1);
     // A lid on it: no second one (the menu opens).
     hold(&mut g, "ntm:rbmk_lid_glass", 1, false);
     assert!(!g.server.native_rbmk_lid(&mut g.sh, OW, core, core, "p1"));
@@ -206,6 +208,7 @@ fn a_lid_goes_on_by_hand_and_comes_off_with_a_screwdriver_once() {
     hold(&mut g, "ntm:rbmk_lid_glass", 1, true);
     assert!(g.server.native_rbmk_lid(&mut g.sh, OW, core, core, "p1"));
     assert_eq!((rbmk(&mut g, core).lid, in_hand(&g).map(|s| s.count)), (Lid::Glass, Some(1)));
+    assert_eq!(g.world.borrow().engine[&(OW.to_string(), core)].1[0], 2, "lid_glass");
     assert!(g.world.borrow().shown.iter().any(|(_, s)| matches!(s, crate::blast::visuals::Show::Sound { id: "minecraft:block.stone.step", .. })));
     hold(&mut g, "ntm:screwdriver_desh", 1, false);
     assert!(g.server.native_rbmk_screw(&mut g.sh, OW, core, "ntm:screwdriver_desh"));

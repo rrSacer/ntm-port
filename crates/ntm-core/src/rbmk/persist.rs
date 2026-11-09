@@ -143,6 +143,58 @@ impl Lid {
     }
 }
 
+/// The six directions in `ForgeDirection.VALID_DIRECTIONS`' order: down, up, north, south, west, east.
+pub const VALID_DIRECTIONS: [[i32; 3]; 6] = [[0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1], [-1, 0, 0], [1, 0, 0]];
+
+/// A fluid port (`TilePort.PortDef.make`): the cell it sits in, and each cell it connects to with the direction from
+/// the port (`DirPos`).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct PortDef {
+    pub at: [i32; 3],
+    pub connections: Vec<([i32; 3], [i32; 3])>,
+}
+
+impl PortDef {
+    pub fn make(at: [i32; 3], dirs: &[[i32; 3]]) -> Self {
+        PortDef { at, connections: dirs.iter().map(|d| ([at[0] + d[0], at[1] + d[1], at[2] + d[2]], *d)).collect() }
+    }
+}
+
+/// Where an `rbmk_loader` stands under a piped column (the boiler, heater, cooler and outgasser `updateEntity`): two
+/// cells below wins over one (`ClassicLoader` is asked first).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum LoaderShape {
+    None,
+    Close,
+    Classic,
+}
+
+impl LoaderShape {
+    pub fn of(loader_one_below: bool, loader_two_below: bool) -> Self {
+        if loader_two_below {
+            LoaderShape::Classic
+        } else if loader_one_below {
+            LoaderShape::Close
+        } else {
+            LoaderShape::None
+        }
+    }
+}
+
+/// A piped column's fluid ports (`TileEntityRBMKBase.getPortsNoLoader`, `getPortsCloseLoader`,
+/// `getPortsClassicLoader`), its core at `core` and `column_height` its `getColumnHeight` (cells above the core). Java
+/// builds each shape once per block entity, with the dial as it read then, and keeps it (T08 decides what height it
+/// passes; the column's own is the world's).
+pub fn column_ports(core: [i32; 3], column_height: i32, shape: LoaderShape) -> Vec<PortDef> {
+    let [x, y, z] = core;
+    let top = PortDef::make([x, y + column_height, z], &[[0, 1, 0]]);
+    match shape {
+        LoaderShape::None => vec![top, PortDef::make(core, &[[0, -1, 0]])],
+        LoaderShape::Close => vec![top, PortDef::make([x, y - 1, z], &VALID_DIRECTIONS)],
+        LoaderShape::Classic => vec![top, PortDef::make(core, &[[0, -1, 0]]), PortDef::make([x, y - 2, z], &VALID_DIRECTIONS)],
+    }
+}
+
 /// The fuel rod an item is (`ItemRBMKRod`): `ntm:rbmk_fuel_<name>`, the Java variable of `hep` being `hep239`.
 pub fn rod_of(item: &str) -> Option<&'static RodType> {
     let name = item.strip_prefix("ntm:")?;
@@ -255,14 +307,22 @@ impl Slotted for RbmkColumn {
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
-    /// The models' values (`docs/visual-fiel.md`): still neutral, as before T01 (T19 lights them).
+    /// The models' values (`docs/visual-fiel.md`): the first is the lid the model shows (`lid_cover` at 1,
+    /// `lid_glass` at 2, as `RBMKBase.renderLid` from the core's metadata; a control rod's own is in its model); the
+    /// others still neutral (T19 lights them).
     fn screen_data(&self) -> Vec<i32> {
         let n = match self.screen {
             0 if self.slots.is_empty() => 1,
             0 => 7,
             n => usize::from(n),
         };
-        vec![0; n]
+        let mut v = vec![0; n];
+        v[0] = match self.lid {
+            Lid::None => 0,
+            Lid::Standard => 1,
+            Lid::Glass => 2,
+        };
+        v
     }
 }
 
@@ -549,5 +609,33 @@ mod tests {
         assert!(with_rod_stack(None, &RodStack { has_tag: true, core: Some(f64::INFINITY), ..RodStack::bare() }).unwrap().contains("core:Infinityd"));
         // A word that is not a double is not one.
         assert_eq!(rod_stack(Some("{yield:\"5.0d\",core:infd}")).yield_, None);
+    }
+}
+
+#[cfg(test)]
+mod port_tests {
+    use super::*;
+
+    /// `getPorts*` of a column at (10, 64, -3), 4 high (`getColumnHeight` 3) and 16 high (15), as the Java builds them.
+    #[test]
+    fn the_piped_columns_ports_are_javas() {
+        let core = [10, 64, -3];
+        assert_eq!(LoaderShape::of(false, false), LoaderShape::None);
+        assert_eq!(LoaderShape::of(true, false), LoaderShape::Close);
+        assert_eq!(LoaderShape::of(true, true), LoaderShape::Classic, "two below is asked first");
+        assert_eq!(LoaderShape::of(false, true), LoaderShape::Classic);
+        let none = column_ports(core, 3, LoaderShape::None);
+        assert_eq!(none, vec![
+            PortDef { at: [10, 67, -3], connections: vec![([10, 68, -3], [0, 1, 0])] },
+            PortDef { at: [10, 64, -3], connections: vec![([10, 63, -3], [0, -1, 0])] },
+        ]);
+        let close = column_ports(core, 15, LoaderShape::Close);
+        assert_eq!(close[0], PortDef { at: [10, 79, -3], connections: vec![([10, 80, -3], [0, 1, 0])] });
+        assert_eq!(close[1].at, [10, 63, -3]);
+        assert_eq!(close[1].connections.iter().map(|c| c.0).collect::<Vec<_>>(), vec![[10, 62, -3], [10, 64, -3], [10, 63, -4], [10, 63, -2], [9, 63, -3], [11, 63, -3]]);
+        let classic = column_ports(core, 1, LoaderShape::Classic);
+        assert_eq!(classic.iter().map(|p| p.at).collect::<Vec<_>>(), vec![[10, 65, -3], [10, 64, -3], [10, 62, -3]]);
+        assert_eq!(classic[2].connections.len(), 6);
+        assert_eq!(classic[2].connections[1], ([10, 63, -3], [0, 1, 0]));
     }
 }
