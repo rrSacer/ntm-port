@@ -21,6 +21,7 @@ pub mod crafter;
 pub mod doors_security;
 pub mod electrolyser;
 pub mod energy;
+pub mod energy_network;
 pub mod explosion;
 pub mod excavator;
 pub mod fluid;
