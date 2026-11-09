@@ -768,7 +768,7 @@ depois que um save o tomou):
 | --- | --- |
 | Transferência jogador↔BE (B) | `ServerHost::player_slots` lê as pilhas do jogador que age (cada uma com o SNBT inteiro) e `commit_player_transfer` publica num passo só: a glue confere todo o lado das máquinas (slots, geração, células), publica o lado do jogador por `native_commit_player` (CAS do inventário inteiro, cursor, mão secundária e attachment; recusa não muda nada) e então as máquinas, cuja publicação não falha depois das conferências; tudo no mesmo callback com `&mut Game` exclusivo. Uma pilha editada mantém os demais componentes. Hosts sem suporte recusam: não há caminho que debite um lado depois do outro. Primeiro usuário: o carregador da pile, cuja barra saía da mão depois do commit (`PileUse::ConsumeRod`); agora sai na mesma transferência. O segundo é a barra RBMK na mão (`RBMKRod.onBlockActivated`: copia uma, debita só fora do criativo, `upgradePlug`). |
 | Recibos de entidades (C) | `WorldEffect::Entities` (tipo, posição exata, compound SNBT) segue o caminho dos itens: com o chunk de destino carregado, `apply_entities` invoca as entidades por `native_summon`; senão ficam devidas (`ChunkLedger::owe_entities`) no registro de um dono carregado e saem quando o destino carrega. O id do efeito (`serial`,`done`) impede o segundo spawn num replay. Host sem entidades recusa: o lote espera e o dono congela, nada se perde. O tipo de detrito do RBMK é do T20 (D9). |
-| Grupo acoplado com RNG/fila (A) | Cada camada RBMK (dimensão, Y da base) é um grupo de `steps()`: suas colunas (BEs) e o estado da camada no `WorldState` (KV, `Tracked`): ordem lógica (D1), `java.util.Random` (D3) e fila de fluxos para o próximo passo. Avançam juntos no estado especulativo e voltam juntos com `self.ready = before` se o commit é recusado. Uma coluna da ordem num chunk desconhecido, ou mostrada pelo mundo e ainda não adotada, ou uma célula ao alcance dos fluxos desconhecida, congela a camada inteira (D4: desconhecido nunca é ar). Doubles guardados pelos bits (NaN e −0,0 inclusos). A tag da barra (`yield`/`xenon`/`core`/`hull`) vai no `custom_data` da própria pilha do slot, com os outros campos preservados. |
+| Grupo acoplado com RNG/fila (A) | Cada **reator** é um grupo de `steps()`: o componente conexo das colunas de uma camada (dimensão, Y da base) que os fluxos e o calor ligam (segunda rodada, P0-1, abaixo). Suas colunas (BEs) e o estado do componente no KV (`java.util.Random` por D3 e a fila de fluxos para o próximo passo) avançam juntos no estado especulativo e voltam juntos com `self.ready = before` se o commit é recusado. Uma coluna do componente num chunk desconhecido, ou mostrada pelo mundo e ainda não adotada, ou uma célula que os fluxos dele leem desconhecida, congela só aquele reator (D4: desconhecido nunca é ar). Doubles guardados pelos bits (NaN e −0,0 inclusos). A tag da barra (`yield`/`xenon`/`core`/`hull`) vai no `custom_data` da própria pilha do slot, com os outros campos preservados e os doubles sem perda (P2-1). |
 
 **Provisório (D-b), assumido por outros tickets.** O passo ligado é o mínimo para provar o contrato: oito colunas
 (`rbmk_rod`, `_mod`, `_reasim`, `_reasim_mod`, `blank`, `moderator`, `reflector`, `absorber`) viraram `Kind::Rbmk`; dials
@@ -778,16 +778,17 @@ casco quente, valores de tela neutros. T02 (altura/tampas/portas), T03 (codec da
 oclusão HBM, radiação, escalonador), T05 (slots por contexto), T16 (fusão) e T19 (visual) substituem cada item; ver
 `docs/rbmk-core.md`.
 
-**Limitação conhecida (D-c): o estado da camada mora no KV.** Ele não guarda item nenhum, então não fere o princípio das
-obrigações. Mas o KV é gravado no fim do save, depois das regiões: numa morte entre as regiões e o KV, a ordem, a RNG e
-a fila voltam ao save anterior enquanto as colunas estão como as regiões as deixaram (um passo de fluxo repetido ou
-perdido; nenhum recurso duplicado ou perdido, o que as provas abaixo conferem). O Java nem persiste a fila: ela vive só
-em memória, em `NeutronNodeWorld.streamWorlds` (`J/handler/neutron/NeutronNodeWorld.java:13`, lista `streams` em `:47`,
-sem NBT), e a RNG é o `world.rand`, ressemeado a cada carga. Se uma prova com failpoint mostrar perda ou duplicação de
-recurso por causa disso, o estado muda para o registro de um chunk-casa da camada (P0).
+**Limitação conhecida (D-c): o estado dos reatores mora no KV** (decisão do coordenador mantida na segunda rodada). Ele
+não guarda item nenhum, então não fere o princípio das obrigações. Mas o KV é gravado no fim do save, depois das regiões:
+numa morte entre as regiões e o KV, a RNG e a fila voltam ao save anterior enquanto as colunas estão como as regiões as
+deixaram (um passo de fluxo repetido ou perdido; nenhum recurso duplicado ou perdido, o que as provas abaixo conferem).
+O Java nem persiste a fila: ela vive só em memória, em `NeutronNodeWorld.streamWorlds`
+(`J/handler/neutron/NeutronNodeWorld.java:13`, lista `streams` em `:47`, sem NBT), e a RNG é o `world.rand`, ressemeado
+a cada carga.
 
-**Custo conhecido:** com uma camada ativa, o estado do mundo muda a cada tick e o `keep_world` serializa o KV inteiro (em
-memória) a cada tick. Medir no T18 com 15×15 antes de otimizar.
+**Gate obrigatório (P2-4): T09 (outgasser) e T16 (fusão) não começam com o estado no KV.** Neles o fluxo produz itens, e
+o mesmo resíduo (um passo repetido ou perdido) vira duplicação ou perda de item. Antes deles, o estado do componente
+tem de ir para o registro do chunk-casa do reator, gravado com as colunas.
 
 **Validação (09/11/2026).** Código de produção no commit `db46103b`; binário release `horizon-client` SHA-256
 `dcafa5147326778857db84ad1bac226fefe360d610a417565c56670d312a7290` (motor `a31497f38`, fontes do stage idênticos ao
@@ -836,3 +837,57 @@ roteiro fica em criativo, salvo nas 4 transferências.
 **Não provado em jogo (pendências do T01):** os recibos de entidades e os `drops`/cursor da transferência só têm prova de
 unidade: nenhum caminho do jogo os produz antes dos detritos (T20/T16) e do retorno da casca (T14), que farão a prova em
 jogo deles. A transferência por menus e funis segue o caminho existente do motor (T05).
+
+### RBMK T01 — segunda rodada: correções da revisão independente
+
+A revisão (`revisao-rbmk-t01`) reprovou a primeira entrega por P0-1. O que mudou, item por item:
+
+| Item | Como fica |
+| --- | --- |
+| P0-1: grupo = reator | A camada lembra cada coluna que registrou (`Member`: número de registro, bloco, componente) e guarda um estado por componente (`CompState`: RNG e fila), sob a célula da sua primeira coluna. Duas colunas se ligam quando uma é canal e a outra está numa célula que os fluxos dela leem (`Reactor::ray_cells`: os quatro raios cardinais, ou as quatro rotações ReaSim de 9° com seus oito raios de 45°, incluindo a célula do `hits` final), ou quando são vizinhas cardinais (`moveHeat`). Os componentes são achados por busca a partir das colunas presentes, limitada ao alcance dos raios: uma coluna fora de todo alcance é outro reator, não congela o primeiro e não faz o passo ler o espaço entre eles. A oclusão provisória lê só as células dos raios. |
+| Fusão e divisão (D1/D3) | O Java não tem componentes: um `world.rand` e uma lista de fluxos por mundo (`NeutronNodeWorld.streamWorlds`), cuja ordem é a de atualização. Com a RNG por simulação de D3: na fusão, fica a RNG do componente cuja primeira coluna foi registrada antes, e os fluxos seguem a ordem de registro das origens (a ordem da lista Java); na divisão, a RNG fica com a parte que tem a primeira coluna sobrevivente do pai, e cada outra parte recebe uma semente derivada do estado do pai e do próprio lugar, sem sortear nada da RNG do pai; cada fluxo vai com a sua origem. Tudo determinístico e igual numa reabertura (teste `reactors_merge_and_split_deterministically`). |
+| P1-1 | Uma coluna removida no passo sai do componente; a trocada no lugar por outra é registrada de novo quando adotada. Antes, a troca travava a camada para sempre. |
+| P1-2 | A transferência ganhou `SlotCopy`: o slot da máquina recebe a pilha do jogador como ela estava (`ItemStack.copy()`), com todos os componentes, no canal RBMK e no carregador da pile (`BlockPileDevice.java:98`, também `copy()`). **Para o T03:** no Java, uma barra renomeada tem `stackTagCompound` (`{display:…}`), então `getDouble("yield")` devolve 0 (`ItemRBMKRod.java:579-585`) e a barra fica morta. O codec provisório só lê `custom_data`, então a barra renomeada aqui funciona: o T03 tem de reproduzir esse bug. |
+| P2-1 | Os quatro doubles da barra passam pela pilha sem perda: os não finitos como o Java os escreve (`NaNd`, `Infinityd`, `-Infinityd`; o NaN canônico, como `writeDouble`), lidos de volta pelo núcleo e convertidos de volta em double pela glue (o SNBT do motor, como o do Java, lê essas palavras como texto). O `canonical` do núcleo escreve ±∞ como o motor. |
+| P2-2 | O host de teste espelha a glue (sem id guardado no spawn direto; entidades devidas no registro do dono; obrigações nos registros dos chunks, entregues na reabertura), e o teste de replay reabre de um save antes e de um depois. Tipo que o motor não sabe invocar (`summonable`) é recusado: o efeito espera, sem gastar. Gate do T20: o tipo de detrito tem de estar registrado como invocável. |
+| P2-3 | Os reatores ganharam uma chave própria no mesmo KV (`rbmk`, gravada no mesmo save): um reator que passa reescreve só ela, e a chave `world` só é reescrita quando os selos dela mudam. Medido em release (`keep_world_cost`): reator 15×15 com 900 fluxos, chave `rbmk` de 111 KB, **0,156 ms por tick com 0, 5 mil e 50 mil gerações** (antes: 0,21/1,06/7,4 ms). |
+| P3 | Fusão registrada no log uma vez por coluna e estado; ar decidido pelo id (`air`, `cave_air`, `void_air`). Adaptações registradas no código: a barra pode vir da mão secundária (1.7.10 não tem), e a inserção consome o clique onde o Java devolve `false` (cairia no `ItemRBMKRod`, que não usa bloco). |
+| Cursor (achado da prova C) | Uma transferência que punha uma pilha no cursor sem menu aberto a perdia: o motor só guarda cursor de um menu aberto (o vanilla o devolve ao inventário ao fechar o menu). A glue recusa a edição de cursor quando a tela do `Game` que executa é nenhuma. Num servidor (integrado ou dedicado), esse `Game` é o do servidor, que não tem tela própria: **hoje toda edição de cursor é recusada em jogo**, sem perda. Gate do T05 (menus por contexto) e do T14 (desmontagem com cursor): trocar a guarda pelo menu aberto do jogador que age antes de usar o cursor. |
+| Pendência C | Ganchos de teste só com `NTM_TEST_HOOKS=1` (como os failpoints; sem a variável o comando nem é registrado): `ntmtest eject` põe a barra de um canal para fora como entidade item pelo `WorldEffect::Entities` do passo do reator, e `ntmtest take` a leva ao cursor do jogador ou a solta da mão, numa transferência. |
+
+**Candidato a upstream (motor, não corrigido aqui):** `item replace block` num contêiner não marca o chunk como alterado:
+num save limpo, o controle vanilla da prova perdia as barras postas nos barris por esse comando até o ato mudar também um
+bloco de cada chunk. O roteiro faz isso nos dois mundos. Corrigir no Horizon (marcar o chunk/BE como sujo ao editar um
+slot por comando) e propor ao upstream.
+
+**Validação da segunda rodada (09/11/2026).** Binário release `horizon-client` SHA-256
+`e51afa8bd3ad41afe86dec43930ba4d21661c9d98c2bb0dfac555861b0fdc472`, construído do commit `120e2f30` (fontes do stage
+idênticos aos commits, núcleo e glue); pacote `ntm.hmod` `9ab18eac…` (conteúdo inalterado). Os commits seguintes só
+mudam roteiros de prova e docs. NTM em debug: 511 testes da lib (2 ignorados: o doc-test já ignorado e a medição
+`keep_world_cost`, que roda em release) e 47 de integração; `save_model` em release 11/11; Clippy `-D warnings` do
+`ntm-core` (todos os alvos) e da glue (`horizon-client` e `horizon-client-lib` no stage, release): 0 avisos.
+
+Mutações da segunda rodada (`evidence/mutations-r2.log`): dez, todas pegas: coluna desconhecida tomada como removida,
+célula desconhecida como ar, coluna mostrada e não adotada como removida, coluna removida no passo mantida (P1-1), sem os
+elos inversos dos raios, herança da RNG perdida na divisão, fluxos da fusão sem a ordem de registro, oclusão truncada,
+double não finito descartado (P2-1) e um grupo por camada (P0-1). As duas sobreviventes da primeira passada ganharam
+testes próprios (coluna ligada só pelo calor; `settle` puro com registros intercalados; obstáculo entre fonte e canal;
+igualdade bit a bit das células dos raios contra todos os obstáculos em 60 passos).
+
+Em jogo, no binário acima:
+
+| Prova | Resultado |
+| --- | --- |
+| Sondas (`--probe`) | P0-1: com uma coluna em (640, 101, 640), carregada por forceload e depois descarregada, o calor da fonte segue mudando (carregada: 28,35204 → 28,34481; descarregada: 28,33343 → 28,32636). P1-1: canal trocado no lugar por `/setblock` de um blank, e depois ar e um canal de novo: o reator segue. P1-2: barra com `custom_name`, `lore` e um campo alheio no `custom_data`, posta à mão: tudo no canal e no item que a coluna derrama ao ser quebrada. 8/8 checagens. |
+| Cenário C (`--scenario c`), duas execuções | `kill`, `kv_committed`, `players_saved`, `live_chunk:2,0` e `live_chunk:3,0`: 5/5 em cada, NTM igual ao controle item a item nas duas reaberturas (3 = 3, ou 2 = 2 nos `live_chunk`, resíduo vanilla do chunk de entidades não gravado). A barra sai como entidade pelo recibo do passo do reator, a edição de cursor é recusada (com e sem menu aberto) e a barra fica no canal, e o drop sai numa transferência. |
+| Cenário principal, duas execuções | 17/17 em cada, NTM igual ao controle item a item em todos os cortes, com o mesmo quadro da primeira rodada: 9 = 9 em 13 cortes (`kill` = último save exato; `region_record:2` pareado com o `save_begin` do controle, que gravou os mesmos chunks); `parked_saved` 13 = 13, `live_chunk:*` 11 = 11 e `kv_committed` 5 = 5, os resíduos vanilla do arquivo do jogador. KV sem item em todas as aberturas. |
+
+Relatórios em `.agent-tmp/rbmk-t01/evidence/` (`final-*-report.json`, `final-*.log`, `mutations-r2.log`,
+`clippy-glue.log`); mundos apagados. Mudanças de critério do runner, ambas a favor do controle e registradas: o `exact`
+só no `kill` (primeira rodada) e, no cenário C, uma cópia do vanilla num corte não é meta para o mod (a perda é comparada
+com `max(perda do controle, 0)`, item a item também).
+
+**Pendências que ficam do T01:** (1) o cursor: toda edição de cursor é recusada em jogo até o T05 trazer o menu do
+jogador como contexto; (2) o tipo de detrito do T20 precisa estar registrado como invocável; (3) D-c é gate de T09 e T16;
+(4) o bug Java da barra renomeada (`{display}` → `yield` 0) é do T03; (5) `item replace block` sem marcar o chunk, no
+motor, candidato a upstream.

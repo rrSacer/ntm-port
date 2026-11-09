@@ -39,10 +39,11 @@ Dados gerados: `gen_rods_rs.py` (`rods_data.rs`, das 33 barras da fixture), `gen
 
 **T01 (branch `rbmk-t01`) ligou o mínimo, provisório onde marcado** (`rbmk/persist.rs`, `server/rbmk_server.rs`; ver
 `docs/horizon-current.md`, seção "RBMK T01"): oito colunas viraram `Kind::Rbmk` (canais comum/moderado/ReaSim/ReaSim
-moderado, blank, moderador, refletor, absorvedor); cada camada (dimensão, Y da base) é um grupo acoplado cujo passo roda
-`Reactor::step` uma vez por tick; o estado de cada coluna fica no seu BE, a tag da barra (`yield`/`xenon`/`core`/`hull`)
-no `custom_data` da pilha do slot, e a ordem lógica, a RNG e a fila de fluxos da camada no `WorldState` (KV), tudo
-confirmado ou recusado junto. A barra entra pela mão numa transferência única jogador↔BE. Continua para os tickets:
+moderado, blank, moderador, refletor, absorvedor); cada **reator** (o componente das colunas de uma camada que os fluxos,
+por `Reactor::ray_cells`, e o calor ligam) é um grupo acoplado cujo passo roda `Reactor::step` uma vez por tick; o estado
+de cada coluna fica no seu BE, a tag da barra (`yield`/`xenon`/`core`/`hull`, sem perda) no `custom_data` da pilha do
+slot, e o registro das colunas (ordem lógica) mais a RNG e a fila de fluxos de cada componente na chave `rbmk` do KV,
+tudo confirmado ou recusado junto. Fusão e divisão de componentes: `persist::settle`. A barra entra pela mão numa transferência única jogador↔BE. Continua para os tickets:
 dials como gamerules e oclusão HBM (T04: hoje dials padrão e "todo bloco não ar é opaco"), `rad`/`effects` (T04/T19),
 `meltdowns` (T16: hoje só registrados no log), tampas/altura/portas (T02: hoje sem tampa, altura 4), menu por contexto
 (T05: hoje o menu genérico do slot, sem a regra de casco quente), codec completo da pilha, tooltip e hazards (T03), e
