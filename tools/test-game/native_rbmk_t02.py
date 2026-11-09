@@ -341,7 +341,7 @@ def act(g):
                 if lid(g, p) == want:
                     break
             g.note(f'uses_{p[0]}', attempt + 1)
-        g.command(f'tp @s {C[0] + .5} {Y} {C[2] + 2.5}')
+        g.command(f'tp @s {C[0] + .5} {Y} {C[2] + 3.5}')
         g.ctl('select minecraft:iron_pickaxe')
         g.ctl(f'break {C[0]} {C[1]} {C[2]}')
     # Away at once, in both worlds: no pickup before the save.
