@@ -2858,6 +2858,8 @@
   "block.ntm.pile_block__air_out": "Chicago Pile (Air Out)",
   "block.ntm.pile_block__control": "Chicago Pile (Control)",
   "block.ntm.pile_block__edge": "Chicago Pile (Edge)",
+  "item.ntm.screwdriver": "Screwdriver",
+  "item.ntm.screwdriver_desh": "Desh Screwdriver",
   "item.ntm.hand_drill": "Hand Drill",
   "item.ntm.hand_drill_desh": "Desh Hand Drill",
   "block.ntm.rbmk_rod": "RBMK Fuel Channel",

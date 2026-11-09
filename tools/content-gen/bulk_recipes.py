@@ -265,7 +265,7 @@ def generate(src,out,rows,emit):
             # These newly imported tools need DictGroup ANY_PLASTIC. Reuse
             # the machine resolver's existing exact group expansion while
             # keeping the previous vanilla catalog's conservative profile.
-            if file.name=='ToolRecipes.java' and re.match(r'new ItemStack\(ModItems\.hand_drill(?:_desh)?\)',args.strip()):
+            if file.name=='ToolRecipes.java' and re.match(r'new ItemStack\(ModItems\.(?:hand_drill|screwdriver)(?:_desh)?\b',args.strip()):
                 if pile_resolver is None:
                     from machine_recipes import MachineResolver
                     pile_resolver=MachineResolver(src,rows)

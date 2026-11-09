@@ -2858,6 +2858,8 @@
   "block.ntm.pile_block__air_out": "Chicago Pile (Saída de Ar)",
   "block.ntm.pile_block__control": "Chicago Pile (Controle)",
   "block.ntm.pile_block__edge": "Chicago Pile (Borda)",
+  "item.ntm.screwdriver": "Chave de Fenda",
+  "item.ntm.screwdriver_desh": "Chave de Fenda de Desh",
   "item.ntm.hand_drill": "Perfuratriz Manual",
   "item.ntm.hand_drill_desh": "Perfuratriz Manual de Desh",
   "block.ntm.rbmk_rod": "Canal de Combustível RBMK",

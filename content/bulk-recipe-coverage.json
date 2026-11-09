@@ -8102,6 +8102,24 @@
       }
     },
     {
+      "id": "ntm:bulk__5be05ab45d91303535",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:139",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:screwdriver",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4aa5842f0b38c4ba57",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:140",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:screwdriver_desh",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__e413a6b4d06e9d1898",
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:141",
       "type": "minecraft:crafting_shaped",
@@ -8381,7 +8399,7 @@
       }
     }
   ],
-  "generated_count": 931,
+  "generated_count": 933,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -13182,18 +13200,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item toolbox",
       "expression": "new ItemStack(ModItems.toolbox), new Object[] { \"CCC\", \"CIC\", 'C', CU.plate(), 'I', IRON.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:139",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item screwdriver",
-      "expression": "new ItemStack(ModItems.screwdriver, 1), new Object[] { \"  I\", \" I \", \"S  \", 'S', STEEL.ingot(), 'I', IRON.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:140",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item screwdriver_desh",
-      "expression": "new ItemStack(ModItems.screwdriver_desh, 1), new Object[] { \"  I\", \" I \", \"S  \", 'S', ANY_PLASTIC.ingot(), 'I', DESH.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:143",
