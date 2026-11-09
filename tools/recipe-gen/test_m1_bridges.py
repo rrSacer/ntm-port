@@ -14,25 +14,25 @@ EXPECTED_TEMPORARY = {
     'ntm:m1_temp__stamp_iron_wire',
 }
 
-# Each Java-sourced recipe: file, cited line, tokens that must appear on that line, and the JSON it must produce.
+# Each Java-sourced recipe: file, a unique anchor text that identifies its line, tokens that must appear on it, and the JSON it must produce.
 # Symbols map as in the Java source: STEEL.plate() -> ntm:plate_steel, CU.plateCast() -> ntm:plate_cast__copper, etc.
 JAVA_RECIPES = {
-    'machine_wood_burner': ('main/CraftingManager.java', 251,
+    'machine_wood_burner': ('main/CraftingManager.java', 'new ItemStack(ModBlocks.machine_wood_burner, 1)',
         ['"PPP", "CFC", "I I"', 'STEEL.plate()', 'ModItems.coil_copper', 'IRON.ingot()', 'Blocks.furnace'],
         {'type': 'minecraft:crafting_shaped', 'category': 'misc', 'pattern': ['PPP', 'CFC', 'I I'],
          'key': {'P': 'ntm:plate_steel', 'C': 'ntm:coil_copper', 'I': 'minecraft:iron_ingot', 'F': 'minecraft:furnace'},
          'result': {'id': 'ntm:machine_wood_burner', 'count': 1}}),
-    'machine_electric_furnace': ('main/CraftingManager.java', 230,
+    'machine_electric_furnace': ('main/CraftingManager.java', 'new ItemStack(Item.getItemFromBlock(ModBlocks.machine_electric_furnace_off), 1)',
         ['"BBB", "WFW", "RRR"', 'BE.ingot()', 'CU.plateCast()', 'ModItems.coil_tungsten', 'Blocks.furnace'],
         {'type': 'minecraft:crafting_shaped', 'category': 'misc', 'pattern': ['BBB', 'WFW', 'RRR'],
          'key': {'B': 'ntm:ingot_beryllium', 'W': 'ntm:plate_cast__copper', 'F': 'minecraft:furnace', 'R': 'ntm:coil_tungsten'},
          'result': {'id': 'ntm:machine_electric_furnace_off', 'count': 1}}),
-    'red_cable': ('main/CraftingManager.java', 239,
+    'red_cable': ('main/CraftingManager.java', 'new ItemStack(ModBlocks.red_cable, 16)',
         ['" W ", "RRR", " W "', 'ModItems.plate_polymer', 'MINGRADE.wireFine()', 'ModBlocks.red_cable, 16'],
         {'type': 'minecraft:crafting_shaped', 'category': 'misc', 'pattern': [' W ', 'RRR', ' W '],
          'key': {'W': 'ntm:plate_polymer', 'R': 'ntm:wire_fine__red_copper'},
          'result': {'id': 'ntm:red_cable', 'count': 16}}),
-    'wiring_red_copper': ('main/CraftingManager.java', 539,
+    'wiring_red_copper': ('main/CraftingManager.java', 'new ItemStack(ModItems.wiring_red_copper, 1)',
         ['"PPP", "PIP", "PPP"', 'STEEL.plate()', 'STEEL.ingot()', 'ModItems.wiring_red_copper'],
         {'type': 'minecraft:crafting_shaped', 'category': 'misc', 'pattern': ['PPP', 'PIP', 'PPP'],
          'key': {'P': 'ntm:plate_steel', 'I': 'ntm:ingot_steel'},
@@ -47,10 +47,11 @@ class M1Recipes(unittest.TestCase):
     def test_java_sourced_recipes_match_the_cited_line(self):
         if not SOURCE.is_dir():
             self.skipTest('ntm-src sibling not present')
-        for name, (java_file, line, tokens, expected) in JAVA_RECIPES.items():
-            source_line = (SOURCE / java_file).read_text().split('\n')[line - 1]
+        for name, (java_file, anchor, tokens, expected) in JAVA_RECIPES.items():
+            lines = [l for l in (SOURCE / java_file).read_text().split('\n') if anchor in l]
+            self.assertEqual(len(lines), 1, f'{name}: anchor {anchor!r} must match exactly one line')
             for token in tokens:
-                self.assertIn(token, source_line, f'{name}: {java_file}:{line} lacks {token}')
+                self.assertIn(token, lines[0], f'{name}: {java_file} line lacks {token}')
             produced = json.loads((RECIPES / f'{name}.json').read_text())
             self.assertEqual(produced, expected, name)
 

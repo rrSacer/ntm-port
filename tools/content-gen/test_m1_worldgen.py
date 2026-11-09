@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check Nether and gneiss ore distributions against HbmWorldGen and WorldConfig defaults."""
 import json
+import re
 import unittest
 from pathlib import Path
 from worldgen import EXTRA, generate
@@ -75,7 +76,11 @@ class M1Worldgen(unittest.TestCase):
 
 
 JAVA = Path(__file__).resolve().parents[2].parent / 'ntm-src/src/main/java/com/hbm'
-CALL = 'DungeonToolbox.generateOre(world, rand, i, j,'
+CALL = re.compile(r'DungeonToolbox\.generateOre\(world, rand, i, j, (.+?), (\d+), (\d+), (\d+), ModBlocks\.(\w+), ([\w.]+)\);')
+
+# Java veins that the port does not generate, each with its reason. Equality is checked both ways.
+NETHER_GAPS = {'ntm:ore_nether_plutonium': 'GeneralConfig.enablePlutoniumOre is false by default'}
+GNEISS_GAPS = {'ntm:ore_gneiss_gas': 'no id in content/ids.json'}
 
 
 def config_default(name):
@@ -84,53 +89,53 @@ def config_default(name):
     for line in text.split('\n'):
         if line.strip().startswith(f'{name} = CommonConfig.createConfigInt'):
             return int(line.rstrip().rstrip(');').split(',')[-1].strip())
-    import re
     m = re.search(rf'public static int {name} = (\d+);', text)
     return int(m.group(1))
 
 
 def java_value(expr):
-    parts = [p.strip() for p in expr.split('*')]
     value = 1
-    for part in parts:
+    for part in (p.strip() for p in expr.split('*')):
         value *= config_default(part.split('.')[-1]) if part.startswith('WorldConfig.') else int(part)
     return value
 
 
-def java_calls(lines):
-    """(attempts, size, min_y, max_y, ore, target) for each plain generateOre call in the given line range."""
-    import re
-    out = []
-    for line in lines:
-        if CALL not in line or 'lutonium' in line:
+def method_region(text, header):
+    """Body of a method in HbmWorldGen.java, found by its header text, up to the next private method."""
+    start = text.index(header)
+    return text[start:text.index('\n\tprivate ', start + len(header))]
+
+
+def java_veins(region, target):
+    """{ore: (attempts, size, min_y, max_y)} for every generateOre call in the region with this target."""
+    out = {}
+    for m in CALL.finditer(region):
+        count, size, low, variance, ore, block = m.groups()
+        if block != target:
             continue
-        m = re.search(r'generateOre\(world, rand, i, j, (.+?), (\d+), (\d+), (\d+), ModBlocks\.(\w+), ([\w.]+)\);', line)
-        if not m:
-            continue
-        count, size, low, variance, ore, target = m.groups()
-        out.append((java_value(count), int(size), int(low), int(low) + int(variance) - 1, 'ntm:' + ore, target))
+        out['ntm:' + ore] = (java_value(count), int(size), int(low), int(low) + int(variance) - 1)
     return out
 
 
 class JavaValues(unittest.TestCase):
-    def test_nether_veins_match_generateNether(self):
-        lines = (JAVA / 'lib/HbmWorldGen.java').read_text().split('\n')[500:515]
-        expected = {ore: (a, s, lo, hi) for a, s, lo, hi, ore, _ in java_calls(lines)}
-        self.assertTrue(expected, 'no generateOre calls found in generateNether')
-        ours = {s['block']: (s['attempts_per_chunk'], s['size'], s['min_y'], s['max_y']) for s in EXTRA if s['material'].startswith('nether_')}
-        for ore, value in expected.items():
-            if ore in ours:
-                self.assertEqual(ours[ore], value, ore)
-        self.assertEqual(set(ours), {o for o in expected if o in ours})
+    def setUp(self):
+        self.text = (JAVA / 'lib/HbmWorldGen.java').read_text()
 
-    def test_gneiss_veins_match_generateSurface(self):
-        lines = (JAVA / 'lib/HbmWorldGen.java').read_text().split('\n')[109:117]
-        expected = {ore: (a, s, lo, hi) for a, s, lo, hi, ore, _ in java_calls(lines)}
-        ours = {s['block']: (s['attempts_per_chunk'], s['size'], s['min_y'], s['max_y']) for s in EXTRA if s['material'].startswith('gneiss_')}
-        for ore, value in expected.items():
-            if ore in ours:
-                self.assertEqual(ours[ore], value, ore)
-        self.assertEqual(set(ours), {o for o in expected if o in ours})
+    def test_java_veins_are_exactly_the_port_plus_named_gaps(self):
+        nether_java = java_veins(method_region(self.text, 'private void generateNether('), 'Blocks.netherrack')
+        gneiss_java = java_veins(method_region(self.text, 'private void generateSurface('), 'ModBlocks.stone_gneiss')
+        self.assertTrue(nether_java and gneiss_java, 'anchor found no generateOre calls')
+        for scope, java, gaps, prefix in [('nether', nether_java, NETHER_GAPS, 'nether_'), ('gneiss', gneiss_java, GNEISS_GAPS, 'gneiss_')]:
+            port = {s['block']: s for s in EXTRA if s['material'].startswith(prefix)}
+            self.assertEqual(set(java), set(port) | set(gaps), f'{scope}: Java veins != port + named gaps')
+            self.assertFalse(set(port) & set(gaps), f'{scope}: a named gap is also generated')
+            for gap, reason in gaps.items():
+                self.assertTrue(reason.strip(), gap)
+            for ore, (attempts, size, low, high) in java.items():
+                if ore in port:
+                    s = port[ore]
+                    self.assertEqual((s['attempts_per_chunk'], s['size'], s['min_y'], s['max_y']), (attempts, size, low, high), ore)
+                    self.assertEqual(s['biomes'], '#minecraft:is_nether' if scope == 'nether' else '#minecraft:is_overworld', ore)
 
     def test_emitted_files_match_generator(self):
         rows = json.loads((Path(__file__).resolve().parents[2] / 'content/ids.json').read_text())['entries']
