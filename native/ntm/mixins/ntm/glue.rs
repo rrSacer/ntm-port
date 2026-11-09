@@ -1347,6 +1347,9 @@ impl ServerHost for Host<'_, '_> {
         if self.game.native_actor_uuid().as_deref()!=Some(t.player.as_str()){return false;}
         let slots:std::collections::BTreeSet<_>=t.edits.iter().map(|e|format!("{:?}",e.slot)).collect();
         if slots.len()!=t.edits.len(){return false;}
+        // A cursor exists only while a menu is open: with none, the engine has nowhere to keep it and the stack would be
+        // lost (vanilla returns it to the inventory as the menu closes, `closeContainer`). Such an edit is refused.
+        if self.game.screen==crate::game::Screen::Playing&&t.edits.iter().any(|e|e.slot==PlayerSlot::Carried){return false;}
         let Some(expected)=crate::game::ntm_items::transfer_snapshot(self.game) else{return false};
         let mut desired=expected.clone();
         for e in &t.edits{
