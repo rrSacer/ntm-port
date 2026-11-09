@@ -161,10 +161,15 @@ pub fn key(name: &str) -> &'static Key {
 }
 
 /// The world's string game rules (`GameRules`): a missing rule reads as `""`.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, PartialEq, serde::Serialize, serde::Deserialize)]
+#[serde(transparent)]
 pub struct GameRules(BTreeMap<String, String>);
 
 impl GameRules {
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
     pub fn set(&mut self, rule: &str, value: &str) {
         self.0.insert(rule.to_string(), value.to_string());
     }

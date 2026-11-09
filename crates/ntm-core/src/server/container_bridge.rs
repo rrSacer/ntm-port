@@ -147,6 +147,18 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:rbmk_moderator", Layout::Native),
     ("ntm:rbmk_reflector", Layout::Native),
     ("ntm:rbmk_absorber", Layout::Native),
+    // T02: the other ten columns, for their lid; the outgasser's, the storage's and the heater's slots, the engine's
+    // until now, are the first sync's truth.
+    ("ntm:rbmk_control", Layout::Native),
+    ("ntm:rbmk_control_mod", Layout::Native),
+    ("ntm:rbmk_control_auto", Layout::Native),
+    ("ntm:rbmk_control_reasim", Layout::Native),
+    ("ntm:rbmk_control_reasim_auto", Layout::Native),
+    ("ntm:rbmk_boiler", Layout::Native),
+    ("ntm:rbmk_outgasser", Layout::Native),
+    ("ntm:rbmk_storage", Layout::Native),
+    ("ntm:rbmk_cooler", Layout::Native),
+    ("ntm:rbmk_heater", Layout::Native),
     ("ntm:pile_device__loader", Layout::Native),
     ("ntm:machine_solar_boiler", Layout::Native),
     ("ntm:solar_mirror", Layout::Native),

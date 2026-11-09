@@ -66,7 +66,7 @@ impl Server {
         let broken=world.removals.iter().map(|r|(r.key.clone(),r.machine.block.clone())).collect();
         let mut bridge=container_bridge::Bridge::default();
         for r in &world.removals {if r.engine_slots{bridge.last.insert(r.key.clone(),Vec::new());}}
-        Server {
+        let mut server = Server {
             blasts: crate::blast::Runtime::default(),
             fluidnet: fluid_server::FluidNet::default(),
             tick,
@@ -94,7 +94,9 @@ impl Server {
             taken: None,
             awaiting: None,
             nonce: obligations::draw_nonce(),
-        }
+        };
+        server.rbmk_start(host);
+        server
     }
 
     /// One server tick: the blocks that changed, the slots players moved,
@@ -201,6 +203,7 @@ impl Server {
     /// callback also uses this when a player quits between two server ticks.
     pub fn native_record_events(&mut self,host:&mut impl ServerHost){
         for (e,generation) in std::mem::take(&mut self.queued){self.native_event(host,e,generation);}
+        self.rbmk_orphans(host);
         self.observe_removals(host);
         self.cancel_obsolete_inputs(host);
         self.checkpoint_facts(host);
@@ -223,6 +226,7 @@ impl Server {
     /// A block changed (`Level.setBlock`): a machine or cable put, taken
     /// away or replaced, as the client's events said before.
     pub fn native_block_changed(&mut self, dim: &str, pos: Pos, old: &str, new: &str) {
+        self.rbmk_note_change(dim, pos, old, new);
         let tracked = |s: &str| {
             let id = blockstate::id_of(s);
             registry::is_cable(id) || machine_from_state(s).is_some()

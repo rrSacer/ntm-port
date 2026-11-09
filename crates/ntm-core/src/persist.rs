@@ -130,6 +130,9 @@ pub struct Kept {
     /// What machines became in steps whose block entities may reach the disk in different chunk records.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub survivors:Vec<crate::server::Survivor>,
+    /// The RBMK dials (`RBMKDials`): Java's game rules of the world, as strings.
+    #[serde(default, skip_serializing_if = "crate::rbmk::dials::GameRules::is_empty")]
+    pub rbmk_rules: crate::rbmk::dials::GameRules,
 }
 
 fn is_zero(n: &u64) -> bool {
@@ -208,6 +211,8 @@ pub struct WorldState {
     /// Each RBMK layer's simulation state, by dimension and base Y. It holds no item: a crash between the regions and
     /// this storage sets it back to the save before while the columns are as the regions left them (docs).
     pub rbmk: Tracked<BTreeMap<(String, i32), crate::rbmk::persist::Layer>>,
+    /// The RBMK dials, Java's game rules (`/gamerule dial...` there, `/ntmrbmk dial` here): one set for the whole save.
+    pub rbmk_rules: Tracked<crate::rbmk::dials::GameRules>,
     /// The removals and batches an earlier version's storage held, still kept here as it held them: until a waited
     /// save wrote their chunk's record with them before this storage, or that record was read back with them.
     pub legacy: Tracked<Legacy>,
@@ -230,6 +235,7 @@ impl WorldState {
             radiation: kept.radiation.into(),
             bombs: kept.bombs.into(),
             zirnox: kept.zirnox.into(),
+            rbmk_rules: kept.rbmk_rules.into(),
             rbmk: Tracked::new(
                 kv.get(RBMK_KEY)
                     .and_then(|b| serde_json::from_slice::<Vec<((String, i32), crate::rbmk::persist::Layer)>>(&b).ok())
@@ -251,7 +257,7 @@ impl WorldState {
             Tracked::stamp(&self.effect_serial),
             Tracked::stamp(&self.legacy),
             Tracked::stamp(&self.generations),
-            0,
+            Tracked::stamp(&self.rbmk_rules),
             0,
             Tracked::stamp(&self.prepared_retentions),
             0,
@@ -297,6 +303,8 @@ impl WorldState {
             machine_effects: std::collections::VecDeque<&'a crate::server::CommittedEffects>,
             #[serde(skip_serializing_if = "std::collections::VecDeque::is_empty")]
             prepared_retentions: &'a std::collections::VecDeque<crate::server::PreparedRetention>,
+            #[serde(skip_serializing_if = "crate::rbmk::dials::GameRules::is_empty")]
+            rbmk_rules: &'a crate::rbmk::dials::GameRules,
         }
         let kept = KeptRef {
             radiation: &self.radiation,
@@ -309,6 +317,7 @@ impl WorldState {
             generations: self.generations.iter().collect(),
             machine_effects: self.legacy.batches.iter().map(|(_, b)| b).collect(),
             prepared_retentions: &self.prepared_retentions,
+            rbmk_rules: &self.rbmk_rules,
         };
         serde_json::to_vec(&kept).unwrap_or_default()
     }
@@ -329,6 +338,7 @@ impl WorldState {
             machine_effects: (*self.machine_effects).clone(),
             applied_machine_effects: (*self.applied_machine_effects).clone(),
             prepared_retentions: (*self.prepared_retentions).clone(),
+            rbmk_rules: (*self.rbmk_rules).clone(),
             survivors: self.survivors.values().cloned().collect(),
         };
         serde_json::to_vec(&kept).unwrap_or_default()

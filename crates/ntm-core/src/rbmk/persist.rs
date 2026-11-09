@@ -53,6 +53,96 @@ pub fn kind_of(block: &str) -> Option<(Kind, bool)> {
     })
 }
 
+/// The eighteen RBMK columns (`RBMKBase`): engine columns 2..16 cells high on `ntm:dummy_rbmk` (T02), each with its
+/// block entity. Only those of [`kind_of`] step yet; the others keep their lid and their slots.
+pub const COLUMNS: [&str; 18] = [
+    "ntm:rbmk_rod",
+    "ntm:rbmk_rod_mod",
+    "ntm:rbmk_rod_reasim",
+    "ntm:rbmk_rod_reasim_mod",
+    "ntm:rbmk_control",
+    "ntm:rbmk_control_mod",
+    "ntm:rbmk_control_auto",
+    "ntm:rbmk_control_reasim",
+    "ntm:rbmk_control_reasim_auto",
+    "ntm:rbmk_blank",
+    "ntm:rbmk_boiler",
+    "ntm:rbmk_reflector",
+    "ntm:rbmk_absorber",
+    "ntm:rbmk_moderator",
+    "ntm:rbmk_outgasser",
+    "ntm:rbmk_storage",
+    "ntm:rbmk_cooler",
+    "ntm:rbmk_heater",
+];
+
+/// The block every cell of a column but its core holds.
+pub const DUMMY: &str = "ntm:dummy_rbmk";
+
+pub fn is_column(block: &str) -> bool {
+    COLUMNS.contains(&block)
+}
+
+/// `RBMKBase.hasOwnLid`: the control rods, whose lid is theirs and never comes off (`isLidRemovable` false).
+pub fn has_own_lid(block: &str) -> bool {
+    matches!(
+        block,
+        "ntm:rbmk_control" | "ntm:rbmk_control_auto" | "ntm:rbmk_control_mod" | "ntm:rbmk_control_reasim" | "ntm:rbmk_control_reasim_auto"
+    )
+}
+
+/// The slots of a column's block entity (`TileEntityRBMKSlottedBase`'s size, the machine file's slots).
+pub fn slot_count(block: &str) -> usize {
+    match block {
+        "ntm:rbmk_rod" | "ntm:rbmk_rod_mod" | "ntm:rbmk_rod_reasim" | "ntm:rbmk_rod_reasim_mod" | "ntm:rbmk_heater" => 1,
+        "ntm:rbmk_outgasser" => 2,
+        "ntm:rbmk_storage" => 12,
+        _ => 0,
+    }
+}
+
+/// The values a column's model and screen read (the machine file's `data`).
+pub fn screen_len(block: &str) -> usize {
+    match block {
+        "ntm:rbmk_rod" | "ntm:rbmk_rod_mod" | "ntm:rbmk_rod_reasim" | "ntm:rbmk_rod_reasim_mod" | "ntm:rbmk_heater" => 7,
+        "ntm:rbmk_control" | "ntm:rbmk_control_mod" | "ntm:rbmk_control_reasim" | "ntm:rbmk_boiler" => 6,
+        "ntm:rbmk_control_auto" | "ntm:rbmk_control_reasim_auto" => 9,
+        "ntm:rbmk_outgasser" => 5,
+        _ => 1,
+    }
+}
+
+/// A column's lid (`RBMKBase.metaToLid`: the core's metadata in Java).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Lid {
+    /// `DIR_NO_LID`: as every column is placed (`getDirModified`).
+    #[default]
+    None,
+    /// `rbmk_lid`, `DIR_NORMAL_LID`.
+    Standard,
+    /// `rbmk_lid_glass`, `DIR_GLASS_LID`.
+    Glass,
+}
+
+impl Lid {
+    /// The lid item `item` is, if one.
+    pub fn of_item(item: &str) -> Option<Lid> {
+        match item {
+            "ntm:rbmk_lid" => Some(Lid::Standard),
+            "ntm:rbmk_lid_glass" => Some(Lid::Glass),
+            _ => None,
+        }
+    }
+    /// The item this lid drops as.
+    pub fn item(self) -> Option<&'static str> {
+        match self {
+            Lid::None => None,
+            Lid::Standard => Some("ntm:rbmk_lid"),
+            Lid::Glass => Some("ntm:rbmk_lid_glass"),
+        }
+    }
+}
+
 /// The fuel rod an item is (`ItemRBMKRod`): `ntm:rbmk_fuel_<name>`, the Java variable of `hep` being `hep239`.
 pub fn rod_of(item: &str) -> Option<&'static RodType> {
     let name = item.strip_prefix("ntm:")?;
@@ -112,11 +202,24 @@ pub struct RbmkColumn {
     pub has_rod: bool,
     /// The engine's slots: the fuel channel's one slot, none for the others.
     pub slots: Slots,
+    /// Its lid (T02); none in a save from before.
+    #[serde(default, skip_serializing_if = "is_no_lid")]
+    pub lid: Lid,
+    /// How many values its screen reads ([`screen_len`]); 0 in a save from before T02 (a fuel channel's 7, else 1).
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub screen: u8,
+}
+
+fn is_no_lid(l: &Lid) -> bool {
+    *l == Lid::None
+}
+
+fn is_zero(n: &u8) -> bool {
+    *n == 0
 }
 
 impl RbmkColumn {
     pub fn of(block: &str) -> Self {
-        let rods = kind_of(block).is_some_and(|(k, _)| matches!(k, Kind::Rod | Kind::RodReaSim));
         RbmkColumn {
             schema: SCHEMA,
             heat: 0.0,
@@ -127,8 +230,15 @@ impl RbmkColumn {
             last_flux_quantity: 0.0,
             last_flux_ratio: 0.0,
             has_rod: false,
-            slots: if rods { vec![None] } else { Vec::new() },
+            slots: vec![None; slot_count(block)],
+            lid: Lid::None,
+            screen: screen_len(block) as u8,
         }
+    }
+
+    /// `TileEntityRBMKBase.hasLid` of a column of `block`: a control rod's own lid always, else the lid put on it.
+    pub fn has_lid(&self, block: &str) -> bool {
+        has_own_lid(block) || self.lid != Lid::None
     }
 }
 
@@ -147,7 +257,12 @@ impl Slotted for RbmkColumn {
     }
     /// The models' values (`docs/visual-fiel.md`): still neutral, as before T01 (T19 lights them).
     fn screen_data(&self) -> Vec<i32> {
-        vec![0; if self.slots.is_empty() { 1 } else { 7 }]
+        let n = match self.screen {
+            0 if self.slots.is_empty() => 1,
+            0 => 7,
+            n => usize::from(n),
+        };
+        vec![0; n]
     }
 }
 

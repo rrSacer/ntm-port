@@ -107,6 +107,18 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
             (SlotAction::Extract,SlotOrigin::Automation) => crate::radioisotopes::can_extract(block,slot),
         };
     }
+    // The RBMK columns' automation (`getAccessibleSlotsFromSide`, `canInsertItem`, `canExtractItem`), through the core
+    // and the proxies of their ports: the storage takes rods and gives anything, the outgasser gives its output (its
+    // input waits for T09's recipes: refused), the fuel channels and the heater show no slot. The hand is T05's.
+    if crate::rbmk::persist::is_column(block) {
+        return origin == SlotOrigin::Manual
+            || match (block, action) {
+                ("ntm:rbmk_storage", SlotAction::Insert) => crate::rbmk::persist::rod_of(&item.id).is_some(),
+                ("ntm:rbmk_storage", SlotAction::Extract) => true,
+                ("ntm:rbmk_outgasser", SlotAction::Extract) => slot == 1,
+                _ => false,
+            };
+    }
     block != crate::zirnox::BLOCK || origin == SlotOrigin::Manual
         || match action {
             SlotAction::Insert => slot < 24 && crate::zirnox::fuel(&item.id).is_some(),

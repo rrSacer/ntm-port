@@ -59,6 +59,12 @@ struct World {
     copied: Vec<String>,
     /// The storage's writes fail (I/O).
     kv_fails: bool,
+    /// The height the engine places RBMK columns with (`set_column_height`).
+    column_height: Option<i32>,
+    /// The tools a publication wore (`commit_lid_removal`).
+    worn: Vec<String>,
+    /// The drops a publication owed by their name (`RetainedDrop`): a known name drops nothing more.
+    retained: BTreeSet<u64>,
 }
 
 impl World {
@@ -88,6 +94,9 @@ impl World {
             copied: Vec::new(),
             no_entities: false,
             kv_fails: false,
+            column_height: None,
+            worn: Vec::new(),
+            retained: BTreeSet::new(),
         };
         for x in -32..32 {
             for z in -32..32 {
@@ -202,6 +211,23 @@ impl ServerHost for SHost {
         for (d,_) in &t.drops{w.dropped.push(format!("player {} {}",d.id,d.count));}
         true
     }
+    fn commit_lid_removal(&mut self,c:&MachineCommit,drop:&RetainedDrop,tool:&str)->bool{
+        if !self.world.borrow().hands.as_ref().and_then(|h|h.held()).is_some_and(|h|h.stack.id==tool){return false;}
+        if !self.world.borrow().loaded(&drop.origin.dim,drop.origin.pos){return false;}
+        if !self.commit_machines(std::slice::from_ref(c)){return false;}
+        let mut w=self.world.borrow_mut();
+        let id=drop.id.unwrap_or_else(||crate::ledger::retained_id(&drop.origin.dim,drop.origin.pos,drop.origin.generation));
+        if w.retained.insert(id){
+            for item in &drop.items{
+                let f=crate::snbt::fields(item).expect("an item compound");
+                let p=drop.origin.pos;
+                w.dropped.push(format!("{} {} {} {} {} {}",drop.origin.dim,p[0],p[1],p[2],f["id"].trim_matches('"'),f["count"]));
+            }
+        }
+        w.worn.push(tool.into());
+        true
+    }
+    fn set_column_height(&mut self,height:i32){self.world.borrow_mut().column_height=Some(height);}
     fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
         let mut w=self.world.borrow_mut();
         if w.refuse_commits{return false;}
@@ -508,6 +534,7 @@ mod blastfurnace_tests;
 mod foundry_tests;
 mod slot_items_tests;
 mod rbmk_tests;
+mod rbmk_t02_tests;
 mod anvil_tests;
 mod press_slots_tests;
 mod purex_tests;

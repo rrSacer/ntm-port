@@ -25,7 +25,6 @@ use super::*;
 use crate::{
     machine::Data,
     rbmk::{
-        dials::{DialState, Dials},
         persist::{self, Layer, Member, RbmkColumn},
         reactor::{Column, Kind as ColumnKind, Reactor},
     },
@@ -33,14 +32,6 @@ use crate::{
 };
 
 type Cell = [i32; 2];
-
-/// The default dials, as a world that never set its rules reads them (T04 brings the rules).
-fn default_dials() -> Dials {
-    let mut d = DialState::default();
-    d.create(false);
-    d.refresh();
-    *d.cached().expect("refreshed dials")
-}
 
 /// Air, by the block's id (not a suffix).
 fn is_air(state: &str) -> bool {
@@ -144,7 +135,7 @@ impl<F: FnMut(Cell, &str) -> Absent> Graph<'_, F> {
 impl Server {
     /// The block entity columns of the layer of `k`, if it is one: (dimension, base Y).
     fn rbmk_layer_of(k: &Key, m: &Machine) -> Option<(String, i32)> {
-        matches!(m.data, Data::Rbmk(_)).then(|| (k.0.clone(), k.1[1]))
+        (matches!(m.data, Data::Rbmk(_)) && persist::kind_of(&m.block).is_some()).then(|| (k.0.clone(), k.1[1]))
     }
 
     /// What a remembered column is, as the world shows it now (a column the step removed has left the layer before:
@@ -160,7 +151,7 @@ impl Server {
     /// The RBMK groups of a step: one per reactor, the machines of each component the layers' columns form. A
     /// component whose remembered columns are all out of reach has no group: it waits, its state kept.
     pub(super) fn rbmk_groups(&mut self, host: &mut impl ServerHost, outside: &BTreeSet<Key>) -> Vec<Vec<Key>> {
-        let range = default_dials().flux_range;
+        let range = self.rbmk_dials().flux_range;
         let (rod, reasim) = (persist::ray_offsets(ColumnKind::Rod, range), persist::ray_offsets(ColumnKind::RodReaSim, range));
         let mut layers: BTreeMap<(String, i32), BTreeMap<Cell, String>> = BTreeMap::new();
         for (k, m) in &self.ready.world.machines {
@@ -202,7 +193,7 @@ impl Server {
             }
         }
         let Some((dim, y)) = at else { return true };
-        let dials = default_dials();
+        let dials = self.rbmk_dials();
         let range = dials.flux_range;
         let mut layer = self.ready.world.rbmk.get(&(dim.clone(), y)).cloned().unwrap_or_default();
         // A column the step removed leaves (P1-1: one replaced in place by another is a new registration once adopted);
@@ -253,8 +244,8 @@ impl Server {
                 let Data::Rbmk(c) = &m.data else { unreachable!() };
                 let (kind, moderated) = persist::kind_of(&m.block).expect("an RBMK column");
                 let mut col = Column::new(kind, p[0], p[1]);
-                // Java places a column without its lid (`RBMKBase.getDirModified`: DIR_NO_LID); lids are T02's.
-                col.lid = false;
+                // Placed without one (`getDirModified`: DIR_NO_LID); a lid put on since (T02), or a control rod's own.
+                col.lid = c.has_lid(&m.block);
                 col.moderated = moderated;
                 col.heat = c.heat;
                 col.reasim_water = c.reasim_water;
