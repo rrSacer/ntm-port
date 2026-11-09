@@ -995,14 +995,15 @@ fn consumed_contents(commits:&[ntm_core::server::MachineCommit])->Vec<ntm_core::
 
 impl Host<'_, '_> {
     fn publish_atomic(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool) -> bool {
-        self.publish_atomic_with(commits,extra,retained,wear_held,None)
+        self.publish_atomic_with(commits,extra,retained,wear_held,None,&[])
     }
     /// `player`: a transfer's player side (`commit_player_transfer`), published by the engine as a whole or not at all,
     /// after every check of the machines' side and before their publication, which cannot fail.
-    fn publish_atomic_with(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool,player:Option<&mut dyn FnMut(&mut crate::game::Game<'_>)->bool>) -> bool {
-        horizon_client::spans::time("ntm_publish_atomic", || self.publish_atomic_timed(commits, extra, retained, wear_held, player))
+    /// `templates`: machine slots that take a copy of a player's whole stack (`SlotCopy`), by dimension, cell and slot.
+    fn publish_atomic_with(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool,player:Option<&mut dyn FnMut(&mut crate::game::Game<'_>)->bool>,templates:&[(String,[i32;3],usize,ItemStack)]) -> bool {
+        horizon_client::spans::time("ntm_publish_atomic", || self.publish_atomic_timed(commits, extra, retained, wear_held, player, templates))
     }
-    fn publish_atomic_timed(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool,player:Option<&mut dyn FnMut(&mut crate::game::Game<'_>)->bool>) -> bool {
+    fn publish_atomic_timed(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool,player:Option<&mut dyn FnMut(&mut crate::game::Game<'_>)->bool>,templates:&[(String,[i32;3],usize,ItemStack)]) -> bool {
         // This callback owns &mut Game for its entire duration. No event,
         // hopper, chunk unload or block mutation can interleave these passes.
         // Resolve ALL entities and validate ALL expected slots before changing
@@ -1077,8 +1078,11 @@ impl Host<'_, '_> {
                 let sent=match e.nbt.get(&JavaString::from(DATA)) {Some(Tag::IntArray(v))=>Some(v.clone()),_=>None};
                 let before_signal=comparator_of(&e.id,match e.nbt.get(&JavaString::from(STATE)){Some(Tag::String(j))=>Some(j),_=>None});
                 let before_audio=match e.nbt.get(&JavaString::from(STATE)){Some(Tag::String(j))=>ntm_core::sounds::snapshot(&j.to_string_lossy()),_=>Vec::new()};
-                for (cell,new) in e.items.iter_mut().zip(&c.desired) {
-                    *cell=item(new.as_ref(),cell.take());
+                for (i,(cell,new)) in e.items.iter_mut().zip(&c.desired).enumerate() {
+                    // A copy of a player's stack keeps its every component (`ItemStack.copy()`).
+                    let template=templates.iter().find(|t|t.0==c.dim&&t.1==c.pos&&t.2==i).map(|t|t.3.clone());
+                    let old=cell.take();
+                    *cell=item(new.as_ref(),template.or(old));
                 }
                 e.data=c.data.clone();
                 e.nbt.insert(JavaString::from(DATA),Tag::IntArray(c.data.clone()));
@@ -1187,8 +1191,10 @@ impl ServerHost for Host<'_, '_> {
     }
     /// Each entity's compound must read and its position be finite before anything is spawned or owed.
     fn apply_entities(&mut self,id:u64,dim:&str,p:[i32;3],entities:&[ntm_core::server::EntitySpawn],owners:&[(String,[i32;3])])->bool{
-        let valid=entities.iter().all(|e|!e.kind.is_empty()&&e.pos.iter().all(|v|v.is_finite())&&matches!(horizon_world::nbt::parse_snbt(&e.nbt),Ok((Tag::Compound(_),_))));
-        if !valid{eprintln!("ntm: invalid entity effect at {dim} {p:?}");return false;}
+        // An entity the engine cannot summon is refused, never spent: the effect waits, its owner frozen (P2-2).
+        let summonable=|k:&str|self.game.ui.registries.summonable.iter().any(|s|s==k);
+        let valid=entities.iter().all(|e|summonable(&e.kind)&&e.pos.iter().all(|v|v.is_finite())&&matches!(horizon_world::nbt::parse_snbt(&e.nbt),Ok((Tag::Compound(_),_))));
+        if !valid{eprintln!("ntm: entity effect {id:016x} at {dim} {p:?} refused: a kind the engine cannot summon or an invalid compound; it waits");return false;}
         let owed=entities.iter().map(|e|(ntm_core::ledger::OwedEntity{kind:e.kind.clone(),pos:e.pos},e.nbt.clone())).collect();
         in_place(self.game,dim,|g|ledger_add_entities_here(g,dim,id,p,owed,owners)).unwrap_or(false)
     }
@@ -1332,8 +1338,21 @@ impl ServerHost for Host<'_, '_> {
             let Some(stack)=item(Some(s),None) else{return false};
             drops.push(NativeDrop::new(stack,match mode{TransferDrop::Thrown=>NativeDropMode::Thrown,TransferDrop::World{delay}=>NativeDropMode::World{delay:*delay}}));
         }
+        // The machine slots that take a copy of a player's stack: the stack as the player held it, before the edits.
+        let mut templates=Vec::new();
+        for c in &t.copies{
+            let from=match c.from{
+                PlayerSlot::Inventory(i)=>expected.inventory.get(i).cloned().flatten(),
+                PlayerSlot::Offhand=>expected.offhand.clone(),
+                PlayerSlot::Carried=>expected.carried.clone(),
+            };
+            let Some(from)=from else{return false};
+            let into=commits.iter().find(|m|m.dim==c.dim&&m.pos==c.pos).and_then(|m|m.desired.get(c.slot)).cloned().flatten();
+            if into.is_none_or(|s|s.id!=*from.item||s.damage!=from.damage){return false;}
+            templates.push((c.dim.clone(),c.pos,c.slot,from));
+        }
         let mut player=|g:&mut crate::game::Game<'_>|crate::game::ntm_items::transfer_commit(g,&expected,desired.clone(),drops.clone());
-        self.publish_atomic_with(commits,&[],&consumed_contents(commits),false,Some(&mut player))
+        self.publish_atomic_with(commits,&[],&consumed_contents(commits),false,Some(&mut player),&templates)
     }
     fn commit_structural(&mut self,cells:&[ntm_core::server::CellWrite],drops:&[ntm_core::server::RetainedDrop],owners:&[(String,[i32;3])])->bool{
         let own=cells.iter().filter(|c|owners.contains(&c.guard.key())).map(|c|(c.guard.dim.clone(),c.guard.pos,ntm_core::blockstate::id_of(&c.desired).into())).collect();
@@ -1560,10 +1579,33 @@ fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
             Some(it)
         }
     };
-    if let Some(it) = result.as_mut() && let Some(custom) = &new.custom && let Ok((tag,_)) = horizon_world::nbt::parse_snbt(custom) {
+    if let Some(it) = result.as_mut() && let Some(custom) = &new.custom && let Ok((mut tag,_)) = horizon_world::nbt::parse_snbt(custom) {
+        if ntm_core::rbmk::persist::rod_of(&new.id).is_some() {
+            rod_doubles(&mut tag);
+        }
         it.data_mut().set_other("minecraft:custom_data",Some(tag));
     }
     result
+}
+
+/// The engine's SNBT, as Java's, reads the bare words of a non-finite double (`NaNd`, `Infinityd`) as text: an RBMK
+/// rod's four doubles come back as the doubles they were written as (P2-1), their bits exact (a NaN canonical, as Java's
+/// `writeDouble` keeps it).
+fn rod_doubles(tag: &mut Tag) {
+    let Tag::Compound(c) = tag else { return };
+    for key in ["yield", "xenon", "core", "hull"] {
+        let k = JavaString::from(key);
+        let v = match c.get(&k) {
+            Some(Tag::String(s)) => match s.to_string_lossy().as_ref() {
+                "NaNd" | "NaND" => f64::NAN,
+                "Infinityd" | "InfinityD" => f64::INFINITY,
+                "-Infinityd" | "-InfinityD" => f64::NEG_INFINITY,
+                _ => continue,
+            },
+            _ => continue,
+        };
+        c.insert(k, Tag::Double(v.to_bits()));
+    }
 }
 
 /// A block entity's server tick: the machine is only adopted by the server
