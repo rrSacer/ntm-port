@@ -1222,6 +1222,36 @@
 2
 ]
 },
+"ntm:furnace_iron": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 53,
+"y": 17
+},
+{
+"x": 53,
+"y": 53
+},
+{
+"x": 71,
+"y": 53
+},
+{
+"output": true,
+"x": 125,
+"y": 35
+},
+{
+"x": 17,
+"y": 35
+}
+],
+"synced": []
+},
 "ntm:heater_electric": {
 "inventory": [
 8,

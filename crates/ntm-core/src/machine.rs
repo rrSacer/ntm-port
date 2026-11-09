@@ -89,6 +89,8 @@ pub enum Kind {
     Rbmk,
     /// The brick furnace (`crate::furnace_brick`), lit or not.
     BrickFurnace,
+    /// The K3 furnaces of several slots (`crate::furnaces`).
+    Furnace,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -190,6 +192,7 @@ pub enum Data {
     Radioisotope(Box<crate::radioisotopes::Radioisotope>),
     Rbmk(Box<crate::rbmk::persist::RbmkColumn>),
     BrickFurnace(crate::furnace_brick::BrickFurnace),
+    Furnace(Box<crate::furnaces::Furnace>),
     Inert { name: String },
 }
 
@@ -288,6 +291,10 @@ impl Machine {
                 _ => crate::fluidbox::FluidStore::new(16_000, 0),
             }),
             Kind::BrickFurnace => Data::BrickFurnace(Default::default()),
+            Kind::Furnace => match crate::furnaces::of(block_id) {
+                Some(f) => Data::Furnace(Box::new(f)),
+                None => Data::Inert { name: block_id.into() },
+            },
             Kind::Inert => Data::Inert {
                 name: block_id.into(),
             },
@@ -362,6 +369,7 @@ impl Machine {
             Data::Pile(_) => Kind::Pile,
             Data::SolarStirling(_) => Kind::SolarStirling,
             Data::BrickFurnace(_) => Kind::BrickFurnace,
+            Data::Furnace(_) => Kind::Furnace,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -407,6 +415,7 @@ impl Machine {
             Data::Pile(m) => &**m,
             Data::SolarStirling(m) => &**m,
             Data::BrickFurnace(m) => m,
+            Data::Furnace(m) => &**m,
             Data::Inert { name } => name,
         }
     }
@@ -452,6 +461,7 @@ impl Machine {
             Data::Pile(m) => &mut **m,
             Data::SolarStirling(m) => &mut **m,
             Data::BrickFurnace(m) => m,
+            Data::Furnace(m) => &mut **m,
             Data::Inert { name } => name,
         }
     }

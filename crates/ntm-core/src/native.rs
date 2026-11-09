@@ -61,6 +61,9 @@ pub fn container(block: &str) -> Option<Container> {
             menu: Some("minecraft:furnace"),
         });
     }
+    if let Some(c) = crate::furnaces::container(block) {
+        return Some(c);
+    }
     if is_brick_furnace(block) {
         // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
         // above, the fuel from the sides, the output, fuel and ash below;
@@ -97,6 +100,9 @@ pub struct SlotFilter {
 /// alike): the furnace takes what it smelts, one creative battery, and
 /// gives its result; the others' are their machine files'.
 pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
+    if crate::furnaces::is_furnace(block) {
+        return crate::furnaces::filters(block);
+    }
     if is_brick_furnace(block) {
         // The fuel rule is `slot_allows`' (a list of fuels would be every item id).
         return vec![
@@ -138,6 +144,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
             (SlotAction::Extract,SlotOrigin::Manual) => true,
             (SlotAction::Extract,SlotOrigin::Automation) => crate::radioisotopes::can_extract(block,slot),
         };
+    }
+    if let Some(allowed) = crate::furnaces::allows(block, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
+        return allowed;
     }
     if is_brick_furnace(block) {
         // `isItemValidForSlot`: any input, only a fuel in slot 1, nothing in

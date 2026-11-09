@@ -505,6 +505,7 @@ mod crafter_tests;
 mod review_m2_tests;
 mod shredder_tests;
 mod brick_furnace_tests;
+mod furnaces_tests;
 mod blastfurnace_tests;
 mod foundry_tests;
 mod slot_items_tests;

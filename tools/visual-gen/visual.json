@@ -35933,7 +35933,177 @@
     },
     "ntm:furnace_iron": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerFurnaceIron, GUIFurnaceIron 176x166 (processing/gui_furnace_iron.png): input (53,17), fuels (53,53) and (71,53), output (125,35), speed upgrade (17,35); FurnaceIron.getDimensions {1,0,1,0,1,0} offset 0, TileEntityProxyCombo(true,false,false): every dummy cell reaches the inventory",
+      "machine": {
+        "slots": [
+          {
+            "x": 53,
+            "y": 17
+          },
+          {
+            "x": 53,
+            "y": 53
+          },
+          {
+            "x": 71,
+            "y": 53
+          },
+          {
+            "x": 125,
+            "y": 35,
+            "output": true
+          },
+          {
+            "x": 17,
+            "y": 35
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 5,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            1,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              -1,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              1
+            ],
+            [
+              -1,
+              1,
+              0
+            ],
+            [
+              -1,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_furnace_iron.png",
+        "texture_from": "textures/gui/processing/gui_furnace_iron.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              53,
+              36,
+              70,
+              5
+            ],
+            "uv": [
+              176,
+              18
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              53,
+              45,
+              70,
+              5
+            ],
+            "uv": [
+              176,
+              23
+            ],
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 4,
+            "min": 1,
+            "rect": [
+              70,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              52,
+              35,
+              71,
+              7
+            ],
+            "lines": [
+              "{0} / {1} ticks"
+            ]
+          },
+          {
+            "rect": [
+              52,
+              44,
+              71,
+              7
+            ],
+            "lines": [
+              "{2} / {3} ticks"
+            ]
+          }
+        ]
+      }
     },
     "ntm:furnace_steel": {
       "auto": false,

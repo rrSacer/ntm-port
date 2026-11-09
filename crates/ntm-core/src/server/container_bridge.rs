@@ -129,6 +129,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Zirnox(z) if !z.destroyed => Some(&mut **z),
         Data::Rbmk(c) => Some(&mut **c),
         Data::BrickFurnace(f) => Some(f),
+        Data::Furnace(f) => Some(f.slotted()),
         _ => None,
     }
 }
@@ -166,6 +167,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_electric_furnace_on", Layout::Native),
     ("ntm:machine_furnace_brick_off", Layout::Native),
     ("ntm:machine_furnace_brick_on", Layout::Native),
+    ("ntm:furnace_iron", Layout::Native),
     ("ntm:barrel_steel", Layout::Native),
     ("ntm:machine_fluidtank", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),

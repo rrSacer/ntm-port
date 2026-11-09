@@ -128,6 +128,79 @@ pub fn burn_time(item: &str) -> u32 {
     }
 }
 
+/// What `ModuleBurnTime.getMod` sorts a fuel into (the OreDict names it
+/// reads, in its order: coke, coal, lignite, logs, wood).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Family {
+    Log,
+    Wood,
+    Coal,
+    Lignite,
+    Coke,
+    Solid,
+    Rocket,
+    Balefire,
+    Other,
+}
+
+pub fn family(item: &str) -> Family {
+    let p = path(item);
+    if item.starts_with("ntm:") {
+        return match p {
+            "solid_fuel" | "solid_fuel_presto" | "solid_fuel_presto_triplet" => Family::Solid,
+            "solid_fuel_bf" | "solid_fuel_presto_bf" | "solid_fuel_presto_triplet_bf" => {
+                Family::Balefire
+            }
+            "rocket_fuel" => Family::Rocket,
+            _ if p.starts_with("coke__") || p.starts_with("block_coke__") => Family::Coke,
+            "powder_coal" | "powder_coal_tiny" | "briquette__coal" => Family::Coal,
+            "lignite" | "powder_lignite" | "briquette__lignite" => Family::Lignite,
+            "briquette__wood" => Family::Wood,
+            _ => Family::Other,
+        };
+    }
+    if !item.starts_with("minecraft:") {
+        return Family::Other;
+    }
+    if matches!(p, "coal" | "coal_block") {
+        return Family::Coal;
+    }
+    if ["_log", "_wood", "_stem", "_hyphae"]
+        .iter()
+        .any(|s| wood_of(p, s))
+    {
+        return Family::Log;
+    }
+    if wood_of(p, "_planks") || wood_of(p, "_slab") || p == "stick" {
+        return Family::Wood;
+    }
+    Family::Other
+}
+
+/// `ModuleBurnTime`: the time bonuses of a machine, by [`Family`].
+#[derive(Clone, Copy, Debug)]
+pub struct Module(pub [f64; 8]);
+
+impl Module {
+    pub const NONE: Module = Module([1.0; 8]);
+
+    pub const fn with(mut self, family: Family, time: f64) -> Self {
+        self.0[family as usize] = time;
+        self
+    }
+
+    /// `getBurnTime(stack)`: the base value times the family's bonus,
+    /// truncated (`(int) (fuel * mod)`).
+    pub fn burn_time(&self, item: &str) -> u32 {
+        let fuel = burn_time(item);
+        match family(item) {
+            _ if fuel == 0 => 0,
+            Family::Other => fuel,
+            f => (f64::from(fuel) * self.0[f as usize]) as u32,
+        }
+    }
+}
+
 /// `getContainerItem` of a fuel that has used up its last item.
 pub fn container_item(item: &str) -> Option<&'static str> {
     (item == "minecraft:lava_bucket").then_some("minecraft:bucket")
@@ -204,6 +277,31 @@ mod tests {
         assert_eq!(burn_time("ntm:powder_ash__coal"), 200);
         assert_eq!(burn_time("ntm:powder_ash__fullerene"), 0);
         assert_eq!(burn_time("ntm:ingot_steel"), 0);
+    }
+
+    #[test]
+    fn a_burn_module_scales_by_family_and_truncates() {
+        let iron = Module::NONE
+            .with(Family::Lignite, 1.25)
+            .with(Family::Coal, 1.25)
+            .with(Family::Coke, 1.5)
+            .with(Family::Solid, 2.0);
+        assert_eq!(iron.burn_time("minecraft:coal"), 2000);
+        assert_eq!(iron.burn_time("minecraft:charcoal"), 1600);
+        assert_eq!(iron.burn_time("ntm:coke__coal"), 4800);
+        assert_eq!(iron.burn_time("ntm:lignite"), 1500);
+        assert_eq!(iron.burn_time("ntm:solid_fuel"), 6400);
+        assert_eq!(iron.burn_time("minecraft:oak_log"), 300);
+        assert_eq!(iron.burn_time("minecraft:stick"), 100);
+        assert_eq!(iron.burn_time("minecraft:stone"), 0);
+        // A truncation: 25 burn ticks of dust at 1.25 would be 31.25.
+        assert_eq!(Module::NONE.burn_time("ntm:dust"), 25);
+        assert_eq!(
+            Module::NONE
+                .with(Family::Wood, 1.25)
+                .burn_time("minecraft:oak_slab"),
+            187
+        );
     }
 
     #[test]
