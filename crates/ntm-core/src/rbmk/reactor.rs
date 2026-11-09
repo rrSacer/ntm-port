@@ -1006,6 +1006,13 @@ impl Reactor {
                 .cloned()
                 .unwrap_or_default()
         };
+        // the output item's stack limit (`getMaxStackSize`), 64 unless the host says otherwise
+        let limit = {
+            let input = self.columns[i].outgasser().unwrap().input.as_ref().unwrap();
+            outgasser::recipe_for(&input.item, input.meta, &names)
+                .and_then(|r| r.solid)
+                .map_or(64, |(item, ..)| self.max_stack.get(item).copied().unwrap_or(64))
+        };
         let o = self.columns[i].outgasser_mut().unwrap();
         let input = o.input.as_mut().unwrap();
         let recipe = outgasser::recipe_for(&input.item, input.meta, &names).unwrap();
@@ -1024,7 +1031,7 @@ impl Reactor {
                         item: item.to_string(),
                         count,
                         meta,
-                        max_stack: 64,
+                        max_stack: limit,
                     })
                 }
                 Some(out) => out.count += count,

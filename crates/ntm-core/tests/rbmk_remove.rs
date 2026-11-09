@@ -79,3 +79,33 @@ fn storage_columns_only_exchange_heat() {
     r.step();
     assert!(r.columns[s].heat > 20.0);
 }
+
+#[test]
+fn outgasser_output_takes_the_host_stack_limit() {
+    use ntm_core::rbmk::outgasser::Stack;
+    let mut r = reactor(&[]);
+    let rod = RodType::by_variable("rbmk_fuel_po210be").unwrap();
+    let mut source = Column::new(Kind::Rod, 0, 0);
+    source.rod_mut().unwrap().fuel = Some((rod, RodStack::fresh(rod)));
+    r.add(source);
+    let mut o = Column::new(Kind::Outgasser, 1, 0);
+    let og = o.outgasser_mut().unwrap();
+    og.progress = 9_990.0;
+    og.input = Some(Stack {
+        item: "minecraft_1_7_10:brown_mushroom".into(),
+        count: 2,
+        meta: 0,
+        max_stack: 64,
+    });
+    let i = r.add(o);
+    r.max_stack.insert("mush".into(), 16);
+    r.step();
+    r.step();
+    let out = r.columns[i]
+        .outgasser()
+        .unwrap()
+        .output
+        .clone()
+        .expect("a mush was made");
+    assert_eq!((out.item.as_str(), out.max_stack), ("mush", 16));
+}

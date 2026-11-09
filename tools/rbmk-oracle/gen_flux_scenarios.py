@@ -161,8 +161,13 @@ scenario("reasim_long_ring", 6, ring, rules={"dialFluxRange": "60"}, seed=31337)
 
 # 17. every FT_Heatable fluid in a heater
 import re
-names = re.findall(r'^\s*\("([A-Z0-9_]+)", ', (pathlib.Path(__file__).resolve().parents[2] / "crates/ntm-core/src/rbmk/tables_data.rs").read_text(), re.M)
+table = (pathlib.Path(__file__).resolve().parents[2] / "crates/ntm-core/src/rbmk/tables_data.rs").read_text()
+names = re.findall(r'\(\s*"([A-Z0-9_]+)",\s*[0-9.]+,', table.split("OUTGASSER")[0])  # rustfmt may break the tuple over lines
+assert len(names) == 15, names
 scenario("heater_every_heatable", 20, [col("heater", 8 * i, 0, heat=900, feed={"fluid": n, "fill": 1000}) for i, n in enumerate(names)])
+
+# 18. the satellite scan fires on world ticks divisible by 200: two sources feeding each other past tick 200
+scenario("satellite_scan_tick_200", 205, [rod(0, 0, "rbmk_fuel_po210be"), rod(1, 0, "rbmk_fuel_po210be")])
 
 pathlib.Path(__file__).with_name("flux_scenarios.json").write_text(json.dumps({"scenarios": S}, indent=1) + "\n")
 print(len(S), "scenarios")

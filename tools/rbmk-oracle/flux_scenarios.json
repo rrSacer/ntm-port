@@ -3272,7 +3272,7 @@
      "z": 0,
      "heat": 900,
      "feed": {
-      "fluid": "MUG",
+      "fluid": "PERFLUOROMETHYL_COLD",
       "fill": 1000
      }
     },
@@ -3282,7 +3282,7 @@
      "z": 0,
      "heat": 900,
      "feed": {
-      "fluid": "BLOOD",
+      "fluid": "PERFLUOROMETHYL",
       "fill": 1000
      }
     },
@@ -3292,7 +3292,7 @@
      "z": 0,
      "heat": 900,
      "feed": {
-      "fluid": "HEAVYWATER",
+      "fluid": "MUG",
       "fill": 1000
      }
     },
@@ -3302,7 +3302,7 @@
      "z": 0,
      "heat": 900,
      "feed": {
-      "fluid": "SODIUM",
+      "fluid": "BLOOD",
       "fill": 1000
      }
     },
@@ -3312,7 +3312,7 @@
      "z": 0,
      "heat": 900,
      "feed": {
-      "fluid": "LEAD",
+      "fluid": "HEAVYWATER",
       "fill": 1000
      }
     },
@@ -3322,9 +3322,48 @@
      "z": 0,
      "heat": 900,
      "feed": {
+      "fluid": "SODIUM",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 104,
+     "z": 0,
+     "heat": 900,
+     "feed": {
+      "fluid": "LEAD",
+      "fill": 1000
+     }
+    },
+    {
+     "kind": "heater",
+     "x": 112,
+     "z": 0,
+     "heat": 900,
+     "feed": {
       "fluid": "THORIUM_SALT",
       "fill": 1000
      }
+    }
+   ]
+  },
+  {
+   "name": "satellite_scan_tick_200",
+   "ticks": 205,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_po210be"
+    },
+    {
+     "kind": "rod",
+     "x": 1,
+     "z": 0,
+     "rod": "rbmk_fuel_po210be"
     }
    ]
   }

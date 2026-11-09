@@ -8,7 +8,7 @@ Módulo `crates/ntm-core/src/rbmk/`, tickets `rbmk-plano` T03, T04, T07, T08 e T
 |---|---|---|
 | `dials` | `RBMKDials` (25 dials: chave, padrão, parse Java, clamps, cache de `createDials`/`refresh`, `getSurgeMod` do cliente) | 25 dials × 10 entradas, bits |
 | `rods` + `rods_data` | `ItemRBMKRod`: 33 barras, 9 curvas de queima, 5 de depleção, xenônio, `burn`/`updateHeat`/`provideHeat`, tag da pilha (`yield`/`xenon`/`core`/`hull`) | 360 + 35 pontos de função, 33 barras × 4 ticks, 14 casos discriminantes |
-| `jmath` | `Math.log10`, `pow`, `sin`, `cos` do HotSpot (ver abaixo) | 7500 amostras do JDK |
+| `jmath` | `Math.log10`, `pow`, `sin`, `cos` do HotSpot (ver abaixo) | 15000 amostras do JDK |
 | `jrandom` | `java.util.Random` serializável (D3) | usado pelos testes de fluxo ReaSim e do respiro |
 | `reactor` | passo do servidor: fila de fluxos do tick anterior → atualização das colunas em ordem de registro (D1). Barra de combustível, barra ReaSim (8 fluxos angulares), moderador, refletor, absorvedor, em branco, controle manual/automático/energizado, **outgasser**, **boiler**, **heater**, **cooler**, calor entre vizinhos, caldeira ReaSim | 38 cenários, bit a bit por tick |
 | `outgasser`, `fluids`, `tables_data` | 19 receitas do outgasser (fixture executada), tanques, `FT_Heatable` (15 fluidos) | idem |
