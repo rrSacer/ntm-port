@@ -155,8 +155,8 @@ pub(super) fn click(game: &crate::game::Game<'_>, block: &str, at: [f32; 2], but
         *lock(&OPEN) = Some((block.to_string(), next.to_string()));
         return;
     }
-    let shift = game.keys.contains(&winit::keyboard::KeyCode::ShiftLeft)
-        || game.keys.contains(&winit::keyboard::KeyCode::ShiftRight);
+    let shift = game.keys.raw(&winit::keyboard::KeyCode::ShiftLeft)
+        || game.keys.raw(&winit::keyboard::KeyCode::ShiftRight);
     *button = def.button_at(at[0], at[1], shift).and_then(|id| i32::try_from(id).ok());
 }
 
