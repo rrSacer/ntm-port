@@ -182,6 +182,23 @@ def item_checks(verdict, outcome, control):
     verdict['no_worse_item'] = all(worse)
 
 
+def wrote_outside_a_save(*plays):
+    """A death outside a save (`KILLS`) after a world wrote region or entity files: the engine, like vanilla 1.21+,
+    saves chunks between saves (`ChunkMap.saveChunksEagerly`), so the files are not the last save's and when that pass
+    ran differs between the mod's world and the control (a machine's chunk is dirty every tick, a chest's only when it
+    changes). Without it (`HORIZON_NO_EAGER_SAVE`) nothing is written there."""
+    return any(any((play.get('written') or {}).values()) for play in plays)
+
+
+def criterion(point, *plays):
+    """Which criterion judges a point, and why (recorded in each outcome)."""
+    if point not in KILLS:
+        return 'cut', 'a cut inside a save: compared with the control at the same cut'
+    if wrote_outside_a_save(*plays):
+        return 'L/D', 'files written outside a save (eager chunk saves): L and D item by item, as the files, storage clean'
+    return 'last_save', 'nothing written outside a save: both worlds are the last save, exactly'
+
+
 def emission_verdict(outcome, control, expected, control_expected, exact=False):
     """An emission against the files and the vanilla control: both reopens count what the files held before them, nothing
     is held more often than in the control, and no more is lost than the control loses at the same cut. The same cut is
@@ -199,6 +216,11 @@ def emission_verdict(outcome, control, expected, control_expected, exact=False):
     control_first = total(control, 'first_reopen')
     verdict['same_cut'] = outcome['point'] in ('none', *KILLS) or (cut(outcome) is not None and cut(outcome) == cut(control))
     compare(verdict, outcome, control)
+    verdict['criterion'], verdict['criterion_reason'] = criterion(outcome['point'], outcome, control)
+    if exact and verdict['criterion'] == 'L/D':
+        exact = False
+        # Not a weaker check: L and D are judged item by item below (`judge`). Record how the mod compared.
+        verdict['better_than_control'] = (first is not None and control_first is not None and first > control_first)
     if exact:
         # A death outside any save's records: both worlds are the last save, exactly, item by item.
         verdict['as_the_last_save'] = (first == expected and control_first == control_expected
