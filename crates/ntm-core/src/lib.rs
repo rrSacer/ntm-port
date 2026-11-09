@@ -114,4 +114,6 @@ pub mod zirnox;
 pub mod petroleo_e;
 pub mod watz_pwr;
 
+pub mod rbmk;
+
 pub mod sounds;

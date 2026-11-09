@@ -60,6 +60,7 @@ impl Server {
         let legacy_read = world.legacy.ids();
         let unread = obligations::legacy_homes(&world.legacy);
         let kept_rev = Some(world.stamps());
+        let rbmk_stamp = world.rbmk_stamp();
         #[cfg(debug_assertions)]
         let kept = world.kept(0);
         let broken=world.removals.iter().map(|r|(r.key.clone(),r.machine.block.clone())).collect();
@@ -79,6 +80,7 @@ impl Server {
                 bridge,
                 topo_dirty: true,
                 kept_rev,
+                kept_rbmk: Some(rbmk_stamp),
                 #[cfg(debug_assertions)]
                 kept,
                 ..Ready::default()
@@ -206,12 +208,14 @@ impl Server {
 
     /// The world's state outside the blocks, kept when it changed (the
     /// clock alone, every [`crate::persist::TICKS_EVERY`] ticks).
-    fn keep_world(&mut self, host: &mut impl ServerHost) {
+    pub(super) fn keep_world(&mut self, host: &mut impl ServerHost) {
         let r = &mut self.ready;
         r.world.ticks += 1;
         // Without the clock, which changes every tick.
         let clock = r.world.ticks.is_multiple_of(crate::persist::TICKS_EVERY);
-        if (self.world_changed() || clock) && let Err(e) = self.write_world(host) {
+        // The rest of the world only when it changed (or for the clock): a stepping reactor rewrites its own key alone.
+        let written = if self.world_part_changed() || clock { self.write_world(host) } else { self.write_rbmk(host) };
+        if let Err(e) = written {
             host.log(&format!("world state: {e}"));
         }
     }

@@ -85,6 +85,8 @@ pub enum Kind {
     Pile,
     Zirnox,
     Radioisotope,
+    /// An RBMK column the provisional step of T01 runs (`crate::rbmk::persist`).
+    Rbmk,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -184,6 +186,7 @@ pub enum Data {
     Pile(Box<crate::pile::Pile>),
     Zirnox(Box<crate::zirnox::Zirnox>),
     Radioisotope(Box<crate::radioisotopes::Radioisotope>),
+    Rbmk(Box<crate::rbmk::persist::RbmkColumn>),
     Inert { name: String },
 }
 
@@ -260,6 +263,7 @@ impl Machine {
             },
             Kind::Radioisotope => Data::Radioisotope(Box::new(crate::radioisotopes::Radioisotope::of(block_id))),
             Kind::Zirnox => Data::Zirnox(Box::new(crate::zirnox::Zirnox::of(block_id))),
+            Kind::Rbmk => Data::Rbmk(Box::new(crate::rbmk::persist::RbmkColumn::of(block_id))),
             Kind::Pile => Data::Pile(Box::new(crate::pile::Pile::of(block_id).expect("pile block"))),
             Kind::SolarStirling => Data::SolarStirling(Box::new(crate::solar_stirling::SolarStirling::of(block_id).expect("solar/stirling block"))),
             Kind::Combustion => match crate::combustion::Combustion::of(block_id) {
@@ -349,6 +353,7 @@ impl Machine {
             Data::Steam(_) => Kind::Steam,
             Data::Combustion(_) => Kind::Combustion,
             Data::Zirnox(_) => Kind::Zirnox,
+            Data::Rbmk(_) => Kind::Rbmk,
             Data::Radioisotope(_) => Kind::Radioisotope,
             Data::Pile(_) => Kind::Pile,
             Data::SolarStirling(_) => Kind::SolarStirling,
@@ -392,6 +397,7 @@ impl Machine {
             Data::Steam(m) => &**m,
             Data::Combustion(m) => &**m,
             Data::Zirnox(m) => &**m,
+            Data::Rbmk(m) => &**m,
             Data::Radioisotope(m) => &**m,
             Data::Pile(m) => &**m,
             Data::SolarStirling(m) => &**m,
@@ -435,6 +441,7 @@ impl Machine {
             Data::Steam(m) => &mut **m,
             Data::Combustion(m) => &mut **m,
             Data::Zirnox(m) => &mut **m,
+            Data::Rbmk(m) => &mut **m,
             Data::Radioisotope(m) => &mut **m,
             Data::Pile(m) => &mut **m,
             Data::SolarStirling(m) => &mut **m,

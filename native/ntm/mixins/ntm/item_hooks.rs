@@ -1119,6 +1119,23 @@ pub(super) fn write_dose(game: &mut Game<'_>, before: &Dose, after: &Dose) -> bo
     set(&mut desired.state, "dose", after.millirad);
     game.native_commit_player(&STATE, &expected, desired, Default::default())
 }
+/// The acting player's stacks with their state, for a transfer with machines (`ServerHost::player_slots`). None: no
+/// acting player, or a state the codec refuses (then no transfer moves anything).
+pub(super) fn transfer_snapshot(game: &mut Game<'_>) -> Option<NativePlayerSnapshot> {
+    game.native_player_snapshot(&STATE)
+}
+/// The player's side of a transfer, published only as a whole (`native_commit_player`): the stacks compared with
+/// `expected` first, every component and the state included; the hand's count changes in place, as `stackSize--`
+/// does, so no equipment event replays. False changes nothing.
+pub(super) fn transfer_commit(
+    game: &mut Game<'_>,
+    expected: &NativePlayerSnapshot,
+    desired: NativePlayerSnapshot,
+    drops: Vec<NativeDrop>,
+) -> bool {
+    let benefits = NativePlayerBenefits { drops, silent_equipment: true, ..Default::default() };
+    game.native_commit_player(&STATE, expected, desired, benefits)
+}
 pub(super) fn radiation_factor(game: &Game<'_>) -> f64 {
     // HazmatRegistry.getResistance: the armor plus 0.2 while Rad-X is active.
     item_hooks::dose_factor(

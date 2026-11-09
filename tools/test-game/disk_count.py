@@ -97,16 +97,16 @@ def _held(folder, chunk, prefixes):
     return total
 
 
-def written(before, after, prefixes):
+def written(before, after, prefixes, dims=('overworld',)):
     """The chunks holding the counted items (before or after) whose record differs between two copies of the world, per
-    folder (`region`, `entities`), with what they held before and after: what the play wrote of them, so two worlds cut
-    at the same point can be told to have written the same of their items or not."""
+    folder (`region`, `entities`; another dimension's as `<dim>/region`), with what they held before and after: what the
+    play wrote of them, so two worlds cut at the same point can be told to have written the same of their items or not."""
     prefixes = tuple(prefixes)
     out = {}
-    for folder in ('region', 'entities'):
+    for name, folder in ((n, f) for n in dims for f in ('region', 'entities')):
         chunks = {}
         for side, root in (('before', before), ('after', after)):
-            dim = Path(root) / 'saves' / 'CrashTest' / 'dimensions' / 'minecraft' / 'overworld' / folder
+            dim = Path(root) / 'saves' / 'CrashTest' / 'dimensions' / 'minecraft' / name / folder
             for path in sorted(dim.glob('r.*.mca')):
                 rx, rz = (int(v) for v in path.name.split('.')[1:3])
                 for i, raw in raw_records(path):
@@ -118,7 +118,7 @@ def written(before, after, prefixes):
             held = [_held(folder, parse(sides[s]), prefixes) if s in sides else 0 for s in ('before', 'after')]
             if any(held):
                 rows.append([x, z, *held])
-        out[folder] = rows
+        out[folder if name == 'overworld' else f'{name}/{folder}'] = rows
     return out
 
 
@@ -167,11 +167,19 @@ def _inventory(player, prefixes):
     return sum(_stack(s, prefixes) for part in ('Inventory', 'EnderItems') for s in player.get(part, []) or [])
 
 
-def count(folder, prefixes):
+def count(folder, prefixes, dims=('overworld',)):
+    """`dims`: the dimensions whose files are counted (`the_nether`: a parked level's too)."""
     prefixes = tuple(prefixes)
     world = Path(folder) / 'saves' / 'CrashTest'
-    dim = world / 'dimensions' / 'minecraft' / 'overworld'
     out = {'entities': 0, 'blocks': 0, 'machines': 0, 'owed': 0, 'player': 0}
+    for name in dims:
+        _count_dim(world / 'dimensions' / 'minecraft' / name, prefixes, out)
+    _count_player(world, prefixes, out)
+    out['total'] = sum(out.values())
+    return out
+
+
+def _count_dim(dim, prefixes, out):
     for path in sorted((dim / 'entities').glob('r.*.mca')):
         for chunk in records(path):
             for e in chunk.get('Entities', []) or []:
@@ -191,6 +199,9 @@ def count(folder, prefixes):
             owed = {}
             _owed_items(_ledger(chunk), prefixes, owed)
             out['owed'] += sum(owed.values())
+
+
+def _count_player(world, prefixes, out):
     # The owner's file: `players/data/<singleplayer_uuid>.dat` (older worlds: level.dat's Player, or playerdata/).
     level = world / 'level.dat'
     data = parse(gzip.decompress(level.read_bytes())).get('Data', {}) if level.exists() else {}
@@ -205,8 +216,6 @@ def count(folder, prefixes):
             files = [f for f in files if f.name == name] or files
         for path in files:
             out['player'] += _inventory(parse(gzip.decompress(path.read_bytes())), prefixes)
-    out['total'] = sum(out.values())
-    return out
 
 
 # ---------------------------------------------------------------------------------------- what the world holds, by item
@@ -365,14 +374,20 @@ def _owed_items(ledger, prefixes, out):
                         _snbt_items(text, prefixes, out)
 
 
-def items(folder, prefixes):
+def items(folder, prefixes, dims=('overworld',)):
     """What the files of the world hold, item by item (`{id: count}`): item entities, block entities' slots, NTM models
     (a core's rods by kind), the owner's inventory, and what chunk records owe (ledgers). The same world reopened holds
     the same; the vanilla control at the same cut holds the same, or vanilla's loss or copy."""
     prefixes = tuple(prefixes)
     world = Path(folder) / 'saves' / 'CrashTest'
-    dim = world / 'dimensions' / 'minecraft' / 'overworld'
     out = {}
+    for name in dims:
+        _items_dim(world / 'dimensions' / 'minecraft' / name, prefixes, out)
+    _items_players(world, prefixes, out)
+    return out
+
+
+def _items_dim(dim, prefixes, out):
     for path in sorted((dim / 'entities').glob('r.*.mca')):
         for chunk in records(path):
             for e in chunk.get('Entities', []) or []:
@@ -393,6 +408,9 @@ def items(folder, prefixes):
                 for k in set(slots) | set(model):
                     out[k] = out.get(k, 0) + max(slots.get(k, 0), model.get(k, 0))
             _owed_items(_ledger(chunk), prefixes, out)
+
+
+def _items_players(world, prefixes, out):
     level = world / 'level.dat'
     data = parse(gzip.decompress(level.read_bytes())).get('Data', {}) if level.exists() else {}
     players = []
@@ -410,7 +428,6 @@ def items(folder, prefixes):
         for part in ('Inventory', 'EnderItems'):
             for s in pl.get(part, []) or []:
                 _stack_items(s, prefixes, out)
-    return out
 
 
 def kv_items(folder):

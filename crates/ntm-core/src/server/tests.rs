@@ -8,6 +8,9 @@ use std::{cell::RefCell, collections::HashMap, rc::Rc};
 
 const OW: &str = "minecraft:overworld";
 
+/// What a chunk's record owes: removals and batches.
+type Owed = (Vec<crate::persist::Removal>, Vec<CommittedEffects>);
+
 #[derive(Clone)]
 struct World {
     blocks: HashMap<(String, Pos), String>,
@@ -39,6 +42,23 @@ struct World {
     values: BTreeMap<(String, String), i64>,
     /// Particles and sounds shown: (dimension, what).
     shown: Vec<(String, crate::blast::visuals::Show)>,
+    /// The acting player's stacks (`player_slots`), for transfers.
+    hands: Option<PlayerSlots>,
+    /// Machine commits and transfers refused after their checks (nothing may change).
+    refuse_commits: bool,
+    /// Entities spawned by effects (`apply_entities`), and the ledger of the ids applied: a known id adds nothing.
+    entities: Vec<(String, EntitySpawn)>,
+    /// Each chunk's ledger (`crate::ledger::ChunkLedger`): entities owed and ids applied, written with the chunk, as
+    /// the native host's.
+    ledgers: BTreeMap<(String, [i32; 2]), crate::ledger::ChunkLedger>,
+    /// What each chunk's record owes (`store_obligations`): removals and batches.
+    homes: BTreeMap<(String, [i32; 2]), Owed>,
+    /// A host without entities: `apply_entities` refuses.
+    no_entities: bool,
+    /// The whole stacks transfers copied into machines (`SlotCopy`), as the player held them.
+    copied: Vec<String>,
+    /// The storage's writes fail (I/O).
+    kv_fails: bool,
 }
 
 impl World {
@@ -60,6 +80,14 @@ impl World {
             effects: Vec::new(),
             values: BTreeMap::new(),
             shown: Vec::new(),
+            hands: None,
+            refuse_commits: false,
+            entities: Vec::new(),
+            ledgers: BTreeMap::new(),
+            homes: BTreeMap::new(),
+            copied: Vec::new(),
+            no_entities: false,
+            kv_fails: false,
         };
         for x in -32..32 {
             for z in -32..32 {
@@ -102,6 +130,9 @@ impl Kv for SHost {
         self.world.borrow_mut().kv.get(key)
     }
     fn set(&mut self, key: &str, value: &[u8]) -> Result<(), String> {
+        if self.world.borrow().kv_fails {
+            return Err("disk full".into());
+        }
         self.world.borrow_mut().kv.set(key, value)
     }
     fn delete(&mut self, key: &str) {
@@ -121,8 +152,59 @@ impl ServerHost for SHost {
         }
 
     fn commit_machine(&mut self,c:&MachineCommit)->bool{self.commit_machines(std::slice::from_ref(c))}
+    fn player_slots(&mut self,_:&str)->Option<PlayerSlots>{self.world.borrow().hands.clone()}
+    /// Once by id, as the native host's ledger: a known id adds nothing; an unloaded cell waits.
+    /// As the glue (`ledger_add_entities_here`): a kind it cannot summon is refused; an id a loaded record knows adds
+    /// nothing; the destination loaded, the entities come out at once and no id is kept (the batch leaves its home's
+    /// record in the same tick); else they are owed in a loaded owner's record.
+    fn apply_entities(&mut self,id:u64,dim:&str,pos:Pos,entities:&[EntitySpawn],owners:&[(String,Pos)])->bool{
+        let mut w=self.world.borrow_mut();
+        if w.no_entities||entities.iter().any(|e|!matches!(e.kind.as_str(),"minecraft:item"|"minecraft:armor_stand")){return false;}
+        let here=[pos[0]>>4,pos[2]>>4];
+        let mut chunks=vec![here];
+        for (d,p) in owners{let c=[p[0]>>4,p[2]>>4];if d==dim&&!chunks.contains(&c){chunks.push(c);}}
+        let loaded:Vec<[i32;2]>=chunks.into_iter().filter(|c|w.loaded(dim,[c[0]*16,0,c[1]*16])).collect();
+        if loaded.iter().any(|c|w.ledgers.get(&(dim.to_string(),*c)).is_some_and(|l|l.knows(id))){return true;}
+        if loaded.contains(&here){for e in entities{w.entities.push((dim.into(),e.clone()));}return true;}
+        let Some(owner)=loaded.first().copied()else{return false};
+        let owed=entities.iter().map(|e|(crate::ledger::OwedEntity{kind:e.kind.clone(),pos:e.pos},e.nbt.clone())).collect();
+        w.ledgers.entry((dim.into(),owner)).or_default().owe_entities(id,pos,owed);
+        true
+    }
+    fn store_obligations(&mut self,dim:&str,chunk:[i32;2],removals:&[crate::persist::Removal],batches:&[CommittedEffects],_:&BTreeSet<crate::persist::Obligation>)->bool{
+        let mut w=self.world.borrow_mut();
+        if !w.loaded(dim,[chunk[0]*16,0,chunk[1]*16]){return false;}
+        if removals.is_empty()&&batches.is_empty(){w.homes.remove(&(dim.into(),chunk));}else{w.homes.insert((dim.into(),chunk),(removals.to_vec(),batches.to_vec()));}
+        true
+    }
+    fn home_loaded(&mut self,dim:&str,chunk:[i32;2])->bool{self.world.borrow().loaded(dim,[chunk[0]*16,0,chunk[1]*16])}
+    /// Both sides checked before either changes: the player's expected stacks, then the machines' (`commit_machines`
+    /// checks every one before it writes).
+    fn commit_player_transfer(&mut self,t:&PlayerTransfer,cs:&[MachineCommit])->bool{
+        let Some(mut hands)=self.world.borrow().hands.clone() else{return false};
+        if !t.publishable(){return false;}
+        if t.edits.iter().any(|e|hands.get(e.slot).map(|s|s.encoded.clone())!=e.expected){return false;}
+        // A copy names the stack the player held and lands on a slot of the same item, as the glue checks.
+        let copied:Option<Vec<String>>=t.copies.iter().map(|c|{
+            let from=hands.get(c.from)?;
+            let into=cs.iter().find(|m|m.dim==c.dim&&m.pos==c.pos)?.desired.get(c.slot)?.as_ref()?;
+            (into.id==from.stack.id).then(||from.encoded.clone())
+        }).collect();
+        let Some(copied)=copied else{return false};
+        if !self.commit_machines(cs){return false;}
+        for e in &t.edits{
+            let new=e.desired.clone().map(|stack|HeldStack{encoded:format!("{stack:?}"),stack});
+            match e.slot{PlayerSlot::Inventory(i)=>hands.inventory[i]=new,PlayerSlot::Offhand=>hands.offhand=new,PlayerSlot::Carried=>hands.carried=new}
+        }
+        let mut w=self.world.borrow_mut();
+        w.hands=Some(hands);
+        w.copied.extend(copied);
+        for (d,_) in &t.drops{w.dropped.push(format!("player {} {}",d.id,d.count));}
+        true
+    }
     fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
         let mut w=self.world.borrow_mut();
+        if w.refuse_commits{return false;}
         if cs.iter().flat_map(|c|&c.cells).any(|c|!w.loaded(&c.guard.dim,c.guard.pos)||w.get(&c.guard.dim,c.guard.pos)!=c.expected.state){return false;}
         if cs.iter().any(|c|!w.loaded(&c.dim,c.pos)||w.engine.get(&(c.dim.clone(),c.pos)).map(|e|e.0.clone()).unwrap_or_default()!=c.expected){return false;}
         for c in cs {for cell in &c.cells{w.set(&cell.guard.dim,cell.guard.pos,&cell.desired);if blockstate::id_of(&cell.expected.state)!=blockstate::id_of(&cell.desired){w.engine.remove(&cell.guard.key());w.saved.remove(&cell.guard.key());}}}
@@ -210,6 +292,13 @@ impl Game {
         let mut server = Server::native(&mut sh, 0);
         server.set_players(vec![player()]);
         let saved: Vec<((String, Pos), String)> = world.borrow().saved.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
+        // What each loaded chunk's record owes comes with it, before its block entities are adopted.
+        let homes: Vec<_> = world.borrow().homes.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
+        for ((dim, chunk), (removals, batches)) in homes {
+            if world.borrow().loaded(&dim, [chunk[0] * 16, 0, chunk[1] * 16]) {
+                server.native_obligations_loaded(&dim, chunk, removals, batches, BTreeSet::new());
+            }
+        }
         for ((dim, p), json) in saved {
             assert!(server.native_adopt(&dim, p, &json), "{json}");
         }
@@ -234,6 +323,17 @@ impl Game {
         self.tick += 1;
         self.server.native_tick(&mut self.sh, self.tick);
         self.world.borrow_mut().apply_writes();
+        // The owed entities whose cell is loaded come out (the glue's `ledger_tick`).
+        let mut w = self.world.borrow_mut();
+        let keys: Vec<_> = w.ledgers.keys().cloned().collect();
+        for key in keys {
+            let mut l = w.ledgers.remove(&key).unwrap();
+            let due = l.take_owed_entities(|e| w.loaded(&key.0, e.at));
+            for (e, nbt) in due {
+                w.entities.push((key.0.clone(), EntitySpawn { kind: e.kind, pos: e.pos, nbt }));
+            }
+            w.ledgers.insert(key, l);
+        }
     }
     fn run(&mut self, n: usize) {
         for _ in 0..n {
@@ -407,6 +507,7 @@ mod shredder_tests;
 mod blastfurnace_tests;
 mod foundry_tests;
 mod slot_items_tests;
+mod rbmk_tests;
 mod anvil_tests;
 mod press_slots_tests;
 mod purex_tests;

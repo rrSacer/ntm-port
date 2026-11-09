@@ -1169,31 +1169,32 @@ pub const BLOCKS: &[BlockSpec] = &[
         ports: Ports::None,
     },
     // Reactors R2 (2b74fe22): the RBMK's columns, consoles and panels.
-    // Inert until their stage is approved.
+    // Inert until their stage is approved; the eight columns the provisional
+    // step of T01 runs are `Kind::Rbmk` (`crate::rbmk::persist`).
     BlockSpec {
         id: "ntm:rbmk_rod",
-        kind: Kind::Inert,
+        kind: Kind::Rbmk,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:rbmk_rod_mod",
-        kind: Kind::Inert,
+        kind: Kind::Rbmk,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:rbmk_rod_reasim",
-        kind: Kind::Inert,
+        kind: Kind::Rbmk,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:rbmk_rod_reasim_mod",
-        kind: Kind::Inert,
+        kind: Kind::Rbmk,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1235,7 +1236,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:rbmk_blank",
-        kind: Kind::Inert,
+        kind: Kind::Rbmk,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1249,21 +1250,21 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:rbmk_reflector",
-        kind: Kind::Inert,
+        kind: Kind::Rbmk,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:rbmk_absorber",
-        kind: Kind::Inert,
+        kind: Kind::Rbmk,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:rbmk_moderator",
-        kind: Kind::Inert,
+        kind: Kind::Rbmk,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
