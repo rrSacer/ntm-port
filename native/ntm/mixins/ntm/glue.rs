@@ -353,12 +353,17 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
     let Some((server,_))=guard.as_mut() else{return true};
     reconcile(server,&mut host);
     let at=match (n(1),n(2),n(3)){(Some(x),Some(y),Some(z))=>Some([x as i32,y as i32,z as i32]),_=>None};
-    let ok=match (w.first().copied(),at){
-        (Some("eject"),Some(p))=>match (n(4),n(5),n(6)){(Some(x),Some(y),Some(z))=>server.native_test_eject(&dim,p,[x,y,z]),_=>false},
-        (Some("take"),Some(p))=>server.native_test_take(&mut host,&dim,p,&me,w.get(4)==Some(&"cursor")),
-        _=>false,
+    let result:Result<(),&str>=match (w.first().copied(),at){
+        (Some("eject"),Some(p))=>match (n(4),n(5),n(6)){(Some(x),Some(y),Some(z))=>if server.native_test_eject(&dim,p,[x,y,z]){Ok(())}else{Err("no rod to put out")},_=>Err("usage")},
+        // The player's state swapped in, as a player's own action has it (the snapshot of a transfer needs it).
+        (Some("take"),Some(p))=>host.game.native_visit_player(&me,|g|{
+            let mut host=Host{game:g,buttons:Vec::new()};
+            server.native_test_take(&mut host,&dim,p,&me,w.get(4)==Some(&"cursor"))
+        }).unwrap_or(Err("no such player")),
+        _=>Err("usage"),
     };
-    host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok={ok}")));
+    let reply=match result{Ok(())=>"ntmtest ok=true".to_string(),Err(e)=>format!("ntmtest ok=false reason={e}")};
+    host.game.native_feedback(horizon_client::text::Text::literal(reply));
     true
 }
 

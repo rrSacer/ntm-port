@@ -533,11 +533,11 @@ fn the_test_hooks_move_a_rod_once() {
     assert_eq!(g.world.borrow().entities.len(), 1, "once");
     // To the cursor, and as a drop.
     hold(&mut g, "minecraft:stone", 1, false);
-    assert!(g.server.native_test_take(&mut g.sh, OW, [2, Y, 0], "p1", true));
+    assert!(g.server.native_test_take(&mut g.sh, OW, [2, Y, 0], "p1", true).is_ok());
     assert_eq!(g.world.borrow().hands.as_ref().unwrap().carried.as_ref().map(|s| s.stack.id.clone()), Some("ntm:rbmk_fuel_meu".into()));
     assert_eq!(slot(&g, [2, Y, 0]), None);
-    assert!(!g.server.native_test_take(&mut g.sh, OW, [2, Y, 0], "p1", false), "an empty channel gives nothing");
-    assert!(g.server.native_test_take(&mut g.sh, OW, [0, Y, 0], "p1", false));
+    assert_eq!(g.server.native_test_take(&mut g.sh, OW, [2, Y, 0], "p1", false), Err("no rod in the channel"), "an empty channel gives nothing");
+    assert!(g.server.native_test_take(&mut g.sh, OW, [0, Y, 0], "p1", false).is_ok());
     assert_eq!(slot(&g, [0, Y, 0]), None);
     assert!(g.world.borrow().dropped.iter().any(|d| d.starts_with("player ntm:rbmk_fuel_po210be 1")));
     // A cursor already full: nothing moves.
@@ -545,7 +545,7 @@ fn the_test_hooks_move_a_rod_once() {
     g2.run(2);
     hold(&mut g2, "minecraft:stone", 1, false);
     g2.world.borrow_mut().hands.as_mut().unwrap().carried = Some(HeldStack { stack: Stack::new("minecraft:dirt", 1), encoded: "dirt".into() });
-    assert!(!g2.server.native_test_take(&mut g2.sh, OW, [1, Y, 0], "p1", true));
+    assert_eq!(g2.server.native_test_take(&mut g2.sh, OW, [1, Y, 0], "p1", true), Err("the cursor is full"));
     assert!(slot(&g2, [1, Y, 0]).is_some());
 }
 

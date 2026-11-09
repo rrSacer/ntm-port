@@ -373,15 +373,15 @@ impl Server {
 
     /// Test hook (`NTM_TEST_HOOKS=1`): the rod of the fuel channel at `pos` goes to the acting player's cursor (`cursor`,
     /// which must be empty) or out of their hand as a thrown drop, in one transfer with the channel.
-    pub fn native_test_take(&mut self, host: &mut impl ServerHost, dim: &str, pos: Pos, player: &str, cursor: bool) -> bool {
+    pub fn native_test_take(&mut self, host: &mut impl ServerHost, dim: &str, pos: Pos, player: &str, cursor: bool) -> Result<(), &'static str> {
         let key = (dim.to_string(), pos);
-        let Some(m) = self.ready.world.machines.get(&key).cloned() else { return false };
+        let Some(m) = self.ready.world.machines.get(&key).cloned() else { return Err("no machine") };
         if self.ready.broken.contains_key(&key) || !self.model_current(&key, &m) || !matches!(m.data, Data::Rbmk(_)) {
-            return false;
+            return Err("not a current RBMK column");
         }
-        let Some(hand) = host.player_slots(player) else { return false };
-        let Some(expected) = host.machine_slots(dim, pos) else { return false };
-        let Some(Some(rod)) = expected.first().cloned() else { return false };
+        let Some(hand) = host.player_slots(player) else { return Err("no acting player's stacks") };
+        let Some(expected) = host.machine_slots(dim, pos) else { return Err("no slots") };
+        let Some(Some(rod)) = expected.first().cloned() else { return Err("no rod in the channel") };
         let mut machine = m.clone();
         let Data::Rbmk(col) = &mut machine.data else { unreachable!() };
         col.slots = vec![None];
@@ -390,7 +390,7 @@ impl Server {
         let commit = MachineCommit { cells: Vec::new(), guard: CellGuard::machine(&key, &m), expected_saved: self.ready.native_saved.contains_key(&key), dim: dim.into(), pos, expected, desired, data, json };
         let (edits, drops) = if cursor {
             if hand.carried.is_some() {
-                return false;
+                return Err("the cursor is full");
             }
             (vec![SlotEdit { slot: PlayerSlot::Carried, expected: None, desired: Some(rod) }], Vec::new())
         } else {
@@ -398,13 +398,13 @@ impl Server {
         };
         let transfer = PlayerTransfer { player: player.into(), edits, drops, copies: Vec::new() };
         if !host.commit_player_transfer(&transfer, std::slice::from_ref(&commit)) {
-            return false;
+            return Err("the transfer was refused");
         }
         self.ready.world.machines.insert(key.clone(), machine);
         self.ready.bridge.last.insert(key.clone(), commit.desired);
         self.ready.bridge.data.insert(key.clone(), commit.data);
         self.ready.native_saved.insert(key, commit.json);
-        true
+        Ok(())
     }
 
     /// A player's use of an RBMK column (`core` its base): a fuel rod in hand goes into an empty fuel channel, one of
