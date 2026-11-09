@@ -26,6 +26,11 @@ const FURNACE: &str = "ntm:machine_electric_furnace_off";
 
 /// A machine block (any the registry runs): its block entity carries the
 /// machine's state, slots and data, and the server's phases run it.
+/// The brick furnace, lit or not (`machine_furnace_brick_off`, `_on`).
+pub fn is_brick_furnace(block: &str) -> bool {
+    matches!(block, "ntm:machine_furnace_brick_off" | "ntm:machine_furnace_brick_on")
+}
+
 pub fn machine_block(block: &str) -> bool {
     registry::spec(block).is_some_and(|s| s.kind != crate::machine::Kind::Inert)
 }
@@ -51,6 +56,19 @@ pub fn container(block: &str) -> Option<Container> {
             menu: Some("minecraft:furnace"),
         });
     }
+    if is_brick_furnace(block) {
+        // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
+        // above, the fuel from the sides, the output, fuel and ash below;
+        // `canExtractItem` only lets slots 2 and 3 out.
+        use crate::furnace_brick::*;
+        return Some(Container {
+            slots: SLOTS,
+            faces: [vec![OUTPUT, FUEL, ASH], vec![INPUT], vec![FUEL], vec![FUEL], vec![FUEL], vec![FUEL]],
+            inputs: vec![INPUT, FUEL],
+            outputs: vec![OUTPUT, ASH],
+            menu: Some("minecraft:generic_9x3"),
+        });
+    }
     let slots = block_slots(block);
     (machine_block(block) && !slots.is_empty()).then(|| file_container(&slots))
 }
@@ -74,6 +92,15 @@ pub struct SlotFilter {
 /// alike): the furnace takes what it smelts, one creative battery, and
 /// gives its result; the others' are their machine files'.
 pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
+    if is_brick_furnace(block) {
+        // The fuel rule is `slot_allows`' (a list of fuels would be every item id).
+        return vec![
+            SlotFilter::default(),
+            SlotFilter::default(),
+            SlotFilter { output: true, ..Default::default() },
+            SlotFilter { output: true, ..Default::default() },
+        ];
+    }
     if block != FURNACE {
         return if machine_block(block) { block_slots(block) } else { Vec::new() };
     }
@@ -105,6 +132,18 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
             (SlotAction::Insert,SlotOrigin::Automation) => crate::radioisotopes::can_insert(block,slots,slot,item),
             (SlotAction::Extract,SlotOrigin::Manual) => true,
             (SlotAction::Extract,SlotOrigin::Automation) => crate::radioisotopes::can_extract(block,slot),
+        };
+    }
+    if is_brick_furnace(block) {
+        // `isItemValidForSlot`: any input, only a fuel in slot 1, nothing in
+        // the outputs; `canExtractItem`: the automation takes slots 2 and 3.
+        return match action {
+            SlotAction::Insert => match slot {
+                crate::furnace_brick::INPUT => true,
+                crate::furnace_brick::FUEL => crate::fuel::burn_time(&item.id) > 0,
+                _ => false,
+            },
+            SlotAction::Extract => origin == SlotOrigin::Manual || slot >= crate::furnace_brick::OUTPUT,
         };
     }
     block != crate::zirnox::BLOCK || origin == SlotOrigin::Manual

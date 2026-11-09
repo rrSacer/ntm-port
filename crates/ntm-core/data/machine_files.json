@@ -3736,6 +3736,60 @@
 "slots": [],
 "synced": []
 },
+"ntm:machine_furnace_brick_off": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 62,
+"y": 35
+},
+{
+"x": 35,
+"y": 17
+},
+{
+"output": true,
+"x": 116,
+"y": 35
+},
+{
+"output": true,
+"x": 35,
+"y": 53
+}
+],
+"synced": []
+},
+"ntm:machine_furnace_brick_on": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 62,
+"y": 35
+},
+{
+"x": 35,
+"y": 17
+},
+{
+"output": true,
+"x": 116,
+"y": 35
+},
+{
+"output": true,
+"x": 35,
+"y": 53
+}
+],
+"synced": []
+},
 "ntm:machine_gascent": {
 "inventory": [
 8,

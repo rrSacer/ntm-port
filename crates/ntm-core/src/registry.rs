@@ -307,14 +307,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_furnace_brick_off",
-        kind: Kind::Inert,
+        kind: Kind::BrickFurnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_furnace_brick_on",
-        kind: Kind::Inert,
+        kind: Kind::BrickFurnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

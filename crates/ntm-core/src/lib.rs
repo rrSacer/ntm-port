@@ -24,6 +24,8 @@ pub mod explosion;
 pub mod excavator;
 pub mod fluid;
 pub mod fluidbox;
+pub mod fuel;
+pub mod furnace_brick;
 pub mod foundry;
 pub mod fraction;
 pub mod gascent;
