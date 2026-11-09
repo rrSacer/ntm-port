@@ -4,6 +4,7 @@
 
 use crate::{
     fuel::{self, Family, Module},
+    furnace_steel::{self, Steel},
     machine::{Logic, fill_level},
     recipes,
     server::container_bridge::{Slots, Slotted, Stack},
@@ -16,11 +17,13 @@ use serde::{Deserialize, Serialize};
 pub const STACK: u32 = 64;
 
 pub const IRON: &str = "ntm:furnace_iron";
+pub const STEEL: &str = "ntm:furnace_steel";
 
 /// Every block this file runs.
 pub fn of(block: &str) -> Option<Furnace> {
     match block {
         IRON => Some(Furnace::Iron(Iron::default())),
+        STEEL => Some(Furnace::Steel(Steel::default())),
         _ => None,
     }
 }
@@ -33,17 +36,20 @@ pub fn is_furnace(block: &str) -> bool {
 #[serde(tag = "f")]
 pub enum Furnace {
     Iron(Iron),
+    Steel(Steel),
 }
 
 impl Furnace {
     pub fn slotted(&mut self) -> &mut dyn Slotted {
         match self {
             Furnace::Iron(m) => m,
+            Furnace::Steel(m) => m,
         }
     }
     fn logic(&self) -> &dyn Logic {
         match self {
             Furnace::Iron(m) => m,
+            Furnace::Steel(m) => m,
         }
     }
 }
@@ -52,6 +58,7 @@ impl Logic for Furnace {
     fn tick(&mut self) -> bool {
         match self {
             Furnace::Iron(m) => m.step(),
+            Furnace::Steel(m) => m.step(),
         }
     }
     fn level(&self, max: u8) -> u8 {
@@ -62,13 +69,20 @@ impl Logic for Furnace {
     }
 }
 
+pub(crate) fn key(s: &Option<Stack>) -> Option<(String, u32)> {
+    s.as_ref().map(|s| (s.id.clone(), s.damage))
+}
+
 fn same(a: &Stack, id: &str) -> bool {
     a.id == id && a.damage == 0 && a.custom.is_none()
 }
 
 /// The smelting both furnaces share: whether the result of `input` fits in
 /// `output` (`canSmelt`'s last lines).
-fn fits(input: &Option<Stack>, output: &Option<Stack>) -> Option<&'static recipes::Smelt> {
+pub(crate) fn fits(
+    input: &Option<Stack>,
+    output: &Option<Stack>,
+) -> Option<&'static recipes::Smelt> {
     let input = input.as_ref().filter(|s| s.count > 0)?;
     let r = recipes::furnace().smelt(&input.id)?;
     match output {
@@ -283,6 +297,12 @@ pub fn allows(block: &str, slot: usize, item: &str, insert: bool, manual: bool) 
         } else {
             manual || slot == iron::OUTPUT
         }),
+        STEEL => Some(if insert {
+            // `isItemValidForSlot`: the three inputs take what smelts.
+            furnace_steel::INPUTS.contains(&slot) && recipes::furnace().smelt(item).is_some()
+        } else {
+            manual || furnace_steel::OUTPUTS.contains(&slot)
+        }),
         _ => None,
     }
 }
@@ -299,6 +319,16 @@ pub fn container(block: &str) -> Option<crate::native::Container> {
                 faces: std::array::from_fn(|_| all.clone()),
                 inputs: vec![iron::INPUT, 1, 2],
                 outputs: vec![iron::OUTPUT],
+                menu: Some("minecraft:generic_9x3"),
+            })
+        }
+        STEEL => {
+            let all: Vec<usize> = (0..furnace_steel::SLOTS).collect();
+            Some(crate::native::Container {
+                slots: furnace_steel::SLOTS,
+                faces: std::array::from_fn(|_| all.clone()),
+                inputs: vec![0, 1, 2],
+                outputs: vec![3, 4, 5],
                 menu: Some("minecraft:generic_9x3"),
             })
         }
@@ -330,6 +360,27 @@ pub fn filters(block: &str) -> Vec<crate::native::SlotFilter> {
                     max: Some(1),
                     ..Default::default()
                 },
+            ]
+        }
+        STEEL => {
+            let mut smeltable: Vec<String> =
+                recipes::furnace().inputs().map(str::to_string).collect();
+            smeltable.sort();
+            let input = SlotFilter {
+                accept: Some(smeltable),
+                ..Default::default()
+            };
+            let output = SlotFilter {
+                output: true,
+                ..Default::default()
+            };
+            vec![
+                input.clone(),
+                input.clone(),
+                input,
+                output.clone(),
+                output.clone(),
+                output,
             ]
         }
         _ => Vec::new(),

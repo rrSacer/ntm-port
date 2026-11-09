@@ -32,7 +32,7 @@ impl Server {
         }
     }
 
-    /// Boilers, cokers, the heating oven and the electric heater take heat
+    /// Boilers, cokers, the steel furnace, the heating oven and the electric heater take heat
     /// from the source under them (`tryPullHeat`), before they run; from the
     /// bottom up, so a stack of heaters passes it on within the tick.
     pub(super) fn heat_tick(&mut self) {
@@ -45,6 +45,7 @@ impl Server {
                 r.loaded.get(*k) == Some(&true)
                     && match &m.data {
                         Data::Boiler(_) | Data::Coker(_) => true,
+                        Data::Furnace(f) => matches!(**f, crate::furnaces::Furnace::Steel(_)),
                         Data::SolarStirling(s) => matches!(**s, crate::solar_stirling::SolarStirling::Stirling(_)),
                         Data::Firebox(f) => f.oven,
                         Data::Heater(h) => matches!(**h, Heater::Electric(_)),
@@ -61,6 +62,10 @@ impl Server {
                 Some(Data::SolarStirling(s)) => match &mut **s { crate::solar_stirling::SolarStirling::Stirling(s) => s.pull_heat(source), _ => 0 },
                 Some(Data::Boiler(b)) => b.pull_heat(source),
                 Some(Data::Coker(c)) => c.pull_heat(source),
+                Some(Data::Furnace(f)) => match &mut **f {
+                    crate::furnaces::Furnace::Steel(s) => s.pull_heat(source),
+                    _ => 0,
+                },
                 Some(Data::Firebox(f)) => f.pull_heat(source),
                 Some(Data::Heater(h)) => match &mut **h {
                     Heater::Electric(e) => e.pull_heat(source),

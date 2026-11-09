@@ -1532,6 +1532,7 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         ntm_core::radioisotopes::RADGEN => Some(SlotPolicy(radgen_slot_policy)),
         _ if ntm_core::native::is_brick_furnace(block) => Some(SlotPolicy(brick_slot_policy)),
         ntm_core::furnaces::IRON => Some(SlotPolicy(iron_furnace_slot_policy)),
+        ntm_core::furnaces::STEEL => Some(SlotPolicy(steel_furnace_slot_policy)),
         _ => None,
     };
     filters.extend(rules.into_iter().map(|f| ModSlotFilter {
@@ -1551,6 +1552,10 @@ fn rtg_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
 fn radgen_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy(ntm_core::radioisotopes::RADGEN, slots, slot, item, action, origin)
+}
+fn steel_furnace_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::furnaces::STEEL, slots, slot, item, action, origin)
 }
 fn iron_furnace_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
