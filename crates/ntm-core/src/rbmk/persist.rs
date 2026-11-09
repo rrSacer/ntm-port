@@ -265,6 +265,51 @@ impl Default for Layer {
     }
 }
 
+/// The states of components after a merge or a split (D1, D3; docs/horizon-current.md "RBMK T01"): for each part (its
+/// cells), its columns in registration order and its state. A parent's random goes to the part with its first
+/// surviving column (on a merge, the part keeps the random of the parent whose first column was registered first); a
+/// part that inherits none derives a seed from its first parent's state and its own place, drawing nothing from it; a
+/// part with no parent starts fresh. Streams go with their origins, in their origins' registration order (the Java
+/// list's order: update order).
+pub fn settle<'a>(layer: &Layer, parts: impl Iterator<Item = &'a std::collections::BTreeSet<[i32; 2]>>, dim: &str, y: i32) -> (Vec<Vec<[i32; 2]>>, Vec<CompState>) {
+    let seq = |c: &[i32; 2]| layer.members[c].seq;
+    let orders: Vec<Vec<[i32; 2]>> = parts
+        .map(|cells| {
+            let mut o: Vec<[i32; 2]> = cells.iter().copied().collect();
+            o.sort_by_key(seq);
+            o
+        })
+        .collect();
+    let mut heir: std::collections::BTreeMap<[i32; 2], (u64, usize)> = Default::default();
+    for (i, o) in orders.iter().enumerate() {
+        for c in o {
+            let m = &layer.members[c];
+            if layer.comps.contains_key(&m.comp) && heir.get(&m.comp).is_none_or(|h| m.seq < h.0) {
+                heir.insert(m.comp, (m.seq, i));
+            }
+        }
+    }
+    let mut states = Vec::new();
+    for (i, o) in orders.iter().enumerate() {
+        let key = o[0];
+        let mut parents: Vec<[i32; 2]> = o.iter().map(|c| layer.members[c].comp).filter(|p| layer.comps.contains_key(p)).collect();
+        parents.sort_by_key(|p| heir[p].0);
+        parents.dedup();
+        let mut state = match parents.iter().find(|p| heir[*p].1 == i) {
+            Some(p) => layer.comps[p].clone(),
+            None => match parents.first() {
+                Some(p) => CompState::derived(&layer.comps[p], key),
+                None => CompState::fresh(dim, y, key),
+            },
+        };
+        let mut streams: Vec<KeptStream> = parents.iter().flat_map(|p| layer.comps[p].streams.iter().filter(|s| o.contains(&s.origin)).cloned()).collect();
+        streams.sort_by_key(|s| seq(&s.origin));
+        state.streams = streams;
+        states.push(state);
+    }
+    (orders, states)
+}
+
 /// The cells a column of `kind` links to, relative to it: the cells its streams can read (`Reactor::ray_cells`) for
 /// a fuel channel, none for the others. The same at every place: the rays' cells are `floor(0.5 + v·i)` offsets.
 pub fn ray_offsets(kind: Kind, range: i32) -> Vec<[i32; 2]> {
@@ -311,6 +356,48 @@ mod tests {
         assert_ne!(child.seed, parent.seed);
         assert_eq!(child, CompState::derived(parent, [5, 5]), "the same in every world");
         assert_eq!(parent.rng(), rng);
+    }
+
+    /// D1/D3 of a merge with interleaved registrations, and of a split: the random to the earliest parent and to the part
+    /// with its first surviving column; streams with their origins, in registration order.
+    #[test]
+    fn components_settle_on_a_merge_and_a_split() {
+        let member = |seq, comp| Member { seq, block: "ntm:rbmk_rod".into(), comp };
+        let (a, b) = ([0, 0], [9, 0]);
+        let mut l = Layer::new();
+        // A registered 0 and 2, B registered 1: interleaved.
+        l.members.insert(a, member(0, a));
+        l.members.insert(b, member(1, b));
+        l.members.insert([1, 0], member(2, a));
+        let stream = |origin: [i32; 2], n: u64| KeptStream { origin, bits: [n, 0, 0, 0] };
+        let mut sa = CompState::fresh("d", 1, a);
+        sa.streams = vec![stream(a, 1), stream([1, 0], 2)];
+        let mut sb = CompState::fresh("d", 1, b);
+        sb.streams = vec![stream(b, 3)];
+        l.comps.insert(a, sa.clone());
+        l.comps.insert(b, sb);
+        let all: std::collections::BTreeSet<[i32; 2]> = [a, b, [1, 0]].into();
+        let (orders, states) = settle(&l, std::iter::once(&all), "d", 1);
+        assert_eq!(orders, vec![vec![a, b, [1, 0]]]);
+        assert_eq!(states[0].rng(), sa.rng(), "the earliest registered parent's random");
+        let origins: Vec<[i32; 2]> = states[0].streams.iter().map(|s| s.origin).collect();
+        assert_eq!(origins, vec![a, b, [1, 0]], "streams in registration order, not by component");
+        // The merged one splits: A's first column keeps the random, the other part derives its seed.
+        let mut m = l.clone();
+        for v in m.members.values_mut() {
+            v.comp = a;
+        }
+        m.comps = [(a, states[0].clone())].into();
+        let (west, east): (std::collections::BTreeSet<[i32; 2]>, std::collections::BTreeSet<[i32; 2]>) = ([a, [1, 0]].into(), [b].into());
+        let (orders, split) = settle(&m, [&east, &west].into_iter(), "d", 1);
+        assert_eq!(orders, vec![vec![b], vec![a, [1, 0]]]);
+        assert_eq!(split[1].rng(), states[0].rng(), "the part with the first column keeps it");
+        assert_eq!(split[0], CompState { streams: vec![stream(b, 3)], ..CompState::derived(&states[0], b) });
+        // A part with no parent starts fresh.
+        let mut n = Layer::new();
+        n.members.insert([5, 5], member(0, [5, 5]));
+        let lone: std::collections::BTreeSet<[i32; 2]> = [[5, 5]].into();
+        assert_eq!(settle(&n, std::iter::once(&lone), "d", 1).1[0], CompState::fresh("d", 1, [5, 5]));
     }
 
     #[test]

@@ -26,7 +26,7 @@ use crate::{
     machine::Data,
     rbmk::{
         dials::{DialState, Dials},
-        persist::{self, CompState, Layer, Member, RbmkColumn},
+        persist::{self, Layer, Member, RbmkColumn},
         reactor::{Column, Kind as ColumnKind, Reactor},
     },
     server::container_bridge::Stack,
@@ -147,11 +147,9 @@ impl Server {
         matches!(m.data, Data::Rbmk(_)).then(|| (k.0.clone(), k.1[1]))
     }
 
-    /// What a remembered column is, as the world shows it now.
-    fn rbmk_absent(host: &mut impl ServerHost, dim: &str, y: i32, c: Cell, removed: &BTreeSet<Key>) -> Absent {
-        if removed.contains(&(dim.to_string(), [c[0], y, c[1]])) {
-            return Absent::Gone;
-        }
+    /// What a remembered column is, as the world shows it now (a column the step removed has left the layer before:
+    /// `rbmk_tick`).
+    fn rbmk_absent(host: &mut impl ServerHost, dim: &str, y: i32, c: Cell) -> Absent {
         match host.get_block(dim, [c[0], y, c[1]]) {
             None => Absent::Unknown,
             Some(b) if persist::kind_of(blockstate::id_of(&b)).is_some() => Absent::NotAdopted,
@@ -177,8 +175,7 @@ impl Server {
         for ((dim, y), present) in layers {
             let empty = Layer::new();
             let members = self.ready.world.rbmk.get(&(dim.clone(), y)).unwrap_or(&empty);
-            let none = BTreeSet::new();
-            let mut g = Graph { present: &present, members: &members.members, absent: |c, _: &str| Self::rbmk_absent(host, &dim, y, c, &none), seen: BTreeMap::new(), rod: rod.clone(), reasim: reasim.clone() };
+            let mut g = Graph { present: &present, members: &members.members, absent: |c, _: &str| Self::rbmk_absent(host, &dim, y, c), seen: BTreeMap::new(), rod: rod.clone(), reasim: reasim.clone() };
             let mut done = BTreeSet::new();
             for c in present.keys() {
                 if done.contains(c) {
@@ -220,7 +217,7 @@ impl Server {
         }
         let (rod, reasim) = (persist::ray_offsets(ColumnKind::Rod, range), persist::ray_offsets(ColumnKind::RodReaSim, range));
         let (mine, siblings, gone) = {
-            let mut g = Graph { present: &present, members: &layer.members, absent: |c, _: &str| Self::rbmk_absent(host, &dim, y, c, removed), seen: BTreeMap::new(), rod: rod.clone(), reasim: reasim.clone() };
+            let mut g = Graph { present: &present, members: &layer.members, absent: |c, _: &str| Self::rbmk_absent(host, &dim, y, c), seen: BTreeMap::new(), rod: rod.clone(), reasim: reasim.clone() };
             let mut mine: Vec<Component> = Vec::new();
             for c in present.keys() {
                 if !mine.iter().any(|m| m.cells.contains(c)) {
@@ -245,43 +242,7 @@ impl Server {
         for c in gone {
             layer.members.remove(&c);
         }
-        let seq = |c: &Cell| layer.members[c].seq;
-        let orders: Vec<Vec<Cell>> = mine.iter().chain(&siblings).map(|m| {
-            let mut o: Vec<Cell> = m.cells.iter().copied().collect();
-            o.sort_by_key(|c| seq(c));
-            o
-        }).collect();
-        // Each parent's heir: the part with its first surviving column.
-        let mut heir: BTreeMap<Cell, (u64, usize)> = BTreeMap::new();
-        for (i, o) in orders.iter().enumerate() {
-            for c in o {
-                let m = &layer.members[c];
-                if layer.comps.contains_key(&m.comp) && heir.get(&m.comp).is_none_or(|h| m.seq < h.0) {
-                    heir.insert(m.comp, (m.seq, i));
-                }
-            }
-        }
-        let mut states: Vec<CompState> = Vec::new();
-        for (i, o) in orders.iter().enumerate() {
-            let key = o[0];
-            let parents: Vec<Cell> = {
-                let mut p: Vec<Cell> = o.iter().map(|c| layer.members[c].comp).filter(|p| layer.comps.contains_key(p)).collect();
-                p.sort_by_key(|p| heir[p].0);
-                p.dedup();
-                p
-            };
-            let mut state = match parents.iter().find(|p| heir[*p].1 == i) {
-                Some(p) => layer.comps[p].clone(),
-                None => match parents.first() {
-                    Some(p) => CompState::derived(&layer.comps[p], key),
-                    None => CompState::fresh(&dim, y, key),
-                },
-            };
-            let mut streams: Vec<persist::KeptStream> = parents.iter().flat_map(|p| layer.comps[p].streams.iter().filter(|s| o.contains(&s.origin)).cloned()).collect();
-            streams.sort_by_key(|s| seq(&s.origin));
-            state.streams = streams;
-            states.push(state);
-        }
+        let (orders, mut states) = persist::settle(&layer, mine.iter().chain(&siblings).map(|m| &m.cells), &dim, y);
         // Step each reactor of the group.
         let height = dials.column_height + 1;
         for (i, order) in orders.iter().enumerate().take(mine.len()) {

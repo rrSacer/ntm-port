@@ -198,10 +198,14 @@ fn a_column_far_away_is_another_reactor() {
 fn reactors_merge_and_split_deterministically() {
     fn play(reopen_at: Option<usize>) -> (Game, Vec<Layer>) {
         let mut g = reactor();
-        // B: a second source fifteen cells east.
+        // B: a second source fifteen cells east; then A grows by a fuel channel registered after B (their registrations
+        // interleave: a merge must order the streams by registration, not by component).
         g.place([20, Y, 0], &column("rbmk_rod_reasim"));
         g.run(1);
         fuel(&mut g, [20, Y, 0], "ntm:rbmk_fuel_po210be");
+        g.place([0, Y, -1], &column("rbmk_rod"));
+        g.run(1);
+        fuel(&mut g, [0, Y, -1], "ntm:rbmk_fuel_ueu");
         let mut seen = Vec::new();
         // Each stage's ticks, then (when asked) the world opened again from what it holds after them.
         let mut step = |g: &mut Game, i: usize| {
@@ -239,7 +243,20 @@ fn reactors_merge_and_split_deterministically() {
     let merged_order = order(merged);
     let pos: Vec<usize> = merged.comps[&A].streams.iter().map(|s| merged_order.iter().position(|c| *c == s.origin).unwrap()).collect();
     assert!(pos.windows(2).all(|w| w[0] <= w[1]), "{pos:?}");
+    assert!(merged.comps[&A].streams.iter().any(|s| s.origin == [20, 0]) && merged.comps[&A].streams.iter().any(|s| s.origin == [0, -1]));
+    assert!(merged.members[&[0, -1]].seq > merged.members[&[20, 0]].seq, "interleaved registrations");
     let split = &once[3];
+    // The split: the west part keeps the merged random, the east one starts from the seed derived from it; each then
+    // draws once a tick for its ReaSim source over the stage's four ticks (`nextInt(4)`).
+    let parent = &once[2].comps[&A];
+    let drawn = |mut r: crate::rbmk::jrandom::JavaRandom| {
+        for _ in 0..4 {
+            r.next_int(4);
+        }
+        r
+    };
+    assert_eq!(split.comps[&A].rng(), drawn(parent.rng()), "the part with the first column keeps the random");
+    assert_eq!(split.comps[&[20, 0]].rng(), drawn(CompState::derived(parent, [20, 0]).rng()), "the other part's seed derives from it");
     let east = split.members[&[20, 0]].comp;
     assert_ne!(east, A, "split again");
     assert_eq!(east, [20, 0], "the east part under its first registered column (B's source, before the row)");
@@ -528,4 +545,96 @@ fn the_test_hooks_move_a_rod_once() {
     g2.world.borrow_mut().hands.as_mut().unwrap().carried = Some(HeldStack { stack: Stack::new("minecraft:dirt", 1), encoded: "dirt".into() });
     assert!(!g2.server.native_test_take(&mut g2.sh, OW, [1, Y, 0], "p1", true));
     assert!(slot(&g2, [1, Y, 0]).is_some());
+}
+
+/// D4 for a column only heat links (no stream reads its chunk): unknown, it holds its component; never taken as gone.
+#[test]
+fn an_unknown_column_that_only_heat_links_holds_its_component() {
+    let mut g = game();
+    // Two blanks across the border x = 16, linked by heat only (no fuel channel, so no ray reads the chunk 1).
+    g.place([15, Y, 0], &column("rbmk_blank"));
+    g.place([16, Y, 0], &column("rbmk_blank"));
+    g.run(3);
+    assert_eq!(layer(&mut g).members[&[16, 0]].comp, [15, 0]);
+    // The world opened again with the chunk 1 not loaded: the blank there is not adopted, its chunk unknown.
+    let mut world = g.world.borrow().clone();
+    world.saved.remove(&(OW.to_string(), [16, Y, 0]));
+    world.unloaded.insert((OW.into(), 1, 0));
+    let mut reopened = Game::new(Rc::new(RefCell::new(world)));
+    let Data::Rbmk(c) = &mut reopened.ready().world.machines.get_mut(&(OW.to_string(), [15, Y, 0])).unwrap().data else { panic!() };
+    c.heat = 500.0;
+    reopened.run(4);
+    assert!(layer(&mut reopened).members.contains_key(&[16, 0]), "kept: unknown is not gone");
+    assert_eq!(rbmk(&mut reopened, [15, Y, 0]).heat, 500.0, "the component waits for it");
+}
+
+/// The cells a step reads for occlusion are every cell a stream can read: with obstacles anywhere around, a reactor
+/// that knows only those in `Reactor::ray_cells` steps exactly as one that knows them all, bit for bit.
+#[test]
+fn the_rays_cells_are_all_the_cells_a_stream_reads() {
+    use crate::rbmk::{dials::DialState, jrandom::JavaRandom, persist::rod_of, reactor::{Column, Kind as K, Reactor}, rods::RodStack};
+    let mut d = DialState::default();
+    d.create(false);
+    d.refresh();
+    let dials = *d.cached().unwrap();
+    let range = dials.flux_range;
+    let build = |obstacles: &dyn Fn(i32, i32, i32) -> bool, keep: &dyn Fn(i32, i32) -> bool| {
+        let mut r = Reactor::new(dials, JavaRandom::new(7), Y);
+        let cols = [((0, 0), K::RodReaSim, "ntm:rbmk_fuel_po210be"), ((3, 1), K::Rod, "ntm:rbmk_fuel_ueu"), ((-2, 4), K::RodReaSim, "ntm:rbmk_fuel_meu"), ((1, -3), K::Rod, "ntm:rbmk_fuel_ueu")];
+        for ((x, z), k, rod) in cols {
+            let mut c = Column::new(k, x, z);
+            let t = rod_of(rod).unwrap();
+            c.rod_mut().unwrap().fuel = Some((t, RodStack::fresh(t)));
+            r.add(c);
+        }
+        for x in -12..=12 {
+            for z in -12..=12 {
+                for h in 0..dials.column_height + 1 {
+                    if r.at(x, z).is_none() && obstacles(x, z, h) && keep(x, z) {
+                        r.obstacles.insert((x, z, h));
+                    }
+                }
+            }
+        }
+        r
+    };
+    let noise = |x: i32, z: i32, h: i32| crate::ledger::fnv(&[&x.to_le_bytes(), &z.to_le_bytes(), &h.to_le_bytes()]) % 3 == 0;
+    let mut cells = BTreeSet::new();
+    for ((x, z), k) in [((0, 0), K::RodReaSim), ((3, 1), K::Rod), ((-2, 4), K::RodReaSim), ((1, -3), K::Rod)] {
+        cells.extend(Reactor::ray_cells(k, x, z, range));
+    }
+    let mut all = build(&noise, &|_, _| true);
+    let mut rays = build(&noise, &|x, z| cells.contains(&(x, z)));
+    assert!(rays.obstacles.len() < all.obstacles.len(), "the rays leave cells out");
+    for _ in 0..60 {
+        all.step();
+        rays.step();
+        assert_eq!(all.queued(), rays.queued());
+        assert_eq!(all.rad, rays.rad);
+        for i in 0..4 {
+            assert_eq!(all.columns[i].heat.to_bits(), rays.columns[i].heat.to_bits());
+        }
+    }
+}
+
+/// The step reads the occlusion of every cell its streams read: a stone between a source and a fuel channel (at a height
+/// the column partly covers) changes what the channel receives.
+#[test]
+fn a_block_in_a_streams_path_occludes_it() {
+    let play = |stone: bool| {
+        let mut g = game();
+        g.place([0, Y, 0], &column("rbmk_rod_reasim"));
+        g.place([0, Y, 3], &column("rbmk_rod"));
+        g.run(2);
+        fuel(&mut g, [0, Y, 0], "ntm:rbmk_fuel_po210be");
+        fuel(&mut g, [0, Y, 3], "ntm:rbmk_fuel_ueu");
+        if stone {
+            g.world.borrow_mut().set(OW, [0, Y + 1, 2], "minecraft:stone");
+        }
+        g.run(40);
+        (rbmk(&mut g, [0, Y, 3]), slot(&g, [0, Y, 3]))
+    };
+    let (open, occluded) = (play(false), play(true));
+    assert!(open.0.has_rod && crate::rbmk::persist::rod_stack(open.1.as_ref().unwrap().custom.as_deref()).yield_ < crate::rbmk::persist::rod_of("ntm:rbmk_fuel_ueu").map(|r| r.yield_), "the channel burned");
+    assert_ne!(open.1, occluded.1, "the stone took part of the source's streams: the rod burned less");
 }
