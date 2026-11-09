@@ -20,7 +20,7 @@ whose files hash the same reproduces the fixture. The flags `--source/--mc-src/-
 override the variables.
 
 Needs OpenJDK `javac`/`java` (compiled `--release 8`), `git`, the HBM tree at
-pin `4f5924e` (`--source`, default `/mnt/ssd120/sacer/horizon-ntm/ntm-src`) and
+pin `4f5924e` (`--source` or `$ENERGY_NET_HBM_SRC`, required) and
 a decompiled 1.7.10 Minecraft/Forge for `Vec3`, `MathHelper`, `ForgeDirection`. No jar is used.
 
 What is executed:

@@ -839,12 +839,20 @@ fn fixture_exercises_long_overflow_and_the_compensation_cap() {
         if supply > i64::MAX as i128 || demand.iter().any(|&d| d > i64::MAX as i128) {
             overflowing += 1;
         }
-        // 100 compensation draws were needed: more providers than the cap, all tiny
-        let providers = arr(case, "nodes")
-            .iter()
-            .filter(|n| n["provider"] == true)
-            .count();
-        if providers > 150 && i(&case["seed"]) == 9005 {
+        if case["label"] == "compensation_cap_200_providers_of_1_vs_receiver_of_199" {
+            // the shape that forces more than 100 compensation draws: every share
+            // truncates to 0 and 199 HE of "rounding error" are left over
+            let nodes = arr(case, "nodes");
+            let tiny = nodes
+                .iter()
+                .filter(|n| n["provider"] == true && i(&n["power"]) == 1 && i(&n["max"]) == 1)
+                .count();
+            let receivers: Vec<i64> = nodes
+                .iter()
+                .filter(|n| n["receiver"] == true)
+                .map(|n| i(&n["max"]) - i(&n["power"]))
+                .collect();
+            assert_eq!((tiny, receivers), (200, vec![199]));
             capped += 1;
         }
     }
@@ -852,7 +860,7 @@ fn fixture_exercises_long_overflow_and_the_compensation_cap() {
         overflowing >= 4,
         "overflow cases in the fixture: {overflowing}"
     );
-    assert_eq!(capped, 1);
+    assert_eq!(capped, 1, "exactly one labelled cap case");
 }
 
 #[test]

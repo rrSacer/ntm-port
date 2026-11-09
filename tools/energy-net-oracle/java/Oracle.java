@@ -148,7 +148,9 @@ public class Oracle {
 		List<Map<String, Object>> cap = new ArrayList<>();
 		for (int i = 0; i < 200; i++) cap.add(plain(i, 1, 1, -1, -1, 2, true, false));
 		cap.add(plain(200, 0, 199, -1, -1, 2, false, true));
-		cs.add(netCase(9005, 1, cap));
+		Map<String, Object> capCase = netCase(9005, 1, cap);
+		capCase.put("label", "compensation_cap_200_providers_of_1_vs_receiver_of_199");
+		cs.add(capCase);
 		// REDD in a net (its transferPower never clamps; its getPower caps at max/2)
 		cs.add(netCase(14, 3, l(o("kind", "redd", "id", 0, "power", "123456789012345678901234567890", "provider", true, "receiver", false, "loaded", true), plain(1, 0, 1000000, -1, -1, 2, false, true), plain(2, 0, big, -1, -1, 3, false, true))));
 		cs.add(netCase(15, 3, l(o("kind", "redd", "id", 0, "power", "50", "provider", true, "receiver", true, "loaded", true), plain(1, 100, 1000, -1, -1, 2, true, false))));
