@@ -34,7 +34,7 @@ closed until the fixture is regenerated.
   `content/machine-recipes/flare.json`, not from re-evaluating `Fluids.java`.
 - Doubles are written as raw IEEE bits. The Rust test compares bit for bit, except the PWR
   `progress` accumulator, which carries `log10`/`pow` results (Java intrinsics and libm round
-  differently by up to 1 ulp) and is compared at 1e-12 relative.
+  differently by a few ulp) and is compared within 4 ulp.
 
 Scenarios (inputs are in the fixture, so the Rust test mirrors nothing by hand): 12 pellet types,
 stacked columns, mud overflow, pump/power gating (19 Watz runs); the Watz core structure at each
