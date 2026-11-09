@@ -80,7 +80,9 @@ def dial(g, value):
 def place(g, p, item, side=(0, 3)):
     """`item` placed by the player at `p` (on the stone under it), standing `side` away from it (south by default):
     the side the player stands on gives the facing."""
-    g.command(f'tp @s {p[0] + side[0] + .5} {p[1]} {p[2] + side[1] + .5}')
+    # Looking at the cell: from the south north (yaw 180), from the west east (-90), and so on.
+    yaw = {(0, 1): 180, (-1, 0): -90, (0, -1): 0, (1, 0): 90}[(max(-1, min(1, side[0])), max(-1, min(1, side[1])))]
+    g.command(f'tp @s {p[0] + side[0] + .5} {p[1]} {p[2] + side[1] + .5} {yaw} 45')
     time.sleep(.3)
     r = g.ctl(f'place {p[0]} {p[1]} {p[2]} --item {item}')
     time.sleep(.5)
@@ -146,17 +148,17 @@ def play(g):
     # Facings: four placements looking each way give the same column.
     facings = {}
     for i, side in enumerate(((0, 3), (-3, 0), (0, -3), (3, 0))):
-        p = (42 + 2 * i, Y, 10)
+        p = (42 + 4 * i, Y, 10)
         g.command('give @s ntm:rbmk_rod 1')
         place(g, p, 'ntm:rbmk_rod', side)
         ok, got = stands(g, p, 'rbmk_rod', 4)
-        facings[str(side)] = block(g, p)
+        facings[str(side)] = g.ctl(f'block {p[0]} {p[1]} {p[2]}').get('state')
         g.check(f'facing_{side[0]}_{side[1]}_same_column', ok, got)
     g.evidence['facings'] = facings
     g.check('four_facings', len(set(facings.values())) == 4, facings)
     # Broken from its base, a middle cell, its top: the whole column goes and one item comes back.
     g.command('give @s minecraft:iron_pickaxe 1')
-    for p, dy in [((42, Y, 10), 0), ((44, Y, 10), 2), ((46, Y, 10), 3)]:
+    for p, dy in [((42, Y, 10), 0), ((46, Y, 10), 2), ((50, Y, 10), 3)]:
         before = inv(g, ('ntm:rbmk_rod',)) + entities(g, ('ntm:rbmk_rod',), 20)
         g.command(f'tp @s {p[0] + .5} {Y} {p[2] + 2.5}')
         g.ctl('select minecraft:iron_pickaxe')
