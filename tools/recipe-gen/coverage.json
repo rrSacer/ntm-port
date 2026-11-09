@@ -1,9 +1,9 @@
 {
   "catalog_items": 3333,
-  "vanilla_recipe_count": 245,
-  "temporary_count": 10,
+  "vanilla_recipe_count": 243,
+  "temporary_count": 4,
   "press_count": 47,
-  "furnace_count": 255,
+  "furnace_count": 254,
   "recipes": [
     {
       "id": "ntm:block_aluminium_from_ingot_aluminium",
@@ -1181,53 +1181,43 @@
       "temporary": false
     },
     {
-      "id": "ntm:m1_temp__machine_wood_burner",
-      "source": "main/CraftingManager.java:251; M1 substitutes steel plate and copper coil",
-      "temporary": true
+      "id": "ntm:machine_wood_burner",
+      "source": "main/CraftingManager.java:251",
+      "temporary": false
     },
     {
-      "id": "ntm:m1_temp__red_cable",
-      "source": "main/CraftingManager.java:239; leather replaces polymer plate",
-      "temporary": true
+      "id": "ntm:red_cable",
+      "source": "main/CraftingManager.java:239",
+      "temporary": false
     },
     {
-      "id": "ntm:m1_temp__machine_electric_furnace",
-      "source": "main/CraftingManager.java:230; aluminium plate replaces copper cast plate, tungsten wire replaces coil",
-      "temporary": true
+      "id": "ntm:machine_electric_furnace",
+      "source": "main/CraftingManager.java:230",
+      "temporary": false
+    },
+    {
+      "id": "ntm:wiring_red_copper",
+      "source": "main/CraftingManager.java:539",
+      "temporary": false
     },
     {
       "id": "ntm:m1_temp__machine_epress",
-      "source": "inventory/recipes/AssemblyMachineRecipes.java:354-356; temporary crafting bridge",
+      "source": "inventory/recipes/AssemblyMachineRecipes.java:354-356 (assembly machine, not ported; its part_generic/item_expensive inputs have no catalog IDs); temporary crafting bridge",
       "temporary": true
     },
     {
       "id": "ntm:m1_temp__machine_battery",
-      "source": "M1 design: no source vanilla recipe for machine_battery",
-      "temporary": true
-    },
-    {
-      "id": "ntm:m1_temp__wiring_red_copper",
-      "source": "main/CraftingManager.java:539; substitutes steel",
+      "source": "no Java 1.7.10 recipe: MachineBattery is registered in ModBlocks without any addRecipe; M1 design bridge",
       "temporary": true
     },
     {
       "id": "ntm:m1_temp__stamp_iron_plate",
-      "source": "inventory/recipes/anvil/AnvilRecipes.java:588-589; custom anvil shaping replaced by craft",
+      "source": "inventory/recipes/anvil/AnvilRecipes.java:588-589 (anvil construction, anvil not ported); temporary crafting bridge",
       "temporary": true
     },
     {
       "id": "ntm:m1_temp__stamp_iron_wire",
-      "source": "inventory/recipes/anvil/AnvilRecipes.java:588-589; custom anvil shaping replaced by craft",
-      "temporary": true
-    },
-    {
-      "id": "ntm:m1_temp__aluminium_from_ore",
-      "source": "crafting/SmeltingRecipes.java:40; cryolite chain deferred",
-      "temporary": true
-    },
-    {
-      "id": "ntm:m1_temp__red_copper_alloy",
-      "source": "inventory/recipes/BlastFurnaceRecipes.java; M1 replaces alloy furnace",
+      "source": "inventory/recipes/anvil/AnvilRecipes.java:588-589 (anvil construction, anvil not ported); temporary crafting bridge",
       "temporary": true
     }
   ],
