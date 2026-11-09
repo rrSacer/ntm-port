@@ -1622,6 +1622,42 @@
       }
     },
     {
+      "id": "ntm:bulk__e37077692f22eacda9",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:445",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:barbed_wire",
+        "count": 16
+      }
+    },
+    {
+      "id": "ntm:bulk__4762a11c7f1e43166c",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:446",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:barbed_wire_fire",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__57613dcf241605bf93",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:447",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:barbed_wire_poison",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__910648b6b65b3be4a6",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:450",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:barbed_wire_ultradeath",
+        "count": 4
+      }
+    },
+    {
       "id": "ntm:bulk__775506d104d10211e6",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:458",
       "type": "minecraft:crafting_shaped",
@@ -1835,6 +1871,15 @@
       "result": {
         "id": "ntm:crystal_horn",
         "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8574e743b4c58e8671",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:568",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:fluid_duct_neo",
+        "count": 8
       }
     },
     {
@@ -2501,6 +2546,294 @@
       "result": {
         "id": "ntm:rbmk_blank",
         "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4188138020a5600259",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:793",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ladder_sturdy",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__5522cf8180fd7ce906",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:794",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ladder_gold",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__46d510e55333197655",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:795",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ladder_copper",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__18e2e45b017b31ebd1",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:796",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ladder_titanium",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__d874fdc09ed68f909a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:797",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ladder_steel",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__866ba81095706b1053",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:804",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:deco_pipe",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__97c85b8e1dc52ab228",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:805",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:deco_pipe",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__9cd747400889295c99",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:806",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:deco_pipe",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3b847dd9c4afcd0784",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:808",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__309fde6856aca18893",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:809",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__2306860b65586edd5f",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:810",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__3d775eeddae44c4fa0",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:811",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__c1808664b6dee558ed",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:813",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__76b066b57f10c3db75",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:814",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__b262084d152314e69d",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:815",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__2d93e517fb77ce7eae",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:816",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__81ba673c46a155d165",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:817",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_green",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__2fe0e54cf51617441a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:818",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim_green",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__0a4a5c65966f36473b",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:819",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad_green",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__801a26f3b61fc53b8a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:820",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed_green",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__440048f8e138cc3124",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:821",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_green_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__8f32276c47202c0978",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:822",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim_green_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__8f833c26c333fd587b",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:823",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad_green_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__3053020d71ac3a695c",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:824",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed_green_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__44539e5971df76d8f5",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:825",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_red",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__ecd85e94fb695412f7",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:826",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim_red",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__5939b080445c0eb964",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:827",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad_red",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__66f8838a68042860ca",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:828",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed_red",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__62c8daaa2632a2f90e",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:829",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_marked",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__c77d62c245ef54e115",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:830",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim_marked",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__36dbf85783316c1e81",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:831",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad_marked",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__23b282c955f0d64d5a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:832",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed_marked",
+        "count": 8
       }
     },
     {
@@ -3536,6 +3869,15 @@
       "result": {
         "id": "ntm:block_aluminium",
         "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8cdac36afe5d0780cb",
+      "source": "src/main/java/com/hbm/crafting/MineralRecipes.java:39",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:ingot_aluminium",
+        "count": 9
       }
     },
     {
@@ -7490,6 +7832,204 @@
       }
     },
     {
+      "id": "ntm:bulk__c1f1fab264f6c8ee61",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:28",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:glyphid_meat_grilled",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__808b600a5761c15eef",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:28; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:glyphid_meat_grilled",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5f41d5710ddfb0855b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:30",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_th232",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__db4415ed3a0e969f3e",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:30; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_th232",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3191e393fb4e0f76f0",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:31",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0298128d91a8be7a20",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:31; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c6a053c68b976da6eb",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:32",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8e5ad60a00a88cec55",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:32; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4839a5f2dbdf9f31f8",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:33",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__39d3f133c2e0ef99a5",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:33; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__00e15957418f333a12",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:34",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c65d61eafe68cf6bf5",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:34; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__fc19928a5d80802e28",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:35",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_plutonium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__732635f2755ee3bbc2",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:35; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_plutonium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d012d6f842d98833ca",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:36",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_titanium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4349cd945672571772",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:36; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_titanium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4e985ee238a9885bed",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:37",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_copper",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__44342076c2b18a5189",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:37; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_copper",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5899568c7b6c2531b9",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:38",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_tungsten",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5ae522e5df9e695ac6",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:38; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_tungsten",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f7698ba4ceb6061e45",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:39",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_tungsten",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7cc42c3471852c61cd",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:39; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_tungsten",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__6def5b8b4c15ff0227",
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:40",
       "type": "minecraft:smelting",
@@ -7504,6 +8044,114 @@
       "type": "minecraft:blasting",
       "result": {
         "id": "ntm:chunk_ore__cryolite",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__e2d82ecd3787e4c8b6",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:41",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_lead",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a841ded5658eb33cbe",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:41; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_lead",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__62e15912bae3fcfeb7",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:42",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_beryllium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__82cf4819294eeb8933",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:42; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_beryllium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7b96becf5c35ba89e2",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:43",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_schrabidium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5dcbb88684930d7409",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:43; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_schrabidium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8a5e339a34ab254cc9",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:44",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_schrabidium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__049b6f826aa4bd6528",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:44; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_schrabidium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__80053f76f716806844",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:45",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_cobalt",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__9980aa15a0b599bd47",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:45; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_cobalt",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2b354396e817ac2e0a",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:46",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_cobalt",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7aada547c5f6a1a7d6",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:46; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_cobalt",
         "count": 1
       }
     },
@@ -7634,6 +8282,132 @@
       }
     },
     {
+      "id": "ntm:bulk__8ef9b3cecd0800cfc8",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:56",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c7427a13f1e6415249",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:56; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2dec6bf62ba6d297f1",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:57",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1fd2ffb7b42e38f7d3",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:57; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__951ac39ca8bdd71456",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:58",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_copper",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0e1df67b75d91697c3",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:58; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_copper",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__51072043fe1624d64d",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:59",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:lithium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__428441b92465d50e81",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:59; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:lithium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__19cd7b5c5fe03027cf",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:60",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_schrabidium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__81989d3b706fb2a038",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:60; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_schrabidium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__483bc680e560dc5a29",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:62",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:nugget_australium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4cdfab56fccbbfcae9",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:62; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:nugget_australium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__9c82e3759d7afab12d",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:63",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_australium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d2b0a76bec869fccbc",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:63; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_australium",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__017a07db38773201c9",
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:65",
       "type": "minecraft:smelting",
@@ -7688,6 +8462,168 @@
       }
     },
     {
+      "id": "ntm:bulk__38dc3941012acbfd06",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:69",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_lead",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5613f107672fe69f67",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:69; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_lead",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4d07f2b448d60b33ea",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:70",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_neptunium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4bd10e5fa850440d17",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:70; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_neptunium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3fddaa5224e0d1cd90",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:71",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_polonium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__cb47e72867dee101ef",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:71; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_polonium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1222ae8a88532d2db6",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:72",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_schrabidium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__83e0aecac30f0b4875",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:72; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_schrabidium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__72935a282bab2a1276",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:73",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_schrabidate",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f9cca3a3bd1aa97a3a",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:73; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_schrabidate",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7abde21b8f40b8a98f",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:74",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_euphemium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__6c4812828929bfeab3",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:74; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_euphemium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8cede3dd085fcc3a1a",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:75",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_aluminium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4532fba7a695e8377d",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:75; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_aluminium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__077f5bb27b2a0fe5da",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:76",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_beryllium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ed5433d11d7c01ae74",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:76; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_beryllium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__826e201576354544dd",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:77",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_copper",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__59441a3320dd462cb6",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:77; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_copper",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__53761e877ea73975cf",
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:78",
       "type": "minecraft:smelting",
@@ -7720,6 +8656,564 @@
       "type": "minecraft:blasting",
       "result": {
         "id": "minecraft:iron_ingot",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1f81f9db85afc55691",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:80",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_titanium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__60a4f8cfb630aa175e",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:80; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_titanium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a62be529c53e7eb384",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:81",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_cobalt",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__144d34c8a03cfa86e1",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:81; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_cobalt",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__73c49c68ee6629783b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:82",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_tungsten",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2534e46bc10373cc66",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:82; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_tungsten",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__9848fdef5e23d710b8",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:83",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__fb0a312c5160476d50",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:83; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__924c10b16d5d4f4f67",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:84",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_th232",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__e4894a5cdaab623a68",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:84; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_th232",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1065cfda2fc6b1f72c",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:85",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_plutonium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__6a2d9145ffc41e2857",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:85; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_plutonium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c564d4dda9279e3195",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:86",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_combine_steel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ce420accf3901aa232",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:86; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_combine_steel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d9f9a1c36e886d2bfe",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:87",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_magnetized_tungsten",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__aa49112309207db613",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:87; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_magnetized_tungsten",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__36d26555dcf515caac",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:88",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_red_copper",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__e54632259da5a280a5",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:88; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_red_copper",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4c58433ce2cc226ed5",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:89",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_steel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3abcadc456a98dc424",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:89; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_steel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c383388ad492221ce7",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:90",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:lithium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__fb8efe862e187fffe4",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:90; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:lithium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__51dd099c532ecabf8d",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:91",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_dura_steel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2bd23add875205ad10",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:91; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_dura_steel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8791766f73f5e8788c",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:92",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_polymer",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__aba5062e40c4adca8f",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:92; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_polymer",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__c91e108417d2d4861f",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:93",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_bakelite",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__fed64adbe0ffbf21ee",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:93; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_bakelite",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__77ec532e1db5c3c9d4",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:94",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_lanthanium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__f81565d38566b3a840",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:94; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_lanthanium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__dac4841f33d7181a9e",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:95",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_actinium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__98395ea23fc07a2fe3",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:95; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_actinium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__312fd7a1005e4a91f2",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:96",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_boron",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__6f6c2b0a95bb3004fd",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:96; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_boron",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__71ffc7b6f3bca959c7",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:97",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_desh",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0bd049afb8682229d3",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:97; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_desh",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a420888d09f9618406",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:98",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_dineutronium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7a770c585b93d9c15e",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:98; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_dineutronium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ddf5f3d4de63899a2d",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:99",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_asbestos",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__07ee7f189f5e5d92b2",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:99; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_asbestos",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__fe55c93137c91ab7e6",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:100",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_zirconium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__81e4f9c0b4178cc540",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:100; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_zirconium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1cc541f002b5d27f9c",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:101",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_tcalloy",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1e952043734659b4ce",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:101; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_tcalloy",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8098f971bcca973b28",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:102",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_au198",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7ee3965425e8944840",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:102; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_au198",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8d6eb142fb2aa9547b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:103",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_sr90",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__6047e6e98b87b7c78d",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:103; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_sr90",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0387b3f90f7716a92f",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:104",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_ra226",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__26eac72f8bdacbecd0",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:104; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_ra226",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8243ca66be19464257",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:105",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_tantalium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__7908c9ca19370a2f64",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:105; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_tantalium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__aa3c5087a36bcd99e4",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:106",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_niobium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__e0c36946d1226291d6",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:106; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_niobium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__362c6a8b0deee7587c",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:107",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_bismuth",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__e72dc52265f74f2fac",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:107; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_bismuth",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5a5971214296bd447b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:108",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_calcium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__fb9daf7a53669b6d22",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:108; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_calcium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__12e940616e10201d53",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:109",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_cadmium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__dff0014cebddae5c8b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:109; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_cadmium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3e1c7e0a65b2dcc02c",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:110",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_biorubber",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__86d94d91b4d73fb8d3",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:110; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_biorubber",
         "count": 1
       }
     },
@@ -7796,6 +9290,60 @@
       }
     },
     {
+      "id": "ntm:bulk__9dfbfd550c03769ca5",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:117",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_combine_steel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__82662d58d8c0f27bf1",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:117; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_combine_steel",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__042781c6eb05507c06",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:118",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:rag",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2036dc6fae632aa6ae",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:118; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:rag",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__55465a7024c71d2b0b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:119",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:rag",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5ff701898995f7f95b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:119; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:rag",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__ba0f0afce76b6936b0",
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:120",
       "type": "minecraft:smelting",
@@ -7810,6 +9358,24 @@
       "type": "minecraft:blasting",
       "result": {
         "id": "ntm:plant_item__tobacco",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1df042dbd17e17b596",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:121",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_firebrick",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__981df29d1afd339c0b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:121; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_firebrick",
         "count": 1
       }
     },
@@ -7940,6 +9506,24 @@
       }
     },
     {
+      "id": "ntm:bulk__90e99428709a642dab",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:137",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:nugget_schrabidium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__30bbeae4509404eb74",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:137; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:nugget_schrabidium",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__81189d2dcef871bd41",
       "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:140",
       "type": "minecraft:smelting",
@@ -8009,6 +9593,402 @@
       "result": {
         "id": "minecraft:diamond",
         "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__7b73728a478a548988",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:144",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__1c619f2d740497414c",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:144; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_uranium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__7474fd8fb0ce6255c9",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:145",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_th232",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__b5d922c22a7c2f5dbe",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:145; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_th232",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__f4430fc8eb028a670d",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:146",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_plutonium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__86fbc8567718240952",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:146; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_plutonium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__61adcc31176fe2a3c2",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:147",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_titanium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__54c351a4a84a6e2644",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:147; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_titanium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__2163d7f4ac47315c8a",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:148",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:sulfur",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__e0ad59a6e5ca07be0d",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:148; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:sulfur",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__9424ac0a8485b2643a",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:149",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:niter",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__7fc4f3f91d495849d5",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:149; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:niter",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__9070a33ab713054074",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:150",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_copper",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__e36047b43388cfad2f",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:150; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_copper",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__ec1031c7272955535e",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:151",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_tungsten",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__461d0f5377fe942beb",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:151; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_tungsten",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__a088350e25e3f08409",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:152",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_aluminium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__f3dc98a15e815491a5",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:152; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_aluminium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__db50b03b9b0710ff3b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:153",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:fluorite",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__25a0ab83cb350e0701",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:153; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:fluorite",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__9f1d89af6803afcc40",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:154",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_beryllium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__e46966518f1c2fd6bd",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:154; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_beryllium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__b0a17c8d68615cac80",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:155",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_lead",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__edb75730d56cdf3767",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:155; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_lead",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__fd2bf65254beb9e7f6",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:156",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:nugget_schrabidium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__45ffd7012f5889207d",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:156; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:nugget_schrabidium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__13b01887ab1ae20e2b",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:157",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_schrabidium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__6cd76ce1eedfbd4aca",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:157; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_schrabidium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__a24520ff8dadbbf2ad",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:158",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:powder_desh_mix",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1b073deeafb058a4ed",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:158; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:powder_desh_mix",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__163894c65d86c11c47",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:159",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:powder_fire",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__b597c0b9df6c973909",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:159; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:powder_fire",
+        "count": 6
+      }
+    },
+    {
+      "id": "ntm:bulk__bc17e74c89540ff5fb",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:160",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:lithium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__0a55637c5caac3ffcd",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:160; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:lithium",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__ff412fbc73875de019",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:161",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_cobalt",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__28dc1b5e52ba83b2ca",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:161; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_cobalt",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__741b07ffc92cf98ca5",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:162",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_starmetal",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__30b37b47aa4cfb7919",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:162; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_starmetal",
+        "count": 2
+      }
+    },
+    {
+      "id": "ntm:bulk__4c337a772b566e8912",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:163",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_plutonium",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__8fdca232d2e2c6a196",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:163; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_plutonium",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__7df597128259793110",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:164",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:cinnebar",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__2869c1a3d3612d9dc6",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:164; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:cinnebar",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__1965500a1b6fa5aca6",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:165",
+      "type": "minecraft:smelting",
+      "result": {
+        "id": "ntm:ingot_osmiridium",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2aeebc1e0d7a4353ed",
+      "source": "src/main/java/com/hbm/crafting/SmeltingRecipes.java:165; blasting extension",
+      "type": "minecraft:blasting",
+      "result": {
+        "id": "ntm:ingot_osmiridium",
+        "count": 1
       }
     },
     {
@@ -8381,7 +10361,7 @@
       }
     }
   ],
-  "generated_count": 931,
+  "generated_count": 1151,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -9080,40 +11060,16 @@
       "expression": "new ItemStack(ModBlocks.floodlight, 2), new Object[] { \"CSC\", \"TST\", \"G G\", 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.CAPACITOR), 'S', STEEL.plate(), 'T', ModItems.coil_tungsten, 'G', KEY_ANYPANE }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:445",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire",
-      "expression": "new ItemStack(ModBlocks.barbed_wire, 16), new Object[] { \"AIA\", \"I I\", \"AIA\", 'A', STEEL.wireFine(), 'I', IRON.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:446",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire_fire",
-      "expression": "new ItemStack(ModBlocks.barbed_wire_fire, 8), new Object[] { \"BBB\", \"BIB\", \"BBB\", 'B', ModBlocks.barbed_wire, 'I', P_RED.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:447",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire_poison",
-      "expression": "new ItemStack(ModBlocks.barbed_wire_poison, 8), new Object[] { \"BBB\", \"BIB\", \"BBB\", 'B', ModBlocks.barbed_wire, 'I', ModItems.powder_poison }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:448",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire_acid",
+      "reason": "dynamic/unsupported metadata Fluids.PEROXIDE.getID()",
       "expression": "new ItemStack(ModBlocks.barbed_wire_acid, 8), new Object[] { \"BBB\", \"BIB\", \"BBB\", 'B', ModBlocks.barbed_wire, 'I', new ItemStack(ModItems.fluid_tank_full, 1, Fluids.PEROXIDE.getID()) }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:449",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire_wither",
+      "reason": "unsupported vanilla metadata Items.skull:1",
       "expression": "new ItemStack(ModBlocks.barbed_wire_wither, 8), new Object[] { \"BBB\", \"BIB\", \"BBB\", 'B', ModBlocks.barbed_wire, 'I', new ItemStack(Items.skull, 1, 1) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:450",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire_ultradeath",
-      "expression": "new ItemStack(ModBlocks.barbed_wire_ultradeath, 4), new Object[] { \"BCB\", \"CIC\", \"BCB\", 'B', ModBlocks.barbed_wire, 'C', ModItems.powder_yellowcake, 'I', ModItems.nuclear_waste }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:452",
@@ -9450,12 +11406,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item crystal_pulsar",
       "expression": "new ItemStack(ModBlocks.crystal_pulsar, 32), new Object[] { \"STS\", \"THT\", \"STS\", 'S', ModItems.cell_uf6, 'T', AL.dust(), 'H', ModItems.crystal_charred }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:568",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype fluid_duct_neo:0",
-      "expression": "new ItemStack(ModBlocks.fluid_duct_neo, 8, 0), new Object[] { \"SAS\", \"   \", \"SAS\", 'S', STEEL.plate(), 'A', AL.plate() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:569",
@@ -10064,36 +12014,6 @@
       "expression": "new ItemStack(ModItems.rtty_designator, 1), new Object[] {\"R\", \"C\", \"T\", 'R', ModBlocks.radio_torch_reader, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ANALOG), 'T', ModItems.rangefinder}"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:793",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ladder_sturdy",
-      "expression": "new ItemStack(ModBlocks.ladder_sturdy, 8), new Object[] { \"LLL\", \"L#L\", \"LLL\", 'L', Blocks.ladder, '#', KEY_PLANKS }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:794",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ladder_gold",
-      "expression": "new ItemStack(ModBlocks.ladder_gold, 8), new Object[] { \"LLL\", \"L#L\", \"LLL\", 'L', Blocks.ladder, '#', GOLD.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:795",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ladder_copper",
-      "expression": "new ItemStack(ModBlocks.ladder_copper, 8), new Object[] { \"LLL\", \"L#L\", \"LLL\", 'L', Blocks.ladder, '#', CU.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:796",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ladder_titanium",
-      "expression": "new ItemStack(ModBlocks.ladder_titanium, 8), new Object[] { \"LLL\", \"L#L\", \"LLL\", 'L', Blocks.ladder, '#', TI.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:797",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ladder_steel",
-      "expression": "new ItemStack(ModBlocks.ladder_steel, 8), new Object[] { \"LLL\", \"L#L\", \"LLL\", 'L', Blocks.ladder, '#', STEEL.ingot() }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:799",
       "callee": "addShapelessAuto",
       "reason": "missing vanilla 26.3 item trapdoor",
@@ -10108,170 +12028,8 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:803",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe",
+      "reason": "unresolved ore dictionary STEEL.pipe()",
       "expression": "new ItemStack(ModBlocks.deco_pipe, 6), new Object[] { \"PP\", 'P', STEEL.pipe() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:804",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe",
-      "expression": "new ItemStack(ModBlocks.deco_pipe, 1), new Object[] { ModBlocks.deco_pipe_rim }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:805",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe",
-      "expression": "new ItemStack(ModBlocks.deco_pipe, 1), new Object[] { ModBlocks.deco_pipe_framed }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:806",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe",
-      "expression": "new ItemStack(ModBlocks.deco_pipe, 1), new Object[] { ModBlocks.deco_pipe_quad }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:808",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe, 'C', STEEL.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:809",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad, 4), new Object[] { \"PP\", \"PP\", 'P', ModBlocks.deco_pipe }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:810",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe, 'C', Blocks.iron_bars }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:811",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim, 'C', Blocks.iron_bars }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:813",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:814",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:815",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_quad, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:816",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:817",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_green",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_green, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:818",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim_green",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim_green, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:819",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad_green",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad_green, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_quad, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:820",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed_green",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed_green, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:821",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_green_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_green_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_green, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:822",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim_green_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim_green_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim_green, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:823",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad_green_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad_green_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_quad_green, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:824",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed_green_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed_green_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed_green, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:825",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_red",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_red, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe, 'C', KEY_RED }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:826",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim_red",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim_red, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim, 'C', KEY_RED }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:827",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad_red",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad_red, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_quad, 'C', KEY_RED }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:828",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed_red",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed_red, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed, 'C', KEY_RED }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:829",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_marked",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_marked, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_green, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:830",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim_marked",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim_marked, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim_green, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:831",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad_marked",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad_marked, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_quad_green, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:832",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed_marked",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed_marked, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed_green, 'C', KEY_GREEN }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:837",
@@ -10858,13 +12616,13 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:1067",
       "callee": "addRecipeAuto",
-      "reason": "missing subtype cm_flux:0",
+      "reason": "unsupported recipe ingredient array",
       "expression": "new ItemStack(ModBlocks.cm_flux, 1, 0), \"NNN\", \"ZCZ\", \"NNN\", 'Z', ZR.plateCast(), 'N', ModItems.neutron_reflector, 'C', ModItems.reactor_core"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:1068",
       "callee": "addRecipeAuto",
-      "reason": "missing subtype cm_heat:0",
+      "reason": "unsupported recipe ingredient array",
       "expression": "new ItemStack(ModBlocks.cm_heat, 1, 0), \"PCP\", \"PCP\", \"PCP\", 'P', ModItems.plate_polymer, 'C', CU.ingot()"
     },
     {
