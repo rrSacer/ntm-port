@@ -342,7 +342,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_electric_furnace_on",
-        kind: Kind::Inert,
+        kind: Kind::ElectricFurnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

@@ -98556,7 +98556,8 @@
           "prop": "honey_level",
           "max": 5
         }
-      }
+      },
+      "drop": "ntm:machine_furnace_brick_off"
     },
     {
       "id": "ntm:machine_industrial_generator",
@@ -98762,7 +98763,8 @@
           "prop": "honey_level",
           "max": 5
         }
-      }
+      },
+      "drop": "ntm:machine_electric_furnace_off"
     },
     {
       "id": "ntm:machine_microwave",

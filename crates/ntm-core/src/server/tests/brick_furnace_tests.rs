@@ -163,3 +163,20 @@ fn breaking_it_drops_the_engines_slots_once() {
         "o mod soltou de novo: {dropped:?}"
     );
 }
+
+/// `machine_electric_furnace_on` is the same machine as the unlit block: its
+/// slots, its battery slot and its smelting.
+#[test]
+fn the_lit_electric_furnace_smelts_like_the_unlit_one() {
+    for block in ["off", "on"] {
+        let mut g = game();
+        engine_block(&mut g, &format!("ntm:machine_electric_furnace_{block}[facing=north,honey_level=0]"));
+        g.world.borrow_mut().engine.get_mut(&(OW.to_string(), AT)).unwrap().0.truncate(3);
+        put(&mut g, 0, Some(Stack::new("minecraft:raw_iron", 2)));
+        put(&mut g, 1, Some(Stack::new("ntm:battery_creative", 1)));
+        g.run(230);
+        let s = slots(&g);
+        assert_eq!(count(&s, "minecraft:iron_ingot"), 2, "{block}: {s:?}");
+        assert!(matches!(g.machine(AT).data, Data::ElectricFurnace(_)), "{block}");
+    }
+}

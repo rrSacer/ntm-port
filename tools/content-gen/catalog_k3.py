@@ -76,5 +76,7 @@ def build(source):
                                           'top':'src/main/resources/assets/hbm/textures/blocks/'+name+'_upper.png'},
                            item_texture='src/main/resources/assets/hbm/textures/items/'+name+'.png')
                 row['behavior_gap']='Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance, sounds and source metadata/NBT transform differ; no tile entity or invented lock.'
+            # `getItemDropped`/`getItem` of the lit furnaces give the unlit block.
+            if name in ('machine_furnace_brick_on','machine_electric_furnace_on'):row['drop']='ntm:'+name[:-3]+'_off'
             rows.append(row)
     return rows

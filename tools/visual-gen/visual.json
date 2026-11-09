@@ -36184,8 +36184,133 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_electric_furnace_on": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerElectricFurnace, GUIMachineElectricFurnace 176x186 (processing/gui_electric_furnace.png); the logic's slot order (input, battery, output: the vanilla furnace menu's) at HBM's places, no upgrade slot (the logic has none); the flames while it smelts (value 2), HBM's lit block",
+      "machine": {
+        "slots": [
+          {
+            "x": 20,
+            "y": 35
+          },
+          {
+            "x": 152,
+            "y": 54
+          },
+          {
+            "x": 80,
+            "y": 35,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          104
+        ],
+        "data": 4
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_electric_furnace.png",
+        "texture_from": "textures/gui/processing/gui_electric_furnace.png",
+        "size": [
+          176,
+          186
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          92
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              34
+            ],
+            "uv": [
+              176,
+              30
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              43,
+              36,
+              28,
+              12
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "rect": [
+              45,
+              20,
+              18,
+              16
+            ],
+            "uv": [
+              192,
+              12
+            ]
+          },
+          {
+            "value": 2,
+            "min": 1,
+            "rect": [
+              46,
+              47,
+              18,
+              16
+            ],
+            "uv": [
+              192,
+              28
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              34
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              43,
+              36,
+              28,
+              12
+            ],
+            "lines": [
+              "{2} / {3} ticks"
+            ]
+          }
+        ]
+      },
+      "auto": false
     },
     "ntm:machine_microwave": {
       "auto": false,
