@@ -318,6 +318,8 @@ def prepare(g):
 
 def act(g):
     g.ctl('wait-ready 120')
+    g.command(f'tp @s 46.5 {Y} 12.5')
+    time.sleep(3)
     before = count(g)
     g.check('start_with_three', before['columns'] + before['inventory'] == TOTAL, before)
     if VANILLA:
@@ -327,8 +329,17 @@ def act(g):
         g.command(f'summon minecraft:item {B[0] + .5} {Y + 3.5} {B[2] + .5} {{Item:{{id:"{LID}",count:1}}}}')
         g.command(f'setblock {C[0]} {C[1]} {C[2]} minecraft:air destroy')
     else:
-        interact(g, (A[0], Y + 3, A[2]), LID)
-        interact(g, (B[0], Y + 1, B[2]), 'ntm:screwdriver', sneak=True)
+        # Each use until the column shows it (a click sent before the client sees the cell reaches nothing); a repeat
+        # is harmless: a column with a lid takes no other, one without gives nothing to the screwdriver.
+        for p, item, sneak, want in [(A, LID, False, 'Standard'), (B, 'ntm:screwdriver', True, 'None')]:
+            for attempt in range(4):
+                interact(g, (p[0], Y + 3 if not sneak else Y + 1, p[2]), item, sneak=sneak)
+                deadline = time.monotonic() + 3
+                while time.monotonic() < deadline and lid(g, p) != want:
+                    time.sleep(.3)
+                if lid(g, p) == want:
+                    break
+            g.note(f'uses_{p[0]}', attempt + 1)
         g.command(f'tp @s {C[0] + .5} {Y} {C[2] + 2.5}')
         g.ctl('select minecraft:iron_pickaxe')
         g.ctl(f'break {C[0]} {C[1]} {C[2]}')
