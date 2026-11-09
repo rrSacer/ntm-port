@@ -26,12 +26,14 @@ Branch `front-catalog`, a partir de `main @ 85d06d9c`.
 | `purex` receitas | 37 | 54 |
 | `assembly` receitas / puladas | 500 / 131 | 502 / 129 |
 | `shredder` receitas / puladas / `no_output` | 734 / 193 / 0 | 759 / 21 / 147 |
-| `bulk-recipe-coverage` receitas / gaps | 931 / 1025 | 1151 / 988 |
+| `bulk-recipe-coverage` receitas / gaps | 931 / 1025 | 1151 / 988 (saída do gerador em pasta vazia); 968 / 988 na árvore integrada |
 | `bulk-coverage` gaps / `claimed_elsewhere` | 944 / — | 689 / 255 |
 
 A queda de `bulk-coverage` tem duas causas. Uma é a regra de `claimed_elsewhere`, que não é conteúdo novo. A outra são os 59 itens declarados nesta frente.
 
 Notas sobre `bulk-recipe-coverage`: as 220 receitas novas (`data/ntm/recipe/bulk__*.json`) estão em `content/data/ntm/recipe/`, território da T3, e não foram copiadas. O `generate.py` do merge cria esses arquivos.
+
+**Contagem na integração (09/11/2026).** Rodado sobre `content/` já preenchido (o caso real), o gerador dá 968 receitas e 988 gaps, não 1151: 183 das 1151 (182 de `SmeltingRecipes.java` e 1 de `MineralRecipes.java`) já existem com o mesmo conteúdo exato em outros arquivos de receita (o gerador pula a receita cujo JSON idêntico já está em `content/data/ntm/recipe/`); com `--output` numa pasta vazia, a conta é 1151. O acréscimo real sobre a `main` (931) é de 37 arquivos `bulk__*.json`.
 
 ## Provas
 
