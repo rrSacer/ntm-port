@@ -907,3 +907,87 @@ com `max(perda do controle, 0)`, item a item também).
 contexto; (2) o tipo de detrito do T20 precisa estar registrado como invocável; (3) D-c é gate de T09 e T16;
 (4) o bug Java da barra renomeada (`{display}` → `yield` 0) é do T03; (5) `item replace block` sem marcar o chunk, no
 motor, candidato a upstream.
+
+## RBMK T02 — altura, dummies, tampas e portas (09/11/2026)
+
+Branch `rbmk-t02` (a partir de `rbmk-t01` @ `0e8eda47`) e, no motor, `rbmk-t02-engine` (a partir de `ntm-current` @
+`a31497f38`). O binário das provas sai de `tools/build-native.sh` com `NEXT_REV=<commit de rbmk-t02-engine>` e
+`HORIZON_NEXT` apontando para essa worktree: o pin de `native/ntm/compatibility.json` continua o da `ntm-current` até o
+motor ser integrado (o coordenador funde a branch do motor e move o pin).
+
+### O que mudou
+
+| Parte | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Coluna no motor | Multibloco `column` (1×H, núcleo embaixo), H = 2..16. A altura de uma coluna em pé é lida do mundo: o núcleo e a sequência de `ntm:dummy_rbmk` logo acima (máx. 16). Núcleo a partir de qualquer célula, quebra inteira e contorno usam essa altura; a colocação usa a altura que o mod deu (`set_column_height`) e checa obstrução nela antes de colocar | `BlockDummyable.findCore`, `fillSpace`, `checkRequirement`, `RBMKBase.getDimensions(world)` |
+| Dummy próprio | `ntm:dummy_rbmk` (mesma dureza do núcleo); nenhum dummy de outra máquina entra numa sequência de coluna | No Java o dummy é o próprio bloco da coluna |
+| 18 colunas adotadas | As dez que eram `Inert` (5 controles, caldeira, outgasser, storage, cooler, aquecedor) viraram `Kind::Rbmk` com `Layout::Native`: tampa, slots do tamanho Java (outgasser 2, storage 12, aquecedor 1) e tamanho da tela por bloco. Só as oito do T01 entram no passo; os slots que o motor já guardava são a verdade da primeira sincronização | `TileEntityRBMKSlottedBase` |
+| Dials | As 25 regras do Java guardadas no estado do mundo (`rbmk_rules`, uma vez por save), criadas no início do servidor como `createDials` (padrões salvo `dialSaveDials`; o cache fica com os valores antigos até um refresh, D2). `/ntmrbmk dial [regra [valor]]` (op 2) faz o que `/gamerule` + `RBMKDials.refresh` fazem; só as 25 regras existentes. O passo do reator passa a ler o cache (antes: padrões) | `RBMKDials.createDials`, `refresh`, `GameRuleHelper.parseInt`, `ModEventHandler.commandEvent` |
+| Altura (D5) | O cache (`clamp(parseInt or 4, 2, 16)`) vai para o motor; só colunas colocadas depois mudam. `/ntmrbmk migrate x y z [x2 y2 z2]` (caixa ≤ 32768) refaz as colunas em pé para o dial: cresce em ar, encolhe tirando dummies do topo; recusa célula ocupada ou não carregada e diz qual. Cada coluna é um único `set_blocks` no seu chunk (uma coluna nunca cruza chunk) | Desvio D5 (o Java relê o dial e deixa partes órfãs) |
+| Órfãos | Dummy cuja sequência não chega a um núcleo vira ar, e o de cima depois (comando, explosão, `setblock`); célula de baixo não carregada: fica | `destroyIfOrphan` (com `checkChunksExist`) |
+| Tampas | Com ou sem shift, `rbmk_lid`/`rbmk_lid_glass` na mão sobre uma coluna sem tampa (qualquer célula): entra, uma sai da mão (não no criativo) na mesma transferência jogador↔BE, som de colocação de pedra/“step.stone” do vidro a 1,0/0,8. Coluna com tampa ou controle (tampa própria): o menu abre. Chave de fenda com shift (sem shift o menu abre antes, como no Java): a tampa sai como item no topo, devida no registro do chunk da coluna junto com a mudança (`RetainedDrop` com nome próprio por remoção) e a ferramenta gasta na mesma publicação; sem tampa: nada, sem desgaste. Coluna quebrada: a tampa cai pelo caminho de remoção de sempre. Os dois drops saem no topo **como o dial diz agora** (`getColumnHeight`), não como a coluna está. O modelo mostra a tampa (valor 0 da tela: 1 tampa, 2 vidro) | `ItemRBMKLid.onItemUse`, `RBMKBase.openInv`, `onScrew`, `breakBlock` |
+| Chave de fenda | `screwdriver` (100 de durabilidade) e `screwdriver_desh` (sem desgaste) saíram do backlog de equipamentos: receitas `ToolRecipes` 139/140, nomes, aba de controle. O export da bigorna ganhou a receita que precisava dela (`AnvilRecipes`:523) | `ItemTooling(SCREWDRIVER, …)` |
+| Proxies e automação | Porta de inventário no topo dos canais e do outgasser, em todos os dummies do storage. Automação: storage aceita só barras e entrega tudo; outgasser entrega só o slot 1; canais e aquecedor não mostram slot. A mão não é restrita aqui (T05) | `createNewTileEntity` + `TileEntityProxyCombo`, `getAccessibleSlotsFromSide`, `canInsertItem`, `canExtractItem` |
+| Portas de fluido | `persist::column_ports` + `LoaderShape` reproduzem `getPortsNoLoader/CloseLoader/ClassicLoader` (loader a 2 abaixo vence a 1) e `PortDef.make`, com teste. Fluxo pelas portas: T08 | `TileEntityRBMKBase.getPorts*`, `TilePort.PortDef` |
+
+### Pontos de contato com o motor (para reaplicar sobre o upstream novo)
+
+Commit `rbmk-t02-engine`: `feat(multiblocks): columns as tall as each was placed`.
+
+| Arquivo | Função / trecho | O quê |
+| --- | --- | --- |
+| `crates/horizon-world/src/mod_multiblocks.rs` | `Multiblock.column`, `Column`, `ColumnPorts`, `parse` (chave `column`), `Registry.column_heights` (mantido em `load`), `set_column_height`, `placed`/`placed_in`, `standing`, `Multiblock::with_height`, `rise` (coluna conta a altura máxima), `core_of` (coluna: só na mesma x/z, altura em pé), `inventory_core` → `column_port`, dois testes novos | Toda a lógica |
+| `crates/horizon-world/src/level/place.rs` | `place`, bloco "A content mod's multiblock": `let m = &crate::mod_multiblocks::placed(&def);` | Colocação com a altura do mod |
+| `crates/horizon-client/src/game/multiblocks.rs` | `standing` (novo), `machine_multiblock` e `multiblock_outline` usam `self.standing(&def, core)` | Quebra inteira e contorno pela altura em pé |
+
+**Candidato a upstream:** o gancho de altura na colocação (`mod_multiblocks::set_column_height`) e a coluna de altura
+variável lida do mundo, úteis a qualquer mod com estruturas de altura configurável.
+
+### Desvios registrados
+
+- D5: altura por instância; dial muda só colunas novas; migração explícita. O Java relê o dial global em todo acesso.
+- Drop da tampa (chave e quebra) no topo pelo dial atual, como o Java, mesmo que a coluna tenha outra altura.
+- Cache de dials: um só, o do servidor. No Java cada `World` tem o seu: a primeira leitura numa dimensão sem cache
+  reescreve a regra lida com o padrão (`getGameRule`, `isIteration`) e o `/gamerule` só refaz o cache do mundo de quem
+  digitou. Essa peculiaridade por dimensão fica para o runtime de dials do T04.
+- `/setblock` trocando no lugar o núcleo de uma coluna por outra coluna: os dummies seguem com o núcleo novo (no Java
+  sumiriam como órfãos, pois o dummy é o próprio bloco da coluna).
+- Entrada do outgasser por automação recusada até as receitas reais (T09).
+- Lado do Java tomado como referência para os sons da tampa: `Blocks.glass.stepSound.func_150496_b()` é `step.stone` e
+  o `concrete_smooth` (pedra) `dig.stone`; aqui `minecraft:block.stone.step` e `minecraft:block.stone.place`, volume
+  1,0 e tom 0,8.
+
+### Validação (09/11/2026)
+
+Binário release `horizon-client` SHA-256 `d3258e6650ee7f9ed8bde27d1e75011a01f6cf7e7b8c3660341b7b0666cd4b2e`, construído
+de `rbmk-t02` @ `c3097105` (os commits seguintes só mudam roteiros de prova e docs) sobre o motor
+`rbmk-t02-engine` @ `5b9d6ee175` (`NEXT_REV`); pacote `ntm.hmod` `cc81c47f…`. Evidências em
+`.agent-tmp/rbmk-t02/evidence/`.
+
+| Prova | Resultado |
+| --- | --- |
+| Motor (`horizon-world`, `mod_multiblocks`) | 7/7 testes (dois novos: coluna lida do mundo, portas top/all, altura do mod com clamp; registro carregado: núcleo de qualquer célula, porta só no topo). Clippy `horizon-world` lib+testes: 0 avisos |
+| NTM em debug | 521 testes da lib (2 ignorados) e os de integração, verdes; 8 testes novos do T02 (dials como regras Java e reabertura, coluna de qualquer célula e migração com recusa/célula não carregada/caixa grande, órfãos, tampas com mão/criativo/recusa/chave errada/drop pelo dial/reabertura, quebra com tampa, adoção das 18, automação Java, `RetainedDrop` antigo) e o de portas de fluido |
+| `save_model` (release) | 11/11 |
+| Clippy | `ntm-core` todos os alvos `-D warnings` e a glue (`horizon-client`, `horizon-client-lib`, release): 0 avisos |
+| Mutações (`evidence/mutations.log`) | 10/10 pegas: cadeia de órfãos não seguida, drop da tampa com o nome da origem, drop num topo fixo, mão debitada no criativo, storage aceitando qualquer item, motor sem a altura no início, controle aceitando tampa, migração crescendo sobre blocos, toda coluna numa camada, dials sempre zerados no início |
+| J em jogo (`--play`, sobrevivência) | 27/27 e, após reabrir, 4/4: alturas 2, 4, 16 e clamp/parse (1→2, 99→16, abc→4) com o item consumido; colunas em pé mantêm a altura quando o dial muda; obstrução recusada com o item na mão; quatro lados de colocação (quatro facings) dão a mesma coluna; quebra pela base, pelo meio e pelo topo leva a coluna inteira e devolve um item; tampa pelo topo (uma da mão), nenhuma segunda, nenhuma num controle; chave de fenda com shift: tampa como item, desgaste 1; sem tampa, nenhum desgaste; tampa de vidro; núcleo trocado por comando leva os dummies; `/ntmrbmk migrate` refaz 2 → 6 e 16 → 6; funil no topo do storage passa barra e segura pedra, no topo do canal segura a barra. Reaberto: dial 4, alturas 6/2/16, tampa de vidro, coluna nova com 4 |
+| C em jogo, duas execuções | `kill`, `kv_committed`, `players_saved`, `live_chunk:2,0`: 4/4 em cada, NTM igual ao controle item a item nas duas reaberturas (3 = 3; 2 = 2 nos cortes em que o controle vanilla também perde a última escrita). O ato: uma tampa da mão para A (transferência), a de B tirada com a chave (item devido no registro do chunk), C quebrada com a tampa (item da coluna e a tampa) |
+
+### Pendências que ficam do T02 (honestas)
+
+1. **Visual da altura (T19 ou ticket próprio):** o modelo de cada coluna é um OBJ fixo de 4 células com a tampa a 4
+   blocos, e os dummies são invisíveis (barreira). Uma coluna de 2 ou de 16 é física e logicamente certa, mas desenha
+   4 células. Proposta: o gerador visual emite 16 grupos de célula e as tampas por altura, mostrados por um valor novo
+   da tela (a altura em pé, que o servidor já sabe ler).
+2. **Colisão da tampa** (`getCollisionBoundingBoxFromPool`: +0,25 em cada célula de uma coluna tampada) e **radiação
+   de coluna destampada** (T04).
+3. **Dials por dimensão** (o cache por `World` do Java e a reescrita do padrão na primeira leitura): T04.
+4. **Fluxo de fluido pelas portas e loaders** (as formas Java já existem em `column_ports`): T08. Por isso o "loaders
+   nas posições Java" do J está provado por teste de unidade, não em jogo.
+5. Entrada do outgasser por automação (receitas): T09. Fila do storage e guindaste: T11. Física das dez colunas
+   adotadas: T08/T09/T11.
+6. Dureza das 18 colunas e do dummy: o padrão genérico do gerador (5/10), não o do Java (3/30); acerto de conteúdo à
+   parte.
+7. O pin `compatibility.json` segue a `ntm-current`; o motor do T02 entra quando a `rbmk-t02-engine` for integrada
+   (depois de reaplicada sobre o upstream novo, com testes e provas repetidos).
