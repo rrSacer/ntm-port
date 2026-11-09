@@ -111,5 +111,6 @@ pub fn warm_tables() {
 pub mod pile;
 
 pub mod zirnox;
+pub mod watz_pwr; pub mod petroleo_e; // one line: both modules of the T8 front
 
 pub mod sounds;
