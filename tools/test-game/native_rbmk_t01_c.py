@@ -3,13 +3,13 @@
 
 Scenario C (the runner, run-rbmk-t01-proof.py --scenario c, owns the process and the cut). Needs NTM_TEST_HOOKS=1:
   prepare  three fuel channels across the border x=48 (46 and 47 in chunk 2, 48 in chunk 3), one rod each, by hand
-  act      the rod of 46 leaves as an item entity in chunk 3 through its reactor's entity effect (`ntmtest eject`), the
-           rod of 47 goes to the player's cursor and the rod of 48 out of the hand as a thrown drop, each in one
-           transfer (`ntmtest take`); then the save the runner cuts
+  act      the rod of 46 leaves as an item entity in chunk 3 through its reactor's entity effect (`ntmtest eject`); a
+           cursor edit for the rod of 47 is refused (with and without the menu open) and the rod stays; the rod of 48
+           goes out of the hand as a thrown drop in one transfer (`ntmtest take`); then the save the runner cuts
   verify / again / drain   as native_rbmk_t01.py
 With NTM_CRASH_VANILLA=1 the vanilla control: barrels at the same cells, and the act empties each barrel and puts the
-rod where the mod does (`summon item` at the same place, `item replace entity @s player.cursor`, `summon item` at the
-player), before the save.
+rod where the mod does (`summon item` at the same place, the second barrel untouched, `summon item` at the player),
+before the save.
 
 Probe mode (`probe`, NTM only, on a prepared base of native_rbmk_t01.py): P0-1 a column at (640, 101, 640) does not
 hold the reactor, loaded or not; P1-1 a fuel channel replaced in place by `/setblock`, and broken and put back, leaves
@@ -81,27 +81,23 @@ def act(g):
     if VANILLA:
         g.command(f'item replace block 46 {Y} 8 container.0 with minecraft:air')
         g.command(f'summon minecraft:item {EJECT_AT[0]} {EJECT_AT[1]} {EJECT_AT[2]} {{Item:{{id:"{t.FUEL}",count:1}},PickupDelay:10s}}')
-        # The cursor goes back to the inventory as the menu closes (`closeContainer`), before the save: the control's rod
-        # goes to the inventory (this engine has no `player.cursor` slot for commands).
-        g.command(f'item replace block 47 {Y} 8 container.0 with minecraft:air')
-        g.command(f'give @s {t.FUEL} 1')
+        # The mod's cursor edit is refused: the control's rod stays in its barrel too.
         g.command(f'item replace block 48 {Y} 8 container.0 with minecraft:air')
         g.command(f'execute at @s run summon minecraft:item ~ ~1.5 ~ {{Item:{{id:"{t.FUEL}",count:1}},PickupDelay:40s}}')
     else:
         replies = []
         replies.append(g.command(f'ntmtest eject 46 {Y} 8 {EJECT_AT[0]} {EJECT_AT[1]} {EJECT_AT[2]}').get('chat'))
         time.sleep(1.5)
-        # No menu open: no cursor to keep the rod, the transfer is refused and nothing moves.
-        refused = g.command(f'ntmtest take 47 {Y} 8 cursor').get('chat')
-        g.evidence['cursor_without_menu'] = refused
-        g.check('cursor_without_a_menu_is_refused', refused and 'ok=false' in ' '.join(refused) and t.slot_rods(g, (47, Y, 8)) == 1, refused)
+        # The cursor: the server keeps no screen of its own for its players (a command runs on the integrated server's
+        # thread, whose screen is always none), so the glue refuses every cursor edit for now (T05 brings the menu
+        # context). Refused with or without the player's menu open, and nothing moves: the rod stays in its channel.
+        refused = [g.command(f'ntmtest take 47 {Y} 8 cursor').get('chat')]
         g.ctl('open-inventory')
         time.sleep(.5)
-        replies.append(g.command(f'ntmtest take 47 {Y} 8 cursor').get('chat'))
-        g.evidence['cursor'] = g.ctl('inventory').get('carried')
-        g.check('rod_on_the_cursor', (g.evidence['cursor'] or {}).get('item') == t.FUEL, g.evidence['cursor'])
+        refused.append(g.command(f'ntmtest take 47 {Y} 8 cursor').get('chat'))
         g.close()
-        time.sleep(.5)
+        g.evidence['cursor_refused'] = refused
+        g.check('cursor_edits_are_refused_without_loss', all(r and 'ok=false' in ' '.join(r) for r in refused) and t.slot_rods(g, (47, Y, 8)) == 1, refused)
         replies.append(g.command(f'ntmtest take 48 {Y} 8 drop').get('chat'))
         g.evidence['hooks'] = replies
         g.check('hooks_answered', all(r and 'ok=true' in ' '.join(r) for r in replies), replies)
@@ -111,7 +107,7 @@ def act(g):
     time.sleep(1.5)
     after = count(g)
     g.evidence['after_act'] = after
-    g.check('three_rods_moved_once', after['columns'] == 0 and after['columns'] + after['entities'] + after['inventory'] == TOTAL, after)
+    g.check('two_rods_moved_once_one_stayed', after['columns'] == 1 and after['columns'] + after['entities'] + after['inventory'] == TOTAL, after)
     g.save()
     if t.NO_SAVE:
         return
