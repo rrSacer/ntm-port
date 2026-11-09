@@ -214,14 +214,17 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
     reconcile(server,&mut host);
     if let Some(action) = server.native_pile_use(&mut host, &dim, pos, face, pile_stack.as_ref(), depletion, &player) {
         match action {
-            ntm_core::server::PileUse::ConsumeRod => {
-                if let Some(h) = host.game.held_mut() { h.count -= 1; if h.count == 0 { *host.game.held_mut() = None; } }
-            }
+            // The rod left the hand in the loader's own transfer (`commit_player_transfer`).
+            ntm_core::server::PileUse::ConsumeRod => {}
             ntm_core::server::PileUse::WearDrill => {
                 if held.as_ref().is_some_and(|h| &*h.item == "ntm:hand_drill") { host.game.damage_held_tool(); }
             }
             ntm_core::server::PileUse::Handled => {}
         }
+        return true;
+    }
+    // A fuel rod into an RBMK fuel channel, moved with the hand in one transfer (T01).
+    if server.native_rbmk_use(&mut host, &dim, pos, core, &player) {
         return true;
     }
     let game = host.game;
@@ -597,6 +600,48 @@ fn ledger_add_here(g: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32;
     })
 }
 
+/// `ledger_add_here` for the entities of the effect `id` (`WorldEffect::Entities`): spawned now when the chunk of `pos`
+/// is loaded, else owed in a loaded owner's record and spawned once `pos` is in; a known id adds nothing.
+fn ledger_add_entities_here(g: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32; 3], entities: Vec<(ntm_core::ledger::OwedEntity, String)>, owners: &[(String, [i32; 3])]) -> bool {
+    let here = [pos[0] >> 4, pos[2] >> 4];
+    let mut chunks: Vec<[i32; 2]> = vec![here];
+    for (d, p) in owners {
+        let c = [p[0] >> 4, p[2] >> 4];
+        if d == dim && !chunks.contains(&c) {
+            chunks.push(c);
+        }
+    }
+    let loaded: Vec<[i32; 2]> = chunks.iter().copied().filter(|c| g.world.loaded(c[0] * 16, c[1] * 16)).collect();
+    if loaded.iter().any(|c| ledger_knows(g, &chunk_key(dim, *c), id)) {
+        return true;
+    }
+    if loaded.contains(&here) {
+        spawn_entities(g, dim, &entities);
+        return true;
+    }
+    let Some(owner) = loaded.first().copied() else { return false };
+    let key = chunk_key(dim, owner);
+    let mut ledger = ledger_get(g, &key);
+    ledger.owe_entities(id, pos, entities);
+    ledger_store(g, &key, ledger);
+    true
+}
+
+/// The entities as `/summon` puts them in the level in place. One a mod keeps out counts as put out (the effect
+/// is spent, as a dropped stack a hopper takes at once).
+fn spawn_entities(g: &mut crate::game::Game<'_>, dim: &str, entities: &[(ntm_core::ledger::OwedEntity, String)]) {
+    for (e, nbt) in entities {
+        match horizon_world::nbt::parse_snbt(nbt).ok() {
+            Some((Tag::Compound(c), _)) => {
+                if g.native_summon(dim, &e.kind, e.pos, c).is_none() {
+                    eprintln!("ntm: owed entity {} at {:?} was not spawned", e.kind, e.pos);
+                }
+            }
+            _ => eprintln!("ntm: invalid owed entity NBT {nbt:?}"),
+        }
+    }
+}
+
 fn ledger_add(game: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32; 3], items: Vec<String>, owners: &[(String, [i32; 3])]) -> bool {
     in_place(game, dim, |g| ledger_add_here(g, dim, id, pos, items, owners)).unwrap_or(false)
 }
@@ -725,6 +770,8 @@ fn ledger_tick(game: &mut crate::game::Game<'_>) {
             for (at, item) in drops {
                 spawn_items(g, at, &[item]);
             }
+            let entities = ledger.take_owed_entities(|e| g.world.loaded(e.at[0], e.at[2]));
+            spawn_entities(g, &key.0, &entities);
             ledger_store(g, &key, ledger);
         });
     }
@@ -941,11 +988,21 @@ fn cell_snapshot(game:&crate::game::Game<'_>,dim:&str,pos:[i32;3])->Option<ntm_c
     Some(ntm_core::server::CellSnapshot{state,entity,items})
 }
 
+/// The contents of the cells machine commits consume, retained in the same publication.
+fn consumed_contents(commits:&[ntm_core::server::MachineCommit])->Vec<ntm_core::server::RetainedDrop>{
+    commits.iter().flat_map(|c|&c.cells).filter(|w|ntm_core::blockstate::id_of(&w.expected.state)!=ntm_core::blockstate::id_of(&w.desired)&&!w.expected.items.is_empty()).map(|w|ntm_core::server::RetainedDrop{origin:w.guard.clone(),items:w.expected.items.clone()}).collect()
+}
+
 impl Host<'_, '_> {
     fn publish_atomic(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool) -> bool {
-        horizon_client::spans::time("ntm_publish_atomic", || self.publish_atomic_timed(commits, extra, retained, wear_held))
+        self.publish_atomic_with(commits,extra,retained,wear_held,None)
     }
-    fn publish_atomic_timed(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool) -> bool {
+    /// `player`: a transfer's player side (`commit_player_transfer`), published by the engine as a whole or not at all,
+    /// after every check of the machines' side and before their publication, which cannot fail.
+    fn publish_atomic_with(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool,player:Option<&mut dyn FnMut(&mut crate::game::Game<'_>)->bool>) -> bool {
+        horizon_client::spans::time("ntm_publish_atomic", || self.publish_atomic_timed(commits, extra, retained, wear_held, player))
+    }
+    fn publish_atomic_timed(&mut self, commits: &[ntm_core::server::MachineCommit], extra:&[ntm_core::server::CellWrite],retained:&[ntm_core::server::RetainedDrop],wear_held:bool,player:Option<&mut dyn FnMut(&mut crate::game::Game<'_>)->bool>) -> bool {
         // This callback owns &mut Game for its entire duration. No event,
         // hopper, chunk unload or block mutation can interleave these passes.
         // Resolve ALL entities and validate ALL expected slots before changing
@@ -1006,6 +1063,9 @@ impl Host<'_, '_> {
             if !valid{return false;}
             spawn.push((dim,d.origin.dim.clone(),d.origin.pos,ntm_core::ledger::retained_id(&d.origin.dim,d.origin.pos,d.origin.generation),d.items.clone()));
         }
+        // A transfer's player side: compared whole and published by the engine, or refused with nothing changed. The
+        // machines' side passed every check above and nothing below can fail, so both land in this callback or neither.
+        if let Some(player)=player && !player(self.game){return false;}
         let mut notify=Vec::new();
         let mut signals=Vec::new();
         for (c,synced) in commits.iter().zip(prepared) {
@@ -1125,6 +1185,13 @@ impl ServerHost for Host<'_, '_> {
         if !valid{eprintln!("ntm: invalid retained item NBT at {dim} {p:?}");return false;}
         ledger_add(self.game,dim,id,p,items.to_vec(),owners)
     }
+    /// Each entity's compound must read and its position be finite before anything is spawned or owed.
+    fn apply_entities(&mut self,id:u64,dim:&str,p:[i32;3],entities:&[ntm_core::server::EntitySpawn],owners:&[(String,[i32;3])])->bool{
+        let valid=entities.iter().all(|e|!e.kind.is_empty()&&e.pos.iter().all(|v|v.is_finite())&&matches!(horizon_world::nbt::parse_snbt(&e.nbt),Ok((Tag::Compound(_),_))));
+        if !valid{eprintln!("ntm: invalid entity effect at {dim} {p:?}");return false;}
+        let owed=entities.iter().map(|e|(ntm_core::ledger::OwedEntity{kind:e.kind.clone(),pos:e.pos},e.nbt.clone())).collect();
+        in_place(self.game,dim,|g|ledger_add_entities_here(g,dim,id,p,owed,owners)).unwrap_or(false)
+    }
     fn ledger_prune(&mut self,live:&std::collections::BTreeSet<u64>){ledger_prune(self.game,live);}
     fn store_obligations(&mut self,dim:&str,chunk:[i32;2],removals:&[ntm_core::persist::Removal],batches:&[ntm_core::server::CommittedEffects],migrated:&std::collections::BTreeSet<ntm_core::persist::Obligation>)->bool{
         store_obligations(self.game,dim,chunk,removals,batches,migrated)
@@ -1230,8 +1297,43 @@ impl ServerHost for Host<'_, '_> {
         self.commit_machines(std::slice::from_ref(c))
     }
     fn commit_machines(&mut self, commits: &[ntm_core::server::MachineCommit]) -> bool {
-        let retained:Vec<_>=commits.iter().flat_map(|c|&c.cells).filter(|w|ntm_core::blockstate::id_of(&w.expected.state)!=ntm_core::blockstate::id_of(&w.desired)&&!w.expected.items.is_empty()).map(|w|ntm_core::server::RetainedDrop{origin:w.guard.clone(),items:w.expected.items.clone()}).collect();
-        self.publish_atomic(commits,&[],&retained,false)
+        self.publish_atomic(commits,&[],&consumed_contents(commits),false)
+    }
+    /// The acting player's stacks (`native_actor_uuid`), each with its whole SNBT, as a transfer compares them.
+    fn player_slots(&mut self,player:&str)->Option<ntm_core::server::PlayerSlots>{
+        use ntm_core::server::{HeldStack,PlayerSlot,PlayerSlots};
+        if self.game.native_actor_uuid().as_deref()!=Some(player){return None;}
+        let s=crate::game::ntm_items::transfer_snapshot(self.game)?;
+        let held=|i:&Option<ItemStack>|stack(i).zip(i.as_ref()).map(|(stack,i)|HeldStack{stack,encoded:item_snbt(i)});
+        let hand=match self.game.hand{crate::game::Hand::Main=>PlayerSlot::Inventory(self.game.selected),crate::game::Hand::Off=>PlayerSlot::Offhand};
+        Some(PlayerSlots{hand:Some(hand),inventory:s.inventory.iter().map(held).collect(),offhand:held(&s.offhand),carried:held(&s.carried),creative:self.game.creative})
+    }
+    /// A transfer between the acting player and machines: the player's edited stacks compared by their whole SNBT and
+    /// the machines' slots and generations, then both published in one exclusive step (`publish_atomic_with`).
+    fn commit_player_transfer(&mut self,t:&ntm_core::server::PlayerTransfer,commits:&[ntm_core::server::MachineCommit])->bool{
+        use crate::game::native_player_transactions::{NativeDrop,NativeDropMode};
+        use ntm_core::server::{PlayerSlot,TransferDrop};
+        if self.game.native_actor_uuid().as_deref()!=Some(t.player.as_str()){return false;}
+        let slots:std::collections::BTreeSet<_>=t.edits.iter().map(|e|format!("{:?}",e.slot)).collect();
+        if slots.len()!=t.edits.len(){return false;}
+        let Some(expected)=crate::game::ntm_items::transfer_snapshot(self.game) else{return false};
+        let mut desired=expected.clone();
+        for e in &t.edits{
+            let cell=match e.slot{
+                PlayerSlot::Inventory(i)=>match desired.inventory.get_mut(i){Some(c)=>c,None=>return false},
+                PlayerSlot::Offhand=>&mut desired.offhand,
+                PlayerSlot::Carried=>&mut desired.carried,
+            };
+            if cell.as_ref().filter(|s|s.count>0&&&*s.item!="minecraft:air").map(item_snbt)!=e.expected{return false;}
+            *cell=item(e.desired.as_ref(),cell.take());
+        }
+        let mut drops=Vec::new();
+        for (s,mode) in &t.drops{
+            let Some(stack)=item(Some(s),None) else{return false};
+            drops.push(NativeDrop::new(stack,match mode{TransferDrop::Thrown=>NativeDropMode::Thrown,TransferDrop::World{delay}=>NativeDropMode::World{delay:*delay}}));
+        }
+        let mut player=|g:&mut crate::game::Game<'_>|crate::game::ntm_items::transfer_commit(g,&expected,desired.clone(),drops.clone());
+        self.publish_atomic_with(commits,&[],&consumed_contents(commits),false,Some(&mut player))
     }
     fn commit_structural(&mut self,cells:&[ntm_core::server::CellWrite],drops:&[ntm_core::server::RetainedDrop],owners:&[(String,[i32;3])])->bool{
         let own=cells.iter().filter(|c|owners.contains(&c.guard.key())).map(|c|(c.guard.dim.clone(),c.guard.pos,ntm_core::blockstate::id_of(&c.desired).into())).collect();
@@ -1437,7 +1539,7 @@ pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
     let s = s.as_ref().filter(|s| s.count > 0 && &*s.item != "minecraft:air")?;
     let mut t = Stack::new(&s.item, s.count);
     t.damage = s.damage;
-    if ntm_core::pile::Rod::of(&s.item,0.0).is_some() || ntm_core::zirnox::fuel(&s.item).is_some() || ntm_core::radioisotopes::pellet(&s.item).is_some() {
+    if ntm_core::pile::Rod::of(&s.item,0.0).is_some() || ntm_core::zirnox::fuel(&s.item).is_some() || ntm_core::radioisotopes::pellet(&s.item).is_some() || ntm_core::rbmk::persist::rod_of(&s.item).is_some() {
         t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);
     }
     Some(t)

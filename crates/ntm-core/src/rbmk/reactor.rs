@@ -355,6 +355,16 @@ struct Stream {
     flux_ratio: f64,
 }
 
+/// A queued stream as the save sees it ([`Reactor::queued`]): the index of its origin column and its values.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct QueuedStream {
+    pub origin: usize,
+    pub vx: f64,
+    pub vz: f64,
+    pub flux_quantity: f64,
+    pub flux_ratio: f64,
+}
+
 /// A radiation increment at a block position (`ChunkRadiationManager`).
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct RadEvent {
@@ -494,6 +504,24 @@ impl Reactor {
     /// Number of streams waiting for the next step.
     pub fn pending_streams(&self) -> usize {
         self.streams.len()
+    }
+
+    /// The streams waiting for the next step, in their order, as the save keeps them (T01).
+    pub fn queued(&self) -> Vec<QueuedStream> {
+        self.streams
+            .iter()
+            .map(|s| QueuedStream { origin: s.origin, vx: s.vx, vz: s.vz, flux_quantity: s.flux_quantity, flux_ratio: s.flux_ratio })
+            .collect()
+    }
+
+    /// The streams of a saved step put back, in their order (T01). A stream whose origin is not a column is dropped,
+    /// as `remove` drops the streams of a column that went.
+    pub fn set_queued(&mut self, queue: Vec<QueuedStream>) {
+        self.streams = queue
+            .into_iter()
+            .filter(|q| q.origin < self.columns.len())
+            .map(|q| Stream { origin: q.origin, vx: q.vx, vz: q.vz, flux_quantity: q.flux_quantity, flux_ratio: q.flux_ratio })
+            .collect();
     }
 
     fn height(&self) -> i32 {

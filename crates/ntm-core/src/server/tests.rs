@@ -39,6 +39,17 @@ struct World {
     values: BTreeMap<(String, String), i64>,
     /// Particles and sounds shown: (dimension, what).
     shown: Vec<(String, crate::blast::visuals::Show)>,
+    /// The acting player's stacks (`player_slots`), for transfers.
+    hands: Option<PlayerSlots>,
+    /// Machine commits and transfers refused after their checks (nothing may change).
+    refuse_commits: bool,
+    /// Entities spawned by effects (`apply_entities`), and the ledger of the ids applied: a known id adds nothing.
+    entities: Vec<(String, EntitySpawn)>,
+    entity_ids: BTreeSet<u64>,
+    /// A host without entities: `apply_entities` refuses.
+    no_entities: bool,
+    /// The storage's writes fail (I/O).
+    kv_fails: bool,
 }
 
 impl World {
@@ -60,6 +71,12 @@ impl World {
             effects: Vec::new(),
             values: BTreeMap::new(),
             shown: Vec::new(),
+            hands: None,
+            refuse_commits: false,
+            entities: Vec::new(),
+            entity_ids: BTreeSet::new(),
+            no_entities: false,
+            kv_fails: false,
         };
         for x in -32..32 {
             for z in -32..32 {
@@ -102,6 +119,9 @@ impl Kv for SHost {
         self.world.borrow_mut().kv.get(key)
     }
     fn set(&mut self, key: &str, value: &[u8]) -> Result<(), String> {
+        if self.world.borrow().kv_fails {
+            return Err("disk full".into());
+        }
         self.world.borrow_mut().kv.set(key, value)
     }
     fn delete(&mut self, key: &str) {
@@ -121,8 +141,30 @@ impl ServerHost for SHost {
         }
 
     fn commit_machine(&mut self,c:&MachineCommit)->bool{self.commit_machines(std::slice::from_ref(c))}
+    fn player_slots(&mut self,_:&str)->Option<PlayerSlots>{self.world.borrow().hands.clone()}
+    /// Once by id, as the native host's ledger: a known id adds nothing; an unloaded cell waits.
+    fn apply_entities(&mut self,id:u64,dim:&str,pos:Pos,entities:&[EntitySpawn],_:&[(String,Pos)])->bool{
+        let mut w=self.world.borrow_mut();
+        if w.no_entities||!w.loaded(dim,pos){return false;}
+        if w.entity_ids.insert(id){for e in entities{w.entities.push((dim.into(),e.clone()));}}
+        true
+    }
+    /// Both sides checked before either changes: the player's expected stacks, then the machines' (`commit_machines`
+    /// checks every one before it writes).
+    fn commit_player_transfer(&mut self,t:&PlayerTransfer,cs:&[MachineCommit])->bool{
+        let Some(mut hands)=self.world.borrow().hands.clone() else{return false};
+        if !t.drops.is_empty()||t.edits.iter().any(|e|hands.get(e.slot).map(|s|s.encoded.clone())!=e.expected){return false;}
+        if !self.commit_machines(cs){return false;}
+        for e in &t.edits{
+            let new=e.desired.clone().map(|stack|HeldStack{encoded:format!("{stack:?}"),stack});
+            match e.slot{PlayerSlot::Inventory(i)=>hands.inventory[i]=new,PlayerSlot::Offhand=>hands.offhand=new,PlayerSlot::Carried=>hands.carried=new}
+        }
+        self.world.borrow_mut().hands=Some(hands);
+        true
+    }
     fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
         let mut w=self.world.borrow_mut();
+        if w.refuse_commits{return false;}
         if cs.iter().flat_map(|c|&c.cells).any(|c|!w.loaded(&c.guard.dim,c.guard.pos)||w.get(&c.guard.dim,c.guard.pos)!=c.expected.state){return false;}
         if cs.iter().any(|c|!w.loaded(&c.dim,c.pos)||w.engine.get(&(c.dim.clone(),c.pos)).map(|e|e.0.clone()).unwrap_or_default()!=c.expected){return false;}
         for c in cs {for cell in &c.cells{w.set(&cell.guard.dim,cell.guard.pos,&cell.desired);if blockstate::id_of(&cell.expected.state)!=blockstate::id_of(&cell.desired){w.engine.remove(&cell.guard.key());w.saved.remove(&cell.guard.key());}}}
@@ -407,6 +449,7 @@ mod shredder_tests;
 mod blastfurnace_tests;
 mod foundry_tests;
 mod slot_items_tests;
+mod rbmk_tests;
 mod anvil_tests;
 mod press_slots_tests;
 mod purex_tests;

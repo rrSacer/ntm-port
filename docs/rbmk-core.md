@@ -37,10 +37,21 @@ Dados gerados: `gen_rods_rs.py` (`rods_data.rs`, das 33 barras da fixture), `gen
 
 ## O que falta ligar (depois do merge da Onda 0)
 
+**T01 (branch `rbmk-t01`) ligou o mínimo, provisório onde marcado** (`rbmk/persist.rs`, `server/rbmk_server.rs`; ver
+`docs/horizon-current.md`, seção "RBMK T01"): oito colunas viraram `Kind::Rbmk` (canais comum/moderado/ReaSim/ReaSim
+moderado, blank, moderador, refletor, absorvedor); cada camada (dimensão, Y da base) é um grupo acoplado cujo passo roda
+`Reactor::step` uma vez por tick; o estado de cada coluna fica no seu BE, a tag da barra (`yield`/`xenon`/`core`/`hull`)
+no `custom_data` da pilha do slot, e a ordem lógica, a RNG e a fila de fluxos da camada no `WorldState` (KV), tudo
+confirmado ou recusado junto. A barra entra pela mão numa transferência única jogador↔BE. Continua para os tickets:
+dials como gamerules e oclusão HBM (T04: hoje dials padrão e "todo bloco não ar é opaco"), `rad`/`effects` (T04/T19),
+`meltdowns` (T16: hoje só registrados no log), tampas/altura/portas (T02: hoje sem tampa, altura 4), menu por contexto
+(T05: hoje o menu genérico do slot, sem a regra de casco quente), codec completo da pilha, tooltip e hazards (T03), e
+as demais colunas (controle, caldeira, aquecedor, cooler, outgasser, storage), ainda `Inert`.
+
 0. Quebra de bloco: `Reactor::remove`; o `rbmk_storage` entra como `Kind::Storage`; `Inlet`/`Outlet` não participam do calor.
-1. Registrar os 33 blocos `Inert` `rbmk_*` como `Kind` (e um id de barra → `RodType::by_variable`).
-2. Chamar `Reactor::step` uma vez por tick de servidor e dimensão; ler `rad`, `meltdowns`, `effects`; `obstacles` vem do mundo (blocos opacos acima da camada).
-3. Persistir colunas, a tag das barras (`RodStack`), a RNG (`JavaRandom::state`) e a fila de fluxos (tem de entrar no ledger transacional do save).
+1. Registrar os demais blocos `Inert` `rbmk_*` como `Kind` (o id de barra → `persist::rod_of`, que já trata `hep`→`hep239`).
+2. ~~Chamar `Reactor::step` uma vez por tick~~ (T01, provisório); ler `rad`, `meltdowns`, `effects`; `obstacles` com a opacidade HBM.
+3. ~~Persistir colunas, a tag das barras, a RNG e a fila de fluxos~~ (T01).
 4. Tanques do boiler/heater/cooler/outgasser ligados ao `FluidStore`, portas e loaders (posições: `getPorts*Loader`), `identifiers` do heater a partir do item do slot 0, `ore_names` da OreDict.
 5. Energia dos controles ReaSim (`transfer_power`), hazards/tooltips dinâmicos das barras (T03), GUIs e console (T05/T06).
 6. Detritos e meltdown (D9) e o som `leverStop` (D8).

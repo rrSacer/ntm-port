@@ -79,6 +79,13 @@ pub trait ServerHost: Kv {
     /// any record that holds the items and adds nothing, as a block effect finds its own. Then items need no journal
     /// write before the next effect; only an explosion does.
     fn replays_by_id(&self)->bool{false}
+    /// Puts the entities of the effect `id` into the world exactly once, as `apply_items` does its stacks: spawned when
+    /// the chunk of `pos` is loaded, else owed in the record of a loaded owner's chunk and spawned once it loads; an id
+    /// the ledger knows adds nothing. Hosts without entities refuse (the effect waits, nothing is lost).
+    fn apply_entities(&mut self,_id:u64,_dim:&str,_pos:Pos,_entities:&[EntitySpawn],_owners:&[(String,Pos)])->bool{false}
+    /// Entities a machine puts out outside a step: inside one they become a [`WorldEffect::Entities`]. Hosts without
+    /// entities refuse.
+    fn spawn_entities(&mut self,_dim:&str,_pos:Pos,_entities:&[EntitySpawn])->bool{false}
     /// `apply_items` for lossless item NBT.
     fn apply_encoded_items(&mut self,_id:u64,dim:&str,pos:Pos,items:&[String],_owners:&[(String,Pos)])->bool{self.drop_encoded_items(dim,pos,items)}
     /// The generation of the machine the cell's block entity was saved with (None: no such block entity).
@@ -143,6 +150,95 @@ pub trait ServerHost: Kv {
     fn show(&mut self, _dim: &str, _show: &crate::blast::visuals::Show) {}
     /// A named number player `id`'s client reads (the Geiger's).
     fn set_player_value(&mut self, _id: &str, _key: &str, _value: i64) {}
+    /// The stacks of the player acting in this callback (`player` their UUID), as a transfer reads and compares them.
+    /// None: another player, or a host without transfers.
+    fn player_slots(&mut self, _player: &str) -> Option<PlayerSlots> {
+        None
+    }
+    /// One indivisible transfer between a player and machines (`transfer`): every expected stack of the player and
+    /// every expected slot and generation of `commits` compared first, then the player's stacks, the machines' slots,
+    /// data and JSON, and the player's drops published together. Refusal MUST publish nothing on either side.
+    /// Unsupported hosts refuse: there is no fallback that debits one side after the other.
+    fn commit_player_transfer(&mut self, _transfer: &PlayerTransfer, _commits: &[MachineCommit]) -> bool {
+        false
+    }
+}
+
+/// A stack a player holds: what the logic reads of it, and the whole stack (SNBT, every component) the host compares
+/// before a transfer publishes anything.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct HeldStack {
+    pub stack: container_bridge::Stack,
+    pub encoded: String,
+}
+
+/// Where a player's stack is: an inventory slot (the engine's index, the hotbar first), the off hand or the cursor.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PlayerSlot {
+    Inventory(usize),
+    Offhand,
+    Carried,
+}
+
+/// The stacks of the acting player a transfer may touch.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct PlayerSlots {
+    /// The stack that acts: the selected hotbar slot, or the off hand.
+    pub hand: Option<PlayerSlot>,
+    pub inventory: Vec<Option<HeldStack>>,
+    pub offhand: Option<HeldStack>,
+    pub carried: Option<HeldStack>,
+    pub creative: bool,
+}
+
+impl PlayerSlots {
+    pub fn get(&self, slot: PlayerSlot) -> Option<&HeldStack> {
+        match slot {
+            PlayerSlot::Inventory(i) => self.inventory.get(i).and_then(Option::as_ref),
+            PlayerSlot::Offhand => self.offhand.as_ref(),
+            PlayerSlot::Carried => self.carried.as_ref(),
+        }
+    }
+    /// The stack in the hand that acts.
+    pub fn held(&self) -> Option<&HeldStack> {
+        self.get(self.hand?)
+    }
+    /// The edit that takes `n` from the stack in `slot`, the rest keeping every component (`stackSize -= n`; an
+    /// emptied stack leaves the slot). None when the slot holds fewer.
+    pub fn take(&self, slot: PlayerSlot, n: u32) -> Option<SlotEdit> {
+        let held = self.get(slot)?;
+        let left = held.stack.count.checked_sub(n)?;
+        let desired = (left > 0).then(|| container_bridge::Stack { count: left, ..held.stack.clone() });
+        Some(SlotEdit { slot, expected: Some(held.encoded.clone()), desired })
+    }
+}
+
+/// One stack of a transfer's player side: as it was read (`expected`, the host's lossless SNBT; None for an empty
+/// slot) and as the transfer leaves it. A desired stack of the same item and damage as the expected one keeps the
+/// expected stack's other components.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct SlotEdit {
+    pub slot: PlayerSlot,
+    pub expected: Option<String>,
+    pub desired: Option<container_bridge::Stack>,
+}
+
+/// How a transfer puts a stack the player cannot hold into the world, each as Java does it.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TransferDrop {
+    /// `dropPlayerItemWithRandomChoice`: from the eyes along the view.
+    Thrown,
+    /// `new EntityItem(world, x, y + eyeHeight, z, stack)` with the pickup delay given.
+    World { delay: u32 },
+}
+
+/// The player's side of a transfer with machines ([`ServerHost::commit_player_transfer`]). The machines' side is a
+/// list of [`MachineCommit`]s, compared and published with it.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct PlayerTransfer {
+    pub player: String,
+    pub edits: Vec<SlotEdit>,
+    pub drops: Vec<(container_bridge::Stack, TransferDrop)>,
 }
 
 /// One indivisible machine update. `expected` is the inventory read before
@@ -255,7 +351,7 @@ struct Ready {
     native_signal: BTreeMap<Key, u8>,
     zirnox_radiation_rate: BTreeMap<String,u32>,
     /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
-    kept_rev: Option<[u64; 10]>,
+    kept_rev: Option<[u64; 11]>,
     /// What was last kept, without the clock: debug builds check every skipped write against it.
     #[cfg(debug_assertions)]
     kept: Vec<u8>,
@@ -578,11 +674,12 @@ mod pile_server;
 pub use pile_server::PileUse;
 
 mod zirnox_server;
+mod rbmk_server;
 mod transaction;
 pub mod obligations;
 mod generation;
 pub use generation::CellGuard;
-pub use transaction::{CommittedEffects,Survivor,WorldEffect,PreparedRetention};
+pub use transaction::{CommittedEffects,EntitySpawn,Survivor,WorldEffect,PreparedRetention};
 
 #[cfg(test)]
 mod generation_tests;

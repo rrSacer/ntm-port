@@ -13,6 +13,7 @@ pub mod fluids;
 pub mod jmath;
 pub mod jrandom;
 pub mod outgasser;
+pub mod persist;
 pub mod reactor;
 pub mod rods;
 mod rods_data;

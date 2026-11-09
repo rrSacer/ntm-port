@@ -127,6 +127,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::SolarStirling(s) => Some(&mut **s),
         Data::Radioisotope(r) => Some(&mut **r),
         Data::Zirnox(z) if !z.destroyed => Some(&mut **z),
+        Data::Rbmk(c) => Some(&mut **c),
         _ => None,
     }
 }
@@ -137,6 +138,15 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_rtg_grey", Layout::Native),
     ("ntm:machine_radgen", Layout::Native),
     ("ntm:machine_zirnox", Layout::Native),
+    // The RBMK columns of T01's provisional step: the fuel channels' one slot.
+    ("ntm:rbmk_rod", Layout::Native),
+    ("ntm:rbmk_rod_mod", Layout::Native),
+    ("ntm:rbmk_rod_reasim", Layout::Native),
+    ("ntm:rbmk_rod_reasim_mod", Layout::Native),
+    ("ntm:rbmk_blank", Layout::Native),
+    ("ntm:rbmk_moderator", Layout::Native),
+    ("ntm:rbmk_reflector", Layout::Native),
+    ("ntm:rbmk_absorber", Layout::Native),
     ("ntm:pile_device__loader", Layout::Native),
     ("ntm:machine_solar_boiler", Layout::Native),
     ("ntm:solar_mirror", Layout::Native),

@@ -55,8 +55,12 @@ pub struct Owed {
     pub idx: u32,
     /// Where the items appear (a cell).
     pub at: [i32; 3],
-    /// The item stack as SNBT, lossless.
+    /// The item stack as SNBT, lossless; for an entity (`entity`), its compound as `/summon` takes it.
     pub item: String,
+    /// An entity an effect puts into the world (`WorldEffect::Entities`), in place of an item stack: its kind and exact
+    /// position. Owed and paid as a stack is, once by its effect's id.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub entity: Option<OwedEntity>,
     /// `Pending`: not in the world yet. `Spawned`: an earlier version's stack whose entities were put out.
     #[serde(default = "pending", skip_serializing_if = "is_pending")]
     pub state: String,
@@ -70,6 +74,15 @@ pub struct Owed {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub seen: Vec<[i32; 2]>,
 }
+
+/// The kind and position of an owed entity (`Owed::entity`).
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct OwedEntity {
+    pub kind: String,
+    pub pos: [f64; 3],
+}
+
+impl Eq for OwedEntity {}
 
 fn pending() -> String {
     "Pending".into()
@@ -153,16 +166,43 @@ impl ChunkLedger {
             return false;
         }
         for (idx, item) in items.into_iter().enumerate() {
-            self.owed.push(Owed { id, idx: idx as u32, at, item, state: pending(), live: 0, last: None, seen: Vec::new() });
+            self.owed.push(Owed { id, idx: idx as u32, at, item, entity: None, state: pending(), live: 0, last: None, seen: Vec::new() });
         }
         true
+    }
+    /// The effect `id` owes `entities` (kind, exact position, compound) in the cell `at` until they can be spawned. False
+    /// when it is already known here.
+    pub fn owe_entities(&mut self, id: u64, at: [i32; 3], entities: Vec<(OwedEntity, String)>) -> bool {
+        if self.knows(id) {
+            return false;
+        }
+        for (idx, (entity, nbt)) in entities.into_iter().enumerate() {
+            let owed = Owed { id, idx: idx as u32, at, item: nbt, entity: Some(entity), state: pending(), live: 0, last: None, seen: Vec::new() };
+            self.owed.push(owed);
+        }
+        true
+    }
+    /// The owed entities that `ready` says can be spawned now, taken out with their compound; their effects are applied.
+    pub fn take_owed_entities(&mut self, mut ready: impl FnMut(&Owed) -> bool) -> Vec<(OwedEntity, String)> {
+        let mut out = Vec::new();
+        let mut kept = Vec::new();
+        for e in std::mem::take(&mut self.owed) {
+            if let Some(entity) = e.entity.clone().filter(|_| e.pending() && ready(&e)) {
+                self.applied.insert(e.id);
+                out.push((entity, e.item));
+            } else {
+                kept.push(e);
+            }
+        }
+        self.owed = kept;
+        out
     }
     /// The owed stacks that `ready` says can be dropped now, taken out with their cell; their effects are applied.
     pub fn take_owed(&mut self, mut ready: impl FnMut(&Owed) -> bool) -> Vec<([i32; 3], String)> {
         let mut out = Vec::new();
         let mut kept = Vec::new();
         for e in std::mem::take(&mut self.owed) {
-            if e.pending() && ready(&e) {
+            if e.entity.is_none() && e.pending() && ready(&e) {
                 self.applied.insert(e.id);
                 out.push((e.at, e.item));
             } else {
@@ -304,6 +344,24 @@ mod tests {
         assert!(ledger.knows(id) && ledger.owed.is_empty());
         let back = ChunkLedger::from_json(&ledger.to_json());
         assert_eq!(back, ledger);
+    }
+
+    /// T01: an entity is owed and paid as a stack is, once by its effect's id, and only by its own taker.
+    #[test]
+    fn an_owed_entity_is_paid_once_and_only_as_an_entity() {
+        let mut ledger = ChunkLedger::default();
+        let (stack, debris) = (effect_id(9, 0), effect_id(9, 1));
+        let entity = OwedEntity { kind: "minecraft:armor_stand".into(), pos: [1.5, 64.25, 2.5] };
+        assert!(ledger.owe(stack, [1, 64, 2], vec!["{id:'ntm:niter',count:3}".into()]));
+        assert!(ledger.owe_entities(debris, [1, 64, 2], vec![(entity.clone(), "{Invisible:1b}".into())]));
+        assert!(!ledger.owe_entities(debris, [1, 64, 2], vec![(entity.clone(), "{}".into())]), "a replay adds nothing");
+        let back = ChunkLedger::from_json(&ledger.to_json());
+        assert_eq!(back, ledger, "the record keeps the entity with its kind and position");
+        assert_eq!(ledger.take_owed(|_| true).len(), 1, "the stack only");
+        assert!(ledger.take_owed_entities(|_| false).is_empty());
+        assert_eq!(ledger.take_owed_entities(|_| true), vec![(entity, "{Invisible:1b}".to_string())]);
+        assert!(ledger.owed.is_empty() && ledger.knows(debris) && ledger.knows(stack));
+        assert!(!ledger.owe_entities(debris, [1, 64, 2], Vec::new()), "a paid entity is not owed again");
     }
 
     #[test]

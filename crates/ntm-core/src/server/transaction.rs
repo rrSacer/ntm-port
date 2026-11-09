@@ -25,6 +25,17 @@ pub enum WorldEffect {
         dim: String,
         pos: [f64; 3],
     },
+    /// Entities a step puts into the world (debris, `rbmk-plano` T20), owed in the cell `pos` like items: spawned
+    /// once by the effect's id (`ServerHost::apply_entities`), or owed in an owner's chunk record until `pos` loads.
+    Entities { dim: String, pos: Pos, entities: Vec<EntitySpawn> },
+}
+
+/// One entity of a [`WorldEffect::Entities`]: its kind, exact position and compound (SNBT, as `/summon` takes it).
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct EntitySpawn {
+    pub kind: String,
+    pub pos: [f64; 3],
+    pub nbt: String,
 }
 #[derive(Clone, Debug, Default, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct CommittedEffects {
@@ -180,6 +191,10 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
     fn pile_drop(&mut self, d: &str, p: Pos, i: &str) -> bool {
         self.drop_items(d, p, &[(i.into(), 1)])
     }
+    fn spawn_entities(&mut self, d: &str, p: Pos, entities: &[EntitySpawn]) -> bool {
+        self.critical.push_back(WorldEffect::Entities { dim: d.into(), pos: p, entities: entities.to_vec() });
+        true
+    }
     fn pile_explode(&mut self, d: &str, p: [f64; 3]) -> bool {
         self.critical.push_back(WorldEffect::PileExplosion {
             dim: d.into(),
@@ -297,7 +312,7 @@ impl Server {
                 // What a chunk owes is played only while it is loaded: its record then follows every step.
                 if let Some(h)=batch.home()&&!host.home_loaded(&h.0,[h.1,h.2]){self.ready.world.machine_effects.rotate_left(1);break;}
                 let Some(mut effect)=batch.effects.front().cloned() else{self.ready.world.machine_effects.pop_front();break};
-                let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::EncodedItems{dim,..}|WorldEffect::PileExplosion{dim,..}=>dim};
+                let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::EncodedItems{dim,..}|WorldEffect::PileExplosion{dim,..}|WorldEffect::Entities{dim,..}=>dim};
                 if !host.pile_reachable(dim){self.ready.world.machine_effects.rotate_left(1);break;}
                 let (effect_id,replayed)={let b=self.ready.world.machine_effects.front().unwrap();(crate::ledger::effect_id(b.serial,b.done),b.replayed)};
                 let mut wait=false;
@@ -345,7 +360,7 @@ impl Server {
                 self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect.clone();
                 if host.trace_effects(){
                     let b=self.ready.world.machine_effects.front().unwrap();
-                    let kind=match &effect{WorldEffect::Blocks{blocks,..}=>format!("blocks {}",blocks.len()),WorldEffect::Items{pos,items,..}=>format!("items {pos:?} {items:?}"),WorldEffect::EncodedItems{pos,items,..}=>format!("encoded {pos:?} {}",items.len()),WorldEffect::PileExplosion{..}=>"explosion".into()};
+                    let kind=match &effect{WorldEffect::Blocks{blocks,..}=>format!("blocks {}",blocks.len()),WorldEffect::Items{pos,items,..}=>format!("items {pos:?} {items:?}"),WorldEffect::EncodedItems{pos,items,..}=>format!("encoded {pos:?} {}",items.len()),WorldEffect::PileExplosion{..}=>"explosion".into(),WorldEffect::Entities{pos,entities,..}=>format!("entities {pos:?} {}",entities.len())};
                     host.log(&format!("effect {}.{} {kind} owners={} origins={}",b.serial,b.done,b.owners.len(),b.origins.len()));
                 }
                 let done=match &effect {
@@ -357,6 +372,7 @@ impl Server {
                     WorldEffect::Items{dim,pos,items}=>host.apply_items(effect_id,dim,*pos,items,&self.ready.world.machine_effects.front().unwrap().owners),
                     WorldEffect::EncodedItems{dim,pos,items}=>host.apply_encoded_items(effect_id,dim,*pos,items,&self.ready.world.machine_effects.front().unwrap().owners),
                     WorldEffect::PileExplosion{dim,pos}=>host.pile_explode(dim,*pos),
+                    WorldEffect::Entities{dim,pos,entities}=>host.apply_entities(effect_id,dim,*pos,entities,&self.ready.world.machine_effects.front().unwrap().owners),
                 };
                 if !done{
                     // A rejected atomic publication emitted no item. Discard
@@ -641,6 +657,8 @@ impl Server {
         buttons.retain(|i|self.current_guard(&i.guard)&&!self.ready.broken.contains_key(&i.guard.key()));
         let mut groups: Vec<Vec<Key>> = Vec::new();
         let mut piles: BTreeMap<Key, Vec<Key>> = BTreeMap::new();
+        // An RBMK layer is one coupled group (T01): its columns and its kept state step and commit together.
+        let mut rbmk: BTreeMap<(String, i32), Vec<Key>> = BTreeMap::new();
         for (k, m) in &self.ready.world.machines {
             if self
                 .ready
@@ -669,11 +687,14 @@ impl Server {
                 }
                 .unwrap_or_else(|| k.clone());
                 piles.entry(core).or_default().push(k.clone());
+            } else if let Some(layer) = Self::rbmk_layer(k, m) {
+                rbmk.entry(layer).or_default().push(k.clone());
             } else if host.get_block(&k.0, k.1).is_some() {
                 groups.push(vec![k.clone()]);
             }
         }
         groups.extend(piles.into_values());
+        groups.extend(rbmk.into_values());
         if removed_only {
             groups.retain(|keys| self.group_removed(keys));
         }
@@ -771,6 +792,9 @@ impl Server {
                 }
                 self.pile_tick(&mut staged);
                 self.zirnox_tick(&mut staged);
+                if !self.rbmk_tick(&mut staged) {
+                    staged.valid = false;
+                }
                 self.requested_detonations(&mut staged);
                 for m in self.ready.world.machines.values_mut() {
                     m.logic_mut().tick();

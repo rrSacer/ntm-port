@@ -11,6 +11,8 @@ use crate::{
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum PileUse {
     Handled,
+    /// A rod went from the hand into a loader, both in the one transfer (`ServerHost::commit_player_transfer`): the
+    /// caller has nothing left to debit.
     ConsumeRod,
     WearDrill,
 }
@@ -311,14 +313,17 @@ impl Server {
                     && l.slots[0].is_none()
                 {
                     let Some(expected)=host.machine_slots(dim,at) else{return Some(PileUse::Handled)};
-                    // The hand is debited by the caller only after this atomic
-                    // slot/state commit, so refusal cannot create or lose a rod.
                     if expected.first().is_none_or(Option::is_some){return Some(PileUse::Handled);}
+                    // The rod leaves the hand in the loader's own commit (`stackSize--`, creative too, as
+                    // BlockPileDevice does): a refusal on either side moves nothing.
+                    let Some(hand)=host.player_slots(player) else{return Some(PileUse::Handled)};
+                    let Some(edit)=hand.held().filter(|s|s.stack==*h).and_then(|_|hand.take(hand.hand?,1)) else{return Some(PileUse::Handled)};
                     let mut stack=h.clone();stack.count=1;l.slots[0]=Some(stack);
                     let (desired,data)=Self::machine_output(&mut machine,&expected);
                     let json=serde_json::to_string(&machine).expect("machine serialization");
                     let c=MachineCommit{cells:Vec::new(),guard:CellGuard::machine(&key,&machine),expected_saved:self.ready.native_saved.contains_key(&key),dim:dim.into(),pos:at,expected,desired,data,json};
-                    if host.commit_machine(&c){
+                    let transfer=PlayerTransfer{player:player.into(),edits:vec![edit],drops:Vec::new()};
+                    if host.commit_player_transfer(&transfer,std::slice::from_ref(&c)){
                         self.ready.world.machines.insert(key.clone(),machine);
                         self.ready.bridge.last.insert(key.clone(),c.desired);
                         self.ready.bridge.data.insert(key.clone(),c.data);
@@ -591,6 +596,15 @@ mod tests {
         homes:BTreeMap<[i32;2],(Vec<crate::persist::Removal>,Vec<CommittedEffects>)>,
         /// What each chunk's record took of an earlier version's storage (`migrated`).
         marks:BTreeMap<[i32;2],BTreeSet<crate::persist::Obligation>>,
+        /// The acting player's stacks (`player_slots`), as the native host reads them.
+        hands:Option<PlayerSlots>,
+        /// The next transfer is refused after its preflight (nothing may change on either side).
+        refuse_player:bool,
+    }
+    /// Puts `stack` in the acting player's hand (slot 0): the stack a use hands the server.
+    fn hold(h:&mut Host,stack:&Stack){
+        let held=HeldStack{stack:stack.clone(),encoded:format!("{stack:?}")};
+        h.hands=Some(PlayerSlots{hand:Some(PlayerSlot::Inventory(0)),inventory:vec![Some(held),None],..Default::default()});
     }
     /// The world opened again from the host's records: the storage, then what each chunk's record owes, as the
     /// native host gives it when the chunk loads (before its block entities are adopted).
@@ -651,6 +665,18 @@ mod tests {
             for c in cells{if let Some(i)=&c.initial{self.first_json.insert(c.guard.pos,i.json.clone());}}
             if wear_held{self.worn+=1;}
             true
+        }
+        fn player_slots(&mut self,_:&str)->Option<PlayerSlots>{self.hands.clone()}
+        fn commit_player_transfer(&mut self,t:&PlayerTransfer,cs:&[MachineCommit])->bool{
+            let Some(mut hands)=self.hands.clone() else{return false};
+            if self.refuse_player||!t.drops.is_empty()||t.edits.iter().any(|e|hands.get(e.slot).map(|s|s.encoded.clone())!=e.expected){return false;}
+            if self.refuse_commit || cs.iter().any(|c|self.inactive.contains(&c.dim)||self.unloaded.contains(&c.pos)||self.slots.get(&c.pos).cloned().unwrap_or_default()!=c.expected){return false;}
+            for e in &t.edits{
+                let new=e.desired.clone().map(|stack|HeldStack{encoded:format!("{stack:?}"),stack});
+                match e.slot{PlayerSlot::Inventory(i)=>hands.inventory[i]=new,PlayerSlot::Offhand=>hands.offhand=new,PlayerSlot::Carried=>hands.carried=new}
+            }
+            self.hands=Some(hands);
+            self.commit_machines(cs)
         }
         fn commit_machine(&mut self,c:&MachineCommit)->bool{self.commit_machines(std::slice::from_ref(c))}
         fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
@@ -863,10 +889,12 @@ mod tests {
                 },
                 12,
             );
+            hold(&mut h, &held);
             assert_eq!(
                 s.native_pile_use(&mut h, DIM, loader, [0, 0, -1], Some(&held), 0., "p"),
                 Some(PileUse::ConsumeRod)
             );
+            assert_eq!(h.hands.as_ref().unwrap().held().unwrap().stack.count, 11, "one rod left the hand");
             assert_eq!(h.slots[&loader][0].as_ref().unwrap().count, 1);
             assert_eq!(
                 s.native_pile_use(&mut h, DIM, loader, [0, 0, -1], None, 0., "p"),
@@ -1091,6 +1119,41 @@ mod tests {
             assert!(kept.machine_effects.is_empty() && kept.removals.is_empty());
         }
     }
+    /// T01: the rod leaves the hand in the loader's own commit. A refusal on either side (the player's stacks, the
+    /// loader's slots) moves nothing; an accepted one moves exactly one rod, the rest of the stack in hand.
+    #[test]
+    fn a_rod_from_the_hand_moves_in_one_transfer_or_not_at_all() {
+        let (mut s, mut h) = formed();
+        drill(&mut s, &mut h, [-1, 64, 0], [0, 0, -1]);
+        let loader = [-1, 64, -1];
+        device(&mut s, &mut h, loader, "ntm:pile_device__loader", "north");
+        let rods = Stack::new("ntm:pile_rod__nu", 3);
+        let use_loader = |s: &mut Server, h: &mut Host| s.native_pile_use(h, DIM, loader, [0, 0, -1], Some(&rods), 0., "p");
+        let (slots, hands, saved) = (h.slots[&loader].clone(), h.hands.clone(), s.ready.world.machines[&(DIM.into(), loader)].clone());
+        // No transfer host: nothing moves, the use is only consumed.
+        assert_eq!(use_loader(&mut s, &mut h), Some(PileUse::Handled));
+        assert_eq!((&h.slots[&loader], &h.hands), (&slots, &hands));
+        hold(&mut h, &rods);
+        let hands = h.hands.clone();
+        for refuse in [|h: &mut Host| h.refuse_player = true, |h: &mut Host| h.refuse_commit = true] {
+            refuse(&mut h);
+            assert_eq!(use_loader(&mut s, &mut h), Some(PileUse::Handled));
+            assert_eq!((&h.slots[&loader], &h.hands), (&slots, &hands), "a refusal publishes neither side");
+            assert_eq!(s.ready.world.machines[&(DIM.into(), loader)], saved, "nor changes the model");
+            (h.refuse_player, h.refuse_commit) = (false, false);
+        }
+        // The hand read differs from the stack the use was given (another stack in hand): nothing moves.
+        hold(&mut h, &Stack::new("ntm:pile_rod__nu", 2));
+        assert_eq!(use_loader(&mut s, &mut h), Some(PileUse::Handled));
+        assert_eq!(h.slots[&loader], slots);
+        hold(&mut h, &rods);
+        assert_eq!(use_loader(&mut s, &mut h), Some(PileUse::ConsumeRod));
+        assert_eq!(h.slots[&loader][0], Some(Stack::new("ntm:pile_rod__nu", 1)));
+        assert_eq!(h.hands.as_ref().unwrap().held().unwrap().stack.count, 2, "one rod left the hand");
+        // A full loader takes nothing more.
+        assert_eq!(use_loader(&mut s, &mut h), Some(PileUse::Handled));
+        assert_eq!(h.hands.as_ref().unwrap().held().unwrap().stack.count, 2);
+    }
     #[test]
     fn native_loader_reads_the_signal_of_its_own_cell_only() {
         let (mut s, mut h) = formed();
@@ -1098,6 +1161,7 @@ mod tests {
         let loader = [-1, 64, -1];
         device(&mut s, &mut h, loader, "ntm:pile_device__loader", "north");
         let rod = Stack::new("ntm:pile_rod__nu", 1);
+        hold(&mut h, &rod);
         assert_eq!(
             s.native_pile_use(&mut h, DIM, loader, [0, 0, -1], Some(&rod), 0., "p"),
             Some(PileUse::ConsumeRod)
@@ -1335,6 +1399,7 @@ mod tests {
         let loader = [-1, 64, -1];
         device(&mut s, &mut h, loader, "ntm:pile_device__loader", "north");
         let rod = Stack::new("ntm:pile_rod__nu", 1);
+        hold(&mut h, &rod);
         assert_eq!(
             s.native_pile_use(&mut h, DIM, loader, [0, 0, -1], Some(&rod), 0., "p"),
             Some(PileUse::ConsumeRod)
@@ -1453,6 +1518,7 @@ mod tests {
         let loader = [-1, 64, -1];
         device(&mut s, &mut h, loader, "ntm:pile_device__loader", "north");
         let incoming = Stack::new("ntm:pile_rod__zr", 1);
+        hold(&mut h, &incoming);
         assert_eq!(s.native_pile_use(&mut h, DIM, loader, [0, 0, -1], Some(&incoming), 0., "p"), Some(PileUse::ConsumeRod));
         s.native_tick(&mut h, 5);
         s.native_world_saved(&mut h, true);
