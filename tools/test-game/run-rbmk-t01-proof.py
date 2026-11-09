@@ -29,11 +29,14 @@ ITEMS = ('ntm:rbmk_fuel_',)
 DIMS = ('overworld', 'the_nether')
 TOTAL = 9
 POINTS = [*rcp.POINTS, 'kv_committed', 'live_chunk:2,0', 'live_chunk:3,0']
+# Scenario C (the review's pending C: entities, cursor and drops through the test hooks), and the cuts it asks for.
+SCRIPT = 'native_rbmk_t01.py'
+C_POINTS = ['kill', 'kv_committed', 'players_saved', 'live_chunk:2,0', 'live_chunk:3,0']
 
 
 class World(rcp.World):
-    def script(self, mode, check=True, extra=None):
-        return subprocess.run([sys.executable, str(HERE / 'native_rbmk_t01.py'), str(self.folder), mode],
+    def script(self, mode, check=True, extra=None, script=None):
+        return subprocess.run([sys.executable, str(HERE / (script or SCRIPT)), str(self.folder), mode],
                               cwd=self.folder, env=dict(self.env, **(extra or {})), check=check, timeout=2700).returncode
 
 
@@ -109,7 +112,12 @@ def main():
     parser.add_argument('--bundle', type=Path)
     parser.add_argument('--scratch-root', type=Path, required=True)
     parser.add_argument('--keep', action='store_true', help='keep the folders of the points that passed')
+    parser.add_argument('--scenario', choices=('a', 'c'), default='a', help='a: transfers and layers; c: entities, cursor, drops')
+    parser.add_argument('--probe', action='store_true', help='P0-1, P1-1, P1-2 probes on a prepared base, NTM only')
     args = parser.parse_args()
+    global SCRIPT, TOTAL, DIMS, POINTS
+    if args.scenario == 'c':
+        SCRIPT, TOTAL, DIMS, POINTS = 'native_rbmk_t01_c.py', 3, ('overworld',), C_POINTS
     work = HERE.parents[1]
     args.binary = args.binary.resolve()
     args.bundle = (args.bundle or work / 'dist/ntm.hmod').resolve()
@@ -118,7 +126,8 @@ def main():
     base = scratch / 'base'
     base.mkdir()
     env = os.environ.copy()
-    env.update(HORIZON_NO_AUDIO='1', HORIZON_LAUNCHER_NO_SELF_UPDATE='1', HORIZON_NO_UPDATE_CHECK='1', WAYLAND_DISPLAY='')
+    env.update(HORIZON_NO_AUDIO='1', HORIZON_LAUNCHER_NO_SELF_UPDATE='1', HORIZON_NO_UPDATE_CHECK='1', WAYLAND_DISPLAY='',
+               NTM_TEST_HOOKS='1')
     (base / 'options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nmaxFps:30\nenableVsync:false\nguiScale:2\ntutorialStep:none\n')
     (base / 'horizon-controller.txt').write_text('enabled:false\n')
     (base / 'horizon-graphics.txt').write_text('workers:2\n')
@@ -139,6 +148,18 @@ def main():
             copy_env[key] = str(folder / sub)
         return copy_env
     try:
+        if args.probe:
+            world = World(args, base, homed(base, False))
+            world.launch()
+            prepared = world.script('prepare', check=False)
+            world.quit()
+            world.launch()
+            probed = world.script('probe', check=False, script='native_rbmk_t01_c.py')
+            world.quit()
+            report['probe'] = evidence(base, 'probe')
+            report['ok'] = not prepared and not probed
+            print(json.dumps(report['probe'].get('checks')), flush=True)
+            return 0 if report['ok'] else 1
         bases = {False: base, True: scratch / 'base-vanilla'}
         shutil.copytree(base, bases[True])
         for control, where in bases.items():
