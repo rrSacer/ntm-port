@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:barbed_wire",
+    "count": 16
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AIA",
+    "I I",
+    "AIA"
+  ],
+  "key": {
+    "A": "#ntm:bulk/wirefinesteel",
+    "I": "#ntm:bulk/ingotiron"
+  }
+}

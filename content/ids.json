@@ -351,7 +351,7 @@
     }
   ],
   "worldgen_gaps": {
-    "lithium": "Only ore_gneiss_lithium exists; stone_gneiss substrate is not generated in M1. No lithium-in-stone substitution.",
+    "lithium": "ore_gneiss_lithium is generated (6 veins, size 6, y 30..39) with target ntm:stone_gneiss, but no stone_gneiss is generated yet: SchistStratum needs an overworld material rule, and content packs may not override vanilla worldgen files (horizon-mods content.rs fence). No lithium-in-stone substitution.",
     "red_copper": "Alloy; no natural ore.",
     "deepslate": "Uses the same ore ID/NTM artwork for stone and deepslate at the original positive heights; no extra negative-depth distribution."
   },
