@@ -45,6 +45,27 @@ def evidence(folder, mode):
     return json.loads(path.read_text()) if path.exists() else {}
 
 
+def no_worse_than_a_copy(outcome):
+    """A copy the vanilla control makes at a cut is not a bar the mod has to reach: where the control holds more than it
+    started with, the mod's loss is compared with none (item by item too), and the rest of the verdict stands."""
+    v, control = outcome.get('verdict'), outcome.get('control') or {}
+    if not v or v.get('control_lost') is None or v.get('lost') is None:
+        return outcome
+    v['no_worse_than_vanilla'] = v['lost'] <= max(v['control_lost'], 0)
+    base, their_base = outcome.get('base_items') or {}, control.get('base_items') or {}
+    worse = []
+    for reopen in rcp.REOPENS:
+        mine, theirs = outcome.get(reopen), control.get(reopen)
+        if mine is None or theirs is None:
+            worse.append(False)
+            continue
+        ids = set(mine) | set(theirs) | set(base) | set(their_base)
+        worse.append(all(base.get(i, 0) - mine.get(i, 0) <= max(their_base.get(i, 0) - theirs.get(i, 0), 0) for i in ids))
+    v['no_worse_item'] = all(worse)
+    outcome['ok'] = rcp.judge(outcome)
+    return outcome
+
+
 def play(args, base, scratch, env, point, control=False):
     folder = rcp.point_folder(scratch, point, control)
     rcp.clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-rbmk-t01-*.json'))
@@ -174,11 +195,13 @@ def main():
             played = {c: play(args, where, scratch, homed(rcp.point_folder(scratch, point, c), c), point, c) for c, where in bases.items()}
             # Exactly the last save only for `kill`: the pause of `kv_committed` writes the player's file (the transfer's
             # other side) ahead of the held regions, the vanilla residue the control shows at the same cut.
-            outcome = rcp.emission_verdict(played[False], played[True], TOTAL, TOTAL, exact=point == 'kill')
+            outcome = no_worse_than_a_copy(rcp.emission_verdict(played[False], played[True], TOTAL, TOTAL, exact=point == 'kill'))
             report['points'].append(outcome)
             print(json.dumps({k: outcome.get(k) for k in ('point', 'ok', 'error', 'verdict')}), flush=True)
             (scratch / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
         rcp.match_cuts(report['points'])
+        for outcome in report['points']:
+            no_worse_than_a_copy(outcome)
         if not args.keep:
             for outcome in report['points']:
                 if outcome['ok']:

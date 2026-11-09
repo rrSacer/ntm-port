@@ -101,6 +101,9 @@ def act(g):
         replies.append(g.command(f'ntmtest take 48 {Y} 8 drop').get('chat'))
         g.evidence['hooks'] = replies
         g.check('hooks_answered', all(r and 'ok=true' in ' '.join(r) for r in replies), replies)
+    # The player steps away at once, in both worlds: a drop is not picked up before the save (the mod's is thrown away
+    # from the eyes, the control's summoned at the feet; who picks what up first is timing, not the transfer).
+    g.command('tp @s 30.5 101 4.5')
     # Both chunks change a block too, in both worlds (the engine's `item replace block` alone leaves a chunk unsaved).
     for x in (44, 50):
         g.command(f'setblock {x} 100 14 minecraft:cobblestone')
