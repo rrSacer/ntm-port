@@ -1011,7 +1011,9 @@ impl Reactor {
             let input = self.columns[i].outgasser().unwrap().input.as_ref().unwrap();
             outgasser::recipe_for(&input.item, input.meta, &names)
                 .and_then(|r| r.solid)
-                .map_or(64, |(item, ..)| self.max_stack.get(item).copied().unwrap_or(64))
+                .map_or(64, |(item, ..)| {
+                    self.max_stack.get(item).copied().unwrap_or(64)
+                })
         };
         let o = self.columns[i].outgasser_mut().unwrap();
         let input = o.input.as_mut().unwrap();
