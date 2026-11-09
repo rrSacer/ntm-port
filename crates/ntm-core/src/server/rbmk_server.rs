@@ -11,7 +11,7 @@
 //!   world shows and the server has not adopted yet, still belongs to its component and holds it (D4: unknown is never
 //!   air); one the world shows as something else, or removed in the step, leaves;
 //! - the logical order is the order of registration (D1); a component's state is kept under its first column;
-//! - Java has one random and one stream list per world (`world.rand`, `NeutronNodeWorld.streamWorlds`), so there is no
+//! - Java has one random and one stream list per world (`world.rand`, `StreamWorld.streams`), so there is no
 //!   component to merge or split; with D3's random per simulation: components that merge keep the random of the one
 //!   whose first column was registered first, their streams in the order of their origins' registration (the order of
 //!   the Java list, whose streams come out in update order); a component that splits leaves its random to the part with

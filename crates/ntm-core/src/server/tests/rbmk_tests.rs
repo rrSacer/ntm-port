@@ -304,7 +304,7 @@ fn a_column_replaced_in_place_leaves_and_the_reactor_steps_on() {
     g.run(4);
     assert_eq!(layer(&mut g).members[&[2, 0]].block, "ntm:rbmk_rod");
     assert_eq!(g.machine([2, Y, 0]).block, "ntm:rbmk_rod");
-    assert!(rods(&g) <= dropped + 1, "the old rod comes out once at most");
+    assert_eq!(rods(&g), dropped + 1, "the old rod comes out exactly once");
     let before = state(&mut g);
     g.run(2);
     assert_ne!(state(&mut g), before, "and the reactor steps on");
@@ -531,11 +531,12 @@ fn the_test_hooks_move_a_rod_once() {
     assert!(entities[0].1.nbt.contains("ntm:rbmk_fuel_ueu") && entities[0].1.nbt.contains("minecraft:custom_data"), "{}", entities[0].1.nbt);
     g.run(3);
     assert_eq!(g.world.borrow().entities.len(), 1, "once");
-    // To the cursor, and as a drop.
+    // To the cursor: refused (P3-7, no cursor edit before T05), nothing moves; as a drop: once.
     hold(&mut g, "minecraft:stone", 1, false);
-    assert!(g.server.native_test_take(&mut g.sh, OW, [2, Y, 0], "p1", true).is_ok());
-    assert_eq!(g.world.borrow().hands.as_ref().unwrap().carried.as_ref().map(|s| s.stack.id.clone()), Some("ntm:rbmk_fuel_meu".into()));
-    assert_eq!(slot(&g, [2, Y, 0]), None);
+    assert_eq!(g.server.native_test_take(&mut g.sh, OW, [2, Y, 0], "p1", true), Err("the transfer was refused"));
+    assert_eq!(g.world.borrow().hands.as_ref().unwrap().carried, None);
+    assert!(slot(&g, [2, Y, 0]).is_some(), "the rod stays");
+    assert!(g.server.native_test_take(&mut g.sh, OW, [2, Y, 0], "p1", false).is_ok());
     assert_eq!(g.server.native_test_take(&mut g.sh, OW, [2, Y, 0], "p1", false), Err("no rod in the channel"), "an empty channel gives nothing");
     assert!(g.server.native_test_take(&mut g.sh, OW, [0, Y, 0], "p1", false).is_ok());
     assert_eq!(slot(&g, [0, Y, 0]), None);
@@ -639,4 +640,15 @@ fn a_block_in_a_streams_path_occludes_it() {
     let (open, occluded) = (play(false), play(true));
     assert!(open.0.has_rod && crate::rbmk::persist::rod_stack(open.1.as_ref().unwrap().custom.as_deref()).yield_ < crate::rbmk::persist::rod_of("ntm:rbmk_fuel_ueu").map(|r| r.yield_), "the channel burned");
     assert_ne!(open.1, occluded.1, "the stone took part of the source's streams: the rod burned less");
+}
+
+/// P3-7: no transfer with a cursor edit is publishable before T05, whatever the screen; the others are.
+#[test]
+fn a_cursor_edit_is_never_publishable_before_t05() {
+    let edit = |slot| SlotEdit { slot, expected: None, desired: Some(Stack::new("ntm:rbmk_fuel_ueu", 1)) };
+    let t = |edits| PlayerTransfer { player: "p1".into(), edits, drops: Vec::new(), copies: Vec::new() };
+    assert!(!t(vec![edit(PlayerSlot::Carried)]).publishable());
+    assert!(!t(vec![edit(PlayerSlot::Inventory(0)), edit(PlayerSlot::Carried)]).publishable());
+    assert!(t(vec![edit(PlayerSlot::Inventory(0)), edit(PlayerSlot::Offhand)]).publishable());
+    assert!(t(Vec::new()).publishable());
 }

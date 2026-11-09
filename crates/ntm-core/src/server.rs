@@ -253,6 +253,16 @@ pub struct PlayerTransfer {
     pub copies: Vec<SlotCopy>,
 }
 
+impl PlayerTransfer {
+    /// Whether a host may publish it: never with a cursor edit, until T05 brings the acting player's open menu as its
+    /// context. A cursor exists only in an open menu, and none is reliably known here: the server's own screen is
+    /// always none, a client's creative screen clears its cursor as it closes, and a LAN guest's screen is the host's.
+    /// A cursor edit published without one loses the stack (found by the T01 proof of the review's pending C).
+    pub fn publishable(&self) -> bool {
+        !self.edits.iter().any(|e| e.slot == PlayerSlot::Carried)
+    }
+}
+
 /// One indivisible machine update. `expected` is the inventory read before
 /// simulation, not a cached approximation. Hosts validate before any mutation.
 #[derive(Clone, Debug)]

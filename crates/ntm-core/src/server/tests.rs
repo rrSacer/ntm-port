@@ -182,6 +182,7 @@ impl ServerHost for SHost {
     /// checks every one before it writes).
     fn commit_player_transfer(&mut self,t:&PlayerTransfer,cs:&[MachineCommit])->bool{
         let Some(mut hands)=self.world.borrow().hands.clone() else{return false};
+        if !t.publishable(){return false;}
         if t.edits.iter().any(|e|hands.get(e.slot).map(|s|s.encoded.clone())!=e.expected){return false;}
         // A copy names the stack the player held and lands on a slot of the same item, as the glue checks.
         let copied:Option<Vec<String>>=t.copies.iter().map(|c|{
