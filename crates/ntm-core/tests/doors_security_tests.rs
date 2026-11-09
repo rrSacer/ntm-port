@@ -418,6 +418,36 @@ fn seal_frame_is_a_ring_around_the_square() {
     );
 }
 
+/// The frame ring of a seal of `size`, facing meta 0, as `BlockSeal.getFrameSize`
+/// walks it: the two rows at z ±size and the two columns at x 0 and 2·size.
+fn seal_ring(size: i32) -> BTreeSet<Cell> {
+    let mut ring = BTreeSet::new();
+    for bx in -size..=size {
+        ring.insert((bx + size, 0, size));
+        ring.insert((bx + size, 0, -size));
+    }
+    for bz in -size..=size {
+        ring.insert((0, 0, bz));
+        ring.insert((2 * size, 0, bz));
+    }
+    ring
+}
+
+/// `BlockSeal.getFrameSize`: `for (size = 1; size < 7; size++)`, so the largest
+/// frame is 6, and a ring of 7 is refused. Only the ring of the tested size is in
+/// the world, so no smaller ring can be the one that closes.
+#[test]
+fn seal_frame_accepts_size_six_and_refuses_seven() {
+    let six = seal_ring(6);
+    assert_eq!(frame_size((0, 0, 0), 0, |c| six.contains(&c)), 6);
+    let seven = seal_ring(7);
+    assert_eq!(frame_size((0, 0, 0), 0, |c| seven.contains(&c)), 0);
+    assert_eq!(
+        seal_explode((0, 0, 0), 0, |c| seven.contains(&c), |_| false),
+        None
+    );
+}
+
 #[test]
 fn seal_square_and_redstone() {
     let controller = (0, 0, 0);
