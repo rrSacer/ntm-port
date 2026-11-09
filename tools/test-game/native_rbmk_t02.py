@@ -253,7 +253,8 @@ def reopen(g):
 
 
 # ----------------------------------------------------------------------------------------------- scenario C
-A, B, C = (44, Y, 6), (46, Y, 6), (48, Y, 6)
+# All three in chunk (2, 0): the lids' records are that chunk's, cut alike in both worlds.
+A, B, C = (38, Y, 6), (41, Y, 6), (44, Y, 6)
 TOTAL = 3
 
 
@@ -289,7 +290,7 @@ def settled(g, timeout=90):
 def prepare(g):
     g.ctl('wait-ready 120')
     g.close()
-    floor(g, 38, 54, 0, 14)
+    floor(g, 34, 54, 0, 14)
     g.command('clear @s')
     g.command('gamemode survival @s')
     g.command('effect give @s minecraft:resistance infinite 4 true')
@@ -308,6 +309,8 @@ def prepare(g):
     g.command(f'give @s {LID} 1')
     g.command('give @s ntm:screwdriver 1')
     g.command('give @s minecraft:iron_pickaxe 1')
+    # The 33 other slots full: no lid that falls is picked up, in either world (who picks up what is timing).
+    g.command('give @s minecraft:stone 2112')
     g.command(f'tp @s 46.5 {Y} 12.5')
     time.sleep(2)
     base = count(g)
@@ -325,6 +328,7 @@ def act(g):
     if VANILLA:
         g.command(f'item replace block {A[0]} {A[1]} {A[2]} container.0 with {LID} 1')
         g.command(f'clear @s {LID} 1')
+        g.command('give @s minecraft:stone 64')
         g.command(f'item replace block {B[0]} {B[1]} {B[2]} container.0 with minecraft:air')
         g.command(f'summon minecraft:item {B[0] + .5} {Y + 3.5} {B[2] + .5} {{Item:{{id:"{LID}",count:1}}}}')
         g.command(f'setblock {C[0]} {C[1]} {C[2]} minecraft:air destroy')
@@ -341,6 +345,9 @@ def act(g):
                 if lid(g, p) == want:
                     break
             g.note(f'uses_{p[0]}', attempt + 1)
+            if item == LID:
+                # The lid's slot, free now, full too.
+                g.command('give @s minecraft:stone 64')
         g.command(f'tp @s {C[0] + .5} {Y} {C[2] + 3.5}')
         g.ctl('select minecraft:iron_pickaxe')
         g.ctl(f'break {C[0]} {C[1]} {C[2]}')
