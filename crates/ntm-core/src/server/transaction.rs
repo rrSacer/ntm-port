@@ -240,6 +240,16 @@ impl Server {
     /// against the whole state serialized: a change that left the stamps behind would leave the storage behind the
     /// world.
     pub(super) fn world_changed(&self) -> bool {
+        self.world_part_changed() || self.rbmk_changed()
+    }
+
+    /// Whether the RBMK layers changed since they were last written.
+    pub(super) fn rbmk_changed(&self) -> bool {
+        self.ready.kept_rbmk != Some(self.ready.world.rbmk_stamp())
+    }
+
+    /// Whether the kept world but the RBMK layers changed since it was last written.
+    pub(super) fn world_part_changed(&self) -> bool {
         let moved = self.ready.kept_rev != Some(self.ready.world.stamps());
         #[cfg(debug_assertions)]
         if !moved {
@@ -252,9 +262,19 @@ impl Server {
     pub(super) fn write_world(&mut self, host: &mut impl ServerHost) -> Result<(), String> {
         host.set(crate::persist::KEY, &self.ready.world.kept(self.ready.world.ticks))?;
         self.ready.kept_rev = Some(self.ready.world.stamps());
+        self.write_rbmk(host)?;
         #[cfg(debug_assertions)]
         {
             self.ready.kept = self.ready.world.kept(0);
+        }
+        Ok(())
+    }
+
+    /// The RBMK layers to the host's storage, under their own key: a reactor that steps rewrites only them.
+    pub(super) fn write_rbmk(&mut self, host: &mut impl ServerHost) -> Result<(), String> {
+        if self.rbmk_changed() {
+            host.set(crate::persist::RBMK_KEY, &self.ready.world.kept_rbmk())?;
+            self.ready.kept_rbmk = Some(self.ready.world.rbmk_stamp());
         }
         Ok(())
     }
@@ -657,8 +677,8 @@ impl Server {
         buttons.retain(|i|self.current_guard(&i.guard)&&!self.ready.broken.contains_key(&i.guard.key()));
         let mut groups: Vec<Vec<Key>> = Vec::new();
         let mut piles: BTreeMap<Key, Vec<Key>> = BTreeMap::new();
-        // An RBMK layer is one coupled group (T01): its columns and its kept state step and commit together.
-        let mut rbmk: BTreeMap<(String, i32), Vec<Key>> = BTreeMap::new();
+        // Machines that wait for a batch of their own: no step takes them.
+        let mut waiting: BTreeSet<Key> = BTreeSet::new();
         for (k, m) in &self.ready.world.machines {
             if self
                 .ready
@@ -667,6 +687,7 @@ impl Server {
                 .iter().chain(self.ready.world.prepared_retentions.iter().map(|p|&p.receipt))
                 .any(|b| b.origins.iter().any(|g|g.key()==*k&&g.generation==m.generation))
             {
+                waiting.insert(k.clone());
                 continue;
             }
             if let crate::machine::Data::Pile(p) = &m.data {
@@ -687,14 +708,14 @@ impl Server {
                 }
                 .unwrap_or_else(|| k.clone());
                 piles.entry(core).or_default().push(k.clone());
-            } else if let Some(layer) = Self::rbmk_layer(k, m) {
-                rbmk.entry(layer).or_default().push(k.clone());
+            } else if matches!(m.data, crate::machine::Data::Rbmk(_)) {
+                // An RBMK reactor is one coupled group (T01), its columns found below.
             } else if host.get_block(&k.0, k.1).is_some() {
                 groups.push(vec![k.clone()]);
             }
         }
         groups.extend(piles.into_values());
-        groups.extend(rbmk.into_values());
+        groups.extend(self.rbmk_groups(host, &waiting));
         if removed_only {
             groups.retain(|keys| self.group_removed(keys));
         }
@@ -773,6 +794,7 @@ impl Server {
                     })
                     .cloned()
                     .collect();
+                let removed_keys: BTreeSet<Key> = removed.iter().cloned().collect();
                 for k in removed {
                     self.block_event(
                         &mut staged,
@@ -792,7 +814,7 @@ impl Server {
                 }
                 self.pile_tick(&mut staged);
                 self.zirnox_tick(&mut staged);
-                if !self.rbmk_tick(&mut staged) {
+                if !self.rbmk_tick(&mut staged, &removed_keys) {
                     staged.valid = false;
                 }
                 self.requested_detonations(&mut staged);

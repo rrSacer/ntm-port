@@ -35,7 +35,7 @@ mod bits {
 }
 
 /// The schema of [`RbmkColumn`] and [`Layer`]: a save of another schema is not read as this one.
-pub const SCHEMA: u32 = 1;
+pub const SCHEMA: u32 = 2;
 
 /// The column kind of an RBMK block and whether it is moderated (`RBMKRod(true)`). None: not a column the
 /// provisional step runs (it stays inert).
@@ -63,23 +63,31 @@ pub fn rod_of(item: &str) -> Option<&'static RodType> {
 const ROD_KEYS: [&str; 4] = ["yield", "xenon", "core", "hull"];
 
 /// The rod's tag read from a stack's `minecraft:custom_data` (provisional codec, T03 owns it): no data is no tag
-/// (`stackTagCompound == null`); a key absent or not a double reads as never written.
+/// (`stackTagCompound == null`); a key absent or not a double reads as never written. The non-finite doubles come as
+/// Java writes them (`NaNd`, `Infinityd`, `-Infinityd`, the engine's SNBT): a tag goes through the stack without loss.
 pub fn rod_stack(custom: Option<&str>) -> RodStack {
     let Some(fields) = custom.and_then(crate::snbt::fields) else { return RodStack::bare() };
-    let read = |k: &str| fields.get(k).and_then(|v| v.strip_suffix(['d', 'D'])).and_then(|v| v.parse::<f64>().ok());
+    let read = |k: &str| fields.get(k).and_then(|v| v.strip_suffix(['d', 'D'])).and_then(|v| match v {
+        "NaN" => Some(f64::NAN),
+        "Infinity" => Some(f64::INFINITY),
+        "-Infinity" => Some(f64::NEG_INFINITY),
+        v if v.bytes().any(|c| c.is_ascii_alphabetic() && c != b'e' && c != b'E') => None,
+        v => v.parse::<f64>().ok(),
+    });
     RodStack { has_tag: true, yield_: read("yield"), xenon: read("xenon"), core: read("core"), hull: read("hull"), ..RodStack::bare() }
 }
 
 /// `custom` with the rod's tag written over its four keys, every other field kept. None: no tag to write (the stack
-/// keeps none). A value with no SNBT form (NaN, infinite) leaves its key as it was.
+/// keeps none). Each double goes by its exact value: the shortest form that reads back to its bits, and Java's words
+/// for NaN and the infinities (a NaN's payload is the canonical one, as `DataOutputStream.writeDouble` writes it).
 pub fn with_rod_stack(custom: Option<&str>, s: &RodStack) -> Option<String> {
     if !s.has_tag {
         return custom.map(str::to_string);
     }
     let mut out = custom.map(str::to_string).unwrap_or_else(|| "{}".into());
     for (key, value) in ROD_KEYS.into_iter().zip([s.yield_, s.xenon, s.core, s.hull]) {
-        if let Some(v) = value.filter(|v| v.is_finite()) {
-            out = crate::snbt::with_field(Some(&out), key, &format!("{v:?}d"));
+        if let Some(v) = value {
+            out = crate::snbt::with_field(Some(&out), key, &format!("{}d", crate::snbt::java_double(v)));
         }
     }
     Some(out)
@@ -150,27 +158,52 @@ pub struct KeptStream {
     pub bits: [u64; 4],
 }
 
-/// A layer's simulation state (one `Reactor` per dimension and base Y).
+/// A map by cell kept as a list of pairs (JSON keys are text).
+mod by_cell {
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+    use std::collections::BTreeMap;
+    pub fn serialize<V: Serialize, S: Serializer>(m: &BTreeMap<[i32; 2], V>, s: S) -> Result<S::Ok, S::Error> {
+        s.collect_seq(m.iter())
+    }
+    pub fn deserialize<'de, V: Deserialize<'de>, D: Deserializer<'de>>(d: D) -> Result<BTreeMap<[i32; 2], V>, D::Error> {
+        Vec::<([i32; 2], V)>::deserialize(d).map(|v| v.into_iter().collect())
+    }
+}
+
+/// A column a layer knows (D1, D4): when it was first registered, what it is, and the component whose state it
+/// shares. Kept while the world may still show it: a column in a chunk not loaded is not gone.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Layer {
-    pub schema: u32,
-    /// The columns' logical order (D1): the order they were first registered, by position.
-    pub order: Vec<[i32; 2]>,
-    /// The layer's `java.util.Random` (D3): its seed and the cached gaussian, by its bits.
+pub struct Member {
+    pub seq: u64,
+    pub block: String,
+    pub comp: [i32; 2],
+}
+
+/// The simulation state of one component of a layer, one reactor: the columns its streams and heat link. Its
+/// `java.util.Random` (D3) by its seed and cached gaussian, and the streams its last step emitted for the next one
+/// (`NeutronNodeWorld`; the Java keeps them in memory only), in their order.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct CompState {
     pub seed: u64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gaussian: Option<u64>,
-    /// The streams the last step emitted, for the next one (`NeutronNodeWorld`; the Java keeps them in memory only).
     pub streams: Vec<KeptStream>,
 }
 
-impl Layer {
-    /// A new layer: its random seeded from its place, the same in every world (D3: a simulation's own RNG, not the
-    /// world's stream).
-    pub fn new(dim: &str, y: i32) -> Self {
-        let seed = crate::ledger::fnv(&[b"rbmk layer", dim.as_bytes(), &y.to_le_bytes()]) as i64;
-        let (seed, gaussian) = JavaRandom::new(seed).state();
-        Layer { schema: SCHEMA, order: Vec::new(), seed, gaussian: gaussian.map(f64::to_bits), streams: Vec::new() }
+impl CompState {
+    fn seeded(seed: u64) -> Self {
+        let (seed, gaussian) = JavaRandom::new(seed as i64).state();
+        CompState { seed, gaussian: gaussian.map(f64::to_bits), streams: Vec::new() }
+    }
+    /// A component's first state: its random seeded from its place (its first column), the same in every world.
+    pub fn fresh(dim: &str, y: i32, key: [i32; 2]) -> Self {
+        Self::seeded(crate::ledger::fnv(&[b"rbmk component", dim.as_bytes(), &y.to_le_bytes(), &cell_bytes(key)]))
+    }
+    /// The state of a part split from `parent` that does not keep its random: a seed derived from the parent's state
+    /// and the part's place, drawing nothing from the parent's random.
+    pub fn derived(parent: &CompState, key: [i32; 2]) -> Self {
+        let g = parent.gaussian.unwrap_or(u64::MAX).to_le_bytes();
+        Self::seeded(crate::ledger::fnv(&[b"rbmk split", &parent.seed.to_le_bytes(), &g, &cell_bytes(key)]))
     }
     pub fn rng(&self) -> JavaRandom {
         JavaRandom::from_state(self.seed, self.gaussian.map(f64::from_bits))
@@ -180,27 +213,62 @@ impl Layer {
         self.seed = seed;
         self.gaussian = gaussian.map(f64::to_bits);
     }
-    /// The kept streams for columns in `order` (indices into it); a stream whose origin is no longer a column of the
-    /// layer is dropped, as `Reactor::remove` drops it.
-    pub fn queue(&self) -> Vec<QueuedStream> {
+    /// The kept streams of the columns in `order` (indices into it); a stream whose origin is not there is dropped,
+    /// as `Reactor::remove` drops it.
+    pub fn queue(&self, order: &[[i32; 2]]) -> Vec<QueuedStream> {
         self.streams
             .iter()
             .filter_map(|s| {
-                let origin = self.order.iter().position(|p| *p == s.origin)?;
+                let origin = order.iter().position(|p| *p == s.origin)?;
                 let [vx, vz, q, r] = s.bits.map(f64::from_bits);
                 Some(QueuedStream { origin, vx, vz, flux_quantity: q, flux_ratio: r })
             })
             .collect()
     }
-    pub fn set_queue(&mut self, queue: &[QueuedStream]) {
+    pub fn set_queue(&mut self, order: &[[i32; 2]], queue: &[QueuedStream]) {
         self.streams = queue
             .iter()
-            .map(|q| KeptStream {
-                origin: self.order[q.origin],
-                bits: [q.vx, q.vz, q.flux_quantity, q.flux_ratio].map(f64::to_bits),
-            })
+            .map(|q| KeptStream { origin: order[q.origin], bits: [q.vx, q.vz, q.flux_quantity, q.flux_ratio].map(f64::to_bits) })
             .collect();
     }
+}
+
+fn cell_bytes(c: [i32; 2]) -> [u8; 8] {
+    let mut b = [0; 8];
+    b[..4].copy_from_slice(&c[0].to_le_bytes());
+    b[4..].copy_from_slice(&c[1].to_le_bytes());
+    b
+}
+
+/// What a layer (dimension, base Y) keeps: the columns it knows and the state of each of its components.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Layer {
+    pub schema: u32,
+    /// The next registration number (D1: the logical order is the order of registration).
+    pub next_seq: u64,
+    #[serde(with = "by_cell")]
+    pub members: std::collections::BTreeMap<[i32; 2], Member>,
+    /// By the cell of the component's first registered column.
+    #[serde(with = "by_cell")]
+    pub comps: std::collections::BTreeMap<[i32; 2], CompState>,
+}
+
+impl Layer {
+    pub fn new() -> Self {
+        Layer { schema: SCHEMA, next_seq: 0, members: Default::default(), comps: Default::default() }
+    }
+}
+
+impl Default for Layer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+/// The cells a column of `kind` links to, relative to it: the cells its streams can read (`Reactor::ray_cells`) for
+/// a fuel channel, none for the others. The same at every place: the rays' cells are `floor(0.5 + v·i)` offsets.
+pub fn ray_offsets(kind: Kind, range: i32) -> Vec<[i32; 2]> {
+    crate::rbmk::reactor::Reactor::ray_cells(kind, 0, 0, range).into_iter().map(|(x, z)| [x, z]).collect()
 }
 
 /// The stack a fuel channel's slot shows for a rod tag: `stack` with the tag written in its data.
@@ -221,21 +289,28 @@ mod tests {
         let back: RbmkColumn = serde_json::from_str(&serde_json::to_string(&c).unwrap()).unwrap();
         assert_eq!(back.heat.to_bits(), c.heat.to_bits());
         assert!(back.flux_fast_ratio.is_nan() && back.last_flux_quantity.to_bits() == (-0.0f64).to_bits());
-        let mut l = Layer::new("minecraft:overworld", 64);
-        l.order = vec![[0, 0], [1, 0]];
+        let mut l = Layer::new();
+        l.members.insert([1, 0], Member { seq: 3, block: "ntm:rbmk_rod".into(), comp: [1, 0] });
+        let mut c = CompState::fresh("minecraft:overworld", 64, [1, 0]);
+        let order = [[0, 0], [1, 0]];
         let q = QueuedStream { origin: 1, vx: 0.5, vz: -1.0, flux_quantity: 1.0e-300, flux_ratio: 0.3 };
-        l.set_queue(&[q]);
-        let mut rng = l.rng();
+        c.set_queue(&order, &[q]);
+        let mut rng = c.rng();
         rng.next_gaussian();
-        l.set_rng(&rng);
+        c.set_rng(&rng);
+        l.comps.insert([1, 0], c);
         let back: Layer = serde_json::from_str(&serde_json::to_string(&l).unwrap()).unwrap();
         assert_eq!(back, l);
-        assert_eq!(back.queue(), vec![q]);
-        assert_eq!(back.rng(), rng, "the cached gaussian too");
-        // A stream of a column that left the order is dropped.
-        let mut gone = back.clone();
-        gone.order = vec![[0, 0]];
-        assert!(gone.queue().is_empty());
+        assert_eq!(back.comps[&[1, 0]].queue(&order), vec![q]);
+        assert_eq!(back.comps[&[1, 0]].rng(), rng, "the cached gaussian too");
+        // A stream of a column that left the component is dropped.
+        assert!(back.comps[&[1, 0]].queue(&[[0, 0]]).is_empty());
+        // A split part's random is its own, and drawing nothing from the parent's.
+        let parent = &back.comps[&[1, 0]];
+        let child = CompState::derived(parent, [5, 5]);
+        assert_ne!(child.seed, parent.seed);
+        assert_eq!(child, CompState::derived(parent, [5, 5]), "the same in every world");
+        assert_eq!(parent.rng(), rng);
     }
 
     #[test]
@@ -255,5 +330,22 @@ mod tests {
         // A tag with a key never written keeps it unwritten.
         let partial = rod_stack(Some("{yield:5.0d}"));
         assert_eq!((partial.yield_, partial.xenon, partial.has_tag), (Some(5.0), None, true));
+        // P2-1: every double by its exact value, the non-finite ones and -0.0 too, as the engine's SNBT writes them.
+        for v in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY, -0.0, f64::MIN_POSITIVE / 3.0, 1.0e300, -7.25e-310] {
+            let s = RodStack { has_tag: true, yield_: Some(v), xenon: Some(-v), core: Some(v), hull: Some(20.0), ..RodStack::bare() };
+            let mut custom = with_rod_stack(Some("{a:1b}"), &s).unwrap();
+            for _ in 0..3 {
+                custom = crate::snbt::canonical(&custom).unwrap();
+                custom = with_rod_stack(Some(&custom), &rod_stack(Some(&custom))).unwrap();
+            }
+            let back = rod_stack(Some(&custom));
+            for (a, b) in [(back.yield_, s.yield_), (back.xenon, s.xenon), (back.core, s.core), (back.hull, s.hull)] {
+                let (a, b) = (a.unwrap(), b.unwrap());
+                assert!(a.to_bits() == b.to_bits() || a.is_nan() && b.is_nan(), "{v:?}: {custom}");
+            }
+        }
+        assert!(with_rod_stack(None, &RodStack { has_tag: true, core: Some(f64::INFINITY), ..RodStack::bare() }).unwrap().contains("core:Infinityd"));
+        // A word that is not a double is not one.
+        assert_eq!(rod_stack(Some("{yield:\"5.0d\",core:infd}")).yield_, None);
     }
 }

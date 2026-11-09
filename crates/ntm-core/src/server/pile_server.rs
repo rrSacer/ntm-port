@@ -322,7 +322,8 @@ impl Server {
                     let (desired,data)=Self::machine_output(&mut machine,&expected);
                     let json=serde_json::to_string(&machine).expect("machine serialization");
                     let c=MachineCommit{cells:Vec::new(),guard:CellGuard::machine(&key,&machine),expected_saved:self.ready.native_saved.contains_key(&key),dim:dim.into(),pos:at,expected,desired,data,json};
-                    let transfer=PlayerTransfer{player:player.into(),edits:vec![edit],drops:Vec::new()};
+                    let copies=vec![SlotCopy{dim:dim.into(),pos:at,slot:0,from:edit.slot}];
+                    let transfer=PlayerTransfer{player:player.into(),edits:vec![edit],drops:Vec::new(),copies};
                     if host.commit_player_transfer(&transfer,std::slice::from_ref(&c)){
                         self.ready.world.machines.insert(key.clone(),machine);
                         self.ready.bridge.last.insert(key.clone(),c.desired);

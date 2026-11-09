@@ -17,6 +17,9 @@ use std::collections::{BTreeMap, BTreeSet};
 
 /// The key of the world's state in the host's storage.
 pub const KEY: &str = "world";
+/// The key of the RBMK layers' state (`WorldState::rbmk`), in the same storage and written with it at every save, apart
+/// from the rest: a reactor that steps rewrites only this one between saves (P2-3 of the T01 review).
+pub const RBMK_KEY: &str = "rbmk";
 /// Ticks between keeps of the clock alone: a crash sets it back at most this.
 pub const TICKS_EVERY: u64 = 600;
 
@@ -109,9 +112,6 @@ pub struct Kept {
     pub bombs: crate::blast::BombWorld,
     #[serde(default)]
     pub zirnox: crate::zirnox::Remnants,
-    /// Each RBMK layer's simulation state (dimension, base Y): order, random and queued streams (`crate::rbmk::persist`).
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub rbmk: Vec<((String, i32), crate::rbmk::persist::Layer)>,
     #[serde(default)]
     pub ticks: u64,
     /// Batches of effects named so far (`CommittedEffects::serial`).
@@ -230,7 +230,14 @@ impl WorldState {
             radiation: kept.radiation.into(),
             bombs: kept.bombs.into(),
             zirnox: kept.zirnox.into(),
-            rbmk: Tracked::new(kept.rbmk.into_iter().filter(|(_, l)| l.schema == crate::rbmk::persist::SCHEMA).collect()),
+            rbmk: Tracked::new(
+                kv.get(RBMK_KEY)
+                    .and_then(|b| serde_json::from_slice::<Vec<((String, i32), crate::rbmk::persist::Layer)>>(&b).ok())
+                    .unwrap_or_default()
+                    .into_iter()
+                    .filter(|(_, l)| l.schema == crate::rbmk::persist::SCHEMA)
+                    .collect(),
+            ),
             ticks: kept.ticks,
             effect_serial: kept.effect_serial.into(),
             ..WorldState::default()
@@ -239,7 +246,7 @@ impl WorldState {
 
     /// The stamps of the kept parts: equal to those of the last keep, the parts are as kept. Of removals and batches
     /// only an earlier version's are (`legacy`): the others are kept with their chunks.
-    pub fn stamps(&self) -> [u64; 11] {
+    pub fn stamps(&self) -> [u64; 10] {
         [
             Tracked::stamp(&self.effect_serial),
             Tracked::stamp(&self.legacy),
@@ -251,7 +258,6 @@ impl WorldState {
             Tracked::stamp(&self.radiation),
             Tracked::stamp(&self.bombs),
             Tracked::stamp(&self.zirnox),
-            Tracked::stamp(&self.rbmk),
         ]
     }
 
@@ -259,6 +265,16 @@ impl WorldState {
     /// prepared retentions. Zero in a world of this version at every save (an earlier version's, until they leave).
     pub fn kept_items(&self) -> usize {
         self.legacy.len() + self.prepared_retentions.len()
+    }
+
+    /// The stamp of the RBMK layers' last change (`RBMK_KEY`).
+    pub fn rbmk_stamp(&self) -> u64 {
+        Tracked::stamp(&self.rbmk)
+    }
+
+    /// What [`WorldState::load`] reads back of the RBMK layers (`RBMK_KEY`): as big as the reactors, whatever the world.
+    pub fn kept_rbmk(&self) -> Vec<u8> {
+        serde_json::to_vec(&self.rbmk.iter().collect::<Vec<_>>()).unwrap_or_default()
     }
 
     /// What [`WorldState::load`] reads back, the clock at `ticks`.
@@ -270,8 +286,6 @@ impl WorldState {
             radiation: &'a BTreeMap<String, crate::radiation::Dose>,
             bombs: &'a crate::blast::BombWorld,
             zirnox: &'a crate::zirnox::Remnants,
-            #[serde(skip_serializing_if = "Vec::is_empty")]
-            rbmk: Vec<(&'a (String, i32), &'a crate::rbmk::persist::Layer)>,
             ticks: u64,
             #[serde(skip_serializing_if = "is_zero")]
             effect_serial: &'a u64,
@@ -288,7 +302,6 @@ impl WorldState {
             radiation: &self.radiation,
             bombs: &self.bombs,
             zirnox: &self.zirnox,
-            rbmk: self.rbmk.iter().collect(),
             ticks,
             effect_serial: &self.effect_serial,
             // Receipts and survivors are the session's: every save confirms them before the storage is written.
@@ -309,7 +322,6 @@ impl WorldState {
             radiation: (*self.radiation).clone(),
             bombs: (*self.bombs).clone(),
             zirnox: (*self.zirnox).clone(),
-            rbmk: self.rbmk.iter().map(|(k, v)| (k.clone(), v.clone())).collect(),
             ticks,
             effect_serial: *self.effect_serial,
             removals: (*self.removals).clone(),

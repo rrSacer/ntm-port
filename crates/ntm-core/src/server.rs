@@ -232,6 +232,16 @@ pub enum TransferDrop {
     World { delay: u32 },
 }
 
+/// A machine slot a transfer fills with a copy of a player's stack (`ItemStack.copy()`): the stack as it was read in
+/// the player's slot `from`, every component carried over, at the count the commit's desired stack gives.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct SlotCopy {
+    pub dim: String,
+    pub pos: Pos,
+    pub slot: usize,
+    pub from: PlayerSlot,
+}
+
 /// The player's side of a transfer with machines ([`ServerHost::commit_player_transfer`]). The machines' side is a
 /// list of [`MachineCommit`]s, compared and published with it.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -239,6 +249,8 @@ pub struct PlayerTransfer {
     pub player: String,
     pub edits: Vec<SlotEdit>,
     pub drops: Vec<(container_bridge::Stack, TransferDrop)>,
+    /// The machine slots that take a player's whole stack (a rod put in by hand).
+    pub copies: Vec<SlotCopy>,
 }
 
 /// One indivisible machine update. `expected` is the inventory read before
@@ -350,8 +362,12 @@ struct Ready {
     /// The redstone signal batteries and bombs received this tick.
     native_signal: BTreeMap<Key, u8>,
     zirnox_radiation_rate: BTreeMap<String,u32>,
+    /// RBMK columns whose meltdown is due and already logged (once per column and state; T16 runs it).
+    rbmk_melting: BTreeSet<Key>,
     /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
-    kept_rev: Option<[u64; 11]>,
+    kept_rev: Option<[u64; 10]>,
+    /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.
+    kept_rbmk: Option<u64>,
     /// What was last kept, without the clock: debug builds check every skipped write against it.
     #[cfg(debug_assertions)]
     kept: Vec<u8>,

@@ -155,6 +155,18 @@ impl Parser<'_> {
     }
 }
 
+/// A double in its shortest form, the words of the non-finite ones as Java writes them (`Double.toString`, the engine's
+/// SNBT): `NaN`, `Infinity`, `-Infinity`.
+pub fn java_double(v: f64) -> String {
+    if v.is_nan() {
+        "NaN".into()
+    } else if v.is_infinite() {
+        if v > 0.0 { "Infinity" } else { "-Infinity" }.into()
+    } else {
+        format!("{v:?}")
+    }
+}
+
 fn quote(s: &str) -> String {
     format!("\"{}\"", s.replace('\\', "\\\\").replace('"', "\\\""))
 }
@@ -167,8 +179,11 @@ fn number(w: &str) -> Option<String> {
         _ => (w, if w.contains('.') || w.contains('e') || w.contains('E') { 'd' } else { 'i' }),
     };
     match suffix {
-        'd' => Some(format!("{:?}d", body.parse::<f64>().ok()?)),
-        'f' => Some(format!("{:?}f", body.parse::<f32>().ok()?)),
+        'd' => Some(format!("{}d", java_double(body.parse::<f64>().ok()?))),
+        'f' => {
+            let v = body.parse::<f32>().ok()?;
+            Some(if v.is_finite() { format!("{v:?}f") } else { format!("{}f", java_double(f64::from(v))) })
+        }
         'b' | 's' | 'l' | 'i' => {
             let v: i64 = body.parse().ok()?;
             Some(if suffix == 'i' { v.to_string() } else { format!("{v}{suffix}") })

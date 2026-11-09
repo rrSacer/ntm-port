@@ -851,6 +851,46 @@ impl Reactor {
         self.columns[i].rod_mut().unwrap().has_rod = true;
     }
 
+    /// Every cell a stream of a column of `kind` at `(x, z)` can read (`run_stream`, its last cell and the cell of its
+    /// end's `hits`), for every direction `spread_flux` can give it: the four cardinal ones, or each of the four
+    /// ReaSim rotations by 9° with its eight streams 45° apart. None for a column that emits nothing (T01: the cells
+    /// whose occlusion a step needs, and the columns its streams link).
+    pub fn ray_cells(kind: Kind, x: i32, z: i32, range: i32) -> Vec<(i32, i32)> {
+        let mut dirs = Vec::new();
+        match kind {
+            Kind::RodReaSim => {
+                let rot = |vx: &mut f64, vz: &mut f64, deg: f64| {
+                    let a = deg / 180.0 * PI;
+                    let (c, s) = (jmath::cos(a), jmath::sin(a));
+                    let (nx, nz) = (*vx * c + *vz * s, *vz * c - *vx * s);
+                    *vx = nx;
+                    *vz = nz;
+                };
+                for r in 0..4 {
+                    let (mut vx, mut vz) = (1.0_f64, 0.0_f64);
+                    rot(&mut vx, &mut vz, f64::from(r) * 9.0);
+                    for _ in 0..8 {
+                        dirs.push((vx, vz));
+                        rot(&mut vx, &mut vz, 45.0);
+                    }
+                }
+            }
+            Kind::Rod => dirs.extend([(0.0, -1.0), (1.0, 0.0), (0.0, 1.0), (-1.0, 0.0)]),
+            _ => {}
+        }
+        let mut cells = Vec::new();
+        for (vx, vz) in dirs {
+            for i in 1..=range {
+                let fi = f64::from(i);
+                cells.push((x + java_floor(0.5 + vx * fi), z + java_floor(0.5 + vz * fi)));
+            }
+            cells.push((java_floor(f64::from(x) + vx), java_floor(f64::from(z) + vz)));
+        }
+        cells.sort_unstable();
+        cells.dedup();
+        cells
+    }
+
     /// `spreadFlux`: four cardinal streams, or eight ReaSim ones.
     fn spread_flux(&mut self, i: usize, flux: f64, ratio: f64) {
         if flux == 0.0 {
