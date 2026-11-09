@@ -323,6 +323,7 @@ pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mo
         for text in ledger_report(game,&line.split_whitespace().skip(1).collect::<Vec<_>>()).lines(){game.native_feedback(horizon_client::text::Text::literal(text));}
         return true;
     }
+    if line.split_whitespace().next()==Some("ntmtest"){return test_hook(game,player,line);}
     if line.split_whitespace().next()!=Some("ntmbomba"){return false;}
     let who=PlayerInfo{id:game.native_actor_uuid().unwrap_or_else(||player.uuid.to_string()),name:player.name.clone(),dim:player.dimension.clone(),pos:player.position,creative:player.game_mode==1};
     let mut guard=lock(&SERVER);
@@ -335,6 +336,30 @@ pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mo
         return true;
     }
     false
+}
+
+/// The in-game proofs' hooks, only with `NTM_TEST_HOOKS=1` (as the save's failpoints): `ntmtest eject <x> <y> <z> <ax>
+/// <ay> <az>` puts the rod of the fuel channel at x y z out as an item entity at ax ay az through its reactor's next step
+/// (the entity receipt path); `ntmtest take <x> <y> <z> cursor|drop` moves it to the acting player's cursor or out of
+/// their hand as a thrown drop, in one transfer. Without the variable the command does not exist.
+fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::NativeServerPlayer,line:&str)->bool {
+    if std::env::var_os("NTM_TEST_HOOKS").is_none(){return false;}
+    let w:Vec<&str>=line.split_whitespace().skip(1).collect();
+    let n=|i:usize|w.get(i).and_then(|v|v.parse::<f64>().ok());
+    let dim=game.dim.id().to_string();
+    let me=game.native_actor_uuid().unwrap_or_else(||player.uuid.to_string());
+    let mut guard=lock(&SERVER);
+    let mut host=Host{game,buttons:Vec::new()};
+    let Some((server,_))=guard.as_mut() else{return true};
+    reconcile(server,&mut host);
+    let at=match (n(1),n(2),n(3)){(Some(x),Some(y),Some(z))=>Some([x as i32,y as i32,z as i32]),_=>None};
+    let ok=match (w.first().copied(),at){
+        (Some("eject"),Some(p))=>match (n(4),n(5),n(6)){(Some(x),Some(y),Some(z))=>server.native_test_eject(&dim,p,[x,y,z]),_=>false},
+        (Some("take"),Some(p))=>server.native_test_take(&mut host,&dim,p,&me,w.get(4)==Some(&"cursor")),
+        _=>false,
+    };
+    host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok={ok}")));
+    true
 }
 
 // ----------------------------------------------------------------- the ledger

@@ -364,6 +364,9 @@ struct Ready {
     zirnox_radiation_rate: BTreeMap<String,u32>,
     /// RBMK columns whose meltdown is due and already logged (once per column and state; T16 runs it).
     rbmk_melting: BTreeSet<Key>,
+    /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a
+    /// place, taken by their reactor's next accepted step.
+    rbmk_ejects: BTreeMap<Key, [f64; 3]>,
     /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
     kept_rev: Option<[u64; 10]>,
     /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.

@@ -494,3 +494,38 @@ fn keep_world_cost() {
     assert!(costs.iter().all(|c| *c < 1.0), "{costs:?}");
     assert!(costs[2] < costs[0] * 1.5 + 0.05, "no growth with the world: {costs:?}");
 }
+
+/// The test hooks of the in-game proof (`NTM_TEST_HOOKS=1`): a rod leaves its channel once, as an item entity through
+/// the entity receipt of its reactor's step, or to the player's cursor, or as a drop, each in one commit.
+#[test]
+fn the_test_hooks_move_a_rod_once() {
+    let mut g = reactor();
+    g.run(2);
+    // As an item entity, through the step's entity effect.
+    assert!(g.server.native_test_eject(OW, [1, Y, 0], [1.5, f64::from(Y) + 3.0, 4.5]));
+    assert!(!g.server.native_test_eject(OW, [1, Y, 1], [0.0; 3]), "a column without a rod has none to put out");
+    g.run(2);
+    assert_eq!(slot(&g, [1, Y, 0]), None);
+    let entities = g.world.borrow().entities.clone();
+    assert_eq!(entities.len(), 1);
+    assert_eq!(entities[0].1.kind, "minecraft:item");
+    assert!(entities[0].1.nbt.contains("ntm:rbmk_fuel_ueu") && entities[0].1.nbt.contains("minecraft:custom_data"), "{}", entities[0].1.nbt);
+    g.run(3);
+    assert_eq!(g.world.borrow().entities.len(), 1, "once");
+    // To the cursor, and as a drop.
+    hold(&mut g, "minecraft:stone", 1, false);
+    assert!(g.server.native_test_take(&mut g.sh, OW, [2, Y, 0], "p1", true));
+    assert_eq!(g.world.borrow().hands.as_ref().unwrap().carried.as_ref().map(|s| s.stack.id.clone()), Some("ntm:rbmk_fuel_meu".into()));
+    assert_eq!(slot(&g, [2, Y, 0]), None);
+    assert!(!g.server.native_test_take(&mut g.sh, OW, [2, Y, 0], "p1", false), "an empty channel gives nothing");
+    assert!(g.server.native_test_take(&mut g.sh, OW, [0, Y, 0], "p1", false));
+    assert_eq!(slot(&g, [0, Y, 0]), None);
+    assert!(g.world.borrow().dropped.iter().any(|d| d.starts_with("player ntm:rbmk_fuel_po210be 1")));
+    // A cursor already full: nothing moves.
+    let mut g2 = reactor();
+    g2.run(2);
+    hold(&mut g2, "minecraft:stone", 1, false);
+    g2.world.borrow_mut().hands.as_mut().unwrap().carried = Some(HeldStack { stack: Stack::new("minecraft:dirt", 1), encoded: "dirt".into() });
+    assert!(!g2.server.native_test_take(&mut g2.sh, OW, [1, Y, 0], "p1", true));
+    assert!(slot(&g2, [1, Y, 0]).is_some());
+}

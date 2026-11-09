@@ -309,6 +309,26 @@ impl Server {
                 r.add(col);
             }
             r.set_queued(states[i].queue(order));
+            // Test hooks: a rod asked out leaves its channel as an item entity, in this step's own commit.
+            for (j, p) in order.iter().enumerate() {
+                let key = (dim.clone(), [p[0], y, p[1]]);
+                let Some(at) = self.ready.rbmk_ejects.remove(&key) else { continue };
+                let Some(rod) = r.columns[j].rod_mut() else { continue };
+                let Some((_, tag)) = rod.fuel.take() else { continue };
+                let m = &self.ready.world.machines[&key];
+                let Data::Rbmk(c) = &m.data else { unreachable!() };
+                let Some(Some(stack)) = c.slots.first().cloned() else { continue };
+                let stack = persist::rod_in_slot(&stack, &tag);
+                let components = stack.custom.as_ref().map_or(String::new(), |c| format!(",components:{{\"minecraft:custom_data\":{c}}}"));
+                let nbt = format!("{{Item:{{id:\"{}\",count:{}{components}}},PickupDelay:10s}}", stack.id, stack.count);
+                let cell = at.map(|v| v.floor() as i32);
+                if !host.spawn_entities(&dim, cell, &[crate::server::EntitySpawn { kind: "minecraft:item".into(), pos: at, nbt }]) {
+                    return false;
+                }
+                if let Some(Data::Rbmk(c)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data) {
+                    c.slots[0] = None;
+                }
+            }
             // Provisional occlusion (T04): every block but air, in the cells the streams of this reactor can read.
             let mut cells = BTreeSet::new();
             for p in order {
@@ -376,6 +396,53 @@ impl Server {
         if self.ready.world.rbmk.get(&(dim.clone(), y)) != Some(&layer) {
             self.ready.world.rbmk.insert((dim, y), layer);
         }
+        true
+    }
+
+    /// Test hook (`NTM_TEST_HOOKS=1`): the rod of the fuel channel at `pos` leaves as an item entity at `at` through a
+    /// `WorldEffect::Entities` of its reactor's next accepted step (the entity receipt path a debris will take, T20).
+    pub fn native_test_eject(&mut self, dim: &str, pos: Pos, at: [f64; 3]) -> bool {
+        let key = (dim.to_string(), pos);
+        let full = self.ready.world.machines.get(&key).is_some_and(|m| matches!(&m.data, Data::Rbmk(c) if c.slots.first().is_some_and(Option::is_some)));
+        if full && at.iter().all(|v| v.is_finite()) {
+            self.ready.rbmk_ejects.insert(key, at);
+        }
+        full
+    }
+
+    /// Test hook (`NTM_TEST_HOOKS=1`): the rod of the fuel channel at `pos` goes to the acting player's cursor (`cursor`,
+    /// which must be empty) or out of their hand as a thrown drop, in one transfer with the channel.
+    pub fn native_test_take(&mut self, host: &mut impl ServerHost, dim: &str, pos: Pos, player: &str, cursor: bool) -> bool {
+        let key = (dim.to_string(), pos);
+        let Some(m) = self.ready.world.machines.get(&key).cloned() else { return false };
+        if self.ready.broken.contains_key(&key) || !self.model_current(&key, &m) || !matches!(m.data, Data::Rbmk(_)) {
+            return false;
+        }
+        let Some(hand) = host.player_slots(player) else { return false };
+        let Some(expected) = host.machine_slots(dim, pos) else { return false };
+        let Some(Some(rod)) = expected.first().cloned() else { return false };
+        let mut machine = m.clone();
+        let Data::Rbmk(col) = &mut machine.data else { unreachable!() };
+        col.slots = vec![None];
+        let (desired, data) = Self::machine_output(&mut machine, &expected);
+        let json = serde_json::to_string(&machine).expect("machine serialization");
+        let commit = MachineCommit { cells: Vec::new(), guard: CellGuard::machine(&key, &m), expected_saved: self.ready.native_saved.contains_key(&key), dim: dim.into(), pos, expected, desired, data, json };
+        let (edits, drops) = if cursor {
+            if hand.carried.is_some() {
+                return false;
+            }
+            (vec![SlotEdit { slot: PlayerSlot::Carried, expected: None, desired: Some(rod) }], Vec::new())
+        } else {
+            (Vec::new(), vec![(rod, TransferDrop::Thrown)])
+        };
+        let transfer = PlayerTransfer { player: player.into(), edits, drops, copies: Vec::new() };
+        if !host.commit_player_transfer(&transfer, std::slice::from_ref(&commit)) {
+            return false;
+        }
+        self.ready.world.machines.insert(key.clone(), machine);
+        self.ready.bridge.last.insert(key.clone(), commit.desired);
+        self.ready.bridge.data.insert(key.clone(), commit.data);
+        self.ready.native_saved.insert(key, commit.json);
         true
     }
 
