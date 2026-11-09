@@ -8,6 +8,9 @@ use std::{cell::RefCell, collections::HashMap, rc::Rc};
 
 const OW: &str = "minecraft:overworld";
 
+/// What a chunk's record owes: removals and batches.
+type Owed = (Vec<crate::persist::Removal>, Vec<CommittedEffects>);
+
 #[derive(Clone)]
 struct World {
     blocks: HashMap<(String, Pos), String>,
@@ -49,7 +52,7 @@ struct World {
     /// the native host's.
     ledgers: BTreeMap<(String, [i32; 2]), crate::ledger::ChunkLedger>,
     /// What each chunk's record owes (`store_obligations`): removals and batches.
-    homes: BTreeMap<(String, [i32; 2]), (Vec<crate::persist::Removal>, Vec<CommittedEffects>)>,
+    homes: BTreeMap<(String, [i32; 2]), Owed>,
     /// A host without entities: `apply_entities` refuses.
     no_entities: bool,
     /// The whole stacks transfers copied into machines (`SlotCopy`), as the player held them.

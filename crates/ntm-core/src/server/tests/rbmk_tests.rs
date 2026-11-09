@@ -59,7 +59,9 @@ fn reactor() -> Game {
 const COLS: [Pos; 5] = [[0, Y, 0], [1, Y, 0], [2, Y, 0], [1, Y, 1], [3, Y, 0]];
 
 /// What the save holds of the reactor A: every column's state and slots, its members and its component's state.
-fn state(g: &mut Game) -> (Vec<String>, Vec<Option<Stack>>, Vec<(u64, [i32; 2])>, Option<CompState>) {
+type Saved = (Vec<String>, Vec<Option<Stack>>, Vec<(u64, [i32; 2])>, Option<CompState>);
+
+fn state(g: &mut Game) -> Saved {
     let json = COLS.iter().map(|p| serde_json::to_string(&rbmk(g, *p)).unwrap()).collect();
     let slots = COLS[..3].iter().map(|p| slot(g, *p)).collect();
     let l = layer(g);
@@ -483,7 +485,7 @@ fn keep_world_cost() {
         }
     }
     let order: Vec<[i32; 2]> = l.members.keys().copied().collect();
-    let queue: Vec<_> = (0..900).map(|i| crate::rbmk::reactor::QueuedStream { origin: i % 225, vx: 0.70710678, vz: -0.70710678, flux_quantity: 1234.5678 + i as f64, flux_ratio: 0.5 }).collect();
+    let queue: Vec<_> = (0..900).map(|i| crate::rbmk::reactor::QueuedStream { origin: i % 225, vx: std::f64::consts::FRAC_1_SQRT_2, vz: -std::f64::consts::FRAC_1_SQRT_2, flux_quantity: 1234.5678 + i as f64, flux_ratio: 0.5 }).collect();
     c.set_queue(&order, &queue);
     l.comps.insert(A, c);
     let mut costs = Vec::new();
@@ -598,7 +600,7 @@ fn the_rays_cells_are_all_the_cells_a_stream_reads() {
         }
         r
     };
-    let noise = |x: i32, z: i32, h: i32| crate::ledger::fnv(&[&x.to_le_bytes(), &z.to_le_bytes(), &h.to_le_bytes()]) % 3 == 0;
+    let noise = |x: i32, z: i32, h: i32| crate::ledger::fnv(&[&x.to_le_bytes(), &z.to_le_bytes(), &h.to_le_bytes()]).is_multiple_of(3);
     let mut cells = BTreeSet::new();
     for ((x, z), k) in [((0, 0), K::RodReaSim), ((3, 1), K::Rod), ((-2, 4), K::RodReaSim), ((1, -3), K::Rod)] {
         cells.extend(Reactor::ray_cells(k, x, z, range));
