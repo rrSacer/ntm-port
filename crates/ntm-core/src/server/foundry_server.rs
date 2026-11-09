@@ -18,6 +18,7 @@
 //! - Molds take metal from above and from the sides, basins from above
 //!   (`crate::foundry::cast`; they cool on their own tick).
 use super::*;
+use crate::blast::visuals::Show;
 use crate::foundry::{
     Acceptor, Tables,
     crucible::Stream,
@@ -207,8 +208,19 @@ fn crucible_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: 
         for (stream, s) in [(Stream::Recipe, 1), (Stream::Waste, -1)] {
             let from = [key.1[0] + 2 * d[0] * s, key.1[1], key.1[2] + 2 * d[2] * s];
             let Some(target) = below(m, host, &key.0, from, CRUCIBLE_FALL) else { continue };
+            let landing = target.clone();
             if c.pour_stream(t, stream, &mut Target { m, key: target }).is_some() {
                 changed = true;
+                // The stream's splash where it lands (ParticleFoundry's
+                // drops), one per tick it pours.
+                host.show(&landing.0, &Show::Particles {
+                    id: "minecraft:falling_lava",
+                    color: [1.; 4],
+                    at: [f64::from(landing.1[0]) + 0.5, f64::from(landing.1[1]) + 1.0, f64::from(landing.1[2]) + 0.5],
+                    spread: [0.2, 0.0, 0.2],
+                    speed: 0.0,
+                    count: 1,
+                });
             }
         }
     }

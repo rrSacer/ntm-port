@@ -5,6 +5,7 @@
 use super::*;
 use crate::foundry::{crucible::Crucible, firebox::Firebox};
 use crate::server::container_bridge::Stack;
+use crate::blast::visuals::Show;
 
 const FIRE: Pos = [0, 70, 0];
 const CORE: Pos = [0, 71, 0];
@@ -255,4 +256,39 @@ fn a_line_of_channel_tank_and_outlet_fills_a_mold() {
         other => panic!("{other:?}"),
     };
     assert_eq!(cast.0, Some(Stack::new("minecraft:iron_ingot", 1)), "o molde sob a saída: {cast:?}; tanque {:?}, canais {:?} {:?}", melt_at(&mut g, tank), melt_at(&mut g, ch1), melt_at(&mut g, ch2));
+}
+
+#[test]
+fn a_pour_splashes_where_it_lands() {
+    let mut g = game();
+    foundry(&mut g);
+    // The same line as above: the waste stream lands in the crucible below.
+    g.place(UNDER_WASTE, "ntm:machine_crucible[facing=north,honey_level=0]");
+    g.run(2);
+    edit(&mut g, CORE, |d| {
+        let Data::Crucible(c) = d else { panic!() };
+        c.slots[1] = Some(Stack::new("minecraft:iron_ingot", 4));
+    });
+    g.run(650);
+    let splashes = |g: &Game| -> Vec<(String, [f64; 3])> {
+        g.world
+            .borrow()
+            .shown
+            .iter()
+            .filter_map(|(dim, s)| match s {
+                Show::Particles { id: "minecraft:falling_lava", at, .. } => Some((dim.clone(), *at)),
+                _ => None,
+            })
+            .collect()
+    };
+    for _ in 0..600 {
+        g.run(1);
+        if crucible(&mut g, UNDER_WASTE).waste_stack.iter().any(|m| m.0 == "iron") {
+            break;
+        }
+    }
+    let s = splashes(&g);
+    assert!(!s.is_empty(), "o metal caiu e não respingou");
+    // Splashes on the crucible below, a block above its top: where the stream lands.
+    assert!(s.iter().all(|(dim, at)| dim == OW && *at == [0.5, 71.0, 2.5]), "{s:?}");
 }
