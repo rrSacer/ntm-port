@@ -333,7 +333,7 @@ def act(g):
         g.ctl('select minecraft:iron_pickaxe')
         g.ctl(f'break {C[0]} {C[1]} {C[2]}')
     # Away at once, in both worlds: no pickup before the save.
-    g.command(f'tp @s 46.5 {Y} 40.5')
+    g.command(f'tp @s 46.5 {Y} 18.5')
     time.sleep(1.5)
     after = count(g)
     g.evidence['after_act'] = after
@@ -368,7 +368,7 @@ def act(g):
 def verify(g, again=False):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
-    g.command(f'tp @s 46.5 {Y} 40.5')
+    g.command(f'tp @s 46.5 {Y} 18.5')
     now = settled(g)
     now['total'] = now['columns'] + now['entities'] + now['inventory']
     g.evidence['counted' + ('_again' if again else '')] = now
