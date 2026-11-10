@@ -33,6 +33,11 @@ pub struct Steel {
     /// resets the line.
     #[serde(skip)]
     pub last: [Option<(String, u32)>; 3],
+    /// A line whose `lastItems` came from a save as "still what the slot
+    /// holds": the bridge assigns the slots after `load_state`, so the
+    /// comparison waits for the first step.
+    #[serde(skip)]
+    pub last_is_slot: [bool; 3],
 }
 
 impl Default for Steel {
@@ -44,6 +49,7 @@ impl Default for Steel {
             heat: 0,
             was_on: false,
             last: [None, None, None],
+            last_is_slot: [false; 3],
         }
     }
 }
@@ -85,6 +91,9 @@ impl Steel {
         self.was_on = false;
         let burn = (i64::from(self.heat) - i64::from(MAX_HEAT / 3)) / 10;
         for i in 0..3 {
+            if std::mem::take(&mut self.last_is_slot[i]) {
+                self.last[i] = key(&self.slots[i]);
+            }
             if self.slots[i].is_none()
                 || self.last[i].is_none()
                 || key(&self.slots[i]) != self.last[i]
@@ -150,21 +159,29 @@ impl Slotted for Steel {
     }
     /// The heat, the progress and the bonus ride with the slots: a crash
     /// cannot leave an input smelted while its progress is still saved.
+    /// `lastItems` (`writeToNBT`, lines 165-174) comes as one flag per line:
+    /// it is only ever compared with the slot, so "is the slot's item" or
+    /// "is not" is all there is to keep.
     fn save_state(&self) -> Vec<i32> {
         let mut v = vec![self.heat as i32];
         v.extend(self.progress.map(|p| p as i32));
         v.extend(self.bonus.map(|b| b as i32));
+        v.extend((0..3).map(|i| i32::from(self.slots[i].is_some() && key(&self.slots[i]) == self.last[i])));
         v
     }
-    /// `lastItems` is what the slots hold now: the engine saves both together.
+    /// The state of a save. The slots are assigned after this (the bridge's
+    /// order), so `last` is resolved against them in the first step. A save
+    /// from before the flags is read as "last is the slot", which keeps the
+    /// progress it holds.
     fn load_state(&mut self, v: &[i32]) {
-        if let [h, p0, p1, p2, b0, b1, b2, ..] = v {
+        if let [h, p0, p1, p2, b0, b1, b2, rest @ ..] = v {
             self.heat = (*h).max(0) as u32;
             self.progress = [p0, p1, p2].map(|x| (*x).max(0) as u32);
             self.bonus = [b0, b1, b2].map(|x| (*x).max(0) as u32);
-        }
-        for i in 0..3 {
-            self.last[i] = key(&self.slots[i]);
+            self.last = [None, None, None];
+            for i in 0..3 {
+                self.last_is_slot[i] = rest.get(i).is_none_or(|f| *f != 0);
+            }
         }
     }
 }
@@ -302,21 +319,66 @@ mod tests {
         assert_eq!(f.slots[3], Some(Stack::new("minecraft:iron_ingot", 64)));
     }
 
+    /// The bridge's order: a fresh machine, `load_state`, then the slots.
+    fn reopened(f: &Steel) -> Steel {
+        let mut g = Steel::default();
+        Slotted::load_state(&mut g, &Slotted::save_state(f));
+        g.slots = f.slots.clone();
+        g
+    }
+
     #[test]
-    fn the_state_survives_a_save_and_the_line_keeps_going() {
+    fn the_state_survives_a_save_in_the_bridges_order() {
         let mut f = hot(MAX_HEAT, "minecraft:raw_iron", 4);
         f.step();
-        f.bonus = [10, 20, 30];
-        let saved = Slotted::save_state(&f);
-        let mut g = Steel {
-            slots: f.slots.clone(),
-            ..Default::default()
-        };
-        Slotted::load_state(&mut g, &saved);
+        f.step();
+        f.bonus[0] = 10;
+        let mut g = reopened(&f);
         assert_eq!((g.heat, g.progress, g.bonus), (f.heat, f.progress, f.bonus));
         let before = g.progress[0];
         g.step();
-        assert!(g.progress[0] > before, "perdeu o fio: {:?}", g.progress);
+        assert!(g.progress[0] > before, "lost the line: {:?} from {before}", g.progress);
+        assert_eq!(g.bonus[0], 10, "the bonus is kept");
+    }
+
+    #[test]
+    fn the_steel_cut_keeps_a_line_half_way_through() {
+        // The review's case: 12 666 of 40 000 TU before the save.
+        let mut f = hot(MAX_HEAT, "minecraft:iron_ore", 8);
+        f.progress[0] = 12_666;
+        f.last[0] = key(&f.slots[0]);
+        let mut g = reopened(&f);
+        let burn = (g.heat - MAX_HEAT / 3) / 10;
+        g.step();
+        assert_eq!(g.progress[0], 12_666 + burn, "it must not fall back to {burn}");
+    }
+
+    #[test]
+    fn an_input_changed_before_the_save_still_resets_after_it() {
+        let mut f = hot(MAX_HEAT, "minecraft:raw_iron", 4);
+        f.step();
+        f.slots[0] = Some(Stack::new("minecraft:raw_copper", 4));
+        assert!(f.progress[0] > 0);
+        f.bonus[0] = 40;
+        let mut g = reopened(&f);
+        let burn = (g.heat - MAX_HEAT / 3) / 10;
+        g.step();
+        assert_eq!(g.progress[0], burn, "the line started over, it did not go on from {}", f.progress[0]);
+        assert_eq!(g.bonus[0], 0);
+    }
+
+    #[test]
+    fn an_old_save_without_the_flags_keeps_its_progress() {
+        let mut f = hot(MAX_HEAT, "minecraft:raw_iron", 4);
+        f.step();
+        let mut old = Slotted::save_state(&f);
+        old.truncate(7);
+        let mut g = Steel::default();
+        Slotted::load_state(&mut g, &old);
+        g.slots = f.slots.clone();
+        let before = g.progress[0];
+        g.step();
+        assert!(g.progress[0] > before);
     }
 
     #[test]
