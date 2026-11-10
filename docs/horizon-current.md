@@ -907,3 +907,11 @@ com `max(perda do controle, 0)`, item a item também).
 contexto; (2) o tipo de detrito do T20 precisa estar registrado como invocável; (3) D-c é gate de T09 e T16;
 (4) o bug Java da barra renomeada (`{display}` → `yield` 0) é do T03; (5) `item replace block` sem marcar o chunk, no
 motor, candidato a upstream.
+
+## Pedido ao motor em aberto: listas de slots por célula de multibloco
+
+Hoje a política de slot do contêiner nativo é uma por máquina e não conhece a célula pela qual um funil chega. A soldadora a arco
+do Java (`getAccessibleSlotsFromSide(x,y,z,side)`) dá uma lista diferente a cada célula (entradas 0, 1 ou 2 e a saída; nada nas seis
+células de cima). Detalhe e o que o port faz no lugar em `docs/native-slot-policy.md` (seção "Pedido ao motor: lista de slots por
+célula") e em `docs/onda-2-sublote-1.md`.
+

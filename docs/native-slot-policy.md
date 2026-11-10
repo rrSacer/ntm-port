@@ -157,3 +157,12 @@ seu contêiner e sua política. Ele carrega barras pela tela normal, converte um
 barra de lítio em trítio com `/tick sprint` e verifica transferência real por
 funis sobre e sob a porta lateral, recusa na célula não-porta e contagem exata
 dos itens.
+
+### Pedido ao motor: lista de slots por célula (soldadora a arco)
+
+A política de slot recebe slot, item, ação e origem, mas **não a célula** pela qual o funil chega, e o contêiner é um só por
+máquina. O Java dá a cada célula da soldadora a sua lista (`TileEntityMachineArcWelder.getAccessibleSlotsFromSide(x,y,z,side)`,
+linhas 312-331): o núcleo e a célula "amarela" acessam o slot 1, as "vermelhas" o 0, as "verdes" o 2, e a saída (3) sai por todas;
+as seis células da camada de cima não dão nada. O port expõe as três entradas e a saída em cada célula-porta e tirou as seis de
+cima de `inventory_ports`. Para reproduzir as listas por célula, `ModSlotFilter::policy` (ou o contêiner) precisa receber a posição
+da célula relativa ao núcleo. Registrado como lacuna nominal em `docs/onda-2-sublote-1.md`.
