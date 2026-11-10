@@ -1477,9 +1477,12 @@ impl ServerHost for Host<'_, '_> {
     fn set_fire_unless_wet(&mut self,id:&str,seconds:i32) {
         self.game.native_visit_player(id,|g| {
             let Some(p)=g.player.as_ref() else {return};
-            // `Entity.isWet`: in water, or rain at the feet or the top of the box.
+            // `Entity.isWet`: in water, or rain at the feet or the top of the box. The water at the feet counts too
+            // (as the trident's `in_water_or_rain`): the touching flag alone read dry for a tick in a proof.
             let (at,top)=(p.position,p.bounds().max_position().y);
-            if p.fluids.was_touching_water || g.in_rain(at,top) {return;}
+            let feet=g.world.block(at.x.floor() as i32,at.y.floor() as i32,at.z.floor() as i32);
+            let water=g.res.facts().get(feet).fluid==horizon_client::blocks::Fluid::Water;
+            if p.fluids.was_touching_water || water || g.in_rain(at,top) {return;}
             // `setFire(seconds)`: the longer of what is left and this, fire protection's share off.
             if let Some(p)=g.player.as_mut() && let Err(e)=p.ignite_for_ticks(seconds.saturating_mul(20)) {
                 eprintln!("ntm: set fire {id}: {e}");
