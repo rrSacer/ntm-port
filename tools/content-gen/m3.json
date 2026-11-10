@@ -25320,7 +25320,13 @@
         "bottom": "src/main/resources/assets/hbm/textures/blocks/door_metal_lower.png",
         "top": "src/main/resources/assets/hbm/textures/blocks/door_metal_upper.png"
       },
-      "item_texture": "src/main/resources/assets/hbm/textures/items/door_metal.png"
+      "item_texture": "src/main/resources/assets/hbm/textures/items/door_metal.png",
+      "block_properties": {
+        "door_sounds": {
+          "open": "ntm:block.opendoor",
+          "close": "ntm:block.opendoor"
+        }
+      }
     },
     {
       "id": "door_office",
@@ -25348,7 +25354,13 @@
         "bottom": "src/main/resources/assets/hbm/textures/blocks/door_office_lower.png",
         "top": "src/main/resources/assets/hbm/textures/blocks/door_office_upper.png"
       },
-      "item_texture": "src/main/resources/assets/hbm/textures/items/door_office.png"
+      "item_texture": "src/main/resources/assets/hbm/textures/items/door_office.png",
+      "block_properties": {
+        "door_sounds": {
+          "open": "ntm:block.opendoor",
+          "close": "ntm:block.opendoor"
+        }
+      }
     },
     {
       "id": "door_bunker",
@@ -25376,7 +25388,13 @@
         "bottom": "src/main/resources/assets/hbm/textures/blocks/door_bunker_lower.png",
         "top": "src/main/resources/assets/hbm/textures/blocks/door_bunker_upper.png"
       },
-      "item_texture": "src/main/resources/assets/hbm/textures/items/door_bunker.png"
+      "item_texture": "src/main/resources/assets/hbm/textures/items/door_bunker.png",
+      "block_properties": {
+        "door_sounds": {
+          "open": "ntm:block.opendoor",
+          "close": "ntm:block.opendoor"
+        }
+      }
     },
     {
       "id": "door_red",
@@ -25404,7 +25422,13 @@
         "bottom": "src/main/resources/assets/hbm/textures/blocks/door_red_lower.png",
         "top": "src/main/resources/assets/hbm/textures/blocks/door_red_upper.png"
       },
-      "item_texture": "src/main/resources/assets/hbm/textures/items/door_red.png"
+      "item_texture": "src/main/resources/assets/hbm/textures/items/door_red.png",
+      "block_properties": {
+        "door_sounds": {
+          "open": "ntm:block.opendoor",
+          "close": "ntm:block.opendoor"
+        }
+      }
     },
     {
       "id": "event_tester",

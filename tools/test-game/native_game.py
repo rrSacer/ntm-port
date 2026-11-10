@@ -3,6 +3,7 @@
 Use a fresh creative world from build-native.sh and control.sock in GAME.
 Commands and failed checks are retained in the scenario's evidence JSON.
 """
+import atexit
 from contextlib import contextmanager
 import json
 import os
@@ -17,6 +18,8 @@ class Game:
         self.output = self.folder / f'native-{scenario}.json'
         self._deferred_saves=0
         self._pending_input_delay=0
+        self._last_save=0.0
+        self._unsaved=False
         self.evidence = {'scenario': scenario, 'ok': False, 'steps': [], 'checks': {}}
 
     def ctl(self, line, _retry=0):
@@ -62,21 +65,39 @@ class Game:
             self._deferred_saves-=1
             self.save()
 
-    def save(self):
+    # Seconds between two writes of the evidence by `ctl` (None: it is written after every call). A write takes
+    # seconds when the disk is busy, and that is wall time in which the game runs on without the script: a script
+    # that counts game ticks (native_items.py) asks for a pause between writes; a check and the end of the run
+    # always write.
+    save_every = None
+
+    def save(self, force=False):
         delay=float(os.environ.get('NTM_CTL_SAVE_DELAY','0'))
         if delay and self.evidence['steps'] and self.evidence['steps'][-1]['command']=='mouse right down':
             self._pending_input_delay=delay
         if self._deferred_saves:return
+        if not force and self.save_every and time.monotonic()-self._last_save<self.save_every:
+            if not self._unsaved:
+                self._unsaved=True
+                atexit.register(self._flush)  # however the run ends, what the pause held back is written
+            return
         if self._pending_input_delay:
             self.evidence['injected_input_evidence_delay_seconds']=self._pending_input_delay
             time.sleep(self._pending_input_delay)
             self._pending_input_delay=0
         self.output.write_text(json.dumps(self.evidence, indent=2, ensure_ascii=False) + '\n')
+        self._last_save=time.monotonic()
+        self._unsaved=False
+
+    def _flush(self):
+        if self._unsaved:
+            try:self.save(True)
+            except OSError:pass
 
     def check(self, name, passed, actual):
         name = self.evidence.get('phase', 'setup') + ':' + name
         self.evidence['checks'][name] = {'ok': bool(passed), 'actual': actual}
-        self.save()
+        self.save(True)
         if not passed:
             raise AssertionError(f'{name}: {actual}')
 
@@ -85,9 +106,22 @@ class Game:
         self.evidence.setdefault('notes', {})[name] = text
         self.save()
 
+    # When set, `command` settles for this many game ticks instead of .3 s of wall time: a script that
+    # counts ticks (native_items.py) then does not depend on how loaded the machine is.
+    command_ticks = None
+
+    def ticks(self, count):
+        """Wait `count` game ticks of the server (20 a second when it keeps up, whatever the wall time); keys
+        and mouse buttons held stay held. The `ticks` of the reply is the client's own counter, which runs apart
+        from the server's: read the server's with `time query gametime`."""
+        return self.ctl(f'wait {int(count)}')
+
     def command(self, text):
         result = self.ctl('command ' + text)
-        time.sleep(.3)  # Commands travel through the integrated server.
+        if self.command_ticks is None:
+            time.sleep(.3)  # Commands travel through the integrated server.
+        else:
+            self.ticks(self.command_ticks)
         return result
 
     def ground(self, x, y, z, width=12, height=6, depth=4):

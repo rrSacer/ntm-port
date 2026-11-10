@@ -99374,6 +99374,12 @@
         "top": "src/main/resources/assets/hbm/textures/blocks/door_metal_upper.png"
       },
       "item_texture": "src/main/resources/assets/hbm/textures/items/door_metal.png",
+      "block_properties": {
+        "door_sounds": {
+          "open": "ntm:block.opendoor",
+          "close": "ntm:block.opendoor"
+        }
+      },
       "source_registry": "hbm:tile.door_metal",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -99410,6 +99416,12 @@
         "top": "src/main/resources/assets/hbm/textures/blocks/door_office_upper.png"
       },
       "item_texture": "src/main/resources/assets/hbm/textures/items/door_office.png",
+      "block_properties": {
+        "door_sounds": {
+          "open": "ntm:block.opendoor",
+          "close": "ntm:block.opendoor"
+        }
+      },
       "source_registry": "hbm:tile.door_office",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -99446,6 +99458,12 @@
         "top": "src/main/resources/assets/hbm/textures/blocks/door_bunker_upper.png"
       },
       "item_texture": "src/main/resources/assets/hbm/textures/items/door_bunker.png",
+      "block_properties": {
+        "door_sounds": {
+          "open": "ntm:block.opendoor",
+          "close": "ntm:block.opendoor"
+        }
+      },
       "source_registry": "hbm:tile.door_bunker",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -99482,6 +99500,12 @@
         "top": "src/main/resources/assets/hbm/textures/blocks/door_red_upper.png"
       },
       "item_texture": "src/main/resources/assets/hbm/textures/items/door_red.png",
+      "block_properties": {
+        "door_sounds": {
+          "open": "ntm:block.opendoor",
+          "close": "ntm:block.opendoor"
+        }
+      },
       "source_registry": "hbm:tile.door_red",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
