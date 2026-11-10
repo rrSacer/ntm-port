@@ -9,7 +9,7 @@ from pathlib import Path
 from native_game import Game
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon').split(',')
 
 
 FAMILY_RUNS=[]
@@ -1054,7 +1054,44 @@ def filter_copy_bug(g):
     g.check('copy_bug_sneak_hands_out_the_copy_and_the_mod_keeps_its_filter',loose==1 and helmet.count('gas_mask_filter')==1 and 'mod_slot_0' in helmet,{'loose':loose,'helmet':helmet})
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks)]
+def dose_drop(g,seconds=2.0):
+    before=state(g)['dose'];time.sleep(seconds);return before-state(g)['dose']
+
+
+def decon(g):
+    """Onda 1, fatia 3: TileEntityDecon, -0.5 RAD a tick for each decontaminator whose box reaches the player,
+    and the end of the radiation potion (HbmPotion.radiation, the port's irradiation)."""
+    g.ground(20,101,8,width=12,height=8)
+    under='20 100 11'
+    # One under the feet: the dose falls by half a RAD per tick, so by a multiple of 500 milliRAD.
+    reset(g,'survival',dose=300000);g.command(f'setblock {under} ntm:decon');time.sleep(.5)
+    drop=dose_drop(g)
+    g.check('one_decon_takes_half_a_rad_a_tick',drop>0 and drop%500==0 and drop<=500*20*6,{'drop':drop})
+    # Creative too: incrementRadiation asks nothing.
+    reset(g,'creative',dose=300000);g.command(f'setblock {under} ntm:decon');time.sleep(.5)
+    g.check('decon_works_in_creative',dose_drop(g)>0,state(g))
+    # Two decontaminators whose boxes both reach a player standing on their border take twice as much.
+    reset(g,'survival',dose=300000);g.command(f'setblock {under} ntm:decon');g.command('setblock 21 100 11 ntm:decon')
+    g.command('tp @s 21.0 101 11.5');time.sleep(.5)
+    two=dose_drop(g)
+    g.check('two_decons_take_a_rad_a_tick',two>0 and two%1000==0,{'drop':two})
+    g.command('setblock 21 100 11 minecraft:stone')
+    # Off the box (the decontaminator one block beyond the reach) nothing changes.
+    reset(g,'survival',dose=300000);g.command(f'setblock {under} ntm:decon');g.command('tp @s 22.4 101 11.5');time.sleep(.5)
+    g.check('out_of_the_box_nothing',dose_drop(g)==0,state(g))
+    # Glowing mycelium irradiates (600 ticks of the radiation potion); the decontaminator ends it, so once off it
+    # the dose no longer grows.
+    reset(g,'survival',dose=0);g.command(f'setblock {under} ntm:waste_mycelium');time.sleep(2.5)
+    g.command(f'setblock {under} minecraft:stone');g.command('tp @s 25.5 101 11.5');time.sleep(.5)
+    growing=-dose_drop(g,1.5)
+    g.check('mycelium_irradiation_keeps_growing_the_dose',growing>0,{'growth':growing})
+    g.command('setblock 25 100 11 ntm:decon');time.sleep(1.5);g.command('setblock 25 100 11 minecraft:stone');time.sleep(.5)
+    after=-dose_drop(g,2.0)
+    g.check('decon_ends_the_irradiation',after==0,{'growth_after':after})
+    g.command(f'setblock {under} minecraft:stone');reset(g,'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon)]
 
 
 if __name__=='__main__':
