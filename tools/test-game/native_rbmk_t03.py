@@ -145,6 +145,43 @@ def fire(g):
     return int(m[1]) if m else None
 
 
+WATER = (58, 101, 10)        # the hot rod's water, a 1x1 pool walled in the middle of the floor
+DRY = (54.5, 101, 10.5)
+
+
+def water_on(g):
+    """The water, walled in on its four sides: it neither spreads nor carries the player off the floor."""
+    x, y, z = WATER
+    for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        g.command(f'setblock {x + dx} {y} {z + dz} minecraft:stone')
+        g.command(f'setblock {x + dx} {y + 1} {z + dz} minecraft:stone')
+    g.command(f'setblock {x} {y} {z} minecraft:water')
+    g.command(f'tp @s {x + .5} {y} {z + .5}')
+
+
+def water_off(g):
+    x, y, z = WATER
+    g.command(f'fill {x - 1} {y} {z - 1} {x + 1} {y + 1} {z + 1} minecraft:air')
+    g.command(f'tp @s {DRY[0]} {DRY[1]} {DRY[2]}')
+
+
+def fire_and_feet(g, n):
+    """`n` readings of the server's fire with the server's position of the player's feet (a reading that finds the
+    feet out of the water's surface explains a transient fire: the server, as Java's, only knows its own position)."""
+    out = []
+    for _ in range(n):
+        f = fire(g)
+        pos = ' '.join(g.command('data get entity @s Pos[1]').get('chat', []))
+        m = re.search(r'(-?[0-9.]+)d?\s*$', pos.strip())
+        out.append((f, float(m[1]) if m else None))
+    return out
+
+
+def all_out(readings):
+    """Every reading in the water finds the fire out (the feet's height recorded with each, in case one does not)."""
+    return all(f is not None and f <= 0 for f, _ in readings)
+
+
 def floor(g, x0, x1, z0, z1):
     g.command(f'forceload add {x0} {z0} {x1} {z1}')
     time.sleep(3)
@@ -355,21 +392,19 @@ def play(g):
     g.command('effect give @s minecraft:fire_resistance infinite 0 true')
     g.command('effect give @s minecraft:resistance infinite 4 true')
     # Never on fire before each of the first two: with a reacher (dry), then in water (`isWet`), then out of both.
-    g.command(f'tp @s 56.5 {Y} 14.5')
+    g.command(f'tp @s {DRY[0]} {DRY[1]} {DRY[2]}')
     g.command('give @s ntm:reacher 1')
     g.command(f'give @s {UEU}[minecraft:custom_data={{yield:1.0E8d,core:400.0d,hull:400.0d}}] 1')
     time.sleep(1.5)
     reacher = [fire(g) for _ in range(4)]
     g.check('not_with_a_reacher', all(v is not None and v <= 0 for v in reacher), reacher)
     g.command('clear @s ntm:reacher')
-    g.command(f'setblock 58 {Y} 14 minecraft:water')
-    g.command(f'tp @s 58.5 {Y} 14.5')
+    water_on(g)
     time.sleep(1.5)
-    wet = [fire(g) for _ in range(4)]
-    g.check('not_in_water', all(v is not None and v <= 0 for v in wet), wet)
-    # Out of the water, the water gone (it spreads over the floor): dry again.
-    g.command(f'fill 50 {Y} 8 66 {Y} 20 minecraft:air replace minecraft:water')
-    g.command(f'tp @s 54.5 {Y} 18.5')
+    wet = fire_and_feet(g, 8)
+    g.check('not_in_water', all_out(wet), wet)
+    # Out of the water: dry again.
+    water_off(g)
     time.sleep(1.5)
     burning = fire(g)
     g.check('a_hot_rod_sets_its_holder_on_fire', burning is not None and burning > 500, burning)
@@ -379,32 +414,27 @@ def play(g):
     select_rod(g)
     g.command(f'item replace block {CHEST[0]} {CHEST[1]} {CHEST[2]} container.2 from entity @s weapon.mainhand')
     g.command(f'clear @s {UEU}')
-    g.command(f'setblock 58 {Y} 14 minecraft:water')
-    g.command(f'tp @s 58.5 {Y} 14.5')
+    water_on(g)
     time.sleep(1.5)
-    without = [fire(g) for _ in range(6)]
+    without = fire_and_feet(g, 8)
     g.command(f'item replace entity @s weapon.mainhand from block {CHEST[0]} {CHEST[1]} {CHEST[2]} container.2')
     g.command(f'item replace block {CHEST[0]} {CHEST[1]} {CHEST[2]} container.2 with minecraft:air')
-    g.command(f'fill 50 {Y} 8 66 {Y} 20 minecraft:air replace minecraft:water')
-    g.command(f'tp @s 54.5 {Y} 18.5')
+    water_off(g)
     time.sleep(1.5)
     lit = fire(g)
-    g.command(f'setblock 58 {Y} 14 minecraft:water')
-    g.command(f'tp @s 58.5 {Y} 14.5')
+    water_on(g)
     time.sleep(1.5)
-    with_rod = [fire(g) for _ in range(6)]
-    g.check('a_burning_holder_goes_out_in_water', all(v is not None and v <= 0 for v in without + with_rod) and lit and lit > 500,
+    with_rod = fire_and_feet(g, 8)
+    g.check('a_burning_holder_goes_out_in_water', all_out(without) and all_out(with_rod) and lit and lit > 500,
             {'without_rod': without, 'relit': lit, 'with_rod': with_rod})
-    g.command(f'fill 50 {Y} 8 66 {Y} 20 minecraft:air replace minecraft:water')
+    water_off(g)
     # Fire Protection as 1.7.10 reads it: the highest level among the armour, not the sum. Two pieces of IV: the
     # rod's 30 seconds less floor(600 · 4 · 0.15) = 240 ticks (the engine's summed attribute would give none).
     g.command('item replace entity @s armor.head with minecraft:diamond_helmet[minecraft:enchantments={"minecraft:fire_protection":4}]')
     g.command('item replace entity @s armor.feet with minecraft:diamond_boots[minecraft:enchantments={"minecraft:fire_protection":4}]')
-    g.command(f'setblock 58 {Y} 14 minecraft:water')
-    g.command(f'tp @s 58.5 {Y} 14.5')
+    water_on(g)
     time.sleep(1.5)
-    g.command(f'fill 50 {Y} 8 66 {Y} 20 minecraft:air replace minecraft:water')
-    g.command(f'tp @s 54.5 {Y} 18.5')
+    water_off(g)
     time.sleep(1.5)
     armour = ' '.join(g.command('data get entity @s').get('chat', []))
     protected = [fire(g) for _ in range(3)]
