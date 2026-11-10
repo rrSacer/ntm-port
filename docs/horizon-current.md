@@ -1205,6 +1205,22 @@ Registrado, sem mudança de código:
 - **Proteção contra Fogo fora do HOT:** o resto do fogo do motor continua somando as peças (`burning_time`). Lacuna
   nominal da Onda 4 (regra de armadura), decisão do coordenador; não bloqueia o T03.
 
+### Motor do T03 sobre o pin novo (`rbmk-t03-engine`, 10/11/2026)
+
+Com a `main` em `e4aa8b2c` (pin `6a79054fa9`, a `ntm-current` sobre o upstream `a3bf6531e`), a `rbmk-t03` foi fundida
+nela (`87ade1f2`, depois de `836c7bb7` com a `8ecff5d8`) e o motor das provas passou a ser a `rbmk-t03-engine`, a partir
+de `6a79054fa9`, com, nesta ordem:
+
+| Commit | Origem | Nota |
+| --- | --- | --- |
+| `56fbb210a7` | `5b9d6ee175` (T02, altura das colunas) | Aplicado limpo; o pin novo não tinha nada de coluna (`set_column_height`, `column_core`, `column_heights` ausentes em `mod_multiblocks.rs`) |
+| `3b96e2d998` | `06bf7ffe5c` (T02, `column_core` e `column_dummies`) | Aplicado limpo |
+| `643e359566` | `00454b508a` (T03, o cursor só empilha com os mesmos componentes) | Portado à mão: no upstream o laço do slot 200 está em `game/menu_clicks.rs` e `host_prepared_craft` em `game/inventory_slots.rs`; a formatação do teste de `hash.rs` já vinha no `88d6b88a2d`. **Exceção** decidida pelo coordenador: entra agora porque a J e a C do T03 dependem dele, e vai pela mesma revisão do T03 |
+
+`01e5147ef5` e `93359657aa` já estão no pin novo (`88d6b88a2d`, `6a79054fa9`). A `rbmk-t02-engine` e a `ntm-current`
+não foram tocadas. O pin de `native/ntm/compatibility.json` continua `6a79054fa9`: as provas usam `NEXT_REV` na ponta
+da `rbmk-t03-engine`, e o pin muda quando o agente do Horizon integrar esses três commits.
+
 ### Contatos de motor do RBMK (todos os commits a portar para o motor novo)
 
 Branch `rbmk-t02-engine`, a partir de `ntm-current` @ `a31497f38`. Cada linha é reaplicada sobre o upstream novo
