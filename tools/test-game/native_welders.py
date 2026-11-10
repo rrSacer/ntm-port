@@ -160,8 +160,13 @@ def identifier(g):
         src = next(s['slot'] for s in screen['slots'] if s['slot'] < 36 and s.get('item') == 'ntm:fluid_identifier_multi')
         g.ctl(f'click-slot {src}')
         g.ctl('click-slot 305')
-        time.sleep(1.5)
-        typed = tank_fluid(g, core)
+        # The machine's saved data follows its ticks, not the click: let some pass, then read.
+        typed = None
+        for _ in range(12):
+            sprint(g, 20)
+            typed = tank_fluid(g, core)
+            if typed is not None and typed[0] == fluid:
+                break
         g.check('identifier_' + fluid + '_types_the_tank', typed is not None and typed[0] == fluid and typed[1] == 0, typed)
         g.ctl('click-slot 305 shift')
         g.command('clear @s')
