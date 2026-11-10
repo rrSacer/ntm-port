@@ -31,7 +31,7 @@ spec = importlib.util.spec_from_file_location('crash_proof', here / 'run-crash-p
 crash_proof = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crash_proof)
 INCOMING = 'ntm:pile_rod__zr'
-BROKEN = ('break', 'replace', 'furnace-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The scenarios whose action writes files itself (a chunk it unloads): after a death outside a save they hold what those
 # files hold, not the last save.
@@ -60,6 +60,12 @@ def items_of(scenario):
         return ('minecraft:raw_iron', 'minecraft:iron_ingot')
     if scenario == 'welder-run':
         return ('ntm:plate_steel', 'ntm:motor')
+    if scenario in ('iron-state', 'steel-state', 'combination-state'):
+        return {'iron-state': ('minecraft:raw_iron', 'minecraft:iron_ingot'), 'steel-state': ('minecraft:iron_ore', 'minecraft:iron_ingot'),
+                'combination-state': ('minecraft:coal', 'ntm:coke__coal')}[scenario]
+    if scenario in ('iron-break', 'steel-break', 'combination-break'):
+        return {'iron-break': ('minecraft:raw_iron', 'ntm:upgrade_speed_1'), 'steel-break': ('minecraft:raw_iron', 'minecraft:raw_copper'),
+                'combination-break': ('minecraft:coal', 'minecraft:bucket')}[scenario]
     if scenario in EMITTING:
         return EMITTING[scenario][0]
     return ('ntm:niter',) if scenario in BROKEN and scenario not in HIDDEN else ('ntm:pile_rod',)
@@ -89,6 +95,12 @@ DEFAULT_POINTS = {
     'furnace-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'welder-run': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'furnace-smelt': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'iron-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'steel-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'combination-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'iron-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'steel-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'combination-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'replace': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'frozen-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:2,0', 'chunks_written', 'entities_written'],
     'frozen-unload': ['none', 'kill', 'kv_committed'],
