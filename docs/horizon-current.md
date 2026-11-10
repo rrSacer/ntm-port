@@ -1040,6 +1040,12 @@ Doze rodadas por binário: pior tick mediana **45 ms** (novo) contra **56 ms** (
 janela de pico 18 contra 19 ms. Nenhum cresce por rodada. O novo não é pior que o R7c fora do ruído. Os números
 absolutos não se comparam aos do R7c medidos com as frentes paradas (até 32 ms).
 
+Limite desta medição: os dois binários rodaram em pares simultâneos, disputando as mesmas CPUs entre si e com as
+outras frentes, sob carga média de 22 a 29. Isso iguala o ruído entre eles e mostra que o novo não é pior, mas não
+mede o custo absoluto do gancho; a mediana de 6 rodadas por execução e o máximo isolado (540 ms na primeira rodada do
+R7c) são sensíveis a picos de outras tarefas. O critério do R7c (pior tick < ~35 ms com as frentes paradas) fica por
+medir numa janela quieta.
+
 **`audio-lifecycle`**: alternando os dois binários três vezes cada sob a mesma carga (24–54), **R7c 0/3 e novo 0/3**,
 quase sempre no mesmo check (`arc_lid_slot_creates_channel`: o canal da tampa do forno a arco é criado e parado antes
 de o mixer de diagnóstico tocar uma amostra, porque a tampa fica em movimento um só tick de cliente entre consultas).
