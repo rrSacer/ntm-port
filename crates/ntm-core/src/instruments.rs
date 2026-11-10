@@ -56,8 +56,8 @@ pub struct Readings {
     pub zone_millirad_s: u32,
     /// `radBuf`: the exposure of the last second, milliRAD/s.
     pub buffer_millirad_s: i64,
-    /// `HazmatRegistry.getResistance`, the exponent of `10^(-r)`.
-    pub resistance: f64,
+    /// `HazmatRegistry.getResistance(player)`, the float exponent of `10^(-r)`.
+    pub resistance: f32,
 }
 
 /// The five lines `printGeigerData` sends.
@@ -65,9 +65,10 @@ pub fn geiger_lines(r: &Readings) -> Vec<String> {
     let e_rad = tenth(r.dose_millirad as f64 / 1000.0);
     let rads = tenth(f64::from(r.zone_millirad_s) / 1000.0);
     let env = tenth(r.buffer_millirad_s as f64 / 1000.0);
-    let factor = 10f64.powf(-r.resistance);
+    // `calculateRadiationMod` is a float, widened here as in the Java.
+    let factor = f64::from(crate::item_hooks::radiation_mod(r.resistance));
     let res = ((10000.0 - factor * 10000.0) as i64) as f64 / 100.0;
-    let koeff = ((r.resistance * 100.0) as i64) as f64 / 100.0;
+    let koeff = ((f64::from(r.resistance) * 100.0) as i64) as f64 / 100.0;
     let res_prefix = if koeff > 0.0 { "§f§a" } else { "§f" };
     vec![
         "§6===== ☢ GEIGER COUNTER ☢ =====".into(),
@@ -247,6 +248,12 @@ mod tests {
         assert_eq!(lines[3], "§ePlayer contamination: §e250.0 RAD");
         // 10^(-0.095) = 0.8035: 19.64% of the dose is stopped, resistance 0.09 (truncated).
         assert_eq!(lines[4], "§ePlayer resistance: §f§a19.64% (0.09)");
+        let line = |resistance| geiger_lines(&Readings { dose_millirad: 0, zone_millirad_s: 0, buffer_millirad_s: 0, resistance })[4].clone();
+        // Full grey hazmat: 10^-2 as a float is 0.00999999977, 99% stopped.
+        assert_eq!(line(2.0), "§ePlayer resistance: §f§a99.0% (2.0)");
+        // Full steel: the float sum 0.045000002 gives 9.84% and (int)(4.5000002) = 4.
+        assert_eq!(line(0.045), "§ePlayer resistance: §f§a9.84% (0.04)");
+        assert_eq!(line(0.0), "§ePlayer resistance: §f0.0% (0.0)");
     }
 
     #[test]
