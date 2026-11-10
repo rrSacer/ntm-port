@@ -102,8 +102,12 @@ def arc(g):
     g.command(f'item replace block {top[0]} {top[1] + 1} {top[2]} container.0 with ntm:plate_steel 2')
     g.command(f'item replace block {top[0]} {top[1] + 1} {top[2]} container.1 with ntm:wire_dense__red_copper 2')
     sprint(g, 100)
-    chest = chest_count(g, (top[0], top[1] + 1, top[2]), 'ntm:plate_steel')
-    g.check('hopper_over_an_upper_cell_moves_nothing', chest == 2, chest)
+    # The hopper pulls the chest's stacks into itself and has nowhere to put them: they must still be in the two.
+    held = chest_count(g, (top[0], top[1] + 1, top[2]), 'ntm:plate_steel') + chest_count(g, top, 'ntm:plate_steel')
+    open_any(g, cells)
+    slots = g.slots()
+    g.check('hopper_over_an_upper_cell_moves_nothing', held == 2 and count(slots, 'ntm:plate_steel') == 0 and count(slots, 'ntm:motor') == 0, [held, slots])
+    g.close()
     g.command(f'setblock {top[0]} {top[1]} {top[2]} minecraft:air')
     g.command(f'setblock {top[0]} {top[1] + 1} {top[2]} minecraft:air')
     # A cell of the lower layer is a port: a hopper beside the east one (the Java's red/yellow/green cells) feeds the inputs.
