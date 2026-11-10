@@ -65,6 +65,9 @@ struct World {
     worn: Vec<String>,
     /// The drops a publication owed by their name (`RetainedDrop`): a known name drops nothing more.
     retained: BTreeSet<u64>,
+    /// Cells the server wrote as its own (`set_machine_blocks`): their change is not told back to it, as the native
+    /// host's owned block scope keeps it from the block change hook.
+    owned: BTreeSet<(String, Pos)>,
 }
 
 impl World {
@@ -97,6 +100,7 @@ impl World {
             column_height: None,
             worn: Vec::new(),
             retained: BTreeSet::new(),
+            owned: BTreeSet::new(),
         };
         for x in -32..32 {
             for z in -32..32 {
@@ -238,6 +242,10 @@ impl ServerHost for SHost {
         true
     }
     fn set_column_height(&mut self,height:i32){self.world.borrow_mut().column_height=Some(height);}
+    fn set_machine_blocks(&mut self,dim:&str,blocks:&[(Pos,String)],owners:&[(String,Pos)])->Result<(),String>{
+        self.world.borrow_mut().owned.extend(owners.iter().filter(|(d,p)|d==dim&&blocks.iter().any(|(q,_)|q==p)).cloned());
+        self.set_blocks(dim,blocks)
+    }
     /// An RBMK column's block entity holds its engine slots, as SNBT stacks (the native host's `cell_snapshot`); the
     /// other blocks' tests read cells without contents, as before.
     fn cell_snapshot(&mut self,dim:&str,p:Pos)->Option<CellSnapshot>{

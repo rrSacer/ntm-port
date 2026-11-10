@@ -204,7 +204,12 @@ impl Server {
         match rebuild(host, dim, core, from, to) {
             Rebuild::Unchanged => Ok(false),
             Rebuild::Blocked(p) => Err(format!("célula ocupada ou não carregada em [{}, {}, {}]", p[0], p[1], p[2])),
-            Rebuild::Cells(cells) => host.set_blocks(dim, &cells).map(|()| true),
+            // The mod's own writes (`set_machine_blocks` with every cell its own): a dummy the migration takes off the
+            // top is no dummy taken away from a column (`rbmk_breaks` would break the column under it).
+            Rebuild::Cells(cells) => {
+                let own: Vec<(String, Pos)> = cells.iter().map(|(p, _)| (dim.to_string(), *p)).collect();
+                host.set_machine_blocks(dim, &cells, &own).map(|()| true)
+            }
         }
     }
 

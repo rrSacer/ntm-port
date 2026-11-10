@@ -38,8 +38,27 @@ fn rbmk(g: &mut Game, p: Pos) -> RbmkColumn {
 
 fn command(g: &mut Game, line: &str) -> Result<String, String> {
     let reply = g.server.native_rbmk_command(&mut g.sh, &player(), 2, line).expect("an ntmrbmk command");
-    g.world.borrow_mut().apply_writes();
+    told(g);
     reply
+}
+
+/// The server's block writes made, each change not its own told to it as the game's block change hook does (its own:
+/// `set_machine_blocks`, the native host's owned block scope), then its events taken, until no write is left.
+fn told(g: &mut Game) {
+    for _ in 0..40 {
+        let writes = std::mem::take(&mut g.world.borrow_mut().writes);
+        if writes.is_empty() {
+            break;
+        }
+        for (d, p, s) in writes {
+            let old = g.world.borrow().get(&d, p);
+            g.world.borrow_mut().set(&d, p, &s);
+            if !g.world.borrow_mut().owned.remove(&(d.clone(), p)) {
+                g.server.native_block_changed(&d, p, &old, &s);
+            }
+        }
+        g.server.native_record_events(&mut g.sh);
+    }
 }
 
 fn height(g: &Game) -> Option<i32> {
@@ -132,6 +151,10 @@ fn a_column_is_found_from_any_cell_and_rebuilt_only_on_demand() {
     assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [0, Y + 4, 0]), 6);
     assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [2, Y, 0]), 6);
     assert_eq!(g.world.borrow().get(OW, [2, Y + 6, 0]), "minecraft:air");
+    // The dummies the migration took off the top are its own writes: told as the game tells them, they break nothing.
+    settle(&mut g);
+    assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [2, Y, 0]), 6, "the shrunk column stands");
+    assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [0, Y + 4, 0]), 6, "the grown one too");
     // Again: nothing more to do.
     let reply = command(&mut g, &format!("ntmrbmk migrate 2 {} 0", Y + 3)).unwrap();
     assert!(reply.contains("0 refeitas") && reply.contains("1 já"), "{reply}");
@@ -170,20 +193,10 @@ fn a_core_taken_away_takes_its_dummies_up_to_the_end_of_its_run() {
     assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [6, Y + 4, 0]), 2);
 }
 
-/// The server's block writes made, each change told to it as the game's block change hook does, until none is left.
+/// The server's pending events taken and its block writes told back (`told`), then two ticks.
 fn settle(g: &mut Game) {
-    for _ in 0..40 {
-        g.server.native_record_events(&mut g.sh);
-        let writes = std::mem::take(&mut g.world.borrow_mut().writes);
-        if writes.is_empty() {
-            break;
-        }
-        for (d, p, s) in writes {
-            let old = g.world.borrow().get(&d, p);
-            g.world.borrow_mut().set(&d, p, &s);
-            g.server.native_block_changed(&d, p, &old, &s);
-        }
-    }
+    g.server.native_record_events(&mut g.sh);
+    told(g);
     g.run(2);
 }
 
