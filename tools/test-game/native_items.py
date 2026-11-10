@@ -83,6 +83,26 @@ def short_hold(g,seconds,setup,attempts=8):
     raise AssertionError(f'no use was seen running in {attempts} holds of {seconds} s')
 
 
+# What the armor must take off the gamma dose, as fractions of the bare rate. The rate is measured over thirty seconds, where one
+# whole-second increment more or less is 3.3%, so the ratio of two measurements of the very same rate falls between about 0.93 and
+# 1.07 (read in game, `scratch/evidence/gamma-mutant`); a mutant that left the armor factor out, with a ratio of 1, therefore
+# cannot pass either threshold, and the real armor, at 0.8 (mask) and 0.6 (hazmat plate), passes both with a margin.
+MASK_RATIO=0.92
+HAZMAT_RATIO=0.75
+
+
+def dose_rate(g):
+    """The gamma dose gained per second. The dose is added once a second. Single increments cannot be told apart when the
+    script's own calls take more than a second of game time, so the rate is the dose gained between two readings thirty
+    seconds (600 ticks) apart over the server ticks that passed between them, the tick read right after each dose, per
+    second: the delay of the calls cancels out of the difference, and one increment more or less in the window (the dose is
+    added in whole seconds) is 3% of it."""
+    d0=state(g)['dose'];t0=now(g)
+    pause(g,30)
+    d1=state(g)['dose'];t1=now(g)
+    return (d1-d0)*20/(t1-t0)
+
+
 def counts(g):
     return g.ctl('inventory')['counts']
 
@@ -106,7 +126,7 @@ def used_up(g,item,count,polls=15):
 
 
 def use(g,seconds=0):
-    g.close();g.ctl('look-at 20 160 8');USE_TICK[0]=now(g)
+    g.close();g.ctl('look-at 20 160 8')
     held=g.ctl('inventory').get('held') or {};item,count=held.get('item'),held.get('count',0)
     if seconds:
         # The game holds the button `seconds` and lets it go (`held_use`): a stack of two loses one, whatever
@@ -120,6 +140,12 @@ def use(g,seconds=0):
         # One click, made by the game itself (`use-item`, as the hold above): a `mouse right click` sent from outside
         # is sometimes lost on a slow frame, and a held button repeats the use of an instant item.
         g.ctl('use-item')
+    # The age of what the use gave (effects, cooldowns, counters) is counted from here: the gesture is over, so what it
+    # applied was applied no later than this tick (a use over a hold applies it before the release), and the script's own
+    # calls until the reading are the whole of the age that `has_effects` and the others allow for. Not from the start of
+    # the use, which would add the length of the hold to it, nor from after `used_up`, which waits up to three seconds
+    # for items that are not spent (the canteen) and would count too little.
+    USE_TICK[0]=now(g)
     used_up(g,item,count)
     pause(g,.4)
 
@@ -220,20 +246,10 @@ def setup(g):
     before=worn;g.command('ntmitem expose blister 100');g.check('mask_blacklist_refuses_blister',inventory_tag(g)==before,inventory_tag(g))
     # Real gamma dose uses the same equipped-armor resolver as other sources.
     g.command('gamemode survival @s');give_hand(g,'ntm:ingot_uranium');pause(g,11)
-    def rate_sample():
-        # The dose is added once a second. Single increments cannot be told apart when the script's own calls take
-        # more than a second of game time, so the rate is the dose gained between two readings thirty seconds (600
-        # ticks) apart over the server ticks that passed between them, the tick read right after each dose, per
-        # second: the delay of the calls cancels out of the difference, and one increment more or less in the
-        # window (the dose is added in whole seconds) is 3% of it.
-        d0=state(g)['dose'];t0=now(g)
-        pause(g,30)
-        d1=state(g)['dose'];t1=now(g)
-        return (d1-d0)*20/(t1-t0)
-    mask=rate_sample()
-    g.command('item replace entity @s armor.head with minecraft:air');bare=rate_sample()
-    g.command('item replace entity @s armor.chest with ntm:hazmat_plate');hazmat=rate_sample()
-    g.check('mask_and_hazmat_reduce_gamma',0<mask<bare and 0<hazmat<bare,{'mask':mask,'bare':bare,'hazmat':hazmat})
+    mask=dose_rate(g)
+    g.command('item replace entity @s armor.head with minecraft:air');bare=dose_rate(g)
+    g.command('item replace entity @s armor.chest with ntm:hazmat_plate');hazmat=dose_rate(g)
+    g.check('mask_and_hazmat_reduce_gamma',0<mask<MASK_RATIO*bare and 0<hazmat<HAZMAT_RATIO*bare,{'mask':mask,'bare':bare,'hazmat':hazmat,'mask_ratio':mask/bare,'hazmat_ratio':hazmat/bare})
     g.command('gamemode creative @s');g.command('clear @s');g.command('ntmitem dose 200000')
     give_hand(g,'ntm:radaway');use(g);pause(g,7.5)
     g.check('radaway_exact_java_total',state(g)['dose']==60000,state(g))
@@ -316,15 +332,13 @@ def full_inventory(g):
     g.command('ntmitem dose 200000')
     full(g,'ntm:radaway',1);use(g);actual=counts(g);away=dropped(g);treated=state(g)
     g.check('full_last_radaway_drops_container',not actual.get('ntm:radaway') and not actual.get('ntm:iv_empty') and away.get('ntm:iv_empty')==1 and treated.get('radaway',0)>0,{'counts':actual,'dropped':away,'state':treated})
-    # A RadAway is not used while the treatment of the last one runs (the counter is in ticks): each use below starts
-    # from none, as the slower wall-clock script used to leave it.
-    g.command('ntmitem cure');full(g,'ntm:radaway',2);use(g);actual=counts(g);away=dropped(g)
+    full(g,'ntm:radaway',2);use(g);actual=counts(g);away=dropped(g)
     g.check('full_stacked_radaway_keeps_stack_and_drops_container',actual.get('ntm:radaway')==1 and away.get('ntm:iv_empty')==1,{'counts':actual,'dropped':away})
     # With one free slot the container goes there, not to the ground.
-    g.command('ntmitem cure');full(g,'ntm:radaway',1);g.command('item replace entity @s inventory.26 with minecraft:air');use(g);actual=counts(g)
+    full(g,'ntm:radaway',1);g.command('item replace entity @s inventory.26 with minecraft:air');use(g);actual=counts(g)
     g.check('free_slot_takes_radaway_container',actual.get('ntm:iv_empty')==1 and not dropped(g),{'counts':actual,'dropped':dropped(g)})
     # Creative mode: addItemStackToInventory discards what does not fit.
-    g.command('ntmitem cure');full(g,'ntm:radaway',1,mode='creative');use(g);actual=counts(g)
+    full(g,'ntm:radaway',1,mode='creative');use(g);actual=counts(g)
     g.check('creative_full_radaway_discards_container',not actual.get('ntm:iv_empty') and not dropped(g),{'counts':actual,'dropped':dropped(g)})
     # ItemStarterKit.giveHaz: the kit never refuses; replaced armor is dropped.
     full(g,'ntm:hazmat_kit',armor={'head':'ntm:gas_mask_m65','chest':'minecraft:iron_chestplate'});use(g);actual=counts(g);away=dropped(g)
@@ -511,6 +525,13 @@ def extinguish(g):
     g.command('setblock 20 101 11 minecraft:air');g.command('effect clear @s');pause(g,.3)
 
 
+def full_food(g):
+    """The food bar full (20): saturation restores it, a few tries if the first second is not enough."""
+    for _ in range(4):
+        g.command('effect give @s minecraft:saturation 2 20 true');pause(g,2.4);g.command('effect clear @s')
+        if g.ctl('state')['player']['food']>=20:break
+
+
 def starve(g):
     """Hunger until the food bar is below 20 (the saturation goes first)."""
     g.command('effect give @s minecraft:hunger 30 255 true');deadline=now(g)+400
@@ -656,8 +677,9 @@ def foods(g):
     reset(g);starve(g);g.command('effect give @s minecraft:slow_falling 120 0 true');g.command('effect give @s minecraft:fire_resistance 120 0 true');hold(g,'ntm:schnitzel_vegan',1.8);effects=effect_map(g)
     g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)}),effects)
     extinguish(g)
-    reset(g);starve(g);hold(g,'ntm:apple_euphemium',1.8);effects=effect_map(g)  # food below 20: it is eaten whatever came before
-    g.check('euphemium_apple_effects_are_endless',effects.get('resistance',(0,0))[0]==120 and effects['resistance'][1]>2_000_000_000 and effects.get('fire_resistance',(9,0))[0]==0,effects)
+    # ItemAppleEuphemium.setAlwaysEdible (and `gate: food_always`): eaten with the food bar full, which is how it is made sure to start.
+    reset(g);full_food(g);food_before=g.ctl('state')['player']['food'];hold(g,'ntm:apple_euphemium',1.8);effects=effect_map(g)
+    g.check('euphemium_apple_effects_are_endless',food_before==20 and effects.get('resistance',(0,0))[0]==120 and effects['resistance'][1]>2_000_000_000 and effects.get('fire_resistance',(9,0))[0]==0,{'food_before':food_before,'effects':effects})
     reset(g);g.check('pancake_is_refused_without_the_bj_armor',refused(g,'ntm:pancake',1),counts(g))
     # Cigarettes: thirty ticks, +100 RAD even in creative, consumed in every mode.
     reset(g,'creative');hold(g,'ntm:cigarette',1.9,2)
