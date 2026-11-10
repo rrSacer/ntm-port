@@ -1023,4 +1023,51 @@ mod tests {
         w.step();
         assert_eq!(w.progress, 1, "the recipe uses the fluid: nothing to avoid");
     }
+
+    /// `ItemFluidIDMulti.getType` of a bare identifier (or one of `none`) is NONE, and `FluidTank.setType` takes it: the tank
+    /// is emptied and left untyped.
+    #[test]
+    fn an_identifier_of_no_type_empties_the_tank() {
+        for model in [ARC, SOLDER] {
+            for custom in [None, Some("{ntm_fluid:\"none\"}")] {
+                let mut w = Welder::of(model).unwrap();
+                identify(&mut w, "oxygen");
+                w.step();
+                w.fluid_give("oxygen", 700);
+                assert_eq!(w.tank.mb, 700);
+                let mut id = Stack::new("ntm:fluid_identifier_multi", 1);
+                id.custom = custom.map(str::to_owned);
+                w.slots[w.model.identifier()] = Some(id);
+                w.step();
+                assert_eq!((w.tank.fluid.as_str(), w.tank.mb), ("", 0), "{model} {custom:?}");
+                assert_eq!(w.fluid_demand("oxygen"), 0, "untyped: nothing comes in");
+            }
+        }
+    }
+
+    /// The output slot of a product that stacks to 16 (`upgrade_radius`, `upgrade_health`) holds 16 and no more.
+    #[test]
+    fn the_stack_of_sixteen_holds_sixteen() {
+        let mut w = Welder::of(SOLDER).unwrap();
+        let r = recipes(Model::Solder).iter().find(|r| r.stack == 16).expect("a recipe whose product stacks to 16");
+        w.power = u64::MAX / 4;
+        w.consumption = 0;
+        w.slots[6] = Some(Stack::new(&r.out.0, 16 - r.out.1));
+        assert!(w.can_process(r), "{} + {} = 16 fits", 16 - r.out.1, r.out.1);
+        w.slots[6] = Some(Stack::new(&r.out.0, 16 - r.out.1 + 1));
+        assert!(!w.can_process(r), "one more than 16 does not");
+    }
+
+    /// `getReceivingTanks`: what a tank takes is the room it has left.
+    #[test]
+    fn the_demand_is_the_free_room() {
+        let mut w = arc();
+        identify(&mut w, "oxygen");
+        w.step();
+        assert_eq!(w.fluid_demand("oxygen"), 24_000);
+        w.fluid_give("oxygen", 1_000);
+        assert_eq!(w.fluid_demand("oxygen"), 23_000);
+        w.fluid_give("oxygen", 23_000);
+        assert_eq!(w.fluid_demand("oxygen"), 0);
+    }
 }
