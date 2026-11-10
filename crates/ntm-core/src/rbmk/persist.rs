@@ -219,6 +219,18 @@ pub fn rod_stack(custom: Option<&str>) -> RodStack {
     RodStack { has_tag: true, yield_: read("yield"), xenon: read("xenon"), core: read("core"), hull: read("hull"), ..RodStack::bare() }
 }
 
+/// The rod's tag of a whole stack (T03): the 1.7.10 stack has its `stackTagCompound` when it holds any data that one
+/// held (`Stack::tagged`), its keys in `minecraft:custom_data`; without one, `ItemRBMKRod.setNBTDefaults` on first use.
+/// A rod with a name, lore, enchantments or a repair cost and no key yet has a tag with none: its yield reads 0
+/// (`getDouble`), a dead rod, as in Java.
+pub fn stack_rod(s: &Stack) -> RodStack {
+    match (&s.custom, s.tagged) {
+        (Some(custom), _) => rod_stack(Some(custom)),
+        (None, true) => RodStack { has_tag: true, ..RodStack::bare() },
+        (None, false) => RodStack::bare(),
+    }
+}
+
 /// `custom` with the rod's tag written over its four keys, every other field kept. None: no tag to write (the stack
 /// keeps none). Each double goes by its exact value: the shortest form that reads back to its bits, and Java's words
 /// for NaN and the infinities (a NaN's payload is the canonical one, as `DataOutputStream.writeDouble` writes it).
@@ -573,6 +585,28 @@ mod tests {
         n.members.insert([5, 5], member(0, [5, 5]));
         let lone: std::collections::BTreeSet<[i32; 2]> = [[5, 5]].into();
         assert_eq!(settle(&n, std::iter::once(&lone), "d", 1).1[0], CompState::fresh("d", 1, [5, 5]));
+    }
+
+    /// `ItemRBMKRod.getDouble` over the whole stack: no 1.7.10 tag, the defaults on first use; any data that made one
+    /// (a name, lore, enchantments, a repair cost) and no key, a yield of 0 (the renamed rod's bug, kept).
+    #[test]
+    fn a_stack_with_a_tag_but_no_key_reads_a_dead_rod_as_java() {
+        let rod = rod_of("ntm:rbmk_fuel_ueu").unwrap();
+        let plain = Stack::new("ntm:rbmk_fuel_ueu", 1);
+        let mut fresh = stack_rod(&plain);
+        assert!(!fresh.has_tag);
+        assert_eq!((fresh.yield_(rod), fresh.core_heat(rod), fresh.hull_heat(rod), fresh.poison(rod)), (rod.yield_, 20.0, 20.0, 0.0));
+        let renamed = Stack { tagged: true, ..plain.clone() };
+        let mut dead = stack_rod(&renamed);
+        assert!(dead.has_tag);
+        assert_eq!((dead.yield_(rod), dead.core_heat(rod), dead.hull_heat(rod), dead.enrichment(rod)), (0.0, 0.0, 0.0, 0.0));
+        // Its first write adds the keys to that tag, as `setDouble` does (the others still read 0).
+        dead.set_hull_heat(rod, 30.0);
+        let custom = with_rod_stack(None, &dead).unwrap();
+        assert_eq!(rod_stack(Some(&custom)), RodStack { has_tag: true, hull: Some(30.0), ..RodStack::bare() });
+        // A crafted rod (`onCreated`) carries the defaults: renamed then, it keeps them.
+        let crafted = Stack { custom: with_rod_stack(None, &RodStack::fresh(rod)), tagged: true, ..plain };
+        assert_eq!(stack_rod(&crafted).yield_, Some(rod.yield_));
     }
 
     #[test]

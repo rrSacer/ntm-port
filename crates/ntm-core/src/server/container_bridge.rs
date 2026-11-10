@@ -23,6 +23,11 @@ pub struct Stack {
     /// with different data don't pile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<String>,
+    /// Whether the 1.7.10 stack would carry a `stackTagCompound`: it has any data that one held (`custom_data`, a name,
+    /// lore, enchantments, an anvil's repair cost). An RBMK rod reads its keys from that tag, its defaults only without
+    /// one (`ItemRBMKRod.getDouble`: a rod renamed before it ever burnt reads a yield of 0). Set for the RBMK rods only.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub tagged: bool,
 }
 
 fn is_zero(v: &u32) -> bool {
@@ -36,6 +41,7 @@ impl Stack {
             count,
             damage: 0,
             custom: None,
+            tagged: false,
         }
     }
 }
@@ -1029,7 +1035,7 @@ impl Server {
                         if let Some(cell) = want.get_mut(i) {
                             // A part keeps the damage its slot gave it.
                             let damage = cell.as_ref().filter(|c| Some(&c.id) == s.as_ref()).map_or(0, |c| c.damage);
-                            *cell = s.clone().map(|id| Stack { id, count: 1, damage, custom: None });
+                            *cell = s.clone().map(|id| Stack { id, count: 1, damage, custom: None, tagged: false });
                         }
                     }
                     bomb_data(b)

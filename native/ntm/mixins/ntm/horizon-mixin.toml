@@ -377,6 +377,18 @@ bindings = [
   { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
 ]
 
+# A crafting grid's result (`prepare_item_craft`, API 290): an RBMK rod comes out with its tag set up, as
+# `ItemRBMKRod.onCreated` does (`setNBTDefaults`).
+[[injection]]
+id = "rbmk-rod-crafted"
+hook = "prepare_item_craft"
+hook_version = 1
+kind = "HEAD"
+helper = "rbmk_craft.rs"
+bindings = [
+  { name = "result", ty = "&mut Option<horizon_client::items::ItemStack>", value = "&mut *result" },
+]
+
 # An item used in the air (`use_item`): the detonator sets its bomb off.
 [[injection]]
 id = "use-item-air"

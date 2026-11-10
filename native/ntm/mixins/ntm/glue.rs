@@ -1648,6 +1648,11 @@ pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
     if ntm_core::pile::Rod::of(&s.item,0.0).is_some() || ntm_core::zirnox::fuel(&s.item).is_some() || ntm_core::radioisotopes::pellet(&s.item).is_some() || ntm_core::rbmk::persist::rod_of(&s.item).is_some() {
         t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);
     }
+    // An RBMK rod reads its keys from the 1.7.10 `stackTagCompound`, which any of these data made (`Stack::tagged`).
+    if ntm_core::rbmk::persist::rod_of(&s.item).is_some() {
+        t.tagged = s.data().is_some_and(|d| d.custom_name.is_some() || !d.enchantments.is_empty() || d.repair_cost > 0
+            || d.other("minecraft:lore").is_some() || d.other("minecraft:custom_data").is_some());
+    }
     Some(t)
 }
 
@@ -1678,6 +1683,19 @@ fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
 /// The engine's SNBT, as Java's, reads the bare words of a non-finite double (`NaNd`, `Infinityd`) as text: an RBMK
 /// rod's four doubles come back as the doubles they were written as (P2-1), their bits exact (a NaN canonical, as Java's
 /// `writeDouble` keeps it).
+/// `ItemRBMKRod.onCreated` on a crafting grid's result: an RBMK rod without a tag gets the defaults (`setNBTDefaults`:
+/// its full yield, core and hull 20), so a rod renamed after it is crafted keeps them, as in Java.
+pub(super) fn rbmk_crafted(result: &mut Option<ItemStack>) {
+    let Some(r) = result.as_ref() else { return };
+    let Some(rod) = ntm_core::rbmk::persist::rod_of(&r.item) else { return };
+    let Some(mut s) = stack(result) else { return };
+    if s.tagged {
+        return;
+    }
+    s.custom = ntm_core::rbmk::persist::with_rod_stack(None, &ntm_core::rbmk::rods::RodStack::fresh(rod));
+    *result = item(Some(&s), result.take());
+}
+
 fn rod_doubles(tag: &mut Tag) {
     let Tag::Compound(c) = tag else { return };
     for key in ["yield", "xenon", "core", "hull"] {

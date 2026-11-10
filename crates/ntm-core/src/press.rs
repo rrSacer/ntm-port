@@ -534,7 +534,7 @@ impl PressCore {
 
     fn sync_out(&self, slots: &mut Slots, len: usize) {
         slots.resize(len, None);
-        slots[slot::STAMP] = self.stamp.as_ref().map(|s| Stack { id: s.item.clone(), count: 1, damage: s.used, custom: None });
+        slots[slot::STAMP] = self.stamp.as_ref().map(|s| Stack { id: s.item.clone(), count: 1, damage: s.used, custom: None, tagged: false });
         slots[slot::INPUT] = stack(&self.input);
         slots[slot::OUTPUT] = stack(&self.output);
     }

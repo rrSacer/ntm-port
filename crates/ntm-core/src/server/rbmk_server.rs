@@ -256,7 +256,7 @@ impl Server {
                     rod.last_flux_quantity = c.last_flux_quantity;
                     rod.last_flux_ratio = c.last_flux_ratio;
                     rod.has_rod = c.has_rod;
-                    rod.fuel = c.slots.first().cloned().flatten().and_then(|s| persist::rod_of(&s.id).map(|t| (t, persist::rod_stack(s.custom.as_deref()))));
+                    rod.fuel = c.slots.first().cloned().flatten().and_then(|s| persist::rod_of(&s.id).map(|t| (t, persist::stack_rod(&s))));
                 }
                 r.add(col);
             }
