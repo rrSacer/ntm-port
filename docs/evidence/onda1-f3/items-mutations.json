@@ -74,5 +74,45 @@
    "result": "NOT-CAUGHT(got:setup:chocolate_milk_kills_a_survival_drinker)"
   }
  ],
- "fix": "cancel_use restocked the stack after its last try too, hiding the consumption; it no longer does"
+ "fix": "cancel_use restocked the stack after its last try too, hiding the consumption; it no longer does",
+ "review": {
+  "commit": "df59a34f",
+  "final": [
+   {
+    "mutant": "pickup_delay_60",
+    "expected_or_result": "setup:thrown_container_waits_its_pickup_delay",
+    "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+   },
+   {
+    "mutant": "pickup_delay_run_out",
+    "expected_or_result": "setup:thrown_container_waits_its_pickup_delay",
+    "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+   },
+   {
+    "mutant": "half_exponent_binary",
+    "expected_or_result": "AssertionError:",
+    "result": "setup:mask_and_hazmat_reduce_gamma: {'mask': 313, 'bare': 350, 'hazmat': 265}"
+   },
+   {
+    "mutant": "schnitzel_short_blindness",
+    "expected_or_result": "setup:vegan_schnitzel_java_effects",
+    "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
+   }
+  ],
+  "stopped_earlier_by_timing": [
+   {
+    "mutant": "schnitzel_short_blindness",
+    "detail": "setup:vegan_schnitzel_java_effects NOT-CAUGHT(got:setup:loop_stew_leaves_a_bowl_in_the_slot)"
+   },
+   {
+    "mutant": "schnitzel_short_blindness",
+    "detail": "setup:vegan_schnitzel_java_effects NOT-CAUGHT(got:setup:loop_stew_java_effects)"
+   },
+   {
+    "mutant": "half_exponent_binary",
+    "detail": "first run stopped at setup:filter_installed_once (a lost click, before the gamma check)"
+   }
+  ],
+  "half_exponent_binary": "native glue radiation_factor with player_resistance(game) / 2.0, built from 130153a4ac as a throwaway binary (not committed): mask 313, hazmat 265 instead of 281 and 201"
+ }
 }

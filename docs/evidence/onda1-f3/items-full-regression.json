@@ -1,5 +1,6 @@
 {
- "commit": "6dd6f59a",
+ "commit": "df59a34f",
+ "note": "review adjustments (P3-1..P3-5)",
  "phases": {
   "capture-state": {
    "capture-state:mask_kept_with_filter_wear": {
@@ -56,7 +57,7 @@
     "actual": {
      "potion_sickness": [
       0,
-      11830
+      11826
      ]
     }
    },
@@ -65,8 +66,8 @@
     "actual": {
      "treated": 482,
      "after": {
-      "dose": 215000,
-      "herbal": 11819,
+      "dose": 213000,
+      "herbal": 11815,
       "radaway": 0
      }
     }
@@ -77,14 +78,14 @@
     "ok": true,
     "actual": {
      "before": {
-      "invariant": 215000,
-      "dose": 215000,
+      "invariant": 213000,
+      "dose": 213000,
       "radaway": 0,
       "canteen": 179
      },
      "after": {
-      "dose": 215000,
-      "herbal": 11783,
+      "dose": 213000,
+      "herbal": 11779,
       "radaway": 0
      }
     }
@@ -93,7 +94,7 @@
     "ok": true,
     "actual": {
      "before": 179,
-     "after": 167
+     "after": 163
     }
    },
    "check-state:content_mob_effects_survive_the_reopen": {
@@ -101,11 +102,11 @@
     "actual": {
      "potion_sickness": [
       0,
-      11775
+      11770
      ],
      "radx": [
       0,
-      119963
+      119962
      ]
     }
    },
@@ -114,7 +115,7 @@
     "actual": {
      "potion_sickness": [
       0,
-      11683
+      11678
      ]
     }
    },
@@ -122,14 +123,14 @@
     "ok": true,
     "actual": {
      "before": {
-      "invariant": 215000,
-      "dose": 215000,
+      "invariant": 213000,
+      "dose": 213000,
       "radaway": 0,
       "canteen": 179
      },
      "after": {
-      "dose": 215000,
-      "herbal": 11783,
+      "dose": 213000,
+      "herbal": 11779,
       "radaway": 0
      }
     }
@@ -303,7 +304,7 @@
      "effects": [
       {
        "amplifier": 2,
-       "duration_ticks": 4783,
+       "duration_ticks": 4782,
        "id": "resistance"
       }
      ]
@@ -334,8 +335,8 @@
       "ntm:iv_empty": 1
      },
      "state": {
-      "dose": 175000,
-      "radaway": 115
+      "dose": 174000,
+      "radaway": 114
      }
     }
    },
@@ -573,15 +574,15 @@
     "actual": {
      "speed": [
       1,
-      572
+      569
      ],
      "resistance": [
       2,
-      572
+      569
      ],
      "strength": [
       0,
-      572
+      569
      ]
     }
    },
@@ -597,11 +598,11 @@
     "actual": {
      "resistance": [
       2,
-      3571
+      3575
      ],
      "regeneration": [
       2,
-      1171
+      1175
      ]
     }
    },
@@ -666,11 +667,11 @@
     "actual": {
      "speed": [
       1,
-      570
+      575
      ],
      "haste": [
       1,
-      570
+      575
      ]
     }
    },
@@ -683,7 +684,7 @@
    "setup:canteen_sets_its_cooldown_and_stays": {
     "ok": true,
     "actual": {
-     "damage": 178,
+     "damage": 179,
      "counts": {
       "ntm:canteen_vodka": 1
      }
@@ -694,11 +695,11 @@
     "actual": {
      "nausea": [
       0,
-      176
+      174
      ],
      "strength": [
       2,
-      576
+      574
      ]
     }
    },
@@ -709,7 +710,7 @@
    "setup:canteen_cools_one_per_second": {
     "ok": true,
     "actual": {
-     "first": 178,
+     "first": 179,
      "later": 172
     }
    },
@@ -946,11 +947,11 @@
       "radaway": 482
      },
      "cleared": {
-      "dose": 419000,
+      "dose": 421000,
       "radaway": 0
      },
      "later": {
-      "dose": 419000,
+      "dose": 421000,
       "radaway": 0
      }
     }
@@ -1025,21 +1026,21 @@
     "actual": {
      "state": {
       "dose": 400000,
-      "herbal": 11952,
+      "herbal": 11960,
       "radaway": 0
      },
      "effects": {
       "nausea": [
        0,
-       171
+       172
       ],
       "slowness": [
        0,
-       91
+       87
       ],
       "weakness": [
        2,
-       11971
+       11972
       ],
       "mining_fatigue": [
        2,
@@ -1067,7 +1068,7 @@
     "actual": {
      "potion_sickness": [
       0,
-      11862
+      11868
      ]
     }
    },
@@ -1082,7 +1083,7 @@
     "actual": {
      "blindness": [
       0,
-      33
+      31
      ]
     }
    },
@@ -1204,11 +1205,11 @@
      "effects": {
       "slow_falling": [
        0,
-       2304
+       2302
       ],
       "fire_resistance": [
        0,
-       2312
+       2310
       ],
       "blindness": [
        0,
@@ -1386,7 +1387,7 @@
    "setup:misc_loot_crate_gives_one_ported_part": {
     "ok": true,
     "actual": {
-     "ntm:mp_warhead_10_cloud": 1
+     "ntm:mp_warhead_10_taint": 1
     }
    },
    "setup:gas_mask_filter_mono_is_installed": {
@@ -1507,7 +1508,7 @@
    },
    "setup:survey_scanner_finds_ported_ores": {
     "ok": true,
-    "actual": "Found SCHIST! | Found OIL! | Replaced 1 slot(s) on ItemsTest with [Survey Scanner] | Changed the block at 20, 100, 16 | Changed the block at 25, 100, 11 | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Target has no effects to remove | true | Removed 66 item(s) from player ItemsTest | Digamma resistance:  N/A"
+    "actual": "Found SCHIST! | Found OIL! | Replaced 1 slot(s) on ItemsTest with [Survey Scanner] | Changed the block at 20, 100, 16 | Changed the block at 25, 100, 11 | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Removed every effect from ItemsTest | true | Removed 66 item(s) from player ItemsTest | Digamma resistance:  N/A"
    },
    "setup:continuous_source_reads_in_the_buffer": {
     "ok": true,
@@ -1570,7 +1571,7 @@
    "setup:fertilizer_grows_the_crop_around_the_click": {
     "ok": true,
     "actual": {
-     "age": "3",
+     "age": "2",
      "counts": {
       "ntm:powder_fertilizer": 2
      }
@@ -1871,27 +1872,27 @@
    "setup:decon_works_in_creative": {
     "ok": true,
     "actual": {
-     "dose": 250000,
+     "dose": 249000,
      "radaway": 0
     }
    },
    "setup:two_decons_take_a_rad_a_tick": {
     "ok": true,
     "actual": {
-     "drop": 48000
+     "drop": 50000
     }
    },
    "setup:out_of_the_box_nothing": {
     "ok": true,
     "actual": {
-     "dose": 283000,
+     "dose": 280000,
      "radaway": 0
     }
    },
    "setup:mycelium_irradiation_keeps_growing_the_dose": {
     "ok": true,
     "actual": {
-     "growth": 7600
+     "growth": 8000
     }
    },
    "setup:decon_ends_the_irradiation": {
@@ -1903,8 +1904,8 @@
    "setup:audio_ntm:item.syringe": {
     "ok": true,
     "actual": [
-     "sound resolved event=ntm:item.syringe file=/mnt/ssd120/sacer/so/onda1/items-kwt8k28n/.horizon-cache/mod-content/assets/ntm/sounds/tool/stim.ogg stream=false source=7 decoded=Some((39744, 32000))",
-     "sound resolved event=ntm:item.syringe file=/mnt/ssd120/sacer/so/onda1/items-kwt8k28n/.horizon-cache/mod-content/assets/ntm/sounds/tool/stim.ogg stream=false source=7 decoded=Some((39744, 32000))"
+     "sound resolved event=ntm:item.syringe file=/mnt/ssd120/sacer/so/onda1/items-es1g_5sj/.horizon-cache/mod-content/assets/ntm/sounds/tool/stim.ogg stream=false source=7 decoded=Some((39744, 32000))",
+     "sound resolved event=ntm:item.syringe file=/mnt/ssd120/sacer/so/onda1/items-es1g_5sj/.horizon-cache/mod-content/assets/ntm/sounds/tool/stim.ogg stream=false source=7 decoded=Some((39744, 32000))"
     ]
    },
    "setup:audio_ntm:item.radaway": {
@@ -1922,7 +1923,7 @@
    "setup:audio_ntm:player.groan": {
     "ok": true,
     "actual": [
-     "sound resolved event=ntm:player.groan file=/mnt/ssd120/sacer/so/onda1/items-kwt8k28n/.horizon-cache/mod-content/assets/ntm/sounds/player/groan1.ogg stream=false source=7 decoded=Some((10944, 44100))"
+     "sound resolved event=ntm:player.groan file=/mnt/ssd120/sacer/so/onda1/items-es1g_5sj/.horizon-cache/mod-content/assets/ntm/sounds/player/groan1.ogg stream=false source=7 decoded=Some((10944, 44100))"
     ]
    },
    "setup:audio_ntm:item.techboop": {
@@ -1942,7 +1943,7 @@
  "report": {
   "ok": true,
   "scenario": "items",
-  "game": "/mnt/ssd120/sacer/so/onda1/items-kwt8k28n",
+  "game": "/mnt/ssd120/sacer/so/onda1/items-es1g_5sj",
   "binary": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda1/client-after",
   "binary_sha256": "e7a999ee9c4e3448c88a1cbc8c3123e281a14a82cfa49aa74998ec8089855d84",
   "bundle": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda1/dist-head/ntm.hmod",

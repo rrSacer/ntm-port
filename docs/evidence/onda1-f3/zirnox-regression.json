@@ -231,5 +231,29 @@
     2
    ]
   }
+ },
+ "review_run": {
+  "commit": "df59a34f",
+  "checks": 136,
+  "all_ok": true,
+  "debris": {
+   "survivor_delta": [
+    20,
+    10,
+    10,
+    10,
+    11,
+    0
+   ],
+   "created_delta": [
+    20,
+    10,
+    10,
+    10,
+    20,
+    2
+   ]
+  },
+  "names": "repeated checks named by kind (P3-5)"
  }
 }
