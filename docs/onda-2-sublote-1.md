@@ -217,6 +217,15 @@ por célula da soldadora (`getAccessibleSlotsFromSide(x,y,z,side)`) viram uma s�
 sem os itens de identificador de fluido (o tanque toma o tipo do primeiro fluido
 que entra, como nos demais); as 18 receitas de míssil.
 
+## Montadora de precisão e fábrica química: o que bloqueia (lido no Java, 10/11)
+
+| Máquina | O que o Java faz | O que falta no port |
+| --- | --- | --- |
+| `machine_precass` | `PrecAssRecipes.registerPair` (linhas 222-248): toda receita rende **o produto com `chance` % ou um `BrokenItem` com o resto**, e cada uma ganha uma receita de reciclagem que consome o item quebrado (`NBTStack`). Com `enable528 = false` (o perfil do port, decisão do coordenador) só existem `crystalcircuit` e as 10 cadeias de upgrade (`addFirstUpgrade`/`addSecondUpgrade`), todas com chance (25 a 75 %). | O item `ntm:broken_item` **não existe no catálogo** (só `block_meteor_broken` e tijolos quebrados) e carrega NBT com o produto original. Sem ele, ou o port entrega só o caminho feliz (infiel) ou perde a falha silenciosamente. Entregar a máquina sem o item seria uma aproximação, não fidelidade. |
+| `machine_chemical_factory` | Quatro módulos de planta química (`ModuleMachineChemplant`) a velocidade ×2 e potência ×2, cada um com 3 entradas, 3 saídas, 3+3 tanques e o seu próprio botão de receita; água e vapor gasto de 4 000 mB. | O Crafter nativo e o painel de receitas (`native::recipes(block)`, botões `RECIPE_BASE + i`) servem **uma receita por bloco**; quatro seletores independentes exigem estender o painel e o hook de botão do motor, e a ponte de slots (`Layout::Crafter`) não tem quatro linhas. |
+
+Perfil 528: fica como lacuna nominal; não é ativado no port até decisão do usuário.
+
 ## Serra: recorte proposto (sem a API de entidades)
 
 `TileEntitySawmill.java` mistura três coisas. O que dá para entregar agora, fiel
