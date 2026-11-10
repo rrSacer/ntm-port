@@ -1461,8 +1461,30 @@ impl ServerHost for Host<'_, '_> {
         self.game.native_visit_player(id,|g|crate::game::ntm_items::write_dose(g,expected,desired)).unwrap_or(false)
     }
     fn radiation_factor(&mut self,id:&str)->f64{self.game.native_visit_player(id,|g|crate::game::ntm_items::radiation_factor(g)).unwrap_or(1.0)}
+    /// Read through the player, for the components that tell a renamed RBMK rod (`Stack::tagged`).
     fn inventory_stacks(&mut self,id:&str)->Option<Vec<Stack>> {
-        Some(self.game.native_player_inventory(id)?.into_iter().map(|c|Stack {id:c.item,count:c.count,damage:0,custom:c.custom_data}).collect())
+        let read=|s:&ItemStack| Stack {
+            custom:s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt),
+            tagged:ntm_core::rbmk::persist::rod_of(&s.item).is_some() && rod_tagged(s),
+            ..Stack::new(&s.item,s.count)
+        };
+        self.game.native_visit_player(id,|g|g.inventory.iter().flatten().chain(g.armor.iter().flatten()).chain(g.offhand.iter()).map(read).collect())
+            .or_else(||self.carried_stacks(id))
+    }
+    fn carried_stacks(&mut self,id:&str)->Option<Vec<Stack>> {
+        Some(self.game.native_player_inventory(id)?.into_iter().map(|c|Stack {custom:c.custom_data,..Stack::new(&c.item,c.count)}).collect())
+    }
+    fn set_fire_unless_wet(&mut self,id:&str,seconds:i32) {
+        self.game.native_visit_player(id,|g| {
+            let Some(p)=g.player.as_ref() else {return};
+            // `Entity.isWet`: in water, or rain at the feet or the top of the box.
+            let (at,top)=(p.position,p.bounds().max_position().y);
+            if p.fluids.was_touching_water || g.in_rain(at,top) {return;}
+            // `setFire(seconds)`: the longer of what is left and this, fire protection's share off.
+            if let Some(p)=g.player.as_mut() && let Err(e)=p.ignite_for_ticks(seconds.saturating_mul(20)) {
+                eprintln!("ntm: set fire {id}: {e}");
+            }
+        });
     }
     fn inventory(&mut self, id: &str) -> Option<Vec<(String, u32)>> {
         Some(self.game.native_player_inventory(id)?.into_iter().map(|c| (c.item, c.count)).collect())
@@ -1650,10 +1672,15 @@ pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
     }
     // An RBMK rod reads its keys from the 1.7.10 `stackTagCompound`, which any of these data made (`Stack::tagged`).
     if ntm_core::rbmk::persist::rod_of(&s.item).is_some() {
-        t.tagged = s.data().is_some_and(|d| d.custom_name.is_some() || !d.enchantments.is_empty() || d.repair_cost > 0
-            || d.other("minecraft:lore").is_some() || d.other("minecraft:custom_data").is_some());
+        t.tagged = rod_tagged(s);
     }
     Some(t)
+}
+
+/// Whether the 1.7.10 stack had its `stackTagCompound`: any of these components made it.
+fn rod_tagged(s: &ItemStack) -> bool {
+    s.data().is_some_and(|d| d.custom_name.is_some() || !d.enchantments.is_empty() || d.repair_cost > 0
+        || d.other("minecraft:lore").is_some() || d.other("minecraft:custom_data").is_some())
 }
 
 /// The game's stack for `new`: the old one with its components when it is

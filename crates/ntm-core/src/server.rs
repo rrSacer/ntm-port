@@ -20,6 +20,9 @@ pub trait ServerHost: Kv {
     /// NativeCarried includes custom data already; older hosts keep their
     /// plain inventory contract through this default adapter.
     fn inventory_stacks(&mut self,id:&str)->Option<Vec<container_bridge::Stack>> {self.inventory(id).map(|v|v.into_iter().map(|(id,n)|container_bridge::Stack::new(&id,n)).collect())}
+    /// `inventory_stacks` without the components only an RBMK rod's tag flag reads (`Stack::tagged`), cheap enough for
+    /// every tick: what decides a rod's heat is its custom data.
+    fn carried_stacks(&mut self,id:&str)->Option<Vec<container_bridge::Stack>> {self.inventory_stacks(id)}
 
     fn block_resistance(&mut self,dim:&str,p:Pos)->Option<f32> {self.get_block(dim,p).map(|b|crate::blast::vanilla::resistance(&b).max(0.))}
 
@@ -145,6 +148,9 @@ pub trait ServerHost: Kv {
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
     /// A status effect on player `id` (`poison`).
     fn effect(&mut self, _id: &str, _effect: &str, _seconds: u32, _amplifier: u8) {}
+    /// `HazardTypeHot.onUpdate`: `if(!target.isWet()) target.setFire(seconds)`, player `id` burning for at least
+    /// `seconds` (less fire protection) unless in water or rain.
+    fn set_fire_unless_wet(&mut self, _id: &str, _seconds: i32) {}
     /// Particles or a sound in `dim` (`crate::blast::visuals::Show`, not
     /// its effects).
     fn show(&mut self, _dim: &str, _show: &crate::blast::visuals::Show) {}

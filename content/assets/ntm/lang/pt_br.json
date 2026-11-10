@@ -3388,5 +3388,6 @@
   "trait.rbmx.splitsWith": "Chega de: %s",
   "trait.rbmx.xenon": "Veneno de chumbo: %s",
   "trait.rbmx.xenonBurn": "Função de destruição de chumbo: %s",
-  "trait.rbmx.xenonGen": "Função de criação de chumbo: %s"
+  "trait.rbmx.xenonGen": "Função de criação de chumbo: %s",
+  "trait.hot": "Pirofórico / Quente"
 }

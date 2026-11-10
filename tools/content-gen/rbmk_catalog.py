@@ -31,7 +31,7 @@ MACHINES=tuple(v for v in ('rbmk_rod','rbmk_rod_mod','rbmk_rod_reasim','rbmk_rod
 
 # The keys ItemRBMKRod.addInformation resolves (I18nUtil.resolveKey): its traits, the DRX's, the neutron types and the
 # cooling hint.
-TOOLTIP_KEYS=re.compile(r'^(trait\.rbm[kx]\.[\w.]+|desc\.item\.wasteCooling)$')
+TOOLTIP_KEYS=re.compile(r'^(trait\.rbm[kx]\.[\w.]+|desc\.item\.wasteCooling|trait\.hot)$')
 
 
 def tooltip_lang(source, languages):

@@ -3388,5 +3388,6 @@
   "trait.rbmx.splitsWith": "Arrives from: %s",
   "trait.rbmx.xenon": "Lead poison: %s",
   "trait.rbmx.xenonBurn": "Lead destruction function: %s",
-  "trait.rbmx.xenonGen": "Lead creation function: %s"
+  "trait.rbmx.xenonGen": "Lead creation function: %s",
+  "trait.hot": "Pyrophoric / Hot"
 }

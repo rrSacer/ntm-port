@@ -61,9 +61,13 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
         lines.push((Text::legacy(&format!("Vida restante: {:.3}% ({life} / {} ticks)",life as f64/p.lifespan_ticks as f64*100.,p.lifespan_ticks)),u32::MAX));
         lines.push((Text::legacy(&format!("Decai para: {}",p.decay_item)),u32::MAX));
     }
-    let rate=native.as_ref().and_then(|s|ntm_core::zirnox::radiation_rate(s).or_else(||ntm_core::radioisotopes::radiation_rate(s)));
+    let rate=native.as_ref().and_then(|s|ntm_core::zirnox::radiation_rate(s).or_else(||ntm_core::radioisotopes::radiation_rate(s)).or_else(||ntm_core::rbmk::hazards::radiation_rate(s)));
     let hazard_lines=rate.map_or_else(||client_rad::tooltip_lines(&stack.item,stack.count),|rate|client_rad::tooltip_rate_lines(rate,stack.count));
     for line in hazard_lines {
         lines.push((Text::legacy(&line), u32::MAX));
+    }
+    // `HazardTypeHot.addHazardInformation`, after the radiation as the rod registers them: gold, while the hull is hot.
+    if native.as_ref().and_then(ntm_core::rbmk::hazards::hot_level).is_some_and(|l|l>0) {
+        lines.push((Text::legacy("\u{a7}6[").append(Text::translate("trait.hot",&[])).append(Text::legacy("]")),u32::MAX));
     }
 }

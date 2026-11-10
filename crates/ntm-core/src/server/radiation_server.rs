@@ -44,6 +44,19 @@ impl Server {
         let amount=(amount as f64*factor) as u64;
         self.update_player_dose(host,id,|dose|radiation::add_dose(dose,amount));
     }
+    /// `HazardTypeHot` from the RBMK rods each player carries, every tick (`HazardSystem.updatePlayerInventory`): each
+    /// rod's `setFire`, so the hottest's, unless the player has a reacher (`inventory.hasItem(reacher)`).
+    pub(super) fn hot_tick(&mut self, host: &mut impl ServerHost) {
+        for p in self.players.clone() {
+            let Some(carried) = host.carried_stacks(&p.id) else { continue };
+            if carried.iter().any(|s| s.id == "ntm:reacher") {
+                continue;
+            }
+            if let Some(level) = carried.iter().filter_map(crate::rbmk::hazards::hot_level).max().filter(|l| *l > 0) {
+                host.set_fire_unless_wet(&p.id, level);
+            }
+        }
+    }
     pub(super) fn radiation_tick(&mut self, host: &mut impl ServerHost) {
         let tick = self.tick;
         if !tick.is_multiple_of(RATE_EVERY) {
@@ -53,7 +66,7 @@ impl Server {
         self.radiation_env.retain(|id, _| self.players.iter().any(|p| &p.id == id));
         for p in self.players.clone() {
             let carried = host.inventory_stacks(&p.id).unwrap_or_default();
-            let held = carried.iter().fold(0u64,|sum,s|sum.saturating_add(crate::zirnox::radiation_rate(s).or_else(||crate::radioisotopes::radiation_rate(s)).map_or_else(||radiation::rate_of([(s.id.as_str(),s.count)]),|rate|u64::from(rate)*u64::from(s.count))));
+            let held = carried.iter().fold(0u64,|sum,s|sum.saturating_add(crate::zirnox::radiation_rate(s).or_else(||crate::radioisotopes::radiation_rate(s)).or_else(||crate::rbmk::hazards::radiation_rate(s)).map_or_else(||radiation::rate_of([(s.id.as_str(),s.count)]),|rate|u64::from(rate)*u64::from(s.count))));
             let held = u32::try_from(held).unwrap_or(u32::MAX);
             let now = self.ready.world.ticks;
             let zones = self.ready.world.bombs.zones.iter().map(|z| z.rate(&p.dim, p.pos, now)).fold(0u32, u32::saturating_add);
@@ -106,6 +119,40 @@ mod tests {
         fn set_player_value(&mut self,_:&str,key:&str,value:i64){self.shown.insert(key.into(),value);}
     }
     #[test]
+    fn a_hot_rod_sets_its_holder_on_fire_unless_they_carry_a_reacher() {
+        struct Hot {inner:Host,fire:Vec<(String,i32)>}
+        impl Kv for Hot {
+            fn get(&mut self,k:&str)->Option<Vec<u8>>{self.inner.get(k)}
+            fn set(&mut self,k:&str,v:&[u8])->Result<(),String>{self.inner.set(k,v)}
+            fn delete(&mut self,k:&str){self.inner.delete(k)}
+        }
+        impl ServerHost for Hot {
+            fn get_block(&mut self,_:&str,_:Pos)->Option<String>{None}
+            fn set_blocks(&mut self,_:&str,_:&[(Pos,String)])->Result<(),String>{Ok(())}
+            fn tell(&mut self,_:&str,_:&str){}
+            fn log(&mut self,_:&str){}
+            fn inventory_stacks(&mut self,_:&str)->Option<Vec<Stack>>{Some(self.inner.carried.clone())}
+            fn set_fire_unless_wet(&mut self,id:&str,seconds:i32){self.fire.push((id.into(),seconds));}
+        }
+        let rod = |hull: f64| {
+            let r = crate::rbmk::persist::rod_of("ntm:rbmk_fuel_ueu").unwrap();
+            let mut s = crate::rbmk::rods::RodStack::fresh(r);
+            s.set_hull_heat(r, hull);
+            Stack { custom: crate::rbmk::persist::with_rod_stack(None, &s), tagged: true, ..Stack::new("ntm:rbmk_fuel_ueu", 1) }
+        };
+        let mut h = Hot { inner: Host { carried: vec![rod(20.0), Stack::new("ntm:rbmk_fuel_ueu", 1)], ..Host::default() }, fire: vec![] };
+        let mut s = Server::native(&mut h, 0);
+        s.players = vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: "minecraft:overworld".into(), pos: [0., 64., 0.], creative: false }];
+        s.hot_tick(&mut h);
+        assert!(h.fire.is_empty(), "a cold rod and a bare one burn nothing");
+        h.inner.carried = vec![rod(150.0), rod(400.0), rod(101.0)];
+        s.hot_tick(&mut h);
+        assert_eq!(h.fire, [("p".to_string(), 30)], "the hottest: ceil((400 − 100) / 10)");
+        h.inner.carried.push(Stack::new("ntm:reacher", 1));
+        s.hot_tick(&mut h);
+        assert_eq!(h.fire.len(), 1, "a reacher stops it");
+    }
+    #[test]
     fn persistent_dose_wins_over_legacy_and_rejected_commit_publishes_nothing() {
         struct Persistent {inner:Host,dose:Option<crate::radiation::Dose>,reject:bool}
         impl Kv for Persistent {
@@ -148,6 +195,10 @@ mod tests {
         // The shared path still honors the ZIRNOX modifier and ordinary waste.
         h.carried=vec![Stack::new("ntm:nuclear_waste_short__uranium235",1),Stack{custom:Some("{life:6250}".into()),..Stack::new("ntm:rod_zirnox__uranium_fuel",1)}];
         s.tick=60;s.radiation_tick(&mut h);assert_eq!(h.shown[radiation::KEY_RATE],67875);
+        // And an RBMK rod's depletion: a renamed one (tag, no keys) reads a yield of 0, at its target.
+        h.carried=vec![Stack{tagged:true,..Stack::new("ntm:rbmk_fuel_ueu",2)}];
+        let target=crate::radiation::rbmk_hazard("ntm:rbmk_fuel_ueu").unwrap().rbmk.unwrap().target_rad_s;
+        s.tick=80;s.radiation_tick(&mut h);assert_eq!(h.shown[radiation::KEY_RATE],i64::from((target*1000.).round() as u32)*2);
     }
     /// A bottle's point `contaminate` joins the continuous sources in the same
     /// second's reading, once, and the next window starts empty.

@@ -165,6 +165,7 @@ impl Server {
         self.bombs_tick(host);
         phases.mark("bombs");
         self.radiation_tick(host);
+        self.hot_tick(host);
         phases.mark("radiation");
         if !frozen.is_empty(){self.ready.topo_dirty=true;self.ready.world.machines.append(&mut frozen);}
         self.zirnox_effects(host);

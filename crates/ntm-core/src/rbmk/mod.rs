@@ -10,6 +10,7 @@
 
 pub mod dials;
 pub mod fluids;
+pub mod hazards;
 pub mod jmath;
 pub mod jrandom;
 pub mod outgasser;
