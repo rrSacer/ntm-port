@@ -46,7 +46,7 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 # `kv_committed`: the action saves by pausing the game, a save that does not wait; the process dies after its storage.
 PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
-BROKEN = ('break', 'replace', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
 # the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
@@ -624,6 +624,9 @@ MIXER = (140, 100, 8)
 MIXER2 = (134, 100, 8)
 MIXER3 = (128, 100, 8)
 NITER = int(os.environ.get('NTM_CRASH_NITER', '16'))
+# `furnace-break`: the broken machine is the brick furnace (its items are the engine's slots), against the chest control.
+FURNACE = SCENARIO == 'furnace-break'
+MACHINE = 'ntm:machine_furnace_brick_off' if FURNACE else 'ntm:machine_mixer'
 # The mixers of a scenario (all in chunk (8,0): one ledger) and the niter each holds.
 MIXERS = {'origin-merge': [(MIXER2, NITER // 2), (MIXER, NITER // 2)],
           # The smaller folds into the larger: the stack whose older copy stays in B is the one that goes.
@@ -657,14 +660,15 @@ def break_prepare(g):
             g.command(f'item replace block {x} {y} {z} container.0 with ntm:niter {each}')
             core = (x, y, z)
         else:
-            g.command('give @s ntm:machine_mixer 1')
+            g.command(f'give @s {MACHINE} 1')
             if SCENARIO.startswith('origin') or SCENARIO in MIXERS:
                 g.command(f'tp @s {x + .5} {y} {z + 3.5}')
-            g.ctl(f'place {x} {y} {z} --item ntm:machine_mixer')
+            g.ctl(f'place {x} {y} {z} --item {MACHINE}')
             g.command('clear @s')
             open_machine(g, x, y, z)
-            core = core_of(g, 'ntm:machine_mixer', x, y, z)
-            g.put('ntm:niter', each, 1)
+            # The brick furnace is one block: its core is where it was put; the input is its slot 0.
+            core = (x, y, z) if FURNACE else core_of(g, 'ntm:machine_mixer', x, y, z)
+            g.put('ntm:niter', each, 0 if FURNACE else 1)
             g.close()
         g.check('niter_inside', mixer_items(g, core) == each, mixer_items(g, core))
         cores.append(core)
@@ -727,12 +731,12 @@ def break_verify(g, again=False):
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     led = quiet(g, 12)
     state = g.ctl('block %d %d %d' % core).get('state', '')
-    inside = mixer_items(g, core) if state.startswith(('ntm:machine_mixer','minecraft:chest')) else 0
+    inside = mixer_items(g, core) if state.startswith(('ntm:machine_mixer', 'ntm:machine_furnace_brick', 'minecraft:chest')) else 0
     total = inside + entities(g, 'ntm:niter') + inventory(g, 'ntm:niter')
     detail = {'block': state, 'inside': inside, 'entities': entities(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'total': total, 'expected': NITER, 'ledger': led,
               'machine': machine_present(g, core)}
     counted(g, 'niter_exactly_once', detail, again)
-    if state.startswith('ntm:machine_mixer'):
+    if state.startswith(('ntm:machine_mixer', 'ntm:machine_furnace_brick')):
         g.check('a_standing_mixer_is_a_live_machine', machine_present(g, core), detail)
 
 
@@ -1052,6 +1056,70 @@ def save_expecting_death(g):
     g.save()
 
 
+# `furnace-smelt`: a brick furnace smelting 16 raw iron on 3 coal, killed at a boundary of a save while it works: the
+# slots and the burn/progress/ash state are one block-entity compound, so what the reopen holds is a whole state.
+SMELT = (140, 100, 8)
+
+
+def smelt_counts(g, p):
+    text = ' '.join(g.command('data get block %d %d %d Items' % p).get('chat', []))
+    out = {}
+    for entry in re.findall(r'\{[^{}]*\}', text):
+        item = re.search(r'id: ?"?([\w:]+)"?', entry)
+        n = re.search(r'[cC]ount: ?(\d+)', entry)
+        if item and n:
+            out[item[1]] = out.get(item[1], 0) + int(n[1])
+    return out
+
+
+def sprint(g, ticks):
+    g.command(f'tick sprint {ticks}')
+    deadline = time.monotonic() + 600
+    while time.monotonic() < deadline:
+        if 'sprint' not in ' '.join(g.command('tick query').get('chat', [])).lower():
+            return
+        time.sleep(.5)
+
+
+def smelt_prepare(g):
+    from native_stations import open_machine
+    g.ctl('wait-ready 120')
+    g.close()
+    x, y, z = SMELT
+    g.ground(x - 3, y, z, width=8)
+    g.command('clear @s')
+    g.command('give @s ntm:machine_furnace_brick_off 1')
+    g.ctl(f'place {x} {y} {z} --item ntm:machine_furnace_brick_off')
+    g.command('clear @s')
+    open_machine(g, x, y, z)
+    g.put('minecraft:raw_iron', 16, 0)
+    g.put('minecraft:coal', 3, 1)
+    g.close()
+    sprint(g, 500)
+    got = smelt_counts(g, SMELT)
+    g.check('smelting_before_the_base_save', got.get('minecraft:iron_ingot', 0) > 0 and got.get('minecraft:raw_iron', 0) > 0, got)
+    g.ctl('save')
+
+
+def smelt_act(g):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 700)
+    g.evidence['after_act'] = smelt_counts(g, SMELT)
+    save_expecting_death(g)
+
+
+def smelt_verify(g, again=False):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s %d %d %d' % (SMELT[0], SMELT[1], SMELT[2] + 4))
+    quiet(g, 6)
+    got = smelt_counts(g, SMELT)
+    raw, ingots = got.get('minecraft:raw_iron', 0), got.get('minecraft:iron_ingot', 0)
+    counted(g, 'raw_and_ingots_are_16', {'total': raw + ingots, 'expected': 16, 'items': got}, again)
+    g.check('the_furnace_is_alive', machine_present(g, SMELT), got)
+
+
 def drain(g):
     g.ctl('wait-ready 120')
     g.ctl('save')
@@ -1074,6 +1142,8 @@ STEPS = {
     'mining': (mining_prepare, mining_act, mining_verify),
     'vanilla-break': (vanilla_break_prepare, break_act, break_verify),
     'break': (break_prepare, break_act, break_verify),
+    'furnace-break': (break_prepare, break_act, break_verify),
+    'furnace-smelt': (smelt_prepare, smelt_act, smelt_verify),
     'frozen-break': (frozen_break_prepare, frozen_break_act, frozen_break_verify),
     'frozen-unload': (frozen_break_prepare, frozen_unload_act, frozen_break_verify),
     'replace': (break_prepare, break_act, break_verify),

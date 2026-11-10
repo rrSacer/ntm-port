@@ -31,7 +31,7 @@ spec = importlib.util.spec_from_file_location('crash_proof', here / 'run-crash-p
 crash_proof = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crash_proof)
 INCOMING = 'ntm:pile_rod__zr'
-BROKEN = ('break', 'replace', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The scenarios whose action writes files itself (a chunk it unloads): after a death outside a save they hold what those
 # files hold, not the last save.
@@ -56,6 +56,8 @@ HIDDEN = {'frozen-break': 12, 'frozen-unload': 12}
 
 
 def items_of(scenario):
+    if scenario == 'furnace-smelt':
+        return ('minecraft:raw_iron', 'minecraft:iron_ingot')
     if scenario in EMITTING:
         return EMITTING[scenario][0]
     return ('ntm:niter',) if scenario in BROKEN and scenario not in HIDDEN else ('ntm:pile_rod',)
@@ -82,6 +84,8 @@ DEFAULT_POINTS = {
     'mining': [*crash_proof.POINTS, 'kv_committed', 'live_chunk:1,0'],
     # The mixer's chunk first (`live_chunk`): a cut after the first record of a batch hits another chunk in the control.
     'break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'furnace-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'furnace-smelt': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'replace': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'frozen-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:2,0', 'chunks_written', 'entities_written'],
     'frozen-unload': ['none', 'kill', 'kv_committed'],
