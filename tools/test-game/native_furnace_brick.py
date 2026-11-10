@@ -18,7 +18,7 @@ from native_game import Game
 from native_combustion import machine_state, first_int
 
 X, Z = 40, 8
-FURNACE = (X, 102, Z)
+FURNACE = (X, 101, Z)
 SECOND = (X + 8, 100, Z)
 SAVED = 'furnace-brick-saved.json'
 
@@ -54,14 +54,20 @@ def state(g, p):
 
 def chest_count(g, p, item):
     text = ' '.join(g.command(f'data get block {p[0]} {p[1]} {p[2]} Items').get('chat', []))
-    return sum(int(n) for n, i in re.findall(r'count: (\d+), id: "?([\w:]+)"?', text) if i == item) or sum(
-        int(n) for i, n in re.findall(r'id: "?([\w:]+)"?, count: (\d+)', text) if i == item)
+    total = 0
+    for entry in re.findall(r'\{[^{}]*\}', text):
+        i = re.search(r'id: ?"?([\w:]+)"?', entry)
+        n = re.search(r'[cC]ount: ?(\d+)', entry)
+        if i and n and i[1] == item:
+            total += int(n[1])
+    return total
 
 
 def setup(g):
     x, y, z = FURNACE
     g.close()
     g.ground(x, 100, z, width=14)
+    g.command(f"fill {x} 100 {z} {x} 100 {z} minecraft:stone")
     g.command('clear @s')
     g.command('give @s ntm:machine_furnace_brick_off 2')
     g.ctl(f'place {x} {y} {z} --item ntm:machine_furnace_brick_off')
@@ -87,52 +93,54 @@ def setup(g):
     sprint(g, 3300)
     slots = g.slots()
     g.check('sixteen_ingots', count(slots, 'minecraft:iron_ingot') == 16, slots)
-    g.check('one_coal_ash', count(slots, 'ntm:powder_ash__coal') == 1, slots)
+    # The routing test's coal burned too (a smeltable was in): three coals, 4 800 burn ticks, two ashes (at the
+    # second and third), 800 left.
+    g.check('two_coal_ashes', count(slots, 'ntm:powder_ash__coal') == 2, slots)
     g.check('no_raw_iron_left', count(slots, 'minecraft:raw_iron') == 0, slots)
-    g.check('ash_level_after', state(g, FURNACE)['ash_coal'] == 3200 - 2000, state(g, FURNACE))
+    g.check('ash_level_after', state(g, FURNACE)['ash_coal'] == 800, state(g, FURNACE))
     g.snapshot('furnace-brick-done')
     g.ctl('click-slot 302 shift')
     g.ctl('click-slot 303 shift')
     g.close()
     inv = g.ctl('inventory').get('counts', {})
     g.check('ingots_taken', inv.get('minecraft:iron_ingot') == 16, inv)
-    g.check('ash_taken', inv.get('ntm:powder_ash__coal') == 1, inv)
+    g.check('ash_taken', inv.get('ntm:powder_ash__coal') == 2, inv)
     automation(g)
     g.evidence['ok'] = True
 
 
 def automation(g):
     x, y, z = FURNACE
-    # raw iron chest -> hopper -> furnace top; coal chest -> hopper -> furnace side;
+    # raw iron chest (above) -> hopper -> furnace top; coal chest (above its own hopper) -> hopper -> furnace side;
     # furnace bottom -> hopper -> output chest.
     for cmd in (
         f'setblock {x} {y + 1} {z} minecraft:hopper[facing=down]',
         f'setblock {x} {y + 2} {z} minecraft:chest',
         f'setblock {x + 1} {y} {z} minecraft:hopper[facing=west]',
-        f'setblock {x + 2} {y} {z} minecraft:chest',
+        f'setblock {x + 1} {y + 1} {z} minecraft:chest',
         f'setblock {x} {y - 1} {z} minecraft:hopper[facing=down]',
         f'setblock {x} {y - 2} {z} minecraft:chest',
     ):
         g.command(cmd)
     g.command(f'item replace block {x} {y + 2} {z} container.0 with minecraft:raw_iron 8')
-    g.command(f'item replace block {x} {y + 2} {z} container.1 with minecraft:coal 4')
-    g.command(f'item replace block {x + 2} {y} {z} container.0 with minecraft:coal 2')
-    g.command(f'item replace block {x + 2} {y} {z} container.1 with minecraft:iron_ingot 3')
+    g.command(f'item replace block {x + 1} {y + 1} {z} container.0 with minecraft:coal 2')
+    g.command(f'item replace block {x + 1} {y + 1} {z} container.1 with minecraft:iron_ingot 3')
     sprint(g, 2500)
     sprint(g, 400)
     out = (x, y - 2, z)
     ingots = chest_count(g, out, 'minecraft:iron_ingot')
     fuel_in_out = chest_count(g, out, 'minecraft:coal')
-    g.check('automation_smelted_8_ingots', ingots == 8, [ingots, g.command(f'data get block {out[0]} {out[1]} {out[2]} Items')])
+    g.check('automation_smelted_8_ingots', ingots == 8, [ingots, state(g, FURNACE), machine_state(g, FURNACE)[:300]])
     # The bottom face leaves the fuel slot alone (canExtractItem is slot >= 2): the coal stays in.
     g.check('hopper_below_does_not_pull_the_fuel', fuel_in_out == 0, fuel_in_out)
-    # The ingots in the side chest never went in: only slot 1 (fuel) is open to the sides.
-    g.check('side_hopper_fed_only_the_fuel_slot', chest_count(g, (x + 2, y, z), 'minecraft:iron_ingot') == 3, 'side chest')
+    # The side hopper pulled the chest's ingots but the fuel slot (the only one open to the sides) refused them.
+    g.check('side_hopper_fed_only_the_fuel_slot', chest_count(g, (x + 1, y, z), 'minecraft:iron_ingot') == 3, 'side hopper')
 
 
 def capture(g):
     x, y, z = SECOND
     g.close()
+    g.ground(x, y, z, width=4)
     g.command('clear @s')
     g.command('give @s ntm:machine_furnace_brick_off 1')
     g.ctl(f'place {x} {y} {z} --item ntm:machine_furnace_brick_off')
@@ -155,7 +163,11 @@ def capture(g):
 def check(g):
     old = json.loads((g.folder / SAVED).read_text())
     now = state(g, SECOND)
-    g.check('burn_state_survived_the_reopen', now['max_burn_time'] == old['state']['max_burn_time'] and now['burn_time'] >= old['state']['burn_time'] - 5, [old, now])
+    # The world went on ticking after the reopen: the burn fell by exactly what the progress rose (the progress wraps at 200:
+    # an ingot finishes), and the last fuel and the ash levels are the saved ones.
+    spent = old['state']['burn_time'] - now['burn_time']
+    g.check('burn_state_survived_the_reopen', now['max_burn_time'] == old['state']['max_burn_time'] and spent >= 0
+            and (old['state']['progress'] + spent) % 200 == now['progress'] and now['ash_coal'] == old['state']['ash_coal'], [old, now])
     open_at(g, SECOND)
     slots = g.slots()
     g.check('items_survived_the_reopen', count(slots, 'minecraft:raw_iron') + count(slots, 'minecraft:iron_ingot') == 16, slots)

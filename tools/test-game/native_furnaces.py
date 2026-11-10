@@ -9,6 +9,7 @@ steel          the steel furnace over a firebox: the firebox's heat, three lines
 Time passes with `tick sprint`; no machine state is injected.
 """
 import json
+import os
 import re
 import sys
 import time
@@ -44,14 +45,40 @@ def core_of(g, around, marker):
     raise AssertionError('no machine with ' + marker + ' near ' + str(around))
 
 
-def open_core(g, core):
+def open_core(g, core, dy=0, dz=0):
+    """Opens the machine's screen: a multiblock by the dummy cell over its core (`dy`), as a player clicks it."""
     g.close()
     g.command(f'tp @s {core[0] + .5} 100 {core[2] + 3.5}')
     time.sleep(1)
-    g.ctl(f'interact {core[0]} {core[1]} {core[2]} south')
-    time.sleep(.7)
-    screen = g.ctl('screen')
-    g.check('menu_open', screen.get('screen') == 'container', screen)
+    for attempt in range(3):
+        g.ctl(f'interact {core[0]} {core[1] + dy} {core[2] + dz} south')
+        deadline = time.monotonic() + 6
+        while time.monotonic() < deadline:
+            screen = g.ctl('screen')
+            if screen.get('screen') == 'container':
+                break
+            time.sleep(.5)
+        if screen.get('screen') == 'container':
+            break
+    g.check('menu_open', screen.get('screen') == 'container', {'screen': screen, 'attempts': attempt + 1})
+
+
+def open_fire(g, fire):
+    """The firebox under a multiblock: its dummy cells hide its south face, so a player clicks its east one."""
+    g.close()
+    g.command(f'tp @s {fire[0] + 3.5} 100 {fire[2] + .5}')
+    time.sleep(1)
+    for attempt in range(3):
+        g.ctl(f'interact {fire[0]} {fire[1]} {fire[2]} east')
+        deadline = time.monotonic() + 6
+        while time.monotonic() < deadline:
+            screen = g.ctl('screen')
+            if screen.get('screen') == 'container':
+                break
+            time.sleep(.5)
+        if screen.get('screen') == 'container':
+            break
+    g.check('firebox_menu_open', screen.get('screen') == 'container', {'attempts': attempt + 1})
 
 
 def lit_electric(g):
@@ -59,9 +86,10 @@ def lit_electric(g):
     g.close()
     g.ground(x, y, z, width=8)
     g.command('clear @s')
-    g.command('give @s ntm:machine_electric_furnace_on 1')
-    g.ctl(f'place {x} {y} {z} --item ntm:machine_electric_furnace_on')
-    time.sleep(1)
+    # The lit block has no creative entry: a command places it, as a world that holds one would.
+    g.command(f'setblock {x} {y} {z} ntm:machine_electric_furnace_on[facing=north]')
+    time.sleep(1.5)
+    g.check('lit_block_is_a_machine', 'ElectricFurnace' in machine_state(g, (x, y, z)), machine_state(g, (x, y, z))[:200])
     open_core(g, (x, y, z))
     g.put('minecraft:raw_iron', 4, 0)
     g.put('ntm:battery_creative', 1, 1)
@@ -88,7 +116,7 @@ def iron(g):
     g.ctl(f'place {x} {y} {z} --item ntm:furnace_iron')
     time.sleep(1.5)
     core = core_of(g, (x, y, z), '"Iron"')
-    open_core(g, core)
+    open_core(g, core, 1)
     g.check('menu_open_by_the_core', True, core)
     g.put('minecraft:coal', 2, 1)
     g.put('ntm:upgrade_speed_3', 1, 4)
@@ -108,7 +136,7 @@ def iron(g):
     g.command(f'setblock {top[0]} {top[1] + 1} {top[2]} minecraft:chest')
     g.command(f'item replace block {top[0]} {top[1] + 1} {top[2]} container.0 with minecraft:raw_iron 3')
     sprint(g, 600)
-    open_core(g, core)
+    open_core(g, core, 1)
     slots = g.slots()
     g.check('hopper_on_a_dummy_cell_fed_the_furnace', count(slots, 'minecraft:iron_ingot') + count(slots, 'minecraft:raw_iron') == 3, slots)
     g.close()
@@ -120,17 +148,20 @@ def steel(g):
     g.ground(x, y, z, width=8)
     g.command('clear @s')
     g.command('give @s ntm:furnace_steel 1')
+    g.command(f'setblock {x} {y} {z} minecraft:stone')
     g.ctl(f'place {x} {y + 1} {z} --item ntm:furnace_steel')
     time.sleep(1.5)
     core = core_of(g, (x, y + 1, z), '"Steel"')
     # The firebox under the furnace's core.
+    # The pedestal only gave the placement a face to click: out of the way, the firebox is reachable.
+    g.command(f'setblock {x} {y} {z} minecraft:air')
     fire = (core[0], core[1] - 1, core[2])
     g.command(f'setblock {fire[0]} {fire[1]} {fire[2]} ntm:heater_firebox[facing=north]')
     time.sleep(1)
-    open_core(g, fire)
+    open_fire(g, fire)
     g.put('minecraft:coal', 16, 0)
     g.close()
-    open_core(g, core)
+    open_core(g, core, 0, 1)
     g.put('minecraft:iron_ore', 8, 0)
     g.put('minecraft:raw_iron', 4, 1)
     sprint(g, 4000)
@@ -141,7 +172,9 @@ def steel(g):
     ingots = count(slots, 'minecraft:iron_ingot')
     g.check('steel_took_heat_from_the_firebox', heat is not None and heat > 0, state)
     g.check('steel_smelted', ingots > 0, slots)
-    g.check('steel_conserves', ores + ingots + count(slots, 'minecraft:raw_iron') <= 12 and ores + ingots > 0, slots)
+    # Eight ores pay 8 x 25 % = 200 % of bonus: ten ingots; four raw iron (no bonus) four.
+    by_slot = {x['slot']: x.get('count', 0) for x in slots}
+    g.check('steel_bonus_paid_two_extra_ingots', by_slot.get(303) == 10 and by_slot.get(304) == 4 and ores == 0, slots)
     g.snapshot('furnaces-steel')
     g.close()
 
@@ -152,16 +185,19 @@ def combination(g):
     g.ground(x, y, z, width=8)
     g.command('clear @s')
     g.command('give @s ntm:furnace_combination 1')
+    g.command(f'setblock {x} {y} {z} minecraft:stone')
     g.ctl(f'place {x} {y + 1} {z} --item ntm:furnace_combination')
     time.sleep(1.5)
     core = core_of(g, (x, y + 1, z), '"Combination"')
+    # The pedestal only gave the placement a face to click: out of the way, the firebox is reachable.
+    g.command(f'setblock {x} {y} {z} minecraft:air')
     fire = (core[0], core[1] - 1, core[2])
     g.command(f'setblock {fire[0]} {fire[1]} {fire[2]} ntm:heater_firebox[facing=north]')
     time.sleep(1)
-    open_core(g, fire)
+    open_fire(g, fire)
     g.put('minecraft:coal', 16, 0)
     g.close()
-    open_core(g, core)
+    open_core(g, core, 0, 1)
     g.put('minecraft:coal', 4, 0)
     g.put('minecraft:bucket', 2, 2)
     sprint(g, 3000)
@@ -171,7 +207,8 @@ def combination(g):
     g.check('combination_made_coke', coke > 0, slots)
     g.check('combination_conserves_coal', count(slots, 'minecraft:coal') + coke == 4, slots)
     mb = first_int(state, r'"mb":(\d+)')
-    g.check('combination_fluid_in_the_tank_or_buckets', mb is not None, state)
+    # A bucket cannot hold creosote: every 100 mB a coal gave stays in the 24 000 mB tank.
+    g.check('combination_creosote_100_mb_a_coal', mb == coke * 100, [mb, coke])
     g.snapshot('furnaces-combination')
     g.close()
 
@@ -182,6 +219,7 @@ if __name__ == '__main__':
     g.evidence['phase'] = mode
     g.ctl('wait-ready 120')
     {'lit-electric': lit_electric, 'iron': iron, 'steel': steel,
-     'combination': combination, 'all': lambda g: (lit_electric(g), iron(g), steel(g), combination(g))}[mode](g)
+     'combination': combination, 'all': lambda g: [f(g) for n, f in (('lit-electric', lit_electric), ('iron', iron), ('steel', steel), ('combination', combination))
+                                                   if n in os.environ.get('NTM_FURNACES_ONLY', 'lit-electric,iron,steel,combination').split(',')]}[mode](g)
     g.evidence['ok'] = True
     g.save()
